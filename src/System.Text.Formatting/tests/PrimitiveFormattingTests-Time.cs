@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Globalization;
 using System.IO;
 using System.Text.Formatting;
 using Xunit;
@@ -16,7 +17,7 @@ namespace System.Text.Formatting.Tests
             var sb = new StringFormatter();
 
             sb.Append(time, Format.Symbol.O);
-            Assert.Equal(time.ToString("O"), sb.ToString());
+            Assert.Equal(time.ToString("O", CultureInfo.InvariantCulture), sb.ToString());
             sb.Clear();
         }
 
@@ -38,7 +39,7 @@ namespace System.Text.Formatting.Tests
             var sb = new StringFormatter();
 
             sb.Append(time);
-            Assert.Equal(time.ToString(), sb.ToString());
+            Assert.Equal(time.ToString("", CultureInfo.InvariantCulture), sb.ToString());
             sb.Clear();
         }
     }

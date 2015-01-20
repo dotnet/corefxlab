@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Globalization;
 using System.IO;
 using System.Text.Formatting;
 using Xunit;
@@ -19,7 +20,7 @@ namespace System.Text.Formatting.Tests
             var result = formatter.ToString();
             Assert.Equal(expected, result);
 
-            var clrResult = value.ToString(format);
+            var clrResult = value.ToString(format, CultureInfo.InvariantCulture);
             Assert.Equal(clrResult, result);
         }
 
@@ -80,7 +81,7 @@ namespace System.Text.Formatting.Tests
             var result = formatter.ToString();
             Assert.Equal(expected, result);
 
-            var clrResult = value.ToString(format);
+            var clrResult = value.ToString(format, CultureInfo.InvariantCulture);
             Assert.Equal(clrResult, result);
         }
 
