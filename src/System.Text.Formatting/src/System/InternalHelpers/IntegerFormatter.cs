@@ -13,7 +13,7 @@ namespace System.Text.Formatting
         {
             Precondition.Require(numberOfBytes <= sizeof(long));
 
-            Format.Parsed parsedFormat = Format.Parsed.Parse(format);
+            Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormatInt64(value, numberOfBytes, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
@@ -52,7 +52,7 @@ namespace System.Text.Formatting
 
         internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, ReadOnlySpan<char> format, FormattingData formattingData, out int bytesWritten)
         {
-            Format.Parsed parsedFormat = Format.Parsed.Parse(format);
+            Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormatUInt64(value, numberOfBytes, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 

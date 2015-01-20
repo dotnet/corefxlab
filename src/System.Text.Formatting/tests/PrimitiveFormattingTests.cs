@@ -9,6 +9,69 @@ namespace System.Text.Formatting.Tests
 {
     public partial class SystemTextFormattingTests
     {
+        StringFormatter formatter = new StringFormatter();
+
+        private void CheckByte(int value, string format, string expected)
+        {
+            var parsed = Format.Parse(format);
+            formatter.Clear();
+            formatter.Append(value, parsed);
+            var result = formatter.ToString();
+            Assert.Equal(expected, result);
+
+            var clrResult = value.ToString(format);
+            Assert.Equal(clrResult, result);
+        }
+
+        [Fact]
+        void Byte()
+        {
+            CheckByte(0, null, "0");
+            CheckByte(1, null, "1");
+            CheckByte(10, null, "10");
+            CheckByte(byte.MaxValue, null, "255");
+
+            CheckByte(0, "", "0");
+            CheckByte(1, "", "1");
+            CheckByte(10, "", "10");
+            CheckByte(byte.MaxValue, "", "255");
+
+            CheckByte(0, "g", "0");
+            CheckByte(1, "g", "1");
+            CheckByte(10, "g", "10");
+            CheckByte(byte.MaxValue, "g", "255");
+
+            CheckByte(0, "d", "0");
+            CheckByte(1, "d", "1");
+            CheckByte(10, "d", "10");
+            CheckByte(byte.MaxValue, "d", "255");
+
+            CheckByte(0, "d0", "0");
+            CheckByte(0, "d1", "0");
+            CheckByte(0, "d2", "00");
+            CheckByte(0, "d10", "0000000000");
+
+            CheckByte(1, "d0", "1");
+            CheckByte(1, "d1", "1");
+            CheckByte(1, "d2", "01");
+            CheckByte(1, "d10", "0000000001");
+
+            CheckByte(21, "d0", "21");
+            CheckByte(21, "d1", "21");
+            CheckByte(21, "d2", "21");
+            CheckByte(21, "d10", "0000000021");
+
+            CheckByte(0, "x", "0");
+            CheckByte(1, "x", "1");
+            CheckByte(10, "x", "a");
+            CheckByte(byte.MaxValue, "x", "ff");
+
+            CheckByte(0, "X", "0");
+            CheckByte(1, "X", "1");
+            CheckByte(10, "X", "A");
+            CheckByte(byte.MaxValue, "X", "FF");
+        }
+
         [Fact]
         public void FloatFormatting()
         {
@@ -54,7 +117,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatD()
         {
-            var format = Format.Parsed.Parse("D");
+            var format = Format.Parse("D");
             var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
@@ -71,7 +134,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatDPrecision()
         {
-            var format = Format.Parsed.Parse("D3");
+            var format = Format.Parse("D3");
             var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
@@ -88,7 +151,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatG()
         {
-            var format = Format.Parsed.Parse("G");
+            var format = Format.Parse("G");
             var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
@@ -105,7 +168,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatNPrecision()
         {
-            var format = Format.Parsed.Parse("N1");
+            var format = Format.Parse("N1");
             var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
@@ -122,8 +185,8 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatX()
         {
-            var x = Format.Parsed.Parse("x");
-            var X = Format.Parsed.Parse("X");
+            var x = Format.Parse("x");
+            var X = Format.Parse("X");
 
             var sb = new StringFormatter();
             sb.Append((ulong)255, x);
@@ -142,8 +205,8 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatXPrecision()
         {
-            var x = Format.Parsed.Parse("x10");
-            var X = Format.Parsed.Parse("X10");
+            var x = Format.Parse("x10");
+            var X = Format.Parse("X10");
 
             var sb = new StringFormatter();
             sb.Append((ulong)255, x);
