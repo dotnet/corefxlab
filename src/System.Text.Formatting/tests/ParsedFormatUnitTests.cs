@@ -13,40 +13,64 @@ namespace System.Text.Formatting.Tests
         {
             Format.Parsed parsed;
 
-            parsed = Format.Parsed.Parse("D");
+            parsed = Format.Parse("B");
+            Verify(parsed, Format.NoPrecision, Format.Symbol.B);
+
+            parsed = Format.Parse("b");
+            Verify(parsed, Format.NoPrecision, Format.Symbol.B);
+
+            parsed = Format.Parse("D");
             Verify(parsed, Format.NoPrecision, Format.Symbol.D);
 
-            parsed = Format.Parsed.Parse("d");
+            parsed = Format.Parse("d");
             Verify(parsed, Format.NoPrecision, Format.Symbol.D);
 
-            parsed = Format.Parsed.Parse("E");
+            parsed = Format.Parse("E");
             Verify(parsed, Format.NoPrecision, Format.Symbol.E);
 
-            parsed = Format.Parsed.Parse("e");
+            parsed = Format.Parse("e");
             Verify(parsed, Format.NoPrecision, Format.Symbol.E);
 
-            parsed = Format.Parsed.Parse("F");
+            parsed = Format.Parse("F");
             Verify(parsed, Format.NoPrecision, Format.Symbol.F);
 
-            parsed = Format.Parsed.Parse("f");
+            parsed = Format.Parse("f");
             Verify(parsed, Format.NoPrecision, Format.Symbol.F);
 
-            parsed = Format.Parsed.Parse("G");
+            parsed = Format.Parse("G");
             Verify(parsed, Format.NoPrecision, Format.Symbol.G);
 
-            parsed = Format.Parsed.Parse("g");
+            parsed = Format.Parse("g");
             Verify(parsed, Format.NoPrecision, Format.Symbol.G);
 
-            parsed = Format.Parsed.Parse("N");
+            parsed = Format.Parse("N");
             Verify(parsed, Format.NoPrecision, Format.Symbol.N);
 
-            parsed = Format.Parsed.Parse("n");
+            parsed = Format.Parse("n");
             Verify(parsed, Format.NoPrecision, Format.Symbol.N);
 
-            parsed = Format.Parsed.Parse("X");
+            parsed = Format.Parse("O");
+            Verify(parsed, Format.NoPrecision, Format.Symbol.O);
+
+            parsed = Format.Parse("o");
+            Verify(parsed, Format.NoPrecision, Format.Symbol.O);
+
+            parsed = Format.Parse("P");
+            Verify(parsed, Format.NoPrecision, Format.Symbol.P);
+
+            parsed = Format.Parse("p");
+            Verify(parsed, Format.NoPrecision, Format.Symbol.P);
+
+            parsed = Format.Parse("R");
+            Verify(parsed, Format.NoPrecision, Format.Symbol.R);
+
+            parsed = Format.Parse("r");
+            Verify(parsed, Format.NoPrecision, Format.Symbol.R);
+
+            parsed = Format.Parse("X");
             Verify(parsed, Format.NoPrecision, Format.Symbol.X);
 
-            parsed = Format.Parsed.Parse("x");
+            parsed = Format.Parse("x");
             Verify(parsed, Format.NoPrecision, Format.Symbol.XLowercase);
         }
 
@@ -55,40 +79,40 @@ namespace System.Text.Formatting.Tests
         {
             Format.Parsed parsed;
 
-            parsed = Format.Parsed.Parse("D1");
+            parsed = Format.Parse("D1");
             Verify(parsed, 1, Format.Symbol.D);
 
-            parsed = Format.Parsed.Parse("d2");
+            parsed = Format.Parse("d2");
             Verify(parsed, 2, Format.Symbol.D);
 
-            parsed = Format.Parsed.Parse("E3");
+            parsed = Format.Parse("E3");
             Verify(parsed, 3, Format.Symbol.E);
 
-            parsed = Format.Parsed.Parse("e4");
+            parsed = Format.Parse("e4");
             Verify(parsed, 4, Format.Symbol.E);
 
-            parsed = Format.Parsed.Parse("F5");
+            parsed = Format.Parse("F5");
             Verify(parsed, 5, Format.Symbol.F);
 
-            parsed = Format.Parsed.Parse("f6");
+            parsed = Format.Parse("f6");
             Verify(parsed, 6, Format.Symbol.F);
 
-            parsed = Format.Parsed.Parse("G7");
+            parsed = Format.Parse("G7");
             Verify(parsed, 7, Format.Symbol.G);
 
-            parsed = Format.Parsed.Parse("g99");
+            parsed = Format.Parse("g99");
             Verify(parsed, 99, Format.Symbol.G);
 
-            parsed = Format.Parsed.Parse("N98");
+            parsed = Format.Parse("N98");
             Verify(parsed, 98, Format.Symbol.N);
 
-            parsed = Format.Parsed.Parse("n10");
+            parsed = Format.Parse("n10");
             Verify(parsed, 10, Format.Symbol.N);
 
-            parsed = Format.Parsed.Parse("X11");
+            parsed = Format.Parse("X11");
             Verify(parsed, 11, Format.Symbol.X);
 
-            parsed = Format.Parsed.Parse("x10");
+            parsed = Format.Parse("x10");
             Verify(parsed, 10, Format.Symbol.XLowercase);
         }
 

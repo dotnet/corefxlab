@@ -11,7 +11,7 @@ namespace System.Text.Formatting
     {
         public static bool TryFormat(this Guid value, Span<byte> buffer, ReadOnlySpan<char> format, FormattingData formattingData, out int bytesWritten)
         {
-            Format.Parsed parsedFormat = Format.Parsed.Parse(format);
+            Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
