@@ -11,7 +11,7 @@ namespace System.Text.Formatting.Tests
     {
         StringFormatter formatter = new StringFormatter();
 
-        private void CheckByte(int value, string format, string expected)
+        private void CheckByte(byte value, string format, string expected)
         {
             var parsed = Format.Parse(format);
             formatter.Clear();
@@ -24,7 +24,7 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
-        void Byte()
+        public void Byte()
         {
             CheckByte(0, null, "0");
             CheckByte(1, null, "1");
@@ -70,6 +70,74 @@ namespace System.Text.Formatting.Tests
             CheckByte(1, "X", "1");
             CheckByte(10, "X", "A");
             CheckByte(byte.MaxValue, "X", "FF");
+        }
+
+        private void CheckInt64(long value, string format, string expected)
+        {
+            var parsed = Format.Parse(format);
+            formatter.Clear();
+            formatter.Append(value, parsed);
+            var result = formatter.ToString();
+            Assert.Equal(expected, result);
+
+            var clrResult = value.ToString(format);
+            Assert.Equal(clrResult, result);
+        }
+
+        [Fact]
+        public void Int64()
+        {
+            CheckInt64(long.MinValue, null, "-9223372036854775808");
+            CheckInt64(-10, null, "-10");
+            CheckInt64(-1, null, "-1");
+            CheckInt64(0, null, "0");
+            CheckInt64(1, null, "1");
+            CheckInt64(10, null, "10");
+            CheckInt64(long.MaxValue, null, "9223372036854775807");
+
+            CheckInt64(long.MinValue, "d", "-9223372036854775808");
+            CheckInt64(-10, "d", "-10");
+            CheckInt64(-1, "d", "-1");
+            CheckInt64(0, "d", "0");
+            CheckInt64(1, "d", "1");
+            CheckInt64(10, "d", "10");
+            CheckInt64(long.MaxValue, "d", "9223372036854775807");
+
+            CheckInt64(long.MinValue, "x", "8000000000000000");
+            CheckInt64(-10, "x", "fffffffffffffff6");
+            CheckInt64(-1, "x", "ffffffffffffffff");
+            CheckInt64(0, "x", "0");
+            CheckInt64(1, "x", "1");
+            CheckInt64(10, "x", "a");
+            CheckInt64(long.MaxValue, "x", "7fffffffffffffff");
+
+            CheckInt64(long.MinValue, "X", "8000000000000000");
+            CheckInt64(-10,  "X", "FFFFFFFFFFFFFFF6");
+            CheckInt64(-1,  "X", "FFFFFFFFFFFFFFFF");
+            CheckInt64(0,  "X", "0");
+            CheckInt64(1, "X", "1");
+            CheckInt64(10, "X", "A");
+            CheckInt64(long.MaxValue, "X", "7FFFFFFFFFFFFFFF");
+
+            CheckInt64(0, "d0", "0");
+            CheckInt64(0, "d1", "0");
+            CheckInt64(0, "d2", "00");
+            CheckInt64(0, "d10", "0000000000");
+
+            CheckInt64(1, "d0", "1");
+            CheckInt64(1, "d1", "1");
+            CheckInt64(1, "d2", "01");
+            CheckInt64(1, "d10", "0000000001");
+
+            CheckInt64(21, "d0", "21");
+            CheckInt64(21, "d1", "21");
+            CheckInt64(21, "d2", "21");
+            CheckInt64(21, "d10", "0000000021");
+
+            CheckInt64(-1, "d0", "-1");
+            CheckInt64(-1, "d1", "-1");
+            CheckInt64(-1, "d2", "-01");
+            CheckInt64(-1, "d10", "-0000000001");
         }
 
         [Fact]
