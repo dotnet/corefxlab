@@ -9,7 +9,8 @@ System.Text.Formatting APIs are similar to the existing StringBuilder and TextWr
 They are designed to format values into text streams and to build complex strings. 
 But these APIs are optimized for creating text for the Web. 
 They do formatting with minimum GC heap allocations (1/6 of allocations in some scenarios) and can format directly to UTF8 streams. 
-This can result in significant performance wins for software that does a lot of text formatting for the Web, e.g. generating HTML, JSON, XML.
+This can result in significant performance wins for software that does a lot of text formatting for the Web, e.g. generating HTML, JSON, XML. 
+See more information on this component and code samples at the [Wiki]: https://github.com/dotnet/corefxlab/wiki 
 
 More libraries are coming soon. Stay tuned!
 
