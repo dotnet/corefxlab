@@ -40,14 +40,19 @@ namespace Microsoft.NuGet
                 var referencePath = Path.Combine(packageRoot, "lib\\contract", package.Id + ".dll");
                 var dependencyPath = Path.Combine(packageRoot, "lib\\aspnetcore50", package.Id + ".dll");
        
-                if (!File.Exists(referencePath))
-                {
-                    Log.LogWarning("Reference not found: {0}", referencePath);
-                }
-                else
+                if (File.Exists(referencePath))
                 {
                     references.Add(new TaskItem(referencePath));
                     Log.LogMessage(MessageImportance.Low, "Adding reference: {0}", referencePath);
+                }
+                else if (File.Exists(dependencyPath))
+                {
+                    references.Add(new TaskItem(dependencyPath));
+                    Log.LogMessage(MessageImportance.Low, "Adding reference: {0}", dependencyPath);
+                }
+                else
+                {
+                    Log.LogWarning("Reference not found: {0}", referencePath);
                 }
 
                 if (!File.Exists(dependencyPath))
