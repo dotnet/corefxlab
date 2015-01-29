@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask AssemblyFile="NotYetPackages\NuGetTasks\NuGetTasks.dll" TaskName="Microsoft.NuGet.ResolvePackages" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <ProjectRoot>$(MSBuildThisFileDirectory)</ProjectRoot>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E868DBC3-155B-4DDD-8F6B-B7C2892668FE}</ProjectGuid>
+    <DebugEngines>{2E36F1D4-B23C-435D-AB41-18E608940038}</DebugEngines>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <NoStdLib>true</NoStdLib>
+    <NoExplicitReferenceToStdLib>true</NoExplicitReferenceToStdLib>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ProgramExe>$(OutputPath)\$(MSBuildProjectName).exe</ProgramExe>
+    <ProgramDll>$(OutputPath)\$(MSBuildProjectName).dll</ProgramDll>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="HelloWorld.cs" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="BeforeCompile">
+    <ResolvePackages PackagesDirectory="$(ProjectRoot)\packages" PackagesConfig="$(ProjectRoot)\packages.config">
+      <Output TaskParameter="References" ItemName="ReferencePath" />
+      <Output TaskParameter="Dependencies" ItemName="Dependencies" />
+    </ResolvePackages>
+  </Target>
+  <Target Name="AfterBuild">
+    <Move SourceFiles="$(ProgramExe)" DestinationFiles="$(ProgramDll)" />
+    <Copy SourceFiles="@(Dependencies)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(ProjectRoot)\NotYetPackages\CoreCLR\CoreConsole.exe" DestinationFiles="$(ProgramExe)" />
+  </Target>
+</Project>
