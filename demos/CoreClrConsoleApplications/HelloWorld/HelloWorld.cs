@@ -7,13 +7,27 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Console.WriteLine("Hello World!");
-        foreach (var arg in args)
+        const int squareSize = 20;
+        const char filled = '@';
+
+        var colors = new[] { ConsoleColor.Red, ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Yellow };
+        for (int row = 0; row < 2; row++)
         {
-            Console.Write("Hello ");
-            Console.Write(arg);
-            Console.WriteLine("!");
+            for (int i = 0; i < squareSize / 2; i++)
+            {
+                Console.WriteLine();
+                Console.Write("  ");
+                for (int col = 0; col < 2; col++)
+                {
+                    Console.ForegroundColor = colors[row * 2 + col];
+                    for (int j = 0; j < squareSize; j++) Console.Write(filled);
+                    Console.ResetColor();
+                    Console.Write(" ");
+                }
+            }
         }
+        Console.WriteLine();
+        Console.WriteLine();
         Console.WriteLine("Press ENTER to exit ...");
         Console.ReadLine();
     }
