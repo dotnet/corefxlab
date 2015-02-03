@@ -7,7 +7,19 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        const int squareSize = 20;
+        int squareSize = 20;
+
+        // If the user specified an argument, we'll use it as the size
+        // of the squares.
+
+        if (args.Length == 1)
+        {
+            int.TryParse(args[0], out squareSize);
+            squareSize = Math.Max(1, Math.Min(40, squareSize));
+        }
+
+        // Draw flag
+
         const char filled = '@';
 
         var colors = new[] { ConsoleColor.Red, ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Yellow };
