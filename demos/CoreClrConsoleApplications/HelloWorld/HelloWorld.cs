@@ -7,20 +7,29 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        int squareSize = 20;
-
-        // If the user specified an argument, we'll use it as the size
-        // of the squares.
-
-        if (args.Length == 1)
+        if (args.Length == 1 && args[0] == "linux")
         {
-            int.TryParse(args[0], out squareSize);
-            squareSize = Math.Max(1, Math.Min(40, squareSize));
+            DrawLinux();
+        }
+        else if (args.Length == 1 && args[0] == "mac")
+        {
+            DrawMac();
+        }
+        else
+        {
+            DrawWindows();
         }
 
-        // Draw flag
+        Console.WriteLine();
+        Console.WriteLine("Press ENTER to exit ...");
+        Console.ReadLine();
+    }
 
-        const char filled = '@';
+    private static void DrawWindows()
+    {
+        Console.WriteLine("Hello, Windows...");
+
+        const int squareSize = 20;
 
         var colors = new[] { ConsoleColor.Red, ConsoleColor.Green, ConsoleColor.Blue, ConsoleColor.Yellow };
         for (int row = 0; row < 2; row++)
@@ -31,16 +40,113 @@ internal class Program
                 Console.Write("  ");
                 for (int col = 0; col < 2; col++)
                 {
+                    Console.BackgroundColor = colors[row * 2 + col];
                     Console.ForegroundColor = colors[row * 2 + col];
-                    for (int j = 0; j < squareSize; j++) Console.Write(filled);
+                    for (int j = 0; j < squareSize; j++) Console.Write('@');
                     Console.ResetColor();
-                    Console.Write(" ");
                 }
             }
         }
         Console.WriteLine();
+    }
+
+    private static void DrawLinux()
+    {
+        Console.WriteLine("Hello, Linux...");
+
+        const string Penguin = @"
+                                                     
+                        @@@@@                        
+                      @@@@@@@@@@                     
+                    @@@@@@@@@@@@@                    
+                    @@@@@@@@@@@@@@                   
+                   @@@@@@@@@@@@@@@@                  
+                   @@@@@@@@@@@@@@@@                  
+                   @@@@@@@@@@@@@@@@@                 
+                  @@@@@@@@@@@@@@@@@@                 
+                  @@@@@@@@@@@@@@@@@@                 
+                  @@@ @@@@@@@  @@@@@                 
+                  @@   @@@@    @@@@@                 
+                  @@ @@ @@  @@  @@@@                 
+                  @@ @@ @@@ @@@ @@@@                 
+                   @ @@---- @@@ @@@@                 
+                   @ @-------@  @@@@@                
+                   @------------@@@@@                
+                   @------------@@@@@                
+                   @------------@@@@@                
+                   @------------@@@@@                
+                   @ ---------  @@@@@@               
+                   @  ------    @@@@@@@              
+                  @@    --       @@@@@@              
+                 @@@             @@@@@@@             
+                 @@               @@@@@@             
+                @@@               @@@@@@@            
+               @@@                 @@@@@@@           
+              @@@@                 @@@@@@@@          
+             @@@@@                 @@@@@@@@@         
+             @@@@@                  @@@@@@@@         
+             @@@@                    @@@@@@@@        
+            @@@@             *       @@@@@@@@        
+            @@@@            ****     @@@@@@@@        
+            @@@            *****      @@@@@@@@       
+           @@@@     *     ******      @@@@@@@@       
+           @@@      **   *** ***      @@@@@@@@       
+          @@@@      *******  ***      @@@@@@@@@      
+          @@@@      * ****   ***      @@@@@@@@@      
+         @@@@@      *******  ***      @@@@@@@@@      
+         @@@@@      **   *** ***      @@@@@@@@@      
+         @@@@@      *     ******      @@@@@@@@@      
+         @@@@@             *****      @@@@@@@@@      
+         ---@@              ****      @@@@@@@@       
+        -----@@              *      ---@@@@@@@       
+        ------@@                   ----@@@@@@--      
+   ------------@@                   ---@@@@@@--      
+   ------------@@@@                ----@@@@----      
+   -------------@@@@               -------------     
+   --------------@@@@              --------------    
+   --------------@@@@              ---------------   
+   ---------------@@@             @----------------  
+   ----------------              @@----------------- 
+   ----------------             @@@----------------- 
+  ------------------          @@@@@----------------  
+  ------------------@@     @@@@@@@@--------------    
+  -------------------@@@@@@@@@@@@@@------------      
+   ------------------@@@@@@@@@@@@@@----------        
+      --------------@@@@@@@@@@@@@@@---------         
+          @---------@              @-------          
+             @----@@               @@-----           
+                @@                   @@@             
+                                                     
+";
+        foreach (char c in Penguin)
+        {
+            if (c == '\n')
+            {
+                Console.ResetColor();
+                Console.WriteLine();
+            }
+            else
+            {
+                ConsoleColor cc =
+                    c == '*' ? ConsoleColor.Blue :
+                    c == '@' ? ConsoleColor.Black :
+                    c == '-' ? ConsoleColor.Yellow :
+                    ConsoleColor.White;
+                Console.BackgroundColor = cc;
+                Console.ForegroundColor = cc;
+                Console.Write(" ");
+            }
+        }
+
+        Console.ResetColor();
         Console.WriteLine();
-        Console.WriteLine("Press ENTER to exit ...");
-        Console.ReadLine();
+    }
+
+    private static void DrawMac()
+    {
+        Console.WriteLine("Hello, Mac...");
+        Console.WriteLine();
+
+        // TODO: Something pretty here :)
     }
 }
