@@ -142,7 +142,7 @@ internal class Program
         Console.WriteLine();
     }
 
-        private static void DrawMac()
+    private static void DrawMac()
     {
         Console.WriteLine("Hello, Mac...");
 
