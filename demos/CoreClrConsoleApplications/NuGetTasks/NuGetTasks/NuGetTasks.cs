@@ -30,13 +30,33 @@ namespace Microsoft.NuGet
 
             List<ITaskItem> references = new List<ITaskItem>();
             List<ITaskItem> dependencies = new List<ITaskItem>();
-            dependencies.Add(new TaskItem(@"NotYetPackages\CoreCLR\coreclr.dll"));
-            dependencies.Add(new TaskItem(@"NotYetPackages\CoreCLR\mscorlib.dll"));
 
             var installedPackages = PackageManager.ReadPackagesConfig(PackagesConfig);
             foreach (var package in installedPackages)
             {
                 var packageRoot = Path.Combine(PackagesDirectory, package.FullName);
+                var architecture = "amd64";
+                if (package.FullName.StartsWith("CoreClr")) // this is temporary till we add support for implementation packages
+                {
+                    var native = Path.Combine(packageRoot, "native\\windows", architecture);
+                    foreach (var file in Directory.EnumerateFiles(native)) {
+                        dependencies.Add(new TaskItem(Path.Combine(native, file)));
+                    }
+
+                    var architectureDependentLibs = Path.Combine(packageRoot, "lib\\aspnetcore50", architecture);
+                    foreach (var file in Directory.EnumerateFiles(architectureDependentLibs))
+                    {
+                        dependencies.Add(new TaskItem(Path.Combine(native, file)));
+                    }
+
+                    var otherLibs = Path.Combine(packageRoot, "lib\\aspnetcore50");
+                    foreach (var file in Directory.EnumerateFiles(otherLibs))
+                    {
+                        dependencies.Add(new TaskItem(Path.Combine(native, file)));
+                    }
+                    continue;
+                }
+
                 var referencePath = Path.Combine(packageRoot, "lib\\contract", package.Id + ".dll");
                 var dependencyPath = Path.Combine(packageRoot, "lib\\aspnetcore50", package.Id + ".dll");
        
