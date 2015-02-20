@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <UsingTask AssemblyFile="Task\NuGetTasks.dll" TaskName="Microsoft.NuGet.ResolvePackages" />
+  <UsingTask AssemblyFile="Task\NuGetTasks\NuGetTasks.dll" TaskName="Microsoft.NuGet.ResolvePackages" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <ProjectRoot>$(MSBuildThisFileDirectory)</ProjectRoot>
@@ -38,6 +38,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <ItemGroup>
+    <RuntimeEnvironment Include="lib\aspnetcore50\amd64"/>
+    <RuntimeEnvironment Include="native\windows\amd64"/>
+    <!-- <RuntimeEnvironment Include="native\windows\amd64\v7"/> Uncomment this to produce Windows 7 application-->
+  </ItemGroup>
   <PropertyGroup>
     <ProgramExe>$(OutputPath)\$(MSBuildProjectName).exe</ProgramExe>
     <ProgramDll>$(OutputPath)\$(MSBuildProjectName).dll</ProgramDll>
@@ -49,7 +54,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">
-    <ResolvePackages PackagesDirectory="$(ProjectRoot)\packages" PackagesConfig="$(ProjectRoot)\packages.config">
+    <ResolvePackages PackagesDirectory="$(ProjectRoot)\packages" PackagesConfig="$(ProjectRoot)\packages.config" Environment="@(RuntimeEnvironment)">
       <Output TaskParameter="References" ItemName="ReferencePath" />
       <Output TaskParameter="Dependencies" ItemName="Dependencies" />
     </ResolvePackages>
