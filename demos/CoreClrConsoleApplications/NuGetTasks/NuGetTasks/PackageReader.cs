@@ -50,7 +50,7 @@ namespace Microsoft.NuGet
             psi.Arguments = nugetArguments;
             psi.CreateNoWindow = true;
             var process = Process.Start(psi);
-            if (!process.WaitForExit(5000))
+            if (!process.WaitForExit(20000))
             {
                 log.LogError("Packages installation timed out.");
                 return false;
