@@ -10,20 +10,20 @@ namespace System
     {
         T[] _array;
         int _index;
-        int _count;
+        int _length;
 
         public ReadOnlySpan(T[] array, int index, int count)
         {
             _array = array;
             _index = index;
-            _count = count;
+            _length = count;
         }
         public int Length
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                return _count;
+                return _length;
             }
         }
 
@@ -54,12 +54,12 @@ namespace System
             return new ReadOnlySpan<T>(from, 0, from.Length);
         }
 
-        internal T[] CreateArray()
+        public T[] CreateArray()
         {
-            T[] array = new T[_count];
+            T[] array = new T[_length];
             var arrayIndex = 0;
             var start = _index;
-            var count = _count;
+            var count = _length;
             while(count > 0) {
                 array[arrayIndex++] = _array[start++];
                 count--;
