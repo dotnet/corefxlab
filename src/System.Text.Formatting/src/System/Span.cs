@@ -110,6 +110,20 @@ namespace System
             }
             Array.Copy(items, 0, _array, _index, items.Length);
         }
+
+        public T[] CreateArray()
+        {
+            T[] array = new T[_length];
+            var arrayIndex = 0;
+            var start = _index;
+            var count = _length;
+            while (count > 0)
+            {
+                array[arrayIndex++] = _array[start++];
+                count--;
+            }
+            return array;
+        }
     }
 
     public static class SpanExtensions
@@ -117,7 +131,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<T> Slice<T>(this T[] array, int index = 0)
         {
-            return array.Slice(0, array.Length);
+            return array.Slice(index, array.Length - index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
