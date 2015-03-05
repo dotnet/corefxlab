@@ -20,7 +20,7 @@ namespace System.Text.Formatting
             _buffer = null;
             if (bufferSize > 0)
             {
-                _buffer = BufferPool.RentBuffer(bufferSize);
+                _buffer = BufferPool.Shared.RentBuffer(bufferSize);
             }
             _formattingData = formattingData;
             _stream = stream;
@@ -32,7 +32,7 @@ namespace System.Text.Formatting
             {
                 if (_buffer == null)
                 {
-                    _buffer = BufferPool.RentBuffer(256);
+                    _buffer = BufferPool.Shared.RentBuffer(256);
                 }
                 return _buffer;
             }
@@ -48,7 +48,7 @@ namespace System.Text.Formatting
 
         void IFormatter.ResizeBuffer()
         {
-            BufferPool.Enlarge(ref _buffer, _buffer.Length * 2);
+            BufferPool.Shared.Enlarge(ref _buffer, _buffer.Length * 2);
         }
 
         // ISSUE

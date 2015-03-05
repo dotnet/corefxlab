@@ -19,7 +19,7 @@ namespace System.Text.Formatting
 
         public StringFormatter(int capacity)
         {
-            _buffer = BufferPool.RentBuffer(capacity * 2);
+            _buffer = BufferPool.Shared.RentBuffer(capacity * 2);
         }
 
         public void Append(char character) {
@@ -72,7 +72,7 @@ namespace System.Text.Formatting
 
         void IFormatter.ResizeBuffer()
         {
-            BufferPool.Enlarge(ref _buffer, _buffer.Length * 2);
+            BufferPool.Shared.Enlarge(ref _buffer, _buffer.Length * 2);
         }
         void IFormatter.CommitBytes(int bytes)
         {
