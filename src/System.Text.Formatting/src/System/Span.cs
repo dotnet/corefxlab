@@ -111,6 +111,16 @@ namespace System
             Array.Copy(items, 0, _array, _index, items.Length);
         }
 
+        public void Set(Span<T> items)
+        {
+            Set(items._array, items._index, items._length);
+        }
+
+        public void Set(ReadOnlySpan<T> items)
+        {
+            Set(items._array, items._index, items._length);
+        }
+
         public T[] CreateArray()
         {
             T[] array = new T[_length];

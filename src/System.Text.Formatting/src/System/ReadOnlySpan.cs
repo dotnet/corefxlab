@@ -8,9 +8,9 @@ namespace System
     // This is a naive implementation of span. We will get a much better one later.
     public struct ReadOnlySpan<T>
     {
-        T[] _array;
-        int _index;
-        int _length;
+        internal T[] _array;
+        internal int _index;
+        internal int _length;
 
         public ReadOnlySpan(T[] array, int index, int count)
         {
