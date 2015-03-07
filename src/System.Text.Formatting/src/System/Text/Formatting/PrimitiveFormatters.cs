@@ -80,8 +80,8 @@ namespace System.Text.Formatting
                 return true;
             }
 
-            var encoded = new Utf8.FourBytes();
-            bytesWritten = Utf8.CharToUtf8(value, ref encoded);
+            var encoded = new Utf8Helpers.FourBytes();
+            bytesWritten = Utf8Helpers.CharToUtf8(value, ref encoded);
             if(buffer.Length < bytesWritten)
             {
                 bytesWritten = 0;
@@ -130,8 +130,8 @@ namespace System.Text.Formatting
             for (int i = 0; i < value.Length; i++)
             {
                 var c = value[i];
-                var encoded = new Utf8.FourBytes();
-                var bytes = Utf8.CharToUtf8(c, ref encoded);
+                var encoded = new Utf8Helpers.FourBytes();
+                var bytes = Utf8Helpers.CharToUtf8(c, ref encoded);
 
                 if(bytesWritten + bytes > avaliableBytes)
                 {
