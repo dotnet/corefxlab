@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text.Encodings
 {
-    internal static class Utf8
+    internal static class Utf8Helpers
     {
         public static int CharToUtf8(char c, ref FourBytes utf8)
         {

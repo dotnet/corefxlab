@@ -15,25 +15,30 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="System\InternalHelpers\FloatFormatter.cs" />
+    <Compile Include="System\Span.cs" />
+    <Compile Include="System\ReadOnlySpan.cs" />
+
+    <Compile Include="System\Text\Formatting\IBufferFormattable.cs" />
+    <Compile Include="System\Text\Formatting\IFormatter.cs" />
+    <Compile Include="System\Text\Formatting\IFormatterExtensions.cs" />
+    <Compile Include="System\Text\Formatting\FormattingData.cs" />
+    <Compile Include="System\Text\Formatting\ParsedFormat.cs" />
+    <Compile Include="System\Text\Formatting\PrimitiveFormatters.cs" />
     <Compile Include="System\Text\Formatting\PrimitiveFormatters_float.cs" />
     <Compile Include="System\Text\Formatting\PrimitiveFormatters_time.cs" />
     <Compile Include="System\Text\Formatting\PrimitiveFormatters_uuid.cs" />
+    <Compile Include="System\Text\Formatting\StreamFormatter.cs" />
+    <Compile Include="System\Text\Formatting\StringFormatter.cs" />
+
+    <Compile Include="System\Text\Utf8\Utf8String.cs" />
+
+    <Compile Include="System\InternalHelpers\IntegerFormatter.cs" />
+    <Compile Include="System\InternalHelpers\FloatFormatter.cs" />
     <Compile Include="System\InternalHelpers\Precondition.cs" />
     <Compile Include="System\InternalHelpers\BufferPool.cs" />
     <Compile Include="System\InternalHelpers\Utf8.cs" />
-    <Compile Include="System\Text\Formatting\StreamFormatter.cs" />
-    <Compile Include="System\ReadOnlySpan.cs" />
-    <Compile Include="System\Span.cs" />
-    <Compile Include="System\Text\Formatting\FormattingData.cs" />
-    <Compile Include="System\Text\Formatting\IFormatterExtensions.cs" />
-    <Compile Include="System\Text\Formatting\PrimitiveFormatters.cs" />
-    <Compile Include="System\Text\Formatting\IBufferFormattable.cs" />
-    <Compile Include="System\Text\Formatting\IFormatter.cs" />
-    <Compile Include="System\InternalHelpers\IntegerFormatter.cs" />
-    <Compile Include="System\Text\Formatting\ParsedFormat.cs" />
     <Compile Include="System\InternalHelpers\Parser.cs" />
-    <Compile Include="System\Text\Formatting\StringFormatter.cs" />
+
     <Compile Include="Resources\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -162,5 +162,15 @@ namespace System
             var roSpan = (ReadOnlySpan<byte>)utf16;
             return CreateString(roSpan);
         }
+
+        public static bool StartsWith(this ReadOnlySpan<byte> left, ReadOnlySpan<byte> right)
+        {
+            if (left.Length < right.Length) return false;
+            for (int index = 0; index < right.Length; index++)
+            {
+                if (left[index] != right[index]) return false;
+            }
+            return true;
+        }
     }
 }
