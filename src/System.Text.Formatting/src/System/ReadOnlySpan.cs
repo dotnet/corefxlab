@@ -37,13 +37,13 @@ namespace System
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> Slice(int index, int count)
+        public ReadOnlySpan<T> Slice(int index, int count)
         {
             throw new NotImplementedException();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> Slice(int index)
+        public ReadOnlySpan<T> Slice(int index)
         {
             throw new NotImplementedException();
         }
