@@ -39,13 +39,13 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<T> Slice(int index, int count)
         {
-            throw new NotImplementedException();
+            return new Span<T>(_array, _index + index, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<T> Slice(int index)
         {
-            throw new NotImplementedException();
+            return Slice(index, _length - index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
