@@ -39,9 +39,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <RuntimeEnvironment Include="lib\aspnetcore50\amd64"/>
-    <RuntimeEnvironment Include="native\windows\amd64"/>
-    <!-- <RuntimeEnvironment Include="native\windows\amd64\v7"/> Uncomment this to produce Windows 7 application-->
+    <RuntimeEnvironment Include="native\win\x86"/>
+    <!-- <RuntimeEnvironment Include="native\win7\x86"/> Uncomment this to get API sets for Windows 7 -->
+    <RuntimeEnvironment Include="lib\aspnetcore50~windows\x86"/>
   </ItemGroup>
   <PropertyGroup>
     <ProgramExe>$(OutputPath)\$(MSBuildProjectName).exe</ProgramExe>
