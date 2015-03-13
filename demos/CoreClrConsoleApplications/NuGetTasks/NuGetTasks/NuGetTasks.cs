@@ -39,31 +39,53 @@ namespace Microsoft.NuGet
             {
                 var packageRoot = Path.Combine(PackagesDirectory, package.FullName);
 
-				var contractsRoot = Path.Combine(packageRoot, "lib\\contract");
+                // add contracts
+                bool thereWereNoContracts = true;
+                var contractsRoot = Path.Combine(packageRoot, "ref\\any");
 				if (Directory.Exists(contractsRoot))
 				{
 					foreach (var file in Directory.EnumerateFiles(contractsRoot))
 					{
-						references.Add(new TaskItem(Path.Combine(contractsRoot, file)));
+                        if (file.EndsWith("_._"))
+                        {
+                            thereWereNoContracts = false;
+                            break;
+                        }
+                        else
+                        {
+                            references.Add(new TaskItem(Path.Combine(contractsRoot, file)));
+                            thereWereNoContracts = false;
+                        }
 					}
 				}
-				bool thereWereNoContracts = references.Count == 0;
-
-				var runtimeRoot = Path.Combine(packageRoot, "lib\\aspnetcore50");
-				if (Directory.Exists(runtimeRoot))
+                
+                // add portable assemblies
+				var portableRoot = Path.Combine(packageRoot, @"lib\any");
+				if (Directory.Exists(portableRoot))
 				{
-					foreach (var file in Directory.EnumerateFiles(runtimeRoot))
+					foreach (var file in Directory.EnumerateFiles(portableRoot))
 					{
-						dependencies.Add(new TaskItem(Path.Combine(runtimeRoot, file)));
+						dependencies.Add(new TaskItem(Path.Combine(portableRoot, file)));
 
 						if (thereWereNoContracts)
 						{
-							references.Add(new TaskItem(Path.Combine(runtimeRoot, file)));
+							references.Add(new TaskItem(Path.Combine(portableRoot, file)));
 						}
 					}
 				}
 
-				foreach (var environment in Environment)
+                // add CoreFx specific
+                var runtimeRoot = Path.Combine(packageRoot, @"lib\aspnetcore50");
+                if (Directory.Exists(runtimeRoot))
+                {
+                    foreach (var file in Directory.EnumerateFiles(runtimeRoot))
+                    {
+                        dependencies.Add(new TaskItem(Path.Combine(runtimeRoot, file)));
+                    }
+                }
+
+                // add environment specific assemblies (these are specified in the csproj file
+                foreach (var environment in Environment)
 				{
 					var environmentDependencies = Path.Combine(packageRoot, environment.ItemSpec);
 					if (Directory.Exists(environmentDependencies))
