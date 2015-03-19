@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace System
@@ -133,6 +134,14 @@ namespace System
                 count--;
             }
             return array;
+        }
+
+        internal unsafe ByteSpan BorrowDisposableByteSpan()
+        {
+            var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
+            var pinned = handle.AddrOfPinnedObject() + _index;
+            var byteSpan = new ByteSpan(((byte*)pinned.ToPointer()), _length, handle);     
+            return byteSpan;
         }
     }
 
