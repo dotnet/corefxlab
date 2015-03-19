@@ -49,6 +49,12 @@ namespace System {
             }
         }
 
+        public void Set(byte* value, int valueLength)
+        {
+            Precondition.Require(valueLength <= Length);
+            Buffer.MemoryCopy(value, _data, _length, valueLength);
+        }
+
         public int Length
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
