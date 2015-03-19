@@ -125,6 +125,28 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
+        private void FormatGuid()
+        {
+            var guid = Guid.NewGuid();
+            var guidsToWrite = numbersToWrite / 10;
+            timer.Restart();
+            for (int itteration = 0; itteration < itterationsInvariant; itteration++)
+            {
+                StringFormatter sb = new StringFormatter(guidsToWrite * 36);
+                for (int i = 0; i < guidsToWrite; i++)
+                {
+                    sb.Append(guid);
+                }
+                var text = sb.ToString();
+                if (text.Length != guidsToWrite * 36)
+                {
+                    throw new Exception("test failed");
+                }
+            }
+            PrintTime();
+        }
+
+        [Fact]
         private void InvariantFormatStructClr()
         {
             timer.Restart();
