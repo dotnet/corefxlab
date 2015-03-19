@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="HttpRequestParser.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="BufferFormatter.cs" />
     <Compile Include="HttpServer.cs" />
     <Compile Include="main.cs" />
     <Compile Include="RoutingTable.cs" />
