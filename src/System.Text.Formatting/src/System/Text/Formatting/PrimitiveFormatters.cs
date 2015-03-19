@@ -113,19 +113,23 @@ namespace System.Text.Formatting
 
                 if (formattingData.IsUtf16)
                 {
-                    bytesWritten = 0;
-                    var avaliableChars = avaliableBytes >> 1;
-                    for (int i = 0; i < value.Length; i++)
+                    var neededBytes = value.Length << 1;
+                    if (neededBytes > avaliableBytes)
                     {
-                        if (avaliableChars <= i)
-                        {
-                            bytesWritten = 0;
-                            return false;
-                        }
-                        ushort c = (ushort)value[i];
-                        byteSpan[bytesWritten++] = (byte)c;
-                        byteSpan[bytesWritten++] = (byte)(c >> 8);
+                        bytesWritten = 0;
+                        return false;
                     }
+
+                    unsafe
+                    {
+                        fixed (char* pCharacters = value)
+                        {
+                            byte* pBytes = (byte*)pCharacters;
+                            byteSpan.Set(pBytes, neededBytes);
+                        }
+                    }
+
+                    bytesWritten = neededBytes;
                     return true;
                 }
 
@@ -133,30 +137,46 @@ namespace System.Text.Formatting
                 for (int i = 0; i < value.Length; i++)
                 {
                     var c = value[i];
-                    var encoded = new Utf8Helpers.FourBytes();
-                    var bytes = Utf8Helpers.CharToUtf8(c, ref encoded);
 
-                    if (bytesWritten + bytes > avaliableBytes)
+                    var codepoint = (ushort)c;
+                    if (codepoint <= 0x7f) // this if block just optimizes for ascii
                     {
-                        bytesWritten = 0;
-                        return false;
+                        if (bytesWritten + 1 > avaliableBytes)
+                        {
+                            bytesWritten = 0;
+                            return false;
+                        }
+                        byteSpan[bytesWritten++] = (byte)codepoint;
                     }
+                    else
+                    {
+                        var encoded = new Utf8Helpers.FourBytes();
+                        var bytes = Utf8Helpers.CharToUtf8(c, ref encoded);
 
-                    byteSpan[bytesWritten] = encoded.B0;
-                    if (bytes > 1)
-                    {
-                        byteSpan[+bytesWritten + 1] = encoded.B1;
-                    }
-                    if (bytes > 2)
-                    {
-                        byteSpan[+bytesWritten + 2] = encoded.B2;
-                    }
-                    if (bytes > 3)
-                    {
-                        byteSpan[+bytesWritten + 3] = encoded.B3;
-                    }
+                        if (bytesWritten + bytes > avaliableBytes)
+                        {
+                            bytesWritten = 0;
+                            return false;
+                        }
 
-                    bytesWritten += bytes;
+                        byteSpan[bytesWritten] = encoded.B0;
+                        if (bytes > 1)
+                        {
+                            byteSpan[+bytesWritten + 1] = encoded.B1;
+
+                            if (bytes > 2)
+                            {
+                                byteSpan[+bytesWritten + 2] = encoded.B2;
+
+                                if (bytes > 3)
+                                {
+                                    byteSpan[+bytesWritten + 3] = encoded.B3;
+                                }
+                            }
+                        }
+
+                        bytesWritten += bytes;
+                    }
                 }
                 return true;
             }
