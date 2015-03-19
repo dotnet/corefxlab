@@ -3,10 +3,11 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System {
 
-    // I wish I could use just Span<byte>. 
+    // I wish I could use just Span<byte> in all scenarios. 
     // Unfortunatelly, Span<T> (as implementable currently) is too slow for some tight formatting loops.
     // We might at some point get a fast Span<T>, and remove this type. 
     // The main problem with Span<T> is that all indexer accessors need to do double pointer arrithmetic (offset from array and index into array)
@@ -15,14 +16,21 @@ namespace System {
     {
         byte* _data;
         int _length;
+        GCHandle _handle;
+
+        internal void Free()
+        {
+            _handle.Free();
+        }
 
         // Instances of this type will be created out of a memory buffer pool.
-        internal ByteSpan(byte* data, int length)
+        internal ByteSpan(byte* data, int length, GCHandle handle)
         {
             _data = data;
             _length = length;
+            _handle = handle;
         }
-
+        
         public byte this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -56,7 +64,7 @@ namespace System {
 
             var data = _data + index;
             var length = _length - index;
-            return new ByteSpan(data, length);
+            return new ByteSpan(data, length, _handle);
         }
 
         public ByteSpan Slice(int index, int count)
@@ -64,7 +72,7 @@ namespace System {
             Precondition.Require(index + count < Length);
 
             var data = _data + index;
-            return new ByteSpan(data, count);
+            return new ByteSpan(data, count, _handle);
         }
     }
 }

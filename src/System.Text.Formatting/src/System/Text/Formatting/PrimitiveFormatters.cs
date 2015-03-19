@@ -106,56 +106,64 @@ namespace System.Text.Formatting
 
         public static bool TryFormat(this string value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            var avaliableBytes = buffer.Length;
-
-            if (formattingData.IsUtf16)
+            var byteSpan = buffer.BorrowDisposableByteSpan();
+            try
             {
+                var avaliableBytes = byteSpan.Length;
+
+                if (formattingData.IsUtf16)
+                {
+                    bytesWritten = 0;
+                    var avaliableChars = avaliableBytes >> 1;
+                    for (int i = 0; i < value.Length; i++)
+                    {
+                        if (avaliableChars <= i)
+                        {
+                            bytesWritten = 0;
+                            return false;
+                        }
+                        ushort c = (ushort)value[i];
+                        byteSpan[bytesWritten++] = (byte)c;
+                        byteSpan[bytesWritten++] = (byte)(c >> 8);
+                    }
+                    return true;
+                }
+
                 bytesWritten = 0;
-                var avaliableChars = avaliableBytes >> 1;
                 for (int i = 0; i < value.Length; i++)
                 {
-                    if(avaliableChars <= i)
+                    var c = value[i];
+                    var encoded = new Utf8Helpers.FourBytes();
+                    var bytes = Utf8Helpers.CharToUtf8(c, ref encoded);
+
+                    if (bytesWritten + bytes > avaliableBytes)
                     {
                         bytesWritten = 0;
                         return false;
                     }
-                    ushort c = (ushort)value[i];
-                    buffer[bytesWritten++] = (byte)c;
-                    buffer[bytesWritten++] = (byte)(c >> 8);
+
+                    byteSpan[bytesWritten] = encoded.B0;
+                    if (bytes > 1)
+                    {
+                        byteSpan[+bytesWritten + 1] = encoded.B1;
+                    }
+                    if (bytes > 2)
+                    {
+                        byteSpan[+bytesWritten + 2] = encoded.B2;
+                    }
+                    if (bytes > 3)
+                    {
+                        byteSpan[+bytesWritten + 3] = encoded.B3;
+                    }
+
+                    bytesWritten += bytes;
                 }
                 return true;
             }
-
-            bytesWritten = 0;
-            for (int i = 0; i < value.Length; i++)
+            finally
             {
-                var c = value[i];
-                var encoded = new Utf8Helpers.FourBytes();
-                var bytes = Utf8Helpers.CharToUtf8(c, ref encoded);
-
-                if(bytesWritten + bytes > avaliableBytes)
-                {
-                    bytesWritten = 0;
-                    return false;
-                }
-
-                buffer[bytesWritten] = encoded.B0;
-                if (bytes > 1)
-                {
-                    buffer[+bytesWritten + 1] = encoded.B1;
-                }
-                if (bytes > 2)
-                {
-                    buffer[+bytesWritten + 2] = encoded.B2;
-                }
-                if (bytes > 3)
-                {
-                    buffer[+bytesWritten + 3] = encoded.B3;
-                }
-
-                bytesWritten += bytes;
+                byteSpan.Free();
             }
-            return true;
         }
     }
 }

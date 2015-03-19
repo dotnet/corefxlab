@@ -27,14 +27,16 @@ namespace System.Text.Formatting
             _buffer[_count++] = (byte)(character >> 8);
         }
 
+        //TODO: this should use ByteSpan
         public void Append(string text)
         {
-            foreach(char character in text)
+            foreach (char character in text)
             {
                 Append(character);
             }
         }
 
+        //TODO: this should use ByteSpan
         public void Append(ReadOnlySpan<char> substring)
         {
             for (int i = 0; i < substring.Length; i++)
