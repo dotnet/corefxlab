@@ -47,50 +47,53 @@ namespace System.Text.Formatting
                     break;
             }
 
-            var bytes = value.ToByteArray(); // TODO: it would be nice to eliminate this allocation
 
             var byteFormat = new Format.Parsed() { Precision = 2, Symbol = Format.Symbol.XLowercase };
-
-            if (!TryWriteByte(bytes[3], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[2], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[1], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[0], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-
-            if (dash)
+            unsafe
             {
-                if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+                byte* bytes = (byte*)&value;
+
+                if (!TryWriteByte(bytes[3], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[2], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[1], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[0], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+
+                if (dash)
+                {
+                    if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+                }
+
+                if (!TryWriteByte(bytes[5], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[4], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+
+                if (dash)
+                {
+                    if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+                }
+
+                if (!TryWriteByte(bytes[7], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[6], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+
+                if (dash)
+                {
+                    if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+                }
+
+                if (!TryWriteByte(bytes[8], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[9], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+
+                if (dash)
+                {
+                    if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+                }
+
+                if (!TryWriteByte(bytes[10], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[11], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[12], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[13], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[14], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[15], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
             }
-
-            if (!TryWriteByte(bytes[5], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[4], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-
-            if (dash)
-            {
-                if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
-            }
-
-            if (!TryWriteByte(bytes[7], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[6], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-
-            if (dash)
-            {
-                if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
-            }
-
-            if (!TryWriteByte(bytes[8], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[9], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-
-            if (dash)
-            {
-                if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
-            }
-
-            if (!TryWriteByte(bytes[10], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[11], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[12], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[13], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[14], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteByte(bytes[15], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
 
             if (tail != '\0')
             {
