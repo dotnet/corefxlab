@@ -17,7 +17,7 @@ class SampleRestServer : HttpServer
         GetTime = 1,
     }
 
-    public SampleRestServer(Log log, IPAddress ipAddress, int port) : base(log, ipAddress, port)
+    public SampleRestServer(Log log, ushort port, byte address1, byte address2, byte address3, byte address4) : base(log, port, address1, address2, address3, address4)
     {
         Apis.Add(Api.GetTime, HttpMethod.Get, requestUri: "/time");
     }

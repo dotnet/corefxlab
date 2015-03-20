@@ -14,8 +14,7 @@ class Program
         Console.WriteLine("Browse to http://localhost:9999/time to test it.\n");
 
         var log = new ConsoleLog((Log.Level.Off));
-        var address = new IPAddress(new byte[] { 127, 0, 0, 1 }); 
-        var restServer = new SampleRestServer(log, address, 9999); 
+        var restServer = new SampleRestServer(log, 9999, 127, 0, 0, 1); 
         restServer.StartAsync();
 
         Console.WriteLine("Press ENTER to exit ...");

@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Net.Http.Server.Socket;
+using System.Diagnostics;
 using System.IO;
-using System.Net.Sockets;
 using System.Text.Formatting;
 using System.Text.Utf8;
 using System.Threading;
@@ -38,13 +38,14 @@ namespace System.Net.Http.Buffered
         protected static Utf8String HttpNewline = new Utf8String(13, 10);
 
         protected volatile bool _isCancelled = false;
-        TcpListener _listener;
+        TcpServer _listener;
         public Log Log { get; protected set; }
         
-        protected HttpServer(Log log, IPAddress address, int port)
+        protected HttpServer(Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
         {
             Log = log;
-            _listener = new TcpListener(address, port);
+            _listener = new TcpServer();
+            _listener.Start(port, address1, address2, address3, address4);
         }
 
         public void StartAsync()
@@ -65,10 +66,9 @@ namespace System.Net.Http.Buffered
         {
             try
             {
-                _listener.Start();
                 while (!_isCancelled)
                 {
-                    Socket socket = _listener.AcceptSocket();
+                    TcpConnection socket = _listener.Accept();
                     ProcessRequest(socket);
                 }
                 _listener.Stop();
@@ -81,7 +81,7 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        protected virtual void ProcessRequest(Socket socket)
+        protected virtual void ProcessRequest(TcpConnection socket)
         {
             Log.LogVerbose("Processing Request");
             
@@ -118,9 +118,8 @@ namespace System.Net.Http.Buffered
             // send response
             var segment = responseBytes;        
             
-            socket.Send(segment._buffer, 0, segment._count, SocketFlags.None);
-            socket.Shutdown(SocketShutdown.Both);
-            socket.Dispose();
+            socket.Send(segment._buffer, segment._count);
+            socket.Close();
             responseBytes.Return();
             if (Log.IsVerbose)
             {

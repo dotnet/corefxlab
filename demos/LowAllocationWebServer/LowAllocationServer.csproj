@@ -31,13 +31,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Text.Formatting">
-      <HintPath>packages\System.Text.Formatting.0.1.030915\lib\portable-net45+win8+wpa81\System.Text.Formatting.dll</HintPath>
+      <HintPath>packages\System.Text.Formatting.0.1.0.0-d031915\lib\portable-net45+win8+wpa81\System.Text.Formatting.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +48,8 @@
     <Compile Include="main.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="SampleServer.cs" />
+    <Compile Include="SocketInterop.cs" />
+    <Compile Include="TcpServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
