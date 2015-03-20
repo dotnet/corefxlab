@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>System.Text.Formatting</id>
-    <version>0.1.030915</version>
+    <version>0.1.0.0-d031915</version>
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
     <licenseUrl>http://go.microsoft.com/fwlink/?LinkId=329770</licenseUrl>
@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Non-allocating formatting library</description>
     <releaseNotes>Initial package</releaseNotes>
-    <copyright>© Microsoft Corporation.  All rights reserved.</copyright>
+    <copyright> Microsoft Corporation.  All rights reserved.</copyright>
     <tags>.NET formatting corefxlab</tags>
   </metadata>
   <files>
