@@ -93,7 +93,7 @@ namespace System.Net.Http.Buffered
             {
                 return HttpVersion.V2_0;
             }
-            else if (s_Http1_0.Equals((object)version))
+            else if (s_Http1_0.Equals(version))
             {
                 return HttpVersion.V1_0;
             }
