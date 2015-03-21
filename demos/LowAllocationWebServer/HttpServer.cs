@@ -50,9 +50,11 @@ namespace System.Net.Http.Buffered
 
         public void StartAsync()
         {
-            ThreadPool.QueueUserWorkItem((state) => {
-                this.Start();
-            }, null);
+            Thread thread = new Thread(new ParameterizedThreadStart((parameter) => {
+                var httpServer = parameter as HttpServer;
+                httpServer.Start();
+            }));
+            thread.Start(this);
         }
 
         public void Stop()
