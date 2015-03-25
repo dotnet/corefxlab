@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace System.Text.Formatting 
@@ -14,6 +15,7 @@ namespace System.Text.Formatting
         static readonly Format.Parsed d2 = new Format.Parsed() { Precision = 2, Symbol = Format.Symbol.D };
         static readonly Format.Parsed d4 = new Format.Parsed() { Precision = 4, Symbol = Format.Symbol.D };
         static readonly Format.Parsed d7 = new Format.Parsed() { Precision = 7, Symbol = Format.Symbol.D };
+        static readonly Format.Parsed g = new Format.Parsed() { Symbol = Format.Symbol.G };
         const int FractionalTimeScale = 10000000;
 
         public static bool TryFormat(this DateTime value, Span<byte> buffer, ReadOnlySpan<char> format, FormattingData formattingData, out int bytesWritten)
@@ -24,19 +26,90 @@ namespace System.Text.Formatting
 
         public static bool TryFormat(this DateTime value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.R || format.Symbol == Format.Symbol.O);
+            Precondition.Require(format.Symbol == Format.Symbol.R || format.Symbol == Format.Symbol.O || format.Symbol == Format.Symbol.G);
 
-            if(format.Symbol == Format.Symbol.R)
+            switch (format.Symbol)
             {
-                var utc = value.ToUniversalTime();
-                if (formattingData.IsUtf16)
-                {
-                    return TryFormatDateTimeRfc1123(utc, buffer, FormattingData.InvariantUtf16, out bytesWritten);
-                }
-                else
-                {
-                    return TryFormatDateTimeRfc1123(utc, buffer, FormattingData.InvariantUtf8, out bytesWritten);
-                }
+                case Format.Symbol.R:
+                    var utc = value.ToUniversalTime();
+                    if (formattingData.IsUtf16)
+                    {
+                        return TryFormatDateTimeRfc1123(utc, buffer, FormattingData.InvariantUtf16, out bytesWritten);
+                    }
+                    else
+                    {
+                        return TryFormatDateTimeRfc1123(utc, buffer, FormattingData.InvariantUtf8, out bytesWritten);
+                    }
+                case Format.Symbol.O:
+                    if (formattingData.IsUtf16)
+                    {
+                        return TryFormatDateTimeFormatO(value, buffer, FormattingData.InvariantUtf16, out bytesWritten);
+                    }
+                    else
+                    {
+                        return TryFormatDateTimeFormatO(value, buffer, FormattingData.InvariantUtf8, out bytesWritten);
+                    }
+                case Format.Symbol.G:
+                    return TryFormatDateTimeFormagG(value, buffer, formattingData, out bytesWritten);
+                default:
+                    throw new NotImplementedException();
+            }      
+        }
+
+        static bool TryFormatDateTimeFormagG(DateTime value, Span<byte> buffer, FormattingData formattingData, out int bytesWritten)
+        {
+            // for now it only works for invariant culture
+            if(!formattingData.IsInvariantUtf16 && !formattingData.IsInvariantUtf8)
+            {
+                throw new NotImplementedException();
+            }
+
+            bytesWritten = 0;
+            if (!TryWriteInt32(value.Month, buffer, g, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteChar('/', buffer, formattingData, ref bytesWritten)) { return false; }
+
+            if (!TryWriteInt32(value.Day, buffer, g, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteChar('/', buffer, formattingData, ref bytesWritten)) { return false; }
+
+            if (!TryWriteInt32(value.Year, buffer, g, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(' ', buffer, formattingData, ref bytesWritten)) { return false; }
+
+            var hour = value.Hour;
+            if(hour == 0)
+            {
+                hour = 12; 
+            }
+            if(hour > 12)
+            {
+                hour = hour - 12;
+            }
+
+            if (!TryWriteInt32(hour, buffer, g, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(':', buffer, formattingData, ref bytesWritten)) { return false; }
+
+            if (!TryWriteInt32(value.Minute, buffer, d2, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(':', buffer, formattingData, ref bytesWritten)) { return false; }
+
+            if (!TryWriteInt32(value.Second, buffer, d2, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(' ', buffer, formattingData, ref bytesWritten)) { return false; }
+
+            if(value.Hour > 11)
+            {
+                TryWriteString("PM", buffer, formattingData, ref bytesWritten);
+            }
+            else
+            {
+                TryWriteString("AM", buffer, formattingData, ref bytesWritten);
+            }
+
+            return true;
+        }
+
+        static bool TryFormatDateTimeFormatO(DateTime value, Span<byte> buffer, FormattingData formattingData, out int bytesWritten)
+        {
+            if(value.Kind != DateTimeKind.Utc)
+            {
+                throw new NotImplementedException("Format O supports UTC date time only.");
             }
 
             bytesWritten = 0;
