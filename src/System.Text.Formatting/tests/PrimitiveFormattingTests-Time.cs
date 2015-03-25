@@ -33,6 +33,17 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
+        public void FormatDateTimeG()
+        {
+            var time = DateTime.UtcNow;
+            var sb = new StringFormatter();
+
+            sb.Append(time, Format.Symbol.G);
+            Assert.Equal(time.ToString("G"), sb.ToString());
+            sb.Clear();
+        }
+
+        [Fact]
         public void FormatTimeSpan()
         {
             var time = new TimeSpan(1000, 23, 40, 30, 12345);
