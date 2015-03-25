@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Non-AllocatingJson.cs" />
+    <Compile Include="CompositeFormattingTests.cs" />
     <Compile Include="CustomCulture.cs" />
     <Compile Include="CustomTypeFormatting.cs" />
     <Compile Include="ParsedFormatUnitTests.cs" />
