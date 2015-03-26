@@ -13,13 +13,19 @@ namespace System.Text.Formatting {
         public static void Format<TFormatter, T0>(this TFormatter formatter, string compositeFormat, T0 arg0) where TFormatter : IFormatter
         {
             var reader = new CompositeFormatReader(compositeFormat);
-            while (reader.Next() != CompositeFormatReader.State.End)
+            while (true)
             {
-                if (reader.Current == CompositeFormatReader.State.Literal) formatter.Append(reader.Literal);
-                else if (reader.Current == CompositeFormatReader.State.InsertionPoint)
+                var segment = reader.Next();
+                if (segment == null) return;
+
+                if (segment.Value.Count == 0) // insertion point
                 {
-                    if (reader.Insertion.ArgIndex == 0) formatter.AppendUntyped(arg0);
+                    if (segment.Value.Index == 0) formatter.AppendUntyped(arg0, segment.Value.Format);
                     else throw new Exception("invalid insertion point");
+                }
+                else // literal
+                {
+                    formatter.Append(compositeFormat, segment.Value.Index, segment.Value.Count);
                 }
             }
         }
@@ -27,14 +33,20 @@ namespace System.Text.Formatting {
         public static void Format<TFormatter, T0, T1>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1) where TFormatter : IFormatter
         {
             var reader = new CompositeFormatReader(compositeFormat);
-            while (reader.Next() != CompositeFormatReader.State.End)
+            while (true)
             {
-                if (reader.Current == CompositeFormatReader.State.Literal) formatter.Append(reader.Literal);
-                else if (reader.Current == CompositeFormatReader.State.InsertionPoint)
+                var segment = reader.Next();
+                if (segment == null) return;
+
+                if (segment.Value.Count == 0) // insertion point
                 {
-                    if (reader.Insertion.ArgIndex == 0) formatter.AppendUntyped(arg0);
-                    else if (reader.Insertion.ArgIndex == 1) formatter.AppendUntyped(arg1);
+                    if (segment.Value.Index == 0) formatter.AppendUntyped(arg0, segment.Value.Format);
+                    else if (segment.Value.Index == 1) formatter.AppendUntyped(arg1, segment.Value.Format);
                     else throw new Exception("invalid insertion point");
+                }
+                else // literal
+                {
+                    formatter.Append(compositeFormat, segment.Value.Index, segment.Value.Count);
                 }
             }
         }
@@ -42,15 +54,21 @@ namespace System.Text.Formatting {
         public static void Format<TFormatter, T0, T1, T2>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2) where TFormatter : IFormatter
         {
             var reader = new CompositeFormatReader(compositeFormat);
-            while (reader.Next() != CompositeFormatReader.State.End)
+            while (true)
             {
-                if (reader.Current == CompositeFormatReader.State.Literal) formatter.Append(reader.Literal);
-                else if (reader.Current == CompositeFormatReader.State.InsertionPoint)
+                var segment = reader.Next();
+                if (segment == null) return;
+
+                if (segment.Value.Count == 0) // insertion point
                 {
-                    if (reader.Insertion.ArgIndex == 0) formatter.AppendUntyped(arg0);
-                    else if (reader.Insertion.ArgIndex == 1) formatter.AppendUntyped(arg1);
-                    else if (reader.Insertion.ArgIndex == 2) formatter.AppendUntyped(arg2);
+                    if (segment.Value.Index == 0) formatter.AppendUntyped(arg0, segment.Value.Format);
+                    else if (segment.Value.Index == 1) formatter.AppendUntyped(arg1, segment.Value.Format);
+                    else if (segment.Value.Index == 2) formatter.AppendUntyped(arg2, segment.Value.Format);
                     else throw new Exception("invalid insertion point");
+                }
+                else // literal
+                {
+                    formatter.Append(compositeFormat, segment.Value.Index, segment.Value.Count);
                 }
             }
         }
@@ -58,16 +76,22 @@ namespace System.Text.Formatting {
         public static void Format<TFormatter, T0, T1, T2, T3>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2, T3 arg3) where TFormatter : IFormatter
         {
             var reader = new CompositeFormatReader(compositeFormat);
-            while (reader.Next() != CompositeFormatReader.State.End)
+            while (true)
             {
-                if (reader.Current == CompositeFormatReader.State.Literal) formatter.Append(reader.Literal);
-                else if (reader.Current == CompositeFormatReader.State.InsertionPoint)
+                var segment = reader.Next();
+                if (segment == null) return;
+
+                if (segment.Value.Count == 0) // insertion point
                 {
-                    if (reader.Insertion.ArgIndex == 0) formatter.AppendUntyped(arg0);
-                    else if (reader.Insertion.ArgIndex == 1) formatter.AppendUntyped(arg1);
-                    else if (reader.Insertion.ArgIndex == 2) formatter.AppendUntyped(arg2);
-                    else if (reader.Insertion.ArgIndex == 3) formatter.AppendUntyped(arg3);
+                    if (segment.Value.Index == 0) formatter.AppendUntyped(arg0, segment.Value.Format);
+                    else if (segment.Value.Index == 1) formatter.AppendUntyped(arg1, segment.Value.Format);
+                    else if (segment.Value.Index == 2) formatter.AppendUntyped(arg2, segment.Value.Format);
+                    else if (segment.Value.Index == 3) formatter.AppendUntyped(arg3, segment.Value.Format);
                     else throw new Exception("invalid insertion point");
+                }
+                else // literal
+                {
+                    formatter.Append(compositeFormat, segment.Value.Index, segment.Value.Count);
                 }
             }
         }
@@ -75,22 +99,37 @@ namespace System.Text.Formatting {
         public static void Format<TFormatter, T0, T1, T2, T3, T4>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4) where TFormatter : IFormatter
         {
             var reader = new CompositeFormatReader(compositeFormat);
-            while (reader.Next() != CompositeFormatReader.State.End)
+            while (true)
             {
-                if (reader.Current == CompositeFormatReader.State.Literal) formatter.Append(reader.Literal);
-                else if (reader.Current == CompositeFormatReader.State.InsertionPoint)
+                var segment = reader.Next();
+                if (segment == null) return;
+
+                if (segment.Value.Count == 0) // insertion point
                 {
-                    if (reader.Insertion.ArgIndex == 0) formatter.AppendUntyped(arg0);
-                    else if (reader.Insertion.ArgIndex == 1) formatter.AppendUntyped(arg1);
-                    else if (reader.Insertion.ArgIndex == 2) formatter.AppendUntyped(arg2);
-                    else if (reader.Insertion.ArgIndex == 3) formatter.AppendUntyped(arg3);
-                    else if (reader.Insertion.ArgIndex == 4) formatter.AppendUntyped(arg4);
+                    if (segment.Value.Index == 0) formatter.AppendUntyped(arg0, segment.Value.Format);
+                    else if (segment.Value.Index == 1) formatter.AppendUntyped(arg1, segment.Value.Format);
+                    else if (segment.Value.Index == 2) formatter.AppendUntyped(arg2, segment.Value.Format);
+                    else if (segment.Value.Index == 3) formatter.AppendUntyped(arg3, segment.Value.Format);
+                    else if (segment.Value.Index == 4) formatter.AppendUntyped(arg4, segment.Value.Format);
                     else throw new Exception("invalid insertion point");
+                }
+                else // literal
+                {
+                    formatter.Append(compositeFormat, segment.Value.Index, segment.Value.Count);
                 }
             }
         }
 
-        static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value) where TFormatter : IFormatter
+        // TODO: this should be removed and an ability to append substrings should be added
+        static void Append<TFormatter>(this TFormatter formatter, string whole, int index, int count) where TFormatter : IFormatter
+        {
+            for (int i = index; i < index + count; i++)
+            {
+                formatter.Append(whole[i]);
+            }
+        }
+
+        static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format) where TFormatter : IFormatter
         {
             #region Built in types
             var i32 = value as int?;
@@ -167,18 +206,13 @@ namespace System.Text.Formatting {
             }
             #endregion
 
-            // I could uncomment the code below and then not throw for types that implement IBufferFormattable.
-            // Unfortunatelly this would cause silent boxing, which I don't like.
-            // To avoid breaking changes, I will just preemptivelly throw here instead of boxing
-            throw new NotSupportedException("only built-in types are supported in composite formatting");
+            if (value is IBufferFormattable)
+            {
+                formatter.Append((IBufferFormattable)value); // this is boxing. not sure how to avoid it.
+                return;
+            }
 
-            //if(value is IBufferFormattable)
-            //{
-            //    formatter.Append((IBufferFormattable)value); // this is boxing. not sure how to avoid it.
-            //    return;
-            //}
-
-            //else throw new NotSupportedException("value is not formattable.");
+            throw new NotSupportedException("value is not formattable.");
         }
 
         // this is just a state machine walking the composite format and instructing CompositeFormattingExtensions.Format overloads on what to do.
@@ -186,85 +220,114 @@ namespace System.Text.Formatting {
         // I will clean it up later if I decide that I like this whole composite format model.
         struct CompositeFormatReader
         {
+            string _compositeFormatString;
+            int _currentIndex;
+            int _spanStart;
+            State _state;
+
             public CompositeFormatReader(string format)
             {
-                _format = format;
-                _index = -1;
-                _insertionPointStart = -1;
+                _compositeFormatString = format;
+                _currentIndex = 0;
+                _spanStart = 0;
                 _state = State.New;
-                _arg = 0;
             }
 
-            string _format;
-            int _index;
-            int _insertionPointStart;
-            State _state;
-            uint _arg;
-
-            public char Literal
+            public CompositeSegment? Next()
             {
-                get { return _format[_index]; }
-            }
-            public InsertionPoint Insertion
-            {
-                get { return new InsertionPoint() { ArgIndex = _arg }; }
-            }
-            public State Current
-            {
-                get
+                while (_currentIndex < _compositeFormatString.Length)
                 {
-                    return _state;
-                }
-            }
-
-            public State Next()
-            {
-                _index++;
-                if (_index == _format.Length) return State.End;
-
-                char c = _format[_index];
-                switch (c)
-                {
-                    case '{':
-                        _insertionPointStart = _index + 1;
-                        _index++;
-                        _state = State.Ignore;
-                        break;
-                    case '}':
-                        if (!InvariantParser.TryParse(_format, _insertionPointStart, _index - _insertionPointStart, out _arg))
+                    char c = _compositeFormatString[_currentIndex];
+                    if (c == '{')
+                    {
+                        if (_state == State.Literal)
                         {
-                            throw new Exception("invalid insertion point");
+                            _state = State.New;
+                            return CompositeSegment.Literal(_spanStart, _currentIndex);
                         }
-
-                        _insertionPointStart = -1;
-                        _state = State.InsertionPoint;
-                        break;
-                    default:
-                        if (_insertionPointStart == -1)
+                        _currentIndex++;
+                        return ParseInsertionPoint();
+                    }
+                    else
+                    {
+                        if (_state != State.Literal)
                         {
                             _state = State.Literal;
+                            _spanStart = _currentIndex;
                         }
-                        else
-                        {
-                            _state = State.Ignore;
-                        }
-                        break;
+                    }
+                    _currentIndex++;
                 }
-                return _state;
+                if (_state == State.Literal)
+                {
+                    _state = State.New;
+                    return CompositeSegment.Literal(_spanStart, _currentIndex);
+                }
+                return null;
+            }
+
+            // this should be replaced with InvariantFormatter.Parse
+            static bool TryParse(string compositeFormat, int start, int count, out uint value, out int consumed)
+            {
+                consumed = 0;
+                value = 0;
+                for (int i = start; i < start + count; i++)
+                {
+                    var digit = (byte)(compositeFormat[i] - '0');
+                    if (digit >= 0 && digit <= 9)
+                    {
+                        value *= 10;
+                        value += digit;
+                        consumed++;
+                    }
+                    else
+                    {
+                        if (i == start) return false;
+                        else return true;
+                    }
+                }
+                return true;
+            }
+
+            CompositeSegment ParseInsertionPoint()
+            {
+                uint arg;
+                int consumed;
+                if (!TryParse(_compositeFormatString, _currentIndex, 5, out arg, out consumed))
+                {
+                    throw new Exception("invalid insertion point");
+                }
+                _currentIndex += consumed;
+                if (_currentIndex >= _compositeFormatString.Length || _compositeFormatString[_currentIndex] != '}')
+                {
+                    throw new Exception("missing end bracket");
+                }
+                _currentIndex++;
+                return CompositeSegment.InsertionPoint(arg, System.Text.Formatting.Format.Symbol.G);
             }
 
             public enum State : byte
             {
                 New,
-                Ignore,
-                Literal, // TODO: this should not return single chars. it should be span<char> 
-                InsertionPoint,
-                End
+                Literal,
+                InsertionPoint
             }
 
-            public struct InsertionPoint
+            public struct CompositeSegment
             {
-                public uint ArgIndex;
+                public Format.Parsed Format { get; private set; }
+                public int Index { get; private set; }
+                public int Count { get; private set; }
+
+                public static CompositeSegment InsertionPoint(uint argIndex, Format.Parsed format)
+                {
+                    return new CompositeSegment() { Index = (int)argIndex, Format = format };
+                }
+
+                public static CompositeSegment Literal(int startIndex, int endIndex)
+                {
+                    return new CompositeSegment() { Index = startIndex, Count = endIndex - startIndex };
+                }
             }
         }
     }
