@@ -135,80 +135,80 @@ namespace System.Text.Formatting {
             var i32 = value as int?;
             if (i32 != null)
             {
-                formatter.Append(i32.Value);
+                formatter.Append(i32.Value, format);
                 return;
             }
             var i64 = value as long?;
             if (i64 != null)
             {
-                formatter.Append(i64.Value);
+                formatter.Append(i64.Value, format);
                 return;
             }
             var i16 = value as short?;
             if (i16 != null)
             {
-                formatter.Append(i16.Value);
+                formatter.Append(i16.Value, format);
                 return;
             }
             var b = value as byte?;
             if (b != null)
             {
-                formatter.Append(b.Value);
+                formatter.Append(b.Value, format);
                 return;
             }
             var c = value as char?;
             if (c != null)
             {
-                formatter.Append(c.Value);
+                formatter.Append(c.Value, format);
                 return;
             }
             var u32 = value as uint?;
             if (u32 != null)
             {
-                formatter.Append(u32.Value);
+                formatter.Append(u32.Value, format);
                 return;
             }
             var u64 = value as ulong?;
             if (u64 != null)
             {
-                formatter.Append(u64.Value);
+                formatter.Append(u64.Value, format);
                 return;
             }
             var u16 = value as ushort?;
             if (u16 != null)
             {
-                formatter.Append(u16.Value);
+                formatter.Append(u16.Value, format);
                 return;
             }
             var sb = value as sbyte?;
             if (sb != null)
             {
-                formatter.Append(sb.Value);
+                formatter.Append(sb.Value, format);
                 return;
             }
             var str = value as string;
             if (str != null)
             {
-                formatter.Append(str);
+                formatter.Append(str, format);
                 return;
             }
             var dt = value as DateTime?;
             if (dt != null)
             {
-                formatter.Append(dt.Value);
+                formatter.Append(dt.Value, format);
                 return;
             }
             var ts = value as TimeSpan?;
             if (ts != null)
             {
-                formatter.Append(ts.Value);
+                formatter.Append(ts.Value, format);
                 return;
             }
             #endregion
 
             if (value is IBufferFormattable)
             {
-                formatter.Append((IBufferFormattable)value); // this is boxing. not sure how to avoid it.
+                formatter.Append((IBufferFormattable)value, format); // this is boxing. not sure how to avoid it.
                 return;
             }
 
@@ -293,17 +293,33 @@ namespace System.Text.Formatting {
             {
                 uint arg;
                 int consumed;
+                char? formatSpecifier = null;
+
                 if (!TryParse(_compositeFormatString, _currentIndex, 5, out arg, out consumed))
                 {
                     throw new Exception("invalid insertion point");
                 }
                 _currentIndex += consumed;
-                if (_currentIndex >= _compositeFormatString.Length || _compositeFormatString[_currentIndex] != '}')
+                if (_currentIndex >= _compositeFormatString.Length)
                 {
                     throw new Exception("missing end bracket");
                 }
+
+                if(_compositeFormatString[_currentIndex] == ':')
+                {
+                    _currentIndex++;
+                    formatSpecifier = _compositeFormatString[_currentIndex];
+                    _currentIndex++;
+                }
+
+                if (_compositeFormatString[_currentIndex] != '}')
+                {
+                    throw new Exception("missing end bracket");
+                }
+
                 _currentIndex++;
-                return CompositeSegment.InsertionPoint(arg, System.Text.Formatting.Format.Symbol.G);
+                var parsedFormat = formatSpecifier.HasValue ? System.Text.Formatting.Format.Parse(formatSpecifier.Value):new Format.Parsed();
+                return CompositeSegment.InsertionPoint(arg, parsedFormat);
             }
 
             public enum State : byte

@@ -17,5 +17,16 @@ namespace System.Text.Formatting.Tests
 
             Assert.Equal(time.ToString("G") + " - Error 404. File index.html not found.", formatter.ToString());
         }
+
+        [Fact]
+        public void CompositeFormattingFormatStrings()
+        {
+            var time = DateTime.UtcNow;
+
+            var formatter = new StringFormatter();
+            formatter.Format("Hello{0:x}{1:X}{2:G}", 10, 255, 3);
+
+            Assert.Equal("HelloaFF3", formatter.ToString());
+        }
     }
 }
