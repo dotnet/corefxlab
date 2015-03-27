@@ -68,27 +68,27 @@ namespace System.Text.Formatting
             return new Parsed(format, NoPrecision);
         }
 
-        private static char CreateCharFromSymbol(Symbol symbol)
-        {
-            switch (symbol)
-            {
-                case Symbol.B: return 'B';
-                case Symbol.D: return 'D';
-                case Symbol.E: return 'E';
-                case Symbol.F: return 'F';
-                case Symbol.G: return 'G';
-                case Symbol.g: return 'g';
-                case Symbol.N: return 'n';
-                case Symbol.O: return 'O';
-                case Symbol.P: return 'P';
-                case Symbol.R: return 'R';
-                case Symbol.t: return 't';
-                case Symbol.X: return 'X';
-                case Symbol.x: return 'x';
-                default:
-                    throw new NotImplementedException();
-            }
-        } 
+        //private static char CreateCharFromSymbol(Symbol symbol)
+        //{
+        //    switch (symbol)
+        //    {
+        //        case Symbol.B: return 'B';
+        //        case Symbol.D: return 'D';
+        //        case Symbol.E: return 'E';
+        //        case Symbol.F: return 'F';
+        //        case Symbol.G: return 'G';
+        //        case Symbol.g: return 'g';
+        //        case Symbol.N: return 'n';
+        //        case Symbol.O: return 'O';
+        //        case Symbol.P: return 'P';
+        //        case Symbol.R: return 'R';
+        //        case Symbol.t: return 't';
+        //        case Symbol.X: return 'X';
+        //        case Symbol.x: return 'x';
+        //        default:
+        //            throw new NotImplementedException();
+        //    }
+        //} 
         public struct Parsed
         {
             internal const byte MaxPrecision = 99;
@@ -117,31 +117,10 @@ namespace System.Text.Formatting
             public static Format.Parsed HexUppercase = new Format.Parsed('X', Format.NoPrecision);
             public static Format.Parsed HexLowercase = new Format.Parsed('x', Format.NoPrecision);
 
-            public static implicit operator Parsed(Symbol symbol)
-            {
-                return new Parsed() { Symbol = CreateCharFromSymbol(symbol) };
-            }
-
             public static implicit operator Parsed(char symbol)
             {
                 return new Parsed() { Symbol = symbol };
             }
-        }
-        public enum Symbol : byte
-        {
-            G = 0, 
-            g,
-            D,
-            B,
-            E,
-            F,
-            N,
-            O,
-            P,
-            R,
-            t,
-            X,
-            x,
         }
     }
 }

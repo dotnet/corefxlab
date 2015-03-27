@@ -27,11 +27,11 @@ namespace System.Text.Formatting.Tests
             Assert.Equal(guid.ToString("N"), sb.ToString());
             sb.Clear();
 
-            sb.Append(guid, Format.Symbol.B);
+            sb.Append(guid, 'B');
             Assert.Equal(guid.ToString("B"), sb.ToString());
             sb.Clear();
 
-            sb.Append(guid,Format.Symbol.P);
+            sb.Append(guid, 'P');
             Assert.Equal(guid.ToString("P"), sb.ToString());
             sb.Clear();
         }
