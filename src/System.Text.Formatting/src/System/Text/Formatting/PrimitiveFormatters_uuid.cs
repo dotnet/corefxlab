@@ -48,7 +48,7 @@ namespace System.Text.Formatting
             }
 
 
-            var byteFormat = new Format.Parsed() { Precision = 2, Symbol = Format.Symbol.XLowercase };
+            var byteFormat = new Format.Parsed() { Precision = 2, Symbol = Format.Symbol.x };
             unsafe
             {
                 byte* bytes = (byte*)&value;

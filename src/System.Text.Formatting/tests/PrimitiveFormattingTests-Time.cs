@@ -11,6 +11,39 @@ namespace System.Text.Formatting.Tests
     public partial class SystemTextFormattingTests
     {
         [Fact]
+        public void FormatDateTimeOffsetO()
+        {
+            var time = DateTimeOffset.UtcNow;
+            var sb = new StringFormatter();
+
+            sb.Append(time, Format.Symbol.O);
+            Assert.Equal(time.ToString("O", CultureInfo.InvariantCulture), sb.ToString());
+            sb.Clear();
+        }
+
+        [Fact]
+        public void FormatDateTimeOffsetR()
+        {
+            var time = DateTimeOffset.UtcNow;
+            var sb = new StringFormatter();
+
+            sb.Append(time, Format.Symbol.R);
+            Assert.Equal(time.ToString("R"), sb.ToString());
+            sb.Clear();
+        }
+
+        [Fact]
+        public void FormatDateTimeOffsetG()
+        {
+            var time = DateTimeOffset.UtcNow;
+            var sb = new StringFormatter();
+
+            sb.Append(time, Format.Symbol.G);
+            Assert.Equal(time.ToString("G"), sb.ToString());
+            sb.Clear();
+        }
+
+        [Fact]
         public void FormatDateTimeO()
         {
             var time = DateTime.UtcNow;

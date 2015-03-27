@@ -182,10 +182,10 @@ namespace System.Text.Formatting
 
         private static bool TryFormatHexadecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.X || format.Symbol == Format.Symbol.XLowercase);
+            Precondition.Require(format.Symbol == Format.Symbol.X || format.Symbol == Format.Symbol.x);
 
             byte firstDigitOffset = (byte)'0';
-            byte firstHexCharOffset = format.Symbol == Format.Symbol.XLowercase ? (byte)'a' : (byte)'A';
+            byte firstHexCharOffset = format.Symbol == Format.Symbol.x ? (byte)'a' : (byte)'A';
             firstHexCharOffset -= 10;
 
             // Count amount of hex digits
@@ -240,10 +240,10 @@ namespace System.Text.Formatting
 
         private static bool TryFormatHexadecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.X || format.Symbol == Format.Symbol.XLowercase);
+            Precondition.Require(format.Symbol == Format.Symbol.X || format.Symbol == Format.Symbol.x);
 
             byte firstDigitOffset = (byte)'0';
-            byte firstHexCharOffset = format.Symbol == Format.Symbol.XLowercase ? (byte)'a' : (byte)'A';
+            byte firstHexCharOffset = format.Symbol == Format.Symbol.x ? (byte)'a' : (byte)'A';
             firstHexCharOffset -= 10;
 
             // Count amount of hex digits
@@ -476,7 +476,7 @@ namespace System.Text.Formatting
 
         private static ReadOnlySpan<byte> GetHexadecimalDigitBytes(Format.Parsed format, FormattingData formattingData, ulong digit)
         {
-            return format.Symbol == Format.Symbol.XLowercase ? formattingData.GetHexLowerDigit(digit) : formattingData.GetHexUpperDigit(digit);
+            return format.Symbol == Format.Symbol.x ? formattingData.GetHexLowerDigit(digit) : formattingData.GetHexUpperDigit(digit);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

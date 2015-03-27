@@ -71,7 +71,7 @@ namespace System.Text.Formatting.Tests
             Verify(parsed, Format.NoPrecision, Format.Symbol.X);
 
             parsed = Format.Parse("x");
-            Verify(parsed, Format.NoPrecision, Format.Symbol.XLowercase);
+            Verify(parsed, Format.NoPrecision, Format.Symbol.x);
         }
 
         [Fact]
@@ -113,7 +113,7 @@ namespace System.Text.Formatting.Tests
             Verify(parsed, 11, Format.Symbol.X);
 
             parsed = Format.Parse("x10");
-            Verify(parsed, 10, Format.Symbol.XLowercase);
+            Verify(parsed, 10, Format.Symbol.x);
         }
 
         private static void Verify(Format.Parsed format, byte expectedPrecision, Format.Symbol expectedSymbol)

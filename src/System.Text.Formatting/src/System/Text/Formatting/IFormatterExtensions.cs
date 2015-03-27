@@ -144,6 +144,17 @@ namespace System.Text.Formatting
             formatter.CommitBytes(bytesWritten);
         }
 
+        public static void Append<TFormatter>(this TFormatter formatter, DateTimeOffset value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        {
+            int bytesWritten;
+            while (!value.TryFormat(formatter.FreeBuffer, format, formatter.FormattingData, out bytesWritten))
+            {
+                formatter.ResizeBuffer();
+                bytesWritten = 0;
+            }
+            formatter.CommitBytes(bytesWritten);
+        }
+
         public static void Append<TFormatter>(this TFormatter formatter, TimeSpan value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
         {
             int bytesWritten;
