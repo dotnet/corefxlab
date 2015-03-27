@@ -41,7 +41,7 @@ namespace System.Text.Formatting.Tests
             Verify(parsed, Format.NoPrecision, Format.Symbol.G);
 
             parsed = Format.Parse("g");
-            Verify(parsed, Format.NoPrecision, Format.Symbol.G);
+            Verify(parsed, Format.NoPrecision, Format.Symbol.g);
 
             parsed = Format.Parse("N");
             Verify(parsed, Format.NoPrecision, Format.Symbol.N);
@@ -101,7 +101,7 @@ namespace System.Text.Formatting.Tests
             Verify(parsed, 7, Format.Symbol.G);
 
             parsed = Format.Parse("g99");
-            Verify(parsed, 99, Format.Symbol.G);
+            Verify(parsed, 99, Format.Symbol.g);
 
             parsed = Format.Parse("N98");
             Verify(parsed, 98, Format.Symbol.N);
