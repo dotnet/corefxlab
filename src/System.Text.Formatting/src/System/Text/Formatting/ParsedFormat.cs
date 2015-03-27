@@ -63,6 +63,11 @@ namespace System.Text.Formatting
             return CreateFormatFromChar((byte)precision, specifier);
         }
 
+        public static Format.Parsed Parse(char format)
+        {
+            return CreateFormatFromChar(NoPrecision, format);
+        }
+
         private static Parsed CreateFormatFromChar(byte precision, char specifier)
         {
             switch (specifier)
