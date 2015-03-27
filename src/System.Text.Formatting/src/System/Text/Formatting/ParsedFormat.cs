@@ -12,7 +12,7 @@ namespace System.Text.Formatting
         {
             if (format == null || format.Length == 0)
             {
-                return new Format.Parsed() { Symbol = Symbol.G, Precision = NoPrecision };
+                return default(Format.Parsed);
             }
 
             uint precision = NoPrecision;
@@ -31,14 +31,14 @@ namespace System.Text.Formatting
             }
 
             var specifier = format[0];
-            return CreateFormatFromChar((byte)precision, specifier);
+            return new Parsed(specifier, (byte)precision);
         }
 
         public static Format.Parsed Parse(ReadOnlySpan<char> format)
         {
             if (format.Length == 0)
             {
-                return new Format.Parsed() { Symbol = Symbol.G, Precision = NoPrecision };
+                return default(Format.Parsed);
             }
 
             uint precision = NoPrecision;
@@ -60,75 +60,50 @@ namespace System.Text.Formatting
 
             // TODO: this is duplicated from above. It needs to be refactored
             var specifier = format[0];
-            return CreateFormatFromChar((byte)precision, specifier);
+            return new Parsed(specifier, (byte)precision);
         }
 
         public static Format.Parsed Parse(char format)
         {
-            return CreateFormatFromChar(NoPrecision, format);
+            return new Parsed(format, NoPrecision);
         }
 
-        private static Parsed CreateFormatFromChar(byte precision, char specifier)
+        private static char CreateCharFromSymbol(Symbol symbol)
         {
-            switch (specifier)
+            switch (symbol)
             {
-                case 'B':
-                case 'b':
-                    return new Format.Parsed() { Symbol = Symbol.B, Precision = precision };
-                case 'D':
-                case 'd':
-                    return new Format.Parsed() { Symbol = Symbol.D, Precision = precision };
-                case 'E':
-                case 'e':
-                    return new Format.Parsed() { Symbol = Symbol.E, Precision = precision };
-                case 'F':
-                case 'f':
-                    return new Format.Parsed() { Symbol = Symbol.F, Precision = precision };
-                case 'G':
-                    if (precision == 0)
-                    {
-                        precision = NoPrecision;
-                    }
-                    return new Format.Parsed() { Symbol = Symbol.G, Precision = precision };
-                case 'g':
-                    if (precision == 0)
-                    {
-                        precision = NoPrecision;
-                    }
-                    return new Format.Parsed() { Symbol = Symbol.g, Precision = precision };
-                case 'N':
-                case 'n':
-                    return new Format.Parsed() { Symbol = Symbol.N, Precision = precision };
-                case 'O':
-                case 'o':
-                    return new Format.Parsed() { Symbol = Symbol.O, Precision = precision };
-                case 'P':
-                case 'p':
-                    return new Format.Parsed() { Symbol = Symbol.P, Precision = precision };
-                case 'R':
-                case 'r':
-                    return new Format.Parsed() { Symbol = Symbol.R, Precision = precision };
-                case 't':
-                    return new Format.Parsed() { Symbol = Symbol.t, Precision = precision };
-                case 'X':
-                    return new Format.Parsed() { Symbol = Symbol.X, Precision = precision };
-                case 'x':
-                    return new Format.Parsed() { Symbol = Symbol.x, Precision = precision };
+                case Symbol.B: return 'B';
+                case Symbol.D: return 'D';
+                case Symbol.E: return 'E';
+                case Symbol.F: return 'F';
+                case Symbol.G: return 'G';
+                case Symbol.g: return 'g';
+                case Symbol.N: return 'n';
+                case Symbol.O: return 'O';
+                case Symbol.P: return 'P';
+                case Symbol.R: return 'R';
+                case Symbol.t: return 't';
+                case Symbol.X: return 'X';
+                case Symbol.x: return 'x';
                 default:
-                    throw new Exception(Strings.InvalidFormat);
+                    throw new NotImplementedException();
             }
-        }
-
+        } 
         public struct Parsed
         {
             internal const byte MaxPrecision = 99;
 
-            public Symbol Symbol;
+            public char Symbol;
             public byte Precision;
 
+            public Parsed(char symbol, byte precision = NoPrecision)
+            {
+                Symbol = symbol;
+                Precision = precision;
+            }
             public bool IsHexadecimal
             {
-                get { return Symbol == Symbol.X || Symbol == Symbol.x; }
+                get { return Symbol == 'X' || Symbol == 'x'; }
             }
             public bool HasPrecision
             {
@@ -136,17 +111,21 @@ namespace System.Text.Formatting
             }
 
             public bool IsDefault {
-                get { return Symbol == Symbol.G; }
+                get { return Symbol == (char)0; }
             }
 
-            public static Format.Parsed HexUppercase = new Format.Parsed() { Symbol = Symbol.X, Precision = Format.NoPrecision };
-            public static Format.Parsed HexLowercase = new Format.Parsed() { Symbol = Symbol.X, Precision = Format.NoPrecision };
+            public static Format.Parsed HexUppercase = new Format.Parsed('X', Format.NoPrecision);
+            public static Format.Parsed HexLowercase = new Format.Parsed('x', Format.NoPrecision);
 
             public static implicit operator Parsed(Symbol symbol)
             {
-                return new Parsed() { Symbol = symbol };
+                return new Parsed() { Symbol = CreateCharFromSymbol(symbol) };
             }
 
+            public static implicit operator Parsed(char symbol)
+            {
+                return new Parsed() { Symbol = symbol };
+            }
         }
         public enum Symbol : byte
         {

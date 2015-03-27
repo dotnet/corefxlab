@@ -17,7 +17,11 @@ namespace System.Text.Formatting
 
         public static bool TryFormat(this double value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.G);
+            if (format.IsDefault)
+            {
+                format.Symbol = 'G';
+            }
+            Precondition.Require(format.Symbol == 'G');
             return FloatFormatter.TryFormatNumber(value, false, buffer, format, formattingData, out bytesWritten);
         }
 
@@ -29,7 +33,11 @@ namespace System.Text.Formatting
 
         public static bool TryFormat(this float value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.G);
+            if (format.IsDefault)
+            {
+                format.Symbol = 'G';
+            }
+            Precondition.Require(format.Symbol == 'G');
             return FloatFormatter.TryFormatNumber(value, true, buffer, format, formattingData, out bytesWritten);
         }
     }

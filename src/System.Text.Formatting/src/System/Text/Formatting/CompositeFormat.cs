@@ -318,7 +318,7 @@ namespace System.Text.Formatting {
                 }
 
                 _currentIndex++;
-                var parsedFormat = formatSpecifier.HasValue ? System.Text.Formatting.Format.Parse(formatSpecifier.Value):new Format.Parsed();
+                var parsedFormat = formatSpecifier.HasValue ? System.Text.Formatting.Format.Parse(formatSpecifier.Value): default(System.Text.Formatting.Format.Parsed);
                 return CompositeSegment.InsertionPoint(arg, parsedFormat);
             }
 
