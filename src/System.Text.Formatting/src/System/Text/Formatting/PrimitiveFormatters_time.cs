@@ -12,11 +12,11 @@ namespace System.Text.Formatting
     {
         static readonly string[] s_dayNames = { "Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, " };
         static readonly string[] s_monthNames = { "Jan ", "Feb ", "Mar ", "Apr ", "May", "Jun ", "Jul ", "Aug ", "Sep ", "Oct ", "Nov ", "Dec " };
-        static readonly Format.Parsed D2 = new Format.Parsed() { Precision = 2, Symbol = Format.Symbol.D };
-        static readonly Format.Parsed D4 = new Format.Parsed() { Precision = 4, Symbol = Format.Symbol.D };
-        static readonly Format.Parsed D7 = new Format.Parsed() { Precision = 7, Symbol = Format.Symbol.D };
-        static readonly Format.Parsed G = new Format.Parsed() { Symbol = Format.Symbol.G };
-        static readonly Format.Parsed t = new Format.Parsed() { Symbol = Format.Symbol.t };
+        static readonly Format.Parsed D2 = new Format.Parsed('D', 2);
+        static readonly Format.Parsed D4 = new Format.Parsed('D', 4);
+        static readonly Format.Parsed D7 = new Format.Parsed('D', 7);
+        static readonly Format.Parsed G = new Format.Parsed('G'); 
+        static readonly Format.Parsed t = new Format.Parsed('t'); 
         const int FractionalTimeScale = 10000000;
 
         public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, ReadOnlySpan<char> format, FormattingData formattingData, out int bytesWritten)
@@ -27,10 +27,14 @@ namespace System.Text.Formatting
 
         public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.R || format.Symbol == Format.Symbol.O || format.Symbol == Format.Symbol.G);
+            if (format.IsDefault)
+            {
+                format.Symbol = 'G';
+            }
+            Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
             switch (format.Symbol)
             {
-                case Format.Symbol.R:
+                case 'R':
 
                     if (formattingData.IsUtf16)
                     {
@@ -40,7 +44,7 @@ namespace System.Text.Formatting
                     {
                         return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, FormattingData.InvariantUtf8, out bytesWritten);
                     }
-                case Format.Symbol.O:
+                case 'O':
                     if (formattingData.IsUtf16)
                     {
                         return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, FormattingData.InvariantUtf16, out bytesWritten);
@@ -49,7 +53,7 @@ namespace System.Text.Formatting
                     {
                         return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, FormattingData.InvariantUtf8, out bytesWritten);
                     }
-                case Format.Symbol.G:
+                case 'G':
                     return TryFormatDateTimeFormagG(value.DateTime, buffer, formattingData, out bytesWritten);
                 default:
                     throw new NotImplementedException();
@@ -64,11 +68,15 @@ namespace System.Text.Formatting
 
         public static bool TryFormat(this DateTime value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.R || format.Symbol == Format.Symbol.O || format.Symbol == Format.Symbol.G);
+            if (format.IsDefault)
+            {
+                format.Symbol = 'G';
+            }
+            Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
 
             switch (format.Symbol)
             {
-                case Format.Symbol.R:
+                case 'R':
                     var utc = value.ToUniversalTime();
                     if (formattingData.IsUtf16)
                     {
@@ -78,7 +86,7 @@ namespace System.Text.Formatting
                     {
                         return TryFormatDateTimeRfc1123(utc, buffer, FormattingData.InvariantUtf8, out bytesWritten);
                     }
-                case Format.Symbol.O:
+                case 'O':
                     if (formattingData.IsUtf16)
                     {
                         return TryFormatDateTimeFormatO(value, true, buffer, FormattingData.InvariantUtf16, out bytesWritten);
@@ -87,7 +95,7 @@ namespace System.Text.Formatting
                     {
                         return TryFormatDateTimeFormatO(value, true, buffer, FormattingData.InvariantUtf8, out bytesWritten);
                     }
-                case Format.Symbol.G:
+                case 'G':
                     return TryFormatDateTimeFormagG(value, buffer, formattingData, out bytesWritten);
                 default:
                     throw new NotImplementedException();
@@ -215,9 +223,13 @@ namespace System.Text.Formatting
 
         public static bool TryFormat(this TimeSpan value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.G || format.Symbol == Format.Symbol.t);
+            if (format.IsDefault)
+            {
+                format.Symbol = 'G';
+            }
+            Precondition.Require(format.Symbol == 'G' || format.Symbol == 't');
 
-            if (format.Symbol == Format.Symbol.G)
+            if (format.Symbol == 'G')
             {
                 return TryFormatTimeSpanG(value, buffer, formattingData, out bytesWritten);
             }

@@ -19,11 +19,11 @@ namespace System.Text.Formatting.Tests
             Assert.Equal(guid.ToString(), sb.ToString());
             sb.Clear();
 
-            sb.Append(guid, Format.Symbol.D);
+            sb.Append(guid, 'D');
             Assert.Equal(guid.ToString("D"), sb.ToString());
             sb.Clear();
 
-            sb.Append(guid, Format.Symbol.N);
+            sb.Append(guid, 'N');
             Assert.Equal(guid.ToString("N"), sb.ToString());
             sb.Clear();
 

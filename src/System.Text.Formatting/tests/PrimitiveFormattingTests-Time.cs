@@ -16,7 +16,7 @@ namespace System.Text.Formatting.Tests
             var time = DateTimeOffset.UtcNow;
             var sb = new StringFormatter();
 
-            sb.Append(time, Format.Symbol.O);
+            sb.Append(time, 'O');
             Assert.Equal(time.ToString("O", CultureInfo.InvariantCulture), sb.ToString());
             sb.Clear();
         }
@@ -27,7 +27,7 @@ namespace System.Text.Formatting.Tests
             var time = DateTimeOffset.UtcNow;
             var sb = new StringFormatter();
 
-            sb.Append(time, Format.Symbol.R);
+            sb.Append(time, 'R');
             Assert.Equal(time.ToString("R"), sb.ToString());
             sb.Clear();
         }
@@ -38,7 +38,7 @@ namespace System.Text.Formatting.Tests
             var time = DateTimeOffset.UtcNow;
             var sb = new StringFormatter();
 
-            sb.Append(time, Format.Symbol.G);
+            sb.Append(time, 'G');
             Assert.Equal(time.ToString("G"), sb.ToString());
             sb.Clear();
         }
@@ -49,7 +49,7 @@ namespace System.Text.Formatting.Tests
             var time = DateTime.UtcNow;
             var sb = new StringFormatter();
 
-            sb.Append(time, Format.Symbol.O);
+            sb.Append(time, 'O');
             Assert.Equal(time.ToString("O", CultureInfo.InvariantCulture), sb.ToString());
             sb.Clear();
         }
@@ -60,7 +60,7 @@ namespace System.Text.Formatting.Tests
             var time = DateTime.UtcNow;
             var sb = new StringFormatter();
 
-            sb.Append(time, Format.Symbol.R);
+            sb.Append(time, 'R');
             Assert.Equal(time.ToString("R"), sb.ToString());
             sb.Clear();
         }
@@ -71,7 +71,7 @@ namespace System.Text.Formatting.Tests
             var time = DateTime.UtcNow;
             var sb = new StringFormatter();
 
-            sb.Append(time, Format.Symbol.G);
+            sb.Append(time, 'G');
             Assert.Equal(time.ToString("G"), sb.ToString());
             sb.Clear();
         }
