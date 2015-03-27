@@ -21,8 +21,6 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void CompositeFormattingFormatStrings()
         {
-            var time = DateTime.UtcNow;
-
             var formatter = new StringFormatter();
             formatter.Format("Hello{0:x}{1:X}{2:G}", 10, 255, 3);
 

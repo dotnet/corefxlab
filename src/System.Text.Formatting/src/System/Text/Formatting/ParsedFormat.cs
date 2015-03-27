@@ -85,12 +85,17 @@ namespace System.Text.Formatting
                 case 'f':
                     return new Format.Parsed() { Symbol = Symbol.F, Precision = precision };
                 case 'G':
-                case 'g':
                     if (precision == 0)
                     {
                         precision = NoPrecision;
                     }
                     return new Format.Parsed() { Symbol = Symbol.G, Precision = precision };
+                case 'g':
+                    if (precision == 0)
+                    {
+                        precision = NoPrecision;
+                    }
+                    return new Format.Parsed() { Symbol = Symbol.g, Precision = precision };
                 case 'N':
                 case 'n':
                     return new Format.Parsed() { Symbol = Symbol.N, Precision = precision };
@@ -103,10 +108,12 @@ namespace System.Text.Formatting
                 case 'R':
                 case 'r':
                     return new Format.Parsed() { Symbol = Symbol.R, Precision = precision };
+                case 't':
+                    return new Format.Parsed() { Symbol = Symbol.t, Precision = precision };
                 case 'X':
                     return new Format.Parsed() { Symbol = Symbol.X, Precision = precision };
                 case 'x':
-                    return new Format.Parsed() { Symbol = Symbol.XLowercase, Precision = precision };
+                    return new Format.Parsed() { Symbol = Symbol.x, Precision = precision };
                 default:
                     throw new Exception(Strings.InvalidFormat);
             }
@@ -121,7 +128,7 @@ namespace System.Text.Formatting
 
             public bool IsHexadecimal
             {
-                get { return Symbol == Symbol.X || Symbol == Symbol.XLowercase; }
+                get { return Symbol == Symbol.X || Symbol == Symbol.x; }
             }
             public bool HasPrecision
             {
@@ -144,6 +151,7 @@ namespace System.Text.Formatting
         public enum Symbol : byte
         {
             G = 0, 
+            g,
             D,
             B,
             E,
@@ -152,8 +160,9 @@ namespace System.Text.Formatting
             O,
             P,
             R,
+            t,
             X,
-            XLowercase,
+            x,
         }
     }
 }
