@@ -58,6 +58,11 @@ namespace System.Text.Formatting
 
         internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
+            if(format.Symbol == Format.Symbol.g)
+            {
+                format.Symbol = Format.Symbol.G;
+            }
+
             if (format.IsHexadecimal && formattingData.IsUtf16) {
                 return TryFormatHexadecimalInvariantCultureUtf16(value, buffer, format, out bytesWritten);
             }
