@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.IO;
-using System.Text.Formatting;
 using Xunit;
 
 namespace System.Text.Formatting.Tests
@@ -25,7 +24,7 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
-        public void Byte()
+        public void ByteBasicTests()
         {
             CheckByte(0, null, "0");
             CheckByte(1, null, "1");
@@ -86,7 +85,7 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
-        public void Int64()
+        public void Int64BasicTests()
         {
             CheckInt64(long.MinValue, null, "-9223372036854775808");
             CheckInt64(-10, null, "-10");
