@@ -26,7 +26,7 @@ namespace System.Text.Formatting
                 if (precision > Parsed.MaxPrecision)
                 {
                     // TODO: this is a contract violation
-                    throw new Exception(Strings.PrecisionValueOutOfRange);
+                    throw new Exception(SR.PrecisionValueOutOfRange);
                 }
             }
 
@@ -48,13 +48,13 @@ namespace System.Text.Formatting
 
                 if (!InvariantParser.TryParse(span, out precision))
                 {
-                    throw new NotImplementedException(Strings.UnableToParsePrecision);
+                    throw new NotImplementedException(SR.UnableToParsePrecision);
                 }
 
                 if (precision > Parsed.MaxPrecision)
                 {
                     // TODO: this is a contract violation
-                    throw new Exception(Strings.PrecisionValueOutOfRange);
+                    throw new Exception(SR.PrecisionValueOutOfRange);
                 }
             }
 
@@ -103,7 +103,7 @@ namespace System.Text.Formatting
                 case 'x':
                     return new Format.Parsed() { Symbol = Symbol.XLowercase, Precision = precision };
                 default:
-                    throw new Exception(Strings.InvalidFormat);
+                    throw new Exception(SR.InvalidFormat);
             }
         }
 
