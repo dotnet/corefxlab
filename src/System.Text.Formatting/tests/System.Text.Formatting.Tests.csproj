@@ -45,6 +45,7 @@
     <Compile Include="PrimitiveFormattingTests-Guid.cs" />
     <Compile Include="PrimitiveFormattingTests.cs" />
     <Compile Include="NumberFormattingTests.Generated.cs" />
+    <Compile Include="TimeSpanFormattingTests.Generated.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

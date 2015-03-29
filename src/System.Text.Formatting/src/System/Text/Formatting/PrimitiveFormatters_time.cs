@@ -225,20 +225,20 @@ namespace System.Text.Formatting
         {
             if (format.IsDefault)
             {
-                format.Symbol = 'G';
+                format.Symbol = 'c';
             }
-            Precondition.Require(format.Symbol == 'G' || format.Symbol == 't');
+            Precondition.Require(format.Symbol == 'G' || format.Symbol == 't' || format.Symbol == 'c' || format.Symbol == 'g');
 
-            if (format.Symbol == 'G')
+            if (format.Symbol != 't')
             {
-                return TryFormatTimeSpanG(value, buffer, formattingData, out bytesWritten);
+                return TryFormatTimeSpanG(value, buffer, format, formattingData, out bytesWritten);
             }
 
             // else it's format 't' (short time used to print time offsets)
             return TryFormatTimeSpanT(value, buffer, formattingData, out bytesWritten);
         }
 
-        private static bool TryFormatTimeSpanG(TimeSpan value, Span<byte> buffer, FormattingData formattingData, out int bytesWritten)
+        private static bool TryFormatTimeSpanG(TimeSpan value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
             bytesWritten = 0;
 
@@ -247,13 +247,27 @@ namespace System.Text.Formatting
                 if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
             }
 
-            if (value.Days != 0)
+            bool daysWritten = false;
+            if (value.Days != 0 || format.Symbol == 'G')
             {
                 if (!TryWriteInt32(Abs(value.Days), buffer, default(Format.Parsed), formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteChar('.', buffer, formattingData, ref bytesWritten)) { return false; }
+                daysWritten = true;
+                if (format.Symbol == 'c')
+                {
+                    if (!TryWriteChar('.', buffer, formattingData, ref bytesWritten)) { return false; }
+                }
+                else
+                {
+                    if (!TryWriteChar(':', buffer, formattingData, ref bytesWritten)) { return false; }
+                }
             }
 
-            if (!TryWriteInt32(Abs(value.Hours), buffer, D2, formattingData, ref bytesWritten)) { return false; }
+            var hourFormat = default(Format.Parsed);
+            if ((daysWritten || format.Symbol == 'c') && format.Symbol != 'g')
+            {
+                hourFormat = D2;
+            }
+            if (!TryWriteInt32(Abs(value.Hours), buffer, hourFormat, formattingData, ref bytesWritten)) { return false; }
             if (!TryWriteChar(':', buffer, formattingData, ref bytesWritten)) { return false; }
 
             if (!TryWriteInt32(Abs(value.Minutes), buffer, D2, formattingData, ref bytesWritten)) { return false; }
@@ -272,11 +286,12 @@ namespace System.Text.Formatting
                 remainingTicks = (remainingTicks + 1) % TimeSpan.TicksPerSecond;
             }
 
+            var ticksFormat = D7;
             if (remainingTicks != 0)
             {
                 if (!TryWriteChar('.', buffer, formattingData, ref bytesWritten)) { return false; }
                 var fraction = remainingTicks * FractionalTimeScale / TimeSpan.TicksPerSecond;
-                if (!TryWriteInt64(fraction, buffer, D7, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteInt64(fraction, buffer, ticksFormat, formattingData, ref bytesWritten)) { return false; }
             }
 
             return true;
