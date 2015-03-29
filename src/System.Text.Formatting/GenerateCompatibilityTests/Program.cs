@@ -2,12 +2,34 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 class Program
 {
     static Random random = new Random(1000);
     static void Main(string[] args)
+    {
+        GenerateNumericTypesTests();
+        GenerateTimeSpanTests();
+    }
+
+    private static void GenerateTimeSpanTests()
+    {
+        var file = new StreamWriter(@"..\..\..\tests\TimeSpanFormattingTests.Generated.cs");
+        var writer = new CodeWriter(file);
+
+        GenerateFileHeader(writer);
+
+        GenerateCheck(writer, "TimeSpan");
+        GenerateTest(writer, "TimeSpan", 'G');
+        //GenerateTest(writer, "TimeSpan", 'g');
+        GenerateTest(writer, "TimeSpan", 'c');
+
+        GenerateFileFooter(file, writer);
+    }
+
+    private static void GenerateNumericTypesTests()
     {
         var file = new StreamWriter(@"..\..\..\tests\NumberFormattingTests.Generated.cs");
         var writer = new CodeWriter(file);
@@ -25,34 +47,32 @@ class Program
         GenerateNumericTypeTests(writer, "UInt64", 5);
         GenerateNumericTypeTests(writer, "Int64", 5);
 
-        writer.Indent--;
-        writer.WriteLine("}"); // end of test type
-        writer.Indent--;
-        writer.WriteLine("}"); // namesapce
-
-        file.Close();
+        GenerateFileFooter(file, writer);
     }
 
     // TODO: all of the formats should work
-    private static void GenerateNumericTypeTests(CodeWriter writer, string type, int maxPrecision = -1)
+    private static void GenerateNumericTypeTests(CodeWriter writer, string typeName, int maxPrecision = -1)
     {
-        GenerateCheck(writer, type);
+        GenerateCheck(writer, typeName);
 
         //GenerateTest(writer, type, 'C', maxPrecision);
-        GenerateTest(writer, type, 'D', maxPrecision);
+        GenerateTest(writer, typeName, 'D', maxPrecision);
+        GenerateTest(writer, typeName, 'd', maxPrecision);
         //GenerateTest(writer, type, 'E', maxPrecision);
         //GenerateTest(writer, type, 'F', maxPrecision);
-        GenerateTest(writer, type, 'G');
+        GenerateTest(writer, typeName, 'G');
+        //GenerateTest(writer, type, 'g', maxPrecision);
         //GenerateTest(writer, type, 'N', maxPrecision); // TODO: this is implemented, but has bugs
         //GenerateTest(writer, type, 'P', maxPrecision);
         //GenerateTest(writer, type, 'R', maxPrecision);
-        GenerateTest(writer, type, 'X', maxPrecision);
+        GenerateTest(writer, typeName, 'X', maxPrecision);
+        GenerateTest(writer, typeName, 'x', maxPrecision);
     }
 
-    private static void GenerateCheck(CodeWriter writer, string type)
+    private static void GenerateCheck(CodeWriter writer, string typeName)
     {
-        var helperName = "Check" + type;
-        writer.WriteLine("public void {0}({1} value, string format)", helperName, type);
+        var helperName = "Check" + typeName;
+        writer.WriteLine("public void {0}({1} value, string format)", helperName, typeName);
         writer.WriteLine("{");
         writer.WriteLine("    var parsed = Format.Parse(format);");
         writer.WriteLine("    formatter.Clear();");
@@ -65,22 +85,20 @@ class Program
 
     }
 
-    private static void GenerateTest(CodeWriter writer, string type, char format, int maxPrecision = -1)
+    private static void GenerateTest(CodeWriter writer, string typeName, char format, int maxPrecision = -1)
     {
         writer.WriteLine("[Fact]");
-        var testName = type + "Format" + format;
+        var testName = typeName + "Format" + format;
         writer.WriteLine("public void {0}()", testName);
         writer.WriteLine("{");
         writer.Indent++;
-        var helperName = "Check" + type;
-        GenerateSpecificFormatTersts(writer, type, format.ToString(), helperName);
-        GenerateSpecificFormatTersts(writer, type, format.ToString().ToLowerInvariant(), helperName);
+        var helperName = "Check" + typeName;
+        GenerateSpecificFormatTersts(writer, typeName, format.ToString(), helperName);
         if (maxPrecision > -1)
         {
             for (int precision = 0; precision <= maxPrecision; precision++)
             {
-                GenerateSpecificFormatTersts(writer, type, format.ToString() + precision.ToString(), helperName);
-                GenerateSpecificFormatTersts(writer, type, format.ToString().ToLowerInvariant() + precision.ToString(), helperName);
+                GenerateSpecificFormatTersts(writer, typeName, format.ToString() + precision.ToString(), helperName);
             }
         }
 
@@ -89,38 +107,67 @@ class Program
         writer.WriteLine("");
     }
 
-    private static void GenerateSpecificFormatTersts(CodeWriter writer, string type, string format, string helperName)
+    private static void GenerateSpecificFormatTersts(CodeWriter writer, string typeName, string format, string checkMethodName)
     {
+        writer.WriteLine("");
         writer.WriteLine("// format {0}", format);
-        writer.WriteLine("{0}({1}, \"{2}\");", helperName, type + ".MinValue", format);
-        writer.WriteLine("{0}({1}, \"{2}\");", helperName, type + ".MaxValue", format);
-        writer.WriteLine("{0}({1}, \"{2}\");", helperName, "0", format);
-        writer.WriteLine("// some random numbers");
-        for (int randomNumber = 0; randomNumber < 5; randomNumber++)
-        {
-            writer.WriteLine("{0}(({3}){1}, \"{2}\");", helperName, GetRandomNumber(type), format, type);
+        foreach (var testValue in GetTestValues(typeName)) {
+            writer.WriteLine("{0}({1}, \"{2}\");", checkMethodName, testValue, format);
         }
     }
 
-    private static string GetRandomNumber(string numericTypeName)
+    private static IEnumerable<string> GetTestValues(string typeName)
     {
-        switch (numericTypeName)
+        int min = 0;
+        int max = int.MaxValue;
+        switch (typeName)
         {
-            case "Int32":
-            case "Int64":
-                return random.Next().ToString();
             case "UInt32":
             case "UInt64":
-                return random.Next(0, int.MaxValue).ToString();
+                break;
+
+            case "TimeSpan":
+            case "Int32":
+            case "Int64":
+                min = int.MinValue;
+                break;
             case "UInt16":
-                return random.Next(0, ushort.MaxValue).ToString();
-            case "Int16":
-                return random.Next(0, short.MaxValue).ToString();
+                max = ushort.MaxValue;
+                break;
             case "Byte":
-                return random.Next(0, byte.MaxValue).ToString();
+                max = byte.MaxValue;
+                break;
+            case "Int16":
+                min = short.MinValue;
+                max = short.MaxValue;
+                break;
             case "SByte":
-                return random.Next(0, sbyte.MaxValue).ToString();
+                min = sbyte.MinValue;
+                max = sbyte.MaxValue;
+                break;
             default: throw new NotImplementedException();
+        }
+
+        yield return typeName + ".MinValue";
+        yield return typeName + ".MaxValue";
+        if (typeName != "TimeSpan")
+        {
+            yield return "0";
+        }
+
+        if (typeName == "TimeSpan")
+        {
+            for (int test = 3; test <= 20; test++)
+            {
+                yield return String.Format("new {0}({1})", typeName, random.Next(min, max));
+            }
+        }
+        else
+        {
+            for (int test = 4; test <= 8; test++)
+            {
+                yield return random.Next(min, max).ToString();
+            }
         }
     }
 
@@ -131,6 +178,7 @@ class Program
         writer.WriteLine("");
         writer.WriteLine("// THIS FILE IS AUTOGENERATED");
         writer.WriteLine("");
+        writer.WriteLine("using System;");
         writer.WriteLine("using System.Globalization;");
         writer.WriteLine("using Xunit;");
         writer.WriteLine("");
@@ -140,6 +188,15 @@ class Program
         writer.WriteLine("public partial class SystemTextFormattingTests");
         writer.WriteLine("{");
         writer.Indent++;
+    }
+
+    private static void GenerateFileFooter(StreamWriter file, CodeWriter writer)
+    {
+        writer.Indent--;
+        writer.WriteLine("}"); // end of test type
+        writer.Indent--;
+        writer.WriteLine("}"); // namesapce
+        file.Close();
     }
 
     class CodeWriter
