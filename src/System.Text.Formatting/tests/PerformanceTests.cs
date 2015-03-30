@@ -213,6 +213,51 @@ namespace System.Text.Formatting.Tests
             PrintTime();
         }
 
+        [Fact]
+        private void EncodeStringToUtf8()
+        {
+            string text = "Hello World!";
+            int stringsToWrite = 2000;
+            int size = stringsToWrite * text.Length + stringsToWrite;
+            BufferFormatter formatter = new BufferFormatter(size, FormattingData.InvariantUtf8);
+
+            timer.Restart();
+            for (int itteration = 0; itteration < itterationsInvariant; itteration++)
+            {
+                formatter.Clear();
+                for (int i = 0; i < stringsToWrite; i++)
+                {
+                    formatter.Append(text);
+                    formatter.Append(1);
+                }
+                Assert.Equal(size, formatter.CommitedByteCount);
+            }
+            PrintTime();
+        }
+
+        [Fact]
+        private void EncodeStringToUtf8Clr()
+        {
+            string text = "Hello World!";
+            int stringsToWrite = 2000;
+            int size = stringsToWrite * text.Length + stringsToWrite;
+            StringBuilder formatter = new StringBuilder(size);
+
+            timer.Restart();
+            for (int itteration = 0; itteration < itterationsInvariant; itteration++)
+            {
+                formatter.Clear();
+                for (int i = 0; i < stringsToWrite; i++)
+                {
+                    formatter.Append(text);
+                    formatter.Append(1);
+                }
+                var bytes = Encoding.UTF8.GetBytes(formatter.ToString());
+                Assert.Equal(size, bytes.Length);
+            }
+            PrintTime();
+        }
+
         static FormattingData CreateCustomCulture()
         {
             var utf16digitsAndSymbols = new byte[13][];
