@@ -58,6 +58,11 @@ namespace System.Text.Formatting
 
         internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
+            if(format.Symbol == 'g')
+            {
+                format.Symbol = 'G';
+            }
+
             if (format.IsHexadecimal && formattingData.IsUtf16) {
                 return TryFormatHexadecimalInvariantCultureUtf16(value, buffer, format, out bytesWritten);
             }
@@ -66,11 +71,11 @@ namespace System.Text.Formatting
                 return TryFormatHexadecimalInvariantCultureUtf8(value, buffer, format, out bytesWritten);
             }
 
-            if ((formattingData.IsInvariantUtf16) && (format.Symbol == Format.Symbol.D || format.Symbol == Format.Symbol.G)) {
+            if ((formattingData.IsInvariantUtf16) && (format.Symbol == 'D' || format.Symbol == 'G')) {
                 return TryFormatDecimalInvariantCultureUtf16(value, buffer, format, out bytesWritten);
             }
 
-            if ((formattingData.IsInvariantUtf8) && (format.Symbol == Format.Symbol.D || format.Symbol == Format.Symbol.G)) {
+            if ((formattingData.IsInvariantUtf8) && (format.Symbol == 'D' || format.Symbol == 'G')) {
                 return TryFormatDecimalInvariantCultureUtf8(value, buffer, format, out bytesWritten);
             }
 
@@ -79,7 +84,7 @@ namespace System.Text.Formatting
 
         private static bool TryFormatDecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.D || format.Symbol == Format.Symbol.G);
+            Precondition.Require(format.Symbol == 'D' || format.Symbol == 'G');
 
             // Count digits
             var valueToCountDigits = value;
@@ -93,7 +98,7 @@ namespace System.Text.Formatting
             var bytesCount = digitsCount * 2;
 
             // If format is D and precision is greater than digits count, append leading zeros
-            if (format.Symbol == Format.Symbol.D && format.HasPrecision) {
+            if (format.Symbol == 'D' && format.HasPrecision) {
                 var leadingZerosCount = format.Precision - digitsCount;
                 if (leadingZerosCount > 0) {
                     bytesCount += leadingZerosCount * 2;
@@ -128,7 +133,7 @@ namespace System.Text.Formatting
 
         private static bool TryFormatDecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.D || format.Symbol == Format.Symbol.G);
+            Precondition.Require(format.Symbol == 'D' || format.Symbol == 'G');
 
             // Count digits
             var valueToCountDigits = value;
@@ -143,7 +148,7 @@ namespace System.Text.Formatting
             var bytesCount = digitsCount;
 
             // If format is D and precision is greater than digits count, append leading zeros
-            if (format.Symbol == Format.Symbol.D && format.HasPrecision)
+            if (format.Symbol == 'D' && format.HasPrecision)
             {
                 var leadingZerosCount = format.Precision - digitsCount;
                 if (leadingZerosCount > 0)
@@ -182,10 +187,10 @@ namespace System.Text.Formatting
 
         private static bool TryFormatHexadecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.X || format.Symbol == Format.Symbol.XLowercase);
+            Precondition.Require(format.Symbol == 'X' || format.Symbol == 'x');
 
             byte firstDigitOffset = (byte)'0';
-            byte firstHexCharOffset = format.Symbol == Format.Symbol.XLowercase ? (byte)'a' : (byte)'A';
+            byte firstHexCharOffset = format.Symbol == 'x' ? (byte)'a' : (byte)'A';
             firstHexCharOffset -= 10;
 
             // Count amount of hex digits
@@ -240,10 +245,10 @@ namespace System.Text.Formatting
 
         private static bool TryFormatHexadecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.X || format.Symbol == Format.Symbol.XLowercase);
+            Precondition.Require(format.Symbol == 'X' || format.Symbol == 'X');
 
             byte firstDigitOffset = (byte)'0';
-            byte firstHexCharOffset = format.Symbol == Format.Symbol.XLowercase ? (byte)'a' : (byte)'A';
+            byte firstHexCharOffset = format.Symbol == 'X' ? (byte)'a' : (byte)'A';
             firstHexCharOffset -= 10;
 
             // Count amount of hex digits
@@ -306,7 +311,12 @@ namespace System.Text.Formatting
         // Another idea possibly worth tying would be to special case cultures that have constant digit size, and go back to the format + reverse buffer approach.
         private static bool TryFormatDecimal(ulong value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.D || format.Symbol == Format.Symbol.G || format.Symbol == Format.Symbol.N);
+            if(format.IsDefault)
+            {
+                format.Symbol = 'G';
+            }
+            format.Symbol = Char.ToUpperInvariant(format.Symbol); // TODO: this is costly. I think the transformation should happen in Parse
+            Precondition.Require(format.Symbol == 'D' || format.Symbol == 'G' || format.Symbol == 'N');
 
             // Reverse value on decimal basis, count digits and trailing zeros before the decimal separator
             ulong reversedValueExceptFirst = 0;
@@ -335,7 +345,7 @@ namespace System.Text.Formatting
             bytesWritten = 0;
             int digitBytes;
             // If format is D and precision is greater than digitsCount + trailingZerosCount, append leading zeros
-            if (format.Symbol == Format.Symbol.D && format.HasPrecision)
+            if (format.Symbol == 'D' && format.HasPrecision)
             {
                 var leadingZerosCount = format.Precision - digitsCount - trailingZerosCount;
                 while (leadingZerosCount-- > 0)
@@ -358,7 +368,7 @@ namespace System.Text.Formatting
             bytesWritten += digitBytes;
             digitsCount--;
 
-            if (format.Symbol == Format.Symbol.N)
+            if (format.Symbol == 'N')
             {
                 const int GroupSize = 3;
 
@@ -446,7 +456,7 @@ namespace System.Text.Formatting
             }
 
             // If format is N and precision is not defined or is greater than zero, append trailing zeros after decimal point
-            if (format.Symbol == Format.Symbol.N)
+            if (format.Symbol == 'N')
             {
                 int trailingZerosAfterDecimalCount = format.HasPrecision ? format.Precision : 2;
 
@@ -476,7 +486,7 @@ namespace System.Text.Formatting
 
         private static ReadOnlySpan<byte> GetHexadecimalDigitBytes(Format.Parsed format, FormattingData formattingData, ulong digit)
         {
-            return format.Symbol == Format.Symbol.XLowercase ? formattingData.GetHexLowerDigit(digit) : formattingData.GetHexUpperDigit(digit);
+            return format.Symbol == 'X' ? formattingData.GetHexLowerDigit(digit) : formattingData.GetHexUpperDigit(digit);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

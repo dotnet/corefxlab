@@ -11,12 +11,45 @@ namespace System.Text.Formatting.Tests
     public partial class SystemTextFormattingTests
     {
         [Fact]
+        public void FormatDateTimeOffsetO()
+        {
+            var time = DateTimeOffset.UtcNow;
+            var sb = new StringFormatter();
+
+            sb.Append(time, 'O');
+            Assert.Equal(time.ToString("O", CultureInfo.InvariantCulture), sb.ToString());
+            sb.Clear();
+        }
+
+        [Fact]
+        public void FormatDateTimeOffsetR()
+        {
+            var time = DateTimeOffset.UtcNow;
+            var sb = new StringFormatter();
+
+            sb.Append(time, 'R');
+            Assert.Equal(time.ToString("R"), sb.ToString());
+            sb.Clear();
+        }
+
+        [Fact]
+        public void FormatDateTimeOffsetG()
+        {
+            var time = DateTimeOffset.UtcNow;
+            var sb = new StringFormatter();
+
+            sb.Append(time, 'G');
+            Assert.Equal(time.ToString("G"), sb.ToString());
+            sb.Clear();
+        }
+
+        [Fact]
         public void FormatDateTimeO()
         {
             var time = DateTime.UtcNow;
             var sb = new StringFormatter();
 
-            sb.Append(time, Format.Symbol.O);
+            sb.Append(time, 'O');
             Assert.Equal(time.ToString("O", CultureInfo.InvariantCulture), sb.ToString());
             sb.Clear();
         }
@@ -27,8 +60,19 @@ namespace System.Text.Formatting.Tests
             var time = DateTime.UtcNow;
             var sb = new StringFormatter();
 
-            sb.Append(time, Format.Symbol.R);
+            sb.Append(time, 'R');
             Assert.Equal(time.ToString("R"), sb.ToString());
+            sb.Clear();
+        }
+
+        [Fact]
+        public void FormatDateTimeG()
+        {
+            var time = DateTime.UtcNow;
+            var sb = new StringFormatter();
+
+            sb.Append(time, 'G');
+            Assert.Equal(time.ToString("G"), sb.ToString());
             sb.Clear();
         }
 

@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Non-AllocatingJson.cs" />
+    <Compile Include="CompositeFormattingTests.cs" />
     <Compile Include="CustomCulture.cs" />
     <Compile Include="CustomTypeFormatting.cs" />
     <Compile Include="ParsedFormatUnitTests.cs" />
@@ -44,6 +45,8 @@
     <Compile Include="PrimitiveFormattingTests-Time.cs" />
     <Compile Include="PrimitiveFormattingTests-Guid.cs" />
     <Compile Include="PrimitiveFormattingTests.cs" />
+    <Compile Include="NumberFormattingTests.Generated.cs" />
+    <Compile Include="TimeSpanFormattingTests.Generated.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

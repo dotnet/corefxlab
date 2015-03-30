@@ -17,27 +17,31 @@ namespace System.Text.Formatting
 
         public static bool TryFormat(this Guid value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.G || format.Symbol == Format.Symbol.D || format.Symbol == Format.Symbol.N || format.Symbol == Format.Symbol.B || format.Symbol == Format.Symbol.P);
+            if (format.IsDefault)
+            {
+                format.Symbol = 'G';
+            }
+            Precondition.Require(format.Symbol == 'G' || format.Symbol == 'D' || format.Symbol == 'N' || format.Symbol == 'B' || format.Symbol == 'P');
             bool dash = true;
             char tail = '\0';
             bytesWritten = 0;
 
             switch (format.Symbol)
             {
-                case Format.Symbol.D:
-                case Format.Symbol.G:
+                case 'D':
+                case 'G':
                     break;
 
-                case Format.Symbol.N:
+                case 'N':
                     dash = false;
                     break;
 
-                case Format.Symbol.B:
+                case 'B':
                     if (!TryWriteChar('{', buffer, formattingData, ref bytesWritten)) { return false; }
                     tail = '}';
                     break;
 
-                case Format.Symbol.P:
+                case 'P':
                     if (!TryWriteChar('(', buffer, formattingData, ref bytesWritten)) { return false; }
                     tail = ')';
                     break;
@@ -48,7 +52,7 @@ namespace System.Text.Formatting
             }
 
 
-            var byteFormat = new Format.Parsed() { Precision = 2, Symbol = Format.Symbol.XLowercase };
+            var byteFormat = new Format.Parsed('x', 2);
             unsafe
             {
                 byte* bytes = (byte*)&value;

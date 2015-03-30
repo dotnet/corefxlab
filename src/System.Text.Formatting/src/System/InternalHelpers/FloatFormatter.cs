@@ -11,7 +11,7 @@ namespace System.Text.Formatting
     {
         public static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == Format.Symbol.G || format.Symbol == Format.Symbol.E || format.Symbol == Format.Symbol.F);
+            Precondition.Require(format.Symbol == 'G' || format.Symbol == 'E' || format.Symbol == 'F');
 
             bytesWritten = 0;
             int written;

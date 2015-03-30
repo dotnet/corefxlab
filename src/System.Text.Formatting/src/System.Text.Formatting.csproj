@@ -33,6 +33,8 @@
     <Compile Include="System\Text\Formatting\StringFormatter.cs" />
     <Compile Include="System\Text\Formatting\BufferFormatter.cs" />
 
+    <Compile Include="System\Text\Formatting\CompositeFormat.cs" />
+
     <Compile Include="System\Text\Utf8\Utf8String.cs" />
 
     <Compile Include="System\InternalHelpers\IntegerFormatter.cs" />
