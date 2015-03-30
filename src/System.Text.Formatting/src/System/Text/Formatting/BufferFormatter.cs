@@ -31,6 +31,11 @@ namespace System.Text.Formatting
             get { return _count; }
         }
 
+        public void Clear()
+        {
+            _count = 0;
+        }
+
         Span<byte> IFormatter.FreeBuffer
         {
             get
