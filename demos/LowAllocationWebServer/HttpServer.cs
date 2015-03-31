@@ -44,8 +44,7 @@ namespace System.Net.Http.Buffered
         protected HttpServer(Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
         {
             Log = log;
-            _listener = new TcpServer();
-            _listener.Start(port, address1, address2, address3, address4);
+            _listener = new TcpServer(port, address1, address2, address3, address4);
         }
 
         public void StartAsync()

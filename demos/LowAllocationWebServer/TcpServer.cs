@@ -6,7 +6,7 @@ namespace Microsoft.Net.Http.Server.Socket
     public struct TcpServer
     {
         IntPtr _handle;
-        public TcpServer()
+        public TcpServer(ushort port, byte address1, byte address2, byte address3, byte address4)
         {
             var version = new TcpServer.Version(2, 2);
             WSDATA data;
@@ -24,9 +24,11 @@ namespace Microsoft.Net.Http.Server.Socket
                 SocketImports.WSACleanup();
                 throw new Exception(String.Format("ERROR: socket returned {0}", error));
             }
+
+            Start(port, address1, address2, address3, address4);
         }
 
-        public void Start(ushort port, byte address1, byte address2, byte address3, byte address4)
+        private void Start(ushort port, byte address1, byte address2, byte address3, byte address4)
         {
             // BIND
             in_addr inAddress = new in_addr();
