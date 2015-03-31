@@ -484,11 +484,6 @@ namespace System.Text.Formatting
             return true;
         }
 
-        private static ReadOnlySpan<byte> GetHexadecimalDigitBytes(Format.Parsed format, FormattingData formattingData, ulong digit)
-        {
-            return format.Symbol == 'X' ? formattingData.GetHexLowerDigit(digit) : formattingData.GetHexUpperDigit(digit);
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ulong GetBitMask(byte numberOfBytes)
         {

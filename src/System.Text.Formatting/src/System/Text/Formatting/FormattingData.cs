@@ -144,15 +144,6 @@ namespace System.Text.Formatting
             Exponent = 15,
         }
 
-        internal ReadOnlySpan<byte> GetHexUpperDigit(ulong digit)
-        {
-            throw new NotImplementedException();
-        }
-        internal ReadOnlySpan<byte> GetHexLowerDigit(ulong digit)
-        {
-            throw new NotImplementedException();
-        }
-
         internal bool IsInvariantUtf16
         {
             get { return _digitsAndSymbols == s_invariantUtf16._digitsAndSymbols; }
