@@ -166,15 +166,15 @@ namespace System.Text.Formatting
                         byteSpan[bytesWritten] = encoded.B0;
                         if (bytes > 1)
                         {
-                            byteSpan[+bytesWritten + 1] = encoded.B1;
+                            byteSpan[bytesWritten + 1] = encoded.B1;
 
                             if (bytes > 2)
                             {
-                                byteSpan[+bytesWritten + 2] = encoded.B2;
+                                byteSpan[bytesWritten + 2] = encoded.B2;
 
                                 if (bytes > 3)
                                 {
-                                    byteSpan[+bytesWritten + 3] = encoded.B3;
+                                    byteSpan[bytesWritten + 3] = encoded.B3;
                                 }
                             }
                         }
