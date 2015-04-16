@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
+
 namespace System.Text.Formatting {
 
     // This whole API is very speculative, i.e. I am not sure I am happy with the design
@@ -123,10 +125,28 @@ namespace System.Text.Formatting {
         // TODO: this should be removed and an ability to append substrings should be added
         static void Append<TFormatter>(this TFormatter formatter, string whole, int index, int count) where TFormatter : IFormatter
         {
-            for (int i = index; i < index + count; i++)
+            var buffer = formatter.FreeBuffer;
+            var maxBytes = count << 4; // this is the worst case, i.e. 4 bytes per char
+            while(buffer.Length < maxBytes)
             {
-                formatter.Append(whole[i]);
+                formatter.ResizeBuffer();
+                buffer = formatter.FreeBuffer;
             }
+
+            // this should ne optimized using fixed pointer to substring, but I will wait with this till we design proper substring
+            int totalWritten = 0;
+            for (int i = 0; i < count; i++)
+            {
+                int bytesWritten;
+                while (!whole[i+index].TryFormat(buffer, default(Format.Parsed), formatter.FormattingData, out bytesWritten))
+                {
+                    Debug.Fail("this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
+                }
+                totalWritten += bytesWritten;
+                buffer = buffer.Slice(bytesWritten);
+            }
+
+            formatter.CommitBytes(totalWritten);
         }
 
         static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format) where TFormatter : IFormatter
