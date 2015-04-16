@@ -88,7 +88,7 @@ namespace System
         {
             Precondition.Require(itemsCount + itemsIndex <= items.Length);
             Precondition.Require(itemsCount <= Length);
-            if (items.Length <= 8)
+            if (itemsCount <= 8)
             {
                 for (int index = 0; index < itemsCount; index++)
                 {

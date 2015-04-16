@@ -106,7 +106,7 @@ namespace System.Text.Formatting
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool TryWriteDigitOrSymbol(ulong digitOrSymbolIndex, Span<byte> buffer, out int bytesWritten)
+        internal bool TryWriteDigitOrSymbol(ulong digitOrSymbolIndex, Span<byte> buffer, out int bytesWritten)
         {
             byte[] bytes = _digitsAndSymbols[digitOrSymbolIndex];
             bytesWritten = bytes.Length;
