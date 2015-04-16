@@ -350,7 +350,7 @@ namespace System.Text.Formatting
                 var leadingZerosCount = format.Precision - digitsCount - trailingZerosCount;
                 while (leadingZerosCount-- > 0)
                 {
-                    if (!formattingData.TryWriteDigit(0, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!formattingData.TryWriteDigitOrSymbol(0, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -419,7 +419,7 @@ namespace System.Text.Formatting
                         digitsLeftInGroup = GroupSize;
                     }
 
-                    if (!formattingData.TryWriteDigit(0, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!formattingData.TryWriteDigitOrSymbol(0, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -446,7 +446,7 @@ namespace System.Text.Formatting
                 // Append trailing zeros if any
                 while (trailingZerosCount-- > 0)
                 {
-                    if (!formattingData.TryWriteDigit(0, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!formattingData.TryWriteDigitOrSymbol(0, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -471,7 +471,7 @@ namespace System.Text.Formatting
 
                     while (trailingZerosAfterDecimalCount-- > 0)
                     {
-                        if (!formattingData.TryWriteDigit(0, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!formattingData.TryWriteDigitOrSymbol(0, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
