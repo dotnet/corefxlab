@@ -95,7 +95,10 @@ namespace System
                     _array[_index + index] = items[itemsIndex + index];
                 }
             }
-            Array.Copy(items, itemsIndex, _array, _index, itemsCount);
+            else
+            {
+                Array.Copy(items, itemsIndex, _array, _index, itemsCount);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -109,7 +112,10 @@ namespace System
                     _array[index + _index] = items[index];
                 }
             }
-            Array.Copy(items, 0, _array, _index, items.Length);
+            else
+            {
+                Array.Copy(items, 0, _array, _index, items.Length);
+            }
         }
 
         public void Set(Span<T> items)
