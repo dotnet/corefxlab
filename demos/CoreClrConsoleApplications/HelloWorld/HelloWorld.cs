@@ -11,6 +11,10 @@ internal class Program
         {
             DrawLinux();
         }
+        else if (args.Length == 1 && args[0] == "freebsd")
+        {
+            DrawFreeBSD();
+        }
         else if (args.Length == 1 && args[0] == "mac")
         {
             DrawMac();
@@ -139,6 +143,37 @@ internal class Program
         }
 
         Console.ResetColor();
+        Console.WriteLine();
+    }
+
+    private static void DrawFreeBSD()
+    {
+        Console.WriteLine("Hello, FreeBSD...");
+
+        const string Daemon = @"
+
+                ,        ,
+               /(        )`
+               \ \___   / |
+               /- _  `-/  '
+              (/\/ \ \   /\
+              / /   | `    \
+              O O   ) /    |
+              `-^--'`<     '
+             (_.)  _  )   /
+              `.___/`    /
+                `-----' /
+   <----.     __ / __   \
+   <----|====O)))==) \) /====
+   <----'    `--' `.__,' \
+                |        |
+                 \       /       /\
+            ______( (_  / \______/
+          ,'  ,-----'   |
+          `--{__________)
+
+";
+        Console.WriteLine(Daemon);
         Console.WriteLine();
     }
 
