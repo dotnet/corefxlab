@@ -149,31 +149,69 @@ internal class Program
     private static void DrawFreeBSD()
     {
         Console.WriteLine("Hello, FreeBSD...");
-
-        const string Daemon = @"
-
-                ,        ,
-               /(        )`
-               \ \___   / |
-               /- _  `-/  '
-              (/\/ \ \   /\
-              / /   | `    \
-              O O   ) /    |
-              `-^--'`<     '
-             (_.)  _  )   /
-              `.___/`    /
-                `-----' /
-   <----.     __ / __   \
-   <----|====O)))==) \) /====
-   <----'    `--' `.__,' \
-                |        |
-                 \       /       /\
-            ______( (_  / \______/
-          ,'  ,-----'   |
-          `--{__________)
-
+        
+        const string daemon_pic = @"
+               ,        ,
+              /(        )`
+              \ \___   / |
+              /- _  `-/  '
+             (/\/ \ \   /\
+             / /   | `    \
+             O O   ) /    |
+             `-^--'`<     '
+            (_.)  _  )   /
+             `.___/`    /
+               `-----' /
+  <----.     __ / __   \
+  <----|====O)))==) \) /====
+  <----'    `--' `.__,' \
+               |        |
+                \       /       /\
+           ______( (_  / \______/
+         ,'  ,-----'   |
+         `--{__________)
 ";
-        Console.WriteLine(Daemon);
+
+        const string daemon_attr = @"
+               R        R
+              RR        RR
+              R RRRR   R R
+              RR W  RRR  R
+             RWWW W R   RR
+             W W   W R    R
+             B B   W R    R
+             WWWWWWRR     R
+            RRRR  R  R   R
+             RRRRRRR    R
+               RRRRRRR R
+  YYYYYY     RR R RR   R
+  YYYYYYYYYYRRRRYYR RR RYYYY
+  YYYYYY    RRRR RRRRRR R
+               R        R
+                R       R       RR
+           CCCCCCR RR  R RRRRRRRR
+         CC  CCCCCCC   C
+         CCCCCCCCCCCCCCC
+";
+
+        for (int i=0; i < daemon_pic.Length; i++)
+        {
+            var symbol = daemon_pic[i];
+            var attr =   daemon_attr[i];
+
+            ConsoleColor color =
+                attr == 'R' ? ConsoleColor.Red :
+                attr == 'W' ? ConsoleColor.White :
+                attr == 'B' ? ConsoleColor.Blue :
+                attr == 'Y' ? ConsoleColor.Yellow :
+                attr == 'C' ? ConsoleColor.Cyan :
+                ConsoleColor.White;
+            
+            Console.ForegroundColor = color;
+            Console.Write(symbol);
+        }
+
+        Console.ResetColor();
         Console.WriteLine();
     }
 
