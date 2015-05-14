@@ -204,6 +204,7 @@ namespace System.Text.Formatting
             if (!TryWriteInt32(value.Day, buffer, D2, formattingData, ref bytesWritten)) { return false; }
             if (!TryWriteChar(' ', buffer, formattingData, ref bytesWritten)) { return false; }
             if (!TryWriteString(s_monthNames[value.Month - 1], buffer, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(' ', buffer, formattingData, ref bytesWritten)) { return false; }
             if (!TryWriteInt32(value.Year, buffer, D4, formattingData, ref bytesWritten)) { return false; }
             if (!TryWriteChar(' ', buffer, formattingData, ref bytesWritten)) { return false; }
             if (!TryWriteInt32(value.Hour, buffer, D2, formattingData, ref bytesWritten)) { return false; }

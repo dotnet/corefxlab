@@ -14,7 +14,7 @@ namespace System.Text.Formatting.Tests
         // Sets up cultures with digits represented by 1 or 5 'A's (0) through 1 or 5 'J's (9) and the minus sigh represented by an underscore followed by a question mark
         static CustomCultureTests()
         {
-            byte[][] utf16digitsAndSymbols = new byte[13][];
+            byte[][] utf16digitsAndSymbols = new byte[17][];
             for (ushort digit = 0; digit < 10; digit++)
             {
                 char digitChar = (char)(digit + 'A');
@@ -26,7 +26,7 @@ namespace System.Text.Formatting.Tests
             utf16digitsAndSymbols[(ushort)FormattingData.Symbol.MinusSign] = GetBytesUtf16("_?");
             Culture5 = new FormattingData(utf16digitsAndSymbols, FormattingData.Encoding.Utf16);
 
-            utf16digitsAndSymbols = new byte[13][];
+            utf16digitsAndSymbols = new byte[17][];
             for (ushort digit = 0; digit < 10; digit++)
             {
                 char digitChar = (char)(digit + 'A');
