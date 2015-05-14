@@ -42,10 +42,11 @@ namespace System.Text.Formatting
                 new byte[] { 55, 0, },
                 new byte[] { 56, 0, },
                 new byte[] { 57, 0, }, // digit 9
-                new byte[] { 45, 0, }, // minus sign 
+                new byte[] { 46, 0, }, // decimal separator
                 new byte[] { 44, 0, }, // group separator
-                new byte[] { 46, 0, },  // decimal separator
                 new byte[] { 73, 0, 110, 0, 102, 0, 105, 0, 110, 0, 105, 0, 116, 0, 121, 0, }, // Infinity
+                new byte[] { 45, 0, }, // minus sign 
+                new byte[] { 43, 0, }, // plus sign 
                 new byte[] { 78, 0, 97, 0, 78, 0, }, // NaN
                 new byte[] { 69, 0, }, // E
             };
@@ -62,13 +63,14 @@ namespace System.Text.Formatting
                 new byte[] { 54, },
                 new byte[] { 55, },
                 new byte[] { 56, },
-                new byte[] { 57, },
-                new byte[] { 45, },
-                new byte[] { 44, },
-                new byte[] { 46, },
+                new byte[] { 57, }, // digit 9
+                new byte[] { 46, }, // decimal separator
+                new byte[] { 44, }, // group separator
                 new byte[] { 73, 110, 102, 105, 110, 105, 116, 121, },
-                new byte[] { 78, 97, 78, },
-                new byte[] { 69, },
+                new byte[] { 45, }, // minus sign
+                new byte[] { 43, }, // plus sign
+                new byte[] { 78, 97, 78, }, // NaN
+                new byte[] { 69, }, // E
             };
 
             s_invariantUtf8 = new FormattingData(utf8digitsAndSymbols, Encoding.Utf8);
@@ -136,12 +138,13 @@ namespace System.Text.Formatting
         [CLSCompliant(false)]
         public enum Symbol : ushort
         {
-            MinusSign = 10,
+            DecimalSeparator = 10,
             GroupSeparator = 11,
-            DecimalSeparator = 12,
-            InfinitySign = 13,
-            NaN = 14,
-            Exponent = 15,
+            InfinitySign = 12,
+            MinusSign = 13,
+            PlusSign = 14,          
+            NaN = 15,
+            Exponent = 16,
         }
 
         internal bool IsInvariantUtf16
