@@ -260,7 +260,7 @@ namespace System.Text.Formatting.Tests
 
         static FormattingData CreateCustomCulture()
         {
-            var utf16digitsAndSymbols = new byte[13][];
+            var utf16digitsAndSymbols = new byte[17][];
             for (ushort digit = 0; digit < 10; digit++)
             {
                 char digitChar = (char)(digit + 'A');
