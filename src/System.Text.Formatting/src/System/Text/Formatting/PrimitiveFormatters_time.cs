@@ -11,7 +11,7 @@ namespace System.Text.Formatting
     public static partial class PrimitiveFormatters
     {
         static readonly string[] s_dayNames = { "Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, " };
-        static readonly string[] s_monthNames = { "Jan ", "Feb ", "Mar ", "Apr ", "May", "Jun ", "Jul ", "Aug ", "Sep ", "Oct ", "Nov ", "Dec " };
+        static readonly string[] s_monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
         static readonly Format.Parsed D2 = new Format.Parsed('D', 2);
         static readonly Format.Parsed D4 = new Format.Parsed('D', 4);
         static readonly Format.Parsed D7 = new Format.Parsed('D', 7);
