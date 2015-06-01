@@ -24,6 +24,7 @@ msbuild.log
 # Roslyn stuff
 *.sln.ide
 *.ide/
+.vs/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
