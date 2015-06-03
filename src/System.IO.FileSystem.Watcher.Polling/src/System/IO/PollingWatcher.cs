@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using System.Threading;
 
 namespace System.IO.FileSystem
@@ -20,6 +21,9 @@ namespace System.IO.FileSystem
     /// </remarks>
     public class PollingWatcher : IDisposable
     {
+        Stopwatch _stopwatch = new Stopwatch();
+        long _lastCycleTicks;
+
         Timer _timer;
         int _pollingIntervalInMilliseconds;
 
@@ -46,6 +50,14 @@ namespace System.IO.FileSystem
         /// </summary>
         public Action Changed;
 
+        public long LastCycleTicks
+        {
+            get
+            {
+                return _lastCycleTicks;
+            }
+        }
+
         /// <summary>
         /// Disposes the timer used for polling.
         /// </summary>
@@ -59,7 +71,9 @@ namespace System.IO.FileSystem
             var handler = Changed;
             if (handler != null)
             {
+                _stopwatch.Restart();
                 var changes = ComputeChangesAndUpdateState(_directory);
+                _lastCycleTicks = _stopwatch.ElapsedTicks;
                 if (!changes.IsEmpty)
                 {
                     handler();
@@ -85,7 +99,7 @@ namespace System.IO.FileSystem
 
                 do
                 {
-                    changes = UpdateState(ref changes, ref fileData);
+                    changes = UpdateState(ref changes, ref fileData, fileData.cFileName);
                 }
                 while (DllImports.FindNextFileW(file, pFileData));
                 DllImports.FindClose(file);
@@ -102,19 +116,12 @@ namespace System.IO.FileSystem
 
             return changes;
         }
-        private FileChangeList UpdateState(ref FileChangeList changes, ref WIN32_FIND_DATAW file)
+        private unsafe FileChangeList UpdateState(ref FileChangeList changes, ref WIN32_FIND_DATAW file, char* filename)
         {
-            int index = _state.IndexOf(ref file);
+            int index = _state.IndexOf(filename);
             if(index == -1) // file added
             {
-                string path;
-                unsafe
-                {
-                    fixed (char* fixedChars = file.cFileName)
-                    {
-                        path = new string(fixedChars);
-                    }
-                }
+                string path = new string(filename);
 
                 var newFileState = new FileState(path);
                 newFileState.LastWrite = file.LastWrite;

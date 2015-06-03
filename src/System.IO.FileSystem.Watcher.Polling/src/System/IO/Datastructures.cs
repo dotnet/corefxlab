@@ -51,6 +51,11 @@ namespace System.IO.FileSystem
                 _changes = larger;
             }
         }
+
+        public override string ToString()
+        {
+            return _count.ToString();
+        }
     }
 
     struct FileChange

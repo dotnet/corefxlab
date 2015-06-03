@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
+
 namespace System.IO.FileSystem
 {
     // this is a quick an dirty hashtable optimized for the PollingWatcher
@@ -18,8 +20,49 @@ namespace System.IO.FileSystem
         public PathToFileStateHashtable(int capacity = 4)
         {
             Values = new FileState[capacity];
-            Buckets = new Bucket[capacity * 2];
+            Buckets = new Bucket[GetPrime(capacity)];
         }
+
+        public static readonly int[] primes = {
+            3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
+            1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
+            17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
+            187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
+            1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369};
+
+        public static bool IsPrime(int candidate)
+        {
+            if ((candidate & 1) != 0)
+            {
+                int limit = (int)Math.Sqrt(candidate);
+                for (int divisor = 3; divisor <= limit; divisor += 2)
+                {
+                    if ((candidate % divisor) == 0)
+                        return false;
+                }
+                return true;
+            }
+            return (candidate == 2);
+        }
+
+        public static int GetPrime(int min)
+        {
+            for (int i = 0; i < primes.Length; i++)
+            {
+                int prime = primes[i];
+                if (prime >= min) return prime;
+            }
+
+            //outside of our predefined table. 
+            //compute the hard way. 
+            for (int i = (min | 1); i < Int32.MaxValue; i += 2)
+            {
+                if (IsPrime(i))
+                    return i;
+            }
+            return min;
+        }
+
 
         public void Add(string key, FileState value)
         {
@@ -67,9 +110,9 @@ namespace System.IO.FileSystem
             }
         }
 
-        public unsafe int IndexOf(ref WIN32_FIND_DATAW file)
+        public unsafe int IndexOf(char* file)
         {
-            int bucket = ComputeBucket(ref file);
+            int bucket = ComputeBucket(file);
             while (true)
             {
                 if (Buckets[bucket].ValuesIndex == 0)
@@ -77,7 +120,7 @@ namespace System.IO.FileSystem
                     return -1; // not found
                 }
 
-                if (Equal(Buckets[bucket].Key, ref file))
+                if (Equal(Buckets[bucket].Key, file))
                 {
                     return Buckets[bucket].ValuesIndex;
                 }
@@ -132,43 +175,46 @@ namespace System.IO.FileSystem
                 char next = str[index];
                 code |= next;
                 code <<= 8;
+                if (index > 8) break;
             }
             return code;
-        }
-        private unsafe int GetHashCode(ref WIN32_FIND_DATAW file)
-        {
-            int code = 0;
-            fixed (char* fixedChars = file.cFileName)
-            {
-                char* pFixedChars = fixedChars;
-                while (true)
-                {
-                    char next = *pFixedChars;
-                    if (next == 0)
-                    {
-                        break;
-                    }
-                    pFixedChars++;
-                    code |= next;
-                    code <<= 8;
-                }
-            }
-            return code;
-        }
-        private unsafe bool Equal(string left, ref WIN32_FIND_DATAW file)
-        {
-            fixed(char* fixedChars = file.cFileName)
-            {
-                int index;
-                for (index = 0; index < left.Length; index++)
-                {
-                    if (fixedChars[index] != left[index]) return false;
-                }
-                if (fixedChars[index] != 0) return false;
-                return true;
-            }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe int GetHashCode(char* nullTerminatedString)
+        {
+            int code = 0;
+            int index = 0;
+            while (true)
+            {
+                char next = *nullTerminatedString;
+                if (next == 0)
+                {
+                    break;
+                }
+                nullTerminatedString++;
+                code |= next;
+                code <<= 8;
+                if (index > 8) break;
+                index++;
+            }         
+            return code;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe bool Equal(string left, char* right)
+        {
+            int index;
+            for (index = 0; index < left.Length; index++)
+            {
+                if (right[index] != left[index]) return false;
+            }
+            if (right[index] != 0) return false;
+            return true;
+            
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int NextBucket(int bucket)
         {
             bucket++;
@@ -186,11 +232,16 @@ namespace System.IO.FileSystem
             return bucket;
         }
 
-        private unsafe int ComputeBucket(ref WIN32_FIND_DATAW file)
+        private unsafe int ComputeBucket(char* key)
         {
-            var hash = GetHashCode(ref file);
+            var hash = GetHashCode(key);
             var bucket = Math.Abs(hash) % Buckets.Length;
             return bucket;
+        }
+
+        public override string ToString()
+        {
+            return _index.ToString();
         }
 
         struct Bucket
