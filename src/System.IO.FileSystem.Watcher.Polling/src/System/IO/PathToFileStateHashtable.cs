@@ -63,8 +63,7 @@ namespace System.IO.FileSystem
             return min;
         }
 
-
-        public void Add(string key, FileState value)
+        public void Add(string directory, string file, FileState value)
         {
             _index++; 
             if(_index >= Values.Length) // Resize
@@ -72,45 +71,27 @@ namespace System.IO.FileSystem
                 var bigger = new PathToFileStateHashtable(Values.Length * 2);
                 foreach(var existingValue in this)
                 {
-                    bigger.Add(existingValue.Path, existingValue);
+                    bigger.Add(existingValue.Directory, existingValue.Path, existingValue);
                 }
                 Values = bigger.Values;
                 Buckets = bigger.Buckets;
             }
 
             Values[_index] = value;
-            var bucket = ComputeBucket(key);
+            var bucket = ComputeBucket(file);
 
             while (true)
             {
                 if (Buckets[bucket].IsEmpty)
                 {
-                    Buckets[bucket] = new Bucket(key, _index);
+                    Buckets[bucket] = new Bucket(directory, file, _index);
                     return;
                 }
                 bucket = NextBucket(bucket);
             }
         }
 
-        public int IndexOf(string key)
-        {
-            int bucket = ComputeBucket(key);
-            while (true)
-            {
-                if (Buckets[bucket].ValuesIndex == 0)
-                {
-                    return -1; // not found
-                }
-
-                if (Buckets[bucket].Key.Equals(key))
-                {
-                    return Buckets[bucket].ValuesIndex;
-                }
-                bucket = NextBucket(bucket);
-            }
-        }
-
-        public unsafe int IndexOf(char* file)
+        public int IndexOf(string directory, string file)
         {
             int bucket = ComputeBucket(file);
             while (true)
@@ -120,7 +101,9 @@ namespace System.IO.FileSystem
                     return -1; // not found
                 }
 
-                if (Equal(Buckets[bucket].Key, file))
+                FullPath fullPath = Buckets[bucket].Key;
+
+                if (string.Equals(fullPath.File, file, StringComparison.Ordinal) && string.Equals(fullPath.Directory, directory, StringComparison.Ordinal))
                 {
                     return Buckets[bucket].ValuesIndex;
                 }
@@ -128,9 +111,27 @@ namespace System.IO.FileSystem
             }
         }
 
-        public void Remove(string key)
+        public unsafe int IndexOf(string directory, char* file)
         {
-            var index = IndexOf(key);
+            int bucket = ComputeBucket(file);
+            while (true)
+            {
+                if (Buckets[bucket].ValuesIndex == 0)
+                {
+                    return -1; // not found
+                }
+
+                if (Equal(Buckets[bucket].Key, directory, file))
+                {
+                    return Buckets[bucket].ValuesIndex;
+                }
+                bucket = NextBucket(bucket);
+            }
+        }
+
+        public void Remove(string directory, string file)
+        {
+            var index = IndexOf(directory, file);
             Values[index].Path = null;
         }
 
@@ -168,11 +169,11 @@ namespace System.IO.FileSystem
             }
         }
 
-        private unsafe int GetHashCode(string str)
+        private unsafe int GetHashCode(string path)
         {
             int code = 0;            
-            for(int index=0; index<str.Length; index++) { 
-                char next = str[index];
+            for(int index=0; index<path.Length; index++) { 
+                char next = path[index];
                 code |= next;
                 code <<= 8;
                 if (index > 8) break;
@@ -202,14 +203,17 @@ namespace System.IO.FileSystem
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe bool Equal(string left, char* right)
+        private unsafe bool Equal(FullPath fullPath, string directory, char* file)
         {
-            int index;
-            for (index = 0; index < left.Length; index++)
-            {
-                if (right[index] != left[index]) return false;
+            if(!String.Equals(fullPath.Directory, directory, StringComparison.Ordinal)) {
+                return false;
             }
-            if (right[index] != 0) return false;
+            int index;
+            for (index = 0; index < fullPath.File.Length; index++)
+            {
+                if (file[index] != fullPath.File[index]) return false; //TODO: this can read past the buffer. Needs to be fixed
+            }
+            if (file[index] != 0) return false;
             return true;
             
         }
@@ -225,16 +229,16 @@ namespace System.IO.FileSystem
             return bucket;
         }
 
-        private int ComputeBucket(string key)
+        private int ComputeBucket(string file)
         {
-            var hash = GetHashCode(key);
+            var hash = GetHashCode(file);
             var bucket = Math.Abs(hash) % Buckets.Length;
             return bucket;
         }
 
-        private unsafe int ComputeBucket(char* key)
+        private unsafe int ComputeBucket(char* file)
         {
-            var hash = GetHashCode(key);
+            var hash = GetHashCode(file);
             var bucket = Math.Abs(hash) % Buckets.Length;
             return bucket;
         }
@@ -246,15 +250,22 @@ namespace System.IO.FileSystem
 
         struct Bucket
         {
-            public string Key;
+            public FullPath Key;
             public int ValuesIndex;
 
-            public Bucket(string key, int valueIndex)
+            public Bucket(string directory, string file, int valueIndex)
             {
-                Key = key;
+                Key.Directory = directory;
+                Key.File = file;
                 ValuesIndex = valueIndex;
             }
             public bool IsEmpty { get { return ValuesIndex == 0; } }
+        }
+
+        struct FullPath
+        {
+            public string Directory;
+            public string File;
         }
     }
 }

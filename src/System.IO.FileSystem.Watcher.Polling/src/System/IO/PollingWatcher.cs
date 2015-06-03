@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 
 namespace System.IO.FileSystem
@@ -26,8 +28,9 @@ namespace System.IO.FileSystem
 
         Timer _timer;
         int _pollingIntervalInMilliseconds;
+        bool _includeSubdirectories;
 
-        string _directory;
+        List<string> _directories = new List<string>();
         PathToFileStateHashtable _state = new PathToFileStateHashtable(); // stores state of the directory
         byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
 
@@ -36,13 +39,81 @@ namespace System.IO.FileSystem
         /// </summary>
         /// <param name="rootDirectory">The directory to watch. It does not support UNC paths (yet).</param>
         /// <param name="pollingIntervalInMilliseconds">Polling interval</param>
-        public PollingWatcher(string rootDirectory, int pollingIntervalInMilliseconds = 1000)
+        public PollingWatcher(string rootDirectory, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
         {
             _pollingIntervalInMilliseconds = pollingIntervalInMilliseconds;
-            _directory = @"\\?\" + rootDirectory + @"\*"; // TODO: this needs to be smarter for UNC paths
-            ComputeChangesAndUpdateState(_directory); // captures the initial state
+            _includeSubdirectories = includeSubdirectories;
+            _directories.Add(ToDirectoryFormat(rootDirectory));
+
+            if (includeSubdirectories) {
+                DiscoverAllSubdirectories(rootDirectory);
+            }
+
+            ComputeChangesAndUpdateState(); // captures the initial state
 
             _timer = new Timer(new TimerCallback(TimerHandler), null, pollingIntervalInMilliseconds, Timeout.Infinite);
+        }
+
+        private FileChangeList ComputeChangesAndUpdateState()
+        {
+            _version++;
+            var changes = new FileChangeList();
+
+            WIN32_FIND_DATAW fileData = new WIN32_FIND_DATAW();
+            unsafe
+            {
+                WIN32_FIND_DATAW* pFileData = &fileData;
+
+                foreach (var directory in _directories) {
+                    // TODO: move this to Ex version of the API. Ex version is faster
+                    var file = DllImports.FindFirstFileW(directory, pFileData);
+                    if (file == DllImports.INVALID_HANDLE_VALUE) {
+                        throw new IOException();
+                    }
+
+                    do {
+                        changes = UpdateState(directory, ref changes, ref fileData, fileData.cFileName);
+                    }
+                    while (DllImports.FindNextFileW(file, pFileData));
+                    DllImports.FindClose(file);
+                }
+            }
+
+            foreach (var value in _state) {
+                if (value._version != _version) {
+                    changes.AddRemoved(value.Directory, value.Path);
+                    _state.Remove(value.Directory, value.Path);
+                }
+            }
+
+            return changes;
+        }
+        private unsafe FileChangeList UpdateState(string directory, ref FileChangeList changes, ref WIN32_FIND_DATAW file, char* filename)
+        {
+            int index = _state.IndexOf(directory, filename);
+            if (index == -1) // file added
+            {
+                string path = new string(filename);
+
+                var newFileState = new FileState(directory, path);
+                newFileState.LastWrite = file.LastWrite;
+                newFileState.FileSize = file.FileSize;
+                newFileState._version = _version;
+
+                _state.Add(directory, path, newFileState);
+                changes.AddAdded(directory, path);
+                return changes;
+            }
+
+            var previousState = _state.Values[index];
+            if (file.LastWrite != previousState.LastWrite || file.FileSize != previousState.FileSize) {
+                changes.AddChanged(directory, previousState.Path);
+                _state.Values[index].LastWrite = file.LastWrite;
+                _state.Values[index].FileSize = file.FileSize;
+            }
+
+            _state.Values[index]._version = _version;
+            return changes;
         }
 
         /// <summary>
@@ -72,7 +143,7 @@ namespace System.IO.FileSystem
             if (handler != null)
             {
                 _stopwatch.Restart();
-                var changes = ComputeChangesAndUpdateState(_directory);
+                var changes = ComputeChangesAndUpdateState();
                 _lastCycleTicks = _stopwatch.ElapsedTicks;
                 if (!changes.IsEmpty)
                 {
@@ -82,67 +153,19 @@ namespace System.IO.FileSystem
 
             _timer.Change(_pollingIntervalInMilliseconds, Timeout.Infinite);
         }
-        private FileChangeList ComputeChangesAndUpdateState(string directory)
+
+        private void DiscoverAllSubdirectories(string root)
         {
-            _version++;
-            var changes = new FileChangeList();
-
-            WIN32_FIND_DATAW fileData = new WIN32_FIND_DATAW();
-            unsafe
-            {
-                WIN32_FIND_DATAW* pFileData = &fileData;
-
-                var file = DllImports.FindFirstFileW(_directory, pFileData);
-                if (file == DllImports.INVALID_HANDLE_VALUE) {
-                    throw new IOException();
-                }
-
-                do
-                {
-                    changes = UpdateState(ref changes, ref fileData, fileData.cFileName);
-                }
-                while (DllImports.FindNextFileW(file, pFileData));
-                DllImports.FindClose(file);
+            foreach (var directory in Directory.EnumerateDirectories(root)) {
+                _directories.Add(ToDirectoryFormat(directory));
+                DiscoverAllSubdirectories(directory);
             }
-
-            foreach(var value in _state)
-            {
-                if(value._version != _version)
-                {
-                    changes.AddRemoved(value.Path);
-                    _state.Remove(value.Path);
-                }
-            }
-
-            return changes;
         }
-        private unsafe FileChangeList UpdateState(ref FileChangeList changes, ref WIN32_FIND_DATAW file, char* filename)
+
+        // TODO: this needs to be smarter for UNC paths
+        private static string ToDirectoryFormat(string path)
         {
-            int index = _state.IndexOf(filename);
-            if(index == -1) // file added
-            {
-                string path = new string(filename);
-
-                var newFileState = new FileState(path);
-                newFileState.LastWrite = file.LastWrite;
-                newFileState.FileSize = file.FileSize;
-                newFileState._version = _version;
-
-                _state.Add(path, newFileState);
-                changes.AddAdded(path);
-                return changes;
-            }
-
-            var previousState = _state.Values[index];
-            if (file.LastWrite != previousState.LastWrite || file.FileSize != previousState.FileSize)
-            {
-                changes.AddChanged(previousState.Path);
-                _state.Values[index].LastWrite = file.LastWrite;
-                _state.Values[index].FileSize = file.FileSize;
-            }
-
-            _state.Values[index]._version = _version;
-            return changes;
+            return @"\\?\" + path + @"\*";
         }
     }
 }
