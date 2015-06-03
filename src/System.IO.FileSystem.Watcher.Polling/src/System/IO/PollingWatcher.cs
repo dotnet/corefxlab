@@ -3,8 +3,9 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
+
+//TODO: there is a bug where directory or file is creted, deleted, recreated and then deleted again
 
 namespace System.IO.FileSystem
 {
@@ -45,6 +46,7 @@ namespace System.IO.FileSystem
             _includeSubdirectories = includeSubdirectories;
             _directories.Add(ToDirectoryFormat(rootDirectory));
 
+            // TODO: this needs to be updated when directories are added or removed
             if (includeSubdirectories) {
                 DiscoverAllSubdirectories(rootDirectory);
             }
@@ -81,6 +83,7 @@ namespace System.IO.FileSystem
                 }
             }
 
+            // TODO: should these be moved to the front of the change list? Otherwise it might be difficult to detect moves/renames
             foreach (var value in _state) {
                 if (value._version != _version) {
                     changes.AddRemoved(value.Directory, value.Path);
@@ -157,17 +160,15 @@ namespace System.IO.FileSystem
             var changedHandler = Changed;
             var ChangedDetailedHandler = ChangedDetailed;
 
-            if (changedHandler != null || ChangedDetailedHandler !=null)
-            {
+            if (changedHandler != null || ChangedDetailedHandler != null) {
                 _stopwatch.Restart();
                 var changes = ComputeChangesAndUpdateState();
                 _lastCycleTicks = _stopwatch.ElapsedTicks;
-                if (!changes.IsEmpty)
-                {
+                if (!changes.IsEmpty) {
                     if (changedHandler != null) {
                         changedHandler();
                     }
-                    if(ChangedDetailedHandler != null) {
+                    if (ChangedDetailedHandler != null) {
                         ChangedDetailedHandler(changes.ToArray());
                     }
                 }
