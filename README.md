@@ -13,7 +13,7 @@ This can result in significant performance wins for software that does a lot of 
 See more information on this component and code samples at the [Wiki]: https://github.com/dotnet/corefxlab/wiki 
 
 * **System.IO.FileSystem.Watcher.Polling**. 
-.NET's FileSystemWatcher is low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some it is not. This component allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize allocations when no changes are detected. In fact, it does not allocate anything on the GC heap when there are not changes detected. 
+.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it night be not. This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected. 
 
 More libraries are coming soon. Stay tuned!
 
