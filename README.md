@@ -12,6 +12,9 @@ They do formatting with minimum GC heap allocations (1/6 of allocations in some 
 This can result in significant performance wins for software that does a lot of text formatting for the Web, e.g. generating HTML, JSON, XML. 
 See more information on this component and code samples at the [Wiki]: https://github.com/dotnet/corefxlab/wiki 
 
+* **System.IO.FileSystem.Watcher.Polling**. 
+.NET's FileSystemWatcher is low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some it is not. This component allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize allocations when no changes are detected. In fact, it does not allocate anything on the GC heap when there are not changes detected. 
+
 More libraries are coming soon. Stay tuned!
 
 [blog post]: http://blogs.msdn.com/b/dotnet/archive/2014/11/12/net-core-is-open-source.aspx
