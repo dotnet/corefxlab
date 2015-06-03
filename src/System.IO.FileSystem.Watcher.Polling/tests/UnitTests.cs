@@ -28,7 +28,7 @@ public partial class PollingWatcherUnitTests
             Thread.Sleep(1000);
         }
 
-        Assert.True(Interlocked.Read(ref changeCount) == 1);
+        Assert.Equal(1, Interlocked.Read(ref changeCount));
     }
 
     [Fact]
@@ -42,14 +42,16 @@ public partial class PollingWatcherUnitTests
 
         using (var file = new TemporaryTestFile(fileName))
         {
+            Thread.Sleep(200);
             watcher.Changed += () =>
             {
                 Interlocked.Increment(ref changeCount);
             };
+            Thread.Sleep(200);
         }
 
-        Thread.Sleep(1000);
-        Assert.True(Interlocked.Read(ref changeCount) == 1);
+        Thread.Sleep(200);
+        Assert.Equal(2, Interlocked.Read(ref changeCount));
     }
 
     [Fact]
@@ -70,7 +72,7 @@ public partial class PollingWatcherUnitTests
 
             file.WriteByte(100);
             Thread.Sleep(1000);
-            Assert.True(Interlocked.Read(ref changeCount) == 1);
+            Assert.Equal(1, Interlocked.Read(ref changeCount));
         }
     }
 }

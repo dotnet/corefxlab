@@ -71,9 +71,12 @@ namespace System.IO.FileSystem
                     }
 
                     do {
-                        changes = UpdateState(directory, ref changes, ref fileData, fileData.cFileName);
+                        if (IsSpecial(fileData.cFileName)) continue;
+                        UpdateState(directory, ref changes, ref fileData, fileData.cFileName);
                     }
                     while (DllImports.FindNextFileW(file, pFileData));
+
+                    // TODO: this should be safe handle probably
                     DllImports.FindClose(file);
                 }
             }
@@ -87,7 +90,19 @@ namespace System.IO.FileSystem
 
             return changes;
         }
-        private unsafe FileChangeList UpdateState(string directory, ref FileChangeList changes, ref WIN32_FIND_DATAW file, char* filename)
+
+        // returns true for empty, '.', and '..' 
+        private unsafe bool IsSpecial(char* cFileName)
+        {
+            if (cFileName[0] == 0) return true;
+            if (cFileName[0] == '.') {
+                if (cFileName[1] == 0) return true;
+                if (cFileName[1] == '.' && cFileName[2] == 0) return true;
+            }
+            return false;
+        }
+
+        private unsafe void UpdateState(string directory, ref FileChangeList changes, ref WIN32_FIND_DATAW file, char* filename)
         {
             int index = _state.IndexOf(directory, filename);
             if (index == -1) // file added
@@ -101,7 +116,7 @@ namespace System.IO.FileSystem
 
                 _state.Add(directory, path, newFileState);
                 changes.AddAdded(directory, path);
-                return changes;
+                return;
             }
 
             var previousState = _state.Values[index];
@@ -112,13 +127,14 @@ namespace System.IO.FileSystem
             }
 
             _state.Values[index]._version = _version;
-            return changes;
         }
 
         /// <summary>
-        /// This callback is called when any change (Created, Deleted, Changed) is detected.
+        /// This callback is called when any change (Created, Deleted, Changed) is detected in any watched file.
         /// </summary>
         public Action Changed;
+
+        public Action<FileChange[]> ChangedDetailed;
 
         public long LastCycleTicks
         {
@@ -138,15 +154,22 @@ namespace System.IO.FileSystem
 
         private void TimerHandler(object context)
         {
-            var handler = Changed;
-            if (handler != null)
+            var changedHandler = Changed;
+            var ChangedDetailedHandler = ChangedDetailed;
+
+            if (changedHandler != null || ChangedDetailedHandler !=null)
             {
                 _stopwatch.Restart();
                 var changes = ComputeChangesAndUpdateState();
                 _lastCycleTicks = _stopwatch.ElapsedTicks;
                 if (!changes.IsEmpty)
                 {
-                    handler();
+                    if (changedHandler != null) {
+                        changedHandler();
+                    }
+                    if(ChangedDetailedHandler != null) {
+                        ChangedDetailedHandler(changes.ToArray());
+                    }
                 }
             }
 
@@ -155,6 +178,8 @@ namespace System.IO.FileSystem
 
         private void DiscoverAllSubdirectories(string root)
         {
+            // TODO: maybe this should use the Win32 APIs too?
+            // TODO: this need sot guard against exceptions from access denied 
             foreach (var directory in Directory.EnumerateDirectories(root)) {
                 _directories.Add(ToDirectoryFormat(directory));
                 DiscoverAllSubdirectories(directory);

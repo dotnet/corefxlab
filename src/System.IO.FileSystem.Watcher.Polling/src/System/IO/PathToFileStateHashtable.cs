@@ -156,7 +156,7 @@ namespace System.IO.FileSystem
                 do
                 {
                     _index++;
-                    if (_index >= _table._index) { return false; }
+                    if (_index > _table._index || _index >= _table.Values.Length) { return false; }
                 }
                 while (_table.Values[_index].Path == null);
 
@@ -232,13 +232,18 @@ namespace System.IO.FileSystem
         private int ComputeBucket(string file)
         {
             var hash = GetHashCode(file);
+            if (hash == Int32.MinValue) hash = Int32.MaxValue;
+
             var bucket = Math.Abs(hash) % Buckets.Length;
             return bucket;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe int ComputeBucket(char* file)
         {
             var hash = GetHashCode(file);
+            if (hash == Int32.MinValue) hash = Int32.MaxValue;
+
             var bucket = Math.Abs(hash) % Buckets.Length;
             return bucket;
         }
