@@ -9,6 +9,10 @@ namespace System.IO.FileSystem
     {
         internal static IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
+        // dwAdditionalFlags:
+        public const int FIND_FIRST_EX_CASE_SENSITIVE = 1;
+        public const int FIND_FIRST_EX_LARGE_FETCH = 2;
+
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
         internal static unsafe extern IntPtr FindFirstFileW(string lpFileName, void* lpFindFileData);
 
@@ -17,6 +21,22 @@ namespace System.IO.FileSystem
 
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool FindClose(IntPtr hFindFile);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static unsafe extern IntPtr FindFirstFileExW(string lpFileName, FINDEX_INFO_LEVELS fInfoLevelId, void* lpFindFileData, FINDEX_SEARCH_OPS fSearchOp, IntPtr lpSearchFilter, int dwAdditionalFlags);
+    }
+
+    enum FINDEX_INFO_LEVELS
+    {
+        FindExInfoStandard = 0,
+        FindExInfoBasic = 1
+    }
+
+    enum FINDEX_SEARCH_OPS
+    {
+        FindExSearchNameMatch = 0,
+        FindExSearchLimitToDirectories = 1,
+        FindExSearchLimitToDevices = 2
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
