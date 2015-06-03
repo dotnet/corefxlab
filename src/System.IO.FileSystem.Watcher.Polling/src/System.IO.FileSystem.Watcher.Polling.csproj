@@ -17,6 +17,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="System\IO\ChangeType.cs" />
+    <Compile Include="System\IO\FileChange.cs" />
     <Compile Include="System\IO\Datastructures.cs" />
     <Compile Include="System\IO\InteropDeclarations.cs" />
     <Compile Include="System\IO\PathToFileStateHashtable.cs" />

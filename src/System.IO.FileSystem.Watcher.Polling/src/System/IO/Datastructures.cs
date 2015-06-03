@@ -56,19 +56,13 @@ namespace System.IO.FileSystem
         {
             return _count.ToString();
         }
-    }
 
-    struct FileChange
-    {
-        public FileChange(string path, ChangeType type)
+        public FileChange[] ToArray()
         {
-            Debug.Assert(path != null);
-
-            Path = path;
-            Type = type;
+            var result = new FileChange[_count];
+            Array.Copy(_changes, result, _count);
+            return result;
         }
-        string Path;
-        ChangeType Type;
     }
 
     struct FileState

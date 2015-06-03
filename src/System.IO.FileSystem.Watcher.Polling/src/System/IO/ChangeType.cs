@@ -3,7 +3,7 @@
 
 namespace System.IO.FileSystem
 {
-    enum ChangeType
+    public enum ChangeType
     {
         Created,
         Deleted,
