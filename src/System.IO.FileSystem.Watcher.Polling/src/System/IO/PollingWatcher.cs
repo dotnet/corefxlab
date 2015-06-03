@@ -65,8 +65,7 @@ namespace System.IO.FileSystem
                 WIN32_FIND_DATAW* pFileData = &fileData;
 
                 foreach (var directory in _directories) {
-                    // TODO: move this to Ex version of the API. Ex version is faster
-                    var file = DllImports.FindFirstFileW(directory, pFileData);
+                    var file = DllImports.FindFirstFileExW(directory, FINDEX_INFO_LEVELS.FindExInfoBasic, pFileData, FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, DllImports.FIND_FIRST_EX_LARGE_FETCH);
                     if (file == DllImports.INVALID_HANDLE_VALUE) {
                         throw new IOException();
                     }
