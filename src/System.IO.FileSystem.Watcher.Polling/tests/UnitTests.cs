@@ -16,7 +16,7 @@ public partial class PollingWatcherUnitTests
         string fileName = Guid.NewGuid().ToString();
         long changeCount = 0;
 
-        var watcher = new PollingWatcher(currentDir, 100);
+        var watcher = new PollingWatcher(currentDir, false, 100);
 
         watcher.Changed += () =>
         {
@@ -38,7 +38,7 @@ public partial class PollingWatcherUnitTests
         string fileName = Guid.NewGuid().ToString();
         long changeCount = 0;
 
-        var watcher = new PollingWatcher(currentDir, 100);
+        var watcher = new PollingWatcher(currentDir, false, 100);
 
         using (var file = new TemporaryTestFile(fileName))
         {
@@ -59,7 +59,7 @@ public partial class PollingWatcherUnitTests
         string fileName = Guid.NewGuid().ToString();
         long changeCount = 0;
 
-        var watcher = new PollingWatcher(currentDir, 100);
+        var watcher = new PollingWatcher(currentDir, false, 100);
 
         using (var file = new TemporaryTestFile(fileName))
         {

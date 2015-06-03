@@ -14,7 +14,7 @@ namespace System.IO.FileSystem
 
         public bool IsEmpty { get { return _changes == null || _count == 0; } }
 
-        internal void AddAdded(string path)
+        internal void AddAdded(string directory, string path)
         {
             Debug.Assert(path != null);
 
@@ -22,7 +22,7 @@ namespace System.IO.FileSystem
             _changes[_count++] = new FileChange(path, ChangeType.Created);
         }
 
-        internal void AddChanged(string path)
+        internal void AddChanged(string directory, string path)
         {
             Debug.Assert(path != null);
 
@@ -30,7 +30,7 @@ namespace System.IO.FileSystem
             _changes[_count++] = new FileChange(path, ChangeType.Changed);
         }
 
-        internal void AddRemoved(string path)
+        internal void AddRemoved(string directory, string path)
         {
             Debug.Assert(path != null);
 
@@ -75,13 +75,14 @@ namespace System.IO.FileSystem
     {
         internal byte _version;  // removal notification are implemented something similar to "mark and sweep". This value is incremented in the mark phase
         public string Path;
+        public string Directory;
         public ulong LastWrite;
         public ulong FileSize;
 
-        public FileState(string path) : this()
+        public FileState(string directory, string path) : this()
         {
             Debug.Assert(path != null);
-
+            Directory = directory;
             Path = path;
         }
 
