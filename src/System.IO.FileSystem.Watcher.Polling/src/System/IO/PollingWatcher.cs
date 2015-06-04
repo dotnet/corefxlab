@@ -83,7 +83,6 @@ namespace System.IO.FileSystem
                 }
             }
 
-            // TODO: should these be moved to the front of the change list? Otherwise it might be difficult to detect moves/renames
             foreach (var value in _state) {
                 if (value._version != _version) {
                     changes.AddRemoved(value.Directory, value.Path);

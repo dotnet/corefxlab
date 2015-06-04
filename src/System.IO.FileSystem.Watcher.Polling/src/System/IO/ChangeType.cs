@@ -5,8 +5,9 @@ namespace System.IO.FileSystem
 {
     public enum ChangeType
     {
-        Created,
-        Deleted,
-        Changed,
+        // the order of these values matter.
+        Deleted = 0,
+        Created = 1,
+        Changed = 2,
     }
 }    
