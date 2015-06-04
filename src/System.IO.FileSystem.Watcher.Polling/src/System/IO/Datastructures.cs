@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace System.IO.FileSystem
@@ -52,6 +53,11 @@ namespace System.IO.FileSystem
             }
         }
 
+        void Sort()
+        {
+            Array.Sort(_changes, 0, _count, Comparer.Default);
+        }
+
         public override string ToString()
         {
             return _count.ToString();
@@ -59,9 +65,23 @@ namespace System.IO.FileSystem
 
         public FileChange[] ToArray()
         {
+            Sort();
             var result = new FileChange[_count];
             Array.Copy(_changes, result, _count);
             return result;
+        }
+
+        class Comparer : IComparer<FileChange>
+        {
+            public static IComparer<FileChange> Default = new Comparer();
+
+            public int Compare(FileChange left, FileChange right)
+            {
+                var nameOrder = String.CompareOrdinal(left.Name, right.Name);
+                if (nameOrder != 0) return nameOrder;
+
+                return left.ChangeType.CompareTo(right.ChangeType);
+            }
         }
     }
 
