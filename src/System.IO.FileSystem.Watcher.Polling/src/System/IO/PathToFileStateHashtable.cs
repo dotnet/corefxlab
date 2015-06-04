@@ -13,8 +13,18 @@ namespace System.IO.FileSystem
     // TODO: hashcode generation should be improved too
     class PathToFileStateHashtable
     {
-        int _index = 0;
+        int _count;
+        int _nextValuesIndex = 1;
         public FileState[] Values { get; private set; }
+
+        public int Count
+        {
+            get
+            {
+                return _count;
+            }
+        }
+
         private Bucket[] Buckets;
 
         public PathToFileStateHashtable(int capacity = 4)
@@ -65,30 +75,41 @@ namespace System.IO.FileSystem
 
         public void Add(string directory, string file, FileState value)
         {
-            _index++; 
-            if(_index >= Values.Length) // Resize
+            if(_nextValuesIndex >= Values.Length) // Resize
             {
-                var bigger = new PathToFileStateHashtable(Values.Length * 2);
-                foreach(var existingValue in this)
-                {
-                    bigger.Add(existingValue.Directory, existingValue.Path, existingValue);
-                }
-                Values = bigger.Values;
-                Buckets = bigger.Buckets;
+                Resize();
             }
 
-            Values[_index] = value;
+            Values[_nextValuesIndex] = value;
             var bucket = ComputeBucket(file);
 
             while (true)
             {
                 if (Buckets[bucket].IsEmpty)
                 {
-                    Buckets[bucket] = new Bucket(directory, file, _index);
+                    Buckets[bucket] = new Bucket(directory, file, _nextValuesIndex);
+                    _count++;
+                    _nextValuesIndex++;
                     return;
                 }
                 bucket = NextBucket(bucket);
             }
+        }
+
+        private void Resize()
+        {
+            // this is because sometimes we just need to garbade collect instead of increase size
+            var newSize = Math.Max(_count * 2, 4);
+
+            var bigger = new PathToFileStateHashtable(newSize);
+            foreach (var existingValue in this)
+            {
+                bigger.Add(existingValue.Directory, existingValue.Path, existingValue);
+            }
+            Values = bigger.Values;
+            Buckets = bigger.Buckets;
+            this._nextValuesIndex = bigger._nextValuesIndex;
+            this._count = bigger._count;
         }
 
         public int IndexOf(string directory, string file)
@@ -101,11 +122,10 @@ namespace System.IO.FileSystem
                     return -1; // not found
                 }
 
-                FullPath fullPath = Buckets[bucket].Key;
-
-                if (string.Equals(fullPath.File, file, StringComparison.Ordinal) && string.Equals(fullPath.Directory, directory, StringComparison.Ordinal))
+                if (Equal(Buckets[bucket].Key, directory, file))
                 {
-                    return Buckets[bucket].ValuesIndex;
+                    var index = Buckets[bucket].ValuesIndex;
+                    if (Values[index].Path != null) return index;
                 }
                 bucket = NextBucket(bucket);
             }
@@ -123,16 +143,50 @@ namespace System.IO.FileSystem
 
                 if (Equal(Buckets[bucket].Key, directory, file))
                 {
-                    return Buckets[bucket].ValuesIndex;
+                    var index =  Buckets[bucket].ValuesIndex;
+                    if (Values[index].Path != null) return index;
                 }
                 bucket = NextBucket(bucket);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe bool Equal(FullPath fullPath, string directory, char* file)
+        {
+            if (!String.Equals(fullPath.Directory, directory, StringComparison.Ordinal))
+            {
+                return false;
+            }
+            int index;
+            for (index = 0; index < fullPath.File.Length; index++)
+            {
+                if (file[index] != fullPath.File[index]) return false; //TODO: this can read past the buffer. Needs to be fixed
+            }
+            if (file[index] != 0) return false;
+            return true;
+
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe bool Equal(FullPath fullPath, string directory, string file)
+        {
+            if (!String.Equals(fullPath.Directory, directory, StringComparison.Ordinal))
+            {
+                return false;
+            }
+            if (!String.Equals(fullPath.File, file, StringComparison.Ordinal))
+            {
+                return false;
+            }
+            return true;
         }
 
         public void Remove(string directory, string file)
         {
             var index = IndexOf(directory, file);
             Values[index].Path = null;
+            Values[index].Directory = null;
+            _count--;
         }
 
         public Enumerator GetEnumerator()
@@ -156,7 +210,7 @@ namespace System.IO.FileSystem
                 do
                 {
                     _index++;
-                    if (_index > _table._index || _index >= _table.Values.Length) { return false; }
+                    if (_index > _table._nextValuesIndex || _index >= _table.Values.Length) { return false; }
                 }
                 while (_table.Values[_index].Path == null);
 
@@ -203,22 +257,6 @@ namespace System.IO.FileSystem
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe bool Equal(FullPath fullPath, string directory, char* file)
-        {
-            if(!String.Equals(fullPath.Directory, directory, StringComparison.Ordinal)) {
-                return false;
-            }
-            int index;
-            for (index = 0; index < fullPath.File.Length; index++)
-            {
-                if (file[index] != fullPath.File[index]) return false; //TODO: this can read past the buffer. Needs to be fixed
-            }
-            if (file[index] != 0) return false;
-            return true;
-            
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int NextBucket(int bucket)
         {
             bucket++;
@@ -250,7 +288,7 @@ namespace System.IO.FileSystem
 
         public override string ToString()
         {
-            return _index.ToString();
+            return _count.ToString();
         }
 
         struct Bucket
