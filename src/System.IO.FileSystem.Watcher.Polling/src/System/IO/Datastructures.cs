@@ -9,7 +9,7 @@ namespace System.IO.FileSystem
     {
         const int DefaultListSize = 4;
 
-        FileChange[] _changes; // TODO: this should probably just use List<FileChange>. As of right now, FileChangeList must be passed by ref
+        FileChange[] _changes;
         int _count;
 
         public bool IsEmpty { get { return _changes == null || _count == 0; } }
@@ -19,7 +19,7 @@ namespace System.IO.FileSystem
             Debug.Assert(path != null);
 
             EnsureCapacity();
-            _changes[_count++] = new FileChange(path, ChangeType.Created);
+            _changes[_count++] = new FileChange(directory, path, ChangeType.Created);
         }
 
         internal void AddChanged(string directory, string path)
@@ -27,7 +27,7 @@ namespace System.IO.FileSystem
             Debug.Assert(path != null);
 
             EnsureCapacity();
-            _changes[_count++] = new FileChange(path, ChangeType.Changed);
+            _changes[_count++] = new FileChange(directory, path, ChangeType.Changed);
         }
 
         internal void AddRemoved(string directory, string path)
@@ -35,7 +35,7 @@ namespace System.IO.FileSystem
             Debug.Assert(path != null);
 
             EnsureCapacity();
-            _changes[_count++] = new FileChange(path, ChangeType.Deleted);
+            _changes[_count++] = new FileChange(directory, path, ChangeType.Deleted);
         }
 
         void EnsureCapacity()

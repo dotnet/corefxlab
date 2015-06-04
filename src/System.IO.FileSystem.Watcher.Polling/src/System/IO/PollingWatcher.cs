@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-//TODO: there is a bug where directory or file is creted, deleted, recreated and then deleted again
+//TODO: add support for UNC paths
+//TODO: write real tests
 
 namespace System.IO.FileSystem
 {
@@ -48,11 +49,6 @@ namespace System.IO.FileSystem
 
             ComputeChangesAndUpdateState(); // captures the initial state
 
-            //// TODO: this needs to be updated when directories are removed
-            //if (includeSubdirectories) {
-            //    DiscoverAllSubdirectories(rootDirectory);
-            //}
-
             _timer = new Timer(new TimerCallback(TimerHandler), null, pollingIntervalInMilliseconds, Timeout.Infinite);
         }
 
@@ -67,8 +63,7 @@ namespace System.IO.FileSystem
             {
                 WIN32_FIND_DATAW* pFileData = &fileData;
 
-                var count = _directories.Count;
-                for(int index=0; index < count; index++) {
+                for(int index=0; index < _directories.Count; index++) {
                     var directory = _directories[index];
 
                     var file = DllImports.FindFirstFileExW(directory, FINDEX_INFO_LEVELS.FindExInfoBasic, pFileData, FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, DllImports.FIND_FIRST_EX_LARGE_FETCH);
@@ -202,7 +197,6 @@ namespace System.IO.FileSystem
             }
         }
 
-        // TODO: this needs to be smarter for UNC paths
         private static string ToDirectoryFormat(string path)
         {
             return @"\\?\" + path + @"\*";
