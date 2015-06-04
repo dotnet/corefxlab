@@ -84,5 +84,10 @@ namespace System.IO.FileSystem
         {
             return Path;
         }
+
+        internal bool IsEmpty
+        {
+            get { return Path == null; }
+        }
     }
 }    

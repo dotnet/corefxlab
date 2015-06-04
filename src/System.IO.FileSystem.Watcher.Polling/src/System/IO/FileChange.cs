@@ -26,7 +26,7 @@ namespace System.IO.FileSystem
             }
         }
 
-        public ChangeType ChageType
+        public ChangeType ChangeType
         {
             get
             {

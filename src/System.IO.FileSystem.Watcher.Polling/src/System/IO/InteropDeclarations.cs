@@ -74,6 +74,18 @@ namespace System.IO.FileSystem
                 return ftLastWriteTime.Time;
             }
         }
+
+        public bool IsDirectory
+        {
+            get
+            {
+                if ((dwFileAttributes & 16) != 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]

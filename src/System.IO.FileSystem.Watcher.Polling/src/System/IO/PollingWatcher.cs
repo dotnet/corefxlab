@@ -46,16 +46,17 @@ namespace System.IO.FileSystem
             _includeSubdirectories = includeSubdirectories;
             _directories.Add(ToDirectoryFormat(rootDirectory));
 
-            // TODO: this needs to be updated when directories are added or removed
-            if (includeSubdirectories) {
-                DiscoverAllSubdirectories(rootDirectory);
-            }
-
             ComputeChangesAndUpdateState(); // captures the initial state
+
+            //// TODO: this needs to be updated when directories are removed
+            //if (includeSubdirectories) {
+            //    DiscoverAllSubdirectories(rootDirectory);
+            //}
 
             _timer = new Timer(new TimerCallback(TimerHandler), null, pollingIntervalInMilliseconds, Timeout.Infinite);
         }
 
+        // This function walks all watched files, collects changes, and updates state
         private FileChangeList ComputeChangesAndUpdateState()
         {
             _version++;
@@ -66,10 +67,14 @@ namespace System.IO.FileSystem
             {
                 WIN32_FIND_DATAW* pFileData = &fileData;
 
-                foreach (var directory in _directories) {
+                var count = _directories.Count;
+                for(int index=0; index < count; index++) {
+                    var directory = _directories[index];
+
                     var file = DllImports.FindFirstFileExW(directory, FINDEX_INFO_LEVELS.FindExInfoBasic, pFileData, FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, DllImports.FIND_FIRST_EX_LARGE_FETCH);
-                    if (file == DllImports.INVALID_HANDLE_VALUE) {
-                        throw new IOException();
+                    if (file == DllImports.INVALID_HANDLE_VALUE) { // directory got deleted 
+                        _directories.Remove(directory);
+                        continue;
                     }
 
                     do {
@@ -112,13 +117,25 @@ namespace System.IO.FileSystem
             {
                 string path = new string(filename);
 
+                if (file.IsDirectory) {
+                    if (_includeSubdirectories) {
+                        _directories.Add(Path.Combine(directory.TrimEnd('*'), path, "*"));
+                    }
+                }
+
+                changes.AddAdded(directory, path);
+                
                 var newFileState = new FileState(directory, path);
                 newFileState.LastWrite = file.LastWrite;
                 newFileState.FileSize = file.FileSize;
                 newFileState._version = _version;
-
                 _state.Add(directory, path, newFileState);
-                changes.AddAdded(directory, path);
+                return;
+            }
+
+            _state.Values[index]._version = _version;
+
+            if (file.IsDirectory) {
                 return;
             }
 
@@ -128,8 +145,6 @@ namespace System.IO.FileSystem
                 _state.Values[index].LastWrite = file.LastWrite;
                 _state.Values[index].FileSize = file.FileSize;
             }
-
-            _state.Values[index]._version = _version;
         }
 
         /// <summary>
