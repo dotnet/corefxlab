@@ -66,20 +66,25 @@ namespace System.IO.FileSystem
                 for(int index=0; index < _directories.Count; index++) {
                     var directory = _directories[index];
 
-                    var file = DllImports.FindFirstFileExW(directory, FINDEX_INFO_LEVELS.FindExInfoBasic, pFileData, FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, DllImports.FIND_FIRST_EX_LARGE_FETCH);
-                    if (file == DllImports.INVALID_HANDLE_VALUE) { // directory got deleted 
+                    var handle = DllImports.FindFirstFileExW(directory, FINDEX_INFO_LEVELS.FindExInfoBasic, pFileData, FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, DllImports.FIND_FIRST_EX_LARGE_FETCH);
+                    if (handle == DllImports.INVALID_HANDLE_VALUE) { // directory got deleted 
                         _directories.Remove(directory);
                         continue;
                     }
 
-                    do {
-                        if (IsSpecial(fileData.cFileName)) continue;
-                        UpdateState(directory, ref changes, ref fileData, fileData.cFileName);
+                    try
+                    {
+                        do
+                        {
+                            if (IsSpecial(fileData.cFileName)) continue;
+                            UpdateState(directory, ref changes, ref fileData, fileData.cFileName);
+                        }
+                        while (DllImports.FindNextFileW(handle, pFileData));
                     }
-                    while (DllImports.FindNextFileW(file, pFileData));
-
-                    // TODO: this should be safe handle probably
-                    DllImports.FindClose(file);
+                    finally
+                    {
+                        DllImports.FindClose(handle);
+                    }
                 }
             }
 
@@ -184,16 +189,6 @@ namespace System.IO.FileSystem
             }
 
             _timer.Change(_pollingIntervalInMilliseconds, Timeout.Infinite);
-        }
-
-        private void DiscoverAllSubdirectories(string root)
-        {
-            // TODO: maybe this should use the Win32 APIs too?
-            // TODO: this need sot guard against exceptions from access denied 
-            foreach (var directory in Directory.EnumerateDirectories(root)) {
-                _directories.Add(ToDirectoryFormat(directory));
-                DiscoverAllSubdirectories(directory);
-            }
         }
 
         private static string ToDirectoryFormat(string path)

@@ -11,7 +11,6 @@ namespace System.IO.FileSystem
     // It allows both string and char* (filenames from WIN32_FIND_DATA) lookups
     // It has optimized Equals and GetHasCode
     // It implements removals by marking values as "removed" (Path==null) and then garbage collecting them when table is resized
-    // TODO: maybe hashcode generation should be improved too; it should use part of the directory string (right now it uses file only)
     class PathToFileStateHashtable
     {
         int _count;
@@ -302,7 +301,6 @@ namespace System.IO.FileSystem
             return _count.ToString();
         }
 
-        // TODO: experiment with buckets that store hashcode to short circuit cases where different hashcodes overlap bucket range
         struct Bucket
         {
             public FullPath Key;
