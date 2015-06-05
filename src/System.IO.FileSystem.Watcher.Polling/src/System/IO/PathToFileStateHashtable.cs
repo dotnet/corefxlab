@@ -13,13 +13,15 @@ namespace System.IO.FileSystem
     // It implements removals by marking values as "removed" (Path==null) and then garbage collecting them when table is resized
     class PathToFileStateHashtable
     {
+        TraceSource _trace;
         int _count;
         int _nextValuesIndex = 1; // the first Values slot is reserved so that default(Bucket) knows that it is not pointing to any value.
         public FileState[] Values { get; private set; }
         private Bucket[] Buckets;
 
-        public PathToFileStateHashtable(int capacity = 4)
+        public PathToFileStateHashtable(TraceSource trace, int capacity = 4)
         {
+            _trace = trace;
             Values = new FileState[capacity];
 
             // +1 is needed so that there are always more buckets than values.
@@ -211,7 +213,13 @@ namespace System.IO.FileSystem
             // this is because sometimes we just need to garbade collect instead of increase size
             var newSize = Math.Max(_count * 2, 4);
 
-            var bigger = new PathToFileStateHashtable(newSize);
+            if (_trace.Switch.ShouldTrace(TraceEventType.Verbose))
+            {
+                _trace.TraceEvent(TraceEventType.Verbose, 5, "Resizing hashtable from {0} to {1}", Values.Length, newSize);
+            }
+
+            var bigger = new PathToFileStateHashtable(_trace, newSize);
+
             foreach (var existingValue in this)
             {
                 bigger.Add(existingValue.Directory, existingValue.Path, existingValue);

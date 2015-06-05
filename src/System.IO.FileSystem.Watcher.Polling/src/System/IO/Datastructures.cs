@@ -15,6 +15,8 @@ namespace System.IO.FileSystem
 
         public bool IsEmpty { get { return _changes == null || _count == 0; } }
 
+        public int Count { get { return _count; } }
+
         internal void AddAdded(string directory, string path)
         {
             Debug.Assert(path != null);
