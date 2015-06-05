@@ -3,7 +3,7 @@
 
 namespace System.IO.FileSystem
 {
-    public enum ChangeType
+    public enum ChangeType : byte
     {
         // the order of these values matter.
         Deleted = 0,
