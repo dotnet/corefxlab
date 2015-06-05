@@ -25,16 +25,15 @@ namespace System.IO.FileSystem
     /// </remarks>
     public class PollingWatcher : IDisposable
     {
+        public TraceSource Tracing { get; private set; }
         Stopwatch _stopwatch = new Stopwatch();
-        long _lastCycleTicks;
-
         Timer _timer;
         int _pollingIntervalInMilliseconds;
         bool _includeSubdirectories;
 
-        List<string> _extensionsToWatch = new List<string>();
+        List<string> _extensionsToWatch;
         List<string> _directories = new List<string>();
-        PathToFileStateHashtable _state = new PathToFileStateHashtable(); // stores state of the directory
+        PathToFileStateHashtable _state; // stores state of the directory
         byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
 
         /// <summary>
@@ -44,6 +43,8 @@ namespace System.IO.FileSystem
         /// <param name="pollingIntervalInMilliseconds">Polling interval</param>
         public PollingWatcher(string rootDirectory, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
         {
+            Tracing = new TraceSource("PollingWatcher");
+            _state = new PathToFileStateHashtable(Tracing); 
             _pollingIntervalInMilliseconds = pollingIntervalInMilliseconds;
             _includeSubdirectories = includeSubdirectories;
             _directories.Add(ToDirectoryFormat(rootDirectory));
@@ -61,6 +62,10 @@ namespace System.IO.FileSystem
             if(_timer != null)
             {
                 throw new InvalidOperationException("Cannot change extensions after watcher has been started");
+            }
+            if(_extensionsToWatch == null)
+            {
+                _extensionsToWatch = new List<string>();
             }
             _extensionsToWatch.Add(extension);
         }
@@ -87,6 +92,10 @@ namespace System.IO.FileSystem
 
                     var handle = DllImports.FindFirstFileExW(directory, FINDEX_INFO_LEVELS.FindExInfoBasic, pFileData, FINDEX_SEARCH_OPS.FindExSearchNameMatch, IntPtr.Zero, DllImports.FIND_FIRST_EX_LARGE_FETCH);
                     if (handle == DllImports.INVALID_HANDLE_VALUE) { // directory got deleted 
+                        if (Tracing.Switch.ShouldTrace(TraceEventType.Information))
+                        {
+                            Tracing.TraceEvent(TraceEventType.Warning, 2, "Directory could not be opened {0}", directory);
+                        }
                         _directories.Remove(directory);
                         continue;
                     }
@@ -159,7 +168,7 @@ namespace System.IO.FileSystem
 
         private unsafe bool IsWatched(char* filename)
         {
-            if (_extensionsToWatch.Count == 0) return true;
+            if (_extensionsToWatch == null) return true;
             var length = GetLength(filename);
             foreach(var extension in _extensionsToWatch)
             {
@@ -215,14 +224,6 @@ namespace System.IO.FileSystem
 
         public Action<FileChange[]> ChangedDetailed;
 
-        public long LastCycleTicks
-        {
-            get
-            {
-                return _lastCycleTicks;
-            }
-        }
-
         /// <summary>
         /// Disposes the timer used for polling.
         /// </summary>
@@ -233,22 +234,43 @@ namespace System.IO.FileSystem
 
         private void TimerHandler(object context)
         {
-            _stopwatch.Restart();
-            var changes = ComputeChangesAndUpdateState();
-            _lastCycleTicks = _stopwatch.ElapsedTicks;
+            try {
+                _stopwatch.Restart();
+                var changes = ComputeChangesAndUpdateState();
+                var lastCycleTicks = _stopwatch.ElapsedTicks;
+                if (Tracing.Switch.ShouldTrace(TraceEventType.Information))
+                {
+                    Tracing.TraceEvent(TraceEventType.Information, 1, "Last polling cycle {0}ms", lastCycleTicks*1000/Stopwatch.Frequency);
+                    Tracing.TraceEvent(TraceEventType.Information, 6, "Changes detected {0}", changes.Count);
+                }
 
-            var changedHandler = Changed;
-            var ChangedDetailedHandler = ChangedDetailed;
+                var changedHandler = Changed;
+                var ChangedDetailedHandler = ChangedDetailed;
 
-            if (changedHandler != null || ChangedDetailedHandler != null) {
-                if (!changes.IsEmpty) {
-                    if (changedHandler != null) {
-                        changedHandler();
-                    }
-                    if (ChangedDetailedHandler != null) {
-                        ChangedDetailedHandler(changes.ToArray());
+                if (changedHandler != null || ChangedDetailedHandler != null)
+                {
+                    if (!changes.IsEmpty)
+                    {
+                        if (changedHandler != null)
+                        {
+                            changedHandler();
+                        }
+                        if (ChangedDetailedHandler != null)
+                        {
+                            ChangedDetailedHandler(changes.ToArray());
+                        }
                     }
                 }
+            }
+            catch(Exception e)
+            {
+                Tracing.TraceEvent(TraceEventType.Error, 0, e.ToString());
+            }
+
+            if (Tracing.Switch.ShouldTrace(TraceEventType.Verbose))
+            {
+                Tracing.TraceEvent(TraceEventType.Verbose, 3, "Number of names watched: {0}", _state.Count);
+                Tracing.TraceEvent(TraceEventType.Verbose, 4, "Number of directories watched: {0}", _directories.Count);
             }
 
             _timer.Change(_pollingIntervalInMilliseconds, Timeout.Infinite);
