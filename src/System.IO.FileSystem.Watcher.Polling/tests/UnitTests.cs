@@ -14,21 +14,24 @@ public partial class PollingWatcherUnitTests
     {
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
-        long changeCount = 0;
 
         var watcher = new PollingWatcher(currentDir, false, 100);
-
-        watcher.Changed += () =>
+        watcher.ChangedDetailed += (changes) =>
         {
-            Interlocked.Increment(ref changeCount);
+            Assert.Equal(1, changes.Length);
+            var change = changes[0];
+            Assert.Equal(ChangeType.Created, change.ChangeType);
+            Assert.Equal(fileName, change.Name);
+            Assert.Equal(currentDir, change.Directory);
         };
-
+        watcher.Start();
+        Thread.Sleep(200);
         using (var file = new TemporaryTestFile(fileName))
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(200);
+            watcher.Dispose();
+            Thread.Sleep(200);
         }
-
-        Assert.Equal(1, Interlocked.Read(ref changeCount));
     }
 
     [Fact]
@@ -36,43 +39,54 @@ public partial class PollingWatcherUnitTests
     {
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
-        long changeCount = 0;
 
         var watcher = new PollingWatcher(currentDir, false, 100);
 
         using (var file = new TemporaryTestFile(fileName))
         {
-            Thread.Sleep(200);
-            watcher.Changed += () =>
+            watcher.ChangedDetailed += (changes) =>
             {
-                Interlocked.Increment(ref changeCount);
+                Assert.Equal(1, changes.Length);
+                var change = changes[0];
+                Assert.Equal((byte)ChangeType.Deleted, (byte)change.ChangeType);
+                Assert.Equal(fileName, change.Name);
+                Assert.Equal(currentDir, change.Directory);
             };
+            Thread.Sleep(100);
+            watcher.Start();
             Thread.Sleep(200);
         }
 
         Thread.Sleep(200);
-        Assert.Equal(2, Interlocked.Read(ref changeCount));
+        watcher.Dispose();
+        Thread.Sleep(200);
     }
 
     [Fact]
-    public static void FileSystemWatcher_Changed_File()
+    public static void FileSystemWatcher_Changed_File() 
     {
         var currentDir = Directory.GetCurrentDirectory();
         string fileName = Guid.NewGuid().ToString();
-        long changeCount = 0;
 
         var watcher = new PollingWatcher(currentDir, false, 100);
 
         using (var file = new TemporaryTestFile(fileName))
         {
-            watcher.Changed += () =>
+            watcher.Start();
+            Thread.Sleep(200);
+            watcher.ChangedDetailed += (changes) =>
             {
-                Interlocked.Increment(ref changeCount);
+                Assert.Equal(1, changes.Length);
+                var change = changes[0];
+                Assert.Equal(ChangeType.Changed, change.ChangeType);
+                Assert.Equal(fileName, change.Name);
+                Assert.Equal(currentDir, change.Directory);
             };
-
+            Thread.Sleep(200);
             file.WriteByte(100);
-            Thread.Sleep(1000);
-            Assert.Equal(1, Interlocked.Read(ref changeCount));
+            Thread.Sleep(200);
+            watcher.Dispose();
+            Thread.Sleep(200);
         }
     }
 }

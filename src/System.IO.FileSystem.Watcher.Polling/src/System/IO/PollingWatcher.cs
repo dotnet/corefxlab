@@ -32,6 +32,7 @@ namespace System.IO.FileSystem
         int _pollingIntervalInMilliseconds;
         bool _includeSubdirectories;
 
+        List<string> _extensionsToWatch = new List<string>();
         List<string> _directories = new List<string>();
         PathToFileStateHashtable _state = new PathToFileStateHashtable(); // stores state of the directory
         byte _version; // this is used to keep track of removals. // TODO: describe the algorithm
@@ -46,10 +47,28 @@ namespace System.IO.FileSystem
             _pollingIntervalInMilliseconds = pollingIntervalInMilliseconds;
             _includeSubdirectories = includeSubdirectories;
             _directories.Add(ToDirectoryFormat(rootDirectory));
+        }
 
+        /// <summary>
+        /// Extensions to watch
+        /// </summary>
+        /// <param name="extension">for examople "txt", "doc", etc., i.e don't use wildcards</param>
+        /// <remarks>
+        /// By default all extensions are watched. Once this method is called, only extensions in added are watched.
+        /// </remarks>
+        public void AddExtension(string extension)
+        {
+            if(_timer != null)
+            {
+                throw new InvalidOperationException("Cannot change extensions after watcher has been started");
+            }
+            _extensionsToWatch.Add(extension);
+        }
+
+        public void Start()
+        {
             ComputeChangesAndUpdateState(); // captures the initial state
-
-            _timer = new Timer(new TimerCallback(TimerHandler), null, pollingIntervalInMilliseconds, Timeout.Infinite);
+            _timer = new Timer(new TimerCallback(TimerHandler), null, _pollingIntervalInMilliseconds, Timeout.Infinite);
         }
 
         // This function walks all watched files, collects changes, and updates state
@@ -77,6 +96,7 @@ namespace System.IO.FileSystem
                         do
                         {
                             if (IsSpecial(fileData.cFileName)) continue;
+                            if (!IsWatched(fileData.cFileName)) continue;
                             UpdateState(directory, ref changes, ref fileData, fileData.cFileName);
                         }
                         while (DllImports.FindNextFileW(handle, pFileData));
@@ -105,6 +125,48 @@ namespace System.IO.FileSystem
             if (cFileName[0] == '.') {
                 if (cFileName[1] == 0) return true;
                 if (cFileName[1] == '.' && cFileName[2] == 0) return true;
+            }
+            return false;
+        }
+
+        private unsafe static int GetLength(char* nullTerminatedString)
+        {
+            int length = -1;
+            while (true)
+            {
+                if (nullTerminatedString[++length] == 0)
+                {
+                    break;
+                }
+            }
+            return length;
+        }
+        private unsafe static bool EndsWith(char* nullTerminatedString, int length, string possibleEnding)
+        {
+            if(possibleEnding.Length > length)
+            {
+                return false;
+            }
+
+            var start = nullTerminatedString + (length - possibleEnding.Length);
+
+            for(int i=0; i<possibleEnding.Length; i++)
+            {
+                if (start[i] != possibleEnding[i]) return false;
+            }
+            return true;
+        }
+
+        private unsafe bool IsWatched(char* filename)
+        {
+            if (_extensionsToWatch.Count == 0) return true;
+            var length = GetLength(filename);
+            foreach(var extension in _extensionsToWatch)
+            {
+                if(EndsWith(filename, length, extension))
+                {
+                    return true;
+                }
             }
             return false;
         }
@@ -171,13 +233,14 @@ namespace System.IO.FileSystem
 
         private void TimerHandler(object context)
         {
+            _stopwatch.Restart();
+            var changes = ComputeChangesAndUpdateState();
+            _lastCycleTicks = _stopwatch.ElapsedTicks;
+
             var changedHandler = Changed;
             var ChangedDetailedHandler = ChangedDetailed;
 
             if (changedHandler != null || ChangedDetailedHandler != null) {
-                _stopwatch.Restart();
-                var changes = ComputeChangesAndUpdateState();
-                _lastCycleTicks = _stopwatch.ElapsedTicks;
                 if (!changes.IsEmpty) {
                     if (changedHandler != null) {
                         changedHandler();
