@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.IO.Buffers;
 
 namespace System.Text.Formatting
 {
