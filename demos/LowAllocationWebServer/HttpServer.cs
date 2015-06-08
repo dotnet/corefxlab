@@ -1,6 +1,7 @@
 ﻿using Microsoft.Net.Http.Server.Socket;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Buffers;
 using System.Text.Formatting;
 using System.Text.Utf8;
 using System.Threading;
@@ -40,7 +41,10 @@ namespace System.Net.Http.Buffered
         protected volatile bool _isCancelled = false;
         TcpServer _listener;
         public Log Log { get; protected set; }
-        
+
+        const int RequestBufferSize = 2048;
+        public BufferBin _buffers = new BufferBin(RequestBufferSize, capacity:10000);
+
         protected HttpServer(Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
         {
             Log = log;
@@ -86,7 +90,7 @@ namespace System.Net.Http.Buffered
         {
             Log.LogVerbose("Processing Request");
             
-            var buffer = BufferPool.Shared.RentBuffer(4096);
+            var buffer = _buffers.RentBuffer();
             var received = socket.Receive(buffer);
 
             var receivedBytes = buffer.Slice(0, received);
@@ -114,7 +118,7 @@ namespace System.Net.Http.Buffered
 
                 responseBytes = CreateResponse(requestLine, restOfRequestBytes);
             }
-            BufferPool.Shared.ReturnBuffer(ref buffer);
+            _buffers.ReturnBuffer(buffer);
 
             // send response
             var segment = responseBytes;        
@@ -166,12 +170,12 @@ namespace System.Net.Http.Buffered
             formatter.Append(responseLine);
             formatter.Append(HttpNewline);
             formatter.Append("Date: ");
-            formatter.Append(currentTime, Format.Symbol.R);
+            formatter.Append(currentTime, 'R');
             formatter.Append(HttpNewline);
             formatter.Append("Server: .NET Core Sample Server");
             formatter.Append(HttpNewline);
             formatter.Append("Last-Modified: ");
-            formatter.Append(currentTime, Format.Symbol.R);
+            formatter.Append(currentTime, 'R');
             formatter.Append(HttpNewline);
             formatter.Append("Content-Type: text/html; charset=UTF-8");
             formatter.Append(HttpNewline);
