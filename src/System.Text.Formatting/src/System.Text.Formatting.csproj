@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
   <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <ProjectGuid>{AB5C520A-B1A2-472F-8841-E8304F3539D6}</ProjectGuid>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
+    <RootNamespace>System.Text.Formatting</RootNamespace>
     <AssemblyName>System.Text.Formatting</AssemblyName>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
@@ -19,7 +19,6 @@
     <Compile Include="System\ByteSpan.cs" />
     <Compile Include="System\Span.cs" />
     <Compile Include="System\ReadOnlySpan.cs" />
-
     <Compile Include="System\Text\Formatting\IBufferFormattable.cs" />
     <Compile Include="System\Text\Formatting\IFormatter.cs" />
     <Compile Include="System\Text\Formatting\IFormatterExtensions.cs" />
@@ -32,21 +31,17 @@
     <Compile Include="System\Text\Formatting\StreamFormatter.cs" />
     <Compile Include="System\Text\Formatting\StringFormatter.cs" />
     <Compile Include="System\Text\Formatting\BufferFormatter.cs" />
-
     <Compile Include="System\Text\Formatting\CompositeFormat.cs" />
-
     <Compile Include="System\Text\Utf8\Utf8String.cs" />
-
     <Compile Include="System\InternalHelpers\IntegerFormatter.cs" />
     <Compile Include="System\InternalHelpers\FloatFormatter.cs" />
     <Compile Include="System\InternalHelpers\Precondition.cs" />
     <Compile Include="System\InternalHelpers\BufferPool.cs" />
     <Compile Include="System\InternalHelpers\Utf8.cs" />
     <Compile Include="System\InternalHelpers\Parser.cs" />
-
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="project.json" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

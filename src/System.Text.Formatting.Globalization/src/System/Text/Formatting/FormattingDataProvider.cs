@@ -13,29 +13,12 @@ namespace System.Text.Formatting
     // For now, the data might contain errors.
     public class FormattingDataProvider
     {
-        public static string[] CreateLocaleIds()
-        {
-            var assembly = typeof(FormattingDataProvider).GetTypeInfo().Assembly;
-            var resources = assembly.GetManifestResourceNames();
-            var localeIds = new string[resources.Length];
-            int next = 0;
-            foreach(var resource in resources)
-            {
-                if(resource.StartsWith("Resources.FormattingData.", StringComparison.Ordinal) && resource.EndsWith(".bin", StringComparison.Ordinal))
-                {
-                    localeIds[next++] = resource.Substring(25, resource.Length - 29);
-                }
-            }
-
-            return localeIds;
-        }
-
         public static FormattingData CreateFormattingData(string localeId)
         {
             const int maxIdLength = 15;
             const int recordSize = 20;
-
-            var resourceName = "Resources.FormattingData.locales.bin";
+  
+            var resourceName = "System.Text.Formatting.locales.bin";
             var resourceStream = typeof(FormattingDataProvider).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName);
             if (resourceStream == null)
             {
