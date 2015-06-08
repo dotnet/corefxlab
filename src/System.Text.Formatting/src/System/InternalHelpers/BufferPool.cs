@@ -5,14 +5,14 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace System.IO
+namespace System.IO.Buffers
 {
     public class BufferPool
     {
         static BufferPool s_instance = new BufferPool(1024 * 1024);
 
         int _maxBufferSize; // larger buffers won't be pooled
-        Bin[] _bins;
+        BufferBin[] _bins;
 
         int _largeAllocationCounter; // performance counter for non-pooled allocations
 
@@ -23,12 +23,12 @@ namespace System.IO
             _maxBufferSize = maxBufferSize;
 
             var maxSizeBin = SelectBinIndex(maxBufferSize);
-            _bins = new Bin[maxSizeBin + 1];
+            _bins = new BufferBin[maxSizeBin + 1];
 
             for (var binIndex = 0; binIndex < _bins.Length; binIndex++)
             {
                 int maxSizeForBin = GetMaxSizeForBin(binIndex);
-                _bins[binIndex] = new Bin(maxSizeForBin, 10);
+                _bins[binIndex] = new BufferBin(maxSizeForBin, 10);
             }
         }
 
@@ -118,7 +118,7 @@ namespace System.IO
     }
 
     // stores buffers of equal size
-    struct Bin
+    public class BufferBin
     {
         int _bufferSize; // the size of buffers in this bin
         int _capacity;
@@ -127,7 +127,7 @@ namespace System.IO
 
         int _allocationCounter; // performance counter incremented when bin actually allocates a new buffer on the GC heap
 
-        public Bin(int bufferSize, int capacity)
+        public BufferBin(int bufferSize, int capacity)
         {
             _bufferSize = bufferSize;
             _capacity = capacity;
@@ -170,6 +170,11 @@ namespace System.IO
 
         public void ReturnBuffer(byte[] buffer)
         {
+            if(buffer.Length != _bufferSize)
+            {
+                throw new InvalidOperationException("buffer does not belong to this pool or bin");
+            }
+
             int top = _top;
             if (top == _buffers.Length - 1) return; // no room in the pool; just drop the buffer on the GC; maybe a counter for this would be good
 

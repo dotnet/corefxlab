@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Buffers;
 using System.Net;
 using System.Net.Http.Buffered;
 using System.Text.Formatting;
@@ -40,7 +41,7 @@ class SampleRestServer : HttpServer
         formatter.Append(HttpNewline);
 
         formatter.Append(@"<html><head><title>Time</title></head><body>");
-        formatter.Append(DateTime.UtcNow, Format.Symbol.O);
+        formatter.Append(DateTime.UtcNow, 'O');
         formatter.Append(@"</body></html>");
         return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
     }
