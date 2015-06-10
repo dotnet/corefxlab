@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.InteropServices;
 using System.Text.Encodings;
 
 namespace System.Text.Formatting
@@ -110,33 +111,34 @@ namespace System.Text.Formatting
 
         public static bool TryFormat(this string value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            var byteSpan = PinnedByteArraySpan.BorrowDisposableByteSpan(buffer);
-            try
+
+            if (formattingData.IsUtf16)
             {
-                var avaliableBytes = byteSpan.Length;
-
-                if (formattingData.IsUtf16)
+                var valueBytes = value.Length << 1;
+                if (valueBytes > buffer.Length)
                 {
-                    var neededBytes = value.Length << 1;
-                    if (neededBytes > avaliableBytes)
-                    {
-                        bytesWritten = 0;
-                        return false;
-                    }
-
-                    unsafe
-                    {
-                        fixed (char* pCharacters = value)
-                        {
-                            byte* pBytes = (byte*)pCharacters;
-                            byteSpan.Set(pBytes, neededBytes);
-                        }
-                    }
-
-                    bytesWritten = neededBytes;
-                    return true;
+                    bytesWritten = 0;
+                    return false;
                 }
 
+                unsafe
+                {
+                    fixed (char* pCharacters = value)
+                    {
+                        byte* pBytes = (byte*)pCharacters;
+                        buffer.Set(pBytes, valueBytes);
+                    }
+                }
+
+                bytesWritten = valueBytes;
+                return true;
+            }
+
+            GCHandle handle;
+            var byteSpan = buffer.Pin(out handle);
+            try {
+                
+                var avaliableBytes = byteSpan.Length;
                 bytesWritten = 0;
                 for (int i = 0; i < value.Length; i++)
                 {
@@ -186,7 +188,7 @@ namespace System.Text.Formatting
             }
             finally
             {
-                byteSpan.Free();
+                handle.Free();
             }
         }
     }

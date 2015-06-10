@@ -179,5 +179,22 @@ namespace System
             }
             return true;
         }
+
+        [CLSCompliant(false)]
+        public static unsafe void Set(this Span<byte> span, byte* pBytes, int length)
+        {
+            Precondition.Require(span.Length >= length);
+            for (int i = 0; i < length; i++) {
+                span[i] = pBytes[i];
+            }
+        }
+
+        internal static unsafe ByteSpan Pin(this Span<byte> source, out GCHandle handle)
+        {
+            handle = GCHandle.Alloc(source._array, GCHandleType.Pinned);
+            var pinned = handle.AddrOfPinnedObject() + source._index;
+            var byteSpan = new ByteSpan(((byte*)pinned.ToPointer()), source._length, -1);
+            return byteSpan;
+        }
     }
 }
