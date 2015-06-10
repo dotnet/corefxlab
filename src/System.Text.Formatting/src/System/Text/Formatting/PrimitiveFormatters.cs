@@ -110,7 +110,7 @@ namespace System.Text.Formatting
 
         public static bool TryFormat(this string value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
-            var byteSpan = buffer.BorrowDisposableByteSpan();
+            var byteSpan = PinnedByteArraySpan.BorrowDisposableByteSpan(buffer);
             try
             {
                 var avaliableBytes = byteSpan.Length;

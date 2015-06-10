@@ -15,6 +15,7 @@
     <RestorePackages>true</RestorePackages>
     <NuGetPackageImportStamp>7a9bfb7d</NuGetPackageImportStamp>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ProjectGuid>{66C14560-AC0E-4D94-A128-2E147BDF2970}</ProjectGuid>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
   <ItemGroup>
@@ -23,6 +24,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BufferPools.cs" />
     <Compile Include="Non-AllocatingJson.cs" />
     <Compile Include="CompositeFormattingTests.cs" />
     <Compile Include="CustomCulture.cs" />
@@ -37,14 +39,13 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\System.Text.Formatting.csproj">
-      <Project>{1dd0ff15-6234-4bd6-850a-317f05479554}</Project>
       <Name>System.Text.Formatting</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-<ItemGroup>
+  <ItemGroup>
     <None Include="project.json" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
