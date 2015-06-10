@@ -43,7 +43,7 @@ namespace System.Net.Http.Buffered
         public Log Log { get; protected set; }
 
         const int RequestBufferSize = 2048;
-        public BufferBin _buffers = new BufferBin(RequestBufferSize, capacity:10000);
+        public NativeBufferPool _buffers = new NativeBufferPool(RequestBufferSize, numberOfBuffers:1000);
 
         protected HttpServer(Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
         {
@@ -90,7 +90,7 @@ namespace System.Net.Http.Buffered
         {
             Log.LogVerbose("Processing Request");
             
-            var buffer = _buffers.RentBuffer();
+            var buffer = _buffers.Rent();
             var received = socket.Receive(buffer);
 
             var receivedBytes = buffer.Slice(0, received);
@@ -118,7 +118,7 @@ namespace System.Net.Http.Buffered
 
                 responseBytes = CreateResponse(requestLine, restOfRequestBytes);
             }
-            _buffers.ReturnBuffer(buffer);
+            _buffers.Return(ref buffer);
 
             // send response
             var segment = responseBytes;        
@@ -132,7 +132,7 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        void LogRestOfRequest(Span<byte> buffer)
+        void LogRestOfRequest(ByteSpan buffer)
         {
             HttpRequestReader reader = new HttpRequestReader();
             reader.Buffer = buffer;
@@ -146,7 +146,7 @@ namespace System.Net.Http.Buffered
             Log.LogMessage(Log.Level.Verbose, "\tBody bytecount: {0}", messageBody.Length);
         }
 
-        protected virtual HttpServerBuffer CreateResponseFor400(Span<byte> receivedBytes) // Bad Request
+        protected virtual HttpServerBuffer CreateResponseFor400(ByteSpan receivedBytes) // Bad Request
         {
             BufferFormatter formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
             WriteCommonHeaders(formatter, @"HTTP/1.1 400 Bad Request");
@@ -154,7 +154,7 @@ namespace System.Net.Http.Buffered
             return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
         }
 
-        protected virtual HttpServerBuffer CreateResponseFor404(HttpRequestLine requestLine, Span<byte> headersAndBody) // Not Found
+        protected virtual HttpServerBuffer CreateResponseFor404(HttpRequestLine requestLine, ByteSpan headersAndBody) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", requestLine);
 
@@ -183,6 +183,6 @@ namespace System.Net.Http.Buffered
             formatter.Append(HttpNewline);
         }
 
-        protected abstract HttpServerBuffer CreateResponse(HttpRequestLine requestLine, Span<byte> headersAndBody);
+        protected abstract HttpServerBuffer CreateResponse(HttpRequestLine requestLine, ByteSpan headersAndBody);
     }
 }

@@ -2,6 +2,49 @@
 
 namespace System.Net.Http.Buffered
 {
+    // TODO: I would like to use Utf8String instead of this type.
+    // But the issue is that this type "borrows" native bytespan, and I don't want to make Utf8String unsafe
+    public struct Utf8Span
+    {
+        static ByteSpan CreateEmptyByteSpan()
+        {
+            unsafe { return new ByteSpan(null, 0); }
+        }
+        static Utf8Span s_empty = new Utf8Span(CreateEmptyByteSpan());
+        ByteSpan _bytes;
+
+        public Utf8Span(ByteSpan bytes)
+        {
+            _bytes = bytes;
+        }
+
+        public static Utf8Span Empty { get { return s_empty; } }
+
+        public int Length
+        {
+            get { return _bytes.Length; }
+        }
+
+        public override bool Equals(object obj)
+        {
+            throw new InvalidOperationException("this should not be called");
+        }
+
+        public bool Equals(Utf8String other)
+        {
+            if (Length != other.Length) return false;
+            for(int i=0; i<Length; i++) {
+                if (_bytes[i] != other.Bytes[i]) return false;
+            }
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            throw new InvalidOperationException("you don't want it in a hashtable, do you?");
+        }
+    }
+
     public enum HttpMethod : byte
     {
         Unknown = 0,
@@ -23,7 +66,7 @@ namespace System.Net.Http.Buffered
     {
         public HttpMethod Method;
         public HttpVersion Version;
-        public Utf8String RequestUri;
+        public Utf8Span RequestUri;
 
         public override string ToString()
         {
@@ -42,7 +85,7 @@ namespace System.Net.Http.Buffered
         internal const byte s_LF = 10; // line feed
         internal const byte s_HT = 9;   // horizontal TAB
 
-        public ReadOnlySpan<byte> Buffer;
+        public ByteSpan Buffer;
 
         public HttpMethod ReadMethod()
         {
@@ -56,25 +99,25 @@ namespace System.Net.Http.Buffered
             return method;
         }
 
-        public Utf8String ReadRequestUri()
+        public Utf8Span ReadRequestUri()
         {
-            Utf8String requestUri;
+            Utf8Span requestUri;
             int parsedBytes;
             if (!HttpRequestParser.TryParseRequestUri(Buffer, out requestUri, out parsedBytes))
             {
-                return Utf8String.Empty;
+                return Utf8Span.Empty;
             }
             Buffer = Buffer.Slice(parsedBytes);
             return requestUri;
         }
 
-        Utf8String ReadHttpVersionAsUtf8String()
+        Utf8Span ReadHttpVersionAsUtf8String()
         {
-            Utf8String httpVersion;
+            Utf8Span httpVersion;
             int parsedBytes;
             if (!HttpRequestParser.TryParseHttpVersion(Buffer, out httpVersion, out parsedBytes))
             {
-                return Utf8String.Empty;
+                return Utf8Span.Empty;
             }
             Buffer = Buffer.Slice(parsedBytes);
             return httpVersion;
@@ -82,18 +125,18 @@ namespace System.Net.Http.Buffered
 
         public HttpVersion ReadHttpVersion()
         {
-            ReadOnlySpan<byte> oldBuffer = Buffer;
-            Utf8String version = ReadHttpVersionAsUtf8String();
+            ByteSpan oldBuffer = Buffer;
+            Utf8Span version = ReadHttpVersionAsUtf8String();
 
-            if (s_Http1_1.Equals(version))
+            if (version.Equals(s_Http1_1))
             {
                 return HttpVersion.V1_1;
             }
-            else if (s_Http2_0.Equals(version))
+            else if (version.Equals(s_Http2_0))
             {
                 return HttpVersion.V2_0;
             }
-            else if (s_Http1_0.Equals(version))
+            else if (version.Equals(s_Http2_0))
             {
                 return HttpVersion.V1_0;
             }
@@ -104,15 +147,15 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        public Utf8String ReadHeader()
+        public Utf8Span ReadHeader()
         {
             int parsedBytes;
             var header = SliceTo(Buffer, s_CR, s_LF, out parsedBytes);
             Buffer = Buffer.Slice(parsedBytes);
-            return new Utf8String(header);
+            return new Utf8Span(header);
         }
 
-        internal static ReadOnlySpan<byte> SliceTo(ReadOnlySpan<byte> buffer, byte terminator, out int consumedBytes)
+        internal static ByteSpan SliceTo(ByteSpan buffer, byte terminator, out int consumedBytes)
         {
             int index = 0;
             while (index < buffer.Length)
@@ -125,9 +168,12 @@ namespace System.Net.Http.Buffered
                 index++;
             }
             consumedBytes = 0;
-            return new Span<byte>();
+            unsafe
+            {
+                return new ByteSpan(null, 0); //TODO: Empty instance should be used
+            }
         }
-        internal static ReadOnlySpan<byte> SliceTo(ReadOnlySpan<byte> buffer, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
+        internal static ByteSpan SliceTo(ByteSpan buffer, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
         {
             int index = 0;
             while (index < buffer.Length)
@@ -141,7 +187,10 @@ namespace System.Net.Http.Buffered
             }
 
             consumedBytes = 0;
-            return new Span<byte>();
+            unsafe
+            {
+                return new ByteSpan(null, 0); // TODO: Empty instance should be used
+            }
         }
     }
 
@@ -152,13 +201,13 @@ namespace System.Net.Http.Buffered
         static readonly Utf8String s_Put = new Utf8String("PUT ");
         static readonly Utf8String s_Delete = new Utf8String("DELETE ");
 
-        public static bool TryParseRequestLine(ReadOnlySpan<byte> buffer, out HttpRequestLine requestLine)
+        public static bool TryParseRequestLine(ByteSpan buffer, out HttpRequestLine requestLine)
         {
             int parsedBytes;
             return TryParseRequestLine(buffer, out requestLine, out parsedBytes);
         }
 
-        public static bool TryParseRequestLine(ReadOnlySpan<byte> buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
+        public static bool TryParseRequestLine(ByteSpan buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
         {
             requestLine = new HttpRequestLine();
             totalParsedBytes = 0;
@@ -179,7 +228,7 @@ namespace System.Net.Http.Buffered
             return true;
         }
 
-        public static bool TryParseMethod(ReadOnlySpan<byte> buffer, out HttpMethod method, out int parsedBytes)
+        public static bool TryParseMethod(ByteSpan buffer, out HttpMethod method, out int parsedBytes)
         {
             if(buffer.StartsWith(s_Get.Bytes))
             {
@@ -213,15 +262,26 @@ namespace System.Net.Http.Buffered
             parsedBytes = 0;
             return false;
         }
-        public static bool TryParseRequestUri(ReadOnlySpan<byte> buffer, out Utf8String requestUri, out int parsedBytes)
+        public static bool TryParseRequestUri(ByteSpan buffer, out Utf8Span requestUri, out int parsedBytes)
         {
-            requestUri = new Utf8String(HttpRequestReader.SliceTo(buffer, HttpRequestReader.s_SP, out parsedBytes));
+            var uriSpan = HttpRequestReader.SliceTo(buffer, HttpRequestReader.s_SP, out parsedBytes);
+            requestUri = new Utf8Span(uriSpan);
             return parsedBytes != 0;
         }
-        public static bool TryParseHttpVersion(ReadOnlySpan<byte> buffer, out Utf8String httpVersion, out int parsedBytes)
+        public static bool TryParseHttpVersion(ByteSpan buffer, out Utf8Span httpVersion, out int parsedBytes)
         {
-            httpVersion = new Utf8String(HttpRequestReader.SliceTo(buffer, HttpRequestReader.s_CR, HttpRequestReader.s_LF, out parsedBytes));
+            var versionSpan = HttpRequestReader.SliceTo(buffer, HttpRequestReader.s_CR, HttpRequestReader.s_LF, out parsedBytes);
+            httpVersion = new Utf8Span(versionSpan);
             return parsedBytes != 0;
+        }
+
+        public static bool StartsWith(this ByteSpan left, ReadOnlySpan<byte> right)
+        {
+            if (left.Length < right.Length) return false;
+            for (int index = 0; index < right.Length; index++) {
+                if (left[index] != right[index]) return false;
+            }
+            return true;
         }
     }
 
