@@ -3,8 +3,6 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading;
 
 namespace System {
 
@@ -14,7 +12,7 @@ namespace System {
         internal int _id;
 
         [CLSCompliant(false)]
-        public ByteSpan(byte* data, int length, int id)
+        public ByteSpan(byte* data, int length, int id = -1)
         {
             _id = id;
             _data = data;
@@ -26,15 +24,13 @@ namespace System {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                // the range checks are super expensive. we need to optimize them out just like we do for arrays
-                //if (index >= Length) Environment.FailFast("index out of range");
+                if (index >= Length) Environment.FailFast("index out of range");
                 return _data[index];
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                // the range checks are super expensive. we need to optimize them out just like we do for arrays
-                //if (index >= Length) Environment.FailFast("index out of range");
+                if (index >= Length) Environment.FailFast("index out of range");
                 _data[index] = value;
             }
         }
