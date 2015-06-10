@@ -173,5 +173,19 @@ namespace Microsoft.Net.Http.Server.Socket
                 }
             }
         }
+
+        internal int Receive(ByteSpan buffer)
+        {
+            unsafe
+            {
+                IntPtr ptr = new IntPtr(buffer.UnsafeBuffer);
+                int bytesReceived = SocketImports.recv(Handle, ptr, buffer.Length, 0);
+                if (bytesReceived < 0) {
+                    var error = SocketImports.WSAGetLastError();
+                    throw new Exception(String.Format("receive failed with {0}", error));
+                }
+                return bytesReceived;
+            }
+        }
     }
 }

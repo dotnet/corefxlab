@@ -13,7 +13,7 @@ namespace System.Net.Http.Buffered
         {
             for(int i=0; i<count; i++)
             {
-                if (Uris[i].Equals(requestLine.RequestUri)) return Apis[i];
+                if (requestLine.RequestUri.Equals(Uris[i])) return Apis[i];
             }
             return default(T);
         }

@@ -42,6 +42,12 @@ namespace System {
             Buffer.MemoryCopy(value, _data, _length, valueLength);
         }
 
+        [CLSCompliant(false)]
+        public unsafe byte* UnsafeBuffer
+        {
+            get { return _data; }
+        }
+
         public int Length
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

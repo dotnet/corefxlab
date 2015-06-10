@@ -23,7 +23,7 @@ class SampleRestServer : HttpServer
         Apis.Add(Api.GetTime, HttpMethod.Get, requestUri: "/time");
     }
 
-    protected override HttpServerBuffer CreateResponse(HttpRequestLine requestLine, Span<byte> headerAndBody)
+    protected override HttpServerBuffer CreateResponse(HttpRequestLine requestLine, ByteSpan headerAndBody)
     {
         var api = Apis.Map(requestLine);
         switch (api) {
