@@ -15,13 +15,19 @@ namespace System.Text.Formatting.Tests
         {
             using (var pool = new NativeBufferPool(256, 10)) {
                 List<ByteSpan> buffers = new List<ByteSpan>();
-                for (int i = 0; i < 10; i++) {
+                for (byte i = 0; i < 10; i++) {
                     var buffer = pool.Rent();
                     buffers.Add(buffer);
+                    for(int bi=0; bi<buffer.Length; bi++) {
+                        buffer[bi] = i;
+                    }
                 }
-                foreach (var buffer in buffers) {
-                    var toReturn = buffer;
-                    pool.Return(ref toReturn);
+                for (byte i = 0; i < 10; i++) {
+                    var buffer = buffers[i];
+                    for (int bi = 0; bi < buffer.Length; bi++) {
+                        Assert.Equal(i, buffer[bi]);
+                    }
+                    pool.Return(ref buffer);
                 }
             }
         }
