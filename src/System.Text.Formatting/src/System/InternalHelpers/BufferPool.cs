@@ -7,6 +7,72 @@ using System.Threading;
 
 namespace System.IO.Buffers
 {
+    public unsafe class NativeBufferPool : IDisposable
+    {
+        byte* _memory;
+        int[] _freeList;
+        int _nextFree = 0;
+        readonly int _totalBytes;
+        readonly int _bufferSizeInBytes;
+
+        public NativeBufferPool(int bufferSizeInBytes, int numberOfBuffers)
+        {
+            _bufferSizeInBytes = bufferSizeInBytes;
+            _freeList = new int[numberOfBuffers];
+            _totalBytes = numberOfBuffers * numberOfBuffers;
+            _memory = (byte*)Marshal.AllocHGlobal(_totalBytes).ToPointer();
+        }
+
+        public ByteSpan Rent()
+        {
+            var freeIndex = Reserve();
+            if (freeIndex == -1) {
+                throw new NotImplementedException();
+            }
+            var start = _bufferSizeInBytes * freeIndex;
+            return new ByteSpan(_memory + start, _bufferSizeInBytes, freeIndex);
+        }
+
+        public void Return(ref ByteSpan span)
+        {
+            span._data = null;
+            if (Interlocked.CompareExchange(ref _freeList[span._id], 0, 1) != 1) {
+                throw new InvalidOperationException("this span has been already returned");
+            }
+            if (span._id < _nextFree) {
+                _nextFree = span._id;
+            }
+            span._id = -1;
+        }
+
+        int Reserve()
+        {
+            var initialNextFree = _nextFree;
+            for (int i = initialNextFree; i < _freeList.Length; i++) {
+                if (Interlocked.CompareExchange(ref _freeList[i], 1, 0) == 0) {
+                    _nextFree++;
+                    return i;
+                }
+            }
+            if (initialNextFree == _nextFree) {
+                if (_nextFree == 0) {
+                    return -1;
+                }
+                _nextFree = 0;
+            }
+            return Reserve();
+        }
+
+        public void Dispose()
+        {
+            for (int i = 0; i < _freeList.Length; i++) {
+                _freeList[i] = 1;
+            }
+            Marshal.FreeHGlobal(new IntPtr(_memory));
+            _memory = null;
+        }
+    }
+
     public class BufferPool
     {
         static BufferPool s_instance = new BufferPool(1024 * 1024);

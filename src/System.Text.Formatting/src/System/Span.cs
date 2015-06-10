@@ -11,9 +11,9 @@ namespace System
     // This is a naive implementation of span. We will get a much better one later.
     public struct Span<T>
     {
-        T[] _array;
-        int _index;
-        int _length;
+        internal T[] _array;
+        internal int _index;
+        internal int _length;
 
         public Span(int length)
         {
@@ -140,14 +140,6 @@ namespace System
                 count--;
             }
             return array;
-        }
-
-        internal unsafe ByteSpan BorrowDisposableByteSpan()
-        {
-            var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
-            var pinned = handle.AddrOfPinnedObject() + _index;
-            var byteSpan = new ByteSpan(((byte*)pinned.ToPointer()), _length, handle);     
-            return byteSpan;
         }
     }
 
