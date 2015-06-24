@@ -2,22 +2,35 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
+using System.Diagnostics;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        if (args.Length == 1 && args[0] == "linux")
+        string osDetect = DetectOS();
+
+        if (args.Length >= 1)
+        {
+            osDetect = args[0];
+        }
+
+        if (osDetect == "linux")
         {
             DrawLinux();
         }
-        else if (args.Length == 1 && args[0] == "freebsd")
+        else if (osDetect == "freebsd")
         {
             DrawFreeBSD();
         }
-        else if (args.Length == 1 && args[0] == "mac")
+        else if (osDetect == "mac")
         {
             DrawMac();
+        }
+        else if (osDetect == "windows")
+        {
+            DrawWindows();
         }
         else
         {
@@ -25,7 +38,7 @@ internal class Program
         }
 
         Console.WriteLine();
-        Console.WriteLine("Press ENTER to exit ...");
+        Console.WriteLine("Press ENTER to continue . . . ");
         Console.ReadLine();
     }
 
@@ -300,5 +313,37 @@ internal class Program
 
         Console.ResetColor();
         Console.WriteLine();
+    }
+
+    //HACK: Needed until CoreFX implements Environment.OSVersion
+    private static string DetectOS()
+    {
+        Process proc = new Process();
+
+        string detectionResult = String.Empty;
+
+        if (proc.StartInfo.Environment.ContainsKey("TERM_PROGRAM"))
+        {
+            detectionResult = "mac";
+        }
+        else if (proc.StartInfo.Environment.ContainsKey("SHELL"))
+        {
+            string shellValue = proc.StartInfo.Environment["SHELL"].ToLowerInvariant();
+
+            if (shellValue.EndsWith("/tcsh") || shellValue.EndsWith("/sh"))
+            {
+                detectionResult = "freebsd";
+            }
+            else
+            {
+                detectionResult = "linux";
+            }
+        }
+        else if (proc.StartInfo.Environment.ContainsKey("COMSPEC"))
+        {
+            detectionResult = "windows";
+        }
+
+        return detectionResult;
     }
 }
