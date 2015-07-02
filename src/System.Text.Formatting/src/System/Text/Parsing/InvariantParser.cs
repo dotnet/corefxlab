@@ -11,8 +11,6 @@ namespace System.Text.Parsing
         [CLSCompliant(false)]
         public static bool TryParse(ByteSpan text, FormattingData.Encoding encoding, out uint value, out int bytesConsumed)
         {
-            Precondition.Require(encoding == FormattingData.Encoding.Utf8); // this is temporary
-
             Precondition.Require(text.Length > 0);
             Precondition.Require(encoding == FormattingData.Encoding.Utf8 || text.Length > 1);
 
@@ -21,12 +19,16 @@ namespace System.Text.Parsing
 
             if (text[0] == '0') {
                 bytesConsumed = 1;
+                if (encoding == FormattingData.Encoding.Utf16)
+                {
+                    return text[1] == 0;
+                }
                 return true;
             }
 
-            for (int charIndex = 0; charIndex < text.Length; charIndex++) {
-                byte nextChar = text[charIndex];
-                if (nextChar < '0' || nextChar > '9') {
+            for (int byteIndex = 0; byteIndex < text.Length; byteIndex++) {
+                byte nextByte = text[byteIndex];
+                if (nextByte < '0' || nextByte > '9') {
                     if (bytesConsumed == 0) {
                         value = default(uint);
                         return false;
@@ -36,15 +38,23 @@ namespace System.Text.Parsing
                     }
                 }
                 uint candidate = value * 10;
-                candidate += (uint)nextChar - '0';
+                candidate += (uint)nextByte - '0';
                 if (candidate > value) {
                     value = candidate;
                 }
                 else {
                     return true;
                 }
-
                 bytesConsumed++;
+                if (encoding == FormattingData.Encoding.Utf16)
+                {
+                    byteIndex++;
+                    if(byteIndex >= text.Length || text[byteIndex] != 0)
+                    {
+                        return false;
+                    }
+                    bytesConsumed++;
+                }
             }
 
             return true;
@@ -54,46 +64,19 @@ namespace System.Text.Parsing
         {
             Precondition.Require(count > 0);
             Precondition.Require(text.Length >= index + count);
-
-            value = 0;
-            charsConsumed = 0;
-
-            if(text[0] == '0')
+            
+            unsafe
             {
-                charsConsumed = 1;
-                return true;
+                fixed(char* pText = text)
+                {
+                    char* pSubstring = pText + index;
+                    var span = new ByteSpan((byte*)pSubstring, count << 1);
+                    int bytesConsumed;
+                    var result = TryParse(span, FormattingData.Encoding.Utf16, out value, out bytesConsumed);
+                    charsConsumed = bytesConsumed << 1;
+                    return result;
+                }
             }
-
-            for (int charIndex = index; charIndex < index + count; charIndex++)
-            {
-                char nextChar = text[charIndex];
-                if(nextChar < '0' || nextChar > '9')
-                {
-                    if (charsConsumed == 0)
-                    {
-                        value = default(uint);
-                        return false;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-                uint candidate = value * 10;
-                candidate += (uint)nextChar - '0';
-                if(candidate > value)
-                {
-                    value = candidate;
-                }
-                else
-                {
-                    return true;
-                }
-
-                charsConsumed++;
-            }
-
-            return true;
         }
 
         internal static bool TryParse(string text, int index, int count, out uint value)
