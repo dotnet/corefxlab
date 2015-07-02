@@ -19,7 +19,7 @@ namespace System.IO.Buffers
         {
             _bufferSizeInBytes = bufferSizeInBytes;
             _freeList = new int[numberOfBuffers];
-            _totalBytes = numberOfBuffers * numberOfBuffers;
+            _totalBytes = bufferSizeInBytes * numberOfBuffers;
             _memory = (byte*)Marshal.AllocHGlobal(_totalBytes).ToPointer();
         }
 
