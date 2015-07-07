@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft. All rights reserved. 
+// Licensed under the MIT license. See LICENSE file in the project root for full license information. 
+
+
 using System.Runtime.InteropServices;
 
 namespace System.Drawing.Graphics {
@@ -80,7 +84,6 @@ namespace System.Drawing.Graphics {
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr gdImageCreate(int sx, int sy);
-       
 
     }
 }
