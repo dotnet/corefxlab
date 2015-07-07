@@ -1,9 +1,6 @@
 {
   "dependencies": {
-<<<<<<< HEAD
     "System.Console":  "4.0.0-beta-*",
-=======
->>>>>>> eab992c599c7847af7067f19c115ce427567cc5d
     "System.Collections": "4.0.10-beta-*",
     "System.Diagnostics.Contracts": "4.0.0-beta-*",
     "System.Diagnostics.Debug": "4.0.10-beta-*",
@@ -19,15 +16,11 @@
     "System.Runtime.InteropServices": "4.0.20-beta-*",
     "System.Text.Encoding": "4.0.10-beta-*",
     "System.Threading": "4.0.10-beta-*",
-<<<<<<< HEAD
     "System.Threading.Timer": "4.0.0-beta-*",
     "xunit": "2.0.0-beta5-build2785",
     "xunit.abstractions.netcore": "1.0.0-prerelease",
     "xunit.assert": "2.0.0-beta5-build2785",
     "xunit.core.netcore": "1.0.1-prerelease"
-=======
-    "System.Threading.Timer": "4.0.0-beta-*"
->>>>>>> eab992c599c7847af7067f19c115ce427567cc5d
   },
   "frameworks": {
     "dnxcore50": {}
