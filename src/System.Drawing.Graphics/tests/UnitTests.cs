@@ -4,13 +4,17 @@
 using System;
 using System.Threading;
 using Xunit;
+using System.Drawing.Graphics;
 
 public partial class GraphicsUnitTests
 {
     [Fact]
-    public static void FileSystemWatcher_Created_File()
+    public void Test()
     {
-        //empty example method from Krzysztof's proj
-    }
+        System.Console.WriteLine("hi");
 
+        IntPtr imgPtr = DLLImports.gdImageCreate(1, 1);
+        System.Console.WriteLine(imgPtr.ToInt64());
+    }
+    
 }

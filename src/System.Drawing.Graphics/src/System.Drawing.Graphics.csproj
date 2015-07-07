@@ -2,6 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
   <PropertyGroup>
+    <AssemblyAttributeClsCompliant>false</AssemblyAttributeClsCompliant>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -9,6 +10,7 @@
     <AssemblyName>System.Drawing.Graphics</AssemblyName>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ProjectGuid>{091712F4-3894-4D0B-9403-39D115621208}</ProjectGuid>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -17,6 +19,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="System\Drawing\Graphics\DLLImports.cs" />
+    <Compile Include="System\Drawing\Graphics\ManagedGDImageScratch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
