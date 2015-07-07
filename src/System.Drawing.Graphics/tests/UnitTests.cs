@@ -4,11 +4,15 @@
 using System;
 using System.Threading;
 using Xunit;
+<<<<<<< HEAD
 using System.Drawing.Graphics;
+=======
+>>>>>>> eab992c599c7847af7067f19c115ce427567cc5d
 
 public partial class GraphicsUnitTests
 {
     [Fact]
+<<<<<<< HEAD
     public void Test()
     {
         System.Console.WriteLine("hi");
@@ -19,3 +23,11 @@ public partial class GraphicsUnitTests
     
 }
 
+=======
+    public static void FileSystemWatcher_Created_File()
+    {
+        //empty example method from Krzysztof's proj
+    }
+
+}
+>>>>>>> eab992c599c7847af7067f19c115ce427567cc5d
