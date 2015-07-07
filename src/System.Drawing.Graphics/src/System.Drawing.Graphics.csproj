@@ -17,6 +17,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="System\Drawing\Graphics\ImageExtensions.cs" />
     <Compile Include="System\Drawing\Graphics\DLLImports.cs" />
     <Compile Include="System\Drawing\Graphics\Image.cs" />
   </ItemGroup>
