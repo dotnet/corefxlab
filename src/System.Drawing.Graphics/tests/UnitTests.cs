@@ -195,7 +195,3 @@ public partial class GraphicsUnitTests
 
     //}
 }
-
-
-    
-}
