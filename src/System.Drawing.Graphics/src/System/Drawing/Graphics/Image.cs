@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 
 namespace System.Drawing.Graphics
 {
+    //assuming only these three types for now (32 bit)
     public enum PixelFormat
     {
         ARGB,
@@ -19,6 +21,8 @@ namespace System.Drawing.Graphics
         private byte[] _data;
         private int _width;
         private int _height;
+        private PixelFormat _pixelFormat;
+        private int _bytesPerPixel;
 
             /* Properties */
         public int WidthInPixels
@@ -31,7 +35,7 @@ namespace System.Drawing.Graphics
         }
         public PixelFormat PixelFormat
         {
-            get { return PixelFormat.RGBA; }
+            get { return _pixelFormat; }
         }
         public byte[] Data
         {
@@ -39,7 +43,7 @@ namespace System.Drawing.Graphics
         }
         public int BytesPerPixel
         {
-            get { return 0; }
+            get { return _bytesPerPixel; }
         }
 
             /* Factory Methods */
@@ -51,7 +55,7 @@ namespace System.Drawing.Graphics
         {
             return new Image(filePath);
         }
-        public static Image Load(object stream)
+        public static Image Load(Stream stream)
         {
             return new Image(stream);
         }
@@ -65,7 +69,7 @@ namespace System.Drawing.Graphics
         {
             throw new NotImplementedException();
         }
-        private Image(object stream)
+        private Image(Stream stream)
         {
             throw new NotImplementedException();
         }

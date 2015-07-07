@@ -5,9 +5,20 @@ using System;
 using System.Threading;
 using Xunit;
 using System.Drawing.Graphics;
+using System.IO;
+
 
 public partial class GraphicsUnitTests
 {
+    [Fact]
+    public static void TestForLibGDCalls()
+    {
+        System.Console.WriteLine("hi");
+        IntPtr imgPtr = DLLImports.gdImageCreate(1, 1);
+        System.Console.WriteLine(imgPtr.ToInt64());
+
+    }
+
     [Fact]
     public static void WhenCreatingAnEmptyImageThenValidateAnImage()
     {
@@ -116,7 +127,7 @@ public partial class GraphicsUnitTests
     [Fact]
     public void WhenCreatingAnImageFromAValidStreamThenGiveValidImage()
     {
-        object stream = null;
+        Stream stream = null;
         Image fromStream = Image.Load(stream);
         ValidateImage(fromStream, 0, 0, PixelFormat.ARGB);
     }
@@ -140,18 +151,18 @@ public partial class GraphicsUnitTests
     [Fact]
     public void WhenResizingImageLoadedFromFileThenGiveAValidatedResizedImage()
     {
-        //string filepath = "";
-        //Image fromFileResizeSquare = Image.Load(filepath);
+        string filepath = "";
+        Image fromFileResizeSquare = Image.Load(filepath);
         //fromFileResizeSquare.Resize(10, 10);
-        //ValidateImage(fromFileResizeSquare, 10, 10, fromFileResizeSquare.PixelFormat);
+        ValidateImage(fromFileResizeSquare, 10, 10, fromFileResizeSquare.PixelFormat);
     }
     [Fact]
     public void WhenResizingImageLoadedFromStreamThenGiveAValidatedResizedImage()
     {
-        //Stream stream = null;
-        //Image fromStreamResizeSquare = Image.Load(stream);
+        Stream stream = null;
+        Image fromStreamResizeSquare = Image.Load(stream);
         //fromStreamResizeSquare.Resize(10, 10);
-        //ValidateImage(fromStreamResizeSquare, 10, 10, fromStreamResizeSquare.PixelFormat);
+        ValidateImage(fromStreamResizeSquare, 10, 10, fromStreamResizeSquare.PixelFormat);
     }
 
     /* Testing Resize parameters */
