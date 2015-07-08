@@ -46,50 +46,45 @@ public partial class GraphicsUnitTests
     [Fact]
     public void WhenCreatingABlankImageWithNegativeHeightThenThrowException()
     {
-        //Action act = () => Image.Create(1, -1);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("Invalid image size given for creation. Parameters must be positive numbers",
-        //    "because an image has to have positive width/height");
+        Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Create(1, -1));
+        Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
     }
     [Fact]
     public void WhenCreatingABlankImageWithNegativeWidthThenThrowException()
     {
-        //Action act = () => Image.Create(-1, 1);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("Invalid image size given for creation. Parameters must be positive numbers",
-        //    "because an image has to have positive width/height");
+        Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Create(-1, 1));
+        Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
     }
     [Fact]
     public void WhenCreatingABlankImageWithNegativeSizesThenThrowException()
     {
-        //Action act = () => Image.Create(-1, -1);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("Invalid image size given for creation. Parameters must be positive numbers",
-        //    "because an image has to have positive width/height");
-    }
-    [Fact]
-    public void WhenCreatingABlankImageWithZeroWidthThenThrowException()
-    {
-        //Action act = () => Image.Create(0, 1);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("Invalid image size given for creation. Parameters must be positive numbers",
-        //    "because an image has to have positive width/height");
+        Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Create(-1, -1));
+        Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
     }
     [Fact]
     public void WhenCreatingABlankImageWithZeroHeightThenThrowException()
     {
-        //Action act = () => Image.Create(1, 0);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("Invalid image size given for creation. Parameters must be positive numbers",
-        //    "because an image has to have positive width/height");
+        Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Create(1, 0));
+        Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
+    }
+    [Fact]
+    public void WhenCreatingABlankImageWithZeroWidthThenThrowException()
+    {
+        Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Create(0, 1));
+        Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
     }
     [Fact]
     public void WhenCreatingABlankImageWithZeroParametersThenThrowException()
     {
-        //Action act = () => Image.Create(0, 0);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("Invalid image size given for creation. Parameters must be positive numbers",
-        //    "because an image has to have positive width/height");
+        Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Create(0, 0));
+        Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
     }
     [Fact]
     public void WhenCreatingAnImageFromAValidFileGiveAValidImage()
     {
         string filepath = "";
         Image fromFile = Image.Load(filepath);
+        //arbitraily passing in pixelformat.argb now and 0, 0
         ValidateImage(fromFile, 0, 0, PixelFormat.ARGB);
     }
 
@@ -101,43 +96,44 @@ public partial class GraphicsUnitTests
     [Fact]
     public void WhenCreatingAnImageFromAMalformedPathThenThrowException()
     {
-        //string invalidFilepath = "C://";
-        //Action act = () => Image.Load(invalidFilepath);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("Malformed file path given",
-        //    "because you can't read a wrongly formed path");
+        //place holder string to demonstrate what would be the error case
+        string invalidFilepath = "C://";
+        Exception exception = Assert.Throws<FileNotFoundException>(() => Image.Load(invalidFilepath));
+        Assert.Equal("Malformed file path given", exception.Message);
     }
     [Fact]
     public void WhenCreatingAnImageFromAnUnfoundPathThenThrowException()
     {
-        //string invalidFilepath = "C:\\Documents\\Documents\\Documents\\documents.jpeg";
-        //Action act = () => Image.Load(invalidFilepath);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("Path not found",
-        //    "because you can't read from an unexistent path");
+        //place holder string to demonstrate what would be the error case
+        string invalidFilepath = "C:\\Documents\\Documents\\Documents\\documents.jpeg";
+        Exception exception = Assert.Throws<FileNotFoundException>(() => Image.Load(invalidFilepath));
+        Assert.Equal("Malformed file path given", exception.Message);
     }
     [Fact]
-    public void WhenCreatingAnImageFromAnThenThrowException()
+    public void WhenCreatingAnImageFromAFileTypeThatIsNotAnImageThenThrowException()
     {
-        //string invalidFilepath = "C:\\Documents\\doc.docx";
-        //Action act = () => Image.Load(invalidFilepath);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("File path not an image",
-        //    "because you can't read an image from a non-image file");
+        //place holder string to demonstrate what would be the error case
+        string invalidFilepath = "C:\\Documents\\doc.docx";
+        Exception exception = Assert.Throws<FileLoadException>(() => Image.Load(invalidFilepath));
+        Assert.Equal("Path given is not an image", exception.Message);
     }
 
     /* Tests Load(stream) mehtod*/
     [Fact]
     public void WhenCreatingAnImageFromAValidStreamThenGiveValidImage()
     {
+        //placeholder stream
         Stream stream = null;
         Image fromStream = Image.Load(stream);
+        //arbitraily passing in pixelformat.argb now and 0, 0
         ValidateImage(fromStream, 0, 0, PixelFormat.ARGB);
     }
     [Fact]
     public void WhenCreatingAnImageFromAnInvalidStreamThenThrowException()
     {
-        //Stream stream = new Stream();
-        //Action act = () => Image.Load(stream);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("Invalid image creation stream",
-        //    "because you can't read an image from a non existent stream");
+        Stream stream = null;
+        Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Load(stream));
+        Assert.Equal("Stream given is not valid", exception.Message);
     }
 
     /* Test Resize */
@@ -145,35 +141,79 @@ public partial class GraphicsUnitTests
     public void WhenResizingEmptyImageThenGiveAValidatedResizedImage()
     {
         Image emptyResizeSquare = Image.Create(100, 100);
-        //emptyResizeSquare.Resize(10, 10);
-        ValidateImage(emptyResizeSquare, 10, 10, emptyResizeSquare.PixelFormat);
+        emptyResizeSquare.Resize(10, 10);
+        //arbitraily passing in pixelformat.argb now 
+        ValidateImage(emptyResizeSquare, 10, 10, PixelFormat.ARGB);
     }
     [Fact]
     public void WhenResizingImageLoadedFromFileThenGiveAValidatedResizedImage()
     {
         string filepath = "";
         Image fromFileResizeSquare = Image.Load(filepath);
-        //fromFileResizeSquare.Resize(10, 10);
-        ValidateImage(fromFileResizeSquare, 10, 10, fromFileResizeSquare.PixelFormat);
+        fromFileResizeSquare.Resize(10, 10);
+        //arbitraily passing in pixelformat.argb now 
+        ValidateImage(fromFileResizeSquare, 10, 10, PixelFormat.ARGB);
     }
     [Fact]
     public void WhenResizingImageLoadedFromStreamThenGiveAValidatedResizedImage()
     {
         Stream stream = null;
         Image fromStreamResizeSquare = Image.Load(stream);
-        //fromStreamResizeSquare.Resize(10, 10);
-        ValidateImage(fromStreamResizeSquare, 10, 10, fromStreamResizeSquare.PixelFormat);
+        fromStreamResizeSquare.Resize(10, 10);
+        //arbitraily passing in pixelformat.argb now 
+        ValidateImage(fromStreamResizeSquare, 10, 10, PixelFormat.ARGB);
     }
 
     /* Testing Resize parameters */
     [Fact]
+    public void WhenResizingImageGivenNegativeHeightThenThrowException()
+    {
+        Image img = Image.Create(1, 1);
+        //Not sure if this is how to do this
+        Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(-1, 1));
+        Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
+    }
+    [Fact]
+    public void WhenResizingImageGivenNegativeWidthThenThrowException()
+    {
+        Image img = Image.Create(1, 1);
+        //Not sure if this is how to do this
+        Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(1, -1));
+        Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
+    }
+    [Fact]
+    public void WhenResizingImageGivenNegativeSizesThenThrowException()
+    {
+        Image img = Image.Create(1, 1);
+        //Not sure if this is how to do this
+        Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(-1, -1));
+        Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
+    }
+    [Fact]
+    public void WhenResizingImageGivenZeroHeightThenThrowException()
+    {
+        Image img = Image.Create(1, 1);
+        //Not sure if this is how to do this
+        Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(0, 1));
+        Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
+    }
+    [Fact]
     public void WhenResizingImageGivenZeroWidthThenThrowException()
     {
+        Image img = Image.Create(1, 1);
         //Not sure if this is how to do this
-        //Action act = () => ImageExtensions.Resize(Image.Create(100, 100), 10, 10);
-        //act.ShouldThrow<InvalidOperationException>().WithMessage("Invalid image size given for creation. Parameters must be positive numbers",
-        //    "because an image has to have positive width/height");
+        Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(1, 0));
+        Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
+    [Fact]
+    public void WhenResizingImageGivenZeroSizesThenThrowException()
+    {
+        Image img = Image.Create(1, 1);
+        //Not sure if this is how to do this
+        Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(0, 0));
+        Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
+    }
+
 
 
 
