@@ -87,6 +87,5 @@ namespace System.Drawing.Graphics {
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         public static extern int gdImageFile(IntPtr im, string filename);
-
     }
 }
