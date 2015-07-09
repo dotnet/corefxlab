@@ -40,7 +40,7 @@ namespace System.Drawing.Graphics {
 
         [StructLayout(LayoutKind.Sequential)]
         //[CLSCompliant(false)]
-        unsafe internal struct gdImagePtr
+        unsafe internal struct gdImageStruct
         {
             public IntPtr pixels;
             public int sx;
@@ -84,6 +84,10 @@ namespace System.Drawing.Graphics {
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr gdImageCreate(int sx, int sy);
+
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        public static extern void gdImageCopyResized(IntPtr dst, IntPtr src, int dstX, int dstY,
+                                        int srcX, int srcY, int dstW, int dstH, int srcW, int srcH);
 
     }
 }
