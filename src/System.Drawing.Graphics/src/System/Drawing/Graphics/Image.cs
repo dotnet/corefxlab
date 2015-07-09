@@ -76,6 +76,11 @@ namespace System.Drawing.Graphics
             throw new NotImplementedException();
         }
 
+            /* Manipulations */
+        public Image Write(string im, string dst)
+        {
+            return DLLimports.gdImageFile(im, dst, GD_True);
+        }
 
     }
 }
