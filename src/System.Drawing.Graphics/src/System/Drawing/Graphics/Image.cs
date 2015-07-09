@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-
+using System.Runtime.InteropServices;
 
 namespace System.Drawing.Graphics
 {
@@ -19,12 +19,15 @@ namespace System.Drawing.Graphics
 
     public class Image
     {
-            /* Private Fields */
+        /* Private Fields */
+        ////do we even need any of this anymore??
         private byte[] _data = null;
         private int _width = 0;
         private int _height = 0;
         private PixelFormat _pixelFormat = PixelFormat.ARGB;
         private int _bytesPerPixel = 0;
+
+        private DLLImports.gdImageStruct _gdImgStruct;
 
             /* Properties */
         public int WidthInPixels
@@ -65,7 +68,8 @@ namespace System.Drawing.Graphics
             /* Constructors */
         private Image(int width, int height)
         {
-            throw new NotImplementedException();
+            IntPtr gdImagePtr = DLLImports.gdImageCreate(width, height);
+            _gdImgStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImagePtr);
         }
         private Image(string filepath)
         {

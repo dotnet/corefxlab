@@ -40,7 +40,7 @@ namespace System.Drawing.Graphics {
 
         [StructLayout(LayoutKind.Sequential)]
         //[CLSCompliant(false)]
-        unsafe internal struct gdImagePtr
+        unsafe internal struct gdImageStruct
         {
             public IntPtr pixels;
             public int sx;
