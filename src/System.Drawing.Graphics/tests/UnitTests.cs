@@ -19,51 +19,39 @@ public partial class GraphicsUnitTests
 
     }
 
-<<<<<<< HEAD
     [Fact(Skip = "Not Implemented yet...")]
     public static void WhenCreatingAnEmptyImageThenValidateAnImage()
     {
         ////create an empty 10x10 image
         Image emptyTenSquare = Image.Create(10, 10);
         ValidateImage(emptyTenSquare, 10, 10, PixelFormat.Argb);
-=======
-    //[Fact]
-    //public static void WhenCreatingAnEmptyImageThenValidateAnImage()
-    //{
-    //    ////create an empty 10x10 image
-    //    Image emptyTenSquare = Image.Create(10, 10);
-    //    ValidateImage(emptyTenSquare, 10, 10, PixelFormat.ARGB);
->>>>>>> upstream/master
-
-    //}
-
-    //private static void ValidateImage(Image image, int widthToCompare, int heightToCompare,
-    //                           PixelFormat formatToCompare)
-    //{
-    //    //ApprovalTests.Approvals.Verify(image.ToString());
-    //    //image.HeightInPixels.ShouldBeEquivalentTo(heightToCompare, "the height of the image we want to check is this");
-    //    //image.PixelFormat.Should().Be(formatToCompare, "this is the Pixel Format this image should be");
-    //    //image.Data.Should().NotBeNull("an initialized image data should neve be null");
-    //    Assert.Equal(image.WidthInPixels, widthToCompare);
-    //    Assert.Equal(image.HeightInPixels, heightToCompare);
-    //    Assert.NotNull(image.Data);
+    }
+    private static void ValidateImage(Image image, int widthToCompare, int heightToCompare,
+                               PixelFormat formatToCompare)
+    {
+        //ApprovalTests.Approvals.Verify(image.ToString());
+        //image.HeightInPixels.ShouldBeEquivalentTo(heightToCompare, "the height of the image we want to check is this");
+        //image.PixelFormat.Should().Be(formatToCompare, "this is the Pixel Format this image should be");
+        //image.Data.Should().NotBeNull("an initialized image data should neve be null");
+        Assert.Equal(image.WidthInPixels, widthToCompare);
+        Assert.Equal(image.HeightInPixels, heightToCompare);
+        Assert.NotNull(image.Data);
 
 
-    //}
+    }
 
-<<<<<<< HEAD
     /* Tests Create Method */
     [Fact(Skip = "Not Implemented yet...")]
     public void WhenCreatingABlankImageWithNegativeHeightThenThrowException()
     {
         Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Create(1, -1));
-        Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
+        //Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
     }
     [Fact(Skip = "Not Implemented yet...")]
     public void WhenCreatingABlankImageWithNegativeWidthThenThrowException()
     {
         Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Create(-1, 1));
-        Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
+        //Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
     }
     [Fact(Skip = "Not Implemented yet...")]
     public void WhenCreatingABlankImageWithNegativeSizesThenThrowException()

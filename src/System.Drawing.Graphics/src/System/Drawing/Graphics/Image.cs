@@ -27,7 +27,6 @@ namespace System.Drawing.Graphics
         private PixelFormat _pixelFormat = PixelFormat.Argb;
         private int _bytesPerPixel = 0;
 
-        private DLLImports.gdImageStruct _gdImgStruct;
 
             /* Properties */
         public int WidthInPixels
@@ -68,8 +67,7 @@ namespace System.Drawing.Graphics
             /* Constructors */
         private Image(int width, int height)
         {
-            IntPtr gdImagePtr = DLLImports.gdImageCreate(width, height);
-            _gdImgStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImagePtr);
+            throw new NotImplementedException();
         }
         private Image(string filepath)
         {
@@ -79,12 +77,5 @@ namespace System.Drawing.Graphics
         {
             throw new NotImplementedException();
         }
-
-            /* Write to a file */
-        public void WriteToFile( Image image , string filename)
-        {
-
-        }
-
     }
 }
