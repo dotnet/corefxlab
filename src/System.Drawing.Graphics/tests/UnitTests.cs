@@ -216,36 +216,16 @@ public partial class GraphicsUnitTests
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
 
+
+    [Fact]
+    public void WhenWritingAnImageToAValidFileWriteToAValidFile()
+    {
+        Image fromFile = Image.Create(10, 10);
+        fromFile.WriteToFile(@"C:\Users\t-dahid\Pictures\TEST.jpg");
+    }
+
 }
 
 
 
 
-    //[Fact]
-    //public void WhenWritingAnImageToAValidFileWriteToAValidFile()
-    //{
-    //    string filepath = "";
-    //    string newfilepath = "";
-    //    int height = 0;
-    //    int width = 0;
-
-    //    PixelFormat format = PixelFormat.RGBA;
-
-    //    Image fromFile = Image.Load(filepath);
-    //    fromFile.Save(newfilepath, format);
-    //    Assert.AreEqual(height, fromFile.HeightInPixels);
-    //    Assert.AreEqual(width, fromFile.WidthInPixels);
-    //    Assert.IsNotNull(fromFile.Data);
-    //    Assert.AreEqual(format, fromFile.PixelFormat);
-
-
-    //}
-
-    //[Fact]
-    //public void WhenWritingAByteArrayToFileToAValidFile(string _FileName, byte[] _ByteArray)
-    //{
-    //    System.IO.FileStream _FileStream = new System.IO.FileStream(_FileName, System.IO.FileMode.Create, System.IO.FileAccess.Write);
-    //    _FileStream.Write(_ByteArray, 0, _ByteArray.Length);
-    //    _FileStream.Close();
-
-    //}
