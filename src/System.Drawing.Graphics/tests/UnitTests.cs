@@ -10,13 +10,23 @@ using System.IO;
 
 public partial class GraphicsUnitTests
 {
-    [Fact]
-    public static void TestForLibGDCalls()
-    {
-        System.Console.WriteLine("hi");
-        IntPtr imgPtr = DLLImports.gdImageCreate(1, 1);
-        System.Console.WriteLine(imgPtr.ToInt64());
+    //[Fact]
+    //public static void TestForLibGDCalls()
+    //{
+    //    System.Console.WriteLine("hi");
+    //    IntPtr imgPtr = DLLImports.gdImageCreate(1, 1);
+    //    System.Console.WriteLine(imgPtr.ToInt64());
+    //    System.Console.WriteLine("-----");
+    //}
 
+    [Fact]
+    public static void Test2()
+    {
+        System.Console.WriteLine("Test 2");
+        Image image = Image.Create(3, 1);
+        System.Console.WriteLine(image.WidthInPixels);
+        System.Console.WriteLine(image.HeightInPixels);
+        image.Write("C:\\Users\\t-xix\\Pictures\\test.jpg");
     }
 
     //[Fact]

@@ -20,16 +20,13 @@ namespace System.Drawing.Graphics
     public class Image
     {
         /* Private Fields */
-        ////do we even need any of this anymore??
-        private byte[] _data = null;
-        private int _width = 0;
-        private int _height = 0;
+        private int _height;
+        private int _width;
+        private byte[] _pixelData = null;
         private PixelFormat _pixelFormat = PixelFormat.ARGB;
         private int _bytesPerPixel = 0;
 
-        private DLLImports.gdImageStruct _gdImgStruct;
-
-            /* Properties */
+        /* Properties */
         public int WidthInPixels
         {
             get { return _width; }
@@ -42,10 +39,11 @@ namespace System.Drawing.Graphics
         {
             get { return _pixelFormat; }
         }
-        public byte[] Data
+        public byte[] PixelData
         {
-            get { return _data; }
+            get { return _pixelData; }
         }
+       
         public int BytesPerPixel
         {
             get { return _bytesPerPixel; }
@@ -65,11 +63,35 @@ namespace System.Drawing.Graphics
             return new Image(stream);
         }
 
-            /* Constructors */
+        /* Write */
+        public void Write(string filePath)
+        {
+            unsafe{
+                fixed (byte* pPixelData = _pixelData)
+                {
+                    DLLImports.gdImageStruct s = new DLLImports.gdImageStruct();
+                    s.pixels = pPixelData;
+                    s.sx = _width;
+                    s.sy = _height;
+                    DLLImports.gdImageFile(s, filePath);
+                }
+            }
+        }
+
+        /* Constructors */
         private Image(int width, int height)
         {
-            IntPtr gdImagePtr = DLLImports.gdImageCreate(width, height);
-            _gdImgStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImagePtr);
+            if(width > 0 && height > 0)
+            {
+                _width = width;
+                _height = height;
+                _pixelData = new byte[width * height];
+            }
+            else
+            {
+                throw new Exception();
+            }
+            
         }
         private Image(string filepath)
         {
