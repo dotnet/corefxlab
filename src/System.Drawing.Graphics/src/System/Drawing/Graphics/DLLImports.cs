@@ -42,7 +42,7 @@ namespace System.Drawing.Graphics {
         //[CLSCompliant(false)]
         unsafe internal struct gdImageStruct
         {
-            public byte* pixels;
+            public byte** pixels;
             public int sx;
             public int sy;
             public int colorsTotal;
@@ -85,8 +85,12 @@ namespace System.Drawing.Graphics {
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern IntPtr gdImageCreate(int sx, int sy);
 
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode, EntryPoint = "_gdImageFile@8")]
+        internal static extern int gdImageFile(gdImageStruct im, string filename);
+
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern void gdImageCopyResized(ref gdImageStruct destination, ref gdImageStruct source, int destinationX, int destinationY,
                                         int sourceX, int sourceY, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight);
+
     }
 }
