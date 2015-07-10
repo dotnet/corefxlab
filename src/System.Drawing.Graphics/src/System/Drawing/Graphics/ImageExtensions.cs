@@ -15,8 +15,11 @@ namespace System.Drawing.Graphics
         //Resizing
         public static Image Resize(this Image sourceImage, int width, int height)
         {
-
-            throw new NotImplementedException();
+            Image destinationImage = Image.Create(width, height);
+            DLLImports.gdImageCopyResized(ref destinationImage.gdImageStruct, ref sourceImage.gdImageStruct, 0, 0, 0, 0,
+                destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
+            return destinationImage;
+            
             //    //throw new NotImplementedException();
             //    if (width > 0 && height > 0)
             //    {

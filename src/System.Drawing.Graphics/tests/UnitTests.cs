@@ -10,23 +10,26 @@ using System.IO;
 
 public partial class GraphicsUnitTests
 {
-    //[Fact]
-    //public static void TestForLibGDCalls()
-    //{
-    //    System.Console.WriteLine("hi");
 
-    //    DLLImports.gdImageCreate(1, 1);
-    //    System.Console.WriteLine(imgPtr.ToInt64());
-    //    System.Console.WriteLine("-----");
+    //[Fact]
+    //public static void Test1()
+    //{
+    //    System.Console.WriteLine("Test 1");
+    //    Image image = Image.Create(100, 90);
+    //    System.Console.WriteLine(image.WidthInPixels);
+    //    System.Console.WriteLine(image.HeightInPixels);
+    //    Image resizedImage = image.Resize(50, 50);
+    //    System.Console.WriteLine(resizedImage.WidthInPixels);
+    //    System.Console.WriteLine(resizedImage.HeightInPixels);
     //}
 
     [Fact]
     public static void Test2()
     {
         System.Console.WriteLine("Test 2");
-        Image image = Image.Create(3, 1);
-        System.Console.WriteLine(image.WidthInPixels);
-        System.Console.WriteLine(image.HeightInPixels);
+        Image image = Image.Load("C:\\Users\\t-xix\\Pictures\\Test\\desk.JPG");
+        //System.Console.WriteLine(image.WidthInPixels);
+        //System.Console.WriteLine(image.HeightInPixels);
     }
 
     [Fact(Skip = "Not Implemented yet...")]
