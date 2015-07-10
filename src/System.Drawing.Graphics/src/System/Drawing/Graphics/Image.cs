@@ -19,32 +19,32 @@ namespace System.Drawing.Graphics
 
     public class Image
     {
-        /* Private Fields */
-        ////do we even need any of this anymore??
-        private byte[] _data = null;
-        private int _width = 0;
-        private int _height = 0;
+        ///* Private Fields */
+        //private int _height;
+        //private int _width;
+        private byte[][] _pixelData = null;
         private PixelFormat _pixelFormat = PixelFormat.Argb;
         private int _bytesPerPixel = 0;
 
+        DLLImports.gdImageStruct gdImageStruct;
 
-            /* Properties */
         public int WidthInPixels
         {
-            get { return _width; }
+            get { return gdImageStruct.sx; }
         }
         public int HeightInPixels
         {
-            get { return _height; }
+            get { return gdImageStruct.sy; }
         }
         public PixelFormat PixelFormat
         {
             get { return _pixelFormat; }
         }
-        public byte[] Data
+        public byte[][] PixelData
         {
-            get { return _data; }
+            get { return _pixelData; }
         }
+       
         public int BytesPerPixel
         {
             get { return _bytesPerPixel; }
@@ -64,14 +64,19 @@ namespace System.Drawing.Graphics
             return new Image(stream);
         }
 
-            /* Constructors */
+        /* Write */
+        public void Write(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        /* Constructors */
         private Image(int width, int height)
         {
             if(width > 0 && height > 0)
             {
-                _width = width;
-                _height = height;
-                _data = new byte[width * height];
+                IntPtr gdImageStructPtr = DLLImports.gdImageCreate(width, height);
+                gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
             }
             else
             {
