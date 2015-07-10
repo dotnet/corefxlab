@@ -1,0 +1,12 @@
+﻿{
+  "dependencies": {
+    "System.Diagnostics.Contracts": "4.0.0-beta-*",
+    "System.Diagnostics.Debug": "4.0.10-beta-*",
+    "System.Globalization": "4.0.10-beta-*",
+    "System.Text.RegularExpressions": "4.0.10-beta-*",
+    "System.Xml.ReaderWriter": "4.0.10-beta-*"
+  },
+  "frameworks": {
+    "dnxcore50": {}
+  }
+}
