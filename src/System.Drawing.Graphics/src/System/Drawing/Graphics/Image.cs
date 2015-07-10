@@ -87,7 +87,7 @@ namespace System.Drawing.Graphics
         {
             IntPtr gdImageStructPtr = DLLImports.gdImageCreateFromFile(filepath);
             System.Console.WriteLine(gdImageStructPtr);
-            //gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+            gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
             //System.Console.WriteLine(gdImageStruct);
         }
         private Image(Stream stream)

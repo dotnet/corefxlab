@@ -28,8 +28,8 @@ public partial class GraphicsUnitTests
     {
         System.Console.WriteLine("Test 2");
         Image image = Image.Load("C:\\Users\\t-xix\\Pictures\\Test\\desk.JPG");
-        //System.Console.WriteLine(image.WidthInPixels);
-        //System.Console.WriteLine(image.HeightInPixels);
+        System.Console.WriteLine(image.WidthInPixels);
+        System.Console.WriteLine(image.HeightInPixels);
     }
 
     [Fact(Skip = "Not Implemented yet...")]
