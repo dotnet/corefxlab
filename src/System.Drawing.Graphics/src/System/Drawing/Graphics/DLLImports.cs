@@ -42,55 +42,55 @@ namespace System.Drawing.Graphics {
         //[CLSCompliant(false)]
         unsafe internal struct gdImageStruct
         {
-            public byte* pixels;
+            public byte** pixels;
             public int sx;
             public int sy;
-            //public int colorsTotal;
-            //public fixed int red[gdMaxColors];
-            //public fixed int green[gdMaxColors];
-            //public fixed int blue[gdMaxColors];
-            //public fixed int open[gdMaxColors];
-            //public int transparent;
-            //public IntPtr polyInts;
-            //public int polyAllocated;
-            //IntPtr brush;
-            //IntPtr tile;
-            //public int styleLength;
-            //public int stylePos;
-            //public int style;
-            //public int interlace;
-            //public int thick;
-            //public fixed int alpha[gdMaxColors];
-            //public int trueColor;
-            //public int** tpixels;
-            //public int alphaBlendingFlag;
-            //public int saveAlphaFlag;
-            //public int AA;
-            //public int AA_color;
-            //public int AA_dont_blend;
-            //public int cx1;
-            //public int cy1;
-            //public int cx2;
-            //public int cy2;
-            //public uint res_x;
-            //public uint res_y;
-            //public int paletteQuantizationMethod;
-            //public int paletteQuantizationSpeed;
-            //public int paletteQuantizationMinQuality;
-            //public int paletteQuantizationMaxQuality;
-            //gdInterpolationMethod interpolation_id;
-            //interpolation_method interpolation;
+            public int colorsTotal;
+            public fixed int red[gdMaxColors];
+            public fixed int green[gdMaxColors];
+            public fixed int blue[gdMaxColors];
+            public fixed int open[gdMaxColors];
+            public int transparent;
+            public IntPtr polyInts;
+            public int polyAllocated;
+            IntPtr brush;
+            IntPtr tile;
+            public int styleLength;
+            public int stylePos;
+            public int style;
+            public int interlace;
+            public int thick;
+            public fixed int alpha[gdMaxColors];
+            public int trueColor;
+            public int** tpixels;
+            public int alphaBlendingFlag;
+            public int saveAlphaFlag;
+            public int AA;
+            public int AA_color;
+            public int AA_dont_blend;
+            public int cx1;
+            public int cy1;
+            public int cx2;
+            public int cy2;
+            public uint res_x;
+            public uint res_y;
+            public int paletteQuantizationMethod;
+            public int paletteQuantizationSpeed;
+            public int paletteQuantizationMinQuality;
+            public int paletteQuantizationMaxQuality;
+            gdInterpolationMethod interpolation_id;
+            interpolation_method interpolation;
         }
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        internal static extern gdImageStruct gdImageCreate(int sx, int sy);
-
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        internal static extern void gdImageCopyResized(gdImageStruct dst, gdImageStruct src, int dstX, int dstY,
-                                        int srcX, int srcY, int dstW, int dstH, int srcW, int srcH);
+        internal static extern IntPtr gdImageCreate(int sx, int sy);
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode, EntryPoint = "_gdImageFile@8")]
-        //[DllImport("libgdx86.dll")]
         internal static extern int gdImageFile(gdImageStruct im, string filename);
+
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        internal static extern void gdImageCopyResized(ref gdImageStruct destination, ref gdImageStruct source, int destinationX, int destinationY,
+                                        int sourceX, int sourceY, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight);
+
     }
 }

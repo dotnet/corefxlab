@@ -12,34 +12,35 @@ namespace System.Drawing.Graphics
     //assuming only these three types for now (32 bit)
     public enum PixelFormat
     {
-        ARGB,
-        RGBA,
-        CMYK
+        Argb,
+        Rgba,
+        Cmyk
     }
 
     public class Image
     {
-        /* Private Fields */
-        private int _height;
-        private int _width;
-        private byte[] _pixelData = null;
-        private PixelFormat _pixelFormat = PixelFormat.ARGB;
+        ///* Private Fields */
+        //private int _height;
+        //private int _width;
+        private byte[][] _pixelData = null;
+        private PixelFormat _pixelFormat = PixelFormat.Argb;
         private int _bytesPerPixel = 0;
 
-        /* Properties */
+        DLLImports.gdImageStruct gdImageStruct;
+
         public int WidthInPixels
         {
-            get { return _width; }
+            get { return gdImageStruct.sx; }
         }
         public int HeightInPixels
         {
-            get { return _height; }
+            get { return gdImageStruct.sy; }
         }
         public PixelFormat PixelFormat
         {
             get { return _pixelFormat; }
         }
-        public byte[] PixelData
+        public byte[][] PixelData
         {
             get { return _pixelData; }
         }
@@ -66,16 +67,7 @@ namespace System.Drawing.Graphics
         /* Write */
         public void Write(string filePath)
         {
-            unsafe{
-                fixed (byte* pPixelData = _pixelData)
-                {
-                    DLLImports.gdImageStruct s = new DLLImports.gdImageStruct();
-                    s.pixels = pPixelData;
-                    s.sx = _width;
-                    s.sy = _height;
-                    DLLImports.gdImageFile(s, filePath);
-                }
-            }
+            throw new NotImplementedException();
         }
 
         /* Constructors */
@@ -83,15 +75,13 @@ namespace System.Drawing.Graphics
         {
             if(width > 0 && height > 0)
             {
-                _width = width;
-                _height = height;
-                _pixelData = new byte[width * height];
+                IntPtr gdImageStructPtr = DLLImports.gdImageCreate(width, height);
+                gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
             }
             else
             {
-                throw new Exception();
+                throw new InvalidOperationException("Parameters for creating an image must be positive integers.") ;
             }
-            
         }
         private Image(string filepath)
         {
@@ -101,7 +91,5 @@ namespace System.Drawing.Graphics
         {
             throw new NotImplementedException();
         }
-
-
     }
 }
