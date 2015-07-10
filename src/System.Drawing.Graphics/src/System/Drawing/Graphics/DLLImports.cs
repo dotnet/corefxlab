@@ -5,7 +5,7 @@
 using System.Runtime.InteropServices;
 
 namespace System.Drawing.Graphics {
-    public class DLLImports
+    internal class DLLImports
     {
         const int gdMaxColors = 256;
 
@@ -42,7 +42,7 @@ namespace System.Drawing.Graphics {
         //[CLSCompliant(false)]
         unsafe internal struct gdImageStruct
         {
-            public IntPtr pixels;
+            public byte* pixels;
             public int sx;
             public int sy;
             //public int colorsTotal;
@@ -83,10 +83,10 @@ namespace System.Drawing.Graphics {
         }
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        public static extern IntPtr gdImageCreate(int sx, int sy);
+        internal static extern IntPtr gdImageCreate(int sx, int sy);
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        public static extern void gdImageCopyResized(IntPtr destination, IntPtr source, int destinationX, int destinationY,
+        internal static extern void gdImageCopyResized(ref gdImageStruct destination, ref gdImageStruct source, int destinationX, int destinationY,
                                         int sourceX, int sourceY, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight);
     }
 }

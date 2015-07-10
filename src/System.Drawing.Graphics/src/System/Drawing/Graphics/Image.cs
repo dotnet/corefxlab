@@ -67,7 +67,16 @@ namespace System.Drawing.Graphics
             /* Constructors */
         private Image(int width, int height)
         {
-            throw new NotImplementedException();
+            if(width > 0 && height > 0)
+            {
+                _width = width;
+                _height = height;
+                _data = new byte[width * height];
+            }
+            else
+            {
+                throw new InvalidOperationException("Parameters for creating an image must be positive integers.") ;
+            }
         }
         private Image(string filepath)
         {
