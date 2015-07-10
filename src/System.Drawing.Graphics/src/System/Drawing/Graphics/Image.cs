@@ -21,7 +21,7 @@ namespace System.Drawing.Graphics
     {
         /* Private Fields */
         ////do we even need any of this anymore??
-        private byte[] _data = null;
+        private byte[][] _data = null;
         private int _width = 0;
         private int _height = 0;
         private PixelFormat _pixelFormat = PixelFormat.Argb;
@@ -41,7 +41,7 @@ namespace System.Drawing.Graphics
         {
             get { return _pixelFormat; }
         }
-        public byte[] Data
+        public byte[][] Data
         {
             get { return _data; }
         }
@@ -71,7 +71,11 @@ namespace System.Drawing.Graphics
             {
                 _width = width;
                 _height = height;
-                _data = new byte[width * height];
+                _data = new byte[height][];
+                for (int i = 0; i < height; i++)
+                {
+                    _data[i] = new byte[width];
+                }
             }
             else
             {
@@ -80,6 +84,11 @@ namespace System.Drawing.Graphics
         }
         private Image(string filepath)
         {
+            unsafe
+            {
+
+            }
+
             throw new NotImplementedException();
         }
         private Image(Stream stream)
