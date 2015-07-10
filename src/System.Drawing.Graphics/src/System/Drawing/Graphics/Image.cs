@@ -75,12 +75,12 @@ namespace System.Drawing.Graphics
         /* Write */
         public void WriteToFile(string filePath)
         {
-            //DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+            //check valid file path
+                
              if(DLLImports.gdImageFile(gdImageStructPtr, filePath) == 0)
             {
-                throw new InvalidOperationException("FAILed to write to file.");
+                throw new Exception("Failed to write to File.");
             }
-            //free??
         }
 
         /* Constructors */
