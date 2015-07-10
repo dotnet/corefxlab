@@ -26,15 +26,23 @@ namespace System.Drawing.Graphics
         private PixelFormat _pixelFormat = PixelFormat.Argb;
         private int _bytesPerPixel = 0;
 
-        internal DLLImports.gdImageStruct gdImageStruct;
+        internal IntPtr gdImageStructPtr;
 
         public int WidthInPixels
         {
-            get { return gdImageStruct.sx; }
+            get
+            {
+                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                return gdImageStruct.sx;
+            }
         }
         public int HeightInPixels
         {
-            get { return gdImageStruct.sy; }
+            get
+            {
+                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                return gdImageStruct.sy;
+            }
         }
         public PixelFormat PixelFormat
         {
@@ -65,9 +73,14 @@ namespace System.Drawing.Graphics
         }
 
         /* Write */
-        public void Write(string filePath)
+        public void WriteToFile(string filePath)
         {
-            throw new NotImplementedException();
+            //DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+             if(DLLImports.gdImageFile(gdImageStructPtr, filePath) == 0)
+            {
+                throw new InvalidOperationException("FAILed to write to file.");
+            }
+            //free??
         }
 
         /* Constructors */
@@ -75,8 +88,7 @@ namespace System.Drawing.Graphics
         {
             if(width > 0 && height > 0)
             {
-                IntPtr gdImageStructPtr = DLLImports.gdImageCreate(width, height);
-                gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                gdImageStructPtr = DLLImports.gdImageCreate(width, height);
             }
             else
             {
@@ -85,10 +97,7 @@ namespace System.Drawing.Graphics
         }
         private Image(string filepath)
         {
-            IntPtr gdImageStructPtr = DLLImports.gdImageCreateFromFile(filepath);
-            System.Console.WriteLine(gdImageStructPtr);
-            gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-            //System.Console.WriteLine(gdImageStruct);
+            gdImageStructPtr = DLLImports.gdImageCreateFromFile(filepath);
         }
         private Image(Stream stream)
         {

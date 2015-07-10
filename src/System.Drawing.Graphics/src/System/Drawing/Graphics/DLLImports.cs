@@ -88,11 +88,12 @@ namespace System.Drawing.Graphics {
         [DllImport("libgdx86.dll", CharSet = CharSet.Ansi)]
         internal static extern IntPtr gdImageCreateFromFile(string filename);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode, EntryPoint = "_gdImageFile@8")]
-        internal static extern int gdImageFile(gdImageStruct im, string filename);
+        [DllImport("libgdx86.dll", CharSet = CharSet.Ansi, EntryPoint = "_gdImageFile@8")]
+        internal static extern int gdImageFile(IntPtr image, string filename);
+
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        internal static extern void gdImageCopyResized(ref gdImageStruct destination, ref gdImageStruct source, int destinationX, int destinationY,
+        internal static extern void gdImageCopyResized(IntPtr destination, IntPtr source, int destinationX, int destinationY,
                                         int sourceX, int sourceY, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight);
 
 
