@@ -9,13 +9,14 @@ namespace System.Drawing.Graphics
 {
     public static class ImageExtensions
     {
-
-
-
+        
         //Resizing
         public static Image Resize(this Image sourceImage, int width, int height)
         {
-            throw new NotImplementedException();
+            Image destinationImage = Image.Create(width, height);
+            DLLImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
+                destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
+            return destinationImage;
         }
 
             //Transparency
