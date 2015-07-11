@@ -82,15 +82,18 @@ namespace System.Drawing.Graphics {
             interpolation_method interpolation;
         }
 
+        [DllImport("libgdx86.dll", CharSet = CharSet.Ansi)]
+        internal static extern bool gdSupportsFileType(string filename, bool writing);
+
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern IntPtr gdImageCreate(int sx, int sy);
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Ansi)]
         internal static extern IntPtr gdImageCreateFromFile(string filename);
 
+        //had to use mangled name here
         [DllImport("libgdx86.dll", CharSet = CharSet.Ansi, EntryPoint = "_gdImageFile@8")]
-        internal static extern int gdImageFile(IntPtr image, string filename);
-
+        internal static extern bool gdImageFile(IntPtr image, string filename);
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern void gdImageCopyResized(IntPtr destination, IntPtr source, int destinationX, int destinationY,

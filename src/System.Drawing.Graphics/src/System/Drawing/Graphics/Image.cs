@@ -75,12 +75,17 @@ namespace System.Drawing.Graphics
         /* Write */
         public void WriteToFile(string filePath)
         {
-            //DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-             if(DLLImports.gdImageFile(gdImageStructPtr, filePath) == 0)
+            if (!DLLImports.gdSupportsFileType(filePath, true))
             {
-                throw new InvalidOperationException("FAILed to write to file.");
+                throw new InvalidOperationException("libgd doesn't support this file type.");
             }
-            //free??
+            else
+            {
+                if (!DLLImports.gdImageFile(gdImageStructPtr, filePath))
+                {
+                    throw new InvalidOperationException("Failed to write to file.");
+                }
+            }
         }
 
         /* Constructors */
@@ -95,9 +100,19 @@ namespace System.Drawing.Graphics
                 throw new InvalidOperationException("Parameters for creating an image must be positive integers.") ;
             }
         }
-        private Image(string filepath)
+        private Image(string filePath)
         {
-            gdImageStructPtr = DLLImports.gdImageCreateFromFile(filepath);
+
+            if (DLLImports.gdSupportsFileType(filePath, false))
+            {
+                
+                gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
+
+            }
+            else
+            {
+                throw new InvalidOperationException("libgd doesn't support this file type.");
+            }
         }
         private Image(Stream stream)
         {
