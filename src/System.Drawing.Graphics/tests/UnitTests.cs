@@ -74,7 +74,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Create(0, 0));
         Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
     }
-    [Fact]
+    [Fact(Skip = "Not Implemented yet...")]
     public void WhenCreatingAnImageFromAValidFileGiveAValidImage()
     {
         string filepath = "";
@@ -104,13 +104,13 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<FileNotFoundException>(() => Image.Load(invalidFilepath));
         Assert.Equal("Malformed file path given", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenCreatingAnImageFromAFileTypeThatIsNotAnImageThenThrowException()
     {
         //place holder string to demonstrate what would be the error case
         string invalidFilepath = "C:\\Documents\\doc.docx";
         Exception exception = Assert.Throws<FileLoadException>(() => Image.Load(invalidFilepath));
-        Assert.Equal("Path given is not an image", exception.Message);
+        Assert.Equal("File type not supported.", exception.Message);
     }
 
     /* Tests Load(stream) mehtod*/
@@ -132,7 +132,7 @@ public partial class GraphicsUnitTests
     }
 
     /* Test Resize */
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingEmptyImageThenGiveAValidatedResizedImage()
     {
         Image emptyResizeSquare = Image.Create(100, 100);
@@ -160,7 +160,7 @@ public partial class GraphicsUnitTests
     }
 
     /* Testing Resize parameters */
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenNegativeHeightThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -168,7 +168,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(-1, 1));
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenNegativeWidthThenThrowException()
     {
         Image img = Image.Create(1, 1);

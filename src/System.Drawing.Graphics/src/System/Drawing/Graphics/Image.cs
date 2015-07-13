@@ -77,13 +77,13 @@ namespace System.Drawing.Graphics
         {
             if (!DLLImports.gdSupportsFileType(filePath, true))
             {
-                throw new InvalidOperationException("libgd doesn't support this file type.");
+                throw new InvalidOperationException("File type not supported.");
             }
             else
             {
                 if (!DLLImports.gdImageFile(gdImageStructPtr, filePath))
                 {
-                    throw new InvalidOperationException("Failed to write to file.");
+                    throw new FileLoadException("Failed to write to file.");
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new InvalidOperationException("libgd doesn't support this file type.");
+                throw new FileLoadException("File type not supported.");
             }
         }
         private Image(Stream stream)
