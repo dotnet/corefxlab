@@ -11,16 +11,17 @@ using System.IO;
 public partial class GraphicsUnitTests
 {
 
-    //[Fact]
-    //public static void Test2()
-    //{
-    //    System.Console.WriteLine("Test 2");
-    //    Image image = Image.Load("C:\\Users\\t-xix\\Pictures\\Test\\desk.JPG");
-    //    System.Console.WriteLine(image.WidthInPixels);
-    //    System.Console.WriteLine(image.HeightInPixels);
-    //}
+    [Fact]
+    public static void Test()
+    {
+        Image dog1 = Image.Load(@"C:\Users\t-xix\Pictures\dog1.jpg");
+        Image cat2 = Image.Load(@"C:\Users\t-xix\Pictures\cat2.jpg");
+        Image blank = Image.Load(@"C:\Users\t-xix\Pictures\blankslide.jpg");
+        Image blankdogsize = blank.Resize(dog1.WidthInPixels, dog1.HeightInPixels);
 
-
+        blankdogsize.Draw(dog1, 10, 10);
+        blankdogsize.WriteToFile(@"C:\Users\t-xix\Pictures\opacity.jpg");
+    }
 
     [Fact]
     public static void WhenCreatingAnEmptyImageThenValidateAnImage()
@@ -176,7 +177,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(1, -1));
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenNegativeSizesThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -184,7 +185,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(-1, -1));
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenZeroHeightThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -192,7 +193,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(0, 1));
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenZeroWidthThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -200,7 +201,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(1, 0));
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenZeroSizesThenThrowException()
     {
         Image img = Image.Create(1, 1);
