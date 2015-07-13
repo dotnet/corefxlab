@@ -30,12 +30,18 @@ namespace System.Drawing.Graphics
         public static void SetTransparency(this Image image, double percentTransparency)
         {
             throw new NotImplementedException();
+
+        }
+
+        public static void SetTransparencyTest(this Image image)
+        {
+            DLLImports.gdImageColorTransparent(image.gdImageStructPtr, 0);
         }
 
         //Stamping an Image onto another
         public static void Draw(this Image image, Image imageToDraw, int xOffset, int yOffset)
         {
-            throw new NotImplementedException();
+            DLLImports.gdImageCopyMerge(image.gdImageStructPtr, imageToDraw.gdImageStructPtr, xOffset, yOffset, 0, 0, imageToDraw.WidthInPixels, imageToDraw.HeightInPixels, 50);
         }
 
     }

@@ -99,6 +99,12 @@ namespace System.Drawing.Graphics {
         internal static extern void gdImageCopyResized(IntPtr destination, IntPtr source, int destinationX, int destinationY,
                                         int sourceX, int sourceY, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight);
 
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        internal static extern void gdImageCopyMerge(IntPtr destination, IntPtr source, int dstX, int dstY, int srcX, int srcY, int w, int h, int pct);
+
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        internal static extern void gdImageColorTransparent(IntPtr im, int color);
+
 
     }
 }
