@@ -13,10 +13,17 @@ namespace System.Drawing.Graphics
         //Resizing
         public static Image Resize(this Image sourceImage, int width, int height)
         {
-            Image destinationImage = Image.Create(width, height);
-            DLLImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
-                destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
-            return destinationImage;
+            if (width > 0 && height > 0)
+            {
+                Image destinationImage = Image.Create(width, height);
+                DLLImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
+                    destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
+                return destinationImage;
+            }
+            else
+            {
+                throw new InvalidOperationException("Parameters for resizing an image must be positive integers.");
+            }
         }
 
             //Transparency
