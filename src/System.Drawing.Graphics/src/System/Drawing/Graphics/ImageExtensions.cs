@@ -13,7 +13,6 @@ namespace System.Drawing.Graphics
         //Resizing
         public static Image Resize(this Image sourceImage, int width, int height)
         {
-
             if (width > 0 && height > 0)
             {
                 Image destinationImage = Image.Create(width, height);
@@ -25,7 +24,6 @@ namespace System.Drawing.Graphics
             {
                 throw new InvalidOperationException("Parameters for resizing an image must be positive integers.");
             }
-
         }
 
             //Transparency

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.InteropServices;
 
+
 namespace System.Drawing.Graphics
 {
     //assuming only these three types for now (32 bit)
@@ -20,7 +21,8 @@ namespace System.Drawing.Graphics
     public class Image
     {
         ///* Private Fields */
-
+        //private int _height;
+        //private int _width;
         private byte[][] _pixelData = null;
         private PixelFormat _pixelFormat = PixelFormat.Argb;
         private int _bytesPerPixel = 0;
@@ -74,11 +76,17 @@ namespace System.Drawing.Graphics
         /* Write */
         public void WriteToFile(string filePath)
         {
-            //check valid file path
-                
-             if(DLLImports.gdImageFile(gdImageStructPtr, filePath) == 0)
+
+            if (!DLLImports.gdSupportsFileType(filePath, true))
             {
-                throw new Exception("Failed to write to File.");
+                throw new InvalidOperationException("File type not supported or not found.");
+            }
+            else
+            {
+                if (!DLLImports.gdImageFile(gdImageStructPtr, filePath))
+                {
+                    throw new FileLoadException("Failed to write to file.");
+                }
             }
         }
 
@@ -94,9 +102,19 @@ namespace System.Drawing.Graphics
                 throw new InvalidOperationException("Parameters for creating an image must be positive integers.") ;
             }
         }
-        private Image(string filepath)
+        private Image(string filePath)
         {
-            gdImageStructPtr = DLLImports.gdImageCreateFromFile(filepath);
+
+            if (DLLImports.gdSupportsFileType(filePath, false))
+            {
+                
+                gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
+
+            }
+            else
+            {
+                throw new FileLoadException("File type not supported.");
+            }
         }
         private Image(Stream stream)
         {

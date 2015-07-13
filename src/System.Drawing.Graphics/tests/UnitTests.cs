@@ -74,11 +74,13 @@ public partial class GraphicsUnitTests
     public void WhenCreatingAnImageFromAValidFileGiveAValidImage()
     {
         //checking with cat image
-        string filepath = @"C:\Users\t-dahid\Pictures\DemoPictures\1-ImageEx";
+        string filepath = @"C:\Users\t-dahid\Pictures\DemoPictures\1-ImageEx\SquareCat.jpg";
         Image fromFile = Image.Load(filepath);
         System.Console.WriteLine(fromFile.WidthInPixels);
         System.Console.WriteLine(fromFile.HeightInPixels);
         ValidateImage(fromFile, 600, 701);
+        fromFile.WriteToFile(@"C:\Users\t-dahid\Pictures\TESTCAT.jpg");
+
     }
 
     //File I/O should be returning exceptions --> HOW TO DO THIS?!!?
@@ -86,11 +88,11 @@ public partial class GraphicsUnitTests
     //Path not found
     //Path not an image
     /* Tests Load(filepath) method */
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenCreatingAnImageFromAMalformedPathThenThrowException()
     {
         //place holder string to demonstrate what would be the error case
-        string invalidFilepath = "C://";
+        string invalidFilepath = "C:/sadfg/";
         Exception exception = Assert.Throws<FileNotFoundException>(() => Image.Load(invalidFilepath));
         Assert.Equal("Malformed file path given", exception.Message);
     }
@@ -146,14 +148,15 @@ public partial class GraphicsUnitTests
         //arbitraily passing in pixelformat.argb now 
         ValidateImage(emptyResizeSquare, 200, 200);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageLoadedFromFileThenGiveAValidatedResizedImage()
     {
-        string filepath = "";
+        string filepath = @"C:\Users\t-dahid\Pictures\DemoPictures\1-ImageEx\SquareCat.jpg";
         Image fromFileResizeSquare = Image.Load(filepath);
-        fromFileResizeSquare.Resize(10, 10);
+        fromFileResizeSquare = fromFileResizeSquare.Resize(10, 10);
         //arbitraily passing in pixelformat.argb now 
         ValidateImage(fromFileResizeSquare, 10, 10);
+        fromFileResizeSquare.WriteToFile(@"C:\Users\t-dahid\Pictures\TESTCAT22.jpg");
     }
     [Fact(Skip = "Not Implemented yet...")]
     public void WhenResizingImageLoadedFromStreamThenGiveAValidatedResizedImage()
@@ -219,8 +222,9 @@ public partial class GraphicsUnitTests
     [Fact]
     public void WhenWritingAnImageToAValidFileWriteToAValidFile()
     {
-        Image fromFile = Image.Create(10, 10);
-        fromFile.WriteToFile(@"C:\Users\t-dahid\PictuRres\TEST.jpg");
+        Image emptyImage = Image.Create(10, 10);
+        ValidateImage(emptyImage, 10, 10);
+        emptyImage.WriteToFile(@"C:\Users\t-dahid\Pictures\TEST.jpg");
     }
 
 }
