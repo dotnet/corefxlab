@@ -11,24 +11,23 @@ using System.IO;
 public partial class GraphicsUnitTests
 {
 
-    [Fact]
-    public static void Test2()
-    {
-        System.Console.WriteLine("Test 2");
-        Image image = Image.Load("C:\\Users\\t-xix\\Pictures\\Test\\desk.JPG");
-        System.Console.WriteLine(image.WidthInPixels);
-        System.Console.WriteLine(image.HeightInPixels);
-    }
+    //[Fact]
+    //public static void Test2()
+    //{
+    //    System.Console.WriteLine("Test 2");
+    //    Image image = Image.Load("C:\\Users\\t-xix\\Pictures\\Test\\desk.JPG");
+    //    System.Console.WriteLine(image.WidthInPixels);
+    //    System.Console.WriteLine(image.HeightInPixels);
+    //}
 
     [Fact]
     public static void WhenCreatingAnEmptyImageThenValidateAnImage()
     {
         ////create an empty 10x10 image
         Image emptyTenSquare = Image.Create(10, 10);
-        ValidateImage(emptyTenSquare, 10, 10, PixelFormat.Argb);
+        ValidateImage(emptyTenSquare, 10, 10);
     }
-    private static void ValidateImage(Image image, int widthToCompare, int heightToCompare,
-                               PixelFormat formatToCompare)
+    private static void ValidateImage(Image image, int widthToCompare, int heightToCompare)
     {
         Assert.Equal(image.WidthInPixels, widthToCompare);
         Assert.Equal(image.HeightInPixels, heightToCompare);
@@ -71,13 +70,15 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => Image.Create(0, 0));
         Assert.Equal("Parameters for creating an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenCreatingAnImageFromAValidFileGiveAValidImage()
     {
-        string filepath = "";
+        //checking with cat image
+        string filepath = @"C:\Users\t-dahid\Pictures\DemoPictures\1-ImageEx";
         Image fromFile = Image.Load(filepath);
-        //arbitraily passing in pixelformat.argb now and 0, 0
-        ValidateImage(fromFile, 0, 0, PixelFormat.Argb);
+        System.Console.WriteLine(fromFile.WidthInPixels);
+        System.Console.WriteLine(fromFile.HeightInPixels);
+        ValidateImage(fromFile, 600, 701);
     }
 
     //File I/O should be returning exceptions --> HOW TO DO THIS?!!?
@@ -118,7 +119,7 @@ public partial class GraphicsUnitTests
         Stream stream = null;
         Image fromStream = Image.Load(stream);
         //arbitraily passing in pixelformat.argb now and 0, 0
-        ValidateImage(fromStream, 0, 0, PixelFormat.Argb);
+        ValidateImage(fromStream, 0, 0);
     }
     [Fact(Skip = "Not Implemented yet...")]
     public void WhenCreatingAnImageFromAnInvalidStreamThenThrowException()
@@ -129,13 +130,21 @@ public partial class GraphicsUnitTests
     }
 
     /* Test Resize */
-    [Fact(Skip = "Not Implemented yet...")]
-    public void WhenResizingEmptyImageThenGiveAValidatedResizedImage()
+    [Fact]
+    public void WhenResizingEmptyImageDownThenGiveAValidatedResizedImage()
     {
         Image emptyResizeSquare = Image.Create(100, 100);
         emptyResizeSquare = emptyResizeSquare.Resize(10, 10);
         //arbitraily passing in pixelformat.argb now 
-        ValidateImage(emptyResizeSquare, 10, 10, PixelFormat.Argb);
+        ValidateImage(emptyResizeSquare, 10, 10);
+    }
+    [Fact]
+    public void WhenResizingEmptyImageUpThenGiveAValidatedResizedImage()
+    {
+        Image emptyResizeSquare = Image.Create(100, 100);
+        emptyResizeSquare = emptyResizeSquare.Resize(200, 200);
+        //arbitraily passing in pixelformat.argb now 
+        ValidateImage(emptyResizeSquare, 200, 200);
     }
     [Fact(Skip = "Not Implemented yet...")]
     public void WhenResizingImageLoadedFromFileThenGiveAValidatedResizedImage()
@@ -144,7 +153,7 @@ public partial class GraphicsUnitTests
         Image fromFileResizeSquare = Image.Load(filepath);
         fromFileResizeSquare.Resize(10, 10);
         //arbitraily passing in pixelformat.argb now 
-        ValidateImage(fromFileResizeSquare, 10, 10, PixelFormat.Argb);
+        ValidateImage(fromFileResizeSquare, 10, 10);
     }
     [Fact(Skip = "Not Implemented yet...")]
     public void WhenResizingImageLoadedFromStreamThenGiveAValidatedResizedImage()
@@ -153,11 +162,11 @@ public partial class GraphicsUnitTests
         Image fromStreamResizeSquare = Image.Load(stream);
         fromStreamResizeSquare.Resize(10, 10);
         //arbitraily passing in pixelformat.argb now 
-        ValidateImage(fromStreamResizeSquare, 10, 10, PixelFormat.Argb);
+        ValidateImage(fromStreamResizeSquare, 10, 10);
     }
 
     /* Testing Resize parameters */
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenNegativeHeightThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -165,7 +174,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(-1, 1));
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenNegativeWidthThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -173,7 +182,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(1, -1));
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenNegativeSizesThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -181,7 +190,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(-1, -1));
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenZeroHeightThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -189,7 +198,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(0, 1));
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenZeroWidthThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -197,7 +206,7 @@ public partial class GraphicsUnitTests
         Exception exception = Assert.Throws<InvalidOperationException>(() => img.Resize(1, 0));
         Assert.Equal("Parameters for resizing an image must be positive integers.", exception.Message);
     }
-    [Fact(Skip = "Not Implemented yet...")]
+    [Fact]
     public void WhenResizingImageGivenZeroSizesThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -211,7 +220,7 @@ public partial class GraphicsUnitTests
     public void WhenWritingAnImageToAValidFileWriteToAValidFile()
     {
         Image fromFile = Image.Create(10, 10);
-        fromFile.WriteToFile(@"C:\Users\t-xix\Pictures\TEST.jpg");
+        fromFile.WriteToFile(@"C:\Users\t-dahid\PictuRres\TEST.jpg");
     }
 
 }

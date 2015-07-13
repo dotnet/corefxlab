@@ -20,8 +20,7 @@ namespace System.Drawing.Graphics
     public class Image
     {
         ///* Private Fields */
-        //private int _height;
-        //private int _width;
+
         private byte[][] _pixelData = null;
         private PixelFormat _pixelFormat = PixelFormat.Argb;
         private int _bytesPerPixel = 0;
