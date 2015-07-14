@@ -41,6 +41,15 @@ namespace System.Drawing.Graphics
                 return gdImageStruct.sy;
             }
         }
+
+        public int TrueColor
+        {
+            get
+            {
+                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                return gdImageStruct.trueColor;
+            }
+        }
         public PixelFormat PixelFormat
         {
             get { return _pixelFormat; }
@@ -100,17 +109,23 @@ namespace System.Drawing.Graphics
         }
         private Image(string filePath)
         {
-            //File.Exists(filePath);
-
-            if (DLLImports.gdSupportsFileType(filePath, false))
+            if (TrueColor == 1)
             {
-                
-                gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
 
+                if (DLLImports.gdSupportsFileType(filePath, false))
+                {
+
+                    gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
+
+                }
+                else
+                {
+                    throw new FileLoadException("File type not supported.");
+                }
             }
             else
             {
-                throw new FileLoadException("File type not supported.");
+                throw new FileLoadException("Non-TrueColor file type not supported.");
             }
         }
         private Image(Stream stream)
