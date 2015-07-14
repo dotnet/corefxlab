@@ -91,7 +91,7 @@ namespace System.Drawing.Graphics
         {
             if(width > 0 && height > 0)
             {
-                gdImageStructPtr = DLLImports.gdImageCreate(width, height);
+                gdImageStructPtr = DLLImports.gdImageCreateTrueColor(width, height);
             }
             else
             {
@@ -100,9 +100,7 @@ namespace System.Drawing.Graphics
         }
         private Image(string filePath)
         {
-            File.Exists(filePath);
-
-
+            //File.Exists(filePath);
 
             if (DLLImports.gdSupportsFileType(filePath, false))
             {

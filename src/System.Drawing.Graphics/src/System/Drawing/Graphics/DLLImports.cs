@@ -88,6 +88,12 @@ namespace System.Drawing.Graphics {
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern IntPtr gdImageCreate(int sx, int sy);
 
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        internal static extern IntPtr gdImageCreateTrueColor(int sx, int sy);
+
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode, EntryPoint = "_gdImageColorAllocate@16")]
+        internal static extern int gdImageColorAllocate(int r, int b, int g);
+
         [DllImport("libgdx86.dll", CharSet = CharSet.Ansi)]
         internal static extern IntPtr gdImageCreateFromFile(string filename);
 
@@ -104,6 +110,13 @@ namespace System.Drawing.Graphics {
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern void gdImageColorTransparent(IntPtr im, int color);
+
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        internal static extern void gdImageSaveAlpha(IntPtr im, int flag);
+
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        internal static extern void gdImageAlphaBlending(IntPtr im, int flag);
+
 
 
     }
