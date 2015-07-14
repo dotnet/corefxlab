@@ -3,6 +3,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
+
 namespace System.Drawing.Graphics
 {
     //assuming only these three types for now (32 bit)
@@ -71,9 +72,10 @@ namespace System.Drawing.Graphics
         /* Write */
         public void WriteToFile(string filePath)
         {
+
             if (!DLLImports.gdSupportsFileType(filePath, true))
             {
-                throw new InvalidOperationException("File type not supported.");
+                throw new InvalidOperationException("File type not supported or not found.");
             }
             else
             {
@@ -89,7 +91,7 @@ namespace System.Drawing.Graphics
         {
             if(width > 0 && height > 0)
             {
-                gdImageStructPtr = DLLImports.gdImageCreate(width, height);
+                gdImageStructPtr = DLLImports.gdImageCreateTrueColor(width, height);
             }
             else
             {
@@ -98,9 +100,7 @@ namespace System.Drawing.Graphics
         }
         private Image(string filePath)
         {
-            File.Exists(filePath);
-
-
+            //File.Exists(filePath);
 
             if (DLLImports.gdSupportsFileType(filePath, false))
             {

@@ -33,11 +33,6 @@ namespace System.Drawing.Graphics
 
         }
 
-        public static void SetTransparencyTest(this Image image)
-        {
-            DLLImports.gdImageColorTransparent(image.gdImageStructPtr, 0);
-        }
-
         //Stamping an Image onto another
         public static void Draw(this Image image, Image imageToDraw, int xOffset, int yOffset)
         {
