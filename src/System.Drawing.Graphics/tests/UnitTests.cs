@@ -23,7 +23,8 @@ public partial class GraphicsUnitTests
     public static void Test()
     {
         Image catTest = Image.Load(@"C:\Users\t-dahid\Pictures\DemoPictures\1-ImageEx\SquareCat.jpg");
-        catTest.WriteToFile(@"C:\Users\t-dahid\Pictures\SquareCatTRANSPARENTTEST.jpg");
+        catTest.SetTransparency(50);
+        catTest.WriteToFile(@"C:\Users\t-dahid\Pictures\SquareCatTRANSPARENTTEST2.jpg");
     }
 
     [Fact]
