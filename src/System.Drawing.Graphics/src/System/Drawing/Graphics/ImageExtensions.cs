@@ -27,7 +27,7 @@ namespace System.Drawing.Graphics
         }
 
         //Transparency
-        public static void SetTransparency(this Image image, double percentOpacity)
+        public static void SetAlphaPercentage(this Image image, double percentOpacity)
         {
             if(percentOpacity > 100 || percentOpacity < 0)
             {
@@ -43,12 +43,14 @@ namespace System.Drawing.Graphics
                     int currentColor = DLLImports.gdImageGetPixel(image.gdImageStructPtr, x, y);
                     //mask to just get the alpha value (7 bits)
                     double currentAlpha = (currentColor >> 24) & 0xff;
+
                     
                     //if the current alpha is transparent
                     //dont bother/ skip over
                     if (currentAlpha == 127)
                         continue;
                     //calculate the new alpha value given the adjustment
+
                     currentAlpha += (127 - currentAlpha) * alphaAdjustment;
                     //if it is somehow transparent now
                     //dont bother setting pixel/skip over
@@ -57,9 +59,9 @@ namespace System.Drawing.Graphics
 
                     //make a new color with the new alpha to set the pixel
                     currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
-
                     //turn alpha blending off so you don't draw over the same picture and get an opaque cat
                     DLLImports.gdImageAlphaBlending(image.gdImageStructPtr, 0);
+
                     DLLImports.gdImageSetPixel(image.gdImageStructPtr, x, y, currentColor);
                 }
             }

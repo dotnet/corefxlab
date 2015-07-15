@@ -53,6 +53,15 @@ namespace System.Drawing.Graphics
             get { return _bytesPerPixel; }
         }
 
+        private bool TrueColor
+        {
+            get
+            {
+                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                return (gdImageStruct.trueColor == 1);
+            }
+        }
+
             /* Factory Methods */
         public static Image Create(int width, int height)
         {
@@ -100,7 +109,11 @@ namespace System.Drawing.Graphics
 
         private Image(string filePath)
         {
-            if (DLLImports.gdSupportsFileType(filePath, false))
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("Malformed file path given.");
+            }
+            else if (DLLImports.gdSupportsFileType(filePath, false))
             {
                 gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
                 DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
