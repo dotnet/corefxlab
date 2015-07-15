@@ -31,7 +31,7 @@ namespace System.Drawing.Graphics
         {
             if(percentOpacity > 100 || percentOpacity < 0)
             {
-                throw new InvalidOperationException(" Percent Transparency must be a value between 0 - 100.");
+                throw new InvalidOperationException("Percent Transparency must be a value between 0 - 100.");
             }
 
             double alphaAdjustment = (100.0 - percentOpacity) / 100.0;
@@ -43,54 +43,34 @@ namespace System.Drawing.Graphics
                     int currentColor = DLLImports.gdImageGetPixel(image.gdImageStructPtr, x, y);
                     //mask to just get the alpha value (7 bits)
                     double currentAlpha = (currentColor >> 24) & 0xff;
-
-
-                    if (x == 10 && y == 10)
-                    {
-                        System.Console.WriteLine(currentColor);
-                        System.Console.WriteLine(currentAlpha);
-                    }
-                    ////System.Console.WriteLine(currentAlpha);
-                    ////if the current alpha is transparent
-                    ////dont bother/ skip over
-                    //if (currentAlpha == 127)
-                    //    continue;
-                    ////calculate the new alpha value given the adjustment
+                    
+                    //if the current alpha is transparent
+                    //dont bother/ skip over
+                    if (currentAlpha == 127)
+                        continue;
+                    //calculate the new alpha value given the adjustment
                     currentAlpha += (127 - currentAlpha) * alphaAdjustment;
-                    ////if it is somehow transparent now
-                    ////dont bother setting pixel/skip over
-                    //if (currentAlpha >= 127)
-                    //    continue;
+                    //if it is somehow transparent now
+                    //dont bother setting pixel/skip over
+                    if (currentAlpha >= 127)
+                        continue;
 
                     //make a new color with the new alpha to set the pixel
                     currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
 
-                    if (x == 10 && y == 10)
-                    {
-                        System.Console.WriteLine(currentColor);
-                        System.Console.WriteLine(currentAlpha);
-                    }
-                    //System.Console.WriteLine(currentColor);
+                    //turn alpha blending off so you don't draw over the same picture and get an opaque cat
+                    DLLImports.gdImageAlphaBlending(image.gdImageStructPtr, 0);
                     DLLImports.gdImageSetPixel(image.gdImageStructPtr, x, y, currentColor);
-
-                    if (x == 10 && y == 10)
-                    {
-                        System.Console.WriteLine(currentColor);
-                        System.Console.WriteLine(currentAlpha);
-                    }
-
                 }
             }
-
         }
-
 
         //Stamping an Image onto another
         public static void Draw(this Image image, Image imageToDraw, int xOffset, int yOffset)
         {
-            //These lines should be added to make it work
+            //turn alpha blending on for drawing
             DLLImports.gdImageAlphaBlending(image.gdImageStructPtr, 1);
-            DLLImports.gdImageAlphaBlending(imageToDraw.gdImageStructPtr, 1);
+            //DLLImports.gdImageAlphaBlending(imageToDraw.gdImageStructPtr, 1);
 
             //loop through the source image
             for (int y = 0; y < imageToDraw.HeightInPixels; y++)
@@ -106,10 +86,8 @@ namespace System.Drawing.Graphics
                     }
 
                     DLLImports.gdImageSetPixel(image.gdImageStructPtr, x + xOffset, y + yOffset, color);
-
                 }
             }
         }
-
     }
 }
