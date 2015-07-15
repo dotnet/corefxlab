@@ -43,6 +43,7 @@ namespace System.Drawing.Graphics {
         unsafe internal struct gdImageStruct
         {
             public byte** pixels;
+            //public IntPtr pixels;
             public int sx;
             public int sy;
             public int colorsTotal;
@@ -55,9 +56,11 @@ namespace System.Drawing.Graphics {
             public int polyAllocated;
             IntPtr brush;
             IntPtr tile;
+            public fixed int brushColorMap[gdMaxColors];
+            public fixed int tileColorMap[gdMaxColors];
             public int styleLength;
             public int stylePos;
-            public int style;
+            public IntPtr style;
             public int interlace;
             public int thick;
             public fixed int alpha[gdMaxColors];
@@ -118,9 +121,13 @@ namespace System.Drawing.Graphics {
         internal static extern void gdImageAlphaBlending(IntPtr im, int flag);
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+
+        internal static extern int gdImageGetPixel(IntPtr im, int x, int y);
+
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern void gdImageSetPixel(IntPtr im, int x, int y, int color);
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        internal static extern int gdImageGetPixel(IntPtr im, int x, int y);
+        internal static extern int gdImagePaletteToTrueColor(IntPtr src);
     }
 }

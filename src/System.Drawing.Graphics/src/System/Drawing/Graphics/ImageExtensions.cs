@@ -26,18 +26,73 @@ namespace System.Drawing.Graphics
             }
         }
 
-            //Transparency
-        public static void SetTransparency(this Image image, double percentTransparency)
+        //Transparency
+        public static void SetTransparency(this Image image, double percentOpacity)
         {
-            throw new NotImplementedException();
+            if(percentOpacity > 100 || percentOpacity < 0)
+            {
+                throw new InvalidOperationException(" Percent Transparency must be a value between 0 - 100.");
+            }
+
+            double alphaAdjustment = (100.0 - percentOpacity) / 100.0;
+            for(int y = 0; y < image.HeightInPixels; y++)
+            {
+                for(int x = 0; x < image.WidthInPixels; x++)
+                {
+                    //get the current color of the pixel
+                    int currentColor = DLLImports.gdImageGetPixel(image.gdImageStructPtr, x, y);
+                    //mask to just get the alpha value (7 bits)
+                    double currentAlpha = (currentColor >> 24) & 0xff;
+
+
+                    if (x == 10 && y == 10)
+                    {
+                        System.Console.WriteLine(currentColor);
+                        System.Console.WriteLine(currentAlpha);
+                    }
+                    ////System.Console.WriteLine(currentAlpha);
+                    ////if the current alpha is transparent
+                    ////dont bother/ skip over
+                    //if (currentAlpha == 127)
+                    //    continue;
+                    ////calculate the new alpha value given the adjustment
+                    currentAlpha += (127 - currentAlpha) * alphaAdjustment;
+                    ////if it is somehow transparent now
+                    ////dont bother setting pixel/skip over
+                    //if (currentAlpha >= 127)
+                    //    continue;
+
+                    //make a new color with the new alpha to set the pixel
+                    currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
+
+                    if (x == 10 && y == 10)
+                    {
+                        System.Console.WriteLine(currentColor);
+                        System.Console.WriteLine(currentAlpha);
+                    }
+                    //System.Console.WriteLine(currentColor);
+                    DLLImports.gdImageSetPixel(image.gdImageStructPtr, x, y, currentColor);
+
+                    if (x == 10 && y == 10)
+                    {
+                        System.Console.WriteLine(currentColor);
+                        System.Console.WriteLine(currentAlpha);
+                    }
+
+                }
+            }
 
         }
+
 
         //Stamping an Image onto another
         public static void Draw(this Image image, Image imageToDraw, int xOffset, int yOffset)
         {
+            DLLImports.gdImageAlphaBlending(image.gdImageStructPtr, 1);
+            DLLImports.gdImageAlphaBlending(imageToDraw.gdImageStructPtr, 1);
+
             //loop through the source image
-            for(int y = 0; y < imageToDraw.HeightInPixels; y++)
+            for (int y = 0; y < imageToDraw.HeightInPixels; y++)
             {
                 for(int x = 0; x < imageToDraw.WidthInPixels; x++)
                 {

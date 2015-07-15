@@ -79,6 +79,8 @@ namespace System.Drawing.Graphics
             }
             else
             {
+                DLLImports.gdImageAlphaBlending(gdImageStructPtr, 1);
+
                 if (!DLLImports.gdImageFile(gdImageStructPtr, filePath))
                 {
                     throw new FileLoadException("Failed to write to file.");
@@ -106,6 +108,20 @@ namespace System.Drawing.Graphics
             {
                 
                 gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
+                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
+                if(gdImageStruct.trueColor == 0)
+                {
+                    int a = DLLImports.gdImagePaletteToTrueColor(gdImageStructPtr);
+                    System.Console.WriteLine("palette to true color fail?: " + a);
+                    gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+
+                    System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
+
+                }
+                System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
+                DLLImports.gdImageAlphaBlending(gdImageStructPtr, 0);
+                DLLImports.gdImageSaveAlpha(gdImageStructPtr, 1);
 
             }
             else
