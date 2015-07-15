@@ -55,6 +55,15 @@ namespace System.Drawing.Graphics
             get { return _bytesPerPixel; }
         }
 
+        private bool TrueColor
+        {
+            get
+            {
+                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                return (gdImageStruct.trueColor == 1);
+            }
+        }
+
             /* Factory Methods */
         public static Image Create(int width, int height)
         {
@@ -102,27 +111,19 @@ namespace System.Drawing.Graphics
         }
         private Image(string filePath)
         {
-            //File.Exists(filePath);
-
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("Malformed file path given.");
+            }
             if (DLLImports.gdSupportsFileType(filePath, false))
             {
-                
                 gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
-                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-                System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
-                if(gdImageStruct.trueColor == 0)
+                if(!TrueColor)
                 {
-                    int a = DLLImports.gdImagePaletteToTrueColor(gdImageStructPtr);
-                    System.Console.WriteLine("palette to true color fail?: " + a);
-                    gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-
-                    System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
-
+                    DLLImports.gdImagePaletteToTrueColor(gdImageStructPtr);
                 }
-                System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
                 DLLImports.gdImageAlphaBlending(gdImageStructPtr, 0);
                 DLLImports.gdImageSaveAlpha(gdImageStructPtr, 1);
-
             }
             else
             {
