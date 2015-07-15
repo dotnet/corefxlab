@@ -27,11 +27,11 @@ namespace System.Drawing.Graphics
         }
 
         //Transparency
-        public static void SetTransparency(this Image image, double percentOpacity)
+        public static void SetAlphaPercentage(this Image image, double percentOpacity)
         {
             if(percentOpacity > 100 || percentOpacity < 0)
             {
-                throw new InvalidOperationException(" Percent Transparency must be a value between 0 - 100.");
+                throw new InvalidOperationException("Percent Transparency must be a value between 0 - 100.");
             }
 
             double alphaAdjustment = (100.0 - percentOpacity) / 100.0;
@@ -45,11 +45,11 @@ namespace System.Drawing.Graphics
                     double currentAlpha = (currentColor >> 24) & 0xff;
 
 
-                    if (x == 10 && y == 10)
-                    {
-                        System.Console.WriteLine(currentColor);
-                        System.Console.WriteLine(currentAlpha);
-                    }
+                    //if (x == 10 && y == 10)
+                    //{
+                    //    System.Console.WriteLine(currentColor);
+                    //    System.Console.WriteLine(currentAlpha);
+                    //}
                     ////System.Console.WriteLine(currentAlpha);
                     ////if the current alpha is transparent
                     ////dont bother/ skip over
@@ -65,20 +65,7 @@ namespace System.Drawing.Graphics
                     //make a new color with the new alpha to set the pixel
                     currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
 
-                    if (x == 10 && y == 10)
-                    {
-                        System.Console.WriteLine(currentColor);
-                        System.Console.WriteLine(currentAlpha);
-                    }
-                    //System.Console.WriteLine(currentColor);
                     DLLImports.gdImageSetPixel(image.gdImageStructPtr, x, y, currentColor);
-
-                    if (x == 10 && y == 10)
-                    {
-                        System.Console.WriteLine(currentColor);
-                        System.Console.WriteLine(currentAlpha);
-                    }
-
                 }
             }
 
