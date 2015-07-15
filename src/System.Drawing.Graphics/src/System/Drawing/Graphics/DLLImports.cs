@@ -100,6 +100,12 @@ namespace System.Drawing.Graphics {
         [DllImport("libgdx86.dll", CharSet = CharSet.Ansi)]
         internal static extern IntPtr gdImageCreateFromFile(string filename);
 
+
+        [DllImport("libgdx86.dll", CharSet = CharSet.Ansi)]
+        internal static extern IntPtr gdIOCtx();
+
+
+
         //had to use mangled name here
         [DllImport("libgdx86.dll", CharSet = CharSet.Ansi, EntryPoint = "_gdImageFile@8")]
         internal static extern bool gdImageFile(IntPtr image, string filename);
