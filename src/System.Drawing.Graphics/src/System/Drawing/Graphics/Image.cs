@@ -79,7 +79,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                //DLLImports.gdImageAlphaBlending(gdImageStructPtr, 0);
+                DLLImports.gdImageAlphaBlending(gdImageStructPtr, 1);
 
                 if (!DLLImports.gdImageFile(gdImageStructPtr, filePath))
                 {

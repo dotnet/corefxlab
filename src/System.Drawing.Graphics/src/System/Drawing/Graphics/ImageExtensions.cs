@@ -88,8 +88,11 @@ namespace System.Drawing.Graphics
         //Stamping an Image onto another
         public static void Draw(this Image image, Image imageToDraw, int xOffset, int yOffset)
         {
+            DLLImports.gdImageAlphaBlending(image.gdImageStructPtr, 1);
+            DLLImports.gdImageAlphaBlending(imageToDraw.gdImageStructPtr, 1);
+
             //loop through the source image
-            for(int y = 0; y < imageToDraw.HeightInPixels; y++)
+            for (int y = 0; y < imageToDraw.HeightInPixels; y++)
             {
                 for(int x = 0; x < imageToDraw.WidthInPixels; x++)
                 {
