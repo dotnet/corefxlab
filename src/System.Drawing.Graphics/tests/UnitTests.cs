@@ -22,8 +22,24 @@ public partial class GraphicsUnitTests
     [Fact]
     public static void Test()
     {
-        Image catTest = Image.Load(@"C:\Users\t-dahid\Pictures\DemoPictures\1-ImageEx\SquareCat.jpg");
-        catTest.WriteToFile(@"C:\Users\t-dahid\Pictures\SquareCatTRANSPARENTTEST.jpg");
+
+        Image catTest = Image.Load(@"C:\Users\t-dahid\Pictures\BlackCat.png");
+        Image pikaTest = Image.Load(@"C:\Users\t-dahid\Pictures\PikachuSprite.png");
+
+        catTest.SetTransparency(10);
+        pikaTest.SetTransparency(30);
+
+        catTest.WriteToFile(@"C:\Users\t-dahid\Pictures\BlackCat12312123.png");
+        pikaTest.WriteToFile(@"C:\Users\t-dahid\Pictures\PikaTest.png");
+
+        Image catSquare = Image.Load(@"C:\Users\t-dahid\Pictures\DemoPictures\1-ImageEx\SquareCat.jpg");
+        catSquare.Draw(catTest, 0, 0);
+
+        //Image blank = Image.Load(@"C:\Users\t-dahid\Pictures\BlankSlide.jpg");
+
+        catSquare.WriteToFile(@"C:\Users\t-dahid\Pictures\blankCatTest.png");
+
+
     }
 
     [Fact]

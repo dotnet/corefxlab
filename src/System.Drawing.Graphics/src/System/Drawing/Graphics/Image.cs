@@ -41,15 +41,6 @@ namespace System.Drawing.Graphics
                 return gdImageStruct.sy;
             }
         }
-
-        public int TrueColor
-        {
-            get
-            {
-                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-                return gdImageStruct.trueColor;
-            }
-        }
         public PixelFormat PixelFormat
         {
             get { return _pixelFormat; }
@@ -88,6 +79,8 @@ namespace System.Drawing.Graphics
             }
             else
             {
+                DLLImports.gdImageAlphaBlending(gdImageStructPtr, 1);
+
                 if (!DLLImports.gdImageFile(gdImageStructPtr, filePath))
                 {
                     throw new FileLoadException("Failed to write to file.");
@@ -109,23 +102,31 @@ namespace System.Drawing.Graphics
         }
         private Image(string filePath)
         {
-            if (TrueColor == 1)
+            //File.Exists(filePath);
+
+            if (DLLImports.gdSupportsFileType(filePath, false))
             {
-
-                if (DLLImports.gdSupportsFileType(filePath, false))
+                
+                gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
+                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
+                if(gdImageStruct.trueColor == 0)
                 {
+                    int a = DLLImports.gdImagePaletteToTrueColor(gdImageStructPtr);
+                    System.Console.WriteLine("palette to true color fail?: " + a);
+                    gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
 
-                    gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
+                    System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
 
                 }
-                else
-                {
-                    throw new FileLoadException("File type not supported.");
-                }
+                System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
+                DLLImports.gdImageAlphaBlending(gdImageStructPtr, 0);
+                DLLImports.gdImageSaveAlpha(gdImageStructPtr, 1);
+
             }
             else
             {
-                throw new FileLoadException("Non-TrueColor file type not supported.");
+                throw new FileLoadException("File type not supported.");
             }
         }
         private Image(Stream stream)
