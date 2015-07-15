@@ -121,6 +121,7 @@ namespace System.Drawing.Graphics {
         internal static extern void gdImageAlphaBlending(IntPtr im, int flag);
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+
         internal static extern int gdImageGetPixel(IntPtr im, int x, int y);
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
@@ -128,8 +129,5 @@ namespace System.Drawing.Graphics {
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern int gdImagePaletteToTrueColor(IntPtr src);
-
-
-
     }
 }

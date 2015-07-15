@@ -88,7 +88,23 @@ namespace System.Drawing.Graphics
         //Stamping an Image onto another
         public static void Draw(this Image image, Image imageToDraw, int xOffset, int yOffset)
         {
-            DLLImports.gdImageCopyMerge(image.gdImageStructPtr, imageToDraw.gdImageStructPtr, xOffset, yOffset, 0, 0, imageToDraw.WidthInPixels, imageToDraw.HeightInPixels, 50);
+            //loop through the source image
+            for(int y = 0; y < imageToDraw.HeightInPixels; y++)
+            {
+                for(int x = 0; x < imageToDraw.WidthInPixels; x++)
+                {
+                    int color = DLLImports.gdImageGetPixel(imageToDraw.gdImageStructPtr, x, y);
+
+                    int alpha = (color >> 24) & 0xff;
+                    if (alpha == 127)
+                    {
+                        continue;
+                    }
+
+                    DLLImports.gdImageSetPixel(image.gdImageStructPtr, x + xOffset, y + yOffset, color);
+
+                }
+            }
         }
 
     }

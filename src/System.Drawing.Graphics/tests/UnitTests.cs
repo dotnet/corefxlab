@@ -22,9 +22,18 @@ public partial class GraphicsUnitTests
     [Fact]
     public static void Test()
     {
-        Image catTest = Image.Load(@"C:\Users\t-dahid\Pictures\DemoPictures\1-ImageEx\SquareCat.jpg");
-        catTest.SetTransparency(50);
-        catTest.WriteToFile(@"C:\Users\t-dahid\Pictures\SquareCatTRANSPARENTTEST2.jpg");
+
+        Image catTest = Image.Load(@"C:\Users\t-dahid\Pictures\BlackCat.png");
+        catTest.SetTransparency(10);
+        catTest.WriteToFile(@"C:\Users\t-dahid\Pictures\BlackCat12312123.png");
+        Image catSquare = Image.Load(@"C:\Users\t-dahid\Pictures\DemoPictures\1-ImageEx\SquareCat.jpg");
+        catSquare.Draw(catTest, 0, 0);
+
+        //Image blank = Image.Load(@"C:\Users\t-dahid\Pictures\BlankSlide.jpg");
+
+        catSquare.WriteToFile(@"C:\Users\t-dahid\Pictures\blankCatTest.png");
+
+
     }
 
     [Fact]
