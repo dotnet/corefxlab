@@ -14,17 +14,19 @@ namespace System.Drawing.Graphics
         Cmyk
     }
 
-    public class Image
+    public class Bitmap
     {
-        ///* Private Fields */
-        //private int _height;
-        //private int _width;
-        private byte[][] _pixelData = null;
+        /* Fields */ 
         private PixelFormat _pixelFormat = PixelFormat.Argb;
         private int _bytesPerPixel = 0;
-
         internal IntPtr gdImageStructPtr;
 
+        public Bitmap(IntPtr gdImageStructPtr)
+        {
+            this.gdImageStructPtr = gdImageStructPtr;
+        }
+
+        /* Properties*/ 
         public int WidthInPixels
         {
             get
@@ -33,6 +35,7 @@ namespace System.Drawing.Graphics
                 return gdImageStruct.sx;
             }
         }
+
         public int HeightInPixels
         {
             get
@@ -54,15 +57,17 @@ namespace System.Drawing.Graphics
         {
             get { return _pixelFormat; }
         }
-        public byte[][] PixelData
-        {
-            get { return _pixelData; }
-        }
+
+        //public byte[][] PixelData
+        //{
+        //    get { return _pixelData; }
+        //}
        
         public int BytesPerPixel
         {
             get { return _bytesPerPixel; }
         }
+
 
             /* Factory Methods */
         public static Image Create(int width, int height)
@@ -78,35 +83,59 @@ namespace System.Drawing.Graphics
             return new Image(stream);
         }
 
-        /* Write */
-        public void WriteToFile(string filePath)
+        private bool TrueColor
         {
-
-            if (!DLLImports.gdSupportsFileType(filePath, true))
+            get
             {
-                throw new InvalidOperationException("File type not supported or not found.");
-            }
-            else
-            {
-                DLLImports.gdImageAlphaBlending(gdImageStructPtr, 1);
-
-                if (!DLLImports.gdImageFile(gdImageStructPtr, filePath))
-                {
-                    throw new FileLoadException("Failed to write to file.");
-                }
+                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                return (gdImageStruct.trueColor == 1);
             }
         }
 
-        /* Constructors */
-        private Image(int width, int height)
+
+
+        /* Factory Methods */
+        public static Bitmap Create(int width, int height)
         {
-            if(width > 0 && height > 0)
+            return new Bitmap(width, height);
+        }
+        //public static Image Load(string filePath)
+        //{
+        //    return new Image(filePath);
+        //}
+        //public static Image Load(Stream stream)
+        //{
+        //    return new Image(stream);
+        //}
+
+        ///* Write */
+        //public void WriteToFile(string filePath)
+        //{
+        //    DLLImports.gdImageSaveAlpha(gdImageStructPtr, 1);
+
+        //    if (!DLLImports.gdSupportsFileType(filePath, true))
+        //    {
+        //        throw new InvalidOperationException("File type not supported or not found.");
+        //    }
+        //    else
+        //    {
+        //        if (!DLLImports.gdImageFile(gdImageStructPtr, filePath))
+        //        {
+        //            throw new FileLoadException("Failed to write to file.");
+        //        }
+        //    }
+        //}
+
+        /* constructors */
+        private Bitmap(int width, int height)
+        {
+            if (width > 0 && height > 0)
             {
                 gdImageStructPtr = DLLImports.gdImageCreateTrueColor(width, height);
             }
             else
             {
-                throw new InvalidOperationException("Parameters for creating an image must be positive integers.") ;
+                throw new InvalidOperationException("parameters for creating an image must be positive integers.");
             }
         }
         private Image(string filePath)
@@ -141,5 +170,32 @@ namespace System.Drawing.Graphics
         {
             throw new NotImplementedException();
         }
+
+        //private Image(string filePath)
+        //{
+        //    if (!File.Exists(filePath))
+        //    {
+        //        throw new FileNotFoundException("Malformed file path given.");
+        //    }
+        //    else if (DLLImports.gdSupportsFileType(filePath, false))
+        //    {
+        //        gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
+        //        DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+        //        if(gdImageStruct.trueColor == 0)
+        //        {
+        //            int a = DLLImports.gdImagePaletteToTrueColor(gdImageStructPtr);
+        //            gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        throw new FileLoadException("File type not supported.");
+        //    }
+        //}
+
+        //private Image(Stream stream)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
