@@ -11,6 +11,67 @@ using System.IO;
 public partial class GraphicsUnitTests
 {
 
+    /*DEMO*/
+
+    [Fact]
+    public static void DemoPresention()
+    {
+        /*Reading and Writing to a file*/
+
+        string filepath = @"C:\Users\t-";
+        Image fromFile = Jpg.Load(filepath);
+        Jpg.WriteToFile(fromFile, @"C:\Users\t-");
+
+
+        ///*Resizing an Image*/
+
+        //string filepath = @"C:\Users\t-";
+        //Image fromFileResizeSquare = Jpg.Load(filepath);
+        //fromFileResizeSquare = fromFileResizeSquare.Resize(100, 100);
+        ////arbitraily passing in pixelformat.argb now 
+        //ValidateImage(fromFileResizeSquare, 100, 100);
+        //Jpg.WriteToFile(fromFileResizeSquare, @"C:\Users\t-");
+
+
+        ///*Changing Transparency*/
+
+        //Image blackCat5 = Jpg.Load(@"C:\Users\t-");
+        //ValidateImage(blackCat5, 220, 220);
+        //blackCat5.SetAlphaPercentage(50);
+        //ValidateImage(blackCat5, 220, 220);
+        //Jpg.WriteToFile(blackCat5, @"C:\Users\t-");
+
+
+
+        ///*Drawing an Image onto another*/
+
+        ////open yellow cat image
+        //Image yellowCat = Jpg.Load(@"C:\Users\t-");
+        //ValidateImage(yellowCat, 600, 701);
+        ////open black cat image
+        //Image blackCat = Jpg.Load(@"C:\Users\t-");
+        //ValidateImage(blackCat, 220, 220);
+        ////draw & Write
+        //yellowCat.Draw(blackCat, 0, 0);
+        //Jpg.WriteToFile(yellowCat, @"C:\Users\t-");
+
+
+        ///*Water-Marking an Image*/
+
+        ////black cat load
+        //Image blackCat = Jpg.Load(@"C:\Users\t-");
+        //ValidateImage(blackCat, 220, 220);
+        //blackCat.SetAlphaPercentage(20);
+        ////yellow cat load
+        //Image yellowCat = Jpg.Load(@"C:\Users\t-");
+        //ValidateImage(yellowCat, 600, 701);
+        //yellowCat.Draw(blackCat, 0, 0);
+        //ValidateImage(yellowCat, 600, 701);
+        ////write
+        //Jpg.WriteToFile(yellowCat, @"C:\Users\t-");
+
+    }
+
 
     [Fact]
     public static void Test2()
