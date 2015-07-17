@@ -20,9 +20,9 @@ namespace System.Drawing.Graphics
                 Image img = new Image(DLLImports.gdImageCreateFromFile(filePath));
                 DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(img.gdImageStructPtr);
 
-                if (gdImageStruct.trueColor == 0)
+                if (!img.TrueColor)
                 {
-                    int a = DLLImports.gdImagePaletteToTrueColor(img.gdImageStructPtr);
+                    DLLImports.gdImagePaletteToTrueColor(img.gdImageStructPtr);
                     gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(img.gdImageStructPtr);
                 }
                 return img;
@@ -50,5 +50,30 @@ namespace System.Drawing.Graphics
                 }
             }
         }
+
+
+        public static Image Load(Stream stream)
+        {
+
+            IntPtr pNativeImage = IntPtr.Zero;
+            var wrapper = new gdStreamWrapper(stream);
+            pNativeImage = DLLImports.gdImageCreateFromPngCtx(ref wrapper.IOCallbacks);
+
+            DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(pNativeImage);
+            Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
+            toRet.gdImageStructPtr = pNativeImage;
+            return toRet;
+        }
+
+        public static void WriteToStream(Image bmp, Stream stream)
+        {
+            DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(bmp.gdImageStructPtr);
+            var wrapper = new gdStreamWrapper(stream);
+            DLLImports.gdImagePngCtx(ref gdImageStruct, ref wrapper.IOCallbacks);
+        }
+
+
+
+
     }
 }

@@ -53,7 +53,7 @@ namespace System.Drawing.Graphics
             get { return _bytesPerPixel; }
         }
 
-        private bool TrueColor
+        public bool TrueColor
         {
             get
             {
