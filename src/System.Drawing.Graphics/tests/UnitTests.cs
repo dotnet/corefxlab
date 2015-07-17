@@ -15,16 +15,35 @@ public partial class GraphicsUnitTests
     [Fact]
     public static void Test2()
     {
-        Bitmap cat1 = Png.Load(@"c:\users\t-xix\pictures\cat1.png");
-        Bitmap cat2 = Jpg.Load(@"c:\users\t-xix\pictures\cat2.jpg");
-        Bitmap dog1 = Jpg.Load(@"c:\users\t-xix\pictures\dog.jpg");
+        FileStream filestream = new FileStream(@"C:\Users\t-dahid\Pictures\BlackCat.png", FileMode.Open);
+
+        Bitmap catStreamTest = Png.Load((Stream)filestream);
+        Png.WriteToFile(catStreamTest, @"C:\Users\t-dahid\Pictures\TestWrite1.png");
+
+
+        using (var stream = new MemoryStream())
+        {
+            //load an image to file & change transparency
+            Bitmap soccerCat = Jpg.Load(@"C:\users\t-dahid\Pictures\SoccerCat.jpg");
+            soccerCat.SetAlphaPercentage(10);
+
+            Jpg.WriteToStream(soccerCat, stream);
+            stream.Position = 0;
+            Bitmap soccerCatTest = Jpg.Load((Stream)stream);
+
+            Jpg.WriteToFile(soccerCatTest, @"C:\Users\t-dahid\Pictures\StreamTest2SoccercAT.jpg");
+        }
+
+
+        Bitmap cat1 = Png.Load(@"C:\Users\t-dahid\Pictures\BlackCat.png");
+        Bitmap cat2 = Jpg.Load(@"C:\Users\t-dahid\Pictures\SquareCat.jpg");
 
         cat1.SetAlphaPercentage(40);
-        Png.WriteToFile(cat1, @"C:\Users\t-xix\Pictures\transparentcat1.png");
+        Png.WriteToFile(cat1, @"C:\Users\t-dahid\Pictures\TransparentBlackCat.png");
 
-        Bitmap transparentCat1 = Png.Load(@"c:\users\t-xix\pictures\transparentcat1.png");
+        Bitmap transparentCat1 = Png.Load(@"C:\Users\t-dahid\Pictures\TransparentBlackCat.png");
         cat2.Draw(transparentCat1, 0, 1);
-        Png.WriteToFile(cat2, @"C:\Users\t-xix\Pictures\testwrite.png");
+        Png.WriteToFile(cat2, @"C:\Users\t-dahid\Pictures\TestWrite2.png");
     }
 
 

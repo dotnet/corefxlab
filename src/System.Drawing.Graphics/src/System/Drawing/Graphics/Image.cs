@@ -49,17 +49,13 @@ namespace System.Drawing.Graphics
             get { return _pixelFormat; }
         }
 
-        //public byte[][] PixelData
-        //{
-        //    get { return _pixelData; }
-        //}
        
         public int BytesPerPixel
         {
             get { return _bytesPerPixel; }
         }
 
-        private bool TrueColor
+        public bool TrueColor
         {
             get
             {
@@ -111,7 +107,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new InvalidOperationException("parameters for creating an image must be positive integers.");
+                throw new InvalidOperationException("Parameters for creating an image must be positive integers.");
             }
         }
 
