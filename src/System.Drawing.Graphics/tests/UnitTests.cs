@@ -221,7 +221,7 @@ public partial class GraphicsUnitTests
         string filepath = @"C:\Users\t-dahid\Pictures\DemoPictures\1-ImageEx\SquareCat.jpg";
         Image fromFile = Image.Load(filepath);
         ValidateImage(fromFile, 600, 701);
-        fromFile.WriteToFile(@"C:\Users\t-dahid\Pictures\TTestCatWrite.jpg");
+        fromFile.WriteToFile(@"C:\Users\t-dahid\Pictures\TestCatWrite.jpg");
     }
 
     /* Test Draw */

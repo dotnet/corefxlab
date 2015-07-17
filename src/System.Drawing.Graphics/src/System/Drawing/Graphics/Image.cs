@@ -130,10 +130,48 @@ namespace System.Drawing.Graphics
                 throw new FileLoadException("File type not supported.");
             }
         }
-        private Image(Stream stream)
+
+        private Image (Stream stream)
         {
-            throw new NotImplementedException();
+            FromPng(stream);
         }
 
-    }
+        private static Image FromPng(Stream stream)
+		{ 
+		    IntPtr pNativeImage = IntPtr.Zero; 
+			//try 
+			//{ 
+			    var wrapper = new gdStreamWrapper(stream); 
+				pNativeImage = DLLImports.gdImageCreateFromPngCtx(ref wrapper.IOCallbacks); 
+    			var managedImage = Image.CopyFrom(pNativeImage); 
+				//var ret = new Image(managedImage); 
+				return managedImage; 
+            //} 
+			//finally 
+			//{ 
+			//    if (pNativeImage != IntPtr.Zero) 
+			//	{ 
+			//	    DLLImports.gdImageDestroy(pNativeImage); 
+			//	} 
+			// } 
+		 } 
+ 
+		public void WritePng(Stream stream)
+	    {
+            DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+            var wrapper = new gdStreamWrapper(stream); 
+			DLLImports.gdImagePngCtx(ref gdImageStruct, ref wrapper.IOCallbacks); 
+	   }
+
+
+
+
+        internal static Image CopyFrom(IntPtr pNativeImage)
+         {
+            DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(pNativeImage); 
+            Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
+            toRet.gdImageStructPtr = pNativeImage;
+            return toRet; 
+         } 
+  }
 }

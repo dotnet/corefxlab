@@ -129,7 +129,15 @@ namespace System.Drawing.Graphics {
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern int gdImagePaletteToTrueColor(IntPtr src);
-        
+
+        [DllImportAttribute("libgd.dll", EntryPoint = "gdImageCreateFromPngCtx")] 
+        public static extern IntPtr gdImageCreateFromPngCtx(ref gdIOCtx @in);
+
+        [System.Runtime.InteropServices.DllImportAttribute("libgd.dll", EntryPoint = "gdImagePngCtx")] 
+        public static extern void gdImagePngCtx(ref gdImageStruct im, ref gdIOCtx @out);
+
+
+
 
         /// Return Type: int 
         ///param0: gdIOCtx* 
