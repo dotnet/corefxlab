@@ -12,26 +12,26 @@ public partial class GraphicsUnitTests
 {
 
 
-    [Fact]
-    public static void Test2()
+    //[Fact]
+    //public static void Test2()
+    //{
+    //    Bitmap cat1 = Png.Load(@"c:\users\t-xix\pictures\cat1.png");
+    //    Bitmap cat2 = Jpg.Load(@"c:\users\t-xix\pictures\cat2.jpg");
+    //    Bitmap dog1 = Jpg.Load(@"c:\users\t-xix\pictures\dog.jpg");
+
+    //    cat1.SetAlphaPercentage(40);
+    //    Png.WriteToFile(cat1, @"C:\Users\t-xix\Pictures\transparentcat1.png");
+
+    //    Bitmap transparentCat1 = Png.Load(@"c:\users\t-xix\pictures\transparentcat1.png");
+    //    cat2.Draw(transparentCat1, 0, 1);
+    //    Png.WriteToFile(cat2, @"C:\Users\t-xix\Pictures\testwrite.png");
+    //}
+
+
+    private static void ValidateImage(Image img, int widthToCompare, int heightToCompare)
     {
-        Bitmap cat1 = Png.Load(@"c:\users\t-xix\pictures\cat1.png");
-        Bitmap cat2 = Jpg.Load(@"c:\users\t-xix\pictures\cat2.jpg");
-        Bitmap dog1 = Jpg.Load(@"c:\users\t-xix\pictures\dog.jpg");
-
-        cat1.SetAlphaPercentage(40);
-        Png.WriteToFile(cat1, @"C:\Users\t-xix\Pictures\transparentcat1.png");
-
-        Bitmap transparentCat1 = Png.Load(@"c:\users\t-xix\pictures\transparentcat1.png");
-        cat2.Draw(transparentCat1, 0, 1);
-        Png.WriteToFile(cat2, @"C:\Users\t-xix\Pictures\testwrite.png");
-    }
-
-
-    private static void ValidateImage(Bitmap bmp, int widthToCompare, int heightToCompare)
-    {
-        Assert.Equal(bmp.WidthInPixels, widthToCompare);
-        Assert.Equal(bmp.HeightInPixels, heightToCompare);
+        Assert.Equal(img.WidthInPixels, widthToCompare);
+        Assert.Equal(img.HeightInPixels, heightToCompare);
     }
 
     ///* Tests Create Method */
@@ -40,7 +40,7 @@ public partial class GraphicsUnitTests
     public static void WhenCreatingAnEmptyImageThenValidateAnImage()
     {
         ////create an empty 10x10 image
-        Bitmap emptyTenSquare = Bitmap.Create(10, 10);
+        Image emptyTenSquare = Image.Create(10, 10);
         ValidateImage(emptyTenSquare, 10, 10);
     }
     //[Fact]
