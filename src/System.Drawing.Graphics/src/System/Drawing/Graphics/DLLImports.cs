@@ -130,6 +130,7 @@ namespace System.Drawing.Graphics {
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern int gdImagePaletteToTrueColor(IntPtr src);
 
+
         [DllImport("libgdx86.dll", EntryPoint = "_gdImageCreateFromPngCtx@4")] 
         public static extern IntPtr gdImageCreateFromPngCtx(ref gdIOCtx @in);
 
@@ -142,6 +143,10 @@ namespace System.Drawing.Graphics {
         [DllImport("libgdx86.dll", EntryPoint = "_gdImageJpegCtx@12")]
         public static extern void gdImageJpegCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
+
+
+        //[DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        //internal static extern int gdImageCreateFromPng(FILE* inFile)
 
 
 
@@ -216,6 +221,8 @@ namespace System.Drawing.Graphics {
             /// void* 
             public System.IntPtr data; 
         }
+
+
 
 
 

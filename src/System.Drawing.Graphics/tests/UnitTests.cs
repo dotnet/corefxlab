@@ -17,40 +17,40 @@ public partial class GraphicsUnitTests
     {
         FileStream filestream = new FileStream(@"C:\Users\t-dahid\Pictures\BlackCat.png", FileMode.Open);
 
-        Bitmap catStreamTest = Png.Load((Stream)filestream);
+        Image catStreamTest = Png.Load((Stream)filestream);
         Png.WriteToFile(catStreamTest, @"C:\Users\t-dahid\Pictures\TestWrite1.png");
 
 
         using (var stream = new MemoryStream())
         {
             //load an image to file & change transparency
-            Bitmap soccerCat = Jpg.Load(@"C:\users\t-dahid\Pictures\SoccerCat.jpg");
+            Image soccerCat = Jpg.Load(@"C:\users\t-dahid\Pictures\SoccerCat.jpg");
             soccerCat.SetAlphaPercentage(10);
 
             Jpg.WriteToStream(soccerCat, stream);
             stream.Position = 0;
-            Bitmap soccerCatTest = Jpg.Load((Stream)stream);
+            Image soccerCatTest = Jpg.Load((Stream)stream);
 
             Jpg.WriteToFile(soccerCatTest, @"C:\Users\t-dahid\Pictures\StreamTest2SoccercAT.jpg");
         }
 
 
-        Bitmap cat1 = Png.Load(@"C:\Users\t-dahid\Pictures\BlackCat.png");
-        Bitmap cat2 = Jpg.Load(@"C:\Users\t-dahid\Pictures\SquareCat.jpg");
+        Image cat1 = Png.Load(@"C:\Users\t-dahid\Pictures\BlackCat.png");
+        Image cat2 = Jpg.Load(@"C:\Users\t-dahid\Pictures\SquareCat.jpg");
 
         cat1.SetAlphaPercentage(40);
         Png.WriteToFile(cat1, @"C:\Users\t-dahid\Pictures\TransparentBlackCat.png");
 
-        Bitmap transparentCat1 = Png.Load(@"C:\Users\t-dahid\Pictures\TransparentBlackCat.png");
+        Image transparentCat1 = Png.Load(@"C:\Users\t-dahid\Pictures\TransparentBlackCat.png");
         cat2.Draw(transparentCat1, 0, 1);
         Png.WriteToFile(cat2, @"C:\Users\t-dahid\Pictures\TestWrite2.png");
     }
 
 
-    private static void ValidateImage(Bitmap bmp, int widthToCompare, int heightToCompare)
+    private static void ValidateImage(Image img, int widthToCompare, int heightToCompare)
     {
-        Assert.Equal(bmp.WidthInPixels, widthToCompare);
-        Assert.Equal(bmp.HeightInPixels, heightToCompare);
+        Assert.Equal(img.WidthInPixels, widthToCompare);
+        Assert.Equal(img.HeightInPixels, heightToCompare);
     }
 
     ///* Tests Create Method */
@@ -59,7 +59,7 @@ public partial class GraphicsUnitTests
     public static void WhenCreatingAnEmptyImageThenValidateAnImage()
     {
         ////create an empty 10x10 image
-        Bitmap emptyTenSquare = Bitmap.Create(10, 10);
+        Image emptyTenSquare = Image.Create(10, 10);
         ValidateImage(emptyTenSquare, 10, 10);
     }
     //[Fact]
