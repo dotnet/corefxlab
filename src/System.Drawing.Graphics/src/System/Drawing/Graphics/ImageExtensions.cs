@@ -11,13 +11,13 @@ namespace System.Drawing.Graphics
     {
         
         //Resizing
-        public static Image Resize(this Image sourceImage, int width, int height)
+        public static Bitmap Resize(this Bitmap sourceBitmap, int width, int height)
         {
             if (width > 0 && height > 0)
             {
-                Image destinationImage = Image.Create(width, height);
-                DLLImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
-                    destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
+                Bitmap destinationImage = Bitmap.Create(width, height);
+                DLLImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceBitmap.gdImageStructPtr, 0, 0, 0, 0,
+                    destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceBitmap.WidthInPixels, sourceBitmap.HeightInPixels);
                 return destinationImage;
             }
             else
@@ -27,7 +27,7 @@ namespace System.Drawing.Graphics
         }
 
         //Transparency
-        public static void SetAlphaPercentage(this Image image, double percentOpacity)
+        public static void SetAlphaPercentage(this Bitmap sourceBitmap, double percentOpacity)
         {
             if(percentOpacity > 100 || percentOpacity < 0)
             {
@@ -35,12 +35,12 @@ namespace System.Drawing.Graphics
             }
 
             double alphaAdjustment = (100.0 - percentOpacity) / 100.0;
-            for(int y = 0; y < image.HeightInPixels; y++)
+            for(int y = 0; y < sourceBitmap.HeightInPixels; y++)
             {
-                for(int x = 0; x < image.WidthInPixels; x++)
+                for(int x = 0; x < sourceBitmap.WidthInPixels; x++)
                 {
                     //get the current color of the pixel
-                    int currentColor = DLLImports.gdImageGetPixel(image.gdImageStructPtr, x, y);
+                    int currentColor = DLLImports.gdImageGetPixel(sourceBitmap.gdImageStructPtr, x, y);
                     //mask to just get the alpha value (7 bits)
                     double currentAlpha = (currentColor >> 24) & 0xff;
 
@@ -60,26 +60,26 @@ namespace System.Drawing.Graphics
                     //make a new color with the new alpha to set the pixel
                     currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
                     //turn alpha blending off so you don't draw over the same picture and get an opaque cat
-                    DLLImports.gdImageAlphaBlending(image.gdImageStructPtr, 0);
+                    DLLImports.gdImageAlphaBlending(sourceBitmap.gdImageStructPtr, 0);
 
-                    DLLImports.gdImageSetPixel(image.gdImageStructPtr, x, y, currentColor);
+                    DLLImports.gdImageSetPixel(sourceBitmap.gdImageStructPtr, x, y, currentColor);
                 }
             }
         }
 
         //Stamping an Image onto another
-        public static void Draw(this Image image, Image imageToDraw, int xOffset, int yOffset)
+        public static void Draw(this Bitmap destinationBitmap, Bitmap sourceBitmap, int xOffset, int yOffset)
         {
             //turn alpha blending on for drawing
-            DLLImports.gdImageAlphaBlending(image.gdImageStructPtr, 1);
+            DLLImports.gdImageAlphaBlending(destinationBitmap.gdImageStructPtr, 1);
             //DLLImports.gdImageAlphaBlending(imageToDraw.gdImageStructPtr, 1);
 
             //loop through the source image
-            for (int y = 0; y < imageToDraw.HeightInPixels; y++)
+            for (int y = 0; y < sourceBitmap.HeightInPixels; y++)
             {
-                for(int x = 0; x < imageToDraw.WidthInPixels; x++)
+                for(int x = 0; x < sourceBitmap.WidthInPixels; x++)
                 {
-                    int color = DLLImports.gdImageGetPixel(imageToDraw.gdImageStructPtr, x, y);
+                    int color = DLLImports.gdImageGetPixel(sourceBitmap.gdImageStructPtr, x, y);
 
                     int alpha = (color >> 24) & 0xff;
                     if (alpha == 127)
@@ -87,7 +87,7 @@ namespace System.Drawing.Graphics
                         continue;
                     }
 
-                    DLLImports.gdImageSetPixel(image.gdImageStructPtr, x + xOffset, y + yOffset, color);
+                    DLLImports.gdImageSetPixel(destinationBitmap.gdImageStructPtr, x + xOffset, y + yOffset, color);
                 }
             }
         }

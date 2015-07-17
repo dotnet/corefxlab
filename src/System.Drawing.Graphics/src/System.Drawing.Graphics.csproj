@@ -21,6 +21,8 @@
     <Compile Include="System\Drawing\Graphics\ImageExtensions.cs" />
     <Compile Include="System\Drawing\Graphics\DLLImports.cs" />
     <Compile Include="System\Drawing\Graphics\Image.cs" />
+    <Compile Include="System\Drawing\Graphics\Jpg.cs" />
+    <Compile Include="System\Drawing\Graphics\Png.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
