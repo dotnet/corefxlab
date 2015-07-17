@@ -14,14 +14,14 @@ namespace System.Drawing.Graphics
         Cmyk
     }
 
-    public class Bitmap
+    public class Image
     {
         /* Fields */ 
         private PixelFormat _pixelFormat = PixelFormat.Argb;
         private int _bytesPerPixel = 0;
         internal IntPtr gdImageStructPtr;
 
-        public Bitmap(IntPtr gdImageStructPtr)
+        public Image(IntPtr gdImageStructPtr)
         {
             this.gdImageStructPtr = gdImageStructPtr;
         }
@@ -71,9 +71,9 @@ namespace System.Drawing.Graphics
 
 
         /* Factory Methods */
-        public static Bitmap Create(int width, int height)
+        public static Image Create(int width, int height)
         {
-            return new Bitmap(width, height);
+            return new Image(width, height);
         }
         //public static Image Load(string filePath)
         //{
@@ -103,7 +103,7 @@ namespace System.Drawing.Graphics
         //}
 
         /* constructors */
-        private Bitmap(int width, int height)
+        private Image(int width, int height)
         {
             if (width > 0 && height > 0)
             {
