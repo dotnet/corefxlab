@@ -48,12 +48,6 @@ namespace System.Drawing.Graphics
         {
             get { return _pixelFormat; }
         }
-
-        //public byte[][] PixelData
-        //{
-        //    get { return _pixelData; }
-        //}
-       
         public int BytesPerPixel
         {
             get { return _bytesPerPixel; }
@@ -67,40 +61,12 @@ namespace System.Drawing.Graphics
                 return (gdImageStruct.trueColor == 1);
             }
         }
-
-
-
+        
         /* Factory Methods */
         public static Image Create(int width, int height)
         {
             return new Image(width, height);
         }
-        //public static Image Load(string filePath)
-        //{
-        //    return new Image(filePath);
-        //}
-        //public static Image Load(Stream stream)
-        //{
-        //    return new Image(stream);
-        //}
-
-        ///* Write */
-        //public void WriteToFile(string filePath)
-        //{
-        //    DLLImports.gdImageSaveAlpha(gdImageStructPtr, 1);
-
-        //    if (!DLLImports.gdSupportsFileType(filePath, true))
-        //    {
-        //        throw new InvalidOperationException("File type not supported or not found.");
-        //    }
-        //    else
-        //    {
-        //        if (!DLLImports.gdImageFile(gdImageStructPtr, filePath))
-        //        {
-        //            throw new FileLoadException("Failed to write to file.");
-        //        }
-        //    }
-        //}
 
         /* constructors */
         private Image(int width, int height)
@@ -114,33 +80,5 @@ namespace System.Drawing.Graphics
                 throw new InvalidOperationException("parameters for creating an image must be positive integers.");
             }
         }
-
-        //private Image(string filePath)
-        //{
-        //    if (!File.Exists(filePath))
-        //    {
-        //        throw new FileNotFoundException("Malformed file path given.");
-        //    }
-        //    else if (DLLImports.gdSupportsFileType(filePath, false))
-        //    {
-        //        gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
-        //        DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-        //        if(gdImageStruct.trueColor == 0)
-        //        {
-        //            int a = DLLImports.gdImagePaletteToTrueColor(gdImageStructPtr);
-        //            gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        throw new FileLoadException("File type not supported.");
-        //    }
-        //}
-
-        //private Image(Stream stream)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
     }
 }
