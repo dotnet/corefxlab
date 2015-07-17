@@ -1,0 +1,422 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ output extension=".txt" #>
+<#
+    const int MinColCount = 1;
+    const int MaxColCount = 4;
+    const int MinRowCount = 1;
+    const int MaxRowCount = 4;
+
+    for (int rowCount = MinRowCount; rowCount <= MaxRowCount; rowCount ++)
+    {
+        for (int colCount = MinColCount; colCount <= MaxColCount; colCount++)
+        {
+            if (rowCount == MinRowCount && colCount == MinColCount)
+                continue;
+
+            string structName = String.Format("Matrix{0}x{1}", colCount, rowCount);
+            string testName = String.Format("Test{0}x{1}", colCount, rowCount);
+            string outputFileName = testName + ".cs";
+            string typeName = structName.ToLower();
+#>
+// Copyright (c) Microsoft. All rights reserved. 
+// Licensed under the MIT license. See LICENSE file in the project root for full license information. 
+
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace System.Numerics.Matrices.Tests
+{
+    /// <summary>
+    /// Tests for the <#= structName #> structure.
+    /// </summary>
+    [TestClass]
+    public class <#= testName #>
+    {
+        const double Epsilon = Double.Epsilon * 10;
+
+        [TestMethod]
+        public void ConstructorValuesAreAccessibleByIndexer()
+        {
+            <#= structName #> <#= typeName #>;
+
+            <#= typeName #> = new <#= structName #>();
+
+            for (int x = 0; x < <#= typeName #>.Columns; x++)
+            {
+                for (int y = 0; y < <#= typeName #>.Rows; y++)
+                {
+                    Assert.AreEqual(0, <#= typeName #>[x, y], Epsilon);
+                }
+            }
+
+            double value = 33.33;
+            <#= typeName #> = new <#= structName #>(value);
+
+            for (int x = 0; x < <#= typeName #>.Columns; x++)
+            {
+                for (int y = 0; y < <#= typeName #>.Rows; y++)
+                {
+                    Assert.AreEqual(value, <#= typeName #>[x, y], Epsilon);
+                }
+            }
+
+            GenerateFilledMatrixWithValues(out <#= typeName #>);
+
+            for (int y = 0; y < <#= typeName #>.Rows; y++)
+            {
+                for (int x = 0; x < <#= typeName #>.Columns; x++)
+                {
+                    Assert.AreEqual(y * <#= typeName #>.Columns + x, <#= typeName #>[x, y], Epsilon);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void IndexerGetAndSetValuesCorrectly()
+        {
+            <#= structName #> <#= typeName #> = new <#= structName #>();
+
+            for (int x = 0; x < <#= typeName #>.Columns; x++)
+            {
+                for (int y = 0; y < <#= typeName #>.Rows; y++)
+                {
+                    <#= typeName #>[x, y] = y * <#= typeName #>.Columns + x;
+                }
+            }
+
+            for (int y = 0; y < <#= typeName #>.Rows; y++)
+            {
+                for (int x = 0; x < <#= typeName #>.Columns; x++)
+                {
+                    Assert.AreEqual(y * <#= typeName #>.Columns + x, <#= typeName #>[x, y], Epsilon);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ConstantValuesAreCorrect()
+        {
+            <#= structName #> <#= typeName #> = new <#= structName #>();
+
+            Assert.AreEqual(<#= colCount #>, <#= typeName #>.Columns);
+            Assert.AreEqual(<#= rowCount #>, <#= typeName #>.Rows);
+            Assert.AreEqual(<#= structName #>.ColumnCount, <#= typeName #>.Columns);
+            Assert.AreEqual(<#= structName #>.RowCount, <#= typeName #>.Rows);
+        }
+
+        [TestMethod]
+        public void ScalarMultiplicationIsCorrect()
+        {
+            <#= structName #> <#= typeName #>;
+
+            GenerateFilledMatrixWithValues(out <#= typeName #>);
+
+            for (double c = -10; c <= 10; c += 0.5)
+            {
+                <#= structName #> result = <#= typeName #> * c;
+
+                for (int y = 0; y < <#= typeName #>.Rows; y++)
+                {
+                    for (int x = 0; x < <#= typeName #>.Columns; x++)
+                    {
+                        Assert.AreEqual(<#= typeName #>[x, y] * c, result[x, y], Epsilon);
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void MemberGetAndSetValuesCorrectly()
+        {
+            <#= structName #> <#= typeName #> = new <#= structName #>();
+
+<#
+            for (int row = 0; row < rowCount; row++)
+            {
+                for (int col = 0; col < colCount; col++)
+                {
+                    #>            <#= typeName #>.M<#= col + 1 #><#= row + 1 #> = <#= row * colCount + col #>;<#
+                    #><#= Environment.NewLine #><#
+                }
+            }
+#>
+
+<#
+            for (int row = 0; row < rowCount; row++)
+            {
+                for (int col = 0; col < colCount; col++)
+                {
+                    #>            Assert.AreEqual(<#= row * colCount + col #>, <#= typeName #>.M<#= col + 1 #><#= row + 1 #>, Epsilon);<#
+                    #><#= Environment.NewLine #><#
+                }
+            }
+#>
+
+<#
+            for (int row = 0; row < rowCount; row++)
+            {
+                for (int col = 0; col < colCount; col++)
+                {
+                    #>            Assert.AreEqual(<#= typeName #>[<#= col#>, <#= row #>], <#= typeName #>.M<#= col + 1 #><#= row + 1 #>, Epsilon);<#
+                    #><#= Environment.NewLine #><#
+                }
+            }
+#>
+        }
+
+<#
+            if (colCount > 1 && rowCount > 1)
+            {
+#>
+        [TestMethod]
+        public void ColumnAccessorAreCorrect()
+        {
+            <#= structName #> value;
+            GenerateFilledMatrixWithValues(out value);
+<#
+                for (int col = 1; col < colCount; col++)
+                {
+#>
+
+            Matrix1x<#= rowCount #> column<#= col #> = value.Column<#= col #>;
+            for (int y = 0; y < value.Rows; y++)
+            {
+                Assert.AreEqual(value[<#= col - 1 #>, y], column<#= col #>[0, y]);
+            }
+<#
+                }
+#>
+        }
+
+        [TestMethod]
+        public void RowAccessorAreCorrect()
+        {
+            <#= structName #> value;
+            GenerateFilledMatrixWithValues(out value);
+
+<#
+                for (int row = 1; row < rowCount; row++)
+                {
+#>
+
+            Matrix<#= colCount #>x1 row<#= row #> = value.Row<#= row #>;
+            for (int x = 0; x < value.Columns; x++)
+            {
+                Assert.AreEqual(value[x, <#= row - 1 #>], row<#= row #>[x, 0]);
+            }
+<#
+                }
+#>
+        }
+
+<#
+            }
+#>
+        [TestMethod]
+        public void HashCodeGenerationWorksCorrectly()
+        {
+            HashSet<int> hashCodes = new HashSet<int>();
+            <#= structName #> value = new <#= structName #>(1);
+
+            for (int i = 2; i <= 100; i++)
+            {
+                if (!hashCodes.Add(value.GetHashCode()))
+                {
+                    Assert.Fail("Unique hash code generation failure.");
+                }
+
+                value *= i;
+            }
+        }
+
+        [TestMethod]
+        public void SimpleAdditionGeneratesCorrectValues()
+        {
+            <#= structName #> value1 = new <#= structName #>(1);
+            <#= structName #> value2 = new <#= structName #>(99);
+            <#= structName #> result = value1 + value2;
+
+            for (int y = 0; y < <#= structName #>.RowCount; y++)
+            {
+                for (int x = 0; x < <#= structName #>.ColumnCount; x++)
+                {
+                    Assert.AreEqual(1 + 99, result[x, y], Epsilon);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void SimpleSubtractionGeneratesCorrectValues()
+        {
+            <#= structName #> value1 = new <#= structName #>(100);
+            <#= structName #> value2 = new <#= structName #>(1);
+            <#= structName #> result = value1 - value2;
+
+            for (int y = 0; y < <#= structName #>.RowCount; y++)
+            {
+                for (int x = 0; x < <#= structName #>.ColumnCount; x++)
+                {
+                    Assert.AreEqual(100 - 1, result[x, y], Epsilon);
+                }
+            }
+        }
+
+<#
+            if (colCount == rowCount)
+            {
+#>
+        [TestMethod]
+        public void MultiplyByIdentityReturnsEqualValue()
+        {
+            <#= structName #> value;
+            GenerateFilledMatrixWithValues(out value);
+            <#= structName #> result = value * <#= structName #>.Identity;
+
+            Assert.AreEqual(value, result);
+        }
+
+<#
+            }
+#>
+        [TestMethod]
+        public void EqualityOperatorWorksCorrectly()
+        {
+            <#= structName #> value1 = new <#= structName #>(100);
+            <#= structName #> value2 = new <#= structName #>(50) * 2;
+
+            Assert.AreEqual(value1, value2);
+            Assert.IsTrue(value1 == value2, "Equality operator failed.");
+        }
+
+        [TestMethod]
+        public void AccessorThrowsWhenOutOfBounds()
+        {
+            <#= structName #> <#= typeName #> = new <#= structName #>();
+
+            try
+            {
+                <#= typeName #>[-1, 0] = 0;
+                Assert.Fail("<#= structName #>[-1, 0] did not throw when it should have.");
+            }
+            catch (ArgumentOutOfRangeException)
+            { }
+
+            try
+            {
+                <#= typeName #>[0, -1] = 0;
+                Assert.Fail("<#= structName #>[0, -1] did not throw when it should have.");
+            }
+            catch (ArgumentOutOfRangeException)
+            { }
+
+            try
+            {
+                <#= typeName #>[<#= colCount #>, 0] = 0;
+                Assert.Fail("<#= structName #>[<#= colCount #>, 0] did not throw when it should have.");
+            }
+            catch (ArgumentOutOfRangeException)
+            { }
+
+            try
+            {
+                <#= typeName #>[0, <#= rowCount #>] = 0;
+                Assert.Fail("<#= structName #>[0, <#= rowCount #>] did not throw when it should have.");
+            }
+            catch (ArgumentOutOfRangeException)
+            { }
+        }
+
+<#
+                for (int j = MinColCount; j <= MaxColCount; j++)
+                {
+                    int srcCols = j;
+                    int srcRows = colCount;
+                    int dstCols = srcCols;
+                    int dstRows = rowCount;
+
+                    if ((srcCols == MinColCount && srcRows == MinRowCount) || (dstCols == MinColCount && dstRows == MinRowCount))
+                        continue;
+
+                    string mulName = String.Format("Matrix{0}x{1}", srcCols, srcRows);
+                    string prodName = String.Format("Matrix{0}x{1}", dstCols, dstRows);
+#>
+        [TestMethod]
+        public void MuliplyBy<#= mulName #>Produces<#= prodName #>()
+        {
+            <#= structName #> matrix1 = new <#= structName #>(3);
+            <#= mulName #> matrix2 = new <#= mulName #>(2);
+            <#= prodName #> result = matrix1 * matrix2;
+            <#= prodName #> expected = new <#= prodName #>(<#
+            
+                    for (int y = 0; y < dstRows; y++)
+                    {
+                        for (int x = 0; x < dstCols; x++)
+                        {
+                            #><#= 3 * 2 * srcRows #><#
+
+                            if (x + 1 < dstCols || y + 1 < dstRows)
+                            {
+                                #>, <#
+                            }
+
+                            if (x + 1 >= dstCols && y + 1 < dstRows)
+                            {
+                                #><#= Environment.NewLine #><#
+                                #>                                               <#
+                            }
+                        
+                        }
+                    }
+
+            #>);
+
+            Assert.AreEqual(expected, result);
+        }
+<#
+                }
+#>
+
+        private void GenerateFilledMatrixWithValues(out <#= structName #> matrix)
+        {
+            matrix = new <#= structName #>(<#
+
+            int maxValue = colCount * rowCount;
+            int len = maxValue.ToString().Length;
+            string format = "{0, " + len + "}";
+
+            for (int row = 0; row < rowCount; row++)
+            {
+                for (int col = 0; col < colCount; col++)
+                {
+                    #><#= String.Format(format, row * colCount + col) #><#
+
+                    if (col + 1 < colCount || row + 1 < rowCount)
+                    {
+                        #>, <#
+                    }
+                }
+
+                if (row + 1 < rowCount)
+                {
+                    #><#= Environment.NewLine #><#
+                    #>                                   <#
+                }
+            }
+#>);
+        }
+    }
+}
+<#
+            string templateDirectory = Path.GetDirectoryName(Host.TemplateFile);
+            string outputFilePath = Path.Combine(templateDirectory, outputFileName);
+            File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString()); 
+
+            this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+        }
+    }
+#>
