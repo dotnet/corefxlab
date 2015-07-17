@@ -1,9 +1,5 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Drawing.Graphics
 {
@@ -61,7 +57,7 @@ namespace System.Drawing.Graphics
                     currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
                     //turn alpha blending off so you don't draw over the same picture and get an opaque cat
                     DLLImports.gdImageAlphaBlending(sourceImage.gdImageStructPtr, 0);
-
+                    
                     DLLImports.gdImageSetPixel(sourceImage.gdImageStructPtr, x, y, currentColor);
                 }
             }
@@ -72,7 +68,6 @@ namespace System.Drawing.Graphics
         {
             //turn alpha blending on for drawing
             DLLImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 1);
-            //DLLImports.gdImageAlphaBlending(imageToDraw.gdImageStructPtr, 1);
 
             //loop through the source image
             for (int y = 0; y < sourceImage.HeightInPixels; y++)
