@@ -111,25 +111,25 @@ namespace System.Drawing.Graphics
         }
         private Image(string filePath)
         {
+            //File.Exists(filePath);
+
             if (DLLImports.gdSupportsFileType(filePath, false))
             {
-                
                 gdImageStructPtr = DLLImports.gdImageCreateFromFile(filePath);
                 DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-                Console.WriteLine("True Color : " + gdImageStruct.trueColor);
-                if(TrueColor == false)
+                System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
+                if(gdImageStruct.trueColor == 0)
                 {
                     int a = DLLImports.gdImagePaletteToTrueColor(gdImageStructPtr);
-                    Console.WriteLine("palette to true color fail?: " + a);
+                    System.Console.WriteLine("palette to true color fail?: " + a);
                     gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
 
-                    Console.WriteLine("True Color : " + gdImageStruct.trueColor);
+                    System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
 
                 }
-                Console.WriteLine("True Color : " + gdImageStruct.trueColor);
+                System.Console.WriteLine("True Color : " + gdImageStruct.trueColor);
                 DLLImports.gdImageAlphaBlending(gdImageStructPtr, 0);
                 DLLImports.gdImageSaveAlpha(gdImageStructPtr, 1);
-
             }
             else
             {
@@ -138,74 +138,8 @@ namespace System.Drawing.Graphics
         }
 
         private Image(Stream stream)
-        { 
-
-        private class gdStreamWrapper
         {
-            public gdIOCtx IOCallbacks;
-
-            Stream _stream;
-
-            public gdStreamWrapper(Stream stream)
-            {
-                _stream = stream;
-                IOCallbacks = new gdIOCtx();
-
-
-                IOCallbacks.getC = getC;
-                IOCallbacks.getBuf = getBuf;
-                IOCallbacks.putC = putC;
-                IOCallbacks.putBuf = putBuf;
-                IOCallbacks.seek = seek;
-                IOCallbacks.tell = tell;
-            }
-
-
-            int getC(IntPtr ctx)
-            {
-                return _stream.ReadByte();
-            }
-
-
-            int getBuf(IntPtr ctx, System.IntPtr buf, int wanted)
-            {
-                byte[] buffer = new byte[wanted];
-                int read = _stream.Read(buffer, 0, wanted);
-                if (read > 0)
-                {
-                    Marshal.Copy(buffer, 0, buf, read);
-                }
-                return read;
-            }
-
-
-            void putC(IntPtr ctx, int ch)
-            {
-                _stream.WriteByte((byte)ch);
-            }
-
-
-            int putBuf(IntPtr ctx, System.IntPtr buf, int wanted)
-            {
-                byte[] buffer = new byte[wanted];
-                Marshal.Copy(buf, buffer, 0, wanted);
-                _stream.Write(buffer, 0, wanted);
-                return wanted;
-            }
-
-
-            int seek(IntPtr ctx, int pos)
-            {
-                _stream.Seek(0, SeekOrigin.Begin);
-                return 1;
-            }
-
-
-            int tell(IntPtr ctx)
-            {
-                return (int)_stream.Position;
-            }
-            }
+            throw new NotImplementedException();
         }
     }
 }

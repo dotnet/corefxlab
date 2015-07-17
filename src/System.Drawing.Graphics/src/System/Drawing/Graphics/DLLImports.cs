@@ -101,11 +101,6 @@ namespace System.Drawing.Graphics {
         internal static extern IntPtr gdImageCreateFromFile(string filename);
 
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Ansi)]
-        internal static extern IntPtr gdIOCtx();
-
-
-
         //had to use mangled name here
         [DllImport("libgdx86.dll", CharSet = CharSet.Ansi, EntryPoint = "_gdImageFile@8")]
         internal static extern bool gdImageFile(IntPtr image, string filename);
@@ -135,5 +130,81 @@ namespace System.Drawing.Graphics {
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern int gdImagePaletteToTrueColor(IntPtr src);
+        
+
+        /// Return Type: int 
+        ///param0: gdIOCtx* 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
+        public delegate int gdIOCtx_getC(IntPtr ctx); 
+ 
+ 
+        /// Return Type: int 
+        ///param0: gdIOCtx* 
+        ///param1: void* 
+        ///param2: int 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
+        public delegate int gdIOCtx_getBuf(IntPtr ctx, System.IntPtr buf, int wanted); 
+ 
+        /// Return Type: void 
+        ///param0: gdIOCtx* 
+        ///param1: int 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
+        public delegate void gdIOCtx_putC(IntPtr ctx, int ch); 
+ 
+        /// Return Type: int 
+        ///param0: gdIOCtx* 
+        ///param1: void* 
+        ///param2: int 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
+        public delegate int gdIOCtx_putBuf(IntPtr ctx, System.IntPtr buf, int wanted); 
+
+        /// Return Type: int 
+        ///param0: gdIOCtx* 
+        ///param1: int 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
+        public delegate int gdIOCtx_seek(IntPtr ctx, int pos); 
+ 
+        /// Return Type: int 
+        ///param0: gdIOCtx* 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
+        public delegate int gdIOCtx_tell(IntPtr ctx); 
+
+        /// Return Type: void 
+        ///param0: gdIOCtx* 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
+        public delegate void gdIOCtx_gd_free(IntPtr param0);
+
+
+        [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)] 
+        public struct gdIOCtx
+        { 
+      
+            /// gdIOCtx_getC 
+            public gdIOCtx_getC getC; 
+      
+            /// gdIOCtx_getBuf 
+            public gdIOCtx_getBuf getBuf; 
+      
+            /// gdIOCtx_putC 
+            public gdIOCtx_putC putC; 
+      
+            /// gdIOCtx_putBuf 
+            public gdIOCtx_putBuf putBuf; 
+      
+            /// gdIOCtx_seek 
+            public gdIOCtx_seek seek; 
+      
+            /// gdIOCtx_tell 
+            public gdIOCtx_tell tell; 
+      
+            /// gdIOCtx_gd_free 
+            public gdIOCtx_gd_free gd_free; 
+      
+            /// void* 
+            public System.IntPtr data; 
+        }
+
+
+
     }
 }
