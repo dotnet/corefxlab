@@ -4,7 +4,8 @@
 
 using System.Runtime.InteropServices;
 
-namespace System.Drawing.Graphics {
+namespace System.Drawing.Graphics
+{
     internal class DLLImports
     {
         const int gdMaxColors = 256;
@@ -130,7 +131,6 @@ namespace System.Drawing.Graphics {
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
         internal static extern int gdImagePaletteToTrueColor(IntPtr src);
-
 
         [DllImport("libgdx86.dll", EntryPoint = "_gdImageCreateFromPngCtx@4")] 
         public static extern IntPtr gdImageCreateFromPngCtx(ref gdIOCtx @in);
