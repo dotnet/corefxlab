@@ -77,7 +77,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new InvalidOperationException("parameters for creating an image must be positive integers.");
+                throw new InvalidOperationException("Parameters for creating an image must be positive integers.");
             }
         }
     }
