@@ -15,6 +15,10 @@ See more information on this component and code samples at the [Wiki]: https://g
 * **System.IO.FileSystem.Watcher.Polling**. 
 .NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it night be not. This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected. 
 
+* **System.Time**.
+This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `TimeOfDay`.
+It also provides extension methods to enhance the functionality of the existing `DateTime`, `DateTimeOffset` and `TimeZoneInfo` types.
+
 More libraries are coming soon. Stay tuned!
 
 [blog post]: http://blogs.msdn.com/b/dotnet/archive/2014/11/12/net-core-is-open-source.aspx

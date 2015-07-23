@@ -5,11 +5,11 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
-    <RootNamespace>System.Drawing.Graphics</RootNamespace>
-    <AssemblyName>System.Drawing.Graphics</AssemblyName>
+    <RootNamespace>System</RootNamespace>
+    <AssemblyName>System.Time</AssemblyName>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ProjectGuid>{091712F4-3894-4D0B-9403-39D115621208}</ProjectGuid>
+    <ProjectGuid>{241780A1-BAFD-4FE9-9D2F-BF1911160C33}</ProjectGuid>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -17,13 +17,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="System\Drawing\Graphics\GDStreamWrapper.cs" />
-    <Compile Include="System\Drawing\Graphics\ImageExtensions.cs" />
-    <Compile Include="System\Drawing\Graphics\DLLImports.cs" />
-    <Compile Include="System\Drawing\Graphics\Image.cs" />
-    <Compile Include="System\Drawing\Graphics\Jpg.cs" />
-    <Compile Include="System\Drawing\Graphics\LibGDLinuxImports.cs" />
-    <Compile Include="System\Drawing\Graphics\Png.cs" />
+    <Compile Include="System\Date.cs" />
+    <Compile Include="System\DateTimeExtensions.cs" />
+    <Compile Include="System\DateTimeOffsetExtensions.cs" />
+    <Compile Include="System\Meridiem.cs" />
+    <Compile Include="System\TimeOfDay.cs" />
+    <Compile Include="System\TimeZoneInfoExtensions.cs" />
+    <Compile Include="System\TimeZoneOffsetResolvers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
