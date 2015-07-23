@@ -23,14 +23,15 @@ namespace System.Drawing.Graphics
         }
 
         //Transparency
-        public static void SetAlphaPercentage(this Image sourceImage, double percentOpacity)
+        //opacityMultiplier is between 0-1
+        public static void SetAlphaPercentage(this Image sourceImage, double opacityMultiplier)
         {
-            if(percentOpacity > 100 || percentOpacity < 0)
+            if(opacityMultiplier > 1 || opacityMultiplier < 0)
             {
-                throw new InvalidOperationException("Percent Transparency must be a value between 0 - 100.");
+                throw new InvalidOperationException("Percent Transparency must be a value between 0 - 1.");
             }
 
-            double alphaAdjustment = (100.0 - percentOpacity) / 100.0;
+            double alphaAdjustment = 1 - opacityMultiplier;
             for(int y = 0; y < sourceImage.HeightInPixels; y++)
             {
                 for(int x = 0; x < sourceImage.WidthInPixels; x++)
