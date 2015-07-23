@@ -16,97 +16,81 @@ public partial class GraphicsUnitTests
     [Fact]
     public static void DemoPresention()
     {
+        System.Console.WriteLine("hi");
+        System.Console.WriteLine("ayo");
+
         /*Reading and Writing to a file*/
 
-        string filepath = @"C:\Users\t-";
-        Image fromFile = Jpg.Load(filepath);
-        Jpg.WriteToFile(fromFile, @"C:\Users\t-");
+        //string filepath = @"C:\Users\t-xix\Pictures\Demo\BlackCat.png";
+        //Image fromFile = Png.Load(filepath);
+        //Png.WriteToFile(fromFile, @"C:\Users\t-xix\Pictures\Results\BlackCatWrite.png");
 
 
         ///*Resizing an Image*/
 
-        //string filepath = @"C:\Users\t-";
+        //string filepath = @"C:\Users\t-xix\Pictures\Demo\SquareCat.jpg";
         //Image fromFileResizeSquare = Jpg.Load(filepath);
         //fromFileResizeSquare = fromFileResizeSquare.Resize(100, 100);
         ////arbitraily passing in pixelformat.argb now 
         //ValidateImage(fromFileResizeSquare, 100, 100);
-        //Jpg.WriteToFile(fromFileResizeSquare, @"C:\Users\t-");
+        //Jpg.WriteToFile(fromFileResizeSquare, @"C:\Users\t-xix\Pictures\Results\SquareCatResizedWrite.jpg");
 
 
         ///*Changing Transparency*/
 
-        //Image blackCat5 = Jpg.Load(@"C:\Users\t-");
-        //ValidateImage(blackCat5, 220, 220);
-        //blackCat5.SetAlphaPercentage(50);
-        //ValidateImage(blackCat5, 220, 220);
-        //Jpg.WriteToFile(blackCat5, @"C:\Users\t-");
-
-
+        //Image blackCat = Png.Load(@"C:\Users\t-xix\Pictures\Demo\BlackCat.png");
+        //ValidateImage(blackCat, 220, 220);
+        //blackCat.SetAlphaPercentage(50);
+        //ValidateImage(blackCat, 220, 220);
+        //Png.WriteToFile(blackCat, @"C:\Users\t-xix\Pictures\Results\BlackCatTransparencyWrite.png");
 
         ///*Drawing an Image onto another*/
 
-        ////open yellow cat image
-        //Image yellowCat = Jpg.Load(@"C:\Users\t-");
-        //ValidateImage(yellowCat, 600, 701);
+        //open square cat image
+        //Image squareCat = Jpg.Load(@"C:\Users\t-xix\Pictures\Demo\SquareCat.jpg");
+        //ValidateImage(squareCat, 600, 701);
         ////open black cat image
-        //Image blackCat = Jpg.Load(@"C:\Users\t-");
+        //Image blackCat = Png.Load(@"C:\Users\t-xix\Pictures\Demo\BlackCat.png");
         //ValidateImage(blackCat, 220, 220);
         ////draw & Write
-        //yellowCat.Draw(blackCat, 0, 0);
-        //Jpg.WriteToFile(yellowCat, @"C:\Users\t-");
+        //squareCat.Draw(blackCat, 0, 0);
+        //Jpg.WriteToFile(squareCat, @"C:\Users\t-xix\Pictures\Results\SquareCatDrawWrite.jpg");
 
 
-        ///*Water-Marking an Image*/
+        /*Water-Marking an Image*/
 
         ////black cat load
-        //Image blackCat = Jpg.Load(@"C:\Users\t-");
+        //Image blackCat = Png.Load(@"C:\Users\t-xix\Pictures\Demo\BlackCat.png");
         //ValidateImage(blackCat, 220, 220);
         //blackCat.SetAlphaPercentage(20);
-        ////yellow cat load
-        //Image yellowCat = Jpg.Load(@"C:\Users\t-");
-        //ValidateImage(yellowCat, 600, 701);
-        //yellowCat.Draw(blackCat, 0, 0);
-        //ValidateImage(yellowCat, 600, 701);
+        ////square cat load
+        //Image squareCat = Jpg.Load(@"C:\Users\t-xix\Pictures\Demo\SquareCat.jpg");
+        //ValidateImage(squareCat, 600, 701);
+        //squareCat.Draw(blackCat, 0, 0);
+        //ValidateImage(squareCat, 600, 701);
         ////write
-        //Jpg.WriteToFile(yellowCat, @"C:\Users\t-");
+        //Jpg.WriteToFile(squareCat, @"C:\Users\t-xix\Pictures\Results\SquareCatWatermarkWrite.jpg");
 
+
+        /* Reading from a stream */
+        //FileStream filestream = new FileStream(@"C:\Users\t-xix\Pictures\Demo\BlackCat.png", FileMode.Open);
+        //Image catStreamTest = Png.Load((Stream)filestream);
+        //Png.WriteToFile(catStreamTest, @"C:\Users\t-xix\Pictures\Results\StreamWrite.png");
+
+        /* Writing to a stream */
+        //using (var stream = new MemoryStream())
+        //{
+        //    //load an image to file & change transparency
+        //    Image squareCat = Jpg.Load(@"C:\users\t-xix\Pictures\Demo\SquareCat.jpg");
+        //    squareCat.SetAlphaPercentage(10);
+
+        //    Jpg.WriteToStream(squareCat, stream);
+        //    stream.Position = 0;
+        //    Image streamTest = Jpg.Load((Stream)stream);
+
+        //    Jpg.WriteToFile(streamTest, @"C:\Users\t-xix\Pictures\Results\StreamWrite.jpg");
+        //}
     }
-
-
-    [Fact]
-    public static void Test2()
-    {
-        FileStream filestream = new FileStream(@"C:\Users\t-dahid\Pictures\BlackCat.png", FileMode.Open);
-
-        Image catStreamTest = Png.Load((Stream)filestream);
-        Png.WriteToFile(catStreamTest, @"C:\Users\t-dahid\Pictures\TestWrite1.png");
-
-
-        using (var stream = new MemoryStream())
-        {
-            //load an image to file & change transparency
-            Image soccerCat = Jpg.Load(@"C:\users\t-dahid\Pictures\SoccerCat.jpg");
-            soccerCat.SetAlphaPercentage(10);
-
-            Jpg.WriteToStream(soccerCat, stream);
-            stream.Position = 0;
-            Image soccerCatTest = Jpg.Load((Stream)stream);
-
-            Jpg.WriteToFile(soccerCatTest, @"C:\Users\t-dahid\Pictures\StreamTest2SoccercAT.jpg");
-        }
-
-
-        Image cat1 = Png.Load(@"C:\Users\t-dahid\Pictures\BlackCat.png");
-        Image cat2 = Jpg.Load(@"C:\Users\t-dahid\Pictures\SquareCat.jpg");
-
-        cat1.SetAlphaPercentage(40);
-        Png.WriteToFile(cat1, @"C:\Users\t-dahid\Pictures\TransparentBlackCat.png");
-
-        Image transparentCat1 = Png.Load(@"C:\Users\t-dahid\Pictures\TransparentBlackCat.png");
-        cat2.Draw(transparentCat1, 0, 1);
-        Png.WriteToFile(cat2, @"C:\Users\t-dahid\Pictures\TestWrite2.png");
-    }
-
 
     private static void ValidateImage(Image img, int widthToCompare, int heightToCompare)
     {
@@ -114,7 +98,44 @@ public partial class GraphicsUnitTests
         Assert.Equal(img.HeightInPixels, heightToCompare);
     }
 
-    ///* Tests Create Method */
+    //[Fact]
+    //public static void Test2()
+    //{
+    //    FileStream filestream = new FileStream(@"C:\Users\t-dahid\Pictures\BlackCat.png", FileMode.Open);
+
+    //    Image catStreamTest = Png.Load((Stream)filestream);
+    //    Png.WriteToFile(catStreamTest, @"C:\Users\t-dahid\Pictures\TestWrite1.png");
+
+
+    //    using (var stream = new MemoryStream())
+    //    {
+    //        //load an image to file & change transparency
+    //        Image soccerCat = Jpg.Load(@"C:\users\t-dahid\Pictures\SoccerCat.jpg");
+    //        soccerCat.SetAlphaPercentage(10);
+
+    //        Jpg.WriteToStream(soccerCat, stream);
+    //        stream.Position = 0;
+    //        Image soccerCatTest = Jpg.Load((Stream)stream);
+
+    //        Jpg.WriteToFile(soccerCatTest, @"C:\Users\t-dahid\Pictures\StreamTest2SoccercAT.jpg");
+    //    }
+
+
+    //    Image cat1 = Png.Load(@"C:\Users\t-dahid\Pictures\BlackCat.png");
+    //    Image cat2 = Jpg.Load(@"C:\Users\t-dahid\Pictures\SquareCat.jpg");
+
+    //    cat1.SetAlphaPercentage(40);
+    //    Png.WriteToFile(cat1, @"C:\Users\t-dahid\Pictures\TransparentBlackCat.png");
+
+    //    Image transparentCat1 = Png.Load(@"C:\Users\t-dahid\Pictures\TransparentBlackCat.png");
+    //    cat2.Draw(transparentCat1, 0, 1);
+    //    Png.WriteToFile(cat2, @"C:\Users\t-dahid\Pictures\TestWrite2.png");
+    //}
+
+
+
+
+    /////* Tests Create Method */
 
     [Fact]
     public static void WhenCreatingAnEmptyImageThenValidateAnImage()
