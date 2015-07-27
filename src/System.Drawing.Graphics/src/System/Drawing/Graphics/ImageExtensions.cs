@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
-//#define WINDOWS
+#define WINDOWS
 
 namespace System.Drawing.Graphics
 {
@@ -21,7 +21,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new InvalidOperationException("Parameters for resizing an image must be positive integers.");
+                throw new InvalidOperationException(SR.Format(SR.ResizeInvalidParameters, width, height));
             }
         }
 
@@ -31,10 +31,9 @@ namespace System.Drawing.Graphics
         {
             if(opacityMultiplier > 1 || opacityMultiplier < 0)
             {
-                throw new InvalidOperationException("Percent Transparency must be a value between 0 - 1.");
+                throw new InvalidOperationException(SR.Format(SR.InvalidTransparencyPercent, opacityMultiplier));
             }
-
-            double alphaAdjustment = 1 - opacityMultiplier;
+            double alphaAdjustment = 1 - opacityMultiplier; 
             for(int y = 0; y < sourceImage.HeightInPixels; y++)
             {
                 for(int x = 0; x < sourceImage.WidthInPixels; x++)
@@ -43,8 +42,6 @@ namespace System.Drawing.Graphics
                     int currentColor = DLLImports.gdImageGetPixel(sourceImage.gdImageStructPtr, x, y);
                     //mask to just get the alpha value (7 bits)
                     double currentAlpha = (currentColor >> 24) & 0xff;
-
-                    
                     //if the current alpha is transparent
                     //dont bother/ skip over
                     if (currentAlpha == 127)
@@ -52,10 +49,6 @@ namespace System.Drawing.Graphics
                     //calculate the new alpha value given the adjustment
 
                     currentAlpha += (127 - currentAlpha) * alphaAdjustment;
-                    //if it is somehow transparent now
-                    //dont bother setting pixel/skip over
-                    if (currentAlpha >= 127)
-                        continue;
 
                     //make a new color with the new alpha to set the pixel
                     currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
@@ -109,7 +102,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new InvalidOperationException("Parameters for resizing an image must be positive integers.");
+                throw new InvalidOperationException(SR.Format(SR.ResizeInvalidParameters, width, height));
             }
         }
 
@@ -119,10 +112,9 @@ namespace System.Drawing.Graphics
         {
             if (opacityMultiplier > 1 || opacityMultiplier < 0)
             {
-                throw new InvalidOperationException("Percent Transparency must be a value between 0 - 1.");
+                throw new InvalidOperationException(SR.Format(SR.InvalidTransparencyPercent, opacityMultiplier));
             }
-
-            double alphaAdjustment = 1 - opacityMultiplier;
+            double alphaAdjustment = 1 - opacityMultiplier; 
             for (int y = 0; y < sourceImage.HeightInPixels; y++)
             {
                 for (int x = 0; x < sourceImage.WidthInPixels; x++)
@@ -131,19 +123,12 @@ namespace System.Drawing.Graphics
                     int currentColor = LibGDLinuxImports.gdImageGetPixel(sourceImage.gdImageStructPtr, x, y);
                     //mask to just get the alpha value (7 bits)
                     double currentAlpha = (currentColor >> 24) & 0xff;
-
-
                     //if the current alpha is transparent
                     //dont bother/ skip over
                     if (currentAlpha == 127)
                         continue;
                     //calculate the new alpha value given the adjustment
-
                     currentAlpha += (127 - currentAlpha) * alphaAdjustment;
-                    //if it is somehow transparent now
-                    //dont bother setting pixel/skip over
-                    if (currentAlpha >= 127)
-                        continue;
 
                     //make a new color with the new alpha to set the pixel
                     currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));

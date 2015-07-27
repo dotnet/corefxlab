@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
-//#define WINDOWS
+#define WINDOWS
 
 
 using System.IO;
@@ -12,12 +12,12 @@ namespace System.Drawing.Graphics
 #if WINDOWS
     public static class Jpg
     {
-        //add png specific method later
+        //add jpg specific method later
         public static Image Load(string filePath)
         {
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException("Malformed file path given.");
+                throw new FileNotFoundException(SR.Format(SR.MalformedFilePath, filePath));
             }
             else if (DLLImports.gdSupportsFileType(filePath, false))
             {
@@ -33,24 +33,24 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new FileLoadException("File type not supported.");
+                throw new FileLoadException(SR.Format(SR.FileTypeNotSupported, filePath));
             }
         }
 
-        //add png specific method later
+        //add jpg specific method later
         public static void WriteToFile(Image img, string filePath)
         {
             DLLImports.gdImageSaveAlpha(img.gdImageStructPtr, 1);
 
             if (!DLLImports.gdSupportsFileType(filePath, true))
             {
-                throw new InvalidOperationException("File type not supported or not found.");
+                throw new InvalidOperationException(SR.Format(SR.FileTypeNotSupported, filePath));
             }
             else
             {
                 if (!DLLImports.gdImageFile(img.gdImageStructPtr, filePath))
                 {
-                    throw new FileLoadException("Failed to write to file.");
+                    throw new FileLoadException(SR.Format(SR.WriteToFileFailed, filePath));
                 }
             }
         }
@@ -58,24 +58,34 @@ namespace System.Drawing.Graphics
 
         public static Image Load(Stream stream)
         {
-            IntPtr pNativeImage = IntPtr.Zero;
-            var wrapper = new gdStreamWrapper(stream);
-            pNativeImage = DLLImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
+            if (stream != null)
+            {
+                IntPtr pNativeImage = IntPtr.Zero;
+                var wrapper = new gdStreamWrapper(stream);
+                pNativeImage = DLLImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
 
-            DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(pNativeImage);
-            Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
-            toRet.gdImageStructPtr = pNativeImage;
-            return toRet;
+                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(pNativeImage);
+                Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
+                toRet.gdImageStructPtr = pNativeImage;
+                return toRet;
+            }
+            else
+            {
+                throw new InvalidOperationException(SR.NullStreamReferenced);
+            }
 
         }
 
-        public static void WriteToStream(Image img, Stream stream)
+        public static void WriteToStream(Image bmp, Stream stream)
         {
-            IntPtr point = img.gdImageStructPtr;
-            DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(point);
+            DLLImports.gdImageSaveAlpha(bmp.gdImageStructPtr, 1);
+
+            DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(bmp.gdImageStructPtr);
             var wrapper = new gdStreamWrapper(stream);
             DLLImports.gdImageJpegCtx(ref gdImageStruct, ref wrapper.IOCallbacks);
         }
+
+
 
 
     }
@@ -85,12 +95,12 @@ namespace System.Drawing.Graphics
 
     public static class Jpg
     {
-        //add png specific method later
+        //add jpg specific method later
         public static Image Load(string filePath)
         {
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException("Malformed file path given.");
+                throw new FileNotFoundException(SR.Format(SR.MalformedFilePath, filePath));
             }
             else if (LibGDLinuxImports.gdSupportsFileType(filePath, false))
             {
@@ -106,24 +116,24 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new FileLoadException("File type not supported.");
+                throw new FileLoadException(SR.Format(SR.FileTypeNotSupported, filePath));
             }
         }
 
-        //add png specific method later
+        //add jpg specific method later
         public static void WriteToFile(Image img, string filePath)
         {
             LibGDLinuxImports.gdImageSaveAlpha(img.gdImageStructPtr, 1);
 
             if (!LibGDLinuxImports.gdSupportsFileType(filePath, true))
             {
-                throw new InvalidOperationException("File type not supported or not found.");
+                throw new InvalidOperationException(SR.Format(SR.FileTypeNotSupported, filePath));
             }
             else
             {
                 if (!LibGDLinuxImports.gdImageFile(img.gdImageStructPtr, filePath))
                 {
-                    throw new FileLoadException("Failed to write to file.");
+                    throw new FileLoadException(SR.Format(SR.WriteToFileFailed, filePath));
                 }
             }
         }
@@ -131,24 +141,34 @@ namespace System.Drawing.Graphics
 
         public static Image Load(Stream stream)
         {
-            IntPtr pNativeImage = IntPtr.Zero;
-            var wrapper = new gdStreamWrapper(stream);
-            pNativeImage = LibGDLinuxImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
+            if(stream != null)
+            {
+                IntPtr pNativeImage = IntPtr.Zero;
+                var wrapper = new gdStreamWrapper(stream);
+                pNativeImage = LibGDLinuxImports.gdImageCreateFromJprgCtx(ref wrapper.IOCallbacks);
 
-            LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(pNativeImage);
-            Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
-            toRet.gdImageStructPtr = pNativeImage;
-            return toRet;
+                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(pNativeImage);
+                Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
+                toRet.gdImageStructPtr = pNativeImage;
+                return toRet;
+            }
+            else
+            {
+                throw new InvalidOperationException(SR.NullStreamReferenced);
+            }
 
         }
 
-        public static void WriteToStream(Image img, Stream stream)
+        public static void WriteToStream(Image bmp, Stream stream)
         {
-            IntPtr point = img.gdImageStructPtr;
-            LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(point);
+            LibGDLinuxImports.gdImageSaveAlpha(bmp.gdImageStructPtr, 1);
+
+            LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(bmp.gdImageStructPtr);
             var wrapper = new gdStreamWrapper(stream);
             LibGDLinuxImports.gdImageJpegCtx(ref gdImageStruct, ref wrapper.IOCallbacks);
         }
+
+
 
 
     }

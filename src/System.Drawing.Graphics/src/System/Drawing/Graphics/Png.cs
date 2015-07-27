@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
-//#define WINDOWS
+#define WINDOWS
 
 using System.IO;
 using System.Runtime.InteropServices;
+
 
 namespace System.Drawing.Graphics
 {
@@ -15,7 +16,7 @@ namespace System.Drawing.Graphics
         {
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException("Malformed file path given.");
+                throw new FileNotFoundException(SR.Format(SR.MalformedFilePath, filePath));
             }
             else if (DLLImports.gdSupportsFileType(filePath, false))
             {
@@ -31,7 +32,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new FileLoadException("File type not supported.");
+                throw new FileLoadException(SR.Format(SR.FileTypeNotSupported, filePath));
             }
         }
 
@@ -42,13 +43,13 @@ namespace System.Drawing.Graphics
 
             if (!DLLImports.gdSupportsFileType(filePath, true))
             {
-                throw new InvalidOperationException("File type not supported or not found.");
+                throw new InvalidOperationException(SR.Format(SR.FileTypeNotSupported, filePath));
             }
             else
             {
                 if (!DLLImports.gdImageFile(img.gdImageStructPtr, filePath))
                 {
-                    throw new FileLoadException("Failed to write to file.");
+                    throw new FileLoadException(SR.Format(SR.WriteToFileFailed, filePath));
                 }
             }
         }
@@ -56,19 +57,28 @@ namespace System.Drawing.Graphics
 
         public static Image Load(Stream stream)
         {
+            if (stream != null)
+            {
+                IntPtr pNativeImage = IntPtr.Zero;
+                var wrapper = new gdStreamWrapper(stream);
+                pNativeImage = DLLImports.gdImageCreateFromPngCtx(ref wrapper.IOCallbacks);
 
-            IntPtr pNativeImage = IntPtr.Zero;
-            var wrapper = new gdStreamWrapper(stream);
-            pNativeImage = DLLImports.gdImageCreateFromPngCtx(ref wrapper.IOCallbacks);
-
-            DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(pNativeImage);
-            Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
-            toRet.gdImageStructPtr = pNativeImage;
-            return toRet;
+                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(pNativeImage);
+                Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
+                toRet.gdImageStructPtr = pNativeImage;
+                return toRet;
+            }
+            else
+            {
+                throw new InvalidOperationException(SR.NullStreamReferenced);
+            }
+            
         }
 
         public static void WriteToStream(Image bmp, Stream stream)
         {
+            DLLImports.gdImageSaveAlpha(bmp.gdImageStructPtr, 1);
+
             DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(bmp.gdImageStructPtr);
             var wrapper = new gdStreamWrapper(stream);
             DLLImports.gdImagePngCtx(ref gdImageStruct, ref wrapper.IOCallbacks);
@@ -89,7 +99,7 @@ namespace System.Drawing.Graphics
         {
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException("Malformed file path given.");
+                throw new FileNotFoundException(SR.Format(SR.MalformedFilePath, filePath));
             }
             else if (LibGDLinuxImports.gdSupportsFileType(filePath, false))
             {
@@ -105,7 +115,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new FileLoadException("File type not supported.");
+                throw new FileLoadException(SR.Format(SR.FileTypeNotSupported, filePath));
             }
         }
 
@@ -116,13 +126,13 @@ namespace System.Drawing.Graphics
 
             if (!LibGDLinuxImports.gdSupportsFileType(filePath, true))
             {
-                throw new InvalidOperationException("File type not supported or not found.");
+                throw new InvalidOperationException(SR.Format(SR.FileTypeNotSupported, filePath));
             }
             else
             {
                 if (!LibGDLinuxImports.gdImageFile(img.gdImageStructPtr, filePath))
                 {
-                    throw new FileLoadException("Failed to write to file.");
+                    throw new FileLoadException(SR.Format(SR.WriteToFileFailed, filePath));
                 }
             }
         }
@@ -130,19 +140,28 @@ namespace System.Drawing.Graphics
 
         public static Image Load(Stream stream)
         {
+            if(stream != null)
+            {
+                IntPtr pNativeImage = IntPtr.Zero;
+                var wrapper = new gdStreamWrapper(stream);
+                pNativeImage = LibGDLinuxImports.gdImageCreateFromPngCtx(ref wrapper.IOCallbacks);
 
-            IntPtr pNativeImage = IntPtr.Zero;
-            var wrapper = new gdStreamWrapper(stream);
-            pNativeImage = LibGDLinuxImports.gdImageCreateFromPngCtx(ref wrapper.IOCallbacks);
+                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(pNativeImage);
+                Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
+                toRet.gdImageStructPtr = pNativeImage;
+                return toRet;
+            }
+            else
+            {
+                throw new InvalidOperationException(SR.NullStreamReferenced);
+            }
 
-            LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(pNativeImage);
-            Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
-            toRet.gdImageStructPtr = pNativeImage;
-            return toRet;
         }
 
         public static void WriteToStream(Image bmp, Stream stream)
         {
+            LibGDLinuxImports.gdImageSaveAlpha(bmp.gdImageStructPtr, 1);
+
             LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(bmp.gdImageStructPtr);
             var wrapper = new gdStreamWrapper(stream);
             LibGDLinuxImports.gdImagePngCtx(ref gdImageStruct, ref wrapper.IOCallbacks);

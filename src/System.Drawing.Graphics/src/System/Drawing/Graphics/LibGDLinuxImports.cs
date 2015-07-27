@@ -144,13 +144,7 @@ namespace System.Drawing.Graphics
         [DllImport("libgd.so.3.0.0", EntryPoint = "_gdImageJpegCtx@12")]
         public static extern void gdImageJpegCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
-
-
-        //[DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        //internal static extern int gdImageCreateFromPng(FILE* inFile)
-
-
-
+        
         /// Return Type: int 
         ///param0: gdIOCtx* 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
