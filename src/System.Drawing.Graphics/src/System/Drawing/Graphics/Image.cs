@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
-//#define WINDOWS
+#define WINDOWS
 
 using System.IO;
 using System.Runtime.InteropServices;
@@ -82,12 +82,13 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new InvalidOperationException("Parameters for creating an image must be positive integers.");
+                string rsc = SR.Format(SR.CreateInvalidParameters, width, height);
+                throw new InvalidOperationException(rsc);
             }
         }
     }
 
-    #else
+#else
 
     public class Image
     {
@@ -153,11 +154,11 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new InvalidOperationException("parameters for creating an image must be positive integers.");
+                throw new InvalidOperationException(SR.Format(SR.CreateInvalidParameters, width, height));
             }
         }
     }
-    #endif
+#endif
 }
 
 

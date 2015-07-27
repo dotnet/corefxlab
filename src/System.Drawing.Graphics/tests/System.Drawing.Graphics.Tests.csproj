@@ -28,11 +28,6 @@
     <Compile Include="UnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\System.Drawing.Graphics.csproj">
-      <Name>System.Drawing.Graphics</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
@@ -41,6 +36,15 @@
   <ItemGroup>
     <Content Include="libgdx86.dll" />
     <Content Include="Resources\libgdx86.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\System.Drawing.Graphics.csproj">
+      <Project>{091712f4-3894-4d0b-9403-39d115621208}</Project>
+      <Name>System.Drawing.Graphics</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Common\Strings.resx" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
