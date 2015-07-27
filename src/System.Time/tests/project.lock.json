@@ -25,9 +25,9 @@
           "lib/DNXCore50/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Globalization/4.0.10-beta-23121": {
+      "System.Globalization/4.0.10-beta-23127": {
         "dependencies": {
-          "System.Runtime": "4.0.0-beta-23121"
+          "System.Runtime": "4.0.0-beta-23127"
         },
         "compile": {
           "ref/dotnet/System.Globalization.dll": {}
@@ -36,10 +36,10 @@
           "lib/DNXCore50/System.Globalization.dll": {}
         }
       },
-      "System.Globalization.Calendars/4.0.0-beta-23121": {
+      "System.Globalization.Calendars/4.0.0-beta-23127": {
         "dependencies": {
-          "System.Runtime": "4.0.0-beta-23121",
-          "System.Globalization": "4.0.0-beta-23121"
+          "System.Runtime": "4.0.0-beta-23127",
+          "System.Globalization": "4.0.0-beta-23127"
         },
         "compile": {
           "ref/dotnet/System.Globalization.Calendars.dll": {}
@@ -579,11 +579,11 @@
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Debug.dll"
       ]
     },
-    "System.Globalization/4.0.10-beta-23121": {
-      "sha512": "Zm/txqK7ySY3A2dWhF73YwMVJP7n5Q+h9LTbMUtp50ztLVogW/09K01v3LU8nZCsKPQB0uMtU7oy3f//hT3q1g==",
+    "System.Globalization/4.0.10-beta-23127": {
+      "sha512": "DtN6tLsL7WD6s9PEsP/XQ8vkkmKOstNqfbvuoEikyKRlmNhFoXn2VfJgxoEj31W/oSCSqfpiVAR2cTs9ha/7lQ==",
       "files": [
-        "System.Globalization.4.0.10-beta-23121.nupkg",
-        "System.Globalization.4.0.10-beta-23121.nupkg.sha512",
+        "System.Globalization.4.0.10-beta-23127.nupkg",
+        "System.Globalization.4.0.10-beta-23127.nupkg.sha512",
         "System.Globalization.nuspec",
         "lib/DNXCore50/System.Globalization.dll",
         "lib/MonoAndroid10/_._",
@@ -611,11 +611,11 @@
         "runtimes/win8-aot/lib/netcore50/System.Globalization.dll"
       ]
     },
-    "System.Globalization.Calendars/4.0.0-beta-23121": {
-      "sha512": "mLKiuU2x8hRGxcRVXcYlP0o80gSsmLPWnSpo4wyLhfoa+gh8hLSGD/P4geucohzQqhQYjjiYyGyvkcrcFFosVw==",
+    "System.Globalization.Calendars/4.0.0-beta-23127": {
+      "sha512": "qGG4XuUE9Mj3akqNbZdjmbV32hFBrNEyg9NaVT9kiccEmFN3N7nFcu9fsHg5TgiNrHzyWoqYFCcwjfAF0Qx7nw==",
       "files": [
-        "System.Globalization.Calendars.4.0.0-beta-23121.nupkg",
-        "System.Globalization.Calendars.4.0.0-beta-23121.nupkg.sha512",
+        "System.Globalization.Calendars.4.0.0-beta-23127.nupkg",
+        "System.Globalization.Calendars.4.0.0-beta-23127.nupkg.sha512",
         "System.Globalization.Calendars.nuspec",
         "lib/DNXCore50/System.Globalization.Calendars.dll",
         "lib/MonoAndroid10/_._",
