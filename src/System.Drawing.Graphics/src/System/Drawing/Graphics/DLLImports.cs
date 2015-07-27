@@ -135,7 +135,7 @@ namespace System.Drawing.Graphics
         [DllImport("libgdx86.dll", EntryPoint = "_gdImageCreateFromPngCtx@4")] 
         public static extern IntPtr gdImageCreateFromPngCtx(ref gdIOCtx @in);
 
-        [DllImport("libgdx86.dlll", EntryPoint = "_gdImagePngCtx@8")] 
+        [DllImport("libgdx86.dll", EntryPoint = "_gdImagePngCtx@8")] 
         public static extern void gdImagePngCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
         [DllImport("libgdx86.dll", EntryPoint = "_gdImageCreateFromJpegCtx@4")]
@@ -143,11 +143,6 @@ namespace System.Drawing.Graphics
 
         [DllImport("libgdx86.dll", EntryPoint = "_gdImageJpegCtx@12")]
         public static extern void gdImageJpegCtx(ref gdImageStruct im, ref gdIOCtx @out);
-
-
-
-        //[DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        //internal static extern int gdImageCreateFromPng(FILE* inFile)
 
 
 
