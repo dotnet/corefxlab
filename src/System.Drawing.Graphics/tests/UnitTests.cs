@@ -31,7 +31,7 @@ public partial class GraphicsUnitTests
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(1, -1));
     }
-    [Fact(]
+    [Fact]
     public void WhenCreatingABlankImageWithNegativeWidthThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(-1, 1));
@@ -86,7 +86,7 @@ public partial class GraphicsUnitTests
     {
         //place holder string to demonstrate what would be the error case
         string invalidFilepath = @"C:\Users\t-dahid\Documents\GitHub\corefxlab\src\System.Drawing.Graphics\text.txt";
-        Assert.Throws<FileLoadException>(() => Jpg.Load(invalidFilepath));
+        Assert.Throws<FileNotFoundException>(() => Jpg.Load(invalidFilepath));
     }
 
     /* Tests Load(stream) mehtod*/

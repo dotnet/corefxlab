@@ -145,7 +145,7 @@ namespace System.Drawing.Graphics
             {
                 IntPtr pNativeImage = IntPtr.Zero;
                 var wrapper = new gdStreamWrapper(stream);
-                pNativeImage = LibGDLinuxImports.gdImageCreateFromJprgCtx(ref wrapper.IOCallbacks);
+                pNativeImage = LibGDLinuxImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
 
                 LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(pNativeImage);
                 Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
