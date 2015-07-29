@@ -103,7 +103,7 @@ namespace System.Drawing.Graphics
             {
                 Image destinationImage = Image.Create(width, height);
                 //turn off alpha blending to overwrite it right overe
-                DLLImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 0);
+                LibGDLinuxImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 0);
                 LibGDLinuxImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
                     destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
                 return destinationImage;
