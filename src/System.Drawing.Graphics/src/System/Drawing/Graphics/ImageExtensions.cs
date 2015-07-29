@@ -15,8 +15,12 @@ namespace System.Drawing.Graphics
             if (width > 0 && height > 0)
             {
                 Image destinationImage = Image.Create(width, height);
+                //turn off alpha blending to overwrite it right overe
+                DLLImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 0);
                 DLLImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
                     destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
+
+
                 return destinationImage;
             }
             else
@@ -39,9 +43,11 @@ namespace System.Drawing.Graphics
                 for(int x = 0; x < sourceImage.WidthInPixels; x++)
                 {
                     //get the current color of the pixel
-                    int currentColor = DLLImports.gdImageGetPixel(sourceImage.gdImageStructPtr, x, y);
+                    int currentColor = DLLImports.gdImageGetTrueColorPixel(sourceImage.gdImageStructPtr, x, y);
                     //mask to just get the alpha value (7 bits)
                     double currentAlpha = (currentColor >> 24) & 0xff;
+                    if(y == 10)
+                    //System.Console.WriteLine("curAReset: " + currentAlpha);
                     //if the current alpha is transparent
                     //dont bother/ skip over
                     if (currentAlpha == 127)
@@ -96,6 +102,8 @@ namespace System.Drawing.Graphics
             if (width > 0 && height > 0)
             {
                 Image destinationImage = Image.Create(width, height);
+                //turn off alpha blending to overwrite it right overe
+                DLLImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 0);
                 LibGDLinuxImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
                     destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
                 return destinationImage;

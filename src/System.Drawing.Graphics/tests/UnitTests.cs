@@ -8,7 +8,6 @@ using System.Drawing.Graphics;
 using System.IO;
 
 
-
 public partial class GraphicsUnitTests
 {
 
@@ -57,29 +56,44 @@ public partial class GraphicsUnitTests
         Assert.Throws<InvalidOperationException>(() => Image.Create(0, 0));
     }
     [Fact]
-    public void WhenCreatingAnImageFromAValidFileGiveAValidImage()
+    public void WhenCreatingAJpegFromAValidFileGiveAValidImage()
     {
         //checking with cat image
         string filepath = @"C:\Users\t-dahid\Pictures\TestPics\SquareCat.jpg";
         Image fromFile = Jpg.Load(filepath);
         ValidateImage(fromFile, 600, 701);
     }
+    [Fact]
+    public void WhenCreatingAPngFromAValidFileGiveAValidImage()
+    {
+        //checking with cat image
+        string filepath = @"C:\Users\t-dahid\Pictures\TestPics\BlackCat.png";
+        Image fromFile = Png.Load(filepath);
+        ValidateImage(fromFile, 220, 220);
+    }
 
- 
+
     /* Tests Load(filepath) method */
     [Fact]
-    public void WhenCreatingAnImageFromAMalformedPathThenThrowException()
+    public void WhenCreatingAJpegFromAMalformedPathThenThrowException()
     {
         //place holder string to demonstrate what would be the error case
         string invalidFilepath = @"C:Users\t-dahid\Pictures\TestPics\SquareCat.jpg";
         Assert.Throws<FileNotFoundException>(() => Jpg.Load(invalidFilepath));
     }
     [Fact]
+    public void WhenCreatingAPngFromAMalformedPathThenThrowException()
+    {
+        //place holder string to demonstrate what would be the error case
+        string invalidFilepath = @"C:Users\t-dahid\Pictures\TestPics\BlackCat.png";
+        Assert.Throws<FileNotFoundException>(() => Png.Load(invalidFilepath));
+    }
+    [Fact]
     public void WhenCreatingAnImageFromAnUnfoundPathThenThrowException()
     {
         //place holder string to demonstrate what would be the error case
         string invalidFilepath = @"C:\Users\t-dahid\Pictures\TestPics\SquareDog.jpg";
-        Exception exception = Assert.Throws<FileNotFoundException>(() => Jpg.Load(invalidFilepath));
+        Assert.Throws<FileNotFoundException>(() => Jpg.Load(invalidFilepath));
     }
     [Fact]
     public void WhenCreatingAnImageFromAFileTypeThatIsNotAnImageThenThrowException()
@@ -91,13 +105,24 @@ public partial class GraphicsUnitTests
 
     /* Tests Load(stream) mehtod*/
     [Fact]
-    public void WhenCreatingAnImageFromAValidStreamThenWriteAValidImageToFile()
+    public void WhenCreatingAJpegFromAValidStreamThenWriteAValidImageToFile()
     {
         using (FileStream filestream = new FileStream(@"C:\Users\t-dahid\Pictures\TestPics\SoccerCat.jpg", FileMode.Open))
         {
             Image fromStream = Jpg.Load(filestream);
             ValidateImage(fromStream, 400, 249);
-            Jpg.WriteToFile(fromStream, @"C:\Users\t-dahid\Pictures\TestWriteFromStream.jpg");
+            Jpg.WriteToFile(fromStream, @"C:\Users\t-dahid\Pictures\TestFromStreamWrite.jpg");
+        }
+
+    }
+    [Fact]
+    public void WhenCreatingAPngFromAValidStreamThenWriteAValidImageToFile()
+    {
+        using (FileStream filestream = new FileStream(@"C:\Users\t-dahid\Pictures\TestPics\CuteCat.png", FileMode.Open))
+        {
+            Image fromStream = Png.Load(filestream);
+            ValidateImage(fromStream, 360, 362);
+            Png.WriteToFile(fromStream, @"C:\Users\t-dahid\Pictures\TestFromStreamWrite.png");
         }
 
     }
@@ -124,16 +149,27 @@ public partial class GraphicsUnitTests
         ValidateImage(emptyResizeSquare, 200, 200);
     }
     [Fact]
-    public void WhenResizingImageLoadedFromFileThenGiveAValidatedResizedImage()
+    public void WhenResizingJpegLoadedFromFileThenGiveAValidatedResizedImage()
     {
+
+        string filepath = @"C:\Users\t-dahid\Pictures\TestPics\SquareCat.jpg";
+        Image fromFileResizeSquare = Png.Load(filepath);
+        fromFileResizeSquare = fromFileResizeSquare.Resize(200, 200);
+        ValidateImage(fromFileResizeSquare, 200, 200);
+        Png.WriteToFile(fromFileResizeSquare, @"C:\Users\t-dahid\Pictures\TestFromFileResizedWrite.jpg");
+    }
+    [Fact]
+    public void WhenResizingPngLoadedFromFileThenGiveAValidatedResizedImage()
+    {
+
         string filepath = @"C:\Users\t-dahid\Pictures\TestPics\BlackCat.png";
         Image fromFileResizeSquare = Png.Load(filepath);
         fromFileResizeSquare = fromFileResizeSquare.Resize(200, 200);
         ValidateImage(fromFileResizeSquare, 200, 200);
-        Png.WriteToFile(fromFileResizeSquare, @"C:\Users\t-dahid\Pictures\TestCatResized.png");
+        Png.WriteToFile(fromFileResizeSquare, @"C:\Users\t-dahid\Pictures\TestFromFileResizedWrite.png");
     }
     [Fact]
-    public void WhenResizingImageLoadedFromStreamThenGiveAValidatedResizedImage()
+    public void WhenResizingJpegLoadedFromStreamThenGiveAValidatedResizedImage()
     {
         using (FileStream filestream = new FileStream(@"C:\Users\t-dahid\Pictures\TestPics\SoccerCat.jpg", FileMode.Open))
         {
@@ -141,7 +177,20 @@ public partial class GraphicsUnitTests
             ValidateImage(fromStream, 400, 249);
             fromStream = fromStream.Resize(400, 400);
             ValidateImage(fromStream, 400, 400);
-            Jpg.WriteToFile(fromStream, @"C:\Users\t-dahid\Pictures\TestWriteFromStreamResized.jpg");
+            Jpg.WriteToFile(fromStream, @"C:\Users\t-dahid\Pictures\TestFromStreamResizedWrite.jpg");
+        }
+    }
+
+    [Fact]
+    public void WhenResizingPngLoadedFromStreamThenGiveAValidatedResizedImage()
+    {
+        using (FileStream filestream = new FileStream(@"C:\Users\t-dahid\Pictures\TestPics\CuteCat.png", FileMode.Open))
+        {
+            Image fromStream = Png.Load(filestream);
+            ValidateImage(fromStream, 360, 362);
+            fromStream = fromStream.Resize(400, 400);
+            ValidateImage(fromStream, 400, 400);
+            Png.WriteToFile(fromStream, @"C:\Users\t-dahid\Pictures\TestFromStreamResizedWrite.png");
         }
     }
 
@@ -185,25 +234,62 @@ public partial class GraphicsUnitTests
 
     /* Tests Writing to a file*/
     [Fact]
-    public void WhenWritingABlankCreatedImageToAValidFileWriteToAValidFile()
+    public void WhenWritingABlankCreatedJpegToAValidFileWriteToAValidFile()
     {
         Image emptyImage = Image.Create(10, 10);
         ValidateImage(emptyImage, 10, 10);
         Jpg.WriteToFile(emptyImage, @"C:\Users\t-dahid\Pictures\TESTBlankWrite.jpg");
     }
     [Fact]
-    public void WhenWritingAnImageCreatedFromFileToAValidFileWriteAValidImage()
+    public void WhenWritingABlankCreatedPngToAValidFileWriteToAValidFile()
+    {
+        Image emptyImage = Image.Create(10, 10);
+        ValidateImage(emptyImage, 10, 10);
+        Png.WriteToFile(emptyImage, @"C:\Users\t-dahid\Pictures\TESTBlankWrite.png");
+    }
+    [Fact]
+    public void WhenWritingAJpegCreatedFromFileToAValidFileWriteAValidImage()
     {
         //checking with cat image
         string filepath = @"C:\Users\t-dahid\Pictures\TestPics\SquareCat.jpg";
-        Image fromFile = Jpg.Load(filepath);
+        Image fromFile = Png.Load(filepath);
         ValidateImage(fromFile, 600, 701);
-        Jpg.WriteToFile(fromFile, @"C:\Users\t-dahid\Pictures\TestCatWrite.jpg");
+        Png.WriteToFile(fromFile, @"C:\Users\t-dahid\Pictures\TestFileWrite.jpg");
+    }
+    [Fact]
+    public void WhenWritingAPngCreatedFromFileToAValidFileWriteAValidImage()
+    {
+        //checking with cat image
+        string filepath = @"C:\Users\t-dahid\Pictures\TestPics\BlackCat.png";
+        Image fromFile = Png.Load(filepath);
+        ValidateImage(fromFile, 220, 220);
+        Png.WriteToFile(fromFile, @"C:\Users\t-dahid\Pictures\TestFileWrite.png");
+    }
+
+    [Fact]
+    public void WhenWritingAPngMadeTransparentToAValidFileWriteAValidImage()
+    {
+        Image img = Png.Load(@"C:\Users\t-dahid\Pictures\TestPics\BlackCat.png");
+        ValidateImage(img, 220, 220);
+        img.SetAlphaPercentage(.2);
+        Png.WriteToFile(img, @"C:\Users\t-dahid\Pictures\TestFromFileFileTransparentWrite.png");
+
+    }
+
+    [Fact]
+    public void WhenWritingATransparentResizedPngToAValidFileWriteAValidImage()
+    {
+        Image img = Png.Load(@"C:\Users\t-dahid\Pictures\TestPics\BlackCat.png");
+        ValidateImage(img, 220, 220);
+        img.SetAlphaPercentage(.2);
+        img = img.Resize(400, 400);
+        ValidateImage(img, 400, 400);
+        Png.WriteToFile(img, @"C:\Users\t-dahid\Pictures\TestFromFileFileTransparentResizeWrite.png");
     }
 
     /* Tests Writing to a Stream*/
     [Fact]
-    public void WhenWritingABlankCreatedImageToAValidStreamWriteToAValidStream()
+    public void WhenWritingABlankCreatedJpegToAValidStreamWriteToAValidStream()
     {
         Image img = Image.Create(100, 100);
         using(MemoryStream stream = new MemoryStream())
@@ -214,8 +300,19 @@ public partial class GraphicsUnitTests
             Jpg.WriteToFile(img2, @"C:\Users\t-dahid\Pictures\TestBlankStreamWrite.jpg");
         }
     }
+    public void WhenWritingABlankCreatedPngToAValidStreamWriteToAValidStream()
+    {
+        Image img = Image.Create(100, 100);
+        using (MemoryStream stream = new MemoryStream())
+        {
+            Jpg.WriteToStream(img, stream);
+            stream.Position = 0;
+            Image img2 = Png.Load(stream);
+            Jpg.WriteToFile(img2, @"C:\Users\t-dahid\Pictures\TestBlankStreamWrite.png");
+        }
+    }
     [Fact]
-    public void WhenWritingAnImageCreatedFromFileToAValidStreamWriteAValidImage()
+    public void WhenWritingAJpegFromFileToAValidStreamWriteAValidImage()
     {
         Image img = Jpg.Load(@"C:\Users\t-dahid\Pictures\TestPics\SoccerCat.jpg");
         using (MemoryStream stream = new MemoryStream())
@@ -226,9 +323,21 @@ public partial class GraphicsUnitTests
             Jpg.WriteToFile(img2, @"C:\Users\t-dahid\Pictures\TestFromFileStreamWrite.jpg");
         }
     }
+    [Fact]
+    public void WhenWritingAPngCreatedFromFileToAValidStreamWriteAValidImage()
+    {
+        Image img = Png.Load(@"C:\Users\t-dahid\Pictures\TestPics\CuteCat.png");
+        using (MemoryStream stream = new MemoryStream())
+        {
+            Png.WriteToStream(img, stream);
+            stream.Position = 0;
+            Image img2 = Png.Load(stream);
+            Png.WriteToFile(img2, @"C:\Users\t-dahid\Pictures\TestFromFileStreamWrite.png");
+        }
+    }
 
     [Fact]
-    public void WhenWritingAResizedImageToAValidStreamWriteAValidImage()
+    public void WhenWritingAResizedJpegToAValidStreamWriteAValidImage()
     {
         Image img = Jpg.Load(@"C:\Users\t-dahid\Pictures\TestPics\SoccerCat.jpg");
         using (MemoryStream stream = new MemoryStream())
@@ -244,9 +353,10 @@ public partial class GraphicsUnitTests
     [Fact]
     public void WhenWritingAResizedPngToAValidStreamWriteAValidImage()
     {
-        Image img = Png.Load(@"C:\Users\t-dahid\Pictures\TestPics\BlackCat.png");
+        Image img = Png.Load(@"C:\Users\t-dahid\Pictures\TestPics\CuteCat.png");
         using (MemoryStream stream = new MemoryStream())
         {
+            //comment
             img = img.Resize(40, 40);
             Png.WriteToStream(img, stream);
             stream.Position = 0;
@@ -256,18 +366,38 @@ public partial class GraphicsUnitTests
     }
 
     [Fact]
-    public void WhenWritingAnImageMadeTransparentToAValidStreamWriteAValidImage()
+    public void WhenWritingAPngMadeTransparentToAValidStreamWriteAValidImage()
     {
-        Image img = Png.Load(@"C:\Users\t-dahid\Pictures\TestPics\BlackCat.png");
+        Image img = Png.Load(@"C:\Users\t-dahid\Pictures\TestPics\CuteCat.png");
         using (MemoryStream stream = new MemoryStream())
         {
+            ValidateImage(img, 360, 362);
             img.SetAlphaPercentage(.2);
             Png.WriteToStream(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
+            ValidateImage(img2, 360, 362);
             Png.WriteToFile(img2, @"C:\Users\t-dahid\Pictures\TestFromFileStreamTransparentWrite.png");
         }
 
+    }
+
+    [Fact]
+    public void WhenWritingATransparentResizedPngToAValidStreamWriteAValidImage()
+    {
+        Image img = Png.Load(@"C:\Users\t-dahid\Pictures\TestPics\CuteCat.png");
+        using (MemoryStream stream = new MemoryStream())
+        {
+            ValidateImage(img, 360, 362);
+            img.SetAlphaPercentage(.2);
+            img = img.Resize(400, 400);
+            ValidateImage(img, 400, 400);
+            Png.WriteToStream(img, stream);
+            stream.Position = 0;
+            Image img2 = Png.Load(stream);
+            ValidateImage(img2, 400, 400);
+            Png.WriteToFile(img2, @"C:\Users\t-dahid\Pictures\TestFromFileStreamTransparentResizeWrite.png");
+        }
     }
 
     /* Test Draw */
