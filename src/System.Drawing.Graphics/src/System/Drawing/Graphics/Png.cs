@@ -28,6 +28,7 @@ namespace System.Drawing.Graphics
                     DLLImports.gdImagePaletteToTrueColor(img.gdImageStructPtr);
                     gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(img.gdImageStructPtr);
                 }
+
                 return img;
             }
             else
@@ -39,6 +40,7 @@ namespace System.Drawing.Graphics
         //add png specific method later
         public static void WriteToFile(Image img, string filePath)
         {
+
             DLLImports.gdImageSaveAlpha(img.gdImageStructPtr, 1);
 
             if (!DLLImports.gdSupportsFileType(filePath, true))
@@ -47,6 +49,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
+
                 if (!DLLImports.gdImageFile(img.gdImageStructPtr, filePath))
                 {
                     throw new FileLoadException(SR.Format(SR.WriteToFileFailed, filePath));
@@ -66,6 +69,7 @@ namespace System.Drawing.Graphics
                 DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(pNativeImage);
                 Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
                 toRet.gdImageStructPtr = pNativeImage;
+
                 return toRet;
             }
             else

@@ -79,6 +79,7 @@ namespace System.Drawing.Graphics
             if (width > 0 && height > 0)
             {
                 gdImageStructPtr = DLLImports.gdImageCreateTrueColor(width, height);
+
             }
             else
             {
