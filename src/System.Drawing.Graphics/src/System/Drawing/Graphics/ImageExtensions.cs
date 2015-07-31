@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
-#define WINDOWS
+//#define WINDOWS
 
 namespace System.Drawing.Graphics
 {
@@ -15,7 +15,7 @@ namespace System.Drawing.Graphics
             if (width > 0 && height > 0)
             {
                 Image destinationImage = Image.Create(width, height);
-                //turn off alpha blending to overwrite it right overe
+                //turn off alpha blending to overwrite it right
                 DLLImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 0);
                 DLLImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
                     destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
@@ -152,7 +152,7 @@ namespace System.Drawing.Graphics
         public static void Draw(this Image destinationImage, Image sourceImage, int xOffset, int yOffset)
         {
             //turn alpha blending on for drawing
-            DLLImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 1);
+            LibGDLinuxImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 1);
 
             //loop through the source image
             for (int y = 0; y < sourceImage.HeightInPixels; y++)
