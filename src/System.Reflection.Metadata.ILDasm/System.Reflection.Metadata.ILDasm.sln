@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Reflection.Metadata.ILDasm", "src\System.Reflection.Metadata.ILDasm.csproj", "{C376C94F-7888-4936-9A81-6160661CCA85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Reflection.Metadata.ILDasm.Tests", "tests\System.Reflection.Metadata.ILDasm.Tests.csproj", "{4DC4FCE8-63E3-49A9-ABB8-A0E11C6FA245}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C376C94F-7888-4936-9A81-6160661CCA85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C376C94F-7888-4936-9A81-6160661CCA85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C376C94F-7888-4936-9A81-6160661CCA85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C376C94F-7888-4936-9A81-6160661CCA85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DC4FCE8-63E3-49A9-ABB8-A0E11C6FA245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DC4FCE8-63E3-49A9-ABB8-A0E11C6FA245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DC4FCE8-63E3-49A9-ABB8-A0E11C6FA245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DC4FCE8-63E3-49A9-ABB8-A0E11C6FA245}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
