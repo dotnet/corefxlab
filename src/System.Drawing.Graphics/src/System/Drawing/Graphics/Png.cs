@@ -183,15 +183,15 @@ namespace System.Drawing.Graphics
             {
                 throw new FileNotFoundException(SR.Format(SR.MalformedFilePath, filePath));
             }
-            else if (LibGDLinuxImports.gdSupportsFileType(filePath, false))
+            else if (LibGDOSXImports.gdSupportsFileType(filePath, false))
             {
-                Image img = new Image(LibGDLinuxImports.gdImageCreateFromFile(filePath));
-                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(img.gdImageStructPtr);
+                Image img = new Image(LibGDOSXImports.gdImageCreateFromFile(filePath));
+                LibGDOSXImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDOSXImports.gdImageStruct>(img.gdImageStructPtr);
 
                 if (!img.TrueColor)
                 {
-                    LibGDLinuxImports.gdImagePaletteToTrueColor(img.gdImageStructPtr);
-                    gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(img.gdImageStructPtr);
+                    LibGDOSXImports.gdImagePaletteToTrueColor(img.gdImageStructPtr);
+                    gdImageStruct = Marshal.PtrToStructure<LibGDOSXImports.gdImageStruct>(img.gdImageStructPtr);
                 }
                 return img;
             }
@@ -204,15 +204,15 @@ namespace System.Drawing.Graphics
         //add png specific method later
         public static void WriteToFile(Image img, string filePath)
         {
-            LibGDLinuxImports.gdImageSaveAlpha(img.gdImageStructPtr, 1);
+            LibGDOSXImports.gdImageSaveAlpha(img.gdImageStructPtr, 1);
 
-            if (!LibGDLinuxImports.gdSupportsFileType(filePath, true))
+            if (!LibGDOSXImports.gdSupportsFileType(filePath, true))
             {
                 throw new InvalidOperationException(SR.Format(SR.FileTypeNotSupported, filePath));
             }
             else
             {
-                if (!LibGDLinuxImports.gdImageFile(img.gdImageStructPtr, filePath))
+                if (!LibGDOSXImports.gdImageFile(img.gdImageStructPtr, filePath))
                 {
                     throw new FileLoadException(SR.Format(SR.WriteToFileFailed, filePath));
                 }
@@ -226,9 +226,9 @@ namespace System.Drawing.Graphics
             {
                 IntPtr pNativeImage = IntPtr.Zero;
                 var wrapper = new gdStreamWrapper(stream);
-                pNativeImage = LibGDLinuxImports.gdImageCreateFromPngCtx(ref wrapper.IOCallbacks);
+                pNativeImage = LibGDOSXImports.gdImageCreateFromPngCtx(ref wrapper.IOCallbacks);
 
-                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(pNativeImage);
+                LibGDOSXImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDOSXImports.gdImageStruct>(pNativeImage);
                 Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
                 toRet.gdImageStructPtr = pNativeImage;
                 return toRet;
@@ -242,11 +242,11 @@ namespace System.Drawing.Graphics
 
         public static void WriteToStream(Image bmp, Stream stream)
         {
-            LibGDLinuxImports.gdImageSaveAlpha(bmp.gdImageStructPtr, 1);
+            LibGDOSXImports.gdImageSaveAlpha(bmp.gdImageStructPtr, 1);
 
-            LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(bmp.gdImageStructPtr);
+            LibGDOSXImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDOSXImports.gdImageStruct>(bmp.gdImageStructPtr);
             var wrapper = new gdStreamWrapper(stream);
-            LibGDLinuxImports.gdImagePngCtx(ref gdImageStruct, ref wrapper.IOCallbacks);
+            LibGDOSXImports.gdImagePngCtx(ref gdImageStruct, ref wrapper.IOCallbacks);
         }
     }
 }

@@ -188,8 +188,8 @@ namespace System.Drawing.Graphics
             {
                 Image destinationImage = Image.Create(width, height);
                 //turn off alpha blending to overwrite it right overe
-                DLLImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 0);
-                DLLImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
+                LibGDOSXImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 0);
+                LibGDOSXImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
                     destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
 
 
@@ -215,7 +215,7 @@ namespace System.Drawing.Graphics
                 for(int x = 0; x < sourceImage.WidthInPixels; x++)
                 {
                     //get the current color of the pixel
-                    int currentColor = DLLImports.gdImageGetTrueColorPixel(sourceImage.gdImageStructPtr, x, y);
+                    int currentColor = LibGDOSXImports.gdImageGetTrueColorPixel(sourceImage.gdImageStructPtr, x, y);
                     //mask to just get the alpha value (7 bits)
                     double currentAlpha = (currentColor >> 24) & 0xff;
                     if(y == 10)
@@ -231,9 +231,9 @@ namespace System.Drawing.Graphics
                     //make a new color with the new alpha to set the pixel
                     currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
                     //turn alpha blending off so you don't draw over the same picture and get an opaque cat
-                    DLLImports.gdImageAlphaBlending(sourceImage.gdImageStructPtr, 0);
-                    
-                    DLLImports.gdImageSetPixel(sourceImage.gdImageStructPtr, x, y, currentColor);
+                    LibGDOSXImports.gdImageAlphaBlending(sourceImage.gdImageStructPtr, 0);
+
+                    LibGDOSXImports.gdImageSetPixel(sourceImage.gdImageStructPtr, x, y, currentColor);
                 }
             }
         }
@@ -242,14 +242,14 @@ namespace System.Drawing.Graphics
         public static void Draw(this Image destinationImage, Image sourceImage, int xOffset, int yOffset)
         {
             //turn alpha blending on for drawing
-            DLLImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 1);
+            LibGDOSXImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 1);
 
             //loop through the source image
             for (int y = 0; y < sourceImage.HeightInPixels; y++)
             {
                 for(int x = 0; x < sourceImage.WidthInPixels; x++)
                 {
-                    int color = DLLImports.gdImageGetPixel(sourceImage.gdImageStructPtr, x, y);
+                    int color = LibGDOSXImports.gdImageGetPixel(sourceImage.gdImageStructPtr, x, y);
 
                     int alpha = (color >> 24) & 0xff;
                     if (alpha == 127)
@@ -257,7 +257,7 @@ namespace System.Drawing.Graphics
                         continue;
                     }
 
-                    DLLImports.gdImageSetPixel(destinationImage.gdImageStructPtr, x + xOffset, y + yOffset, color);
+                    LibGDOSXImports.gdImageSetPixel(destinationImage.gdImageStructPtr, x + xOffset, y + yOffset, color);
                 }
             }
         }

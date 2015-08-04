@@ -185,7 +185,7 @@ namespace System.Drawing.Graphics
         {
             get
             {
-                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
+                LibGDOSXImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDOSXImports.gdImageStruct>(gdImageStructPtr);
                 return gdImageStruct.sx;
             }
         }
@@ -194,7 +194,7 @@ namespace System.Drawing.Graphics
         {
             get
             {
-                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
+                LibGDOSXImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDOSXImports.gdImageStruct>(gdImageStructPtr);
                 return gdImageStruct.sy;
             }
         }
@@ -211,7 +211,7 @@ namespace System.Drawing.Graphics
         {
             get
             {
-                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
+                LibGDOSXImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDOSXImports.gdImageStruct>(gdImageStructPtr);
                 return (gdImageStruct.trueColor == 1);
             }
         }
@@ -227,7 +227,7 @@ namespace System.Drawing.Graphics
         {
             if (width > 0 && height > 0)
             {
-                gdImageStructPtr = LibGDLinuxImports.gdImageCreateTrueColor(width, height);
+                gdImageStructPtr = LibGDOSXImports.gdImageCreateTrueColor(width, height);
             }
             else
             {
