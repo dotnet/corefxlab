@@ -6,6 +6,7 @@ using Xunit;
 using System.Drawing.Graphics;
 using System.IO;
 using System.Diagnostics;
+using System.Reflection;
 
 public partial class GraphicsUnitTests
 {
@@ -359,6 +360,17 @@ public partial class GraphicsUnitTests
 
 
     /*----------------------Actual Unit Tests---------------------------------------------*/
+
+
+    //private static void ValidateImage2(Image img, string embeddedFilepathName)
+    //{
+    //    //Assert.Equal(widthToCompare, img.WidthInPixels);
+    //    //Assert.Equal(heightToCompare, img.HeightInPixels);
+    //    Stream s = typeof(GraphicsUnitTests).GetTypeInfo().Assembly.GetManifestResourceStream(embeddedFilepathName);
+    //    Stream a = new FileStream("path", FileMode.Open);
+    //    Assert.Equal(s, a);
+    //    //TODO: make this way better!!
+    //}
 
     //private static void ValidateImage(Image img, int widthToCompare, int heightToCompare)
     //{
