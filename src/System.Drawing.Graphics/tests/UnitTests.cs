@@ -1,24 +1,36 @@
-// Copyright (c) Microsoft. All rights reserved.
+﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Runtime.InteropServices;
+using System.Reflection;
 using System.Threading;
 using Xunit;
 using System.Drawing.Graphics;
 using System.IO;
-
+using System.Diagnostics;
 
 public partial class GraphicsUnitTests
 {
+
+    //static Image CuteCat = Png.Load(@"C:\Users\t-dahid\Pictures\TestPics\CuteCat.png");
+    private static void ValidateImage2(Image img , string embeddedFilepathName)
+    {
+        //Assert.Equal(widthToCompare, img.WidthInPixels);
+        //Assert.Equal(heightToCompare, img.HeightInPixels);
+        Stream s = typeof(GraphicsUnitTests).GetTypeInfo().Assembly.GetManifestResourceStream(embeddedFilepathName);
+        Stream a = new FileStream("path", FileMode.Open);
+        Assert.Equal(s, a);
+        //TODO: make this way better!!
+    }
 
     private static void ValidateImage(Image img, int widthToCompare, int heightToCompare)
     {
         Assert.Equal(widthToCompare, img.WidthInPixels);
         Assert.Equal(heightToCompare, img.HeightInPixels);
-        //TODO: make this way better!!
     }
 
-    /* Tests Create Method */
+        /* Tests Create Method */
     [Fact]
     public static void WhenCreatingAnEmptyImageThenValidateAnImage()
     {
@@ -472,7 +484,7 @@ public partial class GraphicsUnitTests
         Image yellowCat = Jpg.Load(@"/home/ddcloud/Documents/SquareCat.jpg");
         ValidateImage(yellowCat, 600, 701);
         yellowCat.Draw(blackCat, 0, 0);
-        ValidateImage(yellowCat, 600, 701);
+        ValidateImage(yellowCat, 220, 220);
         //write
         Png.WriteToFile(yellowCat, @"/home/ddcloud/Documents/DrawAndTransparencyTest.png");
     }

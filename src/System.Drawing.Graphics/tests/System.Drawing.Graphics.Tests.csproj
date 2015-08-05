@@ -42,5 +42,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\Common\Strings.resx" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SquareCat.jpg">
+      <LogicalName>SquareCatJpeg</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BlackCat.png" />
+    <EmbeddedResource Include="CuteCat.png" />
+    <EmbeddedResource Include="SoccerCat.jpg" />
+  </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

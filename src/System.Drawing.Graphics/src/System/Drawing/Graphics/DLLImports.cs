@@ -147,6 +147,11 @@ namespace System.Drawing.Graphics
         public static extern void gdImageJpegCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
 
+        //I WROTE
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        internal static extern void gdImageScaleAlphaValueTrueColor(IntPtr src, double alphaMultiplier);
+
+
 
         /// Return Type: int 
         ///param0: gdIOCtx* 

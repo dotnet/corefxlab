@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
-//#define WINDOWS
+#define WINDOWS
 
 namespace System.Drawing.Graphics
 {
@@ -37,33 +37,9 @@ namespace System.Drawing.Graphics
             {
                 throw new InvalidOperationException(SR.Format(SR.InvalidTransparencyPercent, opacityMultiplier));
             }
-            double alphaAdjustment = 1 - opacityMultiplier; 
-            for(int y = 0; y < sourceImage.HeightInPixels; y++)
-            {
-                for(int x = 0; x < sourceImage.WidthInPixels; x++)
-                {
-                    //get the current color of the pixel
-                    int currentColor = DLLImports.gdImageGetTrueColorPixel(sourceImage.gdImageStructPtr, x, y);
-                    //mask to just get the alpha value (7 bits)
-                    double currentAlpha = (currentColor >> 24) & 0xff;
-                    if(y == 10)
-                    //System.Console.WriteLine("curAReset: " + currentAlpha);
-                    //if the current alpha is transparent
-                    //dont bother/ skip over
-                    if (currentAlpha == 127)
-                        continue;
-                    //calculate the new alpha value given the adjustment
 
-                    currentAlpha += (127 - currentAlpha) * alphaAdjustment;
+            DLLImports.gdImageScaleAlphaValueTrueColor(sourceImage.gdImageStructPtr, opacityMultiplier);
 
-                    //make a new color with the new alpha to set the pixel
-                    currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
-                    //turn alpha blending off so you don't draw over the same picture and get an opaque cat
-                    DLLImports.gdImageAlphaBlending(sourceImage.gdImageStructPtr, 0);
-                    
-                    DLLImports.gdImageSetPixel(sourceImage.gdImageStructPtr, x, y, currentColor);
-                }
-            }
         }
 
         //Stamping an Image onto another
