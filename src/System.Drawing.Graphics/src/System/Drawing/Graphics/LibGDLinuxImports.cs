@@ -95,7 +95,7 @@ namespace System.Drawing.Graphics
         [DllImport("libgd.so.3.0.0", CharSet = CharSet.Unicode)]
         internal static extern IntPtr gdImageCreateTrueColor(int sx, int sy);
 
-        [DllImport("libgd.so.3.0.0", CharSet = CharSet.Unicode, EntryPoint = "_gdImageColorAllocate@16")]
+        [DllImport("libgd.so.3.0.0", CharSet = CharSet.Unicode, EntryPoint = "gdImageColorAllocate")]
         internal static extern int gdImageColorAllocate(int r, int b, int g);
 
         [DllImport("libgd.so.3.0.0", CharSet = CharSet.Ansi)]
@@ -103,7 +103,7 @@ namespace System.Drawing.Graphics
 
 
         //had to use mangled name here
-        [DllImport("libgd.so.3.0.0", CharSet = CharSet.Ansi, EntryPoint = "_gdImageFile@8")]
+        [DllImport("libgd.so.3.0.0", CharSet = CharSet.Ansi, EntryPoint = "gdImageFile")]
         internal static extern bool gdImageFile(IntPtr image, string filename);
 
         [DllImport("libgd.so.3.0.0", CharSet = CharSet.Unicode)]
@@ -132,16 +132,16 @@ namespace System.Drawing.Graphics
         internal static extern int gdImagePaletteToTrueColor(IntPtr src);
 
 
-        [DllImport("libgd.so.3.0.0", EntryPoint = "_gdImageCreateFromPngCtx@4")]
+        [DllImport("libgd.so.3.0.0", EntryPoint = "gdImageCreateFromPngCtx")]
         public static extern IntPtr gdImageCreateFromPngCtx(ref gdIOCtx @in);
 
-        [DllImport("libgd.so.3.0.0", EntryPoint = "_gdImagePngCtx@8")]
+        [DllImport("libgd.so.3.0.0", EntryPoint = "gdImagePngCtx")]
         public static extern void gdImagePngCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
-        [DllImport("libgd.so.3.0.0", EntryPoint = "_gdImageCreateFromJpegCtx@4")]
+        [DllImport("libgd.so.3.0.0", EntryPoint = "gdImageCreateFromJpegCtx")]
         public static extern IntPtr gdImageCreateFromJpegCtx(ref gdIOCtx @in);
 
-        [DllImport("libgd.so.3.0.0", EntryPoint = "_gdImageJpegCtx@12")]
+        [DllImport("libgd.so.3.0.0", EntryPoint = "gdImageJpegCtx")]
         public static extern void gdImageJpegCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
         

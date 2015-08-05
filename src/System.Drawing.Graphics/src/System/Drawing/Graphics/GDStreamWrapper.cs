@@ -44,7 +44,13 @@ namespace System.Drawing.Graphics
 		{
 			byte[] buffer = new byte[wanted];
 			int read = _stream.Read(buffer, 0, wanted);
-			if (read > 0)
+            while (read < wanted)
+            {
+                int newRead = _stream.Read(buffer, read, (wanted - read));
+                if (newRead == 0) break;
+                read += newRead;
+            }
+            if (read > 0)
 			{
 				Marshal.Copy(buffer, 0, buf, read);
 			}
@@ -109,8 +115,20 @@ public class gdStreamWrapper
 		int getBuf(IntPtr ctx, IntPtr buf, int wanted)
 		{
 			byte[] buffer = new byte[wanted];
-			int read = _stream.Read(buffer, 0, wanted);
-			if (read > 0)
+            //Console.WriteLine("\nBefore Stream Length: {0} Position: {1}", _stream.Length, _stream.Position);
+
+            int read = _stream.Read(buffer, 0, wanted);
+            //System.Console.WriteLine("Wanted:  {0} Read: {1}", wanted, read);
+            //Console.WriteLine("After Stream Length: {0} Position: {1}", _stream.Length, _stream.Position);
+            while (read < wanted)
+            {
+                //Console.WriteLine("\nInLoop Stream Length: {0} Position: {1}", _stream.Length, _stream.Position);
+
+                int newRead = _stream.Read(buffer, read, (wanted - read));
+                if (newRead == 0) break;
+                read += newRead;
+            }
+            if (read > 0)
 			{
 				Marshal.Copy(buffer, 0, buf, read);
 			}
