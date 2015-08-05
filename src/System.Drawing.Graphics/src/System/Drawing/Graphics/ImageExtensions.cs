@@ -3,6 +3,8 @@
 
 #define WINDOWS
 
+using System.Runtime.InteropServices;
+
 namespace System.Drawing.Graphics
 {
 #if WINDOWS
@@ -29,39 +31,37 @@ namespace System.Drawing.Graphics
             }
         }
 
-        //Transparency
-        //opacityMultiplier is between 0-1
+        ////Transparency
         public static void SetAlphaPercentage(this Image sourceImage, double opacityMultiplier)
         {
-            if(opacityMultiplier > 1 || opacityMultiplier < 0)
+            if (opacityMultiplier > 1 || opacityMultiplier < 0)
             {
                 throw new InvalidOperationException(SR.Format(SR.InvalidTransparencyPercent, opacityMultiplier));
             }
-            double alphaAdjustment = 1 - opacityMultiplier; 
-            for(int y = 0; y < sourceImage.HeightInPixels; y++)
+
+            double alphaAdjustment = 1 - opacityMultiplier;
+            unsafe
             {
-                for(int x = 0; x < sourceImage.WidthInPixels; x++)
+                DLLImports.gdImageStruct* pStruct = (DLLImports.gdImageStruct*)sourceImage.gdImageStructPtr;
+
+                for (int y = 0; y < sourceImage.HeightInPixels; y++)
                 {
-                    //get the current color of the pixel
-                    int currentColor = DLLImports.gdImageGetTrueColorPixel(sourceImage.gdImageStructPtr, x, y);
-                    //mask to just get the alpha value (7 bits)
-                    double currentAlpha = (currentColor >> 24) & 0xff;
-                    if(y == 10)
-                    //System.Console.WriteLine("curAReset: " + currentAlpha);
-                    //if the current alpha is transparent
-                    //dont bother/ skip over
-                    if (currentAlpha == 127)
-                        continue;
-                    //calculate the new alpha value given the adjustment
+                    for (int x = 0; x < sourceImage.WidthInPixels; x++)
+                    {
+                        int currentColor = pStruct->tpixels[y][x];
+                        //mask to just get the alpha value (7 bits)
+                        double currentAlpha = (currentColor >> 24) & 0xff;
+                        //if the current alpha is transparent
+                        //dont bother/ skip over
+                        if (currentAlpha == 127)
+                            continue;
+                        //calculate the new alpha value given the adjustment
+                        currentAlpha += (127 - currentAlpha) * alphaAdjustment;
 
-                    currentAlpha += (127 - currentAlpha) * alphaAdjustment;
-
-                    //make a new color with the new alpha to set the pixel
-                    currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
-                    //turn alpha blending off so you don't draw over the same picture and get an opaque cat
-                    DLLImports.gdImageAlphaBlending(sourceImage.gdImageStructPtr, 0);
-                    
-                    DLLImports.gdImageSetPixel(sourceImage.gdImageStructPtr, x, y, currentColor);
+                        //make a new color with the new alpha to set the pixel
+                        currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
+                        pStruct->tpixels[y][x] = currentColor;
+                    }
                 }
             }
         }
@@ -72,24 +72,40 @@ namespace System.Drawing.Graphics
             //turn alpha blending on for drawing
             DLLImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 1);
 
-            //loop through the source image
-            for (int y = 0; y < sourceImage.HeightInPixels; y++)
+            unsafe
             {
-                for(int x = 0; x < sourceImage.WidthInPixels; x++)
+                DLLImports.gdImageStruct* pStructSource = (DLLImports.gdImageStruct*)sourceImage.gdImageStructPtr;
+                DLLImports.gdImageStruct* pStructDest = (DLLImports.gdImageStruct*)destinationImage.gdImageStructPtr;
+
+                //loop through the source image
+                for (int y = 0; y < sourceImage.HeightInPixels; y++)
                 {
-                    int color = DLLImports.gdImageGetPixel(sourceImage.gdImageStructPtr, x, y);
-
-                    int alpha = (color >> 24) & 0xff;
-                    if (alpha == 127)
+                    for (int x = 0; x < sourceImage.WidthInPixels; x++)
                     {
-                        continue;
-                    }
+                        //ignores what falls outside the bounds of dsetination image
+                        if ((y + yOffset) >= destinationImage.HeightInPixels || (x + xOffset) >= destinationImage.WidthInPixels)
+                        {
+                            continue;
+                        }
+                        
+                        int sourceColor = pStructSource->tpixels[y][x];
+                        int alpha = (sourceColor >> 24) & 0xff;
+                        //should not have 127 as magic
+                        if (alpha == 127)
+                        {
+                            continue;
+                        }
+                        int destColor = pStructDest->tpixels[y + yOffset][x + xOffset];
+                        int blendedColor = DLLImports.gdAlphaBlend(destColor, sourceColor);
 
-                    DLLImports.gdImageSetPixel(destinationImage.gdImageStructPtr, x + xOffset, y + yOffset, color);
+                        pStructDest->tpixels[y + yOffset][x + xOffset] = blendedColor;
+                    }
                 }
             }
+            
         }
-    }
+
+
 }
 #else
 
@@ -113,6 +129,7 @@ namespace System.Drawing.Graphics
                 throw new InvalidOperationException(SR.Format(SR.ResizeInvalidParameters, width, height));
             }
         }
+    }
 
         //Transparency
         //opacityMultiplier is between 0-1
@@ -122,28 +139,30 @@ namespace System.Drawing.Graphics
             {
                 throw new InvalidOperationException(SR.Format(SR.InvalidTransparencyPercent, opacityMultiplier));
             }
-            double alphaAdjustment = 1 - opacityMultiplier; 
-            for (int y = 0; y < sourceImage.HeightInPixels; y++)
+
+            double alphaAdjustment = 1 - opacityMultiplier;
+            unsafe
             {
-                for (int x = 0; x < sourceImage.WidthInPixels; x++)
+                LibGDLinuxImports.gdImageStruct* pStruct = (LibGDLinuxImports.gdImageStruct*)sourceImage.gdImageStructPtr;
+
+                for (int y = 0; y < sourceImage.HeightInPixels; y++)
                 {
-                    //get the current color of the pixel
-                    int currentColor = LibGDLinuxImports.gdImageGetPixel(sourceImage.gdImageStructPtr, x, y);
-                    //mask to just get the alpha value (7 bits)
-                    double currentAlpha = (currentColor >> 24) & 0xff;
-                    //if the current alpha is transparent
-                    //dont bother/ skip over
-                    if (currentAlpha == 127)
-                        continue;
-                    //calculate the new alpha value given the adjustment
-                    currentAlpha += (127 - currentAlpha) * alphaAdjustment;
+                    for (int x = 0; x < sourceImage.WidthInPixels; x++)
+                    {
+                        int currentColor = pStruct->tpixels[y][x];
+                        //mask to just get the alpha value (7 bits)
+                        double currentAlpha = (currentColor >> 24) & 0xff;
+                        //if the current alpha is transparent
+                        //dont bother/ skip over
+                        if (currentAlpha == 127)
+                            continue;
+                        //calculate the new alpha value given the adjustment
+                        currentAlpha += (127 - currentAlpha) * alphaAdjustment;
 
-                    //make a new color with the new alpha to set the pixel
-                    currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
-                    //turn alpha blending off so you don't draw over the same picture and get an opaque cat
-                    LibGDLinuxImports.gdImageAlphaBlending(sourceImage.gdImageStructPtr, 0);
-
-                    LibGDLinuxImports.gdImageSetPixel(sourceImage.gdImageStructPtr, x, y, currentColor);
+                        //make a new color with the new alpha to set the pixel
+                        currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
+                        pStruct->tpixels[y][x] = currentColor;
+                    }
                 }
             }
         }
@@ -152,27 +171,43 @@ namespace System.Drawing.Graphics
         public static void Draw(this Image destinationImage, Image sourceImage, int xOffset, int yOffset)
         {
             //turn alpha blending on for drawing
-            DLLImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 1);
+            LibGDLinuxImports.gdImageAlphaBlending(destinationImage.gdImageStructPtr, 1);
 
-            //loop through the source image
-            for (int y = 0; y < sourceImage.HeightInPixels; y++)
+            unsafe
             {
-                for (int x = 0; x < sourceImage.WidthInPixels; x++)
+                LibGDLinuxImports.gdImageStruct* pStructSource = (LibGDLinuxImports.gdImageStruct*)sourceImage.gdImageStructPtr;
+                LibGDLinuxImports.gdImageStruct* pStructDest = (LibGDLinuxImports.gdImageStruct*)destinationImage.gdImageStructPtr;
+
+                //loop through the source image
+                for (int y = 0; y < sourceImage.HeightInPixels; y++)
                 {
-                    int color = LibGDLinuxImports.gdImageGetPixel(sourceImage.gdImageStructPtr, x, y);
-
-                    int alpha = (color >> 24) & 0xff;
-                    if (alpha == 127)
+                    for (int x = 0; x < sourceImage.WidthInPixels; x++)
                     {
-                        continue;
-                    }
+                        //ignores what falls outside the bounds of dsetination image
+                        if ((y + yOffset) >= destinationImage.HeightInPixels || (x + xOffset) >= destinationImage.WidthInPixels)
+                        {
+                            continue;
+                        }
+                        
+                        int sourceColor = pStructSource->tpixels[y][x];
+                        int alpha = (sourceColor >> 24) & 0xff;
+                        //should not have 127 as magic
+                        if (alpha == 127)
+                        {
+                            continue;
+                        }
+                        int destColor = pStructDest->tpixels[y + yOffset][x + xOffset];
+                        int blendedColor = LibGDLinuxImports.gdAlphaBlend(destColor, sourceColor);
 
-                    LibGDLinuxImports.gdImageSetPixel(destinationImage.gdImageStructPtr, x + xOffset, y + yOffset, color);
+                        pStructDest->tpixels[y + yOffset][x + xOffset] = blendedColor;
+                    }
                 }
-            }
+            } 
         }
-    }
 }
 
 
 #endif
+
+
+}
