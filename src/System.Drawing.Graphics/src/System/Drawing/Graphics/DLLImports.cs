@@ -82,8 +82,8 @@ namespace System.Drawing.Graphics
             public int paletteQuantizationSpeed;
             public int paletteQuantizationMinQuality;
             public int paletteQuantizationMaxQuality;
-            gdInterpolationMethod interpolation_id;
-            interpolation_method interpolation;
+            //gdInterpolationMethod interpolation_id;
+            //interpolation_method interpolation;
         }
 
         [DllImport("libgdx86.dll", CharSet = CharSet.Ansi)]
@@ -147,6 +147,15 @@ namespace System.Drawing.Graphics
         public static extern void gdImageJpegCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
 
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        public static extern int gdAlphaBlend(int src, int dst);
+
+        //I WROTE THESE
+        [DllImport("libgdedit.dll", EntryPoint = "gdImageCopyMergeWithAlpha")]
+        public static extern void gdImageCopyMergeWithAlpha(IntPtr destination, IntPtr source, int xOffset, int yOffset);
+
+        [DllImport("libgdedit.dll", CharSet = CharSet.Unicode)]
+        public static extern void gdImageScaleAlphaValueTrueColor(IntPtr src, double opacityMultiplier);
 
         /// Return Type: int 
         ///param0: gdIOCtx* 
