@@ -36,8 +36,11 @@ namespace System.Drawing.Graphics
         {
             get
             {
-                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-                return gdImageStruct.sx;
+                unsafe
+                {
+                    return ((DLLImports.gdImageStruct*)gdImageStructPtr)->sx;
+                }
+                //DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
             }
         }
 
@@ -45,8 +48,12 @@ namespace System.Drawing.Graphics
         {
             get
             {
-                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-                return gdImageStruct.sy;
+                unsafe
+                {
+                    return ((DLLImports.gdImageStruct*)gdImageStructPtr)->sy;
+                }
+                //DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                //return gdImageStruct.sy;
             }
         }
         public PixelFormat PixelFormat
@@ -62,8 +69,12 @@ namespace System.Drawing.Graphics
         {
             get
             {
-                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-                return (gdImageStruct.trueColor == 1);
+                unsafe
+                {
+                    return ((DLLImports.gdImageStruct*)gdImageStructPtr)->trueColor == 1;
+                }
+                //DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
+                //return (gdImageStruct.trueColor == 1);
             }
         }
         
@@ -109,8 +120,12 @@ namespace System.Drawing.Graphics
         {
             get
             {
-                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
-                return gdImageStruct.sx;
+                unsafe
+                {
+                    return ((DLLImports.gdImageStruct*)gdImageStructPtr)->sx;
+                }
+                //LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
+                //return gdImageStruct.sx;
             }
         }
 
@@ -118,8 +133,12 @@ namespace System.Drawing.Graphics
         {
             get
             {
-                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
-                return gdImageStruct.sy;
+                unsafe
+                {
+                    return ((DLLImports.gdImageStruct*)gdImageStructPtr)->sy;
+                }
+                //LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
+                //return gdImageStruct.sy;
             }
         }
         public PixelFormat PixelFormat
@@ -135,8 +154,12 @@ namespace System.Drawing.Graphics
         {
             get
             {
-                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
-                return (gdImageStruct.trueColor == 1);
+                unsafe
+                {
+                    return ((DLLImports.gdImageStruct*)gdImageStructPtr)->trueColor == 1;
+                }
+                //LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
+                //return (gdImageStruct.trueColor == 1);
             }
         }
         
