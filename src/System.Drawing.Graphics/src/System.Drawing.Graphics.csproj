@@ -23,6 +23,7 @@
     <Compile Include="System\Drawing\Graphics\Image.cs" />
     <Compile Include="System\Drawing\Graphics\Jpg.cs" />
     <Compile Include="System\Drawing\Graphics\LibGDLinuxImports.cs" />
+    <Compile Include="System\Drawing\Graphics\LibGDOSXImports.cs" />
     <Compile Include="System\Drawing\Graphics\Png.cs" />
   </ItemGroup>
   <ItemGroup>
