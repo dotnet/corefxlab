@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Drawing.Graphics
 {
-#if WINDOWS
+#if (WINDOWS && !LINUX)
     public static class Png
     {
         //add png specific method later
@@ -92,7 +92,7 @@ namespace System.Drawing.Graphics
     }
 }
 
-#if Linux
+#if (LINUX && !WINDOWS)
 
     public static class Png
     {

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Drawing.Graphics
 {
-#if WINDOWS
+#if (WINDOWS && !LINUX)
     public static class Jpg
     {
         //add jpg specific method later
@@ -92,7 +92,7 @@ namespace System.Drawing.Graphics
     }
 }
 
-#if LINUX
+#if (LINUX && !WINDOWS)
 
     public static class Jpg
     {
@@ -178,7 +178,7 @@ namespace System.Drawing.Graphics
 
 #else
 
- public static class Jpg
+    public static class Jpg
     {
         //add jpg specific method later
         public static Image Load(string filePath)

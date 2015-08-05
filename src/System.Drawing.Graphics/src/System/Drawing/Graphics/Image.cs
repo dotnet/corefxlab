@@ -19,7 +19,7 @@ namespace System.Drawing.Graphics
         Cmyk
     }
 
-#if (WINDOWS)
+#if (WINDOWS && !LINUX)
     public class Image
     {
         /* Fields */ 
@@ -91,7 +91,7 @@ namespace System.Drawing.Graphics
         }
     }
 
-#if (LINUX)
+#if (LINUX && !WINDOWS)
 
     public class Image
     {

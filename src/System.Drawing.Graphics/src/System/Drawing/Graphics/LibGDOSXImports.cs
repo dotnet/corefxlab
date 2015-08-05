@@ -131,6 +131,9 @@ namespace System.Drawing.Graphics
         [DllImport("libgd.dylib", CharSet = CharSet.Unicode)]
         internal static extern int gdImagePaletteToTrueColor(IntPtr src);
 
+        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        internal static extern int gdImageGetTrueColorPixel(IntPtr im, int x, int y);
+
 
         [DllImport("libgd.dylib", EntryPoint = "_gdImageCreateFromPngCtx@4")]
         public static extern IntPtr gdImageCreateFromPngCtx(ref gdIOCtx @in);

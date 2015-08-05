@@ -6,7 +6,7 @@
 
 namespace System.Drawing.Graphics
 {
-#if WINDOWS
+#if (WINDOWS && !LINUX)
     public static class ImageExtensions
     {
         
@@ -92,7 +92,7 @@ namespace System.Drawing.Graphics
         }
     }
 }
-#if LINUX
+#if (LINUX && !WINDOWS)
 
     public static class ImageExtensions
     {
