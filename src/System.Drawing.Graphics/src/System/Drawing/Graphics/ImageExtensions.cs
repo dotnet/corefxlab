@@ -296,6 +296,3 @@ namespace System.Drawing.Graphics
     }
 }
 #endif
-
-
-}

@@ -10,8 +10,6 @@ using System.Reflection;
 
 public partial class GraphicsUnitTests
 {
-
-<<<<<<< HEAD
     private static void ValidateImage(Image img, int widthToCompare, int heightToCompare)
     {
         Assert.Equal(widthToCompare, img.WidthInPixels);
@@ -455,7 +453,6 @@ public partial class GraphicsUnitTests
         Png.WriteToFile(yellowCat, @"/Users/matell/Documents/OSX-S.D.G./TestImages/DrawAndTransparencyTest.png");
     }
 
-=======
     //perftests
     static Image pngdog = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngdog.png");
     static Image pngcat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
@@ -585,19 +582,19 @@ public partial class GraphicsUnitTests
     //    Console.WriteLine("");
     //}
 
-    [Fact(Skip = "UNSKIP to start Perf Tests")]
-    public static void DrawPngOverPng1()
-    {
-        Console.WriteLine("DrawPngOverPng1");
-        Stopwatch sw = new Stopwatch();
-        sw.Start();
-        pngdog.Draw(transpocat, 200, 200);
-        Png.WriteToFile(pngdog, @"C:\Users\t-xix\Pictures\PerfTestResults\drawtest.png");
-        sw.Stop();
-        TimeSpan elapsedTime = sw.Elapsed;
-        Console.WriteLine(elapsedTime);
-        Console.WriteLine("");
-    }
+    //[Fact(Skip = "UNSKIP to start Perf Tests")]
+    //public static void DrawPngOverPng1()
+    //{
+    //    Console.WriteLine("DrawPngOverPng1");
+    //    Stopwatch sw = new Stopwatch();
+    //    sw.Start();
+    //    pngdog.Draw(transpocat, 200, 200);
+    //    Png.WriteToFile(pngdog, @"C:\Users\t-xix\Pictures\PerfTestResults\drawtest.png");
+    //    sw.Stop();
+    //    TimeSpan elapsedTime = sw.Elapsed;
+    //    Console.WriteLine(elapsedTime);
+    //    Console.WriteLine("");
+    //}
 
     //[Fact]
     //public static void DrawJpgOverPng1()
@@ -1282,7 +1279,6 @@ public partial class GraphicsUnitTests
     //    //write
     //    Png.WriteToFile(yellowCat, @"/home/ddcloud/Documents/DrawAndTransparencyTest.png");
     //}
->>>>>>> 9ea7ce725518c9e519168c92ca5ed4b43bed0138
 }
 
 
