@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace System.Numerics.Matrices
 {
@@ -64,9 +65,9 @@ namespace System.Numerics.Matrices
             get
             {
                 if (col < 0 || col >= ColumnCount)
-                    throw new ArgumentOutOfRangeException(nameof(col), $"Expected greater than or equal to 0 and less than {ColumnCount}, found {col}.");
+                    throw new ArgumentOutOfRangeException("col", String.Format("Expected greater than or equal to 0 and less than {0}, found {1}.", ColumnCount, col));
                 if (row < 0 || row >= RowCount)
-                    throw new ArgumentOutOfRangeException(nameof(row), $"Expected greater than or equal to 0 and less than {RowCount}, found {row}.");
+                    throw new ArgumentOutOfRangeException("row", String.Format("Expected greater than or equal to 0 and less than {0}, found {1}.", RowCount, row));
 
                 fixed (Matrix1x3* p = &this)
                 {
@@ -77,9 +78,9 @@ namespace System.Numerics.Matrices
             set
             {
                 if (col < 0 || col >= ColumnCount)
-                    throw new ArgumentOutOfRangeException(nameof(col), $"Expected greater than or equal to 0 and less than {ColumnCount}, found {col}.");
+                    throw new ArgumentOutOfRangeException("col", String.Format("Expected greater than or equal to 0 and less than {0}, found {1}.", ColumnCount, col));
                 if (row < 0 || row >= RowCount)
-                    throw new ArgumentOutOfRangeException(nameof(row), $"Expected greater than or equal to 0 and less than {RowCount}, found {row}.");
+                    throw new ArgumentOutOfRangeException("row", String.Format("Expected greater than or equal to 0 and less than {0}, found {1}.", RowCount, row));
 
                 fixed (Matrix1x3* p = &this)
                 {
@@ -129,10 +130,12 @@ namespace System.Numerics.Matrices
 
         public override string ToString()
         {
-            return "Matrix1x3: "
-                 + $"{{|{M11:00}|}}"
-                 + $"{{|{M12:00}|}}"
-                 + $"{{|{M13:00}|}}"; 
+		    var sb = new StringBuilder();
+            sb.Append("Matrix1x3: ");
+            sb.AppendFormat("{{|{0}|}}", M11);
+            sb.AppendFormat("{{|{0}|}}", M12);
+            sb.AppendFormat("{{|{0}|}}", M13);
+			return sb.ToString();
         }
 
         /// <summary>
