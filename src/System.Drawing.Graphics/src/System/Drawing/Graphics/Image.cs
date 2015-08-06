@@ -91,7 +91,7 @@ namespace System.Drawing.Graphics
         }
     }
 
-#if (LINUX && !WINDOWS)
+#elif (LINUX && !WINDOWS)
 
     public class Image
     {
@@ -174,7 +174,6 @@ namespace System.Drawing.Graphics
             }
         }
     }
-#endif
 
 #else
 
@@ -198,7 +197,7 @@ namespace System.Drawing.Graphics
             {
                 unsafe
                 {
-                    return ((DLLImports.gdImageStruct*)gdImageStructPtr)->sx;
+                    return ((LibGDOSXImports.gdImageStruct*)gdImageStructPtr)->sx;
             }
                 //LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
                 //return gdImageStruct.sx;
@@ -211,7 +210,7 @@ namespace System.Drawing.Graphics
             {
                 unsafe
                 {
-                    return ((DLLImports.gdImageStruct*)gdImageStructPtr)->sy;
+                    return ((LibGDOSXImports.gdImageStruct*)gdImageStructPtr)->sy;
                 }
                 //LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
                 //return gdImageStruct.sy;
@@ -232,7 +231,7 @@ namespace System.Drawing.Graphics
             {
                 unsafe
                 {
-                    return ((DLLImports.gdImageStruct*)gdImageStructPtr)->trueColor == 1;
+                    return ((LibGDOSXImports.gdImageStruct*)gdImageStructPtr)->trueColor == 1;
                 }
                 //LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
                 //return (gdImageStruct.trueColor == 1);

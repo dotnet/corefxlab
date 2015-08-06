@@ -77,14 +77,14 @@ public partial class GraphicsUnitTests
     public void WhenCreatingAJpegFromAMalformedPathThenThrowException()
     {
         //place holder string to demonstrate what would be the error case
-        string invalidFilepath = @"/Users/matell/Documents/OSX-S.D.G./TestImages/SquareCat.jpg";
+        string invalidFilepath = @"/Users/matell/Documents/OSX-S.D.G./TestImages/\SquareCat.jpg";
         Assert.Throws<FileNotFoundException>(() => Jpg.Load(invalidFilepath));
     }
     [Fact]
     public void WhenCreatingAPngFromAMalformedPathThenThrowException()
     {
         //place holder string to demonstrate what would be the error case
-        string invalidFilepath = @"/Users/matell/Documents/OSX-S.D.G./TestImages/BlackCat.png";
+        string invalidFilepath = @"/Users/matell/Documents/OSX-S.D.G./TestImages/\BlackCat.png";
         Assert.Throws<FileNotFoundException>(() => Png.Load(invalidFilepath));
     }
     [Fact]
@@ -387,7 +387,7 @@ public partial class GraphicsUnitTests
         Image img = Png.Load(@"/Users/matell/Documents/OSX-S.D.G./TestImages/CuteCat.png");
         using (MemoryStream stream = new MemoryStream())
         {
-            ValidateImage(img, 400, 383);
+            ValidateImage(img, 425, 383);
             img.SetAlphaPercentage(.2);
             img = img.Resize(400, 400);
             ValidateImage(img, 400, 400);
@@ -453,12 +453,12 @@ public partial class GraphicsUnitTests
         Png.WriteToFile(yellowCat, @"/Users/matell/Documents/OSX-S.D.G./TestImages/DrawAndTransparencyTest.png");
     }
 
-    //perftests
-    static Image pngdog = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngdog.png");
-    static Image pngcat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
-    static Image transpocat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\transpocat.png");
-    static Image jpgdog = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgdog.jpg");
-    static Image jpgcat = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
+    ////perftests
+    //static Image pngdog = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngdog.png");
+    //static Image pngcat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
+    //static Image transpocat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\transpocat.png");
+    //static Image jpgdog = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgdog.jpg");
+    //static Image jpgcat = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
 
 
 

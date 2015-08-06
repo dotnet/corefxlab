@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
 //#define WINDOWS
-//#define Linux
+//#define LINUX
 
 using System.IO;
 using System.Runtime.InteropServices;
@@ -78,7 +78,7 @@ namespace System.Drawing.Graphics
             {
                 throw new InvalidOperationException(SR.NullStreamReferenced);
             }
-            
+
         }
 
         public static void WriteToStream(Image bmp, Stream stream)
@@ -92,7 +92,7 @@ namespace System.Drawing.Graphics
     }
 }
 
-#if (LINUX && !WINDOWS)
+#elif (LINUX && !WINDOWS)
 
     public static class Png
     {
@@ -142,7 +142,7 @@ namespace System.Drawing.Graphics
 
         public static Image Load(Stream stream)
         {
-            if(stream != null)
+            if (stream != null)
             {
                 IntPtr pNativeImage = IntPtr.Zero;
                 var wrapper = new gdStreamWrapper(stream);
@@ -170,18 +170,17 @@ namespace System.Drawing.Graphics
         }
     }
 }
-#endif
 
 #else
 
-    public static class Png
+public static class Png
     {
         //add png specific method later
         public static Image Load(string filePath)
         {
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException(SR.Format(SR.MalformedFilePath, filePath));
+                throw new FileNotFoundException(SR.Format(SR.MalformedFilePath, filePath)); 
             }
             else if (LibGDOSXImports.gdSupportsFileType(filePath, false))
             {
@@ -247,6 +246,7 @@ namespace System.Drawing.Graphics
             LibGDOSXImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDOSXImports.gdImageStruct>(bmp.gdImageStructPtr);
             var wrapper = new gdStreamWrapper(stream);
             LibGDOSXImports.gdImagePngCtx(ref gdImageStruct, ref wrapper.IOCallbacks);
+        
         }
     }
 }

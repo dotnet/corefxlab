@@ -82,8 +82,7 @@ namespace System.Drawing.Graphics
             public int paletteQuantizationSpeed;
             public int paletteQuantizationMinQuality;
             public int paletteQuantizationMaxQuality;
-            gdInterpolationMethod interpolation_id;
-            interpolation_method interpolation;
+
         }
 
         [DllImport("libgd.dylib", CharSet = CharSet.Ansi)]
@@ -95,7 +94,7 @@ namespace System.Drawing.Graphics
         [DllImport("libgd.dylib", CharSet = CharSet.Unicode)]
         internal static extern IntPtr gdImageCreateTrueColor(int sx, int sy);
 
-        [DllImport("libgd.dylib", CharSet = CharSet.Unicode, EntryPoint = "_gdImageColorAllocate@16")]
+        [DllImport("libgd.dylib", CharSet = CharSet.Unicode, EntryPoint = "gdImageColorAllocate")]
         internal static extern int gdImageColorAllocate(int r, int b, int g);
 
         [DllImport("libgd.dylib", CharSet = CharSet.Ansi)]
@@ -103,7 +102,7 @@ namespace System.Drawing.Graphics
 
 
         //had to use mangled name here
-        [DllImport("libgd.dylib", CharSet = CharSet.Ansi, EntryPoint = "_gdImageFile@8")]
+        [DllImport("libgd.dylib", CharSet = CharSet.Ansi, EntryPoint = "gdImageFile")]
         internal static extern bool gdImageFile(IntPtr image, string filename);
 
         [DllImport("libgd.dylib", CharSet = CharSet.Unicode)]
@@ -131,20 +130,23 @@ namespace System.Drawing.Graphics
         [DllImport("libgd.dylib", CharSet = CharSet.Unicode)]
         internal static extern int gdImagePaletteToTrueColor(IntPtr src);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport("libgd.dylib", CharSet = CharSet.Unicode)]
         internal static extern int gdImageGetTrueColorPixel(IntPtr im, int x, int y);
 
+        [DllImport("libgd.dylib", CharSet = CharSet.Unicode)]
+        public static extern int gdAlphaBlend(int src, int dst);
 
-        [DllImport("libgd.dylib", EntryPoint = "_gdImageCreateFromPngCtx@4")]
+
+        [DllImport("libgd.dylib", EntryPoint = "gdImageCreateFromPngCtx")]
         public static extern IntPtr gdImageCreateFromPngCtx(ref gdIOCtx @in);
 
-        [DllImport("libgd.dylib", EntryPoint = "_gdImagePngCtx@8")]
+        [DllImport("libgd.dylib", EntryPoint = "gdImagePngCtx")]
         public static extern void gdImagePngCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
-        [DllImport("libgd.dylib", EntryPoint = "_gdImageCreateFromJpegCtx@4")]
+        [DllImport("libgd.dylib", EntryPoint = "gdImageCreateFromJpegCtx")]
         public static extern IntPtr gdImageCreateFromJpegCtx(ref gdIOCtx @in);
 
-        [DllImport("libgd.dylib", EntryPoint = "_gdImageJpegCtx@12")]
+        [DllImport("libgd.dylib", EntryPoint = "gdImageJpegCtx")]
         public static extern void gdImageJpegCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
 

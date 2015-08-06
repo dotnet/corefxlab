@@ -84,7 +84,7 @@ namespace System.Drawing.Graphics
 }
 
 
-#if (LINUX && !WINDOWS)
+#elif (LINUX && !WINDOWS)
 
 
 public class gdStreamWrapper
@@ -160,7 +160,6 @@ public class gdStreamWrapper
 		}
 	}
 }
-#endif
 
 #else
 
@@ -186,14 +185,21 @@ public class gdStreamWrapper
 
 		int getC(IntPtr ctx)
 		{
-			return _stream.ReadByte();
+			return _stream.ReadByte(); 
 		}
 
 		int getBuf(IntPtr ctx, IntPtr buf, int wanted)
 		{
 			byte[] buffer = new byte[wanted];
 			int read = _stream.Read(buffer, 0, wanted);
-			if (read > 0)
+            while (read < wanted)
+            {
+                int newRead = _stream.Read(buffer, read, (wanted - read));
+                if (newRead == 0) break;
+                read += newRead;
+            }
+
+            if (read > 0)
 			{
 				Marshal.Copy(buffer, 0, buf, read);
 			}

@@ -92,7 +92,7 @@ namespace System.Drawing.Graphics
     }
 }
 
-#if (LINUX && !WINDOWS)
+#elif (LINUX && !WINDOWS)
 
     public static class Jpg
     {
@@ -174,7 +174,6 @@ namespace System.Drawing.Graphics
 
     }
 }
-#endif
 
 #else
 
