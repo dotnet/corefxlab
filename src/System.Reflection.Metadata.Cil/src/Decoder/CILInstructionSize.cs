@@ -1,6 +1,6 @@
-﻿namespace System.Reflection.Metadata.ILDasm.Decoder
+﻿namespace System.Reflection.Metadata.Cil.Decoder
 {
-    public enum CILInstructionSize
+    public enum CilInstructionSize
     {
         Byte = 1,
         Int16 = 2,

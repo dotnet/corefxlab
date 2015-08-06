@@ -1,7 +1,7 @@
 ﻿
-namespace System.Reflection.Metadata.ILDasm.Decoder
+namespace System.Reflection.Metadata.Cil.Decoder
 {
-    public enum CILTokenType
+    public enum CilTokenType
     {
         Module = 0x00,
         TypeReference = 0x01,
