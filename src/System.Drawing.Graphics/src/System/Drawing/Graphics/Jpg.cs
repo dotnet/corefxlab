@@ -60,14 +60,17 @@ namespace System.Drawing.Graphics
         {
             if (stream != null)
             {
-                IntPtr pNativeImage = IntPtr.Zero;
-                var wrapper = new gdStreamWrapper(stream);
-                pNativeImage = DLLImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
-
-                DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(pNativeImage);
-                Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
-                toRet.gdImageStructPtr = pNativeImage;
-                return toRet;
+                unsafe
+                {
+                    IntPtr pNativeImage = IntPtr.Zero;
+                    var wrapper = new gdStreamWrapper(stream);
+                    pNativeImage = DLLImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
+                    DLLImports.gdImageStruct* pStruct = (DLLImports.gdImageStruct*)pNativeImage;
+                    Image toRet = Image.Create(pStruct->sx, pStruct->sx);
+                    DLLImports.gdImageDestroy(toRet.gdImageStructPtr);
+                    toRet.gdImageStructPtr = pNativeImage;                 
+                    return toRet;
+                }
             }
             else
             {

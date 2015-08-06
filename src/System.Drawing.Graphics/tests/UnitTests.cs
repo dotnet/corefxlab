@@ -7,356 +7,472 @@ using System.Drawing.Graphics;
 using System.IO;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 
 public partial class GraphicsUnitTests
 {
 
     //perftests
-    static Image pngdog = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngdog.png");
-    static Image pngcat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
-    static Image transpocat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\transpocat.png");
-    static Image jpgdog = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgdog.jpg");
-    static Image jpgcat = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
+    static StreamWriter streamwriter;
+    
+    static Stopwatch sw = new Stopwatch();
+    static TimeSpan elapsedTime;
+    static Image jpgcat;
+    static Image pngcat;
+    static Image jpgdog;
+    static Image pngdog;
 
 
-
-    //[Fact]
-    //public static void LoadJpg1()
-    //{
-    //    Console.WriteLine("LoadJpg1");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    Image jpg = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-
-    //[Fact]
-    //public static void LoadPng1()
-    //{
-    //    Console.WriteLine("LoadPng1");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    Image png = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-
-    //[Fact]
-    //public static void SaveJpg1()
-    //{
-    //    Console.WriteLine("SaveJpg1");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    Jpg.WriteToFile(jpgdog, @"C:\Users\t-xix\Pictures\PerfTestResults\jpgdog.jpg");
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-
-    //[Fact]
-    //public static void SavePng1()
-    //{
-    //    Console.WriteLine("SavePng1");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    Png.WriteToFile(pngdog, @"C:\Users\t-xix\Pictures\PerfTestResults\pngdog.png");
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-
-    //[Fact]
-    //public static void ResizeJpg1()
-    //{
-    //    Console.WriteLine("ResizeJpg1");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    jpgcat.Resize(100, 100);
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-
-    //[Fact]
-    //public static void ResizePng1()
-    //{
-    //    Console.WriteLine("ResizePng1");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    pngcat.Resize(100, 100);
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-
-    //[Fact]
-    //public static void ChangeAlphaJpg1()
-    //{
-    //    Console.WriteLine("ChangeAlphaJpg1");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    jpgcat.SetAlphaPercentage(0.5f);
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-
-    //[Fact]
-    //public static void ChangeAlphaPng1()
-    //{
-
-    //    Console.WriteLine("ChangeAlphaPng1");
-
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    pngcat.SetAlphaPercentage(0.5);
-    //    Png.WriteToFile(pngcat, @"C:\Users\t-xix\Pictures\PerfTestResults\MOVINGTOMANAGEDTEST.png");
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-
-    //[Fact]
-    //public static void DrawJpgOverJpg1()
-    //{
-    //    Console.WriteLine("DrawJpgOverJpg1");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    jpgdog.Draw(jpgcat, 10, 10);
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-
-    [Fact(Skip = "UNSKIP to start Perf Tests")]
-    public static void DrawPngOverPng1()
+    [Fact]
+    public static void RunAllTests()
     {
-        Console.WriteLine("DrawPngOverPng1");
-        Stopwatch sw = new Stopwatch();
-        sw.Start();
-        pngdog.Draw(transpocat, 200, 200);
-        Png.WriteToFile(pngdog, @"C:\Users\t-xix\Pictures\PerfTestResults\drawtest.png");
-        sw.Stop();
-        TimeSpan elapsedTime = sw.Elapsed;
-        Console.WriteLine(elapsedTime);
-        Console.WriteLine("");
+
+        FileStream fstream = new FileStream(@"C:\Users\t-xix\Desktop\PerfTestWindows.txt", FileMode.Open);
+        streamwriter = new StreamWriter(fstream);
+        runTests(1);
+        runTests(10);
+        runTests(100);
+        streamwriter.Dispose();
+        fstream.Dispose();
     }
 
-    //[Fact]
-    //public static void DrawJpgOverPng1()
+
+    public static void runTests(int numRuns)
+    {
+        Console.WriteLine("");
+        Console.WriteLine("~~~~~~~~~~~ {0} Runs ~~~~~~~~~~~", numRuns);
+        Console.WriteLine("");
+        streamwriter.WriteLine("");
+        streamwriter.WriteLine("~~~~~~~~~~~ {0} Runs ~~~~~~~~~~~", numRuns);
+        streamwriter.WriteLine("");
+        
+        //LoadFileJpg
+        Console.WriteLine("LoadFileJpg{0}", numRuns);
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            Image img = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
+            sw.Stop();
+            img.ReleaseStruct();
+        }
+
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //LoadFilePng
+        Console.WriteLine("LoadFilePng{0}", numRuns);
+        streamwriter.WriteLine("LoadFilePng{0}", numRuns);
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            Image img = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
+            sw.Stop();
+            img.ReleaseStruct();
+        }
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+        
+        //WriteFileJpg
+        Console.WriteLine("SaveFileJpg{0}", numRuns);
+        streamwriter.WriteLine("SaveFileJpg{0}", numRuns);
+        jpgdog = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgdog.jpg");
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            Jpg.WriteToFile(jpgdog, @"C:\Users\t-xix\Pictures\PerfTestResults\jpgdog.jpg");
+            sw.Stop();
+        }
+        jpgdog.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //WriteFilePng
+        Console.WriteLine("SaveFilePng{0}", numRuns);
+        streamwriter.WriteLine("SaveFilePng{0}", numRuns);
+        pngdog = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            Png.WriteToFile(pngdog, @"C:\Users\t-xix\Pictures\PerfTestResults\pngcat.png");
+            sw.Stop();
+        }
+        pngdog.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //ResizeJpg            
+        Console.WriteLine("ResizeJpg{0}", numRuns);
+        streamwriter.WriteLine("ResizeJpg{0}", numRuns);
+        jpgcat = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            Image img = jpgcat.Resize(100, 100);
+            sw.Stop();
+            img.ReleaseStruct();
+        }
+        jpgcat.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+
+        Console.WriteLine("ResizePng{0}", numRuns);
+        streamwriter.WriteLine("ResizePng{0}", numRuns);
+        pngcat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            Image img = pngcat.Resize(100, 100);
+            sw.Stop();
+            img.ReleaseStruct();
+        }
+        pngcat.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //ChangeAlphaJpg
+        Console.WriteLine("ChangeAlphaJpg{0}", numRuns);
+        streamwriter.WriteLine("ChangeAlphaJpg{0}", numRuns);
+        jpgcat = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
+
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            jpgcat.SetAlphaPercentage(0.5f);
+            sw.Stop();
+        }
+        jpgcat.ReleaseStruct();
+
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //ChangeAlphaPng
+        Console.WriteLine("ChangeAlphaPng{0}", numRuns);
+        streamwriter.WriteLine("ChangeAlphaPng{0}", numRuns);
+        pngcat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            pngcat.SetAlphaPercentage(0.5f);
+            sw.Stop();
+        }
+        pngcat.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //DrawJpgOverJpg       
+        Console.WriteLine("DrawJpgOverJpg{0}", numRuns);
+        streamwriter.WriteLine("DrawJpgOverJpg{0}", numRuns);
+        jpgcat = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
+        jpgdog = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgdog.jpg");
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            jpgdog.Draw(jpgcat, 10, 10);
+            sw.Stop();
+        }
+        jpgcat.ReleaseStruct();
+        jpgdog.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //DrawPngOverPng
+        Console.WriteLine("DrawPngOverPng{0}", numRuns);
+        streamwriter.WriteLine("DrawPngOverPng{0}", numRuns);
+        pngcat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
+        pngdog = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngdog.png");
+        for (int i = 0; i < numRuns; i++)
+        {
+
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            pngdog.Draw(pngcat, 10, 10);
+            sw.Stop();
+        }
+        pngcat.ReleaseStruct();
+        pngdog.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //DrawJpgOverPng
+        Console.WriteLine("DrawJpgOverPng{0}", numRuns);
+        streamwriter.WriteLine("DrawJpgOverPng{0}", numRuns);
+        jpgcat = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
+        pngdog = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngdog.png");
+        for (int i = 0; i < numRuns; i++)
+        {
+
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            pngdog.Draw(jpgcat, 10, 10);
+            sw.Stop();
+        }
+        jpgcat.ReleaseStruct();
+        pngdog.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //DrawPngOverJpg
+        Console.WriteLine("DrawPngOverJpg{0}", numRuns);
+        streamwriter.WriteLine("DrawPngOverJpg{0}", numRuns);
+        jpgdog = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgdog.jpg");
+        pngcat = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
+        for (int i = 0; i < numRuns; i++)
+        {
+
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            sw.Start();
+            jpgdog.Draw(pngcat, 10, 10);
+            sw.Stop();
+        }
+        jpgdog.ReleaseStruct();
+        pngcat.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //LoadStreamJpg
+        Console.WriteLine("LoadStreamJpg{0}", numRuns);
+        streamwriter.WriteLine("LoadStreamJpg{0}", numRuns);
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            using (FileStream filestream = new FileStream(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg", FileMode.Open))
+            {
+                sw.Start();
+                Image img = Jpg.Load(filestream);
+                sw.Stop();
+                img.ReleaseStruct();
+                filestream.Dispose();
+            }
+
+        }
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //LoadStreamPng
+        Console.WriteLine("LoadStreamPng{0}", numRuns);
+        streamwriter.WriteLine("LoadStreamPng{0}", numRuns);
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            using (FileStream filestream = new FileStream(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png", FileMode.Open))
+            {
+                sw.Start();
+                Image img = Png.Load(filestream);
+                sw.Stop();
+                img.ReleaseStruct();
+                filestream.Dispose();
+            }
+
+        }
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //WriteStreamJpg
+        Console.WriteLine("WriteStreamJpg{0}", numRuns);
+        streamwriter.WriteLine("WriteStreamJpg{0}", numRuns);
+        jpgcat = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                sw.Start();
+                Jpg.WriteToStream(jpgcat, stream);
+                sw.Stop();
+            }
+        }
+        jpgcat.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+        //WriteStreamPng
+        Console.WriteLine("WriteStreamPng{0}", numRuns);
+        streamwriter.WriteLine("WriteStreamPng{0}", numRuns);
+        pngcat = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
+        for (int i = 0; i < numRuns; i++)
+        {
+            //make sure it's going
+            if (i % 100 == 0)
+            {
+                Console.WriteLine(i);
+            }
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                sw.Start();
+                Png.WriteToStream(pngcat, stream);
+                sw.Stop();
+            }
+        }
+        pngcat.ReleaseStruct();
+        elapsedTime = sw.Elapsed;
+        Console.WriteLine(elapsedTime);
+        Console.WriteLine("");
+        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("");
+        sw.Reset();
+
+    }
+
+
+    //[Fact(Skip = "UNSKIP to start Perf Tests")]
+    //public static void DrawPngOverPng1()
     //{
-    //    Console.WriteLine("DrawJpgOverPng1");
+    //    Console.WriteLine("DrawPngOverPng1");
     //    Stopwatch sw = new Stopwatch();
     //    sw.Start();
-    //    pngdog.Draw(jpgcat, 10, 10);
+    //    pngdog.Draw(transpocat, 200, 200);
+    //    Png.WriteToFile(pngdog, @"C:\Users\t-xix\Pictures\PerfTestResults\drawtest.png");
     //    sw.Stop();
     //    TimeSpan elapsedTime = sw.Elapsed;
     //    Console.WriteLine(elapsedTime);
     //    Console.WriteLine("");
     //}
-
-    //[Fact]
-    //public static void DrawPngOverJpg1()
-    //{
-    //    Console.WriteLine("DrawPngOverJpg1");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    jpgdog.Draw(pngcat, 10, 10);
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-
-    //[Fact]
-    //public static void LoadJpg100()
-    //{
-    //    Console.WriteLine("LoadJpg100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        Image jpg = Jpg.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\jpgcat.jpg");
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //    Console.WriteLine("");
-    //}
-    //[Fact]
-    //public static void LoadPng100()
-    //{
-    //    Console.WriteLine("LoadPng100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        Image png = Png.Load(@"C:\Users\t-xix\Pictures\PerfTestImages\pngcat.png");
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-    //[Fact]
-    //public static void SaveJpg100()
-    //{
-    //    Console.WriteLine("SaveJpg100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        Jpg.WriteToFile(jpgdog, @"C:\Users\t-xix\Pictures\PerfTestResults\jpgdog.jpg");
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-    //[Fact]
-    //public static void LoadAndSavePng100()
-    //{
-    //    Console.WriteLine("LoadAndSavePng100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        Png.WriteToFile(pngdog, @"C:\Users\t-xix\Pictures\PerfTestResults\pngdog.png");
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-    //[Fact]
-    //public static void ResizeJpg100()
-    //{
-    //    Console.WriteLine("ResizeJpg100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        jpgcat.Resize(100, 100);
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-
-    //[Fact]
-    //public static void ResizePng100()
-    //{
-    //    Console.WriteLine("ResizePng100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        pngcat.Resize(100, 100);
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-
-    //[Fact]
-    //public static void ChangeAlphaJpg100()
-    //{
-    //    Console.WriteLine("ChangeAlphaJpg100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        jpgcat.SetAlphaPercentage(0.5f);
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-
-    //[Fact]
-    //public static void ChangeAlphaPng100()
-    //{
-    //    Console.WriteLine("ChangeAlphaPng100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        pngcat.SetAlphaPercentage(0.5f);
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-    //[Fact]
-    //public static void DrawJpgOverJpg100()
-    //{
-    //    Console.WriteLine("DrawJpgOverJpg100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        jpgdog.Draw(jpgcat, 10, 10);
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-    //[Fact]
-    //public static void DrawPngOverPng100()
-    //{
-    //    Console.WriteLine("DrawPngOverPng100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        pngdog.Draw(pngcat, 10, 10);
-    //    }
-    //        sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-
-    //[Fact]
-    //public static void DrawJpgOverPng100()
-    //{
-    //    Console.WriteLine("DrawJpgOverPng100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        pngdog.Draw(jpgcat, 10, 10);
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-
-    //[Fact]
-    //public static void DrawPngOverJpg100()
-    //{
-    //    Console.WriteLine("DrawPngOverJpg100");
-    //    Stopwatch sw = new Stopwatch();
-    //    sw.Start();
-    //    for (int i = 0; i < 100; i++)
-    //    {
-    //        jpgdog.Draw(pngcat, 10, 10);
-    //    }
-    //    sw.Stop();
-    //    TimeSpan elapsedTime = sw.Elapsed;
-    //    Console.WriteLine(elapsedTime);
-    //}
-
-
-
 
 
     /*----------------------Actual Unit Tests---------------------------------------------*/
@@ -394,6 +510,7 @@ public partial class GraphicsUnitTests
     //[Fact]
     //public void WhenCreatingABlankImageWithNegativeWidthThenThrowException()
     //{
+    //    Console.WriteLine("wtf");
     //    Assert.Throws<InvalidOperationException>(() => Image.Create(-1, 1));
     //}
     //[Fact]

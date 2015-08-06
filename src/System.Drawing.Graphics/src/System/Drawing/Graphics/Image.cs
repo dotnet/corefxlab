@@ -77,6 +77,11 @@ namespace System.Drawing.Graphics
                 //return (gdImageStruct.trueColor == 1);
             }
         }
+
+        public void ReleaseStruct()
+        {
+            DLLImports.gdImageDestroy(gdImageStructPtr);
+        }
         
         /* Factory Methods */
         public static Image Create(int width, int height)
