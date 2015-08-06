@@ -2,19 +2,18 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace System.Numerics.Matrices.Tests
 {
     /// <summary>
     /// Tests for the Matrix4x2 structure.
     /// </summary>
-    [TestClass]
     public class Test4x2
     {
-        const double Epsilon = Double.Epsilon * 10;
+        const int Epsilon = 10;
 
-        [TestMethod]
+        [Fact]
         public void ConstructorValuesAreAccessibleByIndexer()
         {
             Matrix4x2 matrix4x2;
@@ -25,7 +24,7 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int y = 0; y < matrix4x2.Rows; y++)
                 {
-                    Assert.AreEqual(0, matrix4x2[x, y], Epsilon);
+                    Assert.Equal(0, matrix4x2[x, y], Epsilon);
                 }
             }
 
@@ -36,7 +35,7 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int y = 0; y < matrix4x2.Rows; y++)
                 {
-                    Assert.AreEqual(value, matrix4x2[x, y], Epsilon);
+                    Assert.Equal(value, matrix4x2[x, y], Epsilon);
                 }
             }
 
@@ -46,12 +45,12 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int x = 0; x < matrix4x2.Columns; x++)
                 {
-                    Assert.AreEqual(y * matrix4x2.Columns + x, matrix4x2[x, y], Epsilon);
+                    Assert.Equal(y * matrix4x2.Columns + x, matrix4x2[x, y], Epsilon);
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void IndexerGetAndSetValuesCorrectly()
         {
             Matrix4x2 matrix4x2 = new Matrix4x2();
@@ -68,23 +67,23 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int x = 0; x < matrix4x2.Columns; x++)
                 {
-                    Assert.AreEqual(y * matrix4x2.Columns + x, matrix4x2[x, y], Epsilon);
+                    Assert.Equal(y * matrix4x2.Columns + x, matrix4x2[x, y], Epsilon);
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ConstantValuesAreCorrect()
         {
             Matrix4x2 matrix4x2 = new Matrix4x2();
 
-            Assert.AreEqual(4, matrix4x2.Columns);
-            Assert.AreEqual(2, matrix4x2.Rows);
-            Assert.AreEqual(Matrix4x2.ColumnCount, matrix4x2.Columns);
-            Assert.AreEqual(Matrix4x2.RowCount, matrix4x2.Rows);
+            Assert.Equal(4, matrix4x2.Columns);
+            Assert.Equal(2, matrix4x2.Rows);
+            Assert.Equal(Matrix4x2.ColumnCount, matrix4x2.Columns);
+            Assert.Equal(Matrix4x2.RowCount, matrix4x2.Rows);
         }
 
-        [TestMethod]
+        [Fact]
         public void ScalarMultiplicationIsCorrect()
         {
             Matrix4x2 matrix4x2;
@@ -99,13 +98,13 @@ namespace System.Numerics.Matrices.Tests
                 {
                     for (int x = 0; x < matrix4x2.Columns; x++)
                     {
-                        Assert.AreEqual(matrix4x2[x, y] * c, result[x, y], Epsilon);
+                        Assert.Equal(matrix4x2[x, y] * c, result[x, y], Epsilon);
                     }
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void MemberGetAndSetValuesCorrectly()
         {
             Matrix4x2 matrix4x2 = new Matrix4x2();
@@ -119,26 +118,26 @@ namespace System.Numerics.Matrices.Tests
             matrix4x2.M32 = 6;
             matrix4x2.M42 = 7;
 
-            Assert.AreEqual(0, matrix4x2.M11, Epsilon);
-            Assert.AreEqual(1, matrix4x2.M21, Epsilon);
-            Assert.AreEqual(2, matrix4x2.M31, Epsilon);
-            Assert.AreEqual(3, matrix4x2.M41, Epsilon);
-            Assert.AreEqual(4, matrix4x2.M12, Epsilon);
-            Assert.AreEqual(5, matrix4x2.M22, Epsilon);
-            Assert.AreEqual(6, matrix4x2.M32, Epsilon);
-            Assert.AreEqual(7, matrix4x2.M42, Epsilon);
+            Assert.Equal(0, matrix4x2.M11, Epsilon);
+            Assert.Equal(1, matrix4x2.M21, Epsilon);
+            Assert.Equal(2, matrix4x2.M31, Epsilon);
+            Assert.Equal(3, matrix4x2.M41, Epsilon);
+            Assert.Equal(4, matrix4x2.M12, Epsilon);
+            Assert.Equal(5, matrix4x2.M22, Epsilon);
+            Assert.Equal(6, matrix4x2.M32, Epsilon);
+            Assert.Equal(7, matrix4x2.M42, Epsilon);
 
-            Assert.AreEqual(matrix4x2[0, 0], matrix4x2.M11, Epsilon);
-            Assert.AreEqual(matrix4x2[1, 0], matrix4x2.M21, Epsilon);
-            Assert.AreEqual(matrix4x2[2, 0], matrix4x2.M31, Epsilon);
-            Assert.AreEqual(matrix4x2[3, 0], matrix4x2.M41, Epsilon);
-            Assert.AreEqual(matrix4x2[0, 1], matrix4x2.M12, Epsilon);
-            Assert.AreEqual(matrix4x2[1, 1], matrix4x2.M22, Epsilon);
-            Assert.AreEqual(matrix4x2[2, 1], matrix4x2.M32, Epsilon);
-            Assert.AreEqual(matrix4x2[3, 1], matrix4x2.M42, Epsilon);
+            Assert.Equal(matrix4x2[0, 0], matrix4x2.M11, Epsilon);
+            Assert.Equal(matrix4x2[1, 0], matrix4x2.M21, Epsilon);
+            Assert.Equal(matrix4x2[2, 0], matrix4x2.M31, Epsilon);
+            Assert.Equal(matrix4x2[3, 0], matrix4x2.M41, Epsilon);
+            Assert.Equal(matrix4x2[0, 1], matrix4x2.M12, Epsilon);
+            Assert.Equal(matrix4x2[1, 1], matrix4x2.M22, Epsilon);
+            Assert.Equal(matrix4x2[2, 1], matrix4x2.M32, Epsilon);
+            Assert.Equal(matrix4x2[3, 1], matrix4x2.M42, Epsilon);
         }
 
-        [TestMethod]
+        [Fact]
         public void ColumnAccessorAreCorrect()
         {
             Matrix4x2 value;
@@ -147,23 +146,23 @@ namespace System.Numerics.Matrices.Tests
             Matrix1x2 column1 = value.Column1;
             for (int y = 0; y < value.Rows; y++)
             {
-                Assert.AreEqual(value[0, y], column1[0, y]);
+                Assert.Equal(value[0, y], column1[0, y]);
             }
 
             Matrix1x2 column2 = value.Column2;
             for (int y = 0; y < value.Rows; y++)
             {
-                Assert.AreEqual(value[1, y], column2[0, y]);
+                Assert.Equal(value[1, y], column2[0, y]);
             }
 
             Matrix1x2 column3 = value.Column3;
             for (int y = 0; y < value.Rows; y++)
             {
-                Assert.AreEqual(value[2, y], column3[0, y]);
+                Assert.Equal(value[2, y], column3[0, y]);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void RowAccessorAreCorrect()
         {
             Matrix4x2 value;
@@ -173,11 +172,11 @@ namespace System.Numerics.Matrices.Tests
             Matrix4x1 row1 = value.Row1;
             for (int x = 0; x < value.Columns; x++)
             {
-                Assert.AreEqual(value[x, 0], row1[x, 0]);
+                Assert.Equal(value[x, 0], row1[x, 0]);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void HashCodeGenerationWorksCorrectly()
         {
             HashSet<int> hashCodes = new HashSet<int>();
@@ -185,16 +184,13 @@ namespace System.Numerics.Matrices.Tests
 
             for (int i = 2; i <= 100; i++)
             {
-                if (!hashCodes.Add(value.GetHashCode()))
-                {
-                    Assert.Fail("Unique hash code generation failure.");
-                }
+                Assert.True(hashCodes.Add(value.GetHashCode()), "Unique hash code generation failure.");
 
                 value *= i;
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void SimpleAdditionGeneratesCorrectValues()
         {
             Matrix4x2 value1 = new Matrix4x2(1);
@@ -205,12 +201,12 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int x = 0; x < Matrix4x2.ColumnCount; x++)
                 {
-                    Assert.AreEqual(1 + 99, result[x, y], Epsilon);
+                    Assert.Equal(1 + 99, result[x, y], Epsilon);
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void SimpleSubtractionGeneratesCorrectValues()
         {
             Matrix4x2 value1 = new Matrix4x2(100);
@@ -221,60 +217,33 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int x = 0; x < Matrix4x2.ColumnCount; x++)
                 {
-                    Assert.AreEqual(100 - 1, result[x, y], Epsilon);
+                    Assert.Equal(100 - 1, result[x, y], Epsilon);
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void EqualityOperatorWorksCorrectly()
         {
             Matrix4x2 value1 = new Matrix4x2(100);
             Matrix4x2 value2 = new Matrix4x2(50) * 2;
 
-            Assert.AreEqual(value1, value2);
-            Assert.IsTrue(value1 == value2, "Equality operator failed.");
+            Assert.Equal(value1, value2);
+            Assert.True(value1 == value2, "Equality operator failed.");
         }
 
-        [TestMethod]
+        [Fact]
         public void AccessorThrowsWhenOutOfBounds()
         {
             Matrix4x2 matrix4x2 = new Matrix4x2();
 
-            try
-            {
-                matrix4x2[-1, 0] = 0;
-                Assert.Fail("Matrix4x2[-1, 0] did not throw when it should have.");
-            }
-            catch (ArgumentOutOfRangeException)
-            { }
-
-            try
-            {
-                matrix4x2[0, -1] = 0;
-                Assert.Fail("Matrix4x2[0, -1] did not throw when it should have.");
-            }
-            catch (ArgumentOutOfRangeException)
-            { }
-
-            try
-            {
-                matrix4x2[4, 0] = 0;
-                Assert.Fail("Matrix4x2[4, 0] did not throw when it should have.");
-            }
-            catch (ArgumentOutOfRangeException)
-            { }
-
-            try
-            {
-                matrix4x2[0, 2] = 0;
-                Assert.Fail("Matrix4x2[0, 2] did not throw when it should have.");
-            }
-            catch (ArgumentOutOfRangeException)
-            { }
+            Assert.Throws<ArgumentOutOfRangeException>(() => { matrix4x2[-1, 0] = 0; });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { matrix4x2[0, -1] = 0; });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { matrix4x2[4, 0] = 0; });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { matrix4x2[0, 2] = 0; });
         }
 
-        [TestMethod]
+        [Fact]
         public void MuliplyByMatrix1x4ProducesMatrix1x2()
         {
             Matrix4x2 matrix1 = new Matrix4x2(3);
@@ -283,9 +252,9 @@ namespace System.Numerics.Matrices.Tests
             Matrix1x2 expected = new Matrix1x2(24, 
                                                24);
 
-            Assert.AreEqual(expected, result);
+            Assert.Equal(expected, result);
         }
-        [TestMethod]
+        [Fact]
         public void MuliplyByMatrix2x4ProducesMatrix2x2()
         {
             Matrix4x2 matrix1 = new Matrix4x2(3);
@@ -294,9 +263,9 @@ namespace System.Numerics.Matrices.Tests
             Matrix2x2 expected = new Matrix2x2(24, 24, 
                                                24, 24);
 
-            Assert.AreEqual(expected, result);
+            Assert.Equal(expected, result);
         }
-        [TestMethod]
+        [Fact]
         public void MuliplyByMatrix3x4ProducesMatrix3x2()
         {
             Matrix4x2 matrix1 = new Matrix4x2(3);
@@ -305,9 +274,9 @@ namespace System.Numerics.Matrices.Tests
             Matrix3x2 expected = new Matrix3x2(24, 24, 24, 
                                                24, 24, 24);
 
-            Assert.AreEqual(expected, result);
+            Assert.Equal(expected, result);
         }
-        [TestMethod]
+        [Fact]
         public void MuliplyByMatrix4x4ProducesMatrix4x2()
         {
             Matrix4x2 matrix1 = new Matrix4x2(3);
@@ -316,7 +285,7 @@ namespace System.Numerics.Matrices.Tests
             Matrix4x2 expected = new Matrix4x2(24, 24, 24, 24, 
                                                24, 24, 24, 24);
 
-            Assert.AreEqual(expected, result);
+            Assert.Equal(expected, result);
         }
 
         private void GenerateFilledMatrixWithValues(out Matrix4x2 matrix)

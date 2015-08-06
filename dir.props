@@ -10,7 +10,7 @@
 
   <!-- Build Tools Versions -->
   <PropertyGroup>
-    <BuildToolsVersion>1.0.25-prerelease-00056</BuildToolsVersion>
+    <BuildToolsVersion>1.0.25-prerelease-00069</BuildToolsVersion>
     <DnxVersion>1.0.0-beta5-12101</DnxVersion>
     <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'!='Unix'">dnx-coreclr-win-x86.$(DnxVersion)</DnxPackageName>
     <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'=='Unix'">dnx-mono.$(DnxVersion)</DnxPackageName>
@@ -43,11 +43,17 @@
     <ToolsDir Condition="'$(ToolsDir)'==''">$(PackagesDir)Microsoft.DotNet.BuildTools.$(BuildToolsVersion)/lib/</ToolsDir>
   </PropertyGroup>
 
+  <!-- list of nuget package sources passed to nuget.exe -->
+  <ItemGroup>
+    <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-buildtools" />
+    <NuGetSourceList Include="https:%2F%2Fwww.nuget.org/api/v2" />
+  </ItemGroup>
+
   <!-- Common nuget properties -->
   <PropertyGroup>
     <NuGetToolPath Condition="'$(NuGetToolPath)'==''">$(PackagesDir)NuGet.exe</NuGetToolPath>
-    <NuGetConfigFile Condition="'$(NuGetConfigFile)'==''">$(SourceDir)NuGet.Config</NuGetConfigFile>
-    <NuGetConfigCommandLine>-ConfigFile "$(NuGetConfigFile)"</NuGetConfigCommandLine>
+    <NuGetPackageSource>@(NuGetSourceList -> '-source %(Identity)', ' ')</NuGetPackageSource>
+    <NuGetConfigCommandLine>$(NuGetPackageSource)</NuGetConfigCommandLine>
 
     <NugetRestoreCommand>"$(NuGetToolPath)"</NugetRestoreCommand>
     <NugetRestoreCommand>$(NugetRestoreCommand) install</NugetRestoreCommand>
@@ -192,6 +198,11 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <!-- Temporary until build/CI system is upgraded to C# 6: disable C# 6 features -->
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj' OR '$(Language)' == 'C#'">
+    <LangVersion>5</LangVersion>
+  </PropertyGroup>
+
   <!-- Set up some common paths -->
   <PropertyGroup>
     <CommonPath>$(SourceDir)Common\src</CommonPath>
@@ -222,6 +233,11 @@
     <TargetsFreeBSD Condition="'$(OSGroup)' == 'FreeBSD'">true</TargetsFreeBSD>
 
     <TargetsUnix Condition="'$(TargetsLinux)' == 'true' or '$(TargetsOSX)' == 'true' or '$(TargetsFreeBSD)' == 'true'">true</TargetsUnix>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Don't run tests if we're building another platform's binaries on Windows -->
+    <SkipTests Condition="'$(SkipTests)'=='' and ('$(OsEnvironment)'=='Windows_NT' and '$(TargetsWindows)'!='true')">true</SkipTests>
   </PropertyGroup>
 
   <PropertyGroup>
