@@ -142,18 +142,21 @@ namespace System.Drawing.Graphics
         }
 
 
-        public static Image Load(Stream stream)
+         public static Image Load(Stream stream)
         {
-            if(stream != null)
+            if (stream != null)
             {
-                IntPtr pNativeImage = IntPtr.Zero;
-                var wrapper = new gdStreamWrapper(stream);
-                pNativeImage = LibGDLinuxImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
-
-                LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(pNativeImage);
-                Image toRet = Image.Create(gdImageStruct.sx, gdImageStruct.sy);
-                toRet.gdImageStructPtr = pNativeImage;
-                return toRet;
+                unsafe
+                {
+                    IntPtr pNativeImage = IntPtr.Zero;
+                    var wrapper = new gdStreamWrapper(stream);
+                    pNativeImage = LibGDLinuxImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
+                    LibGDLinuxImports.gdImageStruct* pStruct = (LibGDLinuxImports.gdImageStruct*)pNativeImage;
+                    Image toRet = Image.Create(pStruct->sx, pStruct->sx);
+                    LibGDLinuxImports.gdImageDestroy(toRet.gdImageStructPtr);
+                    toRet.gdImageStructPtr = pNativeImage;                 
+                    return toRet;
+                }
             }
             else
             {
