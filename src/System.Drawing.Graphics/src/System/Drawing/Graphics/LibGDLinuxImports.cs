@@ -82,8 +82,6 @@ namespace System.Drawing.Graphics
             public int paletteQuantizationSpeed;
             public int paletteQuantizationMinQuality;
             public int paletteQuantizationMaxQuality;
-            gdInterpolationMethod interpolation_id;
-            interpolation_method interpolation;
         }
 
         [DllImport("libgd.so.3.0.0", CharSet = CharSet.Ansi)]
@@ -144,7 +142,10 @@ namespace System.Drawing.Graphics
         [DllImport("libgd.so.3.0.0", EntryPoint = "gdImageJpegCtx")]
         public static extern void gdImageJpegCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
-        
+        [DllImport("libgd.so.3.0.0", CharSet = CharSet.Unicode)]
+        public static extern void gdImageDestroy(IntPtr im);
+
+
         /// Return Type: int 
         ///param0: gdIOCtx* 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

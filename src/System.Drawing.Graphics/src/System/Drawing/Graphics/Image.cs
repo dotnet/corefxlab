@@ -77,6 +77,11 @@ namespace System.Drawing.Graphics
                 //return (gdImageStruct.trueColor == 1);
             }
         }
+
+        public void ReleaseStruct()
+        {
+            DLLImports.gdImageDestroy(gdImageStructPtr);
+        }
         
         /* Factory Methods */
         public static Image Create(int width, int height)
@@ -161,6 +166,11 @@ namespace System.Drawing.Graphics
                 //LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
                 //return (gdImageStruct.trueColor == 1);
             }
+        }
+
+        public void ReleaseStruct()
+        {
+            LibGDLinuxImports.gdImageDestroy(gdImageStructPtr);
         }
         
         /* Factory Methods */

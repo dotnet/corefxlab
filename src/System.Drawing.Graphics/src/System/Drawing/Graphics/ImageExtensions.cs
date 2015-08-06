@@ -22,7 +22,6 @@ namespace System.Drawing.Graphics
                 DLLImports.gdImageCopyResized(destinationImage.gdImageStructPtr, sourceImage.gdImageStructPtr, 0, 0, 0, 0,
                     destinationImage.WidthInPixels, destinationImage.HeightInPixels, sourceImage.WidthInPixels, sourceImage.HeightInPixels);
 
-
                 return destinationImage;
             }
             else
