@@ -27,19 +27,18 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace System.Numerics.Matrices.Tests
 {
     /// <summary>
     /// Tests for the <#= structName #> structure.
     /// </summary>
-    [TestClass]
     public class <#= testName #>
     {
-        const double Epsilon = Double.Epsilon * 10;
+        const int Epsilon = 10;
 
-        [TestMethod]
+        [Fact]
         public void ConstructorValuesAreAccessibleByIndexer()
         {
             <#= structName #> <#= typeName #>;
@@ -50,7 +49,7 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int y = 0; y < <#= typeName #>.Rows; y++)
                 {
-                    Assert.AreEqual(0, <#= typeName #>[x, y], Epsilon);
+                    Assert.Equal(0, <#= typeName #>[x, y], Epsilon);
                 }
             }
 
@@ -61,7 +60,7 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int y = 0; y < <#= typeName #>.Rows; y++)
                 {
-                    Assert.AreEqual(value, <#= typeName #>[x, y], Epsilon);
+                    Assert.Equal(value, <#= typeName #>[x, y], Epsilon);
                 }
             }
 
@@ -71,12 +70,12 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int x = 0; x < <#= typeName #>.Columns; x++)
                 {
-                    Assert.AreEqual(y * <#= typeName #>.Columns + x, <#= typeName #>[x, y], Epsilon);
+                    Assert.Equal(y * <#= typeName #>.Columns + x, <#= typeName #>[x, y], Epsilon);
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void IndexerGetAndSetValuesCorrectly()
         {
             <#= structName #> <#= typeName #> = new <#= structName #>();
@@ -93,23 +92,23 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int x = 0; x < <#= typeName #>.Columns; x++)
                 {
-                    Assert.AreEqual(y * <#= typeName #>.Columns + x, <#= typeName #>[x, y], Epsilon);
+                    Assert.Equal(y * <#= typeName #>.Columns + x, <#= typeName #>[x, y], Epsilon);
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ConstantValuesAreCorrect()
         {
             <#= structName #> <#= typeName #> = new <#= structName #>();
 
-            Assert.AreEqual(<#= colCount #>, <#= typeName #>.Columns);
-            Assert.AreEqual(<#= rowCount #>, <#= typeName #>.Rows);
-            Assert.AreEqual(<#= structName #>.ColumnCount, <#= typeName #>.Columns);
-            Assert.AreEqual(<#= structName #>.RowCount, <#= typeName #>.Rows);
+            Assert.Equal(<#= colCount #>, <#= typeName #>.Columns);
+            Assert.Equal(<#= rowCount #>, <#= typeName #>.Rows);
+            Assert.Equal(<#= structName #>.ColumnCount, <#= typeName #>.Columns);
+            Assert.Equal(<#= structName #>.RowCount, <#= typeName #>.Rows);
         }
 
-        [TestMethod]
+        [Fact]
         public void ScalarMultiplicationIsCorrect()
         {
             <#= structName #> <#= typeName #>;
@@ -124,13 +123,13 @@ namespace System.Numerics.Matrices.Tests
                 {
                     for (int x = 0; x < <#= typeName #>.Columns; x++)
                     {
-                        Assert.AreEqual(<#= typeName #>[x, y] * c, result[x, y], Epsilon);
+                        Assert.Equal(<#= typeName #>[x, y] * c, result[x, y], Epsilon);
                     }
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void MemberGetAndSetValuesCorrectly()
         {
             <#= structName #> <#= typeName #> = new <#= structName #>();
@@ -151,7 +150,7 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int col = 0; col < colCount; col++)
                 {
-                    #>            Assert.AreEqual(<#= row * colCount + col #>, <#= typeName #>.M<#= col + 1 #><#= row + 1 #>, Epsilon);<#
+                    #>            Assert.Equal(<#= row * colCount + col #>, <#= typeName #>.M<#= col + 1 #><#= row + 1 #>, Epsilon);<#
                     #><#= Environment.NewLine #><#
                 }
             }
@@ -162,7 +161,7 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int col = 0; col < colCount; col++)
                 {
-                    #>            Assert.AreEqual(<#= typeName #>[<#= col#>, <#= row #>], <#= typeName #>.M<#= col + 1 #><#= row + 1 #>, Epsilon);<#
+                    #>            Assert.Equal(<#= typeName #>[<#= col#>, <#= row #>], <#= typeName #>.M<#= col + 1 #><#= row + 1 #>, Epsilon);<#
                     #><#= Environment.NewLine #><#
                 }
             }
@@ -173,7 +172,7 @@ namespace System.Numerics.Matrices.Tests
             if (colCount > 1 && rowCount > 1)
             {
 #>
-        [TestMethod]
+        [Fact]
         public void ColumnAccessorAreCorrect()
         {
             <#= structName #> value;
@@ -186,14 +185,14 @@ namespace System.Numerics.Matrices.Tests
             Matrix1x<#= rowCount #> column<#= col #> = value.Column<#= col #>;
             for (int y = 0; y < value.Rows; y++)
             {
-                Assert.AreEqual(value[<#= col - 1 #>, y], column<#= col #>[0, y]);
+                Assert.Equal(value[<#= col - 1 #>, y], column<#= col #>[0, y]);
             }
 <#
                 }
 #>
         }
 
-        [TestMethod]
+        [Fact]
         public void RowAccessorAreCorrect()
         {
             <#= structName #> value;
@@ -207,7 +206,7 @@ namespace System.Numerics.Matrices.Tests
             Matrix<#= colCount #>x1 row<#= row #> = value.Row<#= row #>;
             for (int x = 0; x < value.Columns; x++)
             {
-                Assert.AreEqual(value[x, <#= row - 1 #>], row<#= row #>[x, 0]);
+                Assert.Equal(value[x, <#= row - 1 #>], row<#= row #>[x, 0]);
             }
 <#
                 }
@@ -217,7 +216,7 @@ namespace System.Numerics.Matrices.Tests
 <#
             }
 #>
-        [TestMethod]
+        [Fact]
         public void HashCodeGenerationWorksCorrectly()
         {
             HashSet<int> hashCodes = new HashSet<int>();
@@ -225,16 +224,13 @@ namespace System.Numerics.Matrices.Tests
 
             for (int i = 2; i <= 100; i++)
             {
-                if (!hashCodes.Add(value.GetHashCode()))
-                {
-                    Assert.Fail("Unique hash code generation failure.");
-                }
+                Assert.True(hashCodes.Add(value.GetHashCode()), "Unique hash code generation failure.");
 
                 value *= i;
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void SimpleAdditionGeneratesCorrectValues()
         {
             <#= structName #> value1 = new <#= structName #>(1);
@@ -245,12 +241,12 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int x = 0; x < <#= structName #>.ColumnCount; x++)
                 {
-                    Assert.AreEqual(1 + 99, result[x, y], Epsilon);
+                    Assert.Equal(1 + 99, result[x, y], Epsilon);
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void SimpleSubtractionGeneratesCorrectValues()
         {
             <#= structName #> value1 = new <#= structName #>(100);
@@ -261,7 +257,7 @@ namespace System.Numerics.Matrices.Tests
             {
                 for (int x = 0; x < <#= structName #>.ColumnCount; x++)
                 {
-                    Assert.AreEqual(100 - 1, result[x, y], Epsilon);
+                    Assert.Equal(100 - 1, result[x, y], Epsilon);
                 }
             }
         }
@@ -270,65 +266,38 @@ namespace System.Numerics.Matrices.Tests
             if (colCount == rowCount)
             {
 #>
-        [TestMethod]
+        [Fact]
         public void MultiplyByIdentityReturnsEqualValue()
         {
             <#= structName #> value;
             GenerateFilledMatrixWithValues(out value);
             <#= structName #> result = value * <#= structName #>.Identity;
 
-            Assert.AreEqual(value, result);
+            Assert.Equal(value, result);
         }
 
 <#
             }
 #>
-        [TestMethod]
+        [Fact]
         public void EqualityOperatorWorksCorrectly()
         {
             <#= structName #> value1 = new <#= structName #>(100);
             <#= structName #> value2 = new <#= structName #>(50) * 2;
 
-            Assert.AreEqual(value1, value2);
-            Assert.IsTrue(value1 == value2, "Equality operator failed.");
+            Assert.Equal(value1, value2);
+            Assert.True(value1 == value2, "Equality operator failed.");
         }
 
-        [TestMethod]
+        [Fact]
         public void AccessorThrowsWhenOutOfBounds()
         {
             <#= structName #> <#= typeName #> = new <#= structName #>();
 
-            try
-            {
-                <#= typeName #>[-1, 0] = 0;
-                Assert.Fail("<#= structName #>[-1, 0] did not throw when it should have.");
-            }
-            catch (ArgumentOutOfRangeException)
-            { }
-
-            try
-            {
-                <#= typeName #>[0, -1] = 0;
-                Assert.Fail("<#= structName #>[0, -1] did not throw when it should have.");
-            }
-            catch (ArgumentOutOfRangeException)
-            { }
-
-            try
-            {
-                <#= typeName #>[<#= colCount #>, 0] = 0;
-                Assert.Fail("<#= structName #>[<#= colCount #>, 0] did not throw when it should have.");
-            }
-            catch (ArgumentOutOfRangeException)
-            { }
-
-            try
-            {
-                <#= typeName #>[0, <#= rowCount #>] = 0;
-                Assert.Fail("<#= structName #>[0, <#= rowCount #>] did not throw when it should have.");
-            }
-            catch (ArgumentOutOfRangeException)
-            { }
+            Assert.Throws<ArgumentOutOfRangeException>(() => { <#= typeName #>[-1, 0] = 0; });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { <#= typeName #>[0, -1] = 0; });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { <#= typeName #>[<#= colCount #>, 0] = 0; });
+            Assert.Throws<ArgumentOutOfRangeException>(() => { <#= typeName #>[0, <#= rowCount #>] = 0; });
         }
 
 <#
@@ -345,7 +314,7 @@ namespace System.Numerics.Matrices.Tests
                     string mulName = String.Format("Matrix{0}x{1}", srcCols, srcRows);
                     string prodName = String.Format("Matrix{0}x{1}", dstCols, dstRows);
 #>
-        [TestMethod]
+        [Fact]
         public void MuliplyBy<#= mulName #>Produces<#= prodName #>()
         {
             <#= structName #> matrix1 = new <#= structName #>(3);
@@ -375,7 +344,7 @@ namespace System.Numerics.Matrices.Tests
 
             #>);
 
-            Assert.AreEqual(expected, result);
+            Assert.Equal(expected, result);
         }
 <#
                 }
