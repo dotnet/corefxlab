@@ -47,10 +47,6 @@ namespace System.Drawing.Graphics
                 {
                     return ((DLLImports.gdImageStruct*)gdImageStructPtr)->trueColor == 1;
                 }
-<<<<<<< HEAD
-=======
-                //DLLImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<DLLImports.gdImageStruct>(gdImageStructPtr);
-                //return (gdImageStruct.trueColor == 1);
             }
         }
 
@@ -77,7 +73,6 @@ namespace System.Drawing.Graphics
             {
                 string rsc = SR.Format(SR.CreateInvalidParameters, width, height);
                 throw new InvalidOperationException(rsc);
->>>>>>> upstream/master
             }
         }
 
@@ -88,8 +83,6 @@ namespace System.Drawing.Graphics
             DLLImports.gdImageDestroy(gdImageStructPtr);
         }
 
-<<<<<<< HEAD
-=======
         public bool TrueColor
         {
             get
@@ -98,8 +91,6 @@ namespace System.Drawing.Graphics
                 {
                     return ((DLLImports.gdImageStruct*)gdImageStructPtr)->trueColor == 1;
                 }
-                //LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(gdImageStructPtr);
-                //return (gdImageStruct.trueColor == 1);
             }
         }
 
@@ -108,7 +99,6 @@ namespace System.Drawing.Graphics
             LibGDLinuxImports.gdImageDestroy(gdImageStructPtr);
         }
         
->>>>>>> upstream/master
         /* Factory Methods */
         public static Image Create(int width, int height)
         {

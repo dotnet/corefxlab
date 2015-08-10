@@ -61,17 +61,9 @@ namespace System.Drawing.Graphics
                     pNativeImage = DLLImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
                     DLLImports.gdImageStruct* pStruct = (DLLImports.gdImageStruct*)pNativeImage;
                     Image toRet = Image.Create(pStruct->sx, pStruct->sx);
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    toRet.gdImageStructPtr = pNativeImage;
-=======
+
                     DLLImports.gdImageDestroy(toRet.gdImageStructPtr);
                     toRet.gdImageStructPtr = pNativeImage;                 
->>>>>>> upstream/master
-=======
-                    DLLImports.gdImageDestroy(toRet.gdImageStructPtr);
-                    toRet.gdImageStructPtr = pNativeImage;                 
->>>>>>> upstream/master
                     return toRet;
                 }
             }
@@ -95,58 +87,4 @@ namespace System.Drawing.Graphics
 }
 
 
-<<<<<<< HEAD
-=======
-            if (!LibGDLinuxImports.gdSupportsFileType(filePath, true))
-            {
-                throw new InvalidOperationException(SR.Format(SR.FileTypeNotSupported, filePath));
-            }
-            else
-            {
-                if (!LibGDLinuxImports.gdImageFile(img.gdImageStructPtr, filePath))
-                {
-                    throw new FileLoadException(SR.Format(SR.WriteToFileFailed, filePath));
-                }
-            }
-        }
-
-
-         public static Image Load(Stream stream)
-        {
-            if (stream != null)
-            {
-                unsafe
-                {
-                    IntPtr pNativeImage = IntPtr.Zero;
-                    var wrapper = new gdStreamWrapper(stream);
-                    pNativeImage = LibGDLinuxImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
-                    LibGDLinuxImports.gdImageStruct* pStruct = (LibGDLinuxImports.gdImageStruct*)pNativeImage;
-                    Image toRet = Image.Create(pStruct->sx, pStruct->sx);
-                    LibGDLinuxImports.gdImageDestroy(toRet.gdImageStructPtr);
-                    toRet.gdImageStructPtr = pNativeImage;                 
-                    return toRet;
-                }
-            }
-            else
-            {
-                throw new InvalidOperationException(SR.NullStreamReferenced);
-            }
-
-        }
-
-        public static void WriteToStream(Image bmp, Stream stream)
-        {
-            LibGDLinuxImports.gdImageSaveAlpha(bmp.gdImageStructPtr, 1);
-
-            LibGDLinuxImports.gdImageStruct gdImageStruct = Marshal.PtrToStructure<LibGDLinuxImports.gdImageStruct>(bmp.gdImageStructPtr);
-            var wrapper = new gdStreamWrapper(stream);
-            LibGDLinuxImports.gdImageJpegCtx(ref gdImageStruct, ref wrapper.IOCallbacks);
-        }
-
-
-
-
-    }
-}
->>>>>>> upstream/master
 

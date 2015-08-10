@@ -150,20 +150,9 @@ namespace System.Drawing.Graphics
         [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         public static extern void gdImageDestroy(IntPtr im);
 
-<<<<<<< HEAD
         [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         public static extern int gdAlphaBlend(int src, int dst);
-=======
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        public static extern void gdImageDestroy(IntPtr im);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        public static extern void gdImageDestroy(IntPtr im);
-
-        //I WROTE THESE
-        [DllImport("libgdedit.dll", EntryPoint = "gdImageCopyMergeWithAlpha")]
-        public static extern void gdImageCopyMergeWithAlpha(IntPtr destination, IntPtr source, int xOffset, int yOffset);
->>>>>>> upstream/master
 
 
         /// Return Type: int 
