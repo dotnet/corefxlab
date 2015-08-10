@@ -27,6 +27,9 @@
 <<<<<<< HEAD
 =======
     <Compile Include="System\Drawing\Graphics\LibGDLinuxImports.cs" />
+<<<<<<< HEAD
+>>>>>>> upstream/master
+=======
 >>>>>>> upstream/master
     <Compile Include="System\Drawing\Graphics\Png.cs" />
   </ItemGroup>

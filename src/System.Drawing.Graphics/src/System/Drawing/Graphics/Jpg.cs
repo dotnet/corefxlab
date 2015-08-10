@@ -62,7 +62,12 @@ namespace System.Drawing.Graphics
                     DLLImports.gdImageStruct* pStruct = (DLLImports.gdImageStruct*)pNativeImage;
                     Image toRet = Image.Create(pStruct->sx, pStruct->sx);
 <<<<<<< HEAD
+<<<<<<< HEAD
                     toRet.gdImageStructPtr = pNativeImage;
+=======
+                    DLLImports.gdImageDestroy(toRet.gdImageStructPtr);
+                    toRet.gdImageStructPtr = pNativeImage;                 
+>>>>>>> upstream/master
 =======
                     DLLImports.gdImageDestroy(toRet.gdImageStructPtr);
                     toRet.gdImageStructPtr = pNativeImage;                 

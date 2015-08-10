@@ -83,8 +83,11 @@ namespace System.Drawing.Graphics
             public int paletteQuantizationMinQuality;
             public int paletteQuantizationMaxQuality;
 <<<<<<< HEAD
+<<<<<<< HEAD
             //gdInterpolationMethod interpolation_id;
             //interpolation_method interpolation;
+=======
+>>>>>>> upstream/master
 =======
 >>>>>>> upstream/master
         }
@@ -151,10 +154,13 @@ namespace System.Drawing.Graphics
         public static extern void gdImageDestroy(IntPtr im);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         [DllImport("libgd.so.3.0.0", CharSet = CharSet.Unicode)]
         public static extern int gdAlphaBlend(int src, int dst);
 
 
+=======
+>>>>>>> upstream/master
 =======
 >>>>>>> upstream/master
 
