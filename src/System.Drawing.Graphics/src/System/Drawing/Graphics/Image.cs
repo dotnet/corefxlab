@@ -50,53 +50,10 @@ namespace System.Drawing.Graphics
             }
         }
 
-        public void ReleaseStruct()
-        {
-            DLLImports.gdImageDestroy(gdImageStructPtr);
-        }
-        
-        /* Factory Methods */
-        public static Image Create(int width, int height)
-        {
-            return new Image(width, height);
-        }
-
-        /* constructors */
-        private Image(int width, int height)
-        {
-            if (width > 0 && height > 0)
-            {
-                gdImageStructPtr = DLLImports.gdImageCreateTrueColor(width, height);
-
-            }
-            else
-            {
-                string rsc = SR.Format(SR.CreateInvalidParameters, width, height);
-                throw new InvalidOperationException(rsc);
-            }
-        }
-
         /* Release */
-
         public void ReleaseStruct()
         {
             DLLImports.gdImageDestroy(gdImageStructPtr);
-        }
-
-        public bool TrueColor
-        {
-            get
-            {
-                unsafe
-                {
-                    return ((DLLImports.gdImageStruct*)gdImageStructPtr)->trueColor == 1;
-                }
-            }
-        }
-
-        public void ReleaseStruct()
-        {
-            LibGDLinuxImports.gdImageDestroy(gdImageStructPtr);
         }
         
         /* Factory Methods */

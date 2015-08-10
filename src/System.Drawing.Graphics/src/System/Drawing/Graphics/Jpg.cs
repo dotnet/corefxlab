@@ -61,7 +61,6 @@ namespace System.Drawing.Graphics
                     pNativeImage = DLLImports.gdImageCreateFromJpegCtx(ref wrapper.IOCallbacks);
                     DLLImports.gdImageStruct* pStruct = (DLLImports.gdImageStruct*)pNativeImage;
                     Image toRet = Image.Create(pStruct->sx, pStruct->sx);
-
                     DLLImports.gdImageDestroy(toRet.gdImageStructPtr);
                     toRet.gdImageStructPtr = pNativeImage;                 
                     return toRet;
