@@ -64,9 +64,9 @@ namespace System.Numerics.Matrices
             get
             {
                 if (col < 0 || col >= ColumnCount)
-                    throw new ArgumentOutOfRangeException(nameof(col), $"Expected greater than or equal to 0 and less than {ColumnCount}, found {col}.");
+                    throw new ArgumentOutOfRangeException("col", String.Format("Expected greater than or equal to 0 and less than {0}, found {1}.", ColumnCount, col));
                 if (row < 0 || row >= RowCount)
-                    throw new ArgumentOutOfRangeException(nameof(row), $"Expected greater than or equal to 0 and less than {RowCount}, found {row}.");
+                    throw new ArgumentOutOfRangeException("row", String.Format("Expected greater than or equal to 0 and less than {0}, found {1}.", RowCount, row));
 
                 fixed (Matrix1x3* p = &this)
                 {
@@ -77,9 +77,9 @@ namespace System.Numerics.Matrices
             set
             {
                 if (col < 0 || col >= ColumnCount)
-                    throw new ArgumentOutOfRangeException(nameof(col), $"Expected greater than or equal to 0 and less than {ColumnCount}, found {col}.");
+                    throw new ArgumentOutOfRangeException("col", String.Format("Expected greater than or equal to 0 and less than {0}, found {1}.", ColumnCount, col));
                 if (row < 0 || row >= RowCount)
-                    throw new ArgumentOutOfRangeException(nameof(row), $"Expected greater than or equal to 0 and less than {RowCount}, found {row}.");
+                    throw new ArgumentOutOfRangeException("row", String.Format("Expected greater than or equal to 0 and less than {0}, found {1}.", RowCount, row));
 
                 fixed (Matrix1x3* p = &this)
                 {
@@ -130,9 +130,9 @@ namespace System.Numerics.Matrices
         public override string ToString()
         {
             return "Matrix1x3: "
-                 + $"{{|{M11:00}|}}"
-                 + $"{{|{M12:00}|}}"
-                 + $"{{|{M13:00}|}}"; 
+                 + String.Format("{{|{0:00}|}}", M11)
+                 + String.Format("{{|{0:00}|}}", M12)
+                 + String.Format("{{|{0:00}|}}", M13); 
         }
 
         /// <summary>

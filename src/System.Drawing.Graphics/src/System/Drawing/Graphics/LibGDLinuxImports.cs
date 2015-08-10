@@ -82,8 +82,11 @@ namespace System.Drawing.Graphics
             public int paletteQuantizationSpeed;
             public int paletteQuantizationMinQuality;
             public int paletteQuantizationMaxQuality;
+<<<<<<< HEAD
             //gdInterpolationMethod interpolation_id;
             //interpolation_method interpolation;
+=======
+>>>>>>> upstream/master
         }
 
         [DllImport("libgd.so.3.0.0", CharSet = CharSet.Ansi)]
@@ -147,10 +150,13 @@ namespace System.Drawing.Graphics
         [DllImport("libgd.so.3.0.0", CharSet = CharSet.Unicode)]
         public static extern void gdImageDestroy(IntPtr im);
 
+<<<<<<< HEAD
         [DllImport("libgd.so.3.0.0", CharSet = CharSet.Unicode)]
         public static extern int gdAlphaBlend(int src, int dst);
 
 
+=======
+>>>>>>> upstream/master
 
         /// Return Type: int 
         ///param0: gdIOCtx* 

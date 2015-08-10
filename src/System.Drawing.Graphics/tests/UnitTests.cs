@@ -24,10 +24,10 @@ public partial class GraphicsUnitTests
     public static void RunAllTests()
     {
         int _trialsToRun = 1;
-        for(int trialsRun = 0; trialsRun < _trialsToRun; trialsRun++)
+        for (int trialsRun = 0; trialsRun < _trialsToRun; trialsRun++)
         {
             string filename = "Trial" + (trialsRun + 1) + "Results.txt";
-            FileStream fstream = new FileStream(Interop.PerformanceTestsResultsDirectory + filename , FileMode.Open);
+            FileStream fstream = new FileStream(Interop.PerformanceTestsResultsDirectory + filename, FileMode.Open);
             streamwriter = new StreamWriter(fstream);
             runTests(1);
             runTests(10);
@@ -259,7 +259,7 @@ public partial class GraphicsUnitTests
         {
             //make sure it's going
             if (i % 100 == 0)
-                 Console.WriteLine(i);
+                Console.WriteLine(i);
 
             sw.Start();
             pngcat.SetAlphaPercentage(0.5);
@@ -901,6 +901,7 @@ public partial class GraphicsUnitTests
         Png.WriteToFile(yellowCat, @"/home/ddcloud/Documents/DrawAndTransparencyTest.png");
     }
 }
+
 
 
 
