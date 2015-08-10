@@ -86,79 +86,74 @@ namespace System.Drawing.Graphics
             //interpolation_method interpolation;
         }
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Ansi)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Ansi)]
         internal static extern bool gdSupportsFileType(string filename, bool writing);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern IntPtr gdImageCreate(int sx, int sy);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern IntPtr gdImageCreateTrueColor(int sx, int sy);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode, EntryPoint = "_gdImageColorAllocate@16")]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode, EntryPoint = Interop.LibGDColorAllocateEntryPoint)]
         internal static extern int gdImageColorAllocate(int r, int b, int g);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Ansi)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Ansi)]
         internal static extern IntPtr gdImageCreateFromFile(string filename);
 
 
         //had to use mangled name here
-        [DllImport("libgdx86.dll", CharSet = CharSet.Ansi, EntryPoint = "_gdImageFile@8")]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Ansi, EntryPoint = Interop.LibGDImageFileEntryPoint)]
         internal static extern bool gdImageFile(IntPtr image, string filename);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern void gdImageCopyResized(IntPtr destination, IntPtr source, int destinationX, int destinationY,
                                         int sourceX, int sourceY, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern void gdImageCopyMerge(IntPtr destination, IntPtr source, int dstX, int dstY, int srcX, int srcY, int w, int h, int pct);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern void gdImageColorTransparent(IntPtr im, int color);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern void gdImageSaveAlpha(IntPtr im, int flag);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern void gdImageAlphaBlending(IntPtr im, int flag);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern int gdImageGetPixel(IntPtr im, int x, int y);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern int gdImageGetTrueColorPixel(IntPtr im, int x, int y);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern void gdImageSetPixel(IntPtr im, int x, int y, int color);
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         internal static extern int gdImagePaletteToTrueColor(IntPtr src);
 
-        [DllImport("libgdx86.dll", EntryPoint = "_gdImageCreateFromPngCtx@4")] 
+        [DllImport(Interop.LibGDBinary, EntryPoint = Interop.LibGDImageCreateFromPngCtxEntryPoint)] 
         public static extern IntPtr gdImageCreateFromPngCtx(ref gdIOCtx @in);
 
-        [DllImport("libgdx86.dll", EntryPoint = "_gdImagePngCtx@8")] 
+        [DllImport(Interop.LibGDBinary, EntryPoint = Interop.LibGDImagePngCtxEntryPoint)] 
         public static extern void gdImagePngCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
-        [DllImport("libgdx86.dll", EntryPoint = "_gdImageCreateFromJpegCtx@4")]
+        [DllImport(Interop.LibGDBinary, EntryPoint = Interop.LibGDImageCreateFromJpegCtxEntryPoint)]
         public static extern IntPtr gdImageCreateFromJpegCtx(ref gdIOCtx @in);
 
-        [DllImport("libgdx86.dll", EntryPoint = "_gdImageJpegCtx@12")]
+        [DllImport(Interop.LibGDBinary, EntryPoint = Interop.LibGDImageJpegCtxEntryPoint)]
         public static extern void gdImageJpegCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
 
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
-        public static extern int gdAlphaBlend(int src, int dst);
-
-        [DllImport("libgdx86.dll", CharSet = CharSet.Unicode)]
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
         public static extern void gdImageDestroy(IntPtr im);
 
-        //I WROTE THESE
-        [DllImport("libgdedit.dll", EntryPoint = "gdImageCopyMergeWithAlpha")]
-        public static extern void gdImageCopyMergeWithAlpha(IntPtr destination, IntPtr source, int xOffset, int yOffset);
+        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        public static extern int gdAlphaBlend(int src, int dst);
 
-        [DllImport("libgdedit.dll", CharSet = CharSet.Unicode)]
-        public static extern void gdImageScaleAlphaValueTrueColor(IntPtr src, double opacityMultiplier);
+
 
         /// Return Type: int 
         ///param0: gdIOCtx* 
