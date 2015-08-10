@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved. 
+﻿// Copyright (c) Microsoft. All rights reserved. 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
 
@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Drawing.Graphics
 {
-    internal class DLLImports
+    internal class LibGDOSXImportsImports
     {
         const int gdMaxColors = 256;
 
@@ -82,148 +82,142 @@ namespace System.Drawing.Graphics
             public int paletteQuantizationSpeed;
             public int paletteQuantizationMinQuality;
             public int paletteQuantizationMaxQuality;
-            //gdInterpolationMethod interpolation_id;
-            //interpolation_method interpolation;
+            gdInterpolationMethod interpolation_id;
+            interpolation_method interpolation;
         }
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Ansi)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Ansi)]
         internal static extern bool gdSupportsFileType(string filename, bool writing);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern IntPtr gdImageCreate(int sx, int sy);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern IntPtr gdImageCreateTrueColor(int sx, int sy);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode, EntryPoint = Interop.LibGDColorAllocateEntryPoint)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode, EntryPoint = "_gdImageColorAllocate@16")]
         internal static extern int gdImageColorAllocate(int r, int b, int g);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Ansi)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Ansi)]
         internal static extern IntPtr gdImageCreateFromFile(string filename);
 
 
         //had to use mangled name here
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Ansi, EntryPoint = Interop.LibGDImageFileEntryPoint)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Ansi, EntryPoint = "_gdImageFile@8")]
         internal static extern bool gdImageFile(IntPtr image, string filename);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern void gdImageCopyResized(IntPtr destination, IntPtr source, int destinationX, int destinationY,
                                         int sourceX, int sourceY, int destinationWidth, int destinationHeight, int sourceWidth, int sourceHeight);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern void gdImageCopyMerge(IntPtr destination, IntPtr source, int dstX, int dstY, int srcX, int srcY, int w, int h, int pct);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern void gdImageColorTransparent(IntPtr im, int color);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern void gdImageSaveAlpha(IntPtr im, int flag);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern void gdImageAlphaBlending(IntPtr im, int flag);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern int gdImageGetPixel(IntPtr im, int x, int y);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern int gdImageGetTrueColorPixel(IntPtr im, int x, int y);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern void gdImageSetPixel(IntPtr im, int x, int y, int color);
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
+        [DllImport("OSX.Imports", CharSet = CharSet.Unicode)]
         internal static extern int gdImagePaletteToTrueColor(IntPtr src);
 
-        [DllImport(Interop.LibGDBinary, EntryPoint = Interop.LibGDImageCreateFromPngCtxEntryPoint)] 
+        [DllImport("OSX.Imports", EntryPoint = "_gdImageCreateFromPngCtx@4")]
         public static extern IntPtr gdImageCreateFromPngCtx(ref gdIOCtx @in);
 
-        [DllImport(Interop.LibGDBinary, EntryPoint = Interop.LibGDImagePngCtxEntryPoint)] 
+        [DllImport("OSX.Imports", EntryPoint = "_gdImagePngCtx@8")]
         public static extern void gdImagePngCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
-        [DllImport(Interop.LibGDBinary, EntryPoint = Interop.LibGDImageCreateFromJpegCtxEntryPoint)]
+        [DllImport("OSX.Imports", EntryPoint = "_gdImageCreateFromJpegCtx@4")]
         public static extern IntPtr gdImageCreateFromJpegCtx(ref gdIOCtx @in);
 
-        [DllImport(Interop.LibGDBinary, EntryPoint = Interop.LibGDImageJpegCtxEntryPoint)]
+        [DllImport("OSX.Imports", EntryPoint = "_gdImageJpegCtx@12")]
         public static extern void gdImageJpegCtx(ref gdImageStruct im, ref gdIOCtx @out);
 
 
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
-        public static extern void gdImageDestroy(IntPtr im);
-
-        [DllImport(Interop.LibGDBinary, CharSet = CharSet.Unicode)]
-        public static extern int gdAlphaBlend(int src, int dst);
-
 
         /// Return Type: int 
         ///param0: gdIOCtx* 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
-        public delegate int gdIOCtx_getC(IntPtr ctx); 
- 
- 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int gdIOCtx_getC(IntPtr ctx);
+
+
         /// Return Type: int 
         ///param0: gdIOCtx* 
         ///param1: void* 
         ///param2: int 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
-        public delegate int gdIOCtx_getBuf(IntPtr ctx, System.IntPtr buf, int wanted); 
- 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int gdIOCtx_getBuf(IntPtr ctx, System.IntPtr buf, int wanted);
+
         /// Return Type: void 
         ///param0: gdIOCtx* 
         ///param1: int 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
-        public delegate void gdIOCtx_putC(IntPtr ctx, int ch); 
- 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void gdIOCtx_putC(IntPtr ctx, int ch);
+
         /// Return Type: int 
         ///param0: gdIOCtx* 
         ///param1: void* 
         ///param2: int 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
-        public delegate int gdIOCtx_putBuf(IntPtr ctx, System.IntPtr buf, int wanted); 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int gdIOCtx_putBuf(IntPtr ctx, System.IntPtr buf, int wanted);
 
         /// Return Type: int 
         ///param0: gdIOCtx* 
         ///param1: int 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
-        public delegate int gdIOCtx_seek(IntPtr ctx, int pos); 
- 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int gdIOCtx_seek(IntPtr ctx, int pos);
+
         /// Return Type: int 
         ///param0: gdIOCtx* 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
-        public delegate int gdIOCtx_tell(IntPtr ctx); 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int gdIOCtx_tell(IntPtr ctx);
 
         /// Return Type: void 
         ///param0: gdIOCtx* 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void gdIOCtx_gd_free(IntPtr param0);
 
 
-        [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)] 
+        [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
         public struct gdIOCtx
-        { 
-      
+        {
+
             /// gdIOCtx_getC 
-            public gdIOCtx_getC getC; 
-      
+            public gdIOCtx_getC getC;
+
             /// gdIOCtx_getBuf 
-            public gdIOCtx_getBuf getBuf; 
-      
+            public gdIOCtx_getBuf getBuf;
+
             /// gdIOCtx_putC 
-            public gdIOCtx_putC putC; 
-      
+            public gdIOCtx_putC putC;
+
             /// gdIOCtx_putBuf 
-            public gdIOCtx_putBuf putBuf; 
-      
+            public gdIOCtx_putBuf putBuf;
+
             /// gdIOCtx_seek 
-            public gdIOCtx_seek seek; 
-      
+            public gdIOCtx_seek seek;
+
             /// gdIOCtx_tell 
-            public gdIOCtx_tell tell; 
-      
+            public gdIOCtx_tell tell;
+
             /// gdIOCtx_gd_free 
-            public gdIOCtx_gd_free gd_free; 
-      
+            public gdIOCtx_gd_free gd_free;
+
             /// void* 
-            public System.IntPtr data; 
+            public System.IntPtr data;
         }
 
 
