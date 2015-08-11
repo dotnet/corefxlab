@@ -45,7 +45,7 @@ public partial class GraphicsUnitTests
 
     public static void runTests(int numRuns)
     {
-        //
+
         WriteTestHeader(numRuns);
         //LoadFileJpg
         WriteCurrentTest("LoadFileJpeg", numRuns);
