@@ -45,7 +45,7 @@ public partial class GraphicsUnitTests
 
     public static void runTests(int numRuns)
     {
-        //
+
         WriteTestHeader(numRuns);
         //LoadFileJpg
         WriteCurrentTest("LoadFileJpeg", numRuns);
@@ -354,7 +354,7 @@ public partial class GraphicsUnitTests
                 Image img = Jpg.Load(filestream);
                 sw.Stop();
                 img.ReleaseStruct();
-                filestream.Dispose();
+                //filestream.Dispose();
             }
 
         }
@@ -374,7 +374,7 @@ public partial class GraphicsUnitTests
                 Image img = Png.Load(filestream);
                 sw.Stop();
                 img.ReleaseStruct();
-                filestream.Dispose();
+                //filestream.Dispose();
             }
         }
     }
