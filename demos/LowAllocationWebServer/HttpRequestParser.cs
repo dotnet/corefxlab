@@ -136,7 +136,7 @@ namespace System.Net.Http.Buffered
             {
                 return HttpVersion.V2_0;
             }
-            else if (version.Equals(s_Http2_0))
+            else if (version.Equals(s_Http1_0))
             {
                 return HttpVersion.V1_0;
             }
