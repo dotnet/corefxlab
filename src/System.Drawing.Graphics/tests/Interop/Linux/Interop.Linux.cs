@@ -7,10 +7,10 @@ internal static partial class Interop
     internal const string FunctionalityTestJpegSoccerCatFilePath = "";
     internal const string FunctionalityTestPngBlackCatFilePath = "";
     internal const string FunctionalityTestPngCuteCatFilePath = "";
-    internal const string PerformanceTestJpegCat = @"/home/ddcloud/Pictures/PerfTestImages/jpgcat.jpg";
-    internal const string PerformanceTestJpegDog = @"/home/ddcloud/Pictures/PerfTestImages/jpgdog.jpg";
-    internal const string PerformanceTestPngCat = @"/home/ddcloud/Pictures/PerfTestImages/pngcat.png";
-    internal const string PerformanceTestPngDog = @"/home/ddcloud/Pictures/PerfTestImages/pngdog.png";
+    internal const string PerformanceTestJpegCat = @"/home/ubuntu/Pictures/PerfTestImages/jpgcat.jpg";
+    internal const string PerformanceTestJpegDog = @"/home/ubuntu/Pictures/PerfTestImages/jpgdog.jpg";
+    internal const string PerformanceTestPngCat = @"/home/ubuntu/Pictures/PerfTestImages/pngcat.png";
+    internal const string PerformanceTestPngDog = @"/home/ubuntu/Pictures/PerfTestImages/pngdog.png";
 
-    internal const string PerformanceTestsResultsDirectory = @"/home/ddcloud/Pictures/PerfTestResults/";
+    internal const string PerformanceTestsResultsDirectory = @"/home/ubuntu/Pictures/PerfTestResults/";
 }
