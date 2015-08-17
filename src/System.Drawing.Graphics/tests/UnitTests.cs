@@ -7,110 +7,102 @@ using System.Drawing.Graphics;
 using System.IO;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading.Tasks;
 
 public partial class GraphicsUnitTests
 {
     /* Performance Tests */
     static StreamWriter streamwriter;
-    static Stopwatch sw = new Stopwatch();
-    static TimeSpan elapsedTime;
-    static Image jpgcat;
-    static Image pngcat;
-    static Image jpgdog;
-    static Image pngdog;
+    static Stopwatch stopwatchSingleThread = new Stopwatch();
+    static Stopwatch stopwatchMultiThread = new Stopwatch();
+    //static double elapsedTime;
+    //static Image jpgcat;
+    //static Image pngcat;
+    //static Image jpgdog;
+    //static Image pngdog;
 
-
-    [Fact]
+    [Fact(Skip ="Until filepath issue is resolved")]
     public static void RunAllTests()
     {
-        int _trialsToRun = 1;
-        for (int trialsRun = 0; trialsRun < _trialsToRun; trialsRun++)
-        {
-            string filename = "Trial" + (trialsRun + 1) + "Results.txt";
+            string filename = "Trial1Results.txt";
             FileStream fstream = new FileStream(Interop.PerformanceTestsResultsDirectory + filename, FileMode.Open);
             streamwriter = new StreamWriter(fstream);
             runTests(1);
             runTests(10);
-            runTests(100);
             runTests(1000);
             runTests(5000);
-            runTests(10000);
-            streamwriter.Dispose();
+        streamwriter.Dispose();
             fstream.Dispose();
-        }
-
-
-
     }
 
     public static void runTests(int numRuns)
     {
-
         WriteTestHeader(numRuns);
         //LoadFileJpg
         WriteCurrentTest("LoadFileJpeg", numRuns);
         LoadFileJpegPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "LoadFileJpeg");
         //LoadFilePng
         WriteCurrentTest("LoadFilePng", numRuns);
         LoadFilePngPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "LoadFilePng");
         //WriteFileJpg
         WriteCurrentTest("WriteFileJpeg", numRuns);
         WriteFileJpegPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "WriteFileJpeg");
         //WriteFilePng
-        WriteCurrentTest("LoadFilePng", numRuns);
+        WriteCurrentTest("WriteFilePng", numRuns);
         WriteFilePngPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "WriteFilePng");
         //ResizeJpg            
         WriteCurrentTest("ResizeJpeg", numRuns);
         ResizeJpegPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "ResizeJpeg");
         //resize png
         WriteCurrentTest("ResizePng", numRuns);
         ResizePngPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "ResizePng");
         //ChangeAlphaJpg
         WriteCurrentTest("ChangeAlphaJpeg", numRuns);
         ChangeAlphaJpegPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "ChangeAlphaJpeg");
         //ChangeAlphaPng
         WriteCurrentTest("ChangeAlphaPng", numRuns);
         ChangeAlphaPngPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "ChangeAlphaPng");
         //DrawJpgOverJpg       
         WriteCurrentTest("DrawJpegOverJpeg", numRuns);
         DrawJpegOverJpegPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "DrawJpegOverJpeg");
         //DrawPngOverPng
         WriteCurrentTest("DrawPngOverPng", numRuns);
         DrawPngOverPngPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "DrawPngOverPng");
         //DrawJpgOverPng
         WriteCurrentTest("DrawJpegOverPng", numRuns);
         DrawJpegOverPngPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "DrawJpegOverPng");
         //DrawPngOverJpg
         WriteCurrentTest("DrawPngOverJpeg", numRuns);
         DrawPngOverJpegPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "DrawPngOverJpeg");
         //LoadStreamJpg
         WriteCurrentTest("LoadStreamJpeg", numRuns);
         LoadStreamJpegPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "LoadStreamJpeg");
         //LoadStreamPng
         WriteCurrentTest("LoadStreamPng", numRuns);
         LoadStreamPngPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "LoadStreamPng");
         //WriteStreamJpg
         WriteCurrentTest("WriteStreamJpeg", numRuns);
         WriteStreamJpegPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "WriteStreamJpeg");
         //WriteStreamPng
         WriteCurrentTest("WriteStreamPng", numRuns);
         WriteStreamPngPerfTest(numRuns);
-        WriteStopWatch();
+        WriteStopWatch(stopwatchSingleThread, "WriteStreamPng");
+
 
     }
     private static void WriteTestHeader(int numRuns)
@@ -126,17 +118,126 @@ public partial class GraphicsUnitTests
     private static void WriteCurrentTest(string currentTest, int numRuns)
     {
         Console.WriteLine(currentTest + "{0}", numRuns);
-        streamwriter.WriteLine("LoadFilePng{0}", numRuns);
+        streamwriter.WriteLine(currentTest + "{0}", numRuns);
     }
 
-    private static void WriteStopWatch()
+    private static void WriteStopWatch(Stopwatch sw, string currentTest)
     {
-        elapsedTime = sw.Elapsed;
-        Console.WriteLine(elapsedTime);
+        TimeSpan elapsedSecs = (sw.Elapsed);
+        Console.WriteLine(elapsedSecs);
         Console.WriteLine("");
-        streamwriter.WriteLine(elapsedTime);
+        streamwriter.WriteLine("Elapsed time for " + currentTest + ": " + elapsedSecs);
         streamwriter.WriteLine("");
         sw.Reset();
+    }
+    [Fact(Skip = "Until filepath issue is resolved")]
+    public static void SetUpAllPerfTestsWithThreads()
+    {
+        int numOfTasks = 4;
+        FileStream fstream = new FileStream(Interop.PerformanceTestsResultsDirectory + "Trial2Results.txt", FileMode.Open);
+        streamwriter = new StreamWriter(fstream);
+        WriteTestHeader(1);
+        RunAllPerfTestsWithThreads(numOfTasks, 1);
+        WriteTestHeader(10);
+        RunAllPerfTestsWithThreads(numOfTasks, 10);
+        WriteTestHeader(100);
+        RunAllPerfTestsWithThreads(numOfTasks, 100);
+        WriteTestHeader(1000);
+        RunAllPerfTestsWithThreads(numOfTasks, 1000);
+        WriteTestHeader(5000);
+        RunAllPerfTestsWithThreads(numOfTasks, 5000);
+
+
+        streamwriter.Dispose();
+        fstream.Dispose();
+
+    }
+
+    private static void RunAllPerfTestsWithThreads(int numOfTasks, int numRuns)
+    {
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadFileJpegPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadFilePngPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteFileJpegPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteFilePngPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "ResizeJpegPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "ResizePngPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "ChangeAlphaJpegPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "ChangeAlphaPngPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "DrawJpegOverJpegPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "DrawPngOverPngPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "DrawJpegOverPngPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "DrawPngOverJpegPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadStreamJpegPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadStreamPngPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteStreamJpegPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteStreamPngPerfTest");
+    }
+
+    private static void RunOneFuntionWithMultipleTasks(int numOfTasks, int numRuns, string functionToRun)
+    {
+        WriteCurrentTest(functionToRun, numRuns);
+        Task[] tasks = new Task[numOfTasks];
+        stopwatchMultiThread.Start();
+        for (int i = 0; i < numOfTasks; i++)
+        {
+            switch (functionToRun)
+            {
+                case "LoadFileJpegPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => LoadFileJpegPerfTest(numRuns / numOfTasks));
+                    break;
+                case "LoadFilePngPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => LoadFilePngPerfTest(numRuns / numOfTasks));
+                    break;
+                case "WriteFileJpegPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => WriteFileJpegPerfTest(numRuns / numOfTasks));
+                    break;
+                case "WriteFilePngPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => WriteFilePngPerfTest(numRuns / numOfTasks));
+                    break;
+                case "ResizeJpegPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => ResizeJpegPerfTest(numRuns / numOfTasks));
+                    break;
+                case "ResizePngPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => ResizePngPerfTest(numRuns / numOfTasks));
+                    break;
+                case "ChangeAlphaJpegPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => ChangeAlphaJpegPerfTest(numRuns / numOfTasks));
+                    break;
+                case "ChangeAlphaPngPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => ChangeAlphaPngPerfTest(numRuns / numOfTasks));
+                    break;
+                case "DrawJpegOverJpegPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => DrawJpegOverJpegPerfTest(numRuns / numOfTasks));
+                    break;
+                case "DrawPngOverPngPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => DrawPngOverPngPerfTest(numRuns / numOfTasks));
+                    break;
+                case "DrawJpegOverPngPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => DrawJpegOverPngPerfTest(numRuns / numOfTasks));
+                    break;
+                case "DrawPngOverJpegPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => DrawPngOverJpegPerfTest(numRuns / numOfTasks));
+                    break;
+                case "LoadStreamJpegPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => LoadStreamJpegPerfTest(numRuns / numOfTasks));
+                    break;
+                case "LoadStreamPngPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => LoadStreamPngPerfTest(numRuns / numOfTasks));
+                    break;
+                case "WriteStreamJpegPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => WriteStreamJpegPerfTest(numRuns / numOfTasks));
+                    break;
+                case "WriteStreamPngPerfTest":
+                    tasks[i] = Task.Factory.StartNew(() => WriteStreamPngPerfTest(numRuns / numOfTasks));
+                    break;
+                default:
+                    throw new NotSupportedException("A task was created but not given a proper task. Check the code/swithc statement.");
+            }
+            //Console.WriteLine("Starting Task {0}...", i);
+        }
+        Task.WaitAll(tasks);
+        stopwatchMultiThread.Stop();
+        WriteStopWatch(stopwatchMultiThread, functionToRun);
     }
 
     private static void LoadFileJpegPerfTest(int numRuns)
@@ -145,11 +246,11 @@ public partial class GraphicsUnitTests
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("LoadFileJpegTest :" + i);
 
-            sw.Start();
+            stopwatchSingleThread.Start();
             Image img = Jpg.Load(Interop.PerformanceTestJpegCat);
-            sw.Stop();
+            stopwatchSingleThread.Stop();
             img.ReleaseStruct();
         }
     }
@@ -161,183 +262,184 @@ public partial class GraphicsUnitTests
             //make sure it's going
             if (i % 100 == 0)
             {
-                Console.WriteLine(i);
+                Console.WriteLine("LoadFilePngTest :" + i);
             }
-            sw.Start();
+            stopwatchSingleThread.Start();
             Image img = Png.Load(Interop.PerformanceTestPngCat);
-            sw.Stop();
+            stopwatchSingleThread.Stop();
             img.ReleaseStruct();
         }
     }
-
+    //FIX Write
     private static void WriteFileJpegPerfTest(int numRuns)
     {
-        jpgdog = Jpg.Load(Interop.PerformanceTestJpegDog);
+        Image _thisjpgdog = Jpg.Load(Interop.PerformanceTestJpegDog);
         for (int i = 0; i < numRuns; i++)
         {
-            //make sure it's going
+            //make sure it's going 
             if (i % 100 == 0)
             {
-                Console.WriteLine(i);
+                Console.WriteLine("WriteFileJpegTest :" + i);
             }
-            sw.Start();
-            Jpg.WriteToFile(jpgdog, Interop.PerformanceTestsResultsDirectory + "jpgdog.jpg");
-            sw.Stop();
+            stopwatchSingleThread.Start();
+            Jpg.WriteToFile(_thisjpgdog, Interop.PerformanceTestsResultsDirectory + "/Dump/jpgdog" + i + ".jpg");
+            stopwatchSingleThread.Stop();
         }
-        jpgdog.ReleaseStruct();
+        _thisjpgdog.ReleaseStruct();
     }
 
+    //fix write
     private static void WriteFilePngPerfTest(int numRuns)
     {
-        pngdog = Png.Load(Interop.PerformanceTestPngCat);
+        Image _thispngdog = Png.Load(Interop.PerformanceTestPngDog);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
-            sw.Start();
-            Png.WriteToFile(pngdog, Interop.PerformanceTestsResultsDirectory + "pngcat.png");
-            sw.Stop();
+                Console.WriteLine("WriteFilePngTest :" + i);
+            stopwatchSingleThread.Start();
+            Png.WriteToFile(_thispngdog, Interop.PerformanceTestsResultsDirectory + "Dump/pngdog" + i + ".png");
+            stopwatchSingleThread.Stop();
         }
-        pngdog.ReleaseStruct();
+        _thispngdog.ReleaseStruct();
     }
 
     private static void ResizeJpegPerfTest(int numRuns)
     {
-        jpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
+        Image _thisjpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("ResizeJpegTest :" + i);
 
-            sw.Start();
-            Image img = jpgcat.Resize(100, 100);
-            sw.Stop();
+            stopwatchSingleThread.Start();
+            Image img = _thisjpgcat.Resize(100, 100);
+            stopwatchSingleThread.Stop();
             img.ReleaseStruct();
         }
-        jpgcat.ReleaseStruct();
+        _thisjpgcat.ReleaseStruct();
     }
 
     private static void ResizePngPerfTest(int numRuns)
     {
-        pngcat = Png.Load(Interop.PerformanceTestPngCat);
+        Image _thispngcat = Png.Load(Interop.PerformanceTestPngCat);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("ResizePngTest :" + i);
 
-            sw.Start();
-            Image img = pngcat.Resize(100, 100);
-            sw.Stop();
+            stopwatchSingleThread.Start();
+            Image img = _thispngcat.Resize(100, 100);
+            stopwatchSingleThread.Stop();
             img.ReleaseStruct();
         }
-        pngcat.ReleaseStruct();
+        _thispngcat.ReleaseStruct();
     }
 
     private static void ChangeAlphaJpegPerfTest(int numRuns)
     {
-        jpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
+        Image _thisjpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("ChangeAlphaJpegTest :" + i);
 
-            sw.Start();
-            jpgcat.SetAlphaPercentage(0.5);
-            sw.Stop();
+            stopwatchSingleThread.Start();
+            _thisjpgcat.SetAlphaPercentage(0.5);
+            stopwatchSingleThread.Stop();
         }
-        jpgcat.ReleaseStruct();
+        _thisjpgcat.ReleaseStruct();
     }
 
     private static void ChangeAlphaPngPerfTest(int numRuns)
     {
-        pngcat = Png.Load(Interop.PerformanceTestPngCat);
+        Image _thispngcat = Png.Load(Interop.PerformanceTestPngCat);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("ChangeAlphaPngTest :" + i);
 
-            sw.Start();
-            pngcat.SetAlphaPercentage(0.5);
-            sw.Stop();
+            stopwatchSingleThread.Start();
+            _thispngcat.SetAlphaPercentage(0.5);
+            stopwatchSingleThread.Stop();
         }
-        pngcat.ReleaseStruct();
+        _thispngcat.ReleaseStruct();
     }
 
     private static void DrawJpegOverJpegPerfTest(int numRuns)
     {
-        jpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
-        jpgdog = Jpg.Load(Interop.PerformanceTestJpegDog);
+        Image _thisjpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
+        Image _thisjpgdog = Jpg.Load(Interop.PerformanceTestJpegDog);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("DrawJpegOverJpegTest :" + i);
 
-            sw.Start();
-            jpgdog.Draw(jpgcat, 10, 10);
-            sw.Stop();
+            stopwatchSingleThread.Start();
+            _thisjpgdog.Draw(_thisjpgcat, 10, 10);
+            stopwatchSingleThread.Stop();
         }
-        jpgcat.ReleaseStruct();
-        jpgdog.ReleaseStruct();
+        _thisjpgcat.ReleaseStruct();
+        _thisjpgdog.ReleaseStruct();
     }
 
     private static void DrawPngOverPngPerfTest(int numRuns)
     {
-        pngcat = Png.Load(Interop.PerformanceTestPngCat);
-        pngdog = Png.Load(Interop.PerformanceTestPngDog);
+        Image _thispngcat = Png.Load(Interop.PerformanceTestPngCat);
+        Image _thispngdog = Png.Load(Interop.PerformanceTestPngDog);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("DrawPngOverPngTest :" + i);
 
-            sw.Start();
-            pngdog.Draw(pngcat, 10, 10);
-            sw.Stop();
+            stopwatchSingleThread.Start();
+            _thispngdog.Draw(_thispngcat, 10, 10);
+            stopwatchSingleThread.Stop();
         }
-        pngcat.ReleaseStruct();
-        pngdog.ReleaseStruct();
+        _thispngcat.ReleaseStruct();
+        _thispngdog.ReleaseStruct();
     }
 
     private static void DrawJpegOverPngPerfTest(int numRuns)
     {
-        jpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
-        pngdog = Png.Load(Interop.PerformanceTestPngDog);
+        Image _thisjpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
+        Image _thispngdog = Png.Load(Interop.PerformanceTestPngDog);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("DrawJpegOverPngTest :" + i);
 
-            sw.Start();
-            pngdog.Draw(jpgcat, 10, 10);
-            sw.Stop();
+            stopwatchSingleThread.Start();
+            _thispngdog.Draw(_thisjpgcat, 10, 10);
+            stopwatchSingleThread.Stop();
         }
-        jpgcat.ReleaseStruct();
-        pngdog.ReleaseStruct();
+        _thisjpgcat.ReleaseStruct();
+        _thispngdog.ReleaseStruct();
     }
 
     private static void DrawPngOverJpegPerfTest(int numRuns)
     {
-        jpgdog = Jpg.Load(Interop.PerformanceTestJpegDog);
-        pngcat = Png.Load(Interop.PerformanceTestPngCat);
+        Image _thisjpgdog = Jpg.Load(Interop.PerformanceTestJpegDog);
+        Image _thispngcat = Png.Load(Interop.PerformanceTestPngCat);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("DrawPngOverJpegTest :" + i);
 
-            sw.Start();
-            jpgdog.Draw(pngcat, 10, 10);
-            sw.Stop();
+            stopwatchSingleThread.Start();
+            _thisjpgdog.Draw(_thispngcat, 10, 10);
+            stopwatchSingleThread.Stop();
         }
-        jpgdog.ReleaseStruct();
-        pngcat.ReleaseStruct();
+        _thisjpgdog.ReleaseStruct();
+        _thispngcat.ReleaseStruct();
     }
 
     private static void LoadStreamJpegPerfTest(int numRuns)
@@ -346,13 +448,13 @@ public partial class GraphicsUnitTests
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("LoadStreamJpegTest :" + i);
 
-            using (FileStream filestream = new FileStream(Interop.PerformanceTestJpegCat, FileMode.Open))
+            using (FileStream filestream = new FileStream(Interop.PerformanceTestJpegCat, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                sw.Start();
+                stopwatchSingleThread.Start();
                 Image img = Jpg.Load(filestream);
-                sw.Stop();
+                stopwatchSingleThread.Stop();
                 img.ReleaseStruct();
                 //filestream.Dispose();
             }
@@ -366,13 +468,14 @@ public partial class GraphicsUnitTests
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("LoadStreamPngTest :" + i);
 
-            using (FileStream filestream = new FileStream(Interop.PerformanceTestPngCat, FileMode.Open))
+            //fixed stream by giving acces to multiple threads?
+            using (FileStream filestream = new FileStream(Interop.PerformanceTestPngCat, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                sw.Start();
+                stopwatchSingleThread.Start();
                 Image img = Png.Load(filestream);
-                sw.Stop();
+                stopwatchSingleThread.Stop();
                 img.ReleaseStruct();
                 //filestream.Dispose();
             }
@@ -381,40 +484,40 @@ public partial class GraphicsUnitTests
 
     private static void WriteStreamJpegPerfTest(int numRuns)
     {
-        jpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
+        Image _thisjpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("WriteStreamJpegTest :" + i);
 
             using (MemoryStream stream = new MemoryStream())
             {
-                sw.Start();
-                Jpg.WriteToStream(jpgcat, stream);
-                sw.Stop();
+                stopwatchSingleThread.Start();
+                Jpg.WriteToStream(_thisjpgcat, stream);
+                stopwatchSingleThread.Stop();
             }
         }
-        jpgcat.ReleaseStruct();
+        _thisjpgcat.ReleaseStruct();
     }
 
     private static void WriteStreamPngPerfTest(int numRuns)
     {
-        pngcat = Jpg.Load(Interop.PerformanceTestPngCat);
+        Image _thispngcat = Jpg.Load(Interop.PerformanceTestPngCat);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine(i);
+                Console.WriteLine("WriteStreamPngTest :" + i);
 
             using (MemoryStream stream = new MemoryStream())
             {
-                sw.Start();
-                Png.WriteToStream(pngcat, stream);
-                sw.Stop();
+                stopwatchSingleThread.Start();
+                Png.WriteToStream(_thispngcat, stream);
+                stopwatchSingleThread.Stop();
             }
         }
-        pngcat.ReleaseStruct();
+        _thispngcat.ReleaseStruct();
     }
 
 
