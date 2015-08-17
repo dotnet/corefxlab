@@ -47,6 +47,7 @@
   <ItemGroup>
     <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-buildtools" />
     <NuGetSourceList Include="https:%2F%2Fwww.nuget.org/api/v2" />
+    <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-corefx" />
   </ItemGroup>
 
   <!-- Common nuget properties -->
