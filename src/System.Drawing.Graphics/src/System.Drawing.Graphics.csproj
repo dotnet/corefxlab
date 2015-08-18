@@ -27,13 +27,13 @@
     <Compile Include="System\Drawing\Graphics\Png.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsWindows)' == 'true' ">
-    <Compile Include= "System\Drawing\Graphics\Interop\Windows\Interop.Windows.cs" />
+    <Compile Include="System\Drawing\Graphics\Interop\Windows\Interop.Windows.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsLinux)' == 'true' ">
-    <Compile Include= "System\Drawing\Graphics\Interop\Linux\Interop.Linux.cs" />
+    <Compile Include="System\Drawing\Graphics\Interop\Linux\Interop.Linux.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsOSX)' == 'true' ">
-    <Compile Include= "System\Drawing\Graphics\Interop\OSX\Interop.OSX.cs" />
+    <Compile Include="System\Drawing\Graphics\Interop\OSX\Interop.OSX.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
