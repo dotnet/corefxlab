@@ -15,19 +15,23 @@ public partial class GraphicsUnitTests
     static StreamWriter streamwriter;
     static Stopwatch stopwatchSingleThread = new Stopwatch();
     static Stopwatch stopwatchMultiThread = new Stopwatch();
+    //static double elapsedTime;
     //static Image jpgcat;
     //static Image pngcat;
     //static Image jpgdog;
     //static Image pngdog;
 
-    [Fact]
+    [Fact(Skip ="Until filepath issue is resolved")]
     public static void RunAllTests()
     {
             string filename = "Trial1Results.txt";
             FileStream fstream = new FileStream(Interop.PerformanceTestsResultsDirectory + filename, FileMode.Open);
             streamwriter = new StreamWriter(fstream);
+            runTests(1);
+            runTests(10);
             runTests(1000);
-            streamwriter.Dispose();
+            runTests(5000);
+        streamwriter.Dispose();
             fstream.Dispose();
     }
 
@@ -119,20 +123,38 @@ public partial class GraphicsUnitTests
 
     private static void WriteStopWatch(Stopwatch sw, string currentTest)
     {
-        double elapsedSecs = (sw.ElapsedMilliseconds)/(1000.0);
+        TimeSpan elapsedSecs = (sw.Elapsed);
         Console.WriteLine(elapsedSecs);
         Console.WriteLine("");
         streamwriter.WriteLine("Elapsed time for " + currentTest + ": " + elapsedSecs);
         streamwriter.WriteLine("");
         sw.Reset();
     }
-    [Fact]
-    public static void RunAllPerfTestsWithThreads()
+    [Fact(Skip = "Until filepath issue is resolved")]
+    public static void SetUpAllPerfTestsWithThreads()
     {
-        int numOfTasks = 8;
-        int numRuns = 1000;
+        int numOfTasks = 4;
         FileStream fstream = new FileStream(Interop.PerformanceTestsResultsDirectory + "Trial2Results.txt", FileMode.Open);
         streamwriter = new StreamWriter(fstream);
+        WriteTestHeader(1);
+        RunAllPerfTestsWithThreads(numOfTasks, 1);
+        WriteTestHeader(10);
+        RunAllPerfTestsWithThreads(numOfTasks, 10);
+        WriteTestHeader(100);
+        RunAllPerfTestsWithThreads(numOfTasks, 100);
+        WriteTestHeader(1000);
+        RunAllPerfTestsWithThreads(numOfTasks, 1000);
+        WriteTestHeader(5000);
+        RunAllPerfTestsWithThreads(numOfTasks, 5000);
+
+
+        streamwriter.Dispose();
+        fstream.Dispose();
+
+    }
+
+    private static void RunAllPerfTestsWithThreads(int numOfTasks, int numRuns)
+    {
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadFileJpegPerfTest");
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadFilePngPerfTest");
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteFileJpegPerfTest");
@@ -149,10 +171,6 @@ public partial class GraphicsUnitTests
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadStreamPngPerfTest");
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteStreamJpegPerfTest");
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteStreamPngPerfTest");
-
-        streamwriter.Dispose();
-        fstream.Dispose();
-
     }
 
     private static void RunOneFuntionWithMultipleTasks(int numOfTasks, int numRuns, string functionToRun)
@@ -258,13 +276,13 @@ public partial class GraphicsUnitTests
         Image _thisjpgdog = Jpg.Load(Interop.PerformanceTestJpegDog);
         for (int i = 0; i < numRuns; i++)
         {
-            //make sure it's going
+            //make sure it's going 
             if (i % 100 == 0)
             {
                 Console.WriteLine("WriteFileJpegTest :" + i);
             }
             stopwatchSingleThread.Start();
-            Jpg.WriteToFile(_thisjpgdog, Interop.PerformanceTestsResultsDirectory + "jpgdog.jpg");
+            Jpg.WriteToFile(_thisjpgdog, Interop.PerformanceTestsResultsDirectory + "/Dump/jpgdog" + i + ".jpg");
             stopwatchSingleThread.Stop();
         }
         _thisjpgdog.ReleaseStruct();
@@ -280,7 +298,7 @@ public partial class GraphicsUnitTests
             if (i % 100 == 0)
                 Console.WriteLine("WriteFilePngTest :" + i);
             stopwatchSingleThread.Start();
-            Png.WriteToFile(_thispngdog, Interop.PerformanceTestsResultsDirectory + "pngdog.png");
+            Png.WriteToFile(_thispngdog, Interop.PerformanceTestsResultsDirectory + "Dump/pngdog" + i + ".png");
             stopwatchSingleThread.Stop();
         }
         _thispngdog.ReleaseStruct();

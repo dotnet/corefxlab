@@ -8,7 +8,7 @@ namespace System.Drawing.Graphics
 {
     public class Image
     {
-        /* Fields */
+        /* Fields */ 
         internal IntPtr gdImageStructPtr;
 
         public Image(IntPtr gdImageStructPtr)
@@ -50,11 +50,12 @@ namespace System.Drawing.Graphics
             }
         }
 
+        /* Release */
         public void ReleaseStruct()
         {
             DLLImports.gdImageDestroy(gdImageStructPtr);
         }
-
+        
         /* Factory Methods */
         public static Image Create(int width, int height)
         {
@@ -75,8 +76,6 @@ namespace System.Drawing.Graphics
                 throw new InvalidOperationException(rsc);
             }
         }
-
-        /* Release */
     }
 }
 
