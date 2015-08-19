@@ -21,6 +21,23 @@ public partial class GraphicsUnitTests
     //static Image jpgdog;
     //static Image pngdog;
 
+    [Fact]
+    public static void ImageFilterTests()
+    {
+        Image img1 = Jpg.Load(Interop.PerformanceTestJpegCat);
+        img1.ApplyMatrixMultiplier(ImageExtensions.GreyScaleMatrix);
+        Jpg.WriteToFile(img1, Interop.PerformanceTestsResultsDirectory + "GreyscaleCat.jpg");
+
+        Image img2 = Jpg.Load(Interop.PerformanceTestJpegCat);
+        img2.ApplyMatrixMultiplier(ImageExtensions.SepiaMatrix);
+        Jpg.WriteToFile(img2, Interop.PerformanceTestsResultsDirectory + "SepiaCat.jpg");
+
+        Image img3 = Jpg.Load(Interop.PerformanceTestJpegCat);
+        img3.ApplyMatrixMultiplier(ImageExtensions.NegativeMatrix);
+        Jpg.WriteToFile(img3, Interop.PerformanceTestsResultsDirectory + "NegativeCat.jpg");
+    }
+
+
     [Fact(Skip ="Until filepath issue is resolved")]
     public static void RunAllTests()
     {
@@ -31,7 +48,7 @@ public partial class GraphicsUnitTests
             runTests(10);
             runTests(1000);
             runTests(5000);
-        streamwriter.Dispose();
+            streamwriter.Dispose();
             fstream.Dispose();
     }
 
