@@ -130,8 +130,6 @@ namespace System.Drawing.Graphics
         }
         public static void ApplyMatrixMultiplier(this Image sourceImage, double[,] matrixMultiplier)
         {
-
-
             unsafe
             {
                 DLLImports.gdImageStruct* pStruct = (DLLImports.gdImageStruct*)sourceImage.gdImageStructPtr;
