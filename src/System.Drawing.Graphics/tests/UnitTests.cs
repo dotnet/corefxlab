@@ -11,28 +11,44 @@ using System.Threading.Tasks;
 
 public partial class GraphicsUnitTests
 {
-    /* Performance Tests */
+
+    /* Functionality test Constants */
+    static string SquareCatLogicalName = "SquareCatJpeg";
+    static string BlackCatLogicalName = "BlackCatPng";
+    static string SoccerCatLogicalName = "SoccerCatJpeg";
+    static string CuteCatLogicalName = "CuteCatPng";
+
+    /* Performance Tests Constants */
     static StreamWriter streamwriter;
     static Stopwatch stopwatchSingleThread = new Stopwatch();
     static Stopwatch stopwatchMultiThread = new Stopwatch();
-    //static double elapsedTime;
-    //static Image jpgcat;
-    //static Image pngcat;
-    //static Image jpgdog;
-    //static Image pngdog;
+    /* Performance Tests Variables */
+    static string jpegCatPath = "";
+    static string jpegDogPath = "";
+    static string pngCatPath = "";
+    static string pngDogPath = "";
 
-    [Fact(Skip ="Until filepath issue is resolved")]
+
+
+    [Fact]
     public static void RunAllTests()
     {
-            string filename = "Trial1Results.txt";
-            FileStream fstream = new FileStream(Interop.PerformanceTestsResultsDirectory + filename, FileMode.Open);
-            streamwriter = new StreamWriter(fstream);
-            runTests(1);
-            runTests(10);
-            runTests(1000);
-            runTests(5000);
-        streamwriter.Dispose();
-            fstream.Dispose();
+        string filepath = Path.GetTempPath() + "Trial1Results.txt";
+        if (File.Exists(filepath)) File.Delete(filepath);
+		FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate);
+		streamwriter = new StreamWriter(fstream);
+        //set temppaths of files perf test images
+        SetTempPathsOfPerfTestFiles();
+        //runTests(1);
+        //runTests(10);
+        runTests(100);
+		//runTests(1000);
+		//runTests(5000);
+		streamwriter.Dispose();
+		fstream.Dispose();
+
+        //delete perf test images files
+        DeletePerfTestFileConstants();
     }
 
     public static void runTests(int numRuns)
@@ -54,6 +70,8 @@ public partial class GraphicsUnitTests
         WriteCurrentTest("WriteFilePng", numRuns);
         WriteFilePngPerfTest(numRuns);
         WriteStopWatch(stopwatchSingleThread, "WriteFilePng");
+
+
         //ResizeJpg            
         WriteCurrentTest("ResizeJpeg", numRuns);
         ResizeJpegPerfTest(numRuns);
@@ -103,53 +121,40 @@ public partial class GraphicsUnitTests
         WriteStreamPngPerfTest(numRuns);
         WriteStopWatch(stopwatchSingleThread, "WriteStreamPng");
 
-
-    }
-    private static void WriteTestHeader(int numRuns)
-    {
-        Console.WriteLine("");
-        Console.WriteLine("~~~~~~~~~~~ {0} Runs ~~~~~~~~~~~", numRuns);
-        Console.WriteLine("");
-        streamwriter.WriteLine("");
-        streamwriter.WriteLine("~~~~~~~~~~~ {0} Runs ~~~~~~~~~~~", numRuns);
-        streamwriter.WriteLine("");
     }
 
-    private static void WriteCurrentTest(string currentTest, int numRuns)
-    {
-        Console.WriteLine(currentTest + "{0}", numRuns);
-        streamwriter.WriteLine(currentTest + "{0}", numRuns);
-    }
-
-    private static void WriteStopWatch(Stopwatch sw, string currentTest)
-    {
-        TimeSpan elapsedSecs = (sw.Elapsed);
-        Console.WriteLine(elapsedSecs);
-        Console.WriteLine("");
-        streamwriter.WriteLine("Elapsed time for " + currentTest + ": " + elapsedSecs);
-        streamwriter.WriteLine("");
-        sw.Reset();
-    }
-    [Fact(Skip = "Until filepath issue is resolved")]
+    [Fact]
     public static void SetUpAllPerfTestsWithThreads()
     {
         int numOfTasks = 4;
-        FileStream fstream = new FileStream(Interop.PerformanceTestsResultsDirectory + "Trial2Results.txt", FileMode.Open);
+        string filepath = Path.GetTempPath() + "Trial2Results.txt";
+        if (File.Exists(filepath)) File.Delete(filepath);
+
+        //set temp paths of files perf test images
+        SetTempPathsOfPerfTestFiles();
+        Console.WriteLine("JpegCat: {0} ", jpegCatPath);
+        Console.WriteLine("JpegDog: {0} ", jpegDogPath);
+        Console.WriteLine(" PngDog: {0} ", pngDogPath);
+        Console.WriteLine(" PngCat: {0} ", pngCatPath);
+
+
+        FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate);
         streamwriter = new StreamWriter(fstream);
-        WriteTestHeader(1);
-        RunAllPerfTestsWithThreads(numOfTasks, 1);
-        WriteTestHeader(10);
-        RunAllPerfTestsWithThreads(numOfTasks, 10);
+        //WriteTestHeader(1);
+        //RunAllPerfTestsWithThreads(numOfTasks, 1);
+        //WriteTestHeader(10);
+        //RunAllPerfTestsWithThreads(numOfTasks, 10);
         WriteTestHeader(100);
         RunAllPerfTestsWithThreads(numOfTasks, 100);
-        WriteTestHeader(1000);
-        RunAllPerfTestsWithThreads(numOfTasks, 1000);
-        WriteTestHeader(5000);
-        RunAllPerfTestsWithThreads(numOfTasks, 5000);
-
-
+        //WriteTestHeader(1000);
+        //RunAllPerfTestsWithThreads(numOfTasks, 1000);
+        //WriteTestHeader(5000);
+        //RunAllPerfTestsWithThreads(numOfTasks, 5000);
         streamwriter.Dispose();
         fstream.Dispose();
+
+        //delete temp perf tests images files
+        DeletePerfTestFileConstants();
 
     }
 
@@ -177,6 +182,7 @@ public partial class GraphicsUnitTests
     {
         WriteCurrentTest(functionToRun, numRuns);
         Task[] tasks = new Task[numOfTasks];
+
         stopwatchMultiThread.Start();
         for (int i = 0; i < numOfTasks; i++)
         {
@@ -189,10 +195,10 @@ public partial class GraphicsUnitTests
                     tasks[i] = Task.Factory.StartNew(() => LoadFilePngPerfTest(numRuns / numOfTasks));
                     break;
                 case "WriteFileJpegPerfTest":
-                    tasks[i] = Task.Factory.StartNew(() => WriteFileJpegPerfTest(numRuns / numOfTasks));
+                    tasks[i] = Task.Factory.StartNew(() => WriteFileJpegPerfTest(numRuns / numOfTasks/*, dump.FullName*/));
                     break;
                 case "WriteFilePngPerfTest":
-                    tasks[i] = Task.Factory.StartNew(() => WriteFilePngPerfTest(numRuns / numOfTasks));
+                    tasks[i] = Task.Factory.StartNew(() => WriteFilePngPerfTest(numRuns / numOfTasks/*, dump.FullName*/));
                     break;
                 case "ResizeJpegPerfTest":
                     tasks[i] = Task.Factory.StartNew(() => ResizeJpegPerfTest(numRuns / numOfTasks));
@@ -233,11 +239,53 @@ public partial class GraphicsUnitTests
                 default:
                     throw new NotSupportedException("A task was created but not given a proper task. Check the code/swithc statement.");
             }
-            //Console.WriteLine("Starting Task {0}...", i);
         }
         Task.WaitAll(tasks);
         stopwatchMultiThread.Stop();
         WriteStopWatch(stopwatchMultiThread, functionToRun);
+        //delete dump dir
+    }
+
+    private static void SetTempPathsOfPerfTestFiles()
+    {
+        jpegDogPath = SaveEmbeddedResourceToFile("JpegDog");
+        jpegCatPath = SaveEmbeddedResourceToFile("JpegCat");
+        pngDogPath = SaveEmbeddedResourceToFile("PngDog");
+        pngCatPath = SaveEmbeddedResourceToFile("PngCat");
+    }
+
+    private static void DeletePerfTestFileConstants()
+    {
+        File.Delete(jpegDogPath);
+        File.Delete(jpegCatPath);
+        File.Delete(pngDogPath);
+        File.Delete(pngCatPath);
+    }
+
+    private static void WriteTestHeader(int numRuns)
+    {
+        Console.WriteLine("");
+        Console.WriteLine("~~~~~~~~~~~ {0} Runs ~~~~~~~~~~~", numRuns);
+        Console.WriteLine("");
+        streamwriter.WriteLine("");
+        streamwriter.WriteLine("~~~~~~~~~~~ {0} Runs ~~~~~~~~~~~", numRuns);
+        streamwriter.WriteLine("");
+    }
+
+    private static void WriteCurrentTest(string currentTest, int numRuns)
+    {
+        Console.WriteLine(currentTest + "{0}", numRuns);
+        streamwriter.WriteLine(currentTest + "{0}", numRuns);
+    }
+
+    private static void WriteStopWatch(Stopwatch sw, string currentTest)
+    {
+        TimeSpan elapsedSecs = (sw.Elapsed);
+        Console.WriteLine(elapsedSecs);
+        Console.WriteLine("");
+        streamwriter.WriteLine("Elapsed time for " + currentTest + ": " + elapsedSecs);
+        streamwriter.WriteLine("");
+        sw.Reset();
     }
 
     private static void LoadFileJpegPerfTest(int numRuns)
@@ -249,7 +297,7 @@ public partial class GraphicsUnitTests
                 Console.WriteLine("LoadFileJpegTest :" + i);
 
             stopwatchSingleThread.Start();
-            Image img = Jpg.Load(Interop.PerformanceTestJpegCat);
+            Image img = Jpg.Load(jpegCatPath);
             stopwatchSingleThread.Stop();
             img.ReleaseStruct();
         }
@@ -265,15 +313,15 @@ public partial class GraphicsUnitTests
                 Console.WriteLine("LoadFilePngTest :" + i);
             }
             stopwatchSingleThread.Start();
-            Image img = Png.Load(Interop.PerformanceTestPngCat);
+            Image img = Png.Load(pngCatPath);
             stopwatchSingleThread.Stop();
             img.ReleaseStruct();
         }
     }
     //FIX Write
-    private static void WriteFileJpegPerfTest(int numRuns)
+    private static void WriteFileJpegPerfTest(int numRuns/*, string dirToWrite*/)
     {
-        Image _thisjpgdog = Jpg.Load(Interop.PerformanceTestJpegDog);
+        Image _thisjpgdog = Jpg.Load(jpegDogPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going 
@@ -282,23 +330,23 @@ public partial class GraphicsUnitTests
                 Console.WriteLine("WriteFileJpegTest :" + i);
             }
             stopwatchSingleThread.Start();
-            Jpg.WriteToFile(_thisjpgdog, Interop.PerformanceTestsResultsDirectory + "/Dump/jpgdog" + i + ".jpg");
+            Jpg.WriteToFile(_thisjpgdog, Path.GetTempPath() + "jpgdog.jpg");
             stopwatchSingleThread.Stop();
         }
         _thisjpgdog.ReleaseStruct();
     }
 
     //fix write
-    private static void WriteFilePngPerfTest(int numRuns)
+    private static void WriteFilePngPerfTest(int numRuns/*, string dirToWrite*/)
     {
-        Image _thispngdog = Png.Load(Interop.PerformanceTestPngDog);
+        Image _thispngdog = Png.Load(pngDogPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
             if (i % 100 == 0)
                 Console.WriteLine("WriteFilePngTest :" + i);
             stopwatchSingleThread.Start();
-            Png.WriteToFile(_thispngdog, Interop.PerformanceTestsResultsDirectory + "Dump/pngdog" + i + ".png");
+            Png.WriteToFile(_thispngdog, Path.GetTempPath() + "pngdog.png");
             stopwatchSingleThread.Stop();
         }
         _thispngdog.ReleaseStruct();
@@ -306,7 +354,7 @@ public partial class GraphicsUnitTests
 
     private static void ResizeJpegPerfTest(int numRuns)
     {
-        Image _thisjpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
+        Image _thisjpgcat = Jpg.Load(jpegCatPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
@@ -323,7 +371,7 @@ public partial class GraphicsUnitTests
 
     private static void ResizePngPerfTest(int numRuns)
     {
-        Image _thispngcat = Png.Load(Interop.PerformanceTestPngCat);
+        Image _thispngcat = Png.Load(pngCatPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
@@ -340,7 +388,7 @@ public partial class GraphicsUnitTests
 
     private static void ChangeAlphaJpegPerfTest(int numRuns)
     {
-        Image _thisjpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
+        Image _thisjpgcat = Jpg.Load(jpegCatPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
@@ -356,7 +404,7 @@ public partial class GraphicsUnitTests
 
     private static void ChangeAlphaPngPerfTest(int numRuns)
     {
-        Image _thispngcat = Png.Load(Interop.PerformanceTestPngCat);
+        Image _thispngcat = Png.Load(pngCatPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
@@ -372,8 +420,8 @@ public partial class GraphicsUnitTests
 
     private static void DrawJpegOverJpegPerfTest(int numRuns)
     {
-        Image _thisjpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
-        Image _thisjpgdog = Jpg.Load(Interop.PerformanceTestJpegDog);
+        Image _thisjpgcat = Jpg.Load(jpegCatPath);
+        Image _thisjpgdog = Jpg.Load(jpegDogPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
@@ -390,8 +438,8 @@ public partial class GraphicsUnitTests
 
     private static void DrawPngOverPngPerfTest(int numRuns)
     {
-        Image _thispngcat = Png.Load(Interop.PerformanceTestPngCat);
-        Image _thispngdog = Png.Load(Interop.PerformanceTestPngDog);
+        Image _thispngcat = Png.Load(pngCatPath);
+        Image _thispngdog = Png.Load(pngDogPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
@@ -408,8 +456,8 @@ public partial class GraphicsUnitTests
 
     private static void DrawJpegOverPngPerfTest(int numRuns)
     {
-        Image _thisjpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
-        Image _thispngdog = Png.Load(Interop.PerformanceTestPngDog);
+        Image _thisjpgcat = Jpg.Load(jpegCatPath);
+        Image _thispngdog = Png.Load(pngDogPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
@@ -426,8 +474,8 @@ public partial class GraphicsUnitTests
 
     private static void DrawPngOverJpegPerfTest(int numRuns)
     {
-        Image _thisjpgdog = Jpg.Load(Interop.PerformanceTestJpegDog);
-        Image _thispngcat = Png.Load(Interop.PerformanceTestPngCat);
+        Image _thisjpgdog = Jpg.Load(jpegDogPath);
+        Image _thispngcat = Png.Load(pngCatPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
@@ -450,7 +498,7 @@ public partial class GraphicsUnitTests
             if (i % 100 == 0)
                 Console.WriteLine("LoadStreamJpegTest :" + i);
 
-            using (FileStream filestream = new FileStream(Interop.PerformanceTestJpegCat, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream filestream = new FileStream(jpegCatPath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 stopwatchSingleThread.Start();
                 Image img = Jpg.Load(filestream);
@@ -471,7 +519,7 @@ public partial class GraphicsUnitTests
                 Console.WriteLine("LoadStreamPngTest :" + i);
 
             //fixed stream by giving acces to multiple threads?
-            using (FileStream filestream = new FileStream(Interop.PerformanceTestPngCat, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream filestream = new FileStream(pngCatPath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 stopwatchSingleThread.Start();
                 Image img = Png.Load(filestream);
@@ -484,7 +532,7 @@ public partial class GraphicsUnitTests
 
     private static void WriteStreamJpegPerfTest(int numRuns)
     {
-        Image _thisjpgcat = Jpg.Load(Interop.PerformanceTestJpegCat);
+        Image _thisjpgcat = Jpg.Load(jpegCatPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
@@ -503,7 +551,7 @@ public partial class GraphicsUnitTests
 
     private static void WriteStreamPngPerfTest(int numRuns)
     {
-        Image _thispngcat = Jpg.Load(Interop.PerformanceTestPngCat);
+        Image _thispngcat = Jpg.Load(pngCatPath);
         for (int i = 0; i < numRuns; i++)
         {
             //make sure it's going
@@ -525,59 +573,89 @@ public partial class GraphicsUnitTests
 
 
     /*----------------------Functionality Unit Tests------------------------------------*/
-
-
-    private static void ValidateImage2(Image img, string embeddedFilepathName)
+    private static void ValidateImagePng(Image img, string embeddedLogicalName)
     {
-        //
-        //Assert.Equal(widthToCompare, img.WidthInPixels);
-        //Assert.Equal(heightToCompare, img.HeightInPixels);
-        Stream s = typeof(GraphicsUnitTests).GetTypeInfo().Assembly.GetManifestResourceStream(embeddedFilepathName);
-        Stream a = new FileStream("path", FileMode.Open);
-        Assert.Equal(s, a);
-        //TODO: make this way better!!
+        Stream toCompare = typeof(GraphicsUnitTests).GetTypeInfo().Assembly.GetManifestResourceStream(embeddedLogicalName);
+        Image comparison = Png.Load(toCompare);
+        Assert.Equal(comparison.HeightInPixels, img.HeightInPixels);
+        Assert.Equal(comparison.WidthInPixels, img.WidthInPixels);
+        Assert.Equal(comparison.TrueColor, img.TrueColor);
     }
 
-    private static void ValidateImage(Image img, int widthToCompare, int heightToCompare)
+    private static void ValidateImageJpeg(Image img, string embeddedLogicalName)
+    {
+        Stream toCompare = typeof(GraphicsUnitTests).GetTypeInfo().Assembly.GetManifestResourceStream(embeddedLogicalName);
+        Image comparison = Jpg.Load(toCompare);
+        Assert.Equal(comparison.HeightInPixels, img.HeightInPixels);
+        Assert.Equal(comparison.WidthInPixels, img.WidthInPixels);
+        Assert.Equal(comparison.TrueColor, img.TrueColor);
+    }
+
+    private static void ValidateCreatedImage(Image img, int widthToCompare, int heightToCompare)
     {
         Assert.Equal(widthToCompare, img.WidthInPixels);
         Assert.Equal(heightToCompare, img.HeightInPixels);
-        //TODO: make this way better!!
+    }
+
+    private static string ChooseExtension(string filepath)
+    {
+        if (filepath.Contains("Jpeg"))
+            return ".jpg";
+        else
+            return ".png";
+    }
+
+
+    private static string SaveEmbeddedResourceToFile(string logicalName)
+    {
+        //get a temp file path
+        string toReturn = Path.GetTempFileName();
+        toReturn = Path.ChangeExtension(toReturn, ChooseExtension(logicalName));
+        //get stream of embedded resoruce
+        Stream embeddedResourceStream = typeof(GraphicsUnitTests).GetTypeInfo().Assembly.GetManifestResourceStream(logicalName);
+        //write stream to temp file path
+        using (FileStream fileStream = new FileStream(toReturn, FileMode.OpenOrCreate))
+        {
+            embeddedResourceStream.Seek(0, SeekOrigin.Begin);
+            embeddedResourceStream.CopyTo(fileStream);
+        }
+        //return where the resource is saved
+        return toReturn;
     }
 
     /* Tests Create Method */
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public static void WhenCreatingAnEmptyImageThenValidateAnImage()
     {
         Image emptyTenSquare = Image.Create(10, 10);
-        ValidateImage(emptyTenSquare, 10, 10);
+        ValidateCreatedImage(emptyTenSquare, 10, 10);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingABlankImageWithNegativeHeightThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(1, -1));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingABlankImageWithNegativeWidthThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(-1, 1));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingABlankImageWithNegativeSizesThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(-1, -1));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingABlankImageWithZeroHeightThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(1, 0));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingABlankImageWithZeroWidthThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(0, 1));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingABlankImageWithZeroParametersThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(0, 0));
@@ -585,78 +663,83 @@ public partial class GraphicsUnitTests
 
 
     /* Tests Load(filepath) method */
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingAJpegFromAValidFileGiveAValidImage()
     {
-        //checking with cat image
-        string filepath = @"/home/ddcloud/Documents/SquareCat.jpg";
-        Image fromFile = Jpg.Load(filepath);
-        ValidateImage(fromFile, 600, 701);
+        //save embedded resource to a file
+        string filepath = SaveEmbeddedResourceToFile(SquareCatLogicalName);
+        //read it
+        Image newJpeg = Jpg.Load(filepath);
+        File.Delete(filepath);
+        //validate it
+        ValidateImageJpeg(newJpeg, SquareCatLogicalName);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingAPngFromAValidFileGiveAValidImage()
     {
-        //checking with cat image
-        string filepath = @"/home/ddcloud/Documents/BlackCat.png";
-        Image fromFile = Png.Load(filepath);
-        ValidateImage(fromFile, 220, 220);
+        //save embedded resource to a file
+        string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
+        //read it
+        Image newJpeg = Png.Load(filepath);
+        File.Delete(filepath);
+        //validate it
+        ValidateImagePng(newJpeg, BlackCatLogicalName);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingAJpegFromAMalformedPathThenThrowException()
     {
         //place holder string to demonstrate what would be the error case
-        string invalidFilepath = @"/home/ddcloud/Documents/\SquareCat.jpg";
+        string temporaryPath = Path.GetTempPath();
+        string invalidFilepath = temporaryPath + "\\Hi.jpg";
         Assert.Throws<FileNotFoundException>(() => Jpg.Load(invalidFilepath));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingAPngFromAMalformedPathThenThrowException()
     {
-        //place holder string to demonstrate what would be the error case
-        string invalidFilepath = @"/home/ddcloud/Documents/\BlackCat.png";
+        string temporaryPath = Path.GetTempPath();
+        string invalidFilepath = temporaryPath + "\\Hi.png";
         Assert.Throws<FileNotFoundException>(() => Png.Load(invalidFilepath));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingAnImageFromAnUnfoundPathThenThrowException()
     {
-        //place holder string to demonstrate what would be the error case
-        string invalidFilepath = @"/home/ddcloud/Documents/SquareDog.jpg";
+        string temporaryPath = Path.GetTempPath();
+        string invalidFilepath = temporaryPath + "\\Hi.jpg";
         Assert.Throws<FileNotFoundException>(() => Jpg.Load(invalidFilepath));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingAnImageFromAFileTypeThatIsNotAnImageThenThrowException()
     {
-        //place holder string to demonstrate what would be the error case
-        string invalidFilepath = @"/home/ddcloud/Documents/text.txt";
+        string temporaryPath = Path.GetTempPath();
+        string invalidFilepath = temporaryPath + "text.txt";
         Assert.Throws<FileNotFoundException>(() => Jpg.Load(invalidFilepath));
     }
 
 
     /* Tests Load(stream) mehtod*/
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingAJpegFromAValidStreamThenWriteAValidImageToFile()
     {
-        using (FileStream filestream = new FileStream(@"/home/ddcloud/Documents/SoccerCat.jpg", FileMode.Open))
+        string filepath = SaveEmbeddedResourceToFile(SoccerCatLogicalName);
+        using (FileStream filestream = new FileStream(filepath, FileMode.Open))
         {
             Image fromStream = Jpg.Load(filestream);
-            ValidateImage(fromStream, 400, 249);
-            //must be commented out later (1 job rule)
-            Jpg.WriteToFile(fromStream, @"/home/ddcloud/Documents/TestFromStreamWrite.jpg");
+            ValidateImageJpeg(fromStream, SoccerCatLogicalName);
         }
-
+        File.Delete(filepath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingAPngFromAValidStreamThenWriteAValidImageToFile()
     {
-        using (FileStream filestream = new FileStream(@"/home/ddcloud/Documents/CuteCat.png", FileMode.Open))
+        string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
+        using (FileStream filestream = new FileStream(filepath, FileMode.Open))
         {
             Image fromStream = Png.Load(filestream);
-            ValidateImage(fromStream, 360, 362);
-            //must be commented out later (1 job rule)
-            Png.WriteToFile(fromStream, @"/home/ddcloud/Documents/TestFromStreamWrite.png");
+            ValidateImagePng(fromStream, CuteCatLogicalName);
         }
-
+        File.Delete(filepath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenCreatingAnImageFromAnInvalidStreamThenThrowException()
     {
         Stream stream = null;
@@ -665,102 +748,98 @@ public partial class GraphicsUnitTests
 
 
     /* Test Resize */
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingEmptyImageDownThenGiveAValidatedResizedImage()
     {
         Image emptyResizeSquare = Image.Create(100, 100);
         emptyResizeSquare = emptyResizeSquare.Resize(10, 10);
-        ValidateImage(emptyResizeSquare, 10, 10);
+        ValidateCreatedImage(emptyResizeSquare, 10, 10);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingEmptyImageUpThenGiveAValidatedResizedImage()
     {
         Image emptyResizeSquare = Image.Create(100, 100);
         emptyResizeSquare = emptyResizeSquare.Resize(200, 200);
-        ValidateImage(emptyResizeSquare, 200, 200);
+        ValidateCreatedImage(emptyResizeSquare, 200, 200);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingJpegLoadedFromFileThenGiveAValidatedResizedImage()
     {
-
-        string filepath = @"/home/ddcloud/Documents/SquareCat.jpg";
+        //what to do? Have embedded resource stream of expected result?
+        string filepath = SaveEmbeddedResourceToFile(SquareCatLogicalName);
         Image fromFileResizeSquare = Jpg.Load(filepath);
         fromFileResizeSquare = fromFileResizeSquare.Resize(200, 200);
-        ValidateImage(fromFileResizeSquare, 200, 200);
-        //must be commented out later (1 job rule)
-        Jpg.WriteToFile(fromFileResizeSquare, @"/home/ddcloud/Documents/TestFromFileResizedWrite.jpg");
+        ValidateCreatedImage(fromFileResizeSquare, 200, 200);
+        File.Delete(filepath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingPngLoadedFromFileThenGiveAValidatedResizedImage()
     {
-
-        string filepath = @"/home/ddcloud/Documents/BlackCat.png";
+        //what to do? Have embedded resource stream of expected result?
+        string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
         Image fromFileResizeSquare = Png.Load(filepath);
         fromFileResizeSquare = fromFileResizeSquare.Resize(400, 400);
-        ValidateImage(fromFileResizeSquare, 400, 400);
-        //must be commented out later (1 job rule)
-        Png.WriteToFile(fromFileResizeSquare, @"/home/ddcloud/Documents/TestFromFileResizedWrite.png");
+        ValidateCreatedImage(fromFileResizeSquare, 400, 400);
+        File.Delete(filepath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingJpegLoadedFromStreamThenGiveAValidatedResizedImage()
     {
-        using (FileStream filestream = new FileStream(@"/home/ddcloud/Documents/SoccerCat.jpg", FileMode.Open))
+        string filepath = SaveEmbeddedResourceToFile(SoccerCatLogicalName);
+        using (FileStream filestream = new FileStream(filepath, FileMode.Open))
         {
             Image fromStream = Jpg.Load(filestream);
-            ValidateImage(fromStream, 400, 249);
             fromStream = fromStream.Resize(400, 400);
-            ValidateImage(fromStream, 400, 400);
-            //must be commented out later (1 job rule)
-            Jpg.WriteToFile(fromStream, @"/home/ddcloud/Documents/TestFromStreamResizedWrite.jpg");
+            ValidateCreatedImage(fromStream, 400, 400);
         }
+        File.Delete(filepath);
     }
 
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingPngLoadedFromStreamThenGiveAValidatedResizedImage()
     {
-        using (FileStream filestream = new FileStream(@"/home/ddcloud/Documents/CuteCat.png", FileMode.Open))
+        string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
+        using (FileStream filestream = new FileStream(filepath, FileMode.Open))
         {
             Image fromStream = Png.Load(filestream);
-            ValidateImage(fromStream, 360, 362);
             fromStream = fromStream.Resize(400, 400);
-            ValidateImage(fromStream, 400, 400);
-            //must be commented out later (1 job rule)
-            Png.WriteToFile(fromStream, @"/home/ddcloud/Documents/TestFromStreamResizedWrite.png");
+            ValidateCreatedImage(fromStream, 400, 400);
         }
+        File.Delete(filepath);
     }
 
     /* Testing Resize parameters */
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingImageGivenNegativeHeightThenThrowException()
     {
         Image img = Image.Create(1, 1);
         Assert.Throws<InvalidOperationException>(() => img.Resize(-1, 1));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingImageGivenNegativeWidthThenThrowException()
     {
         Image img = Image.Create(1, 1);
         Assert.Throws<InvalidOperationException>(() => img.Resize(1, -1));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingImageGivenNegativeSizesThenThrowException()
     {
         Image img = Image.Create(1, 1);
         Assert.Throws<InvalidOperationException>(() => img.Resize(-1, -1));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingImageGivenZeroHeightThenThrowException()
     {
         Image img = Image.Create(1, 1);
         Assert.Throws<InvalidOperationException>(() => img.Resize(0, 1));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingImageGivenZeroWidthThenThrowException()
     {
         Image img = Image.Create(1, 1);
         Assert.Throws<InvalidOperationException>(() => img.Resize(1, 0));
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenResizingImageGivenZeroSizesThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -769,69 +848,92 @@ public partial class GraphicsUnitTests
 
 
     /* Test WriteToFile */
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingABlankCreatedJpegToAValidFileWriteToAValidFile()
     {
         Image emptyImage = Image.Create(10, 10);
-        ValidateImage(emptyImage, 10, 10);
-        Jpg.WriteToFile(emptyImage, @"/home/ddcloud/Documents/TestBlankWriteFile.jpg");
+        ValidateCreatedImage(emptyImage, 10, 10);
+        string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".jpg");
+        Jpg.WriteToFile(emptyImage, tempFilePath);
+        File.Delete(tempFilePath);
+
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingABlankCreatedPngToAValidFileWriteToAValidFile()
     {
         Image emptyImage = Image.Create(10, 10);
-        ValidateImage(emptyImage, 10, 10);
-        Png.WriteToFile(emptyImage, @"/home/ddcloud/Documents/TestBlankWriteFile.png");
+        ValidateCreatedImage(emptyImage, 10, 10);
+        string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".png");
+        Png.WriteToFile(emptyImage, tempFilePath);
+        File.Delete(tempFilePath);
+
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingAJpegCreatedFromFileToAValidFileWriteAValidImage()
     {
-        string filepath = @"/home/ddcloud/Documents/SquareCat.jpg";
-        Image fromFile = Png.Load(filepath);
-        ValidateImage(fromFile, 600, 701);
-        Png.WriteToFile(fromFile, @"/home/ddcloud/Documents/TestFromFileWriteFile.jpg");
+        string filepath = SaveEmbeddedResourceToFile(SquareCatLogicalName);
+        Image fromFile = Jpg.Load(filepath);
+        ValidateImageJpeg(fromFile, SquareCatLogicalName);
+        string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".jpg");
+        Png.WriteToFile(fromFile, tempFilePath);
+        File.Delete(filepath);
+        File.Delete(tempFilePath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingAPngCreatedFromFileToAValidFileWriteAValidImage()
     {
-        string filepath = @"/home/ddcloud/Documents/BlackCat.png";
+        string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
         Image fromFile = Png.Load(filepath);
-        ValidateImage(fromFile, 220, 220);
-        Png.WriteToFile(fromFile, @"/home/ddcloud/Documents/TestFromFileWriteFile.png");
+        ValidateImagePng(fromFile, BlackCatLogicalName);
+        string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".png");
+        Png.WriteToFile(fromFile, tempFilePath);
+        File.Delete(filepath);
+        File.Delete(tempFilePath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingAPngMadeTransparentToAValidFileWriteAValidImage()
     {
-        Image img = Png.Load(@"/home/ddcloud/Documents/BlackCat.png");
-        ValidateImage(img, 220, 220);
+        string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
+        Image img = Png.Load(filepath);
+        ValidateImagePng(img, BlackCatLogicalName);
         img.SetAlphaPercentage(.2);
-        Png.WriteToFile(img, @"/home/ddcloud/Documents/TestFromFileTransparentWriteFile.png");
+        ValidateImagePng(img, BlackCatLogicalName);
+        string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".png");
+        Png.WriteToFile(img, tempFilePath);
+        File.Delete(filepath);
+        File.Delete(tempFilePath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingATransparentResizedPngToAValidFileWriteAValidImage()
     {
-        Image img = Png.Load(@"/home/ddcloud/Documents/BlackCat.png");
-        ValidateImage(img, 220, 220);
+        string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
+        Image img = Png.Load(filepath);
+        ValidateImagePng(img, BlackCatLogicalName);
         img.SetAlphaPercentage(.2);
         img = img.Resize(400, 400);
-        ValidateImage(img, 400, 400);
-        Png.WriteToFile(img, @"/home/ddcloud/Documents/TestFromFileTransparentResizeWriteFile.png");
+        ValidateCreatedImage(img, 400, 400);
+        string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".png");
+        Png.WriteToFile(img, tempFilePath);
+        File.Delete(filepath);
+        File.Delete(tempFilePath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingAResizedTransparentPngToAValidFileWriteAValidImage()
     {
-        Image img = Png.Load(@"/home/ddcloud/Documents/BlackCat.png");
-        ValidateImage(img, 220, 220);
+        string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
+        Image img = Png.Load(filepath);
+        ValidateImagePng(img, BlackCatLogicalName);
         img = img.Resize(400, 400);
-        ValidateImage(img, 400, 400);
+        ValidateCreatedImage(img, 400, 400);
         img.SetAlphaPercentage(.2);
-        Png.WriteToFile(img, @"/home/ddcloud/Documents/TestFromFileResizeTransparentWriteFile.png");
+        string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".png");
+        Png.WriteToFile(img, tempFilePath);
+        File.Delete(filepath);
+        File.Delete(tempFilePath);
     }
 
-
-
     /* Tests Writing to a Stream*/
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingABlankCreatedJpegToAValidStreamWriteToAValidStream()
     {
         Image img = Image.Create(100, 100);
@@ -840,9 +942,10 @@ public partial class GraphicsUnitTests
             Jpg.WriteToStream(img, stream);
             stream.Position = 0;
             Image img2 = Jpg.Load(stream);
-            Jpg.WriteToFile(img2, @"/home/ddcloud/Documents/TestBlankWriteStream.jpg");
+            ValidateCreatedImage(img2, 100, 100);
         }
     }
+    [Fact]
     public void WhenWritingABlankCreatedPngToAValidStreamWriteToAValidStream()
     {
         Image img = Image.Create(100, 100);
@@ -851,157 +954,171 @@ public partial class GraphicsUnitTests
             Png.WriteToStream(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
-            Png.WriteToFile(img2, @"/home/ddcloud/Documents/TestBlankWriteStream.png");
+            ValidateCreatedImage(img2, 100, 100);
         }
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingAJpegFromFileToAValidStreamWriteAValidImage()
     {
-        Image img = Jpg.Load(@"/home/ddcloud/Documents/SoccerCat.jpg");
+        string filepath = SaveEmbeddedResourceToFile(SoccerCatLogicalName);
+        Image img = Jpg.Load(filepath);
         using (MemoryStream stream = new MemoryStream())
         {
             Jpg.WriteToStream(img, stream);
             stream.Position = 0;
             Image img2 = Jpg.Load(stream);
-            Jpg.WriteToFile(img2, @"/home/ddcloud/Documents/TestFromFileWriteStream.jpg");
+            ValidateImageJpeg(img2, SoccerCatLogicalName);
         }
+        File.Delete(filepath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingAPngCreatedFromFileToAValidStreamWriteAValidImage()
     {
-        Image img = Png.Load(@"/home/ddcloud/Documents/CuteCat.png");
+        string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
+        Image img = Png.Load(filepath);
         using (MemoryStream stream = new MemoryStream())
         {
             Png.WriteToStream(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
-            Png.WriteToFile(img2, @"/home/ddcloud/Documents/TestFromFileWriteStream.png");
+            ValidateImagePng(img2, CuteCatLogicalName);
         }
+        File.Delete(filepath);
     }
 
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingAResizedJpegToAValidStreamWriteAValidImage()
     {
-        Image img = Jpg.Load(@"/home/ddcloud/Documents/SoccerCat.jpg");
+        string filepath = SaveEmbeddedResourceToFile(SoccerCatLogicalName);
+        Image img = Jpg.Load(filepath);
         using (MemoryStream stream = new MemoryStream())
         {
             img = img.Resize(40, 40);
-            ValidateImage(img, 40, 40);
+            ValidateCreatedImage(img, 40, 40);
             Jpg.WriteToStream(img, stream);
             stream.Position = 0;
             Image img2 = Jpg.Load(stream);
-            Jpg.WriteToFile(img2, @"/home/ddcloud/Documents/TestFromFileResizeWriteStream.jpg");
+            ValidateCreatedImage(img, 40, 40);
         }
+        File.Delete(filepath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingAResizedPngToAValidStreamWriteAValidImage()
     {
-        Image img = Png.Load(@"/home/ddcloud/Documents/CuteCat.png");
+        string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
+        Image img = Png.Load(filepath);
         using (MemoryStream stream = new MemoryStream())
         {
             img = img.Resize(40, 40);
+            ValidateCreatedImage(img, 40, 40);
             Png.WriteToStream(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
-            Png.WriteToFile(img2, @"/home/ddcloud/Documents/TestFromFileResizeWriteStream.png");
+            ValidateCreatedImage(img, 40, 40);
         }
+        File.Delete(filepath);
     }
 
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingAPngMadeTransparentToAValidStreamWriteAValidImage()
     {
-        Image img = Png.Load(@"/home/ddcloud/Documents/CuteCat.png");
+        string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
+        Image img = Png.Load(filepath);
         using (MemoryStream stream = new MemoryStream())
         {
-            ValidateImage(img, 360, 362);
             img.SetAlphaPercentage(.2);
+            ValidateImagePng(img, CuteCatLogicalName);
             Png.WriteToStream(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
-            ValidateImage(img2, 360, 362);
-            Png.WriteToFile(img2, @"/home/ddcloud/Documents/TestFromFileTransparentWriteStream.png");
+            ValidateImagePng(img2, CuteCatLogicalName);
         }
+        File.Delete(filepath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingATransparentResizedPngToAValidStreamWriteAValidImage()
     {
-        Image img = Png.Load(@"/home/ddcloud/Documents/CuteCat.png");
+        string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
+        Image img = Png.Load(filepath);
         using (MemoryStream stream = new MemoryStream())
         {
-            ValidateImage(img, 360, 362);
             img.SetAlphaPercentage(.2);
             img = img.Resize(400, 400);
-            ValidateImage(img, 400, 400);
+            ValidateCreatedImage(img, 400, 400);
             Png.WriteToStream(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
-            ValidateImage(img2, 400, 400);
-            Png.WriteToFile(img2, @"/home/ddcloud/Documents/TestFromFileTransparentResizeWriteStream.png");
+            ValidateCreatedImage(img2, 400, 400);
         }
+        File.Delete(filepath);
     }
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenWritingAResizedTransparentPngToAValidStreamWriteAValidImage()
     {
-        Image img = Png.Load(@"/home/ddcloud/Documents/CuteCat.png");
-        ValidateImage(img, 360, 362);
+        string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
+        Image img = Png.Load(filepath);
+        ValidateImagePng(img, CuteCatLogicalName);
         img = img.Resize(400, 400);
-        ValidateImage(img, 400, 400);
+        ValidateCreatedImage(img, 400, 400);
         img.SetAlphaPercentage(.2);
-        Png.WriteToFile(img, @"/home/ddcloud/Documents/TestFromFileResizeTransparentWriteStream.png");
+        File.Delete(filepath);
     }
 
     /* Test Draw */
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenDrawingTwoImagesWriteACorrectResult()
     {
         //open yellow cat image
-        Image yellowCat = Jpg.Load(@"/home/ddcloud/Documents/SquareCat.jpg");
-        ValidateImage(yellowCat, 600, 701);
+        string filepath = SaveEmbeddedResourceToFile(SquareCatLogicalName);
+        Image yellowCat = Jpg.Load(filepath);
+        ValidateImageJpeg(yellowCat, SquareCatLogicalName);
         //open black cat image
-        Image blackCat = Png.Load(@"/home/ddcloud/Documents/BlackCat.png");
-        ValidateImage(blackCat, 220, 220);
-        //draw & Write
+        string filepath2 = SaveEmbeddedResourceToFile(BlackCatLogicalName);
+        Image blackCat = Jpg.Load(filepath2);
+        ValidateImagePng(blackCat, BlackCatLogicalName);
+        //draw
         yellowCat.Draw(blackCat, 0, 0);
-        Png.WriteToFile(yellowCat, @"/home/ddcloud/Documents/DrawTest.png");
+        ValidateImageJpeg(yellowCat, SquareCatLogicalName);
+        File.Delete(filepath);
+        File.Delete(filepath2);
     }
     /* Test SetTransparency */
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenSettingTheTransparencyOfAnImageWriteAnImageWithChangedTransparency()
     {
         //open black cat image
-        Image blackCat0 = Png.Load(@"/home/ddcloud/Documents/BlackCat.png");
-        ValidateImage(blackCat0, 220, 220);
+        string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
+        Image blackCat0 = Jpg.Load(filepath);
+        ValidateImagePng(blackCat0, BlackCatLogicalName);
         blackCat0.SetAlphaPercentage(0);
-        ValidateImage(blackCat0, 220, 220);
-        Png.WriteToFile(blackCat0, @"/home/ddcloud/Documents/SetTransparencyTest0.png");
+        ValidateImagePng(blackCat0, BlackCatLogicalName);
 
-        Image blackCat1 = Png.Load(@"/home/ddcloud/Documents/BlackCat.png");
-        ValidateImage(blackCat1, 220, 220);
-        blackCat1.SetAlphaPercentage(.7);
-        ValidateImage(blackCat1, 220, 220);
-        Png.WriteToFile(blackCat1, @"/home/ddcloud/Documents/SetTransparencyTest1.png");
+        Image blackCat1 = Jpg.Load(filepath);
+        ValidateImagePng(blackCat1, BlackCatLogicalName);
+        blackCat0.SetAlphaPercentage(0.5);
+        ValidateImagePng(blackCat1, BlackCatLogicalName);
 
-        Image blackCat2 = Png.Load(@"/home/ddcloud/Documents/BlackCat.png");
-        ValidateImage(blackCat2, 220, 220);
-        blackCat2.SetAlphaPercentage(1);
-        ValidateImage(blackCat2, 220, 220);
-        Png.WriteToFile(blackCat2, @"/home/ddcloud/Documents/SetTransparencyTest2.png");
+        Image blackCat2 = Jpg.Load(filepath);
+        ValidateImagePng(blackCat2, BlackCatLogicalName);
+        blackCat0.SetAlphaPercentage(1);
+        ValidateImagePng(blackCat2, BlackCatLogicalName);
+        File.Delete(filepath);
     }
     /* Test Draw and Set Transparency */
-    [Fact(Skip = "Running only Perf Tests")]
+    [Fact]
     public void WhenDrawingAnImageWithTransparencyChangedGiveACorrectWrittenFile()
     {
         //black cat load
-        Image blackCat = Png.Load(@"/home/ddcloud/Documents/BlackCat.png");
-        ValidateImage(blackCat, 220, 220);
+        string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
+        Image blackCat = Jpg.Load(filepath);
+        ValidateImagePng(blackCat, BlackCatLogicalName);
         blackCat.SetAlphaPercentage(0.5);
         //yellow cat load
-        Image yellowCat = Jpg.Load(@"/home/ddcloud/Documents/SquareCat.jpg");
-        ValidateImage(yellowCat, 600, 701);
+        string filepath2 = SaveEmbeddedResourceToFile(SquareCatLogicalName);
+        Image yellowCat = Jpg.Load(filepath2);
+        ValidateImageJpeg(yellowCat, SquareCatLogicalName);
         yellowCat.Draw(blackCat, 0, 0);
-        ValidateImage(yellowCat, 600, 701);
-        //write
-        Png.WriteToFile(yellowCat, @"/home/ddcloud/Documents/DrawAndTransparencyTest.png");
+        ValidateImageJpeg(yellowCat, SquareCatLogicalName);
     }
 }
 
