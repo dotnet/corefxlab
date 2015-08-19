@@ -8,29 +8,29 @@ namespace System.Drawing.Graphics
     public static class ImageExtensions
     {
 
-        public static double[,] GreyScaleMatrix = { { 1, 0, 0, 0 },
+        public static readonly double[,] GreyScaleMatrix = { { 1, 0, 0, 0 },
                                                       { 0, 0.3, 0.3, 0.3},
                                                       { 0, 0.59, 0.59, 0.59},
                                                       { 0, 0.11, 0.11, 0.11 } };
 
-        public static double[,] SepiaMatrix = { {1, 0, 0, 0},
+        public static readonly double[,] SepiaMatrix = { {1, 0, 0, 0},
                                                  {0, 0.393, 0.349, 0.272 },
                                                  {0, 0.769, 0.686,0.534},
                                                  {0 ,0.189, 0.168 , 0.131}
                                                  };
 
-        public static double[,] NegativeMatrix = { {1, 0, 0, 0},
+        public static readonly double[,] NegativeMatrix = { {1, 0, 0, 0},
                                                 {0, -1, 0, 0 },
                                                 {0, 0, -1, 0},
                                                 { 0 , 0, 0, -1}
                                                  };
 
-        //test...
-        public static double[,] AlphaMatrix040 = { {0.4, 0, 0, 0},
-                                                   {0, 1, 0, 0 },
-                                                   {0, 0, 1, 0},
-                                                   {0, 0, 0, 1}
-                                                 };
+        ////test...
+        //public static readonly double[,] AlphaMatrix040 = { {0.4, 0, 0, 0},
+        //                                           {0, 1, 0, 0 },
+        //                                           {0, 0, 1, 0},
+        //                                           {0, 0, 0, 1}
+        //                                         };
 
         //Resizing
         public static Image Resize(this Image sourceImage, int width, int height)
