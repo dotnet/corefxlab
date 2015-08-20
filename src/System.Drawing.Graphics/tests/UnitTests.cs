@@ -305,6 +305,60 @@ public partial class GraphicsUnitTests
     }
 
 
+    /*Tests CircleCrop*/
+
+    //Tests filpath
+    //Tests jpg
+    [Fact]
+    public void WhenCropingAnJpgImageFromFileGiveACorrectCroppedImage()
+    {
+        //checking with cat image
+        string filepath = @"C:\Users\t-roblo\Pictures\PerfTestImages\jpgcat.jpg";
+        Image avatarImage = Jpg.Load(filepath);
+        Image newImage = avatarImage.CircleCrop();
+        Png.WriteToFile(newImage, @"C:\Users\t-roblo\Pictures\jpgcatf.png");
+    }
+    //Tests png
+    [Fact]
+    public void WhenCropingAnPngImageFromFileGiveACorrectCroppedImage()
+    {
+        //checking with cat image
+        string filepath = @"C:\Users\t-roblo\Pictures\PerfTestImages\pngcat.png";
+        Image avatarImage = Png.Load(filepath);
+        Image newImage = avatarImage.CircleCrop();
+        Png.WriteToFile(newImage, @"C:\Users\t-roblo\Pictures\pngcatf.png");
+    }
+
+    //Tests stream
+    //Tests jpg
+    [Fact]
+    public void WhenCropingAnJpgImageFromFileStreamACorrectCroppedImage()
+    {
+        //checking with cat image
+        using (FileStream filestream = new FileStream(@"C:\Users\t-roblo\Pictures\PerfTestImages\jpgcat.jpg", FileMode.Open))
+        {
+            Image avatarImage = Jpg.Load(filestream);
+            Image newImage = avatarImage.CircleCrop();
+            Png.WriteToFile(newImage, @"C:\Users\t-roblo\Pictures\jpgcats.png");
+        }
+
+    }
+
+    //Tests png
+    [Fact]
+    public void WhenCropingAnPngImageFromFileStreamACorrectCroppedImage()
+    {
+        //checking with cat image
+        using (FileStream filestream = new FileStream(@"C:\Users\t-roblo\Pictures\PerfTestImages\pngcat.png", FileMode.Open))
+        {
+            Image avatarImage = Png.Load(filestream);
+            Image newImage = avatarImage.CircleCrop();
+            Png.WriteToFile(newImage, @"C:\Users\t-roblo\Pictures\pngcats.png");
+        }
+
+    }
+
+
     /* Test WriteToFile */
     [Fact]
     public void WhenWritingABlankCreatedJpegToAValidFileWriteToAValidFile()
