@@ -213,10 +213,8 @@ static class Program
 
         // Packages
         properties.Packages = new List<string>();
-        properties.Packages.Add(@"""Microsoft.NETCore"": ""5.0.0""");
-        properties.Packages.Add(@"""Microsoft.NETCore.Runtime.CoreCLR-x86"": ""1.0.0""");
+        properties.Packages.Add(@"""Microsoft.NETCore.Console"": ""1.0.0-beta-*""");
         properties.Packages.Add(@"""Microsoft.NETCore.ConsoleHost-x86"": ""1.0.0-beta-23123""");
-        properties.Packages.Add(@"""System.Console"": ""4.0.0-beta-23123""");
 
         // References
         properties.References = new List<string>();
@@ -350,17 +348,17 @@ static class Program
 
     static void CreateDefaultProjectJson(Properties properties)
     {
-        using(var file = new StreamWriter(Path.Combine(properties.ToolsDirectory, "project.json"), false))
+        using (var file = new StreamWriter(Path.Combine(properties.ToolsDirectory, "project.json"), false))
         {
             file.WriteLine(@"{");
             file.WriteLine(@"    ""dependencies"": {");
 
-            for(int index=0; index<properties.Packages.Count; index++)
+            for (int index = 0; index < properties.Packages.Count; index++)
             {
                 var package = properties.Packages[index];
                 file.Write(@"        ");
                 file.Write(package);
-                if(index < properties.Packages.Count - 1)
+                if (index < properties.Packages.Count - 1)
                 {
                     file.WriteLine(",");
                 }
@@ -371,9 +369,14 @@ static class Program
             }
             file.WriteLine(@"    },");
             file.WriteLine(@"    ""frameworks"": {");
-            file.WriteLine(@"        ""netcore50"": { }");
+            file.WriteLine(@"        ""dnxcore50"": { }");
             file.WriteLine(@"    }");
             file.WriteLine(@"}");
+
+            //"runtimes": {
+            //"win7-x86": { },
+            //"win7-x64": { }
+            //},
         }
     }
 }
