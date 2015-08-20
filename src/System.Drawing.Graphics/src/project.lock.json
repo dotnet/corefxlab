@@ -125,19 +125,21 @@
     "Microsoft.NETCore.Platforms/1.0.0": {
       "sha512": "0N77OwGZpXqUco2C/ynv1os7HqdFYifvNIbveLDKqL5PZaz05Rl9enCwVBjF61aumHKueLWIJ3prnmdAXxww4A==",
       "files": [
-        "Microsoft.NETCore.Platforms.1.0.0.nupkg",
-        "Microsoft.NETCore.Platforms.1.0.0.nupkg.sha512",
+        "_rels/.rels",
         "Microsoft.NETCore.Platforms.nuspec",
-        "runtime.json"
+        "runtime.json",
+        "package/services/metadata/core-properties/36b51d4c6b524527902ff1a182a64e42.psmdcp",
+        "[Content_Types].xml"
       ]
     },
     "Microsoft.NETCore.Targets/1.0.0": {
       "sha512": "XfITpPjYLYRmAeZtb9diw6P7ylLQsSC1U2a/xj10iQpnHxkiLEBXop/psw15qMPuNca7lqgxWvzZGpQxphuXaw==",
       "files": [
-        "Microsoft.NETCore.Targets.1.0.0.nupkg",
-        "Microsoft.NETCore.Targets.1.0.0.nupkg.sha512",
+        "_rels/.rels",
         "Microsoft.NETCore.Targets.nuspec",
-        "runtime.json"
+        "runtime.json",
+        "package/services/metadata/core-properties/5413a5ed3fde4121a1c9ee8feb12ba66.psmdcp",
+        "[Content_Types].xml"
       ]
     },
     "System.Globalization/4.0.0-beta-23127": {

@@ -10,9 +10,8 @@
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ProjectGuid>{091712F4-3894-4D0B-9403-39D115621208}</ProjectGuid>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <!-- workaround until we have Dev14 nuget targets -->
     <NugetTargetFrameworkMoniker>.NETPlatform,Version=v5.0</NugetTargetFrameworkMoniker>
   </PropertyGroup>
@@ -32,13 +31,13 @@
     <Compile Include="System\Drawing\Graphics\Png.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsWindows)' == 'true' ">
-    <Compile Include="System\Drawing\Graphics\Interop\Windows\Interop.Windows.cs" />
+    <Compile Include= "System\Drawing\Graphics\Interop\Windows\Interop.Windows.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsLinux)' == 'true' ">
-    <Compile Include="System\Drawing\Graphics\Interop\Linux\Interop.Linux.cs" />
+    <Compile Include= "System\Drawing\Graphics\Interop\Linux\Interop.Linux.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsOSX)' == 'true' ">
-    <Compile Include="System\Drawing\Graphics\Interop\OSX\Interop.OSX.cs" />
+    <Compile Include= "System\Drawing\Graphics\Interop\OSX\Interop.OSX.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
