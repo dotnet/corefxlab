@@ -51,7 +51,7 @@ namespace System.Drawing.Graphics
             }
         }
 
-        ////Transparency
+        //Transparency
         public static void SetAlphaPercentage(this Image sourceImage, double opacityMultiplier)
         {
             if (opacityMultiplier > 1 || opacityMultiplier < 0)
@@ -181,6 +181,50 @@ namespace System.Drawing.Graphics
                     }
                 }
             }  
+        }
+
+        //Creating an avatar of the image
+        public static Image CircleCrop(this Image sourceImage)
+        {
+            int radius, diameter;
+            if (sourceImage.HeightInPixels < sourceImage.WidthInPixels)
+            {
+                radius = sourceImage.HeightInPixels / 2;
+            }
+
+            else
+            {
+                radius = sourceImage.WidthInPixels / 2;
+            }
+
+            diameter = 2 * radius;
+
+            Image destinationImage = Image.Create(diameter, diameter);
+
+            unsafe
+            {
+                DLLImports.gdImageStruct* pStruct = (DLLImports.gdImageStruct*)sourceImage.gdImageStructPtr;
+                DLLImports.gdImageStruct* fStruct = (DLLImports.gdImageStruct*)destinationImage.gdImageStructPtr;
+
+                for (int y = 0; y < diameter; y++)
+                {
+                    for (int x = 0; x < diameter; x++)
+                    {
+                        int currentColor = pStruct->tpixels[y][x];
+
+                        if ((x - radius) * (x - radius) + (y - radius) * (y - radius) > (radius * radius))
+                        {
+                            //mask to just get the alpha value (7 bits)
+                            double currentAlpha = (currentColor >> 24) & 0xff;
+                            currentAlpha = 127;
+                            //make a new color with the new alpha to set the pixel
+                            currentColor = (currentColor & 0x00ffffff | ((int)currentAlpha << 24));
+                        }
+                        fStruct->tpixels[y][x] = currentColor;
+                    }
+                }
+            }
+            return destinationImage;
         }
     }
 }
