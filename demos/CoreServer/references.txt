@@ -1,0 +1,7 @@
++System.Net.Sockets\4.0.10-beta-23123\ref\dotnet\System.Net.Sockets.dll
++System.Net.Primitives\4.0.10\ref\dotnet\System.Net.Primitives.dll
++System.IO\4.0.10\ref\dotnet\System.IO.dll
++System.Text.Encoding\4.0.10\ref\dotnet\System.Text.Encoding.dll
++System.Threading.Tasks\4.0.10\ref\dotnet\System.Threading.Tasks.dll
+
+

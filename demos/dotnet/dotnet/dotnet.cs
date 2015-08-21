@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -112,7 +114,14 @@ static class Program
             return;
         }
 
-        if(properties.VerboseLogging) Console.WriteLine("Initialized Properties:");
+        if (args.Length > 0 && args[0] == "/code")
+        {
+            var path = (string)Registry.GetValue("HKEY_CLASSES_ROOT\\*\\shell\\Ticino", "Icon", null);
+            Process.Start(path);
+            return;
+        }
+
+        if (properties.VerboseLogging) Console.WriteLine("Initialized Properties:");
         properties.Log(Console.Out);
 
         Adjust(Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
@@ -168,6 +177,13 @@ static class Program
         }
     }
 
+    private static void CreateNugetConfig(Properties properties)
+    {
+        using (var file = new StreamWriter(Path.Combine(properties.ToolsDirectory, "nuget.config"), false))
+        {
+        }
+    }
+
     private static void Adjust(string adjustmentFilePath, List<string> list)
     {
         if (File.Exists(adjustmentFilePath))
@@ -175,6 +191,7 @@ static class Program
             foreach (var line in File.ReadAllLines(adjustmentFilePath))
             {
                 if (String.IsNullOrWhiteSpace(line)) continue;
+                if (line.StartsWith("//")) continue; // commented out line
                 var adjustment = line.Substring(1).Trim();
                 if (line.StartsWith(" - "))
                 {
@@ -271,7 +288,17 @@ static class Program
         processSettings.CreateNoWindow = true;
         processSettings.RedirectStandardOutput = true;
         processSettings.UseShellExecute = false;
-        var cscProcess = Process.Start(processSettings);
+
+        Process cscProcess = null;
+        try {
+            cscProcess = Process.Start(processSettings);
+        }
+        catch(Win32Exception)
+        {
+            Console.WriteLine("ERROR: csc.exe needs to be on the path.");
+            return false;
+        }
+
         cscProcess.WaitForExit();
         var output = cscProcess.StandardOutput.ReadToEnd();
         Console.WriteLine(output);
@@ -342,8 +369,6 @@ static class Program
                 }
             }
         }
-
-        //webClient.DownloadFile(@"http://dist.nuget.org/win-x86-commandline/v3.1.0-beta/nuget.exe", destination);
     }
 
     static void CreateDefaultProjectJson(Properties properties)
