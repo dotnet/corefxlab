@@ -237,3 +237,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+#dotnet.exe output
+tools/
+
+
+
