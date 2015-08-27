@@ -82,6 +82,11 @@ static class Program
             Directory.CreateDirectory(properties.ToolsDirectory);
         }
 
+        if (!Directory.Exists(properties.PackagesDirectory))
+        {
+            Directory.CreateDirectory(properties.PackagesDirectory);
+        }
+
         DownloadNugetAction(properties);
 
         RestorePackagesAction(properties);
@@ -218,7 +223,8 @@ static class Program
 
     static void OutputRuntimeDependenciesAction(ProjectProperties properties)
     {
-        foreach (var dependencyFolder in properties.Dependencies) { 
+        foreach (var dependencyFolder in properties.Dependencies)
+        {
             Helpers.CopyAllFiles(dependencyFolder, properties.OutputDirectory);
         }
     }
@@ -226,7 +232,7 @@ static class Program
     static void ConvertToCoreConsoleAction(ProjectProperties properties)
     {
         var dllPath = Path.ChangeExtension(properties.OutputAssemblyPath, "dll");
-        if(File.Exists(dllPath))
+        if (File.Exists(dllPath))
         {
             File.Delete(dllPath);
         }
@@ -248,7 +254,21 @@ static class Program
         processSettings.Arguments = "restore " + projectFile + " -PackagesDirectory " + properties.PackagesDirectory;
         processSettings.CreateNoWindow = true;
         processSettings.UseShellExecute = false;
+        processSettings.RedirectStandardOutput = true;
+
+        if (IsLoggingEnabled)
+        {
+            Console.WriteLine("Executing {0}", processSettings.FileName);
+            Console.WriteLine("Arguments: {0}", processSettings.Arguments);
+            Console.WriteLine("project.json:\n{0}", File.ReadAllText(projectFile));
+        }
+
         var process = Process.Start(processSettings);
+        var output = process.StandardOutput.ReadToEnd();
+        if (IsLoggingEnabled)
+        {
+            Console.WriteLine(output);
+        }
         process.WaitForExit();
     }
 
@@ -266,7 +286,7 @@ static class Program
         using (var sourceStreamTask = client.GetStreamAsync(@"http://dist.nuget.org/win-x86-commandline/v3.1.0-beta/nuget.exe"))
         {
             sourceStreamTask.Wait();
-            using(var sourceStream = sourceStreamTask.Result)
+            using (var sourceStream = sourceStreamTask.Result)
             using (var destinationStream = new FileStream(destination, FileMode.Create, FileAccess.Write))
             {
                 byte[] buffer = new byte[1024];
@@ -345,9 +365,13 @@ static class CscAction
             return false;
         }
 
-        cscProcess.WaitForExit();
         var output = cscProcess.StandardOutput.ReadToEnd();
-        Console.WriteLine(output);
+        if (log)
+        {
+            Console.WriteLine(output);
+        }
+
+        cscProcess.WaitForExit();
 
         if (output.Contains("error CS")) return false;
         return true;
@@ -404,7 +428,7 @@ static class OtherActions
 {
     internal static void CreateNewProject(string directory)
     {
-        using (var file = new StreamWriter(Path.Combine(properties.ProjectDirectory, "main.cs"), false))
+        using (var file = new StreamWriter(Path.Combine(directory, "main.cs"), false))
         {
             file.WriteLine(@"using System;");
             file.WriteLine();
