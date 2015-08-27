@@ -46,6 +46,15 @@ static class Program
         }
     }
 
+    private static void PrintUsage()
+    {
+        string appName = Environment.GetCommandLineArgs()[0];
+        Console.WriteLine("{0}.exe [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
+        Console.WriteLine("{0}.exe /new   - creates template sources for a new console app", appName);
+        Console.WriteLine("{0}.exe /edit  - starts code editor", appName);
+        Console.WriteLine("{0}.exe /?     - help", appName);
+    }
+
     private static void Build(string[] args)
     {
         var properties = InitializeProperties(args);
@@ -93,15 +102,6 @@ static class Program
         }
 
         Console.WriteLine("bin\\{0}.exe created", properties.AssemblyName);
-    }
-
-    private static void PrintUsage()
-    {
-        string appName = Environment.GetCommandLineArgs()[0];
-        Console.WriteLine("{0}.exe [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
-        Console.WriteLine("{0}.exe /new   - creates template sources for a new console app", appName);
-        Console.WriteLine("{0}.exe /edit  - starts code editor", appName);
-        Console.WriteLine("{0}.exe /?     - help", appName);
     }
 
     static void Log(this ProjectProperties project, TextWriter log)
