@@ -13,41 +13,49 @@ using System.Text;
 
 static class Program
 {
-    static bool ShouldLog;
+    static bool IsLoggingEnabled;
 
     static void Main(string[] args)
     {
-        if(args.Length > 0 && (args[0] == "/?" || args[0]=="/help"))
+        if (args.Length == 0)
         {
-            string appName = Environment.GetCommandLineArgs()[0];
-            Console.WriteLine("{0}.exe [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
-            Console.WriteLine("{0}.exe /new   - creates template sources for a new console app", appName);
-            Console.WriteLine("{0}.exe /code  - starts VS Code", appName);
-            Console.WriteLine("{0}.exe /?     - help", appName);
-            return;
+            args = new string[] { "/build" };
         }
 
+        switch (args[0])
+        {
+            case "/new":
+                OtherActions.CreateNewProject(Environment.CurrentDirectory);
+                break;
+
+            case "/edit":
+                var path = (string)Registry.GetValue("HKEY_CLASSES_ROOT\\*\\shell\\Ticino", "Icon", null);
+                Process.Start(path);
+                break;
+
+            case "/build":
+            case "/log":
+                Build(args);
+                break;
+
+            case "/help":
+            case "?":
+            default:
+                PrintUsage();
+                break;
+        }
+    }
+
+    private static void Build(string[] args)
+    {
         var properties = InitializeProperties(args);
-
-        if (args.Length > 0 && args[0] == "/new")
-        {
-            OtherActions.CreateNewProject(properties);
-            return;
-        }
-
-        if (args.Length > 0 && args[0] == "/code")
-        {
-            var path = (string)Registry.GetValue("HKEY_CLASSES_ROOT\\*\\shell\\Ticino", "Icon", null);
-            Process.Start(path);
-            return;
-        }
 
         if (args.Length > 0 && args[0] == "/log")
         {
-            ShouldLog = true;
+            IsLoggingEnabled = true;
         }
 
-        if (ShouldLog) Console.WriteLine("Initialized Properties:");
+        if (IsLoggingEnabled) Console.WriteLine("Initialized Properties:");
         properties.Log(Console.Out);
 
         Adjust(Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
@@ -55,7 +63,7 @@ static class Program
         Adjust(Path.Combine(properties.ProjectDirectory, "cscoptions.txt"), properties.CscOptions);
         Adjust(Path.Combine(properties.ProjectDirectory, "packages.txt"), properties.Packages);
 
-        if (ShouldLog) Console.WriteLine("Adjusted Properties:");
+        if (IsLoggingEnabled) Console.WriteLine("Adjusted Properties:");
         properties.Log(Console.Out);
 
         if (properties.Sources.Count == 0)
@@ -78,7 +86,7 @@ static class Program
 
         RestorePackagesAction(properties);
 
-        if (CscAction.Execute(properties, ShouldLog))
+        if (CscAction.Execute(properties, IsLoggingEnabled))
         {
             ConvertToCoreConsoleAction(properties);
             OutputRuntimeDependenciesAction(properties);
@@ -87,9 +95,18 @@ static class Program
         Console.WriteLine("bin\\{0}.exe created", properties.AssemblyName);
     }
 
+    private static void PrintUsage()
+    {
+        string appName = Environment.GetCommandLineArgs()[0];
+        Console.WriteLine("{0}.exe [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
+        Console.WriteLine("{0}.exe /new   - creates template sources for a new console app", appName);
+        Console.WriteLine("{0}.exe /edit  - starts code editor", appName);
+        Console.WriteLine("{0}.exe /?     - help", appName);
+    }
+
     static void Log(this ProjectProperties project, TextWriter log)
     {
-        if (!ShouldLog) return;
+        if (!IsLoggingEnabled) return;
         log.WriteLine("ProjectDirectory     {0}", project.ProjectDirectory);
         log.WriteLine("PackagesDirectory    {0}", project.PackagesDirectory);
         log.WriteLine("OutputDirectory      {0}", project.OutputDirectory);
@@ -385,7 +402,7 @@ static class CscAction
 
 static class OtherActions
 {
-    internal static void CreateNewProject(ProjectProperties properties)
+    internal static void CreateNewProject(string directory)
     {
         using (var file = new StreamWriter(Path.Combine(properties.ProjectDirectory, "main.cs"), false))
         {
