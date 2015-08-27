@@ -13,13 +13,18 @@ using System.Text;
 
 static class Program
 {
-    static bool IsLoggingEnabled;
+    static Log Log = new global::Log();
 
     static void Main(string[] args)
     {
         if (args.Length == 0)
         {
             args = new string[] { "/build" };
+        }
+
+        if (args[0] == "/log")
+        {
+            Log.IsEnabled = true;
         }
 
         switch (args[0])
@@ -35,7 +40,11 @@ static class Program
 
             case "/build":
             case "/log":
-                Build(args);
+                Build(args, Log);
+                break;
+
+            case "/clean":
+                Clean(args, Log);
                 break;
 
             case "/help":
@@ -46,25 +55,20 @@ static class Program
         }
     }
 
-    private static void Build(string[] args)
+    private static void Clean(string[] args, Log log)
     {
-        var properties = InitializeProperties(args);
+        var previous = log.IsEnabled;
+        log.IsEnabled = false;
+        var properties = ProjectPropertiesHelpers.InitializeProperties(args, log);
+        log.IsEnabled = previous;
+        Directory.Delete(properties.ToolsDirectory, true);
+        Directory.Delete(properties.OutputDirectory, true);
+        Directory.Delete(properties.PackagesDirectory, true);
+    }
 
-        if (args.Length > 0 && args[0] == "/log")
-        {
-            IsLoggingEnabled = true;
-        }
-
-        if (IsLoggingEnabled) Console.WriteLine("Initialized Properties:");
-        properties.Log(Console.Out);
-
-        Adjust(Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
-        Adjust(Path.Combine(properties.ProjectDirectory, "references.txt"), properties.References);
-        Adjust(Path.Combine(properties.ProjectDirectory, "cscoptions.txt"), properties.CscOptions);
-        Adjust(Path.Combine(properties.ProjectDirectory, "packages.txt"), properties.Packages);
-
-        if (IsLoggingEnabled) Console.WriteLine("Adjusted Properties:");
-        properties.Log(Console.Out);
+    private static void Build(string[] args, Log log)
+    {
+        var properties = ProjectPropertiesHelpers.InitializeProperties(args, log);
 
         if (properties.Sources.Count == 0)
         {
@@ -87,80 +91,53 @@ static class Program
             Directory.CreateDirectory(properties.PackagesDirectory);
         }
 
-        DownloadNugetAction(properties);
+        NugetAction.DownloadNugetAction(properties);
+        NugetAction.RestorePackagesAction(properties, Log);
 
-        RestorePackagesAction(properties);
-
-        if (CscAction.Execute(properties, IsLoggingEnabled))
+        if (CscAction.Execute(properties, Log))
         {
             ConvertToCoreConsoleAction(properties);
             OutputRuntimeDependenciesAction(properties);
+            Console.WriteLine("bin\\{0}.exe created", properties.AssemblyName);
         }
-
-        Console.WriteLine("bin\\{0}.exe created", properties.AssemblyName);
     }
 
     private static void PrintUsage()
     {
         string appName = Environment.GetCommandLineArgs()[0];
         Console.WriteLine("{0}.exe [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
+        Console.WriteLine("{0}.exe /clean - deletes tools, packages, and bin project subdirectories.", appName);
         Console.WriteLine("{0}.exe /new   - creates template sources for a new console app", appName);
         Console.WriteLine("{0}.exe /edit  - starts code editor", appName);
         Console.WriteLine("{0}.exe /?     - help", appName);
+        Console.WriteLine("NOTE #1: uses csc.exe in <project>\\tools subdirectory, or csc.exe on the path.");
+        Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt, cscoptions.txt can be used to override detials.");
     }
 
-    static void Log(this ProjectProperties project, TextWriter log)
+    static void OutputRuntimeDependenciesAction(ProjectProperties properties)
     {
-        if (!IsLoggingEnabled) return;
-        log.WriteLine("ProjectDirectory     {0}", project.ProjectDirectory);
-        log.WriteLine("PackagesDirectory    {0}", project.PackagesDirectory);
-        log.WriteLine("OutputDirectory      {0}", project.OutputDirectory);
-        log.WriteLine("ToolsDirectory       {0}", project.ToolsDirectory);
-        log.WriteLine("ExecutableFilename   {0}", project.AssemblyName);
-        log.WriteLine("csc.exe Path         {0}", project.CscPath);
-        log.WriteLine("output path          {0}", project.OutputAssemblyPath);
-        LogList(project.Sources, "SOURCES", log);
-        LogList(project.Packages, "PACKAGES", log);
-        LogList(project.References, "REFERENCES", log);
-        LogList(project.Dependencies, "DEPENDENCIES", log);
-        LogList(project.CscOptions, "CSCOPTIONS", log);
-        log.WriteLine();
-    }
-
-    static void LogList(List<string> list, string listName, TextWriter log)
-    {
-        log.WriteLine("{0}:", listName);
-        foreach (var str in list)
+        foreach (var dependencyFolder in properties.Dependencies)
         {
-            log.Write('\t');
-            log.WriteLine(str);
+            Helpers.CopyAllFiles(dependencyFolder, properties.OutputDirectory);
         }
     }
 
-    private static void Adjust(string adjustmentFilePath, List<string> list)
+    static void ConvertToCoreConsoleAction(ProjectProperties properties)
     {
-        if (File.Exists(adjustmentFilePath))
+        var dllPath = Path.ChangeExtension(properties.OutputAssemblyPath, "dll");
+        if (File.Exists(dllPath))
         {
-            foreach (var line in File.ReadAllLines(adjustmentFilePath))
-            {
-                if (String.IsNullOrWhiteSpace(line)) continue;
-                if (line.StartsWith("//")) continue; // commented out line
-                var adjustment = line.Substring(1).Trim();
-                if (line.StartsWith(" - "))
-                {
-                    list.Remove(adjustment);
-                }
-                else
-                {
-                    list.Add(adjustment);
-                }
-            }
+            File.Delete(dllPath);
         }
+        File.Move(properties.OutputAssemblyPath, dllPath);
+        File.Copy(Path.Combine(properties.PackagesDirectory, @"Microsoft.NETCore.ConsoleHost-x86\1.0.0-beta-23123\runtimes\win7-x86\native\CoreConsole.exe"), properties.OutputAssemblyPath);
     }
+}
 
-    private static ProjectProperties InitializeProperties(string[] args)
+static class ProjectPropertiesHelpers
+{
+    public static ProjectProperties InitializeProperties(string[] args, Log log)
     {
-
         // General Properites
         ProjectProperties properties = new ProjectProperties();
 
@@ -203,10 +180,60 @@ static class Program
         properties.CscOptions.Add("/nostdlib");
         properties.CscOptions.Add("/noconfig");
 
+        LogProperties(log, properties, "Initialized Properties Log:");
+
+        Adjust(Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
+        Adjust(Path.Combine(properties.ProjectDirectory, "references.txt"), properties.References);
+        Adjust(Path.Combine(properties.ProjectDirectory, "cscoptions.txt"), properties.CscOptions);
+        Adjust(Path.Combine(properties.ProjectDirectory, "packages.txt"), properties.Packages);
+
+        LogProperties(log, properties, "Adjusted Properties Log:");
+
         return properties;
     }
 
-    private static void FindCompiler(ProjectProperties properties)
+    static void LogProperties(this Log log, ProjectProperties project, string heading)
+    {
+        if (!log.IsEnabled) return;
+
+        log.WriteLine(heading);
+        log.WriteLine("ProjectDirectory     {0}", project.ProjectDirectory);
+        log.WriteLine("PackagesDirectory    {0}", project.PackagesDirectory);
+        log.WriteLine("OutputDirectory      {0}", project.OutputDirectory);
+        log.WriteLine("ToolsDirectory       {0}", project.ToolsDirectory);
+        log.WriteLine("ExecutableFilename   {0}", project.AssemblyName);
+        log.WriteLine("csc.exe Path         {0}", project.CscPath);
+        log.WriteLine("output path          {0}", project.OutputAssemblyPath);
+        log.WriteList(project.Sources, "SOURCES");
+        log.WriteList(project.Packages, "PACKAGES");
+        log.WriteList(project.References, "REFERENCES");
+        log.WriteList(project.Dependencies, "DEPENDENCIES");
+        log.WriteList(project.CscOptions, "CSCOPTIONS");
+        log.WriteLine("-------------------------------------------------");
+    }
+
+    static void Adjust(string adjustmentFilePath, List<string> list)
+    {
+        if (File.Exists(adjustmentFilePath))
+        {
+            foreach (var line in File.ReadAllLines(adjustmentFilePath))
+            {
+                if (String.IsNullOrWhiteSpace(line)) continue;
+                if (line.StartsWith("//")) continue; // commented out line
+                var adjustment = line.Substring(1).Trim();
+                if (line.StartsWith(" - "))
+                {
+                    list.Remove(adjustment);
+                }
+                else
+                {
+                    list.Add(adjustment);
+                }
+            }
+        }
+    }
+
+    static void FindCompiler(ProjectProperties properties)
     {
         properties.CscPath = Path.Combine(properties.ToolsDirectory, "csc.exe");
         if (File.Exists(properties.CscPath))
@@ -220,27 +247,101 @@ static class Program
             properties.CscPath = "csc.exe";
         }
     }
+}
 
-    static void OutputRuntimeDependenciesAction(ProjectProperties properties)
+static class CscAction
+{
+    public static bool Execute(ProjectProperties properties, Log log)
     {
-        foreach (var dependencyFolder in properties.Dependencies)
+        Console.WriteLine("compiling");
+        var processSettings = new ProcessStartInfo();
+        processSettings.FileName = properties.CscPath;
+        processSettings.Arguments = properties.FormatCscArguments();
+
+        log.WriteLine("Executing {0}", processSettings.FileName);
+        log.WriteLine("Csc Arguments: {0}", processSettings.Arguments);
+
+        processSettings.CreateNoWindow = true;
+        processSettings.RedirectStandardOutput = true;
+        processSettings.UseShellExecute = false;
+
+        Process cscProcess = null;
+        try
         {
-            Helpers.CopyAllFiles(dependencyFolder, properties.OutputDirectory);
+            cscProcess = Process.Start(processSettings);
         }
+        catch (Win32Exception)
+        {
+            Console.WriteLine("ERROR: csc.exe needs to be on the path.");
+            return false;
+        }
+
+        var output = cscProcess.StandardOutput.ReadToEnd();
+        log.WriteLine(output);
+
+        cscProcess.WaitForExit();
+
+        if (output.Contains("error CS")) return false;
+        return true;
     }
 
-    static void ConvertToCoreConsoleAction(ProjectProperties properties)
+    static string FormatReferenceOption(this ProjectProperties project)
     {
-        var dllPath = Path.ChangeExtension(properties.OutputAssemblyPath, "dll");
-        if (File.Exists(dllPath))
+        var builder = new StringBuilder();
+        builder.Append(" /r:");
+        bool first = true;
+        foreach (var reference in project.References)
         {
-            File.Delete(dllPath);
+            if (!first) { builder.Append(','); }
+            else { first = false; }
+            builder.Append(Path.Combine(project.PackagesDirectory, reference));
         }
-        File.Move(properties.OutputAssemblyPath, dllPath);
-        File.Copy(Path.Combine(properties.PackagesDirectory, @"Microsoft.NETCore.ConsoleHost-x86\1.0.0-beta-23123\runtimes\win7-x86\native\CoreConsole.exe"), properties.OutputAssemblyPath);
+        builder.Append(" ");
+        return builder.ToString();
     }
 
-    static void RestorePackagesAction(ProjectProperties properties)
+    static string FormatSourcesOption(this ProjectProperties project)
+    {
+        var builder = new StringBuilder();
+        foreach (var source in Directory.EnumerateFiles(Path.Combine(project.ProjectDirectory), "*.cs"))
+        {
+            builder.Append(" ");
+            builder.Append(source);
+        }
+        return builder.ToString();
+    }
+
+    static string FormatCscOptions(this ProjectProperties project)
+    {
+        var builder = new StringBuilder();
+        foreach (var option in project.CscOptions)
+        {
+            builder.Append(" ");
+            builder.Append(option);
+        }
+        builder.Append(" ");
+        builder.Append("/out:");
+        builder.Append(project.OutputAssemblyPath);
+        builder.Append(" ");
+        return builder.ToString();
+    }
+
+    static string FormatCscArguments(this ProjectProperties project)
+    {
+        return project.FormatCscOptions() + project.FormatReferenceOption() + project.FormatSourcesOption();
+    }
+}
+
+static class NugetAction
+{
+    //static void CreateNugetConfig(ProjectProperties properties)
+    //{
+    //    using (var file = new StreamWriter(Path.Combine(properties.ToolsDirectory, "nuget.config"), false))
+    //    {
+    //    }
+    //}
+
+    public static void RestorePackagesAction(ProjectProperties properties, Log log)
     {
         Console.WriteLine("restoring packages");
 
@@ -249,6 +350,7 @@ static class Program
         {
             projectFile = Path.Combine(properties.ToolsDirectory, "project.json");
         }
+
         var processSettings = new ProcessStartInfo();
         processSettings.FileName = Path.Combine(properties.ToolsDirectory, "nuget.exe");
         processSettings.Arguments = "restore " + projectFile + " -PackagesDirectory " + properties.PackagesDirectory;
@@ -256,23 +358,18 @@ static class Program
         processSettings.UseShellExecute = false;
         processSettings.RedirectStandardOutput = true;
 
-        if (IsLoggingEnabled)
-        {
-            Console.WriteLine("Executing {0}", processSettings.FileName);
-            Console.WriteLine("Arguments: {0}", processSettings.Arguments);
-            Console.WriteLine("project.json:\n{0}", File.ReadAllText(projectFile));
-        }
+        log.WriteLine("Executing {0}", processSettings.FileName);
+        log.WriteLine("Arguments: {0}", processSettings.Arguments);
+        log.WriteLine("project.json:\n{0}", File.ReadAllText(projectFile));
 
         var process = Process.Start(processSettings);
         var output = process.StandardOutput.ReadToEnd();
-        if (IsLoggingEnabled)
-        {
-            Console.WriteLine(output);
-        }
+        log.WriteLine(output);
+
         process.WaitForExit();
     }
 
-    static void DownloadNugetAction(ProjectProperties properties)
+    public static void DownloadNugetAction(ProjectProperties properties)
     {
         CreateDefaultProjectJson(properties);
 
@@ -335,95 +432,6 @@ static class Program
     }
 }
 
-static class CscAction
-{
-    public static bool Execute(ProjectProperties properties, bool log)
-    {
-        Console.WriteLine("compiling");
-        var processSettings = new ProcessStartInfo();
-        processSettings.FileName = properties.CscPath;
-        processSettings.Arguments = properties.FormatCscArguments();
-
-        if (log)
-        {
-            Console.WriteLine("Executing {0}", processSettings.FileName);
-            Console.WriteLine("Csc Arguments: {0}", processSettings.Arguments);
-        }
-
-        processSettings.CreateNoWindow = true;
-        processSettings.RedirectStandardOutput = true;
-        processSettings.UseShellExecute = false;
-
-        Process cscProcess = null;
-        try
-        {
-            cscProcess = Process.Start(processSettings);
-        }
-        catch (Win32Exception)
-        {
-            Console.WriteLine("ERROR: csc.exe needs to be on the path.");
-            return false;
-        }
-
-        var output = cscProcess.StandardOutput.ReadToEnd();
-        if (log)
-        {
-            Console.WriteLine(output);
-        }
-
-        cscProcess.WaitForExit();
-
-        if (output.Contains("error CS")) return false;
-        return true;
-    }
-
-    static string FormatReferenceOption(this ProjectProperties project)
-    {
-        var builder = new StringBuilder();
-        builder.Append(" /r:");
-        bool first = true;
-        foreach (var reference in project.References)
-        {
-            if (!first) { builder.Append(','); }
-            else { first = false; }
-            builder.Append(Path.Combine(project.PackagesDirectory, reference));
-        }
-        builder.Append(" ");
-        return builder.ToString();
-    }
-
-    static string FormatSourcesOption(this ProjectProperties project)
-    {
-        var builder = new StringBuilder();
-        foreach (var source in Directory.EnumerateFiles(Path.Combine(project.ProjectDirectory), "*.cs"))
-        {
-            builder.Append(" ");
-            builder.Append(source);
-        }
-        return builder.ToString();
-    }
-
-    static string FormatCscOptions(this ProjectProperties project)
-    {
-        var builder = new StringBuilder();
-        foreach (var option in project.CscOptions)
-        {
-            builder.Append(" ");
-            builder.Append(option);
-        }
-        builder.Append(" ");
-        builder.Append("/out:");
-        builder.Append(project.OutputAssemblyPath);
-        builder.Append(" ");
-        return builder.ToString();
-    }
-
-    static string FormatCscArguments(this ProjectProperties project)
-    {
-        return project.FormatCscOptions() + project.FormatReferenceOption() + project.FormatSourcesOption();
-    }
-}
-
 static class OtherActions
 {
     internal static void CreateNewProject(string directory)
@@ -441,13 +449,6 @@ static class OtherActions
             file.WriteLine(@"}");
         }
     }
-
-    internal static void CreateNugetConfig(ProjectProperties properties)
-    {
-        using (var file = new StreamWriter(Path.Combine(properties.ToolsDirectory, "nuget.config"), false))
-        {
-        }
-    }
 }
 
 static class Helpers
@@ -462,6 +463,34 @@ static class Helpers
                 File.Delete(destinationFilePath);
             }
             File.Copy(sourceFilePath, destinationFilePath);
+        }
+    }
+}
+
+class Log
+{
+    public bool IsEnabled = true;
+
+    public void WriteLine(string format, params object[] args)
+    {
+        if (!IsEnabled) return;
+        Console.WriteLine(format, args);
+    }
+
+    public void Write(string format, params object[] args)
+    {
+        if (!IsEnabled) return;
+        Console.Write(format, args);
+    }
+
+    public void WriteList(List<string> list, string listName)
+    {
+        if (!IsEnabled) return;
+        WriteLine("{0}:", listName);
+        foreach (var str in list)
+        {
+            Write("\t");
+            WriteLine(str);
         }
     }
 }
