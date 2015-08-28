@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dotnet.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="ProjectProperties.cs" />
   </ItemGroup>
   <ItemGroup>
