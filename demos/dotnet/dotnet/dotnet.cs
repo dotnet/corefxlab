@@ -38,8 +38,8 @@ static class Program
                 Process.Start(path);
                 break;
 
-            case "/build":
             case "/log":
+            case "/build":
                 Build(args, Log);
                 break;
 
@@ -55,9 +55,21 @@ static class Program
         }
     }
 
-    private static void Clean(string[] args, Log log)
+    static void PrintUsage()
     {
-        var previous = log.IsEnabled;
+        string appName = Environment.GetCommandLineArgs()[0];
+        Console.WriteLine("{0}.exe [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
+        Console.WriteLine("{0}.exe /clean - deletes tools, packages, and bin project subdirectories.", appName);
+        Console.WriteLine("{0}.exe /new   - creates template sources for a new console app", appName);
+        Console.WriteLine("{0}.exe /edit  - starts code editor", appName);
+        Console.WriteLine("{0}.exe /?     - help", appName);
+        Console.WriteLine("NOTE #1: uses csc.exe in <project>\\tools subdirectory, or csc.exe on the path.");
+        Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt, cscoptions.txt can be used to override detials.");
+    }
+
+    static void Clean(string[] args, Log log)
+    {
+        var previous = log.IsEnabled; //TODO: this 
         log.IsEnabled = false;
         var properties = ProjectPropertiesHelpers.InitializeProperties(args, log);
         log.IsEnabled = previous;
@@ -66,7 +78,7 @@ static class Program
         Directory.Delete(properties.PackagesDirectory, true);
     }
 
-    private static void Build(string[] args, Log log)
+    static void Build(string[] args, Log log)
     {
         var properties = ProjectPropertiesHelpers.InitializeProperties(args, log);
 
@@ -100,18 +112,6 @@ static class Program
             OutputRuntimeDependenciesAction(properties);
             Console.WriteLine("bin\\{0}.exe created", properties.AssemblyName);
         }
-    }
-
-    private static void PrintUsage()
-    {
-        string appName = Environment.GetCommandLineArgs()[0];
-        Console.WriteLine("{0}.exe [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
-        Console.WriteLine("{0}.exe /clean - deletes tools, packages, and bin project subdirectories.", appName);
-        Console.WriteLine("{0}.exe /new   - creates template sources for a new console app", appName);
-        Console.WriteLine("{0}.exe /edit  - starts code editor", appName);
-        Console.WriteLine("{0}.exe /?     - help", appName);
-        Console.WriteLine("NOTE #1: uses csc.exe in <project>\\tools subdirectory, or csc.exe on the path.");
-        Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt, cscoptions.txt can be used to override detials.");
     }
 
     static void OutputRuntimeDependenciesAction(ProjectProperties properties)
@@ -467,31 +467,4 @@ static class Helpers
     }
 }
 
-class Log
-{
-    public bool IsEnabled = true;
-
-    public void WriteLine(string format, params object[] args)
-    {
-        if (!IsEnabled) return;
-        Console.WriteLine(format, args);
-    }
-
-    public void Write(string format, params object[] args)
-    {
-        if (!IsEnabled) return;
-        Console.Write(format, args);
-    }
-
-    public void WriteList(List<string> list, string listName)
-    {
-        if (!IsEnabled) return;
-        WriteLine("{0}:", listName);
-        foreach (var str in list)
-        {
-            Write("\t");
-            WriteLine(str);
-        }
-    }
-}
 
