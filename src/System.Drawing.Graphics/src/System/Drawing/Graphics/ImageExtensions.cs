@@ -184,7 +184,7 @@ namespace System.Drawing.Graphics
         }
 
         //Creating an avatar of the image
-        public static Image CircleCrop(this Image sourceImage)
+        public static Image CircleCrop(this Image sourceImage, int xOffset, int yOffset)
         {
             int radius, diameter;
             if (sourceImage.HeightInPixels < sourceImage.WidthInPixels)
@@ -212,7 +212,7 @@ namespace System.Drawing.Graphics
                     {
                         int currentColor = pStruct->tpixels[y][x];
 
-                        if ((x - radius) * (x - radius) + (y - radius) * (y - radius) > (radius * radius))
+                        if ((x - radius - xOffset) * (x - radius - xOffset) + (y - radius - yOffset) * (y - radius - yOffset) > (radius * radius))
                         {
                             //mask to just get the alpha value (7 bits)
                             double currentAlpha = (currentColor >> 24) & 0xff;
