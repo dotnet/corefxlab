@@ -43,6 +43,10 @@ static class Program
                 Build(args, Log);
                 break;
 
+            case "/lib":
+                Build(args, Log, true);
+                break;
+
             case "/clean":
                 Clean(args, Log);
                 break;
@@ -58,7 +62,8 @@ static class Program
     static void PrintUsage()
     {
         string appName = Environment.GetCommandLineArgs()[0];
-        Console.WriteLine("{0}.exe [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
+        Console.WriteLine("{0}.exe [/log] - compiles sources in current directory. optionally logs diagnostics info.", appName);
+        Console.WriteLine("{0}.exe /lib - compiles sources in current directory ito dll.", appName);
         Console.WriteLine("{0}.exe /clean - deletes tools, packages, and bin project subdirectories.", appName);
         Console.WriteLine("{0}.exe /new   - creates template sources for a new console app", appName);
         Console.WriteLine("{0}.exe /edit  - starts code editor", appName);
@@ -78,9 +83,9 @@ static class Program
         Directory.Delete(properties.PackagesDirectory, true);
     }
 
-    static void Build(string[] args, Log log)
+    static void Build(string[] args, Log log, bool buildLib = false)
     {
-        var properties = ProjectPropertiesHelpers.InitializeProperties(args, log);
+        var properties = ProjectPropertiesHelpers.InitializeProperties(args, log, buildLib);
 
         if (properties.Sources.Count == 0)
         {
@@ -106,11 +111,14 @@ static class Program
         NugetAction.DownloadNugetAction(properties);
         NugetAction.RestorePackagesAction(properties, Log);
 
-        if (CscAction.Execute(properties, Log))
+        if (CscAction.Execute(properties, Log, buildLib))
         {
-            ConvertToCoreConsoleAction(properties);
+            if (!buildLib)
+            {
+                ConvertToCoreConsoleAction(properties);
+            }
             OutputRuntimeDependenciesAction(properties);
-            Console.WriteLine("bin\\{0}.exe created", properties.AssemblyName);
+            Console.WriteLine(buildLib ? "bin\\{0}.dll created" : "bin\\{0}.exe created", properties.AssemblyName);
         }
     }
 
@@ -136,7 +144,7 @@ static class Program
 
 static class ProjectPropertiesHelpers
 {
-    public static ProjectProperties InitializeProperties(string[] args, Log log)
+    public static ProjectProperties InitializeProperties(string[] args, Log log, bool buildLib = false)
     {
         // General Properites
         ProjectProperties properties = new ProjectProperties();
@@ -146,6 +154,7 @@ static class ProjectPropertiesHelpers
         properties.OutputDirectory = Path.Combine(properties.ProjectDirectory, "bin");
         properties.ToolsDirectory = Path.Combine(properties.ProjectDirectory, "tools");
         properties.AssemblyName = Path.GetFileName(properties.ProjectDirectory);
+        properties.OutputType = buildLib ? ".dll" : ".exe";
         FindCompiler(properties);
 
         // Sources
@@ -180,19 +189,19 @@ static class ProjectPropertiesHelpers
         properties.CscOptions.Add("/nostdlib");
         properties.CscOptions.Add("/noconfig");
 
-        LogProperties(log, properties, "Initialized Properties Log:");
+        LogProperties(log, properties, "Initialized Properties Log:", buildLib);
 
         Adjust(Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
         Adjust(Path.Combine(properties.ProjectDirectory, "references.txt"), properties.References);
         Adjust(Path.Combine(properties.ProjectDirectory, "cscoptions.txt"), properties.CscOptions);
         Adjust(Path.Combine(properties.ProjectDirectory, "packages.txt"), properties.Packages);
 
-        LogProperties(log, properties, "Adjusted Properties Log:");
+        LogProperties(log, properties, "Adjusted Properties Log:", buildLib);
 
         return properties;
     }
 
-    static void LogProperties(this Log log, ProjectProperties project, string heading)
+    static void LogProperties(this Log log, ProjectProperties project, string heading, bool buildLib = false)
     {
         if (!log.IsEnabled) return;
 
@@ -201,7 +210,7 @@ static class ProjectPropertiesHelpers
         log.WriteLine("PackagesDirectory    {0}", project.PackagesDirectory);
         log.WriteLine("OutputDirectory      {0}", project.OutputDirectory);
         log.WriteLine("ToolsDirectory       {0}", project.ToolsDirectory);
-        log.WriteLine("ExecutableFilename   {0}", project.AssemblyName);
+        log.WriteLine(buildLib ? "LibraryFilename      {0}" : "ExecutableFilename   {0}", project.AssemblyName);
         log.WriteLine("csc.exe Path         {0}", project.CscPath);
         log.WriteLine("output path          {0}", project.OutputAssemblyPath);
         log.WriteList(project.Sources, "SOURCES");
@@ -251,12 +260,12 @@ static class ProjectPropertiesHelpers
 
 static class CscAction
 {
-    public static bool Execute(ProjectProperties properties, Log log)
+    public static bool Execute(ProjectProperties properties, Log log, bool buildLib = false)
     {
         Console.WriteLine("compiling");
         var processSettings = new ProcessStartInfo();
         processSettings.FileName = properties.CscPath;
-        processSettings.Arguments = properties.FormatCscArguments();
+        processSettings.Arguments = properties.FormatCscArguments(buildLib);
 
         log.WriteLine("Executing {0}", processSettings.FileName);
         log.WriteLine("Csc Arguments: {0}", processSettings.Arguments);
@@ -311,7 +320,7 @@ static class CscAction
         return builder.ToString();
     }
 
-    static string FormatCscOptions(this ProjectProperties project)
+    static string FormatCscOptions(this ProjectProperties project, bool buildLib)
     {
         var builder = new StringBuilder();
         foreach (var option in project.CscOptions)
@@ -319,6 +328,13 @@ static class CscAction
             builder.Append(" ");
             builder.Append(option);
         }
+
+        if (buildLib)
+        {
+            builder.Append(" ");
+            builder.Append("/target:library");
+        }
+
         builder.Append(" ");
         builder.Append("/out:");
         builder.Append(project.OutputAssemblyPath);
@@ -326,9 +342,9 @@ static class CscAction
         return builder.ToString();
     }
 
-    static string FormatCscArguments(this ProjectProperties project)
+    static string FormatCscArguments(this ProjectProperties project, bool buildLib)
     {
-        return project.FormatCscOptions() + project.FormatReferenceOption() + project.FormatSourcesOption();
+        return project.FormatCscOptions(buildLib) + project.FormatReferenceOption() + project.FormatSourcesOption();
     }
 }
 

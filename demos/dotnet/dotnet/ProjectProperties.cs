@@ -9,6 +9,7 @@ namespace Microsoft.Core
     {
         public string AssemblyName;
         public string OutputDirectory;
+        public string OutputType;
 
         public readonly List<string> Sources = new List<string>();
         public readonly List<string> References = new List<string>();
@@ -18,7 +19,7 @@ namespace Microsoft.Core
 
         public string OutputAssemblyPath
         {
-            get { return Path.Combine(OutputDirectory, AssemblyName + ".exe"); }
+            get { return Path.Combine(OutputDirectory, AssemblyName + OutputType); }
         }
 
         internal string ProjectDirectory;
