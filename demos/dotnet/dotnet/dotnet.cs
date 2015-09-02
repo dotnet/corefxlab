@@ -62,12 +62,12 @@ static class Program
     static void PrintUsage()
     {
         string appName = Environment.GetCommandLineArgs()[0];
-        Console.WriteLine("{0}.exe [/log] - compiles sources in current directory. optionally logs diagnostics info.", appName);
-        Console.WriteLine("{0}.exe /lib - compiles sources in current directory ito dll.", appName);
-        Console.WriteLine("{0}.exe /clean - deletes tools, packages, and bin project subdirectories.", appName);
-        Console.WriteLine("{0}.exe /new   - creates template sources for a new console app", appName);
-        Console.WriteLine("{0}.exe /edit  - starts code editor", appName);
-        Console.WriteLine("{0}.exe /?     - help", appName);
+        Console.WriteLine("{0} [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
+        Console.WriteLine("{0} /lib - compiles sources in current directory ito dll.", appName);
+        Console.WriteLine("{0} /clean - deletes tools, packages, and bin project subdirectories.", appName);
+        Console.WriteLine("{0} /new   - creates template sources for a new console app", appName);
+        Console.WriteLine("{0} /edit  - starts code editor", appName);
+        Console.WriteLine("{0} /?     - help", appName);
         Console.WriteLine("NOTE #1: uses csc.exe in <project>\\tools subdirectory, or csc.exe on the path.");
         Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt, cscoptions.txt can be used to override detials.");
     }
