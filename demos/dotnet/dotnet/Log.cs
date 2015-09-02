@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 class Log
 {
-    public bool IsEnabled = true;
+    public bool IsEnabled = false;
 
     public void WriteLine(string format, params object[] args)
     {
