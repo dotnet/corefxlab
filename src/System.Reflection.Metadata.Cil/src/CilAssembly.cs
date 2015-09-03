@@ -28,6 +28,7 @@ namespace System.Reflection.Metadata.Cil
         private CilHeaderOptions _headerOptions;
         private bool _isHeaderInitialized;
         private bool _isModuleInitialized;
+        private bool _disposed;
 
         #region Public APIs
 
@@ -40,6 +41,7 @@ namespace System.Reflection.Metadata.Cil
             assembly._assemblyDefinition = readers.MdReader.GetAssemblyDefinition();
             assembly._isModuleInitialized = false;
             assembly._isHeaderInitialized = false;
+            assembly._disposed = false;
             return assembly;
         }
 
@@ -299,12 +301,26 @@ namespace System.Reflection.Metadata.Cil
 
         public void Dispose()
         {
-            _readers.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion
 
         #region Private Methods
+
+        private void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _readers.Dispose();
+                }
+
+                _disposed = true;
+            }
+        }
 
         private IEnumerable<CilTypeDefinition> GetTypeDefinitions()
         {
