@@ -17,6 +17,8 @@ public partial class GraphicsUnitTests
     static string BlackCatLogicalName = "BlackCatPng";
     static string SoccerCatLogicalName = "SoccerCatJpeg";
     static string CuteCatLogicalName = "CuteCatPng";
+    static string JpegCatLogicalName = "JpegCat";
+    static string PngCatLogicalName = "PngCat";
 
     /* Performance Tests Constants */
 #if PERFORMANCE_TESTING
@@ -305,78 +307,24 @@ public partial class GraphicsUnitTests
     }
 
 
-    /*Tests CircleCrop*/
-
-    //Tests filpath
-    //Tests jpg
+    /* Test Write */
     [Fact]
-    public void WhenCropingAnJpgImageFromFileGiveACorrectCroppedImage()
-    {
-        //checking with cat image
-        string filepath = @"C:\Users\t-roblo\Pictures\PerfTestImages\jpgcat.jpg";
-        Image avatarImage = Jpg.Load(filepath);
-        Image newImage = avatarImage.CircleCrop();
-        Png.WriteToFile(newImage, @"C:\Users\t-roblo\Pictures\jpgcatf.png");
-    }
-    //Tests png
-    [Fact]
-    public void WhenCropingAnPngImageFromFileGiveACorrectCroppedImage()
-    {
-        //checking with cat image
-        string filepath = @"C:\Users\t-roblo\Pictures\PerfTestImages\pngcat.png";
-        Image avatarImage = Png.Load(filepath);
-        Image newImage = avatarImage.CircleCrop();
-        Png.WriteToFile(newImage, @"C:\Users\t-roblo\Pictures\pngcatf.png");
-    }
-
-    //Tests stream
-    //Tests jpg
-    [Fact]
-    public void WhenCropingAnJpgImageFromFileStreamACorrectCroppedImage()
-    {
-        //checking with cat image
-        using (FileStream filestream = new FileStream(@"C:\Users\t-roblo\Pictures\PerfTestImages\jpgcat.jpg", FileMode.Open))
-        {
-            Image avatarImage = Jpg.Load(filestream);
-            Image newImage = avatarImage.CircleCrop();
-            Png.WriteToFile(newImage, @"C:\Users\t-roblo\Pictures\jpgcats.png");
-        }
-
-    }
-
-    //Tests png
-    [Fact]
-    public void WhenCropingAnPngImageFromFileStreamACorrectCroppedImage()
-    {
-        //checking with cat image
-        using (FileStream filestream = new FileStream(@"C:\Users\t-roblo\Pictures\PerfTestImages\pngcat.png", FileMode.Open))
-        {
-            Image avatarImage = Png.Load(filestream);
-            Image newImage = avatarImage.CircleCrop();
-            Png.WriteToFile(newImage, @"C:\Users\t-roblo\Pictures\pngcats.png");
-        }
-
-    }
-
-
-    /* Test WriteToFile */
-    [Fact]
-    public void WhenWritingABlankCreatedJpegToAValidFileWriteToAValidFile()
+    public void WhenWritingABlankCreatedJpegToAValidFileWriteAValidFile()
     {
         Image emptyImage = Image.Create(10, 10);
         ValidateCreatedImage(emptyImage, 10, 10);
         string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".jpg");
-        Jpg.WriteToFile(emptyImage, tempFilePath);
+        Jpg.Write(emptyImage, tempFilePath);
         File.Delete(tempFilePath);
 
     }
     [Fact]
-    public void WhenWritingABlankCreatedPngToAValidFileWriteToAValidFile()
+    public void WhenWritingABlankCreatedPngToAValidFileWriteAValidFile()
     {
         Image emptyImage = Image.Create(10, 10);
         ValidateCreatedImage(emptyImage, 10, 10);
         string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".png");
-        Png.WriteToFile(emptyImage, tempFilePath);
+        Png.Write(emptyImage, tempFilePath);
         File.Delete(tempFilePath);
 
     }
@@ -387,7 +335,7 @@ public partial class GraphicsUnitTests
         Image fromFile = Jpg.Load(filepath);
         ValidateImageJpeg(fromFile, SquareCatLogicalName);
         string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".jpg");
-        Png.WriteToFile(fromFile, tempFilePath);
+        Png.Write(fromFile, tempFilePath);
         File.Delete(filepath);
         File.Delete(tempFilePath);
     }
@@ -398,7 +346,7 @@ public partial class GraphicsUnitTests
         Image fromFile = Png.Load(filepath);
         ValidateImagePng(fromFile, BlackCatLogicalName);
         string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".png");
-        Png.WriteToFile(fromFile, tempFilePath);
+        Png.Write(fromFile, tempFilePath);
         File.Delete(filepath);
         File.Delete(tempFilePath);
     }
@@ -411,7 +359,7 @@ public partial class GraphicsUnitTests
         img.SetAlphaPercentage(.2);
         ValidateImagePng(img, BlackCatLogicalName);
         string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".png");
-        Png.WriteToFile(img, tempFilePath);
+        Png.Write(img, tempFilePath);
         File.Delete(filepath);
         File.Delete(tempFilePath);
     }
@@ -425,7 +373,7 @@ public partial class GraphicsUnitTests
         img = img.Resize(400, 400);
         ValidateCreatedImage(img, 400, 400);
         string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".png");
-        Png.WriteToFile(img, tempFilePath);
+        Png.Write(img, tempFilePath);
         File.Delete(filepath);
         File.Delete(tempFilePath);
     }
@@ -439,31 +387,31 @@ public partial class GraphicsUnitTests
         ValidateCreatedImage(img, 400, 400);
         img.SetAlphaPercentage(.2);
         string tempFilePath = Path.ChangeExtension(Path.GetTempFileName(), ".png");
-        Png.WriteToFile(img, tempFilePath);
+        Png.Write(img, tempFilePath);
         File.Delete(filepath);
         File.Delete(tempFilePath);
     }
 
     /* Tests Writing to a Stream*/
     [Fact]
-    public void WhenWritingABlankCreatedJpegToAValidStreamWriteToAValidStream()
+    public void WhenWritingABlankCreatedJpegToAValidStreamWriteAValidStream()
     {
         Image img = Image.Create(100, 100);
         using (MemoryStream stream = new MemoryStream())
         {
-            Jpg.WriteToStream(img, stream);
+            Jpg.Write(img, stream);
             stream.Position = 0;
             Image img2 = Jpg.Load(stream);
             ValidateCreatedImage(img2, 100, 100);
         }
     }
     [Fact]
-    public void WhenWritingABlankCreatedPngToAValidStreamWriteToAValidStream()
+    public void WhenWritingABlankCreatedPngToAValidStreamWriteAValidStream()
     {
         Image img = Image.Create(100, 100);
         using (MemoryStream stream = new MemoryStream())
         {
-            Png.WriteToStream(img, stream);
+            Png.Write(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
             ValidateCreatedImage(img2, 100, 100);
@@ -476,7 +424,7 @@ public partial class GraphicsUnitTests
         Image img = Jpg.Load(filepath);
         using (MemoryStream stream = new MemoryStream())
         {
-            Jpg.WriteToStream(img, stream);
+            Jpg.Write(img, stream);
             stream.Position = 0;
             Image img2 = Jpg.Load(stream);
             ValidateImageJpeg(img2, SoccerCatLogicalName);
@@ -490,7 +438,7 @@ public partial class GraphicsUnitTests
         Image img = Png.Load(filepath);
         using (MemoryStream stream = new MemoryStream())
         {
-            Png.WriteToStream(img, stream);
+            Png.Write(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
             ValidateImagePng(img2, CuteCatLogicalName);
@@ -507,7 +455,7 @@ public partial class GraphicsUnitTests
         {
             img = img.Resize(40, 40);
             ValidateCreatedImage(img, 40, 40);
-            Jpg.WriteToStream(img, stream);
+            Jpg.Write(img, stream);
             stream.Position = 0;
             Image img2 = Jpg.Load(stream);
             ValidateCreatedImage(img, 40, 40);
@@ -523,7 +471,7 @@ public partial class GraphicsUnitTests
         {
             img = img.Resize(40, 40);
             ValidateCreatedImage(img, 40, 40);
-            Png.WriteToStream(img, stream);
+            Png.Write(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
             ValidateCreatedImage(img, 40, 40);
@@ -540,7 +488,7 @@ public partial class GraphicsUnitTests
         {
             img.SetAlphaPercentage(.2);
             ValidateImagePng(img, CuteCatLogicalName);
-            Png.WriteToStream(img, stream);
+            Png.Write(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
             ValidateImagePng(img2, CuteCatLogicalName);
@@ -557,7 +505,7 @@ public partial class GraphicsUnitTests
             img.SetAlphaPercentage(.2);
             img = img.Resize(400, 400);
             ValidateCreatedImage(img, 400, 400);
-            Png.WriteToStream(img, stream);
+            Png.Write(img, stream);
             stream.Position = 0;
             Image img2 = Png.Load(stream);
             ValidateCreatedImage(img2, 400, 400);
@@ -641,7 +589,7 @@ public partial class GraphicsUnitTests
         Image img1 = Jpg.Load(filepath);
         img1.ApplyMatrixMultiplier(ImageExtensions.GreyScaleMatrix);
         ValidateImageJpeg(img1, SquareCatLogicalName);
-        Jpg.WriteToFile(img1, Path.GetTempPath() + "GreyscaleCat.jpg");
+        Jpg.Write(img1, Path.GetTempPath() + "GreyscaleCat.jpg");
     }
     [Fact]
     public static void WhenAddingAGreyScaleFilterToAPngGiveAValidGreyScaledImage()
@@ -650,7 +598,7 @@ public partial class GraphicsUnitTests
         Image img1 = Png.Load(filepath);
         img1.ApplyMatrixMultiplier(ImageExtensions.GreyScaleMatrix);
         ValidateImagePng(img1, BlackCatLogicalName);
-        Png.WriteToFile(img1, Path.GetTempPath() + "GreyscaleCat.png");
+        Png.Write(img1, Path.GetTempPath() + "GreyscaleCat.png");
     }
 
     [Fact]
@@ -661,7 +609,7 @@ public partial class GraphicsUnitTests
         Image img1 = Jpg.Load(filepath);
         img1.ApplyMatrixMultiplier(ImageExtensions.SepiaMatrix);
         ValidateImageJpeg(img1, SquareCatLogicalName);
-        Jpg.WriteToFile(img1, Path.GetTempPath() + "SepiaCat.jpg");
+        Jpg.Write(img1, Path.GetTempPath() + "SepiaCat.jpg");
     }
     [Fact]
     public static void WhenAddingASepiaFilterToAPngGiveAValidGreyScaledImage()
@@ -670,7 +618,7 @@ public partial class GraphicsUnitTests
         Image img1 = Png.Load(filepath);
         img1.ApplyMatrixMultiplier(ImageExtensions.SepiaMatrix);
         ValidateImagePng(img1, CuteCatLogicalName);
-        Png.WriteToFile(img1, Path.GetTempPath() + "SepiaCat.png");
+        Png.Write(img1, Path.GetTempPath() + "SepiaCat.png");
     }
 
     [Fact]
@@ -681,7 +629,7 @@ public partial class GraphicsUnitTests
         Image img1 = Jpg.Load(filepath);
         img1.ApplyMatrixMultiplier(ImageExtensions.NegativeMatrix);
         ValidateImageJpeg(img1, SquareCatLogicalName);
-        Jpg.WriteToFile(img1, Path.GetTempPath() + "NegativeCat.jpg");
+        Jpg.Write(img1, Path.GetTempPath() + "NegativeCat.jpg");
     }
     [Fact]
     public static void WhenAddingANegativeFilterToAPngGiveAValidGreyScaledImage()
@@ -690,7 +638,57 @@ public partial class GraphicsUnitTests
         Image img1 = Png.Load(filepath);
         img1.ApplyMatrixMultiplier(ImageExtensions.NegativeMatrix);
         ValidateImagePng(img1, BlackCatLogicalName);
-        Png.WriteToFile(img1, Path.GetTempPath() + "NegativeCat.png");
+        Png.Write(img1, Path.GetTempPath() + "NegativeCat.png");
+    }
+
+    /*Tests CircleCrop*/
+
+    //Tests filpath
+    //Tests jpg
+    [Fact]
+    public void WhenCropingAnJpgImageFromFileGiveACorrectCroppedImage()
+    {
+        //checking with cat image
+        string filepath = SaveEmbeddedResourceToFile(JpegCatLogicalName);
+        Image avatarImage = Jpg.Load(filepath);
+        Image newImage = avatarImage.CircleCrop(0, 0);
+
+    }
+    //Tests png
+    [Fact]
+    public void WhenCropingAnPngImageFromFileGiveACorrectCroppedImage()
+    {
+        //checking with cat image
+        string filepath = SaveEmbeddedResourceToFile(PngCatLogicalName);
+        Image avatarImage = Png.Load(filepath);
+        Image newImage = avatarImage.CircleCrop(0, 0);
+    }
+
+    //Tests stream
+    //Tests jpg
+    [Fact]
+    public void WhenCropingAnJpgImageFromFileStreamACorrectCroppedImage()
+    {
+        string filepath = SaveEmbeddedResourceToFile(JpegCatLogicalName);
+        using (FileStream filestream = new FileStream(filepath, FileMode.Open))
+        {
+            Image avatarImage = Jpg.Load(filestream);
+            Image newImage = avatarImage.CircleCrop(0, 0);
+        }
+
+    }
+
+    //Tests png
+    [Fact]
+    public void WhenCropingAnPngImageFromFileStreamACorrectCroppedImage()
+    {
+        string filepath = SaveEmbeddedResourceToFile(PngCatLogicalName);
+        using (FileStream filestream = new FileStream(filepath, FileMode.Open))
+        {
+            Image avatarImage = Png.Load(filestream);
+            Image newImage = avatarImage.CircleCrop(0, 0);
+        }
+
     }
 
     /* ------------------Performance Tests-------------------------*/
@@ -727,12 +725,12 @@ public partial class GraphicsUnitTests
         WriteCurrentTest("LoadFilePng", numRuns);
         LoadFilePngPerfTest(numRuns);
         WriteStopWatch(stopwatchSingleThread, "LoadFilePng");
-        //WriteFileJpg
-        WriteCurrentTest("WriteFileJpeg", numRuns);
+        //WriteJpg
+        WriteCurrentTest("WriteJpeg", numRuns);
         WriteFileJpegPerfTest(numRuns);
         WriteStopWatch(stopwatchSingleThread, "WriteFileJpeg");
-        //WriteFilePng
-        WriteCurrentTest("WriteFilePng", numRuns);
+        //WritePng
+        WriteCurrentTest("WritePng", numRuns);
         WriteFilePngPerfTest(numRuns);
         WriteStopWatch(stopwatchSingleThread, "WriteFilePng");
         //ResizeJpg            
@@ -775,12 +773,12 @@ public partial class GraphicsUnitTests
         WriteCurrentTest("LoadStreamPng", numRuns);
         LoadStreamPngPerfTest(numRuns);
         WriteStopWatch(stopwatchSingleThread, "LoadStreamPng");
-        //WriteStreamJpg
-        WriteCurrentTest("WriteStreamJpeg", numRuns);
+        //WriteJpg
+        WriteCurrentTest("WriteJpeg", numRuns);
         WriteStreamJpegPerfTest(numRuns);
         WriteStopWatch(stopwatchSingleThread, "WriteStreamJpeg");
-        //WriteStreamPng
-        WriteCurrentTest("WriteStreamPng", numRuns);
+        //WritePng
+        WriteCurrentTest("WritePng", numRuns);
         WriteStreamPngPerfTest(numRuns);
         WriteStopWatch(stopwatchSingleThread, "WriteStreamPng");
 
@@ -819,8 +817,8 @@ public partial class GraphicsUnitTests
     {
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadFileJpegPerfTest");
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadFilePngPerfTest");
-        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteFileJpegPerfTest");
-        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteFilePngPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteJpegPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WritePngPerfTest");
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "ResizeJpegPerfTest");
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "ResizePngPerfTest");
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "ChangeAlphaJpegPerfTest");
@@ -831,8 +829,8 @@ public partial class GraphicsUnitTests
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "DrawPngOverJpegPerfTest");
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadStreamJpegPerfTest");
         RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "LoadStreamPngPerfTest");
-        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteStreamJpegPerfTest");
-        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteStreamPngPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WriteJpegPerfTest");
+        RunOneFuntionWithMultipleTasks(numOfTasks, numRuns, "WritePngPerfTest");
     }
 
     private static void RunOneFuntionWithMultipleTasks(int numOfTasks, int numRuns, string functionToRun)
@@ -985,10 +983,10 @@ public partial class GraphicsUnitTests
             //make sure it's going 
             if (i % 100 == 0)
             {
-                Console.WriteLine("WriteFileJpegTest :" + i);
+                Console.WriteLine("WriteJpegTest :" + i);
             }
             stopwatchSingleThread.Start();
-            Jpg.WriteToFile(_thisjpgdog, Path.ChangeExtension(Path.GetTempFileName(), ".jpg"));
+            Jpg.Write(_thisjpgdog, Path.ChangeExtension(Path.GetTempFileName(), ".jpg"));
             stopwatchSingleThread.Stop();
         }
         _thisjpgdog.ReleaseStruct();
@@ -1002,9 +1000,9 @@ public partial class GraphicsUnitTests
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine("WriteFilePngTest :" + i);
+                Console.WriteLine("WritePngTest :" + i);
             stopwatchSingleThread.Start();
-            Png.WriteToFile(_thispngdog, Path.ChangeExtension(Path.GetTempFileName(), ".png"));
+            Png.Write(_thispngdog, Path.ChangeExtension(Path.GetTempFileName(), ".png"));
             stopwatchSingleThread.Stop();
         }
         _thispngdog.ReleaseStruct();
@@ -1195,12 +1193,12 @@ public partial class GraphicsUnitTests
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine("WriteStreamJpegTest :" + i);
+                Console.WriteLine("WriteJpegTest :" + i);
 
             using (MemoryStream stream = new MemoryStream())
             {
                 stopwatchSingleThread.Start();
-                Jpg.WriteToStream(_thisjpgcat, stream);
+                Jpg.Write(_thisjpgcat, stream);
                 stopwatchSingleThread.Stop();
             }
         }
@@ -1214,12 +1212,12 @@ public partial class GraphicsUnitTests
         {
             //make sure it's going
             if (i % 100 == 0)
-                Console.WriteLine("WriteStreamPngTest :" + i);
+                Console.WriteLine("WritePngTest :" + i);
 
             using (MemoryStream stream = new MemoryStream())
             {
                 stopwatchSingleThread.Start();
-                Png.WriteToStream(_thispngcat, stream);
+                Png.Write(_thispngcat, stream);
                 stopwatchSingleThread.Stop();
             }
         }
