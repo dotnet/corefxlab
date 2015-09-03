@@ -1,20 +1,24 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+
 namespace System.Text
 {
     public struct Utf8String : IEquatable<Utf8String>, IComparable<Utf8String>
     {
+        static readonly Utf8String s_empty = new Utf8String(Array.Empty<byte>());
+
         byte[] _array;
         unsafe byte* _buffer;
-        int _bufferLength;
+        int _length;
 
         [CLSCompliant(false)]
         public unsafe Utf8String(byte* utf8, int length)
         {
             _array = null;
             _buffer = utf8;
-            _bufferLength = length;
+            _length = length;
         }
 
         public Utf8String(byte[] utf8)
@@ -23,28 +27,42 @@ namespace System.Text
             {
                 _buffer = null;
             }
-            _bufferLength = utf8.Length;
+            _length = utf8.Length;
             _array = utf8;
         }
 
-        public int Length { get { return _array == null ? _bufferLength : _array.Length; } }
+        public Utf8String(string utf16) : this(Encoding.UTF8.GetBytes(utf16))
+        {
+        }
+
+        public static Utf8String Empty
+        {
+            get { return s_empty; }
+        }
+
+        public int Length { get { return _length; } }
 
         public int CompareTo(Utf8String other) { throw new NotImplementedException(); }
 
-        public bool Equals(Utf8String other) {
+        public bool Equals(Utf8String other)
+        {
+            if (Length != other.Length)
+            {
+                return false;
+            }
+
             unsafe
             {
-                if (_buffer != null || other._buffer != null) {
+                if (_buffer != null || other._buffer != null)
+                {
                     throw new NotImplementedException();
                 }
             }
 
-            if(_array.Length != other._array.Length) {
-                return false;
-            }
-
-            for(int i=0; i<_array.Length; i++) {
-                if(_array[i] != other._array[i]) {
+            for (int i = 0; i < _array.Length; i++)
+            {
+                if (_array[i] != other._array[i])
+                {
                     return false;
                 }
             }
@@ -55,9 +73,49 @@ namespace System.Text
 
         public int CompareTo(string other) { throw new NotImplementedException(); }
 
-        public byte[] ToArray() { throw new NotImplementedException(); }
+        // operators
+        public static bool operator==(Utf8String left, Utf8String right) {
+            return left.Equals(right);
+        }
+        public static bool operator!=(Utf8String left, Utf8String right)
+        {
+            return !left.Equals(right);
+        }
+        public static bool operator ==(Utf8String left, string right)
+        {
+            return left.Equals(right);
+        }
+        public static bool operator !=(Utf8String left, string right)
+        {
+            return !left.Equals(right);
+        }
+        public static bool operator==(string left, Utf8String right)
+        {
+            return right.Equals(left);
+        }
+        public static bool operator !=(string left, Utf8String right)
+        {
+            return !right.Equals(left);
+        }
 
-        public override string ToString() { throw new NotImplementedException(); }
+        public byte[] CopyBytes() {
+            unsafe
+            {
+                if (_buffer != null) { throw new NotImplementedException(); }
+            }
+
+            var copy = new byte[_array.Length];
+            _array.CopyTo(copy, 0);
+            return copy;
+        }
+
+        public override string ToString() {
+            unsafe
+            {
+                if (_buffer != null) { throw new NotImplementedException(); }
+            }
+            return Encoding.UTF8.GetString(_array, 0, _array.Length);
+        }
 
         public override bool Equals(object obj)
         {
@@ -78,5 +136,6 @@ namespace System.Text
         public override int GetHashCode() { throw new NotImplementedException(); }
     }
 }
+
 
 
