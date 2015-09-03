@@ -27,7 +27,11 @@ static class Program
             Log.IsEnabled = true;
         }
 
-        switch (args[0])
+        var commandArgument = args[0];
+        var compilerOptions = commandArgument.Split(':');
+
+
+        switch (compilerOptions[0])
         {
             case "/new":
                 OtherActions.CreateNewProject(Environment.CurrentDirectory);
@@ -43,8 +47,26 @@ static class Program
                 Build(args, Log);
                 break;
 
-            case "/target:library":
-                Build(args, Log, true);
+            case "/recurse":
+                if (compilerOptions.Length > 1)
+                {
+                    Build(compilerOptions, Log);
+                }
+                else
+                {
+                    Console.WriteLine("Please specify the {0} compiler option.", compilerOptions[0]);
+                }
+                break;
+
+            case "/target":
+                if (compilerOptions.Length > 1)
+                {
+                    Build(args, Log, compilerOptions[1] == "library");
+                }
+                else
+                {
+                    Console.WriteLine("Please specify the {0} compiler option.", compilerOptions[0]);
+                }
                 break;
 
             case "/clean":
@@ -64,6 +86,7 @@ static class Program
         string appName = Environment.GetCommandLineArgs()[0];
         Console.WriteLine("{0} [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
         Console.WriteLine("{0} /target:library - compiles sources in current directory into dll.", appName);
+        Console.WriteLine("{0} /recurse:<wildcard> - compiles sources in current directory and subdirectories according to the wildcard specifications.", appName);
         Console.WriteLine("{0} /clean - deletes tools, packages, and bin project subdirectories.", appName);
         Console.WriteLine("{0} /new   - creates template sources for a new console app", appName);
         Console.WriteLine("{0} /edit  - starts code editor", appName);
@@ -78,9 +101,9 @@ static class Program
         log.IsEnabled = false;
         var properties = ProjectPropertiesHelpers.InitializeProperties(args, log);
         log.IsEnabled = previous;
-        Directory.Delete(properties.ToolsDirectory, true);
-        Directory.Delete(properties.OutputDirectory, true);
-        Directory.Delete(properties.PackagesDirectory, true);
+        if (Directory.Exists(properties.ToolsDirectory)) Directory.Delete(properties.ToolsDirectory, true);
+        if (Directory.Exists(properties.OutputDirectory)) Directory.Delete(properties.OutputDirectory, true);
+        if (Directory.Exists(properties.PackagesDirectory)) Directory.Delete(properties.PackagesDirectory, true);
     }
 
     static void Build(string[] args, Log log, bool buildDll = false)
@@ -158,7 +181,13 @@ static class ProjectPropertiesHelpers
         FindCompiler(properties);
 
         // Sources
-        properties.Sources.AddRange(Directory.GetFiles(properties.ProjectDirectory, "*.cs"));
+        properties.Sources.AddRange(Directory.GetFiles(properties.ProjectDirectory, "*.cs", (args.Length > 1 && args[1] == "*.cs") ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
+        //Console.WriteLine(args[1]);
+        if (args.Length > 1 && args[1] != "*.cs")
+        {
+            var subdirectoryPath = Path.Combine(properties.ProjectDirectory, args[1]);
+            properties.Sources.AddRange(Directory.GetFiles(subdirectoryPath, "*.cs"));
+        }
         if (properties.Sources.Count == 1)
         {
             properties.AssemblyName = Path.GetFileNameWithoutExtension(properties.Sources[0]);
@@ -315,7 +344,7 @@ static class CscAction
     static string FormatSourcesOption(this ProjectProperties project)
     {
         var builder = new StringBuilder();
-        foreach (var source in Directory.EnumerateFiles(Path.Combine(project.ProjectDirectory), "*.cs"))
+        foreach (var source in project.Sources)
         {
             builder.Append(" ");
             builder.Append(source);
