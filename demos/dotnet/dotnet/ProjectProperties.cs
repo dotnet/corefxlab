@@ -19,7 +19,12 @@ namespace Microsoft.Core
 
         public string OutputAssemblyPath
         {
-            get { return Path.Combine(OutputDirectory, AssemblyName + OutputType); }
+            get { return Path.Combine(OutputDirectory, AssemblyNameAndExtension); }
+        }
+
+        public string AssemblyNameAndExtension
+        {
+            get { return AssemblyName + OutputType; }
         }
 
         internal string ProjectDirectory;
