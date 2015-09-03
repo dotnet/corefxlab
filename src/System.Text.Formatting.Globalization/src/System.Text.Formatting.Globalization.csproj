@@ -18,8 +18,10 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\System.Text.Formatting\src\System.Text.Formatting.csproj">
-      <Project>{AB5C520A-B1A2-472F-8841-E8304F3539D6}</Project>
       <Name>System.Text.Formatting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.Text.Utf8\src\System.Text.Utf8.csproj">
+      <Name>System.Text.Utf8</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

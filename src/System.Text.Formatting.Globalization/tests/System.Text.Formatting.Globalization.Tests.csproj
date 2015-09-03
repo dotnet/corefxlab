@@ -24,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\System.Text.Formatting\src\System.Text.Formatting.csproj">
+      <Project>{1A77F658-6BF0-4EC4-B009-679A9F52A2AC}</Project>
       <Name>System.Text.Formatting</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\System.Text.Formatting.Globalization\src\System.Text.Formatting.Globalization.csproj">

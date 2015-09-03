@@ -3,7 +3,7 @@
   "version": -9996,
   "targets": {
     ".NETPlatform,Version=v5.0": {
-      "FluentAssertions/4.0.0-beta0001": {
+      "FluentAssertions/4.0.0": {
         "dependencies": {
           "System.Collections": "4.0.10",
           "System.Diagnostics.Debug": "4.0.10",
@@ -45,7 +45,7 @@
           "ref/dotnet/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23213": {
+      "System.Console/4.0.0-beta-23302": {
         "dependencies": {
           "System.Runtime": "4.0.0",
           "System.IO": "4.0.0"
@@ -371,7 +371,7 @@
       "xunit.runners/2.0.0-beta5-build2785": {}
     },
     "DNXCore,Version=v5.0": {
-      "FluentAssertions/4.0.0-beta0001": {
+      "FluentAssertions/4.0.0": {
         "dependencies": {
           "System.Collections": "4.0.10",
           "System.Diagnostics.Debug": "4.0.10",
@@ -418,7 +418,7 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23213": {
+      "System.Console/4.0.0-beta-23302": {
         "dependencies": {
           "System.Runtime": "4.0.20",
           "System.Runtime.InteropServices": "4.0.20",
@@ -877,11 +877,11 @@
     }
   },
   "libraries": {
-    "FluentAssertions/4.0.0-beta0001": {
-      "sha512": "nw9xD2Uj5dGQy4WamqtGqPyC7ENA9IdM+Ar42R663sr/+Ora/Hn/xwSWILebKsZ4Q9Vox50uXdaq79VQKl1O8w==",
+    "FluentAssertions/4.0.0": {
+      "sha512": "AZJ1faVNtNhEscVjFXhUZXqhuMV4/u104RCXuL70R+y2HMF+ZL8Est5xRgo8cN5pMhVfSUdsyVZVXuJBRrXUBw==",
       "files": [
-        "FluentAssertions.4.0.0-beta0001.nupkg",
-        "FluentAssertions.4.0.0-beta0001.nupkg.sha512",
+        "FluentAssertions.4.0.0.nupkg",
+        "FluentAssertions.4.0.0.nupkg.sha512",
         "FluentAssertions.nuspec",
         "lib/dotnet/FluentAssertions.Core.dll",
         "lib/dotnet/FluentAssertions.Core.pdb",
@@ -1026,12 +1026,12 @@
         "[Content_Types].xml"
       ]
     },
-    "System.Console/4.0.0-beta-23213": {
+    "System.Console/4.0.0-beta-23302": {
       "serviceable": true,
-      "sha512": "JMXpqaP1+67/fISmYRXlRm6tGQHXu6seqgY56pAuSLMxpsK5FOYqUXx7RnUIG0SmIJO25ivTfTXLDVv2wTXYAg==",
+      "sha512": "rpWEkJWW29TjVZdDz5zr8VnBv4IN9BQHmP4Ky9tEbvkdhkJRb0ZO59acXMpVD1tSM2VhGlLnq0kpdjOLNmejNA==",
       "files": [
-        "System.Console.4.0.0-beta-23213.nupkg",
-        "System.Console.4.0.0-beta-23213.nupkg.sha512",
+        "System.Console.4.0.0-beta-23302.nupkg",
+        "System.Console.4.0.0-beta-23302.nupkg.sha512",
         "System.Console.nuspec",
         "lib/DNXCore50/System.Console.dll",
         "lib/MonoAndroid10/_._",
@@ -1040,16 +1040,6 @@
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
         "ref/dotnet/System.Console.dll",
-        "ref/dotnet/System.Console.xml",
-        "ref/dotnet/de/System.Console.xml",
-        "ref/dotnet/es/System.Console.xml",
-        "ref/dotnet/fr/System.Console.xml",
-        "ref/dotnet/it/System.Console.xml",
-        "ref/dotnet/ja/System.Console.xml",
-        "ref/dotnet/ko/System.Console.xml",
-        "ref/dotnet/ru/System.Console.xml",
-        "ref/dotnet/zh-hans/System.Console.xml",
-        "ref/dotnet/zh-hant/System.Console.xml",
         "ref/MonoAndroid10/_._",
         "ref/MonoTouch10/_._",
         "ref/net46/System.Console.dll",
