@@ -32,7 +32,7 @@ namespace System.Drawing.Graphics
         }
 
         //add jpg specific method later
-        public static void WriteToFile(Image img, string filePath)
+        public static void Write(Image img, string filePath)
         {
             DLLImports.gdImageSaveAlpha(img.gdImageStructPtr, 1);
 
@@ -73,7 +73,7 @@ namespace System.Drawing.Graphics
 
         }
 
-        public static void WriteToStream(Image bmp, Stream stream)
+        public static void Write(Image bmp, Stream stream)
         {
             DLLImports.gdImageSaveAlpha(bmp.gdImageStructPtr, 1);
             
