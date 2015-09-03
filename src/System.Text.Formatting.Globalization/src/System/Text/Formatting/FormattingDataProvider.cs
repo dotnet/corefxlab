@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using System.Reflection;
-using System.Text.Utf8;
 
 namespace System.Text.Formatting
 {
@@ -39,13 +38,13 @@ namespace System.Text.Formatting
             {
                 throw new Exception("bad locale id");
             }
-            var id = new Utf8String(idBytes.Slice(0, idByteCount));
+            var id = new Utf8String(idBytes.Slice(0, idByteCount).CreateArray());
 
             int recordStart = -1;
             for (int record = 0; record < numberOfIDs; record++)
             {
                 var indexId = index.Slice(record * recordSize, idByteCount);
-                if (id.Equals(new Utf8String(indexId))) // found record
+                if (id.Equals(new Utf8String(indexId.CreateArray()))) // found record
                 {
                     var indexData = index.Slice(record * recordSize + maxIdLength);
                     recordStart = 0;

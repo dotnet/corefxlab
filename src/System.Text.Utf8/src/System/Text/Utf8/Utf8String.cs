@@ -31,7 +31,25 @@ namespace System.Text
 
         public int CompareTo(Utf8String other) { throw new NotImplementedException(); }
 
-        public bool Equals(Utf8String other) { throw new NotImplementedException(); }
+        public bool Equals(Utf8String other) {
+            unsafe
+            {
+                if (_buffer != null || other._buffer != null) {
+                    throw new NotImplementedException();
+                }
+            }
+
+            if(_array.Length != other._array.Length) {
+                return false;
+            }
+
+            for(int i=0; i<_array.Length; i++) {
+                if(_array[i] != other._array[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         public bool Equals(string other) { throw new NotImplementedException(); }
 
