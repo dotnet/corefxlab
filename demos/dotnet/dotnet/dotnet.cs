@@ -43,6 +43,10 @@ static class Program
                 Build(args, Log);
                 break;
 
+            case "/target:library":
+                Build(args, Log, true);
+                break;
+
             case "/clean":
                 Clean(args, Log);
                 break;
@@ -59,6 +63,7 @@ static class Program
     {
         string appName = Environment.GetCommandLineArgs()[0];
         Console.WriteLine("{0} [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
+        Console.WriteLine("{0} /target:library - compiles sources in current directory into dll.", appName);
         Console.WriteLine("{0} /clean - deletes tools, packages, and bin project subdirectories.", appName);
         Console.WriteLine("{0} /new   - creates template sources for a new console app", appName);
         Console.WriteLine("{0} /edit  - starts code editor", appName);
@@ -78,9 +83,9 @@ static class Program
         Directory.Delete(properties.PackagesDirectory, true);
     }
 
-    static void Build(string[] args, Log log)
+    static void Build(string[] args, Log log, bool buildDll = false)
     {
-        var properties = ProjectPropertiesHelpers.InitializeProperties(args, log);
+        var properties = ProjectPropertiesHelpers.InitializeProperties(args, log, buildDll);
 
         if (properties.Sources.Count == 0)
         {
@@ -108,9 +113,12 @@ static class Program
 
         if (CscAction.Execute(properties, Log))
         {
-            ConvertToCoreConsoleAction(properties);
+            if (!buildDll)
+            {
+                ConvertToCoreConsoleAction(properties);
+            }
             OutputRuntimeDependenciesAction(properties);
-            Console.WriteLine("bin\\{0}.exe created", properties.AssemblyName);
+            Console.WriteLine("bin\\{0} created", properties.AssemblyNameAndExtension);
         }
     }
 
@@ -136,7 +144,7 @@ static class Program
 
 static class ProjectPropertiesHelpers
 {
-    public static ProjectProperties InitializeProperties(string[] args, Log log)
+    public static ProjectProperties InitializeProperties(string[] args, Log log, bool buildDll = false)
     {
         // General Properites
         ProjectProperties properties = new ProjectProperties();
@@ -146,6 +154,7 @@ static class ProjectPropertiesHelpers
         properties.OutputDirectory = Path.Combine(properties.ProjectDirectory, "bin");
         properties.ToolsDirectory = Path.Combine(properties.ProjectDirectory, "tools");
         properties.AssemblyName = Path.GetFileName(properties.ProjectDirectory);
+        properties.OutputType = buildDll ? ".dll" : ".exe";
         FindCompiler(properties);
 
         // Sources
@@ -156,8 +165,11 @@ static class ProjectPropertiesHelpers
         }
 
         // Packages
-        properties.Packages.Add(@"""Microsoft.NETCore.Console"": ""1.0.0-beta-*""");
+        properties.Packages.Add(@"""Microsoft.NETCore"": ""5.0.0""");
+        properties.Packages.Add(@"""System.Console"": ""4.0.0-beta-23123""");
+        //properties.Packages.Add(@"""Microsoft.NETCore.Console"": ""1.0.0-beta-*""");
         properties.Packages.Add(@"""Microsoft.NETCore.ConsoleHost-x86"": ""1.0.0-beta-23123""");
+        properties.Packages.Add(@"""Microsoft.NETCore.Runtime.CoreCLR-x86"": ""1.0.0""");
 
         // References
         properties.References.Add(Path.Combine(properties.PackagesDirectory, @"System.Runtime\4.0.20\ref\dotnet\System.Runtime.dll"));
@@ -180,19 +192,19 @@ static class ProjectPropertiesHelpers
         properties.CscOptions.Add("/nostdlib");
         properties.CscOptions.Add("/noconfig");
 
-        LogProperties(log, properties, "Initialized Properties Log:");
+        LogProperties(log, properties, "Initialized Properties Log:", buildDll);
 
         Adjust(Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
         Adjust(Path.Combine(properties.ProjectDirectory, "references.txt"), properties.References);
         Adjust(Path.Combine(properties.ProjectDirectory, "cscoptions.txt"), properties.CscOptions);
         Adjust(Path.Combine(properties.ProjectDirectory, "packages.txt"), properties.Packages);
 
-        LogProperties(log, properties, "Adjusted Properties Log:");
+        LogProperties(log, properties, "Adjusted Properties Log:", buildDll);
 
         return properties;
     }
 
-    static void LogProperties(this Log log, ProjectProperties project, string heading)
+    static void LogProperties(this Log log, ProjectProperties project, string heading, bool buildDll = false)
     {
         if (!log.IsEnabled) return;
 
@@ -201,7 +213,7 @@ static class ProjectPropertiesHelpers
         log.WriteLine("PackagesDirectory    {0}", project.PackagesDirectory);
         log.WriteLine("OutputDirectory      {0}", project.OutputDirectory);
         log.WriteLine("ToolsDirectory       {0}", project.ToolsDirectory);
-        log.WriteLine("ExecutableFilename   {0}", project.AssemblyName);
+        log.WriteLine(buildDll ? "LibraryFilename      {0}" : "ExecutableFilename   {0}", project.AssemblyName);
         log.WriteLine("csc.exe Path         {0}", project.CscPath);
         log.WriteLine("output path          {0}", project.OutputAssemblyPath);
         log.WriteList(project.Sources, "SOURCES");
@@ -319,6 +331,13 @@ static class CscAction
             builder.Append(" ");
             builder.Append(option);
         }
+
+        if (string.Compare(project.OutputType, ".dll") == 0)
+        {
+            builder.Append(" ");
+            builder.Append("/target:library");
+        }
+
         builder.Append(" ");
         builder.Append("/out:");
         builder.Append(project.OutputAssemblyPath);
