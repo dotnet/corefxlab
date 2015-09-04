@@ -190,15 +190,13 @@ static class ProjectPropertiesHelpers
                 properties.Sources.AddRange(ParseProjectFile(properties.ProjectDirectory, projectFile));
             }
         }
-        else
+        properties.Sources.AddRange(Directory.GetFiles(properties.ProjectDirectory, "*.cs", (args.Length > 1 && args[1] == "*.cs") ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
+        if (args.Length > 1 && args[1] != "*.cs")
         {
-            properties.Sources.AddRange(Directory.GetFiles(properties.ProjectDirectory, "*.cs", (args.Length > 1 && args[1] == "*.cs") ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
-            if (args.Length > 1 && args[1] != "*.cs")
-            {
-                var subdirectoryPath = Path.Combine(properties.ProjectDirectory, args[1]);
-                properties.Sources.AddRange(Directory.GetFiles(subdirectoryPath, "*.cs"));
-            }
+            var subdirectoryPath = Path.Combine(properties.ProjectDirectory, args[1]);
+            properties.Sources.AddRange(Directory.GetFiles(subdirectoryPath, "*.cs"));
         }
+
         
         if (properties.Sources.Count == 1)
         {
