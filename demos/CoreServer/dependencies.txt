@@ -1,6 +1,6 @@
 +packages\System.Net.Primitives\4.0.10\lib\DNXCore50
 +packages\System.Private.Networking\4.0.0\lib\DNXCore50
-+packages\System.Net.Sockets\4.0.10-beta-23123\lib\DNXCore50
++packages\System.Net.Sockets\4.1.0-beta-23225\lib\DNXCore50
 +packages\System.Diagnostics.Tracing\4.0.20\lib\DNXCore50
 +packages\System.Runtime.Handles\4.0.0\lib\DNXCore50
 +packages\Microsoft.Win32.Primitives\4.0.0\lib\dotnet

@@ -1,1 +1,5 @@
-//+"Microsoft.AspNet.Server.Kestrel":"1.0.0-beta6" 
++"System.Text.Formatting":"0.1.0.0-d061015-3"
++"System.Net.Sockets":"4.1.0-beta-23225"
++"System.Private.Networking":"4.0.0"
+
+
