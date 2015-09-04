@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using System.Xml;
 
 static class Program
 {
@@ -29,7 +30,6 @@ static class Program
 
         var commandArgument = args[0];
         var compilerOptions = commandArgument.Split(':');
-
 
         switch (compilerOptions[0])
         {
@@ -180,14 +180,26 @@ static class ProjectPropertiesHelpers
         properties.OutputType = buildDll ? ".dll" : ".exe";
         FindCompiler(properties);
 
+        var projectFiles = Directory.GetFiles(properties.ProjectDirectory, "*.dotnetproj");
+        bool projectFileExists = projectFiles.Length > 0;
         // Sources
-        properties.Sources.AddRange(Directory.GetFiles(properties.ProjectDirectory, "*.cs", (args.Length > 1 && args[1] == "*.cs") ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
-        //Console.WriteLine(args[1]);
-        if (args.Length > 1 && args[1] != "*.cs")
+        if (projectFileExists)
         {
-            var subdirectoryPath = Path.Combine(properties.ProjectDirectory, args[1]);
-            properties.Sources.AddRange(Directory.GetFiles(subdirectoryPath, "*.cs"));
+            foreach(var projectFile in projectFiles)
+            {
+                properties.Sources.AddRange(ParseProjectFile(properties.ProjectDirectory, projectFile));
+            }
         }
+        else
+        {
+            properties.Sources.AddRange(Directory.GetFiles(properties.ProjectDirectory, "*.cs", (args.Length > 1 && args[1] == "*.cs") ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
+            if (args.Length > 1 && args[1] != "*.cs")
+            {
+                var subdirectoryPath = Path.Combine(properties.ProjectDirectory, args[1]);
+                properties.Sources.AddRange(Directory.GetFiles(subdirectoryPath, "*.cs"));
+            }
+        }
+        
         if (properties.Sources.Count == 1)
         {
             properties.AssemblyName = Path.GetFileNameWithoutExtension(properties.Sources[0]);
@@ -272,6 +284,31 @@ static class ProjectPropertiesHelpers
                 }
             }
         }
+    }
+
+    static List<string> ParseProjectFile(string projectDirectory, string projectFile)
+    {
+        var sourceFiles = new List<string>();
+        using (XmlReader xmlReader = XmlReader.Create(projectFile))
+        {
+            xmlReader.MoveToContent();
+            while (xmlReader.Read())
+            {
+                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "Compile")
+                {
+                    var sourceFile = xmlReader.GetAttribute("Include");
+                    if (sourceFile == "*.cs")
+                    {
+                        sourceFiles.AddRange(Directory.GetFiles(projectDirectory, "*.cs"));
+                    }
+                    else
+                    {
+                        sourceFiles.Add(sourceFile);
+                    }
+                }
+            }
+        }
+        return sourceFiles;
     }
 
     static void FindCompiler(ProjectProperties properties)
