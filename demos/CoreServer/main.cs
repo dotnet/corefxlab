@@ -2,8 +2,10 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.Http.Buffered;
 using System.Text;
 using System.Text.Formatting;
+using System.Text.Utf8;
 using System.Threading.Tasks;
 
 static class Program {
@@ -21,23 +23,33 @@ static class Program {
         }
         listener.Stop();
     }
-    
+
+    static Utf8String plaintextUri = new Utf8String("/plaintext");
+
     static void ProcessRequest(TcpClient socket) {
         NetworkStream stream = socket.GetStream();
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[1024]; // TODO: this should be borrowed from a pool
         while(true){
-            var read = stream.Read(buffer, 0, buffer.Length);
-            Console.WriteLine("\nread {0} bytes:", read);
-            
-            if(read > 0) {
-                var requestText = Encoding.ASCII.GetString(buffer, 0, read);
-                Console.WriteLine(requestText);
-                                
-                if(requestText.Contains("GET /plaintext")){
-                    ProcessPlainTextRequest(socket);
+            var bytesRead = stream.Read(buffer, 0, buffer.Length);
+            unsafe
+            {
+                fixed (byte* pBuffer = buffer)
+                {
+                    var bufferSpan = new ByteSpan(pBuffer, bytesRead);
+                    HttpRequestLine request;
+                    if (!HttpRequestParser.TryParseRequestLine(bufferSpan, out request))
+                    {
+                        Console.WriteLine("request could not be parsed");
+                    }
+
+                    if (request.RequestUri.Equals(plaintextUri))
+                    {
+                        ProcessPlainTextRequest(socket);
+                    }
                 }
             }
-            if (read < buffer.Length)
+
+            if (bytesRead < buffer.Length)
             {
                 break;
             }
