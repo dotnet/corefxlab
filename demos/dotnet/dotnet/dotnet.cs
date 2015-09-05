@@ -59,13 +59,17 @@ static class Program
                 break;
 
             case "/target":
-                if (compilerOptions.Length > 1)
+                if (compilerOptions.Length > 1 && compilerOptions[1] == "library")
                 {
-                    Build(args, Log, compilerOptions[1] == "library");
+                    Build(args, Log, true);
+                }
+                else if (compilerOptions.Length > 1 && compilerOptions[1] == "exe")
+                {
+                    Build(args, Log);
                 }
                 else
                 {
-                    Console.WriteLine("Please specify the {0} compiler option.", compilerOptions[0]);
+                    Console.WriteLine("Please specify the {0} compiler option correctly.", compilerOptions[0]);
                 }
                 break;
 
@@ -84,7 +88,9 @@ static class Program
     static void PrintUsage()
     {
         string appName = Environment.GetCommandLineArgs()[0];
-        Console.WriteLine("{0} [/log] - compiles sources in current direcotry. optionally logs diagnostics info.", appName);
+        Console.WriteLine("{0} [/log] - compiles sources in current directory into exe. optionally logs diagnostics info.", appName);
+        //Console.WriteLine("{0} [ProjectFile] - compiles sources in current directory into exe. optionally use specified project file.", appName); // TODO: If more projects present, the command line needs to explicitly pass the one project that should be used.
+        Console.WriteLine("{0} /target:exe - compiles sources in current directory into exe.", appName);
         Console.WriteLine("{0} /target:library - compiles sources in current directory into dll.", appName);
         Console.WriteLine("{0} /recurse:<wildcard> - compiles sources in current directory and subdirectories according to the wildcard specifications.", appName);
         Console.WriteLine("{0} /clean - deletes tools, packages, and bin project subdirectories.", appName);
@@ -180,11 +186,11 @@ static class ProjectPropertiesHelpers
         properties.OutputType = buildDll ? ".dll" : ".exe";
         FindCompiler(properties);
 
-        var projectFile = Directory.GetFiles(properties.ProjectDirectory, "*.dotnetproj");
+        var projectFiles = Directory.GetFiles(properties.ProjectDirectory, "*.dotnetproj");
         // Sources
-        if (projectFile.Length > 0)
+        if (projectFiles.Length == 1)
         {
-            properties.Sources.AddRange(ParseProjectFile(properties, projectFile[0]));
+            properties.Sources.AddRange(ParseProjectFile(properties, projectFiles[0]));
         }
 
         var sourceFiles = Directory.GetFiles(properties.ProjectDirectory, "*.cs", (args.Length > 1 && args[1] == "*.cs") ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
