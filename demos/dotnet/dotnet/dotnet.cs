@@ -478,12 +478,22 @@ static class CscAction
 
 static class NugetAction
 {
-    //static void CreateNugetConfig(ProjectProperties properties)
-    //{
-    //    using (var file = new StreamWriter(Path.Combine(properties.ToolsDirectory, "nuget.config"), false))
-    //    {
-    //    }
-    //}
+    static void CreateNugetConfig(ProjectProperties properties)
+    {
+        using (var file = new StreamWriter(Path.Combine(properties.ToolsDirectory, "nuget.config"), false))
+        {
+            file.WriteLine(@"<?xml version = ""1.0"" encoding=""utf-8""?>");
+            file.WriteLine(@"<configuration>");
+            file.WriteLine(@"    <packageSources>");
+
+            file.WriteLine(@"        <add key = ""netcore-prototype"" value=""https://www.myget.org/F/netcore-package-prototyping""/>");
+            file.WriteLine(@"        <add key = ""nuget.org"" value = ""https://api.nuget.org/v3/index.json"" protocolVersion = ""3""/>");
+            file.WriteLine(@"        <add key = ""nuget.org"" value = ""https://www.nuget.org/api/v2/""/>");
+
+            file.WriteLine(@"    </packageSources>");
+            file.WriteLine(@"</configuration>");
+        }
+    }
 
     public static void RestorePackagesAction(ProjectProperties properties, Log log)
     {
@@ -497,10 +507,11 @@ static class NugetAction
 
         var processSettings = new ProcessStartInfo();
         processSettings.FileName = Path.Combine(properties.ToolsDirectory, "nuget.exe");
-        processSettings.Arguments = "restore " + projectFile + " -PackagesDirectory " + properties.PackagesDirectory;
+        processSettings.Arguments = "restore " + projectFile + " -PackagesDirectory " + properties.PackagesDirectory + " -ConfigFile " + Path.Combine(properties.ToolsDirectory, "nuget.config");
         processSettings.CreateNoWindow = true;
         processSettings.UseShellExecute = false;
         processSettings.RedirectStandardOutput = true;
+        processSettings.RedirectStandardError = true;
 
         log.WriteLine("Executing {0}", processSettings.FileName);
         log.WriteLine("Arguments: {0}", processSettings.Arguments);
@@ -508,14 +519,16 @@ static class NugetAction
 
         var process = Process.Start(processSettings);
         var output = process.StandardOutput.ReadToEnd();
+        var error = process.StandardError.ReadToEnd();
         log.WriteLine(output);
-
+        log.Error(error);        
         process.WaitForExit();
     }
 
     public static void DownloadNugetAction(ProjectProperties properties)
     {
         CreateDefaultProjectJson(properties);
+        CreateNugetConfig(properties);
 
         string destination = Path.Combine(properties.ToolsDirectory, "nuget.exe");
         if (File.Exists(destination))
