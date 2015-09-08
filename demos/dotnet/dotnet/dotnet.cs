@@ -44,6 +44,7 @@ static class Program
 
             case "/log":
             case "/build":
+            case "/unsafe":
                 Build(args, Log);
                 break;
 
@@ -94,6 +95,7 @@ static class Program
         Console.WriteLine("{0} /target:library - compiles sources in current directory into dll.", appName);
         Console.WriteLine("{0} /recurse:<wildcard> - compiles sources in current directory and subdirectories according to the wildcard specifications.", appName);
         Console.WriteLine("{0} /clean - deletes tools, packages, and bin project subdirectories.", appName);
+        Console.WriteLine("{0} /unsafe - allows compilation of code that uses the unsafe keyword.", appName);
         Console.WriteLine("{0} /new   - creates template sources for a new console app", appName);
         Console.WriteLine("{0} /edit  - starts code editor", appName);
         Console.WriteLine("{0} /?     - help", appName);
@@ -240,6 +242,10 @@ static class ProjectPropertiesHelpers
         // CSC OPTIONS
         properties.CscOptions.Add("/nostdlib");
         properties.CscOptions.Add("/noconfig");
+        if (Array.Exists(args, element => element == "/unsafe")) 
+        {
+            properties.CscOptions.Add("/unsafe");
+        }
 
         LogProperties(log, properties, "Initialized Properties Log:", buildDll);
 
