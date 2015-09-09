@@ -45,6 +45,16 @@ static class Program
             case "/log":
             case "/build":
             case "/unsafe":
+            case "/debug":
+            case "/optimize":
+                var debugSpecifications = new List<String>() { "full", "pdbonly" };
+
+                if (compilerOptions[0] == "/debug" && (compilerOptions.Length < 2 || !debugSpecifications.Contains(compilerOptions[1])))
+                {
+                    Console.WriteLine("Please specify the {0} compiler option correctly.", compilerOptions[0]);
+                    break;
+                }
+
                 Build(args, Log);
                 break;
 
@@ -96,6 +106,8 @@ static class Program
         Console.WriteLine("{0} /recurse:<wildcard> - compiles sources in current directory and subdirectories according to the wildcard specifications.", appName);
         Console.WriteLine("{0} /clean - deletes tools, packages, and bin project subdirectories.", appName);
         Console.WriteLine("{0} /unsafe - allows compilation of code that uses the unsafe keyword.", appName);
+        Console.WriteLine("{0} /debug:{{full|pdbonly}} - the compiler generates debugging information.", appName);
+        Console.WriteLine("{0} /optimize - enables optimizations performed by the compiler.", appName);
         Console.WriteLine("{0} /new   - creates template sources for a new console app", appName);
         Console.WriteLine("{0} /edit  - starts code editor", appName);
         Console.WriteLine("{0} /?     - help", appName);
@@ -245,6 +257,18 @@ static class ProjectPropertiesHelpers
         if (Array.Exists(args, element => element == "/unsafe")) 
         {
             properties.CscOptions.Add("/unsafe");
+        }
+
+        if (Array.Exists(args, element => element == "/optimize"))
+        {
+            properties.CscOptions.Add("/optimize");
+        }
+
+        var debugOption = Array.Find(args, element => element.StartsWith("/debug"));
+
+        if (debugOption != null)
+        {
+           properties.CscOptions.Add(debugOption);
         }
 
         LogProperties(log, properties, "Initialized Properties Log:", buildDll);
