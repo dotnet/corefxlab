@@ -45,17 +45,8 @@ static class Program
             case "/log":
             case "/build":
             case "/unsafe":
-            case "/platform":
             case "/debug":
             case "/optimize":
-                var platformSpecifications = new List<String>() { "anycpu", "anycpu32bitpreferred", "ARM", "x64", "x86", "Itanium" };
-                
-                if (compilerOptions[0] == "/platform" && (compilerOptions.Length < 2 || !platformSpecifications.Contains(compilerOptions[1])))
-                {
-                    Console.WriteLine("Please specify the {0} compiler option correctly.", compilerOptions[0]);
-                    break;
-                }
-
                 var debugSpecifications = new List<String>() { "full", "pdbonly" };
 
                 if (compilerOptions[0] == "/debug" && (compilerOptions.Length < 2 || !debugSpecifications.Contains(compilerOptions[1])))
@@ -115,7 +106,6 @@ static class Program
         Console.WriteLine("{0} /recurse:<wildcard> - compiles sources in current directory and subdirectories according to the wildcard specifications.", appName);
         Console.WriteLine("{0} /clean - deletes tools, packages, and bin project subdirectories.", appName);
         Console.WriteLine("{0} /unsafe - allows compilation of code that uses the unsafe keyword.", appName);
-        Console.WriteLine("{0} /platform:{{anycpu|anycpu32bitpreferred|ARM|x86|x64|Itanium}} - specify which platform this code can run on, default is anycpu.", appName);
         Console.WriteLine("{0} /debug:{{full|pdbonly}} - the compiler generates debugging information.", appName);
         Console.WriteLine("{0} /optimize - enables optimizations performed by the compiler.", appName);
         Console.WriteLine("{0} /new   - creates template sources for a new console app", appName);
@@ -272,13 +262,6 @@ static class ProjectPropertiesHelpers
         if (Array.Exists(args, element => element == "/optimize"))
         {
             properties.CscOptions.Add("/optimize");
-        }
-
-        var platformOption = Array.Find(args, element => element.StartsWith("/platform"));
-
-        if (platformOption != null)
-        {
-            if (!(platformOption == "/platform:anycpu32bitpreferred" && buildDll)) properties.CscOptions.Add(platformOption);
         }
 
         var debugOption = Array.Find(args, element => element.StartsWith("/debug"));
