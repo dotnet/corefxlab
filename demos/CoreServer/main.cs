@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -31,6 +32,12 @@ static class Program {
         byte[] buffer = new byte[1024]; // TODO: this should be borrowed from a pool
         while(true){
             var bytesRead = stream.Read(buffer, 0, buffer.Length);
+            if(bytesRead == 0)
+            {
+                break;
+            }
+
+            Console.WriteLine("Read {0} bytes, Payload: {1}", bytesRead, Encoding.ASCII.GetString(buffer, 0, bytesRead));
             unsafe
             {
                 fixed (byte* pBuffer = buffer)

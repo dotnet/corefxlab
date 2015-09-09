@@ -230,7 +230,7 @@ namespace System.Net.Http.Buffered
 
         public static bool TryParseMethod(ByteSpan buffer, out HttpMethod method, out int parsedBytes)
         {
-            if(buffer.StartsWith(s_Get.Bytes))
+            if (buffer.StartsWith(s_Get.Bytes))
             {
                 method = HttpMethod.Get;
                 parsedBytes = s_Get.Length;
