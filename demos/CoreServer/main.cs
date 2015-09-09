@@ -10,58 +10,24 @@ using System.Text.Utf8;
 using System.Threading.Tasks;
 
 static class Program {
-    static bool receiveRequests = true;
     
     static void Main() {
         Console.WriteLine(".NET Core Micro-Server");
+
         var address = new IPAddress(new byte[] {127, 0, 0, 1});
-        var listener = new TcpListener(address, 8080);
-        listener.Start();
-        while (receiveRequests)
-        {
-            TcpClient client = listener.AcceptTcpClient();
-            Task.Run(() => { ProcessRequest(client); });
-        }
-        listener.Stop();
+
+        SocketServer.Listen(address, 8080, (socket) => {
+            ProcessRequest(socket);
+        });
     }
 
-    static Utf8String plaintextUri = new Utf8String("/plaintext");
-
     static void ProcessRequest(TcpClient socket) {
-        NetworkStream stream = socket.GetStream();
-        byte[] buffer = new byte[1024]; // TODO: this should be borrowed from a pool
-        while(true){
-            var bytesRead = stream.Read(buffer, 0, buffer.Length);
-            if(bytesRead == 0)
+        HttpServer.OnRequest(socket, (request) => {
+            if (request.RequestUri.Equals("/plaintext"))
             {
-                break;
+                ProcessPlainTextRequest(socket);
             }
-
-            Console.WriteLine("Read {0} bytes, Payload: {1}", bytesRead, Encoding.ASCII.GetString(buffer, 0, bytesRead));
-            unsafe
-            {
-                fixed (byte* pBuffer = buffer)
-                {
-                    var bufferSpan = new ByteSpan(pBuffer, bytesRead);
-                    HttpRequestLine request;
-                    if (!HttpRequestParser.TryParseRequestLine(bufferSpan, out request))
-                    {
-                        Console.WriteLine("request could not be parsed");
-                    }
-
-                    if (request.RequestUri.Equals(plaintextUri))
-                    {
-                        ProcessPlainTextRequest(socket);
-                    }
-                }
-            }
-
-            if (bytesRead < buffer.Length)
-            {
-                break;
-            }
-        }
-        socket.Dispose();
+        });
     }
         
     static void ProcessPlainTextRequest(TcpClient client){
@@ -75,5 +41,60 @@ static class Program {
         writer.WriteLine();
         writer.WriteLine("Hello, World!");
         writer.Dispose();
+    }
+}
+
+static class SocketServer
+{
+    //TODO: this should return cancellation source
+    public static void Listen(IPAddress address, int port, Action<TcpClient> handler)
+    {
+        var listener = new TcpListener(address, port);
+        listener.Start();
+        while (true)
+        {
+            TcpClient client = listener.AcceptTcpClient();
+            Task.Run(() => { handler(client); });
+        }
+        //listener.Stop();
+    }
+}
+
+static class HttpServer
+{
+    public static void OnRequest(this TcpClient connection, Action<HttpRequestLine> request)
+    {
+        NetworkStream stream = connection.GetStream();
+        byte[] buffer = new byte[1024]; // TODO: this should be borrowed from a pool
+        while (true)
+        {
+            var bytesRead = stream.Read(buffer, 0, buffer.Length);
+            if (bytesRead == 0)
+            {
+                break;
+            }
+
+            Console.WriteLine("Read {0} bytes, Payload: {1}", bytesRead, Encoding.ASCII.GetString(buffer, 0, bytesRead));
+            unsafe
+            {
+                fixed (byte* pBuffer = buffer)
+                {
+                    var bufferSpan = new ByteSpan(pBuffer, bytesRead);
+                    HttpRequestLine requestLine;
+                    if (!HttpRequestParser.TryParseRequestLine(bufferSpan, out requestLine))
+                    {
+                        Console.WriteLine("request could not be parsed");
+                    }
+
+                    request(requestLine);
+                }
+            }
+
+            if (bytesRead < buffer.Length)
+            {
+                break;
+            }
+        }
+        connection.Dispose();
     }
 }
