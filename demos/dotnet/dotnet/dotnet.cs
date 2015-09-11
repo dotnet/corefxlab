@@ -16,101 +16,150 @@ static class Program
 {
     static Log Log = new global::Log();
 
+    // Arguments specifications used for parsing
+    static readonly List<String> commandFunctions = new List<String>() { "/new", "/clean", "/edit", "/?", "/help" };
+    static readonly List<String> commandSwitches = new List<String>() { "/log", "/optimize", "/unsafe" };
+    static readonly List<String> commandSwitchesWithSpecifications = new List<String>() { "/target", "/recurse", "/debug" };
+    static readonly List<String> targetSpecifications = new List<String>() { "exe", "library" };
+    static readonly List<String> debugSpecifications = new List<String>() { "full", "pdbonly" };
+
     static void Main(string[] args)
     {
+        // Defaults
         if (args.Length == 0)
         {
-            args = new string[] { "/build" };
+            args = new string[] { "/target:exe" };
         }
 
-        if (args[0] == "/log")
+        Log.IsEnabled = Array.Exists(args, element => element == "/log");
+
+        bool buildDll = false;
+
+        // Incorrect arguments passed in or user asked for help
+        bool printUsage = false;
+
+        bool compilerFunctionSelected = false;
+
+        // Command arguments parsing
+        foreach (var argument in args)
         {
-            Log.IsEnabled = true;
-        }
+            if (printUsage || compilerFunctionSelected) break;
 
-        var commandArgument = args[0];
-        var compilerOptions = commandArgument.Split(':');
+            var argOptions = argument.Split(':');
+            var compilerOption = argOptions[0];
 
-        switch (compilerOptions[0])
-        {
-            case "/new":
-                OtherActions.CreateNewProject(Environment.CurrentDirectory);
-                break;
-
-            case "/edit":
-                var path = (string)Registry.GetValue("HKEY_CLASSES_ROOT\\*\\shell\\Ticino", "Icon", null);
-                Process.Start(path);
-                break;
-
-            case "/log":
-            case "/build":
-            case "/unsafe":
-            case "/debug":
-            case "/optimize":
-                var debugSpecifications = new List<String>() { "full", "pdbonly" };
-
-                if (compilerOptions[0] == "/debug" && (compilerOptions.Length < 2 || !debugSpecifications.Contains(compilerOptions[1])))
+            if (commandFunctions.Contains(compilerOption))
+            {
+                compilerFunctionSelected = true;
+                switch (compilerOption)
                 {
-                    Console.WriteLine("Please specify the {0} compiler option correctly.", compilerOptions[0]);
-                    break;
+                    case "/new":
+                        OtherActions.CreateNewProject(Environment.CurrentDirectory);
+                        break;
+
+                    case "/edit":
+                        var path = (string)Registry.GetValue("HKEY_CLASSES_ROOT\\*\\shell\\Ticino", "Icon", null);
+                        Process.Start(path);
+                        break;
+
+                    case "/clean":
+                        Clean(args, Log);
+                        break;
+
+                    case "/?":
+                    case "/help":
+                    default:
+                        printUsage = true;
+                        break;
                 }
-
-                Build(args, Log);
-                break;
-
-            case "/recurse":
-                if (compilerOptions.Length > 1)
+            }
+            else if (commandSwitches.Contains(compilerOption))
+            {
+                // Do nothing, just pass those switches to the CSC Options
+            }
+            else if (commandSwitchesWithSpecifications.Contains(compilerOption))
+            {
+                if (argOptions.Length != 2)
                 {
-                    Build(compilerOptions, Log);
+                    Console.WriteLine("Please specify the {0} compiler option correctly.", compilerOption);
+                    printUsage = true;
                 }
                 else
                 {
-                    Console.WriteLine("Please specify the {0} compiler option.", compilerOptions[0]);
-                }
-                break;
+                    var commandSpecification = argOptions[1];
+                    switch (compilerOption)
+                    {
+                        case "/target":
+                            if (!targetSpecifications.Contains(commandSpecification))
+                            {
+                                Console.WriteLine("Please specify the {0} compiler option correctly.", compilerOption);
+                                printUsage = true;
+                            }
+                            else
+                            {
+                                buildDll = commandSpecification == "library";
+                            }
+                            break;
 
-            case "/target":
-                if (compilerOptions.Length > 1 && compilerOptions[1] == "library")
-                {
-                    Build(args, Log, true);
-                }
-                else if (compilerOptions.Length > 1 && compilerOptions[1] == "exe")
-                {
-                    Build(args, Log);
-                }
-                else
-                {
-                    Console.WriteLine("Please specify the {0} compiler option correctly.", compilerOptions[0]);
-                }
-                break;
+                        case "/debug":
+                            if (!debugSpecifications.Contains(commandSpecification))
+                            {
+                                Console.WriteLine("Please specify the {0} compiler option correctly.", compilerOption);
+                                printUsage = true;
+                            }
+                            break;
 
-            case "/clean":
-                Clean(args, Log);
-                break;
+                        case "/recurse":
+                            // Do nothing, just pass the switch with the wildcard to find the source files
+                            break;
 
-            case "/help":
-            case "?":
-            default:
-                PrintUsage();
-                break;
+                        default:
+                            printUsage = true;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                if (!File.Exists(compilerOption))
+                {
+                    Console.WriteLine("Could not find the file \"{0}\" in the current directory.", compilerOption);
+                    printUsage = true;
+                }
+            }
+
         }
+
+        if (printUsage)
+        {
+            PrintUsage();
+        }
+        else if (!compilerFunctionSelected)
+        {
+            Build(args, Log, buildDll);
+        }
+
     }
 
     static void PrintUsage()
     {
         string appName = Environment.GetCommandLineArgs()[0];
-        Console.WriteLine("{0} [/log] - compiles sources in current directory into exe. optionally logs diagnostics info.", appName);
-        //Console.WriteLine("{0} [ProjectFile] - compiles sources in current directory into exe. optionally use specified project file.", appName); // TODO: If more projects present, the command line needs to explicitly pass the one project that should be used.
-        Console.WriteLine("{0} /target:exe - compiles sources in current directory into exe.", appName);
-        Console.WriteLine("{0} /target:library - compiles sources in current directory into dll.", appName);
-        Console.WriteLine("{0} /recurse:<wildcard> - compiles sources in current directory and subdirectories according to the wildcard specifications.", appName);
-        Console.WriteLine("{0} /clean - deletes tools, packages, and bin project subdirectories.", appName);
-        Console.WriteLine("{0} /unsafe - allows compilation of code that uses the unsafe keyword.", appName);
-        Console.WriteLine("{0} /debug:{{full|pdbonly}} - the compiler generates debugging information.", appName);
-        Console.WriteLine("{0} /optimize - enables optimizations performed by the compiler.", appName);
-        Console.WriteLine("{0} /new   - creates template sources for a new console app", appName);
-        Console.WriteLine("{0} /edit  - starts code editor", appName);
-        Console.WriteLine("{0} /?     - help", appName);
+        Console.WriteLine("{0} /? or /help        - help", appName);
+        Console.WriteLine("{0} /new               - creates template sources for a new console app", appName);
+        Console.WriteLine("{0} /clean             - deletes tools, packages, and bin project subdirectories", appName);
+        Console.WriteLine("{0} /edit              - starts code editor", appName);
+        Console.WriteLine("{0} [/log] [/target:{{exe|library}}] [/recurse:<wildcard>] [/debug:{{full|pdbonly}}] [/optimize] [/unsafe]", appName);
+        //Console.WriteLine("{0} [/log] [/target:{{exe|library}}] [/recurse:<wildcard>] [/debug:{{full|pdbonly}}] [/optimize] [/unsafe] [ProjectFile] [SourceFiles]", appName); // TODO: this
+        Console.WriteLine("           /log        - logs diagnostics info");
+        Console.WriteLine("           /target     - compiles the sources in the current directory into an exe (default) or dll");
+        Console.WriteLine("           /recurse    - compiles the sources in the current directory and subdirectories specified by the wildcard");
+        Console.WriteLine("           /debug      - generates debugging information");
+        Console.WriteLine("           /optimize   - enables optimizations performed by the compiler");
+        Console.WriteLine("           /unsafe     - allows compilation of code that uses the unsafe keyword");
+        // TODO: If more projects present, the command line needs to explicitly pass the one project that should be used.
+        // TODO: Can the source files be specified explicitly?
+        //Console.WriteLine("           ProjectFile - specifies which project file to use if more than one exists in the current directory");
+        //Console.WriteLine("           SourceFiles - specifices which source files to compile");
         Console.WriteLine("NOTE #1: uses csc.exe in <project>\\tools subdirectory, or csc.exe on the path.");
         Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt, cscoptions.txt can be used to override detials.");
     }
@@ -207,7 +256,14 @@ static class ProjectPropertiesHelpers
             properties.Sources.AddRange(ParseProjectFile(properties, projectFiles[0]));
         }
 
-        var sourceFiles = Directory.GetFiles(properties.ProjectDirectory, "*.cs", (args.Length > 1 && args[1] == "*.cs") ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+        var recurseOption = Array.Find(args, element => element.StartsWith("/recurse"));
+        var recurseWildcard = "";
+        if (recurseOption != null && recurseOption.Split(':').Length == 2)
+        {
+            recurseWildcard = recurseOption.Split(':')[1];
+        }
+
+        var sourceFiles = Directory.GetFiles(properties.ProjectDirectory, "*.cs", recurseWildcard == "*.cs" ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
         foreach (var f in sourceFiles)
         {
             if (!f.StartsWith(properties.PackagesDirectory) && !f.StartsWith(properties.OutputDirectory) && !f.StartsWith(properties.ToolsDirectory))
@@ -216,9 +272,9 @@ static class ProjectPropertiesHelpers
             }
         }
 
-        if (args.Length > 1 && args[1] != "*.cs")
+        if (recurseOption != null && recurseWildcard != "*.cs")
         {
-            var subdirectoryPath = Path.Combine(properties.ProjectDirectory, args[1]);
+            var subdirectoryPath = Path.Combine(properties.ProjectDirectory, recurseWildcard); // TODO: AllDirectories OR TopDirectoryOnly? Right now TopDirectoryOnly
             properties.Sources.AddRange(Directory.GetFiles(subdirectoryPath, "*.cs"));
         }
 
