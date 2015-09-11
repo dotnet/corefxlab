@@ -16,6 +16,13 @@ static class Program
 {
     static Log Log = new global::Log();
 
+    // Arguments specifications used for parsing
+    static readonly List<String> commandFunctions = new List<String>() { "/new", "/clean", "/edit", "/?", "/help" };
+    static readonly List<String> commandSwitches = new List<String>() { "/log", "/optimize", "/unsafe" };
+    static readonly List<String> commandSwitchesWithSpecifications = new List<String>() { "/target", "/recurse", "/debug" };
+    static readonly List<String> targetSpecifications = new List<String>() { "exe", "library" };
+    static readonly List<String> debugSpecifications = new List<String>() { "full", "pdbonly" };
+
     static void Main(string[] args)
     {
         // Defaults
@@ -23,13 +30,6 @@ static class Program
         {
             args = new string[] { "/target:exe" };
         }
-
-        // Arguments specifications used for parsing
-        var commandFunctions = new List<String>() { "/new", "/clean", "/edit", "/?", "/help" };
-        var commandSwitches = new List<String>() {"/log", "/optimize", "/unsafe"};
-        var commandSwitchesWithSpecifications = new List<String>() { "/target", "/recurse", "/debug" };
-        var targetSpecifications = new List<String>() { "exe", "library" };
-        var debugSpecifications = new List<String>() { "full", "pdbonly" };
 
         Log.IsEnabled = Array.Exists(args, element => element == "/log");
 
