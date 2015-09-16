@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Buffers;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.Http.Buffered;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 static class Program {
     
     static void Main() {
-        Console.WriteLine(".NET Core Micro-Server");
+        Console.WriteLine(".NET Core Service");
 
         var address = new IPAddress(new byte[] {127, 0, 0, 1});
 
@@ -22,25 +23,17 @@ static class Program {
     }
 
     static void ProcessRequest(TcpClient socket) {
-        HttpServer.OnRequest(socket, (request) => {
-            if (request.RequestUri.Equals("/plaintext"))
+        HttpServer.Listen(socket, (request) => {
+            if (request.RequestUri.Equals(new Utf8String("/plaintext")))
             {
-                ProcessPlainTextRequest(socket);
+                var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
+                HttpWriter.WriteCommonHeaders(formatter, "HTTP/1.1 200 OK");
+
+                formatter.Append("Hello, World!");
+
+                socket.Write(formatter);
             }
         });
-    }
-        
-    static void ProcessPlainTextRequest(TcpClient client){
-        NetworkStream stream = client.GetStream();
-        var writer = new StreamWriter(stream, Encoding.ASCII);
-        writer.WriteLine("HTTP/1.1 200 OK");
-        writer.WriteLine("Server: .NET Core");
-        writer.WriteLine("Content-Type: text/html; charset=UTF-8");
-        writer.WriteLine("Content-Length: 13");
-        writer.WriteLine("Connection: close");
-        writer.WriteLine();
-        writer.WriteLine("Hello, World!");
-        writer.Dispose();
     }
 }
 
@@ -54,7 +47,15 @@ static class SocketServer
         while (true)
         {
             TcpClient client = listener.AcceptTcpClient();
-            Task.Run(() => { handler(client); });
+            Task.Run(() => {
+                try {
+                    handler(client);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            });
         }
         //listener.Stop();
     }
@@ -62,10 +63,10 @@ static class SocketServer
 
 static class HttpServer
 {
-    public static void OnRequest(this TcpClient connection, Action<HttpRequestLine> request)
+    public static void Listen(this TcpClient connection, Action<HttpRequestLine> request)
     {
         NetworkStream stream = connection.GetStream();
-        byte[] buffer = new byte[1024]; // TODO: this should be borrowed from a pool
+        var buffer = BufferPool.Shared.RentBuffer(1024);
         while (true)
         {
             var bytesRead = stream.Read(buffer, 0, buffer.Length);
@@ -95,6 +96,21 @@ static class HttpServer
                 break;
             }
         }
+
+        BufferPool.Shared.ReturnBuffer(ref buffer);
         connection.Dispose();
+    }
+}
+
+static class TemporaryHelpers
+{
+    // this will be removed once we implement socket APIs that use pooled memory buffers
+    public static void Write(this TcpClient socket, BufferFormatter formatter)
+    {
+        NetworkStream stream = socket.GetStream();
+        stream.Write(formatter.Buffer, 0, formatter.CommitedByteCount);
+        stream.Flush();
+        var buffer = formatter.Buffer;
+        BufferPool.Shared.ReturnBuffer(ref buffer);
     }
 }
