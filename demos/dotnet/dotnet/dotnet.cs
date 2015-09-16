@@ -148,20 +148,18 @@ static class Program
         Console.WriteLine("{0} /new               - creates template sources for a new console app", appName);
         Console.WriteLine("{0} /clean             - deletes tools, packages, and bin project subdirectories", appName);
         Console.WriteLine("{0} /edit              - starts code editor", appName);
-        Console.WriteLine("{0} [/log] [/target:{{exe|library}}] [/recurse:<wildcard>] [/debug:{{full|pdbonly}}] [/optimize] [/unsafe]", appName);
-        //Console.WriteLine("{0} [/log] [/target:{{exe|library}}] [/recurse:<wildcard>] [/debug:{{full|pdbonly}}] [/optimize] [/unsafe] [ProjectFile] [SourceFiles]", appName); // TODO: this
+        Console.WriteLine("{0} [/log] [/target:{{exe|library}}] [/recurse:<wildcard>] [/debug:{{full|pdbonly}}] [/optimize] [/unsafe] [ProjectFile]", appName);
         Console.WriteLine("           /log        - logs diagnostics info");
         Console.WriteLine("           /target     - compiles the sources in the current directory into an exe (default) or dll");
         Console.WriteLine("           /recurse    - compiles the sources in the current directory and subdirectories specified by the wildcard");
         Console.WriteLine("           /debug      - generates debugging information");
         Console.WriteLine("           /optimize   - enables optimizations performed by the compiler");
         Console.WriteLine("           /unsafe     - allows compilation of code that uses the unsafe keyword");
-        // TODO: If more projects present, the command line needs to explicitly pass the one project that should be used.
+        Console.WriteLine("           ProjectFile - specifies which project file to use, default to the one in the current directory, if only one exists");
         // TODO: Can the source files be specified explicitly?
-        //Console.WriteLine("           ProjectFile - specifies which project file to use if more than one exists in the current directory");
         //Console.WriteLine("           SourceFiles - specifices which source files to compile");
         Console.WriteLine("NOTE #1: uses csc.exe in <project>\\tools subdirectory, or csc.exe on the path.");
-        Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt, cscoptions.txt can be used to override detials.");
+        Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt, cscoptions.txt can be used to override details.");
     }
 
     static void Clean(string[] args, Log log)
@@ -249,11 +247,23 @@ static class ProjectPropertiesHelpers
         properties.OutputType = buildDll ? ".dll" : ".exe";
         FindCompiler(properties);
 
-        var projectFiles = Directory.GetFiles(properties.ProjectDirectory, "*.dotnetproj");
-        // Sources
-        if (projectFiles.Length == 1)
+        var specifiedProjectFilename = Array.Find(args, element => element.EndsWith(".dotnetproj"));
+
+        if (specifiedProjectFilename != null)
         {
-            properties.Sources.AddRange(ParseProjectFile(properties, projectFiles[0]));
+            var specifiedProjectFile = Directory.GetFiles(properties.ProjectDirectory, specifiedProjectFilename);
+            if (specifiedProjectFile.Length == 1)
+            {
+                properties.Sources.AddRange(ParseProjectFile(properties, specifiedProjectFile[0]));
+            }
+        }
+        else
+        {
+            var projectFiles = Directory.GetFiles(properties.ProjectDirectory, "*.dotnetproj");
+            if (projectFiles.Length == 1)
+            {
+                properties.Sources.AddRange(ParseProjectFile(properties, projectFiles[0]));
+            }
         }
 
         var recurseOption = Array.Find(args, element => element.StartsWith("/recurse"));
