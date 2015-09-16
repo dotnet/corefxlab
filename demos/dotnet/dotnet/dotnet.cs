@@ -17,12 +17,12 @@ static class Program
     static Log Log = new global::Log();
 
     // Arguments specifications used for parsing
-    static readonly List<String> commandFunctions = new List<String>() { "/new", "/clean", "/edit", "/?", "/help" };
-    static readonly List<String> commandSwitches = new List<String>() { "/log", "/optimize", "/unsafe" };
-    static readonly List<String> commandSwitchesWithSpecifications = new List<String>() { "/target", "/recurse", "/debug", "/platform" };
-    static readonly List<String> targetSpecifications = new List<String>() { "exe", "library" };
-    static readonly List<String> debugSpecifications = new List<String>() { "full", "pdbonly" };
-    static readonly List<String> platformSpecifications = new List<String>() { "anycpu", "anycpu32bitpreferred", "x64", "x86" };
+    static readonly List<string> commandFunctions = new List<string>() { "/new", "/clean", "/edit", "/?", "/help" };
+    static readonly List<string> commandSwitches = new List<string>() { "/log", "/optimize", "/unsafe" };
+    static readonly List<string> commandSwitchesWithSpecifications = new List<string>() { "/target", "/recurse", "/debug", "/platform" };
+    static readonly List<string> targetSpecifications = new List<string>() { "exe", "library" };
+    static readonly List<string> debugSpecifications = new List<string>() { "full", "pdbonly" };
+    static readonly List<string> platformSpecifications = new List<string>() { "anycpu", "anycpu32bitpreferred", "x64", "x86" };
 
     static void Main(string[] args)
     {
@@ -314,8 +314,6 @@ static class ProjectPropertiesHelpers
 
         string result = string.Empty;
 
-        var osName = GetOSName(Environment.OSVersion);
-
         var platformOption = Array.Find(args, element => element.StartsWith("/platform"));
 
         var platformOptionSpecicifcation = "x64";
@@ -430,32 +428,6 @@ static class ProjectPropertiesHelpers
         // platform - x86, x64, arm
         // os - win7, win8
         return "Microsoft.NETCore.Runtime.CoreCLR-" + platform.ToLower() + "\\1.0.0\\runtimes\\" + os.ToLower() + "-" + platform.ToLower() + "\\lib\\dotnet";
-    }
-
-    public static string GetOSName(OperatingSystem os)
-    {
-        var version = os.Version;
-        var build = version.Build;
-        var osname = "win7";
-        switch (build)
-        {
-            case 7600:
-            case 7601:
-                osname = "win7";
-                break;
-
-            case 9200:
-                osname = "win8";
-                break;
-
-            case 9600:
-                osname = "win10";
-                break;
-
-            default:
-                break;
-        }
-        return osname;
     }
 
     static void AddToListWithoutDuplicates(List<string> list, List<string> files)
