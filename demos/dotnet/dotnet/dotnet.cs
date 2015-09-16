@@ -19,9 +19,10 @@ static class Program
     // Arguments specifications used for parsing
     static readonly List<String> commandFunctions = new List<String>() { "/new", "/clean", "/edit", "/?", "/help" };
     static readonly List<String> commandSwitches = new List<String>() { "/log", "/optimize", "/unsafe" };
-    static readonly List<String> commandSwitchesWithSpecifications = new List<String>() { "/target", "/recurse", "/debug" };
+    static readonly List<String> commandSwitchesWithSpecifications = new List<String>() { "/target", "/recurse", "/debug", "/platform" };
     static readonly List<String> targetSpecifications = new List<String>() { "exe", "library" };
     static readonly List<String> debugSpecifications = new List<String>() { "full", "pdbonly" };
+    static readonly List<String> platformSpecifications = new List<String>() { "anycpu", "anycpu32bitpreferred", "x64", "x86" };
 
     static void Main(string[] args)
     {
@@ -109,6 +110,14 @@ static class Program
                             }
                             break;
 
+                        case "/platform":
+                            if (!platformSpecifications.Contains(commandSpecification))
+                            {
+                                Console.WriteLine("Please specify the {0} compiler option correctly.", compilerOption);
+                                printUsage = true;
+                            }
+                            break;
+
                         case "/recurse":
                             // Do nothing, just pass the switch with the wildcard to find the source files
                             break;
@@ -121,7 +130,9 @@ static class Program
             }
             else
             {
-                if (!File.Exists(compilerOption))
+                var files = Directory.GetFiles(Environment.CurrentDirectory, compilerOption);
+
+                if (!File.Exists(compilerOption) && files.Length == 0)
                 {
                     Console.WriteLine("Could not find the file \"{0}\" in the current directory.", compilerOption);
                     printUsage = true;
@@ -148,23 +159,23 @@ static class Program
         Console.WriteLine("{0} /new               - creates template sources for a new console app", appName);
         Console.WriteLine("{0} /clean             - deletes tools, packages, and bin project subdirectories", appName);
         Console.WriteLine("{0} /edit              - starts code editor", appName);
-        Console.WriteLine("{0} [/log] [/target:{{exe|library}}] [/recurse:<wildcard>] [/debug:{{full|pdbonly}}] [/optimize] [/unsafe] [ProjectFile]", appName);
+        Console.WriteLine("{0} [/log] [/target:{{exe|library}}] [/recurse:<wildcard>] [/debug:{{full|pdbonly}}] [/optimize] [/unsafe] [/platform:{{anycpu|anycpu32bitpreferred|x86|x64}}] [ProjectFile] [SourceFiles]", appName);
         Console.WriteLine("           /log        - logs diagnostics info");
         Console.WriteLine("           /target     - compiles the sources in the current directory into an exe (default) or dll");
         Console.WriteLine("           /recurse    - compiles the sources in the current directory and subdirectories specified by the wildcard");
         Console.WriteLine("           /debug      - generates debugging information");
         Console.WriteLine("           /optimize   - enables optimizations performed by the compiler");
         Console.WriteLine("           /unsafe     - allows compilation of code that uses the unsafe keyword");
+        Console.WriteLine("           /platform   - specifies which platform this code can run on, default is anycpu");
         Console.WriteLine("           ProjectFile - specifies which project file to use, default to the one in the current directory, if only one exists");
-        // TODO: Can the source files be specified explicitly?
-        //Console.WriteLine("           SourceFiles - specifices which source files to compile");
+        Console.WriteLine("           SourceFiles - specifices which source files to compile");
         Console.WriteLine("NOTE #1: uses csc.exe in <project>\\tools subdirectory, or csc.exe on the path.");
         Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt, cscoptions.txt can be used to override details.");
     }
 
     static void Clean(string[] args, Log log)
     {
-        var previous = log.IsEnabled; //TODO: this 
+        var previous = log.IsEnabled;
         log.IsEnabled = false;
         var properties = ProjectPropertiesHelpers.InitializeProperties(args, log);
         log.IsEnabled = previous;
@@ -228,7 +239,11 @@ static class Program
             File.Delete(dllPath);
         }
         File.Move(properties.OutputAssemblyPath, dllPath);
-        File.Copy(Path.Combine(properties.PackagesDirectory, @"Microsoft.NETCore.ConsoleHost-x86\1.0.0-beta-23123\runtimes\win7-x86\native\CoreConsole.exe"), properties.OutputAssemblyPath);
+
+        var defaultOption = "/platform:anycpu";
+        var platformOption = properties.CscOptions.Find(x => x.StartsWith("/platform"));
+        var coreConsolePath = ProjectPropertiesHelpers.GetConsoleHostNative(ProjectPropertiesHelpers.GetPlatformOption(platformOption == null ? defaultOption: platformOption), "win7") + "\\CoreConsole.exe";
+        File.Copy(Path.Combine(properties.PackagesDirectory, coreConsolePath), properties.OutputAssemblyPath);
     }
 }
 
@@ -254,7 +269,7 @@ static class ProjectPropertiesHelpers
             var specifiedProjectFile = Directory.GetFiles(properties.ProjectDirectory, specifiedProjectFilename);
             if (specifiedProjectFile.Length == 1)
             {
-                properties.Sources.AddRange(ParseProjectFile(properties, specifiedProjectFile[0]));
+                AddToListWithoutDuplicates(properties.Sources, ParseProjectFile(properties, specifiedProjectFile[0]));
             }
         }
         else
@@ -262,7 +277,21 @@ static class ProjectPropertiesHelpers
             var projectFiles = Directory.GetFiles(properties.ProjectDirectory, "*.dotnetproj");
             if (projectFiles.Length == 1)
             {
-                properties.Sources.AddRange(ParseProjectFile(properties, projectFiles[0]));
+                AddToListWithoutDuplicates(properties.Sources, ParseProjectFile(properties, projectFiles[0]));
+            }
+        }
+
+        var specifiedSourceFilenames = Array.FindAll(args, element => element.EndsWith(".cs"));
+
+        foreach (var sourceFilename in specifiedSourceFilenames)
+        {
+            var sourceFiles = Directory.GetFiles(properties.ProjectDirectory, sourceFilename);
+            foreach (var f in sourceFiles)
+            {
+                if (!f.StartsWith(properties.PackagesDirectory) && !f.StartsWith(properties.OutputDirectory) && !f.StartsWith(properties.ToolsDirectory))
+                {
+                    AddToListWithoutDuplicates(properties.Sources, f);
+                }
             }
         }
 
@@ -273,19 +302,9 @@ static class ProjectPropertiesHelpers
             recurseWildcard = recurseOption.Split(':')[1];
         }
 
-        var sourceFiles = Directory.GetFiles(properties.ProjectDirectory, "*.cs", recurseWildcard == "*.cs" ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
-        foreach (var f in sourceFiles)
-        {
-            if (!f.StartsWith(properties.PackagesDirectory) && !f.StartsWith(properties.OutputDirectory) && !f.StartsWith(properties.ToolsDirectory))
-            {
-                properties.Sources.Add(f);
-            }
-        }
-
         if (recurseOption != null && recurseWildcard != "*.cs")
         {
-            var subdirectoryPath = Path.Combine(properties.ProjectDirectory, recurseWildcard); // TODO: AllDirectories OR TopDirectoryOnly? Right now TopDirectoryOnly
-            properties.Sources.AddRange(Directory.GetFiles(subdirectoryPath, "*.cs"));
+            AddToListWithoutDuplicates(properties.Sources, Directory.GetFiles(properties.ProjectDirectory, recurseWildcard, SearchOption.AllDirectories));
         }
 
         if (properties.Sources.Count == 1)
@@ -293,20 +312,39 @@ static class ProjectPropertiesHelpers
             properties.AssemblyName = Path.GetFileNameWithoutExtension(properties.Sources[0]);
         }
 
+        string result = string.Empty;
+
+        var osName = GetOSName(Environment.OSVersion);
+
+        var platformOption = Array.Find(args, element => element.StartsWith("/platform"));
+
+        var platformOptionSpecicifcation = "x64";
+        if (platformOption != null && platformOption.Split(':').Length == 2)
+        {
+            platformOptionSpecicifcation = GetPlatformOption(platformOption);
+        }
+
+        if (platformOption != null)
+        {
+            // The anycpu32bitpreferred setting is valid only for executable (.EXE) files
+            if (!(platformOption == "/platform:anycpu32bitpreferred" && buildDll)) properties.CscOptions.Add(platformOption);
+        }
+
         // Packages
         properties.Packages.Add(@"""Microsoft.NETCore"": ""5.0.0""");
         properties.Packages.Add(@"""System.Console"": ""4.0.0-beta-23123""");
         //properties.Packages.Add(@"""Microsoft.NETCore.Console"": ""1.0.0-beta-*""");
-        properties.Packages.Add(@"""Microsoft.NETCore.ConsoleHost-x86"": ""1.0.0-beta-23123""");
-        properties.Packages.Add(@"""Microsoft.NETCore.Runtime.CoreCLR-x86"": ""1.0.0""");
+        properties.Packages.Add(GetConsoleHost(platformOptionSpecicifcation));
+        properties.Packages.Add(GetRuntimeCoreCLR(platformOptionSpecicifcation));
 
         // References
         properties.References.Add(Path.Combine(properties.PackagesDirectory, @"System.Runtime\4.0.20\ref\dotnet\System.Runtime.dll"));
         properties.References.Add(Path.Combine(properties.PackagesDirectory, @"System.Console\4.0.0-beta-23123\ref\dotnet\System.Console.dll"));
 
         // Runtime Dependencies
-        properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory, @"Microsoft.NETCore.Runtime.CoreCLR-x86\1.0.0\runtimes\win7-x86\native"));
-        properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory, @"Microsoft.NETCore.Runtime.CoreCLR-x86\1.0.0\runtimes\win7-x86\lib\dotnet"));
+        properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory, GetRuntimeCoreCLRDependencyNative(platformOptionSpecicifcation, "win7")));
+        properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory, GetRuntimeCoreCLRDependencyLibrary(platformOptionSpecicifcation, "win7")));
+
         properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory, @"System.Runtime\4.0.20\lib\netcore50"));
         properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory, @"System.Console\4.0.0-beta-23123\lib\DNXCore50"));
         properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory, @"System.IO\4.0.10\lib\netcore50"));
@@ -347,6 +385,107 @@ static class ProjectPropertiesHelpers
         LogProperties(log, properties, "Adjusted Properties Log:", buildDll);
 
         return properties;
+    }
+
+    public static string GetPlatformOption(string option)
+    {
+        var tempSpecification = option.Split(':')[1];
+        if (tempSpecification == "anycpu32bitpreferred" || tempSpecification == "x86")
+        {
+            return "x86";
+        }
+        else
+        {
+            return "x64";
+        }
+    }
+
+    public static string GetRuntimeCoreCLR(string platform)
+    {
+        // platform - x86, x64, arm
+        return "\"Microsoft.NETCore.Runtime.CoreCLR-" + platform.ToLower() + "\": \"1.0.0\"";
+    }
+
+    public static string GetConsoleHost(string platform)
+    {
+        // platform - x86, x64, arm
+        return "\"Microsoft.NETCore.ConsoleHost-" + platform.ToLower() + "\": \"1.0.0-beta-23123\"";
+    }
+
+    public static string GetConsoleHostNative(string platform, string os)
+    {
+        // platform - x86, x64, arm
+        return "Microsoft.NETCore.ConsoleHost-" + platform.ToLower() + "\\1.0.0-beta-23123\\runtimes\\" + os.ToLower() + "-" + platform.ToLower() + "\\native";
+    }
+
+    public static string GetRuntimeCoreCLRDependencyNative(string platform, string os)
+    {
+        // platform - x86, x64, arm
+        // os - win7, win8
+        return "Microsoft.NETCore.Runtime.CoreCLR-" + platform.ToLower() + "\\1.0.0\\runtimes\\" + os.ToLower() + "-" + platform.ToLower() + "\\native";
+    }
+
+    public static string GetRuntimeCoreCLRDependencyLibrary(string platform, string os)
+    {
+        // platform - x86, x64, arm
+        // os - win7, win8
+        return "Microsoft.NETCore.Runtime.CoreCLR-" + platform.ToLower() + "\\1.0.0\\runtimes\\" + os.ToLower() + "-" + platform.ToLower() + "\\lib\\dotnet";
+    }
+
+    public static string GetOSName(OperatingSystem os)
+    {
+        var version = os.Version;
+        var build = version.Build;
+        var osname = "win7";
+        switch (build)
+        {
+            case 7600:
+            case 7601:
+                osname = "win7";
+                break;
+
+            case 9200:
+                osname = "win8";
+                break;
+
+            case 9600:
+                osname = "win10";
+                break;
+
+            default:
+                break;
+        }
+        return osname;
+    }
+
+    static void AddToListWithoutDuplicates(List<string> list, List<string> files)
+    {
+        foreach(var file in files)
+        {
+            if (!list.Contains(file))
+            {
+                list.Add(file);
+            }
+        }
+    }
+
+    static void AddToListWithoutDuplicates(List<string> list, string file)
+    {
+        if (!list.Contains(file))
+        {
+            list.Add(file);
+        }
+    }
+
+    static void AddToListWithoutDuplicates(List<string> list, string[] files)
+    {
+        foreach (var file in files)
+        {
+            if (!list.Contains(file))
+            {
+                list.Add(file);
+            }
+        }
     }
 
     static void LogProperties(this Log log, ProjectProperties project, string heading, bool buildDll = false)
