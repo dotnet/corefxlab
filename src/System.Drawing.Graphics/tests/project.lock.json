@@ -45,7 +45,7 @@
           "ref/dotnet/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23308": {
+      "System.Console/4.0.0-beta-23316": {
         "dependencies": {
           "System.Runtime": "4.0.0",
           "System.IO": "4.0.0"
@@ -418,23 +418,13 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23308": {
+      "System.Console/4.0.0-beta-23316": {
         "dependencies": {
-          "System.Runtime": "4.0.20",
-          "System.Runtime.InteropServices": "4.0.20",
-          "System.Resources.ResourceManager": "4.0.0",
-          "System.IO.FileSystem.Primitives": "4.0.0",
-          "System.IO": "4.0.10",
-          "System.Threading.Tasks": "4.0.10",
-          "System.Text.Encoding": "4.0.10",
-          "System.Threading": "4.0.10",
-          "System.Text.Encoding.Extensions": "4.0.10"
+          "System.Runtime": "4.0.0",
+          "System.IO": "4.0.0"
         },
         "compile": {
           "ref/dotnet/System.Console.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Console.dll": {}
         }
       },
       "System.Diagnostics.Debug/4.0.10": {
@@ -1026,21 +1016,14 @@
         "[Content_Types].xml"
       ]
     },
-    "System.Console/4.0.0-beta-23308": {
+    "System.Console/4.0.0-beta-23316": {
       "serviceable": true,
-      "sha512": "mN+vKvrUGVG6osNHu1JTwH1/setEQ7PdrQXvRi7YSmz6ZD0zgBc42yj+ZavSgr/23eJ2K/EbRfUguT+CaU50+g==",
+      "sha512": "pYDflUHKD2oIllR+HsbgfkbwNsjivEgYsFjM3eZWS6KVqa5vYVMl93OvC+WfB0Va3Q9gAZYzxXQJUv6gWoJGLw==",
       "files": [
-        "System.Console.4.0.0-beta-23308.nupkg",
-        "System.Console.4.0.0-beta-23308.nupkg.sha512",
+        "runtime.json",
+        "System.Console.4.0.0-beta-23316.nupkg",
+        "System.Console.4.0.0-beta-23316.nupkg.sha512",
         "System.Console.nuspec",
-        "System.Console.xml",
-        "de/System.Console.xml",
-        "es/System.Console.xml",
-        "fr/System.Console.xml",
-        "it/System.Console.xml",
-        "ja/System.Console.xml",
-        "ko/System.Console.xml",
-        "lib/DNXCore50/System.Console.dll",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
         "lib/net46/System.Console.dll",
@@ -1051,10 +1034,7 @@
         "ref/MonoTouch10/_._",
         "ref/net46/System.Console.dll",
         "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "ru/System.Console.xml",
-        "zh-hans/System.Console.xml",
-        "zh-hant/System.Console.xml"
+        "ref/xamarinmac20/_._"
       ]
     },
     "System.Diagnostics.Debug/4.0.10": {
