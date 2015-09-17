@@ -179,9 +179,17 @@ static class Program
         log.IsEnabled = false;
         var properties = ProjectPropertiesHelpers.InitializeProperties(args, log);
         log.IsEnabled = previous;
-        if (Directory.Exists(properties.ToolsDirectory)) Directory.Delete(properties.ToolsDirectory, true);
-        if (Directory.Exists(properties.OutputDirectory)) Directory.Delete(properties.OutputDirectory, true);
-        if (Directory.Exists(properties.PackagesDirectory)) Directory.Delete(properties.PackagesDirectory, true);
+        try
+        {
+            if (Directory.Exists(properties.ToolsDirectory)) Directory.Delete(properties.ToolsDirectory, true);
+            if (Directory.Exists(properties.OutputDirectory)) Directory.Delete(properties.OutputDirectory, true);
+            if (Directory.Exists(properties.PackagesDirectory)) Directory.Delete(properties.PackagesDirectory, true);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Exception during cleanup: {0}", e.Message);
+        }
+
     }
 
     static void Build(string[] args, Log log, bool buildDll = false)
@@ -209,8 +217,11 @@ static class Program
             Directory.CreateDirectory(properties.PackagesDirectory);
         }
 
-        NugetAction.DownloadNugetAction(properties);
-        NugetAction.RestorePackagesAction(properties, Log);
+        if (!NugetAction.DownloadNugetAction(properties) || !NugetAction.RestorePackagesAction(properties, Log))
+        {
+            Console.WriteLine("Failed to get nuget or restore packages.");
+            return;
+        }
 
         if (CscAction.Execute(properties, Log))
         {
@@ -655,7 +666,7 @@ static class NugetAction
         }
     }
 
-    public static void RestorePackagesAction(ProjectProperties properties, Log log)
+    public static bool RestorePackagesAction(ProjectProperties properties, Log log)
     {
         Console.WriteLine("restoring packages");
 
@@ -665,8 +676,15 @@ static class NugetAction
             projectFile = Path.Combine(properties.ToolsDirectory, "project.json");
         }
 
+        var nugetFile = Path.Combine(properties.ToolsDirectory, "nuget.exe");
+        if (!File.Exists(nugetFile))
+        {
+            Console.WriteLine("Could not find file {0}.", nugetFile);
+            return false;
+        }
+
         var processSettings = new ProcessStartInfo();
-        processSettings.FileName = Path.Combine(properties.ToolsDirectory, "nuget.exe");
+        processSettings.FileName = nugetFile;
         processSettings.Arguments = "restore " + projectFile + " -PackagesDirectory " + properties.PackagesDirectory + " -ConfigFile " + Path.Combine(properties.ToolsDirectory, "nuget.config");
         processSettings.CreateNoWindow = true;
         processSettings.UseShellExecute = false;
@@ -677,15 +695,34 @@ static class NugetAction
         log.WriteLine("Arguments: {0}", processSettings.Arguments);
         log.WriteLine("project.json:\n{0}", File.ReadAllText(projectFile));
 
-        var process = Process.Start(processSettings);
-        var output = process.StandardOutput.ReadToEnd();
-        var error = process.StandardError.ReadToEnd();
-        log.WriteLine(output);
-        log.Error(error);        
-        process.WaitForExit();
+        Process process = null;
+        try
+        {
+            process = Process.Start(processSettings);
+            var output = process.StandardOutput.ReadToEnd();
+            var error = process.StandardError.ReadToEnd();
+            log.WriteLine(output);
+            log.Error(error);
+            process.WaitForExit();
+            int exitCode = process.ExitCode;
+            if (exitCode != 0) Console.WriteLine("Process exit code: {0}", exitCode);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+        finally
+        {
+            if (process != null)
+            {
+                process.Close();
+            }
+        }
+        return true;
     }
 
-    public static void DownloadNugetAction(ProjectProperties properties)
+    public static bool DownloadNugetAction(ProjectProperties properties)
     {
         CreateDefaultProjectJson(properties);
         CreateNugetConfig(properties);
@@ -693,25 +730,57 @@ static class NugetAction
         string destination = Path.Combine(properties.ToolsDirectory, "nuget.exe");
         if (File.Exists(destination))
         {
-            return;
+            return true;
         }
 
         var client = new HttpClient();
-        using (var sourceStreamTask = client.GetStreamAsync(@"http://dist.nuget.org/win-x86-commandline/v3.1.0-beta/nuget.exe"))
+        Uri requestUri = new Uri(@"http://dist.nuget.org/win-x86-commandline/v3.1.0-beta/nuget.exe", UriKind.Absolute);
+
+        int numberOfAttempts = 0;
+        const int totalAttempts = 3;
+
+        bool continueLoop = true;
+        while (continueLoop)
         {
-            sourceStreamTask.Wait();
-            using (var sourceStream = sourceStreamTask.Result)
-            using (var destinationStream = new FileStream(destination, FileMode.Create, FileAccess.Write))
+            continueLoop = true;
+            using (var sourceStreamTask = client.GetStreamAsync(requestUri))
             {
-                byte[] buffer = new byte[1024];
-                while (true)
+                try
                 {
-                    var read = sourceStream.Read(buffer, 0, buffer.Length);
-                    if (read < 1) break;
-                    destinationStream.Write(buffer, 0, read);
+                    sourceStreamTask.Wait();
+                }
+                catch (AggregateException exception)
+                {
+                    numberOfAttempts++;
+                    foreach (Exception ex in exception.InnerExceptions)
+                    {
+                        Console.WriteLine("Attempt # {0}: " + ex.Message, numberOfAttempts);
+                    }
+                    if (numberOfAttempts >= totalAttempts)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                continueLoop = false;
+                using (var sourceStream = sourceStreamTask.Result)
+                using (var destinationStream = new FileStream(destination, FileMode.Create, FileAccess.Write))
+                {
+                    byte[] buffer = new byte[1024];
+                    while (true)
+                    {
+                        var read = sourceStream.Read(buffer, 0, buffer.Length);
+                        if (read < 1) break;
+                        destinationStream.Write(buffer, 0, read);
+                    }
                 }
             }
         }
+        return true;
     }
 
     static void CreateDefaultProjectJson(ProjectProperties properties)
