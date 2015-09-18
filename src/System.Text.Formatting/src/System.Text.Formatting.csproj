@@ -17,9 +17,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="System\ByteSpan.cs" />
-    <Compile Include="System\Span.cs" />
-    <Compile Include="System\ReadOnlySpan.cs" />
     <Compile Include="System\Text\Formatting\IBufferFormattable.cs" />
     <Compile Include="System\Text\Formatting\IFormatter.cs" />
     <Compile Include="System\Text\Formatting\IFormatterExtensions.cs" />
@@ -36,12 +33,16 @@
     <Compile Include="System\InternalHelpers\IntegerFormatter.cs" />
     <Compile Include="System\InternalHelpers\FloatFormatter.cs" />
     <Compile Include="System\InternalHelpers\Precondition.cs" />
-    <Compile Include="System\InternalHelpers\BufferPool.cs" />
     <Compile Include="System\InternalHelpers\Utf8.cs" />
     <Compile Include="System\Text\Parsing\InvariantParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
+      <Name>System.Buffers</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="System\Text\Utf8\" />

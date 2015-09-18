@@ -14,7 +14,7 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23316": {
+      "System.Console/4.0.0-beta-23318": {
         "dependencies": {
           "System.Runtime": "4.0.0",
           "System.IO": "4.0.0"
@@ -258,13 +258,13 @@
         "runtimes/win8-aot/lib/netcore50/System.Collections.dll"
       ]
     },
-    "System.Console/4.0.0-beta-23316": {
+    "System.Console/4.0.0-beta-23318": {
       "serviceable": true,
-      "sha512": "pYDflUHKD2oIllR+HsbgfkbwNsjivEgYsFjM3eZWS6KVqa5vYVMl93OvC+WfB0Va3Q9gAZYzxXQJUv6gWoJGLw==",
+      "sha512": "7O8pbiNDUzI4arqyeMUFOFBiUAY1eHh0z4HclT8iPi+P+i5TZcBP65JoqdS784HQGdkdKUAidJlpCIi7knHvzA==",
       "files": [
         "runtime.json",
-        "System.Console.4.0.0-beta-23316.nupkg",
-        "System.Console.4.0.0-beta-23316.nupkg.sha512",
+        "System.Console.4.0.0-beta-23318.nupkg",
+        "System.Console.4.0.0-beta-23318.nupkg.sha512",
         "System.Console.nuspec",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
