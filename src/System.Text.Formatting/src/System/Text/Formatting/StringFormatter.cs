@@ -5,7 +5,7 @@ using System.Buffers;
 
 namespace System.Text.Formatting
 {
-    public class StringFormatter : IFormatter
+    public class StringFormatter : IFormatter, IDisposable
     {
         byte[] _buffer;
         int _count;
@@ -19,6 +19,12 @@ namespace System.Text.Formatting
         public StringFormatter(int capacity)
         {
             _buffer = BufferPool.Shared.RentBuffer(capacity * 2);
+        }
+
+        public void Dispose()
+        {
+            BufferPool.Shared.ReturnBuffer(ref _buffer);
+            _count = 0;
         }
 
         public void Append(char character) {

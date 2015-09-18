@@ -7,7 +7,7 @@ using System.Text.Formatting;
 
 namespace System.Text.Json
 {
-    public struct JsonWriter
+    public struct JsonWriter : IDisposable
     {
         StreamFormatter _formatter;
         bool _wroteListItem;
@@ -20,6 +20,10 @@ namespace System.Text.Json
             _prettyPrint = prettyPrint;
             _indent = 0;
             _formatter = new StreamFormatter(stream, encoding == FormattingData.Encoding.Utf16 ? FormattingData.InvariantUtf16 : FormattingData.InvariantUtf8);
+        }
+
+        public void Dispose() {
+            _formatter.Dispose();
         }
 
         public bool PrettyPrint { get { return _prettyPrint; } set { _prettyPrint = value; } }
