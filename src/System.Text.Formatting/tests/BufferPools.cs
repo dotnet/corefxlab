@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.IO.Buffers;
+using System.Buffers;
 using Xunit;
 
 namespace System.Text.Formatting.Tests

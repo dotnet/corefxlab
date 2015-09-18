@@ -23,6 +23,9 @@
       <Project>{AB5C520A-B1A2-472F-8841-E8304F3539D6}</Project>
       <Name>System.Text.Formatting</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
+      <Name>System.Buffers</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />

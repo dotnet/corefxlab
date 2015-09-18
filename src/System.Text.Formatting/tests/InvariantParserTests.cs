@@ -1,6 +1,6 @@
 ﻿using System.Text.Parsing;
 using Xunit;
-using System.IO.Buffers;
+using System.Buffers;
 
 namespace System.Text.Formatting.Tests
 {
