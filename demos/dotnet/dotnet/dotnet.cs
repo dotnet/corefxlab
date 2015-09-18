@@ -26,6 +26,9 @@ static class Program
 
     static void Main(string[] args)
     {
+
+        var currentDirectory = Directory.GetCurrentDirectory();
+
         // Defaults
         if (args.Length == 0)
         {
@@ -47,7 +50,7 @@ static class Program
             if (printUsage || compilerFunctionSelected) break;
 
             var argOptions = argument.Split(':');
-            var compilerOption = argOptions[0];
+            var compilerOption = argument.StartsWith("/") ? argOptions[0] : argument;
 
             if (commandFunctions.Contains(compilerOption))
             {
@@ -55,12 +58,19 @@ static class Program
                 switch (compilerOption)
                 {
                     case "/new":
-                        OtherActions.CreateNewProject(Environment.CurrentDirectory);
+                        OtherActions.CreateNewProject(currentDirectory);
                         break;
 
                     case "/edit":
                         var path = (string)Registry.GetValue("HKEY_CLASSES_ROOT\\*\\shell\\Ticino", "Icon", null);
-                        Process.Start(path);
+                        if (path != null)
+                        {
+                            Process.Start(path);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Could not find the path to Visual Studio Code Editor.");
+                        }
                         break;
 
                     case "/clean":
@@ -130,13 +140,22 @@ static class Program
             }
             else
             {
-                var files = Directory.GetFiles(Environment.CurrentDirectory, compilerOption);
-
-                if (!File.Exists(compilerOption) && files.Length == 0)
+                try
                 {
-                    Console.WriteLine("Could not find the file \"{0}\" in the current directory.", compilerOption);
+                    var files = Directory.GetFiles(currentDirectory, compilerOption);
+
+                    if (!File.Exists(compilerOption) && files.Length == 0)
+                    {
+                        Console.WriteLine("Could not find the file \"{0}\" in the current directory.", compilerOption);
+                        printUsage = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception when trying to parse arguments: {0}", e.Message);
                     printUsage = true;
                 }
+                
             }
 
         }
@@ -154,7 +173,7 @@ static class Program
 
     static void PrintUsage()
     {
-        string appName = Environment.GetCommandLineArgs()[0];
+        const string appName = "dotnet.exe";
         Console.WriteLine("{0} /? or /help        - help", appName);
         Console.WriteLine("{0} /new               - creates template sources for a new console app", appName);
         Console.WriteLine("{0} /clean             - deletes tools, packages, and bin project subdirectories", appName);
@@ -264,8 +283,9 @@ static class ProjectPropertiesHelpers
     {
         // General Properites
         ProjectProperties properties = new ProjectProperties();
+        var currentDirectory = Directory.GetCurrentDirectory();
 
-        properties.ProjectDirectory = Path.Combine(Environment.CurrentDirectory);
+        properties.ProjectDirectory = Path.Combine(currentDirectory);
         properties.PackagesDirectory = Path.Combine(properties.ProjectDirectory, "packages");
         properties.OutputDirectory = Path.Combine(properties.ProjectDirectory, "bin");
         properties.ToolsDirectory = Path.Combine(properties.ProjectDirectory, "tools");
@@ -292,7 +312,7 @@ static class ProjectPropertiesHelpers
             }
         }
 
-        var specifiedSourceFilenames = Array.FindAll(args, element => element.EndsWith(".cs"));
+        var specifiedSourceFilenames = Array.FindAll(args, element => element.EndsWith(".cs") && !element.StartsWith("/"));
 
         foreach (var sourceFilename in specifiedSourceFilenames)
         {
@@ -651,7 +671,10 @@ static class NugetAction
 {
     static void CreateNugetConfig(ProjectProperties properties)
     {
-        using (var file = new StreamWriter(Path.Combine(properties.ToolsDirectory, "nuget.config"), false))
+        string fileName = Path.Combine(properties.ToolsDirectory, "nuget.config");
+        FileStream fs = null;
+        fs = new FileStream(fileName, FileMode.Create);
+        using (var file = new StreamWriter(fs, Encoding.UTF8))
         {
             file.WriteLine(@"<?xml version = ""1.0"" encoding=""utf-8""?>");
             file.WriteLine(@"<configuration>");
@@ -712,13 +735,6 @@ static class NugetAction
             Console.WriteLine(e);
             return false;
         }
-        finally
-        {
-            if (process != null)
-            {
-                process.Close();
-            }
-        }
         return true;
     }
 
@@ -743,49 +759,51 @@ static class NugetAction
         while (continueLoop)
         {
             continueLoop = true;
-            using (var sourceStreamTask = client.GetStreamAsync(requestUri))
+            var sourceStreamTask = client.GetStreamAsync(requestUri);
+            try
             {
-                try
+                sourceStreamTask.Wait();
+            }
+            catch (AggregateException exception)
+            {
+                numberOfAttempts++;
+                foreach (Exception ex in exception.InnerExceptions)
                 {
-                    sourceStreamTask.Wait();
+                    Console.WriteLine("Attempt # {0}: " + ex.Message, numberOfAttempts);
                 }
-                catch (AggregateException exception)
+                if (numberOfAttempts >= totalAttempts)
                 {
-                    numberOfAttempts++;
-                    foreach (Exception ex in exception.InnerExceptions)
-                    {
-                        Console.WriteLine("Attempt # {0}: " + ex.Message, numberOfAttempts);
-                    }
-                    if (numberOfAttempts >= totalAttempts)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    return false;
                 }
+                else
+                {
+                    continue;
+                }
+            }
 
-                continueLoop = false;
-                using (var sourceStream = sourceStreamTask.Result)
-                using (var destinationStream = new FileStream(destination, FileMode.Create, FileAccess.Write))
+            continueLoop = false;
+            using (var sourceStream = sourceStreamTask.Result)
+            using (var destinationStream = new FileStream(destination, FileMode.Create, FileAccess.Write))
+            {
+                byte[] buffer = new byte[1024];
+                while (true)
                 {
-                    byte[] buffer = new byte[1024];
-                    while (true)
-                    {
-                        var read = sourceStream.Read(buffer, 0, buffer.Length);
-                        if (read < 1) break;
-                        destinationStream.Write(buffer, 0, read);
-                    }
+                    var read = sourceStream.Read(buffer, 0, buffer.Length);
+                    if (read < 1) break;
+                    destinationStream.Write(buffer, 0, read);
                 }
             }
         }
+        
         return true;
     }
 
     static void CreateDefaultProjectJson(ProjectProperties properties)
     {
-        using (var file = new StreamWriter(Path.Combine(properties.ToolsDirectory, "project.json"), false))
+        string fileName = Path.Combine(properties.ToolsDirectory, "project.json");
+        FileStream fs = null;
+        fs = new FileStream(fileName, FileMode.Create);
+        using (var file = new StreamWriter(fs, Encoding.UTF8))
         {
             file.WriteLine(@"{");
             file.WriteLine(@"    ""dependencies"": {");
@@ -822,7 +840,10 @@ static class OtherActions
 {
     internal static void CreateNewProject(string directory)
     {
-        using (var file = new StreamWriter(Path.Combine(directory, "main.cs"), false))
+        string fileName = Path.Combine(directory, "main.cs");
+        FileStream fs = null;
+        fs = new FileStream(fileName, FileMode.Create);
+        using (var file = new StreamWriter(fs, Encoding.UTF8))
         {
             file.WriteLine(@"using System;");
             file.WriteLine();
