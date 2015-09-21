@@ -155,7 +155,7 @@ static class Program
                     Console.WriteLine("Exception when trying to parse arguments: {0}", e.Message);
                     printUsage = true;
                 }
-                
+
             }
 
         }
@@ -189,7 +189,7 @@ static class Program
         Console.WriteLine("           ProjectFile - specifies which project file to use, default to the one in the current directory, if only one exists");
         Console.WriteLine("           SourceFiles - specifices which source files to compile");
         Console.WriteLine("NOTE #1: uses csc.exe in <project>\\tools subdirectory, or csc.exe on the path.");
-        Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt, cscoptions.txt can be used to override details.");
+        Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt can be used to override details.");
     }
 
     static void Clean(string[] args, Log log)
@@ -272,7 +272,7 @@ static class Program
 
         var defaultOption = "/platform:anycpu";
         var platformOption = properties.CscOptions.Find(x => x.StartsWith("/platform"));
-        var coreConsolePath = ProjectPropertiesHelpers.GetConsoleHostNative(ProjectPropertiesHelpers.GetPlatformOption(platformOption == null ? defaultOption: platformOption), "win7") + "\\CoreConsole.exe";
+        var coreConsolePath = ProjectPropertiesHelpers.GetConsoleHostNative(ProjectPropertiesHelpers.GetPlatformOption(platformOption == null ? defaultOption : platformOption), "win7") + "\\CoreConsole.exe";
         File.Copy(Path.Combine(properties.PackagesDirectory, coreConsolePath), properties.OutputAssemblyPath);
     }
 }
@@ -387,7 +387,7 @@ static class ProjectPropertiesHelpers
         // CSC OPTIONS
         properties.CscOptions.Add("/nostdlib");
         properties.CscOptions.Add("/noconfig");
-        if (Array.Exists(args, element => element == "/unsafe")) 
+        if (Array.Exists(args, element => element == "/unsafe"))
         {
             properties.CscOptions.Add("/unsafe");
         }
@@ -401,14 +401,13 @@ static class ProjectPropertiesHelpers
 
         if (debugOption != null)
         {
-           properties.CscOptions.Add(debugOption);
+            properties.CscOptions.Add(debugOption);
         }
 
         LogProperties(log, properties, "Initialized Properties Log:", buildDll);
 
         Adjust(Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
         Adjust(Path.Combine(properties.ProjectDirectory, "references.txt"), properties.References);
-        Adjust(Path.Combine(properties.ProjectDirectory, "cscoptions.txt"), properties.CscOptions);
         Adjust(Path.Combine(properties.ProjectDirectory, "packages.txt"), properties.Packages);
 
         LogProperties(log, properties, "Adjusted Properties Log:", buildDll);
@@ -463,7 +462,7 @@ static class ProjectPropertiesHelpers
 
     static void AddToListWithoutDuplicates(List<string> list, List<string> files)
     {
-        foreach(var file in files)
+        foreach (var file in files)
         {
             if (!list.Contains(file))
             {
@@ -520,7 +519,7 @@ static class ProjectPropertiesHelpers
                 if (String.IsNullOrWhiteSpace(line)) continue;
                 if (line.StartsWith("//")) continue; // commented out line
                 var adjustment = line.Substring(1).Trim();
-                if (line.StartsWith(" - "))
+                if (line.StartsWith("-"))
                 {
                     list.Remove(adjustment);
                 }
@@ -547,7 +546,7 @@ static class ProjectPropertiesHelpers
                     {
                         sourceFiles.AddRange(Directory.GetFiles(properties.ProjectDirectory, "*.cs"));
                     }
-                    else if(sourceFile.EndsWith("\\*.cs"))
+                    else if (sourceFile.EndsWith("\\*.cs"))
                     {
                         sourceFiles.AddRange(Directory.GetFiles(Path.Combine(properties.ProjectDirectory, sourceFile.Replace("\\*.cs", "")), "*.cs"));
                     }
@@ -794,7 +793,7 @@ static class NugetAction
                 }
             }
         }
-        
+
         return true;
     }
 
