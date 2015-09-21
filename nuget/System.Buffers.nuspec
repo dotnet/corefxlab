@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>System.Text.Formatting</id>
+    <id>System.Buffers</id>
     <version>0.1.0.0-d091815-1</version>
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
@@ -9,13 +9,13 @@
     <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
     <projectUrl>https://github.com/dotnet/corefxlab</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Non-allocating formatting library</description>
+    <description>Span, BufferPoool</description>
     <releaseNotes>Initial package</releaseNotes>
     <copyright> Microsoft Corporation.  All rights reserved.</copyright>
-    <tags>.NET formatting corefxlab</tags>
+    <tags>.NET Core slice support</tags>
   </metadata>
   <files>
-    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Text.Formatting\System.Text.Formatting.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
+    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Buffers\System.Buffers.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
   </files>
 </package>
 
