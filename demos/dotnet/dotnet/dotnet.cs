@@ -672,8 +672,7 @@ static class NugetAction
     static void CreateNugetConfig(ProjectProperties properties)
     {
         string fileName = Path.Combine(properties.ToolsDirectory, "nuget.config");
-        FileStream fs = null;
-        fs = new FileStream(fileName, FileMode.Create);
+        FileStream fs = new FileStream(fileName, FileMode.Create);
         using (var file = new StreamWriter(fs, Encoding.UTF8))
         {
             file.WriteLine(@"<?xml version = ""1.0"" encoding=""utf-8""?>");
@@ -718,22 +717,23 @@ static class NugetAction
         log.WriteLine("Arguments: {0}", processSettings.Arguments);
         log.WriteLine("project.json:\n{0}", File.ReadAllText(projectFile));
 
-        Process process = null;
-        try
+        using (Process process = Process.Start(processSettings))
         {
-            process = Process.Start(processSettings);
-            var output = process.StandardOutput.ReadToEnd();
-            var error = process.StandardError.ReadToEnd();
-            log.WriteLine(output);
-            log.Error(error);
-            process.WaitForExit();
-            int exitCode = process.ExitCode;
-            if (exitCode != 0) Console.WriteLine("Process exit code: {0}", exitCode);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return false;
+            try
+            {
+                var output = process.StandardOutput.ReadToEnd();
+                var error = process.StandardError.ReadToEnd();
+                log.WriteLine(output);
+                log.Error(error);
+                process.WaitForExit();
+                int exitCode = process.ExitCode;
+                if (exitCode != 0) Console.WriteLine("Process exit code: {0}", exitCode);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
         }
         return true;
     }
@@ -801,8 +801,7 @@ static class NugetAction
     static void CreateDefaultProjectJson(ProjectProperties properties)
     {
         string fileName = Path.Combine(properties.ToolsDirectory, "project.json");
-        FileStream fs = null;
-        fs = new FileStream(fileName, FileMode.Create);
+        FileStream fs = new FileStream(fileName, FileMode.Create);
         using (var file = new StreamWriter(fs, Encoding.UTF8))
         {
             file.WriteLine(@"{");
@@ -841,8 +840,7 @@ static class OtherActions
     internal static void CreateNewProject(string directory)
     {
         string fileName = Path.Combine(directory, "main.cs");
-        FileStream fs = null;
-        fs = new FileStream(fileName, FileMode.Create);
+        FileStream fs = new FileStream(fileName, FileMode.Create);
         using (var file = new StreamWriter(fs, Encoding.UTF8))
         {
             file.WriteLine(@"using System;");

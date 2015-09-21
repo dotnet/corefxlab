@@ -17,3 +17,4 @@
 +System.Resources.ResourceManager\4.0.0\ref\dotnet\System.Resources.ResourceManager.dll
 +System.Security.SecureString\4.0.0-beta-23225\ref\dotnet\System.Security.SecureString.dll
 +System.Globalization\4.0.10\ref\dotnet\System.Globalization.dll
++System.Threading.ThreadPool\4.0.10-beta-23225\ref\dotnet\System.Threading.ThreadPool.dll
