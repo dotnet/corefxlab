@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.Core;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +16,7 @@ static class Program
     static Log Log = new global::Log();
 
     // Arguments specifications used for parsing
-    static readonly List<string> commandFunctions = new List<string>() { "/new", "/clean", "/edit", "/?", "/help" };
+    static readonly List<string> commandFunctions = new List<string>() { "/new", "/clean", "/?", "/help" };
     static readonly List<string> commandSwitches = new List<string>() { "/log", "/optimize", "/unsafe" };
     static readonly List<string> commandSwitchesWithSpecifications = new List<string>() { "/target", "/recurse", "/debug", "/platform" };
     static readonly List<string> targetSpecifications = new List<string>() { "exe", "library" };
@@ -59,18 +58,6 @@ static class Program
                 {
                     case "/new":
                         OtherActions.CreateNewProject(currentDirectory);
-                        break;
-
-                    case "/edit":
-                        var path = (string)Registry.GetValue("HKEY_CLASSES_ROOT\\*\\shell\\Ticino", "Icon", null);
-                        if (path != null)
-                        {
-                            Process.Start(path);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Could not find the path to Visual Studio Code Editor.");
-                        }
                         break;
 
                     case "/clean":
@@ -177,7 +164,6 @@ static class Program
         Console.WriteLine("{0} /? or /help        - help", appName);
         Console.WriteLine("{0} /new               - creates template sources for a new console app", appName);
         Console.WriteLine("{0} /clean             - deletes tools, packages, and bin project subdirectories", appName);
-        Console.WriteLine("{0} /edit              - starts code editor", appName);
         Console.WriteLine("{0} [/log] [/target:{{exe|library}}] [/recurse:<wildcard>] [/debug:{{full|pdbonly}}] [/optimize] [/unsafe] [/platform:{{anycpu|anycpu32bitpreferred|x86|x64}}] [ProjectFile] [SourceFiles]", appName);
         Console.WriteLine("           /log        - logs diagnostics info");
         Console.WriteLine("           /target     - compiles the sources in the current directory into an exe (default) or dll");
@@ -189,7 +175,7 @@ static class Program
         Console.WriteLine("           ProjectFile - specifies which project file to use, default to the one in the current directory, if only one exists");
         Console.WriteLine("           SourceFiles - specifices which source files to compile");
         Console.WriteLine("NOTE #1: uses csc.exe in <project>\\tools subdirectory, or csc.exe on the path.");
-        Console.WriteLine("NOTE #2: packages.txt, dependencies.txt, references.txt can be used to override details.");
+        Console.WriteLine("NOTE #2: dependencies.txt, references.txt can be used to override details.");
     }
 
     static void Clean(string[] args, Log log)
@@ -294,23 +280,11 @@ static class ProjectPropertiesHelpers
         FindCompiler(properties);
 
         var specifiedProjectFilename = Array.Find(args, element => element.EndsWith(".dotnetproj"));
+        var specifiedProjectFile = specifiedProjectFilename == null ? null : Directory.GetFiles(properties.ProjectDirectory, specifiedProjectFilename);
+        var projectFiles = Directory.GetFiles(properties.ProjectDirectory, "*.dotnetproj");
+        var projectFilename = specifiedProjectFile == null ? projectFiles.Length == 1 ? projectFiles[0] : "" : specifiedProjectFile.Length == 1 ? specifiedProjectFile[0] : "";
 
-        if (specifiedProjectFilename != null)
-        {
-            var specifiedProjectFile = Directory.GetFiles(properties.ProjectDirectory, specifiedProjectFilename);
-            if (specifiedProjectFile.Length == 1)
-            {
-                AddToListWithoutDuplicates(properties.Sources, ParseProjectFile(properties, specifiedProjectFile[0]));
-            }
-        }
-        else
-        {
-            var projectFiles = Directory.GetFiles(properties.ProjectDirectory, "*.dotnetproj");
-            if (projectFiles.Length == 1)
-            {
-                AddToListWithoutDuplicates(properties.Sources, ParseProjectFile(properties, projectFiles[0]));
-            }
-        }
+        AddToListWithoutDuplicates(properties.Sources, ParseProjectFile(properties, projectFilename, "Compile"));
 
         var specifiedSourceFilenames = Array.FindAll(args, element => element.EndsWith(".cs") && !element.StartsWith("/"));
 
@@ -408,7 +382,7 @@ static class ProjectPropertiesHelpers
 
         Adjust(Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
         Adjust(Path.Combine(properties.ProjectDirectory, "references.txt"), properties.References);
-        Adjust(Path.Combine(properties.ProjectDirectory, "packages.txt"), properties.Packages);
+        AddToListWithoutDuplicates(properties.Packages, ParseProjectFile(properties, projectFilename, "Package"));
 
         LogProperties(log, properties, "Adjusted Properties Log:", buildDll);
 
@@ -531,33 +505,93 @@ static class ProjectPropertiesHelpers
         }
     }
 
-    static List<string> ParseProjectFile(ProjectProperties properties, string projectFile)
+    static List<string> ParseProjectFile(ProjectProperties properties, string projectFile, string elementName)
     {
-        var sourceFiles = new List<string>();
+        var attributes = GetAttributes(elementName);
+        if (!File.Exists(projectFile) || attributes == null)
+        {
+            return new List<string>();
+        }
+
+        var attributeValues = new List<string>();
         using (XmlReader xmlReader = XmlReader.Create(projectFile))
         {
             xmlReader.MoveToContent();
             while (xmlReader.Read())
             {
-                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "Compile")
+                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == elementName)
                 {
-                    var sourceFile = xmlReader.GetAttribute("Include");
-                    if (sourceFile == "*.cs")
+                    foreach (var attribute in attributes)
                     {
-                        sourceFiles.AddRange(Directory.GetFiles(properties.ProjectDirectory, "*.cs"));
-                    }
-                    else if (sourceFile.EndsWith("\\*.cs"))
-                    {
-                        sourceFiles.AddRange(Directory.GetFiles(Path.Combine(properties.ProjectDirectory, sourceFile.Replace("\\*.cs", "")), "*.cs"));
-                    }
-                    else
-                    {
-                        sourceFiles.Add(Path.Combine(properties.ProjectDirectory, sourceFile));
+                        attributeValues.Add(xmlReader.GetAttribute(attribute));
                     }
                 }
             }
         }
+
+        var values = new List<string>();
+        switch (elementName)
+        {
+            case "Compile":
+                values = GetSourcesFromProjectFile(properties, attributeValues);
+                break;
+            case "Package":
+                values = GetPackagesFromProjectFile(properties, attributeValues);
+                break;
+            default:
+                break;
+        }
+        return values;
+    }
+
+    static List<string> GetAttributes(string elementName)
+    {
+        var compileAttributes = new List<string>() { "Include" };
+        var packageAttributes = new List<string>() { "Id", "Version" };
+        List<string> attributes = null;
+        switch (elementName)
+        {
+            case "Compile":
+                attributes = compileAttributes;
+                break;
+            case "Package":
+                attributes = packageAttributes;
+                break;
+            default:
+                break;
+        }
+        return attributes;
+    }
+
+    static List<string> GetSourcesFromProjectFile(ProjectProperties properties, List<string> attributeValues)
+    {
+        var sourceFiles = new List<string>();
+        foreach (var val in attributeValues)
+        {
+            if (val == "*.cs")
+            {
+                sourceFiles.AddRange(Directory.GetFiles(properties.ProjectDirectory, "*.cs"));
+            }
+            else if (val.EndsWith("\\*.cs"))
+            {
+                sourceFiles.AddRange(Directory.GetFiles(Path.Combine(properties.ProjectDirectory, val.Replace("\\*.cs", "")), "*.cs"));
+            }
+            else
+            {
+                sourceFiles.Add(Path.Combine(properties.ProjectDirectory, val));
+            }
+        }
         return sourceFiles;
+    }
+
+    static List<string> GetPackagesFromProjectFile(ProjectProperties properties, List<string> attributeValues)
+    {
+        var packages = new List<string>();
+        for (int i = 0; i < attributeValues.Count; i += 2)
+        {
+            packages.Add("\"" + attributeValues[i] + "\": \"" + attributeValues[i + 1] + "\"");
+        }
+        return packages;
     }
 
     static void FindCompiler(ProjectProperties properties)
