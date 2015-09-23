@@ -72,7 +72,6 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="project.json" />
     <None Include="project.lock.json" />
   </ItemGroup>
