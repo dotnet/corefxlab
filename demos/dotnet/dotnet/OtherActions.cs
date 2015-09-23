@@ -9,8 +9,9 @@ namespace dotnet
 {
     internal static class OtherActions
     {
-        internal static void CreateNewProject(string directory)
+        internal static void CreateNewProject()
         {
+            var directory = Directory.GetCurrentDirectory();
             var fileName = Path.Combine(directory, "main.cs");
             var fs = new FileStream(fileName, FileMode.Create);
             using (var file = new StreamWriter(fs, Encoding.UTF8))
@@ -27,16 +28,18 @@ namespace dotnet
             }
         }
 
-        internal static void Clean(string[] args, Log log)
+        internal static void Clean(Settings settings, Log log)
         {
             var previous = log.IsEnabled;
             log.IsEnabled = false;
-            var properties = ProjectPropertiesHelpers.InitializeProperties(args, log);
+            var properties = ProjectPropertiesHelpers.InitializeProperties(settings, log);
             log.IsEnabled = previous;
             try
             {
-                if (Directory.Exists(properties.ToolsDirectory)) Directory.Delete(properties.ToolsDirectory, true);
-                if (Directory.Exists(properties.OutputDirectory)) Directory.Delete(properties.OutputDirectory, true);
+                if (Directory.Exists(properties.ToolsDirectory))
+                    Directory.Delete(properties.ToolsDirectory, true);
+                if (Directory.Exists(properties.OutputDirectory))
+                    Directory.Delete(properties.OutputDirectory, true);
                 if (Directory.Exists(properties.PackagesDirectory))
                     Directory.Delete(properties.PackagesDirectory, true);
             }

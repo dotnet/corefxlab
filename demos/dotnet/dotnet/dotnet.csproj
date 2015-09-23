@@ -49,6 +49,7 @@
     <Compile Include="OtherActions.cs" />
     <Compile Include="ProjectProperties.cs" />
     <Compile Include="ProjectPropertiesHelpers.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

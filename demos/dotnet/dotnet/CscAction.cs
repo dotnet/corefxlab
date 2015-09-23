@@ -88,12 +88,6 @@ namespace dotnet
                 builder.Append(option);
             }
 
-            if (string.CompareOrdinal(project.OutputType, ".dll") == 0)
-            {
-                builder.Append(" ");
-                builder.Append("/target:library");
-            }
-
             builder.Append(" ");
             builder.Append("/out:");
             builder.Append(project.OutputAssemblyPath);

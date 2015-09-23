@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace dotnet
@@ -10,168 +9,85 @@ namespace dotnet
     internal static class Program
     {
         private static readonly Log Log = new Log();
-
-        // Arguments specifications used for parsing
-        private static readonly List<string> CommandFunctions = new List<string> {"/new", "/clean", "/?", "/help"};
-        private static readonly List<string> CommandSwitches = new List<string> {"/log", "/optimize", "/unsafe"};
-
-        private static readonly List<string> CommandSwitchesWithSpecifications = new List<string>
-        {
-            "/target",
-            "/recurse",
-            "/debug",
-            "/platform"
-        };
-
-        private static readonly List<string> TargetSpecifications = new List<string> {"exe", "library"};
-        private static readonly List<string> DebugSpecifications = new List<string> {"full", "pdbonly"};
-
-        private static readonly List<string> PlatformSpecifications = new List<string>
-        {
-            "anycpu",
-            "anycpu32bitpreferred",
-            "x64",
-            "x86"
-        };
+        private static readonly Settings Settings = new Settings();
 
         private static void Main(string[] args)
         {
-            ParseArguments(args);
-        }
-
-        private static void ParseArguments(string[] args)
-        {
-            var currentDirectory = Directory.GetCurrentDirectory();
-
-            // Defaults
-            if (args.Length == 0)
+            if (Array.Exists(args, element => element == "/new"))
             {
-                args = new[] {"/target:exe"};
+                OtherActions.CreateNewProject();
+                return;
+            }
+            if (Array.Exists(args, element => element == "/clean"))
+            {
+                OtherActions.Clean(Settings, Log);
+                return;
             }
 
-            Log.IsEnabled = Array.Exists(args, element => element == "/log");
-
-            var buildDll = false;
-
-            // Incorrect arguments passed in or user asked for help
-            var printUsage = false;
-
-            var compilerFunctionSelected = false;
-
-            // Command arguments parsing
-            foreach (var argument in args)
-            {
-                if (printUsage || compilerFunctionSelected) break;
-
-                var argOptions = argument.Split(':');
-                var compilerOption = argument.StartsWith("/") ? argOptions[0] : argument;
-
-                if (CommandFunctions.Contains(compilerOption))
-                {
-                    compilerFunctionSelected = true;
-                    switch (compilerOption)
-                    {
-                        case "/new":
-                            OtherActions.CreateNewProject(currentDirectory);
-                            break;
-
-                        case "/clean":
-                            OtherActions.Clean(args, Log);
-                            break;
-
-                        case "/?":
-                        case "/help":
-                        default:
-                            printUsage = true;
-                            break;
-                    }
-                }
-                else if (CommandSwitches.Contains(compilerOption))
-                {
-                    // Do nothing, just pass those switches to the CSC Options
-                }
-                else if (CommandSwitchesWithSpecifications.Contains(compilerOption))
-                {
-                    if (argOptions.Length != 2)
-                    {
-                        Console.WriteLine("Please specify the {0} compiler option correctly.", compilerOption);
-                        printUsage = true;
-                    }
-                    else
-                    {
-                        var commandSpecification = argOptions[1];
-                        switch (compilerOption)
-                        {
-                            case "/target":
-                                if (!TargetSpecifications.Contains(commandSpecification))
-                                {
-                                    Console.WriteLine("Please specify the {0} compiler option correctly.",
-                                        compilerOption);
-                                    printUsage = true;
-                                }
-                                else
-                                {
-                                    buildDll = commandSpecification == "library";
-                                }
-                                break;
-
-                            case "/debug":
-                                if (!DebugSpecifications.Contains(commandSpecification))
-                                {
-                                    Console.WriteLine("Please specify the {0} compiler option correctly.",
-                                        compilerOption);
-                                    printUsage = true;
-                                }
-                                break;
-
-                            case "/platform":
-                                if (!PlatformSpecifications.Contains(commandSpecification))
-                                {
-                                    Console.WriteLine("Please specify the {0} compiler option correctly.",
-                                        compilerOption);
-                                    printUsage = true;
-                                }
-                                break;
-
-                            case "/recurse":
-                                // Do nothing, just pass the switch with the wildcard to find the source files
-                                break;
-
-                            default:
-                                printUsage = true;
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        var files = Directory.GetFiles(currentDirectory, compilerOption);
-
-                        if (!File.Exists(compilerOption) && files.Length == 0)
-                        {
-                            Console.WriteLine("Could not find the file \"{0}\" in the current directory.",
-                                compilerOption);
-                            printUsage = true;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Exception when trying to parse arguments: {0}", e.Message);
-                        printUsage = true;
-                    }
-                }
-            }
-
-            if (printUsage)
+            if (!ParseArguments(args))
             {
                 PrintUsage();
             }
-            else if (!compilerFunctionSelected)
+            else
             {
-                Build(args, Log, buildDll);
+                Build(Settings, Log);
             }
+        }
+
+        private static bool ParseArguments(string[] args)
+        {
+            if (Settings.NeedHelp(args) || !Settings.IsValid(args))
+            {
+                return false;
+            }
+
+            Settings.Log = Log.IsEnabled = Array.Exists(args, element => element == "/log");
+            Settings.Optimize = Array.Exists(args, element => element == "/optimize");
+            Settings.Unsafe = Array.Exists(args, element => element == "/unsafe");
+
+            var currentDirectory = Directory.GetCurrentDirectory();
+
+            var specifiedProjectFilename = Array.Find(args, element => element.EndsWith(".dotnetproj"));
+            var specifiedProjectFile = specifiedProjectFilename == null
+                ? null
+                : Directory.GetFiles(currentDirectory, specifiedProjectFilename);
+            var projectFiles = Directory.GetFiles(currentDirectory, "*.dotnetproj");
+            Settings.ProjectFile = specifiedProjectFile == null
+                ? projectFiles.Length == 1 ? projectFiles[0] : ""
+                : specifiedProjectFile.Length == 1 ? specifiedProjectFile[0] : "";
+
+            var specifiedSourceFilenames = Array.FindAll(args, element => element.EndsWith(".cs") && !element.StartsWith("/"));
+            foreach (var sourceFilename in specifiedSourceFilenames)
+            {
+                Settings.SourceFiles.AddRange(Directory.GetFiles(currentDirectory, sourceFilename));
+            }
+
+            return ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/target")),
+                Settings.SetTargetSpecification) &&
+                   ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/platform")),
+                       Settings.SetPlatformSpecification) &&
+                   ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/debug")),
+                       Settings.SetDebugSpecification) &&
+                   ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/recurse")),
+                       Settings.SetRecurseSpecification);
+        }
+
+        private static bool ValidateAndSetOptionSpecifications(string option, Func<string, bool> setFunction)
+        {
+            if (option == null) return true;
+            if (option.Split(':').Length == 2)
+            {
+                var optionSpecification = option.Split(':')[1];
+                if (!setFunction(optionSpecification))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+            return true;
         }
 
         private static void PrintUsage()
@@ -201,9 +117,9 @@ namespace dotnet
             Console.WriteLine("NOTE #2: dependencies.txt, references.txt can be used to override details.");
         }
 
-        private static void Build(string[] args, Log log, bool buildDll = false)
+        private static void Build(Settings settings, Log log)
         {
-            var properties = ProjectPropertiesHelpers.InitializeProperties(args, log, buildDll);
+            var properties = ProjectPropertiesHelpers.InitializeProperties(settings, log);
 
             if (properties.Sources.Count == 0)
             {
@@ -226,21 +142,18 @@ namespace dotnet
                 Directory.CreateDirectory(properties.PackagesDirectory);
             }
 
-            if (!NugetAction.DownloadNugetAction(properties) || !NugetAction.RestorePackagesAction(properties, Log))
+            if (!NugetAction.GetNugetAndRestore(properties, log))
             {
-                Console.WriteLine("Failed to get nuget or restore packages.");
                 return;
             }
 
-            if (CscAction.Execute(properties, Log))
+            if (!CscAction.Execute(properties, Log)) return;
+            if (Settings.Target != "library")
             {
-                if (!buildDll)
-                {
-                    ConvertToCoreConsoleAction(properties);
-                }
-                OutputRuntimeDependenciesAction(properties);
-                Console.WriteLine("bin\\{0} created", properties.AssemblyNameAndExtension);
+                ConvertToCoreConsoleAction(properties);
             }
+            OutputRuntimeDependenciesAction(properties);
+            Console.WriteLine("bin\\{0} created", properties.AssemblyNameAndExtension);
         }
 
         private static void OutputRuntimeDependenciesAction(ProjectProperties properties)
@@ -260,11 +173,8 @@ namespace dotnet
             }
             File.Move(properties.OutputAssemblyPath, dllPath);
 
-            var defaultOption = "/platform:anycpu";
-            var platformOption = properties.CscOptions.Find(x => x.StartsWith("/platform"));
             var coreConsolePath =
-                ProjectPropertiesHelpers.GetConsoleHostNative(
-                    ProjectPropertiesHelpers.GetPlatformOption(platformOption ?? defaultOption), "win7") +
+                ProjectPropertiesHelpers.GetConsoleHostNative(ProjectPropertiesHelpers.GetPlatformOption(Settings.Platform), "win7") +
                 "\\CoreConsole.exe";
             File.Copy(Path.Combine(properties.PackagesDirectory, coreConsolePath), properties.OutputAssemblyPath);
         }

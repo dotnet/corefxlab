@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,11 +10,13 @@ namespace dotnet
 {
     internal static class ProjectPropertiesHelpers
     {
-        public static ProjectProperties InitializeProperties(string[] args, Log log, bool buildDll = false)
+        public static ProjectProperties InitializeProperties(Settings settings, Log log)
         {
             // General Properites
             var properties = new ProjectProperties();
             var currentDirectory = Directory.GetCurrentDirectory();
+
+            var buildDll = settings.Target == "library";
 
             properties.ProjectDirectory = Path.Combine(currentDirectory);
             properties.PackagesDirectory = Path.Combine(properties.ProjectDirectory, "packages");
@@ -25,44 +26,18 @@ namespace dotnet
             properties.OutputType = buildDll ? ".dll" : ".exe";
             FindCompiler(properties);
 
-            var specifiedProjectFilename = Array.Find(args, element => element.EndsWith(".dotnetproj"));
-            var specifiedProjectFile = specifiedProjectFilename == null
-                ? null
-                : Directory.GetFiles(properties.ProjectDirectory, specifiedProjectFilename);
-            var projectFiles = Directory.GetFiles(properties.ProjectDirectory, "*.dotnetproj");
-            var projectFilename = specifiedProjectFile == null
-                ? projectFiles.Length == 1 ? projectFiles[0] : ""
-                : specifiedProjectFile.Length == 1 ? specifiedProjectFile[0] : "";
-
-            AddToListWithoutDuplicates(properties.Sources, ParseProjectFile(properties, projectFilename, "Compile"));
-
-            var specifiedSourceFilenames = Array.FindAll(args,
-                element => element.EndsWith(".cs") && !element.StartsWith("/"));
-
-            foreach (var sourceFilename in specifiedSourceFilenames)
+            AddToListWithoutDuplicates(properties.Sources, ParseProjectFile(properties, settings.ProjectFile, "Compile"));
+            
+            foreach (var file in settings.SourceFiles.Where(f => !f.StartsWith(properties.PackagesDirectory) && !f.StartsWith(properties.OutputDirectory) &&
+                                                              !f.StartsWith(properties.ToolsDirectory)))
             {
-                var sourceFiles = Directory.GetFiles(properties.ProjectDirectory, sourceFilename);
-                foreach (var f in sourceFiles)
-                {
-                    if (!f.StartsWith(properties.PackagesDirectory) && !f.StartsWith(properties.OutputDirectory) &&
-                        !f.StartsWith(properties.ToolsDirectory))
-                    {
-                        AddToListWithoutDuplicates(properties.Sources, f);
-                    }
-                }
+                AddToListWithoutDuplicates(properties.Sources, file);
             }
 
-            var recurseOption = Array.Find(args, element => element.StartsWith("/recurse"));
-            var recurseWildcard = "";
-            if (recurseOption != null && recurseOption.Split(':').Length == 2)
-            {
-                recurseWildcard = recurseOption.Split(':')[1];
-            }
-
-            if (recurseOption != null && recurseWildcard != "*.cs")
+            if (!string.IsNullOrWhiteSpace(settings.Recurse) && settings.Recurse != "*.cs")
             {
                 AddToListWithoutDuplicates(properties.Sources,
-                    Directory.GetFiles(properties.ProjectDirectory, recurseWildcard, SearchOption.AllDirectories));
+                    Directory.GetFiles(properties.ProjectDirectory, settings.Recurse, SearchOption.AllDirectories));
             }
 
             if (properties.Sources.Count == 1)
@@ -70,20 +45,11 @@ namespace dotnet
                 properties.AssemblyName = Path.GetFileNameWithoutExtension(properties.Sources[0]);
             }
 
-            var platformOption = Array.Find(args, element => element.StartsWith("/platform"));
+            var platformOptionSpecicifcation = GetPlatformOption(settings.Platform);
 
-            var platformOptionSpecicifcation = "x64";
-            if (platformOption != null && platformOption.Split(':').Length == 2)
-            {
-                platformOptionSpecicifcation = GetPlatformOption(platformOption);
-            }
-
-            if (platformOption != null)
-            {
-                // The anycpu32bitpreferred setting is valid only for executable (.EXE) files
-                if (!(platformOption == "/platform:anycpu32bitpreferred" && buildDll))
-                    properties.CscOptions.Add(platformOption);
-            }
+            // The anycpu32bitpreferred setting is valid only for executable (.EXE) files
+            if (!(settings.Platform == "anycpu32bitpreferred" && buildDll))
+                properties.CscOptions.Add("/platform:" + settings.Platform);
 
             // Packages
             properties.Packages.Add(@"""Microsoft.NETCore"": ""5.0.0""");
@@ -125,38 +91,37 @@ namespace dotnet
             // CSC OPTIONS
             properties.CscOptions.Add("/nostdlib");
             properties.CscOptions.Add("/noconfig");
-            if (Array.Exists(args, element => element == "/unsafe"))
+            if (settings.Unsafe)
             {
                 properties.CscOptions.Add("/unsafe");
             }
 
-            if (Array.Exists(args, element => element == "/optimize"))
+            if (settings.Optimize)
             {
                 properties.CscOptions.Add("/optimize");
             }
 
-            var debugOption = Array.Find(args, element => element.StartsWith("/debug"));
-
-            if (debugOption != null)
+            if (!string.IsNullOrWhiteSpace(settings.Debug))
             {
-                properties.CscOptions.Add(debugOption);
+                properties.CscOptions.Add("/debug:" + settings.Debug);
             }
+
+            properties.CscOptions.Add("/target:" + settings.Target);
 
             LogProperties(log, properties, "Initialized Properties Log:", buildDll);
 
-            Adjust(Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
-            Adjust(Path.Combine(properties.ProjectDirectory, "references.txt"), properties.References);
-            AddToListWithoutDuplicates(properties.Packages, ParseProjectFile(properties, projectFilename, "Package"));
+            Adjust(properties, Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
+            Adjust(properties, Path.Combine(properties.ProjectDirectory, "references.txt"), properties.References);
+            AddToListWithoutDuplicates(properties.Packages, ParseProjectFile(properties, settings.ProjectFile, "Package"));
 
             LogProperties(log, properties, "Adjusted Properties Log:", buildDll);
 
             return properties;
         }
 
-        public static string GetPlatformOption(string option)
+        public static string GetPlatformOption(string optionSpecification)
         {
-            var tempSpecification = option.Split(':')[1];
-            if (tempSpecification == "anycpu32bitpreferred" || tempSpecification == "x86")
+            if (optionSpecification == "anycpu32bitpreferred" || optionSpecification == "x86")
             {
                 return "x86";
             }
@@ -222,7 +187,7 @@ namespace dotnet
             }
         }
 
-        private static void LogProperties(this Log log, ProjectProperties project, string heading, bool buildDll = false)
+        private static void LogProperties(this Log log, ProjectProperties project, string heading, bool buildDll)
         {
             if (!log.IsEnabled) return;
 
@@ -242,8 +207,8 @@ namespace dotnet
             log.WriteLine("-------------------------------------------------");
         }
 
-        private static void Adjust(string adjustmentFilePath, ICollection<string> list)
-        {
+        private static void Adjust(ProjectProperties properties, string adjustmentFilePath, ICollection<string> list)
+        { 
             if (!File.Exists(adjustmentFilePath)) return;
             foreach (var line in File.ReadAllLines(adjustmentFilePath))
             {
@@ -252,11 +217,11 @@ namespace dotnet
                 var adjustment = line.Substring(1).Trim();
                 if (line.StartsWith("-"))
                 {
-                    list.Remove(adjustment);
+                    list.Remove(Path.Combine(properties.PackagesDirectory, adjustment));
                 }
                 else
                 {
-                    list.Add(adjustment);
+                    list.Add(Path.Combine(properties.PackagesDirectory, adjustment));
                 }
             }
         }
