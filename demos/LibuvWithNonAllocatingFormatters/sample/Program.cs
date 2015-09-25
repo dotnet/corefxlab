@@ -10,7 +10,7 @@ static class Program
     {
         Console.WriteLine("browse to http://localhost:8080");
 
-        bool log = true;
+        bool log = false;
         if(args.Length > 0 && args[0]=="/log")
         {
             log = true;
@@ -18,6 +18,7 @@ static class Program
 
         var loop = UVLoop.Default;
         var listener = new TcpListener("127.0.0.1", 8080, loop);
+        var formatter = new BufferFormatter(512, FormattingData.InvariantUtf8);
 
         listener.ConnectionAccepted += (Tcp connection) => {
             if (log) {
@@ -30,8 +31,7 @@ static class Program
                     Console.WriteLine("*REQUEST:\n {0}", data.Utf8BytesToString());
                 }
 
-                var formatter = new BufferFormatter(512, FormattingData.InvariantUtf8);
-
+                formatter.Clear();
                 formatter.Append("HTTP/1.1 200 OK\r\n");
                 formatter.Append("\r\n\r\n");
                 formatter.Append("Hello World!");
@@ -43,9 +43,6 @@ static class Program
                 var response = formatter.Buffer.Slice(0, formatter.CommitedByteCount);
                 connection.TryWrite(response);
                 connection.Dispose();
-
-                var buffer = formatter.Buffer;
-                BufferPool.Shared.ReturnBuffer(ref buffer);
             };
 
             connection.ReadStart();
