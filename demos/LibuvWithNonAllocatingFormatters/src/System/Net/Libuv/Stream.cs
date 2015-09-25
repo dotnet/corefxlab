@@ -78,6 +78,7 @@ namespace System.Net.Libuv
             long bytesRead = bytesAvaliable.ToInt64();
             if (bytesRead == 0)
             {
+                buffer.Dispose();
                 return;
             }
             else if (bytesRead < 0)
@@ -87,10 +88,12 @@ namespace System.Net.Libuv
                 {
                     OnEndOfStream();
                     Dispose();
+                    buffer.Dispose();
                 }
                 else
                 {
                     Dispose();
+                    buffer.Dispose();
                     throw new UVException((int)bytesRead);
                 }
             }
