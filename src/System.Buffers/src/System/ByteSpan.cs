@@ -9,12 +9,10 @@ namespace System {
     public unsafe struct ByteSpan {
         internal byte* _data;
         internal int _length;
-        internal int _id;
 
         [CLSCompliant(false)]
-        public ByteSpan(byte* data, int length, int id = -1)
+        public ByteSpan(byte* data, int length)
         {
-            _id = id;
             _data = data;
             _length = length;
         }
@@ -63,7 +61,7 @@ namespace System {
 
             var data = _data + index;
             var length = _length - index;
-            return new ByteSpan(data, length, -1);
+            return new ByteSpan(data, length);
         }
 
         public ByteSpan Slice(int index, int count)
@@ -71,7 +69,7 @@ namespace System {
             Precondition.Require(index + count < Length);
 
             var data = _data + index;
-            return new ByteSpan(data, count, -1);
+            return new ByteSpan(data, count);
         }
     }
 }
