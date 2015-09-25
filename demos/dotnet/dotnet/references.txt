@@ -20,3 +20,4 @@
 +System.Net.Primitives\4.0.10\ref\dotnet\System.Net.Primitives.dll
 +System.Collections.NonGeneric\4.0.0\ref\dotnet\System.Collections.NonGeneric.dll
 +System.Security.Cryptography.X509Certificates\4.0.0-beta-23225\ref\dotnet\System.Security.Cryptography.X509Certificates.dll
++System.Linq\4.0.0\ref\dotnet\System.Linq.dll

@@ -41,9 +41,15 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CscAction.cs" />
     <Compile Include="dotnet.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="NugetAction.cs" />
+    <Compile Include="OtherActions.cs" />
     <Compile Include="ProjectProperties.cs" />
+    <Compile Include="ProjectPropertiesHelpers.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
