@@ -72,19 +72,19 @@ namespace System.Net.Libuv
         internal static extern int uv_tcp_keepalive(IntPtr handle, int enable, int delay);
 
         [DllImport("libuv", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int uv_read_start(IntPtr stream, UVInterop.alloc_callback_unix alloc_callback, read_callback_unix read_callback);
+        internal static extern int uv_read_start(IntPtr stream, alloc_callback_unix alloc_callback, read_callback_unix read_callback);
 
         [DllImport("libuv", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int uv_read_start(IntPtr stream, UVInterop.alloc_callback_win alloc_callback, read_callback_win read_callback);
+        internal static extern int uv_read_start(IntPtr stream, alloc_callback_win alloc_callback, read_callback_win read_callback);
 
         [DllImport("libuv", CallingConvention = CallingConvention.Cdecl)]
-        internal unsafe extern static int uv_try_write(IntPtr handle, WindowsBufferStruct* bufs, int nbufs);
+        internal unsafe extern static int uv_try_write(IntPtr handle, UVBuffer.Windows* buffersList, int bufferCount);
 
         [DllImport("libuv", CallingConvention = CallingConvention.Cdecl)]
-        internal unsafe extern static int uv_try_write(IntPtr handle, UnixBufferStruct* bufs, int nbufs);
+        internal unsafe extern static int uv_try_write(IntPtr handle, UVBuffer.Unix* buffersList, int bufferCount);
 
         [DllImport("libuv", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int uv_shutdown(IntPtr req, IntPtr handle, UVInterop.handle_callback callback);
+        internal static extern int uv_shutdown(IntPtr req, IntPtr handle, handle_callback callback);
 
         [DllImport("libuv", CallingConvention = CallingConvention.Cdecl)]
         internal static extern int uv_read_watcher_start(IntPtr stream, Action<IntPtr> read_watcher_callback);
@@ -93,10 +93,10 @@ namespace System.Net.Libuv
         internal static extern int uv_read_stop(IntPtr stream);
 
         [DllImport("libuv", EntryPoint = "uv_write", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int uv_write_unix(IntPtr req, IntPtr handle, UnixBufferStruct[] bufs, int bufcnt, handle_callback callback);
+        internal unsafe static extern int uv_write_unix(IntPtr req, IntPtr handle, UVBuffer.Unix* bufferList, int bufferCount, handle_callback callback);
 
         [DllImport("libuv", EntryPoint = "uv_write", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int uv_write_win(IntPtr req, IntPtr handle, WindowsBufferStruct[] bufs, int bufcnt, handle_callback callback);
+        internal unsafe static extern int uv_write_win(IntPtr req, IntPtr handle, UVBuffer.Windows* bufferList, int bufferCount, handle_callback callback);
 
         [DllImport("libuv", CallingConvention = CallingConvention.Cdecl)]
         internal static extern int uv_is_active(IntPtr handle);
@@ -114,43 +114,17 @@ namespace System.Net.Libuv
         static extern int uv_has_ref(IntPtr handle);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void read_callback_unix(IntPtr stream, IntPtr size, ref UnixBufferStruct buf);
+        internal delegate void read_callback_unix(IntPtr stream, IntPtr size, ref UVBuffer.Unix buffer);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void read_callback_win(IntPtr stream, IntPtr size, ref WindowsBufferStruct buf);
+        internal delegate void read_callback_win(IntPtr stream, IntPtr size, ref UVBuffer.Windows buffer);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void alloc_callback_unix(IntPtr data, uint size, out UnixBufferStruct buf);
+        internal delegate void alloc_callback_unix(IntPtr data, uint size, out UVBuffer.Unix buffer);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void alloc_callback_win(IntPtr data, uint size, out WindowsBufferStruct buf);
+        internal delegate void alloc_callback_win(IntPtr data, uint size, out UVBuffer.Windows buffer);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void close_callback(IntPtr handle);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void handle_callback(IntPtr req, int status);
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    struct WindowsBufferStruct
-    {
-        internal uint Length;
-        internal IntPtr Buffer;
-
-        internal WindowsBufferStruct(IntPtr buffer, uint length)
-        {
-            Buffer = buffer;
-            Length = length;
-        }
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    struct UnixBufferStruct
-    {
-        internal IntPtr Buffer;
-        internal IntPtr Length;
-
-        internal UnixBufferStruct(IntPtr buffer, uint length)
-        {
-            Buffer = buffer;
-            Length = (IntPtr)length;
-        }
     }
 
     [StructLayout(LayoutKind.Sequential, Size = 16)]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Runtime.InteropServices;
 
 namespace System.Net.Libuv
 {
@@ -32,30 +33,70 @@ namespace System.Net.Libuv
             AllocWindowsBuffer = OnAllocateWindowsBuffer;
         }
 
-        internal static void FreeBuffer(IntPtr buffer)
+        internal static void FreeBuffer(ByteSpan buffer)
         {
-            unsafe
-            {
-                var span = new ByteSpan((byte*)buffer, 1); // TODO: this is a hack
-                _pool.Return(ref span);
-            }
+            _pool.Return(ref buffer);
         }
 
-        static void OnAllocateUnixBuffer(IntPtr memoryBuffer, uint length, out UnixBufferStruct buffer)
+        static void OnAllocateUnixBuffer(IntPtr memoryBuffer, uint length, out Unix buffer)
         {
             var memory = _pool.Rent();
             unsafe
             {
-                buffer = new UnixBufferStruct((IntPtr)memory.UnsafeBuffer, (uint)memory.Length);
+                buffer = new Unix((IntPtr)memory.UnsafeBuffer, (uint)memory.Length);
             }
         }
 
-        static void OnAllocateWindowsBuffer(IntPtr memoryBuffer, uint length, out WindowsBufferStruct buffer)
+        static void OnAllocateWindowsBuffer(IntPtr memoryBuffer, uint length, out Windows buffer)
         {
             var memory = _pool.Rent();
             unsafe
             {
-                buffer = new WindowsBufferStruct((IntPtr)memory.UnsafeBuffer, (uint)memory.Length);
+                buffer = new Windows((IntPtr)memory.UnsafeBuffer, (uint)memory.Length);
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct Windows
+        {
+            internal uint Length;
+            internal IntPtr Buffer;
+
+            internal Windows(IntPtr buffer, uint length)
+            {
+                Buffer = buffer;
+                Length = length;
+            }
+
+            internal void Dispose()
+            {
+                unsafe
+                {
+                    var readSlice = new ByteSpan((byte*)Buffer, (int)Length);
+                    FreeBuffer(readSlice);
+                }
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct Unix
+        {
+            internal IntPtr Buffer;
+            internal IntPtr Length;
+
+            internal Unix(IntPtr buffer, uint length)
+            {
+                Buffer = buffer;
+                Length = (IntPtr)length;
+            }
+
+            internal void Dispose()
+            {
+                unsafe
+                {
+                    var readSlice = new ByteSpan((byte*)Buffer, (int)Length);
+                    FreeBuffer(readSlice);
+                }
             }
         }
     }

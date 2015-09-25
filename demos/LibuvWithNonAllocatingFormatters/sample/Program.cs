@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Buffers;
 using System.Net.Libuv;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Formatting;
 
@@ -28,11 +28,12 @@ static class Program
             connection.ReadCompleted += (ByteSpan data) =>
             {
                 if (log){
+
                     Console.WriteLine("*REQUEST:\n {0}", data.Utf8BytesToString());
                 }
 
                 formatter.Clear();
-                formatter.Append("HTTP/1.1 200 OK\r\n");
+                formatter.Append("HTTP/1.1 200 OK");
                 formatter.Append("\r\n\r\n");
                 formatter.Append("Hello World!");
                 if (log)
@@ -40,9 +41,12 @@ static class Program
                     formatter.Format(" @ {0:O}", DateTime.UtcNow);
                 }
 
-                var response = formatter.Buffer.Slice(0, formatter.CommitedByteCount);
-                connection.TryWrite(response);
+                var response = formatter.Buffer.Slice(0, formatter.CommitedByteCount); // formatter should have a property for written bytes
+                GCHandle gcHandle;
+                var byteSpan = response.Pin(out gcHandle);
+                connection.TryWrite(byteSpan);
                 connection.Dispose();
+                gcHandle.Free(); // TODO: formatter should format to ByteSpan, to avoid pinning
             };
 
             connection.ReadStart();
@@ -56,8 +60,7 @@ static class Program
     {
         unsafe
         {
-            var text = Encoding.ASCII.GetString(utf8.UnsafeBuffer, utf8.Length);
-            return text;
+            return Encoding.UTF8.GetString(utf8.UnsafeBuffer, utf8.Length);
         }
     } 
 }

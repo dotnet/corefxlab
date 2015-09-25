@@ -16,7 +16,6 @@ namespace System.Net.Libuv
         {
             EnsureNotDisposed();
 
-            // TODO: this buffer management logic does not work for concurrent requests
             if (IsUnix)
             {
                 UVException.ThrowIfError(UVInterop.uv_read_start(Handle, UVBuffer.AllocateUnixBuffer, ReadUnix));
@@ -40,36 +39,32 @@ namespace System.Net.Libuv
                 IntPtr ptrData = (IntPtr)pData;
                 if (IsUnix)
                 {
-                    var buffer = new UnixBufferStruct(ptrData, (uint)data.Length);
+                    var buffer = new UVBuffer.Unix(ptrData, (uint)data.Length);
                     UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
                 }
                 else
                 {
-                    var buffer = new WindowsBufferStruct(ptrData, (uint)data.Length);
+                    var buffer = new UVBuffer.Windows(ptrData, (uint)data.Length);
                     UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
                 }
             }
         }
 
-        public unsafe void TryWrite(Span<byte> data)
+        public unsafe void TryWrite(ByteSpan data)
         {
             EnsureNotDisposed();
-            GCHandle gcHandle;
-            var byteSpan = data.Pin(out gcHandle);
 
-            IntPtr ptrData = (IntPtr)byteSpan.UnsafeBuffer;
+            IntPtr ptrData = (IntPtr)data.UnsafeBuffer;
             if (IsUnix)
             {
-                var buffer = new UnixBufferStruct(ptrData, (uint)data.Length);
+                var buffer = new UVBuffer.Unix(ptrData, (uint)data.Length);
                 UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
             }
             else
             {
-                var buffer = new WindowsBufferStruct(ptrData, (uint)data.Length);
+                var buffer = new UVBuffer.Windows(ptrData, (uint)data.Length);
                 UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
             }
-
-            gcHandle.Free(); // TODO: should this be release here or later?
         }
 
         static bool IsUnix
@@ -77,7 +72,7 @@ namespace System.Net.Libuv
             get { return false; }
         }
 
-        void OnReadWindows(WindowsBufferStruct buffer, IntPtr bytesAvaliable)
+        void OnReadWindows(UVBuffer.Windows buffer, IntPtr bytesAvaliable)
         {
             // TODO: all branches need to release buffer, I think
             long bytesRead = bytesAvaliable.ToInt64();
@@ -101,12 +96,13 @@ namespace System.Net.Libuv
             }
             else
             {
-                OnReadCompleted(new ByteSpan((byte*)buffer.Buffer, (int)bytesRead));
-                UVBuffer.FreeBuffer(buffer.Buffer);
+                var readSlice = new ByteSpan((byte*)buffer.Buffer, (int)bytesRead);
+                OnReadCompleted(readSlice);
+                buffer.Dispose();
             }
         }
 
-        void OnReadUnix(UnixBufferStruct buffer, IntPtr bytesAvaliable)
+        void OnReadUnix(UVBuffer.Unix buffer, IntPtr bytesAvaliable)
         {
             long bytesRead = bytesAvaliable.ToInt64();
             if (bytesRead == 0)
@@ -129,7 +125,9 @@ namespace System.Net.Libuv
             }
             else
             {
-                OnReadCompleted(new ByteSpan((byte*)buffer.Buffer, (int)bytesRead));
+                var readSlice = new ByteSpan((byte*)buffer.Buffer, (int)bytesRead);
+                OnReadCompleted(readSlice);
+                buffer.Dispose();
             }
         }
 
@@ -142,14 +140,14 @@ namespace System.Net.Libuv
         }
 
         static UVInterop.read_callback_unix ReadUnix = OnReadUnix;
-        static void OnReadUnix(IntPtr streamPointer, IntPtr size, ref UnixBufferStruct buffer)
+        static void OnReadUnix(IntPtr streamPointer, IntPtr size, ref UVBuffer.Unix buffer)
         {
             var stream = As<UVStream>(streamPointer);
             stream.OnReadUnix(buffer, size);
         }
 
         static UVInterop.read_callback_win ReadWindows = OnReadWindows;
-        static void OnReadWindows(IntPtr streamPointer, IntPtr size, ref WindowsBufferStruct buffer)
+        static void OnReadWindows(IntPtr streamPointer, IntPtr size, ref UVBuffer.Windows buffer)
         {
             var stream = As<UVStream>(streamPointer);
             stream.OnReadWindows(buffer, size);
