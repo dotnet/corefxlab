@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Libuv;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Formatting;
+using System.Threading.Tasks;
 
 static class Program
 {
@@ -10,24 +12,41 @@ static class Program
     {
         Console.WriteLine("browse to http://localhost:8080");
 
-        bool log = false;
-        if(args.Length > 0 && args[0]=="/log")
+        bool log = true;
+        if (args.Length > 0 && args[0] == "/log")
         {
             log = true;
         }
 
+        var numberOfLoops = Environment.ProcessorCount;
+        var loops = new Task[numberOfLoops];
+        for (int i = 0; i < numberOfLoops; i++)
+        {
+            var loop = Task.Run(() => RunLoop(log));
+            loops[i] = loop;
+        }
+
+        Task.WaitAll(loops);
+    }
+
+    static void RunLoop(bool log)
+    {
         var loop = new UVLoop();
+
         var listener = new TcpListener("127.0.0.1", 8080, loop);
         var formatter = new BufferFormatter(512, FormattingData.InvariantUtf8);
 
-        listener.ConnectionAccepted += (Tcp connection) => {
-            if (log) {
+        listener.ConnectionAccepted += (Tcp connection) =>
+        {
+            if (log)
+            {
                 Console.WriteLine("connection accepted");
             }
 
             connection.ReadCompleted += (ByteSpan data) =>
             {
-                if (log){
+                if (log)
+                {
 
                     Console.WriteLine("*REQUEST:\n {0}", data.Utf8BytesToString());
                 }
@@ -62,5 +81,5 @@ static class Program
         {
             return Encoding.UTF8.GetString(utf8.UnsafeBuffer, utf8.Length);
         }
-    } 
+    }
 }
