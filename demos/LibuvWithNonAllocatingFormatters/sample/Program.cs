@@ -16,7 +16,7 @@ static class Program
             log = true;
         }
 
-        var loop = UVLoop.Default;
+        var loop = new UVLoop();
         var listener = new TcpListener("127.0.0.1", 8080, loop);
         var formatter = new BufferFormatter(512, FormattingData.InvariantUtf8);
 
