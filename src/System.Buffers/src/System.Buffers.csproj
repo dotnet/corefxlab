@@ -20,6 +20,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="System\Buffers\ArrayBufferPool.cs" />
     <Compile Include="System\Buffers\BufferPool.cs" />
     <Compile Include="System\ByteSpan.cs" />
     <Compile Include="System\Diagnostics\Precondition.cs" />
