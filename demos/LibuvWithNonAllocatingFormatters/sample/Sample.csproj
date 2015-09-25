@@ -46,6 +46,10 @@
       <HintPath>..\packages\System.Text.Formatting.0.1.0.0-d092415-1\lib\portable-net45+win8+wpa81+aspnetcore50\System.Text.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Text.Utf8, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Utf8.0.1.0.0-d091715-1\lib\portable-net45+win8+wpa81+aspnetcore50\System.Text.Utf8.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
