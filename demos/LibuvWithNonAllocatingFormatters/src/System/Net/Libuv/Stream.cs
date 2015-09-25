@@ -25,11 +25,9 @@ namespace System.Net.Libuv
             {
                 UVException.ThrowIfError(UVInterop.uv_read_start(Handle, UVBuffer.AllocWindowsBuffer, ReadWindows));
             }
-
         }
 
-        public event Action<Span<byte>> ReadCompleted;
-        public event Action<byte[]> ReadAndCopyCompleted;
+        public event Action<ByteSpan> ReadCompleted;
         public event Action EndOfStream;
 
         public unsafe void TryWrite(byte[] data)
@@ -79,7 +77,36 @@ namespace System.Net.Libuv
             get { return false; }
         }
 
-        void OnRead(IntPtr streamPointer, IntPtr bytesAvaliable)
+        void OnReadWindows(WindowsBufferStruct buffer, IntPtr bytesAvaliable)
+        {
+            // TODO: all branches need to release buffer, I think
+            long bytesRead = bytesAvaliable.ToInt64();
+            if (bytesRead == 0)
+            {
+                return;
+            }
+            else if (bytesRead < 0)
+            {
+                var error = UVException.ErrorCodeToError((int)bytesRead);
+                if (error == UVError.EOF)
+                {
+                    OnEndOfStream();
+                    Dispose();
+                }
+                else
+                {
+                    Dispose();
+                    throw new UVException((int)bytesRead);
+                }
+            }
+            else
+            {
+                OnReadCompleted(new ByteSpan((byte*)buffer.Buffer, (int)bytesRead));
+                UVBuffer.FreeBuffer(buffer.Buffer);
+            }
+        }
+
+        void OnReadUnix(UnixBufferStruct buffer, IntPtr bytesAvaliable)
         {
             long bytesRead = bytesAvaliable.ToInt64();
             if (bytesRead == 0)
@@ -92,29 +119,21 @@ namespace System.Net.Libuv
                 if (error == UVError.EOF)
                 {
                     OnEndOfStream();
-                    base.Dispose();
+                    Dispose();
                 }
                 else
                 {
-                    base.Dispose();
+                    Dispose();
                     throw new UVException((int)bytesRead);
                 }
             }
             else
             {
-                OnReadCompleted(Loop.Pool.Borrow(bytesAvaliable.ToInt32()));
+                OnReadCompleted(new ByteSpan((byte*)buffer.Buffer, (int)bytesRead));
             }
         }
 
-        void OnReadCompleted(byte[] bytesRead)
-        {
-            if (ReadCompleted != null)
-            {
-                ReadCompleted(bytesRead);
-            }
-        }
-
-        void OnReadCompleted(Span<byte> bytesRead)
+        void OnReadCompleted(ByteSpan bytesRead)
         {
             if (ReadCompleted != null)
             {
@@ -123,17 +142,17 @@ namespace System.Net.Libuv
         }
 
         static UVInterop.read_callback_unix ReadUnix = OnReadUnix;
-        static void OnReadUnix(IntPtr streamPointer, IntPtr size, UnixBufferStruct buffer)
+        static void OnReadUnix(IntPtr streamPointer, IntPtr size, ref UnixBufferStruct buffer)
         {
             var stream = As<UVStream>(streamPointer);
-            stream.OnRead(streamPointer, size);
+            stream.OnReadUnix(buffer, size);
         }
 
         static UVInterop.read_callback_win ReadWindows = OnReadWindows;
-        static void OnReadWindows(IntPtr streamPointer, IntPtr size, WindowsBufferStruct buffer)
+        static void OnReadWindows(IntPtr streamPointer, IntPtr size, ref WindowsBufferStruct buffer)
         {
             var stream = As<UVStream>(streamPointer);
-            stream.OnRead(streamPointer, size);
+            stream.OnReadWindows(buffer, size);
         }
 
         protected virtual void OnEndOfStream()

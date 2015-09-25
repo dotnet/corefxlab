@@ -114,9 +114,9 @@ namespace System.Net.Libuv
         static extern int uv_has_ref(IntPtr handle);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void read_callback_unix(IntPtr stream, IntPtr size, UnixBufferStruct buf);
+        internal delegate void read_callback_unix(IntPtr stream, IntPtr size, ref UnixBufferStruct buf);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        internal delegate void read_callback_win(IntPtr stream, IntPtr size, WindowsBufferStruct buf);
+        internal delegate void read_callback_win(IntPtr stream, IntPtr size, ref WindowsBufferStruct buf);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void alloc_callback_unix(IntPtr data, uint size, out UnixBufferStruct buf);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

@@ -4,13 +4,13 @@ using System.Net.Libuv;
 using System.Text;
 using System.Text.Formatting;
 
-class Program
+static class Program
 {
     public static void Main(string[] args)
     {
         Console.WriteLine("browse to http://localhost:8080");
 
-        bool log = false;
+        bool log = true;
         if(args.Length > 0 && args[0]=="/log")
         {
             log = true;
@@ -24,11 +24,10 @@ class Program
                 Console.WriteLine("connection accepted");
             }
 
-            connection.ReadCompleted += (Span<byte> data) =>
+            connection.ReadCompleted += (ByteSpan data) =>
             {
                 if (log){
-                    var request = Encoding.ASCII.GetString(data.CreateArray());
-                    Console.WriteLine("*REQUEST:\n {0}", request);
+                    Console.WriteLine("*REQUEST:\n {0}", data.Utf8BytesToString());
                 }
 
                 var formatter = new BufferFormatter(512, FormattingData.InvariantUtf8);
@@ -55,4 +54,13 @@ class Program
         listener.Listen();
         loop.Run();
     }
+
+    static string Utf8BytesToString(this ByteSpan utf8)
+    {
+        unsafe
+        {
+            var text = Encoding.ASCII.GetString(utf8.UnsafeBuffer, utf8.Length);
+            return text;
+        }
+    } 
 }
