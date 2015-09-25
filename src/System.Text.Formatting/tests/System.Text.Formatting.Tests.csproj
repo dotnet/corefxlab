@@ -26,7 +26,6 @@
   <ItemGroup>
     <Compile Include="BufferPools.cs" />
     <Compile Include="InvariantParserTests.cs" />
-    <Compile Include="Non-AllocatingJson.cs" />
     <Compile Include="CompositeFormattingTests.cs" />
     <Compile Include="CustomCulture.cs" />
     <Compile Include="CustomTypeFormatting.cs" />
@@ -41,6 +40,9 @@
   <ItemGroup>
     <ProjectReference Include="..\src\System.Text.Formatting.csproj">
       <Name>System.Text.Formatting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
+      <Name>System.Buffers</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

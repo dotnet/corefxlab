@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace System.IO.Buffers
+namespace System.Buffers
 {
     public unsafe class NativeBufferPool : IDisposable
     {
