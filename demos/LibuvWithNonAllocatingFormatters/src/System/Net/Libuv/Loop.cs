@@ -21,16 +21,13 @@ namespace System.Net.Libuv
             }
         }
 
-        UVLoop(UVBuffer pool = null)
+        public UVLoop()
         {
-            if(pool == null)
-            {
-                pool = UVBuffer.Default;
-            }
-
+            _pool = UVBuffer.Default;
             var size = UVInterop.uv_loop_size().ToInt32();
-            var _loopHandle = Marshal.AllocHGlobal(size); // this needs to be deallocated
-            UVException.ThrowIfError(UVInterop.uv_loop_init(_loopHandle));
+            var loopHandle = Marshal.AllocHGlobal(size); // this needs to be deallocated
+            UVException.ThrowIfError(UVInterop.uv_loop_init(loopHandle));
+            _handle = loopHandle;
         }
 
         UVLoop(IntPtr handle, UVBuffer pool) 
