@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 static class Program
 {
     static bool log = false;
+    static string s_address = "127.0.0.1";
 
     public static void Main(string[] args)
     {
@@ -20,9 +21,10 @@ static class Program
         }       
 
         var numberOfLoops = Environment.ProcessorCount;
+        var workitem = new WaitCallback(RunLoop);
         for (int i = 0; i < numberOfLoops; i++)
         {
-            if(!ThreadPool.QueueUserWorkItem(new WaitCallback(RunLoop)))
+            if(!ThreadPool.QueueUserWorkItem(workitem))
             {
                 throw new Exception("thread could not be started");
             }
@@ -35,7 +37,7 @@ static class Program
     {
         var loop = new UVLoop();
 
-        var listener = new TcpListener("127.0.0.1", 8080, loop);
+        var listener = new TcpListener(s_address, 8080, loop);
         var formatter = new BufferFormatter(512, FormattingData.InvariantUtf8);
 
         listener.ConnectionAccepted += (Tcp connection) =>

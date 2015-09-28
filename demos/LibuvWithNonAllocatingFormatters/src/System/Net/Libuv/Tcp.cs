@@ -13,12 +13,12 @@ namespace System.Net.Libuv
         {
             if (ip6)
             {
-                sockaddr_in6 address = CreateSockaddrIp6(ipAddress.ToString(), port);
+                sockaddr_in6 address = CreateSockaddrIp6(ipAddress, port);
                 UVException.ThrowIfError(UVInterop.uv_tcp_bind(listener.Handle, ref address, (uint)(dualstack ? 0 : 1)));
             }
             else
             {
-                sockaddr_in address = CreateSockaddr(ipAddress.ToString(), port);
+                sockaddr_in address = CreateSockaddr(ipAddress, port);
                 UVException.ThrowIfError(UVInterop.uv_tcp_bind(listener.Handle, ref address, 0));
             }
         }
