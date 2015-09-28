@@ -2,6 +2,13 @@
 
 namespace System.Net.Libuv
 {
+    // these come from uv-errno.h
+    enum CommonErrors : int {
+        UV_OK = 0,
+        UV_EOF = -4095, 
+        UV_UNKNOWN = -4094, 
+    }
+
     unsafe public class UVException : Exception
     {
         // OS specific error code
@@ -33,11 +40,14 @@ namespace System.Net.Libuv
 
         public static UVError ErrorCodeToError(int errorCode)
         {
-            if (errorCode == 0)
+            switch((CommonErrors)errorCode)
             {
-                return UVError.OK;
+                case CommonErrors.UV_OK: return UVError.OK;
+                case CommonErrors.UV_EOF: return UVError.EOF;
+                case CommonErrors.UV_UNKNOWN: return UVError.UNKNOWN; // this is important error case because uv_err_name leaks memory for unknown errors
+                default: break;
             }
-            // TODO: need to figure out how to do this more efficiently
+
             return ErrorNameToError(ErrorCodeToText(errorCode));
         }
 
@@ -59,6 +69,7 @@ namespace System.Net.Libuv
 
         static string ErrorCodeToText(int errorCode)
         {
+            // TODO: libuv doc say "Leaks a few bytes of memory when you call it with an unknown error code"
             var nullTerminatedUtf8 = (byte*)UVInterop.uv_err_name(errorCode);
             return NullTerminatedUtf8ToString(nullTerminatedUtf8);
         }
@@ -67,6 +78,7 @@ namespace System.Net.Libuv
         {
             try
             {
+                // TODO: this needs to be eliminated.
                 return (UVError)Enum.Parse(typeof(UVError), errorName);
             }
             catch
