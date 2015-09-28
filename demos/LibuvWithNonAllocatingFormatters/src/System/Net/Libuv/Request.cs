@@ -109,4 +109,32 @@ namespace System.Net.Libuv
             }
         }
     }
+
+    internal class DisposeRequest : UVRequest
+    {
+        UVHandle _handle;
+
+        public DisposeRequest(UVHandle handle) : base(RequestType.UV_SHUTDOWN)
+        {
+            _handle = handle;
+            UVInterop.uv_shutdown(Handle, _handle.Handle, CallbackDelegate);
+        }
+
+        static UVInterop.handle_callback CallbackDelegate = OnCallback;
+
+        unsafe static void OnCallback(IntPtr handle, int status)
+        {
+            uv_req_t* uvRequest = (uv_req_t*)handle.ToPointer();
+            var request = GCHandle.FromIntPtr(uvRequest->data).Target as DisposeRequest;
+            if (request == null)
+            {
+                Environment.FailFast("invalid callback");
+            }
+            else
+            {
+                request._handle.Dispose();
+                request.Dispose();
+            }
+        }
+    }
 }

@@ -12,7 +12,7 @@ static class Program
     {
         Console.WriteLine("browse to http://localhost:8080");
 
-        bool log = true;
+        bool log = false;
         if (args.Length > 0 && args[0] == "/log")
         {
             log = true;

@@ -164,16 +164,10 @@ namespace System.Net.Libuv
             }
         }
 
-        protected override void Dispose(bool disposing)
+        public override void Dispose(bool disposing)
         {
             EnsureNotDisposed();
-
-            var request = new CallbackRequest(RequestType.UV_SHUTDOWN);
-            request.Callback = (status) =>
-            {
-                base.Dispose(disposing);
-            };
-            UVInterop.uv_shutdown(request.Handle, Handle, CallbackRequest.CallbackDelegate);
+            var request = new DisposeRequest(this);
         }
     }
 }

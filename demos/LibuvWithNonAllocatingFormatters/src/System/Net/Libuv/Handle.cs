@@ -50,7 +50,7 @@ namespace System.Net.Libuv
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        public virtual void Dispose(bool disposing)
         {
             if (!IsDisposing && !IsDisposed)
             {
