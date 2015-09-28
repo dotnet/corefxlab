@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <RootNamespace>
+    </RootNamespace>
+    <AssemblyName>System.CommandLine</AssemblyName>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <ProjectGuid>{0A365F6D-AF33-4DD1-ABF3-BE45A5F8E642}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="System\CommandLine\ArgumentParser.cs" />
+    <Compile Include="System\CommandLine\InternalsVisibleTo.cs" />
+    <Compile Include="System\CommandLine\ArgumentSyntax.cs" />
+    <Compile Include="System\CommandLine\ArgumentSyntax_Definers.cs" />
+    <Compile Include="System\CommandLine\Argument.cs" />
+    <Compile Include="System\CommandLine\ArgumentList`1.cs" />
+    <Compile Include="System\CommandLine\Argument`1.cs" />
+    <Compile Include="System\CommandLine\ArgumentCommand.cs" />
+    <Compile Include="System\CommandLine\ArgumentCommand`1.cs" />
+    <Compile Include="System\CommandLine\ArgumentSyntaxException.cs" />
+    <Compile Include="System\CommandLine\ArgumentToken.cs" />
+    <Compile Include="System\CommandLine\ArgumentLexer.cs" />
+    <Compile Include="System\CommandLine\HelpTextGenerator.cs" />
+    <Compile Include="System\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="System\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+</Project>
