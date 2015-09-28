@@ -140,9 +140,15 @@ namespace System.Buffers
         {
             if (_buffers == null)
             {
-                var buffers = new byte[_capacity][];
-                Interlocked.CompareExchange(ref _buffers, buffers, null);
+                lock(this)
+                {
+                    if (_buffers == null)
+                    {
+                        _buffers = new byte[_capacity][];
+                    }
+                }
             }
+
             while (true)
             {
                 int top = _top;

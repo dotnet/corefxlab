@@ -4,32 +4,34 @@ using System.Net.Libuv;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Formatting;
+using System.Threading;
 using System.Threading.Tasks;
 
 static class Program
 {
+    static bool log = false;
+
     public static void Main(string[] args)
     {
-        Console.WriteLine("browse to http://localhost:8080");
-
-        bool log = false;
         if (args.Length > 0 && args[0] == "/log")
         {
             log = true;
-        }
+            Console.WriteLine("browse to http://localhost:8080");
+        }       
 
         var numberOfLoops = Environment.ProcessorCount;
-        var loops = new Task[numberOfLoops];
         for (int i = 0; i < numberOfLoops; i++)
         {
-            var loop = Task.Run(() => RunLoop(log));
-            loops[i] = loop;
+            if(!ThreadPool.QueueUserWorkItem(new WaitCallback(RunLoop)))
+            {
+                throw new Exception("thread could not be started");
+            }
         }
 
-        Task.WaitAll(loops);
+        while (true) { };
     }
 
-    static void RunLoop(bool log)
+    static void RunLoop(object state)
     {
         var loop = new UVLoop();
 
@@ -60,7 +62,7 @@ static class Program
                     formatter.Format(" @ {0:O}", DateTime.UtcNow);
                 }
 
-                var response = formatter.Buffer.Slice(0, formatter.CommitedByteCount); // formatter should have a property for written bytes
+                var response = formatter.Buffer.Slice(0, formatter.CommitedByteCount); // TODO: formatter should have a property for written bytes
                 GCHandle gcHandle;
                 var byteSpan = response.Pin(out gcHandle);
                 connection.TryWrite(byteSpan);

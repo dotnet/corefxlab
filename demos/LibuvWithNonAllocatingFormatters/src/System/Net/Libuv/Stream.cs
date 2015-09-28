@@ -164,7 +164,7 @@ namespace System.Net.Libuv
             }
         }
 
-        public override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             EnsureNotDisposed();
             var request = new DisposeRequest(this);
