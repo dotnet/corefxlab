@@ -26,21 +26,14 @@ namespace System.Net.Libuv
 
         static void OnNotifiedCallback(IntPtr handle, int status)
         {
+            UVStream stream = null;
+            TStream connection = null;
             try {
                 var listener = As<UVListener<TStream>>(handle);
 
-                var stream = listener.CreateStream();
-                var connection = stream as TStream;
-                try
-                {
-                    UVException.ThrowIfError(UVInterop.uv_accept(listener.Handle, connection.Handle));
-                }
-                catch (Exception e)
-                {
-                    stream.Dispose();
-                    connection.Dispose();
-                    Environment.FailFast(e.ToString());
-                }
+                stream = listener.CreateStream();
+                connection = stream as TStream;
+                UVException.ThrowIfError(UVInterop.uv_accept(listener.Handle, connection.Handle));
 
                 if (listener.ConnectionAccepted != null)
                 {
@@ -49,6 +42,8 @@ namespace System.Net.Libuv
             }
             catch(Exception e)
             {
+                if (stream != null) { stream.Dispose(); }
+                if (connection != null) { connection.Dispose(); }
                 Environment.FailFast(e.ToString());
             }
         }

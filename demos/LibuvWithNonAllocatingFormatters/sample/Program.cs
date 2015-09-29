@@ -9,16 +9,17 @@ static class Program
     public static void Main(string[] args)
     {
         Console.WriteLine("service started");
-        var listenerLoop = new UVLoop();
-        UVLoop[] connectionLoops = CreateConnectionLoops(Environment.ProcessorCount - 1);
+        int numberOfLoops = 1;
+        //int numberOfLoops = Environment.ProcessorCount - 1; // this does not really work, i.e. there is a threading issue with the listener implementation.
+        UVLoop[] loops = CreateLoops(numberOfLoops);
 
-        var listener = new TcpListener("127.0.0.1", 8080, listenerLoop, connectionLoops);
+        var listener = new TcpListener("127.0.0.1", 8080, loops[0], loops);
 
         listener.ConnectionAccepted += (Tcp connection) =>
         {
             connection.ReadCompleted += (ByteSpan request) =>
             {
-                var loop = connection.Loop as WorkerLoop;
+                var loop = connection.Loop as ServiceLoop;
                 var formatter = loop.Formatter;
                 formatter.Clear();
                 formatter.Append("HTTP/1.1 200 OK");
@@ -31,36 +32,43 @@ static class Program
         };
 
         listener.Listen();
-        listenerLoop.Run();
+        loops.Run();
     }
 
-    class WorkerLoop : UVLoop
+    static void Run(this UVLoop[] loops)
     {
-        public readonly BufferFormatter Formatter = new BufferFormatter(512, FormattingData.InvariantUtf8);
-    }
-
-    private static UVLoop[] CreateConnectionLoops(int numberOfLoops)
-    {
-        UVLoop[] loops = new UVLoop[numberOfLoops];
-        for (int i = 0; i < loops.Length; i++)
+        for (int index = 1; index < loops.Length; index++)
         {
-            loops[i] = new WorkerLoop();
             ThreadPool.QueueUserWorkItem((context) =>
             {
                 try
                 {
-                    var l = (UVLoop)context;
-                    var idle = new Idle(l);
-                    idle.Start();
-                    l.Run();
+                    ((UVLoop)context).Run();
                 }
                 catch (Exception e)
                 {
                     Environment.FailFast(e.ToString());
                 }
-            }, loops[i]);
+            }, loops[index]);
         }
+        loops[0].Run();
+    }
 
+    class ServiceLoop : UVLoop
+    {
+        public readonly BufferFormatter Formatter = new BufferFormatter(512, FormattingData.InvariantUtf8);
+    }
+
+    private static UVLoop[] CreateLoops(int numberOfLoops)
+    {
+        UVLoop[] loops = new UVLoop[numberOfLoops];
+        for (int i = 0; i < loops.Length; i++)
+        {
+            var loop = new ServiceLoop();
+            var idle = new Idle(loop);
+            idle.Start();
+            loops[i] = loop;
+        }
         return loops;
     }
 
