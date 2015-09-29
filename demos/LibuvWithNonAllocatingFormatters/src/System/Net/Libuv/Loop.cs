@@ -56,7 +56,7 @@ namespace System.Net.Libuv
 
         public void Run()
         {
-            UVInterop.uv_run(_handle, uv_run_mode.UV_RUN_DEFAULT);
+            UVException.ThrowIfError(UVInterop.uv_run(_handle, uv_run_mode.UV_RUN_DEFAULT));
         }
 
         public void Stop()

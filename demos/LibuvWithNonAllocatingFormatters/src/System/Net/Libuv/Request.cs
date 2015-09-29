@@ -96,16 +96,22 @@ namespace System.Net.Libuv
 
         unsafe static void OnCallback(IntPtr handle, int status)
         {
-            uv_req_t* uvRequest = (uv_req_t*)handle.ToPointer();
-            var request = GCHandle.FromIntPtr(uvRequest->data).Target as CallbackRequest;
-            if (request == null)
-            {
-                Environment.FailFast("invalid callback");
+            try {
+                uv_req_t* uvRequest = (uv_req_t*)handle.ToPointer();
+                var request = GCHandle.FromIntPtr(uvRequest->data).Target as CallbackRequest;
+                if (request == null)
+                {
+                    Environment.FailFast("invalid callback");
+                }
+                else
+                {
+                    request.Callback(status);
+                    request.Dispose();
+                }
             }
-            else
+            catch (Exception e)
             {
-                request.Callback(status);
-                request.Dispose();
+                Environment.FailFast(e.ToString());
             }
         }
     }
@@ -120,20 +126,26 @@ namespace System.Net.Libuv
             UVInterop.uv_shutdown(Handle, _handle.Handle, CallbackDelegate);
         }
 
-        static UVInterop.handle_callback CallbackDelegate = OnCallback;
+        static UVInterop.handle_callback CallbackDelegate = OnShutdownCallback;
 
-        unsafe static void OnCallback(IntPtr handle, int status)
+        unsafe static void OnShutdownCallback(IntPtr handle, int status)
         {
-            uv_req_t* uvRequest = (uv_req_t*)handle.ToPointer();
-            var request = GCHandle.FromIntPtr(uvRequest->data).Target as DisposeRequest;
-            if (request == null)
-            {
-                Environment.FailFast("invalid callback");
+            try {
+                uv_req_t* uvRequest = (uv_req_t*)handle.ToPointer();
+                var request = GCHandle.FromIntPtr(uvRequest->data).Target as DisposeRequest;
+                if (request == null)
+                {
+                    Environment.FailFast("invalid callback");
+                }
+                else
+                {
+                    request._handle.Dispose();
+                    request.Dispose();
+                }
             }
-            else
+            catch (Exception e)
             {
-                request._handle.Dispose();
-                request.Dispose();
+                Environment.FailFast(e.ToString());
             }
         }
     }

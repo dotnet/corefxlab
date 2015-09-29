@@ -3,8 +3,12 @@ namespace System.Net.Libuv
 {
     public class TcpListener : UVListener<Tcp> 
     {
-        public TcpListener(string ipAddress, int port, UVLoop loop) : base(loop, HandleType.UV_TCP)
+        UVLoop[] _acceptLoops;
+        Random r = new Random();
+
+        public TcpListener(string ipAddress, int port, UVLoop loop, UVLoop[] acceptLoops) : base(loop, HandleType.UV_TCP)
         {
+            _acceptLoops = acceptLoops;
             UVException.ThrowIfError(UVInterop.uv_tcp_init(Loop.Handle, Handle));
             Bind(this, ipAddress, port);
         }
@@ -41,7 +45,9 @@ namespace System.Net.Libuv
 
         protected override UVStream CreateStream()
         {
-            return new Tcp(Loop);
+            // TODO: this policy needs to be smarter
+            var acceptLoop = r.Next(0, _acceptLoops.Length - 1);
+            return new Tcp(_acceptLoops[acceptLoop]);
         }
     }
 
@@ -49,17 +55,17 @@ namespace System.Net.Libuv
     {
         internal Tcp(UVLoop loop) : base(loop, HandleType.UV_TCP)
         {
-            UVInterop.uv_tcp_init(loop.Handle, Handle);
+            UVException.ThrowIfError(UVInterop.uv_tcp_init(loop.Handle, Handle));
         }
 
         void SetNoDelay(bool value)
         {
-            UVInterop.uv_tcp_nodelay(Handle, value ? 1 : 0);
+            UVException.ThrowIfError(UVInterop.uv_tcp_nodelay(Handle, value ? 1 : 0));
         }
 
         void SetKeepAlive(bool value, int delay)
         {
-            UVInterop.uv_tcp_keepalive(Handle, value ? 1 : 0, delay);
+            UVException.ThrowIfError((UVInterop.uv_tcp_keepalive(Handle, value ? 1 : 0, delay)));
         }
     }
 }

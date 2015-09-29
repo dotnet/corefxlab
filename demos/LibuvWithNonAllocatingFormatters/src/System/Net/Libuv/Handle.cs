@@ -18,8 +18,6 @@ namespace System.Net.Libuv
 
             _gcHandle = GCHandle.Alloc(this);
             Data = GCHandle.ToIntPtr(_gcHandle);
-
-            CloseCallback = OnClose;
         }
 
         public UVLoop Loop
@@ -73,12 +71,18 @@ namespace System.Net.Libuv
             }
         }
 
-        static UVInterop.close_callback CloseCallback = OnClose;
+        static UVInterop.close_callback CloseCallback = OnCloseCallback;
 
-        static void OnClose(IntPtr handlePointer)
+        static void OnCloseCallback(IntPtr handlePointer)
         {
-            var handle = UVHandle.As<UVHandle>(handlePointer);
-            handle.Free(handlePointer);
+            try {
+                var handle = UVHandle.As<UVHandle>(handlePointer);
+                handle.Free(handlePointer);
+            }
+            catch (Exception e)
+            {
+                Environment.FailFast(e.ToString());
+            }
         }
 
         static IntPtr Allocate(HandleType type)

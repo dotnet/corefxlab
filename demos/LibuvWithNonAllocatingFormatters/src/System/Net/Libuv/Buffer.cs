@@ -40,19 +40,33 @@ namespace System.Net.Libuv
 
         static void OnAllocateUnixBuffer(IntPtr memoryBuffer, uint length, out Unix buffer)
         {
-            var memory = _pool.Rent();
-            unsafe
+            try {
+                var memory = _pool.Rent();
+                unsafe
+                {
+                    buffer = new Unix((IntPtr)memory.UnsafeBuffer, (uint)memory.Length);
+                }
+            }
+            catch (Exception e)
             {
-                buffer = new Unix((IntPtr)memory.UnsafeBuffer, (uint)memory.Length);
+                Environment.FailFast(e.ToString());
+                throw;
             }
         }
 
         static void OnAllocateWindowsBuffer(IntPtr memoryBuffer, uint length, out Windows buffer)
         {
-            var memory = _pool.Rent();
-            unsafe
+            try {
+                var memory = _pool.Rent();
+                unsafe
+                {
+                    buffer = new Windows((IntPtr)memory.UnsafeBuffer, (uint)memory.Length);
+                }
+            }
+            catch (Exception e)
             {
-                buffer = new Windows((IntPtr)memory.UnsafeBuffer, (uint)memory.Length);
+                Environment.FailFast(e.ToString());
+                throw;
             }
         }
 

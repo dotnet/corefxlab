@@ -40,6 +40,7 @@
     <Compile Include="System\Net\Libuv\Buffer.cs" />
     <Compile Include="System\Net\Libuv\Error.cs" />
     <Compile Include="System\Net\Libuv\Handle.cs" />
+    <Compile Include="System\Net\Libuv\Idle.cs" />
     <Compile Include="System\Net\Libuv\Interop.cs" />
     <Compile Include="System\Net\Libuv\Listener.cs" />
     <Compile Include="System\Net\Libuv\Loop.cs" />

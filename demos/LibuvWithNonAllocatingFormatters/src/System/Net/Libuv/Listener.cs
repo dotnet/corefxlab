@@ -3,7 +3,7 @@ namespace System.Net.Libuv
 {
     public abstract class UVListener<TStream> : UVHandle where TStream : UVStream
     {
-        static UVInterop.handle_callback Notified = OnNotified;
+        static UVInterop.handle_callback Notified = OnNotifiedCallback;
 
         public event Action<TStream> ConnectionAccepted;
 
@@ -21,29 +21,35 @@ namespace System.Net.Libuv
 
         public void Listen(int backlog)
         {
-            UVInterop.uv_listen(Handle, backlog, Notified);
+            UVException.ThrowIfError(UVInterop.uv_listen(Handle, backlog, Notified));
         }
 
-        static void OnNotified(IntPtr handle, int status)
+        static void OnNotifiedCallback(IntPtr handle, int status)
         {
-            var listener = As<UVListener<TStream>>(handle);
+            try {
+                var listener = As<UVListener<TStream>>(handle);
 
-            var stream = listener.CreateStream();
-            var connection = stream as TStream;
-            try
-            {
-                UVException.ThrowIfError(UVInterop.uv_accept(listener.Handle, connection.Handle));
+                var stream = listener.CreateStream();
+                var connection = stream as TStream;
+                try
+                {
+                    UVException.ThrowIfError(UVInterop.uv_accept(listener.Handle, connection.Handle));
+                }
+                catch (Exception e)
+                {
+                    stream.Dispose();
+                    connection.Dispose();
+                    Environment.FailFast(e.ToString());
+                }
+
+                if (listener.ConnectionAccepted != null)
+                {
+                    listener.ConnectionAccepted(connection);
+                }
             }
             catch(Exception e)
             {
-                stream.Dispose();
-                connection.Dispose();
                 Environment.FailFast(e.ToString());
-            }
-
-            if (listener.ConnectionAccepted != null)
-            {
-                listener.ConnectionAccepted(connection);
             }
         }
 

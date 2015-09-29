@@ -18,7 +18,7 @@ namespace System.Net.Libuv
         internal static extern IntPtr uv_loop_size();
 
         [DllImport("libuv", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void uv_run(IntPtr loop, uv_run_mode mode);
+        internal static extern int uv_run(IntPtr loop, uv_run_mode mode);
 
         [DllImport("libuv", CallingConvention = CallingConvention.Cdecl)]
         internal static extern void uv_stop(IntPtr loop);

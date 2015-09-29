@@ -145,15 +145,27 @@ namespace System.Net.Libuv
         static UVInterop.read_callback_unix ReadUnix = OnReadUnix;
         static void OnReadUnix(IntPtr streamPointer, IntPtr size, ref UVBuffer.Unix buffer)
         {
-            var stream = As<UVStream>(streamPointer);
-            stream.OnReadUnix(buffer, size);
+            try {
+                var stream = As<UVStream>(streamPointer);
+                stream.OnReadUnix(buffer, size);
+            }
+            catch (Exception e)
+            {
+                Environment.FailFast(e.ToString());
+            }
         }
 
         static UVInterop.read_callback_win ReadWindows = OnReadWindows;
         static void OnReadWindows(IntPtr streamPointer, IntPtr size, ref UVBuffer.Windows buffer)
         {
-            var stream = As<UVStream>(streamPointer);
-            stream.OnReadWindows(buffer, size);
+            try {
+                var stream = As<UVStream>(streamPointer);
+                stream.OnReadWindows(buffer, size);
+            }
+            catch (Exception e)
+            {
+                Environment.FailFast(e.ToString());
+            }
         }
 
         protected virtual void OnEndOfStream()
