@@ -27,12 +27,11 @@ namespace System.CommandLine.Tests
         [Fact]
         public void Lex_Options()
         {
-            var text = "-a /b --c";
+            var text = "-a --b";
             var actual = Lex(text);
             var expected = new[] {
                 new ArgumentToken("-", "a", null),
-                new ArgumentToken("/", "b", null),
-                new ArgumentToken("--", "c", null)
+                new ArgumentToken("--", "b", null)
             };
 
             Assert.Equal(expected, actual);
@@ -41,11 +40,11 @@ namespace System.CommandLine.Tests
         [Fact]
         public void Lex_OptionArguments()
         {
-            var text = "-a:va /b=vb --c vc";
+            var text = "-a:va -b=vb --c vc";
             var actual = Lex(text);
             var expected = new[] {
                 new ArgumentToken("-", "a", "va"),
-                new ArgumentToken("/", "b", "vb"),
+                new ArgumentToken("-", "b", "vb"),
                 new ArgumentToken("--", "c", null),
                 new ArgumentToken(null, "vc", null)
             };
@@ -68,12 +67,12 @@ namespace System.CommandLine.Tests
         }
 
         [Fact]
-        public void Lex_ExpandsBundles_UnlessUsingSlash()
+        public void Lex_ExpandsBundles_UnlessUsingDashDash()
         {
-            var text = "/xdf";
+            var text = "--xdf";
             var actual = Lex(text);
             var expected = new[] {
-                new ArgumentToken("/", "xdf", null)
+                new ArgumentToken("--", "xdf", null)
             };
 
             Assert.Equal(expected, actual);
@@ -87,7 +86,7 @@ namespace System.CommandLine.Tests
             {
                 "-xdf",
                 "--out:out.exe",
-                "/responseFileReader",
+                "--responseFileReader",
                 @"C:\Reference Assemblies\system.dll"
             };
 
@@ -100,7 +99,7 @@ namespace System.CommandLine.Tests
                 new ArgumentToken("-", "d", null),
                 new ArgumentToken("-", "f", null),
                 new ArgumentToken("--", "out", "out.exe"),
-                new ArgumentToken("/", "responseFileReader", null),
+                new ArgumentToken("--", "responseFileReader", null),
                 new ArgumentToken(null, @"C:\Reference Assemblies\system.dll", null),
                 new ArgumentToken("--", "after", null)
             };

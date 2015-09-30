@@ -101,15 +101,7 @@ They can be *bundled* together, such as
 
     $ tool -xdf
 
-You can also use a slash, e.g.
-
-    $ tool /x /d /f
-
-However, slashes don't support bundling. For example, the following isn't
-recognized:
-
-    # This is not equivalent to -xdf
-    $ tool /xdf
+Please note that slashes aren't supported.
 
 ### Keyword options
 
@@ -117,28 +109,21 @@ Keyword options are delimited by two dashes, such as:
 
     $ tool --verbose
 
-Alternatively, you can use a slash:
-
-    $ tool /verbose
-
-Using two dashes avoids any ambiguity with bundled forms -- which is why
-slashes don't support bundling.
-
 ### Option arguments
 
 Both, the single letter form, as well as the long forms, support arguments.
 Arguments must be separated by either a space, an equal sign or a colon:
 
     # All three forms are identical:
-    $ tool /out result.exe
-    $ tool /out=result.exe
-    $ tool /out:result.exe
+    $ tool --out result.exe
+    $ tool --out=result.exe
+    $ tool --out:result.exe
 
 Multiple spaces are allowed as well:
 
-    $ tool /out  result.exe
-    $ tool /out =   result.exe
-    $ tool /out : result.exe
+    $ tool --out  result.exe
+    $ tool --out =   result.exe
+    $ tool --out : result.exe
 
 This even works when combined with bundling, but in that case only the last
 option can have an argument. So this:
@@ -278,7 +263,7 @@ will be an argument or the first parameter.
 Both, options and parameters, support the notion of lists. For example, consider
 the C# compiler CSC:
 
-    $ csc /r:mscorlib.dll /r:system.dll source1.cs source2.cs /out:hello.exe /t:exe
+    $ csc -r:mscorlib.dll -r:system.dll source1.cs source2.cs -out:hello.exe -t:exe
 
 You would define the options and parameters as follows:
 

@@ -466,14 +466,12 @@ namespace System.CommandLine.Tests
             Assert.Equal("option -a requires a value", ex.Message);
         }
 
-        [Theory]
-        [InlineData("/")]
-        [InlineData("--")]
-        public void Option_Usage_Error_Flag_Bundle_ViaModifier(string modifier)
+        [Fact]
+        public void Option_Usage_Error_Flag_Bundle_ViaDashDash()
         {
             var ex = Assert.Throws<ArgumentSyntaxException>(() =>
             {
-                Parse(modifier + "opq", syntax =>
+                Parse("--opq", syntax =>
                 {
                     syntax.DefineOption("o", false);
                     syntax.DefineOption("p", false);
@@ -481,7 +479,7 @@ namespace System.CommandLine.Tests
                 });
             });
 
-            Assert.Equal("invalid option " + modifier + "opq", ex.Message);
+            Assert.Equal("invalid option --opq", ex.Message);
         }
 
         [Theory]
@@ -499,7 +497,6 @@ namespace System.CommandLine.Tests
         }
 
         [Theory]
-        [InlineData("/")]
         [InlineData("-")]
         [InlineData("--")]
         public void Option_Usage_ViaModifer(string modifier)

@@ -160,8 +160,7 @@ namespace System.CommandLine
         private static bool TryExtractOption(string text, out string modifier, out string remainder)
         {
             return TryExtractOption(text, @"--", out modifier, out remainder) ||
-                   TryExtractOption(text, @"-", out modifier, out remainder) ||
-                   TryExtractOption(text, @"/", out modifier, out remainder);
+                   TryExtractOption(text, @"-", out modifier, out remainder);
         }
 
         private static bool TryExtractOption(string text, string prefix, out string modifier, out string remainder)
