@@ -134,6 +134,18 @@ is equivalent to:
 
     $ tool -a -m "hello"
 
+### Multiple occurrences
+
+Unix has a strong tradition for scripting. In order to make it easier to forward
+arguments to scripts, it's common practice to allow options to appear more than
+once. The semantics are that the last one wins. So this:
+
+    $ tool -a this -b -a that
+
+has the same effect as that:
+
+    $ tool -b -a that
+
 ### Parameters
 
 Parameters, sometimes also called non-option arguments, can be anywhere in the

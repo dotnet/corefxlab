@@ -430,23 +430,6 @@ namespace System.CommandLine.Tests
             Assert.Equal("value 'abc' isn't valid for -o: invalid format", ex.Message);
         }
 
-        [Fact]
-        public void Option_Usage_Error_Duplicate()
-        {
-            var ex = Assert.Throws<ArgumentSyntaxException>(() =>
-            {
-                Parse("-a -b -a", syntax =>
-                {
-                    var arg1 = false;
-                    var arg2 = false;
-                    syntax.DefineOption("a", ref arg1, string.Empty);
-                    syntax.DefineOption("b", ref arg2, string.Empty);
-                });
-            });
-
-            Assert.Equal("option -a is specified multiple times", ex.Message);
-        }
-
         [Theory]
         [InlineData("-a")]
         [InlineData("-a:")]
@@ -509,6 +492,22 @@ namespace System.CommandLine.Tests
             });
 
             Assert.True(o);
+        }
+
+        [Fact]
+        public void Option_Usage_LastOneWins()
+        {
+            var a = string.Empty;
+            var b = false;
+
+            Parse("-a x -b -a y -b:false", syntax =>
+            {
+                syntax.DefineOption("a", ref a, string.Empty);
+                syntax.DefineOption("b", ref b, string.Empty);
+            });
+
+            Assert.Equal("y", a);
+            Assert.False(b);
         }
 
         [Fact]

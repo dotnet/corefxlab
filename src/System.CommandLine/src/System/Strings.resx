@@ -150,9 +150,6 @@
   <data name="OptionsMustBeDefinedBeforeParameters" xml:space="preserve">
     <value>Options must be defined before any parameters.</value>
   </data>
-  <data name="OptionSpecifiedMultipleTimesFmt" xml:space="preserve">
-    <value>option {0} is specified multiple times</value>
-  </data>
   <data name="ResponseFileDoesNotExistFmt" xml:space="preserve">
     <value>Response file '{0}' doesn't exist.</value>
   </data>

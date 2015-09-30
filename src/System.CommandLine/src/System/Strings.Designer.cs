@@ -134,7 +134,7 @@ namespace System {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to invalid option {0}{1}.
+        ///   Looks up a localized string similar to invalid option {0}.
         /// </summary>
         internal static string InvalidOptionFmt {
             get {
@@ -193,15 +193,6 @@ namespace System {
         internal static string OptionsMustBeDefinedBeforeParameters {
             get {
                 return ResourceManager.GetString("OptionsMustBeDefinedBeforeParameters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to option {0} is specified multiple times.
-        /// </summary>
-        internal static string OptionSpecifiedMultipleTimesFmt {
-            get {
-                return ResourceManager.GetString("OptionSpecifiedMultipleTimesFmt", resourceCulture);
             }
         }
         

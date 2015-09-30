@@ -46,13 +46,12 @@ namespace System.CommandLine
                 return false;
             }
 
-            if (values.Count > 1)
-            {
-                var message = string.Format(Strings.OptionSpecifiedMultipleTimesFmt, diagnosticName);
-                throw new ArgumentSyntaxException(message);
-            }
+            // Please note that we don't verify that the option is only specified once.
+            // It's tradition on Unix to allow single options to occur more than once,
+            // with 'last once wins' semantics. This simplifies scripting because you
+            // easily combine arguments.
 
-            value = values.Single();
+            value = values.Last();
             return true;
         }
 
