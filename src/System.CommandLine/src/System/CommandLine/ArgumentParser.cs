@@ -158,6 +158,10 @@ namespace System.CommandLine
 
         private bool TryParseOptionArgument(ref int tokenIndex, bool isFlag, out string argument)
         {
+            argument = null;
+
+            // Let's see whether the current token already has value, like "-o:value"
+
             var a = _tokens[tokenIndex];
             if (a.HasValue)
             {
@@ -166,44 +170,66 @@ namespace System.CommandLine
                 return true;
             }
 
-            tokenIndex++;
-            if (tokenIndex < _tokens.Count)
+            // OK, we may need to have to advance one or two tokens. Since we don't know
+            // up front, we'll take a look ahead.
+
+            ArgumentToken lookahead;
+
+            // So, do we have a token?
+
+            if (!TryGetNextToken(tokenIndex, out lookahead))
+                return false;
+
+            // If it's an option, then it's not an argument and we're done.
+
+            if (lookahead.IsOption)
+                return false;
+
+            // OK, the lookahead is either a separator or it's an argument.
+
+            if (!lookahead.IsSeparator)
             {
-                var b = _tokens[tokenIndex];
-                if (!b.IsOption)
-                {
-                    // This might be an argument or a separator
-                    if (!b.IsSeparator)
-                    {
-                        // If we require a separator we can't consume this.
-                        if (isFlag)
-                            goto noResult;
+                // If this is a flag, we need an explicit separator.
+                // Since there is none, we don't consume this token.
 
-                        b.MarkMatched();
-                        argument = b.Name;
-                        return true;
-                    }
+                if (isFlag)
+                    return false;
 
-                    // Skip separator
-                    b.MarkMatched();
-                    tokenIndex++;
-
-                    if (tokenIndex < _tokens.Count)
-                    {
-                        var c = _tokens[tokenIndex];
-                        if (!c.IsOption)
-                        {
-                            c.MarkMatched();
-                            argument = c.Name;
-                            return true;
-                        }
-                    }
-                }
+                lookahead.MarkMatched();
+                argument = lookahead.Name;
+                tokenIndex++;
+                return true;
             }
 
-        noResult:
-            argument = null;
-            return false;
+            // Skip separator
+
+            lookahead.MarkMatched();
+            tokenIndex++;
+
+            // See whether the next token is an argument.
+
+            if (!TryGetNextToken(tokenIndex, out lookahead))
+                return false;
+
+            if (lookahead.IsOption || lookahead.IsSeparator)
+                return false;
+
+            lookahead.MarkMatched();
+            argument = lookahead.Name;
+            tokenIndex++;
+            return true;
+        }
+
+        private bool TryGetNextToken(int tokenIndex, out ArgumentToken token)
+        {
+            if (++tokenIndex >= _tokens.Count)
+            {
+                token = null;
+                return false;
+            }
+
+            token = _tokens[tokenIndex];
+            return true;
         }
 
         private static T ParseValue<T>(string diagnosticName, Func<string, T> valueConverter, string valueText)

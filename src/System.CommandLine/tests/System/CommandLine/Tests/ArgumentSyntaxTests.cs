@@ -494,13 +494,15 @@ namespace System.CommandLine.Tests
             Assert.True(o);
         }
 
-        [Fact]
-        public void Option_Usage_LastOneWins()
+        [Theory]
+        [InlineData("-a x -b -a y -b:false")]
+        [InlineData("-a x -a y -b -b:false")]
+        public void Option_Usage_LastOneWins(string commandLine)
         {
             var a = string.Empty;
             var b = false;
 
-            Parse("-a x -b -a y -b:false", syntax =>
+            Parse(commandLine, syntax =>
             {
                 syntax.DefineOption("a", ref a, string.Empty);
                 syntax.DefineOption("b", ref b, string.Empty);
