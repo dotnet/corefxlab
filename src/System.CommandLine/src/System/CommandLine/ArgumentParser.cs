@@ -27,6 +27,7 @@ namespace System.CommandLine
         public bool TryParseCommand(string name)
         {
             var token = _tokens.FirstOrDefault();
+
             if (token == null || token.IsOption || token.IsSeparator)
                 return false;
 
@@ -48,8 +49,8 @@ namespace System.CommandLine
 
             // Please note that we don't verify that the option is only specified once.
             // It's tradition on Unix to allow single options to occur more than once,
-            // with 'last once wins' semantics. This simplifies scripting because you
-            // easily combine arguments.
+            // with 'last one wins' semantics. This simplifies scripting because you
+            // can easily combine arguments.
 
             value = values.Last();
             return true;
@@ -59,19 +60,19 @@ namespace System.CommandLine
         {
             var result = new List<T>();
             var tokenIndex = 0;
-            var isBoolean = typeof(T) == typeof(bool);
+            var isFlag = typeof(T) == typeof(bool);
 
             while (tokenIndex < _tokens.Count)
             {
                 if (TryParseOption(ref tokenIndex, names))
                 {
                     string valueText;
-                    if (TryParseOptionArgument(ref tokenIndex, isBoolean, out valueText))
+                    if (TryParseOptionArgument(ref tokenIndex, isFlag, out valueText))
                     {
                         var value = ParseValue(diagnosticName, valueConverter, valueText);
                         result.Add(value);
                     }
-                    else if (isBoolean)
+                    else if (isFlag)
                     {
                         var value = (T)(object)true;
                         result.Add(value);
@@ -155,7 +156,7 @@ namespace System.CommandLine
             return false;
         }
 
-        private bool TryParseOptionArgument(ref int tokenIndex, bool requiresSeparator, out string argument)
+        private bool TryParseOptionArgument(ref int tokenIndex, bool isFlag, out string argument)
         {
             var a = _tokens[tokenIndex];
             if (a.HasValue)
@@ -171,11 +172,11 @@ namespace System.CommandLine
                 var b = _tokens[tokenIndex];
                 if (!b.IsOption)
                 {
-                    // This might an argument or a separator
+                    // This might be an argument or a separator
                     if (!b.IsSeparator)
                     {
                         // If we require a separator we can't consume this.
-                        if (requiresSeparator)
+                        if (isFlag)
                             goto noResult;
 
                         b.MarkMatched();
