@@ -58,8 +58,6 @@ time for the BCL to provide a built-in experience as well.
 
 ## Work in progress
 
-* Should we disable slash syntax when running on non-Windows operating systems?
-* Should we even support slash syntax at all?
 * Should we support a case insensitive mode?
 * Should we have a way to name option arguments, e.g. `DefineOption("n=name")`?
 * Should provide a string based approach to define usage?
@@ -273,21 +271,19 @@ will be an argument or the first parameter.
 ### Defining option and parameter lists
 
 Both, options and parameters, support the notion of lists. For example, consider
-the C# compiler CSC:
+a compiler `comp`:
 
-    $ csc -r:mscorlib.dll -r:system.dll source1.cs source2.cs -out:hello.exe -t:exe
+    $ comp -D DEBUG -D ARCH=x86 source1 source2 -out:hello
 
 You would define the options and parameters as follows:
 
 ```C#
-string target = "exe";
 string output = string.Empty;
-IReadOnlyList<string> references = Array.Empty<string>();
+IReadOnlyList<string> defines = Array.Empty<string>();
 IReadOnlyList<string> sources = Array.Empty<string>();
 
-syntax.DefineOption("t|target", ref target, "Type of app (exe, dll, winexe)");
 syntax.DefineOption("out", ref output, "Output name");
-syntax.DefineOptionList("r|reference", ref references, "References an assembly");
+syntax.DefineOptionList("D|define", ref defines, "Preprocessor definitions");
 syntax.DefineParameterList("source", ref sources, "The source files to compile");
 ```
 
