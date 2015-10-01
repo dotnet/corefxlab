@@ -64,6 +64,8 @@ time for the BCL to provide a built-in experience as well.
 * Should we provide an error handler?
 * Should we provide a help request handler?
 * Should we expose the response file hander?
+* Should we allow "empty" commands, so that the tool can support options without
+  an command, like `git --version`?
 
 ## Syntax
 
@@ -315,9 +317,6 @@ syntax.DefineOption("amend", ref amend, "Amend existing commit");
 In this case the `pull` command has a `-p` option and the `commit` command has
 `-m` and `--amend` options. It's worth noting that you can use the same option
 name between different commands as they are logically in different scopes.
-
-You can also have global options, i.e. options that are defined before the first
-command. Global options are available to each command.
 
 In order to check which command was used you've two options. You can either
 use the version we used above in which case the `ref` variable passed to

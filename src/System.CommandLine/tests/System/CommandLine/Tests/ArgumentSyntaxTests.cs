@@ -69,6 +69,21 @@ namespace System.CommandLine.Tests
         }
 
         [Fact]
+        public void Command_Definition_Error_AfterOption()
+        {
+            var ex = Assert.Throws<InvalidOperationException>(() =>
+            {
+                Parse(string.Empty, syntax =>
+                {
+                    syntax.DefineOption("o", string.Empty);
+                    syntax.DefineCommand("c", string.Empty);
+                });
+            });
+
+            Assert.Equal("Cannot define commands if global options or parameters exist.", ex.Message);
+        }
+
+        [Fact]
         public void Command_Definition_Error_AfterParameter()
         {
             var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -80,7 +95,7 @@ namespace System.CommandLine.Tests
                 });
             });
 
-            Assert.Equal("Cannot define commands if global parameters exist.", ex.Message);
+            Assert.Equal("Cannot define commands if global options or parameters exist.", ex.Message);
         }
 
         [Fact]
@@ -170,38 +185,6 @@ namespace System.CommandLine.Tests
             });
 
             Assert.Equal("unknown command 'd'", ex.Message);
-        }
-
-        [Fact]
-        public void Command_Usage_GobalOption_IsShared()
-        {
-            var o = string.Empty;
-
-            Parse("c2 -o x", syntax =>
-            {
-                syntax.DefineOption("o", ref o, string.Empty);
-
-                syntax.DefineCommand("c1", string.Empty);
-                syntax.DefineCommand("c2", string.Empty);
-            });
-
-            Assert.Equal("x", o);
-        }
-
-        [Fact]
-        public void Command_Usage_GobalOption_List_IsShared()
-        {
-            var o = (IReadOnlyList<string>)null;
-
-            Parse("c2 -o x -o y", syntax =>
-            {
-                syntax.DefineOptionList("o", ref o, string.Empty);
-
-                syntax.DefineCommand("c1", string.Empty);
-                syntax.DefineCommand("c2", string.Empty);
-            });
-
-            Assert.Equal(new[] { "x", "y" }.AsEnumerable(), o);
         }
 
         [Theory]

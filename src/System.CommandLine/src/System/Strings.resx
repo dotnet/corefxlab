@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CannotDefineCommandsIfGlobalParametersExist" xml:space="preserve">
-    <value>Cannot define commands if global parameters exist.</value>
+  <data name="CannotDefineCommandsIfArgumentsExist" xml:space="preserve">
+    <value>Cannot define commands if global options or parameters exist.</value>
   </data>
   <data name="CannotParseValueFmt" xml:space="preserve">
     <value>value '{0}' isn't valid for {1}: {2}</value>

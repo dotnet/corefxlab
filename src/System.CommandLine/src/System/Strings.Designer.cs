@@ -62,11 +62,11 @@ namespace System {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot define commands if global parameters exist..
+        ///   Looks up a localized string similar to Cannot define commands if global options or parameters exist..
         /// </summary>
-        internal static string CannotDefineCommandsIfGlobalParametersExist {
+        internal static string CannotDefineCommandsIfArgumentsExist {
             get {
-                return ResourceManager.GetString("CannotDefineCommandsIfGlobalParametersExist", resourceCulture);
+                return ResourceManager.GetString("CannotDefineCommandsIfArgumentsExist", resourceCulture);
             }
         }
         
