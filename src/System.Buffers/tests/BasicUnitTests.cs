@@ -28,7 +28,7 @@ namespace System.Text.Utf8.Tests
                     {
                         Assert.Equal(i, buffer[bi]);
                     }
-                    pool.Return(ref buffer);
+                    pool.Return(buffer);
                 }
             }
         }
