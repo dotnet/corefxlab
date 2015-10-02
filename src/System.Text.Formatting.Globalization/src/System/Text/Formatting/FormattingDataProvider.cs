@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.Utf8;
 
 namespace System.Text.Formatting
 {

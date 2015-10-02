@@ -33,7 +33,6 @@
     <Compile Include="System\InternalHelpers\IntegerFormatter.cs" />
     <Compile Include="System\InternalHelpers\FloatFormatter.cs" />
     <Compile Include="System\InternalHelpers\Precondition.cs" />
-    <Compile Include="System\InternalHelpers\Utf8.cs" />
     <Compile Include="System\Text\Parsing\InvariantParser.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -41,6 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
+      <Name>System.Buffers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.Text.Utf8\src\System.Text.Utf8.csproj">
       <Name>System.Buffers</Name>
     </ProjectReference>
   </ItemGroup>
