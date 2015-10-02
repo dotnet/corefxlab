@@ -48,7 +48,7 @@ static class Program
                 if (log)
                 {
 
-                    Console.WriteLine("*REQUEST:\n {0}", data.Utf8BytesToString());
+                    Console.WriteLine("*REQUEST:\n {0}", Encoding.UTF8.GetString(data.CreateArray()));
                 }
 
                 formatter.Clear();
@@ -73,15 +73,5 @@ static class Program
 
         listener.Listen();
         loop.Run();
-    }
-
-    static string Utf8BytesToString(this ByteSpan utf8)
-    {
-        unsafe
-        {
-            byte[] a = new byte[utf8.Length];
-            Marshal.Copy((IntPtr)utf8.UnsafeBuffer, a, 0, a.Length);
-            return Encoding.UTF8.GetString(a);
-        }
     }
 }

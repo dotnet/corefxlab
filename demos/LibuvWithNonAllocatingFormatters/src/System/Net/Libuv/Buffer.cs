@@ -35,7 +35,7 @@ namespace System.Net.Libuv
 
         internal static void FreeBuffer(ByteSpan buffer)
         {
-            _pool.Return(ref buffer);
+            _pool.Return(buffer);
         }
 
         static void OnAllocateUnixBuffer(IntPtr memoryBuffer, uint length, out Unix buffer)
