@@ -3,11 +3,11 @@
 
 using System;
 
-namespace System.Text
+namespace System.Text.Utf8
 {
     public struct Utf8String : IEquatable<Utf8String>, IComparable<Utf8String>
     {
-        static readonly Utf8String s_empty = new Utf8String(Array.Empty<byte>());
+        static readonly Utf8String s_empty = new Utf8String(new byte[0]);
 
         byte[] _array;
         unsafe byte* _buffer;
@@ -112,9 +112,18 @@ namespace System.Text
         public override string ToString() {
             unsafe
             {
-                if (_buffer != null) { throw new NotImplementedException(); }
+                if (_buffer != null)
+                {
+                    // TODO: this should be done without allocating the array
+                    var array = new byte[_length];
+                    for(int i=0; i<_length; i++)
+                    {
+                        array[i] = _buffer[i];
+                    }
+                    Encoding.UTF8.GetString(array, 0, _length);
+                }
             }
-            return Encoding.UTF8.GetString(_array, 0, _array.Length);
+            return Encoding.UTF8.GetString(_array, 0, _length);
         }
 
         public override bool Equals(object obj)

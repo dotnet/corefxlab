@@ -140,7 +140,7 @@ namespace System.Text.Formatting {
                 int bytesWritten;
                 while (!whole[i+index].TryFormat(buffer, default(Format.Parsed), formatter.FormattingData, out bytesWritten))
                 {
-                    Debug.Fail("this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
+                    Debug.Assert(false, "this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
                 }
                 totalWritten += bytesWritten;
                 buffer = buffer.Slice(bytesWritten);

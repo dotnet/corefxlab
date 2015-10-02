@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.InteropServices;
-using System.Text.Encodings;
+using System.Text.Utf8;
 
 namespace System.Text.Formatting
 {
@@ -85,8 +85,8 @@ namespace System.Text.Formatting
                 return true;
             }
 
-            var encoded = new Utf8Helpers.FourBytes();
-            bytesWritten = Utf8Helpers.CharToUtf8(value, ref encoded);
+            var encoded = new FourBytes();
+            bytesWritten = Utf8Encoder.CharToUtf8(value, ref encoded);
             if(buffer.Length < bytesWritten)
             {
                 bytesWritten = 0;
@@ -156,8 +156,8 @@ namespace System.Text.Formatting
                     }
                     else
                     {
-                        var encoded = new Utf8Helpers.FourBytes();
-                        var bytes = Utf8Helpers.CharToUtf8(c, ref encoded);
+                        var encoded = new FourBytes();
+                        var bytes = Utf8Encoder.CharToUtf8(c, ref encoded);
 
                         if (bytesWritten + bytes > avaliableBytes)
                         {
