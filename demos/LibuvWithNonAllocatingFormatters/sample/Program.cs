@@ -4,6 +4,7 @@ using System.Net.Libuv;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Formatting;
+using System.Text.Utf8;
 using System.Threading.Tasks;
 
 static class Program
@@ -47,8 +48,11 @@ static class Program
             {
                 if (log)
                 {
-
-                    Console.WriteLine("*REQUEST:\n {0}", Encoding.UTF8.GetString(data.CreateArray()));
+                    unsafe
+                    {
+                        var requestString = new Utf8String(data.UnsafeBuffer, data.Length);
+                        Console.WriteLine("*REQUEST:\n {0}", requestString.ToString());
+                    }
                 }
 
                 formatter.Clear();
