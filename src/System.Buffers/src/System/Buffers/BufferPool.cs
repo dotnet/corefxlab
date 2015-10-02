@@ -32,7 +32,7 @@ namespace System.Buffers
             return new ByteSpan(_memory + start, _bufferSizeInBytes);
         }
 
-        public int BufferIndexFromSpanAddress(ref ByteSpan span)
+        int BufferIndexFromSpanAddress(ref ByteSpan span)
         {
             var buffer = (ulong)span._data;
             var firstBuffer = (ulong)_memory;
@@ -41,7 +41,7 @@ namespace System.Buffers
             return (int)index;
         }
 
-        public void Return(ref ByteSpan span)
+        public void Return(ByteSpan span)
         {
             int spanIndex = BufferIndexFromSpanAddress(ref span);
             span._data = null;
