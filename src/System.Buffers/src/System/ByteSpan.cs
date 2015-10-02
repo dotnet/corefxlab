@@ -1,8 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System {
 
@@ -37,7 +39,7 @@ namespace System {
         public void Set(byte* value, int valueLength)
         {
             Precondition.Require(valueLength <= Length);
-            Buffer.MemoryCopy(value, _data, _length, valueLength);
+            BufferInternal.MemoryCopy(value, _data, _length, valueLength);
         }
 
         [CLSCompliant(false)]
@@ -70,6 +72,13 @@ namespace System {
 
             var data = _data + index;
             return new ByteSpan(data, count);
+        }
+
+        public byte[] CreateArray()
+        {
+            byte[] array = new byte[_length];
+            Marshal.Copy((IntPtr)UnsafeBuffer, array, 0, _length);
+            return array;
         }
     }
 }
