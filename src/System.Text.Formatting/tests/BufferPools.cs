@@ -31,7 +31,7 @@ namespace System.Text.Formatting.Tests
                     {
                         Assert.Equal(i, buffer[bi]);
                     }
-                    pool.Return(ref buffer);
+                    pool.Return(buffer);
                 }
             }
         }
