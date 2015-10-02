@@ -79,7 +79,9 @@ static class Program
     {
         unsafe
         {
-            return Encoding.UTF8.GetString(utf8.UnsafeBuffer, utf8.Length);
+            byte[] a = new byte[utf8.Length];
+            Marshal.Copy((IntPtr)utf8.UnsafeBuffer, a, 0, a.Length);
+            return Encoding.UTF8.GetString(a);
         }
     }
 }
