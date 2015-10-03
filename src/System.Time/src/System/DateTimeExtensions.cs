@@ -140,10 +140,7 @@ namespace System
 
         public static DateTimeOffset Add(this DateTime dateTime, TimeSpan timeSpan, TimeZoneInfo timeZone, TimeZoneOffsetResolver resolver)
         {
-            var dto = dateTime.Kind == DateTimeKind.Unspecified
-                ? resolver.Invoke(dateTime, timeZone)
-                : new DateTimeOffset(dateTime);
-
+            var dto = resolver.Invoke(dateTime, timeZone);
             var result = dto.Add(timeSpan);
             return TimeZoneInfo.ConvertTime(result, timeZone);
         }
@@ -155,8 +152,8 @@ namespace System
                 dateTime = TimeZoneInfo.ConvertTime(dateTime, timeZone);
             }
 
-            var dt = operation.Invoke(dateTime);
-            return resolver.Invoke(dt, timeZone);
+            var result = operation.Invoke(dateTime);
+            return resolver.Invoke(result, timeZone);
         }
     }
 }
