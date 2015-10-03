@@ -140,12 +140,12 @@ namespace System
 
         public static DateTimeOffset Add(this DateTime dateTime, TimeSpan timeSpan, TimeZoneInfo timeZone, TimeZoneOffsetResolver resolver)
         {
-            var utc = dateTime.Kind == DateTimeKind.Unspecified
-                ? resolver.Invoke(dateTime, timeZone).UtcDateTime
-                : dateTime.ToUniversalTime();
+            var dto = dateTime.Kind == DateTimeKind.Unspecified
+                ? resolver.Invoke(dateTime, timeZone)
+                : new DateTimeOffset(dateTime);
 
-            var dt = utc.Add(timeSpan);
-            return TimeZoneInfo.ConvertTime(dt, timeZone);
+            var result = dto.Add(timeSpan);
+            return TimeZoneInfo.ConvertTime(result, timeZone);
         }
         
         private static DateTimeOffset AddByDate(DateTime dateTime, Func<DateTime, DateTime> operation, TimeZoneInfo timeZone, TimeZoneOffsetResolver resolver)
