@@ -21,6 +21,7 @@
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <!-- workaround until we have Dev14 nuget targets -->
     <NugetTargetFrameworkMoniker>.NETPlatform,Version=v5.0</NugetTargetFrameworkMoniker>
+    <ProjectGuid>{DD942FDB-184A-4D9F-8A1E-3D531858A4B1}</ProjectGuid>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
   <ItemGroup>
@@ -29,11 +30,14 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicUnitTests.cs" />
+    <Compile Include="RandomTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\System.Text.Utf8.csproj">
       <Name>System.Text.Utf8</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
+      <Name>System.Buffers</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

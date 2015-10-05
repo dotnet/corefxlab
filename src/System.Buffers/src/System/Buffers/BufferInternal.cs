@@ -192,5 +192,118 @@ namespace System.Buffers
 
             Memmove((byte*)destination, (byte*)source, checked((uint)sourceBytesToCopy));
         }
+        
+        // TODO: This is naive implementation. Do we have any better native implementation?
+        // TODO: Should we start thinking about supporting long lengths?
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe bool MemoryEqual(void* lhs, int lhsLength, void* rhs, int rhsLength)
+        {
+            // 1. Fast paths
+            if (lhsLength != rhsLength)
+                return false;
+            if (lhs == rhs)
+                return true;
+
+            switch (lhsLength)
+            {
+                case 0: return true;
+                case 1: return *(byte*)lhs == *(byte*)rhs;
+                case 2: return *(UInt16*)lhs == *(UInt16*)rhs;
+                case 3: return *(UInt16*)lhs == *(UInt16*)rhs &&  *((byte*)lhs + 2) == *((byte*)rhs + 2);
+                case 4: return *(UInt32*)lhs == *(UInt32*)rhs;
+                case 8: return *(UInt64*)lhs == *(UInt64*)rhs;
+            }
+            
+            // 2. We split bytes into two groups of: (n/4)*4 and n%4 bytes
+            
+            // TODO: should we play with alignment here?
+            UInt32* a = (UInt32*)lhs;
+            UInt32* b = (UInt32*)rhs;
+            
+            // I think those are one processor instruction, so keeping it together
+            int count = lhsLength / sizeof(UInt32);
+            int remainder = lhsLength % sizeof(UInt32);
+            
+            // 2.a. We split first group into another two groups to inline comparison by 8 comparisons each
+            int count_div_8 = count / 8;
+            int count_mod_8 = count % 8;
+            
+            // 2.b. Do the comparison of first's group first group
+            while (count_div_8-- != 0)
+            {
+                if (*a++ != *b++) return false;
+                if (*a++ != *b++) return false;
+                if (*a++ != *b++) return false;
+                if (*a++ != *b++) return false;
+                
+                if (*a++ != *b++) return false;
+                if (*a++ != *b++) return false;
+                if (*a++ != *b++) return false;
+                if (*a++ != *b++) return false;
+            }
+            
+            // 2.c. Do the comparison of first's group second group
+            switch (count_mod_8)
+            {
+                case 0: break;
+                case 1:
+                    if (*a++ != *b++) return false;
+                    break;
+                case 2:
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    break;
+                case 3:
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    break;
+                case 4:
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    break;
+                case 5:
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    
+                    if (*a++ != *b++) return false;
+                    break;
+                case 6:
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    break;
+                case 7:
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    if (*a++ != *b++) return false;
+                    break;
+            }
+            
+            // 3. Compare bytes in second group
+            switch (remainder)
+            {
+                case 0: return true;
+                case 1: return *(byte*)a == *(byte*)b;
+                case 2: return *(UInt16*)a == *(UInt16*)b;
+                case 3: return *(UInt16*)a == *(UInt16*)b &&  *((byte*)a + 2) == *((byte*)b + 2);
+            }
+            
+            // We actually should never get here
+            return false;
+        }
     }
 }
