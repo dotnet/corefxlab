@@ -9,6 +9,12 @@ namespace System
     {
         public static DateTimeOffset Default(DateTime dt, TimeZoneInfo timeZone)
         {
+            if (dt.Kind != DateTimeKind.Unspecified)
+            {
+                var dto = new DateTimeOffset(dt);
+                return TimeZoneInfo.ConvertTime(dto, timeZone);
+            }
+
             if (timeZone.IsAmbiguousTime(dt))
             {
                 var earlierOffset = timeZone.GetUtcOffset(dt.AddDays(-1));
