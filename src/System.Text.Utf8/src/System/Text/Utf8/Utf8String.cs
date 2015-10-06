@@ -120,7 +120,7 @@ namespace System.Text.Utf8
                     {
                         array[i] = _buffer[i];
                     }
-                    Encoding.UTF8.GetString(array, 0, _length);
+                    return Encoding.UTF8.GetString(array, 0, _length);
                 }
             }
             return Encoding.UTF8.GetString(_array, 0, _length);
