@@ -32,5 +32,13 @@ namespace System.Text.Utf8.Tests
                 }
             }
         }
+
+        [Fact]
+        public void ByteSpanEmptyCreateArrayTest()
+        {
+            var empty = ByteSpan.Empty;
+            var array = empty.CreateArray();
+            Assert.Equal(0, array.Length);
+        }
     }
 }
