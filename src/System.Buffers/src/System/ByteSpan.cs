@@ -19,6 +19,11 @@ namespace System {
             _length = length;
         }
 
+        public static ByteSpan Empty
+        {
+            get { return new ByteSpan(); }
+        }
+
         public byte this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -40,6 +45,16 @@ namespace System {
         {
             Precondition.Require(valueLength <= Length);
             BufferInternal.MemoryCopy(value, _data, _length, valueLength);
+        }
+
+        [CLSCompliant(false)]
+        public bool TrySet(byte* value, int valueLength)
+        {
+            if(valueLength <= Length) {
+                return false;
+            }
+            BufferInternal.MemoryCopy(value, _data, _length, valueLength);
+            return true;
         }
 
         [CLSCompliant(false)]
@@ -76,6 +91,9 @@ namespace System {
 
         public byte[] CreateArray()
         {
+            if(_length == 0) {
+                return new byte[0];
+            }
             byte[] array = new byte[_length];
             Marshal.Copy((IntPtr)UnsafeBuffer, array, 0, _length);
             return array;
