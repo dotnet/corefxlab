@@ -1,0 +1,1 @@
+The implementation of Slice<T> is derived from https://github.com/joeduffy/slice.net
