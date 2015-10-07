@@ -10,6 +10,7 @@
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ProjectGuid>{C5FD8740-19EA-4BCC-B518-7F16B55D23CA}</ProjectGuid>
+    <ILModule>$(OutputPath)System.Slices.netmodule</ILModule>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -21,7 +22,7 @@
     <None Include="System\PtrUtils.il" />
   </ItemGroup>
   <ItemGroup>
-    <AddModules Include="$(OutputPath)System.Slices.netmodule" />
+    <AddModules Include="$(ILModule)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="System\Contract.cs" />
@@ -31,7 +32,7 @@
     <Compile Include="System\SpanHelpers.cs" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
-  <Target Name="BeforeBuild">
-    <Exec Command="$(MSBuildThisFileDirectory)build_module.bat"/>
+  <Target Name="BeforeCompile">
+    <Exec Command="ilasm /dll $(MSBuildThisFileDirectory)System\PtrUtils.il /out:$(ILModule)"/>
   </Target>
 </Project>
