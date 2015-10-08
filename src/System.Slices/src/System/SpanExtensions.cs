@@ -45,16 +45,16 @@ namespace System
         /// </summary>
         /// <param name="array">The target array.</param>
         /// <param name="start">The index at which to begin the slice.</param>
-        /// <param name="end">The index at which to end the slice (exclusive).</param>
+        /// <param name="length">The number of items in the new slice.</param>
         /// <exception cref="System.ArgumentException">
         /// Thrown if the 'array' parameter is null.
         /// </exception>
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
-        public static Span<T> Slice<T>(this T[] array, int start, int end)
+        public static Span<T> Slice<T>(this T[] array, int start, int length)
         {
-           return new Span<T>(array, start, end - start);
+           return new Span<T>(array, start, length);
         }
 
         /// <summary>
@@ -110,14 +110,14 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
-        public static Span<char> Slice(this string str, int start, int end)
+        public static Span<char> Slice(this string str, int start, int length)
         {
             Contract.Requires(str != null);
-            Contract.RequiresInInclusiveRange(start, end, str.Length);
+            Contract.Requires(start + length <= str.Length);
             return new Span<char>(
                 str,
                 new UIntPtr((uint)(SpanHelpers.OffsetToStringData + (start * sizeof(char)))),
-                end - start
+                length
             );
         }
 
