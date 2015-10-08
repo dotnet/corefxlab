@@ -72,14 +72,14 @@ namespace System
         /// </summary>
         /// <param name="array">The target array.</param>
         /// <param name="start">The index at which to begin the span.</param>
-        /// <param name="end">The index at which to end the span (exclusive).</param>
+        /// <param name="length">The number of items in the span.</param>
         /// <exception cref="System.ArgumentException">
         /// Thrown if the 'array' parameter is null.
         /// </exception>
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
-        public Span(T[] array, int start, int end)
+        public Span(T[] array, int start, int length)
         {
             Contract.Requires(array != null);
             Contract.RequiresInInclusiveRange(start, array.Length);
@@ -87,7 +87,7 @@ namespace System
                 m_object = array;
                 m_offset = new UIntPtr(
                     (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
-                Length = end - start;
+                Length = length;
             }
             else {
                 m_object = null;
@@ -199,7 +199,7 @@ namespace System
         /// </exception>
         public Span<T> Slice(int start)
         {
-            return Slice(start, Length);
+            return Slice(start, Length - start);
         }
 
         /// <summary>
@@ -211,11 +211,11 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
-        public Span<T> Slice(int start, int end)
+        public Span<T> Slice(int start, int length)
         {
-            Contract.RequiresInInclusiveRange(start, end, Length);
+            Contract.Requires(start + length <= Length);
             return new Span<T>(
-                m_object, m_offset + (start * PtrUtils.SizeOf<T>()), end - start);
+                m_object, m_offset + (start * PtrUtils.SizeOf<T>()), length);
         }
 
         /// <summary>
