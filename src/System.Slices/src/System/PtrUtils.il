@@ -27,7 +27,7 @@
         // other weird thing is that sometimes these computations don't involve
         // manage objects at all!  If the object is null, and the offset is actually
         // just a raw native pointer, these functions still do the "right" thing.
-        // That is, the computations, dereferencing, and subsequent coercition into
+        // That is, the computations, dereferencing, and subsequent coercion into
         // a T value "just work."  This would be a dirty little undocumented trick
         // that made me need to take a shower, were it not for the fact that C++/CLI
         // depends on it working... (okay, I still feel a little dirty.)
