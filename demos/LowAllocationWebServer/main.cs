@@ -13,7 +13,7 @@ class Program
         Console.WriteLine("Browse to http://localhost:9999/time to test it.\n");
 
         var log = new ConsoleLog((Log.Level.Off));
-        var restServer = new SampleRestServer(log, 9999, 127, 0, 0, 1); 
+        var restServer = new SampleRestServer(log, 8080, 0, 0, 0, 0); 
         restServer.StartAsync();
 
         Console.WriteLine("Press ENTER to exit ...");

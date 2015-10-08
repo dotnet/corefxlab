@@ -59,7 +59,7 @@ namespace System.Text.Formatting
 
             if(recordStart == -1)
             {
-                return FormattingData.InvariantUtf16;
+                throw new Exception("local not found");
             }
 
             resourceStream.Position = recordStart;
