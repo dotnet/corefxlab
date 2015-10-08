@@ -1,17 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Libuv;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.Formatting;
 using System.Text.Utf8;
 using System.Threading.Tasks;
 
 static class Program
 {
+    static string s_ipAddress;
+    static int s_port;
+
     public static void Main(string[] args)
     {
-        Console.WriteLine("browse to http://localhost:8080");
+        if(args.Length < 1 || args[0].Substring(0, 4) != "/ip:")
+        {
+            Usage();
+            return;
+        }
+
+        var options = args[0].Substring(4).Split(':');
+        if(options.Length!=2)
+        {
+            Usage();
+            return;
+        }
+        s_ipAddress = options[0];
+        s_port = Int32.Parse(options[1]);
+
+        Console.WriteLine("browse to http://{0}:{1}", s_ipAddress, s_port);
 
         bool log = false;
         if (args.Length > 0 && args[0] == "/log")
@@ -30,11 +46,16 @@ static class Program
         Task.WaitAll(loops);
     }
 
+    private static void Usage()
+    {
+        Console.WriteLine("Usage: {0} /ip:<ip_address>:<port>", Environment.GetCommandLineArgs()[0]);
+    }
+
     static void RunLoop(bool log)
     {
         var loop = new UVLoop();
 
-        var listener = new TcpListener("127.0.0.1", 8080, loop);
+        var listener = new TcpListener(s_ipAddress, s_port, loop);
         var formatter = new BufferFormatter(512, FormattingData.InvariantUtf8);
 
         listener.ConnectionAccepted += (Tcp connection) =>
