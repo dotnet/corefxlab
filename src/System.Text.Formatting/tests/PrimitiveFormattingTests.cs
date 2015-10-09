@@ -316,8 +316,8 @@ namespace System.Text.Formatting.Tests
                 utf8Writer.Append(" ");
                 utf8Writer.Append("World!");
                 utf8Writer.Append("\u0391"); // greek alpha
-                //utf8Writer.Append("\uD950\uDF21"); // TODO: surrogate pair; this is NIY
-                AssertUtf8Equal(buffer.Slice(0, (int)stream.Position), "Hello World!\u0391");
+                utf8Writer.Append("\uD950\uDF21");
+                AssertUtf8Equal(buffer.Slice(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21");
             }
 
             stream.Position = 0;

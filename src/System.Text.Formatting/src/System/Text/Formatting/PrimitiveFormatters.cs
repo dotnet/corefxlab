@@ -85,26 +85,27 @@ namespace System.Text.Formatting
                 return true;
             }
 
-            var encoded = new FourBytes();
-            bytesWritten = Utf8Encoder.CharToUtf8(value, ref encoded);
-            if(buffer.Length < bytesWritten)
+            // TODO: This can be directly encoded to SpanByte. There is no conversion between spans yet
+            var encoded = new Utf8EncodedCodePoint(value);
+            bytesWritten = encoded.Length;
+            if (buffer.Length < bytesWritten)
             {
                 bytesWritten = 0;
                 return false;
             }
 
-            buffer[0] = encoded.B0;
+            buffer[0] = encoded.Byte0;
             if(bytesWritten > 1)
             {
-                buffer[1] = encoded.B1;
+                buffer[1] = encoded.Byte1;
             }
             if(bytesWritten > 2)
             {
-                buffer[2] = encoded.B2;
+                buffer[2] = encoded.Byte2;
             }
             if(bytesWritten > 3)
             {
-                buffer[3] = encoded.B3;
+                buffer[3] = encoded.Byte3;
             }
             return true;
         }
@@ -156,32 +157,41 @@ namespace System.Text.Formatting
                     }
                     else
                     {
-                        var encoded = new FourBytes();
-                        var bytes = Utf8Encoder.CharToUtf8(c, ref encoded);
+                        Utf8EncodedCodePoint encoded;
+                        if (!char.IsSurrogate(c))
+                            encoded = new Utf8EncodedCodePoint(c);
+                        else
+                        {
+                            if (++i >= value.Length)
+                                throw new ArgumentException("value", "Invalid surrogate pair.");
+                            char lowSurrogate = value[i];
+                            encoded = new Utf8EncodedCodePoint(c, lowSurrogate);
+                        }
+                            
 
-                        if (bytesWritten + bytes > avaliableBytes)
+                        if (bytesWritten + encoded.Length > avaliableBytes)
                         {
                             bytesWritten = 0;
                             return false;
                         }
 
-                        byteSpan[bytesWritten] = encoded.B0;
-                        if (bytes > 1)
+                        byteSpan[bytesWritten] = encoded.Byte0;
+                        if (encoded.Length > 1)
                         {
-                            byteSpan[bytesWritten + 1] = encoded.B1;
+                            byteSpan[bytesWritten + 1] = encoded.Byte1;
 
-                            if (bytes > 2)
+                            if (encoded.Length > 2)
                             {
-                                byteSpan[bytesWritten + 2] = encoded.B2;
+                                byteSpan[bytesWritten + 2] = encoded.Byte2;
 
-                                if (bytes > 3)
+                                if (encoded.Length > 3)
                                 {
-                                    byteSpan[bytesWritten + 3] = encoded.B3;
+                                    byteSpan[bytesWritten + 3] = encoded.Byte3;
                                 }
                             }
                         }
 
-                        bytesWritten += bytes;
+                        bytesWritten += encoded.Length;
                     }
                 }
                 return true;

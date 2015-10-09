@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace System {
 
-    public unsafe struct ByteSpan {
+    public unsafe struct ByteSpan : IEquatable<ByteSpan> {
         internal byte* _data;
         internal int _length;
 
@@ -41,19 +41,20 @@ namespace System {
         }
 
         [CLSCompliant(false)]
-        public void Set(byte* value, int valueLength)
+        public bool TrySet(byte* value, int valueLength)
         {
-            Precondition.Require(valueLength <= Length);
+            if (valueLength > Length)
+                return false;
             BufferInternal.MemoryCopy(value, _data, _length, valueLength);
+            return true;
         }
 
         [CLSCompliant(false)]
-        public bool TrySet(byte* value, int valueLength)
+        public bool TryCopyTo(byte* value, int valueLength)
         {
-            if(valueLength <= Length) {
+            if (Length > valueLength)
                 return false;
-            }
-            BufferInternal.MemoryCopy(value, _data, _length, valueLength);
+            BufferInternal.MemoryCopy(_data, value, valueLength, _length);
             return true;
         }
 
@@ -74,7 +75,8 @@ namespace System {
 
         public ByteSpan Slice(int index)
         {
-            Precondition.Require(index < Length);
+            if (index >= Length)
+                return new ByteSpan(_data, 0);
 
             var data = _data + index;
             var length = _length - index;
@@ -97,6 +99,11 @@ namespace System {
             byte[] array = new byte[_length];
             Marshal.Copy((IntPtr)UnsafeBuffer, array, 0, _length);
             return array;
+        }
+        
+        public bool Equals(ByteSpan buffer)
+        {
+            return BufferInternal.MemoryEqual(_data, _length, buffer._data, buffer._length);
         }
     }
 }

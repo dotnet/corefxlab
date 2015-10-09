@@ -2,7 +2,8 @@
   "dependencies": {
     "System.Resources.ResourceManager": "4.0.0",
     "System.Runtime": "4.0.0",
-    "System.Runtime.Extensions": "4.0.0"
+    "System.Runtime.Extensions": "4.0.0",
+    "System.Text.Encoding" :  "4.0.10"
   },
   "frameworks": {
     "dnxcore50": {}
