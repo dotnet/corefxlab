@@ -2,10 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Buffers;
 using System.Diagnostics;
-using System.IO;
-using System.IO.Buffers;
-using System.Net;
 using System.Net.Http.Buffered;
 using System.Text.Formatting;
 
@@ -32,7 +30,7 @@ class SampleRestServer : HttpServer
             case Api.HelloWorld:
                 return CreateResponseForHelloWorld();
             case Api.GetTime:
-                return CreateResponseForGetTime();
+                return CreateResponseForGetTime(requestLine);
             default:
                 return CreateResponseFor404(requestLine, headerAndBody);
         }
@@ -43,7 +41,7 @@ class SampleRestServer : HttpServer
         var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
         formatter.Append(@"HTTP/1.1 200 OK");
         formatter.Append(HttpNewline);
-        formatter.Append("Content-Length: 15");
+        formatter.Append("Content-Length: 12");
         formatter.Append(HttpNewline);
         formatter.Append("Content-Type: text/plain; charset=UTF-8");
         formatter.Append(HttpNewline);
@@ -57,10 +55,10 @@ class SampleRestServer : HttpServer
         return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
     }
 
-    static HttpServerBuffer CreateResponseForGetTime()
+    static HttpServerBuffer CreateResponseForGetTime(HttpRequestLine request)
     {
         var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
-        WriteCommonHeaders(formatter, @"HTTP/1.1 200 OK");
+        WriteCommonHeaders(formatter, @"HTTP/1.1 200 OK", request.IsKeepAlive());
         formatter.Append(HttpNewline);
 
         formatter.Append(@"<html><head><title>Time</title></head><body>");

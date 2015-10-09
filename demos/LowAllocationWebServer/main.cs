@@ -10,9 +10,9 @@ class Program
     {
         Console.WriteLine("Sample Rest Server Started");
         Console.WriteLine("The server implements /time REST method.");
-        Console.WriteLine("Browse to http://localhost:9999/time to test it.\n");
+        Console.WriteLine("Browse to http://<host>:8080/time or http://<host>:8080/plaintext to test it.\n");
 
-        var log = new ConsoleLog((Log.Level.Off));
+        var log = new ConsoleLog((Log.Level.Verbose));
         var restServer = new SampleRestServer(log, 8080, 0, 0, 0, 0); 
         restServer.StartAsync();
 

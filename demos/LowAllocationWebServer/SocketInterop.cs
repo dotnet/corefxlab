@@ -40,8 +40,20 @@ namespace Microsoft.Net.Http.Server.Socket.Interop
         [DllImport(WS2_32, SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern int closesocket(IntPtr s);
 
+        [DllImport(WS2_32)]
+        public static extern int setsockopt(IntPtr s, SocketOptionLevel level, SocketOptionName optname, ref int optval, int optlen);
+
         public const int SOCKET_ERROR = -1;
         public const int INVALID_SOCKET = -1;
+    }
+
+    public enum SocketOptionLevel
+    {
+        IP = 0,
+        IPv6 = 0x29,
+        Socket = 0xffff,
+        Tcp = 6,
+        Udp = 0x11
     }
 
     public enum ADDRESS_FAMILIES : short
@@ -90,5 +102,54 @@ namespace Microsoft.Net.Http.Server.Socket.Interop
         public byte s_b3;
         [FieldOffset(3)]
         public byte s_b4;
+    }
+
+    public enum SocketOptionName
+    {
+        AcceptConnection = 2,
+        AddMembership = 12,
+        AddSourceMembership = 15,
+        BlockSource = 0x11,
+        Broadcast = 0x20,
+        BsdUrgent = 2,
+        ChecksumCoverage = 20,
+        Debug = 1,
+        DontFragment = 14,
+        DontLinger = -129,
+        DontRoute = 0x10,
+        DropMembership = 13,
+        DropSourceMembership = 0x10,
+        Error = 0x1007,
+        ExclusiveAddressUse = -5,
+        Expedited = 2,
+        HeaderIncluded = 2,
+        HopLimit = 0x15,
+        IPOptions = 1,
+        IPProtectionLevel = 0x17,
+        IpTimeToLive = 4,
+        IPv6Only = 0x1b,
+        KeepAlive = 8,
+        Linger = 0x80,
+        MaxConnections = 0x7fffffff,
+        MulticastInterface = 9,
+        MulticastLoopback = 11,
+        MulticastTimeToLive = 10,
+        NoChecksum = 1,
+        NoDelay = 1,
+        OutOfBandInline = 0x100,
+        PacketInformation = 0x13,
+        ReceiveBuffer = 0x1002,
+        ReceiveLowWater = 0x1004,
+        ReceiveTimeout = 0x1006,
+        ReuseAddress = 4,
+        SendBuffer = 0x1001,
+        SendLowWater = 0x1003,
+        SendTimeout = 0x1005,
+        Type = 0x1008,
+        TypeOfService = 3,
+        UnblockSource = 0x12,
+        UpdateAcceptContext = 0x700b,
+        UpdateConnectContext = 0x7010,
+        UseLoopback = 0x40
     }
 }
