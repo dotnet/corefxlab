@@ -19,7 +19,6 @@ class Tests
                 slice = ints.Slice();
             }
             t.AssertEqual(ints.Length, slice.Length);
-            t.AssertEqual(0, 1);
             // Now try out two ways of walking the slice's contents:
             for (int j = 0; j < ints.Length; j++) {
                 t.AssertEqual(ints[j], slice[j]);
@@ -114,7 +113,7 @@ class Tests
         {
             int st = 3;
             int ed = 7;
-            var subslice4 = slice.Slice(st, ed);
+            var subslice4 = slice.Slice(st, 4);
             t.AssertEqual(ed-st, subslice4.Length);
             for (int i = ed, j = 0; i < ed; i++, j++) {
                 t.AssertEqual(slice[i], subslice4[j]);
