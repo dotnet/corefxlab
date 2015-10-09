@@ -45,7 +45,7 @@
           "ref/dotnet/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23406": {
+      "System.Console/4.0.0-beta-23409": {
         "dependencies": {
           "System.Runtime": "4.0.0",
           "System.IO": "4.0.0"
@@ -418,7 +418,7 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23406": {
+      "System.Console/4.0.0-beta-23409": {
         "dependencies": {
           "System.Runtime": "4.0.0",
           "System.IO": "4.0.0"
@@ -1016,13 +1016,13 @@
         "[Content_Types].xml"
       ]
     },
-    "System.Console/4.0.0-beta-23406": {
+    "System.Console/4.0.0-beta-23409": {
       "serviceable": true,
-      "sha512": "gKzQ/CkAP8fbyQ8+Vxf3lvW4+3qbZ8QpqwTWhRXImQ9QteXgI+q956weRMS1A8fN9BUR1sNnBDtS1sP7cts9fA==",
+      "sha512": "dO1UdUadTRQDeU8n99Tabd//6X/yTdp8qDRaZoD7EITou4iqAY9IHRBBImx+9AUkSO0MTYeOcxSl1wcnu3u4gQ==",
       "files": [
         "runtime.json",
-        "System.Console.4.0.0-beta-23406.nupkg",
-        "System.Console.4.0.0-beta-23406.nupkg.sha512",
+        "System.Console.4.0.0-beta-23409.nupkg",
+        "System.Console.4.0.0-beta-23409.nupkg.sha512",
         "System.Console.nuspec",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -1030,6 +1030,16 @@
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
         "ref/dotnet/System.Console.dll",
+        "ref/dotnet/System.Console.xml",
+        "ref/dotnet/de/System.Console.xml",
+        "ref/dotnet/es/System.Console.xml",
+        "ref/dotnet/fr/System.Console.xml",
+        "ref/dotnet/it/System.Console.xml",
+        "ref/dotnet/ja/System.Console.xml",
+        "ref/dotnet/ko/System.Console.xml",
+        "ref/dotnet/ru/System.Console.xml",
+        "ref/dotnet/zh-hans/System.Console.xml",
+        "ref/dotnet/zh-hant/System.Console.xml",
         "ref/MonoAndroid10/_._",
         "ref/MonoTouch10/_._",
         "ref/net46/System.Console.dll",
