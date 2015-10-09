@@ -1,4 +1,5 @@
-﻿using System.Text.Utf8;
+﻿using System.Text;
+using System.Text.Utf8;
 
 namespace System.Net.Http.Buffered
 {
@@ -32,16 +33,19 @@ namespace System.Net.Http.Buffered
 
         public bool Equals(Utf8String other)
         {
-            if (Length != other.Length) return false;
-            for(int i=0; i<Length; i++) {
-                if (_bytes[i] != other.Bytes[i]) return false;
-            }
-            return true;
+            if (other.Length != Length) return false;
+            var otherBytes = other.CopyBytes(); // TODO: this needs to go away        
+            return _bytes.StartsWith(otherBytes);
         }
 
         public override int GetHashCode()
         {
             throw new InvalidOperationException("you don't want it in a hashtable, do you?");
+        }
+
+        public override string ToString()
+        {
+            return Encoding.UTF8.GetString(_bytes.CreateArray());
         }
     }
 
@@ -151,7 +155,14 @@ namespace System.Net.Http.Buffered
         {
             int parsedBytes;
             var header = SliceTo(Buffer, s_CR, s_LF, out parsedBytes);
-            Buffer = Buffer.Slice(parsedBytes);
+            if (parsedBytes > Buffer.Length)
+            {
+                Buffer = Buffer.Slice(parsedBytes);
+            }
+            else
+            {
+                Buffer = new ByteSpan();
+            }
             return new Utf8Span(header);
         }
 
@@ -196,15 +207,22 @@ namespace System.Net.Http.Buffered
 
     public static class HttpRequestParser
     {
-        static readonly Utf8String s_Get = new Utf8String("GET ");
-        static readonly Utf8String s_Post = new Utf8String("POST ");
-        static readonly Utf8String s_Put = new Utf8String("PUT ");
-        static readonly Utf8String s_Delete = new Utf8String("DELETE ");
+        // TODO: these copies should be eliminated
+        static readonly ReadOnlySpan<byte> s_Get = new Utf8String("GET ").CopyBytes();
+        static readonly ReadOnlySpan<byte> s_Post = new Utf8String("POST ").CopyBytes();
+        static readonly ReadOnlySpan<byte> s_Put = new Utf8String("PUT ").CopyBytes();
+        static readonly ReadOnlySpan<byte> s_Delete = new Utf8String("DELETE ").CopyBytes();
 
         public static bool TryParseRequestLine(ByteSpan buffer, out HttpRequestLine requestLine)
         {
             int parsedBytes;
             return TryParseRequestLine(buffer, out requestLine, out parsedBytes);
+        }
+
+        // TODO: this needs to be smarter
+        public static bool IsKeepAlive(this HttpRequestLine request)
+        {
+            return (request.Version != HttpVersion.V1_0) && (request.Version != HttpVersion.Unknown);
         }
 
         public static bool TryParseRequestLine(ByteSpan buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
@@ -230,28 +248,28 @@ namespace System.Net.Http.Buffered
 
         public static bool TryParseMethod(ByteSpan buffer, out HttpMethod method, out int parsedBytes)
         {
-            if(buffer.StartsWith(s_Get.Bytes))
+            if(buffer.StartsWith(s_Get))
             {
                 method = HttpMethod.Get;
                 parsedBytes = s_Get.Length;
                 return true;
             }
 
-            if (buffer.StartsWith(s_Post.Bytes))
+            if (buffer.StartsWith(s_Post))
             {
                 method = HttpMethod.Post;
                 parsedBytes = s_Post.Length;
                 return true;
             }
 
-            if (buffer.StartsWith(s_Put.Bytes))
+            if (buffer.StartsWith(s_Put))
             {
                 method = HttpMethod.Put;
                 parsedBytes = s_Put.Length;
                 return true;
             }
 
-            if (buffer.StartsWith(s_Delete.Bytes))
+            if (buffer.StartsWith(s_Delete))
             {
                 method = HttpMethod.Delete;
                 parsedBytes = s_Delete.Length;
@@ -283,12 +301,5 @@ namespace System.Net.Http.Buffered
             }
             return true;
         }
-    }
-
-    public static class UriParser
-    {
-        // <heriarchy> [? <query> ] [# <fragment> ]
-        // <query> -> <key>=<value> <separator>
-        // <separator> -> (not defined but either & or ;)
     }
 }
