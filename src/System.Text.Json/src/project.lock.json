@@ -1,5 +1,5 @@
 {
-  "locked": true,
+  "locked": false,
   "version": -9996,
   "targets": {
     "DNXCore,Version=v5.0": {
@@ -762,8 +762,7 @@
       "System.Runtime.Extensions >= 4.0.10-beta-*",
       "System.Runtime.InteropServices >= 4.0.20-beta-*",
       "System.Text.Encoding >= 4.0.10-beta-*",
-      "System.Threading >= 4.0.10-beta-*",
-      "System.Text.Formatting >= 0.1.0.0-d061015-3"
+      "System.Threading >= 4.0.10-beta-*"
     ],
     "DNXCore,Version=v5.0": []
   }
