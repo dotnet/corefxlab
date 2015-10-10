@@ -16,7 +16,7 @@ namespace System.Text.Utf8.Tests
         [InlineData("a\uABEE\uABCDa")]
         public void Length(string s)
         {
-            Assert.Equal(s.Length, (new Utf8String(Encoding.UTF8.GetBytes(s))).Count());
+            Assert.Equal(s.Length, (new Utf8String(Encoding.UTF8.GetBytes(s))).CodePoints.Count());
         }
 
         [Theory]
@@ -46,7 +46,7 @@ namespace System.Text.Utf8.Tests
         public void CodePointValidation(string s)
         {
             var utf8string = new Utf8String(Encoding.UTF8.GetBytes(s));
-            IEnumerator<UnicodeCodePoint> codePoints = utf8string.GetEnumerator();
+            IEnumerator<UnicodeCodePoint> codePoints = utf8string.CodePoints.GetEnumerator();
             for (int i = 0; i < s.Length; i++)
             {
                 Assert.True(codePoints.MoveNext());
@@ -127,6 +127,28 @@ namespace System.Text.Utf8.Tests
             Assert.Equal(0xEF, ecp.Byte0);
             Assert.Equal(0xBF, ecp.Byte1);
             Assert.Equal(0xBF, ecp.Byte2);
+        }
+
+        [Theory]
+        [InlineData("abcdefghijklmnopqrstuvwxyz")]
+        [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ")]
+        [InlineData("0123456789")]
+        [InlineData(" ,.\r\n[]<>()")]
+        public void AsciiStringEnumerators(string s)
+        {
+            Utf8String u8s = new Utf8String(Encoding.UTF8.GetBytes(s));
+            Utf8String.Enumerator e = u8s.GetEnumerator();
+            Utf8String.CodePointEnumerator cpe = u8s.CodePoints.GetEnumerator();
+
+            Assert.Equal(s.Length, u8s.Length);
+            for (int i = 0; i < s.Length; i++)
+            {
+                Assert.True(e.MoveNext());
+                Assert.True(cpe.MoveNext());
+                Assert.Equal((byte)s[i], (byte)u8s[i]);
+                Assert.Equal(u8s[i], e.Current);
+                Assert.Equal((byte)s[i], (byte)(uint)cpe.Current);
+            }
         }
     }
 }

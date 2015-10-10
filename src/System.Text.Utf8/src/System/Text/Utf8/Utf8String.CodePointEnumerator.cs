@@ -8,7 +8,7 @@ namespace System.Text.Utf8
 {
     partial struct Utf8String
     {
-        public struct Enumerator : IEnumerator<Utf8CodeUnit>, IEnumerator
+        public struct CodePointEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
         {
             // TODO: This object is heavier than string itself... Once we got ByteSpan runtime support, change it.
             // TODO: Reduce number of members when we get Span<byte> runtime support
@@ -20,7 +20,9 @@ namespace System.Text.Utf8
             private int _index;
             private int _lastIndex;
 
-            public Enumerator(byte[] bytes, int index, int length)
+            private int _currentLenCache;
+
+            public CodePointEnumerator(byte[] bytes, int index, int length)
             {
                 if (index + length > bytes.Length)
                     throw new ArgumentOutOfRangeException("index");
@@ -33,9 +35,11 @@ namespace System.Text.Utf8
                 _startIndex = index - 1;
                 _index = _startIndex;
                 _lastIndex = index + length;
+
+                _currentLenCache = 0;
             }
 
-            public unsafe Enumerator(ByteSpan buffer)
+            public unsafe CodePointEnumerator(ByteSpan buffer)
             {
                 if (buffer.UnsafeBuffer == null)
                     throw new ArgumentNullException("buffer");
@@ -48,15 +52,19 @@ namespace System.Text.Utf8
                 _startIndex = default(int);
                 _index = default(int);
                 _lastIndex = default(int);
+
+                _currentLenCache = 0;
             }
 
 
             object IEnumerator.Current { get { return Current; } }
 
-            public unsafe Utf8CodeUnit Current
+            public unsafe UnicodeCodePoint Current
             {
                 get
                 {
+                    UnicodeCodePoint ret;
+                    bool succeeded;
                     if (_bytes != null)
                     {
                         if (_index == _startIndex)
@@ -64,7 +72,12 @@ namespace System.Text.Utf8
                             throw new InvalidOperationException("MoveNext() needs to be called at least once");
                         }
 
-                        return (Utf8CodeUnit)_bytes[_index];
+                        fixed (byte* pinnedBytes = _bytes)
+                        {
+                            ByteSpan buffer = new ByteSpan(pinnedBytes + _index, _lastIndex - _index);
+
+                            succeeded = Utf8Encoder.TryDecodeCodePoint(buffer, out ret, out _currentLenCache);
+                        }
                     }
                     else
                     {
@@ -72,8 +85,16 @@ namespace System.Text.Utf8
                         {
                             throw new InvalidOperationException("MoveNext() needs to be called at least once");
                         }
-                        return (Utf8CodeUnit)_buffer[0];
+                        succeeded = Utf8Encoder.TryDecodeCodePoint(_buffer, out ret, out _currentLenCache);
                     }
+
+                    if (!succeeded || _currentLenCache == 0)
+                    {
+                        // TODO: Change exception type
+                        throw new Exception("Invalid code point!");
+                    }
+
+                    return ret;
                 }
             }
 
@@ -83,15 +104,52 @@ namespace System.Text.Utf8
 
             public bool MoveNext()
             {
+                if (IsOnStartingPosition())
+                {
+                    if (_bytes != null)
+                    {
+                        _index++;
+                        return _index < _lastIndex;
+                    }
+                    else
+                    {
+                        _buffer = _buffer.Slice(1);
+                        return _buffer.Length > 0;
+                    }
+                }
+
+                if (_currentLenCache == 0)
+                {
+                    UnicodeCodePoint codePointDummy = Current;
+                    if (_currentLenCache == 0)
+                    {
+                        throw new Exception("Invalid UTF-8 character (badly encoded)");
+                    }
+                }
+
                 if (_bytes != null)
                 {
-                    _index++;
+                    _index += _currentLenCache;
+                    _currentLenCache = 0;
                     return _index < _lastIndex;
                 }
                 else
                 {
-                    _buffer = _buffer.Slice(1);
+                    _buffer = _buffer.Slice(_currentLenCache);
+                    _currentLenCache = 0;
                     return _buffer.Length > 0;
+                }
+            }
+
+            private bool IsOnStartingPosition()
+            {
+                if (_bytes != null)
+                {
+                    return _index == _startIndex;
+                }
+                else
+                {
+                    return _buffer.Length == _startBuffer.Length;
                 }
             }
 
@@ -99,6 +157,7 @@ namespace System.Text.Utf8
             {
                 _index = _startIndex;
                 _buffer = _startBuffer;
+                _currentLenCache = 0;
             }
         }
     }

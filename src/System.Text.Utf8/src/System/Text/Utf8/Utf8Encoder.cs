@@ -76,6 +76,7 @@ namespace System.Text.Utf8
                     return true;
                 default:
                     codePoint = default(UnicodeCodePoint);
+                    encodedBytes = 0;
                     return false;
             }
         }

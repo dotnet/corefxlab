@@ -7,7 +7,8 @@ using System.Text.Utf16;
 
 namespace System.Text.Utf8
 {
-    public partial struct Utf8String : IEnumerable<UnicodeCodePoint>, IEquatable<Utf8String>, IComparable<Utf8String> 
+    // TODO: We should have separate enumerators for code points and code units. Utf8String should implement IEnumerable<Utf8CodeUnit>
+    public partial struct Utf8String : IEnumerable<Utf8CodeUnit>, IEquatable<Utf8String>, IComparable<Utf8String> 
     {
         private ByteSpan _buffer;
 
@@ -91,7 +92,7 @@ namespace System.Text.Utf8
             }
         }
 
-        IEnumerator<UnicodeCodePoint> IEnumerable<UnicodeCodePoint>.GetEnumerator()
+        IEnumerator<Utf8CodeUnit> IEnumerable<Utf8CodeUnit>.GetEnumerator()
         {
             return GetEnumerator();
         }
@@ -99,6 +100,48 @@ namespace System.Text.Utf8
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public CodePointEnumerable CodePoints
+        {
+            get
+            {
+                if (_bytes != null)
+                {
+                    return new CodePointEnumerable(_bytes, _index, _length);
+                }
+                else
+                {
+                    return new CodePointEnumerable(_buffer);
+                }
+            }
+        }
+
+        private Utf8CodeUnit GetCodeUnitAtPositionUnchecked(int i)
+        {
+            if (_bytes != null)
+            {
+                return (Utf8CodeUnit)_bytes[_index + i];
+            }
+            else
+            {
+                return (Utf8CodeUnit)_buffer[i];
+            }
+        }
+
+        public Utf8CodeUnit this[int i]
+        {
+            get
+            {
+                if (i < 0 || i >= Length)
+                {
+                    throw new ArgumentOutOfRangeException("i");
+                }
+                else
+                {
+                    return GetCodeUnitAtPositionUnchecked(i);
+                }
+            }
         }
 
         public static explicit operator Utf8String(string s)
@@ -118,7 +161,7 @@ namespace System.Text.Utf8
             // TODO: is compiler gonna do the right thing here?
             // TODO: Should we use Linq's Count()?
             int len = 0;
-            foreach (var codePoint in this)
+            foreach (var codePoint in CodePoints)
             {
                 len++;
                 if (UnicodeCodePoint.IsSurrogate(codePoint))
@@ -131,7 +174,7 @@ namespace System.Text.Utf8
             fixed (char* pinnedCharacters = characters)
             {
                 ByteSpan buffer = new ByteSpan((byte*)pinnedCharacters, len * 2);
-                foreach (var codePoint in this)
+                foreach (var codePoint in CodePoints)
                 {
                     int bytesEncoded;
                     if (!Utf16LittleEndianEncoder.TryEncodeCodePoint(codePoint, buffer, out bytesEncoded))
@@ -302,6 +345,44 @@ namespace System.Text.Utf8
             }
 
             return false;
+        }
+
+        private CodePointEnumerator GetCodePointEnumerator()
+        {
+            if (_bytes != null)
+            {
+                return new CodePointEnumerator(_bytes, _index, _length);
+            }
+            else
+            {
+                return new CodePointEnumerator(_buffer);
+            }
+        }
+
+        public bool StartsWith(UnicodeCodePoint codePoint)
+        {
+            CodePointEnumerator e = GetCodePointEnumerator();
+            if (!e.MoveNext())
+            {
+                return false;
+            }
+
+            return e.Current == codePoint;
+        }
+
+        public bool StartsWith(Utf8CodeUnit codeUnit)
+        {
+            if (Length == 0)
+            {
+                return false;
+            }
+
+            return GetCodeUnitAtPositionUnchecked(0) == codeUnit;
+        }
+
+        public bool StartsWith(Utf8String value)
+        {
+            return this.Substring(0, value.Length).Equals(value);
         }
     }
 }
