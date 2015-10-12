@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.IO;
-using System.IO.Buffers;
+using System.Buffers;
 
 namespace System.Text.Formatting
 {
-    public struct StreamFormatter : IFormatter
+    public struct StreamFormatter : IFormatter, IDisposable
     {
         Stream _stream;
         FormattingData _formattingData;
@@ -61,6 +61,15 @@ namespace System.Text.Formatting
         void IFormatter.CommitBytes(int bytes)
         {
             _stream.Write(_buffer, 0, bytes);
+        }
+
+        /// <summary>
+        /// Returns buffers to the pool
+        /// </summary>
+        public void Dispose()
+        {
+            BufferPool.Shared.ReturnBuffer(ref _buffer);
+            _stream = null;
         }
     }
 }

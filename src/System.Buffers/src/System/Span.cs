@@ -189,11 +189,11 @@ namespace System
             }
         }
 
-        internal static unsafe ByteSpan Pin(this Span<byte> source, out GCHandle handle)
+        public static unsafe ByteSpan Pin(this Span<byte> source, out GCHandle handle)
         {
             handle = GCHandle.Alloc(source._array, GCHandleType.Pinned);
             var pinned = handle.AddrOfPinnedObject() + source._index;
-            var byteSpan = new ByteSpan(((byte*)pinned.ToPointer()), source._length, -1);
+            var byteSpan = new ByteSpan(((byte*)pinned.ToPointer()), source._length);
             return byteSpan;
         }
     }

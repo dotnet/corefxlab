@@ -296,12 +296,13 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8);
-            writer.Append(100);
-            writer.Append(-100);
-            writer.Append('h');
-            writer.Append("i!");
-            AssertUtf8Equal(buffer.Slice(0, (int)stream.Position), "100-100hi!");
+            using(var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8)) {
+                writer.Append(100);
+                writer.Append(-100);
+                writer.Append('h');
+                writer.Append("i!");
+                AssertUtf8Equal(buffer.Slice(0, (int)stream.Position), "100-100hi!");
+            }
         }
 
         [Fact] // TODO: this should test more than ascii
@@ -310,22 +311,24 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            var utf8Writer = new StreamFormatter(stream, FormattingData.InvariantUtf8);
-            utf8Writer.Append("Hello");
-            utf8Writer.Append(" ");
-            utf8Writer.Append("World!");
-            utf8Writer.Append("\u0391"); // greek alpha
-            //utf8Writer.Append("\uD950\uDF21"); // TODO: surrogate pair; this is NIY
-            AssertUtf8Equal(buffer.Slice(0, (int)stream.Position), "Hello World!\u0391");
+            using(var utf8Writer = new StreamFormatter(stream, FormattingData.InvariantUtf8)) {
+                utf8Writer.Append("Hello");
+                utf8Writer.Append(" ");
+                utf8Writer.Append("World!");
+                utf8Writer.Append("\u0391"); // greek alpha
+                //utf8Writer.Append("\uD950\uDF21"); // TODO: surrogate pair; this is NIY
+                AssertUtf8Equal(buffer.Slice(0, (int)stream.Position), "Hello World!\u0391");
+            }
 
             stream.Position = 0;
-            var utf16Writer = new StreamFormatter(stream, FormattingData.InvariantUtf16);
-            utf16Writer.Append("Hello");
-            utf16Writer.Append(" ");
-            utf16Writer.Append("World!");
-            utf8Writer.Append("\u0391");
-            utf16Writer.Append("\uD950\uDF21"); 
-            AssertUtf16Equal(buffer.Slice(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21");
+            using(var utf16Writer = new StreamFormatter(stream, FormattingData.InvariantUtf16)) {
+                utf16Writer.Append("Hello");
+                utf16Writer.Append(" ");
+                utf16Writer.Append("World!");
+                utf16Writer.Append("\u0391");
+                utf16Writer.Append("\uD950\uDF21"); 
+                AssertUtf16Equal(buffer.Slice(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21");
+            }
         }
 
         internal static void AssertUtf8Equal(Span<byte> formatted, string expected)

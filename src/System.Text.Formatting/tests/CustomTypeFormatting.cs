@@ -46,12 +46,13 @@ namespace System.Text.Formatting.Tests
         {
             byte[] buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
-            var writer = new StreamFormatter(stream);
-            writer.Append(new Age(56));
-            writer.Append(new Age(14, inMonths: true));
+            using(var writer = new StreamFormatter(stream)) {
+                writer.Append(new Age(56));
+                writer.Append(new Age(14, inMonths: true));
 
-            var writtenText = Encoding.Unicode.GetString(buffer, 0, (int)stream.Position);
-            Assert.Equal(writtenText, "56y14m");
+                var writtenText = Encoding.Unicode.GetString(buffer, 0, (int)stream.Position);
+                Assert.Equal(writtenText, "56y14m");
+            }
         }
 
         [Fact]
@@ -59,11 +60,12 @@ namespace System.Text.Formatting.Tests
         {
             byte[] buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
-            var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8);
-            writer.Append(new Age(56));
-            writer.Append(new Age(14, inMonths: true));
-            var writtenText = Encoding.UTF8.GetString(buffer, 0, (int)stream.Position);
-            Assert.Equal(writtenText, "56y14m");
+            using(var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8)) {
+                writer.Append(new Age(56));
+                writer.Append(new Age(14, inMonths: true));
+                var writtenText = Encoding.UTF8.GetString(buffer, 0, (int)stream.Position);
+                Assert.Equal(writtenText, "56y14m");
+            }
         }
 
         [Fact]
