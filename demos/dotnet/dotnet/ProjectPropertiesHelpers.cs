@@ -80,8 +80,6 @@ namespace dotnet
 
             LogProperties(log, properties, "Initialized Properties Log:", buildDll);
 
-            Adjust(properties, Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
-            Adjust(properties, Path.Combine(properties.ProjectDirectory, "references.txt"), properties.References);
             AddToListWithoutDuplicates(properties.Packages, ParseProjectFile(properties, settings.ProjectFile, "Package"));
 
             LogProperties(log, properties, "Adjusted Properties Log:", buildDll);

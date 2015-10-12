@@ -117,7 +117,6 @@ namespace dotnet
                 "           ProjectFile - specifies which project file to use, default to the one in the current directory, if only one exists");
             Console.WriteLine("           SourceFiles - specifices which source files to compile");
             Console.WriteLine("NOTE #1: uses csc.exe in <project>\\tools subdirectory, or csc.exe on the path.");
-            Console.WriteLine("NOTE #2: dependencies.txt, references.txt can be used to override details.");
         }
 
         private static void Build(Settings settings, Log log)
