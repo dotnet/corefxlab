@@ -26,7 +26,13 @@ namespace dotnet
                 projectJsonFile = Path.Combine(properties.ToolsDirectory, "project.json");
             }
 
-            if (!success || !RestorePackagesAction(properties, log, nugetFile, projectJsonFile))
+            var nugetConfigFile = Path.Combine(properties.ProjectDirectory, "nuget.config");
+            if (!File.Exists(nugetConfigFile))
+            {
+                nugetConfigFile = Path.Combine(properties.ToolsDirectory, "nuget.config");
+            }
+
+            if (!success || !RestorePackagesAction(properties, log, nugetFile, projectJsonFile, nugetConfigFile))
             {
                 Console.WriteLine("Failed to get nuget or restore packages.");
                 return false;
@@ -129,7 +135,7 @@ namespace dotnet
             }
         }
 
-        public static bool RestorePackagesAction(ProjectProperties properties, Log log, string nugetFile, string jsonFile)
+        public static bool RestorePackagesAction(ProjectProperties properties, Log log, string nugetFile, string jsonFile, string nugetConfig)
         {
             Console.WriteLine("restoring packages");
 
@@ -148,9 +154,7 @@ namespace dotnet
             var processSettings = new ProcessStartInfo
             {
                 FileName = nugetFile,
-                Arguments =
-                    "restore " + jsonFile + " -PackagesDirectory " + properties.PackagesDirectory + " -ConfigFile " +
-                    Path.Combine(properties.ToolsDirectory, "nuget.config"),
+                Arguments = "restore " + jsonFile + " -PackagesDirectory " + properties.PackagesDirectory + " -ConfigFile " + nugetConfig,
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
