@@ -5,29 +5,29 @@ using System.Collections.Generic;
 
 namespace dotnet
 {
-    public class ProjectLockJson
+    internal class ProjectLockJson
     {
-        public Dictionary<string, Dictionary<string, Target>> Targets { get; set; }
+        public Dictionary<string, Dictionary<string, Target>> Targets;
     }
 
-    public class Target
+    internal class Target
     {
-        public string Type { get; set; }
-        public Dictionary<string, string> Dependencies { get; set; }
-        public Dictionary<string, CompileRef> Compile { get; set; }
-        public Dictionary<string, Runtime> Runtime { get; set; }
-        public Dictionary<string, Native> Native { get; set; }
+        public string Type;
+        public Dictionary<string, string> Dependencies;
+        public Dictionary<string, CompileRef> Compile;
+        public Dictionary<string, Runtime> Runtime;
+        public Dictionary<string, Native> Native;
     }
 
-    public struct CompileRef
-    {
-    }
-
-    public struct Runtime
+    internal struct CompileRef
     {
     }
 
-    public struct Native
+    internal struct Runtime
+    {
+    }
+
+    internal struct Native
     {
     }
 }

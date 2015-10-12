@@ -194,16 +194,15 @@ namespace dotnet
             {
                 projectLockFile = Path.Combine(properties.ToolsDirectory, "project.lock.json");
             }
-
-            const string target = "DNXCore,Version=v5.0";
+            
             var jsonString = File.ReadAllText(projectLockFile);
             var docJsonOutput = JsonConvert.DeserializeObject<ProjectLockJson>(jsonString);
 
             Dictionary<string, Target> packages;
-            docJsonOutput.Targets.TryGetValue(target, out packages);
+            docJsonOutput.Targets.TryGetValue(properties.Target, out packages);
             if (packages == null)
             {
-                log.Error("Packages for the specified target not found {0}.", target);
+                log.Error("Packages for the specified target not found {0}.", properties.Target);
                 return false;
             }
 
