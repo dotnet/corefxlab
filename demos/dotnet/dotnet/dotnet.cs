@@ -2,7 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
 
 namespace dotnet
 {
@@ -147,20 +150,25 @@ namespace dotnet
                 return;
             }
 
+            if (!GetDependencies(properties, log))
+            {
+                log.WriteLine("Unable to get dependencies from the project.lock.json file.");
+            }
+
             if (!CscAction.Execute(properties, Log)) return;
             if (Settings.Target != "library")
             {
                 ConvertToCoreConsoleAction(properties);
             }
-            OutputRuntimeDependenciesAction(properties);
+            OutputRuntimeDependenciesAction(properties, log);
             Console.WriteLine("bin\\{0} created", properties.AssemblyNameAndExtension);
         }
 
-        private static void OutputRuntimeDependenciesAction(ProjectProperties properties)
+        private static void OutputRuntimeDependenciesAction(ProjectProperties properties, Log log)
         {
             foreach (var dependencyFolder in properties.Dependencies)
             {
-                Helpers.CopyAllFiles(dependencyFolder, properties.OutputDirectory);
+                Helpers.CopyFile(dependencyFolder, properties.OutputDirectory, log);
             }
         }
 
@@ -177,6 +185,77 @@ namespace dotnet
                 ProjectPropertiesHelpers.GetConsoleHostNative(ProjectPropertiesHelpers.GetPlatformOption(Settings.Platform), "win7") +
                 "\\CoreConsole.exe";
             File.Copy(Path.Combine(properties.PackagesDirectory, coreConsolePath), properties.OutputAssemblyPath);
+        }
+
+        private static bool GetDependencies(ProjectProperties properties, Log log)
+        {
+            var projectLockFile = Path.Combine(properties.ProjectDirectory, "project.lock.json");
+
+            if (!File.Exists(projectLockFile))
+            {
+                projectLockFile = Path.Combine(properties.ToolsDirectory, "project.lock.json");
+            }
+
+            const string target = "DNXCore,Version=v5.0";
+            var jsonString = File.ReadAllText(projectLockFile);
+            var docJsonOutput = JsonConvert.DeserializeObject<ProjectLockJson>(jsonString);
+
+            Dictionary<string, Target> packages;
+            docJsonOutput.Targets.TryGetValue(target, out packages);
+            if (packages == null)
+            {
+                log.Error("Packages for the specified target not found {0}.", target);
+                return false;
+            }
+
+            var references = new List<string>();
+            var dependencies = new List<string>();
+
+            foreach (var package in packages)
+            {
+                if (package.Value.Compile != null)
+                {
+                    var compileKeys = package.Value.Compile.Keys;
+                    if (compileKeys.Count != 0)
+                    {
+                        references.AddRange(
+                            compileKeys.Select(key => properties.ProjectDirectory + "/packages/" + package.Key + "/" + key));
+                    }
+                }
+
+                if (package.Value.Native != null)
+                {
+                    var nativeKeys = package.Value.Native.Keys;
+                    if (nativeKeys.Count != 0)
+                    {
+                        dependencies.AddRange(
+                            nativeKeys.Select(key => properties.ProjectDirectory + "/packages/" + package.Key + "/" + key));
+                    }
+                }
+
+                if (package.Value.Runtime != null)
+                {
+                    var runtimeKeys = package.Value.Runtime.Keys;
+                    if (runtimeKeys.Count != 0)
+                    {
+                        dependencies.AddRange(
+                            runtimeKeys.Select(key => properties.ProjectDirectory + "/packages/" + package.Key + "/" + key));
+                    }
+                }
+            }
+
+            references.RemoveAll(x => x.EndsWith("_._"));
+
+            foreach (var reference in references)
+            {
+                properties.References.Add(reference);
+            }
+            foreach (var outputAssembly in dependencies)
+            {
+                properties.Dependencies.Add(outputAssembly);
+            }
+
+            return true;
         }
     }
 }

@@ -58,36 +58,6 @@ namespace dotnet
             properties.Packages.Add(GetConsoleHost(platformOptionSpecicifcation));
             properties.Packages.Add(GetRuntimeCoreClr(platformOptionSpecicifcation));
 
-            // References
-            properties.References.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Runtime\4.0.20\ref\dotnet\System.Runtime.dll"));
-            properties.References.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Console\4.0.0-beta-23123\ref\dotnet\System.Console.dll"));
-
-            // Runtime Dependencies
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                GetRuntimeCoreClrDependencyNative(platformOptionSpecicifcation, "win7")));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                GetRuntimeCoreClrDependencyLibrary(platformOptionSpecicifcation, "win7")));
-
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Runtime\4.0.20\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Console\4.0.0-beta-23123\lib\DNXCore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory, @"System.IO\4.0.10\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Threading\4.0.10\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.IO.FileSystem.Primitives\4.0.0\lib\dotnet"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Text.Encoding\4.0.10\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Threading.Tasks\4.0.10\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Text.Encoding.Extensions\4.0.10\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Runtime.InteropServices\4.0.20\lib\netcore50"));
-
             // CSC OPTIONS
             properties.CscOptions.Add("/nostdlib");
             properties.CscOptions.Add("/noconfig");
