@@ -24,6 +24,7 @@ namespace dotnet
             properties.ToolsDirectory = Path.Combine(properties.ProjectDirectory, "tools");
             properties.AssemblyName = Path.GetFileName(properties.ProjectDirectory);
             properties.OutputType = buildDll ? ".dll" : ".exe";
+            properties.Target = "DNXCore,Version=v5.0";
             FindCompiler(properties);
 
             AddToListWithoutDuplicates(properties.Sources, ParseProjectFile(properties, settings.ProjectFile, "Compile"));
@@ -58,36 +59,6 @@ namespace dotnet
             properties.Packages.Add(GetConsoleHost(platformOptionSpecicifcation));
             properties.Packages.Add(GetRuntimeCoreClr(platformOptionSpecicifcation));
 
-            // References
-            properties.References.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Runtime\4.0.20\ref\dotnet\System.Runtime.dll"));
-            properties.References.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Console\4.0.0-beta-23123\ref\dotnet\System.Console.dll"));
-
-            // Runtime Dependencies
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                GetRuntimeCoreClrDependencyNative(platformOptionSpecicifcation, "win7")));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                GetRuntimeCoreClrDependencyLibrary(platformOptionSpecicifcation, "win7")));
-
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Runtime\4.0.20\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Console\4.0.0-beta-23123\lib\DNXCore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory, @"System.IO\4.0.10\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Threading\4.0.10\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.IO.FileSystem.Primitives\4.0.0\lib\dotnet"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Text.Encoding\4.0.10\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Threading.Tasks\4.0.10\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Text.Encoding.Extensions\4.0.10\lib\netcore50"));
-            properties.Dependencies.Add(Path.Combine(properties.PackagesDirectory,
-                @"System.Runtime.InteropServices\4.0.20\lib\netcore50"));
-
             // CSC OPTIONS
             properties.CscOptions.Add("/nostdlib");
             properties.CscOptions.Add("/noconfig");
@@ -110,8 +81,6 @@ namespace dotnet
 
             LogProperties(log, properties, "Initialized Properties Log:", buildDll);
 
-            Adjust(properties, Path.Combine(properties.ProjectDirectory, "dependencies.txt"), properties.Dependencies);
-            Adjust(properties, Path.Combine(properties.ProjectDirectory, "references.txt"), properties.References);
             AddToListWithoutDuplicates(properties.Packages, ParseProjectFile(properties, settings.ProjectFile, "Package"));
 
             LogProperties(log, properties, "Adjusted Properties Log:", buildDll);
