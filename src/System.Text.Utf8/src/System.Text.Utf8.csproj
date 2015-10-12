@@ -30,10 +30,13 @@
     <Compile Include="System\Text\UnicodeConstants.cs" />
     <Compile Include="System\Text\UnicodeCodePoint.cs" />
     <Compile Include="System\Text\Utf16\Utf16LittleEndianEncoder.cs" />
+    <Compile Include="System\Text\Utf8\Utf8CodeUnit.cs" />
     <Compile Include="System\Text\Utf8\Utf8EncodedCodePoint.cs" />
     <Compile Include="System\Text\Utf8\Utf8Encoder.cs" />
-    <Compile Include="System\Text\Utf8\Utf8String.cs" />
+    <Compile Include="System\Text\Utf8\Utf8String.CodePointEnumerable.cs" />
     <Compile Include="System\Text\Utf8\Utf8String.Enumerator.cs" />
+    <Compile Include="System\Text\Utf8\Utf8String.cs" />
+    <Compile Include="System\Text\Utf8\Utf8String.CodePointEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />

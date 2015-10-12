@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
-    public struct UnicodeCodePoint
+    public struct UnicodeCodePoint : IEquatable<UnicodeCodePoint>
     {
         // TODO: make all methods CLSCompliant
         [CLSCompliant(false)]
@@ -18,6 +18,7 @@ namespace System.Text
         [CLSCompliant(false)]
         public uint Value { get; private set; }
 
+        // TODO: Do we need to put these attributes everywhere or is compiler gonna do the right thing?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsSupportedCodePoint(UnicodeCodePoint codePoint)
         {
@@ -49,5 +50,35 @@ namespace System.Text
         public static explicit operator uint(UnicodeCodePoint codePoint) { return codePoint.Value; }
         [CLSCompliant(false)]
         public static explicit operator UnicodeCodePoint(uint value) { return new UnicodeCodePoint(value); }
+
+        public bool Equals(UnicodeCodePoint other)
+        {
+            return Value == other.Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is UnicodeCodePoint)
+            {
+                return Equals((UnicodeCodePoint)obj);
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public static bool operator ==(UnicodeCodePoint left, UnicodeCodePoint right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(UnicodeCodePoint left, UnicodeCodePoint right)
+        {
+            return !left.Equals(right);
+        }
     }
 }
