@@ -25,6 +25,7 @@ namespace dotnet
             properties.AssemblyName = Path.GetFileName(properties.ProjectDirectory);
             properties.OutputType = buildDll ? ".dll" : ".exe";
             properties.Target = "DNXCore,Version=v5.0";
+            properties.RuntimeIdentifier = "win7-x64";
             FindCompiler(properties);
 
             AddToListWithoutDuplicates(properties.Sources, ParseProjectFile(properties, settings.ProjectFile, "Compile"));

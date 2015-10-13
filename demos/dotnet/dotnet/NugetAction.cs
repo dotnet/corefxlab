@@ -104,13 +104,14 @@ namespace dotnet
                 file.WriteLine(@"    },");
                 file.WriteLine(@"    ""frameworks"": {");
                 file.WriteLine(@"        ""dnxcore50"": { }");
+                file.WriteLine(@"    },");
+
+                file.WriteLine(@"    ""runtimes"": {");
+                file.WriteLine(@"        ""win7-x86"": { },");
+                file.WriteLine(@"        ""win7-x64"": { }");
                 file.WriteLine(@"    }");
                 file.WriteLine(@"}");
 
-                //"runtimes": {
-                //"win7-x86": { },
-                //"win7-x64": { }
-                //},
             }
         }
 
