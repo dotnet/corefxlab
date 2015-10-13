@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>System.CommandLine</id>
+    <version>0.1.0-d101215-1</version>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://go.microsoft.com/fwlink/?LinkId=329770</licenseUrl>
+    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
+    <projectUrl>https://github.com/dotnet/corefxlab</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>CLI commandline command parsing</description>
+    <releaseNotes>Initial package</releaseNotes>
+    <copyright> Microsoft Corporation.  All rights reserved.</copyright>
+    <tags>Command line parsing support</tags>
+  </metadata>
+  <files>
+    <file src="..\bin\Windows_NT.AnyCPU.Release\System.CommandLine\System.CommandLine.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
+  </files>
+</package>
+
