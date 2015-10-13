@@ -150,5 +150,24 @@ namespace System.Text.Utf8.Tests
                 Assert.Equal((byte)s[i], (byte)(uint)cpe.Current);
             }
         }
+
+        [Theory]
+        [InlineData("abcdefghijklmnopqrstuvwxyz")]
+        [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ")]
+        [InlineData("0123456789")]
+        [InlineData(" ,.\r\n[]<>()")]
+        [InlineData("")]
+        [InlineData("1258")]
+        [InlineData("1258Hello")]
+        [InlineData("\uABCD")]
+        [InlineData("\uABEE")]
+        [InlineData("a\uABEE")]
+        [InlineData("a\uABEEa")]
+        [InlineData("a\uABEE\uABCDa")]
+        public void RoundTrip(string s)
+        {
+            Utf8String u8s = new Utf8String(s);
+            Assert.Equal(s, u8s.ToString());
+        }
     }
 }

@@ -101,5 +101,28 @@ namespace System.Text.Utf16
             }
             return true;
         }
+
+        // TODO: Should we rewrite this to not use char.ConvertToUtf32 or is it fast enough?
+        public static bool TryDecodeCodePointFromString(string s, int index, out UnicodeCodePoint codePoint, out int encodedChars)
+        {
+            if (index < 0 || index >= s.Length)
+            {
+                codePoint = default(UnicodeCodePoint);
+                encodedChars = 0;
+                return false;
+            }
+
+            if (index == s.Length - 1 && char.IsSurrogate(s[index]))
+            {
+                codePoint = default(UnicodeCodePoint);
+                encodedChars = 0;
+                return false;
+            }
+
+            encodedChars = char.IsHighSurrogate(s[index]) ? 2 : 1;
+            codePoint = (UnicodeCodePoint)(unchecked((uint)char.ConvertToUtf32(s, index)));
+
+            return true;
+        }
     }
 }
