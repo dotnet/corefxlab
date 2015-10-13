@@ -12,6 +12,7 @@ namespace dotnet
         public string OutputDirectory;
         public string OutputType;
         public string Target;
+        public string RuntimeIdentifier;
 
         public readonly List<string> Sources = new List<string>();
         public readonly List<string> References = new List<string>();

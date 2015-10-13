@@ -59,7 +59,8 @@ namespace dotnet
                 ? projectFiles.Length == 1 ? projectFiles[0] : ""
                 : specifiedProjectFile.Length == 1 ? specifiedProjectFile[0] : "";
 
-            var specifiedSourceFilenames = Array.FindAll(args, element => element.EndsWith(".cs") && !element.StartsWith("/"));
+            var specifiedSourceFilenames = Array.FindAll(args,
+                element => element.EndsWith(".cs") && !element.StartsWith("/"));
             foreach (var sourceFilename in specifiedSourceFilenames)
             {
                 Settings.SourceFiles.AddRange(Directory.GetFiles(currentDirectory, sourceFilename));
@@ -181,7 +182,8 @@ namespace dotnet
             File.Move(properties.OutputAssemblyPath, dllPath);
 
             var coreConsolePath =
-                ProjectPropertiesHelpers.GetConsoleHostNative(ProjectPropertiesHelpers.GetPlatformOption(Settings.Platform), "win7") +
+                ProjectPropertiesHelpers.GetConsoleHostNative(
+                    ProjectPropertiesHelpers.GetPlatformOption(Settings.Platform), "win7") +
                 "\\CoreConsole.exe";
             File.Copy(Path.Combine(properties.PackagesDirectory, coreConsolePath), properties.OutputAssemblyPath);
         }
@@ -194,12 +196,13 @@ namespace dotnet
             {
                 projectLockFile = Path.Combine(properties.ToolsDirectory, "project.lock.json");
             }
-            
+
             var jsonString = File.ReadAllText(projectLockFile);
             var docJsonOutput = JsonConvert.DeserializeObject<ProjectLockJson>(jsonString);
 
+            var target = properties.Target + "/" + properties.RuntimeIdentifier;
             Dictionary<string, Target> packages;
-            docJsonOutput.Targets.TryGetValue(properties.Target, out packages);
+            docJsonOutput.Targets.TryGetValue(target, out packages);
             if (packages == null)
             {
                 log.Error("Packages for the specified target not found {0}.", properties.Target);
@@ -217,7 +220,8 @@ namespace dotnet
                     if (compileKeys.Count != 0)
                     {
                         references.AddRange(
-                            compileKeys.Select(key => properties.ProjectDirectory + "/packages/" + package.Key + "/" + key));
+                            compileKeys.Select(
+                                key => properties.ProjectDirectory + "/packages/" + package.Key + "/" + key));
                     }
                 }
 
@@ -227,7 +231,8 @@ namespace dotnet
                     if (nativeKeys.Count != 0)
                     {
                         dependencies.AddRange(
-                            nativeKeys.Select(key => properties.ProjectDirectory + "/packages/" + package.Key + "/" + key));
+                            nativeKeys.Select(
+                                key => properties.ProjectDirectory + "/packages/" + package.Key + "/" + key));
                     }
                 }
 
@@ -237,7 +242,8 @@ namespace dotnet
                     if (runtimeKeys.Count != 0)
                     {
                         dependencies.AddRange(
-                            runtimeKeys.Select(key => properties.ProjectDirectory + "/packages/" + package.Key + "/" + key));
+                            runtimeKeys.Select(
+                                key => properties.ProjectDirectory + "/packages/" + package.Key + "/" + key));
                     }
                 }
             }
