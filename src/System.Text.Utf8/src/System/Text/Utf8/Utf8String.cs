@@ -55,7 +55,7 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
-        public unsafe Utf8String(string s) : this(GetUtf8BytesFromString(s))
+        public Utf8String(string s) : this(GetUtf8BytesFromString(s))
         {
         }
 
@@ -153,7 +153,7 @@ namespace System.Text.Utf8
             return s.ToString();
         }
 
-        public override unsafe string ToString()
+        public override string ToString()
         {
             // get length first
             // TODO: Optimize for characters of length 1 or 2 in UTF-8 representation (no need to read anything)
@@ -170,18 +170,21 @@ namespace System.Text.Utf8
             }
 
             char[] characters = new char[len];
-            fixed (char* pinnedCharacters = characters)
+            unsafe
             {
-                ByteSpan buffer = new ByteSpan((byte*)pinnedCharacters, len * 2);
-                foreach (var codePoint in CodePoints)
+                fixed (char* pinnedCharacters = characters)
                 {
-                    int bytesEncoded;
-                    if (!Utf16LittleEndianEncoder.TryEncodeCodePoint(codePoint, buffer, out bytesEncoded))
+                    ByteSpan buffer = new ByteSpan((byte*)pinnedCharacters, len * 2);
+                    foreach (var codePoint in CodePoints)
                     {
-                        // TODO: Change Exception type
-                        throw new Exception("invalid character");
+                        int bytesEncoded;
+                        if (!Utf16LittleEndianEncoder.TryEncodeCodePoint(codePoint, buffer, out bytesEncoded))
+                        {
+                            // TODO: Change Exception type
+                            throw new Exception("invalid character");
+                        }
+                        buffer = buffer.Slice(bytesEncoded);
                     }
-                    buffer = buffer.Slice(bytesEncoded);
                 }
             }
 
@@ -189,36 +192,39 @@ namespace System.Text.Utf8
             return new string(characters);
         }
 
-        public unsafe bool Equals(Utf8String other)
+        public bool Equals(Utf8String other)
         {
-            if (_bytes == null && other._bytes == null)
+            unsafe
             {
-                return _buffer.Equals(other._buffer);
-            }
-            else if (_bytes != null && other._bytes != null)
-            {
-                fixed (byte* pinnedBytes = _bytes) fixed (byte* pinnedOthersBytes = other._bytes)
+                if (_bytes == null && other._bytes == null)
                 {
-                    ByteSpan b1 = new ByteSpan(pinnedBytes + _index, _length);
-                    ByteSpan b2 = new ByteSpan(pinnedOthersBytes + other._index, other._length);
-                    return b1.Equals(b2);
+                    return _buffer.Equals(other._buffer);
                 }
-            }
-            else if (_bytes != null && other._bytes == null)
-            {
-                fixed (byte* pinnedBytes = _bytes)
-                fixed (byte* pinnedOthersBytes = other._bytes)
+                else if (_bytes != null && other._bytes != null)
                 {
-                    ByteSpan b1 = new ByteSpan(pinnedBytes + _index, _length);
-                    return b1.Equals(other._buffer);
+                    fixed (byte* pinnedBytes = _bytes) fixed (byte* pinnedOthersBytes = other._bytes)
+                    {
+                        ByteSpan b1 = new ByteSpan(pinnedBytes + _index, _length);
+                        ByteSpan b2 = new ByteSpan(pinnedOthersBytes + other._index, other._length);
+                        return b1.Equals(b2);
+                    }
                 }
-            }
-            else // if (_bytes == null && other._bytes != null)
-            {
-                fixed (byte* pinnedOthersBytes = other._bytes)
+                else if (_bytes != null && other._bytes == null)
                 {
-                    ByteSpan b2 = new ByteSpan(pinnedOthersBytes + other._index, other._length);
-                    return _buffer.Equals(b2);
+                    fixed (byte* pinnedBytes = _bytes)
+                    fixed (byte* pinnedOthersBytes = other._bytes)
+                    {
+                        ByteSpan b1 = new ByteSpan(pinnedBytes + _index, _length);
+                        return b1.Equals(other._buffer);
+                    }
+                }
+                else // if (_bytes == null && other._bytes != null)
+                {
+                    fixed (byte* pinnedOthersBytes = other._bytes)
+                    {
+                        ByteSpan b2 = new ByteSpan(pinnedOthersBytes + other._index, other._length);
+                        return _buffer.Equals(b2);
+                    }
                 }
             }
         }
@@ -404,7 +410,7 @@ namespace System.Text.Utf8
             return this.Substring(0, value.Length).Equals(value);
         }
 
-        private static unsafe byte[] GetUtf8BytesFromString(string s)
+        private static byte[] GetUtf8BytesFromString(string s)
         {
             int len = 0;
             for (int i = 0; i < s.Length; /* intentionally no increment */)
@@ -434,31 +440,34 @@ namespace System.Text.Utf8
             }
 
             byte[] bytes = new byte[len];
-            fixed (byte* array_pinned = bytes)
+            unsafe
             {
-                ByteSpan p = new ByteSpan(array_pinned, len);
-                for (int i = 0; i < s.Length; /* intentionally no increment */)
+                fixed (byte* array_pinned = bytes)
                 {
-                    UnicodeCodePoint codePoint;
-                    int encodedChars;
-                    if (Utf16LittleEndianEncoder.TryDecodeCodePointFromString(s, i, out codePoint, out encodedChars))
+                    ByteSpan p = new ByteSpan(array_pinned, len);
+                    for (int i = 0; i < s.Length; /* intentionally no increment */)
                     {
-                        i += encodedChars;
-                        int encodedBytes;
-                        if (Utf8Encoder.TryEncodeCodePoint(codePoint, p, out encodedBytes))
+                        UnicodeCodePoint codePoint;
+                        int encodedChars;
+                        if (Utf16LittleEndianEncoder.TryDecodeCodePointFromString(s, i, out codePoint, out encodedChars))
                         {
-                            p = p.Slice(encodedBytes);
+                            i += encodedChars;
+                            int encodedBytes;
+                            if (Utf8Encoder.TryEncodeCodePoint(codePoint, p, out encodedBytes))
+                            {
+                                p = p.Slice(encodedBytes);
+                            }
+                            else
+                            {
+                                // TODO: Fix exception type
+                                throw new Exception("Internal error: Utf16Decoder somehow got CodePoint out of range or the buffer is too small");
+                            }
                         }
                         else
                         {
                             // TODO: Fix exception type
-                            throw new Exception("Internal error: Utf16Decoder somehow got CodePoint out of range or the buffer is too small");
+                            throw new Exception("Internal error: we did pre-validation of the string, nothing should go wrong");
                         }
-                    }
-                    else
-                    {
-                        // TODO: Fix exception type
-                        throw new Exception("Internal error: we did pre-validation of the string, nothing should go wrong");
                     }
                 }
             }
