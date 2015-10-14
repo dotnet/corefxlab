@@ -100,6 +100,45 @@ namespace System.Text.Parsing
             return true;
         }
 
+        [CLSCompliant(false)]
+        public static bool TryParse(Utf8String text, out ulong value, out int bytesConsumed)
+        {
+            Precondition.Require(text.Length > 0);
+
+            value = 0;
+            bytesConsumed = 0;
+
+            for (int byteIndex = 0; byteIndex < text.Length; byteIndex++)
+            {
+                byte nextByte = (byte)text[byteIndex];
+                if (nextByte < '0' || nextByte > '9')
+                {
+                    if (bytesConsumed == 0)
+                    {
+                        value = default(ulong);
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                ulong candidate = value * 10;
+                candidate += (ulong)nextByte - '0';
+                if (candidate >= value)
+                {
+                    value = candidate;
+                }
+                else
+                {
+                    return true;
+                }
+                bytesConsumed++;
+            }
+
+            return true;
+        }
+
         internal static bool TryParse(string text, int index, int count, out uint value, out int charsConsumed)
         {
             Precondition.Require(count > 0);

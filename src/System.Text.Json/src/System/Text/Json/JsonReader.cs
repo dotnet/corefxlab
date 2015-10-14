@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Text.Parsing;
 using System.Text.Utf8;
 
@@ -12,7 +11,7 @@ namespace System.Text.Json
         private readonly Utf8String _str;
         private int _index;
 
-        private static readonly List<Utf8CodeUnit> EmptyString = new List<Utf8CodeUnit>
+        private static readonly Utf8CodeUnit[] EmptyString =
         {
             new Utf8CodeUnit((byte) ' '),
             new Utf8CodeUnit((byte) '\n'),
@@ -27,6 +26,7 @@ namespace System.Text.Json
         private static readonly Utf8CodeUnit SquareCloseString = new Utf8CodeUnit((byte) ']');
         private static readonly Utf8CodeUnit CurlyOpenString = new Utf8CodeUnit((byte) '{');
         private static readonly Utf8CodeUnit CurlyCloseString = new Utf8CodeUnit((byte) '}');
+        private static readonly Utf8CodeUnit DashString = new Utf8CodeUnit((byte) '-');
 
         public JsonReader(Utf8String str)
         {
@@ -71,7 +71,7 @@ namespace System.Text.Json
         }
 
         [CLSCompliant(false)]
-        public uint ReadPropertyValueInt()
+        public uint ReadPropertyValueAsUInt()
         {
             SkipAll();
             uint value;
@@ -85,7 +85,46 @@ namespace System.Text.Json
             return value;
         }
 
-        public Utf8String ReadPropertyValueString()
+        public int ReadPropertyValueAsInt()
+        {
+            SkipAll();
+            var isNegative = _str[_index] == DashString;
+            if (isNegative)
+            {
+                _index++;
+            }
+            var value = ReadPropertyValueAsUInt();
+            return isNegative ? Convert.ToInt32(value)*-1 : Convert.ToInt32(value);
+        }
+
+        [CLSCompliant(false)]
+        public ulong ReadPropertyValueAsLongUInt()
+        {
+            SkipAll();
+            ulong value;
+            int bytesConsumed;
+            var substr = _str.Substring(_index);
+            if (!InvariantParser.TryParse(substr, out value, out bytesConsumed))
+            {
+                return 0;
+            }
+            _index += bytesConsumed;
+            return value;
+        }
+
+        public long ReadPropertyValueAsLongInt()
+        {
+            SkipAll();
+            var isNegative = _str[_index] == DashString;
+            if (isNegative)
+            {
+                _index++;
+            }
+            var value = ReadPropertyValueAsLongUInt();
+            return isNegative ? Convert.ToInt64(value)*-1 : Convert.ToInt64(value);
+        }
+
+        public Utf8String ReadPropertyValueAsString()
         {
             return ReadProperty();
         }
@@ -95,15 +134,31 @@ namespace System.Text.Json
             return ReadProperty();
         }
 
-        public Utf8String ReadMemberValueString()
+        public Utf8String ReadMemberValueAsString()
         {
             return ReadProperty();
         }
 
         [CLSCompliant(false)]
-        public uint ReadMemberValueInt()
+        public uint ReadMemberValueAsUInt()
         {
-            return ReadPropertyValueInt();
+            return ReadPropertyValueAsUInt();
+        }
+
+        public int ReadMemberValueAsInt()
+        {
+            return ReadPropertyValueAsInt();
+        }
+
+        [CLSCompliant(false)]
+        public ulong ReadMemberValueAsLongUInt()
+        {
+            return ReadPropertyValueAsLongUInt();
+        }
+
+        public long ReadMemberValueAsLongInt()
+        {
+            return ReadPropertyValueAsLongInt();
         }
 
         private Utf8String ReadToByte(Utf8CodeUnit codeUnit, bool includeCodeUnit)
@@ -149,7 +204,7 @@ namespace System.Text.Json
         private void SkipEmpty()
         {
             var nextByte = _str[_index];
-            while (EmptyString.Contains(nextByte))
+            while (Array.IndexOf(EmptyString, nextByte) >= 0)
             {
                 _index++;
                 nextByte = _str[_index];
