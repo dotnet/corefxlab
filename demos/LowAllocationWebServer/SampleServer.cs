@@ -23,16 +23,16 @@ class SampleRestServer : HttpServer
         Apis.Add(Api.GetTime, HttpMethod.Get, requestUri: "/time");
     }
 
-    protected override HttpServerBuffer CreateResponse(HttpRequestLine requestLine, ByteSpan headerAndBody)
+    protected override HttpServerBuffer CreateResponse(HttpRequest request)
     {
-        var api = Apis.Map(requestLine);
+        var api = Apis.Map(request.RequestLine);
         switch (api) {
             case Api.HelloWorld:
                 return CreateResponseForHelloWorld();
             case Api.GetTime:
-                return CreateResponseForGetTime(requestLine);
+                return CreateResponseForGetTime(request.RequestLine);
             default:
-                return CreateResponseFor404(requestLine, headerAndBody);
+                return CreateResponseFor404(request.RequestLine);
         }
     }
 

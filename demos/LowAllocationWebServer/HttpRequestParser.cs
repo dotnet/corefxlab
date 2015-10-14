@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Text;
 using System.Text.Utf8;
 
 namespace System.Net.Http.Buffered
@@ -32,7 +34,140 @@ namespace System.Net.Http.Buffered
         }
     }
 
-    public struct HttpRequestReader
+    public struct HttpRequest
+    {
+        private HttpRequestLine _requestLine;
+        private HttpHeaders _headers;
+        private ByteSpan _body;
+
+        public HttpRequestLine RequestLine
+        {
+            get
+            {
+                return _requestLine;
+            }
+        }
+
+        public HttpHeaders Headers
+        {
+            get
+            {
+                return _headers;
+            }
+        }
+
+        public ByteSpan Body
+        {
+            get
+            {
+                return _body;
+            }
+        }
+
+        public HttpRequest(HttpRequestLine requestLine, HttpHeaders headers, ByteSpan bytes)
+        {
+            _requestLine = requestLine;
+            _headers = headers;
+            _body = bytes;
+        }
+
+        public static HttpRequest Parse(ByteSpan bytes)
+        {
+            int parsed;
+            HttpRequestLine requestLine;
+            if (!HttpRequestParser.TryParseRequestLine(bytes, out requestLine, out parsed)){
+                throw new NotImplementedException();
+            }
+            bytes = bytes.Slice(parsed);
+
+            HttpHeaders headers;
+            if (!HttpRequestParser.TryParseHeaders(bytes, out headers, out parsed))
+            {
+                throw new NotImplementedException();
+            }
+            var body = bytes.Slice(parsed + 4); // TODO: this needs to verify two newlines 
+
+            var request = new HttpRequest(requestLine, headers, body);
+
+            return request;
+        }
+    }
+
+    public struct HttpHeaders : IEnumerable<KeyValuePair<Utf8String, Utf8String>>
+    {
+        // TODO: make this private
+        internal ByteSpan _bytes;
+
+        public HttpHeaders(ByteSpan bytes)
+        {
+            _bytes = bytes;
+        }
+
+        public Utf8String? this[string header]
+        {
+            get
+            {
+                return new Utf8String("HttpHeaders.get_this not implemented yet");
+            }
+        }
+
+        public int Count
+        {
+            get { throw new NotImplementedException(); } 
+        }
+
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator();
+        }
+
+        public struct Enumerator : IEnumerator<KeyValuePair<Utf8String, Utf8String>>
+        {
+            ByteSpan _bytes;
+            int _index;
+
+            internal Enumerator(ByteSpan bytes)
+            {
+                _bytes = bytes;
+                _index = 0;
+            }
+
+            public bool MoveNext() {
+                throw new NotImplementedException();
+            }
+
+            public KeyValuePair<Utf8String, Utf8String> Current { get { throw new NotImplementedException(); } }
+
+            object IEnumerator.Current
+            {
+                get
+                {
+                    return Current;
+                }
+            }
+
+            void IDisposable.Dispose()
+            {
+            }
+
+            void IEnumerator.Reset()
+            {
+                _index = 0;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new Enumerator(_bytes);
+        }
+
+        IEnumerator<KeyValuePair<Utf8String, Utf8String>> IEnumerable<KeyValuePair<Utf8String, Utf8String>>.GetEnumerator()
+        {
+            return new Enumerator(_bytes);
+        }
+    }
+
+    struct HttpRequestReader
     {
         static readonly Utf8String s_Http1_0 = new Utf8String("HTTP/1.0");
         static readonly Utf8String s_Http1_1 = new Utf8String("HTTP/1.1");
@@ -43,9 +178,9 @@ namespace System.Net.Http.Buffered
         internal const byte s_LF = 10; // line feed
         internal const byte s_HT = 9;   // horizontal TAB
 
-        public ByteSpan Buffer;
+        internal ByteSpan Buffer;
 
-        public HttpMethod ReadMethod()
+        internal HttpMethod ReadMethod()
         {
             HttpMethod method;
             int parsedBytes;
@@ -57,7 +192,7 @@ namespace System.Net.Http.Buffered
             return method;
         }
 
-        public Utf8String ReadRequestUri()
+        internal Utf8String ReadRequestUri()
         {
             Utf8String requestUri;
             int parsedBytes;
@@ -81,7 +216,7 @@ namespace System.Net.Http.Buffered
             return httpVersion;
         }
 
-        public HttpVersion ReadHttpVersion()
+        internal HttpVersion ReadHttpVersion()
         {
             ByteSpan oldBuffer = Buffer;
             Utf8String version = ReadHttpVersionAsUtf8String();
@@ -105,7 +240,7 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        public Utf8String ReadHeader()
+        internal Utf8String ReadHeader()
         {
             int parsedBytes;
             var header = SliceTo(Buffer, s_CR, s_LF, out parsedBytes);
@@ -159,7 +294,7 @@ namespace System.Net.Http.Buffered
         }
     }
 
-    public static class HttpRequestParser
+    static class HttpRequestParser
     {
         // TODO: these copies should be eliminated
         static readonly Utf8String s_Get = new Utf8String("GET ");
@@ -174,12 +309,12 @@ namespace System.Net.Http.Buffered
         }
 
         // TODO: this needs to be smarter
-        public static bool IsKeepAlive(this HttpRequestLine request)
+        internal static bool IsKeepAlive(this HttpRequestLine request)
         {
             return (request.Version != HttpVersion.V1_0) && (request.Version != HttpVersion.Unknown);
         }
 
-        public static bool TryParseRequestLine(ByteSpan buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
+        internal static bool TryParseRequestLine(ByteSpan buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
         {
             requestLine = new HttpRequestLine();
             totalParsedBytes = 0;
@@ -200,7 +335,7 @@ namespace System.Net.Http.Buffered
             return true;
         }
 
-        public static bool TryParseMethod(ByteSpan buffer, out HttpMethod method, out int parsedBytes)
+        internal static bool TryParseMethod(ByteSpan buffer, out HttpMethod method, out int parsedBytes)
         {
             var bufferString = new Utf8String(buffer);
             if(bufferString.StartsWith(s_Get))
@@ -235,26 +370,47 @@ namespace System.Net.Http.Buffered
             parsedBytes = 0;
             return false;
         }
-        public static bool TryParseRequestUri(ByteSpan buffer, out Utf8String requestUri, out int parsedBytes)
+        internal static bool TryParseRequestUri(ByteSpan buffer, out Utf8String requestUri, out int parsedBytes)
         {
             var uriSpan = HttpRequestReader.SliceTo(buffer, HttpRequestReader.s_SP, out parsedBytes);
             requestUri = new Utf8String(uriSpan);
             return parsedBytes != 0;
         }
-        public static bool TryParseHttpVersion(ByteSpan buffer, out Utf8String httpVersion, out int parsedBytes)
+        internal static bool TryParseHttpVersion(ByteSpan buffer, out Utf8String httpVersion, out int parsedBytes)
         {
             var versionSpan = HttpRequestReader.SliceTo(buffer, HttpRequestReader.s_CR, HttpRequestReader.s_LF, out parsedBytes);
             httpVersion = new Utf8String(versionSpan);
             return parsedBytes != 0;
         }
 
-        public static bool StartsWith(this ByteSpan left, ReadOnlySpan<byte> right)
+        internal static bool StartsWith(this ByteSpan left, ReadOnlySpan<byte> right)
         {
             if (left.Length < right.Length) return false;
             for (int index = 0; index < right.Length; index++) {
                 if (left[index] != right[index]) return false;
             }
             return true;
+        }
+
+        internal static bool TryParseHeaders(ByteSpan bytes, out HttpHeaders headers, out int parsed)
+        {
+            for(int i=0; i<bytes.Length; i++)
+            {
+                if(i > bytes.Length - 4)
+                {
+                    break;
+                }
+                if(bytes[i] == '\r' && bytes[i+1] == '\n' && bytes[i+2] == '\r' && bytes[i+3] == '\n')
+                {
+                    parsed = i + 4;
+                    headers = new HttpHeaders(bytes.Slice(0, i + 2));
+                    return true;
+                }
+             }
+
+            headers = default(HttpHeaders);
+            parsed = 0;
+            return false;
         }
     }
 }

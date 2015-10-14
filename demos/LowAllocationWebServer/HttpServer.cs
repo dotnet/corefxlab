@@ -109,31 +109,18 @@ namespace System.Net.Http.Buffered
                 Console.WriteLine(text);
             }
 
-            HttpServerBuffer responseBytes;
-                       
-            // parse request
-            HttpRequestLine requestLine;
-            int requestLineBytes;
-            if (!HttpRequestParser.TryParseRequestLine(receivedBytes, out requestLine, out requestLineBytes))
-            {
-                Log.LogError("invalid request line");
-                responseBytes = CreateResponseFor400(receivedBytes);
-            }
-            else
-            {
-                var restOfRequestBytes = receivedBytes.Slice(requestLineBytes);
+            var request = HttpRequest.Parse(receivedBytes);
 
-                if (Log.IsVerbose)
-                {
-                    Log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", requestLine.Method);
-                    Log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", requestLine.RequestUri.ToString());
-                    Log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", requestLine.Version);
-                    LogRestOfRequest(restOfRequestBytes);
-                }
-
-                responseBytes = CreateResponse(requestLine, restOfRequestBytes);
+            if (Log.IsVerbose)
+            {
+                Log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", request.RequestLine.Method);
+                Log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", request.RequestLine.RequestUri.ToString());
+                Log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.RequestLine.Version);
+                LogRestOfRequest(request.Body);
             }
 
+            HttpServerBuffer responseBytes = CreateResponse(request);
+                     
             _buffers.Return(buffer);
 
             // send response
@@ -141,7 +128,7 @@ namespace System.Net.Http.Buffered
             
             socket.Send(segment._buffer, segment._count);
 
-            if (!requestLine.IsKeepAlive())
+            if (!request.RequestLine.IsKeepAlive())
             {
                 socket.Close();
             }
@@ -175,7 +162,7 @@ namespace System.Net.Http.Buffered
             return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
         }
 
-        protected virtual HttpServerBuffer CreateResponseFor404(HttpRequestLine requestLine, ByteSpan headersAndBody) // Not Found
+        protected virtual HttpServerBuffer CreateResponseFor404(HttpRequestLine requestLine) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", requestLine);
 
@@ -207,7 +194,7 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        protected abstract HttpServerBuffer CreateResponse(HttpRequestLine requestLine, ByteSpan headersAndBody);
+        protected abstract HttpServerBuffer CreateResponse(HttpRequest request);
     }
 
     static class FormatterExtensions
