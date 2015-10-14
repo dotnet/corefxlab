@@ -214,7 +214,12 @@ namespace System.Net.Http.Buffered
     {
         public static void Append<T>(this T formatter, Utf8String text) where T : IFormatter
         {
-            var bytes = text.CopyBytes();
+            var bytes = new byte[text.Length];
+            int i = 0;
+            foreach (var codeUnit in text)
+            {
+                bytes[i++] = codeUnit.Value;
+            }
             int avaliable;
             do
             {

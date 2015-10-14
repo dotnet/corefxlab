@@ -43,7 +43,7 @@ namespace System {
         [CLSCompliant(false)]
         public bool TrySet(byte* value, int valueLength)
         {
-            if (valueLength > Length)
+            if (valueLength >= Length)
                 return false;
             BufferInternal.MemoryCopy(value, _data, _length, valueLength);
             return true;
@@ -52,7 +52,7 @@ namespace System {
         [CLSCompliant(false)]
         public bool TryCopyTo(byte* value, int valueLength)
         {
-            if (Length > valueLength)
+            if (Length >= valueLength)
                 return false;
             BufferInternal.MemoryCopy(_data, value, valueLength, _length);
             return true;
@@ -85,7 +85,7 @@ namespace System {
 
         public ByteSpan Slice(int index, int count)
         {
-            Precondition.Require(index + count < Length);
+            Precondition.Require(index + count <= Length);
 
             var data = _data + index;
             return new ByteSpan(data, count);

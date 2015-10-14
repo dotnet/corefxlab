@@ -34,8 +34,8 @@ namespace System.Net.Http.Buffered
         public bool Equals(Utf8String other)
         {
             if (other.Length != Length) return false;
-            var otherBytes = other.CopyBytes(); // TODO: this needs to go away        
-            return _bytes.StartsWith(otherBytes);
+            var bytesString = new Utf8String(_bytes);   
+            return bytesString.StartsWith(other);
         }
 
         public override int GetHashCode()
@@ -208,10 +208,10 @@ namespace System.Net.Http.Buffered
     public static class HttpRequestParser
     {
         // TODO: these copies should be eliminated
-        static readonly ReadOnlySpan<byte> s_Get = new Utf8String("GET ").CopyBytes();
-        static readonly ReadOnlySpan<byte> s_Post = new Utf8String("POST ").CopyBytes();
-        static readonly ReadOnlySpan<byte> s_Put = new Utf8String("PUT ").CopyBytes();
-        static readonly ReadOnlySpan<byte> s_Delete = new Utf8String("DELETE ").CopyBytes();
+        static readonly Utf8String s_Get = new Utf8String("GET ");
+        static readonly Utf8String s_Post = new Utf8String("POST ");
+        static readonly Utf8String s_Put = new Utf8String("PUT ");
+        static readonly Utf8String s_Delete = new Utf8String("DELETE ");
 
         public static bool TryParseRequestLine(ByteSpan buffer, out HttpRequestLine requestLine)
         {
@@ -248,28 +248,29 @@ namespace System.Net.Http.Buffered
 
         public static bool TryParseMethod(ByteSpan buffer, out HttpMethod method, out int parsedBytes)
         {
-            if(buffer.StartsWith(s_Get))
+            var bufferString = new Utf8String(buffer);
+            if(bufferString.StartsWith(s_Get))
             {
                 method = HttpMethod.Get;
                 parsedBytes = s_Get.Length;
                 return true;
             }
 
-            if (buffer.StartsWith(s_Post))
+            if (bufferString.StartsWith(s_Post))
             {
                 method = HttpMethod.Post;
                 parsedBytes = s_Post.Length;
                 return true;
             }
 
-            if (buffer.StartsWith(s_Put))
+            if (bufferString.StartsWith(s_Put))
             {
                 method = HttpMethod.Put;
                 parsedBytes = s_Put.Length;
                 return true;
             }
 
-            if (buffer.StartsWith(s_Delete))
+            if (bufferString.StartsWith(s_Delete))
             {
                 method = HttpMethod.Delete;
                 parsedBytes = s_Delete.Length;
