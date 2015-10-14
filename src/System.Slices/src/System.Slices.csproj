@@ -19,24 +19,17 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="project.json" />
-    <None Include="System\PtrUtils.il" />
-  </ItemGroup>
-  <ItemGroup>
-    <AddModules Include="$(ILModule)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="System\Contract.cs" />
     <Compile Include="System\PrimitiveAttribute.cs" />
+    <Compile Include="System\PtrUtils.cs" />
     <Compile Include="System\Span.cs" />
     <Compile Include="System\SpanExtensions.cs" />
     <Compile Include="System\SpanHelpers.cs" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
-  <Target Name="BeforeCompile">
-    <Exec Command="ilasm /dll $(MSBuildThisFileDirectory)System\PtrUtils.il /out:$(ILModule)"/>
-    <ItemGroup>
-      <ReferenceCopyLocalPaths Include="$(ILModule)" />
-    </ItemGroup>
-   
-  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>ildasm /out:"$(TargetDir)$(TargetName).beforerewrite.il" /nobar "$(TargetPath)" &amp;&amp; "$([System.IO.Path]::GetFullPath('$(SourceDir)System.Slices\tools\ILSub\ILSub.exe'))" "$(TargetDir)$(TargetName).beforerewrite.il" "$(TargetDir)$(TargetName).rewritten.il" &amp;&amp; ilasm /dll /out:$(TargetPath) /nologo $(TargetDir)$(TargetName).rewritten.il &amp;&amp; ilasm /dll /out:$(TargetPath) /nologo $(TargetDir)$(TargetName).rewritten.il</PostBuildEvent>
+  </PropertyGroup>
 </Project>
