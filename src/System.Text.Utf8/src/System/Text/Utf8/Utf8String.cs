@@ -401,6 +401,10 @@ namespace System.Text.Utf8
 
         public bool StartsWith(Utf8String value)
         {
+            if(value.Length > this.Length)
+            {
+                return false;
+            }
             return this.Substring(0, value.Length).Equals(value);
         }
 
