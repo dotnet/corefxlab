@@ -1,6 +1,7 @@
 ﻿using Xunit;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.Utf8;
 
 namespace System.Text.Utf8.Tests
 {
@@ -168,6 +169,48 @@ namespace System.Text.Utf8.Tests
         {
             Utf8String u8s = new Utf8String(s);
             Assert.Equal(s, u8s.ToString());
+        }
+		
+        [Theory]
+        [InlineData(true, "test123", "test123")]
+        [InlineData(false, "test123", "test124")]
+        public unsafe void StringEquals(bool equal, string s1, string s2)
+        {
+            byte[] b1 = Encoding.UTF8.GetBytes(s1);
+            byte[] b2 = Encoding.UTF8.GetBytes(s2);
+            Utf8String s1FromBytes = new Utf8String(b1);
+            Utf8String s2FromBytes = new Utf8String(b2);
+            fixed (byte* b1pinned = b1)
+            fixed (byte* b2pinned = b2)
+            {
+                ByteSpan sp1 = new ByteSpan(b1pinned, b1.Length);
+                ByteSpan sp2 = new ByteSpan(b2pinned, b2.Length);
+                Utf8String s1FromSpan = new Utf8String(sp1);
+                Utf8String s2FromSpan = new Utf8String(sp2);
+
+                Assert.Equal(equal, s1FromBytes == s2FromBytes);
+                Assert.Equal(equal, s1FromBytes == s2FromSpan);
+                Assert.Equal(equal, s1FromBytes == s2);
+
+                Assert.Equal(equal, s1FromSpan == s2FromBytes);
+                Assert.Equal(equal, s1FromSpan == s2FromSpan);
+                Assert.Equal(equal, s1FromSpan == s2);
+
+                Assert.Equal(equal, s1 == s2FromBytes);
+                Assert.Equal(equal, s1 == s2FromSpan);
+
+
+                Assert.Equal(equal, s1FromBytes.Equals(s2FromBytes));
+                Assert.Equal(equal, s1FromBytes.Equals(s2FromSpan));
+                Assert.Equal(equal, s1FromBytes.Equals(s2));
+
+                Assert.Equal(equal, s1FromSpan.Equals(s2FromBytes));
+                Assert.Equal(equal, s1FromSpan.Equals(s2FromSpan));
+                Assert.Equal(equal, s1FromSpan.Equals(s2));
+
+                Assert.Equal(equal, s1.EqualsUtf8String(s2FromBytes));
+                Assert.Equal(equal, s1.EqualsUtf8String(s2FromSpan));
+            }
         }
     }
 }

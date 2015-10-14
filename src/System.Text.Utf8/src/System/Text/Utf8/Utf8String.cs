@@ -218,14 +218,34 @@ namespace System.Text.Utf8
                 fixed (byte* pinnedOthersBytes = other._bytes)
                 {
                     ByteSpan b2 = new ByteSpan(pinnedOthersBytes + other._index, other._length);
-                    return other._buffer.Equals(b2);
+                    return _buffer.Equals(b2);
                 }
             }
         }
 
         public bool Equals(string other)
         {
-            throw new NotImplementedException();
+            CodePointEnumerator thisEnumerator = GetCodePointEnumerator();
+            Utf16LittleEndianCodePointEnumerator otherEnumerator = new Utf16LittleEndianCodePointEnumerator(other);
+
+            while (true)
+            {
+                bool hasNext = thisEnumerator.MoveNext();
+                if (hasNext != otherEnumerator.MoveNext())
+                {
+                    return false;
+                }
+
+                if (!hasNext)
+                {
+                    return true;
+                }
+
+                if (thisEnumerator.Current != otherEnumerator.Current)
+                {
+                    return false;
+                }
+            }
         }
 
         public static bool operator ==(Utf8String left, Utf8String right)
