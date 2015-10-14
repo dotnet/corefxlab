@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Text.Formatting;
+using System.Text.Utf8;
 
 namespace System.Text.Parsing
 {
@@ -55,6 +56,45 @@ namespace System.Text.Parsing
                     }
                     bytesConsumed++;
                 }
+            }
+
+            return true;
+        }
+
+        [CLSCompliant(false)]
+        public static bool TryParse(Utf8String text, out uint value, out int bytesConsumed)
+        {
+            Precondition.Require(text.Length > 0);
+
+            value = 0;
+            bytesConsumed = 0;
+
+            for (int byteIndex = 0; byteIndex < text.Length; byteIndex++)
+            {
+                byte nextByte = (byte)text[byteIndex];
+                if (nextByte < '0' || nextByte > '9')
+                {
+                    if (bytesConsumed == 0)
+                    {
+                        value = default(uint);
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                uint candidate = value * 10;
+                candidate += (uint)nextByte - '0';
+                if (candidate >= value)
+                {
+                    value = candidate;
+                }
+                else
+                {
+                    return true;
+                }
+                bytesConsumed++;
             }
 
             return true;
