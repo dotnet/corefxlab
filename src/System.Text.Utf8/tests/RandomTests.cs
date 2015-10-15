@@ -170,7 +170,7 @@ namespace System.Text.Utf8.Tests
             Utf8String u8s = new Utf8String(s);
             Assert.Equal(s, u8s.ToString());
         }
-		
+
         [Theory]
         [InlineData(true, "test123", "test123")]
         [InlineData(false, "test123", "test124")]
@@ -210,6 +210,114 @@ namespace System.Text.Utf8.Tests
 
                 Assert.Equal(equal, s1.EqualsUtf8String(s2FromBytes));
                 Assert.Equal(equal, s1.EqualsUtf8String(s2FromSpan));
+            }
+        }
+
+        [Theory]
+        [InlineData("", 'a')]
+        [InlineData("abc", 'a')]
+        [InlineData("v", 'v')]
+        [InlineData("1", 'a')]
+        [InlineData("1a", 'a')]
+        public void StartsWithCodeUnit(string s, char c)
+        {
+            Utf8String u8s = new Utf8String(s);
+            Utf8CodeUnit codeUnit = (Utf8CodeUnit)(byte)c;
+            Assert.Equal(s.StartsWith(c.ToString()), u8s.StartsWith(codeUnit));
+        }
+
+        [Theory]
+        [InlineData("", 'a')]
+        [InlineData("cba", 'a')]
+        [InlineData("v", 'v')]
+        [InlineData("1", 'a')]
+        [InlineData("a1", 'a')]
+        public void EndsWithCodeUnit(string s, char c)
+        {
+            Utf8String u8s = new Utf8String(s);
+            Utf8CodeUnit codeUnit = (Utf8CodeUnit)(byte)c;
+            Assert.Equal(s.EndsWith(c.ToString()), u8s.EndsWith(codeUnit));
+        }
+
+        [Theory]
+        [InlineData("", "a")]
+        [InlineData("abc", "a")]
+        [InlineData("v", "v")]
+        [InlineData("1", "a")]
+        [InlineData("1a", "a")]
+        [InlineData("abc", "abc")]
+        [InlineData("abcd", "abc")]
+        [InlineData("abc", "abcd")]
+        public void StartsWithUtf8String(string s, string pattern)
+        {
+            Utf8String u8s = new Utf8String(s);
+            Utf8String u8pattern = new Utf8String(pattern);
+
+            Assert.Equal(s.StartsWith(pattern), u8s.StartsWith(u8pattern));
+        }
+
+        [Theory]
+        [InlineData("", "a")]
+        [InlineData("cba", "a")]
+        [InlineData("v", "v")]
+        [InlineData("1", "a")]
+        [InlineData("a1", "a")]
+        [InlineData("abc", "abc")]
+        [InlineData("abcd", "bcd")]
+        [InlineData("abc", "abcd")]
+        public void EndsWithUtf8String(string s, string pattern)
+        {
+            Utf8String u8s = new Utf8String(s);
+            Utf8String u8pattern = new Utf8String(pattern);
+
+            Assert.Equal(s.EndsWith(pattern), u8s.EndsWith(u8pattern));
+        }
+
+        [Theory]
+        [InlineData("", 'a')]
+        [InlineData("abc", 'a')]
+        [InlineData("abc", 'b')]
+        [InlineData("abc", 'c')]
+        [InlineData("abc", 'd')]
+        public void SubstringFromCodeUnit(string s, char c)
+        {
+            Utf8String u8s = new Utf8String(s);
+            Utf8CodeUnit codeUnit = (Utf8CodeUnit)(byte)(c);
+            Utf8String u8result;
+
+            int idx = s.IndexOf(c);
+            bool expectedToFind = idx != -1;
+
+            Assert.Equal(expectedToFind, u8s.TrySubstringFrom(codeUnit, out u8result));
+            if (expectedToFind)
+            {
+                string expected = s.Substring(idx);
+                Assert.Equal(new Utf8String(expected), u8result);
+                Assert.Equal(expected, u8result.ToString());
+            }
+        }
+
+        [Theory]
+        [InlineData("", 'a')]
+        [InlineData("abc", 'a')]
+        [InlineData("abc", 'b')]
+        [InlineData("abc", 'c')]
+        [InlineData("abc", 'd')]
+        public void SubstringToCodeUnit(string s, char c)
+        {
+            Utf8String u8s = new Utf8String(s);
+            Utf8CodeUnit codeUnit = (Utf8CodeUnit)(byte)(c);
+            Utf8String u8result;
+
+            int idx = s.IndexOf(c);
+            bool expectedToFind = idx != -1;
+
+            Assert.Equal(expectedToFind, u8s.TrySubstringTo(codeUnit, out u8result));
+            if (expectedToFind)
+            {
+                string expected = s.Substring(0, idx);
+                Assert.Equal(new Utf8String(expected), u8result);
+                Assert.Equal(expected, u8result.ToString());
             }
         }
     }

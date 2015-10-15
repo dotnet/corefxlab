@@ -343,15 +343,117 @@ namespace System.Text.Utf8
             }
         }
 
-        public Utf8String SubstringFrom(Utf8String substring)
+        // TODO: Should this be public or should focused on scenarios?
+        private int IndexOf(Utf8String value)
         {
             throw new NotImplementedException();
         }
 
-        public Utf8String SubstringTo(Utf8String substring)
+        // TODO: Should this be public or should focused on scenarios?
+        private int IndexOf(Utf8CodeUnit codeUnit)
+        {
+            for (int i = 0; i < Length; i++)
+            {
+                if (codeUnit == GetCodeUnitAtPositionUnchecked(i))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        // TODO: Should this be public or should focused on scenarios?
+        private int IndexOf(UnicodeCodePoint codePoint)
         {
             throw new NotImplementedException();
         }
+
+        // TODO: Re-evaluate all Substring family methods and check their parameters name
+        public bool TrySubstringFrom(Utf8String value, out Utf8String result)
+        {
+            int idx = IndexOf(value);
+
+            if (idx == -1)
+            {
+                result = default(Utf8String);
+                return false;
+            }
+
+            result = Substring(idx);
+            return true;
+        }
+
+        public bool TrySubstringFrom(Utf8CodeUnit codeUnit, out Utf8String result)
+        {
+            int idx = IndexOf(codeUnit);
+
+            if (idx == -1)
+            {
+                result = default(Utf8String);
+                return false;
+            }
+
+            result = Substring(idx);
+            return true;
+        }
+
+        public bool TrySubstringFrom(UnicodeCodePoint codePoint, out Utf8String result)
+        {
+            int idx = IndexOf(codePoint);
+
+            if (idx == -1)
+            {
+                result = default(Utf8String);
+                return false;
+            }
+
+            result = Substring(idx);
+            return true;
+        }
+
+        public bool TrySubstringTo(Utf8String value, out Utf8String result)
+        {
+            int idx = IndexOf(value);
+
+            if (idx == -1)
+            {
+                result = default(Utf8String);
+                return false;
+            }
+
+            result = Substring(0, idx);
+            return true;
+        }
+
+        public bool TrySubstringTo(Utf8CodeUnit codeUnit, out Utf8String result)
+        {
+            int idx = IndexOf(codeUnit);
+
+            if (idx == -1)
+            {
+                result = default(Utf8String);
+                return false;
+            }
+
+            result = Substring(0, idx);
+            return true;
+        }
+
+        public bool TrySubstringTo(UnicodeCodePoint codePoint, out Utf8String result)
+        {
+            int idx = IndexOf(codePoint);
+
+            if (idx == -1)
+            {
+                result = default(Utf8String);
+                return false;
+            }
+
+            result = Substring(0, idx);
+            return true;
+        }
+
 
         public override int GetHashCode()
         {
@@ -411,7 +513,33 @@ namespace System.Text.Utf8
             {
                 return false;
             }
+
             return this.Substring(0, value.Length).Equals(value);
+        }
+
+        public bool EndsWith(Utf8CodeUnit codeUnit)
+        {
+            if (Length == 0)
+            {
+                return false;
+            }
+
+            return GetCodeUnitAtPositionUnchecked(Length - 1) == codeUnit;
+        }
+
+        public bool EndsWith(Utf8String value)
+        {
+            if (Length < value.Length)
+            {
+                return false;
+            }
+
+            return this.Substring(Length - value.Length, value.Length).Equals(value);
+        }
+
+        public bool EndsWith(UnicodeCodePoint codePoint)
+        {
+            throw new NotImplementedException();
         }
 
         private static byte[] GetUtf8BytesFromString(string s)
