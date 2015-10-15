@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.Utf8;
 using Xunit;
 
@@ -13,15 +14,78 @@ namespace System.Text.Json.Tests
             var str = new Utf8String(Json);
             var jsonReader = new JsonReader(str);
             var result = Read(jsonReader);
-            Assert.Equal(ExpectedAge, result.Age);
-            Assert.Equal(ExpectedBalance, result.Balance);
-            Assert.Equal(_expectedFullName, new Utf8String(result.FirstName + " " + result.LastName));
-            var phoneList = new List<Utf8String> {result.Phone1, result.Phone2};
-            Assert.Equal(ExpectedPhone, phoneList.ToArray());
-            Assert.Equal(_expectedAddress, new Utf8String(result.Street + ", " + result.City + ", " + result.Zip));
-            Assert.Equal(ExpectedId1, result.Id1);
-            Assert.Equal(ExpectedId2, result.Id2);
-            Assert.Equal(ExpectedId3, result.Id3);
+            var age = new Utf8String("age");
+            var balance = new Utf8String("balance");
+            var first = new Utf8String("first");
+            var last = new Utf8String("last");
+            var phoneNumbers = new Utf8String("phoneNumbers");
+            var street = new Utf8String("street");
+            var city = new Utf8String("city");
+            var zip = new Utf8String("zip");
+            var ids = new Utf8String("IDs");
+
+            uint actualAge = 0;
+            foreach (var t in result.Where(t => t.Key == age))
+            {
+                actualAge = Convert.ToUInt32(t.Value);
+            }
+
+            var actualBalance = 0;
+            foreach (var t in result.Where(t => t.Key == balance))
+            {
+                actualBalance = Convert.ToInt32(t.Value);
+            }
+
+            var actualFirstName = new Utf8String();
+            foreach (var t in result.Where(t => t.Key == first))
+            {
+                actualFirstName = new Utf8String(t.Value.ToString());
+            }
+
+            var actualLastName = new Utf8String();
+            foreach (var t in result.Where(t => t.Key == last))
+            {
+                actualLastName = new Utf8String(t.Value.ToString());
+            }
+
+            var actualStreet = new Utf8String();
+            foreach (var t in result.Where(t => t.Key == street))
+            {
+                actualStreet = new Utf8String(t.Value.ToString());
+            }
+
+            var actualCity = new Utf8String();
+            foreach (var t in result.Where(t => t.Key == city))
+            {
+                actualCity = new Utf8String(t.Value.ToString());
+            }
+
+            var actualZip = new Utf8String();
+            foreach (var t in result.Where(t => t.Key == zip))
+            {
+                actualZip = new Utf8String(t.Value.ToString());
+            }
+
+            var actualPhoneList = new List<Utf8String>();
+            foreach (var t in result.Where(t => t.Key == phoneNumbers))
+            {
+                actualPhoneList.Add(new Utf8String(t.Value.ToString()));
+            }
+
+            var actualIDs = new List<object>();
+            foreach (var t in result.Where(t => t.Key == ids))
+            {
+                actualIDs.Add(t.Value);
+            }
+
+            Assert.Equal(ExpectedAge, actualAge);
+            Assert.Equal(ExpectedBalance, actualBalance);
+            Assert.Equal(_expectedFullName, new Utf8String(actualFirstName + " " + actualLastName));
+            Assert.Equal(ExpectedPhone, actualPhoneList.ToArray());
+            Assert.Equal(_expectedAddress, new Utf8String(actualStreet + ", " + actualCity + ", " + actualZip));
+            Assert.Equal(ExpectedId1, Convert.ToUInt32(actualIDs[0]));
+            Assert.Equal(ExpectedId2, Convert.ToInt32(actualIDs[1]));
+            Assert.Equal(ExpectedId3, Convert.ToInt64(actualIDs[2]));
         }
 
         private const string Json =
@@ -42,56 +106,55 @@ namespace System.Text.Json.Tests
 
         private readonly Utf8String _expectedAddress = new Utf8String("1 Microsoft Way, Redmond, 98052");
 
-        private static ReadObject Read(JsonReader json)
+        private static List<KeyValuePair<Utf8String, object>> Read(JsonReader json)
         {
-            var output = new ReadObject();
+            var jsonOutput = new List<KeyValuePair<Utf8String, object>>();
+            var property = new Utf8String("");
+            while (json.Read())
+            {
+                object value;
+                switch (json.TokenType)
+                {
+                    case JsonReader.JsonTokenType.ObjectStart:
+                        json.ReadObjectStart();
+                        value = null;
+                        break;
+                    case JsonReader.JsonTokenType.ObjectEnd:
+                        json.ReadObjectEnd();
+                        property = new Utf8String("");
+                        value = null;
+                        break;
+                    case JsonReader.JsonTokenType.ArrayStart:
+                        json.ReadArrayStart();
+                        value = null;
+                        break;
+                    case JsonReader.JsonTokenType.ArrayEnd:
+                        json.ReadArrayEnd();
+                        property = new Utf8String("");
+                        value = null;
+                        break;
+                    case JsonReader.JsonTokenType.PropertyName:
+                        property = json.ReadPropertyAsString();
+                        value = null;
+                        break;
+                    case JsonReader.JsonTokenType.PropertyValueAsString:
+                        value = json.ReadPropertyAsString();
+                        break;
+                    case JsonReader.JsonTokenType.PropertyValueAsInt:
+                        value = json.ReadPropertyValueAsInt();
+                        break;
+                    default:
+                        property = new Utf8String("");
+                        value = null;
+                        break;
+                }
+                if (property != new Utf8String("") && value != null)
+                {
+                    jsonOutput.Add(new KeyValuePair<Utf8String, object>(property, value));
+                }
+            }
 
-            json.ReadObjectStart();
-            json.ReadProperty();
-            output.Age = json.ReadPropertyValueAsUInt();
-            json.ReadProperty();
-            output.Balance = json.ReadPropertyValueAsInt();
-            json.ReadProperty();
-            output.FirstName = json.ReadPropertyValueAsString();
-            json.ReadProperty();
-            output.LastName = json.ReadPropertyValueAsString();
-            json.ReadMember();
-            json.ReadArrayStart();
-            output.Phone1 = json.ReadMemberValueAsString();
-            output.Phone2 = json.ReadMemberValueAsString();
-            json.ReadArrayEnd();
-            json.ReadMember();
-            json.ReadObjectStart();
-            json.ReadProperty();
-            output.Street = json.ReadPropertyValueAsString();
-            json.ReadProperty();
-            output.City = json.ReadPropertyValueAsString();
-            json.ReadProperty();
-            output.Zip = json.ReadPropertyValueAsUInt();
-            json.ReadObjectEnd();
-            json.ReadArrayStart();
-            output.Id1 = json.ReadMemberValueAsUInt();
-            output.Id2 = json.ReadMemberValueAsInt();
-            output.Id3 = json.ReadPropertyValueAsLongInt();
-            json.ReadArrayEnd();
-            json.ReadObjectEnd();
-            return output;
-        }
-
-        public class ReadObject
-        {
-            public uint Age { get; set; }
-            public int Balance { get; set; }
-            public Utf8String FirstName { get; set; }
-            public Utf8String LastName { get; set; }
-            public Utf8String Phone1 { get; set; }
-            public Utf8String Phone2 { get; set; }
-            public Utf8String Street { get; set; }
-            public Utf8String City { get; set; }
-            public uint Zip { get; set; }
-            public uint Id1 { get; set; }
-            public int Id2 { get; set; }
-            public long Id3 { get; set; }
+            return jsonOutput;
         }
     }
 }
