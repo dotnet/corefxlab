@@ -98,5 +98,25 @@ namespace System.Threading.Tasks.Channels.Tests
             AssertSynchronouslyCanceled(c.ReadAsync(cts.Token).AsTask(), cts.Token);
             AssertSynchronouslyCanceled(c.WaitToReadAsync(cts.Token), cts.Token);
         }
+
+        [Fact]
+        public void Enumerator_DisposedWhenCompleted()
+        {
+            bool disposeCalled = false;
+            IReadableChannel<int> c = Channel.CreateFromEnumerable(new DelegateEnumerable<int>
+            {
+                GetEnumeratorDelegate = () => new DelegateEnumerator<int>
+                {
+                    DisposeDelegate = () => disposeCalled = true
+                }
+            });
+
+            int i;
+            while (c.TryRead(out i))
+            {
+                Assert.False(disposeCalled);
+            }
+            Assert.True(disposeCalled);
+        }
     }
 }

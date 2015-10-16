@@ -100,6 +100,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // There's no more data available.  Complete the channel.
+                _source.Dispose();
                 _completion.TrySetResult(default(VoidResult));
                 return false;
             }

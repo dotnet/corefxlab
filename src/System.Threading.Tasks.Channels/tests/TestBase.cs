@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
+using System.Collections.Generic;
 using Xunit;
 
 namespace System.Threading.Tasks.Channels.Tests
@@ -30,6 +32,58 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.False(task.Result);
+        }
+
+        internal sealed class DelegateEnumerable<T> : IEnumerable<T>
+        {
+            public Func<IEnumerator<T>> GetEnumeratorDelegate;
+
+            public IEnumerator<T> GetEnumerator()
+            {
+                return GetEnumeratorDelegate != null ? 
+                    GetEnumeratorDelegate() :
+                    null;
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+        }
+
+        internal sealed class DelegateEnumerator<T> : IEnumerator<T>
+        {
+            public Func<T> CurrentDelegate;
+            public Action DisposeDelegate;
+            public Func<bool> MoveNextDelegate;
+            public Action ResetDelegate;
+
+            public T Current
+            {
+                get
+                {
+                    return CurrentDelegate != null ? 
+                        CurrentDelegate() :
+                        default(T); }
+            }
+
+            object IEnumerator.Current { get { return Current; } }
+
+            public void Dispose()
+            {
+                if (DisposeDelegate != null)
+                    DisposeDelegate();
+            }
+
+            public bool MoveNext()
+            {
+                return MoveNextDelegate != null ? 
+                    MoveNextDelegate() :
+                    false;
+            }
+
+            public void Reset()
+            {
+                if (ResetDelegate != null)
+                    ResetDelegate();
+            }
         }
 
         internal sealed class DelegateObserver<T> : IObserver<T>

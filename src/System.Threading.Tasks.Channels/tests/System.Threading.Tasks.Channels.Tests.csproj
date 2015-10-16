@@ -7,6 +7,7 @@
     <AssemblyName>System.Threading.Tasks.Channels.Tests</AssemblyName>
     <OutputType>Library</OutputType>
     <RootNamespace>System.Threading.Tasks.Channels.Tests</RootNamespace>
+    <NoWarn>0649</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <!-- workaround until we have Dev14 nuget targets -->
