@@ -67,67 +67,57 @@ namespace System.Text.Json.Tests
                 {
                     case JsonReader.JsonTokenType.ObjectStart:
                         tempString = json.ReadObjectStart();
-                        Console.WriteLine(JsonReader.JsonTokenType.ObjectStart + " - {0}", tempString);
                         jsonOutput.Append(tempString);
                         break;
                     case JsonReader.JsonTokenType.ObjectEnd:
                         tempString = json.ReadObjectEnd();
-                        Console.WriteLine(JsonReader.JsonTokenType.ObjectEnd + " - {0}", tempString);
                         jsonOutput.Append(tempString);
                         break;
                     case JsonReader.JsonTokenType.ArrayStart:
                         tempString = json.ReadArrayStart();
-                        Console.WriteLine(JsonReader.JsonTokenType.ArrayStart + " - {0}", tempString);
                         jsonOutput.Append(tempString);
                         break;
                     case JsonReader.JsonTokenType.ArrayEnd:
                         tempString = json.ReadArrayEnd();
-                        Console.WriteLine(JsonReader.JsonTokenType.ArrayEnd + " - {0}", tempString);
                         jsonOutput.Append(tempString);
                         break;
                     case JsonReader.JsonTokenType.String:
                         tempString = json.ReadString();
-                        Console.WriteLine(JsonReader.JsonTokenType.String + " - {0}", tempString);
                         jsonOutput.Append("\"" + tempString + "\"");
                         break;
                     case JsonReader.JsonTokenType.Colon:
                         tempString = json.ReadColon();
-                        Console.WriteLine(JsonReader.JsonTokenType.Colon + " - {0}", tempString);
                         jsonOutput.Append(tempString);
                         break;
                     case JsonReader.JsonTokenType.Comma:
                         tempString = json.ReadComma();
-                        Console.WriteLine(JsonReader.JsonTokenType.Comma + " - {0}", tempString);
                         jsonOutput.Append(tempString);
                         break;
                     case JsonReader.JsonTokenType.Value:
-                        Console.WriteLine(JsonReader.JsonTokenType.Value + " - {0}", json.ReadValue());
+                        json.ReadValue();
                         break;
                     case JsonReader.JsonTokenType.True:
                         tempString = new Utf8String(json.ReadTrue().ToString().ToLower());
-                        Console.WriteLine(JsonReader.JsonTokenType.True + " - {0}", tempString);
                         jsonOutput.Append(tempString);
                         break;
                     case JsonReader.JsonTokenType.False:
                         tempString = new Utf8String(json.ReadFalse().ToString().ToLower());
-                        Console.WriteLine(JsonReader.JsonTokenType.False + " - {0}", tempString);
                         jsonOutput.Append(tempString);
                         break;
                     case JsonReader.JsonTokenType.Null:
                         tempString = new Utf8String("null");
-                        Console.WriteLine(JsonReader.JsonTokenType.Null + " - {0}", json.ReadNull());
+                        json.ReadNull();
                         jsonOutput.Append(tempString);
                         break;
                     case JsonReader.JsonTokenType.Number:
                         tempString = new Utf8String(json.ReadNumber().ToString(CultureInfo.InvariantCulture));
-                        Console.WriteLine(JsonReader.JsonTokenType.Number + " - {0}", tempString);
                         jsonOutput.Append(tempString);
                         break;
                     case JsonReader.JsonTokenType.Start:
-                        Console.WriteLine(JsonReader.JsonTokenType.Start + " - {0}", json.ReadStart());
+                        json.ReadStart();
                         break;
                     case JsonReader.JsonTokenType.Finish:
-                        Console.WriteLine(JsonReader.JsonTokenType.Finish + " - {0}", json.ReadFinish());
+                        json.ReadFinish();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
