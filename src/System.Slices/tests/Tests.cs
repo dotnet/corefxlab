@@ -2,10 +2,20 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using Xunit;
+using Xunit.Abstractions;
 
-class Tests
+public class Tests
 {
-    public bool TestCreateOverArray(Tester t)
+    private readonly ITestOutputHelper output;
+
+    public Tests(ITestOutputHelper output)
+    {
+        this.output = output;
+    }
+
+    [Fact]
+    public void TestCreateOverArray()
     {
         for (int i = 0; i < 2; i++) {
             var ints = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -18,84 +28,84 @@ class Tests
             else {
                 slice = ints.Slice();
             }
-            t.AssertEqual(ints.Length, slice.Length);
+            Assert.Equal(ints.Length, slice.Length);
             // Now try out two ways of walking the slice's contents:
             for (int j = 0; j < ints.Length; j++) {
-                t.AssertEqual(ints[j], slice[j]);
+                Assert.Equal(ints[j], slice[j]);
             }
             {
                 int j = 0;
                 foreach (var x in slice) {
-                    t.AssertEqual(ints[j], x);
+                    Assert.Equal(ints[j], x);
                     j++;
                 }
             }
         }
-        return true;
     }
 
-    public bool TestCreateOverString(Tester t)
+    [Fact]
+    public void TestCreateOverString()
     {
         var str = "Hello, Slice!";
         Span<char> slice = str.Slice();
-        t.AssertEqual(str.Length, slice.Length);
+        Assert.Equal(str.Length, slice.Length);
 
         // Now try out two ways of walking the slice's contents:
         for (int j = 0; j < str.Length; j++) {
-            t.AssertEqual(str[j], slice[j]);
+            Assert.Equal(str[j], slice[j]);
         }
         {
             int j = 0;
             foreach (var x in slice) {
-                t.AssertEqual(str[j], x);
+                Assert.Equal(str[j], x);
                 j++;
             }
         }
-        return true;
     }
 
-    public bool TestCreateOverPointer(Tester t)
+    [Fact]
+    public void TestCreateOverPointer()
     {
         unsafe {
             byte* buffer = stackalloc byte[256];
             for (int i = 0; i < 256; i++) { buffer[i] = (byte)i; }
             Span<byte> slice = new Span<byte>(buffer, 256);
-            t.AssertEqual(256, slice.Length);
+            Assert.Equal(256, slice.Length);
 
             // Now try out two ways of walking the slice's contents:
             for (int j = 0; j < slice.Length; j++) {
-                t.AssertEqual(buffer[j], slice[j]);
+                Assert.Equal(buffer[j], slice[j]);
             }
             {
                 int j = 0;
                 foreach (var x in slice) {
-                    t.AssertEqual(buffer[j], x);
+                    Assert.Equal(buffer[j], x);
                     j++;
                 }
             }
         }
-        return true;
     }
 
-    public bool TestSubslice(Tester t)
+    [Fact]
+    public void TestSubslice()
     {
         var slice = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }.Slice();
 
         // First a simple subslice over the whole array, using start.
         {
             var subslice1 = slice.Slice(0);
-            t.AssertEqual(slice.Length, subslice1.Length);
+            Assert.Equal(slice.Length, subslice1.Length);
             for (int i = 0; i < slice.Length; i++) {
-                t.AssertEqual(slice[i], subslice1[i]);
+                Assert.Equal(slice[i], subslice1[i]);
             }
         }
 
         // Next a simple subslice over the whole array, using start and end.
         {
             var subslice2 = slice.Slice(0, slice.Length);
-            t.AssertEqual(slice.Length, subslice2.Length);
+            Assert.Equal(slice.Length, subslice2.Length);
             for (int i = 0; i < slice.Length; i++) {
-                t.AssertEqual(slice[i], subslice2[i]);
+                Assert.Equal(slice[i], subslice2[i]);
             }
         }
 
@@ -103,9 +113,9 @@ class Tests
         {
             int mid = slice.Length/2;
             var subslice3 = slice.Slice(mid);
-            t.AssertEqual(mid, subslice3.Length);
+            Assert.Equal(mid, subslice3.Length);
             for (int i = mid, j = 0; i < slice.Length; i++, j++) {
-                t.AssertEqual(slice[i], subslice3[j]);
+                Assert.Equal(slice[i], subslice3[j]);
             }
         }
  
@@ -114,38 +124,37 @@ class Tests
             int st = 3;
             int ed = 7;
             var subslice4 = slice.Slice(st, 4);
-            t.AssertEqual(ed-st, subslice4.Length);
+            Assert.Equal(ed-st, subslice4.Length);
             for (int i = ed, j = 0; i < ed; i++, j++) {
-                t.AssertEqual(slice[i], subslice4[j]);
+                Assert.Equal(slice[i], subslice4[j]);
             }
         }
-
-        return true;
     }
 
-    public bool TestCast(Tester t)
+    [Fact]
+    public void TestCast()
     {
         var ints = new int[100000];
         Random r = new Random(42324232);
         for (int i = 0; i < ints.Length; i++) { ints[i] = r.Next(); }
         var bytes = ints.Slice().Cast<int, byte>();
-        t.Assert(bytes.Length == ints.Length * sizeof(int));
+        Assert.Equal(bytes.Length, ints.Length * sizeof(int));
         for (int i = 0; i < ints.Length; i++) {
-            t.AssertEqual(bytes[i*4], (ints[i]&0xff));
-            t.AssertEqual(bytes[i*4+1], (ints[i]>>8&0xff));
-            t.AssertEqual(bytes[i*4+2], (ints[i]>>16&0xff));
-            t.AssertEqual(bytes[i*4+3], (ints[i]>>24&0xff));
+            Assert.Equal(bytes[i*4], (ints[i]&0xff));
+            Assert.Equal(bytes[i*4+1], (ints[i]>>8&0xff));
+            Assert.Equal(bytes[i*4+2], (ints[i]>>16&0xff));
+            Assert.Equal(bytes[i*4+3], (ints[i]>>24&0xff));
         }
-        return true;
     }
 
-    public bool TestPerfLoop(Tester t)
+    [Fact]
+    public bool TestPerfLoop()
     {
         var ints = new int[10000];
         Random r = new Random(1234);
         for (int i = 0; i < ints.Length; i++) { ints[i] = r.Next(); }
 
-        t.CleanUpMemory();
+        Tester.CleanUpMemory();
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
         int x = 0;
@@ -155,9 +164,9 @@ class Tests
             }
         }
         sw.Stop();
-        Console.WriteLine("    - ints : {0}", sw.Elapsed);
+        output.WriteLine("    - ints : {0}", sw.Elapsed);
 
-        t.CleanUpMemory();
+        Tester.CleanUpMemory();
 
         var slice = ints.Slice();
         sw.Reset();
@@ -169,9 +178,9 @@ class Tests
             }
         }
         sw.Stop();
-        Console.WriteLine("    - slice: {0}", sw.Elapsed);
+        output.WriteLine("    - slice: {0}", sw.Elapsed);
 
-        t.AssertEqual(x, y);
+        Assert.Equal(x, y);
         return true;
     }
 }

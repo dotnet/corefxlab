@@ -30,6 +30,9 @@
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
   <PropertyGroup>
-    <PostBuildEvent>ildasm /out:"$(TargetDir)$(TargetName).beforerewrite.il" /nobar "$(TargetPath)" &amp;&amp; "$([System.IO.Path]::GetFullPath('$(SourceDir)System.Slices\tools\ILSub\ILSub.exe'))" "$(TargetDir)$(TargetName).beforerewrite.il" "$(TargetDir)$(TargetName).rewritten.il" &amp;&amp; ilasm /dll /out:$(TargetPath) /nologo $(TargetDir)$(TargetName).rewritten.il &amp;&amp; ilasm /dll /out:$(TargetPath) /nologo $(TargetDir)$(TargetName).rewritten.il</PostBuildEvent>
+    <DecompileToILCommand>ildasm /out:"$(TargetDir)$(TargetName).beforerewrite.il" /nobar "$(TargetPath)"</DecompileToILCommand>
+    <RewriteILCommand>"$([System.IO.Path]::GetFullPath('$(SourceDir)System.Slices\tools\ILSub\ILSub.exe'))" "$(TargetDir)$(TargetName).beforerewrite.il" "$(TargetDir)$(TargetName).rewritten.il"</RewriteILCommand>
+    <RecompileILCommand>ilasm /quiet /dll /out:$(TargetPath) /nologo $(TargetDir)$(TargetName).rewritten.il</RecompileILCommand>
+    <PostBuildEvent>$(DecompileToILCommand) &amp;&amp; $(RewriteILCommand) &amp;&amp; $(RecompileILCommand)</PostBuildEvent>
   </PropertyGroup>
 </Project>
