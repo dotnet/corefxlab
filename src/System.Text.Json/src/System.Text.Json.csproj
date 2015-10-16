@@ -17,7 +17,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="System\Text\Json\JsonReader.cs" />
     <Compile Include="JsonReader.cs" />
     <Compile Include="JsonWriter.cs" />
   </ItemGroup>
