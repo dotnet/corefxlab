@@ -28,7 +28,7 @@ More libraries are coming soon. Stay tuned!
 For an overview of all the .NET related projects, have a look at the
 [.NET home repository](https://github.com/Microsoft/dotnet).
 
-## How to Us
+## How to Use
 You can get the .NET Core Lab packages from **netcore-package-prototyping** MyGet feed: 
 
 ```
