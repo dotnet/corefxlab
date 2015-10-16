@@ -15,27 +15,32 @@ public class Tests
     }
 
     [Fact]
-    public void TestCreateOverArray()
+    public void TwoSpansCreatedOverSameIntArrayAreEqual()
     {
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++)
+        {
             var ints = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
             // Try out two ways of creating a slice:
             Span<int> slice;
-            if (i == 0) {
+            if (i == 0)
+            {
                 slice = new Span<int>(ints);
             }
-            else {
+            else
+            {
                 slice = ints.Slice();
             }
             Assert.Equal(ints.Length, slice.Length);
             // Now try out two ways of walking the slice's contents:
-            for (int j = 0; j < ints.Length; j++) {
+            for (int j = 0; j < ints.Length; j++)
+            {
                 Assert.Equal(ints[j], slice[j]);
             }
             {
                 int j = 0;
-                foreach (var x in slice) {
+                foreach (var x in slice)
+                {
                     Assert.Equal(ints[j], x);
                     j++;
                 }
@@ -44,19 +49,21 @@ public class Tests
     }
 
     [Fact]
-    public void TestCreateOverString()
+    public void TwoSpansCreatedOverSameStringsAreEqual()
     {
         var str = "Hello, Slice!";
         Span<char> slice = str.Slice();
         Assert.Equal(str.Length, slice.Length);
 
         // Now try out two ways of walking the slice's contents:
-        for (int j = 0; j < str.Length; j++) {
+        for (int j = 0; j < str.Length; j++)
+        {
             Assert.Equal(str[j], slice[j]);
         }
         {
             int j = 0;
-            foreach (var x in slice) {
+            foreach (var x in slice)
+            {
                 Assert.Equal(str[j], x);
                 j++;
             }
@@ -64,21 +71,24 @@ public class Tests
     }
 
     [Fact]
-    public void TestCreateOverPointer()
+    public void TwoSpansCreatedOverSameByteArayAreEqual()
     {
-        unsafe {
+        unsafe
+        {
             byte* buffer = stackalloc byte[256];
             for (int i = 0; i < 256; i++) { buffer[i] = (byte)i; }
             Span<byte> slice = new Span<byte>(buffer, 256);
             Assert.Equal(256, slice.Length);
 
             // Now try out two ways of walking the slice's contents:
-            for (int j = 0; j < slice.Length; j++) {
+            for (int j = 0; j < slice.Length; j++)
+            {
                 Assert.Equal(buffer[j], slice[j]);
             }
             {
                 int j = 0;
-                foreach (var x in slice) {
+                foreach (var x in slice)
+                {
                     Assert.Equal(buffer[j], x);
                     j++;
                 }
@@ -87,7 +97,7 @@ public class Tests
     }
 
     [Fact]
-    public void TestSubslice()
+    public void TwoSpansCreatedOverSameIntSubarrayAreEqual()
     {
         var slice = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }.Slice();
 
@@ -95,7 +105,8 @@ public class Tests
         {
             var subslice1 = slice.Slice(0);
             Assert.Equal(slice.Length, subslice1.Length);
-            for (int i = 0; i < slice.Length; i++) {
+            for (int i = 0; i < slice.Length; i++)
+            {
                 Assert.Equal(slice[i], subslice1[i]);
             }
         }
@@ -104,46 +115,50 @@ public class Tests
         {
             var subslice2 = slice.Slice(0, slice.Length);
             Assert.Equal(slice.Length, subslice2.Length);
-            for (int i = 0; i < slice.Length; i++) {
+            for (int i = 0; i < slice.Length; i++)
+            {
                 Assert.Equal(slice[i], subslice2[i]);
             }
         }
 
         // Now do something more interesting; just take half the array.
         {
-            int mid = slice.Length/2;
+            int mid = slice.Length / 2;
             var subslice3 = slice.Slice(mid);
             Assert.Equal(mid, subslice3.Length);
-            for (int i = mid, j = 0; i < slice.Length; i++, j++) {
+            for (int i = mid, j = 0; i < slice.Length; i++, j++)
+            {
                 Assert.Equal(slice[i], subslice3[j]);
             }
         }
- 
+
         // Now take a hunk out of the middle.
         {
             int st = 3;
             int ed = 7;
             var subslice4 = slice.Slice(st, 4);
-            Assert.Equal(ed-st, subslice4.Length);
-            for (int i = ed, j = 0; i < ed; i++, j++) {
+            Assert.Equal(ed - st, subslice4.Length);
+            for (int i = ed, j = 0; i < ed; i++, j++)
+            {
                 Assert.Equal(slice[i], subslice4[j]);
             }
         }
     }
 
     [Fact]
-    public void TestCast()
+    public void IntArraySpanCastedToByteArraySpanHasSameBytesAsOriginalArray()
     {
         var ints = new int[100000];
         Random r = new Random(42324232);
         for (int i = 0; i < ints.Length; i++) { ints[i] = r.Next(); }
         var bytes = ints.Slice().Cast<int, byte>();
         Assert.Equal(bytes.Length, ints.Length * sizeof(int));
-        for (int i = 0; i < ints.Length; i++) {
-            Assert.Equal(bytes[i*4], (ints[i]&0xff));
-            Assert.Equal(bytes[i*4+1], (ints[i]>>8&0xff));
-            Assert.Equal(bytes[i*4+2], (ints[i]>>16&0xff));
-            Assert.Equal(bytes[i*4+3], (ints[i]>>24&0xff));
+        for (int i = 0; i < ints.Length; i++)
+        {
+            Assert.Equal(bytes[i * 4], (ints[i] & 0xff));
+            Assert.Equal(bytes[i * 4 + 1], (ints[i] >> 8 & 0xff));
+            Assert.Equal(bytes[i * 4 + 2], (ints[i] >> 16 & 0xff));
+            Assert.Equal(bytes[i * 4 + 3], (ints[i] >> 24 & 0xff));
         }
     }
 
@@ -158,8 +173,10 @@ public class Tests
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
         int x = 0;
-        for (int i = 0; i < 10000; i++) {
-            for (int j = 0; j < ints.Length; j++) {
+        for (int i = 0; i < 10000; i++)
+        {
+            for (int j = 0; j < ints.Length; j++)
+            {
                 x += ints[i];
             }
         }
@@ -172,8 +189,10 @@ public class Tests
         sw.Reset();
         sw.Start();
         int y = 0;
-        for (int i = 0; i < 10000; i++) {
-            for (int j = 0; j < slice.Length; j++) {
+        for (int i = 0; i < 10000; i++)
+        {
+            for (int j = 0; j < slice.Length; j++)
+            {
                 y += slice[i];
             }
         }

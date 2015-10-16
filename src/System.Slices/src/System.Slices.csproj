@@ -30,9 +30,9 @@
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
   <PropertyGroup>
-    <DecompileToILCommand>ildasm /out:"$(TargetDir)$(TargetName).beforerewrite.il" /nobar "$(TargetPath)"</DecompileToILCommand>
+    <DecompileToILCommand>ildasm /linenum /out:"$(TargetDir)$(TargetName).beforerewrite.il" /nobar "$(TargetPath)"</DecompileToILCommand>
     <RewriteILCommand>"$([System.IO.Path]::GetFullPath('$(SourceDir)System.Slices\tools\ILSub\ILSub.exe'))" "$(TargetDir)$(TargetName).beforerewrite.il" "$(TargetDir)$(TargetName).rewritten.il"</RewriteILCommand>
-    <RecompileILCommand>ilasm /quiet /dll /out:$(TargetPath) /nologo $(TargetDir)$(TargetName).rewritten.il</RecompileILCommand>
+    <RecompileILCommand>ilasm /pdb /quiet /dll /out:$(TargetPath) /nologo $(TargetDir)$(TargetName).rewritten.il</RecompileILCommand>
     <PostBuildEvent>$(DecompileToILCommand) &amp;&amp; $(RewriteILCommand) &amp;&amp; $(RecompileILCommand)</PostBuildEvent>
   </PropertyGroup>
 </Project>
