@@ -51,20 +51,20 @@ namespace System.Text.Json
             new Utf8CodeUnit((byte) '.')
         };
 
-        private static readonly Utf8CodeUnit QuoteString = new Utf8CodeUnit((byte)'"');
-        private static readonly Utf8CodeUnit ColonString = new Utf8CodeUnit((byte)':');
-        private static readonly Utf8CodeUnit CommaString = new Utf8CodeUnit((byte)',');
-        private static readonly Utf8CodeUnit SquareOpenString = new Utf8CodeUnit((byte)'[');
-        private static readonly Utf8CodeUnit SquareCloseString = new Utf8CodeUnit((byte)']');
-        private static readonly Utf8CodeUnit CurlyOpenString = new Utf8CodeUnit((byte)'{');
-        private static readonly Utf8CodeUnit CurlyCloseString = new Utf8CodeUnit((byte)'}');
-        private static readonly Utf8CodeUnit DashString = new Utf8CodeUnit((byte)'-');
-        private static readonly Utf8CodeUnit PeriodString = new Utf8CodeUnit((byte)'.');
-        private static readonly Utf8CodeUnit ZeroString = new Utf8CodeUnit((byte)'0');
-        private static readonly Utf8CodeUnit NineString = new Utf8CodeUnit((byte)'9');
-        private static readonly Utf8CodeUnit StartTrueString = new Utf8CodeUnit((byte)'t');
-        private static readonly Utf8CodeUnit StartFalseString = new Utf8CodeUnit((byte)'f');
-        private static readonly Utf8CodeUnit StartNullString = new Utf8CodeUnit((byte)'n');
+        private static readonly Utf8CodeUnit QuoteString = new Utf8CodeUnit((byte) '"');
+        private static readonly Utf8CodeUnit ColonString = new Utf8CodeUnit((byte) ':');
+        private static readonly Utf8CodeUnit CommaString = new Utf8CodeUnit((byte) ',');
+        private static readonly Utf8CodeUnit SquareOpenString = new Utf8CodeUnit((byte) '[');
+        private static readonly Utf8CodeUnit SquareCloseString = new Utf8CodeUnit((byte) ']');
+        private static readonly Utf8CodeUnit CurlyOpenString = new Utf8CodeUnit((byte) '{');
+        private static readonly Utf8CodeUnit CurlyCloseString = new Utf8CodeUnit((byte) '}');
+        private static readonly Utf8CodeUnit DashString = new Utf8CodeUnit((byte) '-');
+        private static readonly Utf8CodeUnit PeriodString = new Utf8CodeUnit((byte) '.');
+        private static readonly Utf8CodeUnit ZeroString = new Utf8CodeUnit((byte) '0');
+        private static readonly Utf8CodeUnit NineString = new Utf8CodeUnit((byte) '9');
+        private static readonly Utf8CodeUnit StartTrueString = new Utf8CodeUnit((byte) 't');
+        private static readonly Utf8CodeUnit StartFalseString = new Utf8CodeUnit((byte) 'f');
+        private static readonly Utf8CodeUnit StartNullString = new Utf8CodeUnit((byte) 'n');
 
         private static readonly Utf8String TrueString = new Utf8String("true");
         private static readonly Utf8String FalseString = new Utf8String("false");
@@ -144,7 +144,7 @@ namespace System.Text.Json
             var utf8Bytes = new byte[4];
             for (var i = 0; i < utf8Bytes.Length; i++)
             {
-                utf8Bytes[i] = (byte)_str[_index];
+                utf8Bytes[i] = (byte) _str[_index];
                 _index++;
             }
             var utf8BytesString = new Utf8String(utf8Bytes);
@@ -164,7 +164,7 @@ namespace System.Text.Json
             var utf8Bytes = new byte[4];
             for (var i = 0; i < utf8Bytes.Length; i++)
             {
-                utf8Bytes[i] = (byte)_str[_index];
+                utf8Bytes[i] = (byte) _str[_index];
                 _index++;
             }
             var utf8BytesString = new Utf8String(utf8Bytes);
@@ -184,7 +184,7 @@ namespace System.Text.Json
             var utf8Bytes = new byte[4];
             for (var i = 0; i < utf8Bytes.Length; i++)
             {
-                utf8Bytes[i] = (byte)_str[_index];
+                utf8Bytes[i] = (byte) _str[_index];
                 _index++;
             }
             var utf8BytesString = new Utf8String(utf8Bytes);
@@ -219,7 +219,7 @@ namespace System.Text.Json
             var utf8Bytes = new byte[count];
             for (var i = 0; i < count; i++)
             {
-                utf8Bytes[i] = (byte)_str[_index - count + i];
+                utf8Bytes[i] = (byte) _str[_index - count + i];
             }
 
             MoveToNextTokenType();
@@ -268,12 +268,12 @@ namespace System.Text.Json
             }
 
             var number = wholeNumberPart +
-                         decimalNumberPart / decimalNumberPart.ToString(CultureInfo.InvariantCulture).Length;
+                         decimalNumberPart/decimalNumberPart.ToString(CultureInfo.InvariantCulture).Length;
 
             _index--;
             MoveToNextTokenType();
 
-            return isNegative ? number * -1 : number;
+            return isNegative ? number*-1 : number;
         }
 
         private Utf8String ReadNextByte()
@@ -284,7 +284,7 @@ namespace System.Text.Json
             var nextByte = _str[_index];
             MoveToNextTokenType();
             var utf8Bytes = new byte[1];
-            utf8Bytes[0] = (byte)nextByte;
+            utf8Bytes[0] = (byte) nextByte;
             return new Utf8String(utf8Bytes);
         }
 

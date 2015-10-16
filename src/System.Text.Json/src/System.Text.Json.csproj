@@ -18,7 +18,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="System\Text\Json\JsonReader.cs" />
-    <Compile Include="System\Text\Json\JsonWriter.cs" />
+    <Compile Include="JsonReader.cs" />
+    <Compile Include="JsonWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
