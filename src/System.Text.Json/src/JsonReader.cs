@@ -152,6 +152,7 @@ namespace System.Text.Json
             {
                 throw new FormatException("Invalid json, tried to read 'true'.");
             }
+            _index--;
             MoveToNextTokenType();
             return true;
         }
@@ -161,7 +162,7 @@ namespace System.Text.Json
             if (!Read())
                 throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
                                                    ".");
-            var utf8Bytes = new byte[4];
+            var utf8Bytes = new byte[5];
             for (var i = 0; i < utf8Bytes.Length; i++)
             {
                 utf8Bytes[i] = (byte) _str[_index];
@@ -172,8 +173,9 @@ namespace System.Text.Json
             {
                 throw new FormatException("Invalid json, tried to read 'false'.");
             }
+            _index--;
             MoveToNextTokenType();
-            return true;
+            return false;
         }
 
         public object ReadNull()
@@ -192,6 +194,7 @@ namespace System.Text.Json
             {
                 throw new FormatException("Invalid json, tried to read 'null'.");
             }
+            _index--;
             MoveToNextTokenType();
             return true;
         }
@@ -254,6 +257,8 @@ namespace System.Text.Json
 
             var isDecimal = _str[_index] == PeriodString;
 
+            int zeroesSkipped;
+
             if (isDecimal)
             {
                 _index++;
@@ -267,8 +272,11 @@ namespace System.Text.Json
                 decimalNumberPart = result;
             }
 
-            var number = wholeNumberPart +
-                         decimalNumberPart/decimalNumberPart.ToString(CultureInfo.InvariantCulture).Length;
+            var lengthOfNumber = decimalNumberPart.ToString(CultureInfo.InvariantCulture).Length;
+            zeroesSkipped = bytesConsumed - lengthOfNumber;
+            var divider = Math.Pow(10, lengthOfNumber + zeroesSkipped);
+
+            var number = wholeNumberPart + decimalNumberPart/divider;
 
             _index--;
             MoveToNextTokenType();
@@ -375,22 +383,22 @@ namespace System.Text.Json
             }
 
             if (TokenType == JsonTokenType.Value &&
-                (nextByte == DashString || nextByte.Value >= ZeroString.Value || nextByte.Value <= NineString.Value))
+                (nextByte == DashString || (nextByte.Value >= ZeroString.Value && nextByte.Value <= NineString.Value)))
             {
                 _insideNumber = true;
                 return JsonTokenType.Number;
             }
 
             if (TokenType == JsonTokenType.Number && _insideNumber &&
-                (Array.IndexOf(StringInNumbers, nextByte) >= 0 || nextByte.Value >= ZeroString.Value ||
-                 nextByte.Value <= NineString.Value))
+                (Array.IndexOf(StringInNumbers, nextByte) >= 0 || (nextByte.Value >= ZeroString.Value &&
+                                                                   nextByte.Value <= NineString.Value)))
             {
                 return JsonTokenType.Number;
             }
 
             if (TokenType == JsonTokenType.Number && _insideNumber &&
-                !(Array.IndexOf(StringInNumbers, nextByte) >= 0 || nextByte.Value >= ZeroString.Value ||
-                  nextByte.Value <= NineString.Value))
+                !(Array.IndexOf(StringInNumbers, nextByte) >= 0 || (nextByte.Value >= ZeroString.Value &&
+                                                                    nextByte.Value <= NineString.Value)))
             {
                 _insideNumber = false;
                 return JsonTokenType.Number;
