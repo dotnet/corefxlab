@@ -18,6 +18,7 @@
     <Compile Include="CaseBuilderTests.cs" />
     <Compile Include="ChannelTestBase.cs" />
     <Compile Include="DebuggerAttributes.cs" />
+    <Compile Include="TaskChannelTests.cs" />
     <Compile Include="ObservableObserverTests.cs" />
     <Compile Include="SerializationChannelTests.cs" />
     <Compile Include="TestBase.cs" />

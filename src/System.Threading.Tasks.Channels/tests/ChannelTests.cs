@@ -62,6 +62,12 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
+        public void CreateFromTask_InvalidSource_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentNullException>("source", () => Channel.CreateFromTask<int>(null));
+        }
+
+        [Fact]
         public void AsObservable_InvalidSource_ThrowsArgumentException()
         {
             Assert.Throws<ArgumentNullException>("source", () => Channel.AsObservable<int>(null));

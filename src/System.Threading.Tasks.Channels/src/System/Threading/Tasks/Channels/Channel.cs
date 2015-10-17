@@ -78,6 +78,18 @@ namespace System.Threading.Tasks.Channels
             return new SerializationChannel<T>(destination);
         }
 
+        /// <summary>Creates a channel for the value in a task.</summary>
+        /// <typeparam name="T">Specifies the type of the task's result.</typeparam>
+        /// <param name="source">The task.</param>
+        /// <returns>A channel that will contain the result from the task.</returns>
+        public static IReadableChannel<T> CreateFromTask<T>(Task<T> source)
+        {
+            if (source == null)
+                throw new ArgumentNullException("source");
+
+            return new TaskChannel<T>(source);
+        }
+
         /// <summary>Create a channel that consumes data from the source enumerable.</summary>
         /// <typeparam name="T">Specifies the type of data in the enumerable.</typeparam>
         /// <param name="source">The source enumerable from which to read data.</param>

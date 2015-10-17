@@ -26,6 +26,7 @@
   <ItemGroup>
     <Compile Include="System\Collections\Concurrent\SingleProducerConsumerQueue.cs" />
     <Compile Include="System\Threading\IAsyncEnumerator.cs" />
+    <Compile Include="System\Threading\Tasks\Channels\Channel.TaskChannel.cs" />
     <Compile Include="System\Threading\Tasks\Channels\Channel.Observable.cs" />
     <Compile Include="System\Threading\Tasks\Channels\IDebugEnumerator.cs" />
     <Compile Include="System\Threading\Tasks\VoidResult.cs" />

@@ -90,7 +90,7 @@ cross-process and cross-machine, e.g. ```PipeStream``` and ```NetworkStream```. 
 is limited and rudimentary, using BinaryReader/Writer and limited to the types they support, but the design could be augmented
 to support arbitrary serialization models.
 
-### Integration With Existing Interfaces
+### Integration With Existing Types
 
 ```Channel``` includes a ```CreateFromEnumerable``` method that creates a channel from an enumerable:
 ```C#
@@ -115,6 +115,16 @@ public static class Channel
 This allows for subscribing a writeable channel to an observable as an observer, and subscribing other observers 
 to a readable channel as an observable.  With this support, IObservable-based LINQ queries can be written against
 data in channels.
+
+Channels can also be created from ```Task<T>```, providing a channel that'll eventually have at most one element,
+and allowing ```Task<T>```s to be used anywhere a readable channel can be used.
+```C#
+public static class Channel
+{
+    public static IReadableChannel<T> CreateFromTask<T>(Task<T> source);
+	...
+}
+```
 
 ## Additional Support for Reading
 
