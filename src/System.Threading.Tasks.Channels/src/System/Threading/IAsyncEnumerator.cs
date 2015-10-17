@@ -5,7 +5,7 @@ namespace System.Threading.Tasks.Channels
 {
     /// <summary>Represents an enumerator accessed asynchronously.</summary>
     /// <typeparam name="T">Specifies the type of the data enumerated.</typeparam>
-    public interface IAsyncEnumerator<T>
+    public interface IAsyncEnumerator<out T>
     {
         /// <summary>Asynchronously move the enumerator to the next element.</summary>
         /// <returns>
