@@ -119,7 +119,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {
                 // Fast-path cancellation check
                 if (cancellationToken.IsCancellationRequested)
@@ -149,7 +149,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public Task<bool> WaitToReadAsync(CancellationToken cancellationToken)
             {
                 if (cancellationToken.IsCancellationRequested)
                     return Task.FromCanceled<bool>(cancellationToken);
@@ -271,7 +271,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)
             {
                 if (cancellationToken.IsCancellationRequested)
                     return Task.FromCanceled<bool>(cancellationToken);
@@ -298,7 +298,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+            public Task WriteAsync(T item, CancellationToken cancellationToken)
             {
                 if (cancellationToken.IsCancellationRequested)
                     return Task.FromCanceled(cancellationToken);

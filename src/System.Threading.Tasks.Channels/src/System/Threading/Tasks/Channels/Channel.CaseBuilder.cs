@@ -149,7 +149,7 @@ namespace System.Threading.Tasks.Channels
             }
 
             /// <summary>Core of the SelectUntilAsync operation.</summary>
-            private async Task<int> SelectUntilAsyncCore(Func<int, bool> condition, CancellationToken cancellationToken = default(CancellationToken))
+            private async Task<int> SelectUntilAsyncCore(Func<int, bool> condition, CancellationToken cancellationToken)
             {
                 // TODO: This can be optimized further, by reusing WaitForReadAsync tasks across iterations
                 // rather than getting a new one per iteration, by processing multiple completed-as-true WaitForReadTasks
@@ -214,7 +214,7 @@ namespace System.Threading.Tasks.Channels
             }
 
             /// <summary>Core of the SelectAsync operation.</summary>
-            private async Task<bool> SelectAsyncCore(CancellationToken cancellationToken = default(CancellationToken))
+            private async Task<bool> SelectAsyncCore(CancellationToken cancellationToken)
             {
                 // Loop until cancellation occurs or a case is available
                 Task<bool>[] tasks = new Task<bool>[_cases.Count];

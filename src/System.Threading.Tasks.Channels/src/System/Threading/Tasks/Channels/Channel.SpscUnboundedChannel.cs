@@ -50,7 +50,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {
                 T item;
                 if (TryRead(out item))
@@ -59,7 +59,7 @@ namespace System.Threading.Tasks.Channels
                 return ReadAsyncCore(cancellationToken);
             }
 
-            private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken = default(CancellationToken))
+            private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
             {
                 lock (SyncObj)
                 {
@@ -135,7 +135,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public Task<bool> WaitToReadAsync(CancellationToken cancellationToken)
             {
                 var spinner = default(SpinWait);
                 do
@@ -169,7 +169,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -183,7 +183,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+            public Task WriteAsync(T item, CancellationToken cancellationToken)
             {
                 // Writing always succeeds (unless we've already completed writing or cancellation has been requested),
                 // so just TryWrite and return a completed task.
