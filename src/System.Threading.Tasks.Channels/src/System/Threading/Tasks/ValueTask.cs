@@ -9,7 +9,7 @@ namespace System.Threading.Tasks
     /// <summary>Value type discriminated union for a TResult and a <see cref="Task{TResult}"/>.</summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     [DebuggerDisplay("Status = {DebuggerStatus}, Result = {DebuggerResult}")]
-    public struct ValueTask<TResult>
+    public struct ValueTask<TResult> : IEquatable<ValueTask<TResult>>
     {
         /// <summary>The task. this will be non-null iff the operation didn't complete successfully synchronously.</summary>
         private readonly Task<TResult> _task;
@@ -46,6 +46,53 @@ namespace System.Threading.Tasks
         public static implicit operator ValueTask<TResult>(TResult result)
         {
             return new ValueTask<TResult>(result);
+        }
+
+        /// <summary>Returns the hash code for this instance.</summary>
+        public override int GetHashCode()
+        {
+            return
+                _task != null ? _task.GetHashCode() :
+                _result != null ? _result.GetHashCode() :
+                0;
+        }
+
+        /// <summary>Returns a value indicating whether this value is equal to a specified <see cref="object"/>.</summary>
+        public override bool Equals(object obj)
+        {
+            return 
+                obj is ValueTask<TResult> && 
+                Equals((ValueTask<TResult>)obj);
+        }
+
+        /// <summary>Returns a value indicating whether this value is equal to a specified <see cref="ValueTask{TResult}"/> value.</summary>
+        public bool Equals(ValueTask<TResult> other)
+        {
+            if (_task == null && other._task == null)
+            {
+                if (_result == null)
+                {
+                    return other._result == null;
+                }
+                else
+                {
+                    return other._result != null && _result.Equals(other._result);
+                }
+            }
+
+            return _task == other._task;
+        }
+
+        /// <summary>Returns a value indicating whether two <see cref="ValueTask{TResult}"/> values are equal.</summary>
+        public static bool operator==(ValueTask<TResult> left, ValueTask<TResult> right)
+        {
+            return left.Equals(right);
+        }
+
+        /// <summary>Returns a value indicating whether two <see cref="ValueTask{TResult}"/> values are not equal.</summary>
+        public static bool operator!=(ValueTask<TResult> left, ValueTask<TResult> right)
+        {
+            return !left.Equals(right);
         }
 
         /// <summary>
