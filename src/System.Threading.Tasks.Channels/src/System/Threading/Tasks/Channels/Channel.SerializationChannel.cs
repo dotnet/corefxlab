@@ -15,7 +15,7 @@ namespace System.Threading.Tasks.Channels
     public static partial class Channel
     {
         /// <summary>Provides a channel for serializing data to a stream.</summary>
-        private sealed class SerializationChannel<T> : IWriteableChannel<T>
+        private sealed class SerializationChannel<T> : IWritableChannel<T>
         {
             /// <summary>The writer to which data is written.</summary>
             private readonly BinaryWriter _destination;

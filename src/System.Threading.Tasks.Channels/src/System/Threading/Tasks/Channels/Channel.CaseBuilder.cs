@@ -66,7 +66,7 @@ namespace System.Threading.Tasks.Channels
             /// <param name="item">The data to write to the channel.</param>
             /// <param name="action">The synchronous action to invoke once the write is successful.</param>
             /// <returns>This builder.</returns>
-            public CaseBuilder CaseWrite<T>(IWriteableChannel<T> channel, T item, Action action)
+            public CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action)
             {
                 if (channel == null)
                     throw new ArgumentNullException("channel");
@@ -85,7 +85,7 @@ namespace System.Threading.Tasks.Channels
             /// <param name="item">The data to write to the channel.</param>
             /// <param name="func">The asynchronous function to invoke once the write is successful.</param>
             /// <returns>This builder.</returns>
-            public CaseBuilder CaseWrite<T>(IWriteableChannel<T> channel, T item, Func<Task> func)
+            public CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func)
             {
                 if (channel == null)
                     throw new ArgumentNullException("channel");
@@ -360,11 +360,11 @@ namespace System.Threading.Tasks.Channels
             /// <summary>Provides the concrete case used for channel writes with synchronous processing.</summary>
             private sealed class SyncWriteCase<T> : Case
             {
-                private readonly IWriteableChannel<T> _channel;
+                private readonly IWritableChannel<T> _channel;
                 private readonly T _item;
                 private readonly Action _action;
 
-                internal SyncWriteCase(IWriteableChannel<T> channel, T item, Action action)
+                internal SyncWriteCase(IWritableChannel<T> channel, T item, Action action)
                 {
                     _channel = channel;
                     _item = item;
@@ -397,11 +397,11 @@ namespace System.Threading.Tasks.Channels
             /// <summary>Provides the concrete case used for channel writes with asynchronous processing.</summary>
             private sealed class AsyncWriteCase<T> : Case
             {
-                private readonly IWriteableChannel<T> _channel;
+                private readonly IWritableChannel<T> _channel;
                 private readonly T _item;
                 private readonly Func<Task> _action;
 
-                internal AsyncWriteCase(IWriteableChannel<T> channel, T item, Func<Task> action)
+                internal AsyncWriteCase(IWritableChannel<T> channel, T item, Func<Task> action)
                 {
                     _channel = channel;
                     _item = item;
