@@ -28,7 +28,7 @@ namespace System.Threading.Tasks.Channels
 
             public Task Completion { get { return _completion.Task; } }
 
-            public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {
                 // Fast-path cancellation check
                 if (cancellationToken.IsCancellationRequested)
@@ -68,7 +68,7 @@ namespace System.Threading.Tasks.Channels
                 return false;
             }
 
-            public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public Task<bool> WaitToReadAsync(CancellationToken cancellationToken)
             {
                 // Fast-path cancellation check
                 if (cancellationToken.IsCancellationRequested)

@@ -11,9 +11,9 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Provides an observer for a writeable channel.</summary>
         private sealed class ChannelObserver<T> : IObserver<T>
         {
-            private readonly IWriteableChannel<T> _channel;
+            private readonly IWritableChannel<T> _channel;
 
-            internal ChannelObserver(IWriteableChannel<T> channel)
+            internal ChannelObserver(IWritableChannel<T> channel)
             {
                 Debug.Assert(channel != null);
                 _channel = channel;

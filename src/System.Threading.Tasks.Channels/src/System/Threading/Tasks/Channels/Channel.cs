@@ -68,7 +68,7 @@ namespace System.Threading.Tasks.Channels
         /// <typeparam name="T">Specifies the type of data to be written.  This must be an unmanaged/primitive type.</typeparam>
         /// <param name="destination">The destination stream to which to write data.</param>
         /// <returns>A channel that write elements to the destination stream.</returns>
-        public static IWriteableChannel<T> WriteToStream<T>(Stream destination)
+        public static IWritableChannel<T> WriteToStream<T>(Stream destination)
         {
             if (destination == null)
                 throw new ArgumentNullException("destination");
@@ -123,7 +123,7 @@ namespace System.Threading.Tasks.Channels
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <param name="target">The channel to be treated as an observer.</param>
         /// <returns>An observer that forwards to the specified channel.</returns>
-        public static IObserver<T> AsObserver<T>(this IWriteableChannel<T> target)
+        public static IObserver<T> AsObserver<T>(this IWritableChannel<T> target)
         {
             if (target == null)
                 throw new ArgumentNullException("target");
@@ -185,7 +185,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="item">The data to write to the channel</param>
         /// <param name="action">The action to invoke after the data has been written.</param>
         /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(IWriteableChannel<T> channel, T item, Action action)
+        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action)
         {
             return new CaseBuilder().CaseWrite(channel, item, action);
         }
@@ -196,7 +196,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="item">The data to write to the channel</param>
         /// <param name="func">The asynchronous function to invoke after the data has been written.</param>
         /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(IWriteableChannel<T> channel, T item, Func<Task> func)
+        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func)
         {
             return new CaseBuilder().CaseWrite(channel, item, func);
         }

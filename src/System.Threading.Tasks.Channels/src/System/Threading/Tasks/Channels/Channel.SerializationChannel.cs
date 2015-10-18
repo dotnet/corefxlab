@@ -15,7 +15,7 @@ namespace System.Threading.Tasks.Channels
     public static partial class Channel
     {
         /// <summary>Provides a channel for serializing data to a stream.</summary>
-        private sealed class SerializationChannel<T> : IWriteableChannel<T>
+        private sealed class SerializationChannel<T> : IWritableChannel<T>
         {
             /// <summary>The writer to which data is written.</summary>
             private readonly BinaryWriter _destination;
@@ -71,7 +71,7 @@ namespace System.Threading.Tasks.Channels
                 return true;
             }
 
-            public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)
             {
                 // We assume we can always write to the stream (unless we're already canceled).
                 return 
@@ -80,7 +80,7 @@ namespace System.Threading.Tasks.Channels
                     s_trueTask;
             }
 
-            public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+            public Task WriteAsync(T item, CancellationToken cancellationToken)
             {
                 // Fast-path cancellation check
                 if (cancellationToken.IsCancellationRequested)
@@ -122,7 +122,7 @@ namespace System.Threading.Tasks.Channels
 
             public Task Completion { get { return _completion.Task; } }
 
-            public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {
                 // Fast-path cancellation check
                 if (cancellationToken.IsCancellationRequested)
@@ -192,7 +192,7 @@ namespace System.Threading.Tasks.Channels
                 return false;
             }
 
-            public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public Task<bool> WaitToReadAsync(CancellationToken cancellationToken)
             {
                 if (cancellationToken.IsCancellationRequested)
                     return Task.FromCanceled<bool>(cancellationToken);

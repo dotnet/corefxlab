@@ -36,7 +36,7 @@ namespace System.Threading.Tasks.Channels.Tests
             using (AnonymousPipeServerStream serverPipe = new AnonymousPipeServerStream(PipeDirection.Out))
             using (AnonymousPipeClientStream clientPipe = new AnonymousPipeClientStream(PipeDirection.In, serverPipe.ClientSafePipeHandle))
             {
-                IWriteableChannel<T> writer = Channel.WriteToStream<T>(serverPipe);
+                IWritableChannel<T> writer = Channel.WriteToStream<T>(serverPipe);
                 IReadableChannel<T> reader = Channel.ReadFromStream<T>(clientPipe);
 
                 for (int i = 0; i < numItems; i++)
@@ -63,7 +63,7 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             using (AnonymousPipeServerStream serverPipe = new AnonymousPipeServerStream(PipeDirection.Out))
             {
-                IWriteableChannel<int> writer = Channel.WriteToStream<int>(serverPipe);
+                IWritableChannel<int> writer = Channel.WriteToStream<int>(serverPipe);
                 AssertSynchronousTrue(writer.WaitToWriteAsync());
 
                 writer.Complete();
@@ -78,7 +78,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void WriteToStream_Precancellation()
         {
-            IWriteableChannel<int> w = Channel.WriteToStream<int>(new MemoryStream());
+            IWritableChannel<int> w = Channel.WriteToStream<int>(new MemoryStream());
             var cts = new CancellationTokenSource();
             cts.Cancel();
             AssertSynchronouslyCanceled(w.WaitToWriteAsync(cts.Token), cts.Token);
@@ -101,7 +101,7 @@ namespace System.Threading.Tasks.Channels.Tests
             using (AnonymousPipeServerStream serverPipe = new AnonymousPipeServerStream(PipeDirection.Out))
             using (AnonymousPipeClientStream clientPipe = new AnonymousPipeClientStream(PipeDirection.In, serverPipe.ClientSafePipeHandle))
             {
-                IWriteableChannel<int> writer = Channel.WriteToStream<int>(serverPipe);
+                IWritableChannel<int> writer = Channel.WriteToStream<int>(serverPipe);
                 IReadableChannel<int> reader = Channel.ReadFromStream<int>(clientPipe);
 
                 Task.WaitAll(
@@ -132,7 +132,7 @@ namespace System.Threading.Tasks.Channels.Tests
             using (AnonymousPipeServerStream serverPipe = new AnonymousPipeServerStream(PipeDirection.Out))
             using (AnonymousPipeClientStream clientPipe = new AnonymousPipeClientStream(PipeDirection.In, serverPipe.ClientSafePipeHandle))
             {
-                IWriteableChannel<int> writer = Channel.WriteToStream<int>(serverPipe);
+                IWritableChannel<int> writer = Channel.WriteToStream<int>(serverPipe);
                 IReadableChannel<int> reader = Channel.ReadFromStream<int>(clientPipe);
 
                 Task.WaitAll(

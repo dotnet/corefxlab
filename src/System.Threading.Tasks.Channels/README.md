@@ -15,7 +15,7 @@ combination of a few other interfaces that represent the reading and writing hal
 ```C#
 public interface IChannel<T> : IChannel<T, T> { }
 
-public interface IChannel<TInput, TOutput> : IWriteableChannel<TInput>, IReadableChannel<TOutput> { }
+public interface IChannel<TInput, TOutput> : IWritableChannel<TInput>, IReadableChannel<TOutput> { }
 
 public interface IReadableChannel<T>
 {
@@ -25,7 +25,7 @@ public interface IReadableChannel<T>
     Task Completion { get; }
 }
 
-public interface IWriteableChannel<in T>
+public interface IWritableChannel<in T>
 {
     bool TryWrite(T item);
     Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
@@ -33,7 +33,7 @@ public interface IWriteableChannel<in T>
     void Complete(Exception error = null);
 }
 ```
-The ```IReadableChannel<T>``` and ```IWriteableChannel<T>``` types represent these two halves,
+The ```IReadableChannel<T>``` and ```IWritableChannel<T>``` types represent these two halves,
 with the former allowing data to be read from it and the latter allowing data to be written to it.
 The interfaces mirror each other, with operations exposed on each that are counterparts of those
 on the other:
@@ -80,7 +80,7 @@ Several additional channel types are provided to highlight the kinds of things t
 public static class Channel
 {
     public static IReadableChannel<T> ReadFromStream<T>(Stream source);
-    public static IWriteableChannel<T> WriteToStream<T>(Stream destination);
+    public static IWritableChannel<T> WriteToStream<T>(Stream destination);
 	...
 }
 ```
@@ -108,7 +108,7 @@ pushes the enumerator forward.
 public static class Channel
 {
     public static IObservable<T> AsObservable<T>(this IReadableChannel<T> source);
-    public static IObserver<T> AsObserver<T>(this IWriteableChannel<T> target);
+    public static IObserver<T> AsObserver<T>(this IWritableChannel<T> target);
 	...
 }
 ```
@@ -169,8 +169,8 @@ public static class Channel
 {
     public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Action<T> action);
     public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Func<T, Task> func);
-    public static CaseBuilder CaseWrite<T>(IWriteableChannel<T> channel, T item, Action action);
-    public static CaseBuilder CaseWrite<T>(IWriteableChannel<T> channel, T item, Func<Task> func);
+    public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action);
+    public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func);
 	...
 }
 ```
@@ -181,8 +181,8 @@ public sealed class CaseBuilder
     public CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Action<T> action)
     public CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Func<T, Task> func)
 
-    public CaseBuilder CaseWrite<T>(IWriteableChannel<T> channel, T item, Action action)
-    public CaseBuilder CaseWrite<T>(IWriteableChannel<T> channel, T item, Func<Task> func)
+    public CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action)
+    public CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func)
 
     public CaseBuilder CaseDefault(Action action)
     public CaseBuilder CaseDefault(Func<Task> func)
@@ -238,5 +238,5 @@ consumption models.
 If these Channel interfaces were to become part of corefx, System.Threading.Tasks.Dataflow would likely take a dependency on 
 System.Threading.Tasks.Channels as a lower-level set of abstractions, and several of the blocks in System.Threading.Tasks.Dataflow 
 would likely be modified to implement them as well, enabling direct integration between the libraries.  For example, ```BufferBlock<T>``` 
-would  likely implement ```IChannel<T>```, ```ActionBlock<T>``` would likely implement ```IWriteableChannel<T>```, 
+would  likely implement ```IChannel<T>```, ```ActionBlock<T>``` would likely implement ```IWritableChannel<T>```, 
 ```TransformBlock<TInput,TOutput>``` would likely implement ```IChannel<TInput, TOutput>```, etc.

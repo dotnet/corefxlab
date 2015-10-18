@@ -12,7 +12,7 @@ namespace System.Threading.Tasks.Channels
     /// <summary>Represents a channel to and from which data can be written and read.</summary>
     /// <typeparam name="TInput">Specifies the type of data items writable to the channel.</typeparam>
     /// <typeparam name="TOutput">Specifies the type of data items readable from the channel.</typeparam>
-    public interface IChannel<TInput, TOutput> : IWriteableChannel<TInput>, IReadableChannel<TOutput>
+    public interface IChannel<TInput, TOutput> : IWritableChannel<TInput>, IReadableChannel<TOutput>
     {
     }
 
@@ -41,7 +41,7 @@ namespace System.Threading.Tasks.Channels
 
     /// <summary>Represents a channel to which data can be written.</summary>
     /// <typeparam name="T">Specifies the type of data items writable to the channel.</typeparam>
-    public interface IWriteableChannel<in T>
+    public interface IWritableChannel<in T>
     {
         /// <summary>Asynchronously writes a data item to the channel.</summary>
         /// <param name="item">The item to write.</param>

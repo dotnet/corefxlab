@@ -80,7 +80,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {
                 T item;
                 if (TryRead(out item))
@@ -89,7 +89,7 @@ namespace System.Threading.Tasks.Channels
                 return ReadAsyncCore(cancellationToken);
             }
 
-            private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken = default(CancellationToken))
+            private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
             {
                 if (cancellationToken.IsCancellationRequested)
                     return Task.FromCanceled<T>(cancellationToken);
@@ -171,7 +171,7 @@ namespace System.Threading.Tasks.Channels
                 return false;
             }
 
-            public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+            public Task WriteAsync(T item, CancellationToken cancellationToken)
             {
                 if (cancellationToken.IsCancellationRequested)
                     return Task.FromCanceled(cancellationToken);
@@ -206,7 +206,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public Task<bool> WaitToReadAsync(CancellationToken cancellationToken)
             {
                 lock (SyncObj)
                 {
@@ -229,7 +229,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
+            public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)
             {
                 lock (SyncObj)
                 {
