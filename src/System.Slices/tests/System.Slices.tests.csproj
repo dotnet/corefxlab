@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Harness.cs" />
     <Compile Include="Tests.cs" />
+    <Compile Include="UsageScenarioTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\System.Slices.csproj">
