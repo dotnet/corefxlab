@@ -43,14 +43,14 @@ namespace System.Buffers
 
         public void Return(ByteSpan buffer)
         {
-            int spanIndex = BufferIndexFromSpanAddress(ref span);
+            int spanIndex = BufferIndexFromSpanAddress(ref buffer);
 
             if (spanIndex < 0 || spanIndex > _freeList.Length)
             {
                 throw new InvalidOperationException("This buffer is not from this pool.");
             }
 
-            span._data = null;
+            buffer._data = null;
             if (Interlocked.CompareExchange(ref _freeList[spanIndex], 0, 1) != 1) {
                 throw new InvalidOperationException("this buffer has been already returned.");
             }
