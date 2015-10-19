@@ -90,6 +90,12 @@ namespace System.Net.Libuv
                     Dispose();
                     buffer.Dispose();
                 }
+                else if(error == UVError.ECONNRESET)
+                {
+                    Debug.Assert(buffer.Buffer == IntPtr.Zero && buffer.Length == 0);
+                    // no need to dispose
+                    // TODO: what should we do here?
+                }
                 else
                 {
                     Dispose();

@@ -26,7 +26,7 @@ namespace System.Buffers
         {
             var freeIndex = Reserve();
             if (freeIndex == -1) {
-                throw new NotSupportedException("buffer resizing not supported");
+                throw new NotSupportedException("buffer resizing not supported.");
             }
             var start = _bufferSizeInBytes * freeIndex;
             return new ByteSpan(_memory + start, _bufferSizeInBytes);
@@ -41,12 +41,18 @@ namespace System.Buffers
             return (int)index;
         }
 
-        public void Return(ByteSpan span)
+        public void Return(ByteSpan buffer)
         {
             int spanIndex = BufferIndexFromSpanAddress(ref span);
+
+            if (spanIndex < 0 || spanIndex > _freeList.Length)
+            {
+                throw new InvalidOperationException("This buffer is not from this pool.");
+            }
+
             span._data = null;
             if (Interlocked.CompareExchange(ref _freeList[spanIndex], 0, 1) != 1) {
-                throw new InvalidOperationException("this span has been already returned");
+                throw new InvalidOperationException("this buffer has been already returned.");
             }
             if (spanIndex < _nextFree) {
                 _nextFree = spanIndex;
