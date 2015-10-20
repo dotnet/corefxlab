@@ -11,9 +11,8 @@ namespace System.Text.Json
     {
         private Utf8String _str;
         private int _index;
-        private int _insideArray;
         private int _insideObject;
-        private bool _insideNumber;
+        private int _insideArray;
         public JsonTokenType TokenType;
 
         public enum JsonTokenType
@@ -23,16 +22,21 @@ namespace System.Text.Json
             ObjectEnd,
             ArrayStart,
             ArrayEnd,
-            String,
-            Colon,
-            Comma,
+            Pair,
             Value,
-            True,
-            False,
-            Null,
-            Number,
             Finish
         };
+
+        public enum ValueType
+        {
+            String,
+            Number,
+            Object,
+            Array,
+            True,
+            False,
+            Null
+        }
 
         private static readonly Utf8CodeUnit[] EmptyString =
         {
@@ -42,17 +46,7 @@ namespace System.Text.Json
             new Utf8CodeUnit((byte) '\t')
         };
 
-        private static readonly Utf8CodeUnit[] StringInNumbers =
-        {
-            new Utf8CodeUnit((byte) '-'),
-            new Utf8CodeUnit((byte) '+'),
-            new Utf8CodeUnit((byte) 'e'),
-            new Utf8CodeUnit((byte) 'E'),
-            new Utf8CodeUnit((byte) '.')
-        };
-
         private static readonly Utf8CodeUnit QuoteString = new Utf8CodeUnit((byte) '"');
-        private static readonly Utf8CodeUnit ColonString = new Utf8CodeUnit((byte) ':');
         private static readonly Utf8CodeUnit CommaString = new Utf8CodeUnit((byte) ',');
         private static readonly Utf8CodeUnit SquareOpenString = new Utf8CodeUnit((byte) '[');
         private static readonly Utf8CodeUnit SquareCloseString = new Utf8CodeUnit((byte) ']');
@@ -73,10 +67,18 @@ namespace System.Text.Json
         public JsonReader(Utf8String str)
         {
             _str = str;
-            _index = -1;
-            _insideArray = 0;
+            _index = 0;
             _insideObject = 0;
-            _insideNumber = false;
+            _insideArray = 0;
+            TokenType = JsonTokenType.Start;
+        }
+
+        public JsonReader(string str)
+        {
+            _str = new Utf8String(str);
+            _index = 0;
+            _insideObject = 0;
+            _insideArray = 0;
             TokenType = JsonTokenType.Start;
         }
 
@@ -86,153 +88,109 @@ namespace System.Text.Json
 
         public bool Read()
         {
-            return _index < _str.Length;
-        }
-
-        public Utf8String ReadWhiteSpace()
-        {
-            return ReadNextByte();
-        }
-
-        public Utf8String ReadObjectStart()
-        {
-            return ReadNextByte();
-        }
-
-        public Utf8String ReadObjectEnd()
-        {
-            return ReadNextByte();
-        }
-
-        public Utf8String ReadArrayStart()
-        {
-            return ReadNextByte();
-        }
-
-        public Utf8String ReadArrayEnd()
-        {
-            return ReadNextByte();
-        }
-
-        public Utf8String ReadComma()
-        {
-            return ReadNextByte();
-        }
-
-        public Utf8String ReadColon()
-        {
-            return ReadNextByte();
-        }
-
-        public bool ReadStart()
-        {
-            MoveToNextTokenType();
-            return true;
-        }
-
-        public bool ReadFinish()
-        {
-            MoveToNextTokenType();
-            return true;
-        }
-
-        public bool ReadTrue()
-        {
-            if (!Read())
-                throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
-                                                   ".");
-            var utf8Bytes = new byte[4];
-            for (var i = 0; i < utf8Bytes.Length; i++)
-            {
-                utf8Bytes[i] = (byte) _str[_index];
-                _index++;
-            }
-            var utf8BytesString = new Utf8String(utf8Bytes);
-            if (utf8BytesString != TrueString)
-            {
-                throw new FormatException("Invalid json, tried to read 'true'.");
-            }
-            _index--;
-            MoveToNextTokenType();
-            return true;
-        }
-
-        public bool ReadFalse()
-        {
-            if (!Read())
-                throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
-                                                   ".");
-            var utf8Bytes = new byte[5];
-            for (var i = 0; i < utf8Bytes.Length; i++)
-            {
-                utf8Bytes[i] = (byte) _str[_index];
-                _index++;
-            }
-            var utf8BytesString = new Utf8String(utf8Bytes);
-            if (utf8BytesString != FalseString)
-            {
-                throw new FormatException("Invalid json, tried to read 'false'.");
-            }
-            _index--;
-            MoveToNextTokenType();
-            return false;
-        }
-
-        public object ReadNull()
-        {
-            if (!Read())
-                throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
-                                                   ".");
-            var utf8Bytes = new byte[4];
-            for (var i = 0; i < utf8Bytes.Length; i++)
-            {
-                utf8Bytes[i] = (byte) _str[_index];
-                _index++;
-            }
-            var utf8BytesString = new Utf8String(utf8Bytes);
-            if (utf8BytesString != NullString)
-            {
-                throw new FormatException("Invalid json, tried to read 'null'.");
-            }
-            _index--;
-            MoveToNextTokenType();
-            return true;
-        }
-
-        public bool ReadValue()
-        {
-            MoveToNextTokenType();
-            return true;
+            var canRead = _index < _str.Length;
+            if (canRead) MoveToNextTokenType();
+            return canRead;
         }
 
         public Utf8String ReadString()
         {
-            if (!Read())
-                throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
-                                                   ".");
-
+            SkipEmpty();
+            var str = ReadStringValue();
             _index++;
-            var count = 0;
-            while (_str[_index] != QuoteString)
-            {
-                count++;
-                _index++;
-            }
-
-            var utf8Bytes = new byte[count];
-            for (var i = 0; i < count; i++)
-            {
-                utf8Bytes[i] = (byte) _str[_index - count + i];
-            }
-
-            MoveToNextTokenType();
-
-            return count == 0 ? new Utf8String("") : new Utf8String(utf8Bytes);
+            return str;
         }
 
-        public double ReadNumber()
+        public ValueType GetValueType()
         {
-            if (!Read())
+            SkipEmpty();
+            var nextByte = _str[_index];
+
+            if (nextByte == CurlyOpenString)
+            {
+                return ValueType.Object;
+            }
+
+            if (nextByte == SquareOpenString)
+            {
+                return ValueType.Array;
+            }
+
+            if (nextByte == DashString || (nextByte.Value >= ZeroString.Value && nextByte.Value <= NineString.Value))
+            {
+                return ValueType.Number;
+            }
+
+            if (nextByte == StartTrueString)
+            {
+                return ValueType.True;
+            }
+
+            if (nextByte == StartFalseString)
+            {
+                return ValueType.False;
+            }
+
+            if (nextByte == StartNullString)
+            {
+                return ValueType.Null;
+            }
+
+            if (nextByte == QuoteString)
+            {
+                return ValueType.String;
+            }
+
+            throw new ArgumentOutOfRangeException();
+        }
+
+        public object ReadValue()
+        {
+            var type = GetValueType();
+            SkipEmpty();
+            switch (type)
+            {
+                case ValueType.String:
+                    return ReadStringValue();
+                case ValueType.Number:
+                    return ReadNumberValue();
+                case ValueType.True:
+                    return ReadTrueValue();
+                case ValueType.False:
+                    return ReadFalseValue();
+                case ValueType.Null:
+                    return ReadNullValue();
+                case ValueType.Object:
+                    return null;
+                case ValueType.Array:
+                    return null;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private Utf8String ReadStringValue()
+        {
+            if (_index >= _str.Length)
+                throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
+                                                   ".");
+            _index++;
+
+            Utf8String resultString;
+            if (!_str.Substring(_index).TrySubstringTo(QuoteString, out resultString))
+            {
+                return new Utf8String("");
+            }
+
+            _index += resultString.Length + 1;
+
+            SkipEmpty();
+            return resultString.Length == 0 ? new Utf8String("") : resultString;
+        }
+
+        private double ReadNumberValue()
+        {
+            if (_index >= _str.Length)
                 throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
                                                    ".");
 
@@ -278,27 +236,64 @@ namespace System.Text.Json
 
             var number = wholeNumberPart + decimalNumberPart/divider;
 
-            _index--;
-            MoveToNextTokenType();
-
+            SkipEmpty();
             return isNegative ? number*-1 : number;
         }
 
-        private Utf8String ReadNextByte()
+        private bool ReadTrueValue()
         {
-            if (!Read())
+            if (_index >= _str.Length)
                 throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
                                                    ".");
-            var nextByte = _str[_index];
-            MoveToNextTokenType();
-            var utf8Bytes = new byte[1];
-            utf8Bytes[0] = (byte) nextByte;
-            return new Utf8String(utf8Bytes);
+
+            if (_str.Substring(_index, TrueString.Length) != TrueString)
+            {
+                throw new FormatException("Invalid json, tried to read 'true'.");
+            }
+
+            _index += TrueString.Length;
+
+            SkipEmpty();
+            return true;
+        }
+
+        private bool ReadFalseValue()
+        {
+            if (_index >= _str.Length)
+                throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
+                                                   ".");
+
+            if (_str.Substring(_index, FalseString.Length) != FalseString)
+            {
+                throw new FormatException("Invalid json, tried to read 'false'.");
+            }
+
+            _index += FalseString.Length;
+
+            SkipEmpty();
+            return false;
+        }
+
+        private object ReadNullValue()
+        {
+            if (_index >= _str.Length)
+                throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
+                                                   ".");
+
+            if (_str.Substring(_index, NullString.Length) != NullString)
+            {
+                throw new FormatException("Invalid json, tried to read 'null'.");
+            }
+
+            _index += NullString.Length;
+
+            SkipEmpty();
+            return null;
         }
 
         private void SkipEmpty()
         {
-            if (!Read())
+            if (_index >= _str.Length)
                 throw new IndexOutOfRangeException("Json length is " + _str.Length + " and reading index " + _index +
                                                    ".");
             var nextByte = _str[_index];
@@ -311,117 +306,78 @@ namespace System.Text.Json
 
         private JsonTokenType GetNextTokenType()
         {
-            if (!Read() || TokenType == JsonTokenType.Finish)
+            if (TokenType == JsonTokenType.Finish)
                 return JsonTokenType.Finish;
+
+            if (_index >= _str.Length)
+            {
+                return JsonTokenType.Finish;
+            }
 
             SkipEmpty();
 
             var nextByte = _str[_index];
 
+            if (TokenType == JsonTokenType.ArrayStart && nextByte != SquareCloseString)
+            {
+                return JsonTokenType.Value;
+            }
+
+            if (TokenType == JsonTokenType.ObjectStart && nextByte != CurlyCloseString)
+            {
+                return JsonTokenType.Pair;
+            }
+
             if (nextByte == CurlyOpenString)
             {
+                _index++;
                 _insideObject++;
                 return JsonTokenType.ObjectStart;
             }
 
             if (nextByte == CurlyCloseString)
             {
+                _index++;
                 _insideObject--;
                 return JsonTokenType.ObjectEnd;
             }
 
             if (nextByte == SquareOpenString)
             {
+                _index++;
                 _insideArray++;
                 return JsonTokenType.ArrayStart;
             }
 
             if (nextByte == SquareCloseString)
             {
+                _index++;
                 _insideArray--;
                 return JsonTokenType.ArrayEnd;
             }
 
-            if (nextByte == ColonString)
+            if (TokenType == JsonTokenType.Pair && nextByte == CommaString)
             {
-                return JsonTokenType.Colon;
+                _index++;
+                return JsonTokenType.Pair;
             }
 
-            if (nextByte == CommaString)
+            if (TokenType == JsonTokenType.Value && nextByte == CommaString)
             {
-                return JsonTokenType.Comma;
-            }
-
-            if (TokenType == JsonTokenType.ObjectStart || TokenType == JsonTokenType.ObjectEnd)
-            {
-                return JsonTokenType.String;
-            }
-
-            if (TokenType == JsonTokenType.Comma && _insideObject > 0)
-            {
-                return _insideObject > _insideArray ? JsonTokenType.String : JsonTokenType.Value;
-            }
-
-            if (TokenType == JsonTokenType.ArrayStart)
-            {
+                _index++;
                 return JsonTokenType.Value;
             }
 
-            if (TokenType == JsonTokenType.Colon)
+            if (TokenType == JsonTokenType.ArrayEnd && nextByte == CommaString)
             {
-                return JsonTokenType.Value;
+                _index++;
+                return _insideObject > _insideArray ? JsonTokenType.Pair : JsonTokenType.Value;
             }
 
-            if (TokenType == JsonTokenType.Comma && _insideArray > 0)
+            if (TokenType == JsonTokenType.ObjectEnd && nextByte == CommaString)
             {
-                return _insideObject > _insideArray ? JsonTokenType.String : JsonTokenType.Value;
-            }
-
-            if (TokenType == JsonTokenType.Value && nextByte == QuoteString)
-            {
-                return JsonTokenType.String;
-            }
-
-            if (TokenType == JsonTokenType.Value &&
-                (nextByte == DashString || (nextByte.Value >= ZeroString.Value && nextByte.Value <= NineString.Value)))
-            {
-                _insideNumber = true;
-                return JsonTokenType.Number;
-            }
-
-            if (TokenType == JsonTokenType.Number && _insideNumber &&
-                (Array.IndexOf(StringInNumbers, nextByte) >= 0 || (nextByte.Value >= ZeroString.Value &&
-                                                                   nextByte.Value <= NineString.Value)))
-            {
-                return JsonTokenType.Number;
-            }
-
-            if (TokenType == JsonTokenType.Number && _insideNumber &&
-                !(Array.IndexOf(StringInNumbers, nextByte) >= 0 || (nextByte.Value >= ZeroString.Value &&
-                                                                    nextByte.Value <= NineString.Value)))
-            {
-                _insideNumber = false;
-                return JsonTokenType.Number;
-            }
-
-            if (TokenType == JsonTokenType.Value && (nextByte == StartTrueString))
-            {
-                return JsonTokenType.True;
-            }
-
-            if (TokenType == JsonTokenType.Value && (nextByte == StartFalseString))
-            {
-                return JsonTokenType.False;
-            }
-
-            if (TokenType == JsonTokenType.Value && (nextByte == StartNullString))
-            {
-                return JsonTokenType.Null;
-            }
-
-            if (TokenType == JsonTokenType.String && nextByte == QuoteString)
-            {
-                return JsonTokenType.Colon;
+                _index++;
+                return _insideObject > _insideArray ? JsonTokenType.Pair : JsonTokenType.Value;
             }
 
             throw new FormatException("Unable to get next token type. Check json format.");
@@ -429,7 +385,6 @@ namespace System.Text.Json
 
         private void MoveToNextTokenType()
         {
-            if (TokenType != JsonTokenType.Value) _index++;
             TokenType = GetNextTokenType();
         }
     }
