@@ -38,7 +38,7 @@ namespace System.Slices.Tests
             Span<byte> span = new Span<byte>(array);
             Assert.Equal(array.Length, span.Length);
 
-            Assert.NotSame(array, span.Copy());
+            Assert.NotSame(array, span.CreateArray());
             Assert.True(span.ReferenceEquals(span));
             Assert.True(span.Equals(span));
             Assert.True(span.Equals((object)span));

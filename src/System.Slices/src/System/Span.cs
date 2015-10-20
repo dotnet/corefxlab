@@ -128,6 +128,8 @@ namespace System
             Length = length;
         }
 
+        public static Span<T> Empty { get { return default(Span<T>); } }
+
         /// <summary>
         /// Fetches the managed object (if any) that this span points at.
         /// </summary>
@@ -171,7 +173,7 @@ namespace System
         /// allocates, so should generally be avoided, however is sometimes
         /// necessary to bridge the gap with APIs written in terms of arrays.
         /// </summary>
-        public T[] Copy()
+        public T[] CreateArray()
         {
             var dest = new T[Length];
             CopyTo(dest.Slice());
@@ -242,7 +244,7 @@ namespace System
             uint hash = unchecked((uint)Length);
             foreach (T el in this)
             {
-                hash = (hash >> 1) | ((hash >> 31) << 31);
+                hash = (hash >> 7) | (hash << 25);
                 hash ^= unchecked((uint)el.GetHashCode());
             }
 
