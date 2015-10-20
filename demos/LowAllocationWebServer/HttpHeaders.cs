@@ -9,28 +9,11 @@ namespace System.Net.Http.Buffered
     public struct HttpHeaders : IEnumerable<KeyValuePair<Utf8String, Utf8String>>
     {
         private readonly ByteSpan _bytes;
-
-        private readonly List<KeyValuePair<Utf8String, Utf8String>?> _headers;
-
+        
         public HttpHeaders(ByteSpan bytes)
         {
-            _bytes = bytes;
-            _headers = new List<KeyValuePair<Utf8String, Utf8String>?>();
-
-            ParseHeaders();
-        }
-
-        private void ParseHeaders()
-        {
-            var bytes = _bytes;
-            while (bytes.Length > 0)
-            {
-                int parsedBytes;
-                var header = ParseHeaderLine(bytes, out parsedBytes);
-                _headers.Add(header);
-                bytes = bytes.Slice(parsedBytes);
-            }
-        }
+            _bytes = bytes;            
+        }        
 
         private KeyValuePair<Utf8String, Utf8String> ParseHeaderLine(ByteSpan bytes, out int parsedBytes)
         {
@@ -49,13 +32,41 @@ namespace System.Net.Http.Buffered
         {
             get
             {
-                var header = _headers.FirstOrDefault(h => h.HasValue && h.Value.Key == new Utf8String(headerName));
-                
-                return header?.Value ?? Utf8String.Empty;
+                var bytes = _bytes;
+                while (bytes.Length > 0)
+                {
+                    int parsedBytes;
+                    var header = ParseHeaderLine(bytes, out parsedBytes);
+
+                    if (header.Key == headerName)
+                    {
+                        return header.Value;
+                    }                    
+
+                    bytes = bytes.Slice(parsedBytes);
+                }
+
+                return Utf8String.Empty;
             }
         }
 
-        public int Count => _headers.Count;
+        public int Count
+        {
+            get
+            {
+                var count = 0;
+                var bytes = _bytes;
+                while (bytes.Length > 0)
+                {
+                    int parsedBytes;
+                    ParseHeaderLine(bytes, out parsedBytes);
+                    bytes = bytes.Slice(parsedBytes);
+                    count++;
+                }
+
+                return count;
+            }
+        }
 
         public Enumerator GetEnumerator()
         {
