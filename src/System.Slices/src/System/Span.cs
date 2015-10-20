@@ -49,7 +49,9 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
-        public Span(T[] array, int start)
+        // TODO: Should we have this overload? It is really confusing when you also have Span(T* array, int length)
+        //       While with Slice it makes sense it might not in here.
+        internal Span(T[] array, int start)
         {
             Contract.Requires(array != null);
             Contract.RequiresInInclusiveRange(start, array.Length);
@@ -176,7 +178,7 @@ namespace System
         public T[] CreateArray()
         {
             var dest = new T[Length];
-            CopyTo(dest.Slice());
+            TryCopyTo(dest.Slice());
             return dest;
         }
 
@@ -185,12 +187,11 @@ namespace System
         /// must be at least as big as the source, and may be bigger.
         /// </summary>
         /// <param name="dest">The span to copy items into.</param>
-        public void CopyTo(Span<T> dest)
+        public bool TryCopyTo(Span<T> dest)
         {
-            Contract.Requires(dest.Length >= Length);
-            if (Length == 0)
+            if (Length > dest.Length)
             {
-                return;
+                return false;
             }
 
             // TODO(joe): specialize to use a fast memcpy if T is pointerless.
@@ -198,6 +199,7 @@ namespace System
             {
                 dest[i] = this[i];
             }
+            return true;
         }
 
         /// <summary>
@@ -320,18 +322,18 @@ namespace System
         /// </summary>
         public struct Enumerator : IEnumerator<T>
         {
-            Span<T> m_slice;    // The slice being enumerated.
-            int m_position; // The current position.
+            Span<T> _slice;    // The slice being enumerated.
+            int _position; // The current position.
 
             public Enumerator(Span<T> slice)
             {
-                m_slice = slice;
-                m_position = -1;
+                _slice = slice;
+                _position = -1;
             }
 
             public T Current
             {
-                get { return m_slice[m_position]; }
+                get { return _slice[_position]; }
             }
 
             object IEnumerator.Current
@@ -341,18 +343,18 @@ namespace System
 
             public void Dispose()
             {
-                m_slice = default(Span<T>);
-                m_position = -1;
+                _slice = default(Span<T>);
+                _position = -1;
             }
 
             public bool MoveNext()
             {
-                return ++m_position < m_slice.Length;
+                return ++_position < _slice.Length;
             }
 
             public void Reset()
             {
-                m_position = -1;
+                _position = -1;
             }
         }
     }

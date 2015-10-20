@@ -102,7 +102,7 @@ namespace System.Slices.Tests
                     differentArray[array.Length + i] = array[i];
                 }
                 {
-                    Span<byte> equivalentSpan = new Span<byte>(differentArray, array.Length);
+                    Span<byte> equivalentSpan = new Span<byte>(differentArray, array.Length, array.Length);
                     Assert.Equal(span.GetHashCode(), equivalentSpan.GetHashCode());
                     Assert.False(span.ReferenceEquals(equivalentSpan));
                     Assert.True(span.Equals(equivalentSpan));
@@ -255,7 +255,7 @@ namespace System.Slices.Tests
             new byte[] { 1, 2, 3, 4, 5, 6 }, 0, 6)]
         // copy no bytes starting at the end
         [InlineData(
-            (byte[])null,
+            new byte[] { 7, 7, 7, 4, 5, 6 },
             new byte[] { 1, 2, 3, 7, 7, 7 }, 6, 0,
             new byte[] { 7, 7, 7, 4, 5, 6 }, 0, 6)]
         // copy first byte of 1 element array to last position
@@ -310,7 +310,7 @@ namespace System.Slices.Tests
                 Span<byte> spanA = new Span<byte>(a, aidx, acount);
                 Span<byte> spanB = new Span<byte>(b, bidx, bcount);
 
-                spanA.CopyTo(spanB);
+                Assert.True(spanA.TryCopyTo(spanB));
                 Assert.Equal(expected, b);
 
                 Span<byte> spanExpected = new Span<byte>(expected);
@@ -321,19 +321,7 @@ namespace System.Slices.Tests
             {
                 Span<byte> spanA = new Span<byte>(a, aidx, acount);
                 Span<byte> spanB = new Span<byte>(b, bidx, bcount);
-                // TODO: Should this all be ArgumentException?
-
-                try
-                {
-                    spanA.CopyTo(spanB);
-                }
-                catch (Exception e)
-                {
-                    if (!(e is ArgumentException))
-                    {
-                        output.WriteLine("TODO: Are you sure this should be throwing {0}?", e.GetType().FullName);
-                    }
-                }
+                Assert.False(spanA.TryCopyTo(spanB));
             }
         }
     }
