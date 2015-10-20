@@ -30,7 +30,7 @@ public interface IWritableChannel<in T>
     bool TryWrite(T item);
     Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
     Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken));
-    void Complete(Exception error = null);
+    bool TryComplete(Exception error = null);
 }
 ```
 The ```IReadableChannel<T>``` and ```IWritableChannel<T>``` types represent these two halves,
@@ -43,7 +43,7 @@ on the other:
 the task completes with a ```true``` result, at that moment the channel was available for reading or writing, though 
 because these channels may be used concurrently, it's possible the status changed the moment after the operation completed.
 If the task completes with a ```false``` result, the channel has been completed and will not be able to satisfy a read or write.
-- ```Complete```/```Completion```: Channels may be completed, such that no additional items may be written; such channels will "complete" when
+- ```TryComplete```/```Completion```: Channels may be completed, such that no additional items may be written; such channels will "complete" when
 marked as completed and all existing data in the channel has been consumed.  Channels may also be marked as faulted by passing
 an optional ```Exception``` to Complete; this exception will emerge when awaiting on the Completion Task, as well as when trying
 to ```ReadAsync``` from an empty completed collection.
