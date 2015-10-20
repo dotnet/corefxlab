@@ -59,8 +59,9 @@ namespace System.Threading.Tasks.Channels
         /// <returns>true if the item was written to the channel; otherwise, false.</returns>
         bool TryWrite(T item);
 
-        /// <summary>Marks the channel is being complete, meaning no more items will be written to it.</summary>
+        /// <summary>Attempt to mark the channel as being complete, meaning no more items will be written to it.</summary>
         /// <param name="error">Optional Exception indicating a failure that's causing the channel to complete.</param>
-        void Complete(Exception error = null);
+        /// <returns>true if the channel is successfully marked as complete; otherwise, false if the channel is already marked complete.</returns>
+        bool TryComplete(Exception error = null);
     }
 }

@@ -50,14 +50,17 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public void Complete(Exception error = null)
+            public bool TryComplete(Exception error = null)
             {
                 lock (SyncObj)
                 {
                     AssertInvariants();
 
                     // Mark the channel as being done. Since there's no buffered data, we can complete immediately.
-                    if (_completion.Task.IsCompleted) throw CreateInvalidCompletionException();
+                    if (_completion.Task.IsCompleted)
+                    {
+                        return false;
+                    }
                     CompleteWithOptionalError(_completion, error);
 
                     // Fail any blocked readers, as there will be no writers to pair them with.
@@ -78,6 +81,8 @@ namespace System.Threading.Tasks.Channels
                     WakeUpWaiters(_waitingReaders, false);
                     WakeUpWaiters(_waitingWriters, false);
                 }
+
+                return true;
             }
 
             public ValueTask<T> ReadAsync(CancellationToken cancellationToken)

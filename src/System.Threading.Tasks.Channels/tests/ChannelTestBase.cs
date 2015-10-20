@@ -77,6 +77,15 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
+        public void TryComplete_Twice_ReturnsTrueThenFalse()
+        {
+            IChannel<int> c = CreateChannel();
+            Assert.True(c.TryComplete());
+            Assert.False(c.TryComplete());
+            Assert.False(c.TryComplete());
+        }
+
+        [Fact]
         public void SingleProducerConsumer_ConcurrentReadWrite_Success()
         {
             IChannel<int> c = Channel.Create<int>();

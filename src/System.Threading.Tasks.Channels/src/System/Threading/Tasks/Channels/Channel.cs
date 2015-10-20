@@ -201,6 +201,18 @@ namespace System.Threading.Tasks.Channels
             return new CaseBuilder().CaseWrite(channel, item, func);
         }
 
+        /// <summary>Mark the channel as being complete, meaning no more items will be written to it.</summary>
+        /// <param name="channel">The channel to mark as complete.</param>
+        /// <param name="error">Optional Exception indicating a failure that's causing the channel to complete.</param>
+        /// <exception cref="InvalidOperationException">The channel has already been marked as complete.</exception>
+        public static void Complete<T>(this IWritableChannel<T> channel, Exception error = null)
+        {
+            if (channel == null)
+                throw new ArgumentNullException("channel");
+            if (!channel.TryComplete(error))
+                throw CreateInvalidCompletionException();
+        }
+
         /// <summary>Completes the specified TaskCompletionSource.</summary>
         /// <param name="tcs">The source to complete.</param>
         /// <param name="error">

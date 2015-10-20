@@ -51,14 +51,17 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public void Complete(Exception error = null)
+            public bool TryComplete(Exception error = null)
             {
                 lock (SyncObj)
                 {
                     AssertInvariants();
 
                     // Mark that we're done writing
-                    if (_doneWriting != null) throw CreateInvalidCompletionException();
+                    if (_doneWriting != null)
+                    {
+                        return false;
+                    }
                     _doneWriting = error ?? s_doneWritingSentinel;
 
                     // If there are no items in the queue, then we're done (there won't be any more coming).
@@ -80,6 +83,8 @@ namespace System.Threading.Tasks.Channels
                     // no more data will be coming.
                     WakeUpWaiters(_waitingReaders, false);
                 }
+
+                return true;
             }
 
             public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
