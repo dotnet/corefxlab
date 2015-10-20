@@ -289,7 +289,7 @@ namespace System
             // TODO: Should this work with other spans?
             if (obj is Span<T>)
             {
-
+                return Equals((Span<T>)obj);
             }
             return false;
         }

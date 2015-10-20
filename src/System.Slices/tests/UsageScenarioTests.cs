@@ -41,6 +41,7 @@ namespace System.Slices.Tests
             Assert.NotSame(array, span.Copy());
             Assert.True(span.ReferenceEquals(span));
             Assert.True(span.Equals(span));
+            Assert.True(span.Equals((object)span));
             Assert.Equal(span.GetHashCode(), span.GetHashCode());
             Assert.False(span.Equals(array));
 
@@ -82,6 +83,7 @@ namespace System.Slices.Tests
                 Assert.Equal(span.GetHashCode(), sameSpan.GetHashCode());
                 Assert.True(span.ReferenceEquals(sameSpan));
                 Assert.True(span.Equals(sameSpan));
+                Assert.True(span.Equals((object)sameSpan));
             }
 
             {
@@ -89,6 +91,7 @@ namespace System.Slices.Tests
                 Assert.Equal(span.GetHashCode(), structCopy.GetHashCode());
                 Assert.True(span.ReferenceEquals(structCopy));
                 Assert.True(span.Equals(structCopy));
+                Assert.True(span.Equals((object)structCopy));
             }
 
             {
@@ -103,12 +106,14 @@ namespace System.Slices.Tests
                     Assert.Equal(span.GetHashCode(), equivalentSpan.GetHashCode());
                     Assert.False(span.ReferenceEquals(equivalentSpan));
                     Assert.True(span.Equals(equivalentSpan));
+                    Assert.True(span.Equals((object)equivalentSpan));
 
                     if (equivalentSpan.Length > 0)
                     {
                         Span<byte> similarSpan = equivalentSpan.Slice(0, equivalentSpan.Length - 1);
                         Assert.False(span.ReferenceEquals(similarSpan));
                         Assert.False(span.Equals(similarSpan));
+                        Assert.False(span.Equals((object)similarSpan));
                     }
                 }
 
@@ -119,10 +124,12 @@ namespace System.Slices.Tests
                     if (array.Length == 0)
                     {
                         Assert.True(span.Equals(differentSpan));
+                        Assert.True(span.Equals((object)differentSpan));
                     }
                     else
                     {
                         Assert.False(span.Equals(differentSpan));
+                        Assert.False(span.Equals((object)differentSpan));
                     }
                 }
             }
