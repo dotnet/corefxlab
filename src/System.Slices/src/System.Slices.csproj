@@ -10,7 +10,6 @@
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ProjectGuid>{C5FD8740-19EA-4BCC-B518-7F16B55D23CA}</ProjectGuid>
-    <ILModule>$(IntermediateOutputPath)System.Slices.netmodule</ILModule>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -30,9 +29,15 @@
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
   <PropertyGroup>
-    <DecompileToILCommand>ildasm /out:"$(TargetDir)$(TargetName).beforerewrite.il" /nobar "$(TargetPath)"</DecompileToILCommand>
+    <ILDasm Condition="'$(ILDasm)' == '' AND Exists('ildasm.exe')">ildasm.exe</ILDasm>
+    <ILDasm Condition="'$(ILDasm)' == '' AND Exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools\ildasm.exe')">$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools\ildasm.exe</ILDasm>
+    <ILAsm Condition="'$(ILAsm)' == '' AND Exists('ilasm.exe')">ilasm.exe</ILAsm>
+    <ILAsm Condition="'$(ILAsm)' == '' AND Exists('$(WinDir)\Microsoft.NET\Framework\v4.0.30319\ilasm.exe')">$(WinDir)\Microsoft.NET\Framework\v4.0.30319\ilasm.exe</ILAsm>
+    
+    <DecompileToILCommand>"$(ILDasm)" /linenum /out:"$(TargetDir)$(TargetName).beforerewrite.il" /nobar "$(TargetPath)"</DecompileToILCommand>
     <RewriteILCommand>"$([System.IO.Path]::GetFullPath('$(SourceDir)System.Slices\tools\ILSub\ILSub.exe'))" "$(TargetDir)$(TargetName).beforerewrite.il" "$(TargetDir)$(TargetName).rewritten.il"</RewriteILCommand>
-    <RecompileILCommand>ilasm /quiet /dll /out:$(TargetPath) /nologo $(TargetDir)$(TargetName).rewritten.il</RecompileILCommand>
-    <PostBuildEvent>$(DecompileToILCommand) &amp;&amp; $(RewriteILCommand) &amp;&amp; $(RecompileILCommand)</PostBuildEvent>
+    <RecompileILCommand>"$(ILAsm)" /pdb /quiet /dll /out:$(TargetPath) /nologo $(TargetDir)$(TargetName).rewritten.il</RecompileILCommand>
+    <PostBuildEvent Condition="'$(ILDasm)' != '' AND '$(ILAsm)' != ''">$(DecompileToILCommand) &amp;&amp; $(RewriteILCommand) &amp;&amp; $(RecompileILCommand)</PostBuildEvent>
+    <PostBuildEvent Condition="'$(ILDasm)' == '' OR '$(ILAsm)' == ''">echo Please make sure ilasm.exe and ildasm.exe are accessible and rerun build. &amp;&amp; exit /b 1</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -13,7 +13,16 @@ This can result in significant performance wins for software that does a lot of 
 See more information on this component and code samples at the [Wiki]: https://github.com/dotnet/corefxlab/wiki 
 
 * **System.IO.FileSystem.Watcher.Polling**. 
-.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it night be not. This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected. 
+.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it night be not. 
+This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
+allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected. 
+
+* **System.Threading.Tasks.Channels**.
+The System.Threading.Tasks.Channels library provides a set of synchronization data structures for passing data between producers and consumers. 
+Whereas the existing System.Threading.Tasks.Dataflow library is focused on pipelining and connecting together dataflow "blocks" which encapsulate 
+both storage and processing, System.Threading.Tasks.Channels is focused purely on the storage aspect, with data structures used to provide the 
+hand-offs between participants explicitly coded to use the storage. The library is designed to be used with async/await in C#.  See the
+[README.md](https://github.com/dotnet/corefxlab/blob/master/src/System.Threading.Tasks.Channels/README.md) for more information.
 
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `TimeOfDay`.
@@ -52,4 +61,4 @@ This project is a part of the [.NET Foundation].
 
 To find out how you can build and test .NET Core, see the [Developer Guide].
 
-[Developer Guide]: https://github.com/dotnet/corefx/wiki/Developer-Guide
+[Developer Guide]: https://github.com/dotnet/corefx/blob/master/Documentation/project-docs/developer-guide.md
