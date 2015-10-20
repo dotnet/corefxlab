@@ -1,23 +1,19 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information./
+﻿using System.Runtime.CompilerServices;
 
-.assembly extern mscorlib
+namespace System
 {
-  .publickeytoken = (B7 7A 5C 56 19 34 E0 89 )                         // .z\V.4..
-  .ver 4:0:0:0
-}
+    // This class will be removed in post build step, every instance of it will inject IL passed to the constructor as string
+    [AttributeUsage(AttributeTargets.Method)]
+    class ILSub : Attribute
+    {
+        public ILSub(string il) { }
+    }
 
-.module System.Slices.netmodule
-.custom instance void [mscorlib]System.CLSCompliantAttribute::.ctor(bool) = ( 01 00 01 00 00 )
-
-.namespace System
-{
     /// <summary>
     /// A collection of unsafe helper methods that we cannot implement in C#.
     /// NOTE: these can be used for VeryBadThings(tm), so tread with care...
     /// </summary>
-    .class private auto ansi sealed beforefieldinit PtrUtils
-        extends [mscorlib]System.Object
+    sealed class PtrUtils
     {
         // WARNING:
         // The Get and Set methods below do some tricky things.  They accept
@@ -37,9 +33,9 @@
         /// adds them, and safetly dereferences the target (untyped!) address in
         /// a way that the GC will be okay with.  It yields a value of type T.
         /// </summary>
-        .method public hidebysig static !!T Get<T>(
-            object obj, native uint offset) cil managed aggressiveinlining
-        {
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [ILSub(@"
             .maxstack 2
             .locals ([0] uint8& addr)
             ldarg.0     // load the object
@@ -48,17 +44,17 @@
             ldarg.1     // load the offset
             add         // add the offset
             ldobj !!T   // load a T value from the computed address
-            ret
-        }
+            ret")]
+        public static T Get<T>(object obj, UIntPtr offset) { return default(T); }
+
 
         /// <summary>
         /// Takes a (possibly null) object reference, plus an offset in bytes,
         /// adds them, and safely stores the value of type T in a way that the
         /// GC will be okay with.
         /// </summary>
-        .method public hidebysig static void Set<T>(
-            object obj, native uint offset, !!T val) cil managed aggressiveinlining
-        {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [ILSub(@"
             .maxstack 2
             .locals ([0] uint8& addr)
             ldarg.0     // load the object
@@ -68,32 +64,30 @@
             add         // add the offset
             ldarg.2     // load the value to store
             stobj !!T   // store a T value to the computed address
-            ret
-        }
+            ret")]
+        public static void Set<T>(object obj, UIntPtr offset, T val) { }
 
         /// <summary>
         /// Computes the number of bytes offset from an array object reference
         /// to its first element, in a way the GC will be okay with.
         /// </summary>
-        .method public hidebysig static int32 ElemOffset<T>(!!T[] arr) cil managed
-        {
+        [ILSub(@"
             ldarg.0
             ldc.i4 0
             ldelema !!T
             ldarg.0
             sub
-            ret
-        }
+            ret")]
+        public static int ElemOffset<T>(T[] arr) { return default(int); }
 
         /// <summary>
         /// Computes the size of any type T.  This includes managed object types
         /// which C# complains about (because it is architecture dependent).
         /// </summary>
-        .method public hidebysig static int32 SizeOf<T>() cil managed aggressiveinlining
-        {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [ILSub(@"
             sizeof !!T
-            ret
-        }
+            ret")]
+        public static int SizeOf<T>() { return default(int); }
     }
 }
-

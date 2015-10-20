@@ -228,6 +228,64 @@ namespace System
                 Offset == other.Offset && Length == other.Length;
         }
 
+        public override int GetHashCode()
+        {
+            // TODO: Write something better
+            uint hash = unchecked((uint)Length);
+            foreach (T el in this)
+            {
+                hash = (hash >> 1) | ((hash >> 31) << 31);
+                hash ^= unchecked((uint)el.GetHashCode());
+            }
+
+            return unchecked((int)(hash));
+        }
+
+        public bool Equals(Span<T> other)
+        {
+            if (ReferenceEquals(other))
+            {
+                return true;
+            }
+
+            if (this.Length != other.Length)
+            {
+                return false;
+            }
+
+            Enumerator thisIt = this.GetEnumerator();
+            Enumerator otherIt = other.GetEnumerator();
+            while (true)
+            {
+                bool hasNext = thisIt.MoveNext();
+                if (hasNext != otherIt.MoveNext())
+                {
+                    return false;
+                }
+
+                if (!hasNext)
+                {
+                    return true;
+                }
+
+                // TODO: Fix it so it doesn't box (memcmp)
+                if (!thisIt.Current.Equals(otherIt.Current))
+                {
+                    return false;
+                }
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            // TODO: Should this work with other spans?
+            if (obj is Span<T>)
+            {
+
+            }
+            return false;
+        }
+
         /// <summary>
         /// Returns an enumerator over the span's entire contents.
         /// </summary>

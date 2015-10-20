@@ -14,7 +14,7 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23412": {
+      "System.Console/4.0.0-beta-23419": {
         "dependencies": {
           "System.Runtime": "4.0.0",
           "System.IO": "4.0.0"
@@ -34,7 +34,7 @@
           "lib/DNXCore50/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-beta-23412": {
+      "System.Diagnostics.Tools/4.0.1-beta-23419": {
         "dependencies": {
           "System.Runtime": "4.0.0"
         },
@@ -295,13 +295,13 @@
         "runtimes/win8-aot/lib/netcore50/System.Collections.dll"
       ]
     },
-    "System.Console/4.0.0-beta-23412": {
+    "System.Console/4.0.0-beta-23419": {
       "serviceable": true,
-      "sha512": "D/Pk2kfWvaleX6Fj/YOelUieW1uOD+oS0gesfvjqA6cIolxJJZ1fBRBdXsI7LeTIEc4tGRle08/gKJNkZcDPtA==",
+      "sha512": "3qT+FXi8E79ITgXaIPrs/PtlEv9mfWyeqZClbX08/qThv61xM+Ca8J4XyzVnChag7KJdIRTgMG6Ixgq1eI7WsQ==",
       "files": [
         "runtime.json",
-        "System.Console.4.0.0-beta-23412.nupkg",
-        "System.Console.4.0.0-beta-23412.nupkg.sha512",
+        "System.Console.4.0.0-beta-23419.nupkg",
+        "System.Console.4.0.0-beta-23419.nupkg.sha512",
         "System.Console.nuspec",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -359,12 +359,12 @@
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Debug.dll"
       ]
     },
-    "System.Diagnostics.Tools/4.0.1-beta-23412": {
+    "System.Diagnostics.Tools/4.0.1-beta-23419": {
       "serviceable": true,
-      "sha512": "ec1Qnf5fFFQlxQIh5LrIREozAdYZiy2CeK25UEBMzF068tN5jY/zbL+ahSgpmB4cBd2jsBV6974WWSvPwQ0uYg==",
+      "sha512": "tgebApBqia4ev70bHgs/oZ6WgEaxVLdrt0c0G5JA/cUtWGzl0U8X4QdmT/242LeFBVRemrU9n+jMqeE+2fnB8w==",
       "files": [
-        "System.Diagnostics.Tools.4.0.1-beta-23412.nupkg",
-        "System.Diagnostics.Tools.4.0.1-beta-23412.nupkg.sha512",
+        "System.Diagnostics.Tools.4.0.1-beta-23419.nupkg",
+        "System.Diagnostics.Tools.4.0.1-beta-23419.nupkg.sha512",
         "System.Diagnostics.Tools.nuspec",
         "lib/DNXCore50/System.Diagnostics.Tools.dll",
         "lib/net45/_._",

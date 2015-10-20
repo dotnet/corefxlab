@@ -29,7 +29,10 @@
   <ItemGroup>
     <Compile Include="System\Text\UnicodeConstants.cs" />
     <Compile Include="System\Text\UnicodeCodePoint.cs" />
+    <Compile Include="System\Text\Utf16\Utf16LittleEndianCodePointEnumerator.cs" />
     <Compile Include="System\Text\Utf16\Utf16LittleEndianEncoder.cs" />
+    <Compile Include="System\Text\Utf16\Utf16LittleEndianCodePointEnumerable.cs" />
+    <Compile Include="System\Text\Utf8\Utf16LittleEndianStringExtensions.cs" />
     <Compile Include="System\Text\Utf8\Utf8CodeUnit.cs" />
     <Compile Include="System\Text\Utf8\Utf8EncodedCodePoint.cs" />
     <Compile Include="System\Text\Utf8\Utf8Encoder.cs" />
