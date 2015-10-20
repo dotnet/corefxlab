@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net.Http.Buffered;
 using System.Text;
+using System.Text.Utf8;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,7 +19,8 @@ namespace LowAllocationWebServer.Tests
                                     Upgrade-Insecure-Requests: 1
                                     User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36
                                     Accept-Encoding: gzip, deflate, sdch
-                                    Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4";
+                                    Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4
+";
 
         private ByteSpan _headers;
         private HttpHeaders _httpHeaders;
@@ -41,6 +45,18 @@ namespace LowAllocationWebServer.Tests
         public void It_counts_the_number_of_headers_correctly()
         {            
             _httpHeaders.Count.Should().Be(8);
-        }        
+        }
+
+        [TestMethod]
+        public void It_can_get_the_value_of_a_particular_header()
+        {
+            _httpHeaders["Host"].ToString().Should().Be(" localhost:8080");
+        }
+
+        [TestMethod]
+        public void Returns_empty_string_when_header_is_not_present()
+        {
+            ((IEnumerable)_httpHeaders["Content-Length"]).Should().BeEmpty();
+        }
     }
 }
