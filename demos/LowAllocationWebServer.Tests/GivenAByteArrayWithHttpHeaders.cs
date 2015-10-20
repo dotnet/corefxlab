@@ -19,6 +19,7 @@ namespace LowAllocationWebServer.Tests
                                     Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4";
 
         private ByteSpan _headers;
+        private HttpHeaders _httpHeaders;
 
         [TestInitialize]
         public void Setup()
@@ -32,14 +33,14 @@ namespace LowAllocationWebServer.Tests
                     _headers = new ByteSpan(buffer, bytes.Length);
                 }
             }
+
+            _httpHeaders = new HttpHeaders(_headers);
         }
 
         [TestMethod]
         public void It_counts_the_number_of_headers_correctly()
-        {
-            var httpHeaders = new HttpHeaders(_headers);
-
-            httpHeaders.Count.Should().Be(8);
-        }
+        {            
+            _httpHeaders.Count.Should().Be(8);
+        }        
     }
 }

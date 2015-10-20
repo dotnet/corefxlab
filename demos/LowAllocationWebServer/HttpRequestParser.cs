@@ -95,8 +95,7 @@ namespace System.Net.Http.Buffered
 
     public struct HttpHeaders : IEnumerable<KeyValuePair<Utf8String, Utf8String>>
     {
-        // TODO: make this private
-        internal ByteSpan _bytes;
+        private ByteSpan _bytes;
 
         public HttpHeaders(ByteSpan bytes)
         {
