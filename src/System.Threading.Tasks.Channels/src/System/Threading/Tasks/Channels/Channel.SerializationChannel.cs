@@ -19,7 +19,7 @@ namespace System.Threading.Tasks.Channels
         {
             /// <summary>The writer to which data is written.</summary>
             private readonly BinaryWriter _destination;
-            /// <summary>Whether <see cref="Complete(Exception)"/> has been called.</summary>
+            /// <summary>Whether <see cref="TryComplete(Exception)"/> has been called.</summary>
             private bool _isCompleted;
 
             /// <summary>Initialize the channel.</summary>
@@ -29,14 +29,20 @@ namespace System.Threading.Tasks.Channels
                 _destination = new BinaryWriter(destination);
             }
 
-            public void Complete(Exception error = null)
+            public bool TryComplete(Exception error = null)
             {
                 // Complete the channel by disposing of the stream.
                 lock (_destination)
                 {
+                    if (_isCompleted)
+                    {
+                        return false;
+                    }
                     _isCompleted = true;
                     _destination.Dispose();
                 }
+
+                return true;
             }
 
             public unsafe bool TryWrite(T item)

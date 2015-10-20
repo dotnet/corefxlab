@@ -163,6 +163,12 @@ namespace System.Threading.Tasks.Channels.Tests
                 Channel.CaseWrite(Channel.Create<int>(), 0, () => Task.CompletedTask));
         }
 
+        [Fact]
+        public void Complete_InvalidArgument_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => Channel.Complete<int>(null));
+        }
+
         private sealed class CanReadFalseStream : MemoryStream
         {
             public override bool CanRead { get { return false; } }

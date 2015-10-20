@@ -81,14 +81,17 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public void Complete(Exception error = null)
+            public bool TryComplete(Exception error = null)
             {
                 lock (SyncObj)
                 {
                     AssertInvariants();
 
                     // Mark the channel as done for writing.  This may only be done once.
-                    if (_doneWriting != null) throw CreateInvalidCompletionException();
+                    if (_doneWriting != null)
+                    {
+                        return false;
+                    }
                     _doneWriting = error ?? s_doneWritingSentinel;
 
                     // If there are no items in the channel, then there's no more work to be done,
@@ -117,6 +120,8 @@ namespace System.Threading.Tasks.Channels
                     WakeUpWaiters(_waitingReaders, false);
                     WakeUpWaiters(_waitingWriters, false);
                 }
+
+                return true;
             }
 
             public ValueTask<T> ReadAsync(CancellationToken cancellationToken)

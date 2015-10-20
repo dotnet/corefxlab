@@ -23,11 +23,20 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Asynchronously reads a data item from the channel.</summary>
         /// <param name="cancellationToken">The cancellation token to use to cancel the operation.</param>
         /// <returns>A task representing the asynchronous read operation.</returns>
+        /// <remarks>
+        /// The returned task will complete unsuccessfully if the channel is closed and emptied
+        /// before the read can be satisfied.
+        /// </remarks>
         ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>Asynchronously waits for a data to be available.</summary>
         /// <param name="cancellationToken">The cancellation token to use to cancel the operation.</param>
-        /// <returns>A task representing the asynchronous wait.</returns>
+        /// <returns>
+        /// A task representing the asynchronous wait.  The task will complete with a result of true
+        /// when the channel can be read from (however, concurrent access could change that status).
+        /// The task will complete with a result of false when the channel is closed and emptied and won't
+       ///  be producing any more readable data.
+        /// </returns>
         Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>Attempt to read an item from the channel.</summary>
@@ -47,11 +56,17 @@ namespace System.Threading.Tasks.Channels
         /// <param name="item">The item to write.</param>
         /// <param name="cancellationToken">The cancellation token to use to cancel the operation.</param>
         /// <returns>A task representing the asynchronous write operation.</returns>
+        /// <remarks>The returned task will be complete unsuccessfully if the channel is closed before the write completes.</remarks>
         Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>Asynchronously waits for space to be available.</summary>
         /// <param name="cancellationToken">The cancellation token to use to cancel the operation.</param>
-        /// <returns>A task representing the asynchronous wait.</returns>
+        /// <returns>
+        /// A task representing the asynchronous wait.  The task will complete with a result of true
+        /// when the channel can be written to (however, concurrent access could change that status).
+        /// The task will complete with a result of false when the channel is closed and won't be
+        /// accepting any more data.
+        /// </returns>
         Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>Attempt to write an item to the channel.</summary>
@@ -59,8 +74,9 @@ namespace System.Threading.Tasks.Channels
         /// <returns>true if the item was written to the channel; otherwise, false.</returns>
         bool TryWrite(T item);
 
-        /// <summary>Marks the channel is being complete, meaning no more items will be written to it.</summary>
+        /// <summary>Attempt to mark the channel as being complete, meaning no more items will be written to it.</summary>
         /// <param name="error">Optional Exception indicating a failure that's causing the channel to complete.</param>
-        void Complete(Exception error = null);
+        /// <returns>true if the channel is successfully marked as complete; otherwise, false if the channel is already marked complete.</returns>
+        bool TryComplete(Exception error = null);
     }
 }
