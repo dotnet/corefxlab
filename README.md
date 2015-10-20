@@ -22,7 +22,7 @@ The System.Threading.Tasks.Channels library provides a set of synchronization da
 Whereas the existing System.Threading.Tasks.Dataflow library is focused on pipelining and connecting together dataflow "blocks" which encapsulate 
 both storage and processing, System.Threading.Tasks.Channels is focused purely on the storage aspect, with data structures used to provide the 
 hand-offs between participants explicitly coded to use the storage. The library is designed to be used with async/await in C#.  See the
-(README.md)[https://github.com/dotnet/corefxlab/blob/master/src/System.Threading.Tasks.Channels/README.md] for more information.
+[README.md](https://github.com/dotnet/corefxlab/blob/master/src/System.Threading.Tasks.Channels/README.md) for more information.
 
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `TimeOfDay`.
