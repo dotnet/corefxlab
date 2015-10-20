@@ -101,6 +101,20 @@ namespace System.Net.Http.Buffered
         public HttpHeaders(ByteSpan bytes)
         {
             _bytes = bytes;
+            Count = 1;
+
+            ParseHeaders();
+        }
+
+        private void ParseHeaders()
+        {            
+            for (var i = 0; i < _bytes.Length; i++)
+            {                
+                if (_bytes[i] == '\r' && _bytes[i + 1] == '\n')
+                {
+                    Count++;
+                }
+            }
         }
 
         public Utf8String? this[string header]
@@ -111,10 +125,7 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        public int Count
-        {
-            get { throw new NotImplementedException(); } 
-        }
+        public int Count { get; private set; }
 
         public Enumerator GetEnumerator()
         {
