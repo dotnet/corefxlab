@@ -8,7 +8,8 @@ namespace System.Text.Utf8
 {
     partial struct Utf8String
     {
-        public struct CodePointEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
+        // TODO: Name TBD
+        public struct CodePointReverseEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
         {
             // TODO: This object is heavier than string itself... Once we got ByteSpan runtime support, change it.
             // TODO: Reduce number of members when we get Span<byte> runtime support
@@ -24,7 +25,7 @@ namespace System.Text.Utf8
 
             private int _currentLenCache;
 
-            public CodePointEnumerator(byte[] bytes, int index, int length) : this()
+            public CodePointReverseEnumerator(byte[] bytes, int index, int length) : this()
             {
                 if (index + length > bytes.Length)
                     throw new ArgumentOutOfRangeException("index");
@@ -36,7 +37,7 @@ namespace System.Text.Utf8
                 Reset();
             }
 
-            public unsafe CodePointEnumerator(ByteSpan buffer) : this()
+            public unsafe CodePointReverseEnumerator(ByteSpan buffer) : this()
             {
                 if (buffer.UnsafeBuffer == null && buffer.Length != 0)
                     throw new ArgumentNullException("buffer");
@@ -88,13 +89,13 @@ namespace System.Text.Utf8
                     {
                         fixed (byte* pinnedBytes = _bytes)
                         {
-                            ByteSpan buffer = new ByteSpan(pinnedBytes + _index, _endIndex - _index);
-                            succeeded = Utf8Encoder.TryDecodeCodePoint(buffer, out ret, out _currentLenCache);
+                            ByteSpan buffer = new ByteSpan(pinnedBytes + _startIndex, _index - _startIndex);
+                            succeeded = Utf8Encoder.TryDecodeCodePointBackwards(buffer, out ret, out _currentLenCache);
                         }
                     }
                     else
                     {
-                        succeeded = Utf8Encoder.TryDecodeCodePoint(_buffer, out ret, out _currentLenCache);
+                        succeeded = Utf8Encoder.TryDecodeCodePointBackwards(_buffer, out ret, out _currentLenCache);
                     }
 
                     if (!succeeded || _currentLenCache == 0)
@@ -134,12 +135,12 @@ namespace System.Text.Utf8
 
                 if (_bytes != null)
                 {
-                    _index += _currentLenCache;
+                    _index -= _currentLenCache;
                     _currentLenCache = 0;
                 }
                 else
                 {
-                    _buffer = _buffer.Slice(_currentLenCache);
+                    _buffer = _buffer.Slice(0, _buffer.Length - _currentLenCache);
                     _currentLenCache = 0;
                 }
 
@@ -151,7 +152,7 @@ namespace System.Text.Utf8
             {
                 if (_bytes != null)
                 {
-                    _index = _startIndex;
+                    _index = _endIndex;
                 }
                 else
                 {
@@ -180,7 +181,7 @@ namespace System.Text.Utf8
 
                 if (_bytes != null)
                 {
-                    return _index != _endIndex;
+                    return _index > _startIndex;
                 }
                 else
                 {

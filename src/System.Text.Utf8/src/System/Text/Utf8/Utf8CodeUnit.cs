@@ -1,4 +1,6 @@
-﻿namespace System.Text.Utf8
+﻿using System.Runtime.CompilerServices;
+
+namespace System.Text.Utf8
 {
     // TODO: Should we directly use byte or leave it. If we leave it should we leave the name?
     public struct Utf8CodeUnit : IEquatable<Utf8CodeUnit>
@@ -41,6 +43,12 @@
         public static bool operator !=(Utf8CodeUnit left, Utf8CodeUnit right)
         {
             return !left.Equals(right);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsSurrogate(Utf8CodeUnit codeUnit)
+        {
+            return (codeUnit.Value & UnicodeConstants.Utf8SurrogateMask) == UnicodeConstants.Utf8SurrogateValue;
         }
     }
 }
