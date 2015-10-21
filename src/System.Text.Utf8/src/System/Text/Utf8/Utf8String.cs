@@ -7,7 +7,6 @@ using System.Text.Utf16;
 
 namespace System.Text.Utf8
 {
-    // TODO: We should have separate enumerators for code points and code units. Utf8String should implement IEnumerable<Utf8CodeUnit>
     public partial struct Utf8String : IEnumerable<Utf8CodeUnit>, IEquatable<Utf8String>, IComparable<Utf8String> 
     {
         private ByteSpan _buffer;

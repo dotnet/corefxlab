@@ -80,5 +80,11 @@ namespace System.Text
         {
             return !left.Equals(right);
         }
+
+        // TODO: Inline it and make it faster
+        public static bool IsWhitespace(UnicodeCodePoint codePoint)
+        {
+            return Array.BinarySearch<uint>(UnicodeConstants.SortedWhitespaceCodePoints, codePoint.Value) >= 0;
+        }
     }
 }
