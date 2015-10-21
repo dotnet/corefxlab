@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Utf8;
 using LowAllocationServer;
 
@@ -19,13 +18,31 @@ namespace System.Net.Http.Buffered
         {
             get
             {
-                var headers = this.Where(h => h.Key == headerName);
+                foreach (var header in this)
+                {
+                    if (header.Key == headerName)
+                    {
+                        return header.Value;
+                    }
+                }
 
-                return headers.Any() ? headers.First().Value : Utf8String.Empty;
+                return Utf8String.Empty;
             }
         }
 
-        public int Count => this.Count();
+        public int Count
+        {
+            get
+            {
+                var count = 0;
+                foreach (var header in this)
+                {
+                    count++;
+                }
+
+                return count;
+            }
+        }
 
         public IEnumerator<KeyValuePair<Utf8String, Utf8String>> GetEnumerator()
         {
