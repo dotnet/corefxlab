@@ -29,15 +29,7 @@ namespace System.Net.Http.Buffered
 
         public IEnumerator<KeyValuePair<Utf8String, Utf8String>> GetEnumerator()
         {
-            var bytes = _bytes;
-            while (bytes.Length > 0)
-            {
-                int parsedBytes;
-                var header = ParseHeaderLine(bytes, out parsedBytes);
-                bytes = bytes.Slice(parsedBytes);
-
-                yield return header;
-            }
+            return new Enumerator(_bytes);
         }        
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -50,17 +42,71 @@ namespace System.Net.Http.Buffered
             return GetEnumerator();
         }
 
-        private static KeyValuePair<Utf8String, Utf8String> ParseHeaderLine(ByteSpan bytes, out int parsedBytes)
+        private static KeyValuePair<Utf8String, Utf8String> ParseHeaderLine(ByteSpan bytes, int start, out int parsedBytes)
         {
             int consumedBytes;
-            var headerName = new Utf8String(bytes.SliceTo(':', out consumedBytes));
-            parsedBytes = consumedBytes;
+            var headerName = new Utf8String(bytes.SliceTo(start, ':', out consumedBytes));
+            parsedBytes = start + consumedBytes;
 
-            bytes = bytes.Slice(consumedBytes);
-            var headerValue = new Utf8String(bytes.SliceTo('\r', '\n', out consumedBytes));
+            var headerValue = new Utf8String(bytes.SliceTo(start + consumedBytes, '\r', '\n', out consumedBytes));
             parsedBytes += consumedBytes;
 
             return new KeyValuePair<Utf8String, Utf8String>(headerName, headerValue);
+        }
+
+        public struct Enumerator : IEnumerator<KeyValuePair<Utf8String, Utf8String>>
+        {
+            ByteSpan _bytes;
+            private int _readBytes;
+
+            internal Enumerator(ByteSpan bytes)
+            {
+                _bytes = bytes;
+                _readBytes = -1;
+            }
+
+            public bool MoveNext()
+            {                
+                if (_readBytes == -1)
+                {
+                    _readBytes++;                    
+                }
+                else
+                {
+                    ParseHeaderLine(_bytes, _readBytes, out _readBytes);
+                    if (_readBytes >= _bytes.Length)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            public KeyValuePair<Utf8String, Utf8String> Current
+            {
+                get
+                {
+                    if (_readBytes == -1)
+                    {
+                        return new KeyValuePair<Utf8String, Utf8String>();
+                    }
+
+                    int readBytes;
+                    return ParseHeaderLine(_bytes, _readBytes, out readBytes);
+                }
+            }
+
+            object IEnumerator.Current => Current;
+
+            void IDisposable.Dispose()
+            {
+            }
+
+            void IEnumerator.Reset()
+            {
+                _readBytes = -1;
+            }
         }
     }
 }
