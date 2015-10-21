@@ -13,14 +13,14 @@ namespace System
     /// to regular accesses and is a struct so that creation and subslicing do
     /// not require additional allocations.  It is type- and memory-safe.
     /// </summary>
-    public struct Span<T> : IEnumerable<T>
+    public struct Span<T> : IEnumerable<T>, IEquatable<Span<T>>
     {
         /// <summary>A managed array/string; or null for native ptrs.</summary>
-        readonly object  m_object;
+        readonly object _object;
         /// <summary>An byte-offset into the array/string; or a native ptr.</summary>
-        readonly UIntPtr m_offset;
+        readonly UIntPtr _offset;
         /// <summary>Fetches the number of elements this Span contains.</summary>
-        public readonly int Length;
+        public int Length { get; private set; }
 
         /// <summary>
         /// Creates a new span over the entirety of the target array.
@@ -32,8 +32,8 @@ namespace System
         public Span(T[] array)
         {
             Contract.Requires(array != null);
-            m_object = array;
-            m_offset = new UIntPtr((uint)SpanHelpers<T>.OffsetToArrayData);
+            _object = array;
+            _offset = new UIntPtr((uint)SpanHelpers<T>.OffsetToArrayData);
             Length = array.Length;
         }
 
@@ -49,19 +49,23 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
-        public Span(T[] array, int start)
+        // TODO: Should we have this overload? It is really confusing when you also have Span(T* array, int length)
+        //       While with Slice it makes sense it might not in here.
+        internal Span(T[] array, int start)
         {
             Contract.Requires(array != null);
             Contract.RequiresInInclusiveRange(start, array.Length);
-            if (start < array.Length) {
-                m_object = array;
-                m_offset = new UIntPtr(
+            if (start < array.Length)
+            {
+                _object = array;
+                _offset = new UIntPtr(
                     (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
                 Length = array.Length - start;
             }
-            else {
-                m_object = null;
-                m_offset = UIntPtr.Zero;
+            else
+            {
+                _object = null;
+                _offset = UIntPtr.Zero;
                 Length = 0;
             }
         }
@@ -83,15 +87,17 @@ namespace System
         {
             Contract.Requires(array != null);
             Contract.RequiresInInclusiveRange(start, array.Length);
-            if (start < array.Length) {
-                m_object = array;
-                m_offset = new UIntPtr(
+            if (start < array.Length)
+            {
+                _object = array;
+                _offset = new UIntPtr(
                     (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
                 Length = length;
             }
-            else {
-                m_object = null;
-                m_offset = UIntPtr.Zero;
+            else
+            {
+                _object = null;
+                _offset = UIntPtr.Zero;
                 Length = 0;
             }
         }
@@ -109,8 +115,8 @@ namespace System
         {
             Contract.Requires(length >= 0);
             Contract.Requires(length == 0 || ptr != null);
-            m_object = null;
-            m_offset = new UIntPtr(ptr);
+            _object = null;
+            _offset = new UIntPtr(ptr);
             Length = length;
         }
 
@@ -119,17 +125,19 @@ namespace System
         /// </summary>
         internal Span(object obj, UIntPtr offset, int length)
         {
-            m_object = obj;
-            m_offset = offset;
+            _object = obj;
+            _offset = offset;
             Length = length;
         }
+
+        public static Span<T> Empty { get { return default(Span<T>); } }
 
         /// <summary>
         /// Fetches the managed object (if any) that this span points at.
         /// </summary>
         internal object Object
         {
-            get { return m_object; }
+            get { return _object; }
         }
 
         /// <summary>
@@ -137,7 +145,7 @@ namespace System
         /// </summary>
         internal UIntPtr Offset
         {
-            get { return m_offset; }
+            get { return _offset; }
         }
 
         /// <summary>
@@ -148,15 +156,17 @@ namespace System
         /// </exception>
         public T this[int index]
         {
-            get {
+            get
+            {
                 Contract.RequiresInRange(index, Length);
                 return PtrUtils.Get<T>(
-                    m_object, m_offset + (index * PtrUtils.SizeOf<T>()));
+                    _object, _offset + (index * PtrUtils.SizeOf<T>()));
             }
-            set {
+            set
+            {
                 Contract.RequiresInRange(index, Length);
                 PtrUtils.Set<T>(
-                    m_object, m_offset + (index * PtrUtils.SizeOf<T>()), value);
+                    _object, _offset + (index * PtrUtils.SizeOf<T>()), value);
             }
         }
 
@@ -165,10 +175,10 @@ namespace System
         /// allocates, so should generally be avoided, however is sometimes
         /// necessary to bridge the gap with APIs written in terms of arrays.
         /// </summary>
-        public T[] Copy()
+        public T[] CreateArray()
         {
             var dest = new T[Length];
-            CopyTo(dest.Slice());
+            TryCopyTo(dest.Slice());
             return dest;
         }
 
@@ -177,17 +187,19 @@ namespace System
         /// must be at least as big as the source, and may be bigger.
         /// </summary>
         /// <param name="dest">The span to copy items into.</param>
-        public void CopyTo(Span<T> dest)
+        public bool TryCopyTo(Span<T> dest)
         {
-            Contract.Requires(dest.Length >= Length);
-            if (Length == 0) {
-                return;
+            if (Length > dest.Length)
+            {
+                return false;
             }
 
             // TODO(joe): specialize to use a fast memcpy if T is pointerless.
-            for (int i = 0; i < Length; i++) {
+            for (int i = 0; i < Length; i++)
+            {
                 dest[i] = this[i];
             }
+            return true;
         }
 
         /// <summary>
@@ -215,7 +227,7 @@ namespace System
         {
             Contract.Requires(start + length <= Length);
             return new Span<T>(
-                m_object, m_offset + (start * PtrUtils.SizeOf<T>()), length);
+                _object, _offset + (start * PtrUtils.SizeOf<T>()), length);
         }
 
         /// <summary>
@@ -234,7 +246,7 @@ namespace System
             uint hash = unchecked((uint)Length);
             foreach (T el in this)
             {
-                hash = (hash >> 1) | ((hash >> 31) << 31);
+                hash = (hash >> 7) | (hash << 25);
                 hash ^= unchecked((uint)el.GetHashCode());
             }
 
@@ -281,7 +293,7 @@ namespace System
             // TODO: Should this work with other spans?
             if (obj is Span<T>)
             {
-
+                return Equals((Span<T>)obj);
             }
             return false;
         }
@@ -310,18 +322,18 @@ namespace System
         /// </summary>
         public struct Enumerator : IEnumerator<T>
         {
-            Span<T> m_slice;    // The slice being enumerated.
-            int     m_position; // The current position.
+            Span<T> _slice;    // The slice being enumerated.
+            int _position; // The current position.
 
             public Enumerator(Span<T> slice)
             {
-                m_slice = slice;
-                m_position = -1;
+                _slice = slice;
+                _position = -1;
             }
 
             public T Current
             {
-                get { return m_slice[m_position]; }
+                get { return _slice[_position]; }
             }
 
             object IEnumerator.Current
@@ -331,20 +343,20 @@ namespace System
 
             public void Dispose()
             {
-                m_slice = default(Span<T>);
-                m_position = -1;
+                _slice = default(Span<T>);
+                _position = -1;
             }
 
             public bool MoveNext()
             {
-                return ++m_position < m_slice.Length;
+                return ++_position < _slice.Length;
             }
 
             public void Reset()
             {
-                m_position = -1;
+                _position = -1;
             }
-        }        
+        }
     }
 }
 

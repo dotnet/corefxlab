@@ -54,7 +54,7 @@ namespace System
         /// </exception>
         public static Span<T> Slice<T>(this T[] array, int start, int length)
         {
-           return new Span<T>(array, start, length);
+            return new Span<T>(array, start, length);
         }
 
         /// <summary>
@@ -134,7 +134,8 @@ namespace System
             where U : struct
         {
             int countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
-            if (countOfU == 0) {
+            if (countOfU == 0)
+            {
                 return default(Span<U>);
             }
             return new Span<U>(slice.Object, slice.Offset, countOfU);
@@ -169,7 +170,8 @@ namespace System
 
         public static bool Contains(this Span<char> str, Span<char> value)
         {
-            if (value.Length > str.Length) {
+            if (value.Length > str.Length)
+            {
                 return false;
             }
             return str.IndexOf(value) >= 0;
@@ -177,13 +179,16 @@ namespace System
 
         public static bool EndsWith(this Span<char> str, Span<char> value)
         {
-            if (value.Length > str.Length) {
+            if (value.Length > str.Length)
+            {
                 return false;
             }
 
             int j = str.Length - value.Length - 1;
-            foreach (var c in value) {
-                if (str[j] != c) {
+            foreach (var c in value)
+            {
+                if (str[j] != c)
+                {
                     return false;
                 }
                 j++;
@@ -263,12 +268,15 @@ namespace System
 
         public static bool StartsWith(this Span<char> str, Span<char> value)
         {
-            if (value.Length > str.Length) {
+            if (value.Length > str.Length)
+            {
                 return false;
             }
 
-            for (int i = 0; i < value.Length; i++) {
-                if (str[i] != value[i]) {
+            for (int i = 0; i < value.Length; i++)
+            {
+                if (str[i] != value[i])
+                {
                     return false;
                 }
             }
