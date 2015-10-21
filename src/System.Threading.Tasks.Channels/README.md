@@ -48,6 +48,13 @@ marked as completed and all existing data in the channel has been consumed.  Cha
 an optional ```Exception``` to Complete; this exception will emerge when awaiting on the Completion Task, as well as when trying
 to ```ReadAsync``` from an empty completed collection.
 
+```ReadAsync``` is defined to return a ```ValueTask<T>```, a new struct type included in this library.  ```ValueTask<T>``` is a discriminated 
+union of a ```T``` and a ```Task<T>```, making it allocation-free for ```ReadAsync<T>``` to synchronously return a ```T``` value it has 
+available (in contrast to using ```Task.FromResult<T>```, which needs to allocate a ```Task<T>``` instance).   ```ValueTask<T>``` is awaitable, 
+so most consumption of instances will be indistinguishable from with a ```Task<T>```.  If a ```Task<T>``` is needed, one can be retrieved using 
+```ValueTask<T>```'s ```AsTask()``` method, which will either return the ```Task<T>``` it stores internally or will return an instance created
+from the ```T``` it stores.
+
 ## Core Channels
 
 Any type may implement one or more of these interfaces to be considered a channel.  However, several core channels are built-in
