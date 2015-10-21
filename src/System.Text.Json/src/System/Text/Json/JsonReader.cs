@@ -23,8 +23,7 @@ namespace System.Text.Json
             ArrayStart,
             ArrayEnd,
             Pair,
-            Value,
-            Finish
+            Value
         };
 
         public enum ValueType
@@ -53,12 +52,15 @@ namespace System.Text.Json
         private static readonly Utf8CodeUnit CurlyOpenString = new Utf8CodeUnit((byte) '{');
         private static readonly Utf8CodeUnit CurlyCloseString = new Utf8CodeUnit((byte) '}');
         private static readonly Utf8CodeUnit DashString = new Utf8CodeUnit((byte) '-');
+        private static readonly Utf8CodeUnit PlusString = new Utf8CodeUnit((byte) '+');
         private static readonly Utf8CodeUnit PeriodString = new Utf8CodeUnit((byte) '.');
         private static readonly Utf8CodeUnit ZeroString = new Utf8CodeUnit((byte) '0');
         private static readonly Utf8CodeUnit NineString = new Utf8CodeUnit((byte) '9');
         private static readonly Utf8CodeUnit StartTrueString = new Utf8CodeUnit((byte) 't');
         private static readonly Utf8CodeUnit StartFalseString = new Utf8CodeUnit((byte) 'f');
         private static readonly Utf8CodeUnit StartNullString = new Utf8CodeUnit((byte) 'n');
+        private static readonly Utf8CodeUnit LowerCaseExpString = new Utf8CodeUnit((byte) 'e');
+        private static readonly Utf8CodeUnit UpperCaseExpString = new Utf8CodeUnit((byte) 'E');
 
         private static readonly Utf8String TrueString = new Utf8String("true");
         private static readonly Utf8String FalseString = new Utf8String("false");
@@ -176,16 +178,34 @@ namespace System.Text.Json
                                                    ".");
             _index++;
 
-            Utf8String resultString;
-            if (!_str.Substring(_index).TrySubstringTo(QuoteString, out resultString))
+            var count = _index;
+            Utf8String outString;
+            do
             {
-                return new Utf8String("");
-            }
+                if (!_str.Substring(count).TrySubstringTo(QuoteString, out outString))
+                {
+                    return new Utf8String("");
+                }
+                count += outString.Length + 1;
+            } while (GetNumOfBackSlashesAtEndOfString(outString)%2 != 0);
 
-            _index += resultString.Length + 1;
+            var strLength = count - _index;
+            var resultString = _str.Substring(_index, strLength - 1);
+            _index += strLength;
 
             SkipEmpty();
             return resultString.Length == 0 ? new Utf8String("") : resultString;
+        }
+
+        private static int GetNumOfBackSlashesAtEndOfString(Utf8String str)
+        {
+            var numOfBackSlashes = 0;
+            while (str.EndsWith(new Utf8String("\\")))
+            {
+                str = str.Substring(0, str.Length - 1);
+                numOfBackSlashes++;
+            }
+            return numOfBackSlashes;
         }
 
         private double ReadNumberValue()
@@ -201,43 +221,46 @@ namespace System.Text.Json
             }
 
             int bytesConsumed;
-            var substr = _str.Substring(_index);
+            var numberValue = (double) ReadLongIntegerValue(out bytesConsumed);
 
+            var isDecimal = _str[_index] == PeriodString;
+            if (isDecimal)
+            {
+                _index++;
+                var decimalNumberPart = ReadLongIntegerValue(out bytesConsumed);
+                var lengthOfDecimalPart = decimalNumberPart.ToString(CultureInfo.InvariantCulture).Length;
+                var zeroesSkipped = bytesConsumed - lengthOfDecimalPart;
+                var divisor = Math.Pow(10, lengthOfDecimalPart + zeroesSkipped);
+                numberValue += decimalNumberPart/divisor;
+            }
+
+            var isExp = _str[_index] == LowerCaseExpString || _str[_index] == UpperCaseExpString;
+            if (isExp)
+            {
+                _index++;
+                var isExpNegative = _str[_index] == DashString;
+                if (isExpNegative || _str[_index] == PlusString)
+                {
+                    _index++;
+                }
+                var exponentValue = (uint) ReadLongIntegerValue(out bytesConsumed);
+                numberValue *= (Math.Pow(10, isExpNegative ? exponentValue*-1 : exponentValue));
+            }
+
+            SkipEmpty();
+            return isNegative ? numberValue*-1 : numberValue;
+        }
+
+        private ulong ReadLongIntegerValue(out int bytesConsumed)
+        {
+            var substr = _str.Substring(_index);
             ulong result;
             if (!InvariantParser.TryParse(substr, out result, out bytesConsumed))
             {
                 throw new FormatException("Invalid json, tried to read a number.");
             }
             _index += bytesConsumed;
-
-            var wholeNumberPart = result;
-            double decimalNumberPart = 0;
-
-            var isDecimal = _str[_index] == PeriodString;
-
-            int zeroesSkipped;
-
-            if (isDecimal)
-            {
-                _index++;
-                substr = _str.Substring(_index);
-                if (!InvariantParser.TryParse(substr, out result, out bytesConsumed))
-                {
-                    throw new FormatException("Invalid json, tried to read a number.");
-                }
-                _index += bytesConsumed;
-
-                decimalNumberPart = result;
-            }
-
-            var lengthOfNumber = decimalNumberPart.ToString(CultureInfo.InvariantCulture).Length;
-            zeroesSkipped = bytesConsumed - lengthOfNumber;
-            var divider = Math.Pow(10, lengthOfNumber + zeroesSkipped);
-
-            var number = wholeNumberPart + decimalNumberPart/divider;
-
-            SkipEmpty();
-            return isNegative ? number*-1 : number;
+            return result;
         }
 
         private bool ReadTrueValue()
@@ -306,14 +329,6 @@ namespace System.Text.Json
 
         private JsonTokenType GetNextTokenType()
         {
-            if (TokenType == JsonTokenType.Finish)
-                return JsonTokenType.Finish;
-
-            if (_index >= _str.Length)
-            {
-                return JsonTokenType.Finish;
-            }
-
             SkipEmpty();
 
             var nextByte = _str[_index];

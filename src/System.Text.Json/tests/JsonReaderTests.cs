@@ -9,6 +9,11 @@ namespace System.Text.Json.Tests
         [Fact]
         public void ReadBasicJson()
         {
+            var testJson = CreateJson();
+            const string expectedTestJson =
+                "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1 Microsoft Way\",\"city\":\"Redmond\",\"zip\":98052}}";
+            Assert.Equal(testJson.ToString(), expectedTestJson);
+
             const string jsonString =
                 "{\n   \"age\" : 30,\n   \"first\" : \"John\",\n   \"last\" : \"Smith\",\n   \"phoneNumbers\" " +
                 ": [\n      \"425-000-1212\",\n      \"425-000-1213\"\n   ],\n   \"address\" : {\n      \"street\" : " +
@@ -53,7 +58,6 @@ namespace System.Text.Json.Tests
                 "{\"string\":\"string\",\"number\":5,\"decimal\":3516512.13512,\"long\":9.22337203685478E+18,\"notLong\":922854776000.12,\"boolean\":false,\"object\":{},\"array\":[],\"null\":null,\"emptyArray\":[],\"emptyObject\":{},\"arrayString\":[\"alpha\",\"beta\"],\"arrayNum\":[1,212512.01,3],\"arrayBool\":[false,true,true],\"arrayNull\":[null,null],\"arrayObject\":[{\"firstName\":\"name1\",\"lastName\":\"name\"},{\"firstName\":\"name1\",\"lastName\":\"name\"},{\"firstName\":\"name2\",\"lastName\":\"name\"},{\"firstName\":\"name3\",\"lastName\":\"name1\"}],\"arrayArray\":[[null,false,5,\"-0215.512501\",9.22337203685478E+18],[{},true,null,125651,\"simple\"],[{\"field\":null},\"hi\"]]}";
             var readJson = ReadJson(jsonString);
             var json = readJson.ToString();
-
             Assert.Equal(json, expectedJson);
 
             Assert.Equal(readJson.GetValueFromPropertyName("long")[0].NumberValue, 9.2233720368547758E+18);
@@ -63,6 +67,158 @@ namespace System.Text.Json.Tests
             Assert.Equal(arrayString[0].ArrayValue.Elements[0].Values.Count, 2);
             Assert.Equal(readJson.GetValueFromPropertyName("firstName").Count, 4);
             Assert.Equal(readJson.GetValueFromPropertyName("propertyDNE").Count, 0);
+        }
+
+        [Fact]
+        public void ReadJsonSpecialStrings()
+        {
+            const string jsonString =
+                "{\"Here is a string: \\\"\\\"\":\"Here is a hex value -\\u024A\",\"Here is a back slash\\\\\":[\"Multiline\n String \n\",\"\tMul\r\ntiline\r String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\r\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}";
+            var readJson = ReadJson(jsonString);
+            var json = readJson.ToString();
+            Assert.Equal(json, jsonString);
+        }
+
+        [Fact]
+        public void ReadJsonSpecialNumbers()
+        {
+            const string jsonString =
+                "{\"+testZero+\" : 0,\"+testSmallNum+\" : 0.1,\"+testeZero+\" : 0.1e0,\"+testENegtiveWithZero+\" : 0E-1,\"+testeNegativeWithInt+\" : 2155e-5,\"+testEPositiveWithDecimal+\" : 2152.1541E+2,\"+testePositiveWithLargeInt+\" : 18446744073709551615E109,\"+testeNegativeWithLargeDecimal+\" : 125125612512512.512512e-0123,\"-testZero-\" : -0,\"-testSmallNum-\" : -0.1,\"-testeZero-\" : -0.1e0,\"-testENegtiveWithZero-\" : -0E-1,\"-testeNegativeWithInt-\" : -2155e-5,\"-testEPositiveWithDecimal-\" : -2152.1541E+2,\"-testePositiveWithLargeInt-\" :-18446744073709551615E109,\"-testeNegativeWithLargeDecimal-\" : -125125612512512.512512e-0123}";
+            const string expectedJson =
+                "{\"+testZero+\":0,\"+testSmallNum+\":0.1,\"+testeZero+\":0.1,\"+testENegtiveWithZero+\":0,\"+testeNegativeWithInt+\":0.02155,\"+testEPositiveWithDecimal+\":215215.41,\"+testePositiveWithLargeInt+\":1.84467440737096E+128,\"+testeNegativeWithLargeDecimal+\":1.25125612512513E-109,\"-testZero-\":0,\"-testSmallNum-\":-0.1,\"-testeZero-\":-0.1,\"-testENegtiveWithZero-\":0,\"-testeNegativeWithInt-\":-0.02155,\"-testEPositiveWithDecimal-\":-215215.41,\"-testePositiveWithLargeInt-\":-1.84467440737096E+128,\"-testeNegativeWithLargeDecimal-\":-1.25125612512513E-109}";
+            var readJson = ReadJson(jsonString);
+            var json = readJson.ToString();
+            Assert.Equal(json, expectedJson);
+        }
+
+        private static Json CreateJson()
+        {
+            var valueAge = new Value
+            {
+                Type = Value.ValueType.Number,
+                NumberValue = 30
+            };
+
+            var pairAge = new Pair
+            {
+                Name = "age",
+                Value = valueAge
+            };
+
+            var valueFirst = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "John"
+            };
+
+            var pairFirst = new Pair
+            {
+                Name = "first",
+                Value = valueFirst
+            };
+
+            var valueLast = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "Smith"
+            };
+
+            var pairLast = new Pair
+            {
+                Name = "last",
+                Value = valueLast
+            };
+
+
+            var value1 = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "425-000-1212"
+            };
+
+            var value2 = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "425-000-1213"
+            };
+
+            var values = new List<Value> {value1, value2};
+            var elementInner = new Elements {Values = values};
+            var elementsInner = new List<Elements> {elementInner};
+            var arrInner = new Array {Elements = elementsInner};
+
+            var valuePhone = new Value
+            {
+                Type = Value.ValueType.Array,
+                ArrayValue = arrInner
+            };
+
+            var pairPhone = new Pair
+            {
+                Name = "phoneNumbers",
+                Value = valuePhone
+            };
+
+            var valueStreet = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "1 Microsoft Way"
+            };
+
+            var pairStreet = new Pair
+            {
+                Name = "street",
+                Value = valueStreet
+            };
+
+            var valueCity = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "Redmond"
+            };
+
+            var pairCity = new Pair
+            {
+                Name = "city",
+                Value = valueCity
+            };
+
+            var valueZip = new Value
+            {
+                Type = Value.ValueType.Number,
+                NumberValue = 98052
+            };
+
+            var pairZip = new Pair
+            {
+                Name = "zip",
+                Value = valueZip
+            };
+
+            var pairsInner = new List<Pair> {pairStreet, pairCity, pairZip};
+            var memberInner = new Members {Pairs = pairsInner};
+            var membersInner = new List<Members> {memberInner};
+            var objInner = new Object {Members = membersInner};
+
+            var valueAddress = new Value
+            {
+                Type = Value.ValueType.Object,
+                ObjectValue = objInner
+            };
+
+            var pairAddress = new Pair
+            {
+                Name = "address",
+                Value = valueAddress
+            };
+
+            var pairs = new List<Pair> {pairAge, pairFirst, pairLast, pairPhone, pairAddress};
+            var member = new Members {Pairs = pairs};
+            var members = new List<Members> {member};
+            var obj = new Object {Members = members};
+            var json = new Json {Object = obj};
+
+            return json;
         }
 
         private static Json ReadJson(string jsonString)
@@ -128,8 +284,6 @@ namespace System.Text.Json.Tests
                         break;
                     case JsonReader.JsonTokenType.Value:
                         if (jsonValues != null) jsonValues.Add(GetValue(ref jsonReader));
-                        break;
-                    case JsonReader.JsonTokenType.Finish:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -205,8 +359,6 @@ namespace System.Text.Json.Tests
                         break;
                     case JsonReader.JsonTokenType.Value:
                         break;
-                    case JsonReader.JsonTokenType.Finish:
-                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -245,8 +397,6 @@ namespace System.Text.Json.Tests
                         break;
                     case JsonReader.JsonTokenType.Value:
                         if (jsonValues != null) jsonValues.Add(GetValue(ref jsonReader));
-                        break;
-                    case JsonReader.JsonTokenType.Finish:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

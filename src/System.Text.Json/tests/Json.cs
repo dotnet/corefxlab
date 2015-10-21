@@ -26,12 +26,16 @@ namespace System.Text.Json.Tests
         {
             var values = new List<Value>();
 
-            if (obj == null) return values;
+            if (obj == null || obj.Members == null) return values;
 
             foreach (var member in obj.Members)
             {
+                if (member == null || member.Pairs == null) return values;
+
                 foreach (var pair in member.Pairs)
                 {
+                    if (pair == null || pair.Value == null) return values;
+
                     if (pair.Value.Type == Value.ValueType.Object)
                     {
                         values.AddRange(GetValueFromPropertyName(str, pair.Value.ObjectValue));
@@ -39,11 +43,15 @@ namespace System.Text.Json.Tests
 
                     if (pair.Value.Type == Value.ValueType.Array)
                     {
+                        if (pair.Value.ArrayValue == null || pair.Value.ArrayValue.Elements == null) return values;
+
                         foreach (var element in pair.Value.ArrayValue.Elements)
                         {
+                            if (element == null || element.Values == null) return values;
+
                             foreach (var value in element.Values)
                             {
-                                if (value.Type == Value.ValueType.Object)
+                                if (value != null && value.Type == Value.ValueType.Object)
                                 {
                                     values.AddRange(GetValueFromPropertyName(str, value.ObjectValue));
                                 }
@@ -68,18 +76,25 @@ namespace System.Text.Json.Tests
         private string OutputObject(Object obj)
         {
             var str = "";
+
+            if (obj == null || obj.Members == null) return str;
+
             foreach (var member in obj.Members)
             {
                 str += "{";
                 str += OutputMembers(member);
                 str += "}";
             }
+
             return str;
         }
 
         private string OutputMembers(Members members)
         {
             var str = "";
+
+            if (members == null || members.Pairs == null) return str;
+
             for (var i = 0; i < members.Pairs.Count; i++)
             {
                 str += OutputPair(members.Pairs[i]);
@@ -94,6 +109,9 @@ namespace System.Text.Json.Tests
         private string OutputPair(Pair pair)
         {
             var str = "";
+
+            if (pair == null) return str;
+
             str += "\"" + pair.Name + "\":";
             str += OutputValue(pair.Value);
             return str;
@@ -102,18 +120,25 @@ namespace System.Text.Json.Tests
         private string OutputArray(Array array)
         {
             var str = "";
+
+            if (array == null || array.Elements == null) return str;
+
             foreach (var element in array.Elements)
             {
                 str += "[";
                 str += OutputElements(element);
                 str += "]";
             }
+
             return str;
         }
 
         private string OutputElements(Elements elements)
         {
             var str = "";
+
+            if (elements == null || elements.Values == null) return str;
+
             for (var i = 0; i < elements.Values.Count; i++)
             {
                 str += OutputValue(elements.Values[i]);
@@ -128,6 +153,9 @@ namespace System.Text.Json.Tests
         private string OutputValue(Value value)
         {
             var str = "";
+
+            if (value == null) return str;
+
             var type = value.Type;
             switch (type)
             {
