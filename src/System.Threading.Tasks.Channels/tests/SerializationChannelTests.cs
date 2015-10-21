@@ -161,6 +161,16 @@ namespace System.Threading.Tasks.Channels.Tests
             }
         }
 
+        [Fact]
+        public async Task TryWrite_AfterComplete()
+        {
+            IWritableChannel<int> c = Channel.WriteToStream<int>(new MemoryStream());
+            Assert.True(c.TryComplete());
+            Assert.False(c.TryWrite(42));
+            AssertSynchronousFalse(c.WaitToWriteAsync());
+            await Assert.ThrowsAnyAsync<InvalidOperationException>(() => c.WriteAsync(42));
+            Assert.False(c.TryComplete());
+        }
 
     }
 }

@@ -26,11 +26,14 @@ namespace System.Threading.Tasks.Channels
 
             public Task Completion { get { return _completion.Task; } }
 
-            public void Complete(Exception error = null)
+            public bool TryComplete(Exception error = null)
             {
                 lock (SyncObj)
                 {
-                    if (_doneWriting != null) throw CreateInvalidCompletionException();
+                    if (_doneWriting != null)
+                    {
+                        return false;
+                    }
                     _doneWriting = error ?? s_doneWritingSentinel;
 
                     if (_items.IsEmpty)
@@ -48,6 +51,8 @@ namespace System.Threading.Tasks.Channels
                         }
                     }
                 }
+
+                return true;
             }
 
             public ValueTask<T> ReadAsync(CancellationToken cancellationToken)

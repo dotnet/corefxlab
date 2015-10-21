@@ -14,14 +14,16 @@ namespace System
 
         public static void Assert(bool condition)
         {
-            if (!condition) {
+            if (!condition)
+            {
                 Abandon();
             }
         }
 
         public static void Requires(bool condition)
         {
-            if (!condition) {
+            if (!condition)
+            {
                 throw new ArgumentException();
             }
         }
@@ -29,21 +31,24 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RequiresInRange(int start, int length)
         {
-            if (!(start >= 0 && start < length)) {
+            if (!(start >= 0 && start < length))
+            {
                 throw new ArgumentOutOfRangeException();
             }
         }
 
         public static void RequiresInInclusiveRange(int start, int length)
         {
-            if (!(start >= 0 && start <= length)) {
+            if (!(start >= 0 && start <= length))
+            {
                 throw new ArgumentOutOfRangeException();
             }
         }
 
         public static void RequiresInInclusiveRange(int start, int end, int length)
         {
-            if (!(start >= 0 && start <= end && end >= 0 && end <= length)) {
+            if (!(start >= 0 && start <= end && end >= 0 && end <= length))
+            {
                 throw new ArgumentOutOfRangeException();
             }
         }

@@ -30,7 +30,7 @@ public interface IWritableChannel<in T>
     bool TryWrite(T item);
     Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
     Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken));
-    void Complete(Exception error = null);
+    bool TryComplete(Exception error = null);
 }
 ```
 The ```IReadableChannel<T>``` and ```IWritableChannel<T>``` types represent these two halves,
@@ -43,10 +43,17 @@ on the other:
 the task completes with a ```true``` result, at that moment the channel was available for reading or writing, though 
 because these channels may be used concurrently, it's possible the status changed the moment after the operation completed.
 If the task completes with a ```false``` result, the channel has been completed and will not be able to satisfy a read or write.
-- ```Complete```/```Completion```: Channels may be completed, such that no additional items may be written; such channels will "complete" when
+- ```TryComplete```/```Completion```: Channels may be completed, such that no additional items may be written; such channels will "complete" when
 marked as completed and all existing data in the channel has been consumed.  Channels may also be marked as faulted by passing
 an optional ```Exception``` to Complete; this exception will emerge when awaiting on the Completion Task, as well as when trying
 to ```ReadAsync``` from an empty completed collection.
+
+```ReadAsync``` is defined to return a ```ValueTask<T>```, a new struct type included in this library.  ```ValueTask<T>``` is a discriminated 
+union of a ```T``` and a ```Task<T>```, making it allocation-free for ```ReadAsync<T>``` to synchronously return a ```T``` value it has 
+available (in contrast to using ```Task.FromResult<T>```, which needs to allocate a ```Task<T>``` instance).   ```ValueTask<T>``` is awaitable, 
+so most consumption of instances will be indistinguishable from with a ```Task<T>```.  If a ```Task<T>``` is needed, one can be retrieved using 
+```ValueTask<T>```'s ```AsTask()``` method, which will either return the ```Task<T>``` it stores internally or will return an instance created
+from the ```T``` it stores.
 
 ## Core Channels
 
