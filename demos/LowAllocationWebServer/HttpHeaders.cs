@@ -8,10 +8,13 @@ namespace System.Net.Http.Buffered
     public struct HttpHeaders : IEnumerable<KeyValuePair<Utf8String, Utf8String>>
     {
         private readonly ByteSpan _bytes;
+        private int _count;
         
+        //TODO: consider adding a Utf8String constructor
         public HttpHeaders(ByteSpan bytes)
         {
-            _bytes = bytes;            
+            _bytes = bytes;
+            _count = -1;
         }                
 
         public Utf8String this[string headerName]
@@ -34,17 +37,22 @@ namespace System.Net.Http.Buffered
         {
             get
             {
-                var count = 0;
-                foreach (var header in this)
+                if (_count != -1)
                 {
-                    count++;
+                    return _count;
                 }
 
-                return count;
+                _count = 0;
+                foreach (var header in this)
+                {
+                    _count++;
+                }
+
+                return _count;
             }
         }
 
-        public IEnumerator<KeyValuePair<Utf8String, Utf8String>> GetEnumerator()
+        public Enumerator GetEnumerator()
         {
             return new Enumerator(_bytes);
         }        
