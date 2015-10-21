@@ -2,13 +2,15 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System {
 
-    public unsafe struct ByteSpan : IEquatable<ByteSpan> {
+    public unsafe struct ByteSpan : IEquatable<ByteSpan>, IEnumerable<byte> {
         internal byte* _data;
         internal int _length;
 
@@ -22,6 +24,11 @@ namespace System {
         public static ByteSpan Empty
         {
             get { return new ByteSpan(); }
+        }
+
+        public bool ReferenceEquals(ByteSpan other)
+        {
+            return _data == other._data && _length == other._length;
         }
 
         public byte this[int index]
@@ -43,7 +50,7 @@ namespace System {
         [CLSCompliant(false)]
         public bool TrySet(byte* value, int valueLength)
         {
-            if (valueLength >= Length)
+            if (valueLength > Length)
                 return false;
             BufferInternal.MemoryCopy(value, _data, _length, valueLength);
             return true;
@@ -52,9 +59,17 @@ namespace System {
         [CLSCompliant(false)]
         public bool TryCopyTo(byte* value, int valueLength)
         {
-            if (Length >= valueLength)
+            if (Length > valueLength)
                 return false;
             BufferInternal.MemoryCopy(_data, value, valueLength, _length);
+            return true;
+        }
+
+        public bool TryCopyTo(ByteSpan dest)
+        {
+            if (Length > dest.Length)
+                return false;
+            BufferInternal.MemoryCopy(_data, dest._data, dest.Length, _length);
             return true;
         }
 
@@ -104,6 +119,81 @@ namespace System {
         public bool Equals(ByteSpan buffer)
         {
             return BufferInternal.MemoryEqual(_data, _length, buffer._data, buffer._length);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ByteSpan)
+            {
+                return Equals((ByteSpan)obj);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            // TODO: Write something better
+            uint hash = unchecked((uint)Length);
+            foreach (byte el in this)
+            {
+                hash = (hash >> 7) | (hash << 25);
+                hash ^= unchecked((uint)el.GetHashCode());
+            }
+
+            return unchecked((int)(hash));
+        }
+
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+
+        IEnumerator<byte> IEnumerable<byte>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public struct Enumerator : IEnumerator<byte>
+        {
+            ByteSpan _slice;    // The slice being enumerated.
+            int _position; // The current position.
+
+            public Enumerator(ByteSpan slice)
+            {
+                _slice = slice;
+                _position = -1;
+            }
+
+            public byte Current
+            {
+                get { return _slice[_position]; }
+            }
+
+            object IEnumerator.Current
+            {
+                get { return Current; }
+            }
+
+            public void Dispose()
+            {
+                _slice = default(ByteSpan);
+                _position = -1;
+            }
+
+            public bool MoveNext()
+            {
+                return ++_position < _slice.Length;
+            }
+
+            public void Reset()
+            {
+                _position = -1;
+            }
         }
     }
 }
