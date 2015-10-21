@@ -52,6 +52,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteSpanExtensions.cs" />
+    <Compile Include="HttpHeaders.cs" />
     <Compile Include="HttpRequestParser.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="HttpServer.cs" />

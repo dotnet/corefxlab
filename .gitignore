@@ -242,3 +242,5 @@ tools/
 
 
 
+*.ncrunchproject
+*.ncrunchsolution
