@@ -14,7 +14,6 @@ namespace System.Text.Formatting.Tests
             var json = new JsonWriter(stream, FormattingData.Encoding.Utf8, prettyPrint: true);
             Write(json);
             var str = Encoding.UTF8.GetString(buffer, 0, (int)stream.Position);
-            Console.WriteLine(str);
             Assert.Equal(expected, str.Replace("\n", "").Replace(" ", ""));
         }
 

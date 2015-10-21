@@ -24,6 +24,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Json.cs" />
     <Compile Include="JsonReaderTests.cs" />
     <Compile Include="JsonWriterTests.cs" />
   </ItemGroup>
