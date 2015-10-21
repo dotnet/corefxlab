@@ -45,7 +45,7 @@ namespace System.Threading.Tasks.Channels
                 return true;
             }
 
-            public unsafe bool TryWrite(T item)
+            public bool TryWrite(T item)
             {
                 // Write it out
                 lock (_destination)
@@ -179,7 +179,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public unsafe bool TryRead(out T item)
+            public bool TryRead(out T item)
             {
                 lock (SyncObj)
                 {
