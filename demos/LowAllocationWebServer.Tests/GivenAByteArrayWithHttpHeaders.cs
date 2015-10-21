@@ -54,9 +54,36 @@ namespace LowAllocationWebServer.Tests
         }
 
         [TestMethod]
-        public void Returns_empty_string_when_header_is_not_present()
+        public void It_returns_empty_string_when_header_is_not_present()
         {
             ((IEnumerable)_httpHeaders["Content-Length"]).Should().BeEmpty();
+        }
+
+        [TestMethod]
+        public void Its_enumerator_Current_returns_the_same_item_until_MoveNext_gets_called()
+        {
+            var enumerator = _httpHeaders.GetEnumerator();
+
+            enumerator.MoveNext();
+
+            var current = enumerator.Current;
+            current.Should().Be(enumerator.Current);
+
+            enumerator.MoveNext();
+
+            current.Should().NotBe(enumerator.Current);
+        }
+
+        [TestMethod]
+        public void Its_Enumerator_iterates_through_all_headers()
+        {
+            var count = 0;
+            foreach (var httpHeader in _httpHeaders)
+            {
+                count++;
+            }
+
+            count.Should().Be(8);
         }
     }
 }
