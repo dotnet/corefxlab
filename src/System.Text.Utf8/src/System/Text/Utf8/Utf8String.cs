@@ -49,9 +49,32 @@ namespace System.Text.Utf8
             _length = length;
         }
 
+        // TODO: reevaluate implementation
         public Utf8String(IEnumerable<UnicodeCodePoint> codePoints)
         {
-            throw new NotImplementedException();
+            int len = GetUtf8LengthInBytes(codePoints);
+            byte[] utf8bytes = new byte[len];
+            unsafe
+            {
+                fixed (byte* utf8bytesPinned = utf8bytes)
+                {
+                    ByteSpan span = new ByteSpan(utf8bytesPinned, len);
+                    foreach (UnicodeCodePoint codePoint in codePoints)
+                    {
+                        int encodedBytes;
+                        if (!Utf8Encoder.TryEncodeCodePoint(codePoint, span, out encodedBytes))
+                        {
+                            throw new ArgumentException("Invalid code point", "codePoints");
+                        }
+                        span = span.Slice(encodedBytes);
+                    }
+                }
+            }
+
+            _buffer = default(ByteSpan);
+            _bytes = utf8bytes;
+            _index = 0;
+            _length = len;
         }
 
         public Utf8String(string s) : this(GetUtf8BytesFromString(s))
@@ -326,6 +349,11 @@ namespace System.Text.Utf8
                 return Empty;
             }
 
+            if (length == Length)
+            {
+                return this;
+            }
+
             if (index + length > Length)
             {
                 // TODO: Should this be index or length?
@@ -584,6 +612,18 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
+        private static int GetUtf8LengthInBytes(IEnumerable<UnicodeCodePoint> codePoints)
+        {
+            int len = 0;
+            foreach (var codePoint in codePoints)
+            {
+                len += Utf8Encoder.GetNumberOfEncodedBytes(codePoint);
+            }
+
+            return len;
+        }
+
+        // TODO: This should return Utf16CodeUnits which should wrap byte[]/ByteSpan, same for other encoders
         private static byte[] GetUtf8BytesFromString(string s)
         {
             int len = 0;
@@ -647,6 +687,86 @@ namespace System.Text.Utf8
             }
 
             return bytes;
+        }
+
+        public Utf8String TrimStart()
+        {
+            CodePointEnumerator it = GetCodePointEnumerator();
+            while (it.MoveNext() && UnicodeCodePoint.IsWhitespace(it.Current))
+            {
+            }
+
+            return Substring(it.PositionInCodeUnits);
+        }
+
+        public Utf8String TrimStart(UnicodeCodePoint[] trimCodePoints)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Utf8String TrimStart(Utf8CodeUnit[] trimCodeUnits)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Utf8String TrimEnd()
+        {
+            CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
+            while (it.MoveNext() && UnicodeCodePoint.IsWhitespace(it.Current))
+            {
+            }
+
+            return Substring(0, it.PositionInCodeUnits);
+        }
+
+        public Utf8String TrimEnd(UnicodeCodePoint[] trimCodePoints)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Utf8String TrimEnd(Utf8CodeUnit[] trimCodeUnits)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Utf8String Trim()
+        {
+            return TrimStart().TrimEnd();
+        }
+
+        public Utf8String Trim(UnicodeCodePoint[] trimCodePoints)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Utf8String Trim(Utf8CodeUnit[] trimCodeUnits)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] CopyBytes()
+        {
+            if (_bytes != null)
+            {
+                unsafe
+                {
+                    fixed (byte* pinnedBytes = _bytes)
+                    {
+                        ByteSpan span = new ByteSpan(pinnedBytes + _index, Length);
+                        // TODO: span's method should probably be called the same
+                        return span.CreateArray();
+                    }
+                }
+            }
+            else
+            {
+                return _buffer.CreateArray();
+            }
+        }
+
+        public Utf8CodeUnit[] CopyCodeUnits()
+        {
+            throw new NotImplementedException();
         }
     }
 }

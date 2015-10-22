@@ -21,7 +21,7 @@ namespace System.Text.Utf8
         #region Decoder
         // Should this be public?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool TryGetNumberOfEncodedBytesFromFirstByte(byte first, out int numberOfBytes)
+        private static bool TryGetNumberOfEncodedBytesFromFirstByte(byte first, out int numberOfBytes)
         {
             if ((first & mask_1000_0000) == 0)
             {
@@ -116,6 +116,48 @@ namespace System.Text.Utf8
             }
 
             return true;
+        }
+
+        // TODO: Name TBD
+        // TODO: optimize?
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryDecodeCodePointBackwards(ByteSpan buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        {
+            encodedBytes = 1;
+            ByteSpan it = buffer;
+            // TODO: Should we have something like: ByteSpan.(Slice from the back)
+            for (; encodedBytes <= UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint; encodedBytes++, it = it.Slice(0, it.Length - 1))
+            {
+                if (it.Length == 0)
+                {
+                    codePoint = default(UnicodeCodePoint);
+                    encodedBytes = default(int);
+                    return false;
+                }
+
+                // TODO: Should we have ByteSpan.Last?
+                if (!Utf8CodeUnit.IsSurrogate((Utf8CodeUnit)it[it.Length - 1]))
+                {
+                    break;
+                }
+            }
+
+            if (encodedBytes <= UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint)
+            {
+                int realEncodedBytes;
+                // TODO: Inline decoding, as the invalid surrogate check can be done faster
+                bool ret = TryDecodeCodePoint(buffer.Slice(buffer.Length - encodedBytes, encodedBytes), out codePoint, out realEncodedBytes);
+                if (ret && encodedBytes != realEncodedBytes)
+                {
+                    // invalid surrogate character
+                    return false;
+                }
+                return true;
+            }
+
+            codePoint = default(UnicodeCodePoint);
+            encodedBytes = default(int);
+            return false;
         }
         #endregion
 
