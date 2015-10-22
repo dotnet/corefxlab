@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json.Tests.Resources;
 using Xunit;
@@ -11,75 +12,66 @@ namespace System.Text.Json.Tests
     public class PerfSmokeTests
     {
         private static readonly Stopwatch Timer = new Stopwatch();
-        private const bool Collect = false;
-        private const int MemoryToleranceFactor = 2;
-        private const int IncreaseIterationsBy = 100;
+        private const bool Collect = true;
+        private const int MemoryToleranceFactor = 5;
+
+        // Keep < 10. Otherwise tests take too long to execute (over 10 seconds).
+        private const int NumberOfIterations = 5;
+
+        private const int NumberOfSamples = 3;
         private const int ExpectedMemoryBenchMark = 3000000;
+
+        private static readonly bool OutputResults = false;
 
         [Fact]
         public void ReadBasicJson()
         {
-            Console.WriteLine("====== TEST ReadBasicJson ======");
-            RunTest(TestJson.BasicJson, 5, 3, 1, ExpectedMemoryBenchMark);
+            Output("====== TEST ReadBasicJson ======");
+            RunTest(TestJson.BasicJson, 100 + NumberOfIterations, ExpectedMemoryBenchMark*MemoryToleranceFactor);
         }
 
         [Fact]
         public void ReadProjectLockJson()
         {
-            Console.WriteLine("====== TEST ReadProjectLockJson ======");
-            RunTest(TestJson.ProjectLockJson, 5, 3, 1000, ExpectedMemoryBenchMark*2);
+            Output("====== TEST ReadProjectLockJson ======");
+            RunTest(TestJson.ProjectLockJson, NumberOfIterations*1000, ExpectedMemoryBenchMark*MemoryToleranceFactor);
         }
 
         [Fact]
         public void ReadHeavyNestedJson()
         {
-            Console.WriteLine("====== TEST ReadHeavyNestedJson ======");
-            RunTest(TestJson.HeavyNestedJson, 5, 3, 15, ExpectedMemoryBenchMark*2);
+            Output("====== TEST ReadHeavyNestedJson ======");
+            RunTest(TestJson.HeavyNestedJson, NumberOfIterations*15, ExpectedMemoryBenchMark*MemoryToleranceFactor);
         }
 
-        private static void RunTest(string jsonStr, int numIncrements, int numSamples, int runTimeFactor,
-            int memoryBenchmark)
+        private static void RunTest(string jsonStr, int timeBenchmark, int memoryBenchmark)
         {
-            var timeResultsRead = new List<double>();
-            var memoryResultsRead = new List<double>();
+            var timeIterReadResults = new List<long>();
+            var memoryIterReadResults = new List<long>();
 
-            for (var k = 0; k < numIncrements; k++)
+            for (var j = 0; j < NumberOfSamples; j++)
             {
-                var numIterations = IncreaseIterationsBy*(k + 1);
-                var readTimeBenchMark = numIterations*runTimeFactor;
-
-                var timeIterReadResults = new List<long>();
-                var memoryIterReadResults = new List<long>();
-
-                for (var j = 0; j < numSamples; j++)
+                Timer.Restart();
+                for (var i = 0; i < NumberOfIterations; i++)
                 {
-                    Timer.Restart();
-                    for (var i = 0; i < numIterations; i++)
-                    {
-                        // ReSharper disable once UnusedVariable
-                        var json = ReadJson(jsonStr);
-                    }
-                    var time = Timer.ElapsedMilliseconds;
-                    var memory = GC.GetTotalMemory(Collect);
-                    timeIterReadResults.Add(time);
-                    memoryIterReadResults.Add(memory);
-                    Assert.True(time < readTimeBenchMark);
-                    Assert.True(memory < memoryBenchmark*MemoryToleranceFactor);
+                    // ReSharper disable once UnusedVariable
+                    var json = ReadJson(jsonStr);
                 }
-
-                timeResultsRead.Add(timeIterReadResults.Average());
-                memoryResultsRead.Add(memoryIterReadResults.Average());
+                var time = Timer.ElapsedMilliseconds;
+                var memory = GC.GetTotalMemory(Collect);
+                timeIterReadResults.Add(time);
+                memoryIterReadResults.Add(memory);
+                Assert.True(time < timeBenchmark);
+                Assert.True(memory < memoryBenchmark);
             }
+            Output(timeIterReadResults.Average().ToString(CultureInfo.InvariantCulture));
+            Output((memoryIterReadResults.Average()/1000).ToString(CultureInfo.InvariantCulture));
+        }
 
-            foreach (var res in timeResultsRead)
-            {
-                Console.WriteLine(res);
-            }
-
-            foreach (var res in memoryResultsRead)
-            {
-                Console.WriteLine(res);
-            }
+        private static void Output(string str)
+        {
+            if (!OutputResults) return;
+            Console.WriteLine(str);
         }
 
         private static Json ReadJson(string jsonString)
