@@ -1,222 +1,85 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text.Json.Tests.Resources;
 using Xunit;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+
 namespace System.Text.Json.Tests
 {
-    public class JsonReaderTests
+    public class PerfSmokeTests
     {
+        private static readonly Stopwatch Timer = new Stopwatch();
+        private const bool Collect = false;
+        private const int MemoryToleranceFactor = 2;
+        private const int IncreaseIterationsBy = 100;
+        private const int ExpectedMemoryBenchMark = 3000000;
+
         [Fact]
         public void ReadBasicJson()
         {
-            var testJson = CreateJson();
-            Assert.Equal(testJson.ToString(), TestJson.ExpectedCreateJson);
-
-            var readJson = ReadJson(TestJson.BasicJson);
-            var json = readJson.ToString();
-            Assert.Equal(json, TestJson.ExpectedBasicJson);
-        }
-
-        [Fact]
-        public void ReadBasicJsonWithLongInt()
-        {
-            var readJson = ReadJson(TestJson.BasicJsonWithLargeNum);
-            var json = readJson.ToString();
-            Assert.Equal(json, TestJson.ExpectedBasicJsonWithLargeNum);
-        }
-
-        [Fact]
-        public void ReadFullJsonSchema()
-        {
-            var readJson = ReadJson(TestJson.FullJsonSchema1);
-            var json = readJson.ToString();
-            Assert.Equal(json, TestJson.ExpectedFullJsonSchema1);
-        }
-
-        [Fact]
-        public void ReadFullJsonSchemaAndGetValue()
-        {
-            var readJson = ReadJson(TestJson.FullJsonSchema2);
-            var json = readJson.ToString();
-            Assert.Equal(json, TestJson.ExpectedFullJsonSchema2);
-
-            Assert.Equal(readJson.GetValueFromPropertyName("long")[0].NumberValue, 9.2233720368547758E+18);
-            var emptyObject = readJson.GetValueFromPropertyName("emptyObject");
-            Assert.Equal(emptyObject[0].ObjectValue.Members[0].Pairs.Count, 0);
-            var arrayString = readJson.GetValueFromPropertyName("arrayString");
-            Assert.Equal(arrayString[0].ArrayValue.Elements[0].Values.Count, 2);
-            Assert.Equal(readJson.GetValueFromPropertyName("firstName").Count, 4);
-            Assert.Equal(readJson.GetValueFromPropertyName("propertyDNE").Count, 0);
-        }
-
-        [Fact]
-        public void ReadJsonSpecialStrings()
-        {
-            var readJson = ReadJson(TestJson.JsonWithSpecialStrings);
-            var json = readJson.ToString();
-            Assert.Equal(json, TestJson.ExpectedJsonWithSpecialStrings);
-        }
-
-        [Fact]
-        public void ReadJsonSpecialNumbers()
-        {
-            var readJson = ReadJson(TestJson.JsonWithSpecialNumFormat);
-            var json = readJson.ToString();
-            Assert.Equal(json, TestJson.ExpectedJsonWithSpecialNumFormat);
+            Console.WriteLine("====== TEST ReadBasicJson ======");
+            RunTest(TestJson.BasicJson, 5, 3, 1, ExpectedMemoryBenchMark);
         }
 
         [Fact]
         public void ReadProjectLockJson()
         {
-            var readJson = ReadJson(TestJson.ProjectLockJson);
-            var json = readJson.ToString();
-            Assert.Equal(json, TestJson.ExpectedProjectLockJson);
+            Console.WriteLine("====== TEST ReadProjectLockJson ======");
+            RunTest(TestJson.ProjectLockJson, 5, 3, 1000, ExpectedMemoryBenchMark*2);
         }
 
         [Fact]
         public void ReadHeavyNestedJson()
         {
-            var readJson = ReadJson(TestJson.HeavyNestedJson);
-            var json = readJson.ToString();
-            Assert.Equal(json, TestJson.ExpectedHeavyNestedJson);
+            Console.WriteLine("====== TEST ReadHeavyNestedJson ======");
+            RunTest(TestJson.HeavyNestedJson, 5, 3, 15, ExpectedMemoryBenchMark*2);
         }
 
-        [Fact]
-        public void ReadLargeJson()
+        private static void RunTest(string jsonStr, int numIncrements, int numSamples, int runTimeFactor,
+            int memoryBenchmark)
         {
-            var readJson = ReadJson(TestJson.LargeJson);
-            var json = readJson.ToString();
-            Assert.Equal(json, TestJson.ExpectedLargeJson);
-        }
+            var timeResultsRead = new List<double>();
+            var memoryResultsRead = new List<double>();
 
-        private static Json CreateJson()
-        {
-            var valueAge = new Value
+            for (var k = 0; k < numIncrements; k++)
             {
-                Type = Value.ValueType.Number,
-                NumberValue = 30
-            };
+                var numIterations = IncreaseIterationsBy*(k + 1);
+                var readTimeBenchMark = numIterations*runTimeFactor;
 
-            var pairAge = new Pair
+                var timeIterReadResults = new List<long>();
+                var memoryIterReadResults = new List<long>();
+
+                for (var j = 0; j < numSamples; j++)
+                {
+                    Timer.Restart();
+                    for (var i = 0; i < numIterations; i++)
+                    {
+                        // ReSharper disable once UnusedVariable
+                        var json = ReadJson(jsonStr);
+                    }
+                    var time = Timer.ElapsedMilliseconds;
+                    var memory = GC.GetTotalMemory(Collect);
+                    timeIterReadResults.Add(time);
+                    memoryIterReadResults.Add(memory);
+                    Assert.True(time < readTimeBenchMark);
+                    Assert.True(memory < memoryBenchmark*MemoryToleranceFactor);
+                }
+
+                timeResultsRead.Add(timeIterReadResults.Average());
+                memoryResultsRead.Add(memoryIterReadResults.Average());
+            }
+
+            foreach (var res in timeResultsRead)
             {
-                Name = "age",
-                Value = valueAge
-            };
+                Console.WriteLine(res);
+            }
 
-            var valueFirst = new Value
+            foreach (var res in memoryResultsRead)
             {
-                Type = Value.ValueType.String,
-                StringValue = "John"
-            };
-
-            var pairFirst = new Pair
-            {
-                Name = "first",
-                Value = valueFirst
-            };
-
-            var valueLast = new Value
-            {
-                Type = Value.ValueType.String,
-                StringValue = "Smith"
-            };
-
-            var pairLast = new Pair
-            {
-                Name = "last",
-                Value = valueLast
-            };
-
-
-            var value1 = new Value
-            {
-                Type = Value.ValueType.String,
-                StringValue = "425-000-1212"
-            };
-
-            var value2 = new Value
-            {
-                Type = Value.ValueType.String,
-                StringValue = "425-000-1213"
-            };
-
-            var values = new List<Value> {value1, value2};
-            var elementInner = new Elements {Values = values};
-            var elementsInner = new List<Elements> {elementInner};
-            var arrInner = new Array {Elements = elementsInner};
-
-            var valuePhone = new Value
-            {
-                Type = Value.ValueType.Array,
-                ArrayValue = arrInner
-            };
-
-            var pairPhone = new Pair
-            {
-                Name = "phoneNumbers",
-                Value = valuePhone
-            };
-
-            var valueStreet = new Value
-            {
-                Type = Value.ValueType.String,
-                StringValue = "1 Microsoft Way"
-            };
-
-            var pairStreet = new Pair
-            {
-                Name = "street",
-                Value = valueStreet
-            };
-
-            var valueCity = new Value
-            {
-                Type = Value.ValueType.String,
-                StringValue = "Redmond"
-            };
-
-            var pairCity = new Pair
-            {
-                Name = "city",
-                Value = valueCity
-            };
-
-            var valueZip = new Value
-            {
-                Type = Value.ValueType.Number,
-                NumberValue = 98052
-            };
-
-            var pairZip = new Pair
-            {
-                Name = "zip",
-                Value = valueZip
-            };
-
-            var pairsInner = new List<Pair> {pairStreet, pairCity, pairZip};
-            var memberInner = new Members {Pairs = pairsInner};
-            var membersInner = new List<Members> {memberInner};
-            var objInner = new Object {Members = membersInner};
-
-            var valueAddress = new Value
-            {
-                Type = Value.ValueType.Object,
-                ObjectValue = objInner
-            };
-
-            var pairAddress = new Pair
-            {
-                Name = "address",
-                Value = valueAddress
-            };
-
-            var pairs = new List<Pair> {pairAge, pairFirst, pairLast, pairPhone, pairAddress};
-            var member = new Members {Pairs = pairs};
-            var members = new List<Members> {member};
-            var obj = new Object {Members = members};
-            var json = new Json {Object = obj};
-
-            return json;
+                Console.WriteLine(res);
+            }
         }
 
         private static Json ReadJson(string jsonString)

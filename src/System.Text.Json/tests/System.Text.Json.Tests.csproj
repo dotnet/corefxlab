@@ -27,6 +27,12 @@
     <Compile Include="Json.cs" />
     <Compile Include="JsonReaderTests.cs" />
     <Compile Include="JsonWriterTests.cs" />
+    <Compile Include="PerfSmokeTests.cs" />
+    <Compile Include="Resources\TestJson.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestJson.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\System.Text.Json.csproj">
@@ -49,6 +55,12 @@
     <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
       <Name>System.Buffers</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\TestJson.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestJson.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
