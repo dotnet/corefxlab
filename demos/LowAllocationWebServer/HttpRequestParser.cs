@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Text.Utf8;
+using LowAllocationServer;
 
 namespace System.Net.Http.Buffered
 {
@@ -93,80 +92,6 @@ namespace System.Net.Http.Buffered
         }
     }
 
-    public struct HttpHeaders : IEnumerable<KeyValuePair<Utf8String, Utf8String>>
-    {
-        // TODO: make this private
-        internal ByteSpan _bytes;
-
-        public HttpHeaders(ByteSpan bytes)
-        {
-            _bytes = bytes;
-        }
-
-        public Utf8String? this[string header]
-        {
-            get
-            {
-                return new Utf8String("HttpHeaders.get_this not implemented yet");
-            }
-        }
-
-        public int Count
-        {
-            get { throw new NotImplementedException(); } 
-        }
-
-        public Enumerator GetEnumerator()
-        {
-            return new Enumerator();
-        }
-
-        public struct Enumerator : IEnumerator<KeyValuePair<Utf8String, Utf8String>>
-        {
-            ByteSpan _bytes;
-            int _index;
-
-            internal Enumerator(ByteSpan bytes)
-            {
-                _bytes = bytes;
-                _index = 0;
-            }
-
-            public bool MoveNext() {
-                throw new NotImplementedException();
-            }
-
-            public KeyValuePair<Utf8String, Utf8String> Current { get { throw new NotImplementedException(); } }
-
-            object IEnumerator.Current
-            {
-                get
-                {
-                    return Current;
-                }
-            }
-
-            void IDisposable.Dispose()
-            {
-            }
-
-            void IEnumerator.Reset()
-            {
-                _index = 0;
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new Enumerator(_bytes);
-        }
-
-        IEnumerator<KeyValuePair<Utf8String, Utf8String>> IEnumerable<KeyValuePair<Utf8String, Utf8String>>.GetEnumerator()
-        {
-            return new Enumerator(_bytes);
-        }
-    }
-
     struct HttpRequestReader
     {
         static readonly Utf8String s_Http1_0 = new Utf8String("HTTP/1.0");
@@ -243,7 +168,7 @@ namespace System.Net.Http.Buffered
         internal Utf8String ReadHeader()
         {
             int parsedBytes;
-            var header = SliceTo(Buffer, s_CR, s_LF, out parsedBytes);
+            var header = Buffer.SliceTo(s_CR, s_LF, out parsedBytes);
             if (parsedBytes > Buffer.Length)
             {
                 Buffer = Buffer.Slice(parsedBytes);
@@ -253,45 +178,7 @@ namespace System.Net.Http.Buffered
                 Buffer = new ByteSpan();
             }
             return new Utf8String(header);
-        }
-
-        internal static ByteSpan SliceTo(ByteSpan buffer, byte terminator, out int consumedBytes)
-        {
-            int index = 0;
-            while (index < buffer.Length)
-            {
-                if (buffer[index] == terminator)
-                {
-                    consumedBytes = index + 1;
-                    return buffer.Slice(0, index);
-                }
-                index++;
-            }
-            consumedBytes = 0;
-            unsafe
-            {
-                return new ByteSpan(null, 0); //TODO: Empty instance should be used
-            }
-        }
-        internal static ByteSpan SliceTo(ByteSpan buffer, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
-        {
-            int index = 0;
-            while (index < buffer.Length)
-            {
-                if (buffer[index] == terminatorFirst && buffer.Length > index + 1 && buffer[index + 1] == terminatorSecond)
-                {
-                    consumedBytes = index + 2;
-                    return buffer.Slice(0, index);
-                }
-                index++;
-            }
-
-            consumedBytes = 0;
-            unsafe
-            {
-                return new ByteSpan(null, 0); // TODO: Empty instance should be used
-            }
-        }
+        }        
     }
 
     static class HttpRequestParser
@@ -372,13 +259,13 @@ namespace System.Net.Http.Buffered
         }
         internal static bool TryParseRequestUri(ByteSpan buffer, out Utf8String requestUri, out int parsedBytes)
         {
-            var uriSpan = HttpRequestReader.SliceTo(buffer, HttpRequestReader.s_SP, out parsedBytes);
+            var uriSpan = buffer.SliceTo(HttpRequestReader.s_SP, out parsedBytes);
             requestUri = new Utf8String(uriSpan);
             return parsedBytes != 0;
         }
         internal static bool TryParseHttpVersion(ByteSpan buffer, out Utf8String httpVersion, out int parsedBytes)
         {
-            var versionSpan = HttpRequestReader.SliceTo(buffer, HttpRequestReader.s_CR, HttpRequestReader.s_LF, out parsedBytes);
+            var versionSpan = buffer.SliceTo(HttpRequestReader.s_CR, HttpRequestReader.s_LF, out parsedBytes);
             httpVersion = new Utf8String(versionSpan);
             return parsedBytes != 0;
         }

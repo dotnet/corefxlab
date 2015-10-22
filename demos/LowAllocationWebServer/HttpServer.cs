@@ -116,6 +116,13 @@ namespace System.Net.Http.Buffered
                 Log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", request.RequestLine.Method);
                 Log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", request.RequestLine.RequestUri.ToString());
                 Log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.RequestLine.Version);
+
+                Log.LogMessage(Log.Level.Verbose, "\tHttp Headers:");
+                foreach (var httpHeader in request.Headers)
+                {
+                    Log.LogMessage(Log.Level.Verbose, "\t\tName: {0}, Value: {1}", httpHeader.Key, httpHeader.Value);
+                }
+
                 LogRestOfRequest(request.Body);
             }
 
