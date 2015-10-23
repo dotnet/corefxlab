@@ -46,6 +46,18 @@ namespace System.Text.Utf8
                 }
             }
 
+            public CodePointReverseEnumerator GetReverseEnumerator()
+            {
+                if (_bytes != null)
+                {
+                    return new CodePointReverseEnumerator(_bytes, _index, _length);
+                }
+                else
+                {
+                    return new CodePointReverseEnumerator(_buffer);
+                }
+            }
+
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();

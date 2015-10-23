@@ -30,19 +30,19 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsSurrogate(UnicodeCodePoint codePoint)
         {
-            return codePoint.Value >= UnicodeConstants.SurrogateRangeStart && codePoint.Value <= UnicodeConstants.SurrogateRangeEnd;
+            return codePoint.Value >= UnicodeConstants.Utf16SurrogateRangeStart && codePoint.Value <= UnicodeConstants.Utf16SurrogateRangeEnd;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsLowSurrogate(UnicodeCodePoint codePoint)
         {
-            return codePoint.Value >= UnicodeConstants.LowSurrogateFirstCodePoint && codePoint.Value <= UnicodeConstants.LowSurrogateLastCodePoint;
+            return codePoint.Value >= UnicodeConstants.Utf16LowSurrogateFirstCodePoint && codePoint.Value <= UnicodeConstants.Utf16LowSurrogateLastCodePoint;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsHighSurrogate(UnicodeCodePoint codePoint)
         {
-            return codePoint.Value >= UnicodeConstants.HighSurrogateFirstCodePoint && codePoint.Value <= UnicodeConstants.HighSurrogateLastCodePoint;
+            return codePoint.Value >= UnicodeConstants.Utf16HighSurrogateFirstCodePoint && codePoint.Value <= UnicodeConstants.Utf16HighSurrogateLastCodePoint;
         }
         #endregion
 
@@ -79,6 +79,12 @@ namespace System.Text
         public static bool operator !=(UnicodeCodePoint left, UnicodeCodePoint right)
         {
             return !left.Equals(right);
+        }
+
+        // TODO: Inline it and make it faster
+        public static bool IsWhitespace(UnicodeCodePoint codePoint)
+        {
+            return Array.BinarySearch<uint>(UnicodeConstants.SortedWhitespaceCodePoints, codePoint.Value) >= 0;
         }
     }
 }
