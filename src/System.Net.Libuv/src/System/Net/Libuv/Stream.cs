@@ -50,6 +50,32 @@ namespace System.Net.Libuv
             }
         }
 
+        public unsafe void TryWrite(byte[] data, int length)
+        {
+            Debug.Assert(data != null);
+            if(data.Length < length)
+            {
+                throw new ArgumentOutOfRangeException("length");
+            }
+
+            EnsureNotDisposed();
+
+            fixed (byte* pData = data)
+            {
+                IntPtr ptrData = (IntPtr)pData;
+                if (IsUnix)
+                {
+                    var buffer = new UVBuffer.Unix(ptrData, (uint)length);
+                    UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
+                }
+                else
+                {
+                    var buffer = new UVBuffer.Windows(ptrData, (uint)length);
+                    UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
+                }
+            }
+        }
+
         public unsafe void TryWrite(ByteSpan data)
         {
             EnsureNotDisposed();

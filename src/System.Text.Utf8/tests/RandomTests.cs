@@ -320,5 +320,39 @@ namespace System.Text.Utf8.Tests
                 Assert.Equal(expected, u8result.ToString());
             }
         }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("test124")]
+        public unsafe void StringEquals(string text)
+        {
+            byte[] textArray = Encoding.UTF8.GetBytes(text);
+            byte[] buffer = new byte[textArray.Length];
+
+            fixed (byte* p = textArray)
+            fixed (byte* pBuffer = buffer)
+            {
+                ByteSpan byteSpan = new ByteSpan(pBuffer, buffer.Length);
+                Utf8String strFromArray = new Utf8String(textArray);
+                Utf8String strFromPointer = new Utf8String(new ByteSpan(p, textArray.Length));
+                Assert.Equal(strFromArray, strFromPointer);
+
+                Array.Clear(buffer, 0, buffer.Length);
+                strFromArray.CopyTo(byteSpan);         
+                Assert.Equal(textArray, buffer);
+
+                Array.Clear(buffer, 0, buffer.Length);
+                strFromPointer.CopyTo(byteSpan);
+                Assert.Equal(textArray, buffer);
+
+                Array.Clear(buffer, 0, buffer.Length);
+                strFromArray.CopyTo(buffer);
+                Assert.Equal(textArray, buffer);
+
+                Array.Clear(buffer, 0, buffer.Length);
+                strFromPointer.CopyTo(buffer);
+                Assert.Equal(textArray, buffer);
+            }
+        }
     }
 }
