@@ -85,5 +85,13 @@ Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4
 
             count.Should().Be(8);
         }
+
+        [TestMethod]
+        public void It_parsers_Utf8String_as_well()
+        {
+            var httpHeader = new HttpHeaders(new Utf8String(new UTF8Encoding().GetBytes(_headersString)));
+
+            httpHeader.Count.Should().Be(8);
+        }
     }
 }

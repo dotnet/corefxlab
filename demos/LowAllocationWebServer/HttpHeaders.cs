@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Text.Utf8;
-using LowAllocationServer;
 
 namespace System.Net.Http.Buffered
 {
@@ -15,7 +14,13 @@ namespace System.Net.Http.Buffered
         {
             _headerString = new Utf8String(bytes);
             _count = -1;
-        }                
+        }
+
+        public HttpHeaders(Utf8String headerString)
+        {
+            _headerString = headerString;
+            _count = -1;
+        }
 
         public Utf8String this[string headerName]
         {
@@ -67,18 +72,29 @@ namespace System.Net.Http.Buffered
             return GetEnumerator();
         }
 
-        private static KeyValuePair<Utf8String, Utf8String> ParseHeaderLine(Utf8String headerString)
+        private static Utf8String ParseHeaderLine(Utf8String headerString, out KeyValuePair<Utf8String, Utf8String> header)
         {
             Utf8String headerName;
             Utf8String headerValue;
 
+            //TODO: this will be simplified once we have TrySubstringTo/From accepting strings
             headerString.TrySubstringTo((Utf8CodeUnit) (byte) ':', out headerName);
             headerString.TrySubstringFrom((Utf8CodeUnit) (byte) ':', out headerString);
+            if (headerString.Length > 0)
+            {
+                headerString = headerString.Substring(1);
+            }
 
-            headerString.TrySubstringTo(new Utf8String("\r\n"), out headerValue);
-            headerString.TrySubstringFrom(new Utf8String("\r\n"), out headerString);
+            headerString.TrySubstringTo((Utf8CodeUnit)(byte)'\r', out headerValue);
+            headerString.TrySubstringFrom((Utf8CodeUnit)(byte)'\n', out headerString);
+            if (headerString.Length > 0)
+            {
+                headerString = headerString.Substring(1);
+            }            
             
-            return new KeyValuePair<Utf8String, Utf8String>(headerName, headerValue);
+            header = new KeyValuePair<Utf8String, Utf8String>(headerName, headerValue);
+
+            return headerString;
         }
 
         public struct Enumerator : IEnumerator<KeyValuePair<Utf8String, Utf8String>>
@@ -101,18 +117,12 @@ namespace System.Net.Http.Buffered
                     return false;
                 }
 
-                _current = ParseHeaderLine(_headerString);
+                _headerString = ParseHeaderLine(_headerString, out _current);
 
                 return true;
             }
 
-            public KeyValuePair<Utf8String, Utf8String> Current
-            {
-                get
-                {
-                    return _current;
-                }
-            }
+            public KeyValuePair<Utf8String, Utf8String> Current => _current;
 
             object IEnumerator.Current => Current;
 
