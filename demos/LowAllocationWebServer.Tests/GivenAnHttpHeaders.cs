@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace LowAllocationWebServer.Tests
 {
     [TestClass]
-    public class GivenAByteArrayWithHttpHeaders
+    public class GivenAnHttpHeaders
     {
         private string _headersString = @"Host: localhost:8080
 Connection: keep-alive
