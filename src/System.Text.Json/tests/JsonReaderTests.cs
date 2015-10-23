@@ -249,8 +249,6 @@ namespace System.Text.Json.Tests
             {
                 switch (jsonReader.TokenType)
                 {
-                    case JsonReader.JsonTokenType.Start:
-                        break;
                     case JsonReader.JsonTokenType.ObjectStart:
                         jsonPairs = new List<Pair>();
                         break;
@@ -272,10 +270,10 @@ namespace System.Text.Json.Tests
                             jsonArray.Elements = new List<Elements> {jsonElements};
                         }
                         break;
-                    case JsonReader.JsonTokenType.Pair:
+                    case JsonReader.JsonTokenType.Property:
                         var pair = new Pair
                         {
-                            Name = (string) jsonReader.ReadString(),
+                            Name = (string) jsonReader.GetName(),
                             Value = GetValue(ref jsonReader)
                         };
                         if (jsonPairs != null) jsonPairs.Add(pair);
@@ -291,15 +289,15 @@ namespace System.Text.Json.Tests
 
         private static Value GetValue(ref JsonReader jsonReader)
         {
-            var value = new Value {Type = (Value.ValueType) jsonReader.GetValueType()};
-            var obj = jsonReader.ReadValue();
+            var value = new Value {Type = (Value.ValueType) jsonReader.GetJsonValueType()};
+            var obj = jsonReader.GetValue();
             switch (value.Type)
             {
                 case Value.ValueType.String:
                     value.StringValue = obj.ToString();
                     break;
                 case Value.ValueType.Number:
-                    value.NumberValue = (double) obj;
+                    value.NumberValue = Convert.ToDouble(obj.ToString());
                     break;
                 case Value.ValueType.True:
                     break;
@@ -329,8 +327,6 @@ namespace System.Text.Json.Tests
             {
                 switch (jsonReader.TokenType)
                 {
-                    case JsonReader.JsonTokenType.Start:
-                        break;
                     case JsonReader.JsonTokenType.ObjectStart:
                         jsonPairs = new List<Pair>();
                         break;
@@ -347,10 +343,10 @@ namespace System.Text.Json.Tests
                         break;
                     case JsonReader.JsonTokenType.ArrayEnd:
                         break;
-                    case JsonReader.JsonTokenType.Pair:
+                    case JsonReader.JsonTokenType.Property:
                         var pair = new Pair
                         {
-                            Name = (string) jsonReader.ReadString(),
+                            Name = (string) jsonReader.GetName(),
                             Value = GetValue(ref jsonReader)
                         };
                         if (jsonPairs != null) jsonPairs.Add(pair);
@@ -373,8 +369,6 @@ namespace System.Text.Json.Tests
             {
                 switch (jsonReader.TokenType)
                 {
-                    case JsonReader.JsonTokenType.Start:
-                        break;
                     case JsonReader.JsonTokenType.ObjectStart:
                         break;
                     case JsonReader.JsonTokenType.ObjectEnd:
@@ -391,7 +385,7 @@ namespace System.Text.Json.Tests
                             return jsonArray;
                         }
                         break;
-                    case JsonReader.JsonTokenType.Pair:
+                    case JsonReader.JsonTokenType.Property:
                         break;
                     case JsonReader.JsonTokenType.Value:
                         if (jsonValues != null) jsonValues.Add(GetValue(ref jsonReader));
