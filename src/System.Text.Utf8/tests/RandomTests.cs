@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.Utf8;
+using System.Text.Utf16;
 
 namespace System.Text.Utf8.Tests
 {
@@ -321,6 +322,169 @@ namespace System.Text.Utf8.Tests
             }
         }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData("a")]
+        [InlineData("ab")]
+        [InlineData("abcdefghijklmnopqrstuvwxyz")]
+        [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ")]
+        [InlineData("0123456789")]
+        [InlineData(" ,.\r\n[]<>()")]
+        [InlineData("1258")]
+        [InlineData("1258Hello")]
+        [InlineData("\uABCD")]
+        [InlineData("\uABEE")]
+        [InlineData("a\uABEE")]
+        [InlineData("a\uABEEa")]
+        [InlineData("a\uABEE\uABCDa")]
+        public void CodePointEnumeratorsTests(string s)
+        {
+            Utf8String u8s = new Utf8String(s);
+            TestCodePointForwardEnumerator(s, u8s);
+            TestCodePointReverseEnumerator(s, u8s);
+
+            byte[] bytes = u8s.CopyBytes();
+            unsafe
+            {
+                fixed (byte* pinnedBytes = bytes)
+                {
+                    Utf8String u8sFromBytePointer = new Utf8String(new ByteSpan(pinnedBytes, u8s.Length));
+                    TestCodePointForwardEnumerator(s, u8sFromBytePointer);
+                    TestCodePointReverseEnumerator(s, u8sFromBytePointer);
+                }
+            }
+        }
+
+        // Implementations are intentionally split to avoid boxing
+        private void TestCodePointForwardEnumerator(string s, Utf8String u8s)
+        {
+            List<UnicodeCodePoint> codePoints = new List<UnicodeCodePoint>();
+            Utf8String.CodePointEnumerator it = u8s.CodePoints.GetEnumerator();
+            while (it.MoveNext())
+            {
+                codePoints.Add(it.Current);
+            }
+
+            Utf16LittleEndianCodePointEnumerable utf16CodePoints = new Utf16LittleEndianCodePointEnumerable(s);
+            Assert.Equal(utf16CodePoints, codePoints);
+
+            Utf8String u8s2 = new Utf8String(codePoints);
+            Assert.Equal(u8s, u8s2);
+            Assert.Equal(s, u8s2.ToString());
+        }
+
+        private void TestCodePointReverseEnumerator(string s, Utf8String u8s)
+        {
+            List<UnicodeCodePoint> codePoints = new List<UnicodeCodePoint>();
+            Utf8String.CodePointReverseEnumerator it = u8s.CodePoints.GetReverseEnumerator();
+            while (it.MoveNext())
+            {
+                codePoints.Add(it.Current);
+            }
+
+            codePoints.Reverse();
+
+            Utf16LittleEndianCodePointEnumerable utf16CodePoints = new Utf16LittleEndianCodePointEnumerable(s);
+            Assert.Equal(utf16CodePoints, codePoints);
+
+            Utf8String u8s2 = new Utf8String(codePoints);
+            Assert.Equal(u8s, u8s2);
+            Assert.Equal(s, u8s2.ToString());
+        }
+
+        [Theory]
+        [InlineData(" ")]
+        [InlineData("")]
+        [InlineData("a")]
+        [InlineData("a ")]
+        [InlineData("ab")]
+        [InlineData("abcdefghijklmnopqrstuvwxyz   ")]
+        [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ")]
+        [InlineData("0123456789")]
+        [InlineData(",.\r\n[]<>()")]
+        [InlineData("1258")]
+        [InlineData("1258Hello")]
+        [InlineData("\uABCD")]
+        [InlineData("\uABEE ")]
+        [InlineData("a\uABEE   ")]
+        [InlineData("a\uABEEa")]
+        [InlineData("a\uABEE\uABCDa")]
+        [InlineData("  ")]
+        [InlineData("  a")]
+        [InlineData("   ab")]
+        [InlineData("   abcdefghijklmnopqrstuvwxyz")]
+        [InlineData(" ABCDEFGHIJKL     MNOPQRSTUVWXYZ     ")]
+        [InlineData("   0123456789 ")]
+        [InlineData(" ,.\r\n[]<>()")]
+        [InlineData("   1258")]
+        [InlineData("    1258He        llo")]
+        [InlineData("   \uABCD")]
+        [InlineData("  \uABEE")]
+        [InlineData(" a\uABEE")]
+        [InlineData("  a\uABEEa")]
+        [InlineData("   a\uABEE\uABCDa")]
+        [InlineData("   ")]
+        [InlineData(" a  ")]
+        [InlineData(" a ")]
+        [InlineData(" a a a ")]
+        [InlineData("         a a a           ")]
+        public void TrimTests(string s)
+        {
+            TrimStartTest(s);
+            TrimEndTest(s);
+            TrimTest(s);
+
+            char[] utf16codeUnits = s.ToCharArray();
+            Array.Reverse(utf16codeUnits);
+            s = new string(utf16codeUnits);
+
+            TrimStartTest(s);
+            TrimEndTest(s);
+            TrimTest(s);
+        }
+
+        public void TrimStartTest(string s)
+        {
+            Utf8String u8s = new Utf8String(s);
+
+            string expected = s.TrimStart();
+            Utf8String u8expected = new Utf8String(expected);
+
+            Utf8String u8trimmed = u8s.TrimStart();
+            Assert.Equal(u8expected, u8trimmed);
+
+            string trimmed = u8trimmed.ToString();
+            Assert.Equal(expected, trimmed);
+        }
+
+        public void TrimEndTest(string s)
+        {
+            Utf8String u8s = new Utf8String(s);
+
+            string expected = s.TrimEnd();
+            Utf8String u8expected = new Utf8String(expected);
+
+            Utf8String u8trimmed = u8s.TrimEnd();
+            Assert.Equal(u8expected, u8trimmed);
+
+            string trimmed = u8trimmed.ToString();
+            Assert.Equal(expected, trimmed);
+        }
+
+        public void TrimTest(string s)
+        {
+            Utf8String u8s = new Utf8String(s);
+
+            string expected = s.Trim();
+            Utf8String u8expected = new Utf8String(expected);
+
+            Utf8String u8trimmed = u8s.Trim();
+            Assert.Equal(u8expected, u8trimmed);
+
+            string trimmed = u8trimmed.ToString();
+            Assert.Equal(expected, trimmed);
+        }
+		
         [Theory]
         [InlineData("")]
         [InlineData("test124")]
