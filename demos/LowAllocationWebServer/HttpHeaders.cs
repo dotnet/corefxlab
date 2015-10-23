@@ -9,7 +9,6 @@ namespace System.Net.Http.Buffered
         private readonly Utf8String _headerString;
         private int _count;
         
-        //TODO: consider adding a Utf8String constructor
         public HttpHeaders(ByteSpan bytes)
         {
             _headerString = new Utf8String(bytes);
