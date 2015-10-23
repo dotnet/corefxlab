@@ -494,7 +494,7 @@ namespace System.Text.Utf8
             }
             else
             {
-                _bytes.CopyTo(buffer, 0);
+                Buffer.BlockCopy(_bytes, 0, buffer, 0, _bytes.Length);
             }
         }
 
