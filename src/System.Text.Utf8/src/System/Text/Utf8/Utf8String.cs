@@ -454,6 +454,49 @@ namespace System.Text.Utf8
             return true;
         }
 
+        public void CopyTo(ByteSpan buffer)
+        {
+            if(buffer.Length < Length)
+            {
+                throw new ArgumentException("buffer");
+            }
+
+            if(_bytes == null)
+            {
+                _buffer.TryCopyTo(buffer);
+            }
+            else
+            {
+                unsafe {
+                    fixed(byte* pBytes = _bytes) {
+                        buffer.TrySet(pBytes, _bytes.Length);
+                    }
+                }
+            }
+        }
+
+        public void CopyTo(byte[] buffer)
+        {
+            if (buffer.Length < Length)
+            {
+                throw new ArgumentException("buffer");
+            }
+
+            if (_bytes == null)
+            {
+                unsafe
+                {
+                    fixed(byte* pBuffer = buffer)
+                    {
+                        _buffer.TryCopyTo(pBuffer, buffer.Length);
+                    }
+                }
+            }
+            else
+            {
+                _bytes.CopyTo(buffer, 0);
+            }
+        }
 
         public override int GetHashCode()
         {
