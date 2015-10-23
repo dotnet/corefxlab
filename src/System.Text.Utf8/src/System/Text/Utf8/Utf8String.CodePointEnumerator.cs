@@ -191,7 +191,7 @@ namespace System.Text.Utf8
                 }
             }
 
-            // This is different than MoveToStartPosition, this actually goes before anything
+            // This is different than MoveToFirstPosition, this actually goes before anything
             public void Reset()
             {
                 _index = ResetIndex;

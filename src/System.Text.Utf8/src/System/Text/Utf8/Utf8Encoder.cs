@@ -118,10 +118,8 @@ namespace System.Text.Utf8
             return true;
         }
 
-        // TODO: Name TBD
-        // TODO: optimize?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryDecodeCodePointBackwards(ByteSpan buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        private static bool TryFindEncodedCodePointBytesCountGoingBackwards(ByteSpan buffer, out int encodedBytes)
         {
             encodedBytes = 1;
             ByteSpan it = buffer;
@@ -130,7 +128,6 @@ namespace System.Text.Utf8
             {
                 if (it.Length == 0)
                 {
-                    codePoint = default(UnicodeCodePoint);
                     encodedBytes = default(int);
                     return false;
                 }
@@ -138,11 +135,22 @@ namespace System.Text.Utf8
                 // TODO: Should we have ByteSpan.Last?
                 if (!Utf8CodeUnit.IsSurrogate((Utf8CodeUnit)it[it.Length - 1]))
                 {
-                    break;
+                    // output: encodedBytes
+                    return true;
                 }
             }
 
-            if (encodedBytes <= UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint)
+            // Invalid unicode character or stream prematurely ended (which is still invalid character in that stream)
+            encodedBytes = default(int);
+            return false;
+        }
+
+        // TODO: Name TBD
+        // TODO: optimize?
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryDecodeCodePointBackwards(ByteSpan buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        {
+            if (TryFindEncodedCodePointBytesCountGoingBackwards(buffer, out encodedBytes))
             {
                 int realEncodedBytes;
                 // TODO: Inline decoding, as the invalid surrogate check can be done faster
@@ -150,6 +158,9 @@ namespace System.Text.Utf8
                 if (ret && encodedBytes != realEncodedBytes)
                 {
                     // invalid surrogate character
+                    // we know the character length by iterating on surrogate characters from the end
+                    // but the first byte of the character has also encoded length
+                    // seems like the lengths don't match
                     return false;
                 }
                 return true;
