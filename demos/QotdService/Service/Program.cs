@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Buffers;
 using System.Net.Libuv;
 using System.Text;
+using System.Text.Utf8;
 
 class Program
 {
     static void Main(string[] args)
     {
-        byte[] quote = Encoding.ASCII.GetBytes("Insanity: doing the same thing over and over again and expecting different results. - Albert Einstein");
-        
+        byte[] buffer = new byte[1024];
+        Utf8String quote = new Utf8String("Insanity: doing the same thing over and over again and expecting different results. - Albert Einstein");;
+
         var loop = new UVLoop();
 
         var listener = new TcpListener("0.0.0.0", 17, loop);
@@ -16,13 +19,8 @@ class Program
         {
             connection.ReadCompleted += (ByteSpan data) =>
             {
-                unsafe
-                {
-                    fixed (byte* pQuote = quote)
-                    {
-                        connection.TryWrite(new ByteSpan(pQuote, quote.Length));
-                    }
-                }
+                quote.CopyTo(buffer);
+                connection.TryWrite(buffer, quote.Length);
             };
 
             connection.ReadStart();

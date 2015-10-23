@@ -38,6 +38,9 @@
     <ProjectReference Include="..\..\..\src\System.Buffers\src\System.Buffers.csproj">
       <Name>System.Buffers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\System.Text.Utf8\src\System.Text.Utf8.csproj">
+      <Name>System.Text.Utf8</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\System.Net.Libuv\src\System.Net.Libuv.csproj">
       <Name>System.Net.Libuv</Name>
     </ProjectReference>
