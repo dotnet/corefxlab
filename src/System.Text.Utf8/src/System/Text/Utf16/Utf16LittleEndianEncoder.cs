@@ -31,7 +31,7 @@ namespace System.Text.Utf16
                 }
                 unchecked
                 {
-                    codePointValue -= UnicodeConstants.HighSurrogateFirstCodePoint;
+                    codePointValue -= UnicodeConstants.Utf16HighSurrogateFirstCodePoint;
                     encodedBytes += 2;
                 }
                 // high surrogate contains 10 first bits of the code point
@@ -48,7 +48,7 @@ namespace System.Text.Utf16
 
                 unchecked
                 {
-                    lowSurrogate -= UnicodeConstants.LowSurrogateFirstCodePoint;
+                    lowSurrogate -= UnicodeConstants.Utf16LowSurrogateFirstCodePoint;
                 }
                 codePointValue |= lowSurrogate;
             }
@@ -90,8 +90,8 @@ namespace System.Text.Utf16
             {
                 unchecked
                 {
-                    uint highSurrogate = ((uint)codePoint >> 10) + UnicodeConstants.HighSurrogateFirstCodePoint;
-                    uint lowSurrogate = ((uint)codePoint & MaskLow10Bits) + UnicodeConstants.LowSurrogateFirstCodePoint;
+                    uint highSurrogate = ((uint)codePoint >> 10) + UnicodeConstants.Utf16HighSurrogateFirstCodePoint;
+                    uint lowSurrogate = ((uint)codePoint & MaskLow10Bits) + UnicodeConstants.Utf16LowSurrogateFirstCodePoint;
                     buffer[0] = (byte)highSurrogate;
                     buffer[1] = (byte)(highSurrogate >> 8);
 

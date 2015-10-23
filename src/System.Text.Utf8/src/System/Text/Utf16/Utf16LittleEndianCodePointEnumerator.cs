@@ -64,18 +64,14 @@ namespace System.Text.Utf16
             {
                 _index = 0;
                 _encodedChars = 0;
-                return true;
             }
-
-            if (_index >= _s.Length)
+            else
             {
-                return false;
+                UnicodeCodePoint dummy = Current;
+                _index += _encodedChars;
+                _encodedChars = 0;
             }
 
-            // caching the _encodedChars
-            UnicodeCodePoint dummy = Current;
-            _index += _encodedChars;
-            _encodedChars = 0;
             return _index < _s.Length;
         }
 
