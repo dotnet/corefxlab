@@ -518,5 +518,152 @@ namespace System.Text.Utf8.Tests
                 Assert.Equal(textArray, buffer);
             }
         }
+
+        [Fact]
+        public void HashesSameForTheSameSubstrings()
+        {
+            const int len = 50;
+
+            // two copies of the same string
+            byte[] bytes = new byte[len * 2];
+            for (int i = 0; i < len; i++)
+            {
+                // 0x20 is a spacebar, writing explicitly so
+                // the value is more predictable
+                bytes[i] = unchecked((byte)(0x20 + i));
+                bytes[i + len] = bytes[i];
+            }
+
+            Utf8String sFromBytes = new Utf8String(bytes);
+            Utf8String s1FromBytes = sFromBytes.Substring(0, len);
+            Utf8String s2FromBytes = sFromBytes.Substring(len, len);
+
+            unsafe
+            {
+                fixed (byte* pinnedBytes = bytes)
+                {
+                    Utf8String sFromSpan = new Utf8String(new ByteSpan(pinnedBytes, len * 2));
+                    Utf8String s1FromSpan = sFromSpan.Substring(0, len);
+                    Utf8String s2FromSpan = sFromSpan.Substring(len, len);
+                    TestHashesSameForEquivalentString(s1FromBytes, s2FromBytes);
+                    TestHashesSameForEquivalentString(s1FromSpan, s2FromSpan);
+                    TestHashesSameForEquivalentString(s1FromSpan, s2FromBytes);
+                }
+            }
+        }
+
+        private void TestHashesSameForEquivalentString(Utf8String a, Utf8String b)
+        {
+            // for sanity
+            Assert.Equal(a.Length, b.Length);
+            Assert.Equal(a, b);
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                Utf8String prefixOfA = a.Substring(i, a.Length - i);
+                Utf8String prefixOfB = b.Substring(i, b.Length - i);
+                // sanity
+                Assert.Equal(prefixOfA, prefixOfB);
+                Assert.Equal(prefixOfA.GetHashCode(), prefixOfB.GetHashCode());
+
+                // for all suffixes
+                Utf8String suffixOfA = a.Substring(a.Length - i, i);
+                Utf8String suffixOfB = b.Substring(b.Length - i, i);
+                Assert.Equal(suffixOfA, suffixOfB);
+            }
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("abc", "")]
+        [InlineData("", "a")]
+        [InlineData("", "abc")]
+        [InlineData("", "abc")]
+        [InlineData("", "abc")]
+        [InlineData("abc", "a")]
+        [InlineData("abc", "ab")]
+        [InlineData("abc", "abc")]
+        [InlineData("abc", "b")]
+        [InlineData("abc", "bc")]
+        [InlineData("abc", "c")]
+        [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", "aaaaaaaab")]
+        [InlineData("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "abbbbbbbb")]
+        [InlineData("aaabaaa", "aabaaaa")]
+        [InlineData("aaabaaa", "aadaaaa")]
+        [InlineData("abababab", "bababa")]
+        [InlineData("abababab", "bbababa")]
+        [InlineData("abababab", "bababaa")]
+        [InlineData("aaabaacaaac", "aaac")]
+        [InlineData("aaabaacaaac", "aaac")]
+        [InlineData("baabaaabaaaa", "baaaa")]
+        public void IndexOfSubstringFromAndToUtf8String(string s, string substring)
+        {
+            int p = s.IndexOf(substring);
+            bool expected = p >= 0;
+
+            Utf8String u8s = new Utf8String(s);
+            Utf8String u8substring = new Utf8String(substring);
+            Assert.Equal(p, u8s.IndexOf(u8substring));
+
+            Utf8String u8SubstringFrom;
+            Utf8String u8SubstringTo;
+            bool substringFromResult = u8s.TrySubstringFrom(u8substring, out u8SubstringFrom);
+            bool substringToResult = u8s.TrySubstringTo(u8substring, out u8SubstringTo);
+            Assert.Equal(expected, substringFromResult);
+            Assert.Equal(expected, substringToResult);
+            if (substringFromResult)
+            {
+                {
+                    string expectedSubstringFromRet = s.Substring(p);
+                    Utf8String u8SubstringFromExpectedRet = new Utf8String(expectedSubstringFromRet);
+
+                    Assert.Equal(expectedSubstringFromRet, u8SubstringFrom.ToString());
+                    Assert.Equal(u8SubstringFromExpectedRet, u8SubstringFrom);
+                }
+
+                {
+                    string expectedSubstringToRet = s.Substring(0, p);
+                    Utf8String u8SubstringToExpectedRet = new Utf8String(expectedSubstringToRet);
+
+                    Assert.Equal(expectedSubstringToRet, u8SubstringTo.ToString());
+                    Assert.Equal(u8SubstringToExpectedRet, u8SubstringTo);
+                }
+            }
+        }
+
+        [Theory]
+        [InlineData("abc", 'a')]
+        [InlineData("", 'a')]
+        [InlineData("abc", 'a')]
+        [InlineData("abc", 'c')]
+        [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", 'b')]
+        [InlineData("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", 'a')]
+        [InlineData("aaabaaa", 'b')]
+        [InlineData("aaabaaa", 'a')]
+        [InlineData("abababab", 'a')]
+        [InlineData("abababab", 'b')]
+        public void IndexOfUtf8Character(string s, char character)
+        {
+            int expected = s.IndexOf(character);
+
+            Utf8String u8s = new Utf8String(s);
+            Utf8CodeUnit u8codeUnit = (Utf8CodeUnit)(byte)(character);
+
+            Assert.Equal(expected, u8s.IndexOf(u8codeUnit));
+        }
+
+        [Theory]
+        [InlineData(true, 0, "abc", "a")]
+        [InlineData(true, 0, "abc", "ab")]
+        [InlineData(true, 0, "abc", "abc")]
+        [InlineData(true, 1, "abc", "b")]
+        [InlineData(true, 1, "abc", "bc")]
+        [InlineData(true, 2, "abc", "c")]
+        public void IsSubstringAt(bool expected, int position, string s, string substring)
+        {
+            Utf8String u8s = new Utf8String(s);
+            Utf8String u8substring = new Utf8String(substring);
+            Assert.Equal(expected, u8s.IsSubstringAt(position, u8substring));
+        }
     }
 }

@@ -16,6 +16,8 @@ namespace System.Text.Utf8
         private int _index;
         private int _length;
 
+        private const int StringNotFound = -1;
+
         static readonly Utf8String s_empty = new Utf8String(new byte[0]);
 
         // TODO: Validate constructors, When should we copy? When should we just use the underlying array?
@@ -370,14 +372,42 @@ namespace System.Text.Utf8
             }
         }
 
-        // TODO: Should this be public or should focused on scenarios?
-        private int IndexOf(Utf8String value)
+        // TODO: Naive algorithm, reimplement faster
+        // TODO: Should this be public?
+        public int IndexOf(Utf8String value)
         {
-            throw new NotImplementedException();
+            if (value.Length == 0)
+            {
+                // TODO: Is this the right answer?
+                // TODO: Does this even make sense?
+                return 0;
+            }
+
+            if (Length == 0)
+            {
+                return StringNotFound;
+            }
+
+            Utf8String restOfTheString = this;
+            for (int i = 0; restOfTheString.Length <= Length; restOfTheString = Substring(++i))
+            {
+                int pos = restOfTheString.IndexOf(value[0]);
+                if (pos == StringNotFound)
+                {
+                    return StringNotFound;
+                }
+                i += pos;
+                if (IsSubstringAt(i, value))
+                {
+                    return i;
+                }
+            }
+
+            return StringNotFound;
         }
 
-        // TODO: Should this be public or should focused on scenarios?
-        private int IndexOf(Utf8CodeUnit codeUnit)
+        // TODO: Should this be public?
+        public int IndexOf(Utf8CodeUnit codeUnit)
         {
             for (int i = 0; i < Length; i++)
             {
@@ -387,11 +417,11 @@ namespace System.Text.Utf8
                 }
             }
 
-            return -1;
+            return StringNotFound;
         }
 
-        // TODO: Should this be public or should focused on scenarios?
-        private int IndexOf(UnicodeCodePoint codePoint)
+        // TODO: Should this be public?
+        public int IndexOf(UnicodeCodePoint codePoint)
         {
             throw new NotImplementedException();
         }
@@ -401,7 +431,7 @@ namespace System.Text.Utf8
         {
             int idx = IndexOf(value);
 
-            if (idx == -1)
+            if (idx == StringNotFound)
             {
                 result = default(Utf8String);
                 return false;
@@ -415,7 +445,7 @@ namespace System.Text.Utf8
         {
             int idx = IndexOf(codeUnit);
 
-            if (idx == -1)
+            if (idx == StringNotFound)
             {
                 result = default(Utf8String);
                 return false;
@@ -429,7 +459,7 @@ namespace System.Text.Utf8
         {
             int idx = IndexOf(codePoint);
 
-            if (idx == -1)
+            if (idx == StringNotFound)
             {
                 result = default(Utf8String);
                 return false;
@@ -443,7 +473,7 @@ namespace System.Text.Utf8
         {
             int idx = IndexOf(value);
 
-            if (idx == -1)
+            if (idx == StringNotFound)
             {
                 result = default(Utf8String);
                 return false;
@@ -457,7 +487,7 @@ namespace System.Text.Utf8
         {
             int idx = IndexOf(codeUnit);
 
-            if (idx == -1)
+            if (idx == StringNotFound)
             {
                 result = default(Utf8String);
                 return false;
@@ -471,7 +501,7 @@ namespace System.Text.Utf8
         {
             int idx = IndexOf(codePoint);
 
-            if (idx == -1)
+            if (idx == StringNotFound)
             {
                 result = default(Utf8String);
                 return false;
@@ -479,6 +509,16 @@ namespace System.Text.Utf8
 
             result = Substring(0, idx);
             return true;
+        }
+
+        public bool IsSubstringAt(int index, Utf8String s)
+        {
+            if (index < 0 || index + s.Length > Length)
+            {
+                return false;
+            }
+
+            return Substring(index, s.Length).Equals(s);
         }
 
         public void CopyTo(ByteSpan buffer)
@@ -525,9 +565,35 @@ namespace System.Text.Utf8
             }
         }
 
+        // TODO: write better hashing function
+        // TODO: span.GetHashCode() + some constant?
         public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            unchecked
+            {
+                if (Length <= 4)
+                {
+                    int hash = Length;
+                    for (int i = 0; i < Length; i++)
+                    {
+                        hash <<= 8;
+                        hash ^= (byte)this[i];
+                    }
+                    return hash;
+                }
+                else
+                {
+                    int hash = Length;
+                    hash ^= (byte)this[0];
+                    hash <<= 8;
+                    hash ^= (byte)this[1];
+                    hash <<= 8;
+                    hash ^= (byte)this[Length - 2];
+                    hash <<= 8;
+                    hash ^= (byte)this[Length - 1];
+                    return hash;
+                }
+            }
         }
 
         public override bool Equals(object obj)
@@ -744,6 +810,7 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
+        // TODO: Name TBD, CopyArray? GetBytes?
         public byte[] CopyBytes()
         {
             if (_bytes != null)
