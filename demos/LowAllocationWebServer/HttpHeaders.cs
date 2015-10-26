@@ -77,15 +77,23 @@ namespace System.Net.Http.Buffered
             Utf8String headerName;
             Utf8String headerValue;
 
-            //TODO: this will be simplified once we have TrySubstringTo/From accepting strings
-            headerString.TrySubstringTo((Utf8CodeUnit) (byte) ':', out headerName);
+            //TODO: this will be simplified once we have TrySubstringTo/From accepting strings            
+            if (!headerString.TrySubstringTo((Utf8CodeUnit) (byte) ':', out headerName))
+            {
+                throw new ArgumentException("headerString");
+            }
+
             headerString.TrySubstringFrom((Utf8CodeUnit) (byte) ':', out headerString);
             if (headerString.Length > 0)
             {
                 headerString = headerString.Substring(1);
             }
+            
+            if (!headerString.TrySubstringTo((Utf8CodeUnit)(byte)'\r', out headerValue))
+            {
+                throw new ArgumentException("headerString");
+            }
 
-            headerString.TrySubstringTo((Utf8CodeUnit)(byte)'\r', out headerValue);
             headerString.TrySubstringFrom((Utf8CodeUnit)(byte)'\n', out headerString);
             if (headerString.Length > 0)
             {
