@@ -18,8 +18,6 @@ namespace System.Net.Libuv
 
             _gcHandle = GCHandle.Alloc(this);
             Data = GCHandle.ToIntPtr(_gcHandle);
-
-            CloseCallback = OnClose;
         }
 
         public UVLoop Loop
