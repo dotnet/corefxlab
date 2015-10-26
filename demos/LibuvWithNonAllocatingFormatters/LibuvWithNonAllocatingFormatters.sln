@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Net.Libuv", "src\System.Net.Libuv.csproj", "{D8FE16FD-2531-4065-8E93-B2BD590CBF3E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "sample\Sample.csproj", "{4DBFCB5D-8060-4B97-81EC-7478520A3830}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D8FE16FD-2531-4065-8E93-B2BD590CBF3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D8FE16FD-2531-4065-8E93-B2BD590CBF3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D8FE16FD-2531-4065-8E93-B2BD590CBF3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D8FE16FD-2531-4065-8E93-B2BD590CBF3E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DBFCB5D-8060-4B97-81EC-7478520A3830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DBFCB5D-8060-4B97-81EC-7478520A3830}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DBFCB5D-8060-4B97-81EC-7478520A3830}.Release|Any CPU.ActiveCfg = Release|Any CPU
