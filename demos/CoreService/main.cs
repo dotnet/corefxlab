@@ -14,8 +14,9 @@ static class Program {
     
     static void Main() {
         Console.WriteLine(".NET Core Service");
+        Console.WriteLine("Browse to http://localhost:8080/plaintext");
 
-        var address = new IPAddress(new byte[] {127, 0, 0, 1});
+        var address = new IPAddress(new byte[] {0, 0, 0, 0});
 
         SocketServer.Listen(address, 8080, (socket) => {
             ProcessRequest(socket);
@@ -32,6 +33,7 @@ static class Program {
                 formatter.Append("Hello, World!");
 
                 socket.Write(formatter);
+                socket.Dispose();
             }
         });
     }
@@ -107,10 +109,17 @@ static class TemporaryHelpers
     // this will be removed once we implement socket APIs that use pooled memory buffers
     public static void Write(this TcpClient socket, BufferFormatter formatter)
     {
+        Console.WriteLine("writing");
         NetworkStream stream = socket.GetStream();
-        stream.Write(formatter.Buffer, 0, formatter.CommitedByteCount);
-        stream.Flush();
+
         var buffer = formatter.Buffer;
+        stream.Write(buffer, 0, formatter.CommitedByteCount);
+        stream.Flush();
+
+        //var text = Encoding.UTF8.GetString(buffer, 0, formatter.CommitedByteCount);
+        //Console.WriteLine("response {0} bytes", formatter.CommitedByteCount);
+        //Console.WriteLine(text);
+        
         BufferPool.Shared.ReturnBuffer(ref buffer);
     }
 }
