@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Net.Http.Buffered;
 using System.Text;
 using System.Text.Utf8;
@@ -21,6 +20,10 @@ User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like
 Accept-Encoding: gzip, deflate, sdch
 Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4
 ";
+
+        private string _headerWithoutColumn = "Connection keep-alive\r\n";
+
+        private string _headerWithoutCRLF = "Host: localhost:8080";
 
         private ByteSpan _headers;
         private HttpHeaders _httpHeaders;
@@ -92,6 +95,26 @@ Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4
             var httpHeader = new HttpHeaders(new Utf8String(new UTF8Encoding().GetBytes(_headersString)));
 
             httpHeader.Count.Should().Be(8);
+        }
+
+        [TestMethod]
+        public void String_without_column_throws_ArgumentException()
+        {
+            var httpHeader = new HttpHeaders(new Utf8String(new UTF8Encoding().GetBytes(_headerWithoutColumn)));
+
+            Action action = () => { var count = httpHeader.Count; }; 
+
+            action.ShouldThrow<ArgumentException>();
+        }
+
+        [TestMethod]
+        public void String_without_carriage_return_and_line_feed_throws_ArgumentException()
+        {
+            var httpHeader = new HttpHeaders(new Utf8String(new UTF8Encoding().GetBytes(_headerWithoutCRLF)));
+
+            Action action = () => { var count = httpHeader.Count; };
+
+            action.ShouldThrow<ArgumentException>();
         }
     }
 }
