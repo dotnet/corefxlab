@@ -21,8 +21,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="System\Buffers\ArrayBufferPool.cs" />
+    <Compile Include="System\Buffers\BufferBucket.cs" />
     <Compile Include="System\Buffers\BufferInternal.cs" />
     <Compile Include="System\Buffers\BufferPool.cs" />
+    <Compile Include="System\Buffers\NativeBufferPool.cs" />
     <Compile Include="System\Buffers\Pack.cs" />
     <Compile Include="System\ByteSpan.cs" />
     <Compile Include="System\Diagnostics\Precondition.cs" />

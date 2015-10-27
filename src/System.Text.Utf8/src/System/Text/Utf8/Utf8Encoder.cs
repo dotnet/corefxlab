@@ -21,7 +21,7 @@ namespace System.Text.Utf8
         #region Decoder
         // Should this be public?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool TryGetNumberOfEncodedBytesFromFirstByte(byte first, out int numberOfBytes)
+        private static bool TryGetNumberOfEncodedBytesFromFirstByte(byte first, out int numberOfBytes)
         {
             if ((first & mask_1000_0000) == 0)
             {
@@ -116,6 +116,59 @@ namespace System.Text.Utf8
             }
 
             return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool TryFindEncodedCodePointBytesCountGoingBackwards(ByteSpan buffer, out int encodedBytes)
+        {
+            encodedBytes = 1;
+            ByteSpan it = buffer;
+            // TODO: Should we have something like: ByteSpan.(Slice from the back)
+            for (; encodedBytes <= UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint; encodedBytes++, it = it.Slice(0, it.Length - 1))
+            {
+                if (it.Length == 0)
+                {
+                    encodedBytes = default(int);
+                    return false;
+                }
+
+                // TODO: Should we have ByteSpan.Last?
+                if (!Utf8CodeUnit.IsSurrogate((Utf8CodeUnit)it[it.Length - 1]))
+                {
+                    // output: encodedBytes
+                    return true;
+                }
+            }
+
+            // Invalid unicode character or stream prematurely ended (which is still invalid character in that stream)
+            encodedBytes = default(int);
+            return false;
+        }
+
+        // TODO: Name TBD
+        // TODO: optimize?
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryDecodeCodePointBackwards(ByteSpan buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        {
+            if (TryFindEncodedCodePointBytesCountGoingBackwards(buffer, out encodedBytes))
+            {
+                int realEncodedBytes;
+                // TODO: Inline decoding, as the invalid surrogate check can be done faster
+                bool ret = TryDecodeCodePoint(buffer.Slice(buffer.Length - encodedBytes, encodedBytes), out codePoint, out realEncodedBytes);
+                if (ret && encodedBytes != realEncodedBytes)
+                {
+                    // invalid surrogate character
+                    // we know the character length by iterating on surrogate characters from the end
+                    // but the first byte of the character has also encoded length
+                    // seems like the lengths don't match
+                    return false;
+                }
+                return true;
+            }
+
+            codePoint = default(UnicodeCodePoint);
+            encodedBytes = default(int);
+            return false;
         }
         #endregion
 
