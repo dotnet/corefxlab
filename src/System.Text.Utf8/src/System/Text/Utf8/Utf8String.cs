@@ -3,6 +3,8 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text.Utf16;
 
 namespace System.Text.Utf8
@@ -79,6 +81,21 @@ namespace System.Text.Utf8
 
         public Utf8String(string s) : this(GetUtf8BytesFromString(s))
         {
+        }
+
+        /// <summary>
+        /// This constructor is for use by the compiler.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public Utf8String(RuntimeFieldHandle utf8Data, int length) : this(CreateArrayFromFieldHandle(utf8Data, length))
+        {
+        }
+
+        static byte[] CreateArrayFromFieldHandle(RuntimeFieldHandle utf8Data, int length)
+        {
+            var array = new byte[length];
+            RuntimeHelpers.InitializeArray(array, utf8Data);
+            return array;
         }
 
         public static Utf8String Empty { get { return s_empty; } }
