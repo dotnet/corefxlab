@@ -3,11 +3,58 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.Utf8;
 using System.Text.Utf16;
+using Xunit.Abstractions;
 
 namespace System.Text.Utf8.Tests
 {
     public class Utf8StringTests
     {
+        #region Helpers - useful only when debugging or generating test cases
+        ITestOutputHelper output;
+
+        public Utf8StringTests(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
+        private static string GetStringLiteral(string s)
+        {
+            if (s == null)
+            {
+                return "null";
+            }
+
+            Utf16LittleEndianCodePointEnumerable codePoints = new Utf16LittleEndianCodePointEnumerable(s);
+            StringBuilder sb = new StringBuilder();
+            sb.Append('"');
+            foreach (var codePoint in codePoints)
+            {
+                if (codePoint.Value >= 32 && codePoint.Value < 127)
+                {
+                    sb.Append(char.ConvertFromUtf32(unchecked((int)codePoint.Value)));
+                }
+                else if (codePoint.Value == (uint)'\n')
+                {
+                    sb.Append("\\n");
+                }
+                else if (codePoint.Value == (uint)'\r')
+                {
+                    sb.Append("\\r");
+                }
+                else if (codePoint.Value == (uint)'\t')
+                {
+                    sb.Append("\\t");
+                }
+                else
+                {
+                    sb.Append(string.Format("\\u{0:X04}", codePoint.Value));
+                }
+            }
+            sb.Append('"');
+            return sb.ToString();
+        }
+        #endregion
+
         [Theory]
         [InlineData("")]
         [InlineData("1258")]
@@ -574,60 +621,114 @@ namespace System.Text.Utf8.Tests
         }
 
         [Theory]
-        [InlineData("", "")]
-        [InlineData("abc", "")]
-        [InlineData("", "a")]
-        [InlineData("", "abc")]
-        [InlineData("", "abc")]
-        [InlineData("", "abc")]
-        [InlineData("abc", "a")]
-        [InlineData("abc", "ab")]
-        [InlineData("abc", "abc")]
-        [InlineData("abc", "b")]
-        [InlineData("abc", "bc")]
-        [InlineData("abc", "c")]
-        [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", "aaaaaaaab")]
-        [InlineData("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "abbbbbbbb")]
-        [InlineData("aaabaaa", "aabaaaa")]
-        [InlineData("aaabaaa", "aadaaaa")]
-        [InlineData("abababab", "bababa")]
-        [InlineData("abababab", "bbababa")]
-        [InlineData("abababab", "bababaa")]
-        [InlineData("aaabaacaaac", "aaac")]
-        [InlineData("aaabaacaaac", "aaac")]
-        [InlineData("baabaaabaaaa", "baaaa")]
-        public void IndexOfSubstringFromAndToUtf8String(string s, string substring)
+        [InlineData(0, "", "")]
+        [InlineData(0, "abc", "")]
+        [InlineData(-1, "", "a")]
+        [InlineData(-1, "", "abc")]
+        [InlineData(-1, "", "abc")]
+        [InlineData(-1, "", "abc")]
+        [InlineData(0, "a", "a")]
+        [InlineData(-1, "a", "b")]
+        [InlineData(0, "abc", "a")]
+        [InlineData(0, "abc", "ab")]
+        [InlineData(0, "abc", "abc")]
+        [InlineData(1, "abc", "b")]
+        [InlineData(1, "abc", "bc")]
+        [InlineData(2, "abc", "c")]
+        [InlineData(34, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", "aaaaaaaab")]
+        [InlineData(0, "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "abbbbbbbb")]
+        [InlineData(-1, "aaabaaa", "aabaaaa")]
+        [InlineData(-1, "aaabaaa", "aadaaaa")]
+        [InlineData(1, "abababab", "bababa")]
+        [InlineData(-1, "abababab", "bbababa")]
+        [InlineData(-1, "abababab", "bababaa")]
+        [InlineData(7, "aaabaacaaac", "aaac")]
+        [InlineData(7, "aaabaacaaac", "aaac")]
+        [InlineData(7, "baabaaabaaaa", "baaaa")]
+        public void IndexOfTests(int expected, string s, string substring)
         {
-            int p = s.IndexOf(substring);
-            bool expected = p >= 0;
+            Utf8String utf8s = new Utf8String(s);
+            Utf8String utf8substring = new Utf8String(substring);
+            Assert.Equal(expected, utf8s.IndexOf(utf8substring));
+        }
 
-            Utf8String u8s = new Utf8String(s);
-            Utf8String u8substring = new Utf8String(substring);
-            Assert.Equal(p, u8s.IndexOf(u8substring));
+        [Theory]
+        [InlineData("", "", "")]
+        [InlineData("abc", "abc", "")]
+        [InlineData(null, "", "a")]
+        [InlineData(null, "", "abc")]
+        [InlineData(null, "", "abc")]
+        [InlineData(null, "", "abc")]
+        [InlineData("a", "a", "a")]
+        [InlineData(null, "a", "b")]
+        [InlineData("abc", "abc", "a")]
+        [InlineData("abc", "abc", "ab")]
+        [InlineData("abc", "abc", "abc")]
+        [InlineData("bc", "abc", "b")]
+        [InlineData("bc", "abc", "bc")]
+        [InlineData("c", "abc", "c")]
+        [InlineData("aaaaaaaab", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", "aaaaaaaab")]
+        [InlineData("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "abbbbbbbb")]
+        [InlineData(null, "aaabaaa", "aabaaaa")]
+        [InlineData(null, "aaabaaa", "aadaaaa")]
+        [InlineData("bababab", "abababab", "bababa")]
+        [InlineData(null, "abababab", "bbababa")]
+        [InlineData(null, "abababab", "bababaa")]
+        [InlineData("aaac", "aaabaacaaac", "aaac")]
+        [InlineData("aaac", "aaabaacaaac", "aaac")]
+        [InlineData("baaaa", "baabaaabaaaa", "baaaa")]
+        public void SubstringFromTests(string expected, string s, string substring)
+        {
+            Utf8String utf8s = new Utf8String(s);
+            Utf8String utf8substring = new Utf8String(substring);
+            Utf8String result;
+            Assert.Equal(expected != null, utf8s.TrySubstringFrom(utf8substring, out result));
 
-            Utf8String u8SubstringFrom;
-            Utf8String u8SubstringTo;
-            bool substringFromResult = u8s.TrySubstringFrom(u8substring, out u8SubstringFrom);
-            bool substringToResult = u8s.TrySubstringTo(u8substring, out u8SubstringTo);
-            Assert.Equal(expected, substringFromResult);
-            Assert.Equal(expected, substringToResult);
-            if (substringFromResult)
+            if (expected != null)
             {
-                {
-                    string expectedSubstringFromRet = s.Substring(p);
-                    Utf8String u8SubstringFromExpectedRet = new Utf8String(expectedSubstringFromRet);
+                Utf8String utf8expected = new Utf8String(expected);
+                Assert.Equal(expected, result.ToString());
+                Assert.Equal(utf8expected, result);
+            }
+        }
 
-                    Assert.Equal(expectedSubstringFromRet, u8SubstringFrom.ToString());
-                    Assert.Equal(u8SubstringFromExpectedRet, u8SubstringFrom);
-                }
+        [Theory]
+        [InlineData("", "", "")]
+        [InlineData("", "abc", "")]
+        [InlineData(null, "", "a")]
+        [InlineData(null, "", "abc")]
+        [InlineData(null, "", "abc")]
+        [InlineData(null, "", "abc")]
+        [InlineData("", "a", "a")]
+        [InlineData(null, "a", "b")]
+        [InlineData("", "abc", "a")]
+        [InlineData("", "abc", "ab")]
+        [InlineData("", "abc", "abc")]
+        [InlineData("a", "abc", "b")]
+        [InlineData("a", "abc", "bc")]
+        [InlineData("ab", "abc", "c")]
+        [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", "aaaaaaaab")]
+        [InlineData("", "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "abbbbbbbb")]
+        [InlineData(null, "aaabaaa", "aabaaaa")]
+        [InlineData(null, "aaabaaa", "aadaaaa")]
+        [InlineData("a", "abababab", "bababa")]
+        [InlineData(null, "abababab", "bbababa")]
+        [InlineData(null, "abababab", "bababaa")]
+        [InlineData("aaabaac", "aaabaacaaac", "aaac")]
+        [InlineData("aaabaac", "aaabaacaaac", "aaac")]
+        [InlineData("baabaaa", "baabaaabaaaa", "baaaa")]
+        public void SubstringToTests(string expected, string s, string substring)
+        {
+            Utf8String utf8s = new Utf8String(s);
+            Utf8String utf8substring = new Utf8String(substring);
+            Utf8String result;
+            Assert.Equal(expected != null, utf8s.TrySubstringTo(utf8substring, out result));
 
-                {
-                    string expectedSubstringToRet = s.Substring(0, p);
-                    Utf8String u8SubstringToExpectedRet = new Utf8String(expectedSubstringToRet);
-
-                    Assert.Equal(expectedSubstringToRet, u8SubstringTo.ToString());
-                    Assert.Equal(u8SubstringToExpectedRet, u8SubstringTo);
-                }
+            if (expected != null)
+            {
+                Utf8String utf8expected = new Utf8String(expected);
+                Assert.Equal(expected, result.ToString());
+                Assert.Equal(utf8expected, result);
             }
         }
 
@@ -636,6 +737,8 @@ namespace System.Text.Utf8.Tests
         [InlineData("", 'a')]
         [InlineData("abc", 'a')]
         [InlineData("abc", 'c')]
+        [InlineData("a", 'c')]
+        [InlineData("c", 'c')]
         [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", 'b')]
         [InlineData("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", 'a')]
         [InlineData("aaabaaa", 'b')]
@@ -653,12 +756,23 @@ namespace System.Text.Utf8.Tests
         }
 
         [Theory]
+        [InlineData(true, 0, "a", "a")]
         [InlineData(true, 0, "abc", "a")]
         [InlineData(true, 0, "abc", "ab")]
         [InlineData(true, 0, "abc", "abc")]
         [InlineData(true, 1, "abc", "b")]
         [InlineData(true, 1, "abc", "bc")]
         [InlineData(true, 2, "abc", "c")]
+        [InlineData(false, -1, "a", "a")]
+        [InlineData(false, 1, "a", "a")]
+        [InlineData(false, 1, "abc", "a")]
+        [InlineData(false, 1, "abc", "ab")]
+        [InlineData(false, 1, "abc", "abc")]
+        [InlineData(false, 0, "abc", "b")]
+        [InlineData(false, 2, "abc", "b")]
+        [InlineData(false, 0, "abc", "bc")]
+        [InlineData(false, 0, "abc", "bc")]
+        [InlineData(false, 1, "abc", "c")]
         public void IsSubstringAt(bool expected, int position, string s, string substring)
         {
             Utf8String u8s = new Utf8String(s);
