@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>System.Collections.Generic.MultiValueDictionary</id>
+    <version>0.1.0-d102115-1</version>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://go.microsoft.com/fwlink/?LinkId=329770</licenseUrl>
+    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
+    <projectUrl>https://github.com/dotnet/corefxlab</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Dictionary allowing multiple values per key</description>
+    <releaseNotes>Initial package</releaseNotes>
+    <copyright> Microsoft Corporation.  All rights reserved.</copyright>
+    <tags>.NET Core MultiValueDictionary MultiDictionary Dictionary corefxlab</tags>
+  </metadata>
+  <files>
+    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Collections.Generic.MultiValueDictionary\System.Collections.Generic.MultiValueDictionary.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
+  </files>
+</package>
+
