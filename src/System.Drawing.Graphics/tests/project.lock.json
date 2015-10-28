@@ -45,7 +45,7 @@
           "ref/dotnet/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23420": {},
+      "System.Console/4.0.0-beta-23428": {},
       "System.Diagnostics.Debug/4.0.10": {
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -410,7 +410,7 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23420": {},
+      "System.Console/4.0.0-beta-23428": {},
       "System.Diagnostics.Debug/4.0.10": {
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1000,13 +1000,13 @@
         "[Content_Types].xml"
       ]
     },
-    "System.Console/4.0.0-beta-23420": {
+    "System.Console/4.0.0-beta-23428": {
       "serviceable": true,
-      "sha512": "2dxC8xRy9QRE1kt+7zXeceAKIqWK+T3SghGNjY9Sk/hC+WOYRQo4x3Zci6sz2a17WHXDoTPjO1rBrEPMG/e2jQ==",
+      "sha512": "tAAiXsiehvIY32bdjtoDiLC9aBoGh3PXpL5HU4/XmhO2tv2UTF3azBNUiZkIQKqDcg7RNf8H4QUmA2XoSb6wNQ==",
       "files": [
         "runtime.json",
-        "System.Console.4.0.0-beta-23420.nupkg",
-        "System.Console.4.0.0-beta-23420.nupkg.sha512",
+        "System.Console.4.0.0-beta-23428.nupkg",
+        "System.Console.4.0.0-beta-23428.nupkg.sha512",
         "System.Console.nuspec",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",

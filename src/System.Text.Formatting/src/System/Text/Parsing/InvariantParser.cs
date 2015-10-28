@@ -164,12 +164,12 @@ namespace System.Text.Parsing
             return TryParse(text, index, count, out value, out charsConsumed);
         }
 
-        internal static bool TryParse(ReadOnlySpan<char> text, out uint value, out int charsConsumed)
+        internal static bool TryParse(Span<char> text, out uint value, out int charsConsumed)
         {
             throw new NotImplementedException();
         }
 
-        internal static bool TryParse(ReadOnlySpan<char> text, out uint value)
+        internal static bool TryParse(Span<char> text, out uint value)
         {
             int charsConsumed;
             return TryParse(text, out value, out charsConsumed);
