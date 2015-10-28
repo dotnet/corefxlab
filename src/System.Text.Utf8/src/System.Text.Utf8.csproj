@@ -10,11 +10,6 @@
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ProjectGuid>{C5FD8740-19EA-4BCC-B518-7F16B55D23CA}</ProjectGuid>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <!-- workaround until we have Dev14 nuget targets -->
-    <NugetTargetFrameworkMoniker>.NETPlatform,Version=v5.0</NugetTargetFrameworkMoniker>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
