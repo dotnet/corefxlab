@@ -779,5 +779,30 @@ namespace System.Text.Utf8.Tests
             Utf8String u8substring = new Utf8String(substring);
             Assert.Equal(expected, u8s.IsSubstringAt(position, u8substring));
         }
+
+        [Theory]
+        [InlineData(-1, "", 0)]
+        [InlineData(0, "a", (uint)'a')]
+        [InlineData(-1, "a", (uint)'b')]
+        [InlineData(0, "\uABCD", 0xABCD)]
+        [InlineData(-1, "\uABCD", 0xABCE)]
+        [InlineData(0, "abc", (uint)'a')]
+        [InlineData(1, "abc", (uint)'b')]
+        [InlineData(2, "abc", (uint)'c')]
+        [InlineData(-1, "abc", (uint)'d')]
+        [InlineData(0, "\uABC0\uABC1\uABC2", 0xABC0)]
+        [InlineData(3, "\uABC0\uABC1\uABC2", 0xABC1)]
+        [InlineData(6, "\uABC0\uABC1\uABC2", 0xABC2)]
+        [InlineData(-1, "\uABC0\uABC1\uABC2", 0xABC3)]
+        [InlineData(0, "\uABC0bc", 0xABC0)]
+        [InlineData(1, "a\uABC1c", 0xABC1)]
+        [InlineData(2, "ab\uABC2", 0xABC2)]
+        [InlineData(-1, "\uABC0\uABC1\uABC2", (uint)'d')]
+        public void IndexOfUnicodeCodePoint(int expected, string s, uint codePointValue)
+        {
+            Utf8String u8s = new Utf8String(s);
+            UnicodeCodePoint codePoint = (UnicodeCodePoint)codePointValue;
+            Assert.Equal(expected, u8s.IndexOf(codePoint));
+        }
     }
 }

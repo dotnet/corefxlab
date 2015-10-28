@@ -440,7 +440,16 @@ namespace System.Text.Utf8
         // TODO: Should this be public?
         public int IndexOf(UnicodeCodePoint codePoint)
         {
-            throw new NotImplementedException();
+            CodePointEnumerator it = GetCodePointEnumerator();
+            while (it.MoveNext())
+            {
+                if (it.Current == codePoint)
+                {
+                    return it.PositionInCodeUnits;
+                }
+            }
+            
+            return StringNotFound;
         }
 
         // TODO: Re-evaluate all Substring family methods and check their parameters name
