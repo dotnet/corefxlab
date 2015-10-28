@@ -16,6 +16,11 @@ namespace dotnet
 
         private static void Main(string[] args)
         {
+            if(args.Length == 0)
+            {
+                args = new string[] { "/log", "/reference:System.Slices.dll,System.Buffers.dll", "main.cs" };
+            }
+
             if (Array.Exists(args, element => element == "/new"))
             {
                 OtherActions.CreateNewProject();
@@ -72,6 +77,8 @@ namespace dotnet
                        Settings.SetPlatformSpecification) &&
                    ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/debug")),
                        Settings.SetDebugSpecification) &&
+                   ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/reference")),
+                       Settings.SetReferenceSpecification) &&
                    ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/recurse")),
                        Settings.SetRecurseSpecification);
         }
@@ -252,7 +259,7 @@ namespace dotnet
 
             foreach (var reference in references)
             {
-                properties.References.Add(reference);
+                properties.References.Add(Path.Combine(properties.PackagesDirectory, reference));
             }
             foreach (var outputAssembly in dependencies)
             {
