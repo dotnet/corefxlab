@@ -4,11 +4,10 @@ using System.Net.Http.Buffered;
 using System.Text;
 using System.Text.Formatting;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace LowAllocationWebServer.Tests
-{
-    [TestClass]
+{   
     public class GivenIFormatterExtensionsForHttp
     {
         private const string HttpBody = "Body Part1";
@@ -23,15 +22,14 @@ namespace LowAllocationWebServer.Tests
         private readonly byte[] _httpBodyInBytes = new UTF8Encoding().GetBytes(HttpBody);
         private readonly byte[] _httpMessageInBytes = new UTF8Encoding().GetBytes(HttpMessage);
 
-        private BufferFormatter _formatter;
+        private readonly BufferFormatter _formatter;
 
-        [TestInitialize]
-        public void Setup()
+        public GivenIFormatterExtensionsForHttp()
         {
             _formatter = new BufferFormatter(124, FormattingData.InvariantUtf8, BufferPool.Shared);
         }
 
-        [TestMethod]
+        [Fact]
         public void It_has_an_extension_method_to_write_status_line()
         {            
             _formatter.WriteHttpStatusLine("1.1", "200", "OK");
@@ -43,7 +41,7 @@ namespace LowAllocationWebServer.Tests
             BufferPool.Shared.ReturnBuffer(ref result);
         }
 
-        [TestMethod]
+        [Fact]
         public void It_has_an_extension_method_to_write_headers()
         {
             _formatter.WriteHttpHeader("Connection", "close");
@@ -55,7 +53,7 @@ namespace LowAllocationWebServer.Tests
             BufferPool.Shared.ReturnBuffer(ref result);
         }
 
-        [TestMethod]
+        [Fact]
         public void It_has_an_extension_method_to_end_the_header_session()
         {
             _formatter.EndHttpHeaderSection();
@@ -67,7 +65,7 @@ namespace LowAllocationWebServer.Tests
             BufferPool.Shared.ReturnBuffer(ref result);
         }
 
-        [TestMethod]
+        [Fact]
         public void It_has_an_extension_method_to_write_the_body()
         {
             _formatter.WriteHttpBody(HttpBody);
@@ -79,7 +77,7 @@ namespace LowAllocationWebServer.Tests
             BufferPool.Shared.ReturnBuffer(ref result);
         }        
 
-        [TestMethod]
+        [Fact]
         public void It_is_possible_to_update_the_value_of_a_header()
         {
             var httpHeaderBuffer = _formatter.WriteHttpHeader("Connection", "close");
@@ -93,7 +91,7 @@ namespace LowAllocationWebServer.Tests
             BufferPool.Shared.ReturnBuffer(ref result);
         }
 
-        [TestMethod]
+        [Fact]
         public void It_is_possible_to_specify_a_number_of_reserve_bytes_when_writing_the_header_and_it_is_set_to_empty_space()
         {
             _formatter.WriteHttpHeader("Connection", "close", 30);
@@ -115,7 +113,7 @@ namespace LowAllocationWebServer.Tests
             BufferPool.Shared.ReturnBuffer(ref result);
         }
 
-        [TestMethod]
+        [Fact]
         public void It_is_possible_to_use_the_reserve_to_write_a_header_value_with_more_characters_than_originally_set()
         {
             var httpHeaderBuffer = _formatter.WriteHttpHeader("Connection", "close");
@@ -127,7 +125,7 @@ namespace LowAllocationWebServer.Tests
             result.Should().ContainInOrder(new UTF8Encoding().GetBytes("Connection : 18446744073709551615\r\n"));
         }
 
-        [TestMethod]
+        [Fact]
         public void HttpHeaderBuffer_UpdateValue_throws_an_exception_if_the_new_value_is_bigger_than_the_buffer_space()
         {
             var httpHeaderBuffer = _formatter.WriteHttpHeader("Connection", "close");
@@ -137,7 +135,7 @@ namespace LowAllocationWebServer.Tests
             action.ShouldThrow<ArgumentException>().WithMessage("newValue");
         }
 
-        [TestMethod]
+        [Fact]
         public void The_http_extension_methods_can_be_composed_to_generate_the_http_message()
         {
             _formatter.WriteHttpStatusLine("1.1", "200", "OK");
