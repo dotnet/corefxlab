@@ -36,7 +36,8 @@ namespace System.Text.Formatting
             return new Parsed(specifier, (byte)precision);
         }
 
-        public static Format.Parsed Parse(ReadOnlySpan<char> format)
+        // TODO: format should be ReadOnlySpan<T>
+        public static Format.Parsed Parse(Span<char> format)
         {
             if (format.Length == 0)
             {
