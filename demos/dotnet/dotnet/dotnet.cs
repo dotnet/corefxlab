@@ -16,11 +16,6 @@ namespace dotnet
 
         private static void Main(string[] args)
         {
-            if(args.Length == 0)
-            {
-                args = new string[] { "/log", "/reference:System.Slices.dll,System.Buffers.dll", "main.cs" };
-            }
-
             if (Array.Exists(args, element => element == "/new"))
             {
                 OtherActions.CreateNewProject();
