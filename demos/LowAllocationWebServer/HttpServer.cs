@@ -214,16 +214,43 @@ namespace System.Net.Http.Buffered
             {
                 bytes[i++] = codeUnit.Value;
             }
-            int avaliable;
-            do
+
+            var avaliable = formatter.FreeBuffer.Length;
+            while (avaliable < bytes.Length)
             {
                 avaliable = formatter.FreeBuffer.Length;
                 formatter.ResizeBuffer();
             }
-            while (avaliable < bytes.Length);
 
             formatter.FreeBuffer.Set(bytes);
             formatter.CommitBytes(bytes.Length);
+        }
+
+        public static void FormatWithReserve<T>(
+            this T formatter, 
+            Utf8String text, 
+            int reserve, 
+            out Span<byte> bufferWithReserve) where T : IFormatter
+        {
+            var bytes = new byte[text.Length];
+            var i = 0;
+            foreach (var codeUnit in text)
+            {
+                bytes[i++] = codeUnit.Value;
+            }
+
+            var avaliable = formatter.FreeBuffer.Length;
+            while (avaliable < bytes.Length + reserve)
+            {
+                avaliable = formatter.FreeBuffer.Length;
+                formatter.ResizeBuffer();
+            }
+
+            formatter.FreeBuffer.Set(bytes);
+
+            bufferWithReserve = formatter.FreeBuffer.Slice(0, bytes.Length + reserve);
+            formatter.CommitBytes(bytes.Length + reserve);
+            bufferWithReserve.SetFromRestOfSpanToEmpty(bytes.Length);            
         }
     }
 }
