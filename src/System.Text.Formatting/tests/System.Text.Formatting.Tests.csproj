@@ -24,7 +24,6 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BufferPools.cs" />
     <Compile Include="InvariantParserTests.cs" />
     <Compile Include="CompositeFormattingTests.cs" />
     <Compile Include="CustomCulture.cs" />

@@ -11,7 +11,7 @@ class Program
 
         listener.ConnectionAccepted += (Tcp connection) =>
         {
-            connection.ReadCompleted += (ByteSpan data) =>
+            connection.ReadCompleted += (Span<byte> data) =>
             {
                 connection.TryWrite(data);
             };
