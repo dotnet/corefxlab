@@ -22,7 +22,7 @@ namespace System.Buffers
             _memory = (byte*)Marshal.AllocHGlobal(_totalBytes).ToPointer();
         }
 
-        public ByteSpan Rent()
+        public ByteSpan RentLegacy()
         {
             var freeIndex = Reserve();
             if (freeIndex == -1) {
@@ -30,6 +30,17 @@ namespace System.Buffers
             }
             var start = _bufferSizeInBytes * freeIndex;
             return new ByteSpan(_memory + start, _bufferSizeInBytes);
+        }
+
+        public Span<byte> Rent()
+        {
+            var freeIndex = Reserve();
+            if (freeIndex == -1)
+            {
+                throw new NotSupportedException("buffer resizing not supported.");
+            }
+            var start = _bufferSizeInBytes * freeIndex;
+            return new Span<byte>(_memory + start, _bufferSizeInBytes);
         }
 
         int BufferIndexFromSpanAddress(ref ByteSpan span)
@@ -50,11 +61,38 @@ namespace System.Buffers
                 throw new InvalidOperationException("This buffer is not from this pool.");
             }
 
-            buffer._data = null;
             if (Interlocked.CompareExchange(ref _freeList[spanIndex], 0, 1) != 1) {
                 throw new InvalidOperationException("this buffer has been already returned.");
             }
             if (spanIndex < _nextFree) {
+                _nextFree = spanIndex;
+            }
+        }
+
+        int BufferIndexFromSpanAddress(ref Span<byte> span)
+        {
+            var buffer = (ulong)span.UnsafePointer;
+            var firstBuffer = (ulong)_memory;
+            var offset = buffer - firstBuffer;
+            var index = offset / (ulong)_bufferSizeInBytes;
+            return (int)index;
+        }
+
+        public void Return(Span<byte> buffer)
+        {
+            int spanIndex = BufferIndexFromSpanAddress(ref buffer);
+
+            if (spanIndex < 0 || spanIndex > _freeList.Length)
+            {
+                throw new InvalidOperationException("This buffer is not from this pool.");
+            }
+
+            if (Interlocked.CompareExchange(ref _freeList[spanIndex], 0, 1) != 1)
+            {
+                throw new InvalidOperationException("this buffer has been already returned.");
+            }
+            if (spanIndex < _nextFree)
+            {
                 _nextFree = spanIndex;
             }
         }

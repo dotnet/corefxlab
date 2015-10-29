@@ -20,6 +20,11 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\System.Slices\src\System.Slices.csproj">
+      <Name>System.Slices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="System\Buffers\ArrayBufferPool.cs" />
     <Compile Include="System\Buffers\BufferBucket.cs" />
     <Compile Include="System\Buffers\BufferInternal.cs" />
