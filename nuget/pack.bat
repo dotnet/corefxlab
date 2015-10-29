@@ -5,4 +5,5 @@
 ..\packages\NuGet.exe pack System.Text.Utf8.nuspec
 ..\packages\NuGet.exe pack System.Text.Formatting.nuspec
 ..\packages\NuGet.exe pack System.Text.Json.nuspec
+..\packages\NuGet.exe pack System.Collections.Generic.MultiValueDictionary.nuspec
 

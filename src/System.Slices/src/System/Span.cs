@@ -202,6 +202,34 @@ namespace System
             return true;
         }
 
+        public void Set(Span<T> values)
+        {
+            if (Length < values.Length)
+            {
+                throw new ArgumentOutOfRangeException("values");
+            }
+
+            // TODO(joe): specialize to use a fast memcpy if T is pointerless.
+            for (int i = 0; i < Length; i++)
+            {
+                this[i] = values[i];
+            }
+        }
+
+        public void Set(T[] values)
+        {
+            if (Length < values.Length)
+            {
+                throw new ArgumentOutOfRangeException("values");
+            }
+
+            // TODO(joe): specialize to use a fast memcpy if T is pointerless.
+            for (int i = 0; i < values.Length; i++)
+            {
+                this[i] = values[i];
+            }
+        }
+
         /// <summary>
         /// Forms a slice out of the given span, beginning at 'start'.
         /// </summary>

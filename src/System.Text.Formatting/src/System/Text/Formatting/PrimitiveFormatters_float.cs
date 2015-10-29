@@ -9,7 +9,7 @@ namespace System.Text.Formatting
 {
     public static partial class PrimitiveFormatters
     {
-        public static bool TryFormat(this double value, Span<byte> buffer, ReadOnlySpan<char> format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this double value, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
@@ -25,7 +25,7 @@ namespace System.Text.Formatting
             return FloatFormatter.TryFormatNumber(value, false, buffer, format, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this float value, Span<byte> buffer, ReadOnlySpan<char> format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this float value, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
