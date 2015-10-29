@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Text.Utf8;
+using System.Text.Json.Tests.Resources;
 using Xunit;
 
 namespace System.Text.Json.Tests
@@ -10,55 +10,35 @@ namespace System.Text.Json.Tests
         public void ReadBasicJson()
         {
             var testJson = CreateJson();
-            const string expectedTestJson =
-                "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1 Microsoft Way\",\"city\":\"Redmond\",\"zip\":98052}}";
-            Assert.Equal(testJson.ToString(), expectedTestJson);
+            Assert.Equal(testJson.ToString(), TestJson.ExpectedCreateJson);
 
-            const string jsonString =
-                "{\n   \"age\" : 30,\n   \"first\" : \"John\",\n   \"last\" : \"Smith\",\n   \"phoneNumbers\" " +
-                ": [\n      \"425-000-1212\",\n      \"425-000-1213\"\n   ],\n   \"address\" : {\n      \"street\" : " +
-                "\"1 Microsoft Way\",\n      \"city\" : \"Redmond\",\n      \"zip\" : 98052\n   }\n}";
-            const string expectedJson =
-                "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1 Microsoft Way\",\"city\":\"Redmond\",\"zip\":98052}}";
-            var readJson = ReadJson(jsonString);
+            var readJson = ReadJson(TestJson.BasicJson);
             var json = readJson.ToString();
-            Assert.Equal(json, expectedJson);
+            Assert.Equal(json, TestJson.ExpectedBasicJson);
         }
 
         [Fact]
         public void ReadBasicJsonWithLongInt()
         {
-            const string jsonString =
-                "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"IDs\":[0425,-70,9223372036854775807]}";
-            const string expectedJson =
-                "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"IDs\":[425,-70,9.22337203685478E+18]}";
-            var readJson = ReadJson(jsonString);
+            var readJson = ReadJson(TestJson.BasicJsonWithLargeNum);
             var json = readJson.ToString();
-            Assert.Equal(json, expectedJson);
+            Assert.Equal(json, TestJson.ExpectedBasicJsonWithLargeNum);
         }
 
         [Fact]
         public void ReadFullJsonSchema()
         {
-            const string jsonString =
-                "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"IDs\":[425,-70,9223372036854776000],\"arrayWithObjects\":[\"text\",14,[],null,false,{},{\"time\":24},[\"1\",\"2\",\"3\"]],\"boolean\":false,\"null\":null,\"objectName\":{\"group\":{\"array\":[false],\"field\":\"simple\",\"anotherFieldNum\":5,\"anotherFieldBool\":true,\"lastField\":null}},\"emptyObject\":{}}";
-            const string expectedJson =
-                "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052},\"IDs\":[425,-70,9.22337203685478E+18],\"arrayWithObjects\":[\"text\",14,[],null,false,{},{\"time\":24},[\"1\",\"2\",\"3\"]],\"boolean\":false,\"null\":null,\"objectName\":{\"group\":{\"array\":[false],\"field\":\"simple\",\"anotherFieldNum\":5,\"anotherFieldBool\":true,\"lastField\":null}},\"emptyObject\":{}}";
-            var readJson = ReadJson(jsonString);
+            var readJson = ReadJson(TestJson.FullJsonSchema1);
             var json = readJson.ToString();
-            Assert.Equal(json, expectedJson);
+            Assert.Equal(json, TestJson.ExpectedFullJsonSchema1);
         }
 
         [Fact]
         public void ReadFullJsonSchemaAndGetValue()
         {
-            const string jsonString =
-                "{\"string\":\"string\",\"number\":5,\"decimal\":3516512.13512,\"long\":9223372036854776000.1200,\"notLong\":922854776000.1200,\"boolean\":false,\"object\":{},\"array\":[],\"null\":null,\"emptyArray\":[],\"emptyObject\":{},\"arrayString\":[\"alpha\",\"beta\"],\"arrayNum\":[1,212512.01,3.00],\"arrayBool\":[false,true,true],\"arrayNull\":[null,null],\"arrayObject\":[{\"firstName\":\"name1\",\"lastName\":\"name\"},{\"firstName\":\"name1\",\"lastName\":\"name\"},{\"firstName\":\"name2\",\"lastName\":\"name\"},{\"firstName\":\"name3\",\"lastName\":\"name1\"}],\"arrayArray\":[[null,false,5,\"-0215.512501\",9223372036854776000],[{},true,null,125651,\"simple\"],[{\"field\":null},\"hi\"]]}";
-            const string expectedJson =
-                "{\"string\":\"string\",\"number\":5,\"decimal\":3516512.13512,\"long\":9.22337203685478E+18,\"notLong\":922854776000.12,\"boolean\":false,\"object\":{},\"array\":[],\"null\":null,\"emptyArray\":[],\"emptyObject\":{},\"arrayString\":[\"alpha\",\"beta\"],\"arrayNum\":[1,212512.01,3],\"arrayBool\":[false,true,true],\"arrayNull\":[null,null],\"arrayObject\":[{\"firstName\":\"name1\",\"lastName\":\"name\"},{\"firstName\":\"name1\",\"lastName\":\"name\"},{\"firstName\":\"name2\",\"lastName\":\"name\"},{\"firstName\":\"name3\",\"lastName\":\"name1\"}],\"arrayArray\":[[null,false,5,\"-0215.512501\",9.22337203685478E+18],[{},true,null,125651,\"simple\"],[{\"field\":null},\"hi\"]]}";
-            var readJson = ReadJson(jsonString);
+            var readJson = ReadJson(TestJson.FullJsonSchema2);
             var json = readJson.ToString();
-            Assert.Equal(json, expectedJson);
+            Assert.Equal(json, TestJson.ExpectedFullJsonSchema2);
 
             Assert.Equal(readJson.GetValueFromPropertyName("long")[0].NumberValue, 9.2233720368547758E+18);
             var emptyObject = readJson.GetValueFromPropertyName("emptyObject");
@@ -72,23 +52,41 @@ namespace System.Text.Json.Tests
         [Fact]
         public void ReadJsonSpecialStrings()
         {
-            const string jsonString =
-                "{\"Here is a string: \\\"\\\"\":\"Here is a hex value -\\u024A\",\"Here is a back slash\\\\\":[\"Multiline\n String \n\",\"\tMul\r\ntiline\r String\",\"\\\"somequote\\\"\tMu\\\"\\\"l\r\ntiline\r\\\"another\\\" String\\\\\"],\"str\":\"\\\"\\\"\"}";
-            var readJson = ReadJson(jsonString);
+            var readJson = ReadJson(TestJson.JsonWithSpecialStrings);
             var json = readJson.ToString();
-            Assert.Equal(json, jsonString);
+            Assert.Equal(json, TestJson.ExpectedJsonWithSpecialStrings);
         }
 
         [Fact]
         public void ReadJsonSpecialNumbers()
         {
-            const string jsonString =
-                "{\"+testZero+\" : 0,\"+testSmallNum+\" : 0.1,\"+testeZero+\" : 0.1e0,\"+testENegtiveWithZero+\" : 0E-1,\"+testeNegativeWithInt+\" : 2155e-5,\"+testEPositiveWithDecimal+\" : 2152.1541E+2,\"+testePositiveWithLargeInt+\" : 18446744073709551615E109,\"+testeNegativeWithLargeDecimal+\" : 125125612512512.512512e-0123,\"-testZero-\" : -0,\"-testSmallNum-\" : -0.1,\"-testeZero-\" : -0.1e0,\"-testENegtiveWithZero-\" : -0E-1,\"-testeNegativeWithInt-\" : -2155e-5,\"-testEPositiveWithDecimal-\" : -2152.1541E+2,\"-testePositiveWithLargeInt-\" :-18446744073709551615E109,\"-testeNegativeWithLargeDecimal-\" : -125125612512512.512512e-0123}";
-            const string expectedJson =
-                "{\"+testZero+\":0,\"+testSmallNum+\":0.1,\"+testeZero+\":0.1,\"+testENegtiveWithZero+\":0,\"+testeNegativeWithInt+\":0.02155,\"+testEPositiveWithDecimal+\":215215.41,\"+testePositiveWithLargeInt+\":1.84467440737096E+128,\"+testeNegativeWithLargeDecimal+\":1.25125612512513E-109,\"-testZero-\":0,\"-testSmallNum-\":-0.1,\"-testeZero-\":-0.1,\"-testENegtiveWithZero-\":0,\"-testeNegativeWithInt-\":-0.02155,\"-testEPositiveWithDecimal-\":-215215.41,\"-testePositiveWithLargeInt-\":-1.84467440737096E+128,\"-testeNegativeWithLargeDecimal-\":-1.25125612512513E-109}";
-            var readJson = ReadJson(jsonString);
+            var readJson = ReadJson(TestJson.JsonWithSpecialNumFormat);
             var json = readJson.ToString();
-            Assert.Equal(json, expectedJson);
+            Assert.Equal(json, TestJson.ExpectedJsonWithSpecialNumFormat);
+        }
+
+        [Fact]
+        public void ReadProjectLockJson()
+        {
+            var readJson = ReadJson(TestJson.ProjectLockJson);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedProjectLockJson);
+        }
+
+        [Fact]
+        public void ReadHeavyNestedJson()
+        {
+            var readJson = ReadJson(TestJson.HeavyNestedJson);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedHeavyNestedJson);
+        }
+
+        [Fact]
+        public void ReadLargeJson()
+        {
+            var readJson = ReadJson(TestJson.LargeJson);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedLargeJson);
         }
 
         private static Json CreateJson()
@@ -251,8 +249,6 @@ namespace System.Text.Json.Tests
             {
                 switch (jsonReader.TokenType)
                 {
-                    case JsonReader.JsonTokenType.Start:
-                        break;
                     case JsonReader.JsonTokenType.ObjectStart:
                         jsonPairs = new List<Pair>();
                         break;
@@ -274,10 +270,10 @@ namespace System.Text.Json.Tests
                             jsonArray.Elements = new List<Elements> {jsonElements};
                         }
                         break;
-                    case JsonReader.JsonTokenType.Pair:
+                    case JsonReader.JsonTokenType.Property:
                         var pair = new Pair
                         {
-                            Name = (string) jsonReader.ReadString(),
+                            Name = (string) jsonReader.GetName(),
                             Value = GetValue(ref jsonReader)
                         };
                         if (jsonPairs != null) jsonPairs.Add(pair);
@@ -293,15 +289,15 @@ namespace System.Text.Json.Tests
 
         private static Value GetValue(ref JsonReader jsonReader)
         {
-            var value = new Value {Type = (Value.ValueType) jsonReader.GetValueType()};
-            var obj = jsonReader.ReadValue();
+            var value = new Value {Type = (Value.ValueType) jsonReader.GetJsonValueType()};
+            var obj = jsonReader.GetValue();
             switch (value.Type)
             {
                 case Value.ValueType.String:
-                    value.StringValue = (string) new Utf8String(obj.ToString());
+                    value.StringValue = obj.ToString();
                     break;
                 case Value.ValueType.Number:
-                    value.NumberValue = (double) obj;
+                    value.NumberValue = Convert.ToDouble(obj.ToString());
                     break;
                 case Value.ValueType.True:
                     break;
@@ -331,8 +327,6 @@ namespace System.Text.Json.Tests
             {
                 switch (jsonReader.TokenType)
                 {
-                    case JsonReader.JsonTokenType.Start:
-                        break;
                     case JsonReader.JsonTokenType.ObjectStart:
                         jsonPairs = new List<Pair>();
                         break;
@@ -349,10 +343,10 @@ namespace System.Text.Json.Tests
                         break;
                     case JsonReader.JsonTokenType.ArrayEnd:
                         break;
-                    case JsonReader.JsonTokenType.Pair:
+                    case JsonReader.JsonTokenType.Property:
                         var pair = new Pair
                         {
-                            Name = (string) jsonReader.ReadString(),
+                            Name = (string) jsonReader.GetName(),
                             Value = GetValue(ref jsonReader)
                         };
                         if (jsonPairs != null) jsonPairs.Add(pair);
@@ -375,8 +369,6 @@ namespace System.Text.Json.Tests
             {
                 switch (jsonReader.TokenType)
                 {
-                    case JsonReader.JsonTokenType.Start:
-                        break;
                     case JsonReader.JsonTokenType.ObjectStart:
                         break;
                     case JsonReader.JsonTokenType.ObjectEnd:
@@ -393,7 +385,7 @@ namespace System.Text.Json.Tests
                             return jsonArray;
                         }
                         break;
-                    case JsonReader.JsonTokenType.Pair:
+                    case JsonReader.JsonTokenType.Property:
                         break;
                     case JsonReader.JsonTokenType.Value:
                         if (jsonValues != null) jsonValues.Add(GetValue(ref jsonReader));

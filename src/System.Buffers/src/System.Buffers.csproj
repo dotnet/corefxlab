@@ -28,8 +28,6 @@
     <Compile Include="System\Buffers\Pack.cs" />
     <Compile Include="System\ByteSpan.cs" />
     <Compile Include="System\Diagnostics\Precondition.cs" />
-    <Compile Include="System\ReadOnlySpan.cs" />
-    <Compile Include="System\Span.cs" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

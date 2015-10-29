@@ -42,7 +42,7 @@ namespace System.Text.Formatting
         }
 
         //TODO: this should use ByteSpan
-        public void Append(ReadOnlySpan<char> substring)
+        public void Append(Span<char> substring)
         {
             for (int i = 0; i < substring.Length; i++)
             {
@@ -62,7 +62,7 @@ namespace System.Text.Formatting
 
         Span<byte> IFormatter.FreeBuffer
         {
-            get { return new Span<byte>(_buffer, _count); }
+            get { return new Span<byte>(_buffer, _count, _buffer.Length - _count); }
         }
 
         public FormattingData FormattingData
