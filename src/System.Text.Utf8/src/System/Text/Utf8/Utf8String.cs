@@ -11,12 +11,7 @@ namespace System.Text.Utf8
 {
     public partial struct Utf8String : IEnumerable<Utf8CodeUnit>, IEquatable<Utf8String>, IComparable<Utf8String> 
     {
-        private ByteSpan _buffer;
-
-        // TODO: Reduce number of members when we get Span<byte> runtime support
-        private byte[] _bytes;
-        private int _index;
-        private int _length;
+        private Span<byte> _buffer;
 
         private const int StringNotFound = -1;
 
@@ -24,61 +19,36 @@ namespace System.Text.Utf8
 
         // TODO: Validate constructors, When should we copy? When should we just use the underlying array?
         // TODO: Should we be immutable/readonly?
-        public Utf8String(ByteSpan buffer)
+        public Utf8String(Span<byte> buffer)
         {
             _buffer = buffer;
-            _bytes = null;
-            _index = 0;
-            _length = 0;
         }
 
-        public Utf8String(byte[] utf8bytes) : this(utf8bytes, 0, utf8bytes.Length)
+        public Utf8String(byte[] utf8bytes)
         {
+            _buffer = new Span<byte>(utf8bytes);
         }
 
         public Utf8String(byte[] utf8bytes, int index, int length)
         {
-            if (utf8bytes == null)
-            {
-                throw new ArgumentNullException("utf8bytes");
-            }
-            if (index + length > utf8bytes.Length)
-            {
-                throw new ArgumentOutOfRangeException("index");
-            }
-
-            _buffer = default(ByteSpan);
-            _bytes = utf8bytes;
-            _index = index;
-            _length = length;
+            _buffer = new Span<byte>(utf8bytes, index, length);
         }
 
         // TODO: reevaluate implementation
         public Utf8String(IEnumerable<UnicodeCodePoint> codePoints)
         {
             int len = GetUtf8LengthInBytes(codePoints);
-            byte[] utf8bytes = new byte[len];
-            unsafe
+            _buffer = new Span<byte>(new byte[len]);
+            Span<byte> span = _buffer;
+            foreach (UnicodeCodePoint codePoint in codePoints)
             {
-                fixed (byte* utf8bytesPinned = utf8bytes)
+                int encodedBytes;
+                if (!Utf8Encoder.TryEncodeCodePoint(codePoint, span, out encodedBytes))
                 {
-                    ByteSpan span = new ByteSpan(utf8bytesPinned, len);
-                    foreach (UnicodeCodePoint codePoint in codePoints)
-                    {
-                        int encodedBytes;
-                        if (!Utf8Encoder.TryEncodeCodePoint(codePoint, span, out encodedBytes))
-                        {
-                            throw new ArgumentException("Invalid code point", "codePoints");
-                        }
-                        span = span.Slice(encodedBytes);
-                    }
+                    throw new ArgumentException("Invalid code point", "codePoints");
                 }
+                span = span.Slice(encodedBytes);
             }
-
-            _buffer = default(ByteSpan);
-            _bytes = utf8bytes;
-            _index = 0;
-            _length = len;
         }
 
         public Utf8String(string s) : this(GetUtf8BytesFromString(s))
@@ -109,27 +79,13 @@ namespace System.Text.Utf8
         {
             get
             {
-                if (_bytes != null)
-                {
-                    return _length;
-                }
-                else
-                {
-                    return _buffer.Length;
-                }
+                return _buffer.Length;
             }
         }
 
         public Enumerator GetEnumerator()
         {
-            if (_bytes != null)
-            {
-                return new Enumerator(_bytes, _index, _length);
-            }
-            else
-            {
-                return new Enumerator(_buffer);
-            }
+            return new Enumerator(_buffer);
         }
 
         IEnumerator<Utf8CodeUnit> IEnumerable<Utf8CodeUnit>.GetEnumerator()
@@ -146,27 +102,13 @@ namespace System.Text.Utf8
         {
             get
             {
-                if (_bytes != null)
-                {
-                    return new CodePointEnumerable(_bytes, _index, _length);
-                }
-                else
-                {
-                    return new CodePointEnumerable(_buffer);
-                }
+                return new CodePointEnumerable(_buffer);
             }
         }
 
         private Utf8CodeUnit GetCodeUnitAtPositionUnchecked(int i)
         {
-            if (_bytes != null)
-            {
-                return (Utf8CodeUnit)_bytes[_index + i];
-            }
-            else
-            {
-                return (Utf8CodeUnit)_buffer[i];
-            }
+            return (Utf8CodeUnit)_buffer[i];
         }
 
         public Utf8CodeUnit this[int i]
@@ -215,7 +157,7 @@ namespace System.Text.Utf8
             {
                 fixed (char* pinnedCharacters = characters)
                 {
-                    ByteSpan buffer = new ByteSpan((byte*)pinnedCharacters, len * 2);
+                    Span<byte> buffer = new Span<byte>((byte*)pinnedCharacters, len * 2);
                     foreach (var codePoint in CodePoints)
                     {
                         int bytesEncoded;
@@ -235,39 +177,7 @@ namespace System.Text.Utf8
 
         public bool Equals(Utf8String other)
         {
-            unsafe
-            {
-                if (_bytes == null && other._bytes == null)
-                {
-                    return _buffer.Equals(other._buffer);
-                }
-                else if (_bytes != null && other._bytes != null)
-                {
-                    fixed (byte* pinnedBytes = _bytes) fixed (byte* pinnedOthersBytes = other._bytes)
-                    {
-                        ByteSpan b1 = new ByteSpan(pinnedBytes + _index, _length);
-                        ByteSpan b2 = new ByteSpan(pinnedOthersBytes + other._index, other._length);
-                        return b1.Equals(b2);
-                    }
-                }
-                else if (_bytes != null && other._bytes == null)
-                {
-                    fixed (byte* pinnedBytes = _bytes)
-                    fixed (byte* pinnedOthersBytes = other._bytes)
-                    {
-                        ByteSpan b1 = new ByteSpan(pinnedBytes + _index, _length);
-                        return b1.Equals(other._buffer);
-                    }
-                }
-                else // if (_bytes == null && other._bytes != null)
-                {
-                    fixed (byte* pinnedOthersBytes = other._bytes)
-                    {
-                        ByteSpan b2 = new ByteSpan(pinnedOthersBytes + other._index, other._length);
-                        return _buffer.Equals(b2);
-                    }
-                }
-            }
+            return _buffer.Equals(other._buffer);
         }
 
         public bool Equals(string other)
@@ -379,14 +289,7 @@ namespace System.Text.Utf8
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            if (_bytes != null)
-            {
-                return new Utf8String(_bytes, _index + index, length);
-            }
-            else
-            {
-                return new Utf8String(_buffer.Slice(index, length));
-            }
+            return new Utf8String(_buffer.Slice(index, length));
         }
 
         // TODO: Naive algorithm, reimplement faster
@@ -547,48 +450,22 @@ namespace System.Text.Utf8
             return Substring(index, s.Length).Equals(s);
         }
 
-        public void CopyTo(ByteSpan buffer)
-        {
-            if(buffer.Length < Length)
-            {
-                throw new ArgumentException("buffer");
-            }
-
-            if(_bytes == null)
-            {
-                _buffer.TryCopyTo(buffer);
-            }
-            else
-            {
-                unsafe {
-                    fixed(byte* pBytes = _bytes) {
-                        buffer.TrySet(pBytes, _bytes.Length);
-                    }
-                }
-            }
-        }
-
-        public void CopyTo(byte[] buffer)
+        public void CopyTo(Span<byte> buffer)
         {
             if (buffer.Length < Length)
             {
                 throw new ArgumentException("buffer");
             }
 
-            if (_bytes == null)
+            if (!_buffer.TryCopyTo(buffer))
             {
-                unsafe
-                {
-                    fixed(byte* pBuffer = buffer)
-                    {
-                        _buffer.TryCopyTo(pBuffer, buffer.Length);
-                    }
-                }
+                throw new Exception("Internal error: range check already done, no errors expected here");
             }
-            else
-            {
-                Buffer.BlockCopy(_bytes, 0, buffer, 0, _bytes.Length);
-            }
+        }
+
+        public void CopyTo(byte[] buffer)
+        {
+            CopyTo(new Span<byte>(buffer));
         }
 
         // TODO: write better hashing function
@@ -638,14 +515,7 @@ namespace System.Text.Utf8
 
         private CodePointEnumerator GetCodePointEnumerator()
         {
-            if (_bytes != null)
-            {
-                return new CodePointEnumerator(_bytes, _index, _length);
-            }
-            else
-            {
-                return new CodePointEnumerator(_buffer);
-            }
+            return new CodePointEnumerator(_buffer);
         }
 
         public bool StartsWith(UnicodeCodePoint codePoint)
@@ -715,7 +585,7 @@ namespace System.Text.Utf8
             return len;
         }
 
-        // TODO: This should return Utf16CodeUnits which should wrap byte[]/ByteSpan, same for other encoders
+        // TODO: This should return Utf16CodeUnits which should wrap byte[]/Span<byte>, same for other encoders
         private static byte[] GetUtf8BytesFromString(string s)
         {
             int len = 0;
@@ -750,7 +620,7 @@ namespace System.Text.Utf8
             {
                 fixed (byte* array_pinned = bytes)
                 {
-                    ByteSpan p = new ByteSpan(array_pinned, len);
+                    Span<byte> p = new Span<byte>(array_pinned, len);
                     for (int i = 0; i < s.Length; /* intentionally no increment */)
                     {
                         UnicodeCodePoint codePoint;
@@ -839,22 +709,7 @@ namespace System.Text.Utf8
         // TODO: Name TBD, CopyArray? GetBytes?
         public byte[] CopyBytes()
         {
-            if (_bytes != null)
-            {
-                unsafe
-                {
-                    fixed (byte* pinnedBytes = _bytes)
-                    {
-                        ByteSpan span = new ByteSpan(pinnedBytes + _index, Length);
-                        // TODO: span's method should probably be called the same
-                        return span.CreateArray();
-                    }
-                }
-            }
-            else
-            {
-                return _buffer.CreateArray();
-            }
+            return _buffer.CreateArray();
         }
 
         public Utf8CodeUnit[] CopyCodeUnits()

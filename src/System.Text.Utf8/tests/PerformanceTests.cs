@@ -119,7 +119,7 @@ namespace System.Text.Utf8.Tests
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
@@ -162,7 +162,7 @@ namespace System.Text.Utf8.Tests
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
@@ -207,7 +207,7 @@ namespace System.Text.Utf8.Tests
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
@@ -250,7 +250,7 @@ namespace System.Text.Utf8.Tests
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
@@ -289,7 +289,7 @@ namespace System.Text.Utf8.Tests
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
@@ -328,7 +328,7 @@ namespace System.Text.Utf8.Tests
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
