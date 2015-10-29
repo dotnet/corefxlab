@@ -9,7 +9,8 @@ namespace System.Text.Formatting
 {
     internal static class IntegerFormatter
     {
-        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, ReadOnlySpan<char> format, FormattingData formattingData, out int bytesWritten)
+        // TODO: format should be ReadOnlySpan<char>
+        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
         {
             Precondition.Require(numberOfBytes <= sizeof(long));
 
@@ -50,7 +51,7 @@ namespace System.Text.Formatting
             }
         }
 
-        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, ReadOnlySpan<char> format, FormattingData formattingData, out int bytesWritten)
+        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormatUInt64(value, numberOfBytes, buffer, parsedFormat, formattingData, out bytesWritten);

@@ -24,14 +24,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\System.Text.Formatting\src\System.Text.Formatting.csproj">
-      <Project>{1A77F658-6BF0-4EC4-B009-679A9F52A2AC}</Project>
       <Name>System.Text.Formatting</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
       <Name>System.Buffers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\System.Slices\src\System.Slices.csproj">
+      <Name>System.Slices</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\System.Text.Formatting.Globalization\src\System.Text.Formatting.Globalization.csproj">
-      <Project>{EA0A7468-A3D5-49DB-B098-ECB6F5893208}</Project>
       <Name>System.Text.Formatting.Globalization</Name>
     </ProjectReference>
   </ItemGroup>

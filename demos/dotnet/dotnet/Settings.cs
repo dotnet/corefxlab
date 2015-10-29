@@ -40,7 +40,8 @@ namespace dotnet
             "/target",
             "/recurse",
             "/debug",
-            "/platform"
+            "/platform",
+            "/reference"
         };
 
         private static readonly List<string> TargetSpecifications = new List<string>
@@ -74,7 +75,8 @@ namespace dotnet
 
         public string ProjectFile;
 
-        public List<string> SourceFiles; 
+        public List<string> SourceFiles;
+        public List<string> References;
 
         public bool SetTargetSpecification(string specification)
         {
@@ -87,6 +89,12 @@ namespace dotnet
         {
             if (!PlatformSpecifications.Contains(specification)) return false;
             Platform = specification;
+            return true;
+        }
+
+        public bool SetReferenceSpecification(string specification)
+        {
+            References = new List<string>(specification.Split(','));
             return true;
         }
 

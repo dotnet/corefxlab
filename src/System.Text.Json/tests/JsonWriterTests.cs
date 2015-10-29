@@ -24,8 +24,7 @@ namespace System.Text.Formatting.Tests
             var stream = new MemoryStream(buffer);
             var json = new JsonWriter(stream, FormattingData.Encoding.Utf16);
             Write(json);
-            var written = buffer.Slice(0, (int)stream.Position);
-            var str = written.CreateString();
+            var str = Encoding.Unicode.GetString(buffer, 0, (int)stream.Position);
             Assert.Equal(expected, str.Replace(" ", ""));
         }
 

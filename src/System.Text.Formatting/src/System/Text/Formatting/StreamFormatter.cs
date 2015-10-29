@@ -35,7 +35,7 @@ namespace System.Text.Formatting
                 {
                     _buffer = BufferPool.Shared.RentBuffer(256);
                 }
-                return _buffer;
+                return new Span<byte>(_buffer);
             }
         }
 

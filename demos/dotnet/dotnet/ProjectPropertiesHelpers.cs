@@ -60,6 +60,9 @@ namespace dotnet
             properties.Packages.Add(GetConsoleHost(platformOptionSpecicifcation));
             properties.Packages.Add(GetRuntimeCoreClr(platformOptionSpecicifcation));
 
+            // add explicit references
+            properties.References.AddRange(settings.References);
+
             // CSC OPTIONS
             properties.CscOptions.Add("/nostdlib");
             properties.CscOptions.Add("/noconfig");

@@ -135,71 +135,63 @@ namespace System.Text.Formatting
                 return true;
             }
 
-            GCHandle handle;
-            var byteSpan = buffer.Pin(out handle);
-            try {
                 
-                var avaliableBytes = byteSpan.Length;
-                bytesWritten = 0;
-                for (int i = 0; i < value.Length; i++)
-                {
-                    var c = value[i];
+            var avaliableBytes = buffer.Length;
+            bytesWritten = 0;
+            for (int i = 0; i < value.Length; i++)
+            {
+                var c = value[i];
 
-                    var codepoint = (ushort)c;
-                    if (codepoint <= 0x7f) // this if block just optimizes for ascii
+                var codepoint = (ushort)c;
+                if (codepoint <= 0x7f) // this if block just optimizes for ascii
+                {
+                    if (bytesWritten + 1 > avaliableBytes)
                     {
-                        if (bytesWritten + 1 > avaliableBytes)
-                        {
-                            bytesWritten = 0;
-                            return false;
-                        }
-                        byteSpan[bytesWritten++] = (byte)codepoint;
+                        bytesWritten = 0;
+                        return false;
                     }
+                    buffer[bytesWritten++] = (byte)codepoint;
+                }
+                else
+                {
+                    Utf8EncodedCodePoint encoded;
+                    if (!char.IsSurrogate(c))
+                        encoded = new Utf8EncodedCodePoint(c);
                     else
                     {
-                        Utf8EncodedCodePoint encoded;
-                        if (!char.IsSurrogate(c))
-                            encoded = new Utf8EncodedCodePoint(c);
-                        else
-                        {
-                            if (++i >= value.Length)
-                                throw new ArgumentException("value", "Invalid surrogate pair.");
-                            char lowSurrogate = value[i];
-                            encoded = new Utf8EncodedCodePoint(c, lowSurrogate);
-                        }
+                        if (++i >= value.Length)
+                            throw new ArgumentException("value", "Invalid surrogate pair.");
+                        char lowSurrogate = value[i];
+                        encoded = new Utf8EncodedCodePoint(c, lowSurrogate);
+                    }
                             
 
-                        if (bytesWritten + encoded.Length > avaliableBytes)
-                        {
-                            bytesWritten = 0;
-                            return false;
-                        }
+                    if (bytesWritten + encoded.Length > avaliableBytes)
+                    {
+                        bytesWritten = 0;
+                        return false;
+                    }
 
-                        byteSpan[bytesWritten] = encoded.Byte0;
-                        if (encoded.Length > 1)
-                        {
-                            byteSpan[bytesWritten + 1] = encoded.Byte1;
+                    buffer[bytesWritten] = encoded.Byte0;
+                    if (encoded.Length > 1)
+                    {
+                        buffer[bytesWritten + 1] = encoded.Byte1;
 
-                            if (encoded.Length > 2)
+                        if (encoded.Length > 2)
+                        {
+                            buffer[bytesWritten + 2] = encoded.Byte2;
+
+                            if (encoded.Length > 3)
                             {
-                                byteSpan[bytesWritten + 2] = encoded.Byte2;
-
-                                if (encoded.Length > 3)
-                                {
-                                    byteSpan[bytesWritten + 3] = encoded.Byte3;
-                                }
+                                buffer[bytesWritten + 3] = encoded.Byte3;
                             }
                         }
-
-                        bytesWritten += encoded.Length;
                     }
+
+                    bytesWritten += encoded.Length;
                 }
-                return true;
             }
-            finally
-            {
-                handle.Free();
-            }
+            return true;
         }
     }
 }
