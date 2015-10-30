@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -295,6 +296,17 @@ namespace dotnet
 
         private static void FindCompiler(ProjectProperties properties)
         {
+            string cscEnvPath = Environment.GetEnvironmentVariable("CSCPATH");
+            if (cscEnvPath != null)
+            {
+                string fullCscPath = Path.Combine(cscEnvPath, "csc.exe");
+                if (File.Exists(fullCscPath))
+                {
+                    properties.CscPath = fullCscPath;
+                    return;
+                }
+            }
+
             properties.CscPath = Path.Combine(properties.ToolsDirectory, "csc.exe");
             if (File.Exists(properties.CscPath))
             {
