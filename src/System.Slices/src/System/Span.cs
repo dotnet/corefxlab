@@ -148,6 +148,12 @@ namespace System
             get { return _offset; }
         }
 
+        [CLSCompliant(false)]
+        public unsafe void* UnsafePointer
+        {
+            get { return _offset.ToPointer(); }
+        }
+
         /// <summary>
         /// Fetches the element at the specified index.
         /// </summary>

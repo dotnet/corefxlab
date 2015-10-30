@@ -231,8 +231,8 @@ namespace System.Text.Utf8.Tests
             fixed (byte* b1pinned = b1)
             fixed (byte* b2pinned = b2)
             {
-                ByteSpan sp1 = new ByteSpan(b1pinned, b1.Length);
-                ByteSpan sp2 = new ByteSpan(b2pinned, b2.Length);
+                Span<byte> sp1 = new Span<byte>(b1pinned, b1.Length);
+                Span<byte> sp2 = new Span<byte>(b2pinned, b2.Length);
                 Utf8String s1FromSpan = new Utf8String(sp1);
                 Utf8String s2FromSpan = new Utf8String(sp2);
 
@@ -395,7 +395,7 @@ namespace System.Text.Utf8.Tests
             {
                 fixed (byte* pinnedBytes = bytes)
                 {
-                    Utf8String u8sFromBytePointer = new Utf8String(new ByteSpan(pinnedBytes, u8s.Length));
+                    Utf8String u8sFromBytePointer = new Utf8String(new Span<byte>(pinnedBytes, u8s.Length));
                     TestCodePointForwardEnumerator(s, u8sFromBytePointer);
                     TestCodePointReverseEnumerator(s, u8sFromBytePointer);
                 }
@@ -543,9 +543,9 @@ namespace System.Text.Utf8.Tests
             fixed (byte* p = textArray)
             fixed (byte* pBuffer = buffer)
             {
-                ByteSpan byteSpan = new ByteSpan(pBuffer, buffer.Length);
+                Span<byte> byteSpan = new Span<byte>(pBuffer, buffer.Length);
                 Utf8String strFromArray = new Utf8String(textArray);
-                Utf8String strFromPointer = new Utf8String(new ByteSpan(p, textArray.Length));
+                Utf8String strFromPointer = new Utf8String(new Span<byte>(p, textArray.Length));
                 Assert.Equal(strFromArray, strFromPointer);
 
                 Array.Clear(buffer, 0, buffer.Length);
@@ -589,7 +589,7 @@ namespace System.Text.Utf8.Tests
             {
                 fixed (byte* pinnedBytes = bytes)
                 {
-                    Utf8String sFromSpan = new Utf8String(new ByteSpan(pinnedBytes, len * 2));
+                    Utf8String sFromSpan = new Utf8String(new Span<byte>(pinnedBytes, len * 2));
                     Utf8String s1FromSpan = sFromSpan.Substring(0, len);
                     Utf8String s2FromSpan = sFromSpan.Substring(len, len);
                     TestHashesSameForEquivalentString(s1FromBytes, s2FromBytes);

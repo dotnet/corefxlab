@@ -1,10 +1,10 @@
-﻿using System.Text;
-using System.Text.Formatting;
+﻿using System.Text.Formatting;
 
 namespace System.Net.Http.Buffered
 { 
     public struct HttpHeaderBuffer
-    {        
+    {
+        //TODO: Issue #390: Switch HttpHeaderBuffer to use Slices.Span.
         private Span<byte> _valueByteSpan;
         private readonly FormattingData _formattingData;
 
