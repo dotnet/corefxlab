@@ -33,7 +33,7 @@ namespace System.Net.Libuv
             AllocWindowsBuffer = OnAllocateWindowsBuffer;
         }
 
-        internal static void FreeBuffer(ByteSpan buffer)
+        internal static void FreeBuffer(Span<byte> buffer)
         {
             _pool.Return(buffer);
         }
@@ -43,7 +43,7 @@ namespace System.Net.Libuv
             var memory = _pool.Rent();
             unsafe
             {
-                buffer = new Unix((IntPtr)memory.UnsafeBuffer, (uint)memory.Length);
+                buffer = new Unix((IntPtr)memory.UnsafePointer, (uint)memory.Length);
             }
         }
 
@@ -52,7 +52,7 @@ namespace System.Net.Libuv
             var memory = _pool.Rent();
             unsafe
             {
-                buffer = new Windows((IntPtr)memory.UnsafeBuffer, (uint)memory.Length);
+                buffer = new Windows((IntPtr)memory.UnsafePointer, (uint)memory.Length);
             }
         }
 
@@ -72,7 +72,7 @@ namespace System.Net.Libuv
             {
                 unsafe
                 {
-                    var readSlice = new ByteSpan((byte*)Buffer, (int)Length);
+                    var readSlice = new Span<byte>((byte*)Buffer, (int)Length);
                     FreeBuffer(readSlice);
                 }
             }
@@ -94,7 +94,7 @@ namespace System.Net.Libuv
             {
                 unsafe
                 {
-                    var readSlice = new ByteSpan((byte*)Buffer, (int)Length);
+                    var readSlice = new Span<byte>((byte*)Buffer, (int)Length);
                     FreeBuffer(readSlice);
                 }
             }

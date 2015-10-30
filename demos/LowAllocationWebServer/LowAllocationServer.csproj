@@ -53,14 +53,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteSpanExtensions.cs" />
+    <Compile Include="HttpHeaderBuffer.cs" />
     <Compile Include="HttpHeaders.cs" />
     <Compile Include="HttpRequestParser.cs" />
+    <Compile Include="IFormatterHttpExtensions.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="HttpServer.cs" />
     <Compile Include="main.cs" />
     <Compile Include="RoutingTable.cs" />
     <Compile Include="SampleServer.cs" />
     <Compile Include="SocketInterop.cs" />
+    <Compile Include="SpanExtensions.cs" />
     <Compile Include="TcpServer.cs" />
   </ItemGroup>
   <ItemGroup>

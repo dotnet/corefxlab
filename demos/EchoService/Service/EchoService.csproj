@@ -40,6 +40,9 @@
     <ProjectReference Include="..\..\..\src\System.Net.Libuv\src\System.Net.Libuv.csproj">
       <Name>System.Net.Libuv</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\System.Slices\src\System.Slices.csproj">
+      <Name>System.Slices</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

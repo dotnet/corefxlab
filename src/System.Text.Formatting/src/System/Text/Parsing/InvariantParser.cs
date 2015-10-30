@@ -10,7 +10,7 @@ namespace System.Text.Parsing
     public static class InvariantParser
     {
         [CLSCompliant(false)]
-        public static bool TryParse(ByteSpan text, FormattingData.Encoding encoding, out uint value, out int bytesConsumed)
+        public static bool TryParse(Span<byte> text, FormattingData.Encoding encoding, out uint value, out int bytesConsumed)
         {
             Precondition.Require(text.Length > 0);
             Precondition.Require(encoding == FormattingData.Encoding.Utf8 || text.Length > 1);
@@ -149,7 +149,7 @@ namespace System.Text.Parsing
                 fixed(char* pText = text)
                 {
                     char* pSubstring = pText + index;
-                    var span = new ByteSpan((byte*)pSubstring, count << 1);
+                    var span = new Span<byte>((byte*)pSubstring, count << 1);
                     int bytesConsumed;
                     var result = TryParse(span, FormattingData.Encoding.Utf16, out value, out bytesConsumed);
                     charsConsumed = bytesConsumed << 1;

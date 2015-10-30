@@ -1,5 +1,5 @@
 {
-  "locked": true,
+  "locked": false,
   "version": 2,
   "targets": {
     "DNXCore,Version=v5.0": {
@@ -6191,9 +6191,8 @@
       "type": "package",
       "sha512": "bNycxZe/83M7o7j0IbGp3/daiPLi17hZgYZB6xttgCVDnxgAuw/TP1zetiUTW1yVUPASnAjlkBeJayv/G2Crsw==",
       "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
-        "package/services/metadata/core-properties/6c890516e9584d3ab4031ef8a539ff70.psmdcp",
+        "xunit.2.0.0-beta5-build2785.nupkg",
+        "xunit.2.0.0-beta5-build2785.nupkg.sha512",
         "xunit.nuspec"
       ]
     },
@@ -6201,13 +6200,12 @@
       "type": "package",
       "sha512": "b2RCnV2/wilCH1dsh7bAF82Ou+Vs+WfYLEItzRUUbD3YHNODx0ncpQwLz1JYjL/voBFc5mQh77hxIbgCGmyxKA==",
       "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
         "lib/net35/xunit.abstractions.dll",
         "lib/net35/xunit.abstractions.xml",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monotouch+monoandroid/xunit.abstractions.dll",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monotouch+monoandroid/xunit.abstractions.xml",
-        "package/services/metadata/core-properties/399f3731609f4d74afacd3835adec3ef.psmdcp",
+        "xunit.abstractions.2.0.0-beta5-build2785.nupkg",
+        "xunit.abstractions.2.0.0-beta5-build2785.nupkg.sha512",
         "xunit.abstractions.nuspec"
       ]
     },
@@ -6215,12 +6213,11 @@
       "type": "package",
       "sha512": "1PTLrP+jLzSIhqO3JzzgPcMPmSyBlFadpFH6v3d2Vm08x/bIYHnF78h20qt6wk/t3wMu7smOsyoNcUFeP2ZnGg==",
       "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monoandroid+monotouch10/xunit.assert.dll",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monoandroid+monotouch10/xunit.assert.pdb",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monoandroid+monotouch10/xunit.assert.xml",
-        "package/services/metadata/core-properties/9744844535724f06a45b33a9b7fe9d6b.psmdcp",
+        "xunit.assert.2.0.0-beta5-build2785.nupkg",
+        "xunit.assert.2.0.0-beta5-build2785.nupkg.sha512",
         "xunit.assert.nuspec"
       ]
     },
@@ -6228,8 +6225,6 @@
       "type": "package",
       "sha512": "3rDhbyvCS1iA20A7uXxYvw3LLa4MtyXUX9Y6i3QjY/dRhIHEZcSxBjBfGP3MjPm900WnsBx2H0ryQo2RWABhhg==",
       "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
         "build/monoandroid/xunit.core.props",
         "build/monoandroid/xunit.execution.dll",
         "build/monotouch/xunit.core.props",
@@ -6255,7 +6250,8 @@
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monotouch+monoandroid/xunit.core.xml",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monotouch+monoandroid/xunit.runner.tdnet.dll",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monotouch+monoandroid/xunit.runner.utility.dll",
-        "package/services/metadata/core-properties/7e3ae190162d4ceaa2151619ccd704ef.psmdcp",
+        "xunit.core.2.0.0-beta5-build2785.nupkg",
+        "xunit.core.2.0.0-beta5-build2785.nupkg.sha512",
         "xunit.core.nuspec"
       ]
     }
