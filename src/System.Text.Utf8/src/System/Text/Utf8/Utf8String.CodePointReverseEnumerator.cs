@@ -11,40 +11,14 @@ namespace System.Text.Utf8
         // TODO: Name TBD
         public struct CodePointReverseEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
         {
-            // TODO: This object is heavier than string itself... Once we got ByteSpan runtime support, change it.
-            // TODO: Reduce number of members when we get Span<byte> runtime support
-            private ByteSpan _startBuffer;
-            private ByteSpan _resetBufferPosition;
-            private ByteSpan _buffer;
-
-            private byte[] _bytes;
-            private int _startIndex;
+            private Span<byte> _buffer;
             private int _index;
-            private int _endIndex;
+            private int _currentLenCache;
             private const int ResetIndex = -UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint - 1;
 
-            private int _currentLenCache;
-
-            public CodePointReverseEnumerator(byte[] bytes, int index, int length) : this()
+            public unsafe CodePointReverseEnumerator(Span<byte> buffer) : this()
             {
-                if (index + length > bytes.Length)
-                    throw new ArgumentOutOfRangeException("index");
-
-                _bytes = bytes;
-                _startIndex = index;
-                _endIndex = index + length;
-
-                Reset();
-            }
-
-            public unsafe CodePointReverseEnumerator(ByteSpan buffer) : this()
-            {
-                if (buffer.UnsafeBuffer == null && buffer.Length != 0)
-                    throw new ArgumentNullException("buffer");
-
-                // first MoveNext moves to a first byte
-                _startBuffer = new ByteSpan(buffer.UnsafeBuffer, buffer.Length);
-                _resetBufferPosition = new ByteSpan(buffer.UnsafeBuffer - 1, 0);
+                _buffer = buffer;
 
                 Reset();
             }
@@ -58,17 +32,8 @@ namespace System.Text.Utf8
                     {
                         return -1;
                     }
-                    if (_bytes != null)
-                    {
-                        return _index - _startIndex;
-                    }
-                    else
-                    {
-                        unsafe
-                        {
-                            return checked((int)(_buffer.UnsafeBuffer - _startBuffer.UnsafeBuffer));
-                        }
-                    }
+
+                    return _index;
                 }
             }
 
@@ -83,20 +48,14 @@ namespace System.Text.Utf8
                         throw new InvalidOperationException("MoveNext() needs to be called at least once");
                     }
 
+                    if (!HasValue())
+                    {
+                        throw new InvalidOperationException("Current does not exist");
+                    }
+
+                    Span<byte> buffer = _buffer.Slice(0, _index);
                     UnicodeCodePoint ret;
-                    bool succeeded;
-                    if (_bytes != null)
-                    {
-                        fixed (byte* pinnedBytes = _bytes)
-                        {
-                            ByteSpan buffer = new ByteSpan(pinnedBytes + _startIndex, _index - _startIndex);
-                            succeeded = Utf8Encoder.TryDecodeCodePointBackwards(buffer, out ret, out _currentLenCache);
-                        }
-                    }
-                    else
-                    {
-                        succeeded = Utf8Encoder.TryDecodeCodePointBackwards(_buffer, out ret, out _currentLenCache);
-                    }
+                    bool succeeded = Utf8Encoder.TryDecodeCodePointBackwards(buffer, out ret, out _currentLenCache);
 
                     if (!succeeded || _currentLenCache == 0)
                     {
@@ -133,16 +92,8 @@ namespace System.Text.Utf8
                     }
                 }
 
-                if (_bytes != null)
-                {
-                    _index -= _currentLenCache;
-                    _currentLenCache = 0;
-                }
-                else
-                {
-                    _buffer = _buffer.Slice(0, _buffer.Length - _currentLenCache);
-                    _currentLenCache = 0;
-                }
+                _index -= _currentLenCache;
+                _currentLenCache = 0;
 
                 return HasValue();
             }
@@ -150,26 +101,12 @@ namespace System.Text.Utf8
             // This is different than Reset, it goes to the first element not before first
             private void MoveToFirstPosition()
             {
-                if (_bytes != null)
-                {
-                    _index = _endIndex;
-                }
-                else
-                {
-                    _buffer = _startBuffer;
-                }
+                _index = _buffer.Length;
             }
 
             private bool IsOnResetPosition()
             {
-                if (_bytes != null)
-                {
-                    return _index == ResetIndex;
-                }
-                else
-                {
-                    return _buffer.ReferenceEquals(_resetBufferPosition);
-                }
+                return _index == ResetIndex;
             }
 
             private bool HasValue()
@@ -179,24 +116,13 @@ namespace System.Text.Utf8
                     return true;
                 }
 
-                if (_bytes != null)
-                {
-                    return _index > _startIndex;
-                }
-                else
-                {
-                    unsafe
-                    {
-                        return _buffer.Length != 0;
-                    }
-                }
+                return _index > 0;
             }
 
             // This is different than MoveToFirstPosition, this actually goes before anything
             public void Reset()
             {
                 _index = ResetIndex;
-                _buffer = _resetBufferPosition;
                 _currentLenCache = 0;
             }
         }

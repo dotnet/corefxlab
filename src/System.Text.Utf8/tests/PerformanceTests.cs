@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 namespace System.Text.Utf8.Tests
 {
     [Trait("category", "performance")]
+    [Trait("category", "outerloop")]
     public class Utf8StringPerformanceTests
     {
         private readonly Stopwatch _timer = new Stopwatch();
@@ -28,12 +29,13 @@ namespace System.Text.Utf8.Tests
             _timer.Restart();
             _timer.Stop();
             _timer.Reset();
-            PrintTime(new StringWithDescription("", "ignore this", -1));
+            PrintTime(new TestCase("", "ignore this", -1));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void PrintTime(StringWithDescription str, [CallerMemberName] string memberName = "")
+        public void PrintTime(TestCase str, [CallerMemberName] string memberName = "")
         {
+            _timer.Stop();
             _output.WriteLine(string.Format("{0} : {1} : Elapsed {2}ms ({3} iterations)", memberName, str.Description, _timer.ElapsedMilliseconds, str.Iterations));
         }
 
@@ -48,7 +50,7 @@ namespace System.Text.Utf8.Tests
             return sb.ToString();
         }
 
-        public struct StringWithDescription
+        public struct TestCase
         {
             string _s;
             string _description;
@@ -57,7 +59,7 @@ namespace System.Text.Utf8.Tests
             public string String { get { return _s; } }
             public string Description { get { return _description;  } }
             public int Iterations { get { return _iterations;  } }
-            public StringWithDescription(string s, string description, int iterations)
+            public TestCase(string s, string description, int iterations)
             {
                 _s = s;
                 _description = description;
@@ -65,19 +67,16 @@ namespace System.Text.Utf8.Tests
             }
         }
 
-        private IEnumerable<StringWithDescription> StringsWithDescription()
-        {
-            int iterationsMultiplier = 10;
-            yield return new StringWithDescription(GetRandomString(5, 32, 126), "Short ASCII string", 50000 * iterationsMultiplier);
-            yield return new StringWithDescription(GetRandomString(5, 32, 0xD7FF), "Short string", 50000 * iterationsMultiplier);
-            yield return new StringWithDescription(GetRandomString(50000, 32, 126), "Long ASCII string", 5 * iterationsMultiplier);
-            yield return new StringWithDescription(GetRandomString(50000, 32, 0xD7FF), "Long string", 5 * iterationsMultiplier);
-        }
-
         [Fact]
         public void ConstructFromString()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 30000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 30000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 3000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 3000)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 int iterations = testData.Iterations;
@@ -93,7 +92,13 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public void EnumerateCodeUnitsConstructFromByteArray()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 150000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 150000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 50000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 15000)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
@@ -113,13 +118,19 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public unsafe void EnumerateCodeUnitsConstructFromSpan()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 150000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 150000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 50000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 15000)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
@@ -136,7 +147,13 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public void EnumerateCodePointsConstructFromByteArray()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 25000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 25000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 2500),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 2500)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
@@ -156,13 +173,19 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public unsafe void EnumerateCodePointsConstructFromSpan()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 25000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 25000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 2500),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 2500)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
@@ -179,7 +202,13 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public void ReverseEnumerateCodePointsConstructFromByteArray()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 15000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 15000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 1500),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 1500)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
@@ -201,13 +230,19 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public unsafe void ReverseEnumerateCodePointsConstructFromSpan()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 15000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 15000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 1500),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 1500)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
@@ -226,7 +261,13 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public void SubstringTrimOneCharacterOnEachSideConstructFromByteArray()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 250000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 250000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 250000000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 250000000)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
@@ -244,13 +285,19 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public unsafe void SubstringTrimOneCharacterOnEachSideConstructFromSpan()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 250000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 250000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 250000000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 250000000)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
@@ -265,7 +312,13 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public void IndexOfNonOccuringSingleCodeUnitConstructFromByteArray()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 150000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 150000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 15000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 15000)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
@@ -283,13 +336,19 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public unsafe void IndexOfNonOccuringSingleCodeUnitConstructFromSpan()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 150000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 150000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 15000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 15000)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)
@@ -304,7 +363,13 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public void IndexOfNonOccuringSingleCodePointConstructFromByteArray()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 25000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 25000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 2500),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 2500)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
@@ -322,13 +387,19 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public unsafe void IndexOfNonOccuringSingleCodePointConstructFromSpan()
         {
-            foreach (StringWithDescription testData in StringsWithDescription())
+            TestCase[] testCases = new TestCase[] {
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 25000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 25000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 2500),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 2500)
+            };
+            foreach (TestCase testData in testCases)
             {
                 string s = testData.String;
                 Utf8String utf8s = new Utf8String(s);
                 fixed (byte* bytes = utf8s.CopyBytes())
                 {
-                    utf8s = new Utf8String(new ByteSpan(bytes, utf8s.Length));
+                    utf8s = new Utf8String(new Span<byte>(bytes, utf8s.Length));
                     int iterations = testData.Iterations;
                     _timer.Restart();
                     while (iterations-- != 0)

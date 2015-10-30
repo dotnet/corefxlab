@@ -21,7 +21,7 @@ namespace System.Text.Utf8
 
             fixed (byte* encodedData = &_byte0)
             {
-                ByteSpan buffer = new ByteSpan(encodedData, 4);
+                Span<byte> buffer = new Span<byte>(encodedData, 4);
                 if (!Utf8Encoder.TryEncodeCodePoint(codePoint, buffer, out _length))
                 {
                     // TODO: Change exception type
@@ -36,7 +36,7 @@ namespace System.Text.Utf8
 
             fixed (byte* encodedData = &_byte0)
             {
-                ByteSpan buffer = new ByteSpan(encodedData, 4);
+                Span<byte> buffer = new Span<byte>(encodedData, 4);
                 if (!Utf8Encoder.TryEncodeCodePoint(codePoint, buffer, out _length))
                 {
                     // TODO: Change exception type
