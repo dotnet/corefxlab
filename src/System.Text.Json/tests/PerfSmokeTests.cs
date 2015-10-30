@@ -18,7 +18,7 @@ namespace System.Text.Json.Tests
         private const int NumberOfIterations = 5;
 
         private const int NumberOfSamples = 3;
-        private const int ExpectedMemoryBenchMark = 1000000;
+        private const int ExpectedMemoryBenchMark = 0;
 
         // ReSharper disable once ConvertToConstant.Local
         private static readonly bool OutputResults = true;
@@ -27,7 +27,7 @@ namespace System.Text.Json.Tests
         public void ReadBasicJson()
         {
             Output("====== TEST ReadBasicJson ======");
-            ReadJsonHelper(TestJson.BasicJson);   // Do not test first iteration
+            ReadJsonHelper(TestJson.BasicJson); // Do not test first iteration
             RunTest(TestJson.BasicJson, 10 + NumberOfIterations, ExpectedMemoryBenchMark*MemoryToleranceFactor);
         }
 
@@ -35,7 +35,7 @@ namespace System.Text.Json.Tests
         public void ReadProjectLockJson()
         {
             Output("====== TEST ReadProjectLockJson ======");
-            ReadJsonHelper(TestJson.ProjectLockJson);   // Do not test first iteration
+            ReadJsonHelper(TestJson.ProjectLockJson); // Do not test first iteration
             RunTest(TestJson.ProjectLockJson, 10 + NumberOfIterations*100, ExpectedMemoryBenchMark*MemoryToleranceFactor);
         }
 
@@ -43,33 +43,33 @@ namespace System.Text.Json.Tests
         public void ReadHeavyNestedJson()
         {
             Output("====== TEST ReadHeavyNestedJson ======");
-            ReadJsonHelper(TestJson.HeavyNestedJson);   // Do not test first iteration
+            ReadJsonHelper(TestJson.HeavyNestedJson); // Do not test first iteration
             RunTest(TestJson.HeavyNestedJson, 10 + NumberOfIterations*2, ExpectedMemoryBenchMark*MemoryToleranceFactor);
         }
 
         private static void RunTest(string jsonStr, int timeBenchmark, int memoryBenchmark)
         {
-            GC.Collect();
             var timeIterReadResults = new List<long>();
             var memoryIterReadResults = new List<long>();
 
             for (var j = 0; j < NumberOfSamples; j++)
             {
+                var memoryBefore = GC.GetTotalMemory(true);
                 Timer.Restart();
                 for (var i = 0; i < NumberOfIterations; i++)
                 {
                     ReadJsonHelper(jsonStr);
                 }
                 var time = Timer.ElapsedMilliseconds;
-                var memory = GC.GetTotalMemory(false);
+                var memoryAfter = GC.GetTotalMemory(true);
+                var consumption = memoryAfter - memoryBefore;
                 timeIterReadResults.Add(time);
-                memoryIterReadResults.Add(memory);
+                memoryIterReadResults.Add(consumption);
                 Assert.True(time < timeBenchmark);
-                Assert.True(memory < memoryBenchmark);
+                Assert.True(consumption <= memoryBenchmark);
             }
             Output(timeIterReadResults.Average().ToString(CultureInfo.InvariantCulture));
-            Output((memoryIterReadResults.Average()/1000).ToString(CultureInfo.InvariantCulture));
-            GC.Collect();
+            Output((memoryIterReadResults.Average()).ToString(CultureInfo.InvariantCulture));
         }
 
         private static void ReadJsonHelper(string jsonStr)
@@ -107,7 +107,8 @@ namespace System.Text.Json.Tests
 
         private static void OutputValue(ref JsonReader reader)
         {
-            switch (reader.GetJsonValueType())
+            var type = reader.GetJsonValueType();
+            switch (type)
             {
                 case JsonReader.JsonValueType.String:
                 case JsonReader.JsonValueType.Number:
@@ -115,7 +116,7 @@ namespace System.Text.Json.Tests
                 case JsonReader.JsonValueType.False:
                 case JsonReader.JsonValueType.Null:
                     // ReSharper disable once UnusedVariable
-                    var value = reader.GetValue();
+                    var value = reader.GetValue(type);
                     break;
                 case JsonReader.JsonValueType.Object:
                     break;

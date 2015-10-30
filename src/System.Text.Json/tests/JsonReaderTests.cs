@@ -289,8 +289,9 @@ namespace System.Text.Json.Tests
 
         private static Value GetValue(ref JsonReader jsonReader)
         {
-            var value = new Value {Type = (Value.ValueType) jsonReader.GetJsonValueType()};
-            var obj = jsonReader.GetValue();
+            var type = jsonReader.GetJsonValueType();
+            var value = new Value {Type = (Value.ValueType) type};
+            var obj = jsonReader.GetValue(type);
             switch (value.Type)
             {
                 case Value.ValueType.String:
