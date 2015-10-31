@@ -9,7 +9,6 @@ namespace System.Text.Json
     {
         private Utf8String _str;
         private int _index;
-        private readonly int _length;
         private int _insideObject;
         private int _insideArray;
         public JsonTokenType TokenType;
@@ -43,7 +42,6 @@ namespace System.Text.Json
             _insideObject = 0;
             _insideArray = 0;
             TokenType = 0;
-            _length = _str.Length;
         }
 
         public JsonReader(string str)
@@ -53,7 +51,6 @@ namespace System.Text.Json
             _insideObject = 0;
             _insideArray = 0;
             TokenType = 0;
-            _length = _str.Length;
         }
 
         public void Dispose()
@@ -62,7 +59,7 @@ namespace System.Text.Json
 
         public bool Read()
         {
-            var canRead = _index < _length;
+            var canRead = _index < _str.Length;
             if (canRead) MoveToNextTokenType();
             return canRead;
         }
@@ -118,8 +115,9 @@ namespace System.Text.Json
             throw new FormatException("Invalid json, tried to read char '" + nextByte + "'.");
         }
 
-        public Utf8String GetValue(JsonValueType type)
+        public Utf8String GetValue()
         {
+            var type = GetJsonValueType();
             SkipEmpty();
             switch (type)
             {

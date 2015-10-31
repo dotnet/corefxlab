@@ -291,7 +291,7 @@ namespace System.Text.Json.Tests
         {
             var type = jsonReader.GetJsonValueType();
             var value = new Value {Type = (Value.ValueType) type};
-            var obj = jsonReader.GetValue(type);
+            var obj = jsonReader.GetValue();
             switch (value.Type)
             {
                 case Value.ValueType.String:

@@ -88,10 +88,10 @@ namespace System.Text.Json.Tests
                     case JsonReader.JsonTokenType.Property:
                         // ReSharper disable once UnusedVariable
                         var name = reader.GetName();
-                        OutputValue(ref reader);
+                        var value = reader.GetValue();
                         break;
                     case JsonReader.JsonTokenType.Value:
-                        OutputValue(ref reader);
+                        value = reader.GetValue();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -103,28 +103,6 @@ namespace System.Text.Json.Tests
         {
             if (!OutputResults) return;
             Console.WriteLine(str);
-        }
-
-        private static void OutputValue(ref JsonReader reader)
-        {
-            var type = reader.GetJsonValueType();
-            switch (type)
-            {
-                case JsonReader.JsonValueType.String:
-                case JsonReader.JsonValueType.Number:
-                case JsonReader.JsonValueType.True:
-                case JsonReader.JsonValueType.False:
-                case JsonReader.JsonValueType.Null:
-                    // ReSharper disable once UnusedVariable
-                    var value = reader.GetValue(type);
-                    break;
-                case JsonReader.JsonValueType.Object:
-                    break;
-                case JsonReader.JsonValueType.Array:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
         }
     }
 }
