@@ -41,7 +41,7 @@ namespace System.Buffers
             if (_index >= _data.Length)
             {
                 // Exit the lock as soon as possible
-                _lock.Exit();
+                _lock.Exit(false);
                 buffer = new T[_bufferSize];
             }
             else
@@ -51,7 +51,7 @@ namespace System.Buffers
                 _index++;
 
                 // Exit the lock as soon as possible
-                _lock.Exit();
+                _lock.Exit(false);
             }
 
             return buffer;
@@ -76,7 +76,7 @@ namespace System.Buffers
                 _data[_index] = buffer;
             }
 
-            _lock.Exit();
+            _lock.Exit(false);
         }
     }
 }
