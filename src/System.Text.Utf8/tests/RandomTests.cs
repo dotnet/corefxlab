@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text.Utf8;
 using System.Text.Utf16;
 using Xunit.Abstractions;
+using System.Reflection;
 
 namespace System.Text.Utf8.Tests
 {
@@ -55,148 +56,136 @@ namespace System.Text.Utf8.Tests
         }
         #endregion
 
-        [Theory]
-        [InlineData("")]
-        [InlineData("1258")]
-        [InlineData("\uABCD")]
-        [InlineData("\uABEE")]
-        [InlineData("a\uABEE")]
-        [InlineData("a\uABEEa")]
-        [InlineData("a\uABEE\uABCDa")]
-        public void Length(string s)
+        public static object[][] LengthTestCases = {
+            new object[] { 0, default(Utf8String) },
+            new object[] { 0, Utf8String.Empty },
+            new object[] { 0, ""u8 },
+            new object[] { 4, "1258"u8 },
+            new object[] { 3, "\uABCD"u8 },
+            new object[] { 3, "\uABEE"u8 },
+            new object[] { 4, "a\uABEE"u8 },
+            new object[] { 5, "a\uABEEa"u8 },
+            new object[] { 8, "a\uABEE\uABCDa"u8 }
+        };
+        [Theory, MemberData("LengthTestCases")]
+        public void Length(int expectedLength, Utf8String s)
         {
-            Assert.Equal(s.Length, (new Utf8String(Encoding.UTF8.GetBytes(s))).CodePoints.Count());
+            Assert.Equal(expectedLength, s.Length);
         }
 
-        [Theory]
-        [InlineData("")]
-        [InlineData("1258")]
-        [InlineData("1258Hello")]
-        [InlineData("\uABCD")]
-        [InlineData("\uABEE")]
-        [InlineData("a\uABEE")]
-        [InlineData("a\uABEEa")]
-        [InlineData("a\uABEE\uABCDa")]
-        public void ToStringTest(string s)
+        public static object[][] LengthInCodePointsTestCases = {
+            new object[] { 0, default(Utf8String) },
+            new object[] { 0, Utf8String.Empty },
+            new object[] { 0, ""u8 },
+            new object[] { 4, "1258"u8 },
+            new object[] { 1, "\uABCD"u8 },
+            new object[] { 1, "\uABEE"u8 },
+            new object[] { 2, "a\uABEE"u8 },
+            new object[] { 3, "a\uABEEa"u8 },
+            new object[] { 4, "a\uABEE\uABCDa"u8 }
+        };
+        [Theory, MemberData("LengthInCodePointsTestCases")]
+        public void LengthInCodePoints(int expectedLength, Utf8String s)
         {
-            var utf8string = new Utf8String(Encoding.UTF8.GetBytes(s));
-            Assert.Equal(s, utf8string.ToString());
+            Assert.Equal(expectedLength, s.CodePoints.Count());
         }
 
-        [Theory]
-        [InlineData("")]
-        [InlineData("1258")]
-        [InlineData("1258Hello")]
-        [InlineData("\uABCD")]
-        [InlineData("\uABEE")]
-        [InlineData("a\uABEE")]
-        [InlineData("a\uABEEa")]
-        [InlineData("a\uABEE\uABCDa")]
-        public void CodePointValidation(string s)
+        public static object[][] ToStringTestCases = {
+            new object[] { "", default(Utf8String) },
+            new object[] { "", Utf8String.Empty },
+            new object[] { "", ""u8 },
+            new object[] { "1258", "1258"u8 },
+            new object[] { "\uABCD", "\uABCD"u8 },
+            new object[] { "\uABEE", "\uABEE"u8 },
+            new object[] { "a\uABEE", "a\uABEE"u8 },
+            new object[] { "a\uABEEa", "a\uABEEa"u8 },
+            new object[] { "a\uABEE\uABCDa", "a\uABEE\uABCDa"u8 }
+        };
+        [Theory, MemberData("ToStringTestCases")]
+        public void ToString(string expected, Utf8String s)
         {
-            var utf8string = new Utf8String(Encoding.UTF8.GetBytes(s));
-            IEnumerator<UnicodeCodePoint> codePoints = utf8string.CodePoints.GetEnumerator();
-            for (int i = 0; i < s.Length; i++)
+            Assert.Equal(expected, s.ToString());
+        }
+
+        [Theory, MemberData("ToStringTestCases")]
+        public void EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSame(string utf16String, Utf8String utf8String)
+        {
+            var utf16StringCodePoints = new Utf16LittleEndianCodePointEnumerable(utf16String);
+
+            var utf16CodePointEnumerator = utf16StringCodePoints.GetEnumerator();
+            var utf8CodePointEnumerator = utf8String.CodePoints.GetEnumerator();
+
+            bool moveNext;
+            do
             {
-                Assert.True(codePoints.MoveNext());
-                Assert.Equal((uint)s[i], (uint)codePoints.Current);
+                moveNext = utf16CodePointEnumerator.MoveNext();
+                Assert.Equal(moveNext, utf8CodePointEnumerator.MoveNext());
+                Assert.Equal(utf16CodePointEnumerator.Current, utf8CodePointEnumerator.Current);
+            } while (moveNext);
+        }
+
+        public static object[][] EnsureCodeUnitsOfStringTestCases = {
+            // empty
+            new object[] { new byte[0], default(Utf8String) },
+            new object[] { new byte[0], Utf8String.Empty },
+            new object[] { new byte[0], ""u8 },
+            // ascii
+            new object[] { new byte[] { 0x61 }, "a"u8 },
+            new object[] { new byte[] { 0x61, 0x62, 0x63 }, "abc"u8 },
+            new object[] { new byte[] { 0x41, 0x42, 0x43, 0x44 }, "ABCD"u8 },
+            new object[] { new byte[] { 0x30, 0x31, 0x32, 0x33, 0x34 }, "01234"u8 },
+            new object[] { new byte[] { 0x2c, 0x2e, 0x0d, 0x0a, 0x5b, 0x5d, 0x3c, 0x3e, 0x28, 0x29 },  " ,.\r\n[]<>()"u8 },
+            // edge cases for multibyte characters
+            new object[] { new byte[] { 0x7f }, "\u007f"u8 },
+            new object[] { new byte[] { 0xc2, 0x80 }, "\u0080"u8 },
+            new object[] { new byte[] { 0xdf, 0xbf }, "\u07ff"u8 },
+            new object[] { new byte[] { 0xe0, 0xa0, 0x80 }, "\u0800"u8 },
+            new object[] { new byte[] { 0xef, 0xbf, 0xbf }, "\uffff"u8 },
+            // ascii mixed with multibyte characters
+            // 1 code unit + 2 code units
+            new object[] { new byte[] { 0x61, 0xc2, 0x80 }, "a\u0080"u8 },
+            // 2 code units + 1 code unit
+            new object[] { new byte[] { 0xc2, 0x80, 0x61 }, "\u0080a"u8 },
+            // 1 code unit + 2 code units + 1 code unit
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61 }, "a\u0080a"u8 },
+            // 3 code units + 2 code units
+            new object[] { new byte[] { 0xe0, 0xa0, 0x80, 0xc2, 0x80 }, "\u0800\u0080"u8 },
+            // 2 code units + 3 code units
+            new object[] { new byte[] { 0xc2, 0x80, 0xe0, 0xa0, 0x80 }, "\u0080\u0800"u8 },
+            // 2 code units + 3 code units
+            new object[] { new byte[] { 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf }, "\u0080a\uffff"u8 },
+            // 1 code unit + 2 code units + 3 code units
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0xef, 0xbf, 0xbf }, "a\u0080\uffff"u8 },
+            // 2 code units + 3 code units + 1 code unit
+            new object[] { new byte[] { 0xc2, 0x80, 0xef, 0xbf, 0xbf, 0x61 }, "\u0080\uffffa"u8 },
+            // 1 code unit + 2 code units + 3 code units
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0xef, 0x61, 0xbf, 0xbf, 0x61 }, "a\u0080a\uffffa"u8 }
+            // TODO: Add case with 4 byte character - it is impossible to do using string literals, need to create it using code point
+        };
+        [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
+        public void EnsureCodeUnitsOfStringByEnumeratingBytes(byte[] expectedBytes, Utf8String utf8String)
+        {
+            Assert.Equal(expectedBytes.Length, utf8String.Length);
+            Utf8String.Enumerator e = utf8String.GetEnumerator();
+
+            int i = 0;
+            while (e.MoveNext())
+            {
+                Assert.True(i < expectedBytes.Length);
+                Assert.Equal(expectedBytes[i], (byte)e.Current);
+                i++;
             }
-
-            Assert.False(codePoints.MoveNext());
+            Assert.Equal(expectedBytes.Length, i);
         }
 
-        [Fact]
-        public void Utf8EncodedCodePointFromChar0()
+        [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
+        public void EnsureCodeUnitsOfStringByIndexingBytes(byte[] expectedBytes, Utf8String utf8String)
         {
-            Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u0000');
-            Assert.Equal(1, ecp.Length);
-            Assert.Equal(0x00, ecp.Byte0);
-        }
+            Assert.Equal(expectedBytes.Length, utf8String.Length);
 
-        [Fact]
-        public void Utf8EncodedCodePointFromChar1()
-        {
-            Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u007F');
-            Assert.Equal(1, ecp.Length);
-            Assert.Equal(0x7F, ecp.Byte0);
-        }
-
-        [Fact]
-        public void Utf8EncodedCodePointFromChar2()
-        {
-            Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u0080');
-            Assert.Equal(2, ecp.Length);
-            Assert.Equal(0xC2, ecp.Byte0);
-            Assert.Equal(0x80, ecp.Byte1);
-        }
-
-        [Fact]
-        public void Utf8EncodedCodePointFromChar3()
-        {
-            Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u01ED');
-            Assert.Equal(2, ecp.Length);
-            Assert.Equal(0xC7, ecp.Byte0);
-            Assert.Equal(0xAD, ecp.Byte1);
-        }
-
-        [Fact]
-        public void Utf8EncodedCodePointFromChar4()
-        {
-            Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u07FF');
-            Assert.Equal(2, ecp.Length);
-            Assert.Equal(0xDF, ecp.Byte0);
-            Assert.Equal(0xBF, ecp.Byte1);
-        }
-
-        [Fact]
-        public void Utf8EncodedCodePointFromChar5()
-        {
-            Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u0800');
-            Assert.Equal(3, ecp.Length);
-            Assert.Equal(0xE0, ecp.Byte0);
-            Assert.Equal(0xA0, ecp.Byte1);
-            Assert.Equal(0x80, ecp.Byte2);
-        }
-
-        [Fact]
-        public void Utf8EncodedCodePointFromChar6()
-        {
-            Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u1FA9');
-            Assert.Equal(3, ecp.Length);
-            Assert.Equal(0xE1, ecp.Byte0);
-            Assert.Equal(0xBE, ecp.Byte1);
-            Assert.Equal(0xA9, ecp.Byte2);
-        }
-
-        [Fact]
-        public void Utf8EncodedCodePointFromChar7()
-        {
-            Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\uFFFF');
-            Assert.Equal(3, ecp.Length);
-            Assert.Equal(0xEF, ecp.Byte0);
-            Assert.Equal(0xBF, ecp.Byte1);
-            Assert.Equal(0xBF, ecp.Byte2);
-        }
-
-        [Theory]
-        [InlineData("abcdefghijklmnopqrstuvwxyz")]
-        [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ")]
-        [InlineData("0123456789")]
-        [InlineData(" ,.\r\n[]<>()")]
-        public void AsciiStringEnumerators(string s)
-        {
-            Utf8String u8s = new Utf8String(Encoding.UTF8.GetBytes(s));
-            Utf8String.Enumerator e = u8s.GetEnumerator();
-            Utf8String.CodePointEnumerator cpe = u8s.CodePoints.GetEnumerator();
-
-            Assert.Equal(s.Length, u8s.Length);
-            for (int i = 0; i < s.Length; i++)
+            for (int i = 0; i < utf8String.Length; i++)
             {
-                Assert.True(e.MoveNext());
-                Assert.True(cpe.MoveNext());
-                Assert.Equal((byte)s[i], (byte)u8s[i]);
-                Assert.Equal(u8s[i], e.Current);
-                Assert.Equal((byte)s[i], (byte)(uint)cpe.Current);
+                Assert.Equal(expectedBytes[i], (byte)utf8String[i]);
             }
         }
 
