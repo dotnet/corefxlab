@@ -269,7 +269,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23503": {
+      "System.Console/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -1440,7 +1440,7 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
-      "runtime.win7.System.Console/4.0.0-beta-23503": {
+      "runtime.win7.System.Console/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -1589,7 +1589,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23503": {
+      "System.Console/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -2784,7 +2784,7 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
-      "runtime.win7.System.Console/4.0.0-beta-23503": {
+      "runtime.win7.System.Console/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -2933,7 +2933,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23503": {
+      "System.Console/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -4126,14 +4126,14 @@
         "ref/xamarinmac20/_._"
       ]
     },
-    "runtime.win7.System.Console/4.0.0-beta-23503": {
+    "runtime.win7.System.Console/4.0.0-beta-23504": {
       "type": "package",
       "serviceable": true,
-      "sha512": "JZkkaTfrkPOBq15iYXWbHAe0oDpF9/+yXcQg+AKc3BhkEnFT37ElwtgCxbaqIWN5Dw/iImbR1g8I4CjITXDzlQ==",
+      "sha512": "f1V73xPbwDvT7KMJYpWNnVgjUbA8nW//Ue8A5xhSKqcu6t+AdrstYnD76SxiVrvP4b2wwAq0GAqIsKMF5l95jQ==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.Console.4.0.0-beta-23503.nupkg",
-        "runtime.win7.System.Console.4.0.0-beta-23503.nupkg.sha512",
+        "runtime.win7.System.Console.4.0.0-beta-23504.nupkg",
+        "runtime.win7.System.Console.4.0.0-beta-23504.nupkg.sha512",
         "runtime.win7.System.Console.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.Console.dll",
         "runtimes/win7/lib/net/_._"
@@ -4381,10 +4381,10 @@
         "System.ComponentModel.EventBasedAsync.nuspec"
       ]
     },
-    "System.Console/4.0.0-beta-23503": {
+    "System.Console/4.0.0-beta-23504": {
       "type": "package",
       "serviceable": true,
-      "sha512": "54O/hCKjJ8/tzdhjkC6aXNLb1B/czhUE5k66MA0IDu2ZaH61QVxfoUgs7bMySrZ25R67WF3kNRAAT9SzCJWIdQ==",
+      "sha512": "fuAquEM/2DrY8axtMIbEw1Qk8oX2WCPyd2ws2W0u7PDWlxtFMuFSI4rAOW2hs/S5aGsl5qcpJ2A8ELJW0c/JOw==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -4408,8 +4408,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.Console.4.0.0-beta-23503.nupkg",
-        "System.Console.4.0.0-beta-23503.nupkg.sha512",
+        "System.Console.4.0.0-beta-23504.nupkg",
+        "System.Console.4.0.0-beta-23504.nupkg.sha512",
         "System.Console.nuspec"
       ]
     },

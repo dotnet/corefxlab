@@ -1,10 +1,8 @@
-﻿using Xunit;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
-using System.Text.Utf8;
 using System.Text.Utf16;
+using Xunit;
 using Xunit.Abstractions;
-using System.Reflection;
 
 namespace System.Text.Utf8.Tests
 {
@@ -62,11 +60,11 @@ namespace System.Text.Utf8.Tests
             new object[] { 0, ""u8 },
             new object[] { 4, "1258"u8 },
             new object[] { 3, "\uABCD"u8 },
-            new object[] { 3, "\uABEE"u8 },
             new object[] { 4, "a\uABEE"u8 },
             new object[] { 5, "a\uABEEa"u8 },
             new object[] { 8, "a\uABEE\uABCDa"u8 }
         };
+
         [Theory, MemberData("LengthTestCases")]
         public void Length(int expectedLength, Utf8String s)
         {
@@ -79,11 +77,11 @@ namespace System.Text.Utf8.Tests
             new object[] { 0, ""u8 },
             new object[] { 4, "1258"u8 },
             new object[] { 1, "\uABCD"u8 },
-            new object[] { 1, "\uABEE"u8 },
             new object[] { 2, "a\uABEE"u8 },
             new object[] { 3, "a\uABEEa"u8 },
             new object[] { 4, "a\uABEE\uABCDa"u8 }
         };
+
         [Theory, MemberData("LengthInCodePointsTestCases")]
         public void LengthInCodePoints(int expectedLength, Utf8String s)
         {
@@ -96,19 +94,18 @@ namespace System.Text.Utf8.Tests
             new object[] { "", ""u8 },
             new object[] { "1258", "1258"u8 },
             new object[] { "\uABCD", "\uABCD"u8 },
-            new object[] { "\uABEE", "\uABEE"u8 },
             new object[] { "a\uABEE", "a\uABEE"u8 },
             new object[] { "a\uABEEa", "a\uABEEa"u8 },
             new object[] { "a\uABEE\uABCDa", "a\uABEE\uABCDa"u8 }
         };
+
         [Theory, MemberData("ToStringTestCases")]
         public void ToString(string expected, Utf8String s)
         {
             Assert.Equal(expected, s.ToString());
         }
 
-        public static object[][] StringEqualsTestCases = new object[][] {
-            // empty strings consistency
+        public static object[][] StringEqualsTestCases_EmptyStrings = new object[][] {
             new object[] { true, ""u8, ""u8 },
             new object[] { true, ""u8, default(Utf8String) },
             new object[] { true, ""u8, Utf8String.Empty },
@@ -119,12 +116,21 @@ namespace System.Text.Utf8.Tests
             new object[] { true, Utf8String.Empty, Utf8String.Empty },
             new object[] { true, Utf8String.Empty, new Utf8String("") },
             new object[] { true, new Utf8String(""), new Utf8String("") },
-            // few simple positive cases
+
+            new object[] { false, ""u8, " "u8 },
+            new object[] { false, ""u8, "a"u8 },
+            new object[] { false, ""u8, "\uABCD"u8 },
+            new object[] { false, ""u8, "abc"u8 },
+            new object[] { false, ""u8, "a\uABCD"u8 },
+            new object[] { false, ""u8, "\uABCDa"u8 }
+        };
+
+        public static object[][] StringEqualsTestCases_SimpleStrings = new object[][] {
             new object[] { true, "a"u8, "a"u8 },
             new object[] { true, "\uABCD"u8, "\uABCD"u8 },
             new object[] { true, "abc"u8, "abc"u8 },
             new object[] { true, "a\uABCDbc"u8, "a\uABCDbc"u8 },
-            // few simple negative cases
+
             new object[] { false, "a"u8, "b"u8 },
             new object[] { false, "aaaaa"u8, "aaaab"u8 },
             new object[] { false, "aaaaa"u8, "baaaa"u8 },
@@ -134,26 +140,22 @@ namespace System.Text.Utf8.Tests
             new object[] { false, "\uABCD"u8, "\uABCE"u8 },
             new object[] { false, "abc"u8, "abcd"u8 },
             new object[] { false, "abc"u8, "dabc"u8 },
-            new object[] { false, "ab\uABCDc"u8, "ab\uABCEc"u8 },
-            // empty with anything else
-            new object[] { false, ""u8, " "u8 },
-            new object[] { false, ""u8, "a"u8 },
-            new object[] { false, ""u8, "\uABCD"u8 },
-            new object[] { false, ""u8, "abc"u8 },
-            new object[] { false, "a"u8, ""u8 },
-            new object[] { false, "\uABCD"u8, ""u8 },
-            new object[] { false, "abc"u8, ""u8 }
-            // TODO: add cases for different lengths
+            new object[] { false, "ab\uABCDc"u8, "ab\uABCEc"u8 }
         };
-        [Theory, MemberData("StringEqualsTestCases")]
+
+        // TODO: add cases for different lengths
+        [Theory]
+        [MemberData("StringEqualsTestCases_EmptyStrings")]
+        [MemberData("StringEqualsTestCases_SimpleStrings")]
         public unsafe void StringEquals(bool expected, Utf8String s1, Utf8String s2)
         {
             Assert.Equal(expected, s1.Equals(s2));
             Assert.Equal(expected, s2.Equals(s1));
         }
 
-        [Theory, MemberData("StringEqualsTestCases")]
-        public unsafe void StringEqualsUtf16String(bool expected, Utf8String s1, Utf8String s2)
+        [MemberData("StringEqualsTestCases_EmptyStrings")]
+        [MemberData("StringEqualsTestCases_SimpleStrings")]
+        public unsafe void StringEqualsConvertedToUtf16String(bool expected, Utf8String s1, Utf8String s2)
         {
             Assert.Equal(expected, s1.Equals(s2.ToString()));
             Assert.Equal(expected, s2.Equals(s1.ToString()));

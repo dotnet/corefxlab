@@ -14,7 +14,6 @@ namespace System.Text.Utf8.Tests
         [InlineData("1258")]
         [InlineData("1258Hello")]
         [InlineData("\uABCD")]
-        [InlineData("\uABEE")]
         [InlineData("a\uABEE")]
         [InlineData("a\uABEEa")]
         [InlineData("a\uABEE\uABCDa")]
@@ -33,11 +32,11 @@ namespace System.Text.Utf8.Tests
             new object[] { "1258"u8 },
             new object[] { "1258Hello"u8 },
             new object[] { "\uABCD"u8 },
-            new object[] { "\uABEE"u8 },
             new object[] { "a\uABEE"u8 },
             new object[] { "a\uABEEa"u8 },
             new object[] { "a\uABEE\uABCDa"u8 }
         };
+
         [Theory, MemberData("Utf8StringToUtf16StringToUtf8StringRoundTripTestCases")]
         public void Utf8StringToUtf16StringToUtf8StringRoundTrip(Utf8String utf8String)
         {
@@ -51,11 +50,11 @@ namespace System.Text.Utf8.Tests
             new object[] { "", ""u8 },
             new object[] { "1258", "1258"u8 },
             new object[] { "\uABCD", "\uABCD"u8 },
-            new object[] { "\uABEE", "\uABEE"u8 },
             new object[] { "a\uABEE", "a\uABEE"u8 },
             new object[] { "a\uABEEa", "a\uABEEa"u8 },
             new object[] { "a\uABEE\uABCDa", "a\uABEE\uABCDa"u8 }
         };
+
         [Theory, MemberData("EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSameTestCases")]
         public void EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSame(string utf16String, Utf8String utf8String)
         {
