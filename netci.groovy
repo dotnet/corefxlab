@@ -5,7 +5,7 @@ def project = 'dotnet/corefxlab'
 
 // Generate the builds for debug and release, commit and PRJob
 [true, false].each { isPR -> // Defines a closure over true and false, value assigned to isPR
-    ['Debug', 'Release'].each { configuration ->
+    ['Debug'].each { configuration -> // We only need Debug builds right now
         
         // Determine the name for the new job.  The first parameter is the project,
         // the second parameter is the base name for the job, and the last parameter
@@ -14,7 +14,7 @@ def project = 'dotnet/corefxlab'
         def newJobName = Utilities.getFullJobName(project, configuration, isPR)
         
         // Define build string
-        def buildString = """call build.cmd ${configuration}"""
+        def buildString = """call build.cmd"""
 
         // Create a new job with the specified name.  The brace opens a new closure
         // and calls made within that closure apply to the newly created job.
