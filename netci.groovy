@@ -14,7 +14,7 @@ def project = 'dotnet/corefxlab'
         def newJobName = Utilities.getFullJobName(project, configuration, isPR)
         
         // Define build string
-        def buildString = """call \"C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\Tools\\VsDevCmd.bat\" && build.cmd ${configuration}"""
+        def buildString = """call build.cmd ${configuration}"""
 
         // Create a new job with the specified name.  The brace opens a new closure
         // and calls made within that closure apply to the newly created job.
