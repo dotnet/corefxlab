@@ -23,7 +23,7 @@ namespace System.Text.Json.Tests
         // ReSharper disable once ConvertToConstant.Local
         private static readonly bool OutputResults = true;
 
-        [Fact]
+        [Fact, ActiveIssue(411)]
         public void ReadBasicJson()
         {
             Output("====== TEST ReadBasicJson ======");
@@ -31,7 +31,7 @@ namespace System.Text.Json.Tests
             RunTest(TestJson.BasicJson, 10 + NumberOfIterations, ExpectedMemoryBenchMark*MemoryToleranceFactor);
         }
 
-        [Fact]
+        [Fact, ActiveIssue(411)]
         public void ReadProjectLockJson()
         {
             Output("====== TEST ReadProjectLockJson ======");

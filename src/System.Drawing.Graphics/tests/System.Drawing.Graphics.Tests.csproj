@@ -19,7 +19,6 @@
     <ProjectGuid>{C0219E93-1738-45A1-92CA-16693FAAEC1B}</ProjectGuid>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <!-- workaround until we have Dev14 nuget targets -->
     <NugetTargetFrameworkMoniker>.NETPlatform,Version=v5.0</NugetTargetFrameworkMoniker>
   </PropertyGroup>
