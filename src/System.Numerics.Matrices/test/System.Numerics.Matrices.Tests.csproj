@@ -55,10 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="System\Numerics\TestTemplate.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TestTemplate.txt</LastGenOutput>
-    </Content>
-    <Content Include="System\Numerics\TestTemplate.txt">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TestTemplate.tt</DependentUpon>

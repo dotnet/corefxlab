@@ -9,7 +9,6 @@
     <RootNamespace>System.Threading.Tasks.Channels.Tests</RootNamespace>
     <NoWarn>0649</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <!-- workaround until we have Dev14 nuget targets -->
     <NugetTargetFrameworkMoniker>.NETPlatform,Version=v5.0</NugetTargetFrameworkMoniker>
     <ProjectGuid>{DD942FDB-184A-4D9F-8A1E-3D531858A4B1}</ProjectGuid>

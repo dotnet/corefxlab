@@ -33,6 +33,7 @@ namespace System.Slices.Tests
         [InlineData(new byte[] { 0, 1, 2 })]
         [InlineData(new byte[] { 0, 1, 2, 3 })]
         [InlineData(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 })]
+        [CLSCompliant(false)]
         public void CtorSpanOverByteArrayValidCasesWithPropertiesAndBasicOperationsChecks(byte[] array)
         {
             Span<byte> span = new Span<byte>(array);
@@ -303,6 +304,7 @@ namespace System.Slices.Tests
             (byte[])null,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 4, 2,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 5, 1)]
+        [CLSCompliant(false)]
         public void SpanOfByteCopyToAnotherSpanOfByteTwoDifferentBuffersValidCases(byte[] expected, byte[] a, int aidx, int acount, byte[] b, int bidx, int bcount)
         {
             if (expected != null)
