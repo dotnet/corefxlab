@@ -31,6 +31,9 @@
   <ItemGroup>
     <Compile Include="PerformanceTests.cs" />
     <Compile Include="RandomTests.cs" />
+    <Compile Include="TypeConstraintsTests.cs" />
+    <Compile Include="Utf8EncoderTests.cs" />
+    <Compile Include="Utf8Utf16ConversionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\System.Text.Utf8.csproj">
