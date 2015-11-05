@@ -22,11 +22,6 @@ namespace System.Buffers
 
             _maxBufferSize = maxBufferSizeInBytes;
             _buckets = new BufferBucket<T>[maxBuckets + 1];
-
-            for (int i = 0; i < _buckets.Length; i++)
-            {
-                _buckets[i] = new BufferBucket<T>(GetMaxSizeForBucket(i), NUMBER_OF_BUFFERS_IN_BUCKET);
-            }
         }
 
         public T[] RentBuffer(int size, bool clearBuffer = false)
@@ -41,7 +36,14 @@ namespace System.Buffers
             }
             else
             {
-                buffer = _buckets[SelectBucketIndex(size)].Rent();
+                int index = SelectBucketIndex(size);
+                BufferBucket<T> bucket = Volatile.Read(ref _buckets[index]);
+                if (bucket == null)
+                {
+                    Interlocked.CompareExchange(ref _buckets[index], new BufferBucket<T>(GetMaxSizeForBucket(index), NUMBER_OF_BUFFERS_IN_BUCKET), null);
+                    bucket = _buckets[index];
+                }
+                buffer = bucket.Rent();
                 if (clearBuffer) Array.Clear(buffer, 0, buffer.Length);
             }
 
