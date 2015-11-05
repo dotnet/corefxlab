@@ -33,12 +33,6 @@
     <ProjectReference Include="..\..\System.Slices\src\System.Slices.csproj">
       <Name>System.Slices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
-      <Name>System.Buffers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\System.Slices\src\System.Slices.csproj">
-      <Name>System.Buffers</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
