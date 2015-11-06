@@ -54,18 +54,15 @@ def project = 'dotnet/corefxlab'
     }
 }
 
-[false].each { isPR -> // We only want to generate nuget packages for official builds
-    def nugetJobName = Utilities.getFullJobName(project, 'Debug', isPR)
-
-    def nugetCommand = """call package.cmd"""
-
-    def nugetJob = job(nugetJobName) {
-        label('windows')
-
-        steps {
-            batchFile(nugetCommand)
-        }
-    }
-
-    Utilities.simpleInnerLoopJobSetup(nugetJob, project, isPR, "Generate System.Buffer NuGet Package")
+def packageJob = job(Utilities.getFullJobName(project, 'Generate System.Buffer NUGet Package', false)) {
+  def nugetCommand = """call package.cmd"""
+  label('windows')
+  steps {
+    batchFile(nugetCommand)
+  }
 }
+
+Utilities.addScm(packageJob, project)
+Utilities.addStandardOptions(packageJob)
+Utilities.addStandardNonPRParameters(packageJob)
+Utilities.addPeriodicTrigger(packageJob, '@daily')
