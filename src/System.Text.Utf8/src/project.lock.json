@@ -510,7 +510,6 @@
     },
     "System.Reflection.Primitives/4.0.0": {
       "type": "package",
-      "serviceable": true,
       "sha512": "n9S0XpKv2ruc17FSnaiX6nV47VfHTZ1wLjKZlAirUZCvDQCH71mVp+Ohabn0xXLh5pK2PKp45HCxkqu5Fxn/lA==",
       "files": [
         "lib/DNXCore50/System.Reflection.Primitives.dll",
@@ -544,7 +543,6 @@
     },
     "System.Resources.ResourceManager/4.0.0": {
       "type": "package",
-      "serviceable": true,
       "sha512": "qmqeZ4BJgjfU+G2JbrZt4Dk1LsMxO4t+f/9HarNY6w8pBgweO6jT+cknUH7c3qIrGvyUqraBhU45Eo6UtA0fAw==",
       "files": [
         "lib/DNXCore50/System.Resources.ResourceManager.dll",

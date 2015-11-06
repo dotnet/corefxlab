@@ -161,6 +161,14 @@ namespace System.Text.Utf8.Tests
             Assert.Equal(expected, s2.Equals(s1.ToString()));
         }
 
+        public static object[][] StartsWithCodeUnitTestCases = new object[][] {
+            new object[] { false, ""u8, (Utf8CodeUnit)'a' },
+            new object[] { false, "a"u8, (Utf8CodeUnit)'a' },
+            new object[] { false, "abc"u8, (Utf8CodeUnit)'a' },
+            new object[] { false, "b"u8, (Utf8CodeUnit)'a' },
+            new object[] { false, "ba"u8, (Utf8CodeUnit)'a' }
+        };
+
         [Theory]
         [InlineData("", 'a')]
         [InlineData("abc", 'a')]

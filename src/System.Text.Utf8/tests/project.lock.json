@@ -4843,7 +4843,6 @@
     },
     "System.IO.FileSystem.Primitives/4.0.0": {
       "type": "package",
-      "serviceable": true,
       "sha512": "7pJUvYi/Yq3A5nagqCCiOw3+aJp3xXc/Cjr8dnJDnER3/6kX3LEencfqmXUcPl9+7OvRNyPMNhqsLAcMK6K/KA==",
       "files": [
         "lib/dotnet/System.IO.FileSystem.Primitives.dll",
@@ -5486,7 +5485,6 @@
     },
     "System.Reflection.Primitives/4.0.0": {
       "type": "package",
-      "serviceable": true,
       "sha512": "n9S0XpKv2ruc17FSnaiX6nV47VfHTZ1wLjKZlAirUZCvDQCH71mVp+Ohabn0xXLh5pK2PKp45HCxkqu5Fxn/lA==",
       "files": [
         "lib/DNXCore50/System.Reflection.Primitives.dll",
@@ -5588,7 +5586,6 @@
     },
     "System.Resources.ResourceManager/4.0.0": {
       "type": "package",
-      "serviceable": true,
       "sha512": "qmqeZ4BJgjfU+G2JbrZt4Dk1LsMxO4t+f/9HarNY6w8pBgweO6jT+cknUH7c3qIrGvyUqraBhU45Eo6UtA0fAw==",
       "files": [
         "lib/DNXCore50/System.Resources.ResourceManager.dll",
@@ -5724,7 +5721,6 @@
     },
     "System.Runtime.Handles/4.0.0": {
       "type": "package",
-      "serviceable": true,
       "sha512": "638VhpRq63tVcQ6HDb3um3R/J2BtR1Sa96toHo6PcJGPXEPEsleCuqhBgX2gFCz0y0qkutANwW6VPPY5wQu1XQ==",
       "files": [
         "lib/DNXCore50/System.Runtime.Handles.dll",
@@ -5792,7 +5788,6 @@
     },
     "System.Runtime.InteropServices/4.0.20": {
       "type": "package",
-      "serviceable": true,
       "sha512": "ZgDyBYfEnjWoz/viS6VOswA6XOkDSH2DzgbpczbW50RywhnCgTl+w3JEvtAiOGyIh8cyx1NJq80jsNBSUr8Pig==",
       "files": [
         "lib/DNXCore50/System.Runtime.InteropServices.dll",
@@ -6306,7 +6301,6 @@
     },
     "System.Threading/4.0.10": {
       "type": "package",
-      "serviceable": true,
       "sha512": "0w6pRxIEE7wuiOJeKabkDgeIKmqf4ER1VNrs6qFwHnooEE78yHwi/bKkg5Jo8/pzGLm0xQJw0nEmPXt1QBAIUA==",
       "files": [
         "lib/DNXCore50/System.Threading.dll",
@@ -6399,7 +6393,6 @@
     },
     "System.Threading.Tasks/4.0.10": {
       "type": "package",
-      "serviceable": true,
       "sha512": "NOwJGDfk79jR0bnzosbXLVD/PdI8KzBeESoa3CofEM5v9R5EBfcI0Jyf18stx+0IYV9okmDIDxVtxq9TbnR9bQ==",
       "files": [
         "lib/DNXCore50/System.Threading.Tasks.dll",
