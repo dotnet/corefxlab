@@ -4,18 +4,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.Utf16;
 
 namespace System.Text.Utf8
 {
+    [DebuggerDisplay("{ToString()}u8")]
     public partial struct Utf8String : IEnumerable<Utf8CodeUnit>, IEquatable<Utf8String>, IComparable<Utf8String> 
     {
         private Span<byte> _buffer;
 
         private const int StringNotFound = -1;
 
-        static readonly Utf8String s_empty = new Utf8String(new byte[0]);
+        static readonly Utf8String s_empty = default(Utf8String);
 
         // TODO: Validate constructors, When should we copy? When should we just use the underlying array?
         // TODO: Should we be immutable/readonly?
@@ -51,8 +53,21 @@ namespace System.Text.Utf8
             }
         }
 
-        public Utf8String(string s) : this(GetUtf8BytesFromString(s))
+        public Utf8String(string s)
         {
+            if (s == null)
+            {
+                throw new ArgumentNullException("s", "String cannot be null");
+            }
+
+            if (s == string.Empty)
+            {
+                _buffer = Span<byte>.Empty;
+            }
+            else
+            {
+                _buffer = new Span<byte>(GetUtf8BytesFromString(s));
+            }
         }
 
         /// <summary>
@@ -173,6 +188,11 @@ namespace System.Text.Utf8
 
             // TODO: We already have a char[] and this will copy, how to avoid that
             return new string(characters);
+        }
+
+        public bool ReferenceEquals(Utf8String other)
+        {
+            return _buffer.ReferenceEquals(other._buffer);
         }
 
         public bool Equals(Utf8String other)

@@ -95,7 +95,10 @@ namespace System.Net.Libuv
 
         static bool IsUnix
         {
-            get { return false; }
+            get
+            {
+                return !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            }
         }
 
         void OnReadWindows(UVBuffer.Windows buffer, IntPtr bytesAvaliable)

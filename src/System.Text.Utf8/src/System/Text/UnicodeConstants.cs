@@ -15,9 +15,10 @@ namespace System.Text
         public const uint Utf16SurrogateRangeStart = Utf16HighSurrogateFirstCodePoint;
         public const uint Utf16SurrogateRangeEnd = Utf16LowSurrogateLastCodePoint;
 
-        public const byte Utf8SurrogateValue = 0x80;
-        public const byte Utf8SurrogateMask = 0xC0;
+        public const byte Utf8NonFirstByteInCodePointValue = 0x80;
+        public const byte Utf8NonFirstByteInCodePointMask = 0xC0;
         public const int Utf8MaxCodeUnitsPerCodePoint = 4;
+        public const int AsciiMaxValue = 0x7F;
 
         public const uint FirstNotSupportedCodePoint = 0x110000; // 17 * 2^16
 

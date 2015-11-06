@@ -87,6 +87,8 @@ namespace System
         {
             Contract.Requires(array != null);
             Contract.RequiresInInclusiveRange(start, array.Length);
+            Contract.RequiresNonNegative(length);
+            Contract.RequiresInInclusiveRange(start + length, array.Length);
             if (start < array.Length)
             {
                 _object = array;

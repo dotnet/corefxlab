@@ -163,8 +163,8 @@ namespace System.Net.Http.Buffered
 
         protected virtual HttpServerBuffer CreateResponseFor400(ByteSpan receivedBytes) // Bad Request
         {
-            BufferFormatter formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
-            WriteCommonHeaders(formatter, @"HTTP/1.1 400 Bad Request", false);
+            var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
+            WriteCommonHeaders(formatter, "1.1", "400", "Bad Request", false);
             formatter.Append(HttpNewline);
             return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
         }
@@ -173,31 +173,32 @@ namespace System.Net.Http.Buffered
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", requestLine);
 
-            BufferFormatter formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
-            WriteCommonHeaders(formatter, @"HTTP/1.1 404 Not Found", false);
+            var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
+            WriteCommonHeaders(formatter, "1.1", "404", "Not Found", false);
             formatter.Append(HttpNewline);
             return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
         }
 
-        protected static void WriteCommonHeaders(BufferFormatter formatter, string responseLine, bool keepAlive)
+        protected static void WriteCommonHeaders(
+            BufferFormatter formatter,
+            string version,
+            string statuCode,
+            string reasonCode,
+            bool keepAlive)
         {
             var currentTime = DateTime.UtcNow;
-            formatter.Append(responseLine);
-            formatter.Append(HttpNewline);
-            formatter.Append("Date: ");
-            formatter.Append(currentTime, 'R');
-            formatter.Append(HttpNewline);
-            formatter.Append("Server: .NET Core Sample Server");
-            formatter.Append(HttpNewline);
-            formatter.Append("Last-Modified: ");
-            formatter.Append(currentTime, 'R');
-            formatter.Append(HttpNewline);
-            formatter.Append("Content-Type: text/html; charset=UTF-8");
-            formatter.Append(HttpNewline);
+            formatter.WriteHttpStatusLine(
+                new Utf8String(version), 
+                new Utf8String(statuCode), 
+                new Utf8String(reasonCode));
+            formatter.WriteHttpHeader(new Utf8String("Date"), new Utf8String(currentTime.ToString("R")));
+            formatter.WriteHttpHeader(new Utf8String("Server"), new Utf8String(".NET Core Sample Serve"));
+            formatter.WriteHttpHeader(new Utf8String("Last-Modified"), new Utf8String(currentTime.ToString("R")));
+            formatter.WriteHttpHeader(new Utf8String("Content-Type"), new Utf8String("text/html; charset=UTF-8"));
+            
             if (!keepAlive)
             {
-                formatter.Append("Connection: close");
-                formatter.Append(HttpNewline);
+                formatter.WriteHttpHeader(new Utf8String("Connection"), new Utf8String("close"));
             }
         }
 

@@ -18,24 +18,24 @@ namespace System.Text.Json.Tests
         private const int NumberOfIterations = 5;
 
         private const int NumberOfSamples = 3;
-        private const int ExpectedMemoryBenchMark = 1000000;
+        private const int ExpectedMemoryBenchMark = 0;
 
         // ReSharper disable once ConvertToConstant.Local
         private static readonly bool OutputResults = true;
 
-        [Fact]
+        [Fact, ActiveIssue(411)]
         public void ReadBasicJson()
         {
             Output("====== TEST ReadBasicJson ======");
-            ReadJsonHelper(TestJson.BasicJson);   // Do not test first iteration
+            ReadJsonHelper(TestJson.BasicJson); // Do not test first iteration
             RunTest(TestJson.BasicJson, 10 + NumberOfIterations, ExpectedMemoryBenchMark*MemoryToleranceFactor);
         }
 
-        [Fact]
+        [Fact, ActiveIssue(411)]
         public void ReadProjectLockJson()
         {
             Output("====== TEST ReadProjectLockJson ======");
-            ReadJsonHelper(TestJson.ProjectLockJson);   // Do not test first iteration
+            ReadJsonHelper(TestJson.ProjectLockJson); // Do not test first iteration
             RunTest(TestJson.ProjectLockJson, 10 + NumberOfIterations*100, ExpectedMemoryBenchMark*MemoryToleranceFactor);
         }
 
@@ -43,33 +43,33 @@ namespace System.Text.Json.Tests
         public void ReadHeavyNestedJson()
         {
             Output("====== TEST ReadHeavyNestedJson ======");
-            ReadJsonHelper(TestJson.HeavyNestedJson);   // Do not test first iteration
+            ReadJsonHelper(TestJson.HeavyNestedJson); // Do not test first iteration
             RunTest(TestJson.HeavyNestedJson, 10 + NumberOfIterations*2, ExpectedMemoryBenchMark*MemoryToleranceFactor);
         }
 
         private static void RunTest(string jsonStr, int timeBenchmark, int memoryBenchmark)
         {
-            GC.Collect();
             var timeIterReadResults = new List<long>();
             var memoryIterReadResults = new List<long>();
 
             for (var j = 0; j < NumberOfSamples; j++)
             {
+                var memoryBefore = GC.GetTotalMemory(true);
                 Timer.Restart();
                 for (var i = 0; i < NumberOfIterations; i++)
                 {
                     ReadJsonHelper(jsonStr);
                 }
                 var time = Timer.ElapsedMilliseconds;
-                var memory = GC.GetTotalMemory(false);
+                var memoryAfter = GC.GetTotalMemory(true);
+                var consumption = memoryAfter - memoryBefore;
                 timeIterReadResults.Add(time);
-                memoryIterReadResults.Add(memory);
+                memoryIterReadResults.Add(consumption);
                 Assert.True(time < timeBenchmark);
-                Assert.True(memory < memoryBenchmark);
+                Assert.True(consumption <= memoryBenchmark);
             }
             Output(timeIterReadResults.Average().ToString(CultureInfo.InvariantCulture));
-            Output((memoryIterReadResults.Average()/1000).ToString(CultureInfo.InvariantCulture));
-            GC.Collect();
+            Output((memoryIterReadResults.Average()).ToString(CultureInfo.InvariantCulture));
         }
 
         private static void ReadJsonHelper(string jsonStr)
@@ -88,10 +88,10 @@ namespace System.Text.Json.Tests
                     case JsonReader.JsonTokenType.Property:
                         // ReSharper disable once UnusedVariable
                         var name = reader.GetName();
-                        OutputValue(ref reader);
+                        var value = reader.GetValue();
                         break;
                     case JsonReader.JsonTokenType.Value:
-                        OutputValue(ref reader);
+                        value = reader.GetValue();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -103,27 +103,6 @@ namespace System.Text.Json.Tests
         {
             if (!OutputResults) return;
             Console.WriteLine(str);
-        }
-
-        private static void OutputValue(ref JsonReader reader)
-        {
-            switch (reader.GetJsonValueType())
-            {
-                case JsonReader.JsonValueType.String:
-                case JsonReader.JsonValueType.Number:
-                case JsonReader.JsonValueType.True:
-                case JsonReader.JsonValueType.False:
-                case JsonReader.JsonValueType.Null:
-                    // ReSharper disable once UnusedVariable
-                    var value = reader.GetValue();
-                    break;
-                case JsonReader.JsonValueType.Object:
-                    break;
-                case JsonReader.JsonValueType.Array:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
         }
     }
 }

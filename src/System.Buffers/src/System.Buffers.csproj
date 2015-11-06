@@ -31,8 +31,8 @@
     <Compile Include="System\Buffers\BufferPool.cs" />
     <Compile Include="System\Buffers\NativeBufferPool.cs" />
     <Compile Include="System\Buffers\Pack.cs" />
-    <Compile Include="System\ByteSpan.cs" />
     <Compile Include="System\Diagnostics\Precondition.cs" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+  <Import Project="../../publish-nuget.target" />
 </Project>
