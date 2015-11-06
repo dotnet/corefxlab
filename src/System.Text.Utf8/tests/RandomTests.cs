@@ -712,5 +712,31 @@ namespace System.Text.Utf8.Tests
             UnicodeCodePoint codePoint = (UnicodeCodePoint)codePointValue;
             Assert.Equal(expected, u8s.IndexOf(codePoint));
         }
+
+        [Fact]
+        public void ReferenceEquals()
+        {
+            Utf8String s1 = new Utf8String("asd");
+            Assert.True(s1.ReferenceEquals(s1));
+
+            Utf8String s2 = new Utf8String("asd");
+            Assert.True(s2.ReferenceEquals(s2));
+
+            Assert.False(s1.ReferenceEquals(s2));
+            Assert.False(s2.ReferenceEquals(s1));
+        }
+
+        [Fact]
+        public void ConstructingFromUtf16StringWithNullValueThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentNullException>(() => { Utf8String utf8String = new Utf8String((string)null); });
+        }
+
+        [Fact]
+        public void ConstructingFromUtf16StringWithEmptyStringDoesNotAllocate()
+        {
+            Assert.True((new Utf8String("")).ReferenceEquals(Utf8String.Empty));
+            Assert.True((new Utf8String(string.Empty)).ReferenceEquals(Utf8String.Empty));
+        }
     }
 }
