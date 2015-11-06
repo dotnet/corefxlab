@@ -93,7 +93,7 @@ namespace System.CommandLine
                                    string.Equals(a, @"--help", StringComparison.Ordinal));
         }
 
-        private void ReportError(string message)
+		public void ReportError(string message)
         {
             if (HandleErrors)
                 Console.Error.WriteLine(Strings.ErrorWithMessageFmt, message);
