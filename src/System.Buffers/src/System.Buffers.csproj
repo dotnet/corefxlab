@@ -34,4 +34,5 @@
     <Compile Include="System\Diagnostics\Precondition.cs" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+  <Import Project="../../publish-nuget.target" />
 </Project>

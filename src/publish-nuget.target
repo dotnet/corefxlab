@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <PackagesNuSpecFiles Include="*.nuspec" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackagesOutDir Condition="'$(PackagesOutDir)' == ''">$(OutDir)Packages\</PackagesOutDir>
+    <PackagesBasePath Condition="'$(PackagesBasePath)' == ''">$(OutDir)</PackagesBasePath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NuGetExe>&quot;$(NuGetToolPath)&quot;</NuGetExe>
+    <NuGetBasePath>&quot;$(PackagesBasePath.TrimEnd('\'))&quot;</NuGetBasePath>
+    <NuGetOutputDirectory>&quot;$(PackagesOutDir.TrimEnd('\'))&quot;</NuGetOutputDirectory>
+  </PropertyGroup>
+
+  <Target Name="BuildPackages"
+    Condition="'$(SkipBuildPackages)' != 'true'">
+    
+    <!-- Create package output directory -->
+    <MakeDir Directories="$(PackagesOutDir)" />
+
+    <!-- Make package -->
+    <!-- We ignore warnings because NuGet will warn when libraries are not placed
+         in framework specific subfolders.  Our build tools do this because the
+         libraries are used during build, and do not depend on the framework being
+         targeted by the build -->
+    <!-- We trim the last backslash from properties which could end with one,
+         to prevent it from escaping the closing quote -->
+    <Exec
+      Condition="'@(PackagesNuSpecFiles)'!=''"
+      IgnoreStandardErrorWarningFormat="true"
+      StandardOutputImportance="Low"
+      Command="$(NuGetExe) pack &quot;%(PackagesNuSpecFiles.FullPath)&quot; -BasePath $(NuGetBasePath) -OutputDirectory $(NuGetOutputDirectory) $(ProductVersion)" />
+
+    <Message
+      Condition="'@(PackagesNuSpecFiles)'!=''"
+      Importance="High"
+      Text="%(PackagesNuSpecFiles.Filename) NuGet Package -> $(PackagesOutDir)%(PackagesNuSpecFiles.Filename).%(PackagesNuSpecFiles.PackageVersion).nupkg" />
+
+    <ItemGroup>
+      <PackagesForPublishing Include="$(PackagesOutDir)*.nupkg" />
+    </ItemGroup>
+
+    <!-- push all packages to a server if one has been specified -->
+    <Exec
+      Condition="'@(PackagesForPublishing)' != '' and '$(PublishPackageSource)' != ''"
+      Command="$(NuGetExe) push &quot;%(PackagesForPublishing.Identity)&quot; -s $(PublishPackageSource)" />
+
+  </Target>
+</Project>
