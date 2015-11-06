@@ -5,7 +5,7 @@ def project = 'dotnet/corefxlab'
 
 // Generate the builds for debug and release, commit and PRJob
 [true, false].each { isPR -> // Defines a closure over true and false, value assigned to isPR
-    ['Debug'].each { configuration -> // We only need Debug builds right now
+    ['Debug', 'Release'].each { configuration ->
         
         // Determine the name for the new job.  The first parameter is the project,
         // the second parameter is the base name for the job, and the last parameter
@@ -14,7 +14,7 @@ def project = 'dotnet/corefxlab'
         def newJobName = Utilities.getFullJobName(project, configuration, isPR)
         
         // Define build string
-        def buildString = """call build.cmd"""
+        def buildString = """call build.cmd /p:Configuration=${configuration}"""
 
         // Create a new job with the specified name.  The brace opens a new closure
         // and calls made within that closure apply to the newly created job.
@@ -52,20 +52,4 @@ def project = 'dotnet/corefxlab'
         // See the documentation for this function to see additional optional parameters.
         Utilities.simpleInnerLoopJobSetup(newJob, project, isPR, "Windows ${configuration}")
     }
-}
-
-[false].each { isPR -> // We only want to generate nuget packages for official builds
-    def nugetJobName = Utilities.getFullJobName(project, 'Debug', isPR)
-
-    def nugetCommand = """call package.cmd"""
-
-    def nugetJob = job(nugetJobName) {
-        label('windows')
-
-        steps {
-            batchFile(nugetCommand)
-        }
-    }
-
-    Utilities.simpleInnerLoopJobSetup(nugetJob, project, isPR, "Generate System.Buffer NuGet Package")
 }
