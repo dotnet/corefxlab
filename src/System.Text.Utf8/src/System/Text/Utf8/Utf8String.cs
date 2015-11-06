@@ -4,11 +4,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text.Utf16;
 
 namespace System.Text.Utf8
 {
+    [DebuggerDisplay("{ToString()}u8")]
     public partial struct Utf8String : IEnumerable<Utf8CodeUnit>, IEquatable<Utf8String>, IComparable<Utf8String> 
     {
         private Span<byte> _buffer;
