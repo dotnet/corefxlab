@@ -1,83 +1,90 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace System.Buffers
 {
-    public unsafe class NativeBufferPool : IDisposable
+    public sealed class BufferPool<T> where T : struct
     {
-        byte* _memory;
-        int[] _freeList;
-        int _nextFree = 0;
-        readonly int _totalBytes;
-        readonly int _bufferSizeInBytes;
+        private const int NUMBER_OF_BUFFERS_IN_BUCKET = 50;
+        private int _maxBufferSize;
+        private BufferBucket<T>[] _buckets;
 
-        public NativeBufferPool(int bufferSizeInBytes, int numberOfBuffers)
+        // 2MB taken as the default since the average HTTP page is 1.9MB
+        // per http://httparchive.org/interesting.php, as of October 2015
+        public BufferPool(int maxBufferSizeInBytes = 2048000)
         {
-            _bufferSizeInBytes = bufferSizeInBytes;
-            _freeList = new int[numberOfBuffers];
-            _totalBytes = bufferSizeInBytes * numberOfBuffers;
-            _memory = (byte*)Marshal.AllocHGlobal(_totalBytes).ToPointer();
+            int maxBuckets = SelectBucketIndex(maxBufferSizeInBytes);
+
+            _maxBufferSize = maxBufferSizeInBytes;
+            _buckets = new BufferBucket<T>[maxBuckets + 1];
         }
 
-        public ByteSpan Rent()
+        public T[] RentBuffer(int size, bool clearBuffer = false)
         {
-            var freeIndex = Reserve();
-            if (freeIndex == -1) {
-                throw new NotSupportedException("buffer resizing not supported");
+            T[] buffer;
+            if (size > _maxBufferSize)
+            {
+#if DEBUG
+                System.Diagnostics.Debugger.Break();
+#endif
+                buffer = new T[size];
             }
-            var start = _bufferSizeInBytes * freeIndex;
-            return new ByteSpan(_memory + start, _bufferSizeInBytes);
-        }
-
-        int BufferIndexFromSpanAddress(ref ByteSpan span)
-        {
-            var buffer = (ulong)span._data;
-            var firstBuffer = (ulong)_memory;
-            var offset = buffer - firstBuffer;
-            var index = offset / (ulong)_bufferSizeInBytes;
-            return (int)index;
-        }
-
-        public void Return(ByteSpan span)
-        {
-            int spanIndex = BufferIndexFromSpanAddress(ref span);
-            span._data = null;
-            if (Interlocked.CompareExchange(ref _freeList[spanIndex], 0, 1) != 1) {
-                throw new InvalidOperationException("this span has been already returned");
-            }
-            if (spanIndex < _nextFree) {
-                _nextFree = spanIndex;
-            }
-        }
-
-        int Reserve()
-        {
-            var initialNextFree = _nextFree;
-            for (int i = initialNextFree; i < _freeList.Length; i++) {
-                if (Interlocked.CompareExchange(ref _freeList[i], 1, 0) == 0) {
-                    _nextFree++;
-                    return i;
+            else
+            {
+                int index = SelectBucketIndex(size);
+                BufferBucket<T> bucket = Volatile.Read(ref _buckets[index]);
+                if (bucket == null)
+                {
+                    Interlocked.CompareExchange(ref _buckets[index], new BufferBucket<T>(GetMaxSizeForBucket(index), NUMBER_OF_BUFFERS_IN_BUCKET), null);
+                    bucket = _buckets[index];
                 }
+                buffer = bucket.Rent();
+                if (clearBuffer) Array.Clear(buffer, 0, buffer.Length);
             }
-            if (initialNextFree == _nextFree) {
-                if (_nextFree == 0) {
-                    return -1;
-                }
-                _nextFree = 0;
-            }
-            return Reserve();
+
+            return buffer;
         }
 
-        public void Dispose()
+        public void ReturnBuffer(ref T[] buffer, bool clearBuffer = false)
         {
-            for (int i = 0; i < _freeList.Length; i++) {
-                _freeList[i] = 1;
+            if (clearBuffer) Array.Clear(buffer, 0, buffer.Length);
+
+            if (buffer.Length > _maxBufferSize)
+                buffer = null;
+            else
+                _buckets[SelectBucketIndex(buffer.Length)].Return(ref buffer);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int SelectBucketIndex(int bufferSize)
+        {
+            uint bitsRemaining = ((uint)bufferSize - 1) >> 4;
+            int poolIndex = 0;
+
+            while (bitsRemaining > 0)
+            {
+                bitsRemaining >>= 1;
+                poolIndex++;
             }
-            Marshal.FreeHGlobal(new IntPtr(_memory));
-            _memory = null;
+
+            return poolIndex;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int GetMaxSizeForBucket(int binIndex)
+        {
+            checked
+            {
+                int result = 2;
+                int shifts = binIndex + 3;
+                result <<= shifts;
+                return result;
+            }
         }
     }
 }

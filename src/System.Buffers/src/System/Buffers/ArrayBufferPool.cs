@@ -87,9 +87,17 @@ namespace System.Buffers
         private int SelectBinIndex(int bufferSize)
         {
             Precondition.Require(bufferSize > 0);
-            var _poolIndex = MaxBitIndexSet((ulong)bufferSize - 1) - 3;
-            if (_poolIndex < 0) return 0;
-            return _poolIndex;
+
+            // Log2((bufferSize - 1) >> 3)
+            uint bitsRemaining = ((uint)bufferSize - 1) >> 4;
+            int poolIndex = 0;
+
+            while (bitsRemaining > 0)
+            {
+                bitsRemaining >>= 1;
+                poolIndex++;
+            }
+            return poolIndex;
         }
 
         private int GetMaxSizeForBin(int binIndex)
@@ -101,19 +109,6 @@ namespace System.Buffers
                 result <<= shifts;
                 return result;
             }
-        }
-
-        private int MaxBitIndexSet(ulong value)
-        {
-            if (value == 0) return -1;
-            if (value == 1) return 0;
-            int bit = -1;
-            while (value > 0)
-            {
-                value >>= 1;
-                bit++;
-            }
-            return bit;
         }
     }
 

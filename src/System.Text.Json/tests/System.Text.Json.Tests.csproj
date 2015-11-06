@@ -15,6 +15,7 @@
     <RestorePackages>true</RestorePackages>
     <NuGetPackageImportStamp>7a9bfb7d</NuGetPackageImportStamp>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ProjectGuid>{DFBDD2E3-C895-4BB5-9A0B-A7398035DCC9}</ProjectGuid>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
   <ItemGroup>
@@ -23,19 +24,19 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Json.cs" />
+    <Compile Include="JsonReaderTests.cs" />
     <Compile Include="JsonWriterTests.cs" />
-
+    <Compile Include="PerfSmokeTests.cs" />
+    <Compile Include="Resources\TestJson.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestJson.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\System.Text.Json.csproj">
       <Name>System.Text.Json</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\System.Text.Formatting\src\System.Text.Formatting.csproj">
-      <Project>{AB5C520A-B1A2-472F-8841-E8304F3539D6}</Project>
-      <Name>System.Text.Formatting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
-      <Name>System.Buffers</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +44,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\System.Text.Utf8\src\System.Text.Utf8.csproj">
+      <Name>System.Text.Utf8</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.Text.Formatting\src\System.Text.Formatting.csproj">
+      <Name>System.Text.Formatting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
+      <Name>System.Buffers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.Slices\src\System.Slices.csproj">
+      <Name>System.Slices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\TestJson.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestJson.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

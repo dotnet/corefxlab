@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -56,9 +57,19 @@ namespace dotnet
             // Packages
             properties.Packages.Add(@"""Microsoft.NETCore"": ""5.0.0""");
             properties.Packages.Add(@"""System.Console"": ""4.0.0-beta-23123""");
-            //properties.Packages.Add(@"""Microsoft.NETCore.Console"": ""1.0.0-beta-*""");
+
+            properties.Packages.Add(@"""System.Text.Formatting"": ""0.1.0-d103015-1""");
+            properties.Packages.Add(@"""System.Slices"": ""0.1.0-d103015-1""");
+            properties.Packages.Add(@"""System.Buffers"": ""0.1.0-d103015-1""");
+
             properties.Packages.Add(GetConsoleHost(platformOptionSpecicifcation));
             properties.Packages.Add(GetRuntimeCoreClr(platformOptionSpecicifcation));
+
+            // add explicit references
+            if (settings.References != null)
+            {
+                properties.References.AddRange(settings.References);
+            }
 
             // CSC OPTIONS
             properties.CscOptions.Add("/nostdlib");
@@ -289,6 +300,17 @@ namespace dotnet
 
         private static void FindCompiler(ProjectProperties properties)
         {
+            string cscEnvPath = Environment.GetEnvironmentVariable("CSCPATH");
+            if (cscEnvPath != null)
+            {
+                string fullCscPath = Path.Combine(cscEnvPath, "csc.exe");
+                if (File.Exists(fullCscPath))
+                {
+                    properties.CscPath = fullCscPath;
+                    return;
+                }
+            }
+
             properties.CscPath = Path.Combine(properties.ToolsDirectory, "csc.exe");
             if (File.Exists(properties.CscPath))
             {

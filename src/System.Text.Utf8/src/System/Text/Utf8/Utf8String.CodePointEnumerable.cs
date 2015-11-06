@@ -10,40 +10,26 @@ namespace System.Text.Utf8
     {
         public struct CodePointEnumerable : IEnumerable<UnicodeCodePoint>, IEnumerable
         {
-            private ByteSpan _buffer;
-
-            private byte[] _bytes;
-            private int _index;
-            private int _length;
+            private Span<byte> _buffer;
 
             public CodePointEnumerable(byte[] bytes, int index, int length)
             {
-                _buffer = default(ByteSpan);
-
-                _bytes = bytes;
-                _index = index;
-                _length = length;
+                _buffer = new Span<byte>(bytes, index, length);
             }
 
-            public unsafe CodePointEnumerable(ByteSpan buffer)
+            public unsafe CodePointEnumerable(Span<byte> buffer)
             {
                 _buffer = buffer;
-
-                _bytes = default(byte[]);
-                _index = default(int);
-                _length = default(int);
             }
 
             public CodePointEnumerator GetEnumerator()
             {
-                if (_bytes != null)
-                {
-                    return new CodePointEnumerator(_bytes, _index, _length);
-                }
-                else
-                {
-                    return new CodePointEnumerator(_buffer);
-                }
+                return new CodePointEnumerator(_buffer);
+            }
+
+            public CodePointReverseEnumerator GetReverseEnumerator()
+            {
+                return new CodePointReverseEnumerator(_buffer);
             }
 
             IEnumerator IEnumerable.GetEnumerator()

@@ -72,6 +72,8 @@ namespace dotnet
                        Settings.SetPlatformSpecification) &&
                    ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/debug")),
                        Settings.SetDebugSpecification) &&
+                   ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/reference")),
+                       Settings.SetReferenceSpecification) &&
                    ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/recurse")),
                        Settings.SetRecurseSpecification);
         }
@@ -252,7 +254,7 @@ namespace dotnet
 
             foreach (var reference in references)
             {
-                properties.References.Add(reference);
+                properties.References.Add(Path.Combine(properties.PackagesDirectory, reference));
             }
             foreach (var outputAssembly in dependencies)
             {

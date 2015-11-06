@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Slices", "src\System.Slices.csproj", "{C5FD8740-19EA-4BCC-B518-7F16B55D23CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Slices.tests", "tests\System.Slices.tests.csproj", "{20F5308A-1910-40E9-B3F0-6569DB08E649}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Slices.Tests", "tests\System.Slices.Tests.csproj", "{20F5308A-1910-40E9-B3F0-6569DB08E649}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,5 @@
 ﻿using System.Text.Parsing;
 using Xunit;
-using System.Buffers;
 
 namespace System.Text.Formatting.Tests
 {
@@ -13,7 +12,7 @@ namespace System.Text.Formatting.Tests
             fixed(byte * ptextBuffer = textBuffer) { 
                 uint value;
                 int bytesConsumed;
-                ByteSpan text = new ByteSpan(ptextBuffer, textBuffer.Length);
+                var text = new Span<byte>(ptextBuffer, textBuffer.Length);
                 Assert.True(InvariantParser.TryParse(text, FormattingData.Encoding.Utf8, out value, out bytesConsumed));
                 Assert.Equal(1258U, value);
                 Assert.Equal(textBuffer.Length, bytesConsumed); 

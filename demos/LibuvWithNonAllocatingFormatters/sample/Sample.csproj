@@ -40,10 +40,14 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.0.1.0.0-d100215-1\lib\portable-net45+win8+wpa81+aspnetcore50\System.Buffers.dll</HintPath>
+      <HintPath>..\packages\System.Buffers.0.1.0-d102115-1\lib\portable-net45+win8+wpa81+aspnetcore50\System.Buffers.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Libuv, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Libuv.0.1.0-d102615-1\lib\portable-net45+win8+wpa81+aspnetcore50\System.Net.Libuv.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Text.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Formatting.0.1.0.0-d100215-1\lib\portable-net45+win8+wpa81+aspnetcore50\System.Text.Formatting.dll</HintPath>
       <Private>True</Private>
@@ -61,19 +65,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\src\System.Net.Libuv.csproj">
-      <Project>{d8fe16fd-2531-4065-8e93-b2bd590cbf3e}</Project>
-      <Name>System.Net.Libuv</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

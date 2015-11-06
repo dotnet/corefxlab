@@ -109,31 +109,25 @@ namespace System.Net.Http.Buffered
                 Console.WriteLine(text);
             }
 
-            HttpServerBuffer responseBytes;
-                       
-            // parse request
-            HttpRequestLine requestLine;
-            int requestLineBytes;
-            if (!HttpRequestParser.TryParseRequestLine(receivedBytes, out requestLine, out requestLineBytes))
-            {
-                Log.LogError("invalid request line");
-                responseBytes = CreateResponseFor400(receivedBytes);
-            }
-            else
-            {
-                var restOfRequestBytes = receivedBytes.Slice(requestLineBytes);
+            var request = HttpRequest.Parse(receivedBytes);
 
-                if (Log.IsVerbose)
+            if (Log.IsVerbose)
+            {
+                Log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", request.RequestLine.Method);
+                Log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", request.RequestLine.RequestUri.ToString());
+                Log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.RequestLine.Version);
+
+                Log.LogMessage(Log.Level.Verbose, "\tHttp Headers:");
+                foreach (var httpHeader in request.Headers)
                 {
-                    Log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", requestLine.Method);
-                    Log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", requestLine.RequestUri.ToString());
-                    Log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", requestLine.Version);
-                    LogRestOfRequest(restOfRequestBytes);
+                    Log.LogMessage(Log.Level.Verbose, "\t\tName: {0}, Value: {1}", httpHeader.Key, httpHeader.Value);
                 }
 
-                responseBytes = CreateResponse(requestLine, restOfRequestBytes);
+                LogRestOfRequest(request.Body);
             }
 
+            HttpServerBuffer responseBytes = CreateResponse(request);
+                     
             _buffers.Return(buffer);
 
             // send response
@@ -141,7 +135,7 @@ namespace System.Net.Http.Buffered
             
             socket.Send(segment._buffer, segment._count);
 
-            if (!requestLine.IsKeepAlive())
+            if (!request.RequestLine.IsKeepAlive())
             {
                 socket.Close();
             }
@@ -169,62 +163,95 @@ namespace System.Net.Http.Buffered
 
         protected virtual HttpServerBuffer CreateResponseFor400(ByteSpan receivedBytes) // Bad Request
         {
-            BufferFormatter formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
-            WriteCommonHeaders(formatter, @"HTTP/1.1 400 Bad Request", false);
+            var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
+            WriteCommonHeaders(formatter, "1.1", "400", "Bad Request", false);
             formatter.Append(HttpNewline);
             return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
         }
 
-        protected virtual HttpServerBuffer CreateResponseFor404(HttpRequestLine requestLine, ByteSpan headersAndBody) // Not Found
+        protected virtual HttpServerBuffer CreateResponseFor404(HttpRequestLine requestLine) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", requestLine);
 
-            BufferFormatter formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
-            WriteCommonHeaders(formatter, @"HTTP/1.1 404 Not Found", false);
+            var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
+            WriteCommonHeaders(formatter, "1.1", "404", "Not Found", false);
             formatter.Append(HttpNewline);
             return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
         }
 
-        protected static void WriteCommonHeaders(BufferFormatter formatter, string responseLine, bool keepAlive)
+        protected static void WriteCommonHeaders(
+            BufferFormatter formatter,
+            string version,
+            string statuCode,
+            string reasonCode,
+            bool keepAlive)
         {
             var currentTime = DateTime.UtcNow;
-            formatter.Append(responseLine);
-            formatter.Append(HttpNewline);
-            formatter.Append("Date: ");
-            formatter.Append(currentTime, 'R');
-            formatter.Append(HttpNewline);
-            formatter.Append("Server: .NET Core Sample Server");
-            formatter.Append(HttpNewline);
-            formatter.Append("Last-Modified: ");
-            formatter.Append(currentTime, 'R');
-            formatter.Append(HttpNewline);
-            formatter.Append("Content-Type: text/html; charset=UTF-8");
-            formatter.Append(HttpNewline);
+            formatter.WriteHttpStatusLine(
+                new Utf8String(version), 
+                new Utf8String(statuCode), 
+                new Utf8String(reasonCode));
+            formatter.WriteHttpHeader(new Utf8String("Date"), new Utf8String(currentTime.ToString("R")));
+            formatter.WriteHttpHeader(new Utf8String("Server"), new Utf8String(".NET Core Sample Serve"));
+            formatter.WriteHttpHeader(new Utf8String("Last-Modified"), new Utf8String(currentTime.ToString("R")));
+            formatter.WriteHttpHeader(new Utf8String("Content-Type"), new Utf8String("text/html; charset=UTF-8"));
+            
             if (!keepAlive)
             {
-                formatter.Append("Connection: close");
-                formatter.Append(HttpNewline);
+                formatter.WriteHttpHeader(new Utf8String("Connection"), new Utf8String("close"));
             }
         }
 
-        protected abstract HttpServerBuffer CreateResponse(HttpRequestLine requestLine, ByteSpan headersAndBody);
+        protected abstract HttpServerBuffer CreateResponse(HttpRequest request);
     }
 
     static class FormatterExtensions
     {
         public static void Append<T>(this T formatter, Utf8String text) where T : IFormatter
         {
-            var bytes = text.CopyBytes();
-            int avaliable;
-            do
+            var bytes = new byte[text.Length];
+            int i = 0;
+            foreach (var codeUnit in text)
+            {
+                bytes[i++] = codeUnit.Value;
+            }
+
+            var avaliable = formatter.FreeBuffer.Length;
+            while (avaliable < bytes.Length)
             {
                 avaliable = formatter.FreeBuffer.Length;
                 formatter.ResizeBuffer();
             }
-            while (avaliable < bytes.Length);
 
             formatter.FreeBuffer.Set(bytes);
             formatter.CommitBytes(bytes.Length);
+        }
+
+        public static void FormatWithReserve<T>(
+            this T formatter, 
+            Utf8String text, 
+            int reserve, 
+            out Span<byte> bufferWithReserve) where T : IFormatter
+        {
+            var bytes = new byte[text.Length];
+            var i = 0;
+            foreach (var codeUnit in text)
+            {
+                bytes[i++] = codeUnit.Value;
+            }
+
+            var avaliable = formatter.FreeBuffer.Length;
+            while (avaliable < bytes.Length + reserve)
+            {
+                avaliable = formatter.FreeBuffer.Length;
+                formatter.ResizeBuffer();
+            }
+
+            formatter.FreeBuffer.Set(bytes);
+
+            bufferWithReserve = formatter.FreeBuffer.Slice(0, bytes.Length + reserve);
+            formatter.CommitBytes(bytes.Length + reserve);
+            bufferWithReserve.SetFromRestOfSpanToEmpty(bytes.Length);            
         }
     }
 }

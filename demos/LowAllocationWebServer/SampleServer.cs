@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Net.Http.Buffered;
 using System.Text.Formatting;
+using System.Text.Utf8;
 
 class SampleRestServer : HttpServer
 {
@@ -23,47 +24,43 @@ class SampleRestServer : HttpServer
         Apis.Add(Api.GetTime, HttpMethod.Get, requestUri: "/time");
     }
 
-    protected override HttpServerBuffer CreateResponse(HttpRequestLine requestLine, ByteSpan headerAndBody)
+    protected override HttpServerBuffer CreateResponse(HttpRequest request)
     {
-        var api = Apis.Map(requestLine);
+        var api = Apis.Map(request.RequestLine);
         switch (api) {
             case Api.HelloWorld:
                 return CreateResponseForHelloWorld();
             case Api.GetTime:
-                return CreateResponseForGetTime(requestLine);
+                return CreateResponseForGetTime(request.RequestLine);
             default:
-                return CreateResponseFor404(requestLine, headerAndBody);
+                return CreateResponseFor404(request.RequestLine);
         }
     }
 
-    private HttpServerBuffer CreateResponseForHelloWorld()
+    private static HttpServerBuffer CreateResponseForHelloWorld()
     {
         var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
-        formatter.Append(@"HTTP/1.1 200 OK");
-        formatter.Append(HttpNewline);
-        formatter.Append("Content-Length: 12");
-        formatter.Append(HttpNewline);
-        formatter.Append("Content-Type: text/plain; charset=UTF-8");
-        formatter.Append(HttpNewline);
-        formatter.Append("Server: .NET Core Sample Server");
-        formatter.Append(HttpNewline);
-        formatter.Append("Date: ");
-        formatter.Append(DateTime.UtcNow, 'R');
-        formatter.Append(HttpNewline);
-        formatter.Append(HttpNewline);
-        formatter.Append("Hello, World");
+        formatter.WriteHttpStatusLine(new Utf8String("1.1"), new Utf8String("200"), new Utf8String("Ok"));
+        formatter.WriteHttpHeader(new Utf8String("Content-Length"), new Utf8String("12"));
+        formatter.WriteHttpHeader(new Utf8String("Content-Type"), new Utf8String("text/plain; charset=UTF-8"));
+        formatter.WriteHttpHeader(new Utf8String("Server"), new Utf8String(".NET Core Sample Serve"));
+        formatter.WriteHttpHeader(new Utf8String("Date"), new Utf8String(DateTime.UtcNow.ToString("R")));
+        formatter.EndHttpHeaderSection();
+        formatter.WriteHttpBody(new Utf8String("Hello, World"));
         return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
     }
 
     static HttpServerBuffer CreateResponseForGetTime(HttpRequestLine request)
     {
+        var body = string.Format(@"<html><head><title>Time</title></head><body>{0}</body></html>", DateTime.UtcNow.ToString("O"));
         var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
-        WriteCommonHeaders(formatter, @"HTTP/1.1 200 OK", request.IsKeepAlive());
-        formatter.Append(HttpNewline);
 
-        formatter.Append(@"<html><head><title>Time</title></head><body>");
-        formatter.Append(DateTime.UtcNow, 'O');
-        formatter.Append(@"</body></html>");
+        WriteCommonHeaders(formatter, "1.1", "200", "Ok", request.IsKeepAlive());
+        formatter.WriteHttpHeader(new Utf8String("Content-Length"), new Utf8String(body.Length.ToString()));
+        formatter.EndHttpHeaderSection();
+
+        formatter.WriteHttpBody(new Utf8String(body));
+
         return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
     }
 }

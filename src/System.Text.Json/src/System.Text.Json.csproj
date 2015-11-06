@@ -9,6 +9,7 @@
     <AssemblyName>System.Text.Json</AssemblyName>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ProjectGuid>{17C09FB7-8D43-4BBA-A426-B3929AF4A858}</ProjectGuid>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -16,21 +17,22 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="System\Text\Json\JsonReader.cs" />
     <Compile Include="System\Text\Json\JsonWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
-      <Name>System.Buffers</Name>
-    </ProjectReference>
+    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\System.Text.Utf8\src\System.Text.Utf8.csproj">
       <Name>System.Text.Utf8</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\System.Text.Formatting\src\System.Text.Formatting.csproj">
       <Name>System.Text.Formatting</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="project.json" />
+    <ProjectReference Include="..\..\System.Slices\src\System.Slices.csproj">
+      <Name>System.Slices</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

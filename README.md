@@ -13,11 +13,26 @@ This can result in significant performance wins for software that does a lot of 
 See more information on this component and code samples at the [Wiki]: https://github.com/dotnet/corefxlab/wiki 
 
 * **System.IO.FileSystem.Watcher.Polling**. 
-.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it night be not. This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected. 
+.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
+This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
+allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected. 
+
+* **System.Threading.Tasks.Channels**.
+The System.Threading.Tasks.Channels library provides a set of synchronization data structures for passing data between producers and consumers. 
+Whereas the existing System.Threading.Tasks.Dataflow library is focused on pipelining and connecting together dataflow "blocks" which encapsulate 
+both storage and processing, System.Threading.Tasks.Channels is focused purely on the storage aspect, with data structures used to provide the 
+hand-offs between participants explicitly coded to use the storage. The library is designed to be used with async/await in C#.  See the
+[README.md](https://github.com/dotnet/corefxlab/blob/master/src/System.Threading.Tasks.Channels/README.md) for more information.
 
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `TimeOfDay`.
 It also provides extension methods to enhance the functionality of the existing `DateTime`, `DateTimeOffset` and `TimeZoneInfo` types.
+
+* **System.Collections.Generic.MultiValueDictionary**.
+The MultiValueDictionary is a generic collection that functions similarly to a Dictionary<TKey, ICollection<TValue>> with some added validation
+and ease of use functions. It can also be compared to a Lookup with the exception that the MultiValueDictionary is mutable. It allows custom 
+setting of the internal collections so that uniqueness of values can be chosen by specifying either a HashSet<TValue> or List<TValue>. Some of the
+design decisions as well as introductions to usage can be found in the old blog posts introducing it [here](http://blogs.msdn.com/b/dotnet/archive/2014/06/20/would-you-like-a-multidictionary.aspx) and [here](http://blogs.msdn.com/b/dotnet/archive/2014/08/05/multidictionary-becomes-multivaluedictionary.aspx).
 
 More libraries are coming soon. Stay tuned!
 
@@ -27,6 +42,15 @@ More libraries are coming soon. Stay tuned!
 
 For an overview of all the .NET related projects, have a look at the
 [.NET home repository](https://github.com/Microsoft/dotnet).
+
+## How to Use
+You can get the .NET Core Lab packages from **netcore-package-prototyping** MyGet feed: 
+
+```
+https://www.myget.org/F/netcore-package-prototyping/api/v2
+```
+
+You can add this feed among your NuGet sources and install the packages (keep in mind that packages are pre-release packages).
 
 ## License
 
@@ -43,4 +67,4 @@ This project is a part of the [.NET Foundation].
 
 To find out how you can build and test .NET Core, see the [Developer Guide].
 
-[Developer Guide]: https://github.com/dotnet/corefx/wiki/Developer-Guide
+[Developer Guide]: https://github.com/dotnet/corefx/blob/master/Documentation/project-docs/developer-guide.md

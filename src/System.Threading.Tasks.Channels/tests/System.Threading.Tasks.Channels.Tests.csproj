@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <AssemblyName>System.Threading.Tasks.Channels.Tests</AssemblyName>
+    <OutputType>Library</OutputType>
+    <RootNamespace>System.Threading.Tasks.Channels.Tests</RootNamespace>
+    <NoWarn>0649</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- workaround until we have Dev14 nuget targets -->
+    <NugetTargetFrameworkMoniker>.NETPlatform,Version=v5.0</NugetTargetFrameworkMoniker>
+    <ProjectGuid>{DD942FDB-184A-4D9F-8A1E-3D531858A4B1}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="CaseBuilderTests.cs" />
+    <Compile Include="ChannelTestBase.cs" />
+    <Compile Include="DebuggerAttributes.cs" />
+    <Compile Include="TaskChannelTests.cs" />
+    <Compile Include="ObservableObserverTests.cs" />
+    <Compile Include="SerializationChannelTests.cs" />
+    <Compile Include="TestBase.cs" />
+    <Compile Include="UnboundedChannelTests.cs" />
+    <Compile Include="ValueTaskTests.cs" />
+    <Compile Include="UnbufferedChannelTests.cs" />
+    <Compile Include="EnumerableChannelTests.cs" />
+    <Compile Include="BoundedChannelTests.cs" />
+    <Compile Include="ChannelTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\System.Threading.Tasks.Channels.csproj">
+      <Name>System.Threading.Tasks.Channels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="project.json" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+</Project>

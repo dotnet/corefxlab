@@ -1,22 +1,10 @@
 {
   "dependencies": {
-    "System.Console":  "4.0.0-beta-*",
-    "System.Diagnostics.TraceSource": "4.0.0-beta-*",
-    "System.IO":  "4.0.10-beta-*",
-    "System.IO.FileSystem":  "4.0.0-beta-*",
-    "System.Reflection": "4.0.10-beta-*",
-    "System.Reflection.Extensions": "4.0.0-beta-*",
-    "System.Runtime": "4.0.20-beta-*",
-    "System.Runtime.Extensions": "4.0.10-beta-*",
-    "System.Linq": "4.0.0-beta-*",
-    "System.Text.Encoding.Extensions": "4.0.10-beta-*",
-    "System.Threading": "4.0.10-beta-*",
-    "System.Threading.Thread": "4.0.0-beta-*",
-    "System.Threading.Timer": "4.0.0-beta-*",
-    "xunit": "2.0.0-beta5-build2785",
-    "xunit.abstractions.netcore": "1.0.0-prerelease",
-    "xunit.assert": "2.0.0-beta5-build2785",
-    "xunit.core.netcore": "1.0.1-prerelease"
+    "Microsoft.NETCore" : "5.0.0",
+    "System.Console":  "4.0.0-beta-22605",
+    "System.Threading.Thread": "4.0.0-beta-23225",
+    "System.Diagnostics.TraceSource": "4.0.0-beta-23225",
+    "xunit": "2.0.0-beta5-build2785"
   },
   "frameworks": {
     "dnxcore50": {}
