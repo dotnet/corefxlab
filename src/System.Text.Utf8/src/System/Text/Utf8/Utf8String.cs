@@ -55,7 +55,7 @@ namespace System.Text.Utf8
         {
             if (s == null)
             {
-                throw new ArgumentException("s", "String cannot be null");
+                throw new ArgumentNullException("s", "String cannot be null");
             }
 
             if (s == string.Empty)

@@ -721,7 +721,7 @@ namespace System.Text.Utf8.Tests
         [Fact]
         public void ConstructingFromUtf16StringWithNullValueThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => { Utf8String utf8String = new Utf8String((string)null); });
+            Assert.Throws<ArgumentNullException>(() => { Utf8String utf8String = new Utf8String((string)null); });
         }
 
         [Fact]
