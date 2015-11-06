@@ -28,6 +28,14 @@ namespace System
             }
         }
 
+        public static void RequiresNonNegative(int n)
+        {
+            if (n < 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RequiresInRange(int start, int length)
         {
@@ -37,6 +45,7 @@ namespace System
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RequiresInInclusiveRange(int start, int length)
         {
             if (!(start >= 0 && start <= length))
@@ -45,6 +54,7 @@ namespace System
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RequiresInInclusiveRange(int start, int end, int length)
         {
             if (!(start >= 0 && start <= end && end >= 0 && end <= length))
