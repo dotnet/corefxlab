@@ -1,53 +1,20 @@
 @echo off
 setlocal
 
-:: Note: We've disabled node reuse because it causes file locking issues.
-::       The issue is that we extend the build with our own targets which
-::       means that that rebuilding cannot successfully delete the task
-::       assembly. 
+packages\NuGet.exe pack System.Buffers.nuspec
+packages\NuGet.exe pack System.CommandLine.nuspec
+packages\NuGet.exe pack System.Slices.nuspec
+packages\NuGet.exe pack System.IO.FileSystem.Watcher.Polling.nuspec
+packages\NuGet.exe pack System.Text.Utf8.nuspec
+packages\NuGet.exe pack System.Text.Formatting.nuspec
+packages\NuGet.exe pack System.Text.Json.nuspec
+packages\NuGet.exe pack System.Collections.Generic.MultiValueDictionary.nuspec
 
-if not defined VisualStudioVersion (
-    if defined VS140COMNTOOLS (
-        call "%VS140COMNTOOLS%\VsDevCmd.bat"
-        goto :EnvSet
-    )
-
-    if defined VS120COMNTOOLS (
-        call "%VS120COMNTOOLS%\VsDevCmd.bat"
-        goto :EnvSet
-    )
-
-    echo Error: build.cmd requires Visual Studio 2013 or 2015.  
-    echo        Please see https://github.com/dotnet/corefx/blob/master/Documentation/developer-guide.md for build instructions.
-    exit /b 1
-)
-
-:EnvSet
-
-:: Log build command line
-set _buildproj=%~dp0build.proj
-set _buildlog=%~dp0msbuild.log
-set _buildprefix=echo
-set _buildpostfix=^> "%_buildlog%"
-call :build %*
-
-:: Build
-set _buildprefix=
-set _buildpostfix=
-call :build %*
-
-goto :AfterBuild
-
-:build
-%_buildprefix% msbuild "src/System.Buffers/src/System.Buffers.csproj" /t:BuildPackages /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=normal;LogFile="%_buildlog%";Append %* %_buildpostfix%
-set BUILDERRORLEVEL=%ERRORLEVEL%
-goto :eof
-
-:AfterBuild
-
-echo.
-:: Pull the build summary from the log file
-findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%_buildlog%"
-echo Build Exit Code = %BUILDERRORLEVEL%
-
-exit /b %BUILDERRORLEVEL%
+packages\nuget push System.Buffers.*.nupkg %1% -Source https://www.myget.org/F/dotnet-corefxlab/api/v2/package
+packages\nuget push System.CommandLine.*.nupkg %1% -Source https://www.myget.org/F/dotnet-corefxlab/api/v2/package
+packages\nuget push System.Slices.*.nupkg %1% -Source https://www.myget.org/F/dotnet-corefxlab/api/v2/package
+packages\nuget push System.FileSystem.Watcher.Polling.*.nupkg %1% -Source https://www.myget.org/F/dotnet-corefxlab/api/v2/package
+packages\nuget push System.Text.Json.*.nupkg %1% -Source https://www.myget.org/F/dotnet-corefxlab/api/v2/package
+packages\nuget push System.Text.Utf8.*.nupkg %1% -Source https://www.myget.org/F/dotnet-corefxlab/api/v2/package
+packages\nuget push System.Text.Formatting.*.nupkg %1% -Source https://www.myget.org/F/dotnet-corefxlab/api/v2/package
+packages\nuget push System.Collections.Generic.MultiValueDictionary.*.nupkg %1% -Source https://www.myget.org/F/dotnet-corefxlab/api/v2/package

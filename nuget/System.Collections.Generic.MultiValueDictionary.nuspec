@@ -15,7 +15,7 @@
     <tags>.NET Core MultiValueDictionary MultiDictionary Dictionary corefxlab</tags>
   </metadata>
   <files>
-    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Collections.Generic.MultiValueDictionary\System.Collections.Generic.MultiValueDictionary.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
+    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Collections\System.Collections.Generic.MultiValueDictionary.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
   </files>
 </package>
 
