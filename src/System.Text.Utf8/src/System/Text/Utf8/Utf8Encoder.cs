@@ -133,7 +133,7 @@ namespace System.Text.Utf8
                 }
 
                 // TODO: Should we have Span<byte>.Last?
-                if (!Utf8CodeUnit.IsSurrogate((Utf8CodeUnit)it[it.Length - 1]))
+                if (Utf8CodeUnit.IsFirstCodeUnitInEncodedCodePoint((Utf8CodeUnit)it[it.Length - 1]))
                 {
                     // output: encodedBytes
                     return true;

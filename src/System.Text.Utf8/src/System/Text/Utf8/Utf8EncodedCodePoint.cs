@@ -10,7 +10,7 @@ namespace System.Text.Utf8
     public struct Utf8EncodedCodePoint
     {
         // TODO: Validate constructors if we decide to keep this class
-        public unsafe Utf8EncodedCodePoint(char character) : this()
+        public Utf8EncodedCodePoint(char character) : this()
         {
             if (char.IsSurrogate(character))
             {
@@ -19,28 +19,34 @@ namespace System.Text.Utf8
 
             UnicodeCodePoint codePoint = (UnicodeCodePoint)(uint)character;
 
-            fixed (byte* encodedData = &_byte0)
+            unsafe
             {
-                Span<byte> buffer = new Span<byte>(encodedData, 4);
-                if (!Utf8Encoder.TryEncodeCodePoint(codePoint, buffer, out _length))
+                fixed (byte* encodedData = &_byte0)
                 {
-                    // TODO: Change exception type
-                    throw new Exception("Internal error: this should never happen as codePoint is within acceptable range and is not surrogate");
+                    Span<byte> buffer = new Span<byte>(encodedData, 4);
+                    if (!Utf8Encoder.TryEncodeCodePoint(codePoint, buffer, out _length))
+                    {
+                        // TODO: Change exception type
+                        throw new Exception("Internal error: this should never happen as codePoint is within acceptable range and is not surrogate");
+                    }
                 }
             }
         }
 
-        public unsafe Utf8EncodedCodePoint(char highSurrogate, char lowSurrogate) : this()
+        public Utf8EncodedCodePoint(char highSurrogate, char lowSurrogate) : this()
         {
             UnicodeCodePoint codePoint = (UnicodeCodePoint)(uint)char.ConvertToUtf32(highSurrogate, lowSurrogate);
 
-            fixed (byte* encodedData = &_byte0)
+            unsafe
             {
-                Span<byte> buffer = new Span<byte>(encodedData, 4);
-                if (!Utf8Encoder.TryEncodeCodePoint(codePoint, buffer, out _length))
+                fixed (byte* encodedData = &_byte0)
                 {
-                    // TODO: Change exception type
-                    throw new Exception("Internal error: this should never happen as codePoint should be within acceptable range");
+                    Span<byte> buffer = new Span<byte>(encodedData, 4);
+                    if (!Utf8Encoder.TryEncodeCodePoint(codePoint, buffer, out _length))
+                    {
+                        // TODO: Change exception type
+                        throw new Exception("Internal error: this should never happen as codePoint should be within acceptable range");
+                    }
                 }
             }
         }
