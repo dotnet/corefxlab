@@ -12,6 +12,7 @@ namespace System.Text.Json
         private int _insideObject;
         private int _insideArray;
         public JsonTokenType TokenType;
+        private bool _jsonStartIsObject;
 
         public enum JsonTokenType
         {
@@ -37,20 +38,22 @@ namespace System.Text.Json
 
         public JsonReader(Utf8String str)
         {
-            _str = str;
+            _str = str.Trim();
             _index = 0;
             _insideObject = 0;
             _insideArray = 0;
             TokenType = 0;
+            _jsonStartIsObject = (byte)_str[0] == '{';
         }
 
         public JsonReader(string str)
         {
-            _str = new Utf8String(str);
+            _str = new Utf8String(str).Trim();
             _index = 0;
             _insideObject = 0;
             _insideArray = 0;
             TokenType = 0;
+            _jsonStartIsObject = (byte)_str[0] == '{';
         }
 
         public void Dispose()
@@ -313,6 +316,11 @@ namespace System.Text.Json
                     if (nextByte == ',')
                     {
                         _index++;
+                        if (_insideObject == _insideArray)
+                        {
+                            TokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
+                            return;
+                        }
                         TokenType = _insideObject > _insideArray ? JsonTokenType.Property : JsonTokenType.Value;
                         return;
                     }
@@ -328,6 +336,11 @@ namespace System.Text.Json
                     if (nextByte == ',')
                     {
                         _index++;
+                        if (_insideObject == _insideArray)
+                        {
+                            TokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
+                            return;
+                        }
                         TokenType = _insideObject > _insideArray ? JsonTokenType.Property : JsonTokenType.Value;
                         return;
                     }

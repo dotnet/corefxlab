@@ -82,6 +82,14 @@ namespace System.Text.Json.Tests
         }
 
         [Fact]
+        public void ReadHeavyNestedJsonWithArray()
+        {
+            var readJson = ReadJson(TestJson.HeavyNestedJsonWithArray);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedHeavyNestedJsonWithArray);
+        }
+
+        [Fact]
         public void ReadLargeJson()
         {
             var readJson = ReadJson(TestJson.LargeJson);
@@ -230,11 +238,23 @@ namespace System.Text.Json.Tests
             var jsonReader = new JsonReader(jsonString);
             var jsonObjectMain = new Object();
             var jsonMembersMain = new List<Members>();
+            var jsonArrayMain = new Array();
+            var jsonElementsMain = new List<Elements>();
 
-            ReadJsonHelper(jsonReader, jsonMembersMain);
+            if (jsonString.Trim().Substring(0, 1) == "[")
+            {
+                ReadJsonHelper(jsonReader, jsonElementsMain);
 
-            jsonObjectMain.Members = jsonMembersMain;
-            json.Object = jsonObjectMain;
+                jsonArrayMain.Elements = jsonElementsMain;
+                json.Array = jsonArrayMain;
+            }
+            else
+            {
+                ReadJsonHelper(jsonReader, jsonMembersMain);
+
+                jsonObjectMain.Members = jsonMembersMain;
+                json.Object = jsonObjectMain;
+            }
 
             return json;
         }
@@ -274,6 +294,54 @@ namespace System.Text.Json.Tests
                         var pair = new Pair
                         {
                             Name = (string) jsonReader.GetName(),
+                            Value = GetValue(ref jsonReader)
+                        };
+                        if (jsonPairs != null) jsonPairs.Add(pair);
+                        break;
+                    case JsonReader.JsonTokenType.Value:
+                        if (jsonValues != null) jsonValues.Add(GetValue(ref jsonReader));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        private static void ReadJsonHelper(JsonReader jsonReader, ICollection<Elements> jsonElementsMain)
+        {
+            Object jsonObject = null;
+            List<Pair> jsonPairs = null;
+            List<Value> jsonValues = null;
+
+            while (jsonReader.Read())
+            {
+                switch (jsonReader.TokenType)
+                {
+                    case JsonReader.JsonTokenType.ObjectStart:
+                        jsonObject = new Object();
+                        jsonPairs = new List<Pair>();
+                        break;
+                    case JsonReader.JsonTokenType.ObjectEnd:
+                        if (jsonObject != null)
+                        {
+                            var jsonMembers = new Members { Pairs = jsonPairs };
+                            jsonObject.Members = new List<Members> { jsonMembers };
+                        }
+                        break;
+                    case JsonReader.JsonTokenType.ArrayStart:
+                        jsonValues = new List<Value>();
+                        break;
+                    case JsonReader.JsonTokenType.ArrayEnd:
+                        if (jsonValues != null)
+                        {
+                            var jsonElements = new Elements { Values = jsonValues };
+                            jsonElementsMain.Add(jsonElements);
+                        }
+                        break;
+                    case JsonReader.JsonTokenType.Property:
+                        var pair = new Pair
+                        {
+                            Name = (string)jsonReader.GetName(),
                             Value = GetValue(ref jsonReader)
                         };
                         if (jsonPairs != null) jsonPairs.Add(pair);

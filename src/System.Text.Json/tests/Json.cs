@@ -7,6 +7,8 @@ namespace System.Text.Json.Tests
     {
         public Object Object { get; set; }
 
+        public Array Array { get; set; }
+
         public List<Value> GetValueFromPropertyName(string str)
         {
             return GetValueFromPropertyName(new Utf8String(str), Object);
@@ -70,7 +72,15 @@ namespace System.Text.Json.Tests
 
         public override string ToString()
         {
-            return Object == null ? "" : OutputObject(Object);
+            if (Object != null)
+            {
+                return OutputObject(Object);
+            }
+            if (Array != null)
+            {
+                return OutputArray(Array);
+            }
+            return "";
         }
 
         private string OutputObject(Object obj)
