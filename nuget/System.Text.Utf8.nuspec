@@ -14,7 +14,7 @@
     <copyright> Microsoft Corporation.  All rights reserved.</copyright>
     <tags>.NET Core UTF8 corefxlab</tags>
     <dependencies>
-      <dependency id="System.Slices" version="0.1.0-d102115-1" />
+      <dependency id="System.Slices" version="0.1.0-d103015-1" />
     </dependencies>
   </metadata>
   <files>
