@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace System
 {
@@ -139,6 +140,7 @@ namespace System
         /// </summary>
         internal object Object
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _object; }
         }
 
@@ -147,12 +149,14 @@ namespace System
         /// </summary>
         internal UIntPtr Offset
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _offset; }
         }
 
         [CLSCompliant(false)]
         public unsafe void* UnsafePointer
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _offset.ToPointer(); }
         }
 
@@ -164,12 +168,14 @@ namespace System
         /// </exception>
         public T this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 Contract.RequiresInRange(index, Length);
                 return PtrUtils.Get<T>(
                     _object, _offset + (index * PtrUtils.SizeOf<T>()));
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 Contract.RequiresInRange(index, Length);
@@ -270,6 +276,7 @@ namespace System
         /// Checks to see if two spans point at the same memory.  Note that
         /// this does *not* check to see if the *contents* are equal.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ReferenceEquals(Span<T> other)
         {
             return Object == other.Object &&
