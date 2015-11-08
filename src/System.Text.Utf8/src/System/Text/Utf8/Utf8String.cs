@@ -13,7 +13,7 @@ namespace System.Text.Utf8
     [DebuggerDisplay("{ToString()}u8")]
     public partial struct Utf8String : IEnumerable<Utf8CodeUnit>, IEquatable<Utf8String>, IComparable<Utf8String> 
     {
-        private Span<byte> _buffer;
+        private Span<Utf8CodeUnit> _buffer;
 
         private const int StringNotFound = -1;
 
@@ -21,19 +21,21 @@ namespace System.Text.Utf8
 
         // TODO: Validate constructors, When should we copy? When should we just use the underlying array?
         // TODO: Should we be immutable/readonly?
-        public Utf8String(Span<byte> buffer)
+        public Utf8String(Span<Utf8CodeUnit> buffer)
         {
             _buffer = buffer;
         }
 
-        public Utf8String(byte[] utf8bytes)
+        public Utf8String(Span<byte> buffer) : this(buffer.Cast<byte, Utf8CodeUnit>())
         {
-            _buffer = new Span<byte>(utf8bytes);
         }
 
-        public Utf8String(byte[] utf8bytes, int index, int length)
+        public Utf8String(byte[] utf8bytes) : this(new Span<byte>(utf8bytes))
         {
-            _buffer = new Span<byte>(utf8bytes, index, length);
+        }
+
+        public Utf8String(byte[] utf8bytes, int index, int length) : this(new Span<byte>(utf8bytes, index, length))
+        {
         }
 
         // TODO: Should this boxing constructor even exist?
@@ -71,7 +73,7 @@ namespace System.Text.Utf8
 
             if (s == string.Empty)
             {
-                _buffer = Span<byte>.Empty;
+                _buffer = Span<Utf8CodeUnit>.Empty;
             }
             else
             {
@@ -480,7 +482,7 @@ namespace System.Text.Utf8
             return Substring(index, s.Length).Equals(s);
         }
 
-        public void CopyTo(Span<byte> buffer)
+        public void CopyTo(Span<Utf8CodeUnit> buffer)
         {
             if (buffer.Length < Length)
             {
@@ -495,7 +497,7 @@ namespace System.Text.Utf8
 
         public void CopyTo(byte[] buffer)
         {
-            CopyTo(new Span<byte>(buffer));
+            CopyTo((new Span<byte>(buffer)).Cast<byte, Utf8CodeUnit>());
         }
 
         // TODO: write better hashing function
@@ -674,12 +676,12 @@ namespace System.Text.Utf8
         // TODO: Name TBD, CopyArray? GetBytes?
         public byte[] CopyBytes()
         {
-            return _buffer.CreateArray();
+            return _buffer.Cast<Utf8CodeUnit, byte>().CreateArray();
         }
 
         public Utf8CodeUnit[] CopyCodeUnits()
         {
-            throw new NotImplementedException();
+            return _buffer.CreateArray();
         }
     }
 }

@@ -21,27 +21,27 @@ namespace System.Text.Utf8
         #region Decoder
         // Should this be public?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TryGetNumberOfEncodedBytesFromFirstByte(byte first, out int numberOfBytes)
+        private static bool TryGetNumberOfEncodedBytesFromFirstByte(Utf8CodeUnit first, out int numberOfBytes)
         {
-            if ((first & mask_1000_0000) == 0)
+            if (((byte)first & mask_1000_0000) == 0)
             {
                 numberOfBytes = 1;
                 return true;
             }
 
-            if ((first & mask_1110_0000) == mask_1100_0000)
+            if (((byte)first & mask_1110_0000) == mask_1100_0000)
             {
                 numberOfBytes = 2;
                 return true;
             }
 
-            if ((first & mask_1111_0000) == mask_1110_0000)
+            if (((byte)first & mask_1111_0000) == mask_1110_0000)
             {
                 numberOfBytes = 3;
                 return true;
             }
 
-            if ((first & mask_1111_1000) == mask_1111_0000)
+            if (((byte)first & mask_1111_1000) == mask_1111_0000)
             {
                 numberOfBytes = 4;
                 return true;
@@ -52,7 +52,7 @@ namespace System.Text.Utf8
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TryGetFirstByteCodePointValue(byte first, out UnicodeCodePoint codePoint, out int encodedBytes)
+        private static bool TryGetFirstByteCodePointValue(Utf8CodeUnit first, out UnicodeCodePoint codePoint, out int encodedBytes)
         {
             if (!TryGetNumberOfEncodedBytesFromFirstByte(first, out encodedBytes))
             {
@@ -63,16 +63,16 @@ namespace System.Text.Utf8
             switch (encodedBytes)
             {
                 case 1:
-                    codePoint = (UnicodeCodePoint)(first & mask_0111_1111);
+                    codePoint = (UnicodeCodePoint)((byte)first & mask_0111_1111);
                     return true;
                 case 2:
-                    codePoint = (UnicodeCodePoint)(first & mask_0001_1111);
+                    codePoint = (UnicodeCodePoint)((byte)first & mask_0001_1111);
                     return true;
                 case 3:
-                    codePoint = (UnicodeCodePoint)(first & mask_0000_1111);
+                    codePoint = (UnicodeCodePoint)((byte)first & mask_0000_1111);
                     return true;
                 case 4:
-                    codePoint = (UnicodeCodePoint)(first & mask_0000_0111);
+                    codePoint = (UnicodeCodePoint)((byte)first & mask_0000_0111);
                     return true;
                 default:
                     codePoint = default(UnicodeCodePoint);
@@ -82,9 +82,9 @@ namespace System.Text.Utf8
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TryReadCodePointByte(byte nextByte, ref UnicodeCodePoint codePoint)
+        private static bool TryReadCodePointByte(Utf8CodeUnit nextByte, ref UnicodeCodePoint codePoint)
         {
-            uint current = nextByte;
+            uint current = (byte)nextByte;
             if ((current & mask_1100_0000) != mask_1000_0000)
                 return false;
 
@@ -92,7 +92,7 @@ namespace System.Text.Utf8
             return true;
         }
 
-        public static bool TryDecodeCodePoint(Span<byte> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        public static bool TryDecodeCodePoint(Span<Utf8CodeUnit> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
         {
             if (buffer.Length == 0)
             {
@@ -101,7 +101,7 @@ namespace System.Text.Utf8
                 return false;
             }
 
-            byte first = buffer[0];
+            Utf8CodeUnit first = buffer[0];
             if (!TryGetFirstByteCodePointValue(first, out codePoint, out encodedBytes))
                 return false;
 
@@ -119,10 +119,10 @@ namespace System.Text.Utf8
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TryFindEncodedCodePointBytesCountGoingBackwards(Span<byte> buffer, out int encodedBytes)
+        private static bool TryFindEncodedCodePointBytesCountGoingBackwards(Span<Utf8CodeUnit> buffer, out int encodedBytes)
         {
             encodedBytes = 1;
-            Span<byte> it = buffer;
+            Span<Utf8CodeUnit> it = buffer;
             // TODO: Should we have something like: Span<byte>.(Slice from the back)
             for (; encodedBytes <= UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint; encodedBytes++, it = it.Slice(0, it.Length - 1))
             {
@@ -148,7 +148,7 @@ namespace System.Text.Utf8
         // TODO: Name TBD
         // TODO: optimize?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryDecodeCodePointBackwards(Span<byte> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        public static bool TryDecodeCodePointBackwards(Span<Utf8CodeUnit> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
         {
             if (TryFindEncodedCodePointBytesCountGoingBackwards(buffer, out encodedBytes))
             {

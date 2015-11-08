@@ -10,9 +10,9 @@ namespace System.Text.Utf8
     {
         public struct Enumerator : IEnumerator<Utf8CodeUnit>, IEnumerator
         {
-            private Span<byte>.Enumerator _enumerator;
+            private Span<Utf8CodeUnit>.Enumerator _enumerator;
 
-            public unsafe Enumerator(Span<byte> buffer)
+            public unsafe Enumerator(Span<Utf8CodeUnit> buffer)
             {
                 _enumerator = buffer.GetEnumerator();
             }
