@@ -36,12 +36,19 @@ namespace System.Text.Utf8
             _buffer = new Span<byte>(utf8bytes, index, length);
         }
 
-        // TODO: reevaluate implementation
+        // TODO: Should this boxing constructor even exist?
         public Utf8String(IEnumerable<UnicodeCodePoint> codePoints)
         {
+            Utf8String s = FromCodePoints(codePoints);
+            _buffer = s._buffer;
+        }
+
+        public static Utf8String FromCodePoints<T>(T codePoints)
+            where T : IEnumerable<UnicodeCodePoint>
+        {
             int len = GetUtf8LengthInBytes(codePoints);
-            _buffer = new Span<byte>(new byte[len]);
-            Span<byte> span = _buffer;
+            Span<byte> ret = new Span<byte>(new byte[len]);
+            Span<byte> span = ret;
             foreach (UnicodeCodePoint codePoint in codePoints)
             {
                 int encodedBytes;
@@ -51,6 +58,8 @@ namespace System.Text.Utf8
                 }
                 span = span.Slice(encodedBytes);
             }
+
+            return new Utf8String(ret);
         }
 
         public Utf8String(string s)
@@ -66,7 +75,8 @@ namespace System.Text.Utf8
             }
             else
             {
-                _buffer = new Span<byte>(GetUtf8BytesFromString(s));
+                Utf8String ret = FromCodePoints(new Utf16LittleEndianCodePointEnumerable(s));
+                _buffer = ret._buffer;
             }
         }
 
@@ -594,7 +604,8 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
-        private static int GetUtf8LengthInBytes(IEnumerable<UnicodeCodePoint> codePoints)
+        private static int GetUtf8LengthInBytes<T>(T codePoints)
+            where T : IEnumerable<UnicodeCodePoint>
         {
             int len = 0;
             foreach (var codePoint in codePoints)
@@ -603,72 +614,6 @@ namespace System.Text.Utf8
             }
 
             return len;
-        }
-
-        // TODO: This should return Utf16CodeUnits which should wrap byte[]/Span<byte>, same for other encoders
-        private static byte[] GetUtf8BytesFromString(string s)
-        {
-            int len = 0;
-            for (int i = 0; i < s.Length; /* intentionally no increment */)
-            {
-                UnicodeCodePoint codePoint;
-                int encodedChars;
-                if (!Utf16LittleEndianEncoder.TryDecodeCodePointFromString(s, i, out codePoint, out encodedChars))
-                {
-                    throw new ArgumentException("s", "Invalid surrogate pair in the string.");
-                }
-
-                if (encodedChars <= 0)
-                {
-                    // TODO: Fix exception type
-                    throw new Exception("internal error");
-                }
-
-                int encodedBytes = Utf8Encoder.GetNumberOfEncodedBytes(codePoint);
-                if (encodedBytes == 0)
-                {
-                    // TODO: Fix exception type
-                    throw new Exception("Internal error: Utf16Decoder somehow got CodePoint out of range");
-                }
-                len += encodedBytes;
-
-                i += encodedChars;
-            }
-
-            byte[] bytes = new byte[len];
-            unsafe
-            {
-                fixed (byte* array_pinned = bytes)
-                {
-                    Span<byte> p = new Span<byte>(array_pinned, len);
-                    for (int i = 0; i < s.Length; /* intentionally no increment */)
-                    {
-                        UnicodeCodePoint codePoint;
-                        int encodedChars;
-                        if (Utf16LittleEndianEncoder.TryDecodeCodePointFromString(s, i, out codePoint, out encodedChars))
-                        {
-                            i += encodedChars;
-                            int encodedBytes;
-                            if (Utf8Encoder.TryEncodeCodePoint(codePoint, p, out encodedBytes))
-                            {
-                                p = p.Slice(encodedBytes);
-                            }
-                            else
-                            {
-                                // TODO: Fix exception type
-                                throw new Exception("Internal error: Utf16Decoder somehow got CodePoint out of range or the buffer is too small");
-                            }
-                        }
-                        else
-                        {
-                            // TODO: Fix exception type
-                            throw new Exception("Internal error: we did pre-validation of the string, nothing should go wrong");
-                        }
-                    }
-                }
-            }
-
-            return bytes;
         }
 
         public Utf8String TrimStart()
