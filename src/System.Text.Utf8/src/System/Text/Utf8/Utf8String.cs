@@ -612,7 +612,7 @@ namespace System.Text.Utf8
             int len = 0;
             foreach (var codePoint in codePoints)
             {
-                len += Utf8Encoder.GetNumberOfEncodedBytes(codePoint);
+                len += Utf8Encoder.GetNumberOfCodeUnitsInCodePoint(codePoint);
             }
 
             return len;
