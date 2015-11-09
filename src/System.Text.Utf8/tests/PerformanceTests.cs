@@ -71,10 +71,10 @@ namespace System.Text.Utf8.Tests
         public void ConstructFromString()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 30000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 30000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 3000),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 3000)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 6000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 6000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 600),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 600)
             };
             foreach (TestCase testData in testCases)
             {
@@ -93,10 +93,10 @@ namespace System.Text.Utf8.Tests
         public void EnumerateCodeUnitsConstructFromByteArray()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 150000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 150000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 50000),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 15000)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 30000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 30000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 10000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 3000)
             };
             foreach (TestCase testData in testCases)
             {
@@ -119,10 +119,10 @@ namespace System.Text.Utf8.Tests
         public unsafe void EnumerateCodeUnitsConstructFromSpan()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 150000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 150000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 50000),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 15000)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 30000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 30000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 10000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 3000)
             };
             foreach (TestCase testData in testCases)
             {
@@ -148,10 +148,10 @@ namespace System.Text.Utf8.Tests
         public void EnumerateCodePointsConstructFromByteArray()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 25000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 25000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 2500),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 2500)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 5000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 5000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 500),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 500)
             };
             foreach (TestCase testData in testCases)
             {
@@ -174,10 +174,10 @@ namespace System.Text.Utf8.Tests
         public unsafe void EnumerateCodePointsConstructFromSpan()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 25000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 25000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 2500),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 2500)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 5000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 5000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 500),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 500)
             };
             foreach (TestCase testData in testCases)
             {
@@ -203,10 +203,10 @@ namespace System.Text.Utf8.Tests
         public void ReverseEnumerateCodePointsConstructFromByteArray()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 15000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 15000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 1500),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 1500)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 3000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 3000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 300),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 300)
             };
             foreach (TestCase testData in testCases)
             {
@@ -231,10 +231,10 @@ namespace System.Text.Utf8.Tests
         public unsafe void ReverseEnumerateCodePointsConstructFromSpan()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 15000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 15000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 1500),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 1500)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 3000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 3000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 300),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 300)
             };
             foreach (TestCase testData in testCases)
             {
@@ -262,10 +262,10 @@ namespace System.Text.Utf8.Tests
         public void SubstringTrimOneCharacterOnEachSideConstructFromByteArray()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 250000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 250000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 250000000),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 250000000)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 50000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 50000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 50000000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 50000000)
             };
             foreach (TestCase testData in testCases)
             {
@@ -286,10 +286,10 @@ namespace System.Text.Utf8.Tests
         public unsafe void SubstringTrimOneCharacterOnEachSideConstructFromSpan()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 250000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 250000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 250000000),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 250000000)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 50000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 50000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 50000000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 50000000)
             };
             foreach (TestCase testData in testCases)
             {
@@ -313,10 +313,10 @@ namespace System.Text.Utf8.Tests
         public void IndexOfNonOccuringSingleCodeUnitConstructFromByteArray()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 150000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 150000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 15000),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 15000)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 30000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 30000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 3000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 3000)
             };
             foreach (TestCase testData in testCases)
             {
@@ -337,10 +337,10 @@ namespace System.Text.Utf8.Tests
         public unsafe void IndexOfNonOccuringSingleCodeUnitConstructFromSpan()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 150000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 150000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 15000),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 15000)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 30000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 30000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 3000),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 3000)
             };
             foreach (TestCase testData in testCases)
             {
@@ -364,10 +364,10 @@ namespace System.Text.Utf8.Tests
         public void IndexOfNonOccuringSingleCodePointConstructFromByteArray()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 25000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 25000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 2500),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 2500)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 5000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 5000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 500),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 500)
             };
             foreach (TestCase testData in testCases)
             {
@@ -388,10 +388,10 @@ namespace System.Text.Utf8.Tests
         public unsafe void IndexOfNonOccuringSingleCodePointConstructFromSpan()
         {
             TestCase[] testCases = new TestCase[] {
-                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 25000000),
-                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 25000000),
-                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 2500),
-                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 2500)
+                new TestCase(GetRandomString(5, 32, 126), "Short ASCII string", 5000000),
+                new TestCase(GetRandomString(5, 32, 0xD7FF), "Short string", 5000000),
+                new TestCase(GetRandomString(50000, 32, 126), "Long ASCII string", 500),
+                new TestCase(GetRandomString(50000, 32, 0xD7FF), "Long string", 500)
             };
             foreach (TestCase testData in testCases)
             {
