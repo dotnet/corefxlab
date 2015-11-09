@@ -1,9 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace System
 {
@@ -13,14 +12,14 @@ namespace System
     /// to regular accesses and is a struct so that creation and subslicing do
     /// not require additional allocations.  It is type- and memory-safe.
     /// </summary>
-    public struct Span<T> : IEnumerable<T>, IEquatable<Span<T>>
+    public partial struct Span<T> : IEnumerable<T>, IEquatable<Span<T>>
     {
         /// <summary>A managed array/string; or null for native ptrs.</summary>
         readonly object _object;
         /// <summary>An byte-offset into the array/string; or a native ptr.</summary>
         readonly UIntPtr _offset;
         /// <summary>Fetches the number of elements this Span contains.</summary>
-        public int Length { get; private set; }
+        public readonly int Length;
 
         /// <summary>
         /// Creates a new span over the entirety of the target array.
@@ -164,6 +163,7 @@ namespace System
         /// </exception>
         public T this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 Contract.RequiresInRange(index, Length);
@@ -301,27 +301,17 @@ namespace System
                 return false;
             }
 
-            Enumerator thisIt = this.GetEnumerator();
-            Enumerator otherIt = other.GetEnumerator();
-            while (true)
+            var nonBoxingComparer = EqualityComparer<T>.Default;
+            for (int i = 0; i < Length; i++)
             {
-                bool hasNext = thisIt.MoveNext();
-                if (hasNext != otherIt.MoveNext())
-                {
-                    return false;
-                }
-
-                if (!hasNext)
-                {
-                    return true;
-                }
-
-                // TODO: Fix it so it doesn't box (memcmp)
-                if (!thisIt.Current.Equals(otherIt.Current))
+                if (!nonBoxingComparer.Equals(
+                    this.GetItemWithoutBoundariesCheck(i), other.GetItemWithoutBoundariesCheck(i)))
                 {
                     return false;
                 }
             }
+
+            return true;
         }
 
         public override bool Equals(object obj)
@@ -335,63 +325,15 @@ namespace System
         }
 
         /// <summary>
-        /// Returns an enumerator over the span's entire contents.
+        /// Returns item from given index without the boundaries check
+        /// use only in places where moving outside the boundaries is impossible
+        /// gain: performance: no boundaries check (single operation) 
         /// </summary>
-        public Enumerator GetEnumerator()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private T GetItemWithoutBoundariesCheck(int index)
         {
-            return new Enumerator(this);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        /// <summary>
-        /// A struct-based enumerator, to make fast enumerations possible.
-        /// This isn't designed for direct use, instead see GetEnumerator.
-        /// </summary>
-        public struct Enumerator : IEnumerator<T>
-        {
-            Span<T> _slice;    // The slice being enumerated.
-            int _position; // The current position.
-
-            public Enumerator(Span<T> slice)
-            {
-                _slice = slice;
-                _position = -1;
-            }
-
-            public T Current
-            {
-                get { return _slice[_position]; }
-            }
-
-            object IEnumerator.Current
-            {
-                get { return Current; }
-            }
-
-            public void Dispose()
-            {
-                _slice = default(Span<T>);
-                _position = -1;
-            }
-
-            public bool MoveNext()
-            {
-                return ++_position < _slice.Length;
-            }
-
-            public void Reset()
-            {
-                _position = -1;
-            }
+            return PtrUtils.Get<T>(
+                    _object, _offset + (index * PtrUtils.SizeOf<T>()));
         }
     }
 }

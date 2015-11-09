@@ -29,7 +29,6 @@ namespace System.Text.Utf8
 
             void IDisposable.Dispose()
             {
-                _enumerator.Dispose();
             }
 
             public bool MoveNext()
