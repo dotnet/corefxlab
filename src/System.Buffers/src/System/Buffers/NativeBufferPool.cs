@@ -1,91 +1,73 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace System.Buffers
 {
-    public unsafe class NativeBufferPool : IDisposable
+    public unsafe sealed class NativeBufferPool<T> where T : struct
     {
-        byte* _memory;
-        int[] _freeList;
-        int _nextFree = 0;
-        readonly int _totalBytes;
-        readonly int _bufferSizeInBytes;
+        private const int NUMBER_OF_BUFFERS_IN_BUCKET = 50;
+        private int _maxElements;
+        private NativeBufferBucket<T>[] _buckets;
 
-        public NativeBufferPool(int bufferSizeInBytes, int numberOfBuffers)
+        public NativeBufferPool(int maxElementsInBuffer)
         {
-            _bufferSizeInBytes = bufferSizeInBytes;
-            _freeList = new int[numberOfBuffers];
-            _totalBytes = bufferSizeInBytes * numberOfBuffers;
-            _memory = (byte*)Marshal.AllocHGlobal(_totalBytes).ToPointer();
+            int maxBuckets = BufferUtilities.SelectBucketIndex(maxElementsInBuffer);
+            _maxElements = maxElementsInBuffer;
+            _buckets = new NativeBufferBucket<T>[maxBuckets + 1];
         }
 
-        public Span<byte> Rent()
+        public Span<T> RentBuffer(int numberOfElements, bool clearBuffer = false)
         {
-            var freeIndex = Reserve();
-            if (freeIndex == -1)
+            Span<T> buffer;
+            if (numberOfElements > _maxElements)
             {
-                throw new NotSupportedException("buffer resizing not supported.");
+#if DEBUG
+                System.Diagnostics.Debugger.Break();
+#endif
+                buffer = new Span<T>(Marshal.AllocHGlobal(numberOfElements * Marshal.SizeOf(typeof(T))).ToPointer(), numberOfElements);
             }
-            var start = _bufferSizeInBytes * freeIndex;
-            return new Span<byte>(_memory + start, _bufferSizeInBytes);
-        }
-
-        int BufferIndexFromSpanAddress(ref Span<byte> span)
-        {
-            var buffer = (ulong)span.UnsafePointer;
-            var firstBuffer = (ulong)_memory;
-            var offset = buffer - firstBuffer;
-            var index = offset / (ulong)_bufferSizeInBytes;
-            return (int)index;
-        }
-
-        public void Return(Span<byte> buffer)
-        {
-            int spanIndex = BufferIndexFromSpanAddress(ref buffer);
-
-            if (spanIndex < 0 || spanIndex > _freeList.Length)
+            else
             {
-                throw new InvalidOperationException("This buffer is not from this pool.");
-            }
-
-            if (Interlocked.CompareExchange(ref _freeList[spanIndex], 0, 1) != 1)
-            {
-                throw new InvalidOperationException("this buffer has been already returned.");
-            }
-            if (spanIndex < _nextFree)
-            {
-                _nextFree = spanIndex;
-            }
-        }
-
-        int Reserve()
-        {
-            var initialNextFree = _nextFree;
-            for (int i = initialNextFree; i < _freeList.Length; i++) {
-                if (Interlocked.CompareExchange(ref _freeList[i], 1, 0) == 0) {
-                    _nextFree++;
-                    return i;
+                int index = BufferUtilities.SelectBucketIndex(numberOfElements);
+                NativeBufferBucket<T> bucket = Volatile.Read(ref _buckets[index]);
+                if (bucket == null)
+                {
+                    Interlocked.CompareExchange(ref _buckets[index], new NativeBufferBucket<T>(BufferUtilities.GetMaxSizeForBucket(index), NUMBER_OF_BUFFERS_IN_BUCKET), null);
+                    bucket = _buckets[index];
                 }
+
+                buffer = bucket.Rent();
             }
-            if (initialNextFree == _nextFree) {
-                if (_nextFree == 0) {
-                    return -1;
-                }
-                _nextFree = 0;
-            }
-            return Reserve();
+
+            if (clearBuffer) BufferUtilities.ClearSpan<T>(buffer);
+            return buffer;
         }
 
-        public void Dispose()
+        public void EnlargeBuffer(ref Span<T> buffer, int newSize, bool clearFreeSpace = false)
         {
-            for (int i = 0; i < _freeList.Length; i++) {
-                _freeList[i] = 1;
+            // Still need to figure out how to handle the resizing without allocating more
+            // spans to put into the resized-span's original bucket
+            throw new NotImplementedException();
+        }
+
+        public void ReturnBuffer(ref Span<T> buffer, bool clearBuffer = false)
+        {
+            if (clearBuffer) BufferUtilities.ClearSpan<T>(buffer);
+
+            if (buffer.Length > _maxElements)
+            {
+                Marshal.FreeHGlobal(new IntPtr(buffer.UnsafePointer));
+                buffer = default(Span<T>);
             }
-            Marshal.FreeHGlobal(new IntPtr(_memory));
-            _memory = null;
+            else
+            {
+                _buckets[BufferUtilities.SelectBucketIndex(buffer.Length)].Return(ref buffer);
+            }
         }
     }
 }

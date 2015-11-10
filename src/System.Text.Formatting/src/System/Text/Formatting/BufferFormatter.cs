@@ -8,16 +8,16 @@ namespace System.Text.Formatting
         int _count;
 
         FormattingData _formattingData;
-        BufferPool _pool;
+        ManagedBufferPool<byte> _pool;
 
-        public BufferFormatter(int capacity, FormattingData formattingData, BufferPool pool = null)
+        public BufferFormatter(int capacity, FormattingData formattingData, ManagedBufferPool<byte> pool = null)
         {
             _formattingData = formattingData;
             _count = 0;
             _pool = pool;
             if(_pool == null)
             {
-                _pool = BufferPool.Shared;
+                _pool = new ManagedBufferPool<byte>(capacity);
             }
             _buffer = _pool.RentBuffer(capacity);
         }
@@ -40,7 +40,7 @@ namespace System.Text.Formatting
         {
             get
             {
-                return _buffer.Slice(_count);
+                return new Span<byte>(_buffer, _count, _buffer.Length - _count);
             }
         }
 
@@ -54,7 +54,7 @@ namespace System.Text.Formatting
 
         void IFormatter.ResizeBuffer()
         {
-            _pool.Enlarge(ref _buffer, _buffer.Length * 2);
+            _pool.EnlargeBuffer(ref _buffer, _buffer.Length * 2);
         }
 
         void IFormatter.CommitBytes(int bytes)
