@@ -4,28 +4,15 @@ using System.Runtime.InteropServices;
 
 namespace System.Net.Libuv
 {
-    internal class UVBuffer : IDisposable
+    internal class UVBuffer
     {
-        static NativeBufferPool _pool = new NativeBufferPool(1024, 10);
+        static NativeBufferPool<byte> _pool = new NativeBufferPool<byte>(1024);
         public readonly static UVBuffer Default = new UVBuffer();
 
         public static UVInterop.alloc_callback_unix AllocateUnixBuffer { get; set; }
         public static UVInterop.alloc_callback_win AllocWindowsBuffer { get; set; }
 
         private UVBuffer() { }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _pool.Dispose();
-            }
-        }
 
         static UVBuffer()
         {
@@ -35,12 +22,12 @@ namespace System.Net.Libuv
 
         internal static void FreeBuffer(Span<byte> buffer)
         {
-            _pool.Return(buffer);
+            _pool.ReturnBuffer(ref buffer);
         }
 
         static void OnAllocateUnixBuffer(IntPtr memoryBuffer, uint length, out Unix buffer)
         {
-            var memory = _pool.Rent();
+            var memory = _pool.RentBuffer((int)length);
             unsafe
             {
                 buffer = new Unix((IntPtr)memory.UnsafePointer, (uint)memory.Length);
@@ -49,7 +36,7 @@ namespace System.Net.Libuv
 
         static void OnAllocateWindowsBuffer(IntPtr memoryBuffer, uint length, out Windows buffer)
         {
-            var memory = _pool.Rent();
+            var memory = _pool.RentBuffer((int)length);
             unsafe
             {
                 buffer = new Windows((IntPtr)memory.UnsafePointer, (uint)memory.Length);
