@@ -14,6 +14,21 @@ namespace System.Buffers
         private int _maxBufferSize;
         private ManagedBufferBucket<T>[] _buckets;
 
+        private static ManagedBufferPool<byte> _sharedInstance = null;
+
+        public static ManagedBufferPool<byte> SharedByteBufferPool
+        {
+            get
+            {
+                if (Volatile.Read(ref _sharedInstance) == null)
+                {
+                    Interlocked.CompareExchange(ref _sharedInstance, new ManagedBufferPool<byte>(), null);
+                }
+
+                return _sharedInstance;
+            }
+        }
+
         // 2MB taken as the default since the average HTTP page is 1.9MB
         // per http://httparchive.org/interesting.php, as of October 2015
         public ManagedBufferPool(int maxBufferSizeInBytes = 2048000)
