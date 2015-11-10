@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Json.Net.Tests</RootNamespace>
     <AssemblyName>Json.Net.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -46,19 +47,19 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Slices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\GitHub\corefxlab\bin\Windows_NT.AnyCPU.Release\System.Slices\System.Slices.dll</HintPath>
+      <HintPath>..\..\..\..\..\bin\Windows_NT.AnyCPU.Release\System.Slices\System.Slices.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\GitHub\corefxlab\bin\Windows_NT.AnyCPU.Release\System.Text.Formatting\System.Text.Formatting.dll</HintPath>
+      <HintPath>..\..\..\..\..\bin\Windows_NT.AnyCPU.Release\System.Text.Formatting\System.Text.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.Json, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\GitHub\corefxlab\bin\Windows_NT.AnyCPU.Release\System.Text.Json\System.Text.Json.dll</HintPath>
+      <HintPath>..\..\..\..\..\bin\Windows_NT.AnyCPU.Release\System.Text.Json\System.Text.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.Utf8, Version=999.999.999.999, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\GitHub\corefxlab\bin\Windows_NT.AnyCPU.Release\System.Text.Utf8\System.Text.Utf8.dll</HintPath>
+      <HintPath>..\..\..\..\..\bin\Windows_NT.AnyCPU.Release\System.Text.Utf8\System.Text.Utf8.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />

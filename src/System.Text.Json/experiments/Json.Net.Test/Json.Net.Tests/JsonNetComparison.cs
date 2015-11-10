@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text.Utf8;
 using Newtonsoft.Json;
 using JsonReader = System.Text.Json.JsonReader;
+using JsonWriter = System.Text.Json.JsonWriter;
+using System.Text.Formatting;
+using System.Text;
+using System.IO;
 
 namespace Json.Net.Tests
 {
@@ -22,31 +25,124 @@ namespace Json.Net.Tests
 
         private static void Main()
         {
+            RunWriterTest();
+            RunReaderTest();
+            //Console.Read();
+        }
+
+        private static void RunWriterTest()
+        {
+            Output("====== TEST Write ======");
             for (var i = 0; i < NumberOfSamples; i++)
             {
-                RunTest();
+                JsonNetWriterHelper(OutputJsonData);          // Do not test first iteration
+                RunWriterTestJsonNet();
+
+                JsonWriterHelper(OutputJsonData);             // Do not test first iteration
+                RunWriterTestJson();
             }
-            
+
+            Output("Json.NET Timing Results");
             foreach (var res in TimingResultsJsonNet)
             {
                 Output(res.ToString());
             }
 
+            Output("System.Text.Json Timing Results");
             foreach (var res in TimingResultsJsonReader)
             {
                 Output(res.ToString());
             }
-            //Console.Read();
+
+            TimingResultsJsonNet.Clear();
+            TimingResultsJsonReader.Clear();
         }
 
-        private static void RunTest()
+        private static void RunWriterTestJsonNet()
         {
-            Output("====== TEST ReadProjectLockJson ======");
-            JsonNetReaderHelper(new StringReader(TestJson.ProjectLockJson), OutputJsonData);
+            Timer.Restart();
+            for (var i = 0; i < NumberOfIterations*NumberOfIterations; i++)
+            {
+                JsonNetWriterHelper(OutputJsonData);
+            }
+            TimingResultsJsonNet.Add(Timer.ElapsedMilliseconds);
+        }
+
+        private static void JsonNetWriterHelper(bool output)
+        {
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+            var writer = new JsonTextWriter(sw);
+            writer.Formatting = Formatting.Indented;
+            writer.WriteStartObject();
+            writer.WritePropertyName("CPU");
+            writer.WriteValue("Intel");
+            writer.WritePropertyName("PSU");
+            writer.WriteValue("500W");
+            writer.WritePropertyName("Drives");
+            writer.WriteStartArray();
+            writer.WriteValue("DVD read/writer");
+            writer.WriteValue("500 gigabyte hard drive");
+            writer.WriteValue("200 gigabype hard drive");
+            writer.WriteEnd();
+            writer.WriteEndObject();
+            if (output) Console.WriteLine(sw.ToString());
+        }
+
+        private static void RunWriterTestJson()
+        {
+            Timer.Restart();
+            for (var i = 0; i < NumberOfIterations*NumberOfIterations; i++)
+            {
+                JsonWriterHelper(OutputJsonData);
+            }
+            TimingResultsJsonReader.Add(Timer.ElapsedMilliseconds);
+        }
+
+        private static void JsonWriterHelper(bool output)
+        {
+            var buffer = new byte[1024];
+            var stream = new MemoryStream(buffer);
+            var writer = new JsonWriter(stream, FormattingData.Encoding.Utf8, prettyPrint: true);
+            writer.WriteObjectStart();
+            writer.WriteAttribute("CPU", "Intel");
+            writer.WriteAttribute("PSU", "500W");
+            writer.WriteMember("Drives");
+            writer.WriteArrayStart();
+            writer.WriteString("DVD read/writer");
+            writer.WriteString("500 gigabyte hard drive");
+            writer.WriteString("200 gigabype hard drive");
+            writer.WriteArrayEnd();
+            writer.WriteObjectEnd();
+            if (output) Console.WriteLine(Encoding.UTF8.GetString(buffer, 0, (int)stream.Position));
+        }
+
+        private static void RunReaderTest()
+        {
+            Output("====== TEST Read ProjectLockJson ======");
+            for (var i = 0; i < NumberOfSamples; i++)
+            {
+                JsonNetReaderHelper(new StringReader(TestJson.ProjectLockJson), OutputJsonData);
                 // Do not test first iteration
-            RunTestJsonNet(TestJson.ProjectLockJson, OutputJsonData);
-            JsonReaderHelper(new Utf8String(TestJson.ProjectLockJson), OutputJsonData); // Do not test first iteration
-            RunTestJsonReader(TestJson.ProjectLockJson, OutputJsonData);
+                RunTestJsonNet(TestJson.ProjectLockJson, OutputJsonData);
+                JsonReaderHelper(new Utf8String(TestJson.ProjectLockJson), OutputJsonData); // Do not test first iteration
+                RunTestJsonReader(TestJson.ProjectLockJson, OutputJsonData);
+            }
+
+            Output("Json.NET Timing Results");
+            foreach (var res in TimingResultsJsonNet)
+            {
+                Output(res.ToString());
+            }
+
+            Output("System.Text.Json Timing Results");
+            foreach (var res in TimingResultsJsonReader)
+            {
+                Output(res.ToString());
+            }
+            
+            TimingResultsJsonNet.Clear();
+            TimingResultsJsonReader.Clear();
         }
 
         private static void RunTestJsonNet(string str, bool output)
