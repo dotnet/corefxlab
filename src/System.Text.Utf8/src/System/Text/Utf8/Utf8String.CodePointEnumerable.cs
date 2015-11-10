@@ -10,14 +10,9 @@ namespace System.Text.Utf8
     {
         public struct CodePointEnumerable : IEnumerable<UnicodeCodePoint>, IEnumerable
         {
-            private Span<byte> _buffer;
+            private Span<Utf8CodeUnit> _buffer;
 
-            public CodePointEnumerable(byte[] bytes, int index, int length)
-            {
-                _buffer = new Span<byte>(bytes, index, length);
-            }
-
-            public unsafe CodePointEnumerable(Span<byte> buffer)
+            public unsafe CodePointEnumerable(Span<Utf8CodeUnit> buffer)
             {
                 _buffer = buffer;
             }

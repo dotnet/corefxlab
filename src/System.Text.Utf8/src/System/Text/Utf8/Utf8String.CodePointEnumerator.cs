@@ -10,12 +10,12 @@ namespace System.Text.Utf8
     {
         public struct CodePointEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
         {
-            private Span<byte> _buffer;
+            private Span<Utf8CodeUnit> _buffer;
             private int _index;
             private int _currentLenCache;
             private const int ResetIndex = -UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint - 1;
 
-            public unsafe CodePointEnumerator(Span<byte> buffer) : this()
+            public unsafe CodePointEnumerator(Span<Utf8CodeUnit> buffer) : this()
             {
                 _buffer = buffer;
 
@@ -52,7 +52,7 @@ namespace System.Text.Utf8
                         throw new InvalidOperationException("Current does not exist");
                     }
 
-                    Span<byte> buffer = _buffer.Slice(_index);
+                    Span<Utf8CodeUnit> buffer = _buffer.Slice(_index);
                     UnicodeCodePoint ret;
                     bool succeeded = Utf8Encoder.TryDecodeCodePoint(buffer, out ret, out _currentLenCache);
 

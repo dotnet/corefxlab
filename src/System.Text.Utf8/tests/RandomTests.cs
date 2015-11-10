@@ -457,11 +457,11 @@ namespace System.Text.Utf8.Tests
                 Assert.Equal(strFromArray, strFromPointer);
 
                 Array.Clear(buffer, 0, buffer.Length);
-                strFromArray.CopyTo(byteSpan);         
+                strFromArray.CopyTo(byteSpan.Cast<byte, Utf8CodeUnit>());         
                 Assert.Equal(textArray, buffer);
 
                 Array.Clear(buffer, 0, buffer.Length);
-                strFromPointer.CopyTo(byteSpan);
+                strFromPointer.CopyTo(byteSpan.Cast<byte, Utf8CodeUnit>());
                 Assert.Equal(textArray, buffer);
 
                 Array.Clear(buffer, 0, buffer.Length);
