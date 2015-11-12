@@ -1,5 +1,5 @@
 {
-  "locked": true,
+  "locked": false,
   "version": 2,
   "targets": {
     "DNXCore,Version=v5.0": {
@@ -281,7 +281,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23510": {
+      "System.Console/4.0.0-beta-23511": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -1487,7 +1487,7 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
-      "runtime.win7.System.Console/4.0.0-beta-23510": {
+      "runtime.win7.System.Console/4.0.0-beta-23511": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -1648,7 +1648,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23510": {
+      "System.Console/4.0.0-beta-23511": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -2878,7 +2878,7 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
-      "runtime.win7.System.Console/4.0.0-beta-23510": {
+      "runtime.win7.System.Console/4.0.0-beta-23511": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -3039,7 +3039,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23510": {
+      "System.Console/4.0.0-beta-23511": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -4267,14 +4267,14 @@
         "ref/xamarinmac20/_._"
       ]
     },
-    "runtime.win7.System.Console/4.0.0-beta-23510": {
+    "runtime.win7.System.Console/4.0.0-beta-23511": {
       "type": "package",
       "serviceable": true,
-      "sha512": "nHU+l6sEn8yd8dQxkyMmhxfJL/383KDS9hINGmLbV4v62NcQ5PgIOE+63banvaZowjAx9agdr8z6K826tBcR6Q==",
+      "sha512": "eYglcvwS4XJodUc6Cw9UDGhiA0TiNZ+0mo2PXcm5xQaqHXz2+bytOPg/jh7R4+ihi50zZ+myt7EuvkR9SBvfYQ==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.Console.4.0.0-beta-23510.nupkg",
-        "runtime.win7.System.Console.4.0.0-beta-23510.nupkg.sha512",
+        "runtime.win7.System.Console.4.0.0-beta-23511.nupkg",
+        "runtime.win7.System.Console.4.0.0-beta-23511.nupkg.sha512",
         "runtime.win7.System.Console.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.Console.dll",
         "runtimes/win7/lib/net/_._"
@@ -4316,7 +4316,7 @@
     "System.Buffers/0.1.0-d103015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "+i8W5qHjwNVWDPG0kZuloko3r6GdpPlkzqXX+IqPYV/vfRMvCk3naa4aMui567mtRk7gJmOwnMYdMYeAcf8rKQ==",
+      "sha512": "QRfU+SiEqqariF4BvW5xL6gderJLHmDvms0UPQXOkJZasoKoRsNVI8dYzPDDxrWqoEEO4vBnTeGyETEO+bL48w==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll",
         "System.Buffers.0.1.0-d103015-1.nupkg",
@@ -4533,10 +4533,10 @@
         "System.ComponentModel.EventBasedAsync.nuspec"
       ]
     },
-    "System.Console/4.0.0-beta-23510": {
+    "System.Console/4.0.0-beta-23511": {
       "type": "package",
       "serviceable": true,
-      "sha512": "5bURQAM31UuDv41drdv9nx/uuXXkWkD6f79b9Ptap+eQ1nsddAf7ocOLHdThwM/wkQ9AKaFyLLYCyUdH4quf7g==",
+      "sha512": "vTBLODc40A8p6guqpaIsHPqkZ3zu2P+Iaha98DIEJew2WNjQXgc0L1q4yYhHRcuNox4jtkUG2Er9ZKPxBjCLBQ==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -4560,8 +4560,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.Console.4.0.0-beta-23510.nupkg",
-        "System.Console.4.0.0-beta-23510.nupkg.sha512",
+        "System.Console.4.0.0-beta-23511.nupkg",
+        "System.Console.4.0.0-beta-23511.nupkg.sha512",
         "System.Console.nuspec"
       ]
     },
@@ -6261,7 +6261,7 @@
     "System.Slices/0.1.0-d103015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "1u1LZevMrER/vGicD2NMBhz9Erva68FchBvd75Q/RweHsEoIhpWBkNTyd0NgyqOvo35M4TN3Uvca8y1Tneuv3A==",
+      "sha512": "eC7aluMKuzg9PB+2fSFOkcHN6NRN5yT+SJptlgUNLJ4WX9FJmtnUe+Pt8YoSa4ahbGbNp6towrfoAzXhB8Ofuw==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
         "System.Slices.0.1.0-d103015-1.nupkg",
@@ -6457,10 +6457,9 @@
     },
     "System.Threading/4.0.10": {
       "type": "package",
+      "serviceable": true,
       "sha512": "0w6pRxIEE7wuiOJeKabkDgeIKmqf4ER1VNrs6qFwHnooEE78yHwi/bKkg5Jo8/pzGLm0xQJw0nEmPXt1QBAIUA==",
       "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
         "lib/DNXCore50/System.Threading.dll",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -6468,7 +6467,6 @@
         "lib/netcore50/System.Threading.dll",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "package/services/metadata/core-properties/c17c3791d8fa4efbb8aded2ca8c71fbe.psmdcp",
         "ref/dotnet/de/System.Threading.xml",
         "ref/dotnet/es/System.Threading.xml",
         "ref/dotnet/fr/System.Threading.xml",
@@ -6486,6 +6484,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Threading.dll",
+        "System.Threading.4.0.10.nupkg",
+        "System.Threading.4.0.10.nupkg.sha512",
         "System.Threading.nuspec"
       ]
     },
@@ -6759,9 +6759,8 @@
       "type": "package",
       "sha512": "bNycxZe/83M7o7j0IbGp3/daiPLi17hZgYZB6xttgCVDnxgAuw/TP1zetiUTW1yVUPASnAjlkBeJayv/G2Crsw==",
       "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
-        "package/services/metadata/core-properties/6c890516e9584d3ab4031ef8a539ff70.psmdcp",
+        "xunit.2.0.0-beta5-build2785.nupkg",
+        "xunit.2.0.0-beta5-build2785.nupkg.sha512",
         "xunit.nuspec"
       ]
     },
@@ -6769,13 +6768,12 @@
       "type": "package",
       "sha512": "b2RCnV2/wilCH1dsh7bAF82Ou+Vs+WfYLEItzRUUbD3YHNODx0ncpQwLz1JYjL/voBFc5mQh77hxIbgCGmyxKA==",
       "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
         "lib/net35/xunit.abstractions.dll",
         "lib/net35/xunit.abstractions.xml",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monotouch+monoandroid/xunit.abstractions.dll",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monotouch+monoandroid/xunit.abstractions.xml",
-        "package/services/metadata/core-properties/399f3731609f4d74afacd3835adec3ef.psmdcp",
+        "xunit.abstractions.2.0.0-beta5-build2785.nupkg",
+        "xunit.abstractions.2.0.0-beta5-build2785.nupkg.sha512",
         "xunit.abstractions.nuspec"
       ]
     },
@@ -6783,12 +6781,11 @@
       "type": "package",
       "sha512": "1PTLrP+jLzSIhqO3JzzgPcMPmSyBlFadpFH6v3d2Vm08x/bIYHnF78h20qt6wk/t3wMu7smOsyoNcUFeP2ZnGg==",
       "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monoandroid+monotouch10/xunit.assert.dll",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monoandroid+monotouch10/xunit.assert.pdb",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monoandroid+monotouch10/xunit.assert.xml",
-        "package/services/metadata/core-properties/9744844535724f06a45b33a9b7fe9d6b.psmdcp",
+        "xunit.assert.2.0.0-beta5-build2785.nupkg",
+        "xunit.assert.2.0.0-beta5-build2785.nupkg.sha512",
         "xunit.assert.nuspec"
       ]
     },
@@ -6796,8 +6793,6 @@
       "type": "package",
       "sha512": "3rDhbyvCS1iA20A7uXxYvw3LLa4MtyXUX9Y6i3QjY/dRhIHEZcSxBjBfGP3MjPm900WnsBx2H0ryQo2RWABhhg==",
       "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
         "build/monoandroid/xunit.core.props",
         "build/monoandroid/xunit.execution.dll",
         "build/monotouch/xunit.core.props",
@@ -6823,7 +6818,8 @@
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monotouch+monoandroid/xunit.core.xml",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monotouch+monoandroid/xunit.runner.tdnet.dll",
         "lib/portable-net45+aspnetcore50+win+wpa81+wp80+monotouch+monoandroid/xunit.runner.utility.dll",
-        "package/services/metadata/core-properties/7e3ae190162d4ceaa2151619ccd704ef.psmdcp",
+        "xunit.core.2.0.0-beta5-build2785.nupkg",
+        "xunit.core.2.0.0-beta5-build2785.nupkg.sha512",
         "xunit.core.nuspec"
       ]
     }

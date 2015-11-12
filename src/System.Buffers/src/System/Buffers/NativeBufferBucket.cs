@@ -9,13 +9,15 @@ using System.Threading;
 
 namespace System.Buffers
 {
-    internal unsafe sealed class NativeBufferBucket<T> where T : struct
+    internal unsafe sealed class NativeBufferBucket<T> : IDisposable where T : struct
     {
         private volatile int _index;
         private IntPtr _buffer;
         private Span<T>?[] _slices;
         private int _elementsInBuffer;
         private SpinLock _lock;
+
+        private bool _disposed;
 
         internal NativeBufferBucket(int elementsInBuffer, int numberOfBuffers)
         {
@@ -35,11 +37,29 @@ namespace System.Buffers
 
         ~NativeBufferBucket()
         {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
             Marshal.FreeHGlobal(_buffer);
+            if (disposing)
+            {
+                _disposed = true; // don't touch in the finalizer
+            }
         }
 
         internal Span<T> Rent()
         {
+            if (_disposed)
+                throw new ObjectDisposedException("NativeBufferBucket");
+
             Span<T> buffer;
 
             // Use a lightweight spinlock for our super-short lock
@@ -67,6 +87,9 @@ namespace System.Buffers
 
         internal void Return(ref Span<T> buffer)
         {
+            if (_disposed)
+                throw new ObjectDisposedException("NativeBufferBucket");
+
             // Use a lightweight spinlock for our super short lock
             bool taken = false;
             _lock.Enter(ref taken);

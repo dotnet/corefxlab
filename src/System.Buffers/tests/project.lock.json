@@ -3425,6 +3425,7 @@
   "libraries": {
     "Microsoft.Dnx.Compilation.Abstractions/1.0.0-beta8": {
       "type": "package",
+      "serviceable": true,
       "sha512": "u07MYumKjjVs1nzDMJp6DiECYmOpkT8eDsixcVJl5sQrkv/GzPTfoPeATHzbtsby3FaeIBTG35lYbsECrnHerQ==",
       "files": [
         "lib/dnx451/Microsoft.Dnx.Compilation.Abstractions.dll",
@@ -3438,6 +3439,7 @@
     },
     "Microsoft.Dnx.Runtime.Abstractions/1.0.0-beta8": {
       "type": "package",
+      "serviceable": true,
       "sha512": "t1vLklb3nzZHDbrnXw49rOwq+/ATQby/em1L3seL4wODoHS0W4L7WHG8rxbMZCnrFo/G+UhB/atxULIMuwZL5w==",
       "files": [
         "lib/dnx451/Microsoft.Dnx.Runtime.Abstractions.dll",
@@ -3451,9 +3453,11 @@
     },
     "Microsoft.Dnx.TestHost/1.0.0-beta8": {
       "type": "package",
+      "serviceable": true,
       "sha512": "+bgAlZmvgE9HVTjqndmEhixeDkcmHyFEqseONks8vIZJIMqk2DSdfNuVZPnZ3pmGDcdDco+QC1FZ/0XPs1VWDg==",
       "files": [
         "app/project.json",
+        "app/project.lock.json",
         "lib/dnx451/Microsoft.Dnx.TestHost.dll",
         "lib/dnx451/Microsoft.Dnx.TestHost.xml",
         "lib/dnxcore50/Microsoft.Dnx.TestHost.dll",
@@ -3465,6 +3469,7 @@
     },
     "Microsoft.Dnx.Testing.Abstractions/1.0.0-beta8": {
       "type": "package",
+      "serviceable": true,
       "sha512": "A88CyT4kUu9gHFPTcaQAbxoSC30zr7yNYNCgdMYvwZbNYovyrnvTGnGP8KykV04mXZOpvPXe+XQkkOVB3c+pgg==",
       "files": [
         "lib/dnx451/Microsoft.Dnx.Testing.Abstractions.dll",
@@ -3478,6 +3483,7 @@
     },
     "Microsoft.Framework.DependencyInjection.Abstractions/1.0.0-beta8": {
       "type": "package",
+      "serviceable": true,
       "sha512": "7WL9hy+7bYDyBtIrrW5tw57dChBcizjSyuD0p5pVkay+gSseLqvAk72a4KldMmRgH//7t74d/YVrTvLhw83b7w==",
       "files": [
         "lib/dnx451/Microsoft.Framework.DependencyInjection.Abstractions.dll",
@@ -3495,6 +3501,7 @@
     },
     "Microsoft.Framework.Logging/1.0.0-beta8": {
       "type": "package",
+      "serviceable": true,
       "sha512": "4PpVGirfXovwJjlLfgvM3kKgXUSSnOhqwlIFxAl6v1yTEVrrYrAxVmZ2YVz7EzTDUaeRpElm4AgCoyqHcZty4A==",
       "files": [
         "lib/dnx451/Microsoft.Framework.Logging.dll",
@@ -3512,6 +3519,7 @@
     },
     "Microsoft.Framework.Logging.Abstractions/1.0.0-beta8": {
       "type": "package",
+      "serviceable": true,
       "sha512": "m0NE8yhLNYlHlXfVRdfkwv+aR1a3oL06jf4sXejQKTnhE3hg6Biy7a3/W19ao6IaSyk640ARxrrt2jBEJzeUjg==",
       "files": [
         "lib/dnx451/Microsoft.Framework.Logging.Abstractions.dll",
@@ -3529,6 +3537,7 @@
     },
     "Microsoft.Win32.Primitives/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "CypEz9/lLOup8CEhiAmvr7aLs1zKPYyEU1sxQeEr6G0Ci8/F0Y6pYR1zzkROjM8j8Mq0typmbu676oYyvErQvg==",
       "files": [
         "lib/dotnet/Microsoft.Win32.Primitives.dll",
@@ -3867,6 +3876,7 @@
     },
     "System.Collections/4.0.11-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "m0DkCw77atHTUmQH/hzHRed/f0tAniyl4S8MQUoF8okdg99VA24lWGtgh+ZouC3n9pJA4FXt9GQvcmvDMtTWCg==",
       "files": [
         "lib/DNXCore50/de/System.Collections.xml",
@@ -3920,6 +3930,7 @@
     },
     "System.Collections.Concurrent/4.0.11-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "TgSZK3wQJBbv9jK5sdGyEle1YSslFgRLwXY67CWJWOKwVo/ueEyqeItQ2oZId8Rus8px/sdnXPotbMXC78ZMQQ==",
       "files": [
         "lib/dotnet/de/System.Collections.Concurrent.xml",
@@ -3983,6 +3994,7 @@
     },
     "System.ComponentModel/4.0.1-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "f2B63u5mLi2B9UkndsEu8Q7Br3OEZ4Gp7QaePnQiqMs8jjVMUCBGiQFAy7uxB0BE+6JFG0yGdpPNdlPi9T4CRw==",
       "files": [
         "lib/dotnet/de/System.ComponentModel.xml",
@@ -4047,6 +4059,7 @@
     },
     "System.Console/4.0.0-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "vVstiHq9NKm6jfqm2OQGYgEinU4Zrwbcjtfxq61v0xHXVhx8p3igw9XQCdCOILf1ZWsZtKcvdbcazNP7tL+u+g==",
       "files": [
         "lib/MonoAndroid10/_._",
@@ -4100,6 +4113,7 @@
     },
     "System.Diagnostics.Process/4.1.0-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "VLTAJH3qKr4UUJeoP75sTeTWCyvsX2RQD1JoaXrXrqGLE4VXIDBlJEFd/Llbtupq09DvRcKSJohownJh5M5x9A==",
       "files": [
         "lib/MonoAndroid10/_._",
@@ -4141,6 +4155,7 @@
     },
     "System.Diagnostics.TextWriterTraceListener/4.0.0-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "M7NzNfJve/zyd8eZKwlboa3JCKadlsUu16wXAOHHgfQFC2jRu0uzYvq5aotihrbasDIRykmk431eonhaMMxP3A==",
       "files": [
         "lib/DNXCore50/de/System.Diagnostics.TextWriterTraceListener.xml",
@@ -4206,6 +4221,7 @@
     },
     "System.Diagnostics.TraceSource/4.0.0-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "43qywT02IIcP3uRoIYndSa6tTalx2VIVulk7lTN++hFCpHvne8zrD7HNuBn8AnfgDWohEkO4kFbvCpiwbOSGhg==",
       "files": [
         "lib/MonoAndroid10/_._",
@@ -4227,6 +4243,7 @@
     },
     "System.Diagnostics.Tracing/4.0.20": {
       "type": "package",
+      "serviceable": true,
       "sha512": "gn/wexGHc35Fv++5L1gYHMY5g25COfiZ0PGrL+3PfwzoJd4X2LbTAm/U8d385SI6BKQBI/z4dQfvneS9J27+Tw==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.Tracing.dll",
@@ -4328,6 +4345,7 @@
     },
     "System.IO.Compression/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "S+ljBE3py8pujTrsOOYHtDg2cnAifn6kBu/pfh1hMWIXd8DoVh0ADTA6Puv4q+nYj+Msm6JoFLNwuRSmztbsDQ==",
       "files": [
         "lib/dotnet/System.IO.Compression.dll",
@@ -4389,6 +4407,7 @@
     },
     "System.IO.FileSystem/4.0.1-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "rJ1qnAG50/+luhCinZa/Vle7vLyFZSw89ycK5wM8EIhlK9osZ68gcLF0d6X/3mz1UOr4VGMnu6/XS5uELmOZ0g==",
       "files": [
         "lib/MonoAndroid10/_._",
@@ -4410,6 +4429,7 @@
     },
     "System.IO.FileSystem.Primitives/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "7pJUvYi/Yq3A5nagqCCiOw3+aJp3xXc/Cjr8dnJDnER3/6kX3LEencfqmXUcPl9+7OvRNyPMNhqsLAcMK6K/KA==",
       "files": [
         "lib/dotnet/System.IO.FileSystem.Primitives.dll",
@@ -4441,6 +4461,7 @@
     },
     "System.Linq/4.0.1-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "VqrieHGgjmtYEPqqVQyw1jOFDVQuo5KvAEXaAavvpefiBBs+n6x3K3GG1qqDCYlA2GOz/8Snh6CSNZ8pl+O2bw==",
       "files": [
         "lib/dotnet/de/System.Linq.xml",
@@ -4473,6 +4494,7 @@
     },
     "System.Linq.Expressions/4.0.11-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "CXZPkabv/+t4w8AVb1BEWV8WfqRcY5Nr3SGppiyxcv7BJ33tUbEZ95attbEGguwDlhRYPGOMAXhrUHzi8zbVvg==",
       "files": [
         "lib/DNXCore50/de/System.Linq.Expressions.xml",
@@ -4527,6 +4549,7 @@
     },
     "System.Net.Http/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "mZuAl7jw/mFY8jUq4ITKECxVBh9a8SJt9BC/+lJbmo7cRKspxE3PsITz+KiaCEsexN5WYPzwBOx0oJH/0HlPyQ==",
       "files": [
         "lib/DNXCore50/System.Net.Http.dll",
@@ -4557,6 +4580,7 @@
     },
     "System.Net.Primitives/4.0.11-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "WNz1rOxe8OJaMJxr+SFOVDp8OEOzIsg1H2/72nYuLvRonEL//DtiPEeroydUkeP2JD7z0GOzRaPXB6SgpJsQ+g==",
       "files": [
         "lib/MonoAndroid10/_._",
@@ -4578,6 +4602,7 @@
     },
     "System.Net.Sockets/4.1.0-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "v+oQgsXYbwZal83dd5ryeSWYdXMydLqY90vc4CtAOPOcT8u8vC1W/tYou6GdR0HIKf6zt1PGFC5GkKi7Cj1HdA==",
       "files": [
         "lib/MonoAndroid10/_._",
@@ -4619,6 +4644,7 @@
     },
     "System.ObjectModel/4.0.10": {
       "type": "package",
+      "serviceable": true,
       "sha512": "Djn1wb0vP662zxbe+c3mOhvC4vkQGicsFs1Wi0/GJJpp3Eqp+oxbJ+p2Sx3O0efYueggAI5SW+BqEoczjfr1cA==",
       "files": [
         "lib/dotnet/System.ObjectModel.dll",
@@ -4676,6 +4702,7 @@
     },
     "System.Reflection/4.1.0-beta-23225": {
       "type": "package",
+      "serviceable": true,
       "sha512": "WbLtaCxoe5XdqEyZuGpemSQ8YBJ8cj11zx+yxOxJfHbNrmu7oMQ29+J50swaqg3soUc3BVBMqfIhb/7gocDHQA==",
       "files": [
         "lib/DNXCore50/System.Reflection.dll",
@@ -4779,6 +4806,7 @@
     },
     "System.Reflection.Extensions/4.0.1-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "t5cS0b8mUdbaMqR2A58Ms75+dKWljYuljrMs2A7UTZbfu4W1i+9lvZr+LPwEMqNdB5F3EiJNNWCoBFlZFxT11w==",
       "files": [
         "lib/DNXCore50/System.Reflection.Extensions.dll",
@@ -4811,6 +4839,7 @@
     },
     "System.Reflection.Primitives/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "n9S0XpKv2ruc17FSnaiX6nV47VfHTZ1wLjKZlAirUZCvDQCH71mVp+Ohabn0xXLh5pK2PKp45HCxkqu5Fxn/lA==",
       "files": [
         "lib/DNXCore50/System.Reflection.Primitives.dll",
@@ -4844,6 +4873,7 @@
     },
     "System.Reflection.TypeExtensions/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "YRM/msNAM86hdxPyXcuZSzmTO0RQFh7YMEPBLTY8cqXvFPYIx2x99bOyPkuU81wRYQem1c1HTkImQ2DjbOBfew==",
       "files": [
         "lib/DNXCore50/System.Reflection.TypeExtensions.dll",
@@ -4977,6 +5007,7 @@
     },
     "System.Runtime.Handles/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "638VhpRq63tVcQ6HDb3um3R/J2BtR1Sa96toHo6PcJGPXEPEsleCuqhBgX2gFCz0y0qkutANwW6VPPY5wQu1XQ==",
       "files": [
         "lib/DNXCore50/System.Runtime.Handles.dll",
@@ -5044,6 +5075,7 @@
     },
     "System.Security.Cryptography.Algorithms/4.0.0-beta-23225": {
       "type": "package",
+      "serviceable": true,
       "sha512": "GjeU8uLxWigoEEtfD2aBtPLmskJNnanmUwNSNKdHHzIuGr69hwmSsaVA1IDJSQ1dX5WQY32v1O1MROCfEq/Seg==",
       "files": [
         "lib/DNXCore50/System.Security.Cryptography.Algorithms.dll",
@@ -5065,6 +5097,7 @@
     },
     "System.Security.Cryptography.Hashing.Algorithms/4.0.0-beta-23225": {
       "type": "package",
+      "serviceable": true,
       "sha512": "XY15yEU8nhSexa/zr4ie3mtlFsPHdQODumfqQwwjBbRlA+jdn0ue8oabzlGy6UsppZWcCZgwpnpDFqiu1aixMg==",
       "files": [
         "lib/DNXCore50/System.Security.Cryptography.Hashing.Algorithms.dll",
@@ -5075,6 +5108,7 @@
     },
     "System.Security.Cryptography.Primitives/4.0.0-beta-23225": {
       "type": "package",
+      "serviceable": true,
       "sha512": "acOPCfkrkOFr/NAnA+hIOnY8yQZr94JzJ02heQDIqE0sFKyBITLbgQBoO+gTBVRxGr1o+oiYbFnXY0Q30+SACg==",
       "files": [
         "lib/DNXCore50/System.Security.Cryptography.Primitives.dll",
@@ -5195,6 +5229,7 @@
     },
     "System.Text.RegularExpressions/4.0.10": {
       "type": "package",
+      "serviceable": true,
       "sha512": "0vDuHXJePpfMCecWBNOabOKCvzfTbFMNcGgklt3l5+RqHV5SzmF7RUVpuet8V0rJX30ROlL66xdehw2Rdsn2DA==",
       "files": [
         "lib/dotnet/System.Text.RegularExpressions.dll",
@@ -5317,6 +5352,7 @@
     },
     "System.Threading.Thread/4.0.0-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "P69kQVO3f9z2f7/vpSukvncQ8PJmxrNXl6w5mNb1FiS+HZES1MqKhDXz2yAiykqSPo+ND1qWISL6qD/hOrWeLw==",
       "files": [
         "lib/DNXCore50/System.Threading.Thread.dll",
@@ -5338,6 +5374,7 @@
     },
     "System.Threading.ThreadPool/4.0.10-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "XeD7mDWCdLEWPGmX9zJ2XP/D9qe7g2JDxOcjPz9iOarHm/RriQWEAVLtOkQj/6WhosfYt2E8Q4okTB+mPNUhCA==",
       "files": [
         "lib/DNXCore50/System.Threading.ThreadPool.dll",
@@ -5359,6 +5396,7 @@
     },
     "System.Xml.ReaderWriter/4.0.10": {
       "type": "package",
+      "serviceable": true,
       "sha512": "VdmWWMH7otrYV7D+cviUo7XjX0jzDnD/lTGSZTlZqfIQ5PhXk85j+6P0TK9od3PnOd5ZIM+pOk01G/J+3nh9/w==",
       "files": [
         "lib/dotnet/System.Xml.ReaderWriter.dll",
@@ -5390,6 +5428,7 @@
     },
     "System.Xml.XDocument/4.0.11-beta-23409": {
       "type": "package",
+      "serviceable": true,
       "sha512": "E2cEmEXzv3+x10cG69Uc50gt2YLvHUmlee9HJ4M6yFcBpVD2/E1V1lm8Fu6Y1jZQcokZY/rXiZQxt/U56FJPnQ==",
       "files": [
         "lib/dotnet/de/System.Xml.XDocument.xml",

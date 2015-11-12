@@ -1,5 +1,5 @@
 {
-  "locked": true,
+  "locked": false,
   "version": 2,
   "targets": {
     "DNXCore,Version=v5.0": {
@@ -269,7 +269,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23510": {
+      "System.Console/4.0.0-beta-23511": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -1449,7 +1449,7 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
-      "runtime.win7.System.Console/4.0.0-beta-23510": {
+      "runtime.win7.System.Console/4.0.0-beta-23511": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -1598,7 +1598,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23510": {
+      "System.Console/4.0.0-beta-23511": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -2802,7 +2802,7 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
-      "runtime.win7.System.Console/4.0.0-beta-23510": {
+      "runtime.win7.System.Console/4.0.0-beta-23511": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -2951,7 +2951,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23510": {
+      "System.Console/4.0.0-beta-23511": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -4153,14 +4153,14 @@
         "ref/xamarinmac20/_._"
       ]
     },
-    "runtime.win7.System.Console/4.0.0-beta-23510": {
+    "runtime.win7.System.Console/4.0.0-beta-23511": {
       "type": "package",
       "serviceable": true,
-      "sha512": "nHU+l6sEn8yd8dQxkyMmhxfJL/383KDS9hINGmLbV4v62NcQ5PgIOE+63banvaZowjAx9agdr8z6K826tBcR6Q==",
+      "sha512": "eYglcvwS4XJodUc6Cw9UDGhiA0TiNZ+0mo2PXcm5xQaqHXz2+bytOPg/jh7R4+ihi50zZ+myt7EuvkR9SBvfYQ==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.Console.4.0.0-beta-23510.nupkg",
-        "runtime.win7.System.Console.4.0.0-beta-23510.nupkg.sha512",
+        "runtime.win7.System.Console.4.0.0-beta-23511.nupkg",
+        "runtime.win7.System.Console.4.0.0-beta-23511.nupkg.sha512",
         "runtime.win7.System.Console.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.Console.dll",
         "runtimes/win7/lib/net/_._"
@@ -4408,10 +4408,10 @@
         "System.ComponentModel.EventBasedAsync.nuspec"
       ]
     },
-    "System.Console/4.0.0-beta-23510": {
+    "System.Console/4.0.0-beta-23511": {
       "type": "package",
       "serviceable": true,
-      "sha512": "5bURQAM31UuDv41drdv9nx/uuXXkWkD6f79b9Ptap+eQ1nsddAf7ocOLHdThwM/wkQ9AKaFyLLYCyUdH4quf7g==",
+      "sha512": "vTBLODc40A8p6guqpaIsHPqkZ3zu2P+Iaha98DIEJew2WNjQXgc0L1q4yYhHRcuNox4jtkUG2Er9ZKPxBjCLBQ==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -4435,8 +4435,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.Console.4.0.0-beta-23510.nupkg",
-        "System.Console.4.0.0-beta-23510.nupkg.sha512",
+        "System.Console.4.0.0-beta-23511.nupkg",
+        "System.Console.4.0.0-beta-23511.nupkg.sha512",
         "System.Console.nuspec"
       ]
     },
@@ -4870,6 +4870,7 @@
     },
     "System.IO.FileSystem.Primitives/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "7pJUvYi/Yq3A5nagqCCiOw3+aJp3xXc/Cjr8dnJDnER3/6kX3LEencfqmXUcPl9+7OvRNyPMNhqsLAcMK6K/KA==",
       "files": [
         "lib/dotnet/System.IO.FileSystem.Primitives.dll",
@@ -5512,6 +5513,7 @@
     },
     "System.Reflection.Primitives/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "n9S0XpKv2ruc17FSnaiX6nV47VfHTZ1wLjKZlAirUZCvDQCH71mVp+Ohabn0xXLh5pK2PKp45HCxkqu5Fxn/lA==",
       "files": [
         "lib/DNXCore50/System.Reflection.Primitives.dll",
@@ -5613,6 +5615,7 @@
     },
     "System.Resources.ResourceManager/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "qmqeZ4BJgjfU+G2JbrZt4Dk1LsMxO4t+f/9HarNY6w8pBgweO6jT+cknUH7c3qIrGvyUqraBhU45Eo6UtA0fAw==",
       "files": [
         "lib/DNXCore50/System.Resources.ResourceManager.dll",
@@ -5748,6 +5751,7 @@
     },
     "System.Runtime.Handles/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "638VhpRq63tVcQ6HDb3um3R/J2BtR1Sa96toHo6PcJGPXEPEsleCuqhBgX2gFCz0y0qkutANwW6VPPY5wQu1XQ==",
       "files": [
         "lib/DNXCore50/System.Runtime.Handles.dll",
@@ -5815,6 +5819,7 @@
     },
     "System.Runtime.InteropServices/4.0.20": {
       "type": "package",
+      "serviceable": true,
       "sha512": "ZgDyBYfEnjWoz/viS6VOswA6XOkDSH2DzgbpczbW50RywhnCgTl+w3JEvtAiOGyIh8cyx1NJq80jsNBSUr8Pig==",
       "files": [
         "lib/DNXCore50/System.Runtime.InteropServices.dll",
@@ -6131,7 +6136,7 @@
     "System.Slices/0.1.0-d103015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "1u1LZevMrER/vGicD2NMBhz9Erva68FchBvd75Q/RweHsEoIhpWBkNTyd0NgyqOvo35M4TN3Uvca8y1Tneuv3A==",
+      "sha512": "eC7aluMKuzg9PB+2fSFOkcHN6NRN5yT+SJptlgUNLJ4WX9FJmtnUe+Pt8YoSa4ahbGbNp6towrfoAzXhB8Ofuw==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
         "System.Slices.0.1.0-d103015-1.nupkg",
@@ -6339,6 +6344,7 @@
     },
     "System.Threading/4.0.10": {
       "type": "package",
+      "serviceable": true,
       "sha512": "0w6pRxIEE7wuiOJeKabkDgeIKmqf4ER1VNrs6qFwHnooEE78yHwi/bKkg5Jo8/pzGLm0xQJw0nEmPXt1QBAIUA==",
       "files": [
         "lib/DNXCore50/System.Threading.dll",
@@ -6431,6 +6437,7 @@
     },
     "System.Threading.Tasks/4.0.10": {
       "type": "package",
+      "serviceable": true,
       "sha512": "NOwJGDfk79jR0bnzosbXLVD/PdI8KzBeESoa3CofEM5v9R5EBfcI0Jyf18stx+0IYV9okmDIDxVtxq9TbnR9bQ==",
       "files": [
         "lib/DNXCore50/System.Threading.Tasks.dll",

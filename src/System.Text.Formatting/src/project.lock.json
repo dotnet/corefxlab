@@ -1,5 +1,5 @@
 {
-  "locked": true,
+  "locked": false,
   "version": 2,
   "targets": {
     "DNXCore,Version=v5.0": {
@@ -571,7 +571,7 @@
     "System.Buffers/0.1.0-d103015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "+i8W5qHjwNVWDPG0kZuloko3r6GdpPlkzqXX+IqPYV/vfRMvCk3naa4aMui567mtRk7gJmOwnMYdMYeAcf8rKQ==",
+      "sha512": "QRfU+SiEqqariF4BvW5xL6gderJLHmDvms0UPQXOkJZasoKoRsNVI8dYzPDDxrWqoEEO4vBnTeGyETEO+bL48w==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll",
         "System.Buffers.0.1.0-d103015-1.nupkg",
@@ -1099,7 +1099,7 @@
     "System.Slices/0.1.0-d103015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "1u1LZevMrER/vGicD2NMBhz9Erva68FchBvd75Q/RweHsEoIhpWBkNTyd0NgyqOvo35M4TN3Uvca8y1Tneuv3A==",
+      "sha512": "eC7aluMKuzg9PB+2fSFOkcHN6NRN5yT+SJptlgUNLJ4WX9FJmtnUe+Pt8YoSa4ahbGbNp6towrfoAzXhB8Ofuw==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
         "System.Slices.0.1.0-d103015-1.nupkg",
