@@ -44,10 +44,10 @@ For an overview of all the .NET related projects, have a look at the
 [.NET home repository](https://github.com/Microsoft/dotnet).
 
 ## How to Use
-You can get the .NET Core Lab packages from **netcore-package-prototyping** MyGet feed: 
+You can get the .NET Core Lab packages from **dotnet-corefxlab** MyGet feed: 
 
 ```
-https://www.myget.org/F/netcore-package-prototyping/api/v2
+https://www.myget.org/F/dotnet-corefxlab/api/v2
 ```
 
 You can add this feed among your NuGet sources and install the packages (keep in mind that packages are pre-release packages).
