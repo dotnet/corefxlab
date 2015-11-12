@@ -14,6 +14,7 @@ namespace dotnet
             Unsafe = false;
             Optimize = false;
             SourceFiles = new List<string>();
+            Runtime = "win7-x64";
         }
 
         private static readonly List<string> CommandFunctions = new List<string>
@@ -40,7 +41,9 @@ namespace dotnet
             "/target",
             "/recurse",
             "/debug",
-            "/platform"
+            "/platform",
+            "/reference",
+            "/runtime"
         };
 
         private static readonly List<string> TargetSpecifications = new List<string>
@@ -67,6 +70,7 @@ namespace dotnet
         public string Platform;
         public string Recurse;
         public string Debug;
+        public string Runtime;
 
         public bool Log;
         public bool Unsafe;
@@ -74,7 +78,8 @@ namespace dotnet
 
         public string ProjectFile;
 
-        public List<string> SourceFiles; 
+        public List<string> SourceFiles;
+        public List<string> References;
 
         public bool SetTargetSpecification(string specification)
         {
@@ -90,6 +95,12 @@ namespace dotnet
             return true;
         }
 
+        public bool SetReferenceSpecification(string specification)
+        {
+            References = new List<string>(specification.Split(','));
+            return true;
+        }
+
         public bool SetDebugSpecification(string specification)
         {
             if (!DebugSpecifications.Contains(specification)) return false;
@@ -100,6 +111,12 @@ namespace dotnet
         public bool SetRecurseSpecification(string specification)
         {
             Recurse = specification;
+            return true;
+        }
+
+        public bool SetRuntimeSpecification(string specification)
+        {
+            Runtime = specification;
             return true;
         }
 

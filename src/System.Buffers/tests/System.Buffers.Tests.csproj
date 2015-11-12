@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
   <PropertyGroup>
@@ -15,8 +15,14 @@
     <RestorePackages>true</RestorePackages>
     <NuGetPackageImportStamp>7a9bfb7d</NuGetPackageImportStamp>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ProjectGuid>{DD942FDB-184A-4D9F-8A1E-3D531858A4B1}</ProjectGuid>
+    <AssemblyAttributeClsCompliant>false</AssemblyAttributeClsCompliant>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
   <ItemGroup>
     <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
       <Visible>False</Visible>
@@ -28,6 +34,9 @@
   <ItemGroup>
     <ProjectReference Include="..\src\System.Buffers.csproj">
       <Name>System.Buffers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.Slices\src\System.Slices.csproj">
+      <Name>System.Slices</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

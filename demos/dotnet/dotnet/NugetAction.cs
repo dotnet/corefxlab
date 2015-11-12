@@ -46,7 +46,7 @@ namespace dotnet
             CreateNugetConfig(properties);
 
             var client = new HttpClient();
-            var requestUri = new Uri(@"http://dist.nuget.org/win-x86-commandline/v3.1.0-beta/nuget.exe",
+            var requestUri = new Uri(@"https://dist.nuget.org/win-x86-commandline/v3.2.1-rc/nuget.exe",
                 UriKind.Absolute);
 
             var sourceStreamTask = client.GetStreamAsync(requestUri);
@@ -108,7 +108,8 @@ namespace dotnet
 
                 file.WriteLine(@"    ""runtimes"": {");
                 file.WriteLine(@"        ""win7-x86"": { },");
-                file.WriteLine(@"        ""win7-x64"": { }");
+                file.WriteLine(@"        ""win7-x64"": { },");
+                file.WriteLine(@"        ""ubuntu.14.04-x64"": { }");
                 file.WriteLine(@"    }");
                 file.WriteLine(@"}");
 
@@ -129,7 +130,6 @@ namespace dotnet
                     @"        <add key = ""netcore-prototype"" value=""https://www.myget.org/F/netcore-package-prototyping""/>");
                 file.WriteLine(
                     @"        <add key = ""nuget.org"" value = ""https://api.nuget.org/v3/index.json"" protocolVersion = ""3""/>");
-                file.WriteLine(@"        <add key = ""nuget.org"" value = ""https://www.nuget.org/api/v2/""/>");
 
                 file.WriteLine(@"    </packageSources>");
                 file.WriteLine(@"</configuration>");

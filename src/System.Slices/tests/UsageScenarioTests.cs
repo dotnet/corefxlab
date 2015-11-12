@@ -33,14 +33,16 @@ namespace System.Slices.Tests
         [InlineData(new byte[] { 0, 1, 2 })]
         [InlineData(new byte[] { 0, 1, 2, 3 })]
         [InlineData(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 })]
+        [CLSCompliant(false)] // TODO: find out why the assembly-level CLSCompliant=false doesn't work
         public void CtorSpanOverByteArrayValidCasesWithPropertiesAndBasicOperationsChecks(byte[] array)
         {
             Span<byte> span = new Span<byte>(array);
             Assert.Equal(array.Length, span.Length);
 
-            Assert.NotSame(array, span.Copy());
+            Assert.NotSame(array, span.CreateArray());
             Assert.True(span.ReferenceEquals(span));
             Assert.True(span.Equals(span));
+            Assert.True(span.Equals((object)span));
             Assert.Equal(span.GetHashCode(), span.GetHashCode());
             Assert.False(span.Equals(array));
 
@@ -82,6 +84,7 @@ namespace System.Slices.Tests
                 Assert.Equal(span.GetHashCode(), sameSpan.GetHashCode());
                 Assert.True(span.ReferenceEquals(sameSpan));
                 Assert.True(span.Equals(sameSpan));
+                Assert.True(span.Equals((object)sameSpan));
             }
 
             {
@@ -89,6 +92,7 @@ namespace System.Slices.Tests
                 Assert.Equal(span.GetHashCode(), structCopy.GetHashCode());
                 Assert.True(span.ReferenceEquals(structCopy));
                 Assert.True(span.Equals(structCopy));
+                Assert.True(span.Equals((object)structCopy));
             }
 
             {
@@ -99,16 +103,18 @@ namespace System.Slices.Tests
                     differentArray[array.Length + i] = array[i];
                 }
                 {
-                    Span<byte> equivalentSpan = new Span<byte>(differentArray, array.Length);
+                    Span<byte> equivalentSpan = new Span<byte>(differentArray, array.Length, array.Length);
                     Assert.Equal(span.GetHashCode(), equivalentSpan.GetHashCode());
                     Assert.False(span.ReferenceEquals(equivalentSpan));
                     Assert.True(span.Equals(equivalentSpan));
+                    Assert.True(span.Equals((object)equivalentSpan));
 
                     if (equivalentSpan.Length > 0)
                     {
                         Span<byte> similarSpan = equivalentSpan.Slice(0, equivalentSpan.Length - 1);
                         Assert.False(span.ReferenceEquals(similarSpan));
                         Assert.False(span.Equals(similarSpan));
+                        Assert.False(span.Equals((object)similarSpan));
                     }
                 }
 
@@ -119,10 +125,12 @@ namespace System.Slices.Tests
                     if (array.Length == 0)
                     {
                         Assert.True(span.Equals(differentSpan));
+                        Assert.True(span.Equals((object)differentSpan));
                     }
                     else
                     {
                         Assert.False(span.Equals(differentSpan));
+                        Assert.False(span.Equals((object)differentSpan));
                     }
                 }
             }
@@ -248,7 +256,7 @@ namespace System.Slices.Tests
             new byte[] { 1, 2, 3, 4, 5, 6 }, 0, 6)]
         // copy no bytes starting at the end
         [InlineData(
-            (byte[])null,
+            new byte[] { 7, 7, 7, 4, 5, 6 },
             new byte[] { 1, 2, 3, 7, 7, 7 }, 6, 0,
             new byte[] { 7, 7, 7, 4, 5, 6 }, 0, 6)]
         // copy first byte of 1 element array to last position
@@ -296,6 +304,7 @@ namespace System.Slices.Tests
             (byte[])null,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 4, 2,
             new byte[] { 7, 7, 7, 7, 7, 7 }, 5, 1)]
+        [CLSCompliant(false)] // TODO: find out why the assembly-level CLSCompliant=false doesn't work
         public void SpanOfByteCopyToAnotherSpanOfByteTwoDifferentBuffersValidCases(byte[] expected, byte[] a, int aidx, int acount, byte[] b, int bidx, int bcount)
         {
             if (expected != null)
@@ -303,7 +312,7 @@ namespace System.Slices.Tests
                 Span<byte> spanA = new Span<byte>(a, aidx, acount);
                 Span<byte> spanB = new Span<byte>(b, bidx, bcount);
 
-                spanA.CopyTo(spanB);
+                Assert.True(spanA.TryCopyTo(spanB));
                 Assert.Equal(expected, b);
 
                 Span<byte> spanExpected = new Span<byte>(expected);
@@ -314,19 +323,7 @@ namespace System.Slices.Tests
             {
                 Span<byte> spanA = new Span<byte>(a, aidx, acount);
                 Span<byte> spanB = new Span<byte>(b, bidx, bcount);
-                // TODO: Should this all be ArgumentException?
-
-                try
-                {
-                    spanA.CopyTo(spanB);
-                }
-                catch (Exception e)
-                {
-                    if (!(e is ArgumentException))
-                    {
-                        output.WriteLine("TODO: Are you sure this should be throwing {0}?", e.GetType().FullName);
-                    }
-                }
+                Assert.False(spanA.TryCopyTo(spanB));
             }
         }
     }

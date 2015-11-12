@@ -1,91 +1,137 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Utf8;
-using LowAllocationServer;
 
 namespace System.Net.Http.Buffered
 {
     public struct HttpHeaders : IEnumerable<KeyValuePair<Utf8String, Utf8String>>
     {
-        private readonly ByteSpan _bytes;
-
-        private readonly List<KeyValuePair<Utf8String, Utf8String>?> _headers;
-
+        private readonly Utf8String _headerString;
+        private int _count;
+        
         public HttpHeaders(ByteSpan bytes)
         {
-            _bytes = bytes;
-            _headers = new List<KeyValuePair<Utf8String, Utf8String>?>();
-
-            ParseHeaders();
+            _headerString = new Utf8String(bytes);
+            _count = -1;
         }
 
-        private void ParseHeaders()
+        public HttpHeaders(Utf8String headerString)
         {
-            var bytes = _bytes;
-            while (bytes.Length > 0)
-            {
-                int parsedBytes;
-                var header = ParseHeaderLine(bytes, out parsedBytes);
-                _headers.Add(header);
-                bytes = bytes.Slice(parsedBytes);
-            }
-        }
-
-        private KeyValuePair<Utf8String, Utf8String> ParseHeaderLine(ByteSpan bytes, out int parsedBytes)
-        {
-            int consumedBytes;
-            var headerName = new Utf8String(bytes.SliceTo(':', out consumedBytes));
-            parsedBytes = consumedBytes;
-
-            bytes = bytes.Slice(consumedBytes);
-            var headerValue = new Utf8String(bytes.SliceTo('\r', '\n', out consumedBytes));
-            parsedBytes += consumedBytes;
-
-            return new KeyValuePair<Utf8String, Utf8String>(headerName, headerValue);
+            _headerString = headerString;
+            _count = -1;
         }
 
         public Utf8String this[string headerName]
         {
             get
             {
-                var header = _headers.FirstOrDefault(h => h.HasValue && h.Value.Key == new Utf8String(headerName));
-                
-                return header?.Value ?? Utf8String.Empty;
+                foreach (var header in this)
+                {
+                    if (header.Key == headerName)
+                    {
+                        return header.Value;
+                    }
+                }
+
+                return Utf8String.Empty;
             }
         }
 
-        public int Count => _headers.Count;
+        public int Count
+        {
+            get
+            {
+                if (_count != -1)
+                {
+                    return _count;
+                }
+
+                _count = 0;
+                foreach (var header in this)
+                {
+                    _count++;
+                }
+
+                return _count;
+            }
+        }
 
         public Enumerator GetEnumerator()
         {
-            return new Enumerator();
+            return new Enumerator(_headerString);
+        }        
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        IEnumerator<KeyValuePair<Utf8String, Utf8String>> IEnumerable<KeyValuePair<Utf8String, Utf8String>>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        private static Utf8String ParseHeaderLine(Utf8String headerString, out KeyValuePair<Utf8String, Utf8String> header)
+        {
+            Utf8String headerName;
+            Utf8String headerValue;
+
+            //TODO: this will be simplified once we have TrySubstringTo/From accepting strings            
+            if (!headerString.TrySubstringTo((Utf8CodeUnit) (byte) ':', out headerName))
+            {
+                throw new ArgumentException("headerString");
+            }
+
+            headerString.TrySubstringFrom((Utf8CodeUnit) (byte) ':', out headerString);
+            if (headerString.Length > 0)
+            {
+                headerString = headerString.Substring(1);
+            }
+            
+            if (!headerString.TrySubstringTo((Utf8CodeUnit)(byte)'\r', out headerValue))
+            {
+                throw new ArgumentException("headerString");
+            }
+
+            headerString.TrySubstringFrom((Utf8CodeUnit)(byte)'\n', out headerString);
+            if (headerString.Length > 0)
+            {
+                headerString = headerString.Substring(1);
+            }            
+            
+            header = new KeyValuePair<Utf8String, Utf8String>(headerName, headerValue);
+
+            return headerString;
         }
 
         public struct Enumerator : IEnumerator<KeyValuePair<Utf8String, Utf8String>>
         {
-            ByteSpan _bytes;
-            int _index;
+            private readonly Utf8String _originalHeaderString;
+            private Utf8String _headerString;
+            private KeyValuePair<Utf8String, Utf8String> _current;
 
-            internal Enumerator(ByteSpan bytes)
+            internal Enumerator(Utf8String originalHeaderString)
             {
-                _bytes = bytes;
-                _index = 0;
+                _originalHeaderString = originalHeaderString;
+                _headerString = _originalHeaderString;
+                _current = new KeyValuePair<Utf8String, Utf8String>();
             }
 
-            public bool MoveNext() {
-                throw new NotImplementedException();
-            }
-
-            public KeyValuePair<Utf8String, Utf8String> Current { get { throw new NotImplementedException(); } }
-
-            object IEnumerator.Current
+            public bool MoveNext()
             {
-                get
+                if (_headerString.Length == 0)
                 {
-                    return Current;
+                    return false;
                 }
+
+                _headerString = ParseHeaderLine(_headerString, out _current);
+
+                return true;
             }
+
+            public KeyValuePair<Utf8String, Utf8String> Current => _current;
+
+            object IEnumerator.Current => Current;
 
             void IDisposable.Dispose()
             {
@@ -93,18 +139,9 @@ namespace System.Net.Http.Buffered
 
             void IEnumerator.Reset()
             {
-                _index = 0;
+                _headerString = _originalHeaderString;
+                _current = new KeyValuePair<Utf8String, Utf8String>();
             }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new Enumerator(_bytes);
-        }
-
-        IEnumerator<KeyValuePair<Utf8String, Utf8String>> IEnumerable<KeyValuePair<Utf8String, Utf8String>>.GetEnumerator()
-        {
-            return new Enumerator(_bytes);
         }
     }
 }

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,9 +24,9 @@ namespace dotnet
             properties.OutputDirectory = Path.Combine(properties.ProjectDirectory, "bin");
             properties.ToolsDirectory = Path.Combine(properties.ProjectDirectory, "tools");
             properties.AssemblyName = Path.GetFileName(properties.ProjectDirectory);
-            properties.OutputType = buildDll ? ".dll" : ".exe";
+            properties.OutputType = buildDll ? ".dll" : (settings.Runtime.StartsWith("ubuntu") || settings.Runtime.StartsWith("linux")) ? "" : ".exe";
             properties.Target = "DNXCore,Version=v5.0";
-            properties.RuntimeIdentifier = "win7-x64";
+            properties.RuntimeIdentifier = settings.Runtime;
             FindCompiler(properties);
 
             AddToListWithoutDuplicates(properties.Sources, ParseProjectFile(properties, settings.ProjectFile, "Compile"));
@@ -54,11 +55,21 @@ namespace dotnet
                 properties.CscOptions.Add("/platform:" + settings.Platform);
 
             // Packages
-            properties.Packages.Add(@"""Microsoft.NETCore"": ""5.0.0""");
-            properties.Packages.Add(@"""System.Console"": ""4.0.0-beta-23123""");
-            //properties.Packages.Add(@"""Microsoft.NETCore.Console"": ""1.0.0-beta-*""");
-            properties.Packages.Add(GetConsoleHost(platformOptionSpecicifcation));
-            properties.Packages.Add(GetRuntimeCoreClr(platformOptionSpecicifcation));
+            properties.Packages.Add(@"""Microsoft.NETCore"": ""5.0.1-beta-23505""");
+            properties.Packages.Add(@"""System.Console"": ""4.0.0-beta-23505""");
+
+            properties.Packages.Add(@"""System.Text.Formatting"": ""0.1.0-d103015-1""");
+            properties.Packages.Add(@"""System.Slices"": ""0.1.0-d103015-1""");
+            properties.Packages.Add(@"""System.Buffers"": ""0.1.0-d103015-1""");
+
+            properties.Packages.Add(@"""Microsoft.NETCore.ConsoleHost"": ""1.0.0-beta-23505""");
+            properties.Packages.Add(@"""Microsoft.NETCore.Runtime"": ""1.0.1-beta-23505""");
+
+            // add explicit references
+            if (settings.References != null)
+            {
+                properties.References.AddRange(settings.References);
+            }
 
             // CSC OPTIONS
             properties.CscOptions.Add("/nostdlib");
@@ -96,41 +107,6 @@ namespace dotnet
                 return "x86";
             }
             return "x64";
-        }
-
-        public static string GetRuntimeCoreClr(string platform)
-        {
-            // platform - x86, x64, arm
-            return "\"Microsoft.NETCore.Runtime.CoreCLR-" + platform.ToLower() + "\": \"1.0.0\"";
-        }
-
-        public static string GetConsoleHost(string platform)
-        {
-            // platform - x86, x64, arm
-            return "\"Microsoft.NETCore.ConsoleHost-" + platform.ToLower() + "\": \"1.0.0-beta-23123\"";
-        }
-
-        public static string GetConsoleHostNative(string platform, string os)
-        {
-            // platform - x86, x64, arm
-            return "Microsoft.NETCore.ConsoleHost-" + platform.ToLower() + "\\1.0.0-beta-23123\\runtimes\\" +
-                   os.ToLower() + "-" + platform.ToLower() + "\\native";
-        }
-
-        public static string GetRuntimeCoreClrDependencyNative(string platform, string os)
-        {
-            // platform - x86, x64, arm
-            // os - win7, win8
-            return "Microsoft.NETCore.Runtime.CoreCLR-" + platform.ToLower() + "\\1.0.0\\runtimes\\" + os.ToLower() +
-                   "-" + platform.ToLower() + "\\native";
-        }
-
-        public static string GetRuntimeCoreClrDependencyLibrary(string platform, string os)
-        {
-            // platform - x86, x64, arm
-            // os - win7, win8
-            return "Microsoft.NETCore.Runtime.CoreCLR-" + platform.ToLower() + "\\1.0.0\\runtimes\\" + os.ToLower() +
-                   "-" + platform.ToLower() + "\\lib\\dotnet";
         }
 
         private static void AddToListWithoutDuplicates(ICollection<string> list, List<string> files)
@@ -289,6 +265,17 @@ namespace dotnet
 
         private static void FindCompiler(ProjectProperties properties)
         {
+            string cscEnvPath = Environment.GetEnvironmentVariable("CSCPATH");
+            if (cscEnvPath != null)
+            {
+                string fullCscPath = Path.Combine(cscEnvPath, "csc.exe");
+                if (File.Exists(fullCscPath))
+                {
+                    properties.CscPath = fullCscPath;
+                    return;
+                }
+            }
+
             properties.CscPath = Path.Combine(properties.ToolsDirectory, "csc.exe");
             if (File.Exists(properties.CscPath))
             {

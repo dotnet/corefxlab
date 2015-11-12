@@ -10,8 +10,8 @@
 
   <!-- Build Tools Versions -->
   <PropertyGroup>
-    <BuildToolsVersion>1.0.25-prerelease-00070</BuildToolsVersion>
-    <DnxVersion>1.0.0-beta5-12101</DnxVersion>
+    <BuildToolsVersion>1.0.25-prerelease-00107</BuildToolsVersion>
+    <DnxVersion>1.0.0-rc1-15838</DnxVersion>
     <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'!='Unix'">dnx-coreclr-win-x86.$(DnxVersion)</DnxPackageName>
     <DnxPackageName Condition="'$(DnxPackageName)' == '' and '$(OsEnvironment)'=='Unix'">dnx-mono.$(DnxVersion)</DnxPackageName>
     <RoslynVersion>1.0.0-rc3-20150510-01</RoslynVersion>
@@ -42,12 +42,17 @@
     <PackagesDir Condition="'$(PackagesDir)'==''">$(ProjectDir)packages/</PackagesDir>
     <ToolsDir Condition="'$(ToolsDir)'==''">$(PackagesDir)Microsoft.DotNet.BuildTools.$(BuildToolsVersion)/lib/</ToolsDir>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <CscToolPath>$(ProjectDir)tools/csc/</CscToolPath>
+  </PropertyGroup>
 
   <!-- list of nuget package sources passed to nuget.exe -->
   <ItemGroup>
     <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-buildtools" />
     <NuGetSourceList Include="https:%2F%2Fwww.nuget.org/api/v2" />
     <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-corefx" />
+    <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-corefxlab" />
   </ItemGroup>
 
   <!-- Common nuget properties -->
@@ -73,6 +78,7 @@
     <DnuSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-corefx/" />
     <DnuSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-corefxtestdata/" />
     <DnuSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-buildtools/" />
+    <DnuSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-corefxlab/" />    
     <DnuSourceList Include="https:%2F%2Fwww.nuget.org/api/v2/" />
   </ItemGroup>
 
@@ -201,7 +207,7 @@
 
   <!-- Temporary until build/CI system is upgraded to C# 6: disable C# 6 features -->
   <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj' OR '$(Language)' == 'C#'">
-    <LangVersion>5</LangVersion>
+    <LangVersion>experimental</LangVersion>
   </PropertyGroup>
 
   <!-- Set up some common paths -->

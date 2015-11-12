@@ -72,8 +72,12 @@ namespace dotnet
                        Settings.SetPlatformSpecification) &&
                    ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/debug")),
                        Settings.SetDebugSpecification) &&
+                   ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/reference")),
+                       Settings.SetReferenceSpecification) &&
                    ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/recurse")),
-                       Settings.SetRecurseSpecification);
+                       Settings.SetRecurseSpecification) &&
+                   ValidateAndSetOptionSpecifications(Array.Find(args, element => element.StartsWith("/runtime")),
+                       Settings.SetRuntimeSpecification);
         }
 
         private static bool ValidateAndSetOptionSpecifications(string option, Func<string, bool> setFunction)
@@ -102,7 +106,7 @@ namespace dotnet
             Console.WriteLine("{0} /clean             - deletes tools, packages, and bin project subdirectories",
                 appName);
             Console.WriteLine(
-                "{0} [/log] [/target:{{exe|library}}] [/recurse:<wildcard>] [/debug:{{full|pdbonly}}] [/optimize] [/unsafe] [/platform:{{anycpu|anycpu32bitpreferred|x86|x64}}] [ProjectFile] [SourceFiles]",
+                "{0} [/log] [/target:{{exe|library}}] [/recurse:<wildcard>] [/debug:{{full|pdbonly}}] [/optimize] [/unsafe] [/platform:{{anycpu|anycpu32bitpreferred|x86|x64}}] [/reference:<path to dll>] [/runtime:<runtime>] [ProjectFile] [SourceFiles]",
                 appName);
             Console.WriteLine("           /log        - logs diagnostics info");
             Console.WriteLine(
@@ -114,6 +118,10 @@ namespace dotnet
             Console.WriteLine("           /unsafe     - allows compilation of code that uses the unsafe keyword");
             Console.WriteLine(
                 "           /platform   - specifies which platform this code can run on, default is anycpu");
+            Console.WriteLine(
+                "           /reference  - specifies additional reference dlls to compile against");
+            Console.WriteLine(
+                "           /runtime    - specifies which runtime to target from the list specified in project.json, default is win7-x64");
             Console.WriteLine(
                 "           ProjectFile - specifies which project file to use, default to the one in the current directory, if only one exists");
             Console.WriteLine("           SourceFiles - specifices which source files to compile");
@@ -181,11 +189,8 @@ namespace dotnet
             }
             File.Move(properties.OutputAssemblyPath, dllPath);
 
-            var coreConsolePath =
-                ProjectPropertiesHelpers.GetConsoleHostNative(
-                    ProjectPropertiesHelpers.GetPlatformOption(Settings.Platform), "win7") +
-                "\\CoreConsole.exe";
-            File.Copy(Path.Combine(properties.PackagesDirectory, coreConsolePath), properties.OutputAssemblyPath);
+            var coreConsolePath = properties.Dependencies.FirstOrDefault(p => Path.GetFileNameWithoutExtension(p).Equals("coreconsole", StringComparison.OrdinalIgnoreCase));
+            File.Copy(coreConsolePath, properties.OutputAssemblyPath);
         }
 
         private static bool GetDependencies(ProjectProperties properties, Log log)
@@ -200,7 +205,11 @@ namespace dotnet
             var jsonString = File.ReadAllText(projectLockFile);
             var docJsonOutput = JsonConvert.DeserializeObject<ProjectLockJson>(jsonString);
 
-            var target = properties.Target + "/" + properties.RuntimeIdentifier;
+            var target = properties.Target;
+            if (!string.IsNullOrEmpty(properties.RuntimeIdentifier))
+            {
+                target += "/" + properties.RuntimeIdentifier;
+            }
             Dictionary<string, Target> packages;
             docJsonOutput.Targets.TryGetValue(target, out packages);
             if (packages == null)
@@ -252,7 +261,7 @@ namespace dotnet
 
             foreach (var reference in references)
             {
-                properties.References.Add(reference);
+                properties.References.Add(Path.Combine(properties.PackagesDirectory, reference));
             }
             foreach (var outputAssembly in dependencies)
             {

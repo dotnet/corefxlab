@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -27,10 +28,11 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void InvariantFormatIntDec()
         {
+            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)
             {
-                StringFormatter sb = new StringFormatter(numbersToWrite);
+                StringFormatter sb = new StringFormatter(numbersToWrite, pool);
                 for (int i = 0; i < numbersToWrite; i++)
                 {
                     sb.Append(((int)(i % 10)));
@@ -67,10 +69,11 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void InvariantFormatIntHex()
         {
+            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)
             {
-                StringFormatter sb = new StringFormatter(numbersToWrite);
+                StringFormatter sb = new StringFormatter(numbersToWrite, pool);
                 for (int i = 0; i < numbersToWrite; i++)
                 {
                     sb.Append(((int)(i % 10)), Format.Parsed.HexUppercase);
@@ -107,10 +110,11 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void InvariantFormatStruct()
         {
+            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)
             {
-                StringFormatter sb = new StringFormatter(numbersToWrite * 2);
+                StringFormatter sb = new StringFormatter(numbersToWrite * 2, pool);
                 for (int i = 0; i < numbersToWrite; i++)
                 {
                     sb.Append(new Age(i % 10));
@@ -127,12 +131,13 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void FormatGuid()
         {
+            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             var guid = Guid.NewGuid();
             var guidsToWrite = numbersToWrite / 10;
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)
             {
-                StringFormatter sb = new StringFormatter(guidsToWrite * 36);
+                StringFormatter sb = new StringFormatter(guidsToWrite * 36, pool);
                 for (int i = 0; i < guidsToWrite; i++)
                 {
                     sb.Append(guid);
@@ -169,7 +174,8 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void CustomCultureFormat()
         {
-            StringFormatter sb = new StringFormatter(numbersToWrite * 3);
+            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
+            StringFormatter sb = new StringFormatter(numbersToWrite * 3, pool);
             sb.FormattingData = CreateCustomCulture();
 
             timer.Restart();
@@ -219,7 +225,8 @@ namespace System.Text.Formatting.Tests
             string text = "Hello World!";
             int stringsToWrite = 2000;
             int size = stringsToWrite * text.Length + stringsToWrite;
-            BufferFormatter formatter = new BufferFormatter(size, FormattingData.InvariantUtf8);
+            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(100000);
+            BufferFormatter formatter = new BufferFormatter(size, FormattingData.InvariantUtf8, pool);
 
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)

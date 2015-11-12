@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Formatting;
@@ -9,6 +10,7 @@ namespace System.Text.Json
 {
     public struct JsonWriter : IDisposable
     {
+        ManagedBufferPool<byte> _pool;
         StreamFormatter _formatter;
         bool _wroteListItem;
         bool _prettyPrint;
@@ -19,7 +21,8 @@ namespace System.Text.Json
             _wroteListItem = false;
             _prettyPrint = prettyPrint;
             _indent = 0;
-            _formatter = new StreamFormatter(stream, encoding == FormattingData.Encoding.Utf16 ? FormattingData.InvariantUtf16 : FormattingData.InvariantUtf8);
+            _pool = new ManagedBufferPool<byte>(2048);
+            _formatter = new StreamFormatter(stream, encoding == FormattingData.Encoding.Utf16 ? FormattingData.InvariantUtf16 : FormattingData.InvariantUtf8, _pool);
         }
 
         public void Dispose() {

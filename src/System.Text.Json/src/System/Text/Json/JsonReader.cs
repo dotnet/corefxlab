@@ -1,64 +1,59 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
-using System.Text.Parsing;
 using System.Text.Utf8;
 
 namespace System.Text.Json
 {
     public struct JsonReader : IDisposable
     {
-        private readonly Utf8String _str;
+        private Utf8String _str;
         private int _index;
+        private int _insideObject;
+        private int _insideArray;
         public JsonTokenType TokenType;
-        private bool _insideArray;
+        private bool _jsonStartIsObject;
 
         public enum JsonTokenType
         {
-            ObjectStart,
-            ObjectEnd,
-            ArrayStart,
-            ArrayEnd,
-            PropertyName,
-            PropertyValueAsString,
-            PropertyValueAsInt
+            // Start = 0 state reserved for internal use
+            ObjectStart = 1,
+            ObjectEnd = 2,
+            ArrayStart = 3,
+            ArrayEnd = 4,
+            Property = 5,
+            Value = 6
         };
 
-        private static readonly Utf8CodeUnit[] EmptyString =
+        public enum JsonValueType
         {
-            new Utf8CodeUnit((byte) ' '),
-            new Utf8CodeUnit((byte) '\n'),
-            new Utf8CodeUnit((byte) '\r'),
-            new Utf8CodeUnit((byte) '\t')
-        };
-
-        private readonly Dictionary<Utf8CodeUnit, JsonTokenType> _mapping;
-
-        private static readonly Utf8CodeUnit QuoteString = new Utf8CodeUnit((byte) '"');
-        private static readonly Utf8CodeUnit ColonString = new Utf8CodeUnit((byte) ':');
-        private static readonly Utf8CodeUnit CommaString = new Utf8CodeUnit((byte) ',');
-        private static readonly Utf8CodeUnit SquareOpenString = new Utf8CodeUnit((byte) '[');
-        private static readonly Utf8CodeUnit SquareCloseString = new Utf8CodeUnit((byte) ']');
-        private static readonly Utf8CodeUnit CurlyOpenString = new Utf8CodeUnit((byte) '{');
-        private static readonly Utf8CodeUnit CurlyCloseString = new Utf8CodeUnit((byte) '}');
-        private static readonly Utf8CodeUnit DashString = new Utf8CodeUnit((byte) '-');
+            String,
+            Number,
+            Object,
+            Array,
+            True,
+            False,
+            Null
+        }
 
         public JsonReader(Utf8String str)
         {
-            _str = str;
+            _str = str.Trim();
             _index = 0;
-            TokenType = JsonTokenType.ObjectStart;
-            _insideArray = false;
+            _insideObject = 0;
+            _insideArray = 0;
+            TokenType = 0;
+            _jsonStartIsObject = (byte)_str[0] == '{';
+        }
 
-            _mapping = new Dictionary<Utf8CodeUnit, JsonTokenType>
-            {
-                {CurlyOpenString, JsonTokenType.ObjectStart},
-                {CurlyCloseString, JsonTokenType.ObjectEnd},
-                {SquareOpenString, JsonTokenType.ArrayStart},
-                {SquareCloseString, JsonTokenType.ArrayEnd},
-                {QuoteString, JsonTokenType.PropertyName}
-            };
+        public JsonReader(string str)
+        {
+            _str = new Utf8String(str).Trim();
+            _index = 0;
+            _insideObject = 0;
+            _insideArray = 0;
+            TokenType = 0;
+            _jsonStartIsObject = (byte)_str[0] == '{';
         }
 
         public void Dispose()
@@ -67,181 +62,326 @@ namespace System.Text.Json
 
         public bool Read()
         {
-            return _index < _str.Length;
+            var canRead = _index < _str.Length;
+            if (canRead) MoveToNextTokenType();
+            return canRead;
         }
 
-        public Utf8String ReadObjectStart()
+        public Utf8String GetName()
         {
-            SkipAll();
-            var result = ReadToByte(CurlyOpenString, true);
-            GetNextTokenType();
-            return result;
+            SkipEmpty();
+            var str = ReadStringValue();
+            _index++;
+            return str;
         }
 
-        public Utf8String ReadObjectEnd()
+        public JsonValueType GetJsonValueType()
         {
-            SkipAll();
-            var result = ReadToByte(CurlyCloseString, true);
-            GetNextTokenType();
-            return result;
-        }
+            var nextByte = (byte) _str[_index];
 
-        public Utf8String ReadArrayStart()
-        {
-            SkipAll();
-            var result = ReadToByte(SquareOpenString, true);
-            GetNextTokenType();
-            return result;
-        }
-
-        public Utf8String ReadArrayEnd()
-        {
-            SkipAll();
-            var result = ReadToByte(SquareCloseString, true);
-            GetNextTokenType();
-            return result;
-        }
-
-        public Utf8String ReadProperty()
-        {
-            SkipAll();
-            // TODO: Use _str.SubstringFrom(new Utf8String("\"")).Substring(1).SubstringTo(new Utf8String("\""));
-            ReadToByte(QuoteString, true);
-            var result = ReadToByte(QuoteString, false);
-            GetNextTokenType();
-            return result;
-        }
-
-        public long ReadPropertyValueAsInt()
-        {
-            SkipAll();
-            var isNegative = _str[_index] == DashString;
-            if (isNegative)
+            while (isWhiteSpace(nextByte))
             {
                 _index++;
+                nextByte = (byte)_str[_index];
             }
 
-            int bytesConsumed;
-            var substr = _str.Substring(_index);
-
-            ulong result;
-            if (!InvariantParser.TryParse(substr, out result, out bytesConsumed))
+            if (nextByte == '"')
             {
-                return 0;
+                return JsonValueType.String;
             }
-            _index += bytesConsumed;
 
-            GetNextTokenType();
-            return isNegative ? Convert.ToInt64(result)*-1 : Convert.ToInt64(result);
+            if (nextByte == '{')
+            {
+                return JsonValueType.Object;
+            }
+
+            if (nextByte == '[')
+            {
+                return JsonValueType.Array;
+            }
+
+            if (nextByte == 't')
+            {
+                return JsonValueType.True;
+            }
+
+            if (nextByte == 'f')
+            {
+                return JsonValueType.False;
+            }
+
+            if (nextByte == 'n')
+            {
+                return JsonValueType.Null;
+            }
+
+            if (nextByte == '-' || (nextByte >= '0' && nextByte <= '9'))
+            {
+                return JsonValueType.Number;
+            }
+
+            throw new FormatException("Invalid json, tried to read char '" + nextByte + "'.");
         }
 
-        public Utf8String ReadPropertyAsString()
+        public Utf8String GetValue()
         {
-            return ReadProperty();
+            var type = GetJsonValueType();
+            SkipEmpty();
+            switch (type)
+            {
+                case JsonValueType.String:
+                    return ReadStringValue();
+                case JsonValueType.Number:
+                    return ReadNumberValue();
+                case JsonValueType.True:
+                    return ReadTrueValue();
+                case JsonValueType.False:
+                    return ReadFalseValue();
+                case JsonValueType.Null:
+                    return ReadNullValue();
+                case JsonValueType.Object:
+                case JsonValueType.Array:
+                    return Utf8String.Empty;
+                default:
+                    throw new ArgumentException("Invalid json value type '" + type + "'.");
+            }
         }
 
-        private Utf8String ReadToByte(Utf8CodeUnit codeUnit, bool includeCodeUnit)
+        private Utf8String ReadStringValue()
         {
-            SkipAll();
+            _index++;
+            var count = _index;
+            do
+            {
+                while ((byte) _str[count] != '"')
+                {
+                    count++;
+                }
+                count++;
+            } while (AreNumOfBackSlashesAtEndOfStringOdd(count - 2));
 
-            var count = 1;
-            while (_str[_index] != codeUnit)
+            var strLength = count - _index;
+            var resultString = _str.Substring(_index, strLength - 1);
+            _index += strLength;
+
+            SkipEmpty();
+            return resultString;
+        }
+
+        private bool AreNumOfBackSlashesAtEndOfStringOdd(int count)
+        {
+            var length = count - _index;
+            if (length < 0) return false;
+            var nextByte = (byte) _str[count];
+            if (nextByte != '\\') return false;
+            var numOfBackSlashes = 0;
+            while (nextByte == '\\')
+            {
+                numOfBackSlashes++;
+                if ((length - numOfBackSlashes) < 0) return numOfBackSlashes%2 != 0;
+                nextByte = (byte) _str[count - numOfBackSlashes];
+            }
+            return numOfBackSlashes%2 != 0;
+        }
+
+        private Utf8String ReadNumberValue()
+        {
+            var count = _index;
+
+            var nextByte = (byte) _str[count];
+            if (nextByte == '-')
             {
                 count++;
-                _index++;
             }
 
-            if (!includeCodeUnit)
+            nextByte = (byte) _str[count];
+            while (nextByte >= '0' && nextByte <= '9')
             {
-                count--;
-                _index--;
+                count++;
+                nextByte = (byte) _str[count];
             }
 
-            var utf8Bytes = new byte[count];
-            for (var i = 0; i < count; i++)
+            if (nextByte == '.')
             {
-                utf8Bytes[i] = (byte) _str[_index - count + i + 1];
+                count++;
             }
-            _index++;
 
-            if (!includeCodeUnit)
+            nextByte = (byte) _str[count];
+            while (nextByte >= '0' && nextByte <= '9')
             {
-                _index++;
+                count++;
+                nextByte = (byte) _str[count];
             }
 
-            return new Utf8String(utf8Bytes);
+            if (nextByte == 'e' || nextByte == 'E')
+            {
+                count++;
+                nextByte = (byte) _str[count];
+                if (nextByte == '-' || nextByte == '+')
+                {
+                    count++;
+                }
+                nextByte = (byte) _str[count];
+                while (nextByte >= '0' && nextByte <= '9')
+                {
+                    count++;
+                    nextByte = (byte) _str[count];
+                }
+            }
+
+            var length = count - _index;
+            var resultStr = _str.Substring(_index, count - _index);
+            _index += length;
+            SkipEmpty();
+            return resultStr;
         }
 
-        private void SkipAll()
+        private Utf8String ReadTrueValue()
         {
-            var nextByte = _str[_index];
-            while (Array.IndexOf(EmptyString, nextByte) >= 0 || nextByte == CommaString)
+            var trueString = _str.Substring(_index, 4);
+            if ((byte) trueString[1] != 'r' || (byte) trueString[2] != 'u' || (byte) trueString[3] != 'e')
             {
-                _index++;
-                nextByte = _str[_index];
+                throw new FormatException("Invalid json, tried to read 'true'.");
             }
+
+            _index += 4;
+
+            SkipEmpty();
+            return trueString;
+        }
+
+        private Utf8String ReadFalseValue()
+        {
+            var falseString = _str.Substring(_index, 5);
+            if ( (byte) falseString[1] != 'a' || (byte) falseString[2] != 'l' || (byte) falseString[3] != 's' || (byte) falseString[4] != 'e')
+            {
+                throw new FormatException("Invalid json, tried to read 'false'.");
+            }
+
+            _index += 5;
+
+            SkipEmpty();
+            return falseString;
+        }
+
+        private Utf8String ReadNullValue()
+        {
+            var nullString = _str.Substring(_index, 4);
+            if ((byte) nullString[1] != 'u' || (byte) nullString[2] != 'l' || (byte) nullString[3] != 'l')
+            {
+                throw new FormatException("Invalid json, tried to read 'null'.");
+            }
+
+            _index += 4;
+
+            SkipEmpty();
+            return nullString;
         }
 
         private void SkipEmpty()
         {
-            var nextByte = _str[_index];
-            while (Array.IndexOf(EmptyString, nextByte) >= 0)
+            var nextByte = (byte)_str[_index];
+
+            while (isWhiteSpace(nextByte))
             {
                 _index++;
-                nextByte = _str[_index];
+                nextByte = (byte)_str[_index];
             }
         }
 
-        private void SkipComma()
+        private static bool isWhiteSpace(byte nextByte)
         {
-            SkipEmpty();
-            var nextByte = _str[_index];
-            while (nextByte == CommaString)
-            {
-                _index++;
-                nextByte = _str[_index];
-            }
+            return nextByte == ' ' || nextByte == '\n' || nextByte == '\r' || nextByte == '\t';
         }
 
-        private void GetNextTokenType()
+        private void MoveToNextTokenType()
         {
-            if (!Read()) return;
-            SkipAll();
-            if (_str[_index] == ColonString)
+            var nextByte = (byte) _str[_index];
+            while (isWhiteSpace(nextByte))
             {
                 _index++;
-                SkipAll();
-                if (!_mapping.TryGetValue(_str[_index], out TokenType))
-                {
-                    TokenType = JsonTokenType.PropertyValueAsInt;
-                }
-                if (_str[_index] == QuoteString)
-                {
-                    TokenType = JsonTokenType.PropertyValueAsString;
-                }
-            }
-            else
-            {
-                var nextToken = _str[_index];
-                var prevTokenType = TokenType;
-                if (!_mapping.TryGetValue(nextToken, out TokenType))
-                {
-                    TokenType = JsonTokenType.PropertyValueAsInt;
-                }
-                if ((_insideArray || prevTokenType == JsonTokenType.ArrayStart) &&
-                    TokenType == JsonTokenType.PropertyName)
-                {
-                    TokenType = JsonTokenType.PropertyValueAsString;
-                }
+                nextByte = (byte)_str[_index];
             }
 
-            if (TokenType == JsonTokenType.ArrayStart)
+            switch (TokenType)
             {
-                _insideArray = true;
+                case JsonTokenType.ObjectStart:
+                    if (nextByte != '}')
+                    {
+                        TokenType = JsonTokenType.Property;
+                        return;
+                    }
+                    break;
+                case JsonTokenType.ObjectEnd:
+                    if (nextByte == ',')
+                    {
+                        _index++;
+                        if (_insideObject == _insideArray)
+                        {
+                            TokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
+                            return;
+                        }
+                        TokenType = _insideObject > _insideArray ? JsonTokenType.Property : JsonTokenType.Value;
+                        return;
+                    }
+                    break;
+                case JsonTokenType.ArrayStart:
+                    if (nextByte != ']')
+                    {
+                        TokenType = JsonTokenType.Value;
+                        return;
+                    }
+                    break;
+                case JsonTokenType.ArrayEnd:
+                    if (nextByte == ',')
+                    {
+                        _index++;
+                        if (_insideObject == _insideArray)
+                        {
+                            TokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
+                            return;
+                        }
+                        TokenType = _insideObject > _insideArray ? JsonTokenType.Property : JsonTokenType.Value;
+                        return;
+                    }
+                    break;
+                case JsonTokenType.Property:
+                    if (nextByte == ',')
+                    {
+                        _index++;
+                        return;
+                    }
+                    break;
+                case JsonTokenType.Value:
+                    if (nextByte == ',')
+                    {
+                        _index++;
+                        return;
+                    }
+                    break;
             }
-            else if (TokenType == JsonTokenType.ArrayEnd)
+
+            _index++;
+            switch (nextByte)
             {
-                _insideArray = false;
+                case (byte) '{':
+                    _insideObject++;
+                    TokenType = JsonTokenType.ObjectStart;
+                    return;
+                case (byte) '}':
+                    _insideObject--;
+                    TokenType = JsonTokenType.ObjectEnd;
+                    return;
+                case (byte) '[':
+                    _insideArray++;
+                    TokenType = JsonTokenType.ArrayStart;
+                    return;
+                case (byte) ']':
+                    _insideArray--;
+                    TokenType = JsonTokenType.ArrayEnd;
+                    return;
+                default:
+                    throw new FormatException("Unable to get next token type. Check json format.");
             }
         }
     }

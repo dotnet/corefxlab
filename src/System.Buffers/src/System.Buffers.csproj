@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
   <PropertyGroup>
@@ -20,14 +20,16 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="System\Buffers\ArrayBufferPool.cs" />
-    <Compile Include="System\Buffers\BufferInternal.cs" />
-    <Compile Include="System\Buffers\BufferPool.cs" />
-    <Compile Include="System\Buffers\Pack.cs" />
-    <Compile Include="System\ByteSpan.cs" />
-    <Compile Include="System\Diagnostics\Precondition.cs" />
-    <Compile Include="System\ReadOnlySpan.cs" />
-    <Compile Include="System\Span.cs" />
+    <ProjectReference Include="..\..\System.Slices\src\System.Slices.csproj">
+      <Name>System.Slices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="System\Buffers\BufferUtilities.cs" />
+    <Compile Include="System\Buffers\ManagedBufferBucket.cs" />
+    <Compile Include="System\Buffers\ManagedBufferPool.cs" />
+    <Compile Include="System\Buffers\NativeBufferBucket.cs" />
+    <Compile Include="System\Buffers\NativeBufferPool.cs" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

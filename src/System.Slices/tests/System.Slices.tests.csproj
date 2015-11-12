@@ -36,6 +36,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BasicUnitTests.cs" />
     <Compile Include="Harness.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="UsageScenarioTests.cs" />

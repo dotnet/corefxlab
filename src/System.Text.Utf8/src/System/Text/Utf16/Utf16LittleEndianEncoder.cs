@@ -7,7 +7,7 @@ namespace System.Text.Utf16
     {
         const uint MaskLow10Bits = 0x3FF;
 
-        public static bool TryDecodeCodePoint(ByteSpan buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        public static bool TryDecodeCodePoint(Span<byte> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
         {
             if (buffer.Length < 2)
             {
@@ -31,7 +31,7 @@ namespace System.Text.Utf16
                 }
                 unchecked
                 {
-                    codePointValue -= UnicodeConstants.HighSurrogateFirstCodePoint;
+                    codePointValue -= UnicodeConstants.Utf16HighSurrogateFirstCodePoint;
                     encodedBytes += 2;
                 }
                 // high surrogate contains 10 first bits of the code point
@@ -48,7 +48,7 @@ namespace System.Text.Utf16
 
                 unchecked
                 {
-                    lowSurrogate -= UnicodeConstants.LowSurrogateFirstCodePoint;
+                    lowSurrogate -= UnicodeConstants.Utf16LowSurrogateFirstCodePoint;
                 }
                 codePointValue |= lowSurrogate;
             }
@@ -58,7 +58,7 @@ namespace System.Text.Utf16
             return true;
         }
 
-        public static bool TryEncodeCodePoint(UnicodeCodePoint codePoint, ByteSpan buffer, out int encodedBytes)
+        public static bool TryEncodeCodePoint(UnicodeCodePoint codePoint, Span<byte> buffer, out int encodedBytes)
         {
             if (!UnicodeCodePoint.IsSupportedCodePoint(codePoint))
             {
@@ -90,8 +90,8 @@ namespace System.Text.Utf16
             {
                 unchecked
                 {
-                    uint highSurrogate = ((uint)codePoint >> 10) + UnicodeConstants.HighSurrogateFirstCodePoint;
-                    uint lowSurrogate = ((uint)codePoint & MaskLow10Bits) + UnicodeConstants.LowSurrogateFirstCodePoint;
+                    uint highSurrogate = ((uint)codePoint >> 10) + UnicodeConstants.Utf16HighSurrogateFirstCodePoint;
+                    uint lowSurrogate = ((uint)codePoint & MaskLow10Bits) + UnicodeConstants.Utf16LowSurrogateFirstCodePoint;
                     buffer[0] = (byte)highSurrogate;
                     buffer[1] = (byte)(highSurrogate >> 8);
 

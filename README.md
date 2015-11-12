@@ -13,7 +13,7 @@ This can result in significant performance wins for software that does a lot of 
 See more information on this component and code samples at the [Wiki]: https://github.com/dotnet/corefxlab/wiki 
 
 * **System.IO.FileSystem.Watcher.Polling**. 
-.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it night be not. 
+.NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
 This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
 allocations, when no changes are detected. In fact, it does not allocate anything on the GC heap when there are no changes detected. 
 
@@ -27,6 +27,12 @@ hand-offs between participants explicitly coded to use the storage. The library 
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `TimeOfDay`.
 It also provides extension methods to enhance the functionality of the existing `DateTime`, `DateTimeOffset` and `TimeZoneInfo` types.
+
+* **System.Collections.Generic.MultiValueDictionary**.
+The MultiValueDictionary is a generic collection that functions similarly to a Dictionary<TKey, ICollection<TValue>> with some added validation
+and ease of use functions. It can also be compared to a Lookup with the exception that the MultiValueDictionary is mutable. It allows custom 
+setting of the internal collections so that uniqueness of values can be chosen by specifying either a HashSet<TValue> or List<TValue>. Some of the
+design decisions as well as introductions to usage can be found in the old blog posts introducing it [here](http://blogs.msdn.com/b/dotnet/archive/2014/06/20/would-you-like-a-multidictionary.aspx) and [here](http://blogs.msdn.com/b/dotnet/archive/2014/08/05/multidictionary-becomes-multivaluedictionary.aspx).
 
 More libraries are coming soon. Stay tuned!
 

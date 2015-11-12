@@ -84,38 +84,38 @@ public partial class GraphicsUnitTests
     }
 
     /* Tests Create Method */
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public static void WhenCreatingAnEmptyImageThenValidateAnImage()
     {
         Image emptyTenSquare = Image.Create(10, 10);
         ValidateCreatedImage(emptyTenSquare, 10, 10);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingABlankImageWithNegativeHeightThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(1, -1));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingABlankImageWithNegativeWidthThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(-1, 1));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingABlankImageWithNegativeSizesThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(-1, -1));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingABlankImageWithZeroHeightThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(1, 0));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingABlankImageWithZeroWidthThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(0, 1));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingABlankImageWithZeroParametersThenThrowException()
     {
         Assert.Throws<InvalidOperationException>(() => Image.Create(0, 0));
@@ -123,7 +123,7 @@ public partial class GraphicsUnitTests
 
 
     /* Tests Load(filepath) method */
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingAJpegFromAValidFileGiveAValidImage()
     {
         //save embedded resource to a file
@@ -134,7 +134,7 @@ public partial class GraphicsUnitTests
         //validate it
         ValidateImageJpeg(newJpeg, SquareCatLogicalName);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingAPngFromAValidFileGiveAValidImage()
     {
         //save embedded resource to a file
@@ -145,7 +145,7 @@ public partial class GraphicsUnitTests
         //validate it
         ValidateImagePng(newJpeg, BlackCatLogicalName);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingAJpegFromAMalformedPathThenThrowException()
     {
         //place holder string to demonstrate what would be the error case
@@ -153,21 +153,21 @@ public partial class GraphicsUnitTests
         string invalidFilepath = temporaryPath + "\\Hi.jpg";
         Assert.Throws<FileNotFoundException>(() => Jpg.Load(invalidFilepath));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingAPngFromAMalformedPathThenThrowException()
     {
         string temporaryPath = Path.GetTempPath();
         string invalidFilepath = temporaryPath + "\\Hi.png";
         Assert.Throws<FileNotFoundException>(() => Png.Load(invalidFilepath));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingAnImageFromAnUnfoundPathThenThrowException()
     {
         string temporaryPath = Path.GetTempPath();
         string invalidFilepath = temporaryPath + "\\Hi.jpg";
         Assert.Throws<FileNotFoundException>(() => Jpg.Load(invalidFilepath));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingAnImageFromAFileTypeThatIsNotAnImageThenThrowException()
     {
         string temporaryPath = Path.GetTempPath();
@@ -177,7 +177,7 @@ public partial class GraphicsUnitTests
 
 
     /* Tests Load(stream) mehtod*/
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingAJpegFromAValidStreamThenWriteAValidImageToFile()
     {
         string filepath = SaveEmbeddedResourceToFile(SoccerCatLogicalName);
@@ -188,7 +188,7 @@ public partial class GraphicsUnitTests
         }
         File.Delete(filepath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingAPngFromAValidStreamThenWriteAValidImageToFile()
     {
         string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
@@ -199,7 +199,7 @@ public partial class GraphicsUnitTests
         }
         File.Delete(filepath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCreatingAnImageFromAnInvalidStreamThenThrowException()
     {
         Stream stream = null;
@@ -208,21 +208,21 @@ public partial class GraphicsUnitTests
 
 
     /* Test Resize */
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingEmptyImageDownThenGiveAValidatedResizedImage()
     {
         Image emptyResizeSquare = Image.Create(100, 100);
         emptyResizeSquare = emptyResizeSquare.Resize(10, 10);
         ValidateCreatedImage(emptyResizeSquare, 10, 10);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingEmptyImageUpThenGiveAValidatedResizedImage()
     {
         Image emptyResizeSquare = Image.Create(100, 100);
         emptyResizeSquare = emptyResizeSquare.Resize(200, 200);
         ValidateCreatedImage(emptyResizeSquare, 200, 200);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingJpegLoadedFromFileThenGiveAValidatedResizedImage()
     {
         //what to do? Have embedded resource stream of expected result?
@@ -232,7 +232,7 @@ public partial class GraphicsUnitTests
         ValidateCreatedImage(fromFileResizeSquare, 200, 200);
         File.Delete(filepath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingPngLoadedFromFileThenGiveAValidatedResizedImage()
     {
         //what to do? Have embedded resource stream of expected result?
@@ -242,7 +242,7 @@ public partial class GraphicsUnitTests
         ValidateCreatedImage(fromFileResizeSquare, 400, 400);
         File.Delete(filepath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingJpegLoadedFromStreamThenGiveAValidatedResizedImage()
     {
         string filepath = SaveEmbeddedResourceToFile(SoccerCatLogicalName);
@@ -255,7 +255,7 @@ public partial class GraphicsUnitTests
         File.Delete(filepath);
     }
 
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingPngLoadedFromStreamThenGiveAValidatedResizedImage()
     {
         string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
@@ -269,37 +269,37 @@ public partial class GraphicsUnitTests
     }
 
     /* Testing Resize parameters */
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingImageGivenNegativeHeightThenThrowException()
     {
         Image img = Image.Create(1, 1);
         Assert.Throws<InvalidOperationException>(() => img.Resize(-1, 1));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingImageGivenNegativeWidthThenThrowException()
     {
         Image img = Image.Create(1, 1);
         Assert.Throws<InvalidOperationException>(() => img.Resize(1, -1));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingImageGivenNegativeSizesThenThrowException()
     {
         Image img = Image.Create(1, 1);
         Assert.Throws<InvalidOperationException>(() => img.Resize(-1, -1));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingImageGivenZeroHeightThenThrowException()
     {
         Image img = Image.Create(1, 1);
         Assert.Throws<InvalidOperationException>(() => img.Resize(0, 1));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingImageGivenZeroWidthThenThrowException()
     {
         Image img = Image.Create(1, 1);
         Assert.Throws<InvalidOperationException>(() => img.Resize(1, 0));
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenResizingImageGivenZeroSizesThenThrowException()
     {
         Image img = Image.Create(1, 1);
@@ -308,7 +308,7 @@ public partial class GraphicsUnitTests
 
 
     /* Test Write */
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingABlankCreatedJpegToAValidFileWriteAValidFile()
     {
         Image emptyImage = Image.Create(10, 10);
@@ -318,7 +318,7 @@ public partial class GraphicsUnitTests
         File.Delete(tempFilePath);
 
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingABlankCreatedPngToAValidFileWriteAValidFile()
     {
         Image emptyImage = Image.Create(10, 10);
@@ -328,7 +328,7 @@ public partial class GraphicsUnitTests
         File.Delete(tempFilePath);
 
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingAJpegCreatedFromFileToAValidFileWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(SquareCatLogicalName);
@@ -339,7 +339,7 @@ public partial class GraphicsUnitTests
         File.Delete(filepath);
         File.Delete(tempFilePath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingAPngCreatedFromFileToAValidFileWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
@@ -350,7 +350,7 @@ public partial class GraphicsUnitTests
         File.Delete(filepath);
         File.Delete(tempFilePath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingAPngMadeTransparentToAValidFileWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
@@ -363,7 +363,7 @@ public partial class GraphicsUnitTests
         File.Delete(filepath);
         File.Delete(tempFilePath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingATransparentResizedPngToAValidFileWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
@@ -377,7 +377,7 @@ public partial class GraphicsUnitTests
         File.Delete(filepath);
         File.Delete(tempFilePath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingAResizedTransparentPngToAValidFileWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
@@ -393,7 +393,7 @@ public partial class GraphicsUnitTests
     }
 
     /* Tests Writing to a Stream*/
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingABlankCreatedJpegToAValidStreamWriteAValidStream()
     {
         Image img = Image.Create(100, 100);
@@ -405,7 +405,7 @@ public partial class GraphicsUnitTests
             ValidateCreatedImage(img2, 100, 100);
         }
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingABlankCreatedPngToAValidStreamWriteAValidStream()
     {
         Image img = Image.Create(100, 100);
@@ -417,7 +417,7 @@ public partial class GraphicsUnitTests
             ValidateCreatedImage(img2, 100, 100);
         }
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingAJpegFromFileToAValidStreamWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(SoccerCatLogicalName);
@@ -431,7 +431,7 @@ public partial class GraphicsUnitTests
         }
         File.Delete(filepath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingAPngCreatedFromFileToAValidStreamWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
@@ -446,7 +446,7 @@ public partial class GraphicsUnitTests
         File.Delete(filepath);
     }
 
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingAResizedJpegToAValidStreamWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(SoccerCatLogicalName);
@@ -462,7 +462,7 @@ public partial class GraphicsUnitTests
         }
         File.Delete(filepath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingAResizedPngToAValidStreamWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
@@ -479,7 +479,7 @@ public partial class GraphicsUnitTests
         File.Delete(filepath);
     }
 
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingAPngMadeTransparentToAValidStreamWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
@@ -495,7 +495,7 @@ public partial class GraphicsUnitTests
         }
         File.Delete(filepath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingATransparentResizedPngToAValidStreamWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
@@ -512,7 +512,7 @@ public partial class GraphicsUnitTests
         }
         File.Delete(filepath);
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenWritingAResizedTransparentPngToAValidStreamWriteAValidImage()
     {
         string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
@@ -525,7 +525,7 @@ public partial class GraphicsUnitTests
     }
 
     /* Test Draw */
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenDrawingTwoImagesWriteACorrectResult()
     {
         //open yellow cat image
@@ -543,7 +543,7 @@ public partial class GraphicsUnitTests
         File.Delete(filepath2);
     }
     /* Test SetTransparency */
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenSettingTheTransparencyOfAnImageWriteAnImageWithChangedTransparency()
     {
         //open black cat image
@@ -565,7 +565,7 @@ public partial class GraphicsUnitTests
         File.Delete(filepath);
     }
     /* Test Draw and Set Transparency */
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenDrawingAnImageWithTransparencyChangedGiveACorrectWrittenFile()
     {
         //black cat load
@@ -581,7 +581,7 @@ public partial class GraphicsUnitTests
         ValidateImageJpeg(yellowCat, SquareCatLogicalName);
     }
 
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public static void WhenAddingAGreyScaleFilterToAJpegGiveAValidGreyScaledImage()
     {
         string filepath = SaveEmbeddedResourceToFile(SquareCatLogicalName);
@@ -591,7 +591,7 @@ public partial class GraphicsUnitTests
         ValidateImageJpeg(img1, SquareCatLogicalName);
         Jpg.Write(img1, Path.GetTempPath() + "GreyscaleCat.jpg");
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public static void WhenAddingAGreyScaleFilterToAPngGiveAValidGreyScaledImage()
     {
         string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
@@ -601,7 +601,7 @@ public partial class GraphicsUnitTests
         Png.Write(img1, Path.GetTempPath() + "GreyscaleCat.png");
     }
 
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public static void WhenAddingASepiaFilterToAJpegGiveAValidGreyScaledImage()
     {
         string filepath = SaveEmbeddedResourceToFile(SquareCatLogicalName);
@@ -611,7 +611,7 @@ public partial class GraphicsUnitTests
         ValidateImageJpeg(img1, SquareCatLogicalName);
         Jpg.Write(img1, Path.GetTempPath() + "SepiaCat.jpg");
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public static void WhenAddingASepiaFilterToAPngGiveAValidGreyScaledImage()
     {
         string filepath = SaveEmbeddedResourceToFile(CuteCatLogicalName);
@@ -621,7 +621,7 @@ public partial class GraphicsUnitTests
         Png.Write(img1, Path.GetTempPath() + "SepiaCat.png");
     }
 
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public static void WhenAddingANegativeFilterToAJpegGiveAValidGreyScaledImage()
     {
         string filepath = SaveEmbeddedResourceToFile(SquareCatLogicalName);
@@ -631,7 +631,7 @@ public partial class GraphicsUnitTests
         ValidateImageJpeg(img1, SquareCatLogicalName);
         Jpg.Write(img1, Path.GetTempPath() + "NegativeCat.jpg");
     }
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public static void WhenAddingANegativeFilterToAPngGiveAValidGreyScaledImage()
     {
         string filepath = SaveEmbeddedResourceToFile(BlackCatLogicalName);
@@ -645,7 +645,7 @@ public partial class GraphicsUnitTests
 
     //Tests filpath
     //Tests jpg
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCropingAnJpgImageFromFileGiveACorrectCroppedImage()
     {
         //checking with cat image
@@ -655,7 +655,7 @@ public partial class GraphicsUnitTests
 
     }
     //Tests png
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCropingAnPngImageFromFileGiveACorrectCroppedImage()
     {
         //checking with cat image
@@ -666,7 +666,7 @@ public partial class GraphicsUnitTests
 
     //Tests stream
     //Tests jpg
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCropingAnJpgImageFromFileStreamACorrectCroppedImage()
     {
         string filepath = SaveEmbeddedResourceToFile(JpegCatLogicalName);
@@ -679,7 +679,7 @@ public partial class GraphicsUnitTests
     }
 
     //Tests png
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public void WhenCropingAnPngImageFromFileStreamACorrectCroppedImage()
     {
         string filepath = SaveEmbeddedResourceToFile(PngCatLogicalName);
@@ -694,7 +694,7 @@ public partial class GraphicsUnitTests
     /* ------------------Performance Tests-------------------------*/
 
 #if PERFORMANCE_TESTING
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public static void RunAllPerfTests()
     {
         string filepath = Path.GetTempPath() + "Trial1Results.txt";
@@ -784,7 +784,7 @@ public partial class GraphicsUnitTests
 
     }
 
-    [Fact]
+    [Fact, ActiveIssue(410)]
     public static void SetUpAllPerfTestsWithThreads()
     {
         int numOfTasks = 4;

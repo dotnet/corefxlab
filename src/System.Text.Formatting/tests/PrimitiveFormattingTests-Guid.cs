@@ -13,7 +13,7 @@ namespace System.Text.Formatting.Tests
         public void FormatGuid()
         {
             var guid = Guid.NewGuid();
-            var sb = new StringFormatter();
+            var sb = new StringFormatter(pool);
 
             sb.Append(guid);
             Assert.Equal(guid.ToString(), sb.ToString());

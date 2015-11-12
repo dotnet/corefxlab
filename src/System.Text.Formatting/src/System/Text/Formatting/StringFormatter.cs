@@ -10,20 +10,22 @@ namespace System.Text.Formatting
         byte[] _buffer;
         int _count;
         FormattingData _culture = FormattingData.InvariantUtf16;
+        ManagedBufferPool<byte> _pool;
 
-        public StringFormatter() : this(64)
+        public StringFormatter(ManagedBufferPool<byte> pool) : this(64, pool)
         {
             Clear();
         }
 
-        public StringFormatter(int capacity)
+        public StringFormatter(int capacity, ManagedBufferPool<byte> pool)
         {
-            _buffer = BufferPool.Shared.RentBuffer(capacity * 2);
+            _pool = pool;
+            _buffer = _pool.RentBuffer(capacity * 2);
         }
 
         public void Dispose()
         {
-            BufferPool.Shared.ReturnBuffer(ref _buffer);
+            _pool.ReturnBuffer(ref _buffer);
             _count = 0;
         }
 
@@ -32,7 +34,7 @@ namespace System.Text.Formatting
             _buffer[_count++] = (byte)(character >> 8);
         }
 
-        //TODO: this should use ByteSpan
+        //TODO: this should use Span<byte>
         public void Append(string text)
         {
             foreach (char character in text)
@@ -41,8 +43,8 @@ namespace System.Text.Formatting
             }
         }
 
-        //TODO: this should use ByteSpan
-        public void Append(ReadOnlySpan<char> substring)
+        //TODO: this should use Span<byte>
+        public void Append(Span<char> substring)
         {
             for (int i = 0; i < substring.Length; i++)
             {
@@ -62,7 +64,7 @@ namespace System.Text.Formatting
 
         Span<byte> IFormatter.FreeBuffer
         {
-            get { return new Span<byte>(_buffer, _count); }
+            get { return new Span<byte>(_buffer, _count, _buffer.Length - _count); }
         }
 
         public FormattingData FormattingData
@@ -79,7 +81,7 @@ namespace System.Text.Formatting
 
         void IFormatter.ResizeBuffer()
         {
-            BufferPool.Shared.Enlarge(ref _buffer, _buffer.Length * 2);
+            _pool.EnlargeBuffer(ref _buffer, _buffer.Length * 2);
         }
         void IFormatter.CommitBytes(int bytes)
         {

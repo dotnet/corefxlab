@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Text.Formatting;
 using Xunit;
 
@@ -47,7 +48,8 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void CustomCulture()
         {
-            var sb = new StringFormatter();
+            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
+            var sb = new StringFormatter(pool);
             sb.FormattingData = Culture5;
 
             sb.Append(-1234567890);

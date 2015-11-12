@@ -24,14 +24,17 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
+      <Name>System.Buffers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\System.Text.Utf8\src\System.Text.Utf8.csproj">
       <Name>System.Text.Utf8</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\System.Text.Formatting\src\System.Text.Formatting.csproj">
       <Name>System.Text.Formatting</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
-      <Name>System.Buffers</Name>
+    <ProjectReference Include="..\..\System.Slices\src\System.Slices.csproj">
+      <Name>System.Slices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />

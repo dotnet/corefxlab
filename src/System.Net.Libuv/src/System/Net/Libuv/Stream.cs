@@ -26,7 +26,7 @@ namespace System.Net.Libuv
             }
         }
 
-        public event Action<ByteSpan> ReadCompleted;
+        public event Action<Span<byte>> ReadCompleted;
         public event Action EndOfStream;
 
         public unsafe void TryWrite(byte[] data)
@@ -50,11 +50,37 @@ namespace System.Net.Libuv
             }
         }
 
-        public unsafe void TryWrite(ByteSpan data)
+        public unsafe void TryWrite(byte[] data, int length)
+        {
+            Debug.Assert(data != null);
+            if(data.Length < length)
+            {
+                throw new ArgumentOutOfRangeException("length");
+            }
+
+            EnsureNotDisposed();
+
+            fixed (byte* pData = data)
+            {
+                IntPtr ptrData = (IntPtr)pData;
+                if (IsUnix)
+                {
+                    var buffer = new UVBuffer.Unix(ptrData, (uint)length);
+                    UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
+                }
+                else
+                {
+                    var buffer = new UVBuffer.Windows(ptrData, (uint)length);
+                    UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
+                }
+            }
+        }
+
+        public unsafe void TryWrite(Span<byte> data)
         {
             EnsureNotDisposed();
 
-            IntPtr ptrData = (IntPtr)data.UnsafeBuffer;
+            IntPtr ptrData = (IntPtr)data.UnsafePointer;
             if (IsUnix)
             {
                 var buffer = new UVBuffer.Unix(ptrData, (uint)data.Length);
@@ -69,7 +95,10 @@ namespace System.Net.Libuv
 
         static bool IsUnix
         {
-            get { return false; }
+            get
+            {
+                return !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            }
         }
 
         void OnReadWindows(UVBuffer.Windows buffer, IntPtr bytesAvaliable)
@@ -105,7 +134,7 @@ namespace System.Net.Libuv
             }
             else
             {
-                var readSlice = new ByteSpan((byte*)buffer.Buffer, (int)bytesRead);
+                var readSlice = new Span<byte>((byte*)buffer.Buffer, (int)bytesRead);
                 OnReadCompleted(readSlice);
                 buffer.Dispose();
             }
@@ -134,13 +163,13 @@ namespace System.Net.Libuv
             }
             else
             {
-                var readSlice = new ByteSpan((byte*)buffer.Buffer, (int)bytesRead);
+                var readSlice = new Span<byte>((byte*)buffer.Buffer, (int)bytesRead);
                 OnReadCompleted(readSlice);
                 buffer.Dispose();
             }
         }
 
-        void OnReadCompleted(ByteSpan bytesRead)
+        void OnReadCompleted(Span<byte> bytesRead)
         {
             if (ReadCompleted != null)
             {

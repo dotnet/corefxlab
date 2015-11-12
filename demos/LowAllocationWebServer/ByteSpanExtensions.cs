@@ -9,16 +9,28 @@ namespace LowAllocationServer
             return buffer.SliceTo((byte) terminator, out consumedBytes);
         }
 
+        internal static ByteSpan SliceTo(this ByteSpan buffer, int start, char terminator, out int consumedBytes)
+        {
+            return buffer.SliceTo(start, (byte)terminator, out consumedBytes);
+        }
+
         internal static ByteSpan SliceTo(this ByteSpan buffer, byte terminator, out int consumedBytes)
         {
-            var index = 0;
+            return buffer.SliceTo(0, terminator, out consumedBytes);
+        }
+
+        internal static ByteSpan SliceTo(this ByteSpan buffer, int start, byte terminator, out int consumedBytes)
+        {
+            var index = start;
+            var count = 0;
             while (index < buffer.Length)
-            {
+            {                
                 if (buffer[index] == terminator)
                 {
-                    consumedBytes = index + 1;
-                    return buffer.Slice(0, index);
+                    consumedBytes = count + 1;
+                    return buffer.Slice(start, count);
                 }
+                count++;
                 index++;
             }
             consumedBytes = 0;
@@ -31,16 +43,28 @@ namespace LowAllocationServer
             return buffer.SliceTo((byte) terminatorFirst, (byte) terminatorSecond, out consumedBytes);
         }
 
+        internal static ByteSpan SliceTo(this ByteSpan buffer, int start, char terminatorFirst, char terminatorSecond, out int consumedBytes)
+        {
+            return buffer.SliceTo(start, (byte)terminatorFirst, (byte)terminatorSecond, out consumedBytes);
+        }
+
         internal static ByteSpan SliceTo(this ByteSpan buffer, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
         {
-            int index = 0;
+            return buffer.SliceTo(0, terminatorFirst, terminatorSecond, out consumedBytes);
+        }
+
+        internal static ByteSpan SliceTo(this ByteSpan buffer, int start, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
+        {
+            var index = start;
+            var count = 0;
             while (index < buffer.Length)
-            {
+            {                
                 if (buffer[index] == terminatorFirst && buffer.Length > index + 1 && buffer[index + 1] == terminatorSecond)
                 {
-                    consumedBytes = index + 2;
-                    return buffer.Slice(0, index);
+                    consumedBytes = count + 2;
+                    return buffer.Slice(start, count);
                 }
+                count++;
                 index++;
             }
 

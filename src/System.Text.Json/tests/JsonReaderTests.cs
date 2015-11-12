@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.Utf8;
+using System.Text.Json.Tests.Resources;
 using Xunit;
 
 namespace System.Text.Json.Tests
@@ -8,153 +7,463 @@ namespace System.Text.Json.Tests
     public class JsonReaderTests
     {
         [Fact]
-        public void ReadJsonUtf8()
+        public void ReadBasicJson()
         {
-            Console.WriteLine(Json);
-            var str = new Utf8String(Json);
-            var jsonReader = new JsonReader(str);
-            var result = Read(jsonReader);
-            var age = new Utf8String("age");
-            var balance = new Utf8String("balance");
-            var first = new Utf8String("first");
-            var last = new Utf8String("last");
-            var phoneNumbers = new Utf8String("phoneNumbers");
-            var street = new Utf8String("street");
-            var city = new Utf8String("city");
-            var zip = new Utf8String("zip");
-            var ids = new Utf8String("IDs");
+            var testJson = CreateJson();
+            Assert.Equal(testJson.ToString(), TestJson.ExpectedCreateJson);
 
-            uint actualAge = 0;
-            foreach (var t in result.Where(t => t.Key == age))
-            {
-                actualAge = Convert.ToUInt32(t.Value);
-            }
-
-            var actualBalance = 0;
-            foreach (var t in result.Where(t => t.Key == balance))
-            {
-                actualBalance = Convert.ToInt32(t.Value);
-            }
-
-            var actualFirstName = new Utf8String();
-            foreach (var t in result.Where(t => t.Key == first))
-            {
-                actualFirstName = new Utf8String(t.Value.ToString());
-            }
-
-            var actualLastName = new Utf8String();
-            foreach (var t in result.Where(t => t.Key == last))
-            {
-                actualLastName = new Utf8String(t.Value.ToString());
-            }
-
-            var actualStreet = new Utf8String();
-            foreach (var t in result.Where(t => t.Key == street))
-            {
-                actualStreet = new Utf8String(t.Value.ToString());
-            }
-
-            var actualCity = new Utf8String();
-            foreach (var t in result.Where(t => t.Key == city))
-            {
-                actualCity = new Utf8String(t.Value.ToString());
-            }
-
-            var actualZip = new Utf8String();
-            foreach (var t in result.Where(t => t.Key == zip))
-            {
-                actualZip = new Utf8String(t.Value.ToString());
-            }
-
-            var actualPhoneList = new List<Utf8String>();
-            foreach (var t in result.Where(t => t.Key == phoneNumbers))
-            {
-                actualPhoneList.Add(new Utf8String(t.Value.ToString()));
-            }
-
-            var actualIDs = new List<object>();
-            foreach (var t in result.Where(t => t.Key == ids))
-            {
-                actualIDs.Add(t.Value);
-            }
-
-            Assert.Equal(ExpectedAge, actualAge);
-            Assert.Equal(ExpectedBalance, actualBalance);
-            Assert.Equal(_expectedFullName, new Utf8String(actualFirstName + " " + actualLastName));
-            Assert.Equal(ExpectedPhone, actualPhoneList.ToArray());
-            Assert.Equal(_expectedAddress, new Utf8String(actualStreet + ", " + actualCity + ", " + actualZip));
-            Assert.Equal(ExpectedId1, Convert.ToUInt32(actualIDs[0]));
-            Assert.Equal(ExpectedId2, Convert.ToInt32(actualIDs[1]));
-            Assert.Equal(ExpectedId3, Convert.ToInt64(actualIDs[2]));
+            var readJson = ReadJson(TestJson.BasicJson);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedBasicJson);
         }
 
-        private const string Json =
-            "{\"age\":30,\"balance\":-1000,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1 Microsoft Way\",\"city\":\"Redmond\",\"zip\":98052}\"IDs\" \n : [ \t 0425 \n , -70 \n, 9223372036854775807 ] \t }";
-
-        private const uint ExpectedAge = 30;
-        private const int ExpectedBalance = -1000;
-        private const uint ExpectedId1 = 425;
-        private const int ExpectedId2 = -70;
-        private const long ExpectedId3 = 9223372036854775807;
-        private readonly Utf8String _expectedFullName = new Utf8String("John Smith");
-
-        private static readonly Utf8String[] ExpectedPhone =
+        [Fact]
+        public void ReadBasicJsonWithLongInt()
         {
-            new Utf8String("425-000-1212"),
-            new Utf8String("425-000-1213")
-        };
+            var readJson = ReadJson(TestJson.BasicJsonWithLargeNum);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedBasicJsonWithLargeNum);
+        }
 
-        private readonly Utf8String _expectedAddress = new Utf8String("1 Microsoft Way, Redmond, 98052");
-
-        private static List<KeyValuePair<Utf8String, object>> Read(JsonReader json)
+        [Fact]
+        public void ReadFullJsonSchema()
         {
-            var jsonOutput = new List<KeyValuePair<Utf8String, object>>();
-            var property = new Utf8String("");
-            while (json.Read())
+            var readJson = ReadJson(TestJson.FullJsonSchema1);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedFullJsonSchema1);
+        }
+
+        [Fact]
+        public void ReadFullJsonSchemaAndGetValue()
+        {
+            var readJson = ReadJson(TestJson.FullJsonSchema2);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedFullJsonSchema2);
+
+            Assert.Equal(readJson.GetValueFromPropertyName("long")[0].NumberValue, 9.2233720368547758E+18);
+            var emptyObject = readJson.GetValueFromPropertyName("emptyObject");
+            Assert.Equal(emptyObject[0].ObjectValue.Members[0].Pairs.Count, 0);
+            var arrayString = readJson.GetValueFromPropertyName("arrayString");
+            Assert.Equal(arrayString[0].ArrayValue.Elements[0].Values.Count, 2);
+            Assert.Equal(readJson.GetValueFromPropertyName("firstName").Count, 4);
+            Assert.Equal(readJson.GetValueFromPropertyName("propertyDNE").Count, 0);
+        }
+
+        [Fact]
+        public void ReadJsonSpecialStrings()
+        {
+            var readJson = ReadJson(TestJson.JsonWithSpecialStrings);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedJsonWithSpecialStrings);
+        }
+
+        [Fact]
+        public void ReadJsonSpecialNumbers()
+        {
+            var readJson = ReadJson(TestJson.JsonWithSpecialNumFormat);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedJsonWithSpecialNumFormat);
+        }
+
+        [Fact]
+        public void ReadProjectLockJson()
+        {
+            var readJson = ReadJson(TestJson.ProjectLockJson);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedProjectLockJson);
+        }
+
+        [Fact]
+        public void ReadHeavyNestedJson()
+        {
+            var readJson = ReadJson(TestJson.HeavyNestedJson);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedHeavyNestedJson);
+        }
+
+        [Fact]
+        public void ReadHeavyNestedJsonWithArray()
+        {
+            var readJson = ReadJson(TestJson.HeavyNestedJsonWithArray);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedHeavyNestedJsonWithArray);
+        }
+
+        [Fact]
+        public void ReadLargeJson()
+        {
+            var readJson = ReadJson(TestJson.LargeJson);
+            var json = readJson.ToString();
+            Assert.Equal(json, TestJson.ExpectedLargeJson);
+        }
+
+        private static Json CreateJson()
+        {
+            var valueAge = new Value
             {
-                object value;
-                switch (json.TokenType)
-                {
-                    case JsonReader.JsonTokenType.ObjectStart:
-                        json.ReadObjectStart();
-                        value = null;
-                        break;
-                    case JsonReader.JsonTokenType.ObjectEnd:
-                        json.ReadObjectEnd();
-                        property = new Utf8String("");
-                        value = null;
-                        break;
-                    case JsonReader.JsonTokenType.ArrayStart:
-                        json.ReadArrayStart();
-                        value = null;
-                        break;
-                    case JsonReader.JsonTokenType.ArrayEnd:
-                        json.ReadArrayEnd();
-                        property = new Utf8String("");
-                        value = null;
-                        break;
-                    case JsonReader.JsonTokenType.PropertyName:
-                        property = json.ReadPropertyAsString();
-                        value = null;
-                        break;
-                    case JsonReader.JsonTokenType.PropertyValueAsString:
-                        value = json.ReadPropertyAsString();
-                        break;
-                    case JsonReader.JsonTokenType.PropertyValueAsInt:
-                        value = json.ReadPropertyValueAsInt();
-                        break;
-                    default:
-                        property = new Utf8String("");
-                        value = null;
-                        break;
-                }
-                if (property != new Utf8String("") && value != null)
-                {
-                    jsonOutput.Add(new KeyValuePair<Utf8String, object>(property, value));
-                }
+                Type = Value.ValueType.Number,
+                NumberValue = 30
+            };
+
+            var pairAge = new Pair
+            {
+                Name = "age",
+                Value = valueAge
+            };
+
+            var valueFirst = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "John"
+            };
+
+            var pairFirst = new Pair
+            {
+                Name = "first",
+                Value = valueFirst
+            };
+
+            var valueLast = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "Smith"
+            };
+
+            var pairLast = new Pair
+            {
+                Name = "last",
+                Value = valueLast
+            };
+
+
+            var value1 = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "425-000-1212"
+            };
+
+            var value2 = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "425-000-1213"
+            };
+
+            var values = new List<Value> {value1, value2};
+            var elementInner = new Elements {Values = values};
+            var elementsInner = new List<Elements> {elementInner};
+            var arrInner = new Array {Elements = elementsInner};
+
+            var valuePhone = new Value
+            {
+                Type = Value.ValueType.Array,
+                ArrayValue = arrInner
+            };
+
+            var pairPhone = new Pair
+            {
+                Name = "phoneNumbers",
+                Value = valuePhone
+            };
+
+            var valueStreet = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "1 Microsoft Way"
+            };
+
+            var pairStreet = new Pair
+            {
+                Name = "street",
+                Value = valueStreet
+            };
+
+            var valueCity = new Value
+            {
+                Type = Value.ValueType.String,
+                StringValue = "Redmond"
+            };
+
+            var pairCity = new Pair
+            {
+                Name = "city",
+                Value = valueCity
+            };
+
+            var valueZip = new Value
+            {
+                Type = Value.ValueType.Number,
+                NumberValue = 98052
+            };
+
+            var pairZip = new Pair
+            {
+                Name = "zip",
+                Value = valueZip
+            };
+
+            var pairsInner = new List<Pair> {pairStreet, pairCity, pairZip};
+            var memberInner = new Members {Pairs = pairsInner};
+            var membersInner = new List<Members> {memberInner};
+            var objInner = new Object {Members = membersInner};
+
+            var valueAddress = new Value
+            {
+                Type = Value.ValueType.Object,
+                ObjectValue = objInner
+            };
+
+            var pairAddress = new Pair
+            {
+                Name = "address",
+                Value = valueAddress
+            };
+
+            var pairs = new List<Pair> {pairAge, pairFirst, pairLast, pairPhone, pairAddress};
+            var member = new Members {Pairs = pairs};
+            var members = new List<Members> {member};
+            var obj = new Object {Members = members};
+            var json = new Json {Object = obj};
+
+            return json;
+        }
+
+        private static Json ReadJson(string jsonString)
+        {
+            var json = new Json();
+            if (string.IsNullOrEmpty(jsonString))
+            {
+                return json;
             }
 
-            return jsonOutput;
+            var jsonReader = new JsonReader(jsonString);
+            var jsonObjectMain = new Object();
+            var jsonMembersMain = new List<Members>();
+            var jsonArrayMain = new Array();
+            var jsonElementsMain = new List<Elements>();
+
+            if (jsonString.Trim().Substring(0, 1) == "[")
+            {
+                ReadJsonHelper(jsonReader, jsonElementsMain);
+
+                jsonArrayMain.Elements = jsonElementsMain;
+                json.Array = jsonArrayMain;
+            }
+            else
+            {
+                ReadJsonHelper(jsonReader, jsonMembersMain);
+
+                jsonObjectMain.Members = jsonMembersMain;
+                json.Object = jsonObjectMain;
+            }
+
+            return json;
+        }
+
+        private static void ReadJsonHelper(JsonReader jsonReader, ICollection<Members> jsonMembersMain)
+        {
+            Array jsonArray = null;
+            List<Pair> jsonPairs = null;
+            List<Value> jsonValues = null;
+
+            while (jsonReader.Read())
+            {
+                switch (jsonReader.TokenType)
+                {
+                    case JsonReader.JsonTokenType.ObjectStart:
+                        jsonPairs = new List<Pair>();
+                        break;
+                    case JsonReader.JsonTokenType.ObjectEnd:
+                        if (jsonPairs != null)
+                        {
+                            var jsonMembers = new Members {Pairs = jsonPairs};
+                            jsonMembersMain.Add(jsonMembers);
+                        }
+                        break;
+                    case JsonReader.JsonTokenType.ArrayStart:
+                        jsonArray = new Array();
+                        jsonValues = new List<Value>();
+                        break;
+                    case JsonReader.JsonTokenType.ArrayEnd:
+                        if (jsonArray != null)
+                        {
+                            var jsonElements = new Elements {Values = jsonValues};
+                            jsonArray.Elements = new List<Elements> {jsonElements};
+                        }
+                        break;
+                    case JsonReader.JsonTokenType.Property:
+                        var pair = new Pair
+                        {
+                            Name = (string) jsonReader.GetName(),
+                            Value = GetValue(ref jsonReader)
+                        };
+                        if (jsonPairs != null) jsonPairs.Add(pair);
+                        break;
+                    case JsonReader.JsonTokenType.Value:
+                        if (jsonValues != null) jsonValues.Add(GetValue(ref jsonReader));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        private static void ReadJsonHelper(JsonReader jsonReader, ICollection<Elements> jsonElementsMain)
+        {
+            Object jsonObject = null;
+            List<Pair> jsonPairs = null;
+            List<Value> jsonValues = null;
+
+            while (jsonReader.Read())
+            {
+                switch (jsonReader.TokenType)
+                {
+                    case JsonReader.JsonTokenType.ObjectStart:
+                        jsonObject = new Object();
+                        jsonPairs = new List<Pair>();
+                        break;
+                    case JsonReader.JsonTokenType.ObjectEnd:
+                        if (jsonObject != null)
+                        {
+                            var jsonMembers = new Members { Pairs = jsonPairs };
+                            jsonObject.Members = new List<Members> { jsonMembers };
+                        }
+                        break;
+                    case JsonReader.JsonTokenType.ArrayStart:
+                        jsonValues = new List<Value>();
+                        break;
+                    case JsonReader.JsonTokenType.ArrayEnd:
+                        if (jsonValues != null)
+                        {
+                            var jsonElements = new Elements { Values = jsonValues };
+                            jsonElementsMain.Add(jsonElements);
+                        }
+                        break;
+                    case JsonReader.JsonTokenType.Property:
+                        var pair = new Pair
+                        {
+                            Name = (string)jsonReader.GetName(),
+                            Value = GetValue(ref jsonReader)
+                        };
+                        if (jsonPairs != null) jsonPairs.Add(pair);
+                        break;
+                    case JsonReader.JsonTokenType.Value:
+                        if (jsonValues != null) jsonValues.Add(GetValue(ref jsonReader));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        private static Value GetValue(ref JsonReader jsonReader)
+        {
+            var type = jsonReader.GetJsonValueType();
+            var value = new Value {Type = (Value.ValueType) type};
+            var obj = jsonReader.GetValue();
+            switch (value.Type)
+            {
+                case Value.ValueType.String:
+                    value.StringValue = obj.ToString();
+                    break;
+                case Value.ValueType.Number:
+                    value.NumberValue = Convert.ToDouble(obj.ToString());
+                    break;
+                case Value.ValueType.True:
+                    break;
+                case Value.ValueType.False:
+                    break;
+                case Value.ValueType.Null:
+                    break;
+                case Value.ValueType.Object:
+                    value.ObjectValue = ReadObject(ref jsonReader);
+                    break;
+                case Value.ValueType.Array:
+                    value.ArrayValue = ReadArray(ref jsonReader);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return value;
+        }
+
+        private static Object ReadObject(ref JsonReader jsonReader)
+        {
+            var jsonObject = new Object();
+            var jsonMembersList = new List<Members>();
+            List<Pair> jsonPairs = null;
+
+            while (jsonReader.Read())
+            {
+                switch (jsonReader.TokenType)
+                {
+                    case JsonReader.JsonTokenType.ObjectStart:
+                        jsonPairs = new List<Pair>();
+                        break;
+                    case JsonReader.JsonTokenType.ObjectEnd:
+                        if (jsonPairs != null)
+                        {
+                            var jsonMembers = new Members {Pairs = jsonPairs};
+                            jsonMembersList.Add(jsonMembers);
+                            jsonObject.Members = jsonMembersList;
+                            return jsonObject;
+                        }
+                        break;
+                    case JsonReader.JsonTokenType.ArrayStart:
+                        break;
+                    case JsonReader.JsonTokenType.ArrayEnd:
+                        break;
+                    case JsonReader.JsonTokenType.Property:
+                        var pair = new Pair
+                        {
+                            Name = (string) jsonReader.GetName(),
+                            Value = GetValue(ref jsonReader)
+                        };
+                        if (jsonPairs != null) jsonPairs.Add(pair);
+                        break;
+                    case JsonReader.JsonTokenType.Value:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            throw new FormatException("Json object was started but never ended.");
+        }
+
+        private static Array ReadArray(ref JsonReader jsonReader)
+        {
+            Array jsonArray = null;
+            List<Value> jsonValues = null;
+
+            while (jsonReader.Read())
+            {
+                switch (jsonReader.TokenType)
+                {
+                    case JsonReader.JsonTokenType.ObjectStart:
+                        break;
+                    case JsonReader.JsonTokenType.ObjectEnd:
+                        break;
+                    case JsonReader.JsonTokenType.ArrayStart:
+                        jsonArray = new Array();
+                        jsonValues = new List<Value>();
+                        break;
+                    case JsonReader.JsonTokenType.ArrayEnd:
+                        if (jsonArray != null)
+                        {
+                            var jsonElements = new Elements {Values = jsonValues};
+                            jsonArray.Elements = new List<Elements> {jsonElements};
+                            return jsonArray;
+                        }
+                        break;
+                    case JsonReader.JsonTokenType.Property:
+                        break;
+                    case JsonReader.JsonTokenType.Value:
+                        if (jsonValues != null) jsonValues.Add(GetValue(ref jsonReader));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            throw new FormatException("Json array was started but never ended.");
         }
     }
 }

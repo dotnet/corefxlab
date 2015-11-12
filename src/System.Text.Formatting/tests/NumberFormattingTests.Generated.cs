@@ -14,7 +14,7 @@ namespace System.Text.Formatting.Tests
         public void CheckByte(Byte value, string format)
         {
             var parsed = Format.Parse(format);
-            formatter.Clear();
+            var formatter = new StringFormatter(pool);
             formatter.Append(value, parsed);
             var result = formatter.ToString();
             var clrResult = value.ToString(format, CultureInfo.InvariantCulture);
@@ -339,7 +339,7 @@ namespace System.Text.Formatting.Tests
         public void CheckSByte(SByte value, string format)
         {
             var parsed = Format.Parse(format);
-            formatter.Clear();
+            var formatter = new StringFormatter(pool);
             formatter.Append(value, parsed);
             var result = formatter.ToString();
             var clrResult = value.ToString(format, CultureInfo.InvariantCulture);
@@ -664,7 +664,7 @@ namespace System.Text.Formatting.Tests
         public void CheckUInt16(UInt16 value, string format)
         {
             var parsed = Format.Parse(format);
-            formatter.Clear();
+            var formatter = new StringFormatter(pool);
             formatter.Append(value, parsed);
             var result = formatter.ToString();
             var clrResult = value.ToString(format, CultureInfo.InvariantCulture);
@@ -989,7 +989,7 @@ namespace System.Text.Formatting.Tests
         public void CheckInt16(Int16 value, string format)
         {
             var parsed = Format.Parse(format);
-            formatter.Clear();
+            var formatter = new StringFormatter(pool);
             formatter.Append(value, parsed);
             var result = formatter.ToString();
             var clrResult = value.ToString(format, CultureInfo.InvariantCulture);
@@ -1314,7 +1314,7 @@ namespace System.Text.Formatting.Tests
         public void CheckUInt32(UInt32 value, string format)
         {
             var parsed = Format.Parse(format);
-            formatter.Clear();
+            var formatter = new StringFormatter(pool);
             formatter.Append(value, parsed);
             var result = formatter.ToString();
             var clrResult = value.ToString(format, CultureInfo.InvariantCulture);
@@ -1639,7 +1639,7 @@ namespace System.Text.Formatting.Tests
         public void CheckInt32(Int32 value, string format)
         {
             var parsed = Format.Parse(format);
-            formatter.Clear();
+            var formatter = new StringFormatter(pool);
             formatter.Append(value, parsed);
             var result = formatter.ToString();
             var clrResult = value.ToString(format, CultureInfo.InvariantCulture);
@@ -1964,7 +1964,7 @@ namespace System.Text.Formatting.Tests
         public void CheckUInt64(UInt64 value, string format)
         {
             var parsed = Format.Parse(format);
-            formatter.Clear();
+            var formatter = new StringFormatter(pool);
             formatter.Append(value, parsed);
             var result = formatter.ToString();
             var clrResult = value.ToString(format, CultureInfo.InvariantCulture);
@@ -2289,7 +2289,7 @@ namespace System.Text.Formatting.Tests
         public void CheckInt64(Int64 value, string format)
         {
             var parsed = Format.Parse(format);
-            formatter.Clear();
+            var formatter = new StringFormatter(pool);
             formatter.Append(value, parsed);
             var result = formatter.ToString();
             var clrResult = value.ToString(format, CultureInfo.InvariantCulture);
