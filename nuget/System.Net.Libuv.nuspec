@@ -14,8 +14,8 @@
     <copyright> Microsoft Corporation.  All rights reserved.</copyright>
     <tags>.NET formatting corefxlab</tags>
     <dependencies>
-      <dependency id="System.Buffers" />
-      <dependency id="System.Slices" />
+      <dependency id="System.Buffers" version="$version$" />
+      <dependency id="System.Slices" version="$version$" />
     </dependencies>
   </metadata>
   <files>
