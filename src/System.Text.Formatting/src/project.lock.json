@@ -3,10 +3,10 @@
   "version": 2,
   "targets": {
     "DNXCore,Version=v5.0": {
-      "System.Buffers/0.1.0-d103015-1": {
+      "System.Buffers/0.1.0-d8ileDaAe-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d103015-1"
+          "System.Slices": "0.1.0-d8ileDaAe-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
@@ -191,10 +191,10 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x86": {
-      "System.Buffers/0.1.0-d103015-1": {
+      "System.Buffers/0.1.0-d8ileDaAe-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d103015-1"
+          "System.Slices": "0.1.0-d8ileDaAe-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
@@ -379,10 +379,10 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x64": {
-      "System.Buffers/0.1.0-d103015-1": {
+      "System.Buffers/0.1.0-d8ileDaAe-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d103015-1"
+          "System.Slices": "0.1.0-d8ileDaAe-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
@@ -568,14 +568,14 @@
     }
   },
   "libraries": {
-    "System.Buffers/0.1.0-d103015-1": {
+    "System.Buffers/0.1.0-d8ileDaAe-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "PbBsg9lrRS5/3q9gR857+sIP4b20vhib16XqHxXQmKK+daB7ik/gKqn9GXznx/vh/DQEPG8PC604N5PGNeSALg==",
+      "sha512": "Yye0F8AwDvwcXEXHPDEwvYN/qYC4qstMbbENgPX+6qRKv4fZdZDPuBAxDoIM6AOzabqdbOKh94yZOaX5VmHK1A==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll",
-        "System.Buffers.0.1.0-d103015-1.nupkg",
-        "System.Buffers.0.1.0-d103015-1.nupkg.sha512",
+        "System.Buffers.0.1.0-d8ileDaAe-1.nupkg",
+        "System.Buffers.0.1.0-d8ileDaAe-1.nupkg.sha512",
         "System.Buffers.nuspec"
       ]
     },
@@ -1265,7 +1265,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "System.Buffers >= 0.1.0-d103015-1",
+      "System.Buffers >= 0.1.0-*",
       "System.Collections >= 4.0.0",
       "System.Diagnostics.Contracts >= 4.0.0",
       "System.Diagnostics.Debug >= 4.0.0",

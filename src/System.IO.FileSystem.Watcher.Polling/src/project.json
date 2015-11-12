@@ -1,4 +1,7 @@
 {
+  "compilationOptions": {
+    "allowUnsafe": true
+  },
   "dependencies": {
     "System.Collections": "4.0.0",
     "System.Diagnostics.Contracts": "4.0.0",

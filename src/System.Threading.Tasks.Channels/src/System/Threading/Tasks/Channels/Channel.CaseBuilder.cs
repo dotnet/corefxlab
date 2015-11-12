@@ -106,7 +106,7 @@ namespace System.Threading.Tasks.Channels
                 if (action == null)
                     throw new ArgumentNullException("action");
                 if (_default != null)
-                    throw new InvalidOperationException(SR.InvalidOperationException_DefaultCaseAlreadyExists);
+                    throw new InvalidOperationException(Properties.Resources.InvalidOperationException_DefaultCaseAlreadyExists);
                 _default = new SyncDefaultCase(action);
                 return this;
             }
@@ -122,7 +122,7 @@ namespace System.Threading.Tasks.Channels
                 if (func == null)
                     throw new ArgumentNullException("func");
                 if (_default != null)
-                    throw new InvalidOperationException(SR.InvalidOperationException_DefaultCaseAlreadyExists);
+                    throw new InvalidOperationException(Properties.Resources.InvalidOperationException_DefaultCaseAlreadyExists);
                 _default = new AsyncDefaultCase(func);
                 return this;
             }

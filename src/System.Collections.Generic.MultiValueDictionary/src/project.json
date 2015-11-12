@@ -1,7 +1,8 @@
 {
   "dependencies": {
-    "System.Collections": "4.0.0", 
+    "System.Collections": "4.0.0",
     "System.Diagnostics.Debug": "4.0.0", 
+    "System.Diagnostics.Tools": "4.0.1-beta-23409",
     "System.Reflection.Primitives": "4.0.0",
     "System.Resources.ResourceManager": "4.0.0",
     "System.Runtime": "4.0.0",
@@ -10,6 +11,6 @@
     "System.Threading": "4.0.0"
     },
   "frameworks": {
-    "dnxcore50": {}
+    "dnxcore50": { }
   }
 }
