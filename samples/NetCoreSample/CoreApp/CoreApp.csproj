@@ -17,7 +17,8 @@
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
     <NuGetTargetMoniker>DNXCore,Version=v5.0</NuGetTargetMoniker>
     <BaseNuGetRuntimeIdentifier>win7</BaseNuGetRuntimeIdentifier>
-    <HostExe>CoreConsole.exe</HostExe>
+    <HostExe>coreconsole</HostExe>
+    <HostExtension>.exe</HostExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -54,7 +55,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
     <BaseNuGetRuntimeIdentifier>ubuntu.14.04</BaseNuGetRuntimeIdentifier>
-    <HostExe>coreconsole</HostExe>
+    <HostExtension></HostExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ubuntu_Release|x64'">
     <OutputPath>bin\x64.Release.ubuntu</OutputPath>
@@ -67,7 +68,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
     <BaseNuGetRuntimeIdentifier>ubuntu.14.04</BaseNuGetRuntimeIdentifier>
-    <HostExe>coreconsole</HostExe>
+    <HostExtension></HostExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Osx_Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -81,7 +82,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
     <BaseNuGetRuntimeIdentifier>osx.10.10</BaseNuGetRuntimeIdentifier>
-    <HostExe>coreconsole</HostExe>
+    <HostExtension></HostExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Osx_Release|x64'">
     <OutputPath>bin\x64.Release.osx</OutputPath>
@@ -94,7 +95,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
     <BaseNuGetRuntimeIdentifier>osx.10.10</BaseNuGetRuntimeIdentifier>
-    <HostExe>coreconsole</HostExe>
+    <HostExtension></HostExtension>
   </PropertyGroup>
   <ItemGroup>
     <None Include="project.json" />
@@ -137,6 +138,6 @@
   </PropertyGroup>
   <Target Name="AfterBuild">
     <Move SourceFiles="$(TargetPath)" DestinationFiles="$(TargetDir)\$(AssemblyName).dll" />
-    <Move SourceFiles="$(TargetDir)\$(HostExe)" DestinationFiles="$(TargetPath)" />
+    <Move SourceFiles="$(TargetDir)\$(HostExe)$(HostExtension)" DestinationFiles="$(TargetDir)\$(AssemblyName)$(HostExtension)" />
   </Target>
 </Project>
