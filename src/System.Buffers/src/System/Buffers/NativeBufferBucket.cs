@@ -16,6 +16,7 @@ namespace System.Buffers
         private Span<T>?[] _slices;
         private int _elementsInBuffer;
         private SpinLock _lock;
+
         private bool _disposed;
 
         internal NativeBufferBucket(int elementsInBuffer, int numberOfBuffers)

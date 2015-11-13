@@ -13,6 +13,7 @@ namespace System.Buffers
         private const int NUMBER_OF_BUFFERS_IN_BUCKET = 50;
         private int _maxElements;
         private NativeBufferBucket<T>[] _buckets;
+
         private bool _disposed;
 
         private static NativeBufferPool<byte> _sharedInstance = null;

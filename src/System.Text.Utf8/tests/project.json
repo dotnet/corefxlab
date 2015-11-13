@@ -2,7 +2,8 @@
   "dependencies": {
     "Microsoft.NETCore" : "5.0.0-beta-*",
     "System.Console": "4.0.0-beta-*",
-    "xunit": "2.0.0-beta5-build2785"
+    "xunit": "2.0.0-beta5-build2785",
+    "System.Slices": "0.1.0-d103015-1"
   },
   "frameworks": {
     "dnxcore50": {}

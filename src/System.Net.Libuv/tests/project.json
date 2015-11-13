@@ -1,6 +1,7 @@
-{
+﻿{
   "dependencies": {
-    "Microsoft.NETCore" : "5.0.0-beta-*",
+    "Microsoft.NETCore": "5.0.0-beta-*",
+    "System.Buffers": "0.1.0-d103015-1",
     "xunit": "2.0.0-beta5-build2785"
   },
   "frameworks": {

@@ -1,4 +1,7 @@
 {
+  "compilationOptions": {
+		"allowUnsafe": true
+	},
   "dependencies": {
     "System.Diagnostics.Debug": "4.0.0", 
     "System.Reflection.Primitives": "4.0.0",
