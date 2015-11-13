@@ -263,6 +263,30 @@ namespace System.Text.Json.Tests.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [
+        ///   {
+        ///      &quot;age&quot; : 30,
+        ///      &quot;first&quot; : &quot;John&quot;,
+        ///      &quot;last&quot; : &quot;Smith&quot;,
+        ///      &quot;phoneNumbers&quot; : [
+        ///         &quot;425-000-1212&quot;,
+        ///         &quot;425-000-1213&quot;
+        ///      ],
+        ///      &quot;address&quot; : {
+        ///         &quot;street&quot; : &quot;1 Microsoft Way&quot;,
+        ///         &quot;city&quot; : &quot;Redmond&quot;,
+        ///         &quot;zip&quot; : 98052
+        ///      }
+        ///   }
+        ///].
+        /// </summary>
+        internal static string ParseJson {
+            get {
+                return ResourceManager.GetString("ParseJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {  &quot;locked&quot;: false,  &quot;version&quot;: 1,  &quot;targets&quot;: {    &quot;DNXCore,Version=v5.0&quot;: {      &quot;Microsoft.CSharp/4.0.0&quot;: {        &quot;dependencies&quot;: {          &quot;System.Runtime&quot;: &quot;[4.0.20, )&quot;,          &quot;System.Dynamic.Runtime&quot;: &quot;[4.0.0, )&quot;,          &quot;System.Linq.Expressions&quot;: &quot;[4.0.0, )&quot;,          &quot;System.Runtime.InteropServices&quot;: &quot;[4.0.20, )&quot;,          &quot;System.Resources.ResourceManager&quot;: &quot;[4.0.0, )&quot;,          &quot;System.Linq&quot;: &quot;[4.0.0, )&quot;,          &quot;System.Reflection.TypeExtensions&quot;: &quot;[4.0.0, )&quot;,          &quot;System.Reflection. [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ProjectLockJson {
