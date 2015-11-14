@@ -891,7 +891,7 @@
     "System.Slices/0.1.0-d103015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "eC7aluMKuzg9PB+2fSFOkcHN6NRN5yT+SJptlgUNLJ4WX9FJmtnUe+Pt8YoSa4ahbGbNp6towrfoAzXhB8Ofuw==",
+      "sha512": "8dK8yxO5wh6bkyJk7BNTJVvVw07BqiqN+FPqnhw02qNkUV6hbIShJmsYVFGXTy+EMTzmTv6jygaPPEe0iz2Dqg==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
         "System.Slices.0.1.0-d103015-1.nupkg",

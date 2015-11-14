@@ -6,6 +6,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Net.Http.Buffered;
 using System.Text.Formatting;
+using System.Text.Http;
 using System.Text.Utf8;
 
 class SampleRestServer : HttpServer
@@ -55,7 +56,7 @@ class SampleRestServer : HttpServer
         var body = string.Format(@"<html><head><title>Time</title></head><body>{0}</body></html>", DateTime.UtcNow.ToString("O"));
         var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
 
-        WriteCommonHeaders(formatter, "1.1", "200", "Ok", request.IsKeepAlive());
+        WriteCommonHeaders(formatter, "1.1", "200", "Ok", keepAlive: false);
         formatter.WriteHttpHeader(new Utf8String("Content-Length"), new Utf8String(body.Length.ToString()));
         formatter.EndHttpHeaderSection();
 

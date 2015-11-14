@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
-using System.Net.Http.Buffered;
 using System.Text;
-using System.Text.Utf8;
 using FluentAssertions;
 using Xunit;
+using System.Text.Http;
+using System.Text.Utf8;
 
-namespace LowAllocationWebServer.Tests
+namespace System.Text.Http.Tests
 {
     public class GivenAnHttpHeaders
     {
@@ -28,14 +28,14 @@ Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4
 
         public GivenAnHttpHeaders()
         {
-            ByteSpan headers;
+            Span<byte> headers;
             var bytes = new UTF8Encoding().GetBytes(HeadersString);            
 
             unsafe
             {
                 fixed (byte* buffer = bytes)
                 {
-                    headers = new ByteSpan(buffer, bytes.Length);
+                    headers = new Span<byte>(buffer, bytes.Length);
                 }
             }
 

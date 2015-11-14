@@ -1,4 +1,5 @@
-﻿using System.Text.Utf8;
+﻿using System.Text.Http;
+using System.Text.Utf8;
 
 namespace System.Net.Http.Buffered
 {

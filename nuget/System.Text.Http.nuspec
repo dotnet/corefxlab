@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>System.Net.Libuv</id>
+    <id>System.Text.Formatting</id>
     <version>$version$</version>
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
@@ -9,17 +9,19 @@
     <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
     <projectUrl>https://github.com/dotnet/corefxlab</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>libuv .net core wrapper</description>
+    <description>Non-allocating HTTP parser</description>
     <releaseNotes>Initial package</releaseNotes>
     <copyright> Microsoft Corporation.  All rights reserved.</copyright>
-    <tags>.NET formatting corefxlab</tags>
+    <tags>.NET corefxlab</tags>
     <dependencies>
       <dependency id="System.Buffers" version="$version$" />
+      <dependency id="System.Text.Utf8" version="$version$" />
       <dependency id="System.Slices" version="$version$" />
+      <dependency id="System.Text.Formatting" version="$version$" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Net.Libuv\System.Net.Libuv.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
+    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Text.Http\System.Text.Http.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
   </files>
 </package>
 

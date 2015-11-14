@@ -1,11 +1,10 @@
 ﻿using Microsoft.Net.Http.Server.Socket;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using System.Text.Formatting;
 using System.Text.Utf8;
+using System.Text.Http;
 using System.Threading;
 
 namespace System.Net.Http.Buffered
@@ -135,10 +134,7 @@ namespace System.Net.Http.Buffered
             
             socket.Send(segment._buffer, segment._count);
 
-            if (!request.RequestLine.IsKeepAlive())
-            {
-                socket.Close();
-            }
+            socket.Close();
 
             responseBytes.Return();
             if (Log.IsVerbose)
@@ -147,7 +143,7 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        void LogRestOfRequest(ByteSpan buffer)
+        void LogRestOfRequest(Span<byte> buffer)
         {
             HttpRequestReader reader = new HttpRequestReader();
             reader.Buffer = buffer;
@@ -161,7 +157,7 @@ namespace System.Net.Http.Buffered
             Log.LogMessage(Log.Level.Verbose, "\tBody bytecount: {0}", messageBody.Length);
         }
 
-        protected virtual HttpServerBuffer CreateResponseFor400(ByteSpan receivedBytes) // Bad Request
+        protected virtual HttpServerBuffer CreateResponseFor400(Span<byte> receivedBytes) // Bad Request
         {
             var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
             WriteCommonHeaders(formatter, "1.1", "400", "Bad Request", false);
@@ -203,55 +199,5 @@ namespace System.Net.Http.Buffered
         }
 
         protected abstract HttpServerBuffer CreateResponse(HttpRequest request);
-    }
-
-    static class FormatterExtensions
-    {
-        public static void Append<T>(this T formatter, Utf8String text) where T : IFormatter
-        {
-            var bytes = new byte[text.Length];
-            int i = 0;
-            foreach (var codeUnit in text)
-            {
-                bytes[i++] = codeUnit.Value;
-            }
-
-            var avaliable = formatter.FreeBuffer.Length;
-            while (avaliable < bytes.Length)
-            {
-                avaliable = formatter.FreeBuffer.Length;
-                formatter.ResizeBuffer();
-            }
-
-            formatter.FreeBuffer.Set(bytes);
-            formatter.CommitBytes(bytes.Length);
-        }
-
-        public static void FormatWithReserve<T>(
-            this T formatter, 
-            Utf8String text, 
-            int reserve, 
-            out Span<byte> bufferWithReserve) where T : IFormatter
-        {
-            var bytes = new byte[text.Length];
-            var i = 0;
-            foreach (var codeUnit in text)
-            {
-                bytes[i++] = codeUnit.Value;
-            }
-
-            var avaliable = formatter.FreeBuffer.Length;
-            while (avaliable < bytes.Length + reserve)
-            {
-                avaliable = formatter.FreeBuffer.Length;
-                formatter.ResizeBuffer();
-            }
-
-            formatter.FreeBuffer.Set(bytes);
-
-            bufferWithReserve = formatter.FreeBuffer.Slice(0, bytes.Length + reserve);
-            formatter.CommitBytes(bytes.Length + reserve);
-            bufferWithReserve.SetFromRestOfSpanToEmpty(bytes.Length);            
-        }
     }
 }

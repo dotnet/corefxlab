@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text.Utf8;
 
-namespace System.Net.Http.Buffered
+namespace System.Text.Http
 {
     public struct HttpHeaders : IEnumerable<KeyValuePair<Utf8String, Utf8String>>
     {
         private readonly Utf8String _headerString;
         private int _count;
         
-        public HttpHeaders(ByteSpan bytes)
+        public HttpHeaders(Span<byte> bytes)
         {
             _headerString = new Utf8String(bytes);
             _count = -1;
