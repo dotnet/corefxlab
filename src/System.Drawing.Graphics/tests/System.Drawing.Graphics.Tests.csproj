@@ -93,7 +93,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libgd.dll" />
+    <Content Condition="'$(OSGroup)'=='Windows_NT' And '$(TestArchitecture)'=='x64'" Include="$(MSBuildThisFileDirectory)\LibgdBins\x64Bin\libgd.dll" />
+    <Content Condition="'$(OSGroup)'=='Windows_NT' And '$(TestArchitecture)'=='x86'" Include="$(MSBuildThisFileDirectory)\LibgdBins\x86Bin\libgd.dll" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
