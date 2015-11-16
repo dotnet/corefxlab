@@ -133,6 +133,11 @@ namespace System
 
         public static Span<T> Empty { get { return default(Span<T>); } }
 
+        public bool IsEmpty
+        {
+            get { return Length == 0; }
+        }
+
         /// <summary>
         /// Fetches the managed object (if any) that this span points at.
         /// </summary>
@@ -283,45 +288,25 @@ namespace System
 
         public override int GetHashCode()
         {
-            // TODO: Write something better
-            uint hash = unchecked((uint)Length);
-            foreach (T el in this)
+            var hashCode = Length ^ Offset.GetHashCode();
+            if (Object != null)
             {
-                hash = (hash >> 7) | (hash << 25);
-                hash ^= unchecked((uint)el.GetHashCode());
+                hashCode ^= Object.GetHashCode();
             }
-
-            return unchecked((int)(hash));
+            return hashCode;
         }
 
+        /// <summary>
+        /// Checks to see if two spans point at the same memory.  Note that
+        /// this does *not* check to see if the *contents* are equal.
+        /// </summary>
         public bool Equals(Span<T> other)
         {
-            if (ReferenceEquals(other))
-            {
-                return true;
-            }
-
-            if (this.Length != other.Length)
-            {
-                return false;
-            }
-
-            var nonBoxingComparer = EqualityComparer<T>.Default;
-            for (int i = 0; i < Length; i++)
-            {
-                if (!nonBoxingComparer.Equals(
-                    this.GetItemWithoutBoundariesCheck(i), other.GetItemWithoutBoundariesCheck(i)))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return ReferenceEquals(other);
         }
 
         public override bool Equals(object obj)
         {
-            // TODO: Should this work with other spans?
             if (obj is Span<T>)
             {
                 return Equals((Span<T>)obj);
@@ -335,7 +320,7 @@ namespace System
         /// gain: performance: no boundaries check (single operation) 
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private T GetItemWithoutBoundariesCheck(int index)
+        internal T GetItemWithoutBoundariesCheck(int index)
         {
             return PtrUtils.Get<T>(
                     _object, _offset + (index * PtrUtils.SizeOf<T>()));

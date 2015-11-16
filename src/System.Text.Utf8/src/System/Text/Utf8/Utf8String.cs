@@ -197,7 +197,7 @@ namespace System.Text.Utf8
 
         public bool Equals(Utf8String other)
         {
-            return _buffer.Equals(other._buffer);
+            return _buffer.SequenceEqual(other._buffer);
         }
 
         public bool Equals(string other)

@@ -93,5 +93,21 @@ namespace System
             sizeof !!T
             ret")]
         public static int SizeOf<T>() { return default(int); }
+
+        /// <summary>
+        /// computes the address of object reference plus an offset in bytes
+        /// </summary>
+        /// <param name="obj">*must* be pinned (for managed arrays and strings) or can be null (unmanaged arrays)</param>
+        /// <param name="offset">offset to add (can be offset to managed array element or pointer to unmanaged array)</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [ILSub(@"
+            .maxstack 2
+            .locals ([0] uint8& addr)
+            ldarg.0     // load the object
+            conv.u      // since the arg must be pinned, there is no need to deal with byref local (as in Get method)
+            ldarg.1     // load the offset
+            add         // add the offset
+            ret")]
+        public static UIntPtr ComputeAddress(object obj, UIntPtr offset) { return UIntPtr.Zero; }
     }
 }
