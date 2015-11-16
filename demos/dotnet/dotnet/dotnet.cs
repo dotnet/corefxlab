@@ -182,7 +182,16 @@ namespace dotnet
 
         private static void ConvertToCoreConsoleAction(ProjectProperties properties)
         {
-            var dllPath = Path.ChangeExtension(properties.OutputAssemblyPath, "dll");
+            string dllPath;
+            if (string.IsNullOrEmpty(properties.OutputType))
+            {
+                dllPath = properties.OutputAssemblyPath + ".dll";
+            }
+            else
+            {
+                dllPath = Path.ChangeExtension(properties.OutputAssemblyPath, "dll");
+            }
+
             if (File.Exists(dllPath))
             {
                 File.Delete(dllPath);

@@ -24,7 +24,7 @@ namespace dotnet
             properties.OutputDirectory = Path.Combine(properties.ProjectDirectory, "bin");
             properties.ToolsDirectory = Path.Combine(properties.ProjectDirectory, "tools");
             properties.AssemblyName = Path.GetFileName(properties.ProjectDirectory);
-            properties.OutputType = buildDll ? ".dll" : (settings.Runtime.StartsWith("ubuntu") || settings.Runtime.StartsWith("linux")) ? "" : ".exe";
+            properties.OutputType = buildDll ? ".dll" : (settings.Runtime.StartsWith("win")) ? ".exe" : "";
             properties.Target = "DNXCore,Version=v5.0";
             properties.RuntimeIdentifier = settings.Runtime;
             FindCompiler(properties);
