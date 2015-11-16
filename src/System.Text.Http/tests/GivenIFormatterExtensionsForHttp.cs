@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Buffers;
-using System.Net.Http.Buffered;
 using System.Text;
 using System.Text.Formatting;
 using System.Text.Utf8;
 using FluentAssertions;
 using Xunit;
+using System.Text.Http;
 
-namespace LowAllocationWebServer.Tests
+namespace System.Text.Http.Tests
 {   
     public class GivenIFormatterExtensionsForHttp
     {
@@ -28,7 +28,7 @@ namespace LowAllocationWebServer.Tests
 
         public GivenIFormatterExtensionsForHttp()
         {
-            _formatter = new BufferFormatter(124, FormattingData.InvariantUtf8, BufferPool.Shared);
+            _formatter = new BufferFormatter(124, FormattingData.InvariantUtf8, ManagedBufferPool<byte>.SharedByteBufferPool);
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace LowAllocationWebServer.Tests
 
             result.Should().ContainInOrder(_statusLineInBytes);
 
-            BufferPool.Shared.ReturnBuffer(ref result);
+            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace LowAllocationWebServer.Tests
 
             result.Should().ContainInOrder(_headerInBytes);
 
-            BufferPool.Shared.ReturnBuffer(ref result);
+            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace LowAllocationWebServer.Tests
 
             result.Should().ContainInOrder(_httpHeaderSectionDelineatorInBytes);
 
-            BufferPool.Shared.ReturnBuffer(ref result);
+            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace LowAllocationWebServer.Tests
 
             result.Should().ContainInOrder(_httpBodyInBytes);
 
-            BufferPool.Shared.ReturnBuffer(ref result);
+            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
         }        
 
         [Fact]
@@ -94,7 +94,7 @@ namespace LowAllocationWebServer.Tests
 
             result.Should().ContainInOrder(_updatedHeaderInBytes);
 
-            BufferPool.Shared.ReturnBuffer(ref result);
+            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
         }
 
         [Fact]
@@ -116,7 +116,7 @@ namespace LowAllocationWebServer.Tests
             result.Should().ContainInOrder(_headerInBytes);
             result.Should().ContainInOrder(fillingArray);
 
-            BufferPool.Shared.ReturnBuffer(ref result);
+            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
         }
 
         [Fact]
@@ -160,13 +160,13 @@ namespace LowAllocationWebServer.Tests
 
             result.Should().ContainInOrder(_httpMessageInBytes);
 
-            BufferPool.Shared.ReturnBuffer(ref result);
+            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
         }
 
         [Fact]
         public void WriteHttpHeader_resizes_the_buffer_taking_into_consideration_the_reserver()
         {
-            _formatter = new BufferFormatter(32, FormattingData.InvariantUtf8, BufferPool.Shared);
+            _formatter = new BufferFormatter(32, FormattingData.InvariantUtf8, ManagedBufferPool<byte>.SharedByteBufferPool);
 
             var httpHeaderBuffer =
                 _formatter.WriteHttpHeader(GetUtf8EncodedString("Connection"), GetUtf8EncodedString("close"));

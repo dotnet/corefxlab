@@ -174,11 +174,11 @@ namespace Microsoft.Net.Http.Server.Socket
             }
         }
 
-        internal int Receive(ByteSpan buffer)
+        internal int Receive(Span<byte> buffer)
         {
             unsafe
             {
-                IntPtr ptr = new IntPtr(buffer.UnsafeBuffer);
+                IntPtr ptr = new IntPtr(buffer.UnsafePointer);
                 int bytesReceived = SocketImports.recv(Handle, ptr, buffer.Length, 0);
                 if (bytesReceived < 0) {
                     var error = SocketImports.WSAGetLastError();

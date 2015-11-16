@@ -1,8 +1,6 @@
-﻿using System.Text;
-using System.Text.Utf8;
-using LowAllocationServer;
+﻿using System.Text.Utf8;
 
-namespace System.Net.Http.Buffered
+namespace System.Text.Http
 {
     public enum HttpMethod : byte
     {
@@ -37,7 +35,7 @@ namespace System.Net.Http.Buffered
     {
         private HttpRequestLine _requestLine;
         private HttpHeaders _headers;
-        private ByteSpan _body;
+        private Span<byte> _body;
 
         public HttpRequestLine RequestLine
         {
@@ -55,7 +53,7 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        public ByteSpan Body
+        public Span<byte> Body
         {
             get
             {
@@ -63,14 +61,14 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        public HttpRequest(HttpRequestLine requestLine, HttpHeaders headers, ByteSpan bytes)
+        public HttpRequest(HttpRequestLine requestLine, HttpHeaders headers, Span<byte> bytes)
         {
             _requestLine = requestLine;
             _headers = headers;
             _body = bytes;
         }
 
-        public static HttpRequest Parse(ByteSpan bytes)
+        public static HttpRequest Parse(Span<byte> bytes)
         {
             int parsed;
             HttpRequestLine requestLine;
@@ -92,7 +90,7 @@ namespace System.Net.Http.Buffered
         }
     }
 
-    struct HttpRequestReader
+    public struct HttpRequestReader
     {
         static readonly Utf8String s_Http1_0 = new Utf8String("HTTP/1.0");
         static readonly Utf8String s_Http1_1 = new Utf8String("HTTP/1.1");
@@ -103,7 +101,20 @@ namespace System.Net.Http.Buffered
         internal const byte s_LF = 10; // line feed
         internal const byte s_HT = 9;   // horizontal TAB
 
-        internal ByteSpan Buffer;
+        private Span<byte> buffer;
+
+        public Span<byte> Buffer
+        {
+            get
+            {
+                return buffer;
+            }
+
+            set
+            {
+                buffer = value;
+            }
+        }
 
         internal HttpMethod ReadMethod()
         {
@@ -143,7 +154,7 @@ namespace System.Net.Http.Buffered
 
         internal HttpVersion ReadHttpVersion()
         {
-            ByteSpan oldBuffer = Buffer;
+            Span<byte> oldBuffer = Buffer;
             Utf8String version = ReadHttpVersionAsUtf8String();
 
             if (version.Equals(s_Http1_1))
@@ -165,7 +176,7 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        internal Utf8String ReadHeader()
+        public Utf8String ReadHeader()
         {
             int parsedBytes;
             var header = Buffer.SliceTo(s_CR, s_LF, out parsedBytes);
@@ -175,7 +186,7 @@ namespace System.Net.Http.Buffered
             }
             else
             {
-                Buffer = new ByteSpan();
+                Buffer = new Span<byte>();
             }
             return new Utf8String(header);
         }        
@@ -189,19 +200,13 @@ namespace System.Net.Http.Buffered
         static readonly Utf8String s_Put = new Utf8String("PUT ");
         static readonly Utf8String s_Delete = new Utf8String("DELETE ");
 
-        public static bool TryParseRequestLine(ByteSpan buffer, out HttpRequestLine requestLine)
+        public static bool TryParseRequestLine(Span<byte> buffer, out HttpRequestLine requestLine)
         {
             int parsedBytes;
             return TryParseRequestLine(buffer, out requestLine, out parsedBytes);
         }
 
-        // TODO: this needs to be smarter
-        internal static bool IsKeepAlive(this HttpRequestLine request)
-        {
-            return (request.Version != HttpVersion.V1_0) && (request.Version != HttpVersion.Unknown);
-        }
-
-        internal static bool TryParseRequestLine(ByteSpan buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
+        internal static bool TryParseRequestLine(Span<byte> buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
         {
             requestLine = new HttpRequestLine();
             totalParsedBytes = 0;
@@ -222,7 +227,7 @@ namespace System.Net.Http.Buffered
             return true;
         }
 
-        internal static bool TryParseMethod(ByteSpan buffer, out HttpMethod method, out int parsedBytes)
+        internal static bool TryParseMethod(Span<byte> buffer, out HttpMethod method, out int parsedBytes)
         {
             var bufferString = new Utf8String(buffer);
             if(bufferString.StartsWith(s_Get))
@@ -257,20 +262,20 @@ namespace System.Net.Http.Buffered
             parsedBytes = 0;
             return false;
         }
-        internal static bool TryParseRequestUri(ByteSpan buffer, out Utf8String requestUri, out int parsedBytes)
+        internal static bool TryParseRequestUri(Span<byte> buffer, out Utf8String requestUri, out int parsedBytes)
         {
             var uriSpan = buffer.SliceTo(HttpRequestReader.s_SP, out parsedBytes);
             requestUri = new Utf8String(uriSpan);
             return parsedBytes != 0;
         }
-        internal static bool TryParseHttpVersion(ByteSpan buffer, out Utf8String httpVersion, out int parsedBytes)
+        internal static bool TryParseHttpVersion(Span<byte> buffer, out Utf8String httpVersion, out int parsedBytes)
         {
             var versionSpan = buffer.SliceTo(HttpRequestReader.s_CR, HttpRequestReader.s_LF, out parsedBytes);
             httpVersion = new Utf8String(versionSpan);
             return parsedBytes != 0;
         }
 
-        internal static bool StartsWith(this ByteSpan left, ReadOnlySpan<byte> right)
+        internal static bool StartsWith(this Span<byte> left, Span<byte> right)
         {
             if (left.Length < right.Length) return false;
             for (int index = 0; index < right.Length; index++) {
@@ -279,7 +284,7 @@ namespace System.Net.Http.Buffered
             return true;
         }
 
-        internal static bool TryParseHeaders(ByteSpan bytes, out HttpHeaders headers, out int parsed)
+        internal static bool TryParseHeaders(Span<byte> bytes, out HttpHeaders headers, out int parsed)
         {
             for(int i=0; i<bytes.Length; i++)
             {

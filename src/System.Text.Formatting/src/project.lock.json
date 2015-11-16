@@ -571,7 +571,7 @@
     "System.Buffers/0.1.0-d103015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "QRfU+SiEqqariF4BvW5xL6gderJLHmDvms0UPQXOkJZasoKoRsNVI8dYzPDDxrWqoEEO4vBnTeGyETEO+bL48w==",
+      "sha512": "PbBsg9lrRS5/3q9gR857+sIP4b20vhib16XqHxXQmKK+daB7ik/gKqn9GXznx/vh/DQEPG8PC604N5PGNeSALg==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll",
         "System.Buffers.0.1.0-d103015-1.nupkg",
@@ -1099,7 +1099,7 @@
     "System.Slices/0.1.0-d103015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "eC7aluMKuzg9PB+2fSFOkcHN6NRN5yT+SJptlgUNLJ4WX9FJmtnUe+Pt8YoSa4ahbGbNp6towrfoAzXhB8Ofuw==",
+      "sha512": "8dK8yxO5wh6bkyJk7BNTJVvVw07BqiqN+FPqnhw02qNkUV6hbIShJmsYVFGXTy+EMTzmTv6jygaPPEe0iz2Dqg==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
         "System.Slices.0.1.0-d103015-1.nupkg",
@@ -1158,7 +1158,7 @@
     "System.Text.Utf8/0.1.0-d103015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "YWfNMKYa+NpzPV42vYnYIH3CRuFQdNyMBkkV53RyeaSvd2rWgI89cIUNP++44n955axdBHwfc901yULQ9SsudQ==",
+      "sha512": "7F5374IyaYEO41/g4oa7B45echGE6Rwqtw+5f/GHqPLAFawty2ZlPhgh2eHyt+diJeEjBoSjB57aUciLRBJt/w==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Utf8.dll",
         "System.Text.Utf8.0.1.0-d103015-1.nupkg",
