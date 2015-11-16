@@ -48,7 +48,7 @@ class SampleRestServer : HttpServer
         formatter.WriteHttpHeader(new Utf8String("Date"), new Utf8String(DateTime.UtcNow.ToString("R")));
         formatter.EndHttpHeaderSection();
         formatter.WriteHttpBody(new Utf8String("Hello, World"));
-        return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
+        return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount);
     }
 
     static HttpServerBuffer CreateResponseForGetTime(HttpRequestLine request)
@@ -62,7 +62,7 @@ class SampleRestServer : HttpServer
 
         formatter.WriteHttpBody(new Utf8String(body));
 
-        return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
+        return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount);
     }
 }
 

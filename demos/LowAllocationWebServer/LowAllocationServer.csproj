@@ -38,6 +38,18 @@
     <ProjectReference Include="..\..\src\System.Text.Http\src\System.Text.Http.csproj">
       <Name>System.Text.Http</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Text.Formatting\src\System.Text.Formatting.csproj">
+      <Name>System.Text.Formatting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Text.Utf8\src\System.Text.Utf8.csproj">
+      <Name>System.Text.Utf8</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Buffers\src\System.Buffers.csproj">
+      <Name>System.Buffers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Slices\src\System.Slices.csproj">
+      <Name>System.Slices</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Log.cs" />
@@ -54,24 +66,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Buffers">
-      <HintPath>..\..\..\packages\System.Buffers.0.1.0-d103015-1\lib\portable-net45+win8+wpa81+aspnetcore50\System.Buffers.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Slices">
-      <HintPath>..\..\..\packages\System.Slices.0.1.0-d103015-1\lib\portable-net45+win8+wpa81+aspnetcore50\System.Slices.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Text.Formatting">
-      <HintPath>..\..\..\packages\System.Text.Formatting.0.1.0-d103015-1\lib\portable-net45+win8+wpa81+aspnetcore50\System.Text.Formatting.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Text.Utf8">
-      <HintPath>..\..\..\packages\System.Text.Utf8.0.1.0-d103015-1\lib\portable-net45+win8+wpa81+aspnetcore50\System.Text.Utf8.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
