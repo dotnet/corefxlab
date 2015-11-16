@@ -16,9 +16,9 @@ namespace System.Net.Http.Buffered
     {
         public byte[] _buffer;
         public int _count;
-        BufferPool _pool;
+        ManagedBufferPool<byte> _pool;
 
-        public HttpServerBuffer(byte[] buffer, int count, BufferPool pool = null)
+        public HttpServerBuffer(byte[] buffer, int count, ManagedBufferPool<byte> pool = null)
         {
             _buffer = buffer;
             _count = count;
@@ -44,7 +44,8 @@ namespace System.Net.Http.Buffered
         public Log Log { get; protected set; }
 
         const int RequestBufferSize = 2048;
-        public NativeBufferPool _buffers = new NativeBufferPool(RequestBufferSize, numberOfBuffers:1000);
+
+        public ManagedBufferPool<byte> _buffers = new ManagedBufferPool<byte>(RequestBufferSize);
 
         protected HttpServer(Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
         {
@@ -64,7 +65,6 @@ namespace System.Net.Http.Buffered
         public void Stop()
         {
             _isCancelled = true;
-            Log.LogMessage(Log.Level.Verbose, "Buffers Allocated: " + BufferPool.Shared.Allocations);
             Log.LogVerbose("Server Terminated");
         }
 
@@ -91,7 +91,7 @@ namespace System.Net.Http.Buffered
         {
             Log.LogVerbose("Processing Request");
             
-            var buffer = _buffers.Rent();
+            var buffer = _buffers.RentBuffer(RequestBufferSize);
             var received = socket.Receive(buffer);
 
             if(received == 0)
@@ -127,7 +127,7 @@ namespace System.Net.Http.Buffered
 
             HttpServerBuffer responseBytes = CreateResponse(request);
                      
-            _buffers.Return(buffer);
+            _buffers.ReturnBuffer(ref buffer);
 
             // send response
             var segment = responseBytes;        
@@ -162,7 +162,7 @@ namespace System.Net.Http.Buffered
             var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
             WriteCommonHeaders(formatter, "1.1", "400", "Bad Request", false);
             formatter.Append(HttpNewline);
-            return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
+            return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, _buffers);
         }
 
         protected virtual HttpServerBuffer CreateResponseFor404(HttpRequestLine requestLine) // Not Found
@@ -172,7 +172,7 @@ namespace System.Net.Http.Buffered
             var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
             WriteCommonHeaders(formatter, "1.1", "404", "Not Found", false);
             formatter.Append(HttpNewline);
-            return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
+            return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, _buffers);
         }
 
         protected static void WriteCommonHeaders(
