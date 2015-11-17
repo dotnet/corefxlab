@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Libuv;
-using System.Runtime.InteropServices;
 using System.Text.Formatting;
 using System.Text.Utf8;
 using System.Threading.Tasks;
@@ -65,13 +64,13 @@ static class Program
                 Console.WriteLine("connection accepted");
             }
 
-            connection.ReadCompleted += (ByteSpan data) =>
+            connection.ReadCompleted += (Span<byte> data) =>
             {
                 if (log)
                 {
                     unsafe
                     {
-                        var requestString = new Utf8String(data.UnsafeBuffer, data.Length);
+                        var requestString = new Utf8String(data);
                         Console.WriteLine("*REQUEST:\n {0}", requestString.ToString());
                     }
                 }
@@ -86,11 +85,9 @@ static class Program
                 }
 
                 var response = formatter.Buffer.Slice(0, formatter.CommitedByteCount); // formatter should have a property for written bytes
-                GCHandle gcHandle;
-                var byteSpan = response.Pin(out gcHandle);
-                connection.TryWrite(byteSpan);
+
+                connection.TryWrite(response);           
                 connection.Dispose();
-                gcHandle.Free(); // TODO: formatter should format to ByteSpan, to avoid pinning
             };
 
             connection.ReadStart();
