@@ -1,5 +1,6 @@
 ﻿using Microsoft.Net.Http.Server.Socket.Interop;
 using System;
+using System.Net.Http.Buffered;
 
 namespace Microsoft.Net.Http.Server.Socket
 {
@@ -156,6 +157,22 @@ namespace Microsoft.Net.Http.Server.Socket
         {
             SocketImports.closesocket(_handle);
         }
+
+        public int Send(Span<byte> bytes)
+        {
+            unsafe
+            {
+                IntPtr ptr = new IntPtr(bytes.UnsafePointer);
+                int bytesSent = SocketImports.send(_handle, ptr, bytes.Length, 0);
+                if (bytesSent == SocketImports.SOCKET_ERROR)
+                {
+                    var error = SocketImports.WSAGetLastError();
+                    throw new Exception(String.Format("send failed with {0}", error));
+                }
+                return bytesSent;
+            }
+        }
+
         public int Send(byte[] bytes, int count)
         {
             unsafe
