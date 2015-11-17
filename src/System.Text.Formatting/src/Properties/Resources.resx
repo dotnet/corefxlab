@@ -117,25 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ArgumentException_DestinationStreamNotWritable" xml:space="preserve">
-    <value>Destination stream is not writable.</value>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>Invalid format</value>
   </data>
-  <data name="ArgumentException_SourceStreamNotReadable" xml:space="preserve">
-    <value>Source stream is not readable</value>
+  <data name="PrecisionValueOutOfRange" xml:space="preserve">
+    <value>Precision value exceeds maximum allowed</value>
   </data>
-  <data name="ClosedChannelException_DefaultMessage" xml:space="preserve">
-    <value>The channel has been closed.</value>
-  </data>
-  <data name="Debugger_TaskResultNotAvailable" xml:space="preserve">
-    <value>Result not available.</value>
-  </data>
-  <data name="InvalidOperationException_DefaultCaseAlreadyExists" xml:space="preserve">
-    <value>A default case already exists.</value>
-  </data>
-  <data name="InvalidOperationException_TypeNotSerializable" xml:space="preserve">
-    <value>The specified type cannot be serialized or deserialized.</value>
-  </data>
-  <data name="InvalidOperationException_SingleReaderWriterUsedConcurrently" xml:space="preserve">
-    <value>Concurrent operations may not be issued against a single reader/writer channel.</value>
+  <data name="UnableToParsePrecision" xml:space="preserve">
+    <value>Unable to parse precision specification</value>
   </data>
 </root>

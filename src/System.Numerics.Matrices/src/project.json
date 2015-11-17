@@ -1,4 +1,7 @@
 {
+  "compilationOptions": {
+    "allowUnsafe": true
+  },
   "dependencies": {
     "System.Runtime": "4.0.20",
     "System.Runtime.Extensions": "4.0.10"

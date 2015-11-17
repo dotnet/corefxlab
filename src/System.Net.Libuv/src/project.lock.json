@@ -3,10 +3,10 @@
   "version": 2,
   "targets": {
     "DNXCore,Version=v5.0": {
-      "System.Buffers/0.1.0-d103015-1": {
+      "System.Buffers/0.1.0-d7ileDaAe-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d103015-1"
+          "System.Slices": "0.1.0-d7ileDaAe-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
@@ -22,6 +22,18 @@
         },
         "compile": {
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
+        }
+      },
+      "System.Diagnostics.Tools/4.0.1-beta-23409": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Tools.dll": {}
+        },
+        "runtime": {
+          "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -168,10 +180,10 @@
           "runtimes/win7/lib/dotnet/System.Runtime.InteropServices.RuntimeInformation.dll": {}
         }
       },
-      "System.Buffers/0.1.0-d103015-1": {
+      "System.Buffers/0.1.0-d7ileDaAe-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d103015-1"
+          "System.Slices": "0.1.0-d7ileDaAe-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
@@ -187,6 +199,18 @@
         },
         "compile": {
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
+        }
+      },
+      "System.Diagnostics.Tools/4.0.1-beta-23409": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Tools.dll": {}
+        },
+        "runtime": {
+          "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -333,10 +357,10 @@
           "runtimes/win7/lib/dotnet/System.Runtime.InteropServices.RuntimeInformation.dll": {}
         }
       },
-      "System.Buffers/0.1.0-d103015-1": {
+      "System.Buffers/0.1.0-d7ileDaAe-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d103015-1"
+          "System.Slices": "0.1.0-d7ileDaAe-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
@@ -352,6 +376,18 @@
         },
         "compile": {
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
+        }
+      },
+      "System.Diagnostics.Tools/4.0.1-beta-23409": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Tools.dll": {}
+        },
+        "runtime": {
+          "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -498,14 +534,14 @@
         "runtimes/win7/lib/dotnet/System.Runtime.InteropServices.RuntimeInformation.dll"
       ]
     },
-    "System.Buffers/0.1.0-d103015-1": {
+    "System.Buffers/0.1.0-d7ileDaAe-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "QRfU+SiEqqariF4BvW5xL6gderJLHmDvms0UPQXOkJZasoKoRsNVI8dYzPDDxrWqoEEO4vBnTeGyETEO+bL48w==",
+      "sha512": "XaUZIPyyxPBBuCG8yVsJonWQ5+rWm+4MWivffUH4yn4pTcUi+R09EwSli1kpvpdiNsmDRYoMf6fPKNkkD9eHXQ==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll",
-        "System.Buffers.0.1.0-d103015-1.nupkg",
-        "System.Buffers.0.1.0-d103015-1.nupkg.sha512",
+        "System.Buffers.0.1.0-d7ileDaAe-1.nupkg",
+        "System.Buffers.0.1.0-d7ileDaAe-1.nupkg.sha512",
         "System.Buffers.nuspec"
       ]
     },
@@ -555,6 +591,59 @@
         "System.Diagnostics.Debug.4.0.0.nupkg",
         "System.Diagnostics.Debug.4.0.0.nupkg.sha512",
         "System.Diagnostics.Debug.nuspec"
+      ]
+    },
+    "System.Diagnostics.Tools/4.0.1-beta-23409": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "/8C9PvnURwFnAuU2Qo6IDC39lr29DRlQsU2g1wMc60l2D5gxmvFDfpNKTOxJa3S3/Rxx/Cz/sg7CauiIE1lpKw==",
+      "files": [
+        "lib/DNXCore50/de/System.Diagnostics.Tools.xml",
+        "lib/DNXCore50/es/System.Diagnostics.Tools.xml",
+        "lib/DNXCore50/fr/System.Diagnostics.Tools.xml",
+        "lib/DNXCore50/it/System.Diagnostics.Tools.xml",
+        "lib/DNXCore50/ja/System.Diagnostics.Tools.xml",
+        "lib/DNXCore50/ko/System.Diagnostics.Tools.xml",
+        "lib/DNXCore50/ru/System.Diagnostics.Tools.xml",
+        "lib/DNXCore50/System.Diagnostics.Tools.dll",
+        "lib/DNXCore50/System.Diagnostics.Tools.xml",
+        "lib/DNXCore50/zh-hans/System.Diagnostics.Tools.xml",
+        "lib/DNXCore50/zh-hant/System.Diagnostics.Tools.xml",
+        "lib/net45/_._",
+        "lib/netcore50/de/System.Diagnostics.Tools.xml",
+        "lib/netcore50/es/System.Diagnostics.Tools.xml",
+        "lib/netcore50/fr/System.Diagnostics.Tools.xml",
+        "lib/netcore50/it/System.Diagnostics.Tools.xml",
+        "lib/netcore50/ja/System.Diagnostics.Tools.xml",
+        "lib/netcore50/ko/System.Diagnostics.Tools.xml",
+        "lib/netcore50/ru/System.Diagnostics.Tools.xml",
+        "lib/netcore50/System.Diagnostics.Tools.dll",
+        "lib/netcore50/System.Diagnostics.Tools.xml",
+        "lib/netcore50/zh-hans/System.Diagnostics.Tools.xml",
+        "lib/netcore50/zh-hant/System.Diagnostics.Tools.xml",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "ref/dotnet/System.Diagnostics.Tools.dll",
+        "ref/net45/_._",
+        "ref/netcore50/System.Diagnostics.Tools.dll",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "runtimes/win8-aot/lib/netcore50/de/System.Diagnostics.Tools.xml",
+        "runtimes/win8-aot/lib/netcore50/es/System.Diagnostics.Tools.xml",
+        "runtimes/win8-aot/lib/netcore50/fr/System.Diagnostics.Tools.xml",
+        "runtimes/win8-aot/lib/netcore50/it/System.Diagnostics.Tools.xml",
+        "runtimes/win8-aot/lib/netcore50/ja/System.Diagnostics.Tools.xml",
+        "runtimes/win8-aot/lib/netcore50/ko/System.Diagnostics.Tools.xml",
+        "runtimes/win8-aot/lib/netcore50/ru/System.Diagnostics.Tools.xml",
+        "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.dll",
+        "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.xml",
+        "runtimes/win8-aot/lib/netcore50/zh-hans/System.Diagnostics.Tools.xml",
+        "runtimes/win8-aot/lib/netcore50/zh-hant/System.Diagnostics.Tools.xml",
+        "System.Diagnostics.Tools.4.0.1-beta-23409.nupkg",
+        "System.Diagnostics.Tools.4.0.1-beta-23409.nupkg.sha512",
+        "System.Diagnostics.Tools.nuspec"
       ]
     },
     "System.Globalization/4.0.0": {
@@ -1089,8 +1178,9 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "System.Buffers >= 0.1.0-d103015-1",
+      "System.Buffers >= 0.1.0-*",
       "System.Diagnostics.Debug >= 4.0.0",
+      "System.Diagnostics.Tools >= 4.0.1-beta-23409",
       "System.Reflection.Primitives >= 4.0.0",
       "System.Resources.ResourceManager >= 4.0.0",
       "System.Runtime >= 4.0.0",

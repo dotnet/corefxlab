@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks.Channels;
 
 namespace System.Threading.Tasks
 {
@@ -144,7 +145,7 @@ namespace System.Threading.Tasks
                 return
                     _task == null ? _result.ToString() :
                     _task.Status == TaskStatus.RanToCompletion ? _task.Result.ToString() :
-                    SR.Debugger_TaskResultNotAvailable;
+                    Channels.Properties.Resources.Debugger_TaskResultNotAvailable;
             }
         }
 

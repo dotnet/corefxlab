@@ -1,6 +1,9 @@
 {
+  "compilationOptions": {
+    "allowUnsafe": true
+  },
   "dependencies": {
-    "System.Buffers": "0.1.0-d103015-1",
+    "System.Buffers": "0.1.0-*",
     "System.Collections": "4.0.0",
     "System.Diagnostics.Contracts": "4.0.0",
     "System.Diagnostics.Debug": "4.0.0",
@@ -19,6 +22,6 @@
     "System.Threading": "4.0.0"
   },
   "frameworks": {
-    "dnxcore50": {}
+    "dnxcore50": { }
   }
 }
