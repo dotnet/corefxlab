@@ -15,6 +15,13 @@ The experiment solution compares the runtime and memory allocation of System.Tex
 
 Shown below are the results of the comparison between the System.Text.Json and Json.NET reader/writers in terms of memory allocation and runtime.
 
+There are differences in the two JSON APIs that affect the runtime results.
+The JSON.Net JsonReader returns 'values' as object type whereas System.Text.Json JsonReader returns 'values' as Utf8String.
+Due to this, there is no casting done to different types from the input (which is Ut8fString) in the System.Text.Json.
+However, in JSON.Net, the input is casted to object from the input (which is string text reader). This is one of the main reasons for the performance difference.
+Other than that, JSON.Net provides additional JSON validation and tracks the line number and path for syntax error reporting.
+Lastly, JSON.Net provides type specific Read APIs (such as ReadAsDecimal, ReadAsString, etc), which are not provided currently in System.Text.Json. The GetValue and GetName APIs only return Utf8String.
+
 ### JSON Reader
 #### Memory Allocation
 ![alt tag](Reader_Allocation.png?raw=true "JSON Reader Memory Allocation")
