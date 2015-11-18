@@ -48,14 +48,14 @@ Lastly, JSON.Net provides type specific Read APIs (such as ReadAsDecimal, ReadAs
 ### JsonReader APIs
 
 ```C#
-public JsonReader.JsonTokenType TokenType;
+public JsonTokenType TokenType;
 public JsonReader(string str);
 public JsonReader(Utf8String str);
 public void Dispose();
-public JsonReader.JsonValueType GetJsonValueType();
+public JsonValueType GetJsonValueType();
 public bool Read();
 public Utf8String GetName();
-public object ReadValue();
+public Utf8String GetValue();
 
 public enum JsonTokenType {
     // Start = 0 state reserved for internal use
