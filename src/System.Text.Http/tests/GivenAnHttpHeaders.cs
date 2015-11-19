@@ -42,25 +42,25 @@ Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4
             _httpHeaders = new HttpHeaders(headers);
         }
 
-        [Fact, ActiveIssue(463)]
+        [Fact]
         public void It_counts_the_number_of_headers_correctly()
         {            
             _httpHeaders.Count.Should().Be(8);
         }
 
-        [Fact, ActiveIssue(463)]
+        [Fact]
         public void It_can_get_the_value_of_a_particular_header()
         {
             _httpHeaders["Host"].ToString().Should().Be(" localhost:8080");
         }
 
-        [Fact, ActiveIssue(463)]
+        [Fact]
         public void It_returns_empty_string_when_header_is_not_present()
         {
             ((IEnumerable)_httpHeaders["Content-Length"]).Should().BeEmpty();
         }
 
-        [Fact, ActiveIssue(463)]
+        [Fact]
         public void Its_enumerator_Current_returns_the_same_item_until_MoveNext_gets_called()
         {
             var enumerator = _httpHeaders.GetEnumerator();
@@ -75,7 +75,7 @@ Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4
             current.Should().NotBe(enumerator.Current);
         }
 
-        [Fact, ActiveIssue(463)]
+        [Fact]
         public void Its_Enumerator_iterates_through_all_headers()
         {
             var count = 0;
@@ -87,7 +87,7 @@ Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4
             count.Should().Be(8);
         }
 
-        [Fact, ActiveIssue(463)]
+        [Fact]
         public void It_parsers_Utf8String_as_well()
         {
             var httpHeader = new HttpHeaders(new Utf8String(new UTF8Encoding().GetBytes(HeadersString)));
