@@ -59,6 +59,17 @@
     </Task>
   </UsingTask>
 
+  <UsingTask TaskName="UnzipFile" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll">
+    <ParameterGroup>
+      <ZipFilePath ParameterType="System.String" Required="true" />
+      <ZipOutputDirectory ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.IO.Compression.FileSystem" />
+      <Code>System.IO.Compression.ZipFile.ExtractToDirectory(ZipFilePath, ZipOutputDirectory);</Code>
+    </Task>
+  </UsingTask>
+
   <!--
     Use a semaphore file to determine the need to restore build tools to avoid conflicts with locked binaries.
   -->
@@ -85,7 +96,7 @@
                   Condition="!Exists('$(NuGetToolPath)') and '$(OsEnvironment)'=='Windows_NT'" />
 
     <Exec Command="curl -sSL --create-dirs -o $(NuGetToolPath) https://api.nuget.org/downloads/nuget.exe"
-          Condition="!Exists('$(NuGetToolPath)') and '$(OsEnvironment)'=='Unix'" />
+          Condition="!Exists('$(NuGetToolPath)') and '$(OsEnvironment)'=='Unix'" />    
 
     <PropertyGroup>
       <_RestoreBuildToolsCommand>$(NugetRestoreCommand) "$(SourceDir).nuget/packages.$(OsEnvironment).config"</_RestoreBuildToolsCommand>
@@ -101,6 +112,16 @@
           Command="chmod a+x &quot;$(DnxPackageDir)/bin/dnx&quot;" />
     <Exec Condition="'$(OsEnvironment)'=='Unix'"
           Command="find '$(RoslynPackageDir)tools' -name &quot;*.exe&quot; -exec chmod &quot;+x&quot; '{}' ';'" />
+
+    <!-- Download latest dotnet -->
+    <DownloadFile FileName="$(DotnetPackagePath)"
+                  Address="https://dotnetcli.blob.core.windows.net/dotnet/dev/Binaries/Latest/dotnet-win-x64.latest.zip"
+                  Condition="!Exists('$(DotnetPackagePath)') and '$(OsEnvironment)'=='Windows_NT'" />
+
+    <Exec Command="curl -sSL --create-dirs -o $(DotnetPackagePath) https://dotnetcli.blob.core.windows.net/dotnet/dev/Binaries/Latest/dotnet-win-x64.latest.zip"
+          Condition="!Exists('$(DotnetPackagePath)') and '$(OsEnvironment)'=='Unix'" />
+
+    <UnzipFile ZipFilePath="$(DotnetPackagePath)" ZipOutputDirectory="$(DotnetPath)" Condition="Exists('$(DotnetPackagePath)') and !Exists('$(DotnetBinPath)') and '$(OsEnvironment)'=='Windows_NT'" />
 
     <!--
       Touch our semaphore file to ensure Inputs/Outputs comparison for this target will show that we're up to date.
@@ -118,5 +139,5 @@
   <!-- Provide default targets which can be hooked onto or overridden as necessary -->
   <Target Name="BuildAndTest" DependsOnTargets="Build;Test" />
   <Target Name="RebuildAndTest" DependsOnTargets="Rebuild;Test" />
-  <Target Name="Test" />
+  <Target Name="Test" />  
 </Project>

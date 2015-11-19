@@ -269,7 +269,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23519": {
+      "System.Console/4.0.0-rc2-23608": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -923,7 +923,7 @@
           "lib/dotnet/System.Security.Principal.dll": {}
         }
       },
-      "System.Slices/0.1.0-d111915-1": {
+      "System.Slices/0.1.0-d121015-1": {
         "type": "package",
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
@@ -1296,7 +1296,7 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
-      "runtime.win7.System.Console/4.0.0-rc2-23519": {
+      "runtime.win7.System.Console/4.0.0-rc2-23608": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -1445,7 +1445,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23519": {
+      "System.Console/4.0.0-rc2-23608": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -2123,7 +2123,7 @@
           "lib/dotnet/System.Security.Principal.dll": {}
         }
       },
-      "System.Slices/0.1.0-d111915-1": {
+      "System.Slices/0.1.0-d121015-1": {
         "type": "package",
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
@@ -2496,7 +2496,7 @@
           "lib/dotnet/Microsoft.Win32.Primitives.dll": {}
         }
       },
-      "runtime.win7.System.Console/4.0.0-rc2-23519": {
+      "runtime.win7.System.Console/4.0.0-rc2-23608": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -2645,7 +2645,7 @@
           "lib/dotnet/System.ComponentModel.EventBasedAsync.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23519": {
+      "System.Console/4.0.0-rc2-23608": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -3323,7 +3323,7 @@
           "lib/dotnet/System.Security.Principal.dll": {}
         }
       },
-      "System.Slices/0.1.0-d111915-1": {
+      "System.Slices/0.1.0-d121015-1": {
         "type": "package",
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
@@ -3694,14 +3694,14 @@
         "ref/xamarinmac20/_._"
       ]
     },
-    "runtime.win7.System.Console/4.0.0-rc2-23519": {
+    "runtime.win7.System.Console/4.0.0-rc2-23608": {
       "type": "package",
       "serviceable": true,
-      "sha512": "HdUziKdEDxQxVltxCqy3zBw98bXfL3vv1OjX79dTej2nO6NCAo4t1WgNW2iYH+nH8FgnfaTkcZ3kWmnFiO2FeQ==",
+      "sha512": "T8iMm8KDnNS91L9o4oNDCr+4mG0ymE3L3UrBbdJKuTJORuAtqIG3J8AS/tSVDeKIvOAM50VYIqpdLUp4EkPsuw==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.Console.4.0.0-rc2-23519.nupkg",
-        "runtime.win7.System.Console.4.0.0-rc2-23519.nupkg.sha512",
+        "runtime.win7.System.Console.4.0.0-rc2-23608.nupkg",
+        "runtime.win7.System.Console.4.0.0-rc2-23608.nupkg.sha512",
         "runtime.win7.System.Console.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.Console.dll",
         "runtimes/win7/lib/net/_._"
@@ -3949,10 +3949,10 @@
         "System.ComponentModel.EventBasedAsync.nuspec"
       ]
     },
-    "System.Console/4.0.0-rc2-23519": {
+    "System.Console/4.0.0-rc2-23608": {
       "type": "package",
       "serviceable": true,
-      "sha512": "kcV3vk5iNVYL5Bj2cHjeC2ySZIHkARUaPdkkW4Vg93BWmK31p2XjsTMNEsZASthda7gRJF7yrSASjmoYSt7syg==",
+      "sha512": "v3kSxXQ7+3XTjy7yEgiezgYRKrTZZEmoL7Fc82MNDyInmqkACZE9ZToKRG5UJRirTRhdz9p1GCvjnVc/zX9xmA==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -3976,8 +3976,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.Console.4.0.0-rc2-23519.nupkg",
-        "System.Console.4.0.0-rc2-23519.nupkg.sha512",
+        "System.Console.4.0.0-rc2-23608.nupkg",
+        "System.Console.4.0.0-rc2-23608.nupkg.sha512",
         "System.Console.nuspec"
       ]
     },
@@ -5320,14 +5320,14 @@
         "System.Security.Principal.nuspec"
       ]
     },
-    "System.Slices/0.1.0-d111915-1": {
+    "System.Slices/0.1.0-d121015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "Re5jy3jlp1vQbdXgEogU3tETz8dosZYcSK4wXmIZhFKcyGLdm2SL0qdnxhWR8A3uZnhzYZ0ofOAMcYgNuj4ZBA==",
+      "sha512": "2kVpfJuus3PFdvZF9HTyAY3vBw1hAm6WzHo4ApuLiI0GkyySJJwPrhxsnUXqCuEk6GAlIDDj9UJ29OP7jw0MZg==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
-        "System.Slices.0.1.0-d111915-1.nupkg",
-        "System.Slices.0.1.0-d111915-1.nupkg.sha512",
+        "System.Slices.0.1.0-d121015-1.nupkg",
+        "System.Slices.0.1.0-d121015-1.nupkg.sha512",
         "System.Slices.nuspec"
       ]
     },

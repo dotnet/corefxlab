@@ -5,4 +5,6 @@
 
   <Import Project="mono.targets" Condition="'$(OsEnvironment)'=='Unix'" />
   <Import Project="roslyn.xplat.targets" Condition="'$(OsEnvironment)'=='Unix' and '$(UseRoslynCompiler)'=='true'" />
+
+  <Import Project="$(MSBuildThisFileDirectory)dotnet.targets" Condition="$(MSBuildProjectExtension.Equals('.xproj'))" />
 </Project>

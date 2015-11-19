@@ -244,3 +244,6 @@ tools/
 
 *.ncrunchproject
 *.ncrunchsolution
+
+#dotnet cli
+[Dd]otnet/
