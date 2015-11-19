@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>System.Text.Formatting</id>
+    <id>System.Text.Http</id>
     <version>$version$</version>
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>

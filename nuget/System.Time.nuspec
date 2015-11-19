@@ -22,6 +22,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Time\System.Time.dll" target="aspnetcore50"/>
+    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Time\System.Time.dll" target="lib/aspnetcore50"/>
   </files>
 </package>
