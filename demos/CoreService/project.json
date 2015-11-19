@@ -1,12 +1,12 @@
 ﻿{
     "dependencies": {
         "Microsoft.NETCore": "5.0.0",
-        "System.Console": "4.0.0-beta-23412",
-        "Microsoft.NETCore.ConsoleHost-x64": "1.0.0-beta-23123",
+        "System.Console": "4.0.0-*",
+        "Microsoft.NETCore.ConsoleHost-x64": "1.0.0-*",
         "Microsoft.NETCore.Runtime.CoreCLR-x64": "1.0.0",
-        "System.Text.Formatting":"0.1.0.0-d061015-3",
-        "System.Net.Sockets":"4.1.0-beta-23225",
-        "System.Private.Networking":"4.0.1-beta-23225"
+        "System.Text.Formatting":"0.1.0.0-*",
+        "System.Net.Sockets":"4.1.0-*",
+        "System.Private.Networking":"4.0.1-*"
     },
     "frameworks": {
         "dnxcore50": { }

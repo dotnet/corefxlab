@@ -16,9 +16,9 @@
     "System.Runtime": "4.0.0",
     "System.Runtime.Extensions": "4.0.0",
     "System.Runtime.InteropServices": "4.0.0",
-    "System.Slices": "0.1.0-d103015-1",
+    "System.Slices": "0.1.0-*",
     "System.Text.Encoding": "4.0.0",
-    "System.Text.Utf8": "0.1.0-d103015-1",
+    "System.Text.Utf8": "0.1.0-*",
     "System.Threading": "4.0.0"
   },
   "frameworks": {
