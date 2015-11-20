@@ -7,14 +7,14 @@ using System.Threading;
 
 namespace System.Buffers
 {
-    internal sealed class BufferBucket<T> where T : struct
+    internal sealed class ManagedBufferBucket<T> where T : struct
     {
         private volatile int _index;
         private T[][] _data;
         private int _bufferSize;
         private SpinLock _lock;
 
-        internal BufferBucket(int bufferSize, int numberOfBuffers)
+        internal ManagedBufferBucket(int bufferSize, int numberOfBuffers)
         {
             _index = 0;
             _bufferSize = bufferSize;

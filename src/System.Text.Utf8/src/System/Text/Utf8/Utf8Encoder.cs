@@ -7,41 +7,30 @@ namespace System.Text.Utf8
 {
     public static class Utf8Encoder
     {
-        const uint mask_0111_1111 = 0x7F;
-        const uint mask_0011_1111 = 0x3F;
-        const uint mask_0001_1111 = 0x1F;
-        const uint mask_0000_1111 = 0x0F;
-        const uint mask_0000_0111 = 0x07;
-        const uint mask_1000_0000 = 0x80;
-        const uint mask_1100_0000 = 0xC0;
-        const uint mask_1110_0000 = 0xE0;
-        const uint mask_1111_0000 = 0xF0;
-        const uint mask_1111_1000 = 0xF8;
-
         #region Decoder
         // Should this be public?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryGetNumberOfEncodedBytesFromFirstByte(byte first, out int numberOfBytes)
         {
-            if ((first & mask_1000_0000) == 0)
+            if ((first & 0b1000_0000) == 0)
             {
                 numberOfBytes = 1;
                 return true;
             }
 
-            if ((first & mask_1110_0000) == mask_1100_0000)
+            if ((first & 0b1110_0000) == 0b1100_0000)
             {
                 numberOfBytes = 2;
                 return true;
             }
 
-            if ((first & mask_1111_0000) == mask_1110_0000)
+            if ((first & 0b1111_0000) == 0b1110_0000)
             {
                 numberOfBytes = 3;
                 return true;
             }
 
-            if ((first & mask_1111_1000) == mask_1111_0000)
+            if ((first & 0b1111_1000) == 0b1111_0000)
             {
                 numberOfBytes = 4;
                 return true;
@@ -63,16 +52,16 @@ namespace System.Text.Utf8
             switch (encodedBytes)
             {
                 case 1:
-                    codePoint = (UnicodeCodePoint)(first & mask_0111_1111);
+                    codePoint = (UnicodeCodePoint)(first & 0b0111_1111U);
                     return true;
                 case 2:
-                    codePoint = (UnicodeCodePoint)(first & mask_0001_1111);
+                    codePoint = (UnicodeCodePoint)(first & 0b0001_1111U);
                     return true;
                 case 3:
-                    codePoint = (UnicodeCodePoint)(first & mask_0000_1111);
+                    codePoint = (UnicodeCodePoint)(first & 0b0000_1111U);
                     return true;
                 case 4:
-                    codePoint = (UnicodeCodePoint)(first & mask_0000_0111);
+                    codePoint = (UnicodeCodePoint)(first & 0b0000_0111U);
                     return true;
                 default:
                     codePoint = default(UnicodeCodePoint);
@@ -85,10 +74,10 @@ namespace System.Text.Utf8
         private static bool TryReadCodePointByte(byte nextByte, ref UnicodeCodePoint codePoint)
         {
             uint current = nextByte;
-            if ((current & mask_1100_0000) != mask_1000_0000)
+            if ((current & 0b1100_0000U) != 0b1000_0000U)
                 return false;
 
-            codePoint = new UnicodeCodePoint((codePoint.Value << 6) | (mask_0011_1111 & current));
+            codePoint = new UnicodeCodePoint((codePoint.Value << 6) | (0b0011_1111U & current));
             return true;
         }
 
@@ -218,22 +207,22 @@ namespace System.Text.Utf8
             switch (encodedBytes)
             {
                 case 1:
-                    buffer[0] = (byte)(mask_0111_1111 & codePoint.Value);
+                    buffer[0] = (byte)(0b0111_1111U & codePoint.Value);
                     return true;
                 case 2:
-                    buffer[0] = (byte)(((codePoint.Value >> 6) & mask_0001_1111) | mask_1100_0000);
-                    buffer[1] = (byte)(((codePoint.Value >> 0) & mask_0011_1111) | mask_1000_0000);
+                    buffer[0] = (byte)(((codePoint.Value >> 6) & 0b0001_1111U) | 0b1100_0000U);
+                    buffer[1] = (byte)(((codePoint.Value >> 0) & 0b0011_1111U) | 0b1000_0000U);
                     return true;
                 case 3:
-                    buffer[0] = (byte)(((codePoint.Value >> 12) & mask_0000_1111) | mask_1110_0000);
-                    buffer[1] = (byte)(((codePoint.Value >> 6) & mask_0011_1111) | mask_1000_0000);
-                    buffer[2] = (byte)(((codePoint.Value >> 0) & mask_0011_1111) | mask_1000_0000);
+                    buffer[0] = (byte)(((codePoint.Value >> 12) & 0b0000_1111U) | 0b1110_0000U);
+                    buffer[1] = (byte)(((codePoint.Value >> 6) & 0b0011_1111U) | 0b1000_0000U);
+                    buffer[2] = (byte)(((codePoint.Value >> 0) & 0b0011_1111U) | 0b1000_0000U);
                     return true;
                 case 4:
-                    buffer[0] = (byte)(((codePoint.Value >> 18) & mask_0000_0111) | mask_1111_0000);
-                    buffer[1] = (byte)(((codePoint.Value >> 12) & mask_0011_1111) | mask_1000_0000);
-                    buffer[2] = (byte)(((codePoint.Value >> 6) & mask_0011_1111) | mask_1000_0000);
-                    buffer[3] = (byte)(((codePoint.Value >> 0) & mask_0011_1111) | mask_1000_0000);
+                    buffer[0] = (byte)(((codePoint.Value >> 18) & 0b0000_0111U) | 0b1111_0000U);
+                    buffer[1] = (byte)(((codePoint.Value >> 12) & 0b0011_1111U) | 0b1000_0000U);
+                    buffer[2] = (byte)(((codePoint.Value >> 6) & 0b0011_1111U) | 0b1000_0000U);
+                    buffer[3] = (byte)(((codePoint.Value >> 0) & 0b0011_1111U) | 0b1000_0000U);
                     return true;
                 default:
                     return false;

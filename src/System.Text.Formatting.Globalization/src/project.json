@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "System.Buffers": "0.1.0-d103015-1",
     "System.Collections": "4.0.10-beta-*",
     "System.Diagnostics.Contracts": "4.0.0-beta-*",
     "System.Diagnostics.Debug": "4.0.10-beta-*",
@@ -12,7 +13,10 @@
     "System.Runtime": "4.0.20",
     "System.Runtime.Extensions": "4.0.10",
     "System.Runtime.InteropServices": "4.0.20-beta-*",
+    "System.Slices": "0.1.0-d103015-1",
     "System.Text.Encoding": "4.0.10-beta-*",
+    "System.Text.Formatting": "0.1.0-d103015-1",
+    "System.Text.Utf8": "0.1.0-d103015-1",
     "System.Threading": "4.0.10"
   },
   "frameworks": {

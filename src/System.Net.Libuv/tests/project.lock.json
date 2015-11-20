@@ -1,5 +1,5 @@
 {
-  "locked": true,
+  "locked": false,
   "version": 2,
   "targets": {
     "DNXCore,Version=v5.0": {
@@ -150,6 +150,18 @@
         },
         "runtime": {
           "lib/DNXCore50/System.AppContext.dll": {}
+        }
+      },
+      "System.Buffers/0.1.0-d103015-1": {
+        "type": "package",
+        "dependencies": {
+          "System.Slices": "0.1.0-d103015-1"
+        },
+        "compile": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
         }
       },
       "System.Collections/4.0.10-beta-23127": {
@@ -1059,6 +1071,15 @@
           "lib/DNXCore50/System.Security.SecureString.dll": {}
         }
       },
+      "System.Slices/0.1.0-d103015-1": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
+        }
+      },
       "System.Text.Encoding/4.0.10-beta-23127": {
         "type": "package",
         "dependencies": {
@@ -1440,6 +1461,18 @@
         },
         "runtime": {
           "lib/DNXCore50/System.AppContext.dll": {}
+        }
+      },
+      "System.Buffers/0.1.0-d103015-1": {
+        "type": "package",
+        "dependencies": {
+          "System.Slices": "0.1.0-d103015-1"
+        },
+        "compile": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
         }
       },
       "System.Collections/4.0.10-beta-23127": {
@@ -2373,6 +2406,15 @@
           "lib/DNXCore50/System.Security.SecureString.dll": {}
         }
       },
+      "System.Slices/0.1.0-d103015-1": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
+        }
+      },
       "System.Text.Encoding/4.0.10-beta-23127": {
         "type": "package",
         "dependencies": {
@@ -2754,6 +2796,18 @@
         },
         "runtime": {
           "lib/DNXCore50/System.AppContext.dll": {}
+        }
+      },
+      "System.Buffers/0.1.0-d103015-1": {
+        "type": "package",
+        "dependencies": {
+          "System.Slices": "0.1.0-d103015-1"
+        },
+        "compile": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
         }
       },
       "System.Collections/4.0.10-beta-23127": {
@@ -3687,6 +3741,15 @@
           "lib/DNXCore50/System.Security.SecureString.dll": {}
         }
       },
+      "System.Slices/0.1.0-d103015-1": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
+        }
+      },
       "System.Text.Encoding/4.0.10-beta-23127": {
         "type": "package",
         "dependencies": {
@@ -4087,6 +4150,17 @@
         "System.AppContext.4.0.0-beta-23127.nupkg",
         "System.AppContext.4.0.0-beta-23127.nupkg.sha512",
         "System.AppContext.nuspec"
+      ]
+    },
+    "System.Buffers/0.1.0-d103015-1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "QRfU+SiEqqariF4BvW5xL6gderJLHmDvms0UPQXOkJZasoKoRsNVI8dYzPDDxrWqoEEO4vBnTeGyETEO+bL48w==",
+      "files": [
+        "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll",
+        "System.Buffers.0.1.0-d103015-1.nupkg",
+        "System.Buffers.0.1.0-d103015-1.nupkg.sha512",
+        "System.Buffers.nuspec"
       ]
     },
     "System.Collections/4.0.10-beta-23127": {
@@ -5823,6 +5897,17 @@
         "System.Security.SecureString.nuspec"
       ]
     },
+    "System.Slices/0.1.0-d103015-1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "eC7aluMKuzg9PB+2fSFOkcHN6NRN5yT+SJptlgUNLJ4WX9FJmtnUe+Pt8YoSa4ahbGbNp6towrfoAzXhB8Ofuw==",
+      "files": [
+        "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
+        "System.Slices.0.1.0-d103015-1.nupkg",
+        "System.Slices.0.1.0-d103015-1.nupkg.sha512",
+        "System.Slices.nuspec"
+      ]
+    },
     "System.Text.Encoding/4.0.10-beta-23127": {
       "type": "package",
       "sha512": "XUOP6mx45Fk4fUcinHnUdeXGzQaXGskTBvI4/v195wCyUhsHQXFvnVVDevMoFlrcjb7Lvm6UdIORmqA1y4onmg==",
@@ -6259,6 +6344,7 @@
   "projectFileDependencyGroups": {
     "": [
       "Microsoft.NETCore >= 5.0.0-beta-*",
+      "System.Buffers >= 0.1.0-d103015-1",
       "xunit >= 2.0.0-beta5-build2785"
     ],
     "DNXCore,Version=v5.0": []

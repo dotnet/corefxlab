@@ -125,20 +125,19 @@ namespace System.Text.Utf8.Tests
             Assert.Equal(!expectedNegated, b != a);
         }
 
-        // TODO: refactor that to use bits once C#6 features are available
         public static object[][] IsFirstCodeUnitInEncodedCodePointTestCases = new object[][] {
             // the only forbidden range is binary 1000 0000 - 1011 1111
-            new object[] { true, new Utf8CodeUnit(0) },     // 0000 0000
-            new object[] { true, new Utf8CodeUnit(0x30) },  // 0011 0000
-            new object[] { true, new Utf8CodeUnit(127) },   // 0111 1111
+            new object[] { true, new Utf8CodeUnit(0b0000_0000) },
+            new object[] { true, new Utf8CodeUnit(0b0011_0000) },
+            new object[] { true, new Utf8CodeUnit(0b0111_1111) },
 
-            new object[] { false, new Utf8CodeUnit(128) },  // 1000 0000
-            new object[] { false, new Utf8CodeUnit(0x99) }, // 1001 1001
-            new object[] { false, new Utf8CodeUnit(0xBF) }, // 1011 1111
+            new object[] { false, new Utf8CodeUnit(0b1000_0000) },
+            new object[] { false, new Utf8CodeUnit(0b1001_1001) },
+            new object[] { false, new Utf8CodeUnit(0b1011_1111) },
 
-            new object[] { true, new Utf8CodeUnit(0xC0) },  // 1100 0000
-            new object[] { true, new Utf8CodeUnit(0xD0) },  // 1101 0000
-            new object[] { true, new Utf8CodeUnit(0xFF) }   // 1111 1111
+            new object[] { true, new Utf8CodeUnit(0b1100_0000) },
+            new object[] { true, new Utf8CodeUnit(0b1101_0000) },
+            new object[] { true, new Utf8CodeUnit(0b1111_1111) }
         };
 
         [Theory, MemberData("IsFirstCodeUnitInEncodedCodePointTestCases")]
@@ -205,17 +204,17 @@ namespace System.Text.Utf8.Tests
         }
 
         public static object[][] ConvertToCharTestCases = new object[][] {
-            new object[] { false, new Utf8CodeUnit(0) },    // 0000 0000
-            new object[] { false, new Utf8CodeUnit(0x30) }, // 0011 0000
-            new object[] { false, new Utf8CodeUnit(127) },  // 0111 1111
+            new object[] { false, new Utf8CodeUnit(0b0000_0000) },
+            new object[] { false, new Utf8CodeUnit(0b0011_0000) },
+            new object[] { false, new Utf8CodeUnit(0b0111_1111) },
 
-            new object[] { true, new Utf8CodeUnit(128) },   // 1000 0000
-            new object[] { true, new Utf8CodeUnit(0x99) },  // 1001 1001
-            new object[] { true, new Utf8CodeUnit(0xBF) },  // 1011 1111
+            new object[] { true, new Utf8CodeUnit(0b1000_0000) },
+            new object[] { true, new Utf8CodeUnit(0b1001_1001) },
+            new object[] { true, new Utf8CodeUnit(0b1011_1111) },
 
-            new object[] { true, new Utf8CodeUnit(0xC0) },  // 1100 0000
-            new object[] { true, new Utf8CodeUnit(0xD0) },  // 1101 0000
-            new object[] { true, new Utf8CodeUnit(0xFF) }   // 1111 1111
+            new object[] { true, new Utf8CodeUnit(0b1100_0000) },
+            new object[] { true, new Utf8CodeUnit(0b1101_0000) },
+            new object[] { true, new Utf8CodeUnit(0b1111_1111) }
         };
 
         [Theory, MemberData("ConvertToCharTestCases")]

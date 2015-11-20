@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Text.Formatting;
 using System.IO;
 using Xunit;
@@ -45,8 +46,9 @@ namespace System.Text.Formatting.Tests
         public void CustomTypeToStreamUtf16()
         {
             byte[] buffer = new byte[1024];
+            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             MemoryStream stream = new MemoryStream(buffer);
-            using(var writer = new StreamFormatter(stream)) {
+            using(var writer = new StreamFormatter(stream, pool)) {
                 writer.Append(new Age(56));
                 writer.Append(new Age(14, inMonths: true));
 
@@ -60,7 +62,8 @@ namespace System.Text.Formatting.Tests
         {
             byte[] buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
-            using(var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8)) {
+            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
+            using(var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8, pool)) {
                 writer.Append(new Age(56));
                 writer.Append(new Age(14, inMonths: true));
                 var writtenText = Encoding.UTF8.GetString(buffer, 0, (int)stream.Position);
@@ -71,7 +74,8 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void CustomTypeToString()
         {
-            var sb = new StringFormatter();
+            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
+            var sb = new StringFormatter(pool);
             sb.Append(new Age(56));
             sb.Append(new Age(14, inMonths: true));
             Assert.Equal(sb.ToString(), "56y14m");
