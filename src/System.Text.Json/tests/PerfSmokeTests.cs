@@ -12,11 +12,9 @@ namespace System.Text.Json.Tests
     public class PerfSmokeTests
     {
         private static readonly Stopwatch Timer = new Stopwatch();
-        private const int MemoryToleranceFactor = 5;
 
         // Keep < 10 before checking in. Otherwise tests take over 2 seconds to execute.
         private const int NumberOfIterations = 5;
-
         private const int NumberOfSamples = 3;
         private const int ExpectedMemoryBenchMark = 0;
 
@@ -28,7 +26,7 @@ namespace System.Text.Json.Tests
         {
             Output("====== TEST ReadBasicJson ======");
             ReadJsonHelper(TestJson.BasicJson); // Do not test first iteration
-            RunTest(TestJson.BasicJson, 10 + NumberOfIterations, ExpectedMemoryBenchMark*MemoryToleranceFactor);
+            RunTest(TestJson.BasicJson);
         }
 
         [Fact, ActiveIssue(411)]
@@ -36,7 +34,7 @@ namespace System.Text.Json.Tests
         {
             Output("====== TEST ReadProjectLockJson ======");
             ReadJsonHelper(TestJson.ProjectLockJson); // Do not test first iteration
-            RunTest(TestJson.ProjectLockJson, 10 + NumberOfIterations*100, ExpectedMemoryBenchMark*MemoryToleranceFactor);
+            RunTest(TestJson.ProjectLockJson);
         }
 
         [Fact]
@@ -44,10 +42,10 @@ namespace System.Text.Json.Tests
         {
             Output("====== TEST ReadHeavyNestedJson ======");
             ReadJsonHelper(TestJson.HeavyNestedJson); // Do not test first iteration
-            RunTest(TestJson.HeavyNestedJson, 10 + NumberOfIterations*2, ExpectedMemoryBenchMark*MemoryToleranceFactor);
+            RunTest(TestJson.HeavyNestedJson);
         }
 
-        private static void RunTest(string jsonStr, int timeBenchmark, int memoryBenchmark)
+        private static void RunTest(string jsonStr)
         {
             var timeIterReadResults = new List<long>();
             var memoryIterReadResults = new List<long>();
@@ -65,8 +63,7 @@ namespace System.Text.Json.Tests
                 var consumption = memoryAfter - memoryBefore;
                 timeIterReadResults.Add(time);
                 memoryIterReadResults.Add(consumption);
-                Assert.True(time < timeBenchmark);
-                Assert.True(consumption <= memoryBenchmark);
+                Assert.True(consumption <= ExpectedMemoryBenchMark);
             }
             Output(timeIterReadResults.Average().ToString(CultureInfo.InvariantCulture));
             Output((memoryIterReadResults.Average()).ToString(CultureInfo.InvariantCulture));
