@@ -86,7 +86,7 @@ namespace System.CommandLine
             }
         }
 
-        private bool IsHelpRequested()
+        public bool IsHelpRequested()
         {
             return Parser.GetUnreadOptionNames()
                          .Any(a => string.Equals(a, @"-?", StringComparison.Ordinal) ||
