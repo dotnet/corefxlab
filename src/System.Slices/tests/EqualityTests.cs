@@ -34,8 +34,8 @@ namespace System.Slices.Tests
 
             Assert.True(span.SequenceEqual(pointingToSameMemory));
             Assert.True(pointingToSameMemory.SequenceEqual(span));
-            Assert.True(span.StructuralEqual(pointingToSameMemory));
-            Assert.True(pointingToSameMemory.StructuralEqual(span));
+            Assert.True(span.BlockEquals(pointingToSameMemory));
+            Assert.True(pointingToSameMemory.BlockEquals(span));
         }
 
         [Fact]
@@ -49,8 +49,8 @@ namespace System.Slices.Tests
 
             var emptySpanOfOtherType = Array.Empty<double>().Slice();
 
-            Assert.True(emptySpan.StructuralEqual(emptySpanOfOtherType));
-            Assert.True(emptySpanOfOtherType.StructuralEqual(emptySpan));
+            Assert.True(emptySpan.BlockEquals(emptySpanOfOtherType));
+            Assert.True(emptySpanOfOtherType.BlockEquals(emptySpan));
 
             var spanFromNonEmptyArrayButWithZeroLength = new int[1] { 123 }.Slice(0, 0);
 
@@ -70,8 +70,8 @@ namespace System.Slices.Tests
 
             Assert.True(span.SequenceEqual(ofSameValues));
             Assert.True(ofSameValues.SequenceEqual(span));
-            Assert.True(span.StructuralEqual(ofSameValues));
-            Assert.True(ofSameValues.StructuralEqual(span));
+            Assert.True(span.BlockEquals(ofSameValues));
+            Assert.True(ofSameValues.BlockEquals(span));
 
             Assert.False(span.ReferenceEquals(ofSameValues));
             Assert.False(span.Equals(ofSameValues));
@@ -91,8 +91,8 @@ namespace System.Slices.Tests
 
             Assert.False(span.SequenceEqual(ofDifferentValues));
             Assert.False(ofDifferentValues.SequenceEqual(span));
-            Assert.False(span.StructuralEqual(ofDifferentValues));
-            Assert.False(ofDifferentValues.StructuralEqual(span));
+            Assert.False(span.BlockEquals(ofDifferentValues));
+            Assert.False(ofDifferentValues.BlockEquals(span));
 
             Assert.False(span.ReferenceEquals(ofDifferentValues));
             Assert.False(span.Equals(ofDifferentValues));
@@ -110,8 +110,8 @@ namespace System.Slices.Tests
             var span = new Span<byte>(bytes, start, length);
             var ofSameValuesOfDifferentType = new Span<SingleByteStruct>(differentTypeButSameValues, start, length);
 
-            Assert.True(span.StructuralEqual(ofSameValuesOfDifferentType));
-            Assert.True(ofSameValuesOfDifferentType.StructuralEqual(span));
+            Assert.True(span.BlockEquals(ofSameValuesOfDifferentType));
+            Assert.True(ofSameValuesOfDifferentType.BlockEquals(span));
 
             Assert.False(span.Equals((Object)ofSameValuesOfDifferentType));
             Assert.NotEqual(span.GetHashCode(), ofSameValuesOfDifferentType.GetHashCode());
@@ -126,13 +126,13 @@ namespace System.Slices.Tests
             var spanOfGuids = new Span<Guid>(guids);
             var spanOfGuidsByteRepresentation = new Span<byte>(guidsBytes);
 
-            Assert.True(spanOfGuids.StructuralEqual(spanOfGuidsByteRepresentation));
-            Assert.True(spanOfGuidsByteRepresentation.StructuralEqual(spanOfGuids));
+            Assert.True(spanOfGuids.BlockEquals(spanOfGuidsByteRepresentation));
+            Assert.True(spanOfGuidsByteRepresentation.BlockEquals(spanOfGuids));
 
             guidsBytes[guidsBytes.Length - 1] = --guidsBytes[guidsBytes.Length - 1]; // make sure that comparison covers whole span
 
-            Assert.False(spanOfGuids.StructuralEqual(spanOfGuidsByteRepresentation));
-            Assert.False(spanOfGuidsByteRepresentation.StructuralEqual(spanOfGuids));
+            Assert.False(spanOfGuids.BlockEquals(spanOfGuidsByteRepresentation));
+            Assert.False(spanOfGuidsByteRepresentation.BlockEquals(spanOfGuids));
         }
 
         [Fact]
@@ -183,12 +183,12 @@ namespace System.Slices.Tests
                 Assert.True(managedHeapSlice.SequenceEqual(unmanagedHeapSlice));
                 Assert.True(managedHeapSlice.SequenceEqual(stackSlice));
 
-                Assert.True(stackSlice.StructuralEqual(unmanagedHeapSlice));
-                Assert.True(stackSlice.StructuralEqual(managedHeapSlice));
-                Assert.True(unmanagedHeapSlice.StructuralEqual(stackSlice));
-                Assert.True(unmanagedHeapSlice.StructuralEqual(managedHeapSlice));
-                Assert.True(managedHeapSlice.StructuralEqual(unmanagedHeapSlice));
-                Assert.True(managedHeapSlice.StructuralEqual(stackSlice));
+                Assert.True(stackSlice.BlockEquals(unmanagedHeapSlice));
+                Assert.True(stackSlice.BlockEquals(managedHeapSlice));
+                Assert.True(unmanagedHeapSlice.BlockEquals(stackSlice));
+                Assert.True(unmanagedHeapSlice.BlockEquals(managedHeapSlice));
+                Assert.True(managedHeapSlice.BlockEquals(unmanagedHeapSlice));
+                Assert.True(managedHeapSlice.BlockEquals(stackSlice));
             }
             finally
             {
@@ -207,8 +207,8 @@ namespace System.Slices.Tests
             Assert.False(sliceOfStructuresWithCustomEquals.SequenceEqual(sliceOfSameBytes));
             Assert.False(sliceOfSameBytes.SequenceEqual(sliceOfStructuresWithCustomEquals));
 
-            Assert.True(sliceOfStructuresWithCustomEquals.StructuralEqual(sliceOfSameBytes));
-            Assert.True(sliceOfSameBytes.StructuralEqual(sliceOfStructuresWithCustomEquals));
+            Assert.True(sliceOfStructuresWithCustomEquals.BlockEquals(sliceOfSameBytes));
+            Assert.True(sliceOfSameBytes.BlockEquals(sliceOfStructuresWithCustomEquals));
         }
 
         [Fact]
@@ -232,18 +232,18 @@ namespace System.Slices.Tests
             var positiveInfinities = Enumerable.Repeat(positiveInfinity, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().Slice();
 
             Assert.Equal(positiveInfinity.Equals(negativeInfinity), positiveInfinities.SequenceEqual(negativeInfinities));
-            Assert.False(negativeInfinities.StructuralEqual(positiveInfinities));
+            Assert.False(negativeInfinities.BlockEquals(positiveInfinities));
 
             var negativeZeroes = Enumerable.Repeat(negativeZero, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().Slice();
             var positiveZeroes = Enumerable.Repeat(positiveZero, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().Slice();
 
             Assert.Equal(negativeZero.Equals(positiveZero), negativeZeroes.SequenceEqual(positiveZeroes));
-            Assert.False(positiveInfinities.StructuralEqual(negativeInfinities));
+            Assert.False(positiveInfinities.BlockEquals(negativeInfinities));
 
             var nans = Enumerable.Repeat(NaN, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().Slice();
 
             Assert.Equal(NaN.Equals(NaN), nans.SequenceEqual(nans));
-            Assert.True(nans.StructuralEqual(nans));
+            Assert.True(nans.BlockEquals(nans));
         }
 
         [CLSCompliant(false)]
@@ -260,12 +260,12 @@ namespace System.Slices.Tests
 
             for (int i = 0; i < bytesCount; i++)
             {
-                Assert.True(slice.StructuralEqual(copy)); // it is equal
+                Assert.True(slice.BlockEquals(copy)); // it is equal
 
                 var valueCopy = slice[i];
                 slice[i] = (byte)(valueCopy + 1); // lets just change single value
 
-                Assert.False(slice.StructuralEqual(copy)); // it is not equal anymore
+                Assert.False(slice.BlockEquals(copy)); // it is not equal anymore
 
                 slice[i] = valueCopy;
             }

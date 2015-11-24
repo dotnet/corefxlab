@@ -288,12 +288,16 @@ namespace System
 
         public override int GetHashCode()
         {
-            var hashCode = Length ^ Offset.GetHashCode();
-            if (Object != null)
+            unchecked
             {
-                hashCode ^= Object.GetHashCode();
+                var hashCode = Offset.GetHashCode();
+                hashCode = hashCode * 33 + Length;
+                if (Object != null)
+                {
+                    hashCode = hashCode * 33 + Object.GetHashCode();
+                }
+                return hashCode;
             }
-            return hashCode;
         }
 
         /// <summary>

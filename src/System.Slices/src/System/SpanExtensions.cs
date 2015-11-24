@@ -194,7 +194,7 @@ namespace System
         /// </summary>
         /// <param name="first">A span, of type T to compare to second.</param>
         /// <param name="second">A span, of type U to compare to first.</param>
-        public static bool StructuralEqual<[Primitive]T, [Primitive]U>(this Span<T> first, Span<U> second)
+        public static bool BlockEquals<[Primitive]T, [Primitive]U>(this Span<T> first, Span<U> second)
             where T : struct
             where U : struct
         {
