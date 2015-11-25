@@ -7,6 +7,44 @@ namespace System.Text.Json.Tests
     public class JsonReaderTests
     {
         [Fact]
+        public void ParseBasicJson()
+        {
+            var json = ReadJson(TestJson.ParseJson);
+            var person = json[0];
+            var age = (double)person["age"];
+            var first = (string)person["first"];
+            var last = (string)person["last"];
+            var phoneNums = person["phoneNumbers"];
+            var phoneNum1 = (string)phoneNums[0];
+            var phoneNum2 = (string)phoneNums[1];
+            var address = person["address"];
+            var street = (string)address["street"];
+            var city = (string)address["city"];
+            var zipCode = (double)address["zip"];
+
+            // Exceptional use case
+            //var a = json[1];                          // IndexOutOfRangeException
+            //var b = json["age"];                      // NullReferenceException
+            //var c = person[0];                        // NullReferenceException
+            //var d = address["cit"];                   // KeyNotFoundException
+            //var e = address[0];                       // NullReferenceException
+            //var f = (double)address["city"];          // InvalidCastException
+            //var g = (bool)address["city"];            // InvalidCastException
+            //var h = (string)address["zip"];           // InvalidCastException
+            //var i = (string)person["phoneNumbers"];   // NullReferenceException
+            //var j = (string)person;                   // NullReferenceException
+
+            Assert.Equal(age, 30);
+            Assert.Equal(first, "John");
+            Assert.Equal(last, "Smith");
+            Assert.Equal(phoneNum1, "425-000-1212");
+            Assert.Equal(phoneNum2, "425-000-1213");
+            Assert.Equal(street, "1 Microsoft Way");
+            Assert.Equal(city, "Redmond");
+            Assert.Equal(zipCode, 98052);
+        }
+
+        [Fact]
         public void ReadBasicJson()
         {
             var testJson = CreateJson();
@@ -42,9 +80,9 @@ namespace System.Text.Json.Tests
 
             Assert.Equal(readJson.GetValueFromPropertyName("long")[0].NumberValue, 9.2233720368547758E+18);
             var emptyObject = readJson.GetValueFromPropertyName("emptyObject");
-            Assert.Equal(emptyObject[0].ObjectValue.Members[0].Pairs.Count, 0);
+            Assert.Equal(emptyObject[0].ObjectValue.Pairs.Count, 0);
             var arrayString = readJson.GetValueFromPropertyName("arrayString");
-            Assert.Equal(arrayString[0].ArrayValue.Elements[0].Values.Count, 2);
+            Assert.Equal(arrayString[0].ArrayValue.Values.Count, 2);
             Assert.Equal(readJson.GetValueFromPropertyName("firstName").Count, 4);
             Assert.Equal(readJson.GetValueFromPropertyName("propertyDNE").Count, 0);
         }
@@ -149,9 +187,7 @@ namespace System.Text.Json.Tests
             };
 
             var values = new List<Value> {value1, value2};
-            var elementInner = new Elements {Values = values};
-            var elementsInner = new List<Elements> {elementInner};
-            var arrInner = new Array {Elements = elementsInner};
+            var arrInner = new Array {Values = values};
 
             var valuePhone = new Value
             {
@@ -202,9 +238,7 @@ namespace System.Text.Json.Tests
             };
 
             var pairsInner = new List<Pair> {pairStreet, pairCity, pairZip};
-            var memberInner = new Members {Pairs = pairsInner};
-            var membersInner = new List<Members> {memberInner};
-            var objInner = new Object {Members = membersInner};
+            var objInner = new Object {Pairs = pairsInner};
 
             var valueAddress = new Value
             {
@@ -219,9 +253,7 @@ namespace System.Text.Json.Tests
             };
 
             var pairs = new List<Pair> {pairAge, pairFirst, pairLast, pairPhone, pairAddress};
-            var member = new Members {Pairs = pairs};
-            var members = new List<Members> {member};
-            var obj = new Object {Members = members};
+            var obj = new Object {Pairs = pairs};
             var json = new Json {Object = obj};
 
             return json;
@@ -237,29 +269,29 @@ namespace System.Text.Json.Tests
 
             var jsonReader = new JsonReader(jsonString);
             var jsonObjectMain = new Object();
-            var jsonMembersMain = new List<Members>();
+            var jsonMembersMain = new List<Pair>();
             var jsonArrayMain = new Array();
-            var jsonElementsMain = new List<Elements>();
+            var jsonElementsMain = new List<Value>();
 
             if (jsonString.Trim().Substring(0, 1) == "[")
             {
                 ReadJsonHelper(jsonReader, jsonElementsMain);
 
-                jsonArrayMain.Elements = jsonElementsMain;
+                jsonArrayMain.Values = jsonElementsMain;
                 json.Array = jsonArrayMain;
             }
             else
             {
                 ReadJsonHelper(jsonReader, jsonMembersMain);
 
-                jsonObjectMain.Members = jsonMembersMain;
+                jsonObjectMain.Pairs = jsonMembersMain;
                 json.Object = jsonObjectMain;
             }
 
             return json;
         }
 
-        private static void ReadJsonHelper(JsonReader jsonReader, ICollection<Members> jsonMembersMain)
+        private static void ReadJsonHelper(JsonReader jsonReader, List<Pair> jsonMembersMain)
         {
             Array jsonArray = null;
             List<Pair> jsonPairs = null;
@@ -275,8 +307,7 @@ namespace System.Text.Json.Tests
                     case JsonReader.JsonTokenType.ObjectEnd:
                         if (jsonPairs != null)
                         {
-                            var jsonMembers = new Members {Pairs = jsonPairs};
-                            jsonMembersMain.Add(jsonMembers);
+                            jsonMembersMain.AddRange(jsonPairs);
                         }
                         break;
                     case JsonReader.JsonTokenType.ArrayStart:
@@ -286,8 +317,7 @@ namespace System.Text.Json.Tests
                     case JsonReader.JsonTokenType.ArrayEnd:
                         if (jsonArray != null)
                         {
-                            var jsonElements = new Elements {Values = jsonValues};
-                            jsonArray.Elements = new List<Elements> {jsonElements};
+                            jsonArray.Values = jsonValues;
                         }
                         break;
                     case JsonReader.JsonTokenType.Property:
@@ -307,7 +337,7 @@ namespace System.Text.Json.Tests
             }
         }
 
-        private static void ReadJsonHelper(JsonReader jsonReader, ICollection<Elements> jsonElementsMain)
+        private static void ReadJsonHelper(JsonReader jsonReader, List<Value> jsonElementsMain)
         {
             Object jsonObject = null;
             List<Pair> jsonPairs = null;
@@ -324,8 +354,7 @@ namespace System.Text.Json.Tests
                     case JsonReader.JsonTokenType.ObjectEnd:
                         if (jsonObject != null)
                         {
-                            var jsonMembers = new Members { Pairs = jsonPairs };
-                            jsonObject.Members = new List<Members> { jsonMembers };
+                            jsonObject.Pairs = jsonPairs;
                         }
                         break;
                     case JsonReader.JsonTokenType.ArrayStart:
@@ -334,8 +363,7 @@ namespace System.Text.Json.Tests
                     case JsonReader.JsonTokenType.ArrayEnd:
                         if (jsonValues != null)
                         {
-                            var jsonElements = new Elements { Values = jsonValues };
-                            jsonElementsMain.Add(jsonElements);
+                            jsonElementsMain.AddRange(jsonValues);
                         }
                         break;
                     case JsonReader.JsonTokenType.Property:
@@ -389,7 +417,6 @@ namespace System.Text.Json.Tests
         private static Object ReadObject(ref JsonReader jsonReader)
         {
             var jsonObject = new Object();
-            var jsonMembersList = new List<Members>();
             List<Pair> jsonPairs = null;
 
             while (jsonReader.Read())
@@ -402,9 +429,7 @@ namespace System.Text.Json.Tests
                     case JsonReader.JsonTokenType.ObjectEnd:
                         if (jsonPairs != null)
                         {
-                            var jsonMembers = new Members {Pairs = jsonPairs};
-                            jsonMembersList.Add(jsonMembers);
-                            jsonObject.Members = jsonMembersList;
+                            jsonObject.Pairs = jsonPairs;
                             return jsonObject;
                         }
                         break;
@@ -449,8 +474,7 @@ namespace System.Text.Json.Tests
                     case JsonReader.JsonTokenType.ArrayEnd:
                         if (jsonArray != null)
                         {
-                            var jsonElements = new Elements {Values = jsonValues};
-                            jsonArray.Elements = new List<Elements> {jsonElements};
+                            jsonArray.Values = jsonValues;
                             return jsonArray;
                         }
                         break;
