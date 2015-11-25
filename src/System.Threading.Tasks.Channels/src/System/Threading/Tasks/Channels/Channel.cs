@@ -59,7 +59,7 @@ namespace System.Threading.Tasks.Channels
             if (source == null)
                 throw new ArgumentNullException("source");
             if (!source.CanRead)
-                throw new ArgumentException(SR.ArgumentException_SourceStreamNotReadable, "source");
+                throw new ArgumentException(Properties.Resources.ArgumentException_SourceStreamNotReadable, "source");
 
             return new DeserializationChannel<T>(source);
         }
@@ -73,7 +73,7 @@ namespace System.Threading.Tasks.Channels
             if (destination == null)
                 throw new ArgumentNullException("destination");
             if (!destination.CanWrite)
-                throw new ArgumentException(SR.ArgumentException_DestinationStreamNotWritable, "destination");
+                throw new ArgumentException(Properties.Resources.ArgumentException_DestinationStreamNotWritable, "destination");
 
             return new SerializationChannel<T>(destination);
         }
@@ -264,7 +264,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Creates an exception detailing concurrent use of a single reader/writer channel.</summary>
         private static Exception CreateSingleReaderWriterMisuseException()
         {
-            return new InvalidOperationException(SR.InvalidOperationException_SingleReaderWriterUsedConcurrently).InitializeStackTrace();
+            return new InvalidOperationException(Properties.Resources.InvalidOperationException_SingleReaderWriterUsedConcurrently).InitializeStackTrace();
         }
 
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>
@@ -276,7 +276,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Exception thrown when a channel is used incorrectly after it's been closed.</summary>
         private sealed class ClosedChannelException : InvalidOperationException
         {
-            public ClosedChannelException() : base(SR.ClosedChannelException_DefaultMessage) { }
+            public ClosedChannelException() : base(Properties.Resources.ClosedChannelException_DefaultMessage) { }
         }
 
         /// <summary>Initializes the stack trace of an Exception by throwing and catching it.</summary>

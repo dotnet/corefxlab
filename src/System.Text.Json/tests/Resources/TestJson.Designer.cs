@@ -147,6 +147,15 @@ namespace System.Text.Json.Tests.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [{&quot;array&quot;:[{&quot;_id&quot;:&quot;56280d1abea79cfca762cd56&quot;,&quot;index&quot;:0,&quot;isActive&quot;:false,&quot;tags&quot;:[&quot;ad&quot;,&quot;voluptate&quot;,&quot;ullamco&quot;,&quot;reprehenderit&quot;,&quot;duis&quot;,&quot;Lorem&quot;,&quot;anim&quot;],&quot;friends&quot;:[{&quot;id&quot;:0,&quot;name&quot;:&quot;Fernandez Barr&quot;,&quot;friends&quot;:[{&quot;id&quot;:0,&quot;name&quot;:&quot;Selena Hoover&quot;,&quot;friends&quot;:[{&quot;id&quot;:0,&quot;name&quot;:&quot;Verna Keller&quot;,&quot;friends&quot;:[{&quot;id&quot;:0,&quot;name&quot;:&quot;Middleton Duncan&quot;,&quot;friends&quot;:[{&quot;id&quot;:0,&quot;name&quot;:&quot;Fitzgerald Mcbride&quot;,&quot;friends&quot;:[{&quot;id&quot;:0,&quot;name&quot;:&quot;Boyd Marshall&quot;,&quot;friends&quot;:[{&quot;id&quot;:0,&quot;name&quot;:&quot;Debbie Hess&quot;,&quot;friends&quot;:[{&quot;id&quot;:0,&quot;name&quot;:&quot;Larson Mcmahon&quot;,&quot;friends&quot;:[{&quot;id&quot;:0,&quot;nam [rest of string was truncated]&qu....
+        /// </summary>
+        internal static string ExpectedHeavyNestedJsonWithArray {
+            get {
+                return ResourceManager.GetString("ExpectedHeavyNestedJsonWithArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;+testZero+&quot;:0,&quot;+testSmallNum+&quot;:0.1,&quot;+testeZero+&quot;:0.1,&quot;+testENegtiveWithZero+&quot;:0,&quot;+testeNegativeWithInt+&quot;:0.02155,&quot;+testEPositiveWithDecimal+&quot;:215215.41,&quot;+testePositiveWithLargeInt+&quot;:1.84467440737096E+128,&quot;+testeNegativeWithLargeDecimal+&quot;:1.25125612512513E-109,&quot;-testZero-&quot;:0,&quot;-testSmallNum-&quot;:-0.1,&quot;-testeZero-&quot;:-0.1,&quot;-testENegtiveWithZero-&quot;:0,&quot;-testeNegativeWithInt-&quot;:-0.02155,&quot;-testEPositiveWithDecimal-&quot;:-215215.41,&quot;-testePositiveWithLargeInt-&quot;:-1.84467440737096E+128,&quot;-testeNegativeWithLargeDecimal-&quot;:-1.251 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ExpectedJsonWithSpecialNumFormat {
@@ -214,6 +223,15 @@ namespace System.Text.Json.Tests.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [{&quot;array&quot;:[  {    &quot;_id&quot;: &quot;56280d1abea79cfca762cd56&quot;,    &quot;index&quot;: 0,    &quot;isActive&quot;: false,    &quot;tags&quot;: [      &quot;ad&quot;,      &quot;voluptate&quot;,      &quot;ullamco&quot;,      &quot;reprehenderit&quot;,      &quot;duis&quot;,      &quot;Lorem&quot;,      &quot;anim&quot;    ],    &quot;friends&quot;: [      {        &quot;id&quot;: 0,        &quot;name&quot;: &quot;Fernandez Barr&quot;,        &quot;friends&quot;: [          {            &quot;id&quot;: 0,            &quot;name&quot;: &quot;Selena Hoover&quot;,            &quot;friends&quot;: [              {                &quot;id&quot;: 0,                &quot;name&quot;: &quot;Verna Keller&quot;,                &quot;friends&quot;: [          [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string HeavyNestedJsonWithArray {
+            get {
+                return ResourceManager.GetString("HeavyNestedJsonWithArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;+testZero+&quot; : 0,&quot;+testSmallNum+&quot; : 0.1,&quot;+testeZero+&quot; : 0.1e0,&quot;+testENegtiveWithZero+&quot; : 0E-1,&quot;+testeNegativeWithInt+&quot; : 2155e-5,&quot;+testEPositiveWithDecimal+&quot; : 2152.1541E+2,&quot;+testePositiveWithLargeInt+&quot; : 18446744073709551615E109,&quot;+testeNegativeWithLargeDecimal+&quot; : 125125612512512.512512e-0123,&quot;-testZero-&quot; : -0,&quot;-testSmallNum-&quot; : -0.1,&quot;-testeZero-&quot; : -0.1e0,&quot;-testENegtiveWithZero-&quot; : -0E-1,&quot;-testeNegativeWithInt-&quot; : -2155e-5,&quot;-testEPositiveWithDecimal-&quot; : -2152.1541E+2,&quot;-testePositiveWithLargeInt-&quot; :-18446 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string JsonWithSpecialNumFormat {
@@ -241,6 +259,30 @@ namespace System.Text.Json.Tests.Resources {
         internal static string LargeJson {
             get {
                 return ResourceManager.GetString("LargeJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///   {
+        ///      &quot;age&quot; : 30,
+        ///      &quot;first&quot; : &quot;John&quot;,
+        ///      &quot;last&quot; : &quot;Smith&quot;,
+        ///      &quot;phoneNumbers&quot; : [
+        ///         &quot;425-000-1212&quot;,
+        ///         &quot;425-000-1213&quot;
+        ///      ],
+        ///      &quot;address&quot; : {
+        ///         &quot;street&quot; : &quot;1 Microsoft Way&quot;,
+        ///         &quot;city&quot; : &quot;Redmond&quot;,
+        ///         &quot;zip&quot; : 98052
+        ///      }
+        ///   }
+        ///].
+        /// </summary>
+        internal static string ParseJson {
+            get {
+                return ResourceManager.GetString("ParseJson", resourceCulture);
             }
         }
         

@@ -12,6 +12,18 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
+      "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
+        },
+        "runtime": {
+          "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
+        }
+      },
       "System.Globalization/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -82,6 +94,15 @@
         },
         "compile": {
           "ref/dotnet/System.Runtime.Extensions.dll": {}
+        }
+      },
+      "System.Slices/0.1.0-d111915-1": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
         }
       },
       "System.Text.Encoding/4.0.10": {
@@ -116,6 +137,18 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
+      "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
+        },
+        "runtime": {
+          "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
+        }
+      },
       "System.Globalization/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -186,6 +219,15 @@
         },
         "compile": {
           "ref/dotnet/System.Runtime.Extensions.dll": {}
+        }
+      },
+      "System.Slices/0.1.0-d111915-1": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
         }
       },
       "System.Text.Encoding/4.0.10": {
@@ -220,6 +262,18 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
+      "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
+        },
+        "runtime": {
+          "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
+        }
+      },
       "System.Globalization/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -290,6 +344,15 @@
         },
         "compile": {
           "ref/dotnet/System.Runtime.Extensions.dll": {}
+        }
+      },
+      "System.Slices/0.1.0-d111915-1": {
+        "type": "package",
+        "compile": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
         }
       },
       "System.Text.Encoding/4.0.10": {
@@ -362,6 +425,49 @@
         "System.Diagnostics.Debug.4.0.0.nupkg",
         "System.Diagnostics.Debug.4.0.0.nupkg.sha512",
         "System.Diagnostics.Debug.nuspec"
+      ]
+    },
+    "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "Z7L/VIQCtYt4P/Evv4wmp44D+kyxlcNK8QJByfhBwICCqUZY2CMJf5KXhDoatoHos3ZACOG6a9CywZK99qKVcA==",
+      "files": [
+        "lib/DNXCore50/System.Diagnostics.Tools.dll",
+        "lib/net45/_._",
+        "lib/netcore50/System.Diagnostics.Tools.dll",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "ref/dotnet5.1/de/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/es/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/fr/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/it/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/ja/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/ko/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/ru/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/System.Diagnostics.Tools.dll",
+        "ref/dotnet5.1/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/zh-hans/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/zh-hant/System.Diagnostics.Tools.xml",
+        "ref/net45/_._",
+        "ref/netcore50/de/System.Diagnostics.Tools.xml",
+        "ref/netcore50/es/System.Diagnostics.Tools.xml",
+        "ref/netcore50/fr/System.Diagnostics.Tools.xml",
+        "ref/netcore50/it/System.Diagnostics.Tools.xml",
+        "ref/netcore50/ja/System.Diagnostics.Tools.xml",
+        "ref/netcore50/ko/System.Diagnostics.Tools.xml",
+        "ref/netcore50/ru/System.Diagnostics.Tools.xml",
+        "ref/netcore50/System.Diagnostics.Tools.dll",
+        "ref/netcore50/System.Diagnostics.Tools.xml",
+        "ref/netcore50/zh-hans/System.Diagnostics.Tools.xml",
+        "ref/netcore50/zh-hant/System.Diagnostics.Tools.xml",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.dll",
+        "System.Diagnostics.Tools.4.0.1-rc2-23519.nupkg",
+        "System.Diagnostics.Tools.4.0.1-rc2-23519.nupkg.sha512",
+        "System.Diagnostics.Tools.nuspec"
       ]
     },
     "System.Globalization/4.0.0": {
@@ -510,6 +616,7 @@
     },
     "System.Reflection.Primitives/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "n9S0XpKv2ruc17FSnaiX6nV47VfHTZ1wLjKZlAirUZCvDQCH71mVp+Ohabn0xXLh5pK2PKp45HCxkqu5Fxn/lA==",
       "files": [
         "lib/DNXCore50/System.Reflection.Primitives.dll",
@@ -543,6 +650,7 @@
     },
     "System.Resources.ResourceManager/4.0.0": {
       "type": "package",
+      "serviceable": true,
       "sha512": "qmqeZ4BJgjfU+G2JbrZt4Dk1LsMxO4t+f/9HarNY6w8pBgweO6jT+cknUH7c3qIrGvyUqraBhU45Eo6UtA0fAw==",
       "files": [
         "lib/DNXCore50/System.Resources.ResourceManager.dll",
@@ -670,6 +778,17 @@
         "System.Runtime.Extensions.nuspec"
       ]
     },
+    "System.Slices/0.1.0-d111915-1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "Re5jy3jlp1vQbdXgEogU3tETz8dosZYcSK4wXmIZhFKcyGLdm2SL0qdnxhWR8A3uZnhzYZ0ofOAMcYgNuj4ZBA==",
+      "files": [
+        "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
+        "System.Slices.0.1.0-d111915-1.nupkg",
+        "System.Slices.0.1.0-d111915-1.nupkg.sha512",
+        "System.Slices.nuspec"
+      ]
+    },
     "System.Text.Encoding/4.0.10": {
       "type": "package",
       "sha512": "fNlSFgy4OuDlJrP9SFFxMlaLazq6ipv15sU5TiEgg9UCVnA/OgoVUfymFp4AOk1jOkW5SVxWbeeIUptcM+m/Vw==",
@@ -754,9 +873,11 @@
   },
   "projectFileDependencyGroups": {
     "": [
+      "System.Diagnostics.Tools >= 4.0.1-*",
       "System.Resources.ResourceManager >= 4.0.0",
       "System.Runtime >= 4.0.0",
       "System.Runtime.Extensions >= 4.0.0",
+      "System.Slices >= 0.1.0-*",
       "System.Text.Encoding >= 4.0.10",
       "System.Diagnostics.Debug >= 4.0.0"
     ],

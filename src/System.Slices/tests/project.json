@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "Microsoft.NETCore" : "5.0.0-beta-*",
-    "xunit": "2.0.0-beta5-build2785"
+    "Microsoft.NETCore" : "5.0.0-*",
+    "xunit": "2.0.0-*"
   },
   "frameworks": {
     "dnxcore50": {}

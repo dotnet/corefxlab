@@ -24,6 +24,9 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
+      <Name>System.Buffers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\System.Text.Utf8\src\System.Text.Utf8.csproj">
       <Name>System.Text.Utf8</Name>
     </ProjectReference>

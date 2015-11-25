@@ -7,6 +7,134 @@ namespace System.Text.Json.Tests
     {
         public Object Object { get; set; }
 
+        public Array Array { get; set; }
+
+        public Value Value { get; set; }
+
+        public Json this[string index]
+        {
+            get
+            {
+                if (Object == null) throw new NullReferenceException();
+                if (Object.Pairs == null) throw new NullReferenceException();
+
+                var json = new Json();
+                foreach (var pair in Object.Pairs)
+                {
+                    if (pair.Name == index)
+                    {
+                        switch (pair.Value.Type)
+                        {
+                            case Value.ValueType.Object:
+                                json.Object = pair.Value.ObjectValue;
+                                break;
+                            case Value.ValueType.Array:
+                                json.Array = pair.Value.ArrayValue;
+                                break;
+                            case Value.ValueType.String:
+                            case Value.ValueType.Number:
+                            case Value.ValueType.False:
+                            case Value.ValueType.True:
+                            case Value.ValueType.Null:
+                                json.Value = pair.Value;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        return json;
+                    }
+                }
+
+                throw new KeyNotFoundException();
+            }
+        }
+
+        public Json this[int index]
+        {
+            get
+            {
+                if (Array == null) throw new NullReferenceException();
+                if (Array.Values == null) throw new NullReferenceException();
+                List<Value> values = Array.Values;
+                if (index < 0 || index >= values.Count) throw new IndexOutOfRangeException();
+                Value value = values[index];
+
+                var json = new Json();
+                switch (value.Type)
+                {
+                    case Value.ValueType.Object:
+                        json.Object = value.ObjectValue;
+                        break;
+                    case Value.ValueType.Array:
+                        json.Array = value.ArrayValue;
+                        break;
+                    case Value.ValueType.String:
+                    case Value.ValueType.Number:
+                    case Value.ValueType.False:
+                    case Value.ValueType.True:
+                    case Value.ValueType.Null:
+                        json.Value = value;
+                        break;
+                    default:
+                        break;
+                }
+
+                return json;
+            }
+        }
+
+        public static explicit operator string (Json json)
+        {
+            if (json == null || json.Value == null) throw new NullReferenceException();
+
+            if (json.Value.Type == Value.ValueType.String)
+            {
+                return json.Value.StringValue;
+            }
+            else if (json.Value.Type == Value.ValueType.Null)
+            {
+                return json.Value.NullValue.ToString();
+            }
+            else
+            {
+                throw new InvalidCastException();
+            }
+        }
+
+        public static explicit operator double (Json json)
+        {
+            if (json == null || json.Value == null) throw new NullReferenceException();
+
+            if (json.Value.Type == Value.ValueType.Number)
+            {
+                return json.Value.NumberValue;
+
+            }
+            else
+            {
+                throw new InvalidCastException();
+            }
+        }
+
+        public static explicit operator bool (Json json)
+        {
+            if (json == null || json.Value == null) throw new NullReferenceException();
+
+            if (json.Value.Type == Value.ValueType.True)
+            {
+                return json.Value.TrueValue;
+            }
+            else if (json.Value.Type == Value.ValueType.False)
+            {
+                return json.Value.FalseValue;
+            }
+            else
+            {
+                throw new InvalidCastException();
+            }
+        }
+
         public List<Value> GetValueFromPropertyName(string str)
         {
             return GetValueFromPropertyName(new Utf8String(str), Object);
@@ -26,84 +154,70 @@ namespace System.Text.Json.Tests
         {
             var values = new List<Value>();
 
-            if (obj == null || obj.Members == null) return values;
+            if (obj == null || obj.Pairs == null) return values;
 
-            foreach (var member in obj.Members)
+            foreach (var pair in obj.Pairs)
             {
-                if (member == null || member.Pairs == null) return values;
+                if (pair == null || pair.Value == null) return values;
 
-                foreach (var pair in member.Pairs)
+                if (pair.Value.Type == Value.ValueType.Object)
                 {
-                    if (pair == null || pair.Value == null) return values;
+                    values.AddRange(GetValueFromPropertyName(str, pair.Value.ObjectValue));
+                }
 
-                    if (pair.Value.Type == Value.ValueType.Object)
+                if (pair.Value.Type == Value.ValueType.Array)
+                {
+                    if (pair.Value.ArrayValue == null || pair.Value.ArrayValue.Values == null) return values;
+                    
+                    foreach (var value in pair.Value.ArrayValue.Values)
                     {
-                        values.AddRange(GetValueFromPropertyName(str, pair.Value.ObjectValue));
-                    }
-
-                    if (pair.Value.Type == Value.ValueType.Array)
-                    {
-                        if (pair.Value.ArrayValue == null || pair.Value.ArrayValue.Elements == null) return values;
-
-                        foreach (var element in pair.Value.ArrayValue.Elements)
+                        if (value != null && value.Type == Value.ValueType.Object)
                         {
-                            if (element == null || element.Values == null) return values;
-
-                            foreach (var value in element.Values)
-                            {
-                                if (value != null && value.Type == Value.ValueType.Object)
-                                {
-                                    values.AddRange(GetValueFromPropertyName(str, value.ObjectValue));
-                                }
-                            }
+                            values.AddRange(GetValueFromPropertyName(str, value.ObjectValue));
                         }
                     }
+                }
 
-                    if (new Utf8String(pair.Name) == str)
-                    {
-                        values.Add(pair.Value);
-                    }
+                if (new Utf8String(pair.Name) == str)
+                {
+                    values.Add(pair.Value);
                 }
             }
+
             return values;
         }
 
         public override string ToString()
         {
-            return Object == null ? "" : OutputObject(Object);
+            if (Object != null)
+            {
+                return OutputObject(Object);
+            }
+            if (Array != null)
+            {
+                return OutputArray(Array);
+            }
+            return "";
         }
 
         private string OutputObject(Object obj)
         {
-            var str = "";
+            var strBuilder = new StringBuilder();
 
-            if (obj == null || obj.Members == null) return str;
+            if (obj == null || obj.Pairs == null) return "";
 
-            foreach (var member in obj.Members)
+            strBuilder.Append("{");
+            for (var i = 0; i < obj.Pairs.Count; i++)
             {
-                str += "{";
-                str += OutputMembers(member);
-                str += "}";
-            }
-
-            return str;
-        }
-
-        private string OutputMembers(Members members)
-        {
-            var str = "";
-
-            if (members == null || members.Pairs == null) return str;
-
-            for (var i = 0; i < members.Pairs.Count; i++)
-            {
-                str += OutputPair(members.Pairs[i]);
-                if (i < members.Pairs.Count - 1)
+                strBuilder.Append(OutputPair(obj.Pairs[i]));
+                if (i < obj.Pairs.Count - 1)
                 {
-                    str += ",";
+                    strBuilder.Append(",");
                 }
             }
-            return str;
+            strBuilder.Append("}");
+
+            return strBuilder.ToString();
         }
 
         private string OutputPair(Pair pair)
@@ -119,35 +233,22 @@ namespace System.Text.Json.Tests
 
         private string OutputArray(Array array)
         {
-            var str = "";
+            var strBuilder = new StringBuilder();
 
-            if (array == null || array.Elements == null) return str;
+            if (array == null || array.Values == null) return "";
 
-            foreach (var element in array.Elements)
+            strBuilder.Append("[");
+            for (var i = 0; i < array.Values.Count; i++)
             {
-                str += "[";
-                str += OutputElements(element);
-                str += "]";
-            }
-
-            return str;
-        }
-
-        private string OutputElements(Elements elements)
-        {
-            var str = "";
-
-            if (elements == null || elements.Values == null) return str;
-
-            for (var i = 0; i < elements.Values.Count; i++)
-            {
-                str += OutputValue(elements.Values[i]);
-                if (i < elements.Values.Count - 1)
+                strBuilder.Append(OutputValue(array.Values[i]));
+                if (i < array.Values.Count - 1)
                 {
-                    str += ",";
+                    strBuilder.Append(",");
                 }
             }
-            return str;
+            strBuilder.Append("]");
+
+            return strBuilder.ToString();
         }
 
         private string OutputValue(Value value)
@@ -189,11 +290,6 @@ namespace System.Text.Json.Tests
 
     public class Object
     {
-        public List<Members> Members { get; set; }
-    }
-
-    public class Members
-    {
         public List<Pair> Pairs { get; set; }
     }
 
@@ -204,11 +300,6 @@ namespace System.Text.Json.Tests
     }
 
     public class Array
-    {
-        public List<Elements> Elements { get; set; }
-    }
-
-    public class Elements
     {
         public List<Value> Values { get; set; }
     }

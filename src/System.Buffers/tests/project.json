@@ -1,7 +1,12 @@
-{
+﻿{
   "dependencies": {
-    "Microsoft.NETCore" : "5.0.0-beta-*",
-    "xunit": "2.0.0-beta5-build2785"
+    "System.Collections": "4.0.11-*",
+    "System.Slices": "0.1.0-*",
+    "xunit": "2.1.0",
+    "xunit.runner.dnx": "2.1.0-*"
+  },
+  "commands": {
+        "test": "xunit.runner.dnx"
   },
   "frameworks": {
     "dnxcore50": {}

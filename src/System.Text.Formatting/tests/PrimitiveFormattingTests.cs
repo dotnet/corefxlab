@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Globalization;
 using System.IO;
 using Xunit;
@@ -9,10 +10,11 @@ namespace System.Text.Formatting.Tests
 {
     public partial class SystemTextFormattingTests
     {
-        StringFormatter formatter = new StringFormatter();
+        ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(2048);
 
         private void CheckByte(byte value, string format, string expected)
         {
+            var formatter = new StringFormatter(pool);
             var parsed = Format.Parse(format);
             formatter.Clear();
             formatter.Append(value, parsed);
@@ -72,7 +74,7 @@ namespace System.Text.Formatting.Tests
             CheckByte(byte.MaxValue, "X", "FF");
         }
 
-        private void CheckInt64(long value, string format, string expected)
+        private void CheckInt64(long value, string format, string expected, StringFormatter formatter)
         {
             var parsed = Format.Parse(format);
             formatter.Clear();
@@ -87,63 +89,64 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void Int64BasicTests()
         {
-            CheckInt64(long.MinValue, null, "-9223372036854775808");
-            CheckInt64(-10, null, "-10");
-            CheckInt64(-1, null, "-1");
-            CheckInt64(0, null, "0");
-            CheckInt64(1, null, "1");
-            CheckInt64(10, null, "10");
-            CheckInt64(long.MaxValue, null, "9223372036854775807");
+            var formatter = new StringFormatter(pool);
+            CheckInt64(long.MinValue, null, "-9223372036854775808", formatter);
+            CheckInt64(-10, null, "-10", formatter);
+            CheckInt64(-1, null, "-1", formatter);
+            CheckInt64(0, null, "0", formatter);
+            CheckInt64(1, null, "1", formatter);
+            CheckInt64(10, null, "10", formatter);
+            CheckInt64(long.MaxValue, null, "9223372036854775807", formatter);
 
-            CheckInt64(long.MinValue, "d", "-9223372036854775808");
-            CheckInt64(-10, "d", "-10");
-            CheckInt64(-1, "d", "-1");
-            CheckInt64(0, "d", "0");
-            CheckInt64(1, "d", "1");
-            CheckInt64(10, "d", "10");
-            CheckInt64(long.MaxValue, "d", "9223372036854775807");
+            CheckInt64(long.MinValue, "d", "-9223372036854775808", formatter);
+            CheckInt64(-10, "d", "-10", formatter);
+            CheckInt64(-1, "d", "-1", formatter);
+            CheckInt64(0, "d", "0", formatter);
+            CheckInt64(1, "d", "1", formatter);
+            CheckInt64(10, "d", "10", formatter);
+            CheckInt64(long.MaxValue, "d", "9223372036854775807", formatter);
 
-            CheckInt64(long.MinValue, "x", "8000000000000000");
-            CheckInt64(-10, "x", "fffffffffffffff6");
-            CheckInt64(-1, "x", "ffffffffffffffff");
-            CheckInt64(0, "x", "0");
-            CheckInt64(1, "x", "1");
-            CheckInt64(10, "x", "a");
-            CheckInt64(long.MaxValue, "x", "7fffffffffffffff");
+            CheckInt64(long.MinValue, "x", "8000000000000000", formatter);
+            CheckInt64(-10, "x", "fffffffffffffff6", formatter);
+            CheckInt64(-1, "x", "ffffffffffffffff", formatter);
+            CheckInt64(0, "x", "0", formatter);
+            CheckInt64(1, "x", "1", formatter);
+            CheckInt64(10, "x", "a", formatter);
+            CheckInt64(long.MaxValue, "x", "7fffffffffffffff", formatter);
 
-            CheckInt64(long.MinValue, "X", "8000000000000000");
-            CheckInt64(-10,  "X", "FFFFFFFFFFFFFFF6");
-            CheckInt64(-1,  "X", "FFFFFFFFFFFFFFFF");
-            CheckInt64(0,  "X", "0");
-            CheckInt64(1, "X", "1");
-            CheckInt64(10, "X", "A");
-            CheckInt64(long.MaxValue, "X", "7FFFFFFFFFFFFFFF");
+            CheckInt64(long.MinValue, "X", "8000000000000000", formatter);
+            CheckInt64(-10,  "X", "FFFFFFFFFFFFFFF6", formatter);
+            CheckInt64(-1,  "X", "FFFFFFFFFFFFFFFF", formatter);
+            CheckInt64(0,  "X", "0", formatter);
+            CheckInt64(1, "X", "1", formatter);
+            CheckInt64(10, "X", "A", formatter);
+            CheckInt64(long.MaxValue, "X", "7FFFFFFFFFFFFFFF", formatter);
 
-            CheckInt64(0, "d0", "0");
-            CheckInt64(0, "d1", "0");
-            CheckInt64(0, "d2", "00");
-            CheckInt64(0, "d10", "0000000000");
+            CheckInt64(0, "d0", "0", formatter);
+            CheckInt64(0, "d1", "0", formatter);
+            CheckInt64(0, "d2", "00", formatter);
+            CheckInt64(0, "d10", "0000000000", formatter);
 
-            CheckInt64(1, "d0", "1");
-            CheckInt64(1, "d1", "1");
-            CheckInt64(1, "d2", "01");
-            CheckInt64(1, "d10", "0000000001");
+            CheckInt64(1, "d0", "1", formatter);
+            CheckInt64(1, "d1", "1", formatter);
+            CheckInt64(1, "d2", "01", formatter);
+            CheckInt64(1, "d10", "0000000001", formatter);
 
-            CheckInt64(21, "d0", "21");
-            CheckInt64(21, "d1", "21");
-            CheckInt64(21, "d2", "21");
-            CheckInt64(21, "d10", "0000000021");
+            CheckInt64(21, "d0", "21", formatter);
+            CheckInt64(21, "d1", "21", formatter);
+            CheckInt64(21, "d2", "21", formatter);
+            CheckInt64(21, "d10", "0000000021", formatter);
 
-            CheckInt64(-1, "d0", "-1");
-            CheckInt64(-1, "d1", "-1");
-            CheckInt64(-1, "d2", "-01");
-            CheckInt64(-1, "d10", "-0000000001");
+            CheckInt64(-1, "d0", "-1", formatter);
+            CheckInt64(-1, "d1", "-1", formatter);
+            CheckInt64(-1, "d2", "-01", formatter);
+            CheckInt64(-1, "d10", "-0000000001", formatter);
         }
 
         [Fact]
         public void FloatFormatting()
         {
-            var sb = new StringFormatter();
+            var sb = new StringFormatter(pool);
 
             sb.Append(Double.NaN);
             var result = sb.ToString();
@@ -168,7 +171,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatDefault()
         {
-            var sb = new StringFormatter();
+            var sb = new StringFormatter(pool);
             sb.Append('C');
             sb.Append((sbyte)-10);
             sb.Append((byte)99);
@@ -186,7 +189,7 @@ namespace System.Text.Formatting.Tests
         public void FormatD()
         {
             var format = Format.Parse("D");
-            var sb = new StringFormatter();
+            var sb = new StringFormatter(pool);
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
             sb.Append((short)-10, format);
@@ -203,7 +206,7 @@ namespace System.Text.Formatting.Tests
         public void FormatDPrecision()
         {
             var format = Format.Parse("D3");
-            var sb = new StringFormatter();
+            var sb = new StringFormatter(pool);
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
             sb.Append((short)-10, format);
@@ -220,7 +223,7 @@ namespace System.Text.Formatting.Tests
         public void FormatG()
         {
             var format = Format.Parse("G");
-            var sb = new StringFormatter();
+            var sb = new StringFormatter(pool);
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
             sb.Append((short)-10, format);
@@ -237,7 +240,7 @@ namespace System.Text.Formatting.Tests
         public void FormatNPrecision()
         {
             var format = Format.Parse("N1");
-            var sb = new StringFormatter();
+            var sb = new StringFormatter(pool);
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
             sb.Append((short)-10, format);
@@ -256,7 +259,7 @@ namespace System.Text.Formatting.Tests
             var x = Format.Parse("x");
             var X = Format.Parse("X");
 
-            var sb = new StringFormatter();
+            var sb = new StringFormatter(pool);
             sb.Append((ulong)255, x);
             sb.Append((uint)255, X);
             Assert.Equal("ffFF", sb.ToString());
@@ -276,7 +279,7 @@ namespace System.Text.Formatting.Tests
             var x = Format.Parse("x10");
             var X = Format.Parse("X10");
 
-            var sb = new StringFormatter();
+            var sb = new StringFormatter(pool);
             sb.Append((ulong)255, x);
             sb.Append((uint)255, X);
             Assert.Equal("00000000ff00000000FF", sb.ToString());
@@ -296,7 +299,7 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            using(var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8)) {
+            using(var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8, pool)) {
                 writer.Append(100);
                 writer.Append(-100);
                 writer.Append('h');
@@ -311,7 +314,7 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            using(var utf8Writer = new StreamFormatter(stream, FormattingData.InvariantUtf8)) {
+            using(var utf8Writer = new StreamFormatter(stream, FormattingData.InvariantUtf8, pool)) {
                 utf8Writer.Append("Hello");
                 utf8Writer.Append(" ");
                 utf8Writer.Append("World!");
@@ -321,7 +324,7 @@ namespace System.Text.Formatting.Tests
             }
 
             stream.Position = 0;
-            using(var utf16Writer = new StreamFormatter(stream, FormattingData.InvariantUtf16)) {
+            using(var utf16Writer = new StreamFormatter(stream, FormattingData.InvariantUtf16, pool)) {
                 utf16Writer.Append("Hello");
                 utf16Writer.Append(" ");
                 utf16Writer.Append("World!");

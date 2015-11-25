@@ -1,41 +1,14 @@
 ﻿using Microsoft.Net.Http.Server.Socket;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using System.Text.Formatting;
 using System.Text.Utf8;
+using System.Text.Http;
 using System.Threading;
 
 namespace System.Net.Http.Buffered
 {
-    // this is a small holder for a buffer and the pool that allocated it
-    // it's used to pass buffers around that can be deallocated into the same pool they were taken from
-    // if the pool was static, we would not need this type. But I am not sure if a static pool is good enough.
-    public struct HttpServerBuffer
-    {
-        public byte[] _buffer;
-        public int _count;
-        BufferPool _pool;
-
-        public HttpServerBuffer(byte[] buffer, int count, BufferPool pool = null)
-        {
-            _buffer = buffer;
-            _count = count;
-            _pool = pool;
-        }
-
-        public void Return()
-        {
-            if (_pool != null)
-            {
-                _pool.ReturnBuffer(ref _buffer);
-                _count = 0;
-            }
-        }
-    }
-
     public abstract class HttpServer
     {
         protected static Utf8String HttpNewline = new Utf8String(new byte[] { 13, 10 });
@@ -45,7 +18,6 @@ namespace System.Net.Http.Buffered
         public Log Log { get; protected set; }
 
         const int RequestBufferSize = 2048;
-        public NativeBufferPool _buffers = new NativeBufferPool(RequestBufferSize, numberOfBuffers:1000);
 
         protected HttpServer(Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
         {
@@ -65,7 +37,6 @@ namespace System.Net.Http.Buffered
         public void Stop()
         {
             _isCancelled = true;
-            Log.LogMessage(Log.Level.Verbose, "Buffers Allocated: " + BufferPool.Shared.Allocations);
             Log.LogVerbose("Server Terminated");
         }
 
@@ -92,93 +63,47 @@ namespace System.Net.Http.Buffered
         {
             Log.LogVerbose("Processing Request");
             
-            var buffer = _buffers.Rent();
-            var received = socket.Receive(buffer);
+            var requestBuffer = ManagedBufferPool<byte>.SharedByteBufferPool.RentBuffer(RequestBufferSize);
+            var requestByteCount = socket.Receive(requestBuffer);
 
-            if(received == 0)
-            {
+            if(requestByteCount == 0) {
                 socket.Close();
                 return;
             }
 
-            var receivedBytes = buffer.Slice(0, received);
+            var requestBytes = requestBuffer.Slice(0, requestByteCount);
+            var request = HttpRequest.Parse(requestBytes);
+            Log.LogRequest(request);
 
-            if (Log.IsVerbose)
-            {
-                var text = Encoding.UTF8.GetString(receivedBytes.CreateArray());
-                Console.WriteLine(text);
-            }
+            var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
+            WriteResponse(formatter, request);
 
-            var request = HttpRequest.Parse(receivedBytes);
+            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref requestBuffer);
 
-            if (Log.IsVerbose)
-            {
-                Log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", request.RequestLine.Method);
-                Log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", request.RequestLine.RequestUri.ToString());
-                Log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.RequestLine.Version);
+            socket.Send(formatter.Buffer.Slice(formatter.CommitedByteCount));
+            socket.Close();
 
-                Log.LogMessage(Log.Level.Verbose, "\tHttp Headers:");
-                foreach (var httpHeader in request.Headers)
-                {
-                    Log.LogMessage(Log.Level.Verbose, "\t\tName: {0}, Value: {1}", httpHeader.Key, httpHeader.Value);
-                }
-
-                LogRestOfRequest(request.Body);
-            }
-
-            HttpServerBuffer responseBytes = CreateResponse(request);
-                     
-            _buffers.Return(buffer);
-
-            // send response
-            var segment = responseBytes;        
-            
-            socket.Send(segment._buffer, segment._count);
-
-            if (!request.RequestLine.IsKeepAlive())
-            {
-                socket.Close();
-            }
-
-            responseBytes.Return();
             if (Log.IsVerbose)
             {
                 Log.LogMessage(Log.Level.Verbose, "Request Processed", DateTime.UtcNow.Ticks);
             }
         }
 
-        void LogRestOfRequest(ByteSpan buffer)
+        protected virtual void WriteResponseFor400(BufferFormatter formatter, Span<byte> receivedBytes) // Bad Request
         {
-            HttpRequestReader reader = new HttpRequestReader();
-            reader.Buffer = buffer;
-            while (true)
-            {
-                var header = reader.ReadHeader();
-                if (header.Length == 0) break;
-                Log.LogMessage(Log.Level.Verbose, "\tHeader: {0}", header.ToString());
-            }
-            var messageBody = reader.Buffer;
-            Log.LogMessage(Log.Level.Verbose, "\tBody bytecount: {0}", messageBody.Length);
-        }
-
-        protected virtual HttpServerBuffer CreateResponseFor400(ByteSpan receivedBytes) // Bad Request
-        {
-            var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
+            Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", receivedBytes.Length);
             WriteCommonHeaders(formatter, "1.1", "400", "Bad Request", false);
             formatter.Append(HttpNewline);
-            return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
         }
 
-        protected virtual HttpServerBuffer CreateResponseFor404(HttpRequestLine requestLine) // Not Found
+        protected virtual void WriteResponseFor404(BufferFormatter formatter, HttpRequestLine requestLine) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", requestLine);
-
-            var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
             WriteCommonHeaders(formatter, "1.1", "404", "Not Found", false);
             formatter.Append(HttpNewline);
-            return new HttpServerBuffer(formatter.Buffer, formatter.CommitedByteCount, BufferPool.Shared);
         }
 
+        // TODO: this should not be here. Also, this should not allocate
         protected static void WriteCommonHeaders(
             BufferFormatter formatter,
             string version,
@@ -202,56 +127,6 @@ namespace System.Net.Http.Buffered
             }
         }
 
-        protected abstract HttpServerBuffer CreateResponse(HttpRequest request);
-    }
-
-    static class FormatterExtensions
-    {
-        public static void Append<T>(this T formatter, Utf8String text) where T : IFormatter
-        {
-            var bytes = new byte[text.Length];
-            int i = 0;
-            foreach (var codeUnit in text)
-            {
-                bytes[i++] = codeUnit.Value;
-            }
-
-            var avaliable = formatter.FreeBuffer.Length;
-            while (avaliable < bytes.Length)
-            {
-                avaliable = formatter.FreeBuffer.Length;
-                formatter.ResizeBuffer();
-            }
-
-            formatter.FreeBuffer.Set(bytes);
-            formatter.CommitBytes(bytes.Length);
-        }
-
-        public static void FormatWithReserve<T>(
-            this T formatter, 
-            Utf8String text, 
-            int reserve, 
-            out Span<byte> bufferWithReserve) where T : IFormatter
-        {
-            var bytes = new byte[text.Length];
-            var i = 0;
-            foreach (var codeUnit in text)
-            {
-                bytes[i++] = codeUnit.Value;
-            }
-
-            var avaliable = formatter.FreeBuffer.Length;
-            while (avaliable < bytes.Length + reserve)
-            {
-                avaliable = formatter.FreeBuffer.Length;
-                formatter.ResizeBuffer();
-            }
-
-            formatter.FreeBuffer.Set(bytes);
-
-            bufferWithReserve = formatter.FreeBuffer.Slice(0, bytes.Length + reserve);
-            formatter.CommitBytes(bytes.Length + reserve);
-            bufferWithReserve.SetFromRestOfSpanToEmpty(bytes.Length);            
-        }
+        protected abstract void WriteResponse(BufferFormatter formatter, HttpRequest request);
     }
 }

@@ -28,7 +28,7 @@ namespace System.Text.Formatting
                 if (precision > Parsed.MaxPrecision)
                 {
                     // TODO: this is a contract violation
-                    throw new Exception(SR.PrecisionValueOutOfRange);
+                    throw new Exception(Properties.Resources.PrecisionValueOutOfRange);
                 }
             }
 
@@ -51,13 +51,13 @@ namespace System.Text.Formatting
 
                 if (!InvariantParser.TryParse(span, out precision))
                 {
-                    throw new NotImplementedException(SR.UnableToParsePrecision);
+                    throw new NotImplementedException(Properties.Resources.UnableToParsePrecision);
                 }
 
                 if (precision > Parsed.MaxPrecision)
                 {
                     // TODO: this is a contract violation
-                    throw new Exception(SR.PrecisionValueOutOfRange);
+                    throw new Exception(Properties.Resources.PrecisionValueOutOfRange);
                 }
             }
 

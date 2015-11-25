@@ -69,7 +69,7 @@ namespace System.Threading.Tasks.Channels
                     else if (typeof(T) == typeof(uint)) _destination.Write((uint)(object)item);
                     else if (typeof(T) == typeof(ulong)) _destination.Write((ulong)(object)item);
                     else if (typeof(T) == typeof(ushort)) _destination.Write((ushort)(object)item);
-                    else throw new InvalidOperationException(SR.InvalidOperationException_TypeNotSerializable);
+                    else throw new InvalidOperationException(Properties.Resources.InvalidOperationException_TypeNotSerializable);
                 }
 
                 // And always return true.  We have no mechanism on Stream for attempting to write
@@ -254,7 +254,7 @@ namespace System.Threading.Tasks.Channels
                         else if (typeof(T) == typeof(uint)) item = (T)(object)reader.ReadUInt32();
                         else if (typeof(T) == typeof(ulong)) item = (T)(object)reader.ReadUInt64();
                         else if (typeof(T) == typeof(ushort)) item = (T)(object)reader.ReadUInt16();
-                        else throw new InvalidOperationException(SR.InvalidOperationException_TypeNotSerializable);
+                        else throw new InvalidOperationException(Properties.Resources.InvalidOperationException_TypeNotSerializable);
                         return new KeyValuePair<bool, T>(true, item);
                     }
                     catch (EndOfStreamException)
