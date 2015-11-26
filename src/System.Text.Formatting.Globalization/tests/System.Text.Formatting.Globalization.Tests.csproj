@@ -26,6 +26,9 @@
     <ProjectReference Include="..\..\System.Text.Formatting\src\System.Text.Formatting.csproj">
       <Name>System.Text.Formatting</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\System.Text.Utf8\src\System.Text.Utf8.csproj">
+      <Name>System.Text.Formatting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
       <Name>System.Buffers</Name>
     </ProjectReference>

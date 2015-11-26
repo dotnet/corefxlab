@@ -21,12 +21,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="System\Contract.cs" />
+    <Compile Include="System\MemoryUtils.cs" />
     <Compile Include="System\PrimitiveAttribute.cs" />
     <Compile Include="System\PtrUtils.cs" />
     <Compile Include="System\Span.cs" />
     <Compile Include="System\SpanEnumerators.cs" />
     <Compile Include="System\SpanExtensions.cs" />
+    <Compile Include="System\SpanEqualsExtensions.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SpanExtensionsTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Include="System\SpanHelpers.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="System\SpanExtensionsTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SpanEqualsExtensions.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
   <PropertyGroup>

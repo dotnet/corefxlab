@@ -40,10 +40,6 @@ namespace System.Slices.Tests
             Assert.Equal(array.Length, span.Length);
 
             Assert.NotSame(array, span.CreateArray());
-            Assert.True(span.ReferenceEquals(span));
-            Assert.True(span.Equals(span));
-            Assert.True(span.Equals((object)span));
-            Assert.Equal(span.GetHashCode(), span.GetHashCode());
             Assert.False(span.Equals(array));
 
             Span<byte>.Enumerator it = span.GetEnumerator();
@@ -78,149 +74,6 @@ namespace System.Slices.Tests
                 Assert.Equal(array[i], it.Current);
             }
             Assert.False(it.MoveNext());
-
-            {
-                Span<byte> sameSpan = new Span<byte>(array);
-                Assert.Equal(span.GetHashCode(), sameSpan.GetHashCode());
-                Assert.True(span.ReferenceEquals(sameSpan));
-                Assert.True(span.Equals(sameSpan));
-                Assert.True(span.Equals((object)sameSpan));
-            }
-
-            {
-                Span<byte> structCopy = span;
-                Assert.Equal(span.GetHashCode(), structCopy.GetHashCode());
-                Assert.True(span.ReferenceEquals(structCopy));
-                Assert.True(span.Equals(structCopy));
-                Assert.True(span.Equals((object)structCopy));
-            }
-
-            {
-                byte[] differentArray = new byte[array.Length * 2];
-                for (int i = 0; i < array.Length; i++)
-                {
-                    differentArray[i] = unchecked((byte)(array[i] + 1));
-                    differentArray[array.Length + i] = array[i];
-                }
-                {
-                    Span<byte> equivalentSpan = new Span<byte>(differentArray, array.Length, array.Length);
-                    Assert.Equal(span.GetHashCode(), equivalentSpan.GetHashCode());
-                    Assert.False(span.ReferenceEquals(equivalentSpan));
-                    Assert.True(span.Equals(equivalentSpan));
-                    Assert.True(span.Equals((object)equivalentSpan));
-
-                    if (equivalentSpan.Length > 0)
-                    {
-                        Span<byte> similarSpan = equivalentSpan.Slice(0, equivalentSpan.Length - 1);
-                        Assert.False(span.ReferenceEquals(similarSpan));
-                        Assert.False(span.Equals(similarSpan));
-                        Assert.False(span.Equals((object)similarSpan));
-                    }
-                }
-
-                {
-                    Span<byte> differentSpan = new Span<byte>(differentArray, 0, array.Length);
-                    Assert.False(span.ReferenceEquals(differentSpan));
-                    // This can be simplified although it is harder to understand after simplification
-                    if (array.Length == 0)
-                    {
-                        Assert.True(span.Equals(differentSpan));
-                        Assert.True(span.Equals((object)differentSpan));
-                    }
-                    else
-                    {
-                        Assert.False(span.Equals(differentSpan));
-                        Assert.False(span.Equals((object)differentSpan));
-                    }
-                }
-            }
-        }
-
-        [Fact]
-        public void SpanOfByteEqualOtherSpanOfByte()
-        {
-            byte[] bytes1 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            //                              ^span1^
-            //                                 ^span4^
-
-            byte[] bytes2 = new byte[] { 0, 1, 2, 3, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
-            //                              ^span2^     ^span3^
-            //                                 ^span5^
-
-            Span<byte> spanOfAllBytes2 = new Span<byte>(bytes2);
-
-            Span<byte> span1 = new Span<byte>(bytes1, 1, 3);
-            Span<byte> span2 = new Span<byte>(bytes2, 1, 3);
-            Span<byte> span3 = spanOfAllBytes2.Slice(4).Slice(1, 3);
-            Span<byte> span4 = new Span<byte>(bytes1, 2, 3);
-            Span<byte> span5 = new Span<byte>(bytes2, 2, 3);
-            
-            Assert.Equal(span1, span1);
-            Assert.Equal(span1, span2);
-            Assert.Equal(span1, span3);
-            Assert.NotEqual(span1, span4);
-            Assert.NotEqual(span1, span5);
-            
-            Assert.Equal(span2, span1);
-            Assert.Equal(span2, span2);
-            Assert.Equal(span2, span3);
-            Assert.NotEqual(span2, span4);
-            Assert.NotEqual(span2, span5);
-
-            Assert.Equal(span3, span1);
-            Assert.Equal(span3, span2);
-            Assert.Equal(span3, span3);
-            Assert.NotEqual(span3, span4);
-            Assert.NotEqual(span3, span5);
-
-            Assert.NotEqual(span4, span1);
-            Assert.NotEqual(span4, span2);
-            Assert.NotEqual(span4, span3);
-            Assert.Equal(span4, span4);
-            Assert.NotEqual(span4, span5);
-
-            Assert.NotEqual(span5, span1);
-            Assert.NotEqual(span5, span2);
-            Assert.NotEqual(span5, span3);
-            Assert.NotEqual(span5, span4);
-            Assert.Equal(span5, span5);
-        }
-
-        [Fact]
-        public void DefaultSpanNullSpanEmptySpanEqualsTo()
-        {
-            byte[] bytes1 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            //                              ^span1^
-
-            Span<byte> span1 = new Span<byte>(bytes1, 1, 3);
-
-            Span<byte> defaultSpan = default(Span<byte>);
-            Assert.NotEqual(defaultSpan, span1);
-
-            Assert.NotEqual(span1, defaultSpan);
-
-            byte[] emptyArray = new byte[0];
-            Span<byte> emptySpan = new Span<byte>(emptyArray);
-            Assert.Equal(emptySpan, emptySpan);
-            Assert.NotEqual(emptySpan, span1);
-            Assert.NotEqual(span1, emptySpan);
-
-            Assert.Equal(emptySpan, defaultSpan);
-            Assert.Equal(defaultSpan, emptySpan);
-
-            // TODO: Not so sure if this should be forbidden
-            //byte[] nullBytes = null;
-            //Span<byte> nullSpan = new Span<byte>(nullBytes, 0);
-            //Assert.Equal(nullSpan, nullSpan);
-
-            //Assert.Equal(nullSpan, defaultSpan);
-            //Assert.Equal(nullSpan, emptySpan);
-            //Assert.Equal(defaultSpan, nullSpan);
-            //Assert.Equal(emptySpan, nullSpan);
-
-            //Assert.NotEqual(nullSpan, span1);
-
-            //Assert.NotEqual(span1, nullSpan);
         }
 
         [Theory]
@@ -317,7 +170,7 @@ namespace System.Slices.Tests
 
                 Span<byte> spanExpected = new Span<byte>(expected);
                 Span<byte> spanBAll = new Span<byte>(b);
-                Assert.Equal(spanExpected, spanBAll);
+                Assert.True(spanExpected.SequenceEqual(spanBAll));
             }
             else
             {

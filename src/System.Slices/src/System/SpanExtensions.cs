@@ -1,12 +1,14 @@
-/// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Runtime.CompilerServices;
 
 namespace System
 {
     /// <summary>
     /// A collection of convenient span helpers, exposed as extension methods.
     /// </summary>
-    public static class SpanExtensions
+    public static partial class SpanExtensions
     {
         // span creation helpers:
 
@@ -129,6 +131,7 @@ namespace System
         /// safety.  This is checked statically by a Roslyn analyzer.
         /// </summary>
         /// <param name="slice">The source slice, of type T.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<U> Cast<[Primitive]T, [Primitive]U>(this Span<T> slice)
             where T : struct
             where U : struct
@@ -160,6 +163,62 @@ namespace System
             Contract.Requires(slice.Length >= PtrUtils.SizeOf<T>());
             var cast = slice.Cast<byte, T>();
             cast[0] = value;
+        }
+
+        /// <summary>
+        /// Determines whether two spans are equal by comparing the elements by using generic Equals method
+        /// </summary>
+        /// <param name="first">A span of type T to compare to second.</param>
+        /// <param name="second">A span of type T to compare to first.</param>
+        public static bool SequenceEqual<T>(this Span<T> first, Span<T> second)
+            where T : struct, IEquatable<T>
+        {
+            if (first.Length != second.Length)
+            {
+                return false;
+            }
+
+            // we can not call memcmp here because structures might have nontrivial Equals implementation
+            for (int i = 0; i < first.Length; i++)
+            {
+                if (!first.GetItemWithoutBoundariesCheck(i).Equals(second.GetItemWithoutBoundariesCheck(i)))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether two spans are structurally (byte-wise) equal by comparing the elements by using memcmp
+        /// </summary>
+        /// <param name="first">A span, of type T to compare to second.</param>
+        /// <param name="second">A span, of type U to compare to first.</param>
+        public static bool BlockEquals<[Primitive]T, [Primitive]U>(this Span<T> first, Span<U> second)
+            where T : struct
+            where U : struct
+        {
+            var bytesCount = first.Length * PtrUtils.SizeOf<T>();
+            if (bytesCount != second.Length * PtrUtils.SizeOf<U>())
+            {
+                return false;
+            }
+
+            // perf: it is cheaper to compare 'n' long elements than 'n*8' bytes (in a loop)
+            if ((bytesCount & 0x00000007) == 0) // fast % sizeof(long)
+            {
+                return SequenceEqual(Cast<T, long>(first), Cast<U, long>(second));
+            }
+            if ((bytesCount & 0x00000003) == 0) // fast % sizeof(int)
+            {
+                return SequenceEqual(Cast<T, int>(first), Cast<U, int>(second));
+            }
+            if ((bytesCount & 0x00000001) == 0) // fast % sizeof(short)
+            {
+                return SequenceEqual(Cast<T, short>(first), Cast<U, short>(second));
+            }
+
+            return SequenceEqual(Cast<T, byte>(first), Cast<U, byte>(second));
         }
 
         // Helper methods similar to System.ArrayExtension:
