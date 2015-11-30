@@ -53,28 +53,37 @@ namespace System.CommandLine
             return DefineOption(name, defaultValue, s_int32Parser);
         }
 
-        public Argument<T> DefineOption<T>(string name, ref T value, Func<string, T> valueConverter, string help)
+        public Argument<T> DefineOption<T>(
+            string name, 
+            ref T value, 
+            Func<string, T> valueConverter, 
+            string help, 
+            Func<T, bool> assignConditional = null)
         {
             var option = DefineOption(name, value, valueConverter);
             option.Help = help;
 
-            value = option.Value;
+            if (assignConditional == null || assignConditional(option.Value))
+            {
+                value = option.Value;
+            }
+            
             return option;
         }
 
-        public Argument<string> DefineOption(string name, ref string value, string help)
+        public Argument<string> DefineOption(string name, ref string value, string help, Func<string, bool> assignConditional = null)
         {
-            return DefineOption(name, ref value, s_stringParser, help);
+            return DefineOption(name, ref value, s_stringParser, help, assignConditional);
         }
 
-        public Argument<bool> DefineOption(string name, ref bool value, string help)
+        public Argument<bool> DefineOption(string name, ref bool value, string help, Func<bool, bool> assignConditional = null)
         {
-            return DefineOption(name, ref value, s_booleanParser, help);
+            return DefineOption(name, ref value, s_booleanParser, help, assignConditional);
         }
 
-        public Argument<int> DefineOption(string name, ref int value, string help)
+        public Argument<int> DefineOption(string name, ref int value, string help, Func<int, bool> assignConditional = null)
         {
-            return DefineOption(name, ref value, s_int32Parser, help);
+            return DefineOption(name, ref value, s_int32Parser, help, assignConditional);
         }
 
         // Option lists

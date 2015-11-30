@@ -413,6 +413,171 @@ namespace System.CommandLine.Tests
             Assert.Equal("value 'abc' isn't valid for -o: invalid format", ex.Message);
         }
 
+        [Fact]
+        public void Option_Value_Gets_Assigned_When_No_Conditional_Is_Passed()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, s => s, string.Empty, null);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Option_Value_Does_Not_Get_Assigned_When_The_Conditional_Returns_False()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, s => s, string.Empty, s => false);
+            });
+
+            Assert.Equal("option A", optionAValue);
+        }
+
+        [Fact]
+        public void Option_Value_Gets_Assigned_When_The_Conditional_Returns_True()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, s => s, string.Empty, s => true);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void String_Option_Value_Gets_Assigned_When_No_Conditional_Is_Passed()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, null);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void String_Option_Value_Does_Not_Get_Assigned_When_The_Conditional_Returns_False()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => false);
+            });
+
+            Assert.Equal("option A", optionAValue);
+        }
+
+        [Fact]
+        public void String_Option_Value_Gets_Assigned_When_The_Conditional_Returns_True()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => true);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Int_Option_Value_Gets_Assigned_When_No_Conditional_Is_Passed()
+        {
+            const int valueA = 1;
+            var optionAValue = 99;
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, null);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Int_Option_Value_Does_Not_Get_Assigned_When_The_Conditional_Returns_False()
+        {
+            const int valueA = 1;
+            var optionAValue = 99;
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => false);
+            });
+
+            Assert.Equal(99, optionAValue);
+        }
+
+        [Fact]
+        public void Int_Option_Value_Gets_Assigned_When_The_Conditional_Returns_True()
+        {
+            const int valueA = 1;
+            var optionAValue = 99;
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => true);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Bool_Option_Value_Gets_Assigned_When_No_Conditional_Is_Passed()
+        {
+            var optionAValue = false;
+
+            Parse("--option-a", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, null);
+            });
+
+            Assert.True(optionAValue);
+        }
+
+        [Fact]
+        public void Bool_Option_Value_Does_Not_Get_Assigned_When_The_Conditional_Returns_False()
+        {
+            var optionAValue = false;
+
+            Parse("--option-a", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => false);
+            });
+
+            Assert.False(optionAValue);
+        }
+
+        [Fact]
+        public void Bool_Option_Value_Gets_Assigned_When_The_Conditional_Returns_True()
+        {
+            var optionAValue = false;
+
+            Parse("--option-a", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => true);
+            });
+
+            Assert.True(optionAValue);
+        }
+
         [Theory]
         [InlineData("-a")]
         [InlineData("-a:")]
