@@ -291,10 +291,10 @@ namespace System
             unchecked
             {
                 var hashCode = Offset.GetHashCode();
-                hashCode = hashCode * 33 + Length;
+                hashCode = hashCode * 31 + Length;
                 if (Object != null)
                 {
-                    hashCode = hashCode * 33 + Object.GetHashCode();
+                    hashCode = hashCode * 31 + Object.GetHashCode();
                 }
                 return hashCode;
             }
