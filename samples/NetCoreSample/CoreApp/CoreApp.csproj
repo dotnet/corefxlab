@@ -44,7 +44,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <BaseNuGetRuntimeIdentifier>ubuntu.14.04</BaseNuGetRuntimeIdentifier>
-    <HostExtension></HostExtension>
+    <HostExtension>
+    </HostExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ubuntu_Release|x64'">
     <OutputPath>bin\x64.Release.ubuntu</OutputPath>
@@ -53,7 +54,8 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <BaseNuGetRuntimeIdentifier>ubuntu.14.04</BaseNuGetRuntimeIdentifier>
-    <HostExtension></HostExtension>
+    <HostExtension>
+    </HostExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Osx_Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -62,7 +64,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <BaseNuGetRuntimeIdentifier>osx.10.10</BaseNuGetRuntimeIdentifier>
-    <HostExtension></HostExtension>
+    <HostExtension>
+    </HostExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Osx_Release|x64'">
     <OutputPath>bin\x64.Release.osx</OutputPath>
@@ -71,7 +74,8 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <BaseNuGetRuntimeIdentifier>osx.10.10</BaseNuGetRuntimeIdentifier>
-    <HostExtension></HostExtension>
+    <HostExtension>
+    </HostExtension>
   </PropertyGroup>
   <ItemGroup>
     <None Include="project.json" />
