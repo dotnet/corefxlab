@@ -37,6 +37,15 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
+        public async Task MultipleReaders_ThrowsInvalid()
+        {
+            IChannel<int> c = CreateChannel();
+            ValueTask<int> t1 = c.ReadAsync();
+            ValueTask<int> t2 = c.ReadAsync();
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await t2);
+        }
+
+        [Fact]
         public void Stress_TryWrite_TryRead()
         {
             const int NumItems = 3000000;
