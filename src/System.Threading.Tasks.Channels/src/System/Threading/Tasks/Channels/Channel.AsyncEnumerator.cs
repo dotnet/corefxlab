@@ -27,7 +27,7 @@ namespace System.Threading.Tasks.Channels
             {
                 ValueTask<T> result = _channel.ReadAsync(_cancellationToken);
 
-                if (result.IsRanToCompletion)
+                if (result.IsCompletedSuccessfully)
                 {
                     _current = result.Result;
                     return s_trueTask;

@@ -22,7 +22,6 @@
     <Compile Include="SerializationChannelTests.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="UnboundedChannelTests.cs" />
-    <Compile Include="ValueTaskTests.cs" />
     <Compile Include="UnbufferedChannelTests.cs" />
     <Compile Include="EnumerableChannelTests.cs" />
     <Compile Include="BoundedChannelTests.cs" />
