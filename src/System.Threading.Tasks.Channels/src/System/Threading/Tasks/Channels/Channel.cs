@@ -137,12 +137,12 @@ namespace System.Threading.Tasks.Channels
         /// <remarks>
         /// Getting the awaiter will initiate a read operation on the channel.
         /// </remarks>
-        public static ValueTask<T>.ValueTaskAwaiter GetAwaiter<T>(this IReadableChannel<T> channel)
+        public static ValueTaskAwaiter<T> GetAwaiter<T>(this IReadableChannel<T> channel)
         {
             if (channel == null)
                 throw new ArgumentNullException("channel");
 
-            return new ValueTask<T>.ValueTaskAwaiter(channel.ReadAsync(), continueOnCapturedContext: true);
+            return channel.ReadAsync().GetAwaiter();
         }
 
         /// <summary>Gets an async enumerator of the data in the channel.</summary>

@@ -39,7 +39,7 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             IChannel<int> c = Channel.CreateUnbuffered<int>();
             ValueTask<int> r = c.ReadAsync();
-            Assert.False(r.IsRanToCompletion);
+            Assert.False(r.IsCompletedSuccessfully);
             Assert.False(r.AsTask().IsCompleted);
             Assert.True(c.TryWrite(42));
             Assert.Equal(42, r.Result);
@@ -92,7 +92,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.False(w.IsCompleted);
 
             ValueTask<int> r = c.ReadAsync();
-            Assert.True(r.IsRanToCompletion);
+            Assert.True(r.IsCompletedSuccessfully);
 
             cts.Cancel();
             await w; // no throw
@@ -105,7 +105,7 @@ namespace System.Threading.Tasks.Channels.Tests
             var cts = new CancellationTokenSource();
 
             ValueTask<int> r = c.ReadAsync(cts.Token);
-            Assert.False(r.IsRanToCompletion);
+            Assert.False(r.IsCompletedSuccessfully);
 
             Task w = c.WriteAsync(42);
             Assert.True(w.IsCompleted);
