@@ -176,16 +176,10 @@ namespace System.Threading.Tasks.Channels
 
             public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return Task.FromCanceled<bool>(cancellationToken);
-                }
-
-                // Other than for cancellation, writing can always be done if we haven't completed, as we're unbounded.
-                lock (SyncObj)
-                {
-                    return _doneWriting == null ? s_trueTask : s_falseTask;
-                }
+                return
+                    cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
+                    _doneWriting == null ? s_trueTask :
+                    s_falseTask;
             }
 
             public Task WriteAsync(T item, CancellationToken cancellationToken)
