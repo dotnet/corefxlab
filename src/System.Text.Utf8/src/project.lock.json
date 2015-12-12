@@ -12,7 +12,7 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23608": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -96,7 +96,7 @@
           "ref/dotnet/System.Runtime.Extensions.dll": {}
         }
       },
-      "System.Slices/0.1.0-d111915-1": {
+      "System.Slices/0.1.0-d121015-1": {
         "type": "package",
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
@@ -137,7 +137,7 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23608": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -221,7 +221,7 @@
           "ref/dotnet/System.Runtime.Extensions.dll": {}
         }
       },
-      "System.Slices/0.1.0-d111915-1": {
+      "System.Slices/0.1.0-d121015-1": {
         "type": "package",
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
@@ -262,7 +262,7 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23608": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -346,7 +346,7 @@
           "ref/dotnet/System.Runtime.Extensions.dll": {}
         }
       },
-      "System.Slices/0.1.0-d111915-1": {
+      "System.Slices/0.1.0-d121015-1": {
         "type": "package",
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
@@ -427,17 +427,21 @@
         "System.Diagnostics.Debug.nuspec"
       ]
     },
-    "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+    "System.Diagnostics.Tools/4.0.1-rc2-23608": {
       "type": "package",
       "serviceable": true,
-      "sha512": "Z7L/VIQCtYt4P/Evv4wmp44D+kyxlcNK8QJByfhBwICCqUZY2CMJf5KXhDoatoHos3ZACOG6a9CywZK99qKVcA==",
+      "sha512": "0/oE2bO9OcxEUQbH6BFvY+YcHYOfozhWvoVlRFmyIT1YIJAh9ioOE/XGCIoCARPdfW3Bq5Z03F6w6sCnZ6JuNQ==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.Tools.dll",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
         "lib/net45/_._",
         "lib/netcore50/System.Diagnostics.Tools.dll",
         "lib/win8/_._",
         "lib/wp80/_._",
         "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
         "ref/dotnet5.1/de/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/es/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/fr/System.Diagnostics.Tools.xml",
@@ -449,6 +453,8 @@
         "ref/dotnet5.1/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/zh-hans/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/zh-hant/System.Diagnostics.Tools.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net45/_._",
         "ref/netcore50/de/System.Diagnostics.Tools.xml",
         "ref/netcore50/es/System.Diagnostics.Tools.xml",
@@ -464,9 +470,11 @@
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.dll",
-        "System.Diagnostics.Tools.4.0.1-rc2-23519.nupkg",
-        "System.Diagnostics.Tools.4.0.1-rc2-23519.nupkg.sha512",
+        "System.Diagnostics.Tools.4.0.1-rc2-23608.nupkg",
+        "System.Diagnostics.Tools.4.0.1-rc2-23608.nupkg.sha512",
         "System.Diagnostics.Tools.nuspec"
       ]
     },
@@ -778,14 +786,14 @@
         "System.Runtime.Extensions.nuspec"
       ]
     },
-    "System.Slices/0.1.0-d111915-1": {
+    "System.Slices/0.1.0-d121015-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "Re5jy3jlp1vQbdXgEogU3tETz8dosZYcSK4wXmIZhFKcyGLdm2SL0qdnxhWR8A3uZnhzYZ0ofOAMcYgNuj4ZBA==",
+      "sha512": "2kVpfJuus3PFdvZF9HTyAY3vBw1hAm6WzHo4ApuLiI0GkyySJJwPrhxsnUXqCuEk6GAlIDDj9UJ29OP7jw0MZg==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
-        "System.Slices.0.1.0-d111915-1.nupkg",
-        "System.Slices.0.1.0-d111915-1.nupkg.sha512",
+        "System.Slices.0.1.0-d121015-1.nupkg",
+        "System.Slices.0.1.0-d121015-1.nupkg.sha512",
         "System.Slices.nuspec"
       ]
     },
