@@ -13,6 +13,23 @@
     <releaseNotes>Initial package</releaseNotes>
     <copyright> Microsoft Corporation.  All rights reserved.</copyright>
     <tags>Command line parsing support</tags>
+    <dependencies>
+      <group targetFramework="dotnet">
+        <dependency id="System.Collections" version="4.0.10" />
+        <dependency id="System.Console" version="4.0.0-beta-23516" />
+        <dependency id="System.Diagnostics.Debug" version="4.0.10" />
+        <dependency id="System.Diagnostics.Tools" version="4.0.1-beta-23516" />
+        <dependency id="System.IO" version="4.0.10" />
+        <dependency id="System.IO.FileSystem" version="4.0.0" />
+        <dependency id="System.Linq" version="4.0.0" />
+        <dependency id="System.Reflection.Primitives" version="4.0.0" />
+        <dependency id="System.Resources.ResourceManager" version="4.0.0" />
+        <dependency id="System.Runtime" version="4.0.20" />
+        <dependency id="System.Runtime.Extensions" version="4.0.10" />
+        <dependency id="System.Runtime.InteropServices" version="4.0.20" />
+        <dependency id="System.Threading" version="4.0.10" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
     <file src="..\bin\Windows_NT.AnyCPU.Release\System.CommandLine\System.CommandLine.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
