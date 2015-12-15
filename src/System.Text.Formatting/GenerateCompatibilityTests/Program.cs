@@ -55,16 +55,16 @@ class Program
     {
         GenerateCheck(writer, typeName);
 
-        //GenerateTest(writer, type, 'C', maxPrecision);
+        //GenerateTest(writer, typeName, 'C', maxPrecision);
         GenerateTest(writer, typeName, 'D', maxPrecision);
         GenerateTest(writer, typeName, 'd', maxPrecision);
-        //GenerateTest(writer, type, 'E', maxPrecision);
-        //GenerateTest(writer, type, 'F', maxPrecision);
+        //GenerateTest(writer, typeName, 'E', maxPrecision);
+        //GenerateTest(writer, typeName, 'F', maxPrecision);
         GenerateTest(writer, typeName, 'G');
-        //GenerateTest(writer, type, 'g', maxPrecision);
-        //GenerateTest(writer, type, 'N', maxPrecision); // TODO: this is implemented, but has bugs
-        //GenerateTest(writer, type, 'P', maxPrecision);
-        //GenerateTest(writer, type, 'R', maxPrecision);
+        //GenerateTest(writer, typeName, 'g', maxPrecision);
+        //GenerateTest(writer, typeName, 'N', maxPrecision); // TODO: this is implemented, but has bugs
+        //GenerateTest(writer, typeName, 'P', maxPrecision);
+        //GenerateTest(writer, typeName, 'R', maxPrecision);
         GenerateTest(writer, typeName, 'X', maxPrecision);
         GenerateTest(writer, typeName, 'x', maxPrecision);
     }
@@ -75,7 +75,7 @@ class Program
         writer.WriteLine("public void {0}({1} value, string format)", helperName, typeName);
         writer.WriteLine("{");
         writer.WriteLine("    var parsed = Format.Parse(format);");
-        writer.WriteLine("    formatter.Clear();");
+        writer.WriteLine("    var formatter = new StringFormatter(pool);");
         writer.WriteLine("    formatter.Append(value, parsed);");
         writer.WriteLine("    var result = formatter.ToString();");
         writer.WriteLine("    var clrResult = value.ToString(format, CultureInfo.InvariantCulture);");
