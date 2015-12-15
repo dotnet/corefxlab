@@ -7,19 +7,6 @@ namespace System
 {
     static class Contract
     {
-        public static void Abandon()
-        {
-            Environment.FailFast("A program error has occurred.");
-        }
-
-        public static void Assert(bool condition)
-        {
-            if (!condition)
-            {
-                Abandon();
-            }
-        }
-
         public static void Requires(bool condition)
         {
             if (!condition)

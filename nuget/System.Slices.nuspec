@@ -13,6 +13,9 @@
     <releaseNotes>Initial package</releaseNotes>
     <copyright> Microsoft Corporation.  All rights reserved.</copyright>
     <tags>Slice, Span, Slices, Spans</tags>
+    <dependencies>
+      <dependency id="System.Runtime" version="4.0.0" />
+    </dependencies>
   </metadata>
   <files>
     <file src="..\bin\Windows_NT.AnyCPU.Release\System.Slices\System.Slices.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -157,7 +157,7 @@ namespace System.Slices.Tests
             const int arraySize = 100;
             int[] arrayAllocatedOnManagedHeap = new int[arraySize];
             int* arrayAllocatedOnStack = stackalloc int[arraySize];
-            int* arrayAllocatedOnUnmanagedHeap = (int*)Marshal.AllocHGlobal(arraySize * sizeof (int)).ToPointer();
+            int* arrayAllocatedOnUnmanagedHeap = (int*)Marshal.AllocHGlobal(arraySize * sizeof(int)).ToPointer();
 
             try
             {
