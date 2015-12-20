@@ -10,8 +10,8 @@ namespace System.Time.Tests
     {
         public TimeOfDayFormattingTests()
         {
-            CultureInfo.CurrentCulture = new CultureInfo("en-US");
-            CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
         }
 
         [Fact]
@@ -19,7 +19,7 @@ namespace System.Time.Tests
         {
             var time = new TimeOfDay(10, 49, 12, Meridiem.PM);
             var s = time.ToLongTimeString();
-            Assert.Equal("10:49:12 PM", s);
+            Assert.Equal("22:49:12", s);
         }
 
         [Fact]
@@ -27,7 +27,7 @@ namespace System.Time.Tests
         {
             var time = new TimeOfDay(22, 49);
             var s = time.ToShortTimeString();
-            Assert.Equal("10:49 PM", s);
+            Assert.Equal("22:49", s);
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace System.Time.Tests
         {
             var time = new TimeOfDay(23, 59, 59);
             var s = time.ToString("t");
-            Assert.Equal("11:59 PM", s);
+            Assert.Equal("23:59", s);
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace System.Time.Tests
         {
             var time = new TimeOfDay(23, 59, 59);
             var s = time.ToString((string) null);
-            Assert.Equal("11:59:59 PM", s);
+            Assert.Equal("23:59:59", s);
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace System.Time.Tests
         {
             var time = new TimeOfDay(23, 59, 59);
             var s = time.ToString("");
-            Assert.Equal("11:59:59 PM", s);
+            Assert.Equal("23:59:59", s);
         }
 
         [Fact]
