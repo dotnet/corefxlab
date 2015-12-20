@@ -44,9 +44,6 @@ namespace System.Buffers
             T[] buffer;
             if (size > _maxBufferSize)
             {
-#if DEBUG
-                System.Diagnostics.Debugger.Break();
-#endif
                 buffer = new T[size];
             }
             else
