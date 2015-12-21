@@ -1,13 +1,22 @@
-﻿using System;
-using System.Buffers;
-using System.Text.Formatting;
-using System.IO;
+﻿using System.Buffers;
+using System.Globalization;
 using Xunit;
 
 namespace System.Text.Formatting.Tests
 {
     public class CompositeFormattingTests
     {
+        public CompositeFormattingTests()
+        {
+            var culture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+
+            culture.DateTimeFormat.LongTimePattern = "hh:mm:ss tt";
+            culture.DateTimeFormat.ShortTimePattern = "hh:mm tt";
+
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+        }
+
         [Fact]
         public void CompositeFormattingBasics()
         {

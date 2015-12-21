@@ -12,6 +12,17 @@ namespace System.Text.Formatting.Tests
     {
         ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(2048);
 
+        public SystemTextFormattingTests()
+        {
+            var culture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+
+            culture.DateTimeFormat.LongTimePattern = "hh:mm:ss tt";
+            culture.DateTimeFormat.ShortTimePattern = "hh:mm tt";
+
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+        }
+
         private void CheckByte(byte value, string format, string expected)
         {
             var formatter = new StringFormatter(pool);
