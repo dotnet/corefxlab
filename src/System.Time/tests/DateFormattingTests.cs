@@ -10,8 +10,8 @@ namespace System.Time.Tests
     {
         public DateFormattingTests()
         {
-            CultureInfo.CurrentCulture = new CultureInfo("en-US");
-            CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
         }
 
         [Fact]
@@ -19,7 +19,7 @@ namespace System.Time.Tests
         {
             var date = new Date(2000, 12, 31);
             var s = date.ToLongDateString();
-            Assert.Equal("Sunday, December 31, 2000", s);
+            Assert.Equal("Sunday, 31 December 2000", s);
         }
 
         [Fact]
