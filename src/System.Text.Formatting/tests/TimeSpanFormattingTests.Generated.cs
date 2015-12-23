@@ -28,24 +28,24 @@ namespace System.Text.Formatting.Tests
             // format G
             CheckTimeSpan(TimeSpan.MinValue, "G");
             CheckTimeSpan(TimeSpan.MaxValue, "G");
-            CheckTimeSpan(new TimeSpan(1944698421), "G");
-            CheckTimeSpan(new TimeSpan(82938987), "G");
-            CheckTimeSpan(new TimeSpan(1978120584), "G");
-            CheckTimeSpan(new TimeSpan(503141639), "G");
-            CheckTimeSpan(new TimeSpan(586695490), "G");
-            CheckTimeSpan(new TimeSpan(-44121223), "G");
-            CheckTimeSpan(new TimeSpan(1873109777), "G");
-            CheckTimeSpan(new TimeSpan(384250645), "G");
-            CheckTimeSpan(new TimeSpan(-276980243), "G");
-            CheckTimeSpan(new TimeSpan(-545130237), "G");
-            CheckTimeSpan(new TimeSpan(192234178), "G");
-            CheckTimeSpan(new TimeSpan(-642542568), "G");
-            CheckTimeSpan(new TimeSpan(-1574304687), "G");
-            CheckTimeSpan(new TimeSpan(238867855), "G");
-            CheckTimeSpan(new TimeSpan(-9707235), "G");
-            CheckTimeSpan(new TimeSpan(-752141784), "G");
-            CheckTimeSpan(new TimeSpan(-1628014271), "G");
-            CheckTimeSpan(new TimeSpan(983164301), "G");
+            CheckTimeSpan(new TimeSpan(-597541364), "G");
+            CheckTimeSpan(new TimeSpan(1034657452), "G");
+            CheckTimeSpan(new TimeSpan(-2128880930), "G");
+            CheckTimeSpan(new TimeSpan(-1249396686), "G");
+            CheckTimeSpan(new TimeSpan(568757918), "G");
+            CheckTimeSpan(new TimeSpan(242760937), "G");
+            CheckTimeSpan(new TimeSpan(1039627054), "G");
+            CheckTimeSpan(new TimeSpan(-539625891), "G");
+            CheckTimeSpan(new TimeSpan(-2081988522), "G");
+            CheckTimeSpan(new TimeSpan(1439405730), "G");
+            CheckTimeSpan(new TimeSpan(-1988877353), "G");
+            CheckTimeSpan(new TimeSpan(1649323406), "G");
+            CheckTimeSpan(new TimeSpan(1251608416), "G");
+            CheckTimeSpan(new TimeSpan(910390888), "G");
+            CheckTimeSpan(new TimeSpan(-578131831), "G");
+            CheckTimeSpan(new TimeSpan(1091964721), "G");
+            CheckTimeSpan(new TimeSpan(-697222132), "G");
+            CheckTimeSpan(new TimeSpan(569627714), "G");
         }
         
         [Fact]
@@ -55,24 +55,24 @@ namespace System.Text.Formatting.Tests
             // format c
             CheckTimeSpan(TimeSpan.MinValue, "c");
             CheckTimeSpan(TimeSpan.MaxValue, "c");
-            CheckTimeSpan(new TimeSpan(2030513564), "c");
-            CheckTimeSpan(new TimeSpan(-1880026379), "c");
-            CheckTimeSpan(new TimeSpan(-763245925), "c");
-            CheckTimeSpan(new TimeSpan(559460645), "c");
-            CheckTimeSpan(new TimeSpan(314172980), "c");
-            CheckTimeSpan(new TimeSpan(-1944932857), "c");
-            CheckTimeSpan(new TimeSpan(1057841790), "c");
-            CheckTimeSpan(new TimeSpan(-59716933), "c");
-            CheckTimeSpan(new TimeSpan(-771325288), "c");
-            CheckTimeSpan(new TimeSpan(1692478753), "c");
-            CheckTimeSpan(new TimeSpan(1285702982), "c");
-            CheckTimeSpan(new TimeSpan(263643141), "c");
-            CheckTimeSpan(new TimeSpan(-199121113), "c");
-            CheckTimeSpan(new TimeSpan(-1769501624), "c");
-            CheckTimeSpan(new TimeSpan(-812621779), "c");
-            CheckTimeSpan(new TimeSpan(-625188670), "c");
-            CheckTimeSpan(new TimeSpan(-1829558478), "c");
-            CheckTimeSpan(new TimeSpan(1744216764), "c");
+            CheckTimeSpan(new TimeSpan(-2015815770), "c");
+            CheckTimeSpan(new TimeSpan(-1397727426), "c");
+            CheckTimeSpan(new TimeSpan(1720336262), "c");
+            CheckTimeSpan(new TimeSpan(-1188575091), "c");
+            CheckTimeSpan(new TimeSpan(523061914), "c");
+            CheckTimeSpan(new TimeSpan(-895692313), "c");
+            CheckTimeSpan(new TimeSpan(-349859009), "c");
+            CheckTimeSpan(new TimeSpan(2137082378), "c");
+            CheckTimeSpan(new TimeSpan(-788622211), "c");
+            CheckTimeSpan(new TimeSpan(1800438645), "c");
+            CheckTimeSpan(new TimeSpan(-1259968094), "c");
+            CheckTimeSpan(new TimeSpan(764542939), "c");
+            CheckTimeSpan(new TimeSpan(78630430), "c");
+            CheckTimeSpan(new TimeSpan(684818620), "c");
+            CheckTimeSpan(new TimeSpan(-1759609814), "c");
+            CheckTimeSpan(new TimeSpan(1137120042), "c");
+            CheckTimeSpan(new TimeSpan(1175992869), "c");
+            CheckTimeSpan(new TimeSpan(-18815684), "c");
         }
         
     }

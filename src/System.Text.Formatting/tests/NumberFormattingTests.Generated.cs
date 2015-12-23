@@ -187,6 +187,81 @@ namespace System.Text.Formatting.Tests
         }
         
         [Fact]
+        public void ByteFormatN()
+        {
+            
+            // format N
+            CheckByte(Byte.MinValue, "N");
+            CheckByte(Byte.MaxValue, "N");
+            CheckByte(0, "N");
+            CheckByte(37, "N");
+            CheckByte(234, "N");
+            CheckByte(142, "N");
+            CheckByte(60, "N");
+            CheckByte(69, "N");
+            
+            // format N0
+            CheckByte(Byte.MinValue, "N0");
+            CheckByte(Byte.MaxValue, "N0");
+            CheckByte(0, "N0");
+            CheckByte(38, "N0");
+            CheckByte(146, "N0");
+            CheckByte(116, "N0");
+            CheckByte(94, "N0");
+            CheckByte(217, "N0");
+            
+            // format N1
+            CheckByte(Byte.MinValue, "N1");
+            CheckByte(Byte.MaxValue, "N1");
+            CheckByte(0, "N1");
+            CheckByte(241, "N1");
+            CheckByte(123, "N1");
+            CheckByte(52, "N1");
+            CheckByte(161, "N1");
+            CheckByte(217, "N1");
+            
+            // format N2
+            CheckByte(Byte.MinValue, "N2");
+            CheckByte(Byte.MaxValue, "N2");
+            CheckByte(0, "N2");
+            CheckByte(219, "N2");
+            CheckByte(0, "N2");
+            CheckByte(149, "N2");
+            CheckByte(156, "N2");
+            CheckByte(0, "N2");
+            
+            // format N3
+            CheckByte(Byte.MinValue, "N3");
+            CheckByte(Byte.MaxValue, "N3");
+            CheckByte(0, "N3");
+            CheckByte(136, "N3");
+            CheckByte(44, "N3");
+            CheckByte(3, "N3");
+            CheckByte(198, "N3");
+            CheckByte(250, "N3");
+            
+            // format N4
+            CheckByte(Byte.MinValue, "N4");
+            CheckByte(Byte.MaxValue, "N4");
+            CheckByte(0, "N4");
+            CheckByte(171, "N4");
+            CheckByte(136, "N4");
+            CheckByte(56, "N4");
+            CheckByte(251, "N4");
+            CheckByte(55, "N4");
+            
+            // format N5
+            CheckByte(Byte.MinValue, "N5");
+            CheckByte(Byte.MaxValue, "N5");
+            CheckByte(0, "N5");
+            CheckByte(63, "N5");
+            CheckByte(4, "N5");
+            CheckByte(99, "N5");
+            CheckByte(228, "N5");
+            CheckByte(70, "N5");
+        }
+        
+        [Fact]
         public void ByteFormatX()
         {
             
@@ -194,71 +269,71 @@ namespace System.Text.Formatting.Tests
             CheckByte(Byte.MinValue, "X");
             CheckByte(Byte.MaxValue, "X");
             CheckByte(0, "X");
-            CheckByte(37, "X");
-            CheckByte(234, "X");
-            CheckByte(142, "X");
-            CheckByte(60, "X");
-            CheckByte(69, "X");
+            CheckByte(12, "X");
+            CheckByte(173, "X");
+            CheckByte(36, "X");
+            CheckByte(6, "X");
+            CheckByte(212, "X");
             
             // format X0
             CheckByte(Byte.MinValue, "X0");
             CheckByte(Byte.MaxValue, "X0");
             CheckByte(0, "X0");
-            CheckByte(38, "X0");
-            CheckByte(146, "X0");
-            CheckByte(116, "X0");
-            CheckByte(94, "X0");
-            CheckByte(217, "X0");
+            CheckByte(46, "X0");
+            CheckByte(54, "X0");
+            CheckByte(254, "X0");
+            CheckByte(102, "X0");
+            CheckByte(182, "X0");
             
             // format X1
             CheckByte(Byte.MinValue, "X1");
             CheckByte(Byte.MaxValue, "X1");
             CheckByte(0, "X1");
-            CheckByte(241, "X1");
-            CheckByte(123, "X1");
-            CheckByte(52, "X1");
-            CheckByte(161, "X1");
-            CheckByte(217, "X1");
+            CheckByte(173, "X1");
+            CheckByte(141, "X1");
+            CheckByte(99, "X1");
+            CheckByte(12, "X1");
+            CheckByte(252, "X1");
             
             // format X2
             CheckByte(Byte.MinValue, "X2");
             CheckByte(Byte.MaxValue, "X2");
             CheckByte(0, "X2");
-            CheckByte(219, "X2");
-            CheckByte(0, "X2");
-            CheckByte(149, "X2");
-            CheckByte(156, "X2");
-            CheckByte(0, "X2");
+            CheckByte(43, "X2");
+            CheckByte(193, "X2");
+            CheckByte(200, "X2");
+            CheckByte(250, "X2");
+            CheckByte(200, "X2");
             
             // format X3
             CheckByte(Byte.MinValue, "X3");
             CheckByte(Byte.MaxValue, "X3");
             CheckByte(0, "X3");
-            CheckByte(136, "X3");
-            CheckByte(44, "X3");
-            CheckByte(3, "X3");
-            CheckByte(198, "X3");
-            CheckByte(250, "X3");
+            CheckByte(248, "X3");
+            CheckByte(231, "X3");
+            CheckByte(199, "X3");
+            CheckByte(64, "X3");
+            CheckByte(152, "X3");
             
             // format X4
             CheckByte(Byte.MinValue, "X4");
             CheckByte(Byte.MaxValue, "X4");
             CheckByte(0, "X4");
-            CheckByte(171, "X4");
-            CheckByte(136, "X4");
-            CheckByte(56, "X4");
-            CheckByte(251, "X4");
-            CheckByte(55, "X4");
+            CheckByte(157, "X4");
+            CheckByte(90, "X4");
+            CheckByte(119, "X4");
+            CheckByte(38, "X4");
+            CheckByte(153, "X4");
             
             // format X5
             CheckByte(Byte.MinValue, "X5");
             CheckByte(Byte.MaxValue, "X5");
             CheckByte(0, "X5");
-            CheckByte(63, "X5");
-            CheckByte(4, "X5");
-            CheckByte(99, "X5");
-            CheckByte(228, "X5");
-            CheckByte(70, "X5");
+            CheckByte(236, "X5");
+            CheckByte(23, "X5");
+            CheckByte(78, "X5");
+            CheckByte(91, "X5");
+            CheckByte(205, "X5");
         }
         
         [Fact]
@@ -269,71 +344,71 @@ namespace System.Text.Formatting.Tests
             CheckByte(Byte.MinValue, "x");
             CheckByte(Byte.MaxValue, "x");
             CheckByte(0, "x");
-            CheckByte(12, "x");
-            CheckByte(173, "x");
-            CheckByte(36, "x");
-            CheckByte(6, "x");
-            CheckByte(212, "x");
+            CheckByte(46, "x");
+            CheckByte(219, "x");
+            CheckByte(142, "x");
+            CheckByte(199, "x");
+            CheckByte(209, "x");
             
             // format x0
             CheckByte(Byte.MinValue, "x0");
             CheckByte(Byte.MaxValue, "x0");
             CheckByte(0, "x0");
-            CheckByte(46, "x0");
-            CheckByte(54, "x0");
-            CheckByte(254, "x0");
-            CheckByte(102, "x0");
-            CheckByte(182, "x0");
+            CheckByte(82, "x0");
+            CheckByte(44, "x0");
+            CheckByte(155, "x0");
+            CheckByte(16, "x0");
+            CheckByte(76, "x0");
             
             // format x1
             CheckByte(Byte.MinValue, "x1");
             CheckByte(Byte.MaxValue, "x1");
             CheckByte(0, "x1");
-            CheckByte(173, "x1");
-            CheckByte(141, "x1");
-            CheckByte(99, "x1");
+            CheckByte(30, "x1");
+            CheckByte(36, "x1");
+            CheckByte(43, "x1");
+            CheckByte(254, "x1");
             CheckByte(12, "x1");
-            CheckByte(252, "x1");
             
             // format x2
             CheckByte(Byte.MinValue, "x2");
             CheckByte(Byte.MaxValue, "x2");
             CheckByte(0, "x2");
-            CheckByte(43, "x2");
-            CheckByte(193, "x2");
-            CheckByte(200, "x2");
-            CheckByte(250, "x2");
-            CheckByte(200, "x2");
+            CheckByte(125, "x2");
+            CheckByte(59, "x2");
+            CheckByte(103, "x2");
+            CheckByte(28, "x2");
+            CheckByte(77, "x2");
             
             // format x3
             CheckByte(Byte.MinValue, "x3");
             CheckByte(Byte.MaxValue, "x3");
             CheckByte(0, "x3");
-            CheckByte(248, "x3");
-            CheckByte(231, "x3");
-            CheckByte(199, "x3");
-            CheckByte(64, "x3");
-            CheckByte(152, "x3");
+            CheckByte(35, "x3");
+            CheckByte(228, "x3");
+            CheckByte(226, "x3");
+            CheckByte(109, "x3");
+            CheckByte(54, "x3");
             
             // format x4
             CheckByte(Byte.MinValue, "x4");
             CheckByte(Byte.MaxValue, "x4");
             CheckByte(0, "x4");
-            CheckByte(157, "x4");
-            CheckByte(90, "x4");
-            CheckByte(119, "x4");
-            CheckByte(38, "x4");
-            CheckByte(153, "x4");
+            CheckByte(210, "x4");
+            CheckByte(189, "x4");
+            CheckByte(216, "x4");
+            CheckByte(203, "x4");
+            CheckByte(200, "x4");
             
             // format x5
             CheckByte(Byte.MinValue, "x5");
             CheckByte(Byte.MaxValue, "x5");
             CheckByte(0, "x5");
-            CheckByte(236, "x5");
-            CheckByte(23, "x5");
-            CheckByte(78, "x5");
-            CheckByte(91, "x5");
-            CheckByte(205, "x5");
+            CheckByte(149, "x5");
+            CheckByte(62, "x5");
+            CheckByte(8, "x5");
+            CheckByte(61, "x5");
+            CheckByte(206, "x5");
         }
         
         public void CheckSByte(SByte value, string format)
@@ -354,71 +429,71 @@ namespace System.Text.Formatting.Tests
             CheckSByte(SByte.MinValue, "D");
             CheckSByte(SByte.MaxValue, "D");
             CheckSByte(0, "D");
-            CheckSByte(-82, "D");
-            CheckSByte(91, "D");
-            CheckSByte(14, "D");
-            CheckSByte(71, "D");
-            CheckSByte(81, "D");
+            CheckSByte(-50, "D");
+            CheckSByte(-78, "D");
+            CheckSByte(-127, "D");
+            CheckSByte(-87, "D");
+            CheckSByte(-11, "D");
             
             // format D0
             CheckSByte(SByte.MinValue, "D0");
             CheckSByte(SByte.MaxValue, "D0");
             CheckSByte(0, "D0");
-            CheckSByte(-46, "D0");
-            CheckSByte(-84, "D0");
-            CheckSByte(27, "D0");
-            CheckSByte(-112, "D0");
-            CheckSByte(-52, "D0");
+            CheckSByte(75, "D0");
+            CheckSByte(-53, "D0");
+            CheckSByte(55, "D0");
+            CheckSByte(115, "D0");
+            CheckSByte(-7, "D0");
             
             // format D1
             CheckSByte(SByte.MinValue, "D1");
             CheckSByte(SByte.MaxValue, "D1");
             CheckSByte(0, "D1");
-            CheckSByte(-98, "D1");
-            CheckSByte(-92, "D1");
-            CheckSByte(-85, "D1");
-            CheckSByte(126, "D1");
-            CheckSByte(-116, "D1");
+            CheckSByte(-8, "D1");
+            CheckSByte(-81, "D1");
+            CheckSByte(-8, "D1");
+            CheckSByte(-103, "D1");
+            CheckSByte(-100, "D1");
             
             // format D2
             CheckSByte(SByte.MinValue, "D2");
             CheckSByte(SByte.MaxValue, "D2");
             CheckSByte(0, "D2");
-            CheckSByte(-3, "D2");
-            CheckSByte(-69, "D2");
-            CheckSByte(-25, "D2");
-            CheckSByte(-100, "D2");
-            CheckSByte(-51, "D2");
+            CheckSByte(48, "D2");
+            CheckSByte(47, "D2");
+            CheckSByte(-78, "D2");
+            CheckSByte(-114, "D2");
+            CheckSByte(41, "D2");
             
             // format D3
             CheckSByte(SByte.MinValue, "D3");
             CheckSByte(SByte.MaxValue, "D3");
             CheckSByte(0, "D3");
-            CheckSByte(-93, "D3");
-            CheckSByte(100, "D3");
-            CheckSByte(98, "D3");
-            CheckSByte(-19, "D3");
-            CheckSByte(-74, "D3");
+            CheckSByte(-56, "D3");
+            CheckSByte(120, "D3");
+            CheckSByte(-95, "D3");
+            CheckSByte(16, "D3");
+            CheckSByte(125, "D3");
             
             // format D4
             CheckSByte(SByte.MinValue, "D4");
             CheckSByte(SByte.MaxValue, "D4");
             CheckSByte(0, "D4");
-            CheckSByte(82, "D4");
-            CheckSByte(61, "D4");
-            CheckSByte(88, "D4");
-            CheckSByte(75, "D4");
-            CheckSByte(72, "D4");
+            CheckSByte(19, "D4");
+            CheckSByte(-45, "D4");
+            CheckSByte(78, "D4");
+            CheckSByte(-58, "D4");
+            CheckSByte(54, "D4");
             
             // format D5
             CheckSByte(SByte.MinValue, "D5");
             CheckSByte(SByte.MaxValue, "D5");
             CheckSByte(0, "D5");
-            CheckSByte(21, "D5");
-            CheckSByte(-66, "D5");
-            CheckSByte(-120, "D5");
-            CheckSByte(-67, "D5");
-            CheckSByte(78, "D5");
+            CheckSByte(95, "D5");
+            CheckSByte(-100, "D5");
+            CheckSByte(108, "D5");
+            CheckSByte(-81, "D5");
+            CheckSByte(60, "D5");
         }
         
         [Fact]
@@ -429,71 +504,71 @@ namespace System.Text.Formatting.Tests
             CheckSByte(SByte.MinValue, "d");
             CheckSByte(SByte.MaxValue, "d");
             CheckSByte(0, "d");
-            CheckSByte(-50, "d");
-            CheckSByte(-78, "d");
-            CheckSByte(-127, "d");
-            CheckSByte(-87, "d");
-            CheckSByte(-11, "d");
+            CheckSByte(-54, "d");
+            CheckSByte(-71, "d");
+            CheckSByte(-67, "d");
+            CheckSByte(37, "d");
+            CheckSByte(0, "d");
             
             // format d0
             CheckSByte(SByte.MinValue, "d0");
             CheckSByte(SByte.MaxValue, "d0");
             CheckSByte(0, "d0");
-            CheckSByte(75, "d0");
-            CheckSByte(-53, "d0");
-            CheckSByte(55, "d0");
-            CheckSByte(115, "d0");
-            CheckSByte(-7, "d0");
+            CheckSByte(87, "d0");
+            CheckSByte(-83, "d0");
+            CheckSByte(110, "d0");
+            CheckSByte(114, "d0");
+            CheckSByte(61, "d0");
             
             // format d1
             CheckSByte(SByte.MinValue, "d1");
             CheckSByte(SByte.MaxValue, "d1");
             CheckSByte(0, "d1");
-            CheckSByte(-8, "d1");
-            CheckSByte(-81, "d1");
-            CheckSByte(-8, "d1");
-            CheckSByte(-103, "d1");
-            CheckSByte(-100, "d1");
+            CheckSByte(35, "d1");
+            CheckSByte(-59, "d1");
+            CheckSByte(62, "d1");
+            CheckSByte(46, "d1");
+            CheckSByte(-104, "d1");
             
             // format d2
             CheckSByte(SByte.MinValue, "d2");
             CheckSByte(SByte.MaxValue, "d2");
             CheckSByte(0, "d2");
-            CheckSByte(48, "d2");
-            CheckSByte(47, "d2");
-            CheckSByte(-78, "d2");
-            CheckSByte(-114, "d2");
-            CheckSByte(41, "d2");
+            CheckSByte(101, "d2");
+            CheckSByte(-117, "d2");
+            CheckSByte(121, "d2");
+            CheckSByte(18, "d2");
+            CheckSByte(5, "d2");
             
             // format d3
             CheckSByte(SByte.MinValue, "d3");
             CheckSByte(SByte.MaxValue, "d3");
             CheckSByte(0, "d3");
-            CheckSByte(-56, "d3");
-            CheckSByte(120, "d3");
-            CheckSByte(-95, "d3");
-            CheckSByte(16, "d3");
-            CheckSByte(125, "d3");
+            CheckSByte(-43, "d3");
+            CheckSByte(-112, "d3");
+            CheckSByte(-16, "d3");
+            CheckSByte(-86, "d3");
+            CheckSByte(97, "d3");
             
             // format d4
             CheckSByte(SByte.MinValue, "d4");
             CheckSByte(SByte.MaxValue, "d4");
             CheckSByte(0, "d4");
-            CheckSByte(19, "d4");
-            CheckSByte(-45, "d4");
-            CheckSByte(78, "d4");
-            CheckSByte(-58, "d4");
-            CheckSByte(54, "d4");
+            CheckSByte(-8, "d4");
+            CheckSByte(-5, "d4");
+            CheckSByte(-15, "d4");
+            CheckSByte(-68, "d4");
+            CheckSByte(25, "d4");
             
             // format d5
             CheckSByte(SByte.MinValue, "d5");
             CheckSByte(SByte.MaxValue, "d5");
             CheckSByte(0, "d5");
-            CheckSByte(95, "d5");
-            CheckSByte(-100, "d5");
-            CheckSByte(108, "d5");
-            CheckSByte(-81, "d5");
-            CheckSByte(60, "d5");
+            CheckSByte(-36, "d5");
+            CheckSByte(-63, "d5");
+            CheckSByte(-56, "d5");
+            CheckSByte(-37, "d5");
+            CheckSByte(80, "d5");
         }
         
         [Fact]
@@ -504,11 +579,86 @@ namespace System.Text.Formatting.Tests
             CheckSByte(SByte.MinValue, "G");
             CheckSByte(SByte.MaxValue, "G");
             CheckSByte(0, "G");
-            CheckSByte(-54, "G");
-            CheckSByte(-71, "G");
-            CheckSByte(-67, "G");
-            CheckSByte(37, "G");
-            CheckSByte(0, "G");
+            CheckSByte(-9, "G");
+            CheckSByte(-15, "G");
+            CheckSByte(11, "G");
+            CheckSByte(12, "G");
+            CheckSByte(81, "G");
+        }
+        
+        [Fact]
+        public void SByteFormatN()
+        {
+            
+            // format N
+            CheckSByte(SByte.MinValue, "N");
+            CheckSByte(SByte.MaxValue, "N");
+            CheckSByte(0, "N");
+            CheckSByte(-102, "N");
+            CheckSByte(-119, "N");
+            CheckSByte(-82, "N");
+            CheckSByte(82, "N");
+            CheckSByte(-38, "N");
+            
+            // format N0
+            CheckSByte(SByte.MinValue, "N0");
+            CheckSByte(SByte.MaxValue, "N0");
+            CheckSByte(0, "N0");
+            CheckSByte(-51, "N0");
+            CheckSByte(19, "N0");
+            CheckSByte(-97, "N0");
+            CheckSByte(-82, "N0");
+            CheckSByte(79, "N0");
+            
+            // format N1
+            CheckSByte(SByte.MinValue, "N1");
+            CheckSByte(SByte.MaxValue, "N1");
+            CheckSByte(0, "N1");
+            CheckSByte(83, "N1");
+            CheckSByte(-94, "N1");
+            CheckSByte(-39, "N1");
+            CheckSByte(41, "N1");
+            CheckSByte(-26, "N1");
+            
+            // format N2
+            CheckSByte(SByte.MinValue, "N2");
+            CheckSByte(SByte.MaxValue, "N2");
+            CheckSByte(0, "N2");
+            CheckSByte(-70, "N2");
+            CheckSByte(72, "N2");
+            CheckSByte(-109, "N2");
+            CheckSByte(66, "N2");
+            CheckSByte(-120, "N2");
+            
+            // format N3
+            CheckSByte(SByte.MinValue, "N3");
+            CheckSByte(SByte.MaxValue, "N3");
+            CheckSByte(0, "N3");
+            CheckSByte(-37, "N3");
+            CheckSByte(59, "N3");
+            CheckSByte(49, "N3");
+            CheckSByte(-40, "N3");
+            CheckSByte(-31, "N3");
+            
+            // format N4
+            CheckSByte(SByte.MinValue, "N4");
+            CheckSByte(SByte.MaxValue, "N4");
+            CheckSByte(0, "N4");
+            CheckSByte(-31, "N4");
+            CheckSByte(124, "N4");
+            CheckSByte(-30, "N4");
+            CheckSByte(92, "N4");
+            CheckSByte(31, "N4");
+            
+            // format N5
+            CheckSByte(SByte.MinValue, "N5");
+            CheckSByte(SByte.MaxValue, "N5");
+            CheckSByte(0, "N5");
+            CheckSByte(-12, "N5");
+            CheckSByte(-1, "N5");
+            CheckSByte(-20, "N5");
+            CheckSByte(64, "N5");
+            CheckSByte(-22, "N5");
         }
         
         [Fact]
@@ -519,71 +669,71 @@ namespace System.Text.Formatting.Tests
             CheckSByte(SByte.MinValue, "X");
             CheckSByte(SByte.MaxValue, "X");
             CheckSByte(0, "X");
-            CheckSByte(87, "X");
-            CheckSByte(-83, "X");
-            CheckSByte(110, "X");
-            CheckSByte(114, "X");
-            CheckSByte(61, "X");
+            CheckSByte(-53, "X");
+            CheckSByte(97, "X");
+            CheckSByte(29, "X");
+            CheckSByte(79, "X");
+            CheckSByte(20, "X");
             
             // format X0
             CheckSByte(SByte.MinValue, "X0");
             CheckSByte(SByte.MaxValue, "X0");
             CheckSByte(0, "X0");
-            CheckSByte(35, "X0");
-            CheckSByte(-59, "X0");
-            CheckSByte(62, "X0");
-            CheckSByte(46, "X0");
-            CheckSByte(-104, "X0");
+            CheckSByte(99, "X0");
+            CheckSByte(-36, "X0");
+            CheckSByte(-61, "X0");
+            CheckSByte(-20, "X0");
+            CheckSByte(69, "X0");
             
             // format X1
             CheckSByte(SByte.MinValue, "X1");
             CheckSByte(SByte.MaxValue, "X1");
             CheckSByte(0, "X1");
-            CheckSByte(101, "X1");
-            CheckSByte(-117, "X1");
-            CheckSByte(121, "X1");
-            CheckSByte(18, "X1");
-            CheckSByte(5, "X1");
+            CheckSByte(-71, "X1");
+            CheckSByte(102, "X1");
+            CheckSByte(30, "X1");
+            CheckSByte(115, "X1");
+            CheckSByte(22, "X1");
             
             // format X2
             CheckSByte(SByte.MinValue, "X2");
             CheckSByte(SByte.MaxValue, "X2");
             CheckSByte(0, "X2");
-            CheckSByte(-43, "X2");
-            CheckSByte(-112, "X2");
-            CheckSByte(-16, "X2");
-            CheckSByte(-86, "X2");
-            CheckSByte(97, "X2");
+            CheckSByte(45, "X2");
+            CheckSByte(-35, "X2");
+            CheckSByte(72, "X2");
+            CheckSByte(4, "X2");
+            CheckSByte(-10, "X2");
             
             // format X3
             CheckSByte(SByte.MinValue, "X3");
             CheckSByte(SByte.MaxValue, "X3");
             CheckSByte(0, "X3");
-            CheckSByte(-8, "X3");
-            CheckSByte(-5, "X3");
+            CheckSByte(-34, "X3");
+            CheckSByte(-41, "X3");
+            CheckSByte(84, "X3");
             CheckSByte(-15, "X3");
-            CheckSByte(-68, "X3");
-            CheckSByte(25, "X3");
+            CheckSByte(119, "X3");
             
             // format X4
             CheckSByte(SByte.MinValue, "X4");
             CheckSByte(SByte.MaxValue, "X4");
             CheckSByte(0, "X4");
-            CheckSByte(-36, "X4");
+            CheckSByte(-48, "X4");
+            CheckSByte(-79, "X4");
             CheckSByte(-63, "X4");
-            CheckSByte(-56, "X4");
-            CheckSByte(-37, "X4");
-            CheckSByte(80, "X4");
+            CheckSByte(13, "X4");
+            CheckSByte(-38, "X4");
             
             // format X5
             CheckSByte(SByte.MinValue, "X5");
             CheckSByte(SByte.MaxValue, "X5");
             CheckSByte(0, "X5");
-            CheckSByte(-9, "X5");
-            CheckSByte(-15, "X5");
-            CheckSByte(11, "X5");
-            CheckSByte(12, "X5");
-            CheckSByte(81, "X5");
+            CheckSByte(-44, "X5");
+            CheckSByte(53, "X5");
+            CheckSByte(24, "X5");
+            CheckSByte(-66, "X5");
+            CheckSByte(-101, "X5");
         }
         
         [Fact]
@@ -594,71 +744,71 @@ namespace System.Text.Formatting.Tests
             CheckSByte(SByte.MinValue, "x");
             CheckSByte(SByte.MaxValue, "x");
             CheckSByte(0, "x");
-            CheckSByte(-102, "x");
-            CheckSByte(-119, "x");
+            CheckSByte(-41, "x");
+            CheckSByte(-85, "x");
+            CheckSByte(-62, "x");
             CheckSByte(-82, "x");
-            CheckSByte(82, "x");
-            CheckSByte(-38, "x");
+            CheckSByte(-93, "x");
             
             // format x0
             CheckSByte(SByte.MinValue, "x0");
             CheckSByte(SByte.MaxValue, "x0");
             CheckSByte(0, "x0");
-            CheckSByte(-51, "x0");
-            CheckSByte(19, "x0");
-            CheckSByte(-97, "x0");
-            CheckSByte(-82, "x0");
-            CheckSByte(79, "x0");
+            CheckSByte(126, "x0");
+            CheckSByte(-8, "x0");
+            CheckSByte(-60, "x0");
+            CheckSByte(18, "x0");
+            CheckSByte(-89, "x0");
             
             // format x1
             CheckSByte(SByte.MinValue, "x1");
             CheckSByte(SByte.MaxValue, "x1");
             CheckSByte(0, "x1");
-            CheckSByte(83, "x1");
-            CheckSByte(-94, "x1");
-            CheckSByte(-39, "x1");
-            CheckSByte(41, "x1");
-            CheckSByte(-26, "x1");
+            CheckSByte(-6, "x1");
+            CheckSByte(-34, "x1");
+            CheckSByte(-18, "x1");
+            CheckSByte(-58, "x1");
+            CheckSByte(113, "x1");
             
             // format x2
             CheckSByte(SByte.MinValue, "x2");
             CheckSByte(SByte.MaxValue, "x2");
             CheckSByte(0, "x2");
-            CheckSByte(-70, "x2");
-            CheckSByte(72, "x2");
-            CheckSByte(-109, "x2");
-            CheckSByte(66, "x2");
-            CheckSByte(-120, "x2");
+            CheckSByte(-106, "x2");
+            CheckSByte(54, "x2");
+            CheckSByte(102, "x2");
+            CheckSByte(-55, "x2");
+            CheckSByte(-116, "x2");
             
             // format x3
             CheckSByte(SByte.MinValue, "x3");
             CheckSByte(SByte.MaxValue, "x3");
             CheckSByte(0, "x3");
-            CheckSByte(-37, "x3");
-            CheckSByte(59, "x3");
-            CheckSByte(49, "x3");
-            CheckSByte(-40, "x3");
-            CheckSByte(-31, "x3");
+            CheckSByte(115, "x3");
+            CheckSByte(-116, "x3");
+            CheckSByte(-84, "x3");
+            CheckSByte(86, "x3");
+            CheckSByte(-60, "x3");
             
             // format x4
             CheckSByte(SByte.MinValue, "x4");
             CheckSByte(SByte.MaxValue, "x4");
             CheckSByte(0, "x4");
-            CheckSByte(-31, "x4");
-            CheckSByte(124, "x4");
-            CheckSByte(-30, "x4");
-            CheckSByte(92, "x4");
-            CheckSByte(31, "x4");
+            CheckSByte(50, "x4");
+            CheckSByte(-102, "x4");
+            CheckSByte(52, "x4");
+            CheckSByte(-111, "x4");
+            CheckSByte(-15, "x4");
             
             // format x5
             CheckSByte(SByte.MinValue, "x5");
             CheckSByte(SByte.MaxValue, "x5");
             CheckSByte(0, "x5");
-            CheckSByte(-12, "x5");
-            CheckSByte(-1, "x5");
-            CheckSByte(-20, "x5");
-            CheckSByte(64, "x5");
-            CheckSByte(-22, "x5");
+            CheckSByte(3, "x5");
+            CheckSByte(-51, "x5");
+            CheckSByte(-33, "x5");
+            CheckSByte(88, "x5");
+            CheckSByte(-66, "x5");
         }
         
         public void CheckUInt16(UInt16 value, string format)
@@ -679,71 +829,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt16(UInt16.MinValue, "D");
             CheckUInt16(UInt16.MaxValue, "D");
             CheckUInt16(0, "D");
-            CheckUInt16(19530, "D");
-            CheckUInt16(57880, "D");
-            CheckUInt16(40367, "D");
-            CheckUInt16(53245, "D");
-            CheckUInt16(38107, "D");
+            CheckUInt16(33469, "D");
+            CheckUInt16(6930, "D");
+            CheckUInt16(39442, "D");
+            CheckUInt16(24891, "D");
+            CheckUInt16(30737, "D");
             
             // format D0
             CheckUInt16(UInt16.MinValue, "D0");
             CheckUInt16(UInt16.MaxValue, "D0");
             CheckUInt16(0, "D0");
-            CheckUInt16(58396, "D0");
-            CheckUInt16(23673, "D0");
-            CheckUInt16(17228, "D0");
-            CheckUInt16(27884, "D0");
-            CheckUInt16(50705, "D0");
+            CheckUInt16(58842, "D0");
+            CheckUInt16(4850, "D0");
+            CheckUInt16(16953, "D0");
+            CheckUInt16(18948, "D0");
+            CheckUInt16(32357, "D0");
             
             // format D1
             CheckUInt16(UInt16.MinValue, "D1");
             CheckUInt16(UInt16.MaxValue, "D1");
             CheckUInt16(0, "D1");
-            CheckUInt16(14845, "D1");
-            CheckUInt16(59278, "D1");
-            CheckUInt16(40611, "D1");
-            CheckUInt16(62641, "D1");
-            CheckUInt16(38754, "D1");
+            CheckUInt16(61838, "D1");
+            CheckUInt16(49869, "D1");
+            CheckUInt16(64453, "D1");
+            CheckUInt16(39791, "D1");
+            CheckUInt16(17529, "D1");
             
             // format D2
             CheckUInt16(UInt16.MinValue, "D2");
             CheckUInt16(UInt16.MaxValue, "D2");
             CheckUInt16(0, "D2");
-            CheckUInt16(44629, "D2");
-            CheckUInt16(24140, "D2");
-            CheckUInt16(51404, "D2");
-            CheckUInt16(34107, "D2");
-            CheckUInt16(30483, "D2");
+            CheckUInt16(40358, "D2");
+            CheckUInt16(52783, "D2");
+            CheckUInt16(20346, "D2");
+            CheckUInt16(12965, "D2");
+            CheckUInt16(9923, "D2");
             
             // format D3
             CheckUInt16(UInt16.MinValue, "D3");
             CheckUInt16(UInt16.MaxValue, "D3");
             CheckUInt16(0, "D3");
-            CheckUInt16(24273, "D3");
-            CheckUInt16(22514, "D3");
-            CheckUInt16(54617, "D3");
-            CheckUInt16(29055, "D3");
-            CheckUInt16(63718, "D3");
+            CheckUInt16(19349, "D3");
+            CheckUInt16(65384, "D3");
+            CheckUInt16(27683, "D3");
+            CheckUInt16(59959, "D3");
+            CheckUInt16(28985, "D3");
             
             // format D4
             CheckUInt16(UInt16.MinValue, "D4");
             CheckUInt16(UInt16.MaxValue, "D4");
             CheckUInt16(0, "D4");
-            CheckUInt16(20570, "D4");
-            CheckUInt16(12630, "D4");
-            CheckUInt16(16944, "D4");
-            CheckUInt16(36267, "D4");
-            CheckUInt16(23353, "D4");
+            CheckUInt16(58551, "D4");
+            CheckUInt16(50005, "D4");
+            CheckUInt16(13133, "D4");
+            CheckUInt16(8577, "D4");
+            CheckUInt16(41780, "D4");
             
             // format D5
             CheckUInt16(UInt16.MinValue, "D5");
             CheckUInt16(UInt16.MaxValue, "D5");
             CheckUInt16(0, "D5");
-            CheckUInt16(21619, "D5");
-            CheckUInt16(46518, "D5");
-            CheckUInt16(39248, "D5");
-            CheckUInt16(16095, "D5");
-            CheckUInt16(6939, "D5");
+            CheckUInt16(11331, "D5");
+            CheckUInt16(65286, "D5");
+            CheckUInt16(38129, "D5");
+            CheckUInt16(1883, "D5");
+            CheckUInt16(28541, "D5");
         }
         
         [Fact]
@@ -754,71 +904,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt16(UInt16.MinValue, "d");
             CheckUInt16(UInt16.MaxValue, "d");
             CheckUInt16(0, "d");
-            CheckUInt16(22611, "d");
-            CheckUInt16(11160, "d");
-            CheckUInt16(17210, "d");
-            CheckUInt16(11961, "d");
-            CheckUInt16(9216, "d");
+            CheckUInt16(64429, "d");
+            CheckUInt16(7352, "d");
+            CheckUInt16(34377, "d");
+            CheckUInt16(53699, "d");
+            CheckUInt16(9822, "d");
             
             // format d0
             CheckUInt16(UInt16.MinValue, "d0");
             CheckUInt16(UInt16.MaxValue, "d0");
             CheckUInt16(0, "d0");
-            CheckUInt16(65281, "d0");
-            CheckUInt16(30966, "d0");
-            CheckUInt16(17663, "d0");
-            CheckUInt16(37663, "d0");
-            CheckUInt16(10107, "d0");
+            CheckUInt16(57700, "d0");
+            CheckUInt16(51843, "d0");
+            CheckUInt16(57897, "d0");
+            CheckUInt16(22704, "d0");
+            CheckUInt16(21233, "d0");
             
             // format d1
             CheckUInt16(UInt16.MinValue, "d1");
             CheckUInt16(UInt16.MaxValue, "d1");
             CheckUInt16(0, "d1");
-            CheckUInt16(31361, "d1");
-            CheckUInt16(24267, "d1");
-            CheckUInt16(28296, "d1");
-            CheckUInt16(18025, "d1");
-            CheckUInt16(62010, "d1");
+            CheckUInt16(61431, "d1");
+            CheckUInt16(7811, "d1");
+            CheckUInt16(6704, "d1");
+            CheckUInt16(52536, "d1");
+            CheckUInt16(54262, "d1");
             
             // format d2
             CheckUInt16(UInt16.MinValue, "d2");
             CheckUInt16(UInt16.MaxValue, "d2");
             CheckUInt16(0, "d2");
-            CheckUInt16(5824, "d2");
-            CheckUInt16(46795, "d2");
-            CheckUInt16(59269, "d2");
-            CheckUInt16(18902, "d2");
-            CheckUInt16(3129, "d2");
+            CheckUInt16(46613, "d2");
+            CheckUInt16(65218, "d2");
+            CheckUInt16(11549, "d2");
+            CheckUInt16(45778, "d2");
+            CheckUInt16(62328, "d2");
             
             // format d3
             CheckUInt16(UInt16.MinValue, "d3");
             CheckUInt16(UInt16.MaxValue, "d3");
             CheckUInt16(0, "d3");
-            CheckUInt16(62551, "d3");
-            CheckUInt16(3262, "d3");
-            CheckUInt16(11311, "d3");
-            CheckUInt16(55061, "d3");
-            CheckUInt16(17537, "d3");
+            CheckUInt16(33619, "d3");
+            CheckUInt16(44781, "d3");
+            CheckUInt16(45017, "d3");
+            CheckUInt16(61441, "d3");
+            CheckUInt16(37720, "d3");
             
             // format d4
             CheckUInt16(UInt16.MinValue, "d4");
             CheckUInt16(UInt16.MaxValue, "d4");
             CheckUInt16(0, "d4");
-            CheckUInt16(45765, "d4");
-            CheckUInt16(6729, "d4");
-            CheckUInt16(46496, "d4");
-            CheckUInt16(4530, "d4");
-            CheckUInt16(29086, "d4");
+            CheckUInt16(8837, "d4");
+            CheckUInt16(57252, "d4");
+            CheckUInt16(8376, "d4");
+            CheckUInt16(42703, "d4");
+            CheckUInt16(21025, "d4");
             
             // format d5
             CheckUInt16(UInt16.MinValue, "d5");
             CheckUInt16(UInt16.MaxValue, "d5");
             CheckUInt16(0, "d5");
-            CheckUInt16(33862, "d5");
-            CheckUInt16(20029, "d5");
-            CheckUInt16(24515, "d5");
-            CheckUInt16(55702, "d5");
-            CheckUInt16(16142, "d5");
+            CheckUInt16(62086, "d5");
+            CheckUInt16(11739, "d5");
+            CheckUInt16(62570, "d5");
+            CheckUInt16(11250, "d5");
+            CheckUInt16(18635, "d5");
         }
         
         [Fact]
@@ -829,11 +979,86 @@ namespace System.Text.Formatting.Tests
             CheckUInt16(UInt16.MinValue, "G");
             CheckUInt16(UInt16.MaxValue, "G");
             CheckUInt16(0, "G");
-            CheckUInt16(33469, "G");
-            CheckUInt16(6930, "G");
-            CheckUInt16(39442, "G");
-            CheckUInt16(24891, "G");
-            CheckUInt16(30737, "G");
+            CheckUInt16(33006, "G");
+            CheckUInt16(18405, "G");
+            CheckUInt16(32181, "G");
+            CheckUInt16(3143, "G");
+            CheckUInt16(17757, "G");
+        }
+        
+        [Fact]
+        public void UInt16FormatN()
+        {
+            
+            // format N
+            CheckUInt16(UInt16.MinValue, "N");
+            CheckUInt16(UInt16.MaxValue, "N");
+            CheckUInt16(0, "N");
+            CheckUInt16(33041, "N");
+            CheckUInt16(7486, "N");
+            CheckUInt16(4978, "N");
+            CheckUInt16(38725, "N");
+            CheckUInt16(33088, "N");
+            
+            // format N0
+            CheckUInt16(UInt16.MinValue, "N0");
+            CheckUInt16(UInt16.MaxValue, "N0");
+            CheckUInt16(0, "N0");
+            CheckUInt16(50740, "N0");
+            CheckUInt16(43300, "N0");
+            CheckUInt16(26131, "N0");
+            CheckUInt16(19850, "N0");
+            CheckUInt16(60701, "N0");
+            
+            // format N1
+            CheckUInt16(UInt16.MinValue, "N1");
+            CheckUInt16(UInt16.MaxValue, "N1");
+            CheckUInt16(0, "N1");
+            CheckUInt16(11648, "N1");
+            CheckUInt16(53737, "N1");
+            CheckUInt16(57885, "N1");
+            CheckUInt16(5089, "N1");
+            CheckUInt16(60456, "N1");
+            
+            // format N2
+            CheckUInt16(UInt16.MinValue, "N2");
+            CheckUInt16(UInt16.MaxValue, "N2");
+            CheckUInt16(0, "N2");
+            CheckUInt16(19647, "N2");
+            CheckUInt16(27869, "N2");
+            CheckUInt16(38471, "N2");
+            CheckUInt16(15979, "N2");
+            CheckUInt16(984, "N2");
+            
+            // format N3
+            CheckUInt16(UInt16.MinValue, "N3");
+            CheckUInt16(UInt16.MaxValue, "N3");
+            CheckUInt16(0, "N3");
+            CheckUInt16(448, "N3");
+            CheckUInt16(43467, "N3");
+            CheckUInt16(15194, "N3");
+            CheckUInt16(1678, "N3");
+            CheckUInt16(24682, "N3");
+            
+            // format N4
+            CheckUInt16(UInt16.MinValue, "N4");
+            CheckUInt16(UInt16.MaxValue, "N4");
+            CheckUInt16(0, "N4");
+            CheckUInt16(49692, "N4");
+            CheckUInt16(10776, "N4");
+            CheckUInt16(60989, "N4");
+            CheckUInt16(33901, "N4");
+            CheckUInt16(21256, "N4");
+            
+            // format N5
+            CheckUInt16(UInt16.MinValue, "N5");
+            CheckUInt16(UInt16.MaxValue, "N5");
+            CheckUInt16(0, "N5");
+            CheckUInt16(28207, "N5");
+            CheckUInt16(33036, "N5");
+            CheckUInt16(8405, "N5");
+            CheckUInt16(28021, "N5");
+            CheckUInt16(29287, "N5");
         }
         
         [Fact]
@@ -844,71 +1069,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt16(UInt16.MinValue, "X");
             CheckUInt16(UInt16.MaxValue, "X");
             CheckUInt16(0, "X");
-            CheckUInt16(58842, "X");
-            CheckUInt16(4850, "X");
-            CheckUInt16(16953, "X");
-            CheckUInt16(18948, "X");
-            CheckUInt16(32357, "X");
+            CheckUInt16(26133, "X");
+            CheckUInt16(39802, "X");
+            CheckUInt16(6292, "X");
+            CheckUInt16(28352, "X");
+            CheckUInt16(52514, "X");
             
             // format X0
             CheckUInt16(UInt16.MinValue, "X0");
             CheckUInt16(UInt16.MaxValue, "X0");
             CheckUInt16(0, "X0");
-            CheckUInt16(61838, "X0");
-            CheckUInt16(49869, "X0");
-            CheckUInt16(64453, "X0");
-            CheckUInt16(39791, "X0");
-            CheckUInt16(17529, "X0");
+            CheckUInt16(31071, "X0");
+            CheckUInt16(31120, "X0");
+            CheckUInt16(54061, "X0");
+            CheckUInt16(47536, "X0");
+            CheckUInt16(9377, "X0");
             
             // format X1
             CheckUInt16(UInt16.MinValue, "X1");
             CheckUInt16(UInt16.MaxValue, "X1");
             CheckUInt16(0, "X1");
-            CheckUInt16(40358, "X1");
-            CheckUInt16(52783, "X1");
-            CheckUInt16(20346, "X1");
-            CheckUInt16(12965, "X1");
-            CheckUInt16(9923, "X1");
+            CheckUInt16(8349, "X1");
+            CheckUInt16(19389, "X1");
+            CheckUInt16(57480, "X1");
+            CheckUInt16(16328, "X1");
+            CheckUInt16(64522, "X1");
             
             // format X2
             CheckUInt16(UInt16.MinValue, "X2");
             CheckUInt16(UInt16.MaxValue, "X2");
             CheckUInt16(0, "X2");
-            CheckUInt16(19349, "X2");
-            CheckUInt16(65384, "X2");
-            CheckUInt16(27683, "X2");
-            CheckUInt16(59959, "X2");
-            CheckUInt16(28985, "X2");
+            CheckUInt16(5136, "X2");
+            CheckUInt16(45469, "X2");
+            CheckUInt16(16202, "X2");
+            CheckUInt16(2158, "X2");
+            CheckUInt16(17309, "X2");
             
             // format X3
             CheckUInt16(UInt16.MinValue, "X3");
             CheckUInt16(UInt16.MaxValue, "X3");
             CheckUInt16(0, "X3");
-            CheckUInt16(58551, "X3");
-            CheckUInt16(50005, "X3");
-            CheckUInt16(13133, "X3");
-            CheckUInt16(8577, "X3");
-            CheckUInt16(41780, "X3");
+            CheckUInt16(55108, "X3");
+            CheckUInt16(57827, "X3");
+            CheckUInt16(3300, "X3");
+            CheckUInt16(14043, "X3");
+            CheckUInt16(48931, "X3");
             
             // format X4
             CheckUInt16(UInt16.MinValue, "X4");
             CheckUInt16(UInt16.MaxValue, "X4");
             CheckUInt16(0, "X4");
-            CheckUInt16(11331, "X4");
-            CheckUInt16(65286, "X4");
-            CheckUInt16(38129, "X4");
-            CheckUInt16(1883, "X4");
-            CheckUInt16(28541, "X4");
+            CheckUInt16(39964, "X4");
+            CheckUInt16(47846, "X4");
+            CheckUInt16(57765, "X4");
+            CheckUInt16(64128, "X4");
+            CheckUInt16(32494, "X4");
             
             // format X5
             CheckUInt16(UInt16.MinValue, "X5");
             CheckUInt16(UInt16.MaxValue, "X5");
             CheckUInt16(0, "X5");
-            CheckUInt16(64429, "X5");
-            CheckUInt16(7352, "X5");
-            CheckUInt16(34377, "X5");
-            CheckUInt16(53699, "X5");
-            CheckUInt16(9822, "X5");
+            CheckUInt16(44146, "X5");
+            CheckUInt16(45331, "X5");
+            CheckUInt16(29864, "X5");
+            CheckUInt16(41337, "X5");
+            CheckUInt16(34323, "X5");
         }
         
         [Fact]
@@ -919,71 +1144,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt16(UInt16.MinValue, "x");
             CheckUInt16(UInt16.MaxValue, "x");
             CheckUInt16(0, "x");
-            CheckUInt16(57700, "x");
-            CheckUInt16(51843, "x");
-            CheckUInt16(57897, "x");
-            CheckUInt16(22704, "x");
-            CheckUInt16(21233, "x");
+            CheckUInt16(45380, "x");
+            CheckUInt16(21577, "x");
+            CheckUInt16(10118, "x");
+            CheckUInt16(28999, "x");
+            CheckUInt16(35448, "x");
             
             // format x0
             CheckUInt16(UInt16.MinValue, "x0");
             CheckUInt16(UInt16.MaxValue, "x0");
             CheckUInt16(0, "x0");
-            CheckUInt16(61431, "x0");
-            CheckUInt16(7811, "x0");
-            CheckUInt16(6704, "x0");
-            CheckUInt16(52536, "x0");
-            CheckUInt16(54262, "x0");
+            CheckUInt16(34863, "x0");
+            CheckUInt16(54941, "x0");
+            CheckUInt16(33193, "x0");
+            CheckUInt16(57836, "x0");
+            CheckUInt16(16332, "x0");
             
             // format x1
             CheckUInt16(UInt16.MinValue, "x1");
             CheckUInt16(UInt16.MaxValue, "x1");
             CheckUInt16(0, "x1");
-            CheckUInt16(46613, "x1");
-            CheckUInt16(65218, "x1");
-            CheckUInt16(11549, "x1");
-            CheckUInt16(45778, "x1");
-            CheckUInt16(62328, "x1");
+            CheckUInt16(30302, "x1");
+            CheckUInt16(18830, "x1");
+            CheckUInt16(44661, "x1");
+            CheckUInt16(34913, "x1");
+            CheckUInt16(16120, "x1");
             
             // format x2
             CheckUInt16(UInt16.MinValue, "x2");
             CheckUInt16(UInt16.MaxValue, "x2");
             CheckUInt16(0, "x2");
-            CheckUInt16(33619, "x2");
-            CheckUInt16(44781, "x2");
-            CheckUInt16(45017, "x2");
-            CheckUInt16(61441, "x2");
-            CheckUInt16(37720, "x2");
+            CheckUInt16(48273, "x2");
+            CheckUInt16(16834, "x2");
+            CheckUInt16(6246, "x2");
+            CheckUInt16(10711, "x2");
+            CheckUInt16(39713, "x2");
             
             // format x3
             CheckUInt16(UInt16.MinValue, "x3");
             CheckUInt16(UInt16.MaxValue, "x3");
             CheckUInt16(0, "x3");
-            CheckUInt16(8837, "x3");
-            CheckUInt16(57252, "x3");
-            CheckUInt16(8376, "x3");
-            CheckUInt16(42703, "x3");
-            CheckUInt16(21025, "x3");
+            CheckUInt16(33841, "x3");
+            CheckUInt16(36502, "x3");
+            CheckUInt16(57783, "x3");
+            CheckUInt16(44956, "x3");
+            CheckUInt16(12550, "x3");
             
             // format x4
             CheckUInt16(UInt16.MinValue, "x4");
             CheckUInt16(UInt16.MaxValue, "x4");
             CheckUInt16(0, "x4");
-            CheckUInt16(62086, "x4");
-            CheckUInt16(11739, "x4");
-            CheckUInt16(62570, "x4");
-            CheckUInt16(11250, "x4");
-            CheckUInt16(18635, "x4");
+            CheckUInt16(48760, "x4");
+            CheckUInt16(38889, "x4");
+            CheckUInt16(55467, "x4");
+            CheckUInt16(15041, "x4");
+            CheckUInt16(30765, "x4");
             
             // format x5
             CheckUInt16(UInt16.MinValue, "x5");
             CheckUInt16(UInt16.MaxValue, "x5");
             CheckUInt16(0, "x5");
-            CheckUInt16(33006, "x5");
-            CheckUInt16(18405, "x5");
-            CheckUInt16(32181, "x5");
-            CheckUInt16(3143, "x5");
-            CheckUInt16(17757, "x5");
+            CheckUInt16(28553, "x5");
+            CheckUInt16(55060, "x5");
+            CheckUInt16(16142, "x5");
+            CheckUInt16(47540, "x5");
+            CheckUInt16(19142, "x5");
         }
         
         public void CheckInt16(Int16 value, string format)
@@ -1004,71 +1229,71 @@ namespace System.Text.Formatting.Tests
             CheckInt16(Int16.MinValue, "D");
             CheckInt16(Int16.MaxValue, "D");
             CheckInt16(0, "D");
-            CheckInt16(273, "D");
-            CheckInt16(-25282, "D");
-            CheckInt16(-27790, "D");
-            CheckInt16(5957, "D");
-            CheckInt16(320, "D");
+            CheckInt16(16325, "D");
+            CheckInt16(2582, "D");
+            CheckInt16(19969, "D");
+            CheckInt16(-523, "D");
+            CheckInt16(15213, "D");
             
             // format D0
             CheckInt16(Int16.MinValue, "D0");
             CheckInt16(Int16.MaxValue, "D0");
             CheckInt16(0, "D0");
-            CheckInt16(17972, "D0");
-            CheckInt16(10532, "D0");
-            CheckInt16(-6637, "D0");
-            CheckInt16(-12918, "D0");
-            CheckInt16(27933, "D0");
+            CheckInt16(-32601, "D0");
+            CheckInt16(-8134, "D0");
+            CheckInt16(-21769, "D0");
+            CheckInt16(30478, "D0");
+            CheckInt16(-14140, "D0");
             
             // format D1
             CheckInt16(Int16.MinValue, "D1");
             CheckInt16(Int16.MaxValue, "D1");
             CheckInt16(0, "D1");
-            CheckInt16(-21120, "D1");
-            CheckInt16(20969, "D1");
-            CheckInt16(25117, "D1");
-            CheckInt16(-27679, "D1");
-            CheckInt16(27688, "D1");
+            CheckInt16(-11635, "D1");
+            CheckInt16(-29583, "D1");
+            CheckInt16(-9916, "D1");
+            CheckInt16(15240, "D1");
+            CheckInt16(16988, "D1");
             
             // format D2
             CheckInt16(Int16.MinValue, "D2");
             CheckInt16(Int16.MaxValue, "D2");
             CheckInt16(0, "D2");
-            CheckInt16(-13121, "D2");
-            CheckInt16(-4899, "D2");
-            CheckInt16(5703, "D2");
-            CheckInt16(-16789, "D2");
-            CheckInt16(-31784, "D2");
+            CheckInt16(-5456, "D2");
+            CheckInt16(6316, "D2");
+            CheckInt16(-13616, "D2");
+            CheckInt16(-31144, "D2");
+            CheckInt16(-32287, "D2");
             
             // format D3
             CheckInt16(Int16.MinValue, "D3");
             CheckInt16(Int16.MaxValue, "D3");
             CheckInt16(0, "D3");
-            CheckInt16(-32320, "D3");
-            CheckInt16(10699, "D3");
-            CheckInt16(-17574, "D3");
-            CheckInt16(-31090, "D3");
-            CheckInt16(-8086, "D3");
+            CheckInt16(-23891, "D3");
+            CheckInt16(-3440, "D3");
+            CheckInt16(-2071, "D3");
+            CheckInt16(-16319, "D3");
+            CheckInt16(19454, "D3");
             
             // format D4
             CheckInt16(Int16.MinValue, "D4");
             CheckInt16(Int16.MaxValue, "D4");
             CheckInt16(0, "D4");
-            CheckInt16(16924, "D4");
-            CheckInt16(-21992, "D4");
-            CheckInt16(28221, "D4");
-            CheckInt16(1133, "D4");
-            CheckInt16(-11512, "D4");
+            CheckInt16(28740, "D4");
+            CheckInt16(32240, "D4");
+            CheckInt16(-14617, "D4");
+            CheckInt16(-5698, "D4");
+            CheckInt16(20546, "D4");
             
             // format D5
             CheckInt16(Int16.MinValue, "D5");
             CheckInt16(Int16.MaxValue, "D5");
             CheckInt16(0, "D5");
-            CheckInt16(-4561, "D5");
-            CheckInt16(268, "D5");
-            CheckInt16(-24363, "D5");
-            CheckInt16(-4747, "D5");
-            CheckInt16(-3481, "D5");
+            CheckInt16(8009, "D5");
+            CheckInt16(-30080, "D5");
+            CheckInt16(29887, "D5");
+            CheckInt16(-16998, "D5");
+            CheckInt16(-207, "D5");
         }
         
         [Fact]
@@ -1079,71 +1304,71 @@ namespace System.Text.Formatting.Tests
             CheckInt16(Int16.MinValue, "d");
             CheckInt16(Int16.MaxValue, "d");
             CheckInt16(0, "d");
-            CheckInt16(-6635, "d");
-            CheckInt16(7034, "d");
-            CheckInt16(-26476, "d");
-            CheckInt16(-4416, "d");
-            CheckInt16(19746, "d");
+            CheckInt16(-19846, "d");
+            CheckInt16(-3137, "d");
+            CheckInt16(6768, "d");
+            CheckInt16(-4503, "d");
+            CheckInt16(6777, "d");
             
             // format d0
             CheckInt16(Int16.MinValue, "d0");
             CheckInt16(Int16.MaxValue, "d0");
             CheckInt16(0, "d0");
-            CheckInt16(-1697, "d0");
-            CheckInt16(-1648, "d0");
-            CheckInt16(21293, "d0");
-            CheckInt16(14768, "d0");
-            CheckInt16(-23391, "d0");
+            CheckInt16(-23561, "d0");
+            CheckInt16(-7265, "d0");
+            CheckInt16(27304, "d0");
+            CheckInt16(-6440, "d0");
+            CheckInt16(24183, "d0");
             
             // format d1
             CheckInt16(Int16.MinValue, "d1");
             CheckInt16(Int16.MaxValue, "d1");
             CheckInt16(0, "d1");
-            CheckInt16(-24419, "d1");
-            CheckInt16(-13379, "d1");
-            CheckInt16(24712, "d1");
-            CheckInt16(-16440, "d1");
-            CheckInt16(31754, "d1");
+            CheckInt16(12807, "d1");
+            CheckInt16(-16732, "d1");
+            CheckInt16(-25309, "d1");
+            CheckInt16(-1948, "d1");
+            CheckInt16(-29315, "d1");
             
             // format d2
             CheckInt16(Int16.MinValue, "d2");
             CheckInt16(Int16.MaxValue, "d2");
             CheckInt16(0, "d2");
-            CheckInt16(-27632, "d2");
-            CheckInt16(12701, "d2");
-            CheckInt16(-16566, "d2");
-            CheckInt16(-30610, "d2");
-            CheckInt16(-15459, "d2");
+            CheckInt16(22236, "d2");
+            CheckInt16(3140, "d2");
+            CheckInt16(-18250, "d2");
+            CheckInt16(14290, "d2");
+            CheckInt16(-22503, "d2");
             
             // format d3
             CheckInt16(Int16.MinValue, "d3");
             CheckInt16(Int16.MaxValue, "d3");
             CheckInt16(0, "d3");
-            CheckInt16(22340, "d3");
-            CheckInt16(25059, "d3");
-            CheckInt16(-29468, "d3");
-            CheckInt16(-18725, "d3");
-            CheckInt16(16163, "d3");
+            CheckInt16(-13003, "d3");
+            CheckInt16(-28115, "d3");
+            CheckInt16(3520, "d3");
+            CheckInt16(12789, "d3");
+            CheckInt16(19239, "d3");
             
             // format d4
             CheckInt16(Int16.MinValue, "d4");
             CheckInt16(Int16.MaxValue, "d4");
             CheckInt16(0, "d4");
-            CheckInt16(7196, "d4");
-            CheckInt16(15078, "d4");
-            CheckInt16(24997, "d4");
-            CheckInt16(31360, "d4");
-            CheckInt16(-274, "d4");
+            CheckInt16(-32074, "d4");
+            CheckInt16(-26286, "d4");
+            CheckInt16(16695, "d4");
+            CheckInt16(-22836, "d4");
+            CheckInt16(10617, "d4");
             
             // format d5
             CheckInt16(Int16.MinValue, "d5");
             CheckInt16(Int16.MaxValue, "d5");
             CheckInt16(0, "d5");
-            CheckInt16(11378, "d5");
-            CheckInt16(12563, "d5");
-            CheckInt16(-2904, "d5");
-            CheckInt16(8569, "d5");
-            CheckInt16(1555, "d5");
+            CheckInt16(-14323, "d5");
+            CheckInt16(-26704, "d5");
+            CheckInt16(-25687, "d5");
+            CheckInt16(-17322, "d5");
+            CheckInt16(4066, "d5");
         }
         
         [Fact]
@@ -1154,11 +1379,86 @@ namespace System.Text.Formatting.Tests
             CheckInt16(Int16.MinValue, "G");
             CheckInt16(Int16.MaxValue, "G");
             CheckInt16(0, "G");
-            CheckInt16(12612, "G");
-            CheckInt16(-11191, "G");
-            CheckInt16(-22650, "G");
-            CheckInt16(-3769, "G");
-            CheckInt16(2680, "G");
+            CheckInt16(30448, "G");
+            CheckInt16(32315, "G");
+            CheckInt16(23653, "G");
+            CheckInt16(-5155, "G");
+            CheckInt16(24041, "G");
+        }
+        
+        [Fact]
+        public void Int16FormatN()
+        {
+            
+            // format N
+            CheckInt16(Int16.MinValue, "N");
+            CheckInt16(Int16.MaxValue, "N");
+            CheckInt16(0, "N");
+            CheckInt16(16141, "N");
+            CheckInt16(2022, "N");
+            CheckInt16(-28399, "N");
+            CheckInt16(-7736, "N");
+            CheckInt16(-26121, "N");
+            
+            // format N0
+            CheckInt16(Int16.MinValue, "N0");
+            CheckInt16(Int16.MaxValue, "N0");
+            CheckInt16(0, "N0");
+            CheckInt16(12704, "N0");
+            CheckInt16(24781, "N0");
+            CheckInt16(20097, "N0");
+            CheckInt16(-9151, "N0");
+            CheckInt16(31077, "N0");
+            
+            // format N1
+            CheckInt16(Int16.MinValue, "N1");
+            CheckInt16(Int16.MaxValue, "N1");
+            CheckInt16(0, "N1");
+            CheckInt16(-27899, "N1");
+            CheckInt16(20936, "N1");
+            CheckInt16(-17171, "N1");
+            CheckInt16(-27263, "N1");
+            CheckInt16(-19972, "N1");
+            
+            // format N2
+            CheckInt16(Int16.MinValue, "N2");
+            CheckInt16(Int16.MaxValue, "N2");
+            CheckInt16(0, "N2");
+            CheckInt16(-24500, "N2");
+            CheckInt16(26109, "N2");
+            CheckInt16(26745, "N2");
+            CheckInt16(9025, "N2");
+            CheckInt16(6083, "N2");
+            
+            // format N3
+            CheckInt16(Int16.MinValue, "N3");
+            CheckInt16(Int16.MaxValue, "N3");
+            CheckInt16(0, "N3");
+            CheckInt16(-30044, "N3");
+            CheckInt16(8806, "N3");
+            CheckInt16(17372, "N3");
+            CheckInt16(15709, "N3");
+            CheckInt16(5738, "N3");
+            
+            // format N4
+            CheckInt16(Int16.MinValue, "N4");
+            CheckInt16(Int16.MaxValue, "N4");
+            CheckInt16(0, "N4");
+            CheckInt16(6743, "N4");
+            CheckInt16(-23813, "N4");
+            CheckInt16(24779, "N4");
+            CheckInt16(26753, "N4");
+            CheckInt16(-26997, "N4");
+            
+            // format N5
+            CheckInt16(Int16.MinValue, "N5");
+            CheckInt16(Int16.MaxValue, "N5");
+            CheckInt16(0, "N5");
+            CheckInt16(22687, "N5");
+            CheckInt16(12253, "N5");
+            CheckInt16(19671, "N5");
+            CheckInt16(23015, "N5");
+            CheckInt16(-5877, "N5");
         }
         
         [Fact]
@@ -1169,71 +1469,71 @@ namespace System.Text.Formatting.Tests
             CheckInt16(Int16.MinValue, "X");
             CheckInt16(Int16.MaxValue, "X");
             CheckInt16(0, "X");
-            CheckInt16(2095, "X");
-            CheckInt16(22173, "X");
-            CheckInt16(425, "X");
-            CheckInt16(25068, "X");
-            CheckInt16(-16436, "X");
+            CheckInt16(17741, "X");
+            CheckInt16(-32484, "X");
+            CheckInt16(-21512, "X");
+            CheckInt16(6141, "X");
+            CheckInt16(-26234, "X");
             
             // format X0
             CheckInt16(Int16.MinValue, "X0");
             CheckInt16(Int16.MaxValue, "X0");
             CheckInt16(0, "X0");
-            CheckInt16(-2466, "X0");
-            CheckInt16(-13938, "X0");
-            CheckInt16(11893, "X0");
-            CheckInt16(2145, "X0");
-            CheckInt16(-16648, "X0");
+            CheckInt16(-24089, "X0");
+            CheckInt16(-13617, "X0");
+            CheckInt16(-6922, "X0");
+            CheckInt16(-21146, "X0");
+            CheckInt16(5748, "X0");
             
             // format X1
             CheckInt16(Int16.MinValue, "X1");
             CheckInt16(Int16.MaxValue, "X1");
             CheckInt16(0, "X1");
-            CheckInt16(15505, "X1");
-            CheckInt16(-15934, "X1");
-            CheckInt16(-26522, "X1");
-            CheckInt16(-22057, "X1");
-            CheckInt16(6945, "X1");
+            CheckInt16(-2493, "X1");
+            CheckInt16(23233, "X1");
+            CheckInt16(-31193, "X1");
+            CheckInt16(-30118, "X1");
+            CheckInt16(-4203, "X1");
             
             // format X2
             CheckInt16(Int16.MinValue, "X2");
             CheckInt16(Int16.MaxValue, "X2");
             CheckInt16(0, "X2");
-            CheckInt16(1073, "X2");
-            CheckInt16(3734, "X2");
-            CheckInt16(25015, "X2");
-            CheckInt16(12188, "X2");
-            CheckInt16(-20218, "X2");
+            CheckInt16(-28429, "X2");
+            CheckInt16(-27199, "X2");
+            CheckInt16(-18141, "X2");
+            CheckInt16(21528, "X2");
+            CheckInt16(21317, "X2");
             
             // format X3
             CheckInt16(Int16.MinValue, "X3");
             CheckInt16(Int16.MaxValue, "X3");
             CheckInt16(0, "X3");
-            CheckInt16(15992, "X3");
-            CheckInt16(6121, "X3");
-            CheckInt16(22699, "X3");
-            CheckInt16(-17727, "X3");
-            CheckInt16(-2003, "X3");
+            CheckInt16(-25434, "X3");
+            CheckInt16(17417, "X3");
+            CheckInt16(-11342, "X3");
+            CheckInt16(19293, "X3");
+            CheckInt16(-97, "X3");
             
             // format X4
             CheckInt16(Int16.MinValue, "X4");
             CheckInt16(Int16.MaxValue, "X4");
             CheckInt16(0, "X4");
-            CheckInt16(-4215, "X4");
-            CheckInt16(22292, "X4");
-            CheckInt16(-16626, "X4");
-            CheckInt16(14772, "X4");
-            CheckInt16(-13626, "X4");
+            CheckInt16(3749, "X4");
+            CheckInt16(-32766, "X4");
+            CheckInt16(26111, "X4");
+            CheckInt16(-14923, "X4");
+            CheckInt16(-24379, "X4");
             
             // format X5
             CheckInt16(Int16.MinValue, "X5");
             CheckInt16(Int16.MaxValue, "X5");
             CheckInt16(0, "X5");
-            CheckInt16(16325, "X5");
-            CheckInt16(2582, "X5");
-            CheckInt16(19969, "X5");
-            CheckInt16(-523, "X5");
-            CheckInt16(15213, "X5");
+            CheckInt16(-7386, "X5");
+            CheckInt16(-31504, "X5");
+            CheckInt16(-7419, "X5");
+            CheckInt16(11381, "X5");
+            CheckInt16(-4946, "X5");
         }
         
         [Fact]
@@ -1244,71 +1544,71 @@ namespace System.Text.Formatting.Tests
             CheckInt16(Int16.MinValue, "x");
             CheckInt16(Int16.MaxValue, "x");
             CheckInt16(0, "x");
-            CheckInt16(-32601, "x");
-            CheckInt16(-8134, "x");
-            CheckInt16(-21769, "x");
-            CheckInt16(30478, "x");
-            CheckInt16(-14140, "x");
+            CheckInt16(-24784, "x");
+            CheckInt16(14852, "x");
+            CheckInt16(-12165, "x");
+            CheckInt16(2491, "x");
+            CheckInt16(-2596, "x");
             
             // format x0
             CheckInt16(Int16.MinValue, "x0");
             CheckInt16(Int16.MaxValue, "x0");
             CheckInt16(0, "x0");
-            CheckInt16(-11635, "x0");
-            CheckInt16(-29583, "x0");
-            CheckInt16(-9916, "x0");
-            CheckInt16(15240, "x0");
-            CheckInt16(16988, "x0");
+            CheckInt16(16339, "x0");
+            CheckInt16(-17040, "x0");
+            CheckInt16(5750, "x0");
+            CheckInt16(-22808, "x0");
+            CheckInt16(-24538, "x0");
             
             // format x1
             CheckInt16(Int16.MinValue, "x1");
             CheckInt16(Int16.MaxValue, "x1");
             CheckInt16(0, "x1");
-            CheckInt16(-5456, "x1");
-            CheckInt16(6316, "x1");
-            CheckInt16(-13616, "x1");
-            CheckInt16(-31144, "x1");
-            CheckInt16(-32287, "x1");
+            CheckInt16(16276, "x1");
+            CheckInt16(-25389, "x1");
+            CheckInt16(22128, "x1");
+            CheckInt16(-1813, "x1");
+            CheckInt16(-31336, "x1");
             
             // format x2
             CheckInt16(Int16.MinValue, "x2");
             CheckInt16(Int16.MaxValue, "x2");
             CheckInt16(0, "x2");
-            CheckInt16(-23891, "x2");
-            CheckInt16(-3440, "x2");
-            CheckInt16(-2071, "x2");
-            CheckInt16(-16319, "x2");
-            CheckInt16(19454, "x2");
+            CheckInt16(17118, "x2");
+            CheckInt16(-2374, "x2");
+            CheckInt16(30910, "x2");
+            CheckInt16(-31070, "x2");
+            CheckInt16(-13212, "x2");
             
             // format x3
             CheckInt16(Int16.MinValue, "x3");
             CheckInt16(Int16.MaxValue, "x3");
             CheckInt16(0, "x3");
-            CheckInt16(28740, "x3");
-            CheckInt16(32240, "x3");
-            CheckInt16(-14617, "x3");
-            CheckInt16(-5698, "x3");
-            CheckInt16(20546, "x3");
+            CheckInt16(-32445, "x3");
+            CheckInt16(11624, "x3");
+            CheckInt16(-8038, "x3");
+            CheckInt16(-26530, "x3");
+            CheckInt16(2784, "x3");
             
             // format x4
             CheckInt16(Int16.MinValue, "x4");
             CheckInt16(Int16.MaxValue, "x4");
             CheckInt16(0, "x4");
-            CheckInt16(8009, "x4");
-            CheckInt16(-30080, "x4");
-            CheckInt16(29887, "x4");
-            CheckInt16(-16998, "x4");
-            CheckInt16(-207, "x4");
+            CheckInt16(-24092, "x4");
+            CheckInt16(-6961, "x4");
+            CheckInt16(-24768, "x4");
+            CheckInt16(-29536, "x4");
+            CheckInt16(-19635, "x4");
             
             // format x5
             CheckInt16(Int16.MinValue, "x5");
             CheckInt16(Int16.MaxValue, "x5");
             CheckInt16(0, "x5");
-            CheckInt16(-19846, "x5");
-            CheckInt16(-3137, "x5");
-            CheckInt16(6768, "x5");
-            CheckInt16(-4503, "x5");
-            CheckInt16(6777, "x5");
+            CheckInt16(-3758, "x5");
+            CheckInt16(-2116, "x5");
+            CheckInt16(-9808, "x5");
+            CheckInt16(7594, "x5");
+            CheckInt16(-12188, "x5");
         }
         
         public void CheckUInt32(UInt32 value, string format)
@@ -1329,71 +1629,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt32(UInt32.MinValue, "D");
             CheckUInt32(UInt32.MaxValue, "D");
             CheckUInt32(0, "D");
-            CheckUInt32(301708922, "D");
-            CheckUInt32(835711388, "D");
-            CheckUInt32(1968492561, "D");
-            CheckUInt32(862731528, "D");
-            CheckUInt32(1866222068, "D");
+            CheckUInt32(729213789, "D");
+            CheckUInt32(1654825975, "D");
+            CheckUInt32(1471414376, "D");
+            CheckUInt32(790527484, "D");
+            CheckUInt32(163112133, "D");
             
             // format D0
             CheckUInt32(UInt32.MinValue, "D0");
             CheckUInt32(UInt32.MaxValue, "D0");
             CheckUInt32(0, "D0");
-            CheckUInt32(1493430514, "D0");
-            CheckUInt32(525500467, "D0");
-            CheckUInt32(244421466, "D0");
-            CheckUInt32(1009933999, "D0");
-            CheckUInt32(113152097, "D0");
+            CheckUInt32(1872432339, "D0");
+            CheckUInt32(382300904, "D0");
+            CheckUInt32(375719024, "D0");
+            CheckUInt32(1436265686, "D0");
+            CheckUInt32(1610969219, "D0");
             
             // format D1
             CheckUInt32(UInt32.MinValue, "D1");
             CheckUInt32(UInt32.MaxValue, "D1");
             CheckUInt32(0, "D1");
-            CheckUInt32(1802398837, "D1");
-            CheckUInt32(1176654413, "D1");
-            CheckUInt32(475747219, "D1");
-            CheckUInt32(1542026502, "D1");
-            CheckUInt32(336369415, "D1");
+            CheckUInt32(954792541, "D1");
+            CheckUInt32(348677594, "D1");
+            CheckUInt32(915026399, "D1");
+            CheckUInt32(537849796, "D1");
+            CheckUInt32(787668470, "D1");
             
             // format D2
             CheckUInt32(UInt32.MinValue, "D2");
             CheckUInt32(UInt32.MaxValue, "D2");
             CheckUInt32(0, "D2");
-            CheckUInt32(647670751, "D2");
-            CheckUInt32(152487555, "D2");
-            CheckUInt32(1189130702, "D2");
-            CheckUInt32(1492855714, "D2");
-            CheckUInt32(1704193721, "D2");
+            CheckUInt32(1983249801, "D2");
+            CheckUInt32(102297252, "D2");
+            CheckUInt32(775001052, "D2");
+            CheckUInt32(805881441, "D2");
+            CheckUInt32(901089862, "D2");
             
             // format D3
             CheckUInt32(UInt32.MinValue, "D3");
             CheckUInt32(UInt32.MaxValue, "D3");
             CheckUInt32(0, "D3");
-            CheckUInt32(22742409, "D3");
-            CheckUInt32(212434048, "D3");
-            CheckUInt32(1620854352, "D3");
-            CheckUInt32(325459069, "D3");
-            CheckUInt32(1421688242, "D3");
+            CheckUInt32(954447276, "D3");
+            CheckUInt32(750088757, "D3");
+            CheckUInt32(470740892, "D3");
+            CheckUInt32(2137856234, "D3");
+            CheckUInt32(704369110, "D3");
             
             // format D4
             CheckUInt32(UInt32.MinValue, "D4");
             CheckUInt32(UInt32.MaxValue, "D4");
             CheckUInt32(0, "D4");
-            CheckUInt32(604430953, "D4");
-            CheckUInt32(198714172, "D4");
-            CheckUInt32(232052385, "D4");
-            CheckUInt32(506170497, "D4");
-            CheckUInt32(1206999996, "D4");
+            CheckUInt32(763518239, "D4");
+            CheckUInt32(253207750, "D4");
+            CheckUInt32(1156256309, "D4");
+            CheckUInt32(2043520471, "D4");
+            CheckUInt32(1466540324, "D4");
             
             // format D5
             CheckUInt32(UInt32.MinValue, "D5");
             CheckUInt32(UInt32.MaxValue, "D5");
             CheckUInt32(0, "D5");
-            CheckUInt32(2071514287, "D5");
-            CheckUInt32(2132672859, "D5");
-            CheckUInt32(1848837649, "D5");
-            CheckUInt32(904854012, "D5");
-            CheckUInt32(1861565419, "D5");
+            CheckUInt32(602692228, "D5");
+            CheckUInt32(1636909444, "D5");
+            CheckUInt32(476253928, "D5");
+            CheckUInt32(339977407, "D5");
+            CheckUInt32(1465197681, "D5");
         }
         
         [Fact]
@@ -1404,71 +1704,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt32(UInt32.MinValue, "d");
             CheckUInt32(UInt32.MaxValue, "d");
             CheckUInt32(0, "d");
-            CheckUInt32(1602674782, "d");
-            CheckUInt32(1140047483, "d");
-            CheckUInt32(143168714, "d");
-            CheckUInt32(820273541, "d");
-            CheckUInt32(217836757, "d");
+            CheckUInt32(2127369182, "d");
+            CheckUInt32(1672054066, "d");
+            CheckUInt32(1296105929, "d");
+            CheckUInt32(2040025699, "d");
+            CheckUInt32(915895489, "d");
             
             // format d0
             CheckUInt32(UInt32.MinValue, "d0");
             CheckUInt32(UInt32.MaxValue, "d0");
             CheckUInt32(0, "d0");
-            CheckUInt32(1490056575, "d0");
-            CheckUInt32(1885815089, "d0");
-            CheckUInt32(1732337586, "d0");
-            CheckUInt32(773899076, "d0");
-            CheckUInt32(2092105958, "d0");
+            CheckUInt32(1775792020, "d0");
+            CheckUInt32(1078958036, "d0");
+            CheckUInt32(1521592696, "d0");
+            CheckUInt32(740929323, "d0");
+            CheckUInt32(210219759, "d0");
             
             // format d1
             CheckUInt32(UInt32.MinValue, "d1");
             CheckUInt32(UInt32.MaxValue, "d1");
             CheckUInt32(0, "d1");
-            CheckUInt32(159567713, "d1");
-            CheckUInt32(1759823872, "d1");
-            CheckUInt32(511116320, "d1");
-            CheckUInt32(180420255, "d1");
-            CheckUInt32(419322407, "d1");
+            CheckUInt32(2083136547, "d1");
+            CheckUInt32(2078117421, "d1");
+            CheckUInt32(1871811508, "d1");
+            CheckUInt32(1465755602, "d1");
+            CheckUInt32(594603426, "d1");
             
             // format d2
             CheckUInt32(UInt32.MinValue, "d2");
             CheckUInt32(UInt32.MaxValue, "d2");
             CheckUInt32(0, "d2");
-            CheckUInt32(270959530, "d2");
-            CheckUInt32(1929320653, "d2");
-            CheckUInt32(1950174744, "d2");
-            CheckUInt32(1369522033, "d2");
-            CheckUInt32(1273110571, "d2");
+            CheckUInt32(848346458, "d2");
+            CheckUInt32(229425210, "d2");
+            CheckUInt32(2093992361, "d2");
+            CheckUInt32(421542736, "d2");
+            CheckUInt32(1867436148, "d2");
             
             // format d3
             CheckUInt32(UInt32.MinValue, "d3");
             CheckUInt32(UInt32.MaxValue, "d3");
             CheckUInt32(0, "d3");
-            CheckUInt32(89274874, "d3");
-            CheckUInt32(1362340683, "d3");
-            CheckUInt32(1643033492, "d3");
-            CheckUInt32(1588526933, "d3");
-            CheckUInt32(1261791115, "d3");
+            CheckUInt32(2126608679, "d3");
+            CheckUInt32(1184085083, "d3");
+            CheckUInt32(1481041789, "d3");
+            CheckUInt32(86158374, "d3");
+            CheckUInt32(1547077541, "d3");
             
             // format d4
             CheckUInt32(UInt32.MinValue, "d4");
             CheckUInt32(UInt32.MaxValue, "d4");
             CheckUInt32(0, "d4");
-            CheckUInt32(1294716342, "d4");
-            CheckUInt32(293448082, "d4");
-            CheckUInt32(1885734616, "d4");
-            CheckUInt32(1950417650, "d4");
-            CheckUInt32(189121457, "d4");
+            CheckUInt32(1619224589, "d4");
+            CheckUInt32(1373528242, "d4");
+            CheckUInt32(479682200, "d4");
+            CheckUInt32(2117209009, "d4");
+            CheckUInt32(1008276991, "d4");
             
             // format d5
             CheckUInt32(UInt32.MinValue, "d5");
             CheckUInt32(UInt32.MaxValue, "d5");
             CheckUInt32(0, "d5");
-            CheckUInt32(1817209625, "d5");
-            CheckUInt32(1475300411, "d5");
-            CheckUInt32(1718376854, "d5");
-            CheckUInt32(1827944730, "d5");
-            CheckUInt32(881178280, "d5");
+            CheckUInt32(1465366744, "d5");
+            CheckUInt32(2019907313, "d5");
+            CheckUInt32(575048992, "d5");
+            CheckUInt32(1220135762, "d5");
+            CheckUInt32(807782935, "d5");
         }
         
         [Fact]
@@ -1479,11 +1779,86 @@ namespace System.Text.Formatting.Tests
             CheckUInt32(UInt32.MinValue, "G");
             CheckUInt32(UInt32.MaxValue, "G");
             CheckUInt32(0, "G");
-            CheckUInt32(1655106915, "G");
-            CheckUInt32(9318841, "G");
-            CheckUInt32(368857161, "G");
-            CheckUInt32(1275018957, "G");
-            CheckUInt32(214137146, "G");
+            CheckUInt32(311195735, "G");
+            CheckUInt32(953674970, "G");
+            CheckUInt32(882459000, "G");
+            CheckUInt32(2037469599, "G");
+            CheckUInt32(1272781489, "G");
+        }
+        
+        [Fact]
+        public void UInt32FormatN()
+        {
+            
+            // format N
+            CheckUInt32(UInt32.MinValue, "N");
+            CheckUInt32(UInt32.MaxValue, "N");
+            CheckUInt32(0, "N");
+            CheckUInt32(2022972887, "N");
+            CheckUInt32(1375979708, "N");
+            CheckUInt32(1877295216, "N");
+            CheckUInt32(1927636475, "N");
+            CheckUInt32(768716210, "N");
+            
+            // format N0
+            CheckUInt32(UInt32.MinValue, "N0");
+            CheckUInt32(UInt32.MaxValue, "N0");
+            CheckUInt32(0, "N0");
+            CheckUInt32(832884465, "N0");
+            CheckUInt32(528879889, "N0");
+            CheckUInt32(1837984354, "N0");
+            CheckUInt32(1448917045, "N0");
+            CheckUInt32(618193866, "N0");
+            
+            // format N1
+            CheckUInt32(UInt32.MinValue, "N1");
+            CheckUInt32(UInt32.MaxValue, "N1");
+            CheckUInt32(0, "N1");
+            CheckUInt32(373267018, "N1");
+            CheckUInt32(1690400730, "N1");
+            CheckUInt32(54711192, "N1");
+            CheckUInt32(620024906, "N1");
+            CheckUInt32(1486072649, "N1");
+            
+            // format N2
+            CheckUInt32(UInt32.MinValue, "N2");
+            CheckUInt32(UInt32.MaxValue, "N2");
+            CheckUInt32(0, "N2");
+            CheckUInt32(943284099, "N2");
+            CheckUInt32(191012277, "N2");
+            CheckUInt32(1209947555, "N2");
+            CheckUInt32(492948158, "N2");
+            CheckUInt32(1444154547, "N2");
+            
+            // format N3
+            CheckUInt32(UInt32.MinValue, "N3");
+            CheckUInt32(UInt32.MaxValue, "N3");
+            CheckUInt32(0, "N3");
+            CheckUInt32(402263778, "N3");
+            CheckUInt32(599275836, "N3");
+            CheckUInt32(1551867334, "N3");
+            CheckUInt32(1880135979, "N3");
+            CheckUInt32(892336662, "N3");
+            
+            // format N4
+            CheckUInt32(UInt32.MinValue, "N4");
+            CheckUInt32(UInt32.MaxValue, "N4");
+            CheckUInt32(0, "N4");
+            CheckUInt32(63229234, "N4");
+            CheckUInt32(1503068429, "N4");
+            CheckUInt32(651675746, "N4");
+            CheckUInt32(657972667, "N4");
+            CheckUInt32(283407691, "N4");
+            
+            // format N5
+            CheckUInt32(UInt32.MinValue, "N5");
+            CheckUInt32(UInt32.MaxValue, "N5");
+            CheckUInt32(0, "N5");
+            CheckUInt32(2042155135, "N5");
+            CheckUInt32(1494449857, "N5");
+            CheckUInt32(56522762, "N5");
+            CheckUInt32(1296244894, "N5");
+            CheckUInt32(1991946908, "N5");
         }
         
         [Fact]
@@ -1494,71 +1869,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt32(UInt32.MinValue, "X");
             CheckUInt32(UInt32.MaxValue, "X");
             CheckUInt32(0, "X");
-            CheckUInt32(284410967, "X");
-            CheckUInt32(627580109, "X");
-            CheckUInt32(846955276, "X");
-            CheckUInt32(380836758, "X");
-            CheckUInt32(1262120529, "X");
+            CheckUInt32(750628971, "X");
+            CheckUInt32(1454273514, "X");
+            CheckUInt32(1700888961, "X");
+            CheckUInt32(1464925811, "X");
+            CheckUInt32(714193076, "X");
             
             // format X0
             CheckUInt32(UInt32.MinValue, "X0");
             CheckUInt32(UInt32.MaxValue, "X0");
             CheckUInt32(0, "X0");
-            CheckUInt32(992090728, "X0");
-            CheckUInt32(1835081499, "X0");
-            CheckUInt32(51632130, "X0");
-            CheckUInt32(86848090, "X0");
-            CheckUInt32(936040466, "X0");
+            CheckUInt32(1090344700, "X0");
+            CheckUInt32(1683027535, "X0");
+            CheckUInt32(1178248802, "X0");
+            CheckUInt32(1499015143, "X0");
+            CheckUInt32(635009973, "X0");
             
             // format X1
             CheckUInt32(UInt32.MinValue, "X1");
             CheckUInt32(UInt32.MaxValue, "X1");
             CheckUInt32(0, "X1");
-            CheckUInt32(142193634, "X1");
-            CheckUInt32(182498115, "X1");
-            CheckUInt32(479315616, "X1");
-            CheckUInt32(1779227088, "X1");
-            CheckUInt32(1772290545, "X1");
+            CheckUInt32(1922449661, "X1");
+            CheckUInt32(1965196121, "X1");
+            CheckUInt32(2102507733, "X1");
+            CheckUInt32(1881546760, "X1");
+            CheckUInt32(2011982483, "X1");
             
             // format X2
             CheckUInt32(UInt32.MinValue, "X2");
             CheckUInt32(UInt32.MaxValue, "X2");
             CheckUInt32(0, "X2");
-            CheckUInt32(240334099, "X2");
-            CheckUInt32(1644497638, "X2");
-            CheckUInt32(702125428, "X2");
-            CheckUInt32(1705966073, "X2");
-            CheckUInt32(1070604062, "X2");
+            CheckUInt32(120183458, "X2");
+            CheckUInt32(1891211062, "X2");
+            CheckUInt32(389510842, "X2");
+            CheckUInt32(593315052, "X2");
+            CheckUInt32(870517711, "X2");
             
             // format X3
             CheckUInt32(UInt32.MinValue, "X3");
             CheckUInt32(UInt32.MaxValue, "X3");
             CheckUInt32(0, "X3");
-            CheckUInt32(1196608493, "X3");
-            CheckUInt32(80473, "X3");
-            CheckUInt32(1929403583, "X3");
-            CheckUInt32(584777619, "X3");
-            CheckUInt32(274896333, "X3");
+            CheckUInt32(1423697051, "X3");
+            CheckUInt32(1971596021, "X3");
+            CheckUInt32(2144642884, "X3");
+            CheckUInt32(1035299813, "X3");
+            CheckUInt32(705486975, "X3");
             
             // format X4
             CheckUInt32(UInt32.MinValue, "X4");
             CheckUInt32(UInt32.MaxValue, "X4");
             CheckUInt32(0, "X4");
-            CheckUInt32(831750949, "X4");
-            CheckUInt32(41447018, "X4");
-            CheckUInt32(830655237, "X4");
-            CheckUInt32(1446725622, "X4");
-            CheckUInt32(911699139, "X4");
+            CheckUInt32(1477299683, "X4");
+            CheckUInt32(2024687790, "X4");
+            CheckUInt32(1180011687, "X4");
+            CheckUInt32(1165509354, "X4");
+            CheckUInt32(723522378, "X4");
             
             // format X5
             CheckUInt32(UInt32.MinValue, "X5");
             CheckUInt32(UInt32.MaxValue, "X5");
             CheckUInt32(0, "X5");
-            CheckUInt32(261640689, "X5");
-            CheckUInt32(1560463492, "X5");
-            CheckUInt32(675155787, "X5");
-            CheckUInt32(1155384887, "X5");
-            CheckUInt32(988699604, "X5");
+            CheckUInt32(1026300808, "X5");
+            CheckUInt32(1633877968, "X5");
+            CheckUInt32(905949945, "X5");
+            CheckUInt32(775561645, "X5");
+            CheckUInt32(735443678, "X5");
         }
         
         [Fact]
@@ -1569,71 +1944,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt32(UInt32.MinValue, "x");
             CheckUInt32(UInt32.MaxValue, "x");
             CheckUInt32(0, "x");
-            CheckUInt32(1609178412, "x");
-            CheckUInt32(515385407, "x");
-            CheckUInt32(1262196734, "x");
-            CheckUInt32(326406404, "x");
-            CheckUInt32(269700387, "x");
+            CheckUInt32(1636494232, "x");
+            CheckUInt32(637606963, "x");
+            CheckUInt32(1892505391, "x");
+            CheckUInt32(1926238729, "x");
+            CheckUInt32(353809847, "x");
             
             // format x0
             CheckUInt32(UInt32.MinValue, "x0");
             CheckUInt32(UInt32.MaxValue, "x0");
             CheckUInt32(0, "x0");
-            CheckUInt32(1607118490, "x0");
-            CheckUInt32(241815952, "x0");
-            CheckUInt32(1798886526, "x0");
-            CheckUInt32(1014377184, "x0");
-            CheckUInt32(46927823, "x0");
+            CheckUInt32(866719890, "x0");
+            CheckUInt32(1568510681, "x0");
+            CheckUInt32(52852191, "x0");
+            CheckUInt32(1245126006, "x0");
+            CheckUInt32(1117370648, "x0");
             
             // format x1
             CheckUInt32(UInt32.MinValue, "x1");
             CheckUInt32(UInt32.MaxValue, "x1");
             CheckUInt32(0, "x1");
-            CheckUInt32(1634711510, "x1");
-            CheckUInt32(995984795, "x1");
-            CheckUInt32(2086633413, "x1");
-            CheckUInt32(55654185, "x1");
-            CheckUInt32(640844181, "x1");
+            CheckUInt32(245516760, "x1");
+            CheckUInt32(1548044343, "x1");
+            CheckUInt32(917612633, "x1");
+            CheckUInt32(793473831, "x1");
+            CheckUInt32(163224233, "x1");
             
             // format x2
             CheckUInt32(UInt32.MinValue, "x2");
             CheckUInt32(UInt32.MaxValue, "x2");
             CheckUInt32(0, "x2");
-            CheckUInt32(10609277, "x2");
-            CheckUInt32(1454677060, "x2");
-            CheckUInt32(810374735, "x2");
-            CheckUInt32(204414895, "x2");
-            CheckUInt32(1165012300, "x2");
+            CheckUInt32(150944073, "x2");
+            CheckUInt32(1104939015, "x2");
+            CheckUInt32(1610691357, "x2");
+            CheckUInt32(425727183, "x2");
+            CheckUInt32(568249857, "x2");
             
             // format x3
             CheckUInt32(UInt32.MinValue, "x3");
             CheckUInt32(UInt32.MaxValue, "x3");
             CheckUInt32(0, "x3");
-            CheckUInt32(284330494, "x3");
-            CheckUInt32(845660173, "x3");
-            CheckUInt32(262177657, "x3");
-            CheckUInt32(105940425, "x3");
-            CheckUInt32(430369580, "x3");
+            CheckUInt32(926516597, "x3");
+            CheckUInt32(1457114277, "x3");
+            CheckUInt32(665589148, "x3");
+            CheckUInt32(759438835, "x3");
+            CheckUInt32(1384377040, "x3");
             
             // format x4
             CheckUInt32(UInt32.MinValue, "x4");
             CheckUInt32(UInt32.MaxValue, "x4");
             CheckUInt32(0, "x4");
-            CheckUInt32(950643710, "x4");
-            CheckUInt32(1004426262, "x4");
-            CheckUInt32(752390155, "x4");
-            CheckUInt32(1322632598, "x4");
-            CheckUInt32(674399777, "x4");
+            CheckUInt32(1213140557, "x4");
+            CheckUInt32(503015848, "x4");
+            CheckUInt32(12739448, "x4");
+            CheckUInt32(775492765, "x4");
+            CheckUInt32(1756192812, "x4");
             
             // format x5
             CheckUInt32(UInt32.MinValue, "x5");
             CheckUInt32(UInt32.MaxValue, "x5");
             CheckUInt32(0, "x5");
-            CheckUInt32(729213789, "x5");
-            CheckUInt32(1654825975, "x5");
-            CheckUInt32(1471414376, "x5");
-            CheckUInt32(790527484, "x5");
-            CheckUInt32(163112133, "x5");
+            CheckUInt32(288571693, "x5");
+            CheckUInt32(1059246176, "x5");
+            CheckUInt32(1326946088, "x5");
+            CheckUInt32(1146103082, "x5");
+            CheckUInt32(375488251, "x5");
         }
         
         public void CheckInt32(Int32 value, string format)
@@ -1654,71 +2029,71 @@ namespace System.Text.Formatting.Tests
             CheckInt32(Int32.MinValue, "D");
             CheckInt32(Int32.MaxValue, "D");
             CheckInt32(0, "D");
-            CheckInt32(-1872432341, "D");
-            CheckInt32(-375719026, "D");
-            CheckInt32(1610969218, "D");
-            CheckInt32(348677593, "D");
-            CheckInt32(-537849798, "D");
+            CheckInt32(-1630060144, "D");
+            CheckInt32(610755759, "D");
+            CheckInt32(3797820, "D");
+            CheckInt32(-1918743832, "D");
+            CheckInt32(-2065412814, "D");
             
             // format D0
             CheckInt32(Int32.MinValue, "D0");
             CheckInt32(Int32.MaxValue, "D0");
             CheckInt32(0, "D0");
-            CheckInt32(-1983249803, "D0");
-            CheckInt32(775001051, "D0");
-            CheckInt32(-901089864, "D0");
-            CheckInt32(-750088759, "D0");
-            CheckInt32(-2137856236, "D0");
+            CheckInt32(2076738986, "D0");
+            CheckInt32(386537855, "D0");
+            CheckInt32(-572578307, "D0");
+            CheckInt32(-23186613, "D0");
+            CheckInt32(-207311790, "D0");
             
             // format D1
             CheckInt32(Int32.MinValue, "D1");
             CheckInt32(Int32.MaxValue, "D1");
             CheckInt32(0, "D1");
-            CheckInt32(-763518241, "D1");
-            CheckInt32(1156256308, "D1");
-            CheckInt32(-1466540326, "D1");
-            CheckInt32(-1636909446, "D1");
-            CheckInt32(339977406, "D1");
+            CheckInt32(-179379957, "D1");
+            CheckInt32(1133066555, "D1");
+            CheckInt32(-1288152939, "D1");
+            CheckInt32(1555771232, "D1");
+            CheckInt32(1636416840, "D1");
             
             // format D2
             CheckInt32(Int32.MinValue, "D2");
             CheckInt32(Int32.MaxValue, "D2");
             CheckInt32(0, "D2");
-            CheckInt32(-2127369184, "D2");
-            CheckInt32(1296105928, "D2");
-            CheckInt32(-915895491, "D2");
-            CheckInt32(-1078958038, "D2");
-            CheckInt32(740929322, "D2");
+            CheckInt32(1333754230, "D2");
+            CheckInt32(-1918993200, "D2");
+            CheckInt32(-680647740, "D2");
+            CheckInt32(-494183257, "D2");
+            CheckInt32(421929361, "D2");
             
             // format D3
             CheckInt32(Int32.MinValue, "D3");
             CheckInt32(Int32.MaxValue, "D3");
             CheckInt32(0, "D3");
-            CheckInt32(2083136546, "D3");
-            CheckInt32(-1871811510, "D3");
-            CheckInt32(-594603428, "D3");
-            CheckInt32(229425209, "D3");
-            CheckInt32(-421542738, "D3");
+            CheckInt32(1155256413, "D3");
+            CheckInt32(747659982, "D3");
+            CheckInt32(-1455121702, "D3");
+            CheckInt32(-116477994, "D3");
+            CheckInt32(202914459, "D3");
             
             // format D4
             CheckInt32(Int32.MinValue, "D4");
             CheckInt32(Int32.MaxValue, "D4");
             CheckInt32(0, "D4");
-            CheckInt32(2126608678, "D4");
-            CheckInt32(-1481041791, "D4");
-            CheckInt32(1547077540, "D4");
-            CheckInt32(-1373528244, "D4");
-            CheckInt32(2117209008, "D4");
+            CheckInt32(-265385084, "D4");
+            CheckInt32(1119634299, "D4");
+            CheckInt32(196108295, "D4");
+            CheckInt32(1013122761, "D4");
+            CheckInt32(-1098835917, "D4");
             
             // format D5
             CheckInt32(Int32.MinValue, "D5");
             CheckInt32(Int32.MaxValue, "D5");
             CheckInt32(0, "D5");
-            CheckInt32(1465366743, "D5");
-            CheckInt32(-575048994, "D5");
-            CheckInt32(807782934, "D5");
-            CheckInt32(-953674972, "D5");
-            CheckInt32(2037469598, "D5");
+            CheckInt32(446898783, "D5");
+            CheckInt32(1410583683, "D5");
+            CheckInt32(-1273699634, "D5");
+            CheckInt32(1335565605, "D5");
+            CheckInt32(321637382, "D5");
         }
         
         [Fact]
@@ -1729,71 +2104,71 @@ namespace System.Text.Formatting.Tests
             CheckInt32(Int32.MinValue, "d");
             CheckInt32(Int32.MaxValue, "d");
             CheckInt32(0, "d");
-            CheckInt32(-2022972889, "d");
-            CheckInt32(1877295215, "d");
-            CheckInt32(768716209, "d");
-            CheckInt32(-528879891, "d");
-            CheckInt32(-1448917047, "d");
+            CheckInt32(-1574662187, "d");
+            CheckInt32(-58293402, "d");
+            CheckInt32(801154313, "d");
+            CheckInt32(1371841478, "d");
+            CheckInt32(1234223635, "d");
             
             // format d0
             CheckInt32(Int32.MinValue, "d0");
             CheckInt32(Int32.MaxValue, "d0");
             CheckInt32(0, "d0");
-            CheckInt32(-373267020, "d0");
-            CheckInt32(-54711194, "d0");
-            CheckInt32(1486072648, "d0");
-            CheckInt32(191012276, "d0");
-            CheckInt32(492948157, "d0");
+            CheckInt32(247226049, "d0");
+            CheckInt32(1221928612, "d0");
+            CheckInt32(563413872, "d0");
+            CheckInt32(1248947601, "d0");
+            CheckInt32(-221877286, "d0");
             
             // format d1
             CheckInt32(Int32.MinValue, "d1");
             CheckInt32(Int32.MaxValue, "d1");
             CheckInt32(0, "d1");
-            CheckInt32(-402263780, "d1");
-            CheckInt32(1551867333, "d1");
-            CheckInt32(-892336664, "d1");
-            CheckInt32(-1503068431, "d1");
-            CheckInt32(657972666, "d1");
+            CheckInt32(-1286599289, "d1");
+            CheckInt32(272350236, "d1");
+            CheckInt32(266164702, "d1");
+            CheckInt32(1294497361, "d1");
+            CheckInt32(1173252633, "d1");
             
             // format d2
             CheckInt32(Int32.MinValue, "d2");
             CheckInt32(Int32.MaxValue, "d2");
             CheckInt32(0, "d2");
-            CheckInt32(2042155134, "d2");
-            CheckInt32(-56522764, "d2");
-            CheckInt32(1991946907, "d2");
-            CheckInt32(1454273513, "d2");
-            CheckInt32(-1464925813, "d2");
+            CheckInt32(-917983443, "d2");
+            CheckInt32(-836300593, "d2");
+            CheckInt32(260168833, "d2");
+            CheckInt32(520730013, "d2");
+            CheckInt32(-536021689, "d2");
             
             // format d3
             CheckInt32(Int32.MinValue, "d3");
             CheckInt32(Int32.MaxValue, "d3");
             CheckInt32(0, "d3");
-            CheckInt32(1090344699, "d3");
-            CheckInt32(1178248801, "d3");
-            CheckInt32(635009972, "d3");
-            CheckInt32(1965196120, "d3");
-            CheckInt32(1881546759, "d3");
+            CheckInt32(286200847, "d3");
+            CheckInt32(982154081, "d3");
+            CheckInt32(1540351375, "d3");
+            CheckInt32(-1419455793, "d3");
+            CheckInt32(673199983, "d3");
             
             // format d4
             CheckInt32(Int32.MinValue, "d4");
             CheckInt32(Int32.MaxValue, "d4");
             CheckInt32(0, "d4");
-            CheckInt32(-120183460, "d4");
-            CheckInt32(-389510844, "d4");
-            CheckInt32(870517710, "d4");
-            CheckInt32(-1971596023, "d4");
-            CheckInt32(-1035299815, "d4");
+            CheckInt32(606693129, "d4");
+            CheckInt32(-1894158641, "d4");
+            CheckInt32(1281224262, "d4");
+            CheckInt32(-527133871, "d4");
+            CheckInt32(1375567244, "d4");
             
             // format d5
             CheckInt32(Int32.MinValue, "d5");
             CheckInt32(Int32.MaxValue, "d5");
             CheckInt32(0, "d5");
-            CheckInt32(-1477299685, "d5");
-            CheckInt32(-1180011689, "d5");
-            CheckInt32(-723522380, "d5");
-            CheckInt32(1633877967, "d5");
-            CheckInt32(-775561647, "d5");
+            CheckInt32(474768840, "d5");
+            CheckInt32(-1807828952, "d5");
+            CheckInt32(-264104098, "d5");
+            CheckInt32(-1709016317, "d5");
+            CheckInt32(1688900634, "d5");
         }
         
         [Fact]
@@ -1804,11 +2179,86 @@ namespace System.Text.Formatting.Tests
             CheckInt32(Int32.MinValue, "G");
             CheckInt32(Int32.MaxValue, "G");
             CheckInt32(0, "G");
-            CheckInt32(1636494231, "G");
-            CheckInt32(1892505390, "G");
-            CheckInt32(-353809849, "G");
-            CheckInt32(1568510680, "G");
-            CheckInt32(-1245126008, "G");
+            CheckInt32(-234000805, "G");
+            CheckInt32(45795509, "G");
+            CheckInt32(-883888212, "G");
+            CheckInt32(1590618748, "G");
+            CheckInt32(-1388967856, "G");
+        }
+        
+        [Fact]
+        public void Int32FormatN()
+        {
+            
+            // format N
+            CheckInt32(Int32.MinValue, "N");
+            CheckInt32(Int32.MaxValue, "N");
+            CheckInt32(0, "N");
+            CheckInt32(1389383512, "N");
+            CheckInt32(985329788, "N");
+            CheckInt32(-1140271487, "N");
+            CheckInt32(-401250726, "N");
+            CheckInt32(-648833943, "N");
+            
+            // format N0
+            CheckInt32(Int32.MinValue, "N0");
+            CheckInt32(Int32.MaxValue, "N0");
+            CheckInt32(0, "N0");
+            CheckInt32(1086250753, "N0");
+            CheckInt32(-249818756, "N0");
+            CheckInt32(-99556901, "N0");
+            CheckInt32(519179521, "N0");
+            CheckInt32(-1800127931, "N0");
+            
+            // format N1
+            CheckInt32(Int32.MinValue, "N1");
+            CheckInt32(Int32.MaxValue, "N1");
+            CheckInt32(0, "N1");
+            CheckInt32(-487532859, "N1");
+            CheckInt32(-2067580876, "N1");
+            CheckInt32(284968011, "N1");
+            CheckInt32(-707952901, "N1");
+            CheckInt32(415143761, "N1");
+            
+            // format N2
+            CheckInt32(Int32.MinValue, "N2");
+            CheckInt32(Int32.MaxValue, "N2");
+            CheckInt32(0, "N2");
+            CheckInt32(-1706237901, "N2");
+            CheckInt32(34973609, "N2");
+            CheckInt32(897898790, "N2");
+            CheckInt32(875465563, "N2");
+            CheckInt32(-494471185, "N2");
+            
+            // format N3
+            CheckInt32(Int32.MinValue, "N3");
+            CheckInt32(Int32.MaxValue, "N3");
+            CheckInt32(0, "N3");
+            CheckInt32(1845533256, "N3");
+            CheckInt32(790520114, "N3");
+            CheckInt32(11262142, "N3");
+            CheckInt32(1521226495, "N3");
+            CheckInt32(-1695478294, "N3");
+            
+            // format N4
+            CheckInt32(Int32.MinValue, "N4");
+            CheckInt32(Int32.MaxValue, "N4");
+            CheckInt32(0, "N4");
+            CheckInt32(-587894942, "N4");
+            CheckInt32(702957576, "N4");
+            CheckInt32(-1877049970, "N4");
+            CheckInt32(-1912885922, "N4");
+            CheckInt32(-369315809, "N4");
+            
+            // format N5
+            CheckInt32(Int32.MinValue, "N5");
+            CheckInt32(Int32.MaxValue, "N5");
+            CheckInt32(0, "N5");
+            CheckInt32(-1603765782, "N5");
+            CheckInt32(-1269608506, "N5");
+            CheckInt32(-1699525230, "N5");
+            CheckInt32(-1209298589, "N5");
+            CheckInt32(1645807885, "N5");
         }
         
         [Fact]
@@ -1819,71 +2269,71 @@ namespace System.Text.Formatting.Tests
             CheckInt32(Int32.MinValue, "X");
             CheckInt32(Int32.MaxValue, "X");
             CheckInt32(0, "X");
-            CheckInt32(245516759, "X");
-            CheckInt32(917612632, "X");
-            CheckInt32(163224232, "X");
-            CheckInt32(1104939014, "X");
-            CheckInt32(425727182, "X");
+            CheckInt32(-1844907227, "X");
+            CheckInt32(1000423877, "X");
+            CheckInt32(-1743001434, "X");
+            CheckInt32(1337065266, "X");
+            CheckInt32(-1711908593, "X");
             
             // format X0
             CheckInt32(Int32.MinValue, "X0");
             CheckInt32(Int32.MaxValue, "X0");
             CheckInt32(0, "X0");
-            CheckInt32(926516596, "X0");
-            CheckInt32(665589147, "X0");
-            CheckInt32(1384377039, "X0");
-            CheckInt32(-503015850, "X0");
-            CheckInt32(-775492767, "X0");
+            CheckInt32(1609388677, "X0");
+            CheckInt32(-551128805, "X0");
+            CheckInt32(1733738507, "X0");
+            CheckInt32(-1616058082, "X0");
+            CheckInt32(-1428901748, "X0");
             
             // format X1
             CheckInt32(Int32.MinValue, "X1");
             CheckInt32(Int32.MaxValue, "X1");
             CheckInt32(0, "X1");
-            CheckInt32(-288571695, "X1");
-            CheckInt32(-1326946090, "X1");
-            CheckInt32(-375488253, "X1");
-            CheckInt32(-2146189320, "X1");
-            CheckInt32(239505204, "X1");
+            CheckInt32(1023867067, "X1");
+            CheckInt32(784229323, "X1");
+            CheckInt32(643586930, "X1");
+            CheckInt32(902139191, "X1");
+            CheckInt32(-878579576, "X1");
             
             // format X2
             CheckInt32(Int32.MinValue, "X2");
             CheckInt32(Int32.MaxValue, "X2");
             CheckInt32(0, "X2");
-            CheckInt32(-2002670019, "X2");
-            CheckInt32(-899516880, "X2");
-            CheckInt32(459970215, "X2");
-            CheckInt32(-1107075159, "X2");
-            CheckInt32(1002285120, "X2");
+            CheckInt32(-2075397315, "X2");
+            CheckInt32(151248240, "X2");
+            CheckInt32(613575489, "X2");
+            CheckInt32(1242783456, "X2");
+            CheckInt32(-352399029, "X2");
             
             // format X3
             CheckInt32(Int32.MinValue, "X3");
             CheckInt32(Int32.MaxValue, "X3");
             CheckInt32(0, "X3");
-            CheckInt32(2068845439, "X3");
-            CheckInt32(-480222764, "X3");
-            CheckInt32(1956410727, "X3");
-            CheckInt32(-2119501464, "X3");
-            CheckInt32(541861688, "X3");
+            CheckInt32(72216510, "X3");
+            CheckInt32(-1845217760, "X3");
+            CheckInt32(695234926, "X3");
+            CheckInt32(-1898482122, "X3");
+            CheckInt32(888429278, "X3");
             
             // format X4
             CheckInt32(Int32.MinValue, "X4");
             CheckInt32(Int32.MaxValue, "X4");
             CheckInt32(0, "X4");
-            CheckInt32(363704041, "X4");
-            CheckInt32(1424843072, "X4");
-            CheckInt32(828798954, "X4");
-            CheckInt32(-221098257, "X4");
-            CheckInt32(-417985582, "X4");
+            CheckInt32(1446144310, "X4");
+            CheckInt32(-1957416237, "X4");
+            CheckInt32(-433904139, "X4");
+            CheckInt32(728888713, "X4");
+            CheckInt32(1056671933, "X4");
             
             // format X5
             CheckInt32(Int32.MinValue, "X5");
             CheckInt32(Int32.MaxValue, "X5");
             CheckInt32(0, "X5");
-            CheckInt32(152238401, "X5");
-            CheckInt32(-1371186154, "X5");
-            CheckInt32(-713063489, "X5");
-            CheckInt32(557597398, "X5");
-            CheckInt32(-299468621, "X5");
+            CheckInt32(-1708613265, "X5");
+            CheckInt32(758380144, "X5");
+            CheckInt32(-1367325742, "X5");
+            CheckInt32(-907132180, "X5");
+            CheckInt32(1638052850, "X5");
         }
         
         [Fact]
@@ -1894,71 +2344,71 @@ namespace System.Text.Formatting.Tests
             CheckInt32(Int32.MinValue, "x");
             CheckInt32(Int32.MaxValue, "x");
             CheckInt32(0, "x");
-            CheckInt32(-106065402, "x");
-            CheckInt32(-1157937976, "x");
-            CheckInt32(-1834831021, "x");
-            CheckInt32(-579023416, "x");
-            CheckInt32(-1337176003, "x");
+            CheckInt32(367730753, "x");
+            CheckInt32(-1882141420, "x");
+            CheckInt32(1563884148, "x");
+            CheckInt32(1915572397, "x");
+            CheckInt32(-1789579947, "x");
             
             // format x0
             CheckInt32(Int32.MinValue, "x0");
             CheckInt32(Int32.MaxValue, "x0");
             CheckInt32(0, "x0");
-            CheckInt32(-1658042329, "x0");
-            CheckInt32(68894070, "x0");
-            CheckInt32(-1787577428, "x0");
-            CheckInt32(-493900759, "x0");
-            CheckInt32(-1236613859, "x0");
+            CheckInt32(1792407507, "x0");
+            CheckInt32(1574890342, "x0");
+            CheckInt32(-1945366384, "x0");
+            CheckInt32(472459573, "x0");
+            CheckInt32(-1951286599, "x0");
             
             // format x1
             CheckInt32(Int32.MinValue, "x1");
             CheckInt32(Int32.MaxValue, "x1");
             CheckInt32(0, "x1");
-            CheckInt32(-1855640734, "x1");
-            CheckInt32(2116035922, "x1");
-            CheckInt32(420339902, "x1");
-            CheckInt32(-799484108, "x1");
-            CheckInt32(-1641731950, "x1");
+            CheckInt32(-493371837, "x1");
+            CheckInt32(-93510427, "x1");
+            CheckInt32(-1852651546, "x1");
+            CheckInt32(1665029702, "x1");
+            CheckInt32(-2001717957, "x1");
             
             // format x2
             CheckInt32(Int32.MinValue, "x2");
             CheckInt32(Int32.MaxValue, "x2");
             CheckInt32(0, "x2");
-            CheckInt32(1769266202, "x2");
-            CheckInt32(-833597939, "x2");
-            CheckInt32(-1182087539, "x2");
-            CheckInt32(397833258, "x2");
-            CheckInt32(1949069468, "x2");
+            CheckInt32(-1785736832, "x2");
+            CheckInt32(-1674894608, "x2");
+            CheckInt32(-1868763912, "x2");
+            CheckInt32(1387584017, "x2");
+            CheckInt32(593306723, "x2");
             
             // format x3
             CheckInt32(Int32.MinValue, "x3");
             CheckInt32(Int32.MaxValue, "x3");
             CheckInt32(0, "x3");
-            CheckInt32(-754730819, "x3");
-            CheckInt32(-581817199, "x3");
-            CheckInt32(1170089057, "x3");
-            CheckInt32(425289183, "x3");
-            CheckInt32(781835582, "x3");
+            CheckInt32(-463511967, "x3");
+            CheckInt32(-1020996357, "x3");
+            CheckInt32(554671589, "x3");
+            CheckInt32(1593822595, "x3");
+            CheckInt32(-669998812, "x3");
             
             // format x4
             CheckInt32(Int32.MinValue, "x4");
             CheckInt32(Int32.MaxValue, "x4");
             CheckInt32(0, "x4");
-            CheckInt32(-661355659, "x4");
-            CheckInt32(-1658529775, "x4");
-            CheckInt32(1746964614, "x4");
-            CheckInt32(147925715, "x4");
-            CheckInt32(-1930058206, "x4");
+            CheckInt32(854536941, "x4");
+            CheckInt32(509618765, "x4");
+            CheckInt32(18106123, "x4");
+            CheckInt32(-372365298, "x4");
+            CheckInt32(309952688, "x4");
             
             // format x5
             CheckInt32(Int32.MinValue, "x5");
             CheckInt32(Int32.MaxValue, "x5");
             CheckInt32(0, "x5");
-            CheckInt32(-1613384625, "x5");
-            CheckInt32(1625385998, "x5");
-            CheckInt32(-574325742, "x5");
-            CheckInt32(-179524827, "x5");
-            CheckInt32(-2064232027, "x5");
+            CheckInt32(1230394810, "x5");
+            CheckInt32(1855918614, "x5");
+            CheckInt32(-459948389, "x5");
+            CheckInt32(209264422, "x5");
+            CheckInt32(-1068288296, "x5");
         }
         
         public void CheckUInt64(UInt64 value, string format)
@@ -1979,71 +2429,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt64(UInt64.MinValue, "D");
             CheckUInt64(UInt64.MaxValue, "D");
             CheckUInt64(0, "D");
-            CheckUInt64(49065525, "D");
-            CheckUInt64(1419455791, "D");
-            CheckUInt64(1608997862, "D");
-            CheckUInt64(673199984, "D");
-            CheckUInt64(518968815, "D");
+            CheckUInt64(1713055153, "D");
+            CheckUInt64(677647572, "D");
+            CheckUInt64(1695717938, "D");
+            CheckUInt64(117839680, "D");
+            CheckUInt64(2065946456, "D");
             
             // format D0
             CheckUInt64(UInt64.MinValue, "D0");
             CheckUInt64(UInt64.MaxValue, "D0");
             CheckUInt64(0, "D0");
-            CheckUInt64(606693130, "D0");
-            CheckUInt64(753748409, "D0");
-            CheckUInt64(1894158639, "D0");
-            CheckUInt64(1299031972, "D0");
-            CheckUInt64(1281224263, "D0");
+            CheckUInt64(1474636044, "D0");
+            CheckUInt64(1706178096, "D0");
+            CheckUInt64(1282523708, "D0");
+            CheckUInt64(1745615633, "D0");
+            CheckUInt64(2028197310, "D0");
             
             // format D1
             CheckUInt64(UInt64.MinValue, "D1");
             CheckUInt64(UInt64.MaxValue, "D1");
             CheckUInt64(0, "D1");
-            CheckUInt64(1149373001, "D1");
-            CheckUInt64(527133869, "D1");
-            CheckUInt64(1423941464, "D1");
-            CheckUInt64(1375567245, "D1");
-            CheckUInt64(139798657, "D1");
+            CheckUInt64(1752131917, "D1");
+            CheckUInt64(1696218115, "D1");
+            CheckUInt64(707337403, "D1");
+            CheckUInt64(1587547739, "D1");
+            CheckUInt64(661185116, "D1");
             
             // format D2
             CheckUInt64(UInt64.MinValue, "D2");
             CheckUInt64(UInt64.MaxValue, "D2");
             CheckUInt64(0, "D2");
-            CheckUInt64(474768841, "D2");
-            CheckUInt64(1860795353, "D2");
-            CheckUInt64(1807828950, "D2");
-            CheckUInt64(1634742668, "D2");
-            CheckUInt64(264104095, "D2");
+            CheckUInt64(1020145667, "D2");
+            CheckUInt64(1075441638, "D2");
+            CheckUInt64(418816529, "D2");
+            CheckUInt64(358845196, "D2");
+            CheckUInt64(2080723960, "D2");
             
             // format D3
             CheckUInt64(UInt64.MinValue, "D3");
             CheckUInt64(UInt64.MaxValue, "D3");
             CheckUInt64(0, "D3");
-            CheckUInt64(99300334, "D3");
-            CheckUInt64(1709016315, "D3");
-            CheckUInt64(1439354056, "D3");
-            CheckUInt64(1688900635, "D3");
-            CheckUInt64(1097512897, "D3");
+            CheckUInt64(607903294, "D3");
+            CheckUInt64(1805729823, "D3");
+            CheckUInt64(1632342960, "D3");
+            CheckUInt64(227893441, "D3");
+            CheckUInt64(603052106, "D3");
             
             // format D4
             CheckUInt64(UInt64.MinValue, "D4");
             CheckUInt64(UInt64.MaxValue, "D4");
             CheckUInt64(0, "D4");
-            CheckUInt64(234000803, "D4");
-            CheckUInt64(1771045250, "D4");
-            CheckUInt64(45795510, "D4");
-            CheckUInt64(1795035191, "D4");
-            CheckUInt64(883888210, "D4");
+            CheckUInt64(2072759427, "D4");
+            CheckUInt64(1457784470, "D4");
+            CheckUInt64(747138468, "D4");
+            CheckUInt64(498521977, "D4");
+            CheckUInt64(347324486, "D4");
             
             // format D5
             CheckUInt64(UInt64.MinValue, "D5");
             CheckUInt64(UInt64.MaxValue, "D5");
             CheckUInt64(0, "D5");
-            CheckUInt64(1107074462, "D5");
-            CheckUInt64(1590618749, "D5");
-            CheckUInt64(355601859, "D5");
-            CheckUInt64(1388967854, "D5");
-            CheckUInt64(217099178, "D5");
+            CheckUInt64(1762673458, "D5");
+            CheckUInt64(395883573, "D5");
+            CheckUInt64(1048006941, "D5");
+            CheckUInt64(1852384665, "D5");
+            CheckUInt64(848598710, "D5");
         }
         
         [Fact]
@@ -2054,71 +2504,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt64(UInt64.MinValue, "d");
             CheckUInt64(UInt64.MaxValue, "d");
             CheckUInt64(0, "d");
-            CheckUInt64(1389383513, "d");
-            CheckUInt64(1832983147, "d");
-            CheckUInt64(985329789, "d");
-            CheckUInt64(654283819, "d");
-            CheckUInt64(1140271485, "d");
+            CheckUInt64(176889370, "d");
+            CheckUInt64(1217356872, "d");
+            CheckUInt64(391779086, "d");
+            CheckUInt64(1337615268, "d");
+            CheckUInt64(690953727, "d");
             
             // format d0
             CheckUInt64(UInt64.MinValue, "d0");
             CheckUInt64(UInt64.MaxValue, "d0");
             CheckUInt64(0, "d0");
-            CheckUInt64(164235032, "d0");
-            CheckUInt64(401250724, "d0");
-            CheckUInt64(1684752266, "d0");
-            CheckUInt64(648833941, "d0");
-            CheckUInt64(1258279480, "d0");
+            CheckUInt64(229345501, "d0");
+            CheckUInt64(1237325235, "d0");
+            CheckUInt64(2131205856, "d0");
+            CheckUInt64(429239026, "d0");
+            CheckUInt64(760765013, "d0");
             
             // format d1
             CheckUInt64(UInt64.MinValue, "d1");
             CheckUInt64(UInt64.MaxValue, "d1");
             CheckUInt64(0, "d1");
-            CheckUInt64(1086250754, "d1");
-            CheckUInt64(1244272197, "d1");
-            CheckUInt64(249818754, "d1");
-            CheckUInt64(396223030, "d1");
-            CheckUInt64(99556899, "d1");
+            CheckUInt64(1681660343, "d1");
+            CheckUInt64(1978382429, "d1");
+            CheckUInt64(268370876, "d1");
+            CheckUInt64(1760156418, "d1");
+            CheckUInt64(1587286367, "d1");
             
             // format d2
             CheckUInt64(UInt64.MinValue, "d2");
             CheckUInt64(UInt64.MaxValue, "d2");
             CheckUInt64(0, "d2");
-            CheckUInt64(572889142, "d2");
-            CheckUInt64(519179522, "d2");
-            CheckUInt64(1494895061, "d2");
-            CheckUInt64(1800127929, "d2");
-            CheckUInt64(1441051042, "d2");
+            CheckUInt64(1279389113, "d2");
+            CheckUInt64(1937931541, "d2");
+            CheckUInt64(839093827, "d2");
+            CheckUInt64(1135047981, "d2");
+            CheckUInt64(357194498, "d2");
             
             // format d3
             CheckUInt64(UInt64.MinValue, "d3");
             CheckUInt64(UInt64.MaxValue, "d3");
             CheckUInt64(0, "d3");
-            CheckUInt64(487532857, "d3");
-            CheckUInt64(2127585382, "d3");
-            CheckUInt64(2067580874, "d3");
-            CheckUInt64(1723170734, "d3");
-            CheckUInt64(284968012, "d3");
+            CheckUInt64(2054808977, "d3");
+            CheckUInt64(1192788259, "d3");
+            CheckUInt64(1467824497, "d3");
+            CheckUInt64(1662271221, "d3");
+            CheckUInt64(2140670676, "d3");
             
             // format d4
             CheckUInt64(UInt64.MinValue, "d4");
             CheckUInt64(UInt64.MaxValue, "d4");
             CheckUInt64(0, "d4");
-            CheckUInt64(983131527, "d4");
-            CheckUInt64(707952899, "d4");
-            CheckUInt64(99123448, "d4");
-            CheckUInt64(415143762, "d4");
-            CheckUInt64(174149801, "d4");
+            CheckUInt64(16851574, "d4");
+            CheckUInt64(959039628, "d4");
+            CheckUInt64(784001731, "d4");
+            CheckUInt64(1398291147, "d4");
+            CheckUInt64(265523852, "d4");
             
             // format d5
             CheckUInt64(UInt64.MinValue, "d5");
             CheckUInt64(UInt64.MaxValue, "d5");
             CheckUInt64(0, "d5");
-            CheckUInt64(1706237899, "d5");
-            CheckUInt64(171532010, "d5");
-            CheckUInt64(34973610, "d5");
-            CheckUInt64(1158468067, "d5");
-            CheckUInt64(897898791, "d5");
+            CheckUInt64(1356248344, "d5");
+            CheckUInt64(648211174, "d5");
+            CheckUInt64(1002436385, "d5");
+            CheckUInt64(738949029, "d5");
+            CheckUInt64(484295746, "d5");
         }
         
         [Fact]
@@ -2129,11 +2579,86 @@ namespace System.Text.Formatting.Tests
             CheckUInt64(UInt64.MinValue, "G");
             CheckUInt64(UInt64.MaxValue, "G");
             CheckUInt64(0, "G");
-            CheckUInt64(789269341, "G");
-            CheckUInt64(875465564, "G");
-            CheckUInt64(1153545131, "G");
-            CheckUInt64(494471183, "G");
-            CheckUInt64(99869064, "G");
+            CheckUInt64(1950272442, "G");
+            CheckUInt64(683662552, "G");
+            CheckUInt64(1228684908, "G");
+            CheckUInt64(1815375116, "G");
+            CheckUInt64(1851378459, "G");
+        }
+        
+        [Fact]
+        public void UInt64FormatN()
+        {
+            
+            // format N
+            CheckUInt64(UInt64.MinValue, "N");
+            CheckUInt64(UInt64.MaxValue, "N");
+            CheckUInt64(0, "N");
+            CheckUInt64(1518061706, "N");
+            CheckUInt64(1822007614, "N");
+            CheckUInt64(1203103934, "N");
+            CheckUInt64(1614612075, "N");
+            CheckUInt64(1068875410, "N");
+            
+            // format N0
+            CheckUInt64(UInt64.MinValue, "N0");
+            CheckUInt64(UInt64.MaxValue, "N0");
+            CheckUInt64(0, "N0");
+            CheckUInt64(94376998, "N0");
+            CheckUInt64(1189413594, "N0");
+            CheckUInt64(1134465697, "N0");
+            CheckUInt64(1058719257, "N0");
+            CheckUInt64(1215419020, "N0");
+            
+            // format N1
+            CheckUInt64(UInt64.MinValue, "N1");
+            CheckUInt64(UInt64.MaxValue, "N1");
+            CheckUInt64(0, "N1");
+            CheckUInt64(1972225564, "N1");
+            CheckUInt64(1704273393, "N1");
+            CheckUInt64(2060442607, "N1");
+            CheckUInt64(1495190167, "N1");
+            CheckUInt64(941273380, "N1");
+            
+            // format N2
+            CheckUInt64(UInt64.MinValue, "N2");
+            CheckUInt64(UInt64.MaxValue, "N2");
+            CheckUInt64(0, "N2");
+            CheckUInt64(1131584758, "N2");
+            CheckUInt64(1897016022, "N2");
+            CheckUInt64(876991512, "N2");
+            CheckUInt64(1344428239, "N2");
+            CheckUInt64(674102153, "N2");
+            
+            // format N3
+            CheckUInt64(UInt64.MinValue, "N3");
+            CheckUInt64(UInt64.MaxValue, "N3");
+            CheckUInt64(0, "N3");
+            CheckUInt64(1417789520, "N3");
+            CheckUInt64(453323504, "N3");
+            CheckUInt64(732914709, "N3");
+            CheckUInt64(163715174, "N3");
+            CheckUInt64(1552000316, "N3");
+            
+            // format N4
+            CheckUInt64(UInt64.MinValue, "N4");
+            CheckUInt64(UInt64.MaxValue, "N4");
+            CheckUInt64(0, "N4");
+            CheckUInt64(1033449169, "N4");
+            CheckUInt64(975946044, "N4");
+            CheckUInt64(1676905494, "N4");
+            CheckUInt64(1275860672, "N4");
+            CheckUInt64(1784497572, "N4");
+            
+            // format N5
+            CheckUInt64(UInt64.MinValue, "N5");
+            CheckUInt64(UInt64.MaxValue, "N5");
+            CheckUInt64(0, "N5");
+            CheckUInt64(595726561, "N5");
+            CheckUInt64(709246633, "N5");
+            CheckUInt64(1171202358, "N5");
+            CheckUInt64(1431153169, "N5");
+            CheckUInt64(986616439, "N5");
         }
         
         [Fact]
@@ -2144,71 +2669,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt64(UInt64.MinValue, "X");
             CheckUInt64(UInt64.MaxValue, "X");
             CheckUInt64(0, "X");
-            CheckUInt64(1845533257, "X");
-            CheckUInt64(24264049, "X");
-            CheckUInt64(790520115, "X");
-            CheckUInt64(430621155, "X");
-            CheckUInt64(11262143, "X");
+            CheckUInt64(232801363, "X");
+            CheckUInt64(2137167972, "X");
+            CheckUInt64(2000696069, "X");
+            CheckUInt64(593395811, "X");
+            CheckUInt64(2046293678, "X");
             
             // format X0
             CheckUInt64(UInt64.MinValue, "X0");
             CheckUInt64(UInt64.MaxValue, "X0");
             CheckUInt64(0, "X0");
-            CheckUInt64(1137212253, "X0");
-            CheckUInt64(1521226496, "X0");
-            CheckUInt64(1797056127, "X0");
-            CheckUInt64(1695478292, "X0");
-            CheckUInt64(310999068, "X0");
+            CheckUInt64(974921627, "X0");
+            CheckUInt64(1972057578, "X0");
+            CheckUInt64(1872766121, "X0");
+            CheckUInt64(182872127, "X0");
+            CheckUInt64(440781935, "X0");
             
             // format X1
             CheckUInt64(UInt64.MinValue, "X1");
             CheckUInt64(UInt64.MaxValue, "X1");
             CheckUInt64(0, "X1");
-            CheckUInt64(587894940, "X1");
-            CheckUInt64(95723688, "X1");
-            CheckUInt64(702957577, "X1");
-            CheckUInt64(2095400459, "X1");
-            CheckUInt64(1877049968, "X1");
+            CheckUInt64(1799458598, "X1");
+            CheckUInt64(735252214, "X1");
+            CheckUInt64(1654729865, "X1");
+            CheckUInt64(1945159296, "X1");
+            CheckUInt64(1500194635, "X1");
             
             // format X2
             CheckUInt64(UInt64.MinValue, "X2");
             CheckUInt64(UInt64.MaxValue, "X2");
             CheckUInt64(0, "X2");
-            CheckUInt64(1409281778, "X2");
-            CheckUInt64(1912885920, "X2");
-            CheckUInt64(1409642702, "X2");
-            CheckUInt64(369315807, "X2");
-            CheckUInt64(157139958, "X2");
+            CheckUInt64(53256420, "X2");
+            CheckUInt64(1954154687, "X2");
+            CheckUInt64(2031740316, "X2");
+            CheckUInt64(1141272963, "X2");
+            CheckUInt64(433588939, "X2");
             
             // format X3
             CheckUInt64(UInt64.MinValue, "X3");
             CheckUInt64(UInt64.MaxValue, "X3");
             CheckUInt64(0, "X3");
-            CheckUInt64(1603765780, "X3");
-            CheckUInt64(302127276, "X3");
-            CheckUInt64(1269608504, "X3");
-            CheckUInt64(474684140, "X3");
-            CheckUInt64(1699525228, "X3");
+            CheckUInt64(1064738202, "X3");
+            CheckUInt64(1089092905, "X3");
+            CheckUInt64(1039388760, "X3");
+            CheckUInt64(62611759, "X3");
+            CheckUInt64(35426241, "X3");
             
             // format X4
             CheckUInt64(UInt64.MinValue, "X4");
             CheckUInt64(UInt64.MaxValue, "X4");
             CheckUInt64(0, "X4");
-            CheckUInt64(914718744, "X4");
-            CheckUInt64(1209298587, "X4");
-            CheckUInt64(1238834334, "X4");
-            CheckUInt64(1645807886, "X4");
-            CheckUInt64(1457771205, "X4");
+            CheckUInt64(1265914601, "X4");
+            CheckUInt64(1659991747, "X4");
+            CheckUInt64(2006088672, "X4");
+            CheckUInt64(1421705332, "X4");
+            CheckUInt64(619692459, "X4");
             
             // format X5
             CheckUInt64(UInt64.MinValue, "X5");
             CheckUInt64(UInt64.MaxValue, "X5");
             CheckUInt64(0, "X5");
-            CheckUInt64(1844907225, "X5");
-            CheckUInt64(1513118038, "X5");
-            CheckUInt64(1000423878, "X5");
-            CheckUInt64(1700258865, "X5");
-            CheckUInt64(1743001432, "X5");
+            CheckUInt64(1262978931, "X5");
+            CheckUInt64(533071035, "X5");
+            CheckUInt64(629289438, "X5");
+            CheckUInt64(508573728, "X5");
+            CheckUInt64(708472017, "X5");
         }
         
         [Fact]
@@ -2219,71 +2744,71 @@ namespace System.Text.Formatting.Tests
             CheckUInt64(UInt64.MinValue, "x");
             CheckUInt64(UInt64.MaxValue, "x");
             CheckUInt64(0, "x");
-            CheckUInt64(463268808, "x");
-            CheckUInt64(1337065267, "x");
-            CheckUInt64(1636959719, "x");
-            CheckUInt64(1711908591, "x");
-            CheckUInt64(1295239406, "x");
+            CheckUInt64(1141900433, "x");
+            CheckUInt64(2043803600, "x");
+            CheckUInt64(283595701, "x");
+            CheckUInt64(1445618208, "x");
+            CheckUInt64(1846664173, "x");
             
             // format x0
             CheckUInt64(UInt64.MinValue, "x0");
             CheckUInt64(UInt64.MaxValue, "x0");
             CheckUInt64(0, "x0");
-            CheckUInt64(1609388678, "x0");
-            CheckUInt64(1058380419, "x0");
-            CheckUInt64(551128803, "x0");
-            CheckUInt64(104144694, "x0");
-            CheckUInt64(1733738508, "x0");
+            CheckUInt64(1593215589, "x0");
+            CheckUInt64(728041030, "x0");
+            CheckUInt64(550042582, "x0");
+            CheckUInt64(1870416886, "x0");
+            CheckUInt64(1900025365, "x0");
             
             // format x1
             CheckUInt64(UInt64.MinValue, "x1");
             CheckUInt64(UInt64.MaxValue, "x1");
             CheckUInt64(0, "x1");
-            CheckUInt64(1610514211, "x1");
-            CheckUInt64(1616058080, "x1");
-            CheckUInt64(87056798, "x1");
-            CheckUInt64(1428901746, "x1");
-            CheckUInt64(1636100660, "x1");
+            CheckUInt64(298196955, "x1");
+            CheckUInt64(1468699826, "x1");
+            CheckUInt64(1879229845, "x1");
+            CheckUInt64(1923149684, "x1");
+            CheckUInt64(1731241152, "x1");
             
             // format x2
             CheckUInt64(UInt64.MinValue, "x2");
             CheckUInt64(UInt64.MaxValue, "x2");
             CheckUInt64(0, "x2");
-            CheckUInt64(1023867068, "x2");
-            CheckUInt64(1613306509, "x2");
-            CheckUInt64(784229324, "x2");
-            CheckUInt64(337331225, "x2");
-            CheckUInt64(643586931, "x2");
+            CheckUInt64(789055521, "x2");
+            CheckUInt64(824989964, "x2");
+            CheckUInt64(29929395, "x2");
+            CheckUInt64(997564230, "x2");
+            CheckUInt64(2069361884, "x2");
             
             // format x3
             CheckUInt64(UInt64.MinValue, "x3");
             CheckUInt64(UInt64.MaxValue, "x3");
             CheckUInt64(0, "x3");
-            CheckUInt64(1543405981, "x3");
-            CheckUInt64(902139192, "x3");
-            CheckUInt64(315835975, "x3");
-            CheckUInt64(878579574, "x3");
-            CheckUInt64(1244027046, "x3");
+            CheckUInt64(1291192105, "x3");
+            CheckUInt64(1097779212, "x3");
+            CheckUInt64(1938084310, "x3");
+            CheckUInt64(557969570, "x3");
+            CheckUInt64(780379077, "x3");
             
             // format x4
             CheckUInt64(UInt64.MinValue, "x4");
             CheckUInt64(UInt64.MaxValue, "x4");
             CheckUInt64(0, "x4");
-            CheckUInt64(2075397313, "x4");
-            CheckUInt64(282392162, "x4");
-            CheckUInt64(151248241, "x4");
-            CheckUInt64(237707087, "x4");
-            CheckUInt64(613575490, "x4");
+            CheckUInt64(1462413527, "x4");
+            CheckUInt64(2113452553, "x4");
+            CheckUInt64(451060789, "x4");
+            CheckUInt64(1710663315, "x4");
+            CheckUInt64(1325286651, "x4");
             
             // format x5
             CheckUInt64(UInt64.MinValue, "x5");
             CheckUInt64(UInt64.MaxValue, "x5");
             CheckUInt64(0, "x5");
-            CheckUInt64(1222260549, "x5");
-            CheckUInt64(1242783457, "x5");
-            CheckUInt64(1150182359, "x5");
-            CheckUInt64(352399027, "x5");
-            CheckUInt64(1413781160, "x5");
+            CheckUInt64(1266387563, "x5");
+            CheckUInt64(105962776, "x5");
+            CheckUInt64(1146156137, "x5");
+            CheckUInt64(1236687279, "x5");
+            CheckUInt64(358294202, "x5");
         }
         
         public void CheckInt64(Int64 value, string format)
@@ -2304,71 +2829,71 @@ namespace System.Text.Formatting.Tests
             CheckInt64(Int64.MinValue, "D");
             CheckInt64(Int64.MaxValue, "D");
             CheckInt64(0, "D");
-            CheckInt64(72216510, "D");
-            CheckInt64(-1845217760, "D");
-            CheckInt64(695234926, "D");
-            CheckInt64(-1898482122, "D");
-            CheckInt64(888429278, "D");
+            CheckInt64(-156936469, "D");
+            CheckInt64(586122107, "D");
+            CheckInt64(-987856999, "D");
+            CheckInt64(539050322, "D");
+            CheckInt64(310070040, "D");
             
             // format D0
             CheckInt64(Int64.MinValue, "D0");
             CheckInt64(Int64.MaxValue, "D0");
             CheckInt64(0, "D0");
-            CheckInt64(1446144310, "D0");
-            CheckInt64(-1957416237, "D0");
-            CheckInt64(-433904139, "D0");
-            CheckInt64(728888713, "D0");
-            CheckInt64(1056671933, "D0");
+            CheckInt64(1944698421, "D0");
+            CheckInt64(82938987, "D0");
+            CheckInt64(1978120584, "D0");
+            CheckInt64(503141639, "D0");
+            CheckInt64(586695490, "D0");
             
             // format D1
             CheckInt64(Int64.MinValue, "D1");
             CheckInt64(Int64.MaxValue, "D1");
             CheckInt64(0, "D1");
-            CheckInt64(-1708613265, "D1");
-            CheckInt64(758380144, "D1");
-            CheckInt64(-1367325742, "D1");
-            CheckInt64(-907132180, "D1");
-            CheckInt64(1638052850, "D1");
+            CheckInt64(-44121223, "D1");
+            CheckInt64(1873109777, "D1");
+            CheckInt64(384250645, "D1");
+            CheckInt64(-276980243, "D1");
+            CheckInt64(-545130237, "D1");
             
             // format D2
             CheckInt64(Int64.MinValue, "D2");
             CheckInt64(Int64.MaxValue, "D2");
             CheckInt64(0, "D2");
-            CheckInt64(367730753, "D2");
-            CheckInt64(-1882141420, "D2");
-            CheckInt64(1563884148, "D2");
-            CheckInt64(1915572397, "D2");
-            CheckInt64(-1789579947, "D2");
+            CheckInt64(192234178, "D2");
+            CheckInt64(-642542568, "D2");
+            CheckInt64(-1574304687, "D2");
+            CheckInt64(238867855, "D2");
+            CheckInt64(-9707235, "D2");
             
             // format D3
             CheckInt64(Int64.MinValue, "D3");
             CheckInt64(Int64.MaxValue, "D3");
             CheckInt64(0, "D3");
-            CheckInt64(1792407507, "D3");
-            CheckInt64(1574890342, "D3");
-            CheckInt64(-1945366384, "D3");
-            CheckInt64(472459573, "D3");
-            CheckInt64(-1951286599, "D3");
+            CheckInt64(-752141784, "D3");
+            CheckInt64(-1628014271, "D3");
+            CheckInt64(983164301, "D3");
+            CheckInt64(2030513564, "D3");
+            CheckInt64(-1880026379, "D3");
             
             // format D4
             CheckInt64(Int64.MinValue, "D4");
             CheckInt64(Int64.MaxValue, "D4");
             CheckInt64(0, "D4");
-            CheckInt64(-493371837, "D4");
-            CheckInt64(-93510427, "D4");
-            CheckInt64(-1852651546, "D4");
-            CheckInt64(1665029702, "D4");
-            CheckInt64(-2001717957, "D4");
+            CheckInt64(-763245925, "D4");
+            CheckInt64(559460645, "D4");
+            CheckInt64(314172980, "D4");
+            CheckInt64(-1944932857, "D4");
+            CheckInt64(1057841790, "D4");
             
             // format D5
             CheckInt64(Int64.MinValue, "D5");
             CheckInt64(Int64.MaxValue, "D5");
             CheckInt64(0, "D5");
-            CheckInt64(-1785736832, "D5");
-            CheckInt64(-1674894608, "D5");
-            CheckInt64(-1868763912, "D5");
-            CheckInt64(1387584017, "D5");
-            CheckInt64(593306723, "D5");
+            CheckInt64(-59716933, "D5");
+            CheckInt64(-771325288, "D5");
+            CheckInt64(1692478753, "D5");
+            CheckInt64(1285702982, "D5");
+            CheckInt64(263643141, "D5");
         }
         
         [Fact]
@@ -2379,71 +2904,71 @@ namespace System.Text.Formatting.Tests
             CheckInt64(Int64.MinValue, "d");
             CheckInt64(Int64.MaxValue, "d");
             CheckInt64(0, "d");
-            CheckInt64(-463511967, "d");
-            CheckInt64(-1020996357, "d");
-            CheckInt64(554671589, "d");
-            CheckInt64(1593822595, "d");
-            CheckInt64(-669998812, "d");
+            CheckInt64(-199121113, "d");
+            CheckInt64(-1769501624, "d");
+            CheckInt64(-812621779, "d");
+            CheckInt64(-625188670, "d");
+            CheckInt64(-1829558478, "d");
             
             // format d0
             CheckInt64(Int64.MinValue, "d0");
             CheckInt64(Int64.MaxValue, "d0");
             CheckInt64(0, "d0");
-            CheckInt64(854536941, "d0");
-            CheckInt64(509618765, "d0");
-            CheckInt64(18106123, "d0");
-            CheckInt64(-372365298, "d0");
-            CheckInt64(309952688, "d0");
+            CheckInt64(1744216764, "d0");
+            CheckInt64(-1254320186, "d0");
+            CheckInt64(-2017875528, "d0");
+            CheckInt64(-1910566692, "d0");
+            CheckInt64(-1250682503, "d0");
             
             // format d1
             CheckInt64(Int64.MinValue, "d1");
             CheckInt64(Int64.MaxValue, "d1");
             CheckInt64(0, "d1");
-            CheckInt64(1230394810, "d1");
-            CheckInt64(1855918614, "d1");
-            CheckInt64(-459948389, "d1");
-            CheckInt64(209264422, "d1");
-            CheckInt64(-1068288296, "d1");
+            CheckInt64(1468530973, "d1");
+            CheckInt64(1824962460, "d1");
+            CheckInt64(1672947780, "d1");
+            CheckInt64(-1157482054, "d1");
+            CheckInt64(-1275745179, "d1");
             
             // format d2
             CheckInt64(Int64.MinValue, "d2");
             CheckInt64(Int64.MaxValue, "d2");
             CheckInt64(0, "d2");
-            CheckInt64(-1713055155, "d2");
-            CheckInt64(-1695717940, "d2");
-            CheckInt64(-2065946458, "d2");
-            CheckInt64(-1706178098, "d2");
-            CheckInt64(-1745615635, "d2");
+            CheckInt64(-395948644, "d2");
+            CheckInt64(-496953469, "d2");
+            CheckInt64(-688176575, "d2");
+            CheckInt64(852219592, "d2");
+            CheckInt64(1006785589, "d2");
             
             // format d3
             CheckInt64(Int64.MinValue, "d3");
             CheckInt64(Int64.MaxValue, "d3");
             CheckInt64(0, "d3");
-            CheckInt64(1752131916, "d3");
-            CheckInt64(707337402, "d3");
-            CheckInt64(661185115, "d3");
-            CheckInt64(1075441637, "d3");
-            CheckInt64(-358845198, "d3");
+            CheckInt64(1573512155, "d3");
+            CheckInt64(238808147, "d3");
+            CheckInt64(1911360842, "d3");
+            CheckInt64(445350871, "d3");
+            CheckInt64(1953524006, "d3");
             
             // format d4
             CheckInt64(Int64.MinValue, "d4");
             CheckInt64(Int64.MaxValue, "d4");
             CheckInt64(0, "d4");
-            CheckInt64(607903293, "d4");
-            CheckInt64(1632342959, "d4");
-            CheckInt64(603052105, "d4");
-            CheckInt64(-1457784472, "d4");
-            CheckInt64(-498521979, "d4");
+            CheckInt64(1859071689, "d4");
+            CheckInt64(1562368298, "d4");
+            CheckInt64(1391093075, "d4");
+            CheckInt64(90342220, "d4");
+            CheckInt64(1476050291, "d4");
             
             // format d5
             CheckInt64(Int64.MinValue, "d5");
             CheckInt64(Int64.MaxValue, "d5");
             CheckInt64(0, "d5");
-            CheckInt64(1762673457, "d5");
-            CheckInt64(1048006940, "d5");
-            CheckInt64(-848598712, "d5");
-            CheckInt64(-1217356874, "d5");
-            CheckInt64(1337615267, "d5");
+            CheckInt64(1252799124, "d5");
+            CheckInt64(-1924107966, "d5");
+            CheckInt64(454134025, "d5");
+            CheckInt64(-1166913814, "d5");
+            CheckInt64(-1117139627, "d5");
         }
         
         [Fact]
@@ -2454,11 +2979,86 @@ namespace System.Text.Formatting.Tests
             CheckInt64(Int64.MinValue, "G");
             CheckInt64(Int64.MaxValue, "G");
             CheckInt64(0, "G");
-            CheckInt64(229345500, "G");
-            CheckInt64(-2131205858, "G");
-            CheckInt64(760765012, "G");
-            CheckInt64(-1978382431, "G");
-            CheckInt64(1760156417, "G");
+            CheckInt64(1013260664, "G");
+            CheckInt64(-2111316905, "G");
+            CheckInt64(2097058998, "G");
+            CheckInt64(-79176733, "G");
+            CheckInt64(-885219725, "G");
+        }
+        
+        [Fact]
+        public void Int64FormatN()
+        {
+            
+            // format N
+            CheckInt64(Int64.MinValue, "N");
+            CheckInt64(Int64.MaxValue, "N");
+            CheckInt64(0, "N");
+            CheckInt64(754603500, "N");
+            CheckInt64(2145541669, "N");
+            CheckInt64(1796905172, "N");
+            CheckInt64(1950061759, "N");
+            CheckInt64(1924276544, "N");
+            
+            // format N0
+            CheckInt64(Int64.MinValue, "N0");
+            CheckInt64(Int64.MaxValue, "N0");
+            CheckInt64(0, "N0");
+            CheckInt64(905082666, "N0");
+            CheckInt64(-229379577, "N0");
+            CheckInt64(946059972, "N0");
+            CheckInt64(1115939043, "N0");
+            CheckInt64(-1901108746, "N0");
+            
+            // format N1
+            CheckInt64(Int64.MinValue, "N1");
+            CheckInt64(Int64.MaxValue, "N1");
+            CheckInt64(0, "N1");
+            CheckInt64(-1523903136, "N1");
+            CheckInt64(2143836756, "N1");
+            CheckInt64(961221477, "N1");
+            CheckInt64(351250880, "N1");
+            CheckInt64(938463928, "N1");
+            
+            // format N2
+            CheckInt64(Int64.MinValue, "N2");
+            CheckInt64(Int64.MaxValue, "N2");
+            CheckInt64(0, "N2");
+            CheckInt64(-1949443150, "N2");
+            CheckInt64(-235184982, "N2");
+            CheckInt64(-1005547552, "N2");
+            CheckInt64(823032261, "N2");
+            CheckInt64(671643733, "N2");
+            
+            // format N3
+            CheckInt64(Int64.MinValue, "N3");
+            CheckInt64(Int64.MaxValue, "N3");
+            CheckInt64(0, "N3");
+            CheckInt64(-576692242, "N3");
+            CheckInt64(-309641314, "N3");
+            CheckInt64(117367970, "N3");
+            CheckInt64(2123240894, "N3");
+            CheckInt64(-253247079, "N3");
+            
+            // format N4
+            CheckInt64(Int64.MinValue, "N4");
+            CheckInt64(Int64.MaxValue, "N4");
+            CheckInt64(0, "N4");
+            CheckInt64(1607512215, "N4");
+            CheckInt64(-1863578243, "N4");
+            CheckInt64(1753194994, "N4");
+            CheckInt64(47636206, "N4");
+            CheckInt64(-487525205, "N4");
+            
+            // format N5
+            CheckInt64(Int64.MinValue, "N5");
+            CheckInt64(Int64.MaxValue, "N5");
+            CheckInt64(0, "N5");
+            CheckInt64(1877097270, "N5");
+            CheckInt64(-817933906, "N5");
+            CheckInt64(1005080839, "N5");
+            CheckInt64(-1644113559, "N5");
+            CheckInt64(-388570638, "N5");
         }
         
         [Fact]
@@ -2469,71 +3069,71 @@ namespace System.Text.Formatting.Tests
             CheckInt64(Int64.MinValue, "X");
             CheckInt64(Int64.MaxValue, "X");
             CheckInt64(0, "X");
-            CheckInt64(1279389112, "X");
-            CheckInt64(839093826, "X");
-            CheckInt64(357194497, "X");
-            CheckInt64(1192788258, "X");
-            CheckInt64(-1662271223, "X");
+            CheckInt64(2076873255, "X");
+            CheckInt64(1393582800, "X");
+            CheckInt64(955398249, "X");
+            CheckInt64(49275349, "X");
+            CheckInt64(-813705400, "X");
             
             // format X0
             CheckInt64(Int64.MinValue, "X0");
             CheckInt64(Int64.MaxValue, "X0");
             CheckInt64(0, "X0");
-            CheckInt64(-16851576, "X0");
-            CheckInt64(784001730, "X0");
-            CheckInt64(-265523854, "X0");
-            CheckInt64(648211173, "X0");
-            CheckInt64(-738949031, "X0");
+            CheckInt64(1678177618, "X0");
+            CheckInt64(-109814174, "X0");
+            CheckInt64(1355096893, "X0");
+            CheckInt64(904527935, "X0");
+            CheckInt64(740724461, "X0");
             
             // format X1
             CheckInt64(Int64.MinValue, "X1");
             CheckInt64(Int64.MaxValue, "X1");
             CheckInt64(0, "X1");
-            CheckInt64(-1950272444, "X1");
-            CheckInt64(-1228684910, "X1");
-            CheckInt64(-1851378461, "X1");
-            CheckInt64(-1822007616, "X1");
-            CheckInt64(-1614612077, "X1");
+            CheckInt64(-1161173603, "X1");
+            CheckInt64(-2135319729, "X1");
+            CheckInt64(-643655899, "X1");
+            CheckInt64(740065721, "X1");
+            CheckInt64(1452502090, "X1");
             
             // format X2
             CheckInt64(Int64.MinValue, "X2");
             CheckInt64(Int64.MaxValue, "X2");
             CheckInt64(0, "X2");
-            CheckInt64(-94377000, "X2");
-            CheckInt64(1134465696, "X2");
-            CheckInt64(-1215419022, "X2");
-            CheckInt64(1704273392, "X2");
-            CheckInt64(-1495190169, "X2");
+            CheckInt64(1784815864, "X2");
+            CheckInt64(-328628083, "X2");
+            CheckInt64(1415247518, "X2");
+            CheckInt64(-915334691, "X2");
+            CheckInt64(545214629, "X2");
             
             // format X3
             CheckInt64(Int64.MinValue, "X3");
             CheckInt64(Int64.MaxValue, "X3");
             CheckInt64(0, "X3");
-            CheckInt64(-1131584760, "X3");
-            CheckInt64(876991511, "X3");
-            CheckInt64(-674102155, "X3");
-            CheckInt64(453323503, "X3");
-            CheckInt64(-163715176, "X3");
+            CheckInt64(346411488, "X3");
+            CheckInt64(-400762905, "X3");
+            CheckInt64(-612276336, "X3");
+            CheckInt64(1477186338, "X3");
+            CheckInt64(-1901537837, "X3");
             
             // format X4
             CheckInt64(Int64.MinValue, "X4");
             CheckInt64(Int64.MaxValue, "X4");
             CheckInt64(0, "X4");
-            CheckInt64(-1033449171, "X4");
-            CheckInt64(-1676905496, "X4");
-            CheckInt64(1784497571, "X4");
-            CheckInt64(-709246635, "X4");
-            CheckInt64(1431153168, "X4");
+            CheckInt64(-1527415850, "X4");
+            CheckInt64(-1289702952, "X4");
+            CheckInt64(-723560213, "X4");
+            CheckInt64(652741680, "X4");
+            CheckInt64(884183325, "X4");
             
             // format X5
             CheckInt64(Int64.MinValue, "X5");
             CheckInt64(Int64.MaxValue, "X5");
             CheckInt64(0, "X5");
-            CheckInt64(-232801365, "X5");
-            CheckInt64(2000696068, "X5");
-            CheckInt64(2046293677, "X5");
-            CheckInt64(1972057577, "X5");
-            CheckInt64(182872126, "X5");
+            CheckInt64(-1373321435, "X5");
+            CheckInt64(-381235384, "X5");
+            CheckInt64(-42443487, "X5");
+            CheckInt64(1452907729, "X5");
+            CheckInt64(326062928, "X5");
         }
         
         [Fact]
@@ -2544,71 +3144,71 @@ namespace System.Text.Formatting.Tests
             CheckInt64(Int64.MinValue, "x");
             CheckInt64(Int64.MaxValue, "x");
             CheckInt64(0, "x");
-            CheckInt64(-1799458600, "x");
-            CheckInt64(-1654729867, "x");
-            CheckInt64(-1500194637, "x");
-            CheckInt64(-1954154689, "x");
-            CheckInt64(1141272962, "x");
+            CheckInt64(-872674618, "x");
+            CheckInt64(-336841119, "x");
+            CheckInt64(-263449224, "x");
+            CheckInt64(1355284704, "x");
+            CheckInt64(2063880740, "x");
             
             // format x0
             CheckInt64(Int64.MinValue, "x0");
             CheckInt64(Int64.MaxValue, "x0");
             CheckInt64(0, "x0");
-            CheckInt64(1064738201, "x0");
-            CheckInt64(1039388759, "x0");
-            CheckInt64(35426240, "x0");
-            CheckInt64(-1659991749, "x0");
-            CheckInt64(1421705331, "x0");
+            CheckInt64(-1807472686, "x0");
+            CheckInt64(1593919688, "x0");
+            CheckInt64(452975632, "x0");
+            CheckInt64(-950594182, "x0");
+            CheckInt64(1939920347, "x0");
             
             // format x1
             CheckInt64(Int64.MinValue, "x1");
             CheckInt64(Int64.MaxValue, "x1");
             CheckInt64(0, "x1");
-            CheckInt64(1262978930, "x1");
-            CheckInt64(-629289440, "x1");
-            CheckInt64(708472016, "x1");
-            CheckInt64(2043803599, "x1");
-            CheckInt64(1445618207, "x1");
+            CheckInt64(-314192776, "x1");
+            CheckInt64(-1599039341, "x1");
+            CheckInt64(-413970056, "x1");
+            CheckInt64(-2127630648, "x1");
+            CheckInt64(765306014, "x1");
             
             // format x2
             CheckInt64(Int64.MinValue, "x2");
             CheckInt64(Int64.MaxValue, "x2");
             CheckInt64(0, "x2");
-            CheckInt64(-1593215591, "x2");
-            CheckInt64(-550042584, "x2");
-            CheckInt64(1900025364, "x2");
-            CheckInt64(1468699825, "x2");
-            CheckInt64(-1923149686, "x2");
+            CheckInt64(790137376, "x2");
+            CheckInt64(-898044176, "x2");
+            CheckInt64(-491880568, "x2");
+            CheckInt64(-425216695, "x2");
+            CheckInt64(-1662744352, "x2");
             
             // format x3
             CheckInt64(Int64.MinValue, "x3");
             CheckInt64(Int64.MaxValue, "x3");
             CheckInt64(0, "x3");
-            CheckInt64(-789055523, "x3");
-            CheckInt64(-29929397, "x3");
-            CheckInt64(2069361883, "x3");
-            CheckInt64(-1097779214, "x3");
-            CheckInt64(557969569, "x3");
+            CheckInt64(1113024589, "x3");
+            CheckInt64(948512278, "x3");
+            CheckInt64(-158233839, "x3");
+            CheckInt64(1402349077, "x3");
+            CheckInt64(527821930, "x3");
             
             // format x4
             CheckInt64(Int64.MinValue, "x4");
             CheckInt64(Int64.MaxValue, "x4");
             CheckInt64(0, "x4");
-            CheckInt64(1462413526, "x4");
-            CheckInt64(451060788, "x4");
-            CheckInt64(1325286650, "x4");
-            CheckInt64(105962775, "x4");
-            CheckInt64(-1236687281, "x4");
+            CheckInt64(-634769958, "x4");
+            CheckInt64(1948864205, "x4");
+            CheckInt64(-73969667, "x4");
+            CheckInt64(-1117233228, "x4");
+            CheckInt64(686946567, "x4");
             
             // format x5
             CheckInt64(Int64.MinValue, "x5");
             CheckInt64(Int64.MaxValue, "x5");
             CheckInt64(0, "x5");
-            CheckInt64(-156936469, "x5");
-            CheckInt64(586122107, "x5");
-            CheckInt64(-987856999, "x5");
-            CheckInt64(539050322, "x5");
-            CheckInt64(310070040, "x5");
+            CheckInt64(-819644223, "x5");
+            CheckInt64(-562264214, "x5");
+            CheckInt64(-1905440709, "x5");
+            CheckInt64(765398091, "x5");
+            CheckInt64(-1743549992, "x5");
         }
         
     }

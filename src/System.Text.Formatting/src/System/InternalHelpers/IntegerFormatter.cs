@@ -377,6 +377,16 @@ namespace System.Text.Formatting
                 var digitsLeftInGroup = (digitsCount + trailingZerosCount) % GroupSize;
                 if (digitsLeftInGroup == 0)
                 {
+                    if (digitsCount + trailingZerosCount > 0)
+                    {
+                        // There is a new group immediately after the first digit
+                        if (!formattingData.TryWriteSymbol(FormattingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                        {
+                            bytesWritten = 0;
+                            return false;
+                        }
+                        bytesWritten += digitBytes;
+                    }
                     digitsLeftInGroup = GroupSize;
                 }
 

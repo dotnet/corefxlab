@@ -62,7 +62,7 @@ class Program
         //GenerateTest(writer, typeName, 'F', maxPrecision);
         GenerateTest(writer, typeName, 'G');
         //GenerateTest(writer, typeName, 'g', maxPrecision);
-        //GenerateTest(writer, typeName, 'N', maxPrecision); // TODO: this is implemented, but has bugs
+        GenerateTest(writer, typeName, 'N', maxPrecision);
         //GenerateTest(writer, typeName, 'P', maxPrecision);
         //GenerateTest(writer, typeName, 'R', maxPrecision);
         GenerateTest(writer, typeName, 'X', maxPrecision);
@@ -93,12 +93,12 @@ class Program
         writer.WriteLine("{");
         writer.Indent++;
         var helperName = "Check" + typeName;
-        GenerateSpecificFormatTersts(writer, typeName, format.ToString(), helperName);
+        GenerateSpecificFormatTests(writer, typeName, format.ToString(), helperName);
         if (maxPrecision > -1)
         {
             for (int precision = 0; precision <= maxPrecision; precision++)
             {
-                GenerateSpecificFormatTersts(writer, typeName, format.ToString() + precision.ToString(), helperName);
+                GenerateSpecificFormatTests(writer, typeName, format.ToString() + precision.ToString(), helperName);
             }
         }
 
@@ -107,7 +107,7 @@ class Program
         writer.WriteLine("");
     }
 
-    private static void GenerateSpecificFormatTersts(CodeWriter writer, string typeName, string format, string checkMethodName)
+    private static void GenerateSpecificFormatTests(CodeWriter writer, string typeName, string format, string checkMethodName)
     {
         writer.WriteLine("");
         writer.WriteLine("// format {0}", format);
