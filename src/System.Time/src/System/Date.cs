@@ -69,7 +69,7 @@ namespace System
         {
             if (dayNumber < MinDayNumber || dayNumber > MaxDayNumber)
             {
-                throw new ArgumentOutOfRangeException("dayNumber");
+                throw new ArgumentOutOfRangeException(nameof(dayNumber), dayNumber, SR.ArgumentOutOfRange_BadDayNumber);
             }
 
             Contract.EndContractBlock();
@@ -115,6 +115,11 @@ namespace System
         /// </exception>
         public Date(int year, int month, int day, Calendar calendar)
         {
+            if (calendar == null)
+            {
+                throw new ArgumentNullException(nameof(calendar));
+            }
+
             DateTime dt = calendar.ToDateTime(year, month, day, 0, 0, 0, 0);
             _dayNumber = (int)(dt.Ticks / TimeSpan.TicksPerDay);
         }
@@ -136,7 +141,7 @@ namespace System
         {
             if (dayOfYear < 1 || dayOfYear > (IsLeapYear(year) ? 366 : 365))
             {
-                throw new ArgumentOutOfRangeException("dayOfYear");
+                throw new ArgumentOutOfRangeException(nameof(dayOfYear), dayOfYear, SR.ArgumentOutOfRange_BadYearDay);
             }
 
             Contract.EndContractBlock();
@@ -274,7 +279,7 @@ namespace System
         {
             if (year < 1 || year > 9999)
             {
-                throw new ArgumentOutOfRangeException("year");
+                throw new ArgumentOutOfRangeException(nameof(year), year, SR.ArgumentOutOfRange_Year);
             }
 
             Contract.EndContractBlock();
@@ -301,12 +306,12 @@ namespace System
         {
             if (year < 1 || year > 9999)
             {
-                throw new ArgumentOutOfRangeException("year");
+                throw new ArgumentOutOfRangeException(nameof(year), year, SR.ArgumentOutOfRange_Year);
             }
 
             if (month < 1 || month > 12)
             {
-                throw new ArgumentOutOfRangeException("month");
+                throw new ArgumentOutOfRangeException(nameof(month), month, SR.ArgumentOutOfRange_Month);
             }
 
             Contract.EndContractBlock();
@@ -377,7 +382,7 @@ namespace System
         {
             if (years <= -10000 || years >= 10000)
             {
-                throw new ArgumentOutOfRangeException("years");
+                throw new ArgumentOutOfRangeException(nameof(years), years, SR.ArgumentOutOfRange_BadYears);
             }
 
             Contract.EndContractBlock();
@@ -407,7 +412,7 @@ namespace System
         {
             if (months <= -120000 || months >= 120000)
             {
-                throw new ArgumentOutOfRangeException("months");
+                throw new ArgumentOutOfRangeException(nameof(months), months, SR.ArgumentOutOfRange_BadMonths);
             }
 
             Contract.EndContractBlock();
@@ -430,7 +435,7 @@ namespace System
 
             if (y < 1 || y > 9999)
             {
-                throw new ArgumentOutOfRangeException("months");
+                throw new ArgumentOutOfRangeException(nameof(months), months, SR.ArgumentOutOfRange_DateArithmetic);
             }
 
             int days = DaysInMonth(y, m);
@@ -461,7 +466,7 @@ namespace System
             int dayNumber = _dayNumber + days;
             if (dayNumber < MinDayNumber || dayNumber > MaxDayNumber)
             {
-                throw new ArgumentOutOfRangeException("days");
+                throw new ArgumentOutOfRangeException(nameof(days), days, SR.ArgumentOutOfRange_DateArithmetic);
             }
 
             Contract.EndContractBlock();
@@ -738,7 +743,7 @@ namespace System
 
             if (!(value is Date))
             {
-                throw new ArgumentException();
+                throw new ArgumentException(SR.Argument_MustBeDate, nameof(value));
             }
 
             return Compare(this, (Date)value);
@@ -1015,7 +1020,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1098,7 +1103,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1154,7 +1159,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1233,7 +1238,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1289,7 +1294,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1348,7 +1353,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1531,7 +1536,7 @@ namespace System
                 }
             }
 
-            throw new ArgumentOutOfRangeException();
+            throw new ArgumentOutOfRangeException(SR.ArgumentOutOfRange_BadYearMonthDay);
         }
 
         /// <summary>
@@ -1644,7 +1649,7 @@ namespace System
                 }
 
                 // All other standard DateTime formats are invalid for Date
-                throw new FormatException();
+                throw new FormatException(SR.Format_InvalidString);
             }
 
             // custom format - test for time components or embedded standard time formats
@@ -1653,7 +1658,7 @@ namespace System
             var filtered = Regex.Replace(format, @"(\\.)|("".*"")|('.*')", String.Empty);
             if (Regex.IsMatch(filtered, "([fFghHKmstz:]+)|(%[fFgGrRtTuU]+)"))
             {
-                throw new FormatException();
+                throw new FormatException(SR.Format_InvalidString);
             }
 
             // custom format with embedded standard format(s) - ISO replacement
@@ -1688,6 +1693,9 @@ namespace System
         /// Generates a <see cref="Date"/> object from its XML representation.
         /// </summary>
         /// <param name="reader">The <see cref="XmlReader"/> stream from which the object is deserialized.</param>
+        /// <exception cref="FormatException">
+        /// String was not recognized as a valid <see cref="Date"/>.
+        /// </exception>
         /// <remarks>
         /// An <c>xs:date</c> uses the ISO-8601 extended date format. The equivalent .NET Framework format string
         /// is <c>yyyy-MM-dd</c>.  This method always uses the proleptic Gregorian calendar of the
@@ -1702,7 +1710,7 @@ namespace System
             Date d;
             if (!TryParseExact(s, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out d))
             {
-                throw new FormatException();
+                throw new FormatException(SR.Format_BadDate);
             }
 
             this = d;
