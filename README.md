@@ -2,7 +2,7 @@
 
 This repo is for experimentation and exploring new ideas that may or may not make it into the main corefx repo.
 
-Curently, this repo contains the following experimental components:
+Currently, this repo contains the following experimental components:
 
 * **System.Text.Formatting**. 
 System.Text.Formatting APIs are similar to the existing StringBuilder and TextWriter APIs. 
@@ -10,7 +10,7 @@ They are designed to format values into text streams and to build complex string
 But these APIs are optimized for creating text for the Web. 
 They do formatting with minimum GC heap allocations (1/6 of allocations in some scenarios) and can format directly to UTF8 streams. 
 This can result in significant performance wins for software that does a lot of text formatting for the Web, e.g. generating HTML, JSON, XML. 
-See more information on this component and code samples at the [Wiki]: https://github.com/dotnet/corefxlab/wiki 
+See more information on this component and code samples at the [Wiki]( https://github.com/dotnet/corefxlab/wiki). 
 
 * **System.IO.FileSystem.Watcher.Polling**. 
 .NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
