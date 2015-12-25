@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Globalization;
+
 namespace System
 {
     /// <summary>
@@ -115,6 +117,132 @@ namespace System
             var dto = TimeZoneInfo.ConvertTime(dateTimeOffset, timeZone);
             var dt = operation.Invoke(dto.DateTime);
             return resolver.Invoke(dt, timeZone);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTimeOffset"/> object to its equivalent long date string
+        /// representation.
+        /// </summary>
+        /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> instance.</param>
+        /// <returns>
+        /// A string that contains the long date string representation of the current <see cref="DateTimeOffset"/> object.
+        /// </returns>
+        /// <remarks>
+        /// The value of the current <see cref="DateTimeOffset"/> object is formatted using the pattern defined by the
+        /// <see cref="DateTimeFormatInfo.LongDatePattern" /> property associated with the current thread culture.
+        /// </remarks>
+        public static string ToLongDateString(this DateTimeOffset dateTimeOffset)
+        {
+            return dateTimeOffset.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongDatePattern);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTimeOffset"/> object to its equivalent long date string
+        /// representation.
+        /// </summary>
+        /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> instance.</param>
+        /// <returns>
+        /// A string that contains the long date string representation of the current <see cref="DateTimeOffset"/> object.
+        /// </returns>
+        /// <remarks>
+        /// The value of the current <see cref="DateTimeOffset"/> object is formatted using the pattern defined by the
+        /// <see cref="DateTimeFormatInfo.LongDatePattern" /> property associated with the invariant culture.
+        /// </remarks>
+        public static string ToLongDateStringInvariant(this DateTimeOffset dateTimeOffset)
+        {
+            return dateTimeOffset.ToString(CultureInfo.InvariantCulture.DateTimeFormat.LongDatePattern, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTimeOffset"/> object to its equivalent short date string
+        /// representation.
+        /// </summary>
+        /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> instance.</param>
+        /// <returns>
+        /// A string that contains the short date string representation of the current <see cref="DateTimeOffset"/> object.
+        /// </returns>
+        /// <remarks>
+        /// The value of the current <see cref="DateTimeOffset"/> object is formatted using the pattern defined by the
+        /// <see cref="DateTimeFormatInfo.ShortDatePattern" /> property associated with the current thread culture.
+        /// </remarks>
+        public static string ToShortDateString(this DateTimeOffset dateTimeOffset)
+        {
+            return dateTimeOffset.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTimeOffset"/> object to its equivalent short date string
+        /// representation.
+        /// </summary>
+        /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> instance.</param>
+        /// <returns>
+        /// A string that contains the short date string representation of the current <see cref="DateTimeOffset"/> object.
+        /// </returns>
+        /// <remarks>
+        /// The value of the current <see cref="DateTimeOffset"/> object is formatted using the pattern defined by the
+        /// <see cref="DateTimeFormatInfo.ShortDatePattern" /> property associated with the invariant culture.
+        /// </remarks>
+        public static string ToShortDateStringInvariant(this DateTimeOffset dateTimeOffset)
+        {
+            return dateTimeOffset.ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTimeOffset"/> object to its equivalent
+        /// long time string representation.
+        /// </summary>
+        /// <returns>A string that contains the long time string representation of the
+        /// current <see cref="DateTimeOffset"/> object.</returns>
+        /// <remarks>The value of the current <see cref="DateTimeOffset"/> object is formatted
+        /// using the pattern defined by the <see cref="DateTimeFormatInfo.LongTimePattern" />
+        /// property associated with the current thread culture.</remarks>
+        public static string ToLongTimeString(this DateTimeOffset dateTimeOffset)
+        {
+            return dateTimeOffset.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTimeOffset"/> object to its equivalent
+        /// long time string representation.
+        /// </summary>
+        /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> instance.</param>
+        /// <returns>A string that contains the long time string representation of the
+        /// current <see cref="DateTimeOffset"/> object.</returns>
+        /// <remarks>The value of the current <see cref="DateTimeOffset"/> object is formatted
+        /// using the pattern defined by the <see cref="DateTimeFormatInfo.LongTimePattern" />
+        /// property associated with the invariant culture.</remarks>
+        public static string ToLongTimeStringInvariant(this DateTimeOffset dateTimeOffset)
+        {
+            return dateTimeOffset.ToString(CultureInfo.InvariantCulture.DateTimeFormat.LongTimePattern, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTimeOffset"/> object to its equivalent
+        /// short time string representation.
+        /// </summary>
+        /// <returns>A string that contains the short time string representation of the
+        /// current <see cref="DateTimeOffset"/> object.</returns>
+        /// <remarks>The value of the current <see cref="DateTimeOffset"/> object is formatted
+        /// using the pattern defined by the <see cref="DateTimeFormatInfo.ShortTimePattern" />
+        /// property associated with the current thread culture.</remarks>
+        public static string ToShortTimeString(this DateTimeOffset dateTimeOffset)
+        {
+            return dateTimeOffset.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTimeOffset"/> object to its equivalent
+        /// short time string representation.
+        /// </summary>
+        /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> instance.</param>
+        /// <returns>A string that contains the short time string representation of the
+        /// current <see cref="DateTimeOffset"/> object.</returns>
+        /// <remarks>The value of the current <see cref="DateTimeOffset"/> object is formatted
+        /// using the pattern defined by the <see cref="DateTimeFormatInfo.ShortTimePattern" />
+        /// property associated with the invariant culture.</remarks>
+        public static string ToShortTimeStringInvariant(this DateTimeOffset dateTimeOffset)
+        {
+            return dateTimeOffset.ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortTimePattern, CultureInfo.InvariantCulture);
         }
     }
 }
