@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -15,8 +14,7 @@ namespace System
     /// Represents a time of day, as would be read from a clock, within the range 00:00:00 to 23:59:59.9999999
     /// Has properties for working with both 12-hour and 24-hour time values.
     /// </summary>
-    [DebuggerDisplay("{ToString()}")]
-    [XmlSchemaProvider("GetSchema")]
+    [XmlSchemaProvider(nameof(GetSchema))]
     public struct TimeOfDay : IEquatable<TimeOfDay>, IComparable<TimeOfDay>, IComparable, IFormattable, IXmlSerializable
     {
         private const long TicksPerMillisecond = 10000;
