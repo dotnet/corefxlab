@@ -1014,7 +1014,7 @@ namespace System
         /// property associated with the invariant culture.</remarks>
         public string ToLongTimeStringInvariant()
         {
-            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.LongTimePattern);
+            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.LongTimePattern, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -1042,7 +1042,7 @@ namespace System
         /// property associated with the invariant culture.</remarks>
         public string ToShortTimeStringInvariant()
         {
-            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortTimePattern);
+            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortTimePattern, CultureInfo.InvariantCulture);
         }
 
         /// <summary>

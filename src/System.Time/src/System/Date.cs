@@ -919,7 +919,7 @@ namespace System
         /// </remarks>
         public string ToLongDateStringInvariant()
         {
-            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.LongDatePattern);
+            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.LongDatePattern, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -951,7 +951,7 @@ namespace System
         /// </remarks>
         public string ToShortDateStringInvariant()
         {
-            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern);
+            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
