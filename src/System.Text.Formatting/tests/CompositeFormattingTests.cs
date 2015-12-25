@@ -10,8 +10,8 @@ namespace System.Text.Formatting.Tests
         {
             var culture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
 
-            culture.DateTimeFormat.LongTimePattern = "hh:mm:ss tt";
-            culture.DateTimeFormat.ShortTimePattern = "hh:mm tt";
+            culture.DateTimeFormat.LongTimePattern = "h:mm:ss tt";
+            culture.DateTimeFormat.ShortTimePattern = "h:mm tt";
 
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = culture;
