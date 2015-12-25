@@ -18,6 +18,8 @@ namespace System.Text.Formatting.Tests
 
             culture.DateTimeFormat.LongTimePattern = "h:mm:ss tt";
             culture.DateTimeFormat.ShortTimePattern = "h:mm tt";
+            culture.DateTimeFormat.LongDatePattern = "dddd, d MMMM yyyy";
+            culture.DateTimeFormat.ShortDatePattern = "M/d/yyyy";
 
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = culture;
