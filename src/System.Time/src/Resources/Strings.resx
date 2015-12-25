@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ArgumentOutOfRange_BadDayNumber" xml:space="preserve">
-    <value>Day number must be between Date.MinDayNumber and Date.MaxDayNumber.</value>
+    <value>Day number must be between Date.MinValue.DayNumber and Date.MaxValue.DayNumber.</value>
   </data>
   <data name="ArgumentOutOfRange_BadMonths" xml:space="preserve">
     <value>Months value must be between +/-120000.</value>
@@ -160,13 +160,13 @@
     <value>Second must be between 0 and 59.</value>
   </data>
   <data name="ArgumentOutOfRange_TimeOfDayBadTicks" xml:space="preserve">
-    <value>Ticks must be between TimeOfDay.MinTicks and TimeOfDay.MaxTicks.</value>
+    <value>Ticks must be between TimeOfDay.MinValue.Ticks and TimeOfDay.MaxValue.Ticks.</value>
   </data>
   <data name="ArgumentOutOfRange_Year" xml:space="preserve">
     <value>Year must be between 1 and 9999.</value>
   </data>
   <data name="Argument_InvalidDateTimeStyles" xml:space="preserve">
-    <value>Styles contains an invalid values.</value>
+    <value>Styles contains invalid values.</value>
   </data>
   <data name="Argument_MustBeDate" xml:space="preserve">
     <value>Object must be of type Date.</value>
