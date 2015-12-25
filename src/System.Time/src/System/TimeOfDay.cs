@@ -56,7 +56,7 @@ namespace System
         {
             if (ticks < MinTicks || ticks > MaxTicks)
             {
-                throw new ArgumentOutOfRangeException("ticks");
+                throw new ArgumentOutOfRangeException(nameof(ticks), ticks, SR.ArgumentOutOfRange_TimeOfDayBadTicks);
             }
 
             Contract.EndContractBlock();
@@ -79,12 +79,12 @@ namespace System
         {
             if (hour < 0 || hour > 23)
             {
-                throw new ArgumentOutOfRangeException("hour");
+                throw new ArgumentOutOfRangeException(nameof(hour), hour, SR.ArgumentOutOfRange_Hour);
             }
 
             if (minute < 0 || minute > 59)
             {
-                throw new ArgumentOutOfRangeException("minute");
+                throw new ArgumentOutOfRangeException(nameof(minute), minute, SR.ArgumentOutOfRange_Minute);
             }
 
             Contract.EndContractBlock();
@@ -110,17 +110,17 @@ namespace System
         {
             if (hour < 1 || hour > 12)
             {
-                throw new ArgumentOutOfRangeException("hour");
+                throw new ArgumentOutOfRangeException(nameof(hour), hour, SR.ArgumentOutOfRange_Hour12HF);
             }
 
             if (minute < 0 || minute > 59)
             {
-                throw new ArgumentOutOfRangeException("minute");
+                throw new ArgumentOutOfRangeException(nameof(minute), minute, SR.ArgumentOutOfRange_Minute);
             }
 
             if (meridiem < Meridiem.AM || meridiem > Meridiem.PM)
             {
-                throw new ArgumentOutOfRangeException("meridiem");
+                throw new ArgumentOutOfRangeException(nameof(meridiem), meridiem, SR.ArgumentOutOfRange_Meridiem);
             }
 
             Contract.EndContractBlock();
@@ -148,17 +148,17 @@ namespace System
         {
             if (hour < 0 || hour > 23)
             {
-                throw new ArgumentOutOfRangeException("hour");
+                throw new ArgumentOutOfRangeException(nameof(hour), hour, SR.ArgumentOutOfRange_Hour);
             }
 
             if (minute < 0 || minute > 59)
             {
-                throw new ArgumentOutOfRangeException("minute");
+                throw new ArgumentOutOfRangeException(nameof(minute), minute, SR.ArgumentOutOfRange_Minute);
             }
 
             if (second < 0 || second > 59)
             {
-                throw new ArgumentOutOfRangeException("second");
+                throw new ArgumentOutOfRangeException(nameof(second), second, SR.ArgumentOutOfRange_Second);
             }
 
             Contract.EndContractBlock();
@@ -188,22 +188,22 @@ namespace System
         {
             if (hour < 1 || hour > 12)
             {
-                throw new ArgumentOutOfRangeException("hour");
+                throw new ArgumentOutOfRangeException(nameof(hour), hour, SR.ArgumentOutOfRange_Hour12HF);
             }
 
             if (minute < 0 || minute > 59)
             {
-                throw new ArgumentOutOfRangeException("minute");
+                throw new ArgumentOutOfRangeException(nameof(minute), minute, SR.ArgumentOutOfRange_Minute);
             }
 
             if (second < 0 || second > 59)
             {
-                throw new ArgumentOutOfRangeException("second");
+                throw new ArgumentOutOfRangeException(nameof(second), second, SR.ArgumentOutOfRange_Second);
             }
 
             if (meridiem < Meridiem.AM || meridiem > Meridiem.PM)
             {
-                throw new ArgumentOutOfRangeException("meridiem");
+                throw new ArgumentOutOfRangeException(nameof(meridiem), meridiem, SR.ArgumentOutOfRange_Meridiem);
             }
 
             Contract.EndContractBlock();
@@ -235,22 +235,22 @@ namespace System
         {
             if (hour < 0 || hour > 23)
             {
-                throw new ArgumentOutOfRangeException("hour");
+                throw new ArgumentOutOfRangeException(nameof(hour), hour, SR.ArgumentOutOfRange_Hour);
             }
 
             if (minute < 0 || minute > 59)
             {
-                throw new ArgumentOutOfRangeException("minute");
+                throw new ArgumentOutOfRangeException(nameof(minute), minute, SR.ArgumentOutOfRange_Minute);
             }
 
             if (second < 0 || second > 59)
             {
-                throw new ArgumentOutOfRangeException("second");
+                throw new ArgumentOutOfRangeException(nameof(second), second, SR.ArgumentOutOfRange_Second);
             }
 
             if (millisecond < 0 || millisecond > 999)
             {
-                throw new ArgumentOutOfRangeException("millisecond");
+                throw new ArgumentOutOfRangeException(nameof(millisecond), millisecond, SR.ArgumentOutOfRange_Millisecond);
             }
 
             Contract.EndContractBlock();
@@ -284,27 +284,27 @@ namespace System
         {
             if (hour < 1 || hour > 12)
             {
-                throw new ArgumentOutOfRangeException("hour");
+                throw new ArgumentOutOfRangeException(nameof(hour), hour, SR.ArgumentOutOfRange_Hour12HF);
             }
 
             if (minute < 0 || minute > 59)
             {
-                throw new ArgumentOutOfRangeException("minute");
+                throw new ArgumentOutOfRangeException(nameof(minute), minute, SR.ArgumentOutOfRange_Minute);
             }
 
             if (second < 0 || second > 59)
             {
-                throw new ArgumentOutOfRangeException("second");
+                throw new ArgumentOutOfRangeException(nameof(second), second, SR.ArgumentOutOfRange_Second);
             }
 
             if (millisecond < 0 || millisecond > 999)
             {
-                throw new ArgumentOutOfRangeException("millisecond");
+                throw new ArgumentOutOfRangeException(nameof(millisecond), millisecond, SR.ArgumentOutOfRange_Millisecond);
             }
 
             if (meridiem < Meridiem.AM || meridiem > Meridiem.PM)
             {
-                throw new ArgumentOutOfRangeException("meridiem");
+                throw new ArgumentOutOfRangeException(nameof(meridiem), meridiem, SR.ArgumentOutOfRange_Meridiem);
             }
 
             Contract.EndContractBlock();
@@ -851,7 +851,7 @@ namespace System
 
             if (!(value is TimeOfDay))
             {
-                throw new ArgumentException();
+                throw new ArgumentException(SR.Argument_MustBeTimeOfDay);
             }
 
             return Compare(this, (TimeOfDay)value);
@@ -1094,7 +1094,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1178,7 +1178,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1235,7 +1235,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1314,7 +1314,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1370,7 +1370,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1429,7 +1429,7 @@ namespace System
         {
             if (((int)styles) >= 8)
             {
-                throw new ArgumentException("styles");
+                throw new ArgumentException(SR.Argument_InvalidDateTimeStyles, nameof(styles));
             }
 
             Contract.EndContractBlock();
@@ -1583,7 +1583,7 @@ namespace System
             long ticks = timeSpan.Ticks;
             if (ticks < 0 || ticks >= TicksPerDay)
             {
-                throw new ArgumentOutOfRangeException("timeSpan");
+                throw new ArgumentOutOfRangeException(nameof(timeSpan), timeSpan, SR.ArgumentOutOfRange_BadTimeSpan);
             }
 
             Contract.EndContractBlock();
@@ -1615,12 +1615,12 @@ namespace System
         {
             if (hours12 < 1 || hours12 > 12)
             {
-                throw new ArgumentOutOfRangeException("hours12");
+                throw new ArgumentOutOfRangeException(nameof(hours12), hours12, SR.ArgumentOutOfRange_Hour12HF);
             }
 
             if (!Enum.IsDefined(typeof(Meridiem), meridiem))
             {
-                throw new ArgumentOutOfRangeException("meridiem");
+                throw new ArgumentOutOfRangeException(nameof(meridiem), meridiem, SR.ArgumentOutOfRange_Meridiem);
             }
 
             Contract.EndContractBlock();
@@ -1676,7 +1676,7 @@ namespace System
 
 
                 // All other standard DateTime formats are invalid for TimeOfDay
-                throw new FormatException();
+                throw new FormatException(SR.Format_InvalidString);
             }
 
             // custom format - test for date components or embedded standard date formats
@@ -1685,7 +1685,7 @@ namespace System
             var filtered = Regex.Replace(format, @"(\\.)|("".*"")|('.*')", String.Empty);
             if (Regex.IsMatch(filtered, "([dKMyz/]+)|(%[dDfFgGmMrRuUyY]+)"))
             {
-                throw new FormatException();
+                throw new FormatException(SR.Format_InvalidString);
             }
 
             // custom format with embedded standard format(s) - ISO replacement
@@ -1721,6 +1721,9 @@ namespace System
         /// Generates a <see cref="TimeOfDay"/> object from its XML representation.
         /// </summary>
         /// <param name="reader">The <see cref="XmlReader"/> stream from which the object is deserialized.</param>
+        /// <exception cref="FormatException">
+        /// String was not recognized as a valid <see cref="Date"/>.
+        /// </exception>
         /// <remarks>
         /// An <c>xs:time</c> uses the ISO-8601 extended time format, with up to seven decimal places of fractional
         /// seconds.  The equivalent .NET Framework format string is <c>HH:mm:ss.FFFFFFF</c>.
@@ -1734,7 +1737,7 @@ namespace System
             TimeOfDay t;
             if (!TryParseExact(s, "HH:mm:ss.FFFFFFF", CultureInfo.InvariantCulture, DateTimeStyles.None, out t))
             {
-                throw new FormatException();
+                throw new FormatException(SR.Format_BadTimeOfDay);
             }
 
             this = t;
