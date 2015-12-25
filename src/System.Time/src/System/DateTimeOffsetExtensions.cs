@@ -14,7 +14,7 @@ namespace System
         /// </summary>
         /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> instance.</param>
         /// <returns>The <see cref="Date"/> value.</returns>
-        public static Date Date(this DateTimeOffset dateTimeOffset)
+        public static Date GetDate(this DateTimeOffset dateTimeOffset)
         {
             return new Date((int)(dateTimeOffset.DateTime.Ticks / TimeSpan.TicksPerDay));
         }
@@ -25,7 +25,7 @@ namespace System
         /// </summary>
         /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> instance.</param>
         /// <returns>The <see cref="TimeOfDay"/> value.</returns>
-        public static TimeOfDay TimeOfDay(this DateTimeOffset dateTimeOffset)
+        public static TimeOfDay GetTimeOfDay(this DateTimeOffset dateTimeOffset)
         {
             return new TimeOfDay(dateTimeOffset.TimeOfDay.Ticks);
         }
