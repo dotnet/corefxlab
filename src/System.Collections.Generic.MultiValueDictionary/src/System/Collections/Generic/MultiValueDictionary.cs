@@ -1038,7 +1038,7 @@ namespace System.Collections.Generic
                 if (arrayIndex > array.Length)
                     throw new ArgumentOutOfRangeException("arrayIndex", Properties.Resources.ArgumentOutOfRange_Index);
                 if (array.Length - arrayIndex < collection.Count)
-                    throw new ArgumentException("arrayIndex", Properties.Resources.CopyTo_ArgumentsTooSmall);
+                    throw new ArgumentException(Properties.Resources.CopyTo_ArgumentsTooSmall, "arrayIndex");
 
                 collection.CopyTo(array, arrayIndex);
             }
