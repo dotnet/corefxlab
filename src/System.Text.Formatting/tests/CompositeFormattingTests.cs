@@ -37,5 +37,34 @@ namespace System.Text.Formatting.Tests
 
             Assert.Equal("HelloaFF3", formatter.ToString());
         }
+
+        [Fact]
+        public void CompositeFormattingEscaping()
+        {
+            var format = "}}a {0} b {0} c {{{0}}} d {{e}} {{";
+            var pool = new ManagedBufferPool<byte>(1024);
+            var formatter = new StringFormatter(pool);
+            formatter.Format(format, 1);
+
+            Assert.Equal(string.Format(format, 1), formatter.ToString());
+        }
+
+        [Fact]
+        public void CompositeFormattingEscapingMissingStartBracket()
+        {
+            var pool = new ManagedBufferPool<byte>(1024);
+            var formatter = new StringFormatter(pool);
+
+            Assert.Throws<Exception>(() => formatter.Format("{{0}", 1));
+        }
+
+        [Fact]
+        public void CompositeFormattingEscapingMissingEndBracket()
+        {
+            var pool = new ManagedBufferPool<byte>(1024);
+            var formatter = new StringFormatter(pool);
+
+            Assert.Throws<Exception>(() => formatter.Format("{0}}", 1));
+        }
     }
 }
