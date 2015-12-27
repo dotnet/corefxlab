@@ -40,6 +40,7 @@ namespace System.IO.FileSystem
         /// Creates an instance of a watcher
         /// </summary>
         /// <param name="rootDirectory">The directory to watch. It does not support UNC paths (yet).</param>
+        /// <param name="includeSubdirectories">A bool controlling whether or not subdirectories will be watched too</param>
         /// <param name="pollingIntervalInMilliseconds">Polling interval</param>
         public PollingWatcher(string rootDirectory, bool includeSubdirectories = false, int pollingIntervalInMilliseconds = 1000)
         {
@@ -61,7 +62,7 @@ namespace System.IO.FileSystem
         {
             if(_timer != null)
             {
-                throw new InvalidOperationException("Cannot change extensions after watcher has been started");
+                throw new InvalidOperationException(SR.InvalidOperation_Extension);
             }
             if(_extensionsToWatch == null)
             {
