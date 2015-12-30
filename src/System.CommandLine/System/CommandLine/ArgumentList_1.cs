@@ -8,15 +8,15 @@ namespace System.CommandLine
 {
     public sealed class ArgumentList<T> : Argument
     {
-        internal ArgumentList(ArgumentCommand command, IEnumerable<string> names, IReadOnlyList<T> defaultValue)
-            : base(command, names, true)
+        internal ArgumentList(ArgumentCommand command, IEnumerable<string> names, IReadOnlyList<T> defaultValue, bool isRequired)
+            : base(command, names, true, isRequired)
         {
             Value = defaultValue;
             DefaultValue = defaultValue;
         }
 
         internal ArgumentList(ArgumentCommand command, string name, IReadOnlyList<T> defaultValue)
-            : base(command, new[] { name }, false)
+            : base(command, new[] { name }, false, true)
         {
             Value = defaultValue;
             DefaultValue = defaultValue;
