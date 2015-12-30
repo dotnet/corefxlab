@@ -1,11 +1,22 @@
 {
+  "name": "System.Collections.Tests",
   "dependencies": {
-    "Microsoft.NETCore" : "5.0.0-*",
+    "Microsoft.NETCore.TestHost": "1.0.0-beta-23409",
+    "Microsoft.NETCore.Platforms": "1.0.1-beta-23409",
+    "Microsoft.NETCore.Runtime.CoreCLR": "1.0.1-beta-23409",
+    "src": {
+          "type": "build",
+          "version": "1.0.0"
+        },
+    "Microsoft.NETCore": "5.0.0",
     "Microsoft.DotNet.xunit.performance": "1.0.0-*",
     "xunit": "2.1.0",
+    "xunit.console.netcore": "1.0.2-prerelease-00101",
+    "xunit.extensibility.execution": "2.1.0",
     "xunit.netcore.extensions": "1.0.0-*"
   },
   "frameworks": {
-    "dnxcore50": {}
-  }
+    "dnxcore50": { }
+  },
+  "compileExclude": "Performance/*.cs"
 }

@@ -12,7 +12,7 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+      "System.Diagnostics.Tools/4.0.1-beta-23516": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -107,8 +107,11 @@
           "ref/dotnet/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Slices/0.1.0-d111915-1": {
+      "System.Slices/0.1.0-d123115-1": {
         "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
         },
@@ -155,7 +158,7 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+      "System.Diagnostics.Tools/4.0.1-beta-23516": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -250,8 +253,11 @@
           "ref/dotnet/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Slices/0.1.0-d111915-1": {
+      "System.Slices/0.1.0-d123115-1": {
         "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
         },
@@ -298,7 +304,7 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+      "System.Diagnostics.Tools/4.0.1-beta-23516": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -393,8 +399,11 @@
           "ref/dotnet/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Slices/0.1.0-d111915-1": {
+      "System.Slices/0.1.0-d123115-1": {
         "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
         },
@@ -481,10 +490,10 @@
         "System.Diagnostics.Debug.nuspec"
       ]
     },
-    "System.Diagnostics.Tools/4.0.1-rc2-23519": {
+    "System.Diagnostics.Tools/4.0.1-beta-23516": {
       "type": "package",
       "serviceable": true,
-      "sha512": "Z7L/VIQCtYt4P/Evv4wmp44D+kyxlcNK8QJByfhBwICCqUZY2CMJf5KXhDoatoHos3ZACOG6a9CywZK99qKVcA==",
+      "sha512": "tbiK8p/MW8s15iO7oAVdFHRM1VkEuj6s0wC0W6N3aRcWxJm7Hta+x0aoBmO2ukm16rTKT+YhCTxbsz9SQxJ84Q==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.Tools.dll",
         "lib/net45/_._",
@@ -519,8 +528,8 @@
         "ref/wp80/_._",
         "ref/wpa81/_._",
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.dll",
-        "System.Diagnostics.Tools.4.0.1-rc2-23519.nupkg",
-        "System.Diagnostics.Tools.4.0.1-rc2-23519.nupkg.sha512",
+        "System.Diagnostics.Tools.4.0.1-beta-23516.nupkg",
+        "System.Diagnostics.Tools.4.0.1-beta-23516.nupkg.sha512",
         "System.Diagnostics.Tools.nuspec"
       ]
     },
@@ -878,14 +887,14 @@
         "System.Runtime.InteropServices.nuspec"
       ]
     },
-    "System.Slices/0.1.0-d111915-1": {
+    "System.Slices/0.1.0-d123115-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "Re5jy3jlp1vQbdXgEogU3tETz8dosZYcSK4wXmIZhFKcyGLdm2SL0qdnxhWR8A3uZnhzYZ0ofOAMcYgNuj4ZBA==",
+      "sha512": "VJ1+8mdj/hucrjk1/yiEZYYUf5dH6k1qcriSrQZnDmXH0SRM1U0FGkMTmqsE43rl9QzcZqG4aPKwu6NukekZvA==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
-        "System.Slices.0.1.0-d111915-1.nupkg",
-        "System.Slices.0.1.0-d111915-1.nupkg.sha512",
+        "System.Slices.0.1.0-d123115-1.nupkg",
+        "System.Slices.0.1.0-d123115-1.nupkg.sha512",
         "System.Slices.nuspec"
       ]
     },
@@ -1037,7 +1046,7 @@
   "projectFileDependencyGroups": {
     "": [
       "System.Diagnostics.Debug >= 4.0.0",
-      "System.Diagnostics.Tools >= 4.0.1-*",
+      "System.Diagnostics.Tools >= 4.0.1-beta-*",
       "System.Reflection.Primitives >= 4.0.0",
       "System.Resources.ResourceManager >= 4.0.0",
       "System.Runtime >= 4.0.0",

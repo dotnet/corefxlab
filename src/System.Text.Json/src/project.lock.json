@@ -3,10 +3,10 @@
   "version": 2,
   "targets": {
     "DNXCore,Version=v5.0": {
-      "System.Buffers/0.1.0-d121015-1": {
+      "System.Buffers/0.1.0-d123115-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d121015-1"
+          "System.Slices": "0.1.0-d123115-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
@@ -171,8 +171,11 @@
           "lib/DNXCore50/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Slices/0.1.0-d121015-1": {
+      "System.Slices/0.1.0-d123115-1": {
         "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
         },
@@ -192,12 +195,12 @@
           "lib/DNXCore50/System.Text.Encoding.dll": {}
         }
       },
-      "System.Text.Formatting/0.1.0-d121015-1": {
+      "System.Text.Formatting/0.1.0-d123115-1": {
         "type": "package",
         "dependencies": {
-          "System.Buffers": "0.1.0-d121015-1",
-          "System.Slices": "0.1.0-d121015-1",
-          "System.Text.Utf8": "0.1.0-d121015-1"
+          "System.Buffers": "0.1.0-d123115-1",
+          "System.Slices": "0.1.0-d123115-1",
+          "System.Text.Utf8": "0.1.0-d123115-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Formatting.dll": {}
@@ -206,10 +209,10 @@
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Formatting.dll": {}
         }
       },
-      "System.Text.Utf8/0.1.0-d121015-1": {
+      "System.Text.Utf8/0.1.0-d123115-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d121015-1"
+          "System.Slices": "0.1.0-d123115-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Utf8.dll": {}
@@ -242,10 +245,10 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x86": {
-      "System.Buffers/0.1.0-d121015-1": {
+      "System.Buffers/0.1.0-d123115-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d121015-1"
+          "System.Slices": "0.1.0-d123115-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
@@ -410,8 +413,11 @@
           "lib/DNXCore50/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Slices/0.1.0-d121015-1": {
+      "System.Slices/0.1.0-d123115-1": {
         "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
         },
@@ -431,12 +437,12 @@
           "lib/DNXCore50/System.Text.Encoding.dll": {}
         }
       },
-      "System.Text.Formatting/0.1.0-d121015-1": {
+      "System.Text.Formatting/0.1.0-d123115-1": {
         "type": "package",
         "dependencies": {
-          "System.Buffers": "0.1.0-d121015-1",
-          "System.Slices": "0.1.0-d121015-1",
-          "System.Text.Utf8": "0.1.0-d121015-1"
+          "System.Buffers": "0.1.0-d123115-1",
+          "System.Slices": "0.1.0-d123115-1",
+          "System.Text.Utf8": "0.1.0-d123115-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Formatting.dll": {}
@@ -445,10 +451,10 @@
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Formatting.dll": {}
         }
       },
-      "System.Text.Utf8/0.1.0-d121015-1": {
+      "System.Text.Utf8/0.1.0-d123115-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d121015-1"
+          "System.Slices": "0.1.0-d123115-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Utf8.dll": {}
@@ -481,10 +487,10 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x64": {
-      "System.Buffers/0.1.0-d121015-1": {
+      "System.Buffers/0.1.0-d123115-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d121015-1"
+          "System.Slices": "0.1.0-d123115-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
@@ -649,8 +655,11 @@
           "lib/DNXCore50/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Slices/0.1.0-d121015-1": {
+      "System.Slices/0.1.0-d123115-1": {
         "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll": {}
         },
@@ -670,12 +679,12 @@
           "lib/DNXCore50/System.Text.Encoding.dll": {}
         }
       },
-      "System.Text.Formatting/0.1.0-d121015-1": {
+      "System.Text.Formatting/0.1.0-d123115-1": {
         "type": "package",
         "dependencies": {
-          "System.Buffers": "0.1.0-d121015-1",
-          "System.Slices": "0.1.0-d121015-1",
-          "System.Text.Utf8": "0.1.0-d121015-1"
+          "System.Buffers": "0.1.0-d123115-1",
+          "System.Slices": "0.1.0-d123115-1",
+          "System.Text.Utf8": "0.1.0-d123115-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Formatting.dll": {}
@@ -684,10 +693,10 @@
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Formatting.dll": {}
         }
       },
-      "System.Text.Utf8/0.1.0-d121015-1": {
+      "System.Text.Utf8/0.1.0-d123115-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d121015-1"
+          "System.Slices": "0.1.0-d123115-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Utf8.dll": {}
@@ -721,14 +730,14 @@
     }
   },
   "libraries": {
-    "System.Buffers/0.1.0-d121015-1": {
+    "System.Buffers/0.1.0-d123115-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "E2yOiS7ZVJk5LUHcuE3Xbf7j/KkeWv6jorNoZXRcVj4ac6VKF+0wFk7sBoeGhdjY3ml55RkbrtJFaxBKTuPuqQ==",
+      "sha512": "WVA1UkAKXAkMw2MZ6p1GrD69zeGhG/fS0f8EECMq64gJ/qB9Z66Fu/Zx5k1M31jG8r725nDYHx/vv5/wuJK0lQ==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll",
-        "System.Buffers.0.1.0-d121015-1.nupkg",
-        "System.Buffers.0.1.0-d121015-1.nupkg.sha512",
+        "System.Buffers.0.1.0-d123115-1.nupkg",
+        "System.Buffers.0.1.0-d123115-1.nupkg.sha512",
         "System.Buffers.nuspec"
       ]
     },
@@ -1199,14 +1208,14 @@
         "System.Runtime.InteropServices.nuspec"
       ]
     },
-    "System.Slices/0.1.0-d121015-1": {
+    "System.Slices/0.1.0-d123115-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "2kVpfJuus3PFdvZF9HTyAY3vBw1hAm6WzHo4ApuLiI0GkyySJJwPrhxsnUXqCuEk6GAlIDDj9UJ29OP7jw0MZg==",
+      "sha512": "VJ1+8mdj/hucrjk1/yiEZYYUf5dH6k1qcriSrQZnDmXH0SRM1U0FGkMTmqsE43rl9QzcZqG4aPKwu6NukekZvA==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
-        "System.Slices.0.1.0-d121015-1.nupkg",
-        "System.Slices.0.1.0-d121015-1.nupkg.sha512",
+        "System.Slices.0.1.0-d123115-1.nupkg",
+        "System.Slices.0.1.0-d123115-1.nupkg.sha512",
         "System.Slices.nuspec"
       ]
     },
@@ -1243,25 +1252,25 @@
         "System.Text.Encoding.nuspec"
       ]
     },
-    "System.Text.Formatting/0.1.0-d121015-1": {
+    "System.Text.Formatting/0.1.0-d123115-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "WEb1q5HBrA2dzckRJgiZ/w9IXLoj3dn1GwmmBS+sQRzPju5+YgYDo0twRXXeGQBE4zUWYUpfMZeYU5ddwzRNEA==",
+      "sha512": "liYru6tbCBOeW+QGo/iW3TWqc2s8PSzuEqnKs+phJWmsUqnqFZxtKViU+nlWAkZdVNn8RQG9csGNe1zuqzgBuA==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Formatting.dll",
-        "System.Text.Formatting.0.1.0-d121015-1.nupkg",
-        "System.Text.Formatting.0.1.0-d121015-1.nupkg.sha512",
+        "System.Text.Formatting.0.1.0-d123115-1.nupkg",
+        "System.Text.Formatting.0.1.0-d123115-1.nupkg.sha512",
         "System.Text.Formatting.nuspec"
       ]
     },
-    "System.Text.Utf8/0.1.0-d121015-1": {
+    "System.Text.Utf8/0.1.0-d123115-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "KKZrkeZla9ka43WoYWzh0KjW0FlhINawiBLWGoO6VpKpJ/2ohigG+UKxiuyvJf6OZxWvXgTIEeA8G2YGkyK8Bg==",
+      "sha512": "q3cjtdNBtkYXh5zuoJ/K42GerAdYjHrALAQn4iyP+mg3UM9bp6TuTw0hTi9ukkJitrUvD0+lzJaBX4pl2+KC4Q==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Utf8.dll",
-        "System.Text.Utf8.0.1.0-d121015-1.nupkg",
-        "System.Text.Utf8.0.1.0-d121015-1.nupkg.sha512",
+        "System.Text.Utf8.0.1.0-d123115-1.nupkg",
+        "System.Text.Utf8.0.1.0-d123115-1.nupkg.sha512",
         "System.Text.Utf8.nuspec"
       ]
     },

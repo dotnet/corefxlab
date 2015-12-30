@@ -1,12 +1,14 @@
 {
+  "name": "System.Slices",
+  "version": "1.0.0",
   "compilationOptions": {
-		"allowUnsafe": true
-	},
-  "dependencies": {   
+    "allowUnsafe": true
+  },
+  "dependencies": {
     "System.Runtime": "4.0.0",
     "System.Runtime.InteropServices": "4.0.0"
   },
   "frameworks": {
-    "dnxcore50": {}
+    "dnxcore50": { }
   }
 }

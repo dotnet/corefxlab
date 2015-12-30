@@ -1,6 +1,11 @@
 {
+  "name": "System.Text.Formatting",
+  "version": "1.0.0",
   "compilationOptions": {
     "allowUnsafe": true
+  },
+  "namedResource": {
+    "System.Text.Formatting.Properties.Resources": "Properties/Resources.resx"
   },
   "dependencies": {
     "System.Buffers": "0.1.0-*",

@@ -27,7 +27,7 @@
           "lib/DNXCore50/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23611": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23707": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -154,7 +154,7 @@
           "lib/DNXCore50/System.Threading.Tasks.dll": {}
         }
       },
-      "System.Threading.Tasks.Extensions/4.0.0-rc2-23611": {
+      "System.Threading.Tasks.Extensions/4.0.0-rc2-23707": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.0",
@@ -194,7 +194,7 @@
           "lib/DNXCore50/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23611": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23707": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -321,7 +321,7 @@
           "lib/DNXCore50/System.Threading.Tasks.dll": {}
         }
       },
-      "System.Threading.Tasks.Extensions/4.0.0-rc2-23611": {
+      "System.Threading.Tasks.Extensions/4.0.0-rc2-23707": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.0",
@@ -361,7 +361,7 @@
           "lib/DNXCore50/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23611": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23707": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -488,7 +488,7 @@
           "lib/DNXCore50/System.Threading.Tasks.dll": {}
         }
       },
-      "System.Threading.Tasks.Extensions/4.0.0-rc2-23611": {
+      "System.Threading.Tasks.Extensions/4.0.0-rc2-23707": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.0",
@@ -573,10 +573,10 @@
         "System.Diagnostics.Debug.nuspec"
       ]
     },
-    "System.Diagnostics.Tools/4.0.1-rc2-23611": {
+    "System.Diagnostics.Tools/4.0.1-rc2-23707": {
       "type": "package",
       "serviceable": true,
-      "sha512": "8Ore5PK7gmfGrhg+Ja5sGYygx40zgch/JC4ZHnZTBA63Rri9EXf43fVw1FZiY/2yh+M673S/NB531QibHut3qg==",
+      "sha512": "ggOlvWQli4IMsevOZfqRjLbIp41YeS03k1FfcrfXbta9AlHo8Lo5qRDHfcYJics0V0ymr9XXPaS2A1NaU8jkgg==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.Tools.dll",
         "lib/MonoAndroid10/_._",
@@ -619,8 +619,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.dll",
-        "System.Diagnostics.Tools.4.0.1-rc2-23611.nupkg",
-        "System.Diagnostics.Tools.4.0.1-rc2-23611.nupkg.sha512",
+        "System.Diagnostics.Tools.4.0.1-rc2-23707.nupkg",
+        "System.Diagnostics.Tools.4.0.1-rc2-23707.nupkg.sha512",
         "System.Diagnostics.Tools.nuspec"
       ]
     },
@@ -987,17 +987,17 @@
         "System.Threading.Tasks.nuspec"
       ]
     },
-    "System.Threading.Tasks.Extensions/4.0.0-rc2-23611": {
+    "System.Threading.Tasks.Extensions/4.0.0-rc2-23707": {
       "type": "package",
       "serviceable": true,
-      "sha512": "MvhQcHudzV8Nl7Aj2Tee2Ne6wcOj2oKoHfr8gM3YT4GayVRJHI6OyLI1CXpoa2JvmYjqZXwBGkN6f7XERAs5Jw==",
+      "sha512": "94tP33Sj5yFNhlU/c8rRLfbhRoHd3/W/95xRt0/CvoMRg/T/kkS5ub5YYVSQc3TJgIhLOpCyNucQx2CyAvKOnA==",
       "files": [
         "lib/dotnet5.1/System.Threading.Tasks.Extensions.dll",
         "lib/dotnet5.1/System.Threading.Tasks.Extensions.xml",
         "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.dll",
         "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.xml",
-        "System.Threading.Tasks.Extensions.4.0.0-rc2-23611.nupkg",
-        "System.Threading.Tasks.Extensions.4.0.0-rc2-23611.nupkg.sha512",
+        "System.Threading.Tasks.Extensions.4.0.0-rc2-23707.nupkg",
+        "System.Threading.Tasks.Extensions.4.0.0-rc2-23707.nupkg.sha512",
         "System.Threading.Tasks.Extensions.nuspec"
       ]
     }
@@ -1012,7 +1012,7 @@
       "System.Runtime >= 4.0.20",
       "System.Threading >= 4.0.10",
       "System.Threading.Tasks >= 4.0.10",
-      "System.Threading.Tasks.Extensions >= 4.0.0-*"
+      "System.Threading.Tasks.Extensions >= 4.0.0-rc2-*"
     ],
     "DNXCore,Version=v5.0": []
   }

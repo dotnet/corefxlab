@@ -27,7 +27,7 @@ namespace System.CommandLine.Tests
         {
             var ex = Assert.Throws<ArgumentNullException>(() =>
             {
-                ArgumentSyntax.Parse(Array.Empty<string>(), null);
+                ArgumentSyntax.Parse(new string[0], null);
             });
 
             Assert.Equal("defineAction", ex.ParamName);
@@ -599,7 +599,7 @@ namespace System.CommandLine.Tests
             {
                 Parse(string.Empty, syntax =>
                 {
-                    syntax.DefineOptionList(name, Array.Empty<string>());
+                    syntax.DefineOptionList(name, new string[0]);
                 });
             });
 
@@ -617,7 +617,7 @@ namespace System.CommandLine.Tests
             {
                 Parse(string.Empty, syntax =>
                 {
-                    syntax.DefineOptionList(name, Array.Empty<string>());
+                    syntax.DefineOptionList(name, new string[0]);
                 });
             });
 
@@ -632,7 +632,7 @@ namespace System.CommandLine.Tests
                 Parse(string.Empty, syntax =>
                 {
                     syntax.DefineParameter("p", string.Empty);
-                    syntax.DefineOptionList("o", Array.Empty<string>());
+                    syntax.DefineOptionList("o", new string[0]);
                 });
             });
 
@@ -642,7 +642,7 @@ namespace System.CommandLine.Tests
         [Fact]
         public void Option_List_Definition()
         {
-            var arg1 = (IReadOnlyList<string>)Array.Empty<string>();
+            var arg1 = (IReadOnlyList<string>)new string[0];
             var arg2 = false;
 
             Parse("-a x -b -a y", syntax =>
@@ -712,7 +712,7 @@ namespace System.CommandLine.Tests
             {
                 Parse(string.Empty, syntax =>
                 {
-                    syntax.DefineParameterList("a", Array.Empty<string>());
+                    syntax.DefineParameterList("a", new string[0]);
                     syntax.DefineParameter("b", string.Empty);
                 });
             });
@@ -812,7 +812,7 @@ namespace System.CommandLine.Tests
             {
                 Parse(string.Empty, syntax =>
                 {
-                    syntax.DefineParameterList(name, Array.Empty<string>());
+                    syntax.DefineParameterList(name, new string[0]);
                 });
             });
 
@@ -831,7 +831,7 @@ namespace System.CommandLine.Tests
             {
                 Parse(string.Empty, syntax =>
                 {
-                    syntax.DefineParameterList(name, Array.Empty<string>());
+                    syntax.DefineParameterList(name, new string[0]);
                 });
             });
 
@@ -876,7 +876,7 @@ namespace System.CommandLine.Tests
         [Fact]
         public void Parameter_List_Definition()
         {
-            var sources = (IReadOnlyList<string>)Array.Empty<string>();
+            var sources = (IReadOnlyList<string>)new string[0];
 
             Parse("source1.cs source2.cs", syntax =>
             {
@@ -892,7 +892,7 @@ namespace System.CommandLine.Tests
         public void Parameter_List_Definition_AfterParamater()
         {
             var p = string.Empty;
-            var ps = (IReadOnlyList<string>)Array.Empty<string>();
+            var ps = (IReadOnlyList<string>)new string[0];
 
             Parse("single p1 p2", syntax =>
             {

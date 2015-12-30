@@ -1,4 +1,6 @@
 {
+  "name": "System.Text.Http",  
+  "version": "1.0.0",
   "dependencies": {
     "System.Buffers": "0.1.0-*",
     "System.Collections": "4.0.0",
@@ -15,6 +17,7 @@
     "System.Runtime.InteropServices": "4.0.0",
     "System.Slices": "0.1.0-*",
     "System.Text.Encoding": "4.0.0",
+    "System.Text.Formatting": "0.1.0-*",
     "System.Text.Utf8": "0.1.0-*",
     "System.Threading": "4.0.0"
   },

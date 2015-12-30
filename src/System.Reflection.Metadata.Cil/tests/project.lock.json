@@ -2674,7 +2674,7 @@
     },
     "Microsoft.NETCore.Platforms/1.0.1-beta-23409": {
       "type": "package",
-      "sha512": "xS7L0xIQiXqZEO7mZ7zLCpmYUZ8qHzUM2uXTw/eJN3qEPjrlfpS4mjFXoK2lb9geSGAaz5EX6ZhVVwtKh/+7rg==",
+      "sha512": "j08efVzD7XTKOysQ6J1Zzn8e47BKcThf6gEuTRLEzMvYxIbNovc+FkwyTjKtOoLXGUJZkkHMSDzlWe83GNpDxg==",
       "files": [
         "Microsoft.NETCore.Platforms.1.0.1-beta-23409.nupkg",
         "Microsoft.NETCore.Platforms.1.0.1-beta-23409.nupkg.sha512",
@@ -2813,7 +2813,7 @@
     },
     "runtime.win7-x64.Microsoft.NETCore.Windows.ApiSets/1.0.1-beta-23409": {
       "type": "package",
-      "sha512": "BTVGIcrpR4mBleld0gUKelqVKBBdxUrMIxLNKRFHcpaR6fPJ1ROFJD3DjJQDzhPVMxgtPtaW2VKHrWH37hjN5g==",
+      "sha512": "ugNfW1hJhmawjpBG7vB2I3NDnjQnIuMBuN9u7RRJ1zWA8Eno1umCU5BDmEyCm4oC9ZZMSJCiRUPixDOHCg2x8g==",
       "files": [
         "runtime.win7-x64.Microsoft.NETCore.Windows.ApiSets.1.0.1-beta-23409.nupkg",
         "runtime.win7-x64.Microsoft.NETCore.Windows.ApiSets.1.0.1-beta-23409.nupkg.sha512",
