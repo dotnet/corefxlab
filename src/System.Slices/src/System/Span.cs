@@ -15,9 +15,9 @@ namespace System
     public partial struct Span<T> : IEnumerable<T>, IEquatable<Span<T>>
     {
         /// <summary>A managed array/string; or null for native ptrs.</summary>
-        readonly object _object;
+        internal readonly object Object;
         /// <summary>An byte-offset into the array/string; or a native ptr.</summary>
-        readonly UIntPtr _offset;
+        internal readonly UIntPtr Offset;
         /// <summary>Fetches the number of elements this Span contains.</summary>
         public readonly int Length;
 
@@ -31,8 +31,8 @@ namespace System
         public Span(T[] array)
         {
             Contract.Requires(array != null);
-            _object = array;
-            _offset = new UIntPtr((uint)SpanHelpers<T>.OffsetToArrayData);
+            Object = array;
+            Offset = new UIntPtr((uint)SpanHelpers<T>.OffsetToArrayData);
             Length = array.Length;
         }
 
@@ -56,15 +56,15 @@ namespace System
             Contract.RequiresInInclusiveRange(start, array.Length);
             if (start < array.Length)
             {
-                _object = array;
-                _offset = new UIntPtr(
+                Object = array;
+                Offset = new UIntPtr(
                     (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
                 Length = array.Length - start;
             }
             else
             {
-                _object = null;
-                _offset = UIntPtr.Zero;
+                Object = null;
+                Offset = UIntPtr.Zero;
                 Length = 0;
             }
         }
@@ -90,15 +90,15 @@ namespace System
             Contract.RequiresInInclusiveRange(start + length, array.Length);
             if (start < array.Length)
             {
-                _object = array;
-                _offset = new UIntPtr(
+                Object = array;
+                Offset = new UIntPtr(
                     (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
                 Length = length;
             }
             else
             {
-                _object = null;
-                _offset = UIntPtr.Zero;
+                Object = null;
+                Offset = UIntPtr.Zero;
                 Length = 0;
             }
         }
@@ -116,8 +116,8 @@ namespace System
         {
             Contract.Requires(length >= 0);
             Contract.Requires(length == 0 || ptr != null);
-            _object = null;
-            _offset = new UIntPtr(ptr);
+            Object = null;
+            Offset = new UIntPtr(ptr);
             Length = length;
         }
 
@@ -126,8 +126,8 @@ namespace System
         /// </summary>
         internal Span(object obj, UIntPtr offset, int length)
         {
-            _object = obj;
-            _offset = offset;
+            Object = obj;
+            Offset = offset;
             Length = length;
         }
 
@@ -138,29 +138,11 @@ namespace System
             get { return Length == 0; }
         }
 
-        /// <summary>
-        /// Fetches the managed object (if any) that this span points at.
-        /// </summary>
-        internal object Object
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _object; }
-        }
-
-        /// <summary>
-        /// Fetches the offset -- or sometimes, raw pointer -- for this span.
-        /// </summary>
-        internal UIntPtr Offset
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _offset; }
-        }
-
         [CLSCompliant(false)]
         public unsafe void* UnsafePointer
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _offset.ToPointer(); }
+            get { return Offset.ToPointer(); }
         }
 
         /// <summary>
@@ -176,14 +158,14 @@ namespace System
             {
                 Contract.RequiresInRange(index, Length);
                 return PtrUtils.Get<T>(
-                    _object, _offset + (index * PtrUtils.SizeOf<T>()));
+                    Object, Offset + (index * PtrUtils.SizeOf<T>()));
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 Contract.RequiresInRange(index, Length);
                 PtrUtils.Set<T>(
-                    _object, _offset + (index * PtrUtils.SizeOf<T>()), value);
+                    Object, Offset + (index * PtrUtils.SizeOf<T>()), value);
             }
         }
 
@@ -272,7 +254,7 @@ namespace System
         {
             Contract.Requires(start + length <= Length);
             return new Span<T>(
-                _object, _offset + (start * PtrUtils.SizeOf<T>()), length);
+                Object, Offset + (start * PtrUtils.SizeOf<T>()), length);
         }
 
         /// <summary>
@@ -327,7 +309,7 @@ namespace System
         internal T GetItemWithoutBoundariesCheck(int index)
         {
             return PtrUtils.Get<T>(
-                    _object, _offset + (index * PtrUtils.SizeOf<T>()));
+                    Object, Offset + (index * PtrUtils.SizeOf<T>()));
         }
     }
 }
