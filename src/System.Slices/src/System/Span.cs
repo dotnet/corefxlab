@@ -175,13 +175,13 @@ namespace System
             get
             {
                 Contract.RequiresInRange(index, Length);
-                return PtrUtils.Get<T>(_object, _offset, index);
+                return PtrUtils.Get<T>(_object, _offset, (UIntPtr)index);
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 Contract.RequiresInRange(index, Length);
-                PtrUtils.Set(_object, _offset, index, value);
+                PtrUtils.Set(_object, _offset, (UIntPtr)index, value);
             }
         }
 
@@ -324,7 +324,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal T GetItemWithoutBoundariesCheck(int index)
         {
-            return PtrUtils.Get<T>(_object, _offset, index);
+            return PtrUtils.Get<T>(_object, _offset, (UIntPtr)index);
         }
     }
 }
