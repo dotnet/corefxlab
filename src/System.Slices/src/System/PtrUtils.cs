@@ -49,7 +49,23 @@ namespace System
             ldobj !!T   // load a T value from the computed address
             ret")]
         public static T Get<T>(object obj, UIntPtr offset) { return default(T); }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [ILSub(@"            
+            .maxstack 3
+            .locals([0] uint8 & addr)
+            ldarg.0     // load the object
+            stloc.0     // convert the object pointer to a byref
+            ldloc.0     // load the object pointer as a byref
+            ldarg.1     // load the offset
+            add         // add the offset
+            ldarg.2     // load the index
+            sizeof !!T  // load size of T
+            mul         // multiply the index and size of T
+            add         // add the result
+            ldobj !!T   // load a T value from the computed address
+            ret")]
+        public static T Get<T>(object obj, UIntPtr offset, long index) { return default(T); }
 
         /// <summary>
         /// Takes a (possibly null) object reference, plus an offset in bytes,
@@ -69,6 +85,23 @@ namespace System
             stobj !!T   // store a T value to the computed address
             ret")]
         public static void Set<T>(object obj, UIntPtr offset, T val) { }
+
+        [ILSub(@"            
+            .maxstack 3
+            .locals([0] uint8 & addr)
+            ldarg.0     // load the object
+            stloc.0     // convert the object pointer to a byref
+            ldloc.0     // load the object pointer as a byref
+            ldarg.1     // load the offset
+            add         // add the offset
+            ldarg.2     // load the index
+            sizeof !!T  // load size of T
+            mul         // multiply the index and size of T
+            add         // add the result
+            ldarg.3     // load the value to store
+            stobj !!T   // store a T value to the computed address
+            ret")]
+        public static void Set<T>(object obj, UIntPtr offset, long index, T val) { }
 
         /// <summary>
         /// Computes the number of bytes offset from an array object reference
