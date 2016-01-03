@@ -47,6 +47,16 @@ public class Tests
             }
         }
     }
+    
+    [Fact]
+    public void TestEndsWith() {
+        
+        var str = "Hello, Slice!";
+        Slice<char> slice = str.Slice();
+        Slice<char> slice2 = "Slice!".Slice();
+        
+        Assert.Equal(str.EndsWith(slice2),true);
+    }
 
     [Fact]
     public void TwoSpansCreatedOverSameStringsAreEqual()
