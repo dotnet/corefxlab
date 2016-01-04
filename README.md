@@ -48,6 +48,10 @@ You can get the .NET Core Lab packages from **dotnet-corefxlab** MyGet feed:
 
 ```
 https://www.myget.org/F/dotnet-corefxlab/api/v2
+
+or
+
+https://www.myget.org/F/dotnet-corefxlab/api/v3/index.json (preview support)
 ```
 
 You can add this feed among your NuGet sources and install the packages (keep in mind that packages are pre-release packages).
