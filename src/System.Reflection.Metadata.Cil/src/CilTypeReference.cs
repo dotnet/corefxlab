@@ -31,7 +31,7 @@ namespace System.Reflection.Metadata.Cil
         {
             get
             {
-                return Token;
+                return _token;
             }
         }
 
