@@ -46,7 +46,7 @@ namespace System.Text.Formatting.Tests
             var formatter = new StringFormatter(pool);
             formatter.Format(format, 1);
 
-            Assert.Equal(string.Format(format, 1), formatter.ToString());
+            Assert.Equal(string.Format(CultureInfo.InvariantCulture, format, 1), formatter.ToString());
         }
 
         [Fact]
