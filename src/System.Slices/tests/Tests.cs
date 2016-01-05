@@ -48,7 +48,7 @@ public class Tests
         }
     }
     [Fact]
-    public bool TestEndsWith() {
+    public void TestEndsWith() {
         
         var str = "Hello, Slice!";
         Span<char> slice = str.Slice();
