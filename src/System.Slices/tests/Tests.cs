@@ -54,7 +54,7 @@ public class Tests
         Span<char> slice = str.Slice();
         Span<char> slice2 = "Slice!".Slice();
         
-        str.EndsWith(slice2);
+        slice.EndsWith(slice2);
     }
 
 
