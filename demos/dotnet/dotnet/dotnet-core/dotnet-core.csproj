@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{507301F7-B451-4C9F-8947-95E1CBE2049A}</ProjectGuid>
+    <ProjectGuid>{D47E204B-D06C-4BEA-A6E0-1A1CFBFB193B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>dotnet</RootNamespace>
@@ -17,7 +17,7 @@
     <NuGetTargetMoniker>DNXCore,Version=v5.0</NuGetTargetMoniker>
     <BaseNuGetRuntimeIdentifier>win7</BaseNuGetRuntimeIdentifier>
   </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -69,13 +69,11 @@
     <Compile Include="..\CscAction.cs" />
     <Compile Include="..\NugetAction.cs" />
     <Compile Include="..\Helpers.cs" />
+    <Compile Include="..\ProjectLockJson.cs" />
     <Compile Include="..\ProjectProperties.cs" />
     <Compile Include="..\ProjectPropertiesHelpers.cs" />
     <Compile Include="..\Settings.cs" />
     <Compile Include="..\OtherActions.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="..\Properties\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
