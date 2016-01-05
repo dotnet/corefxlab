@@ -11,7 +11,7 @@ namespace System
         {
             if (!condition)
             {
-                throw new ArgumentException();
+                throw NewArgumentException();
             }
         }
 
@@ -19,35 +19,38 @@ namespace System
         {
             if (n < 0)
             {
-                throw new ArgumentOutOfRangeException();
+                throw NewArgumentOutOfRangeException();
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RequiresInRange(int start, int length)
         {
-            if (!(start >= 0 && start < length))
+            if ((uint)start >= (uint)length)
             {
-                throw new ArgumentOutOfRangeException();
+                throw NewArgumentOutOfRangeException();
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RequiresInInclusiveRange(int start, int length)
         {
-            if (!(start >= 0 && start <= length))
+            if ((uint)start > (uint)length)
             {
-                throw new ArgumentOutOfRangeException();
+                throw NewArgumentOutOfRangeException();
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RequiresInInclusiveRange(int start, int end, int length)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Exception NewArgumentException()
         {
-            if (!(start >= 0 && start <= end && end >= 0 && end <= length))
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            return new ArgumentException();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Exception NewArgumentOutOfRangeException()
+        {
+            return new ArgumentOutOfRangeException();
         }
     }
 }

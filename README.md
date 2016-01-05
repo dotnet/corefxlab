@@ -34,6 +34,9 @@ and ease of use functions. It can also be compared to a Lookup with the exceptio
 setting of the internal collections so that uniqueness of values can be chosen by specifying either a HashSet<TValue> or List<TValue>. Some of the
 design decisions as well as introductions to usage can be found in the old blog posts introducing it [here](http://blogs.msdn.com/b/dotnet/archive/2014/06/20/would-you-like-a-multidictionary.aspx) and [here](http://blogs.msdn.com/b/dotnet/archive/2014/08/05/multidictionary-becomes-multivaluedictionary.aspx).
 
+* **System.CommandLine**.
+The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](https://github.com/dotnet/corefxlab/blob/master/src/System.CommandLine/README.md) for more information.
+
 More libraries are coming soon. Stay tuned!
 
 [blog post]: http://blogs.msdn.com/b/dotnet/archive/2014/11/12/net-core-is-open-source.aspx
@@ -48,6 +51,10 @@ You can get the .NET Core Lab packages from **dotnet-corefxlab** MyGet feed:
 
 ```
 https://www.myget.org/F/dotnet-corefxlab/api/v2
+
+or
+
+https://www.myget.org/F/dotnet-corefxlab/api/v3/index.json (preview support)
 ```
 
 You can add this feed among your NuGet sources and install the packages (keep in mind that packages are pre-release packages).
