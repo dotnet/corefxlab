@@ -50,7 +50,7 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
-        public void CompositeFormattingEscapingMissingStartBracket()
+        public void CompositeFormattingEscapingMissingEndBracket()
         {
             var pool = new ManagedBufferPool<byte>(1024);
             var formatter = new StringFormatter(pool);
@@ -59,7 +59,7 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
-        public void CompositeFormattingEscapingMissingEndBracket()
+        public void CompositeFormattingEscapingMissingStartBracket()
         {
             var pool = new ManagedBufferPool<byte>(1024);
             var formatter = new StringFormatter(pool);
