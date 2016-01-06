@@ -265,8 +265,35 @@ namespace System.Text.Formatting {
                             _state = State.New;
                             return CompositeSegment.Literal(_spanStart, _currentIndex);
                         }
-                        _currentIndex++;
-                        return ParseInsertionPoint();
+                        if ((_currentIndex + 1 < _compositeFormatString.Length) && (_compositeFormatString[_currentIndex + 1] == c))
+                        {
+                            _state = State.Literal;
+                            _currentIndex++;
+                            _spanStart = _currentIndex;
+                        }
+                        else
+                        {
+                            _currentIndex++;
+                            return ParseInsertionPoint();
+                        }
+                    }
+                    else if (c == '}')
+                    {
+                        if ((_currentIndex + 1 < _compositeFormatString.Length) && (_compositeFormatString[_currentIndex + 1] == c))
+                        {
+                            if (_state == State.Literal)
+                            {
+                                _state = State.New;
+                                return CompositeSegment.Literal(_spanStart, _currentIndex);
+                            }
+                            _state = State.Literal;
+                            _currentIndex++;
+                            _spanStart = _currentIndex;
+                        }
+                        else
+                        {
+                            throw new Exception("missing start bracket");
+                        }
                     }
                     else
                     {
