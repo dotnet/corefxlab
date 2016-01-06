@@ -137,11 +137,15 @@ namespace System
             where U : struct
         {
             int countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
-            if (countOfU == 0)
+            object obj = null;
+            UIntPtr offset = default(UIntPtr);
+
+            if (countOfU != 0)
             {
-                return default(Span<U>);
+                obj = slice.Object;
+                offset = slice.Offset;
             }
-            return new Span<U>(slice.Object, slice.Offset, countOfU);
+            return new Span<U>(obj, offset, countOfU);
         }
 
         /// <summary>
