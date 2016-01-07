@@ -47,7 +47,6 @@ namespace System
             add         // add the offset
             ldarg.2     // load the index
             sizeof !!T  // load size of T
-            conv.u  
             mul         // multiply the index and size of T
             add         // add the result
             ldobj !!T   // load a T value from the computed address
@@ -69,7 +68,6 @@ namespace System
             add         // add the offset
             ldarg.2     // load the index
             sizeof !!T  // load size of T
-            conv.u  
             mul         // multiply the index and size of T
             add         // add the result
             ldarg.3     // load the value to store
