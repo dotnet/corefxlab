@@ -20,6 +20,7 @@
   </metadata>
   <files>
     <file src="..\bin\Windows_NT.AnyCPU.Release\System.Net.Libuv\System.Net.Libuv.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
+    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Net.Libuv\libuv.dll" target="runtimes/win7-x64/native"/>
   </files>
 </package>
 
