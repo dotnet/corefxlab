@@ -236,9 +236,12 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> Slice(int start)
         {
-            return Slice(start, Length - start);
+            Contract.RequiresInInclusiveRange(start, Length);
+            return new Span<T>(
+                Object, Offset + (start * PtrUtils.SizeOf<T>()), Length - start);
         }
 
         /// <summary>
@@ -250,9 +253,11 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> Slice(int start, int length)
         {
-            Contract.Requires(start + length <= Length);
+            Contract.RequiresInInclusiveRange(start, length, Length);
+
             return new Span<T>(
                 Object, Offset + (start * PtrUtils.SizeOf<T>()), length);
         }

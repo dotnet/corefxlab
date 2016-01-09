@@ -41,6 +41,18 @@ namespace System
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RequiresInInclusiveRange(int start, int length, int existingLength)
+        {
+            if ((uint)start > (uint)existingLength
+                || length < 0
+                || (uint)(start + length) > (uint)existingLength)
+            {
+                throw NewArgumentOutOfRangeException();
+            }
+        }
+
+        
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static Exception NewArgumentException()
         {
