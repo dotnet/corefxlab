@@ -23,10 +23,26 @@ namespace System.Time.Tests
         }
 
         [Fact]
+        public void ToLongDateStringInvariant()
+        {
+            var date = new Date(2000, 12, 31);
+            var s = date.ToLongDateStringInvariant();
+            Assert.Equal("Sunday, 31 December 2000", s);
+        }
+
+        [Fact]
         public void ToShortDateString()
         {
             var date = new Date(2000, 12, 31);
             var s = date.ToShortDateString();
+            Assert.Equal("12/31/2000", s);
+        }
+
+        [Fact]
+        public void ToShortDateStringInvariant()
+        {
+            var date = new Date(2000, 12, 31);
+            var s = date.ToShortDateStringInvariant();
             Assert.Equal("12/31/2000", s);
         }
 

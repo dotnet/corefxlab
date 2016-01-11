@@ -1005,6 +1005,20 @@ namespace System
 
         /// <summary>
         /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent
+        /// long time string representation.
+        /// </summary>
+        /// <returns>A string that contains the long time string representation of the
+        /// current <see cref="TimeOfDay"/> object.</returns>
+        /// <remarks>The value of the current <see cref="TimeOfDay"/> object is formatted
+        /// using the pattern defined by the <see cref="DateTimeFormatInfo.LongTimePattern" />
+        /// property associated with the invariant culture.</remarks>
+        public string ToLongTimeStringInvariant()
+        {
+            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.LongTimePattern, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent
         /// short time string representation.
         /// </summary>
         /// <returns>A string that contains the short time string representation of the
@@ -1015,6 +1029,20 @@ namespace System
         public string ToShortTimeString()
         {
             return ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="TimeOfDay"/> object to its equivalent
+        /// short time string representation.
+        /// </summary>
+        /// <returns>A string that contains the short time string representation of the
+        /// current <see cref="TimeOfDay"/> object.</returns>
+        /// <remarks>The value of the current <see cref="TimeOfDay"/> object is formatted
+        /// using the pattern defined by the <see cref="DateTimeFormatInfo.ShortTimePattern" />
+        /// property associated with the invariant culture.</remarks>
+        public string ToShortTimeStringInvariant()
+        {
+            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortTimePattern, CultureInfo.InvariantCulture);
         }
 
         /// <summary>

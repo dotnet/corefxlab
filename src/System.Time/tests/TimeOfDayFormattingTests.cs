@@ -15,7 +15,7 @@ namespace System.Time.Tests
         }
 
         [Fact]
-        public void ToLongDateString()
+        public void ToLongTimeString()
         {
             var time = new TimeOfDay(10, 49, 12, Meridiem.PM);
             var s = time.ToLongTimeString();
@@ -23,10 +23,26 @@ namespace System.Time.Tests
         }
 
         [Fact]
-        public void ToShortDateString()
+        public void ToLongTimeStringInvariant()
+        {
+            var time = new TimeOfDay(10, 49, 12, Meridiem.PM);
+            var s = time.ToLongTimeStringInvariant();
+            Assert.Equal("22:49:12", s);
+        }
+
+        [Fact]
+        public void ToShortTimeString()
         {
             var time = new TimeOfDay(22, 49);
             var s = time.ToShortTimeString();
+            Assert.Equal("22:49", s);
+        }
+
+        [Fact]
+        public void ToShortTimeStringInvariant()
+        {
+            var time = new TimeOfDay(22, 49);
+            var s = time.ToShortTimeStringInvariant();
             Assert.Equal("22:49", s);
         }
 

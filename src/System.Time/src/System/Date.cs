@@ -912,6 +912,22 @@ namespace System
         }
 
         /// <summary>
+        /// Converts the value of the current <see cref="Date"/> object to its equivalent long date string
+        /// representation.
+        /// </summary>
+        /// <returns>
+        /// A string that contains the long date string representation of the current <see cref="Date"/> object.
+        /// </returns>
+        /// <remarks>
+        /// The value of the current <see cref="Date"/> object is formatted using the pattern defined by the
+        /// <see cref="DateTimeFormatInfo.LongDatePattern" /> property associated with the invariant culture.
+        /// </remarks>
+        public string ToLongDateStringInvariant()
+        {
+            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.LongDatePattern, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
         /// Converts the value of the current <see cref="Date"/> object to its equivalent short date string
         /// representation.
         /// </summary>
@@ -925,6 +941,22 @@ namespace System
         public string ToShortDateString()
         {
             return ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="Date"/> object to its equivalent short date string
+        /// representation.
+        /// </summary>
+        /// <returns>
+        /// A string that contains the short date string representation of the current <see cref="Date"/> object.
+        /// </returns>
+        /// <remarks>
+        /// The value of the current <see cref="Date"/> object is formatted using the pattern defined by the
+        /// <see cref="DateTimeFormatInfo.ShortDatePattern" /> property associated with the invariant culture.
+        /// </remarks>
+        public string ToShortDateStringInvariant()
+        {
+            return ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern, CultureInfo.InvariantCulture);
         }
 
         /// <summary>

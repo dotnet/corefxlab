@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Globalization;
+
 namespace System
 {
     /// <summary>
@@ -154,6 +156,70 @@ namespace System
 
             var result = operation.Invoke(dateTime);
             return resolver.Invoke(result, timeZone);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTime"/> object to its equivalent long date string
+        /// representation.
+        /// </summary>
+        /// <param name="dateTime">The <see cref="DateTime"/> instance.</param>
+        /// <returns>
+        /// A string that contains the long date string representation of the current <see cref="DateTime"/> object.
+        /// </returns>
+        /// <remarks>
+        /// The value of the current <see cref="DateTime"/> object is formatted using the pattern defined by the
+        /// <see cref="DateTimeFormatInfo.LongDatePattern" /> property associated with the invariant culture.
+        /// </remarks>
+        public static string ToLongDateStringInvariant(this DateTime dateTime)
+        {
+            return dateTime.ToString(CultureInfo.InvariantCulture.DateTimeFormat.LongDatePattern, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTime"/> object to its equivalent short date string
+        /// representation.
+        /// </summary>
+        /// <param name="dateTime">The <see cref="DateTime"/> instance.</param>
+        /// <returns>
+        /// A string that contains the short date string representation of the current <see cref="DateTime"/> object.
+        /// </returns>
+        /// <remarks>
+        /// The value of the current <see cref="DateTime"/> object is formatted using the pattern defined by the
+        /// <see cref="DateTimeFormatInfo.ShortDatePattern" /> property associated with the invariant culture.
+        /// </remarks>
+        public static string ToShortDateStringInvariant(this DateTime dateTime)
+        {
+            return dateTime.ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTime"/> object to its equivalent
+        /// long time string representation.
+        /// </summary>
+        /// <param name="dateTime">The <see cref="DateTime"/> instance.</param>
+        /// <returns>A string that contains the long time string representation of the
+        /// current <see cref="DateTime"/> object.</returns>
+        /// <remarks>The value of the current <see cref="DateTime"/> object is formatted
+        /// using the pattern defined by the <see cref="DateTimeFormatInfo.LongTimePattern" />
+        /// property associated with the invariant culture.</remarks>
+        public static string ToLongTimeStringInvariant(this DateTime dateTime)
+        {
+            return dateTime.ToString(CultureInfo.InvariantCulture.DateTimeFormat.LongTimePattern, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Converts the value of the current <see cref="DateTime"/> object to its equivalent
+        /// short time string representation.
+        /// </summary>
+        /// <param name="dateTime">The <see cref="DateTime"/> instance.</param>
+        /// <returns>A string that contains the short time string representation of the
+        /// current <see cref="DateTime"/> object.</returns>
+        /// <remarks>The value of the current <see cref="DateTime"/> object is formatted
+        /// using the pattern defined by the <see cref="DateTimeFormatInfo.ShortTimePattern" />
+        /// property associated with the invariant culture.</remarks>
+        public static string ToShortTimeStringInvariant(this DateTime dateTime)
+        {
+            return dateTime.ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortTimePattern, CultureInfo.InvariantCulture);
         }
     }
 }
