@@ -1083,7 +1083,7 @@ namespace System
         /// <paramref name="s"/> does not contain a valid string representation of a time-of-day.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="styles"/> styles contains an invalid <see cref="DateTimeStyles"/> values.
+        /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
         /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
@@ -1167,7 +1167,7 @@ namespace System
         /// <paramref name="format"/> contains a format pattern that is not applicable to a <see cref="TimeOfDay"/>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="styles"/> styles contains an invalid <see cref="DateTimeStyles"/> values.
+        /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
         /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
@@ -1224,7 +1224,7 @@ namespace System
         /// <see cref="TimeOfDay"/>.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="styles"/> styles contains an invalid <see cref="DateTimeStyles"/> values.
+        /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
         /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
@@ -1303,7 +1303,7 @@ namespace System
         /// <c>true</c> if the <paramref name="s"/> parameter was converted successfully; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="styles"/> styles contains an invalid <see cref="DateTimeStyles"/> values.
+        /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
         /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
@@ -1359,7 +1359,7 @@ namespace System
         /// <c>true</c> if the <paramref name="s"/> parameter was converted successfully; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="styles"/> styles contains an invalid <see cref="DateTimeStyles"/> values.
+        /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
         /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
@@ -1418,7 +1418,7 @@ namespace System
         /// <c>true</c> if the <paramref name="s"/> parameter was converted successfully; otherwise, <c>false</c>.
         /// </returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="styles"/> styles contains an invalid <see cref="DateTimeStyles"/> values.
+        /// <paramref name="styles"/> contains invalid <see cref="DateTimeStyles"/> values.
         /// The only styles that are valid for a <see cref="TimeOfDay"/> are:
         /// <see cref="DateTimeStyles.None"/>, <see cref="DateTimeStyles.AllowLeadingWhite"/>,
         /// <see cref="DateTimeStyles.AllowTrailingWhite"/>, <see cref="DateTimeStyles.AllowInnerWhite"/>, and
