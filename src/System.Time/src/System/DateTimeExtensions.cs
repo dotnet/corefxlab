@@ -16,7 +16,7 @@ namespace System
         /// </summary>
         /// <param name="dateTime">The <see cref="DateTime"/> instance.</param>
         /// <returns>The <see cref="Date"/> value.</returns>
-        public static Date Date(this DateTime dateTime)
+        public static Date GetDate(this DateTime dateTime)
         {
             return new Date((int) (dateTime.Ticks / TimeSpan.TicksPerDay));
         }
@@ -27,7 +27,7 @@ namespace System
         /// </summary>
         /// <param name="dateTime">The <see cref="DateTime"/> instance.</param>
         /// <returns>The <see cref="TimeOfDay"/> value.</returns>
-        public static TimeOfDay TimeOfDay(this DateTime dateTime)
+        public static TimeOfDay GetTimeOfDay(this DateTime dateTime)
         {
             return new TimeOfDay(dateTime.TimeOfDay.Ticks);
         }
