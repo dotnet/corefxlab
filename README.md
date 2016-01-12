@@ -75,3 +75,5 @@ This project is a part of the [.NET Foundation].
 To find out how you can build and test .NET Core, see the [Developer Guide].
 
 [Developer Guide]: https://github.com/dotnet/corefx/blob/master/Documentation/project-docs/developer-guide.md
+
+:)
