@@ -121,23 +121,13 @@ namespace System.Text.Utf8
             }
         }
 
-        private Utf8CodeUnit GetCodeUnitAtPositionUnchecked(int i)
-        {
-            return (Utf8CodeUnit)_buffer[i];
-        }
-
         public Utf8CodeUnit this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                if (i < 0 || i >= Length)
-                {
-                    throw new ArgumentOutOfRangeException("i");
-                }
-                else
-                {
-                    return GetCodeUnitAtPositionUnchecked(i);
-                }
+                // there is no need to check the boundaries -> Span is going to do this on it's own
+                return (Utf8CodeUnit)_buffer[i];
             }
         }
 
@@ -351,7 +341,7 @@ namespace System.Text.Utf8
         {
             for (int i = 0; i < Length; i++)
             {
-                if (codeUnit == GetCodeUnitAtPositionUnchecked(i))
+                if (codeUnit == this[i])
                 {
                     return i;
                 }
@@ -556,7 +546,7 @@ namespace System.Text.Utf8
                 return false;
             }
 
-            return GetCodeUnitAtPositionUnchecked(0) == codeUnit;
+            return this[0] == codeUnit;
         }
 
         public bool StartsWith(Utf8String value)
@@ -576,7 +566,7 @@ namespace System.Text.Utf8
                 return false;
             }
 
-            return GetCodeUnitAtPositionUnchecked(Length - 1) == codeUnit;
+            return this[Length - 1] == codeUnit;
         }
 
         public bool EndsWith(Utf8String value)
