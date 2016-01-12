@@ -24,29 +24,29 @@ namespace System
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RequiresInRange(int start, int length)
+        public static void RequiresInRange(int start, uint length)
         {
-            if ((uint)start >= (uint)length)
+            if ((uint)start >= length)
             {
                 throw NewArgumentOutOfRangeException();
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RequiresInInclusiveRange(int start, int length)
+        public static void RequiresInInclusiveRange(int start, uint length)
         {
-            if ((uint)start > (uint)length)
+            if ((uint)start > length)
             {
                 throw NewArgumentOutOfRangeException();
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RequiresInInclusiveRange(int start, int length, int existingLength)
+        public static void RequiresInInclusiveRange(int start, int length, uint existingLength)
         {
-            if ((uint)start > (uint)existingLength
+            if ((uint)start > existingLength
                 || length < 0
-                || (uint)(start + length) > (uint)existingLength)
+                || (uint)(start + length) > existingLength)
             {
                 throw NewArgumentOutOfRangeException();
             }
