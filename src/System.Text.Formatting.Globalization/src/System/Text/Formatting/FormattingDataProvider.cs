@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Text.Utf8;
 
@@ -15,15 +16,23 @@ namespace System.Text.Formatting
     {
         public static FormattingData CreateFormattingData(string localeId)
         {
-            const int maxIdLength = 15;
-            const int recordSize = 20;
-  
             var resourceName = "System.Text.Formatting.locales.bin";
             var resourceStream = typeof(FormattingDataProvider).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName);
             if (resourceStream == null)
             {
                 throw new Exception("resource missing");
             }
+
+            using (resourceStream)
+            {
+                return CreateFormattingData(localeId, resourceStream);
+            }
+        }
+
+        private static FormattingData CreateFormattingData(string localeId, Stream resourceStream)
+        {
+            const int maxIdLength = 15;
+            const int recordSize = 20;
 
             var b1 = resourceStream.ReadByte();
             var b2 = resourceStream.ReadByte();
@@ -39,13 +48,13 @@ namespace System.Text.Formatting
             {
                 throw new Exception("bad locale id");
             }
-            var id = new Utf8String(idBytes.Slice(0, idByteCount).CreateArray());
+            var id = new Utf8String(idBytes.Slice(0, idByteCount));
 
             int recordStart = -1;
             for (int record = 0; record < numberOfIDs; record++)
             {
                 var indexId = index.Slice(record * recordSize, idByteCount);
-                if (id.Equals(new Utf8String(indexId.CreateArray()))) // found record
+                if (id.Equals(new Utf8String(indexId))) // found record
                 {
                     var indexData = index.Slice(record * recordSize + maxIdLength);
                     recordStart = 0;
@@ -57,7 +66,7 @@ namespace System.Text.Formatting
                 }
             }
 
-            if(recordStart == -1)
+            if (recordStart == -1)
             {
                 throw new Exception("local not found");
             }
