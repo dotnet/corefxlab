@@ -413,6 +413,254 @@ namespace System.CommandLine.Tests
             Assert.Equal("value 'abc' isn't valid for -o: invalid format", ex.Message);
         }
 
+        [Fact]
+        public void Option_Value_Gets_Assigned_When_No_Conditional_Is_Passed()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, s => s, string.Empty, null);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Option_Value_Does_Not_Get_Assigned_When_The_Conditional_Returns_False()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, s => s, string.Empty, s => false);
+            });
+
+            Assert.Equal("option A", optionAValue);
+        }
+
+        [Fact]
+        public void Option_Value_Gets_Assigned_When_The_Conditional_Returns_True()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, s => s, string.Empty, s => true);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Option_Value_Gets_Assigned_Through_Delegate_When_No_Conditional_Is_Passed()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", s => optionAValue = s, null, s => s, string.Empty, null);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Option_Value_Does_Not_Get_Assigned_Through_Delegate_When_The_Conditional_Returns_False()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", s => optionAValue = s, null, s => s, string.Empty, s => false);
+            });
+
+            Assert.Equal("option A", optionAValue);
+        }
+
+        [Fact]
+        public void Option_Value_Gets_Assigned_Through_Delegate_When_The_Conditional_Returns_True()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", s => optionAValue = s, null, s => s, string.Empty, s => true);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void String_Option_Value_Gets_Assigned_Through_Delegate()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", s => optionAValue = s, null, string.Empty);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Int_Option_Value_Gets_Assigned_Through_Delegate()
+        {
+            const int valueA = 1;
+            var optionAValue = 99;
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", s => optionAValue = s, -1, string.Empty);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Bool_Option_Value_Gets_Assigned_Through_Delegate()
+        {
+            var optionAValue = false;
+
+            Parse("--option-a", syntax =>
+            {
+                syntax.DefineOption("option-a", s => optionAValue = s, false, string.Empty);
+            });
+
+            Assert.True(optionAValue);
+        }
+
+        [Fact]
+        public void String_Option_Value_Gets_Assigned_When_No_Conditional_Is_Passed()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, null);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void String_Option_Value_Does_Not_Get_Assigned_When_The_Conditional_Returns_False()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => false);
+            });
+
+            Assert.Equal("option A", optionAValue);
+        }
+
+        [Fact]
+        public void String_Option_Value_Gets_Assigned_When_The_Conditional_Returns_True()
+        {
+            const string valueA = "valueA";
+            var optionAValue = "option A";
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => true);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Int_Option_Value_Gets_Assigned_When_No_Conditional_Is_Passed()
+        {
+            const int valueA = 1;
+            var optionAValue = 99;
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, null);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Int_Option_Value_Does_Not_Get_Assigned_When_The_Conditional_Returns_False()
+        {
+            const int valueA = 1;
+            var optionAValue = 99;
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => false);
+            });
+
+            Assert.Equal(99, optionAValue);
+        }
+
+        [Fact]
+        public void Int_Option_Value_Gets_Assigned_When_The_Conditional_Returns_True()
+        {
+            const int valueA = 1;
+            var optionAValue = 99;
+
+            Parse($"--option-a {valueA}", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => true);
+            });
+
+            Assert.Equal(valueA, optionAValue);
+        }
+
+        [Fact]
+        public void Bool_Option_Value_Gets_Assigned_When_No_Conditional_Is_Passed()
+        {
+            var optionAValue = false;
+
+            Parse("--option-a", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, null);
+            });
+
+            Assert.True(optionAValue);
+        }
+
+        [Fact]
+        public void Bool_Option_Value_Does_Not_Get_Assigned_When_The_Conditional_Returns_False()
+        {
+            var optionAValue = false;
+
+            Parse("--option-a", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => false);
+            });
+
+            Assert.False(optionAValue);
+        }
+
+        [Fact]
+        public void Bool_Option_Value_Gets_Assigned_When_The_Conditional_Returns_True()
+        {
+            var optionAValue = false;
+
+            Parse("--option-a", syntax =>
+            {
+                syntax.DefineOption("option-a", ref optionAValue, string.Empty, s => true);
+            });
+
+            Assert.True(optionAValue);
+        }
+
         [Theory]
         [InlineData("-a")]
         [InlineData("-a:")]
@@ -655,6 +903,45 @@ namespace System.CommandLine.Tests
             Assert.True(arg2);
         }
 
+        [Fact]
+        public void Option_List_Gets_Assigned_Through_Delegate()
+        {
+            var arg1 = (IReadOnlyList<double>)Array.Empty<double>();
+
+            Parse("-a 1 -a 2", syntax =>
+            {
+                syntax.DefineOptionList<double>("a", s => arg1 = s, Double.Parse, string.Empty);
+            });
+
+            Assert.Equal(new double[] { 1, 2 }, arg1);
+        }
+
+        [Fact]
+        public void String_Option_List_Gets_Assigned_Through_Delegate()
+        {
+            var arg1 = (IReadOnlyList<string>)Array.Empty<string>();
+
+            Parse("-a x -a y", syntax =>
+            {
+                syntax.DefineOptionList("a", s => arg1 = s, string.Empty);
+            });
+
+            Assert.Equal(new[] { "x", "y" }, arg1);
+        }
+
+        [Fact]
+        public void Int_Option_List_Gets_Assigned_Through_Delegate()
+        {
+            var arg1 = (IReadOnlyList<int>)Array.Empty<int>();
+
+            Parse("-a 1 -a 2", syntax =>
+            {
+                syntax.DefineOptionList("a", s => arg1 = s, string.Empty);
+            });
+
+            Assert.Equal(new[] { 1, 2 }, arg1);
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData(null)]
@@ -734,6 +1021,58 @@ namespace System.CommandLine.Tests
                 Assert.Equal("x", o1);
                 Assert.Equal("y", o2);
             });
+        }
+
+        [Fact]
+        public void Parameter_Definition_Assigned_Through_Delegate()
+        {
+            var o2 = (double)2;
+
+            Parse("1", syntax =>
+            {
+                syntax.DefineParameter<double>("o", s => o2 = s, -1, Double.Parse, string.Empty);
+            });
+
+            Assert.Equal(1, o2);
+        }
+
+        [Fact]
+        public void String_Parameter_Definition_Assigned_Through_Delegate()
+        {
+            var o2 = "o2";
+
+            Parse("y", syntax =>
+            {
+                syntax.DefineParameter("o", s => o2 = s, null, string.Empty);                
+            });
+
+            Assert.Equal("y", o2);
+        }
+
+        [Fact]
+        public void Int_Parameter_Definition_Assigned_Through_Delegate()
+        {
+            var o2 = 2;
+
+            Parse("1", syntax =>
+            {
+                syntax.DefineParameter("o", s => o2 = s, -1, string.Empty);
+            });
+
+            Assert.Equal(1, o2);
+        }
+
+        [Fact]
+        public void Bool_Parameter_Definition_Assigned_Through_Delegate()
+        {
+            var o2 = false;
+
+            Parse("true", syntax =>
+            {
+                syntax.DefineParameter("o", s => o2 = s, false, string.Empty);
+            });
+
+            Assert.True(o2);
         }
 
         [Fact]
@@ -886,6 +1225,45 @@ namespace System.CommandLine.Tests
             var expected = new[] { "source1.cs", "source2.cs" };
             var actual = sources;
             Assert.Equal(expected.AsEnumerable(), actual);
+        }
+
+        [Fact]
+        public void Parameter_List_Definition_Assigned_Through_Delegate()
+        {
+            var actual = (IReadOnlyList<double>)Array.Empty<double>();
+
+            Parse("1 2", syntax =>
+            {
+                syntax.DefineParameterList<double>("o", s => actual = s, Double.Parse, string.Empty);
+            });
+
+            Assert.Equal(new double[] { 1, 2 }, actual);
+        }
+
+        [Fact]
+        public void String_Parameter_List_Definition_Assigned_Through_Delegate()
+        {
+            var actual = (IReadOnlyList<string>)Array.Empty<string>();
+
+            Parse("source1.cs source2.cs", syntax =>
+            {
+                syntax.DefineParameterList("sources", s => actual = s, string.Empty);
+            });
+
+            Assert.Equal(new[] { "source1.cs", "source2.cs" }, actual);
+        }
+
+        [Fact]
+        public void Int_Parameter_List_Definition_Assigned_Through_Delegate()
+        {
+            var actual = (IReadOnlyList<int>)Array.Empty<int>();
+
+            Parse("1 2", syntax =>
+            {
+                syntax.DefineParameterList("o", s => actual = s, string.Empty);
+            });
+
+            Assert.Equal(new[] { 1, 2 }, actual);
         }
 
         [Fact]

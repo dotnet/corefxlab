@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -53,29 +52,72 @@ namespace System.CommandLine
             return DefineOption(name, defaultValue, s_int32Parser);
         }
 
-        public Argument<T> DefineOption<T>(string name, ref T value, Func<string, T> valueConverter, string help)
+        public Argument<T> DefineOption<T>(
+            string name,
+            Action<T> assign,
+            T defaultValue,
+            Func<string, T> valueConverter,
+            string help,
+            Func<T, bool> assignConditional = null)
+        {
+            var option = DefineOption(name, defaultValue, valueConverter);
+            option.Help = help;
+
+            if (assignConditional == null || assignConditional(option.Value))
+            {
+                assign(option.Value);
+            }
+
+            return option;
+        }
+
+        public Argument<string> DefineOption(string name, Action<string> assign, string defaultValue, string help, Func<string, bool> assignConditional = null)
+        {
+            return DefineOption(name, assign, defaultValue, s_stringParser, help, assignConditional);
+        }
+
+        public Argument<bool> DefineOption(string name, Action<bool> assign, bool defaultValue, string help, Func<bool, bool> assignConditional = null)
+        {
+            return DefineOption(name, assign, defaultValue, s_booleanParser, help, assignConditional);
+        }
+
+        public Argument<int> DefineOption(string name, Action<int> assign, int defaultValue, string help, Func<int, bool> assignConditional = null)
+        {
+            return DefineOption(name, assign, defaultValue, s_int32Parser, help, assignConditional);
+        }
+
+        public Argument<T> DefineOption<T>(
+            string name, 
+            ref T value, 
+            Func<string, T> valueConverter, 
+            string help, 
+            Func<T, bool> assignConditional = null)
         {
             var option = DefineOption(name, value, valueConverter);
             option.Help = help;
 
-            value = option.Value;
+            if (assignConditional == null || assignConditional(option.Value))
+            {
+                value = option.Value;
+            }
+            
             return option;
         }
 
-        public Argument<string> DefineOption(string name, ref string value, string help)
+        public Argument<string> DefineOption(string name, ref string value, string help, Func<string, bool> assignConditional = null)
         {
-            return DefineOption(name, ref value, s_stringParser, help);
+            return DefineOption(name, ref value, s_stringParser, help, assignConditional);
         }
 
-        public Argument<bool> DefineOption(string name, ref bool value, string help)
+        public Argument<bool> DefineOption(string name, ref bool value, string help, Func<bool, bool> assignConditional = null)
         {
-            return DefineOption(name, ref value, s_booleanParser, help);
+            return DefineOption(name, ref value, s_booleanParser, help, assignConditional);
         }
 
-        public Argument<int> DefineOption(string name, ref int value, string help)
+        public Argument<int> DefineOption(string name, ref int value, string help, Func<int, bool> assignConditional = null)
         {
-            return DefineOption(name, ref value, s_int32Parser, help);
-        }
+            return DefineOption(name, ref value, s_int32Parser, help, assignConditional);
+        }        
 
         // Option lists
 
@@ -87,6 +129,25 @@ namespace System.CommandLine
         public ArgumentList<int> DefineOptionList(string name, IReadOnlyList<int> defaultValue)
         {
             return DefineOptionList(name, defaultValue, s_int32Parser);
+        }
+
+        public ArgumentList<T> DefineOptionList<T>(string name, Action<IReadOnlyList<T>> assign, Func<string, T> valueConverter, string help)
+        {
+            var optionList = DefineOptionList(name, Array.Empty<T>(), valueConverter);
+            optionList.Help = help;
+
+            assign(optionList.Value);
+            return optionList;
+        }
+
+        public ArgumentList<string> DefineOptionList(string name, Action<IReadOnlyList<string>> assign, string help)
+        {
+            return DefineOptionList(name, assign, s_stringParser, help);
+        }
+
+        public ArgumentList<int> DefineOptionList(string name, Action<IReadOnlyList<int>> assign, string help)
+        {
+            return DefineOptionList(name, assign, s_int32Parser, help);
         }
 
         public ArgumentList<T> DefineOptionList<T>(string name, ref IReadOnlyList<T> value, Func<string, T> valueConverter, string help)
@@ -125,6 +186,30 @@ namespace System.CommandLine
             return DefineParameter(name, defaultValue, s_int32Parser);
         }
 
+        public Argument<T> DefineParameter<T>(string name, Action<T> assign, T defaultValue, Func<string, T> valueConverter, string help)
+        {
+            var parameter = DefineParameter(name, defaultValue, valueConverter);
+            parameter.Help = help;
+
+            assign(parameter.Value);
+            return parameter;
+        }
+
+        public Argument<string> DefineParameter(string name, Action<string> assign, string defaultValue, string help)
+        {
+            return DefineParameter(name, assign, defaultValue, s_stringParser, help);
+        }
+
+        public Argument<bool> DefineParameter(string name, Action<bool> assign, bool defaultValue, string help)
+        {
+            return DefineParameter(name, assign, defaultValue, s_booleanParser, help);
+        }
+
+        public Argument<int> DefineParameter(string name, Action<int> assign, int defaultValue, string help)
+        {
+            return DefineParameter(name, assign, defaultValue, s_int32Parser, help);
+        }
+
         public Argument<T> DefineParameter<T>(string name, ref T value, Func<string, T> valueConverter, string help)
         {
             var parameter = DefineParameter(name, value, valueConverter);
@@ -159,6 +244,25 @@ namespace System.CommandLine
         public ArgumentList<int> DefineParameterList(string name, IReadOnlyList<int> defaultValue)
         {
             return DefineParameterList(name, defaultValue, s_int32Parser);
+        }
+
+        public ArgumentList<T> DefineParameterList<T>(string name, Action<IReadOnlyList<T>> assign, Func<string, T> valueConverter, string help)
+        {
+            var parameterList = DefineParameterList(name, Array.Empty<T>(), valueConverter);
+            parameterList.Help = help;
+
+            assign(parameterList.Value);
+            return parameterList;
+        }
+
+        public ArgumentList<string> DefineParameterList(string name, Action<IReadOnlyList<string>> assign, string help)
+        {
+            return DefineParameterList(name, assign, s_stringParser, help);
+        }
+
+        public ArgumentList<int> DefineParameterList(string name, Action<IReadOnlyList<int>> assign, string help)
+        {
+            return DefineParameterList(name, assign, s_int32Parser, help);
         }
 
         public ArgumentList<T> DefineParameterList<T>(string name, ref IReadOnlyList<T> value, Func<string, T> valueConverter, string help)
