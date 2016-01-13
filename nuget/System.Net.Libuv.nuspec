@@ -24,7 +24,7 @@
       <dependency id="System.Resources.ResourceManager" version="4.0.0" />
       <dependency id="System.Runtime.Extensions" version="4.0.0" />
       <dependency id="System.Runtime.InteropServices" version="4.0.0" />
-      <dependency id="System.Runtime.Threading" version="4.0.0" />
+      <dependency id="System.Threading" version="4.0.0" />
     </dependencies>
   </metadata>
   <files>
