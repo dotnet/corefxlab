@@ -1,4 +1,6 @@
 ﻿{
+  "name": "System.Net.Libuv",
+  "version": "1.0.0",
   "compilationOptions": {
     "allowUnsafe": true
   },

@@ -1,4 +1,9 @@
 ﻿{
+  "name": "System.Time",
+  "namedResource": {
+    "System.Time.Resources.Strings": "Properties/Strings.resx"
+  },
+  "version": "1.0.0",
   "dependencies": {
     "System.Diagnostics.Contracts": "4.0.0-*",
     "System.Diagnostics.Debug": "4.0.10-*",

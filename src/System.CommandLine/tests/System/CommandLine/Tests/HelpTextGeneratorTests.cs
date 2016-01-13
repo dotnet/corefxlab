@@ -491,7 +491,7 @@ namespace System.CommandLine.Tests
 
         private static ArgumentSyntax CreateSyntax(Action<ArgumentSyntax> defineAction)
         {
-            return CreateSyntax(Array.Empty<string>(), defineAction);
+            return CreateSyntax(new string[0], defineAction);
         }
 
         private static ArgumentSyntax CreateSyntax(string commandLine, Action<ArgumentSyntax> defineAction)

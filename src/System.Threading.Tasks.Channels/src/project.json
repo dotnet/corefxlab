@@ -1,4 +1,6 @@
 {
+  "name": "System.Threading.Tasks.Channels",  
+  "version": "1.0.0",
   "dependencies": {
     "System.Collections": "4.0.10-*",
     "System.Diagnostics.Debug": "4.0.10-*",
@@ -8,7 +10,7 @@
     "System.Runtime": "4.0.20",
     "System.Threading": "4.0.10",
     "System.Threading.Tasks": "4.0.10",
-    "System.Threading.Tasks.Extensions": "4.0.0-*"
+    "System.Threading.Tasks.Extensions": "4.0.0-rc2-*"
   },
   "frameworks": {
     "dnxcore50": { }

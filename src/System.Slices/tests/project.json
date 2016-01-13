@@ -1,9 +1,18 @@
 {
+  "name": "System.Slices.Tests",
+  "compilationOptions": {
+    "allowUnsafe": true
+  },
   "dependencies": {
-    "Microsoft.NETCore" : "5.0.0-*",
+    "Microsoft.NETCore": "5.0.0",
+    "Microsoft.NETCore.Platforms": "1.0.1-beta-23516",
+    "src": {
+          "type": "build",
+          "version": "1.0.0"
+        },
     "xunit": "2.0.0-*"
   },
   "frameworks": {
-    "dnxcore50": {}
+    "dnxcore50": { }
   }
 }

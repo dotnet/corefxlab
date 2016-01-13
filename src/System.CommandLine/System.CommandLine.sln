@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.CommandLine", "src\System.CommandLine.csproj", "{0A365F6D-AF33-4DD1-ABF3-BE45A5F8E642}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.CommandLine", "src\System.CommandLine.xproj", "{0A365F6D-AF33-4DD1-ABF3-BE45A5F8E642}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.CommandLine.Tests", "tests\System.CommandLine.Tests.csproj", "{F48BE89B-4F3E-4AB3-B10A-D6AE47869190}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.CommandLine.Tests", "tests\System.CommandLine.Tests.xproj", "{F48BE89B-4F3E-4AB3-B10A-D6AE47869190}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

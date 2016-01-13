@@ -45,13 +45,13 @@
           "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
-      "System.Diagnostics.TraceSource/4.0.0-rc2-23519": {
+      "System.Diagnostics.TraceSource/4.0.0-beta-23516": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
         },
         "compile": {
-          "ref/dotnet5.4/System.Diagnostics.TraceSource.dll": {}
+          "ref/dotnet5.1/System.Diagnostics.TraceSource.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -179,7 +179,7 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x86": {
-      "runtime.win7.System.Diagnostics.TraceSource/4.0.0-rc2-23519": {
+      "runtime.win7.System.Diagnostics.TraceSource/4.0.0-beta-23516": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -239,13 +239,13 @@
           "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
-      "System.Diagnostics.TraceSource/4.0.0-rc2-23519": {
+      "System.Diagnostics.TraceSource/4.0.0-beta-23516": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
         },
         "compile": {
-          "ref/dotnet5.4/System.Diagnostics.TraceSource.dll": {}
+          "ref/dotnet5.1/System.Diagnostics.TraceSource.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -373,7 +373,7 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x64": {
-      "runtime.win7.System.Diagnostics.TraceSource/4.0.0-rc2-23519": {
+      "runtime.win7.System.Diagnostics.TraceSource/4.0.0-beta-23516": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -433,13 +433,13 @@
           "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
-      "System.Diagnostics.TraceSource/4.0.0-rc2-23519": {
+      "System.Diagnostics.TraceSource/4.0.0-beta-23516": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
         },
         "compile": {
-          "ref/dotnet5.4/System.Diagnostics.TraceSource.dll": {}
+          "ref/dotnet5.1/System.Diagnostics.TraceSource.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -568,14 +568,14 @@
     }
   },
   "libraries": {
-    "runtime.win7.System.Diagnostics.TraceSource/4.0.0-rc2-23519": {
+    "runtime.win7.System.Diagnostics.TraceSource/4.0.0-beta-23516": {
       "type": "package",
       "serviceable": true,
-      "sha512": "PPOUQcWYaed3lO1jgBRcnLCe3kEmasiX17b6Bk0RkN5r/O18TXHZ5E5AjphbG6VIObVNdFOmu3h6gcRkOCkYzA==",
+      "sha512": "6YSh7+vRI2ptFNPTWE100MNz0sRAVuBjwU0znK3kzd5GYQgLjvtWn8rT9DvJQA4R6OmC5Q+OgXzb/nibxcbtbA==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.Diagnostics.TraceSource.4.0.0-rc2-23519.nupkg",
-        "runtime.win7.System.Diagnostics.TraceSource.4.0.0-rc2-23519.nupkg.sha512",
+        "runtime.win7.System.Diagnostics.TraceSource.4.0.0-beta-23516.nupkg",
+        "runtime.win7.System.Diagnostics.TraceSource.4.0.0-beta-23516.nupkg.sha512",
         "runtime.win7.System.Diagnostics.TraceSource.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.Diagnostics.TraceSource.dll",
         "runtimes/win7/lib/net/_._",
@@ -751,35 +751,35 @@
         "System.Diagnostics.Tools.nuspec"
       ]
     },
-    "System.Diagnostics.TraceSource/4.0.0-rc2-23519": {
+    "System.Diagnostics.TraceSource/4.0.0-beta-23516": {
       "type": "package",
       "serviceable": true,
-      "sha512": "tii3HY4ynemXygMeGdP6t60ixE4ZdKvS3Qi3pQGYyBqCaP4cNvJU3QnrHuO5glFTr6rxtL7Wy8Ax5nGhNNhDHw==",
+      "sha512": "gvJNxObthiaV07AKZYjQV69xRBKRR7gTpEVe4qXF4Mta/2zD7sI+Zm//rRCQenLYBuL8nBxVzomtYJ4eT7w8QQ==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
         "lib/net46/System.Diagnostics.TraceSource.dll",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/dotnet5.4/de/System.Diagnostics.TraceSource.xml",
-        "ref/dotnet5.4/es/System.Diagnostics.TraceSource.xml",
-        "ref/dotnet5.4/fr/System.Diagnostics.TraceSource.xml",
-        "ref/dotnet5.4/it/System.Diagnostics.TraceSource.xml",
-        "ref/dotnet5.4/ja/System.Diagnostics.TraceSource.xml",
-        "ref/dotnet5.4/ko/System.Diagnostics.TraceSource.xml",
-        "ref/dotnet5.4/ru/System.Diagnostics.TraceSource.xml",
-        "ref/dotnet5.4/System.Diagnostics.TraceSource.dll",
-        "ref/dotnet5.4/System.Diagnostics.TraceSource.xml",
-        "ref/dotnet5.4/zh-hans/System.Diagnostics.TraceSource.xml",
-        "ref/dotnet5.4/zh-hant/System.Diagnostics.TraceSource.xml",
+        "ref/dotnet5.1/de/System.Diagnostics.TraceSource.xml",
+        "ref/dotnet5.1/es/System.Diagnostics.TraceSource.xml",
+        "ref/dotnet5.1/fr/System.Diagnostics.TraceSource.xml",
+        "ref/dotnet5.1/it/System.Diagnostics.TraceSource.xml",
+        "ref/dotnet5.1/ja/System.Diagnostics.TraceSource.xml",
+        "ref/dotnet5.1/ko/System.Diagnostics.TraceSource.xml",
+        "ref/dotnet5.1/ru/System.Diagnostics.TraceSource.xml",
+        "ref/dotnet5.1/System.Diagnostics.TraceSource.dll",
+        "ref/dotnet5.1/System.Diagnostics.TraceSource.xml",
+        "ref/dotnet5.1/zh-hans/System.Diagnostics.TraceSource.xml",
+        "ref/dotnet5.1/zh-hant/System.Diagnostics.TraceSource.xml",
         "ref/MonoAndroid10/_._",
         "ref/MonoTouch10/_._",
         "ref/net46/System.Diagnostics.TraceSource.dll",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.Diagnostics.TraceSource.4.0.0-rc2-23519.nupkg",
-        "System.Diagnostics.TraceSource.4.0.0-rc2-23519.nupkg.sha512",
+        "System.Diagnostics.TraceSource.4.0.0-beta-23516.nupkg",
+        "System.Diagnostics.TraceSource.4.0.0-beta-23516.nupkg.sha512",
         "System.Diagnostics.TraceSource.nuspec"
       ]
     },
@@ -1329,7 +1329,7 @@
       "System.Diagnostics.Contracts >= 4.0.0",
       "System.Diagnostics.Debug >= 4.0.0",
       "System.Diagnostics.Tools >= 4.0.0",
-      "System.Diagnostics.TraceSource >= 4.0.0-*",
+      "System.Diagnostics.TraceSource >= 4.0.0-beta-*",
       "System.Globalization >= 4.0.0",
       "System.IO >= 4.0.0",
       "System.Reflection >= 4.0.0",

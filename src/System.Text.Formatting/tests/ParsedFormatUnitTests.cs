@@ -117,6 +117,16 @@ namespace System.Text.Formatting.Tests
 
             parsed = Format.Parse("x10");
             Verify(parsed, 10, 'x');
+
+            
+        }
+
+        [Fact]
+        public void ParseThrowsExceptionWhenParsedPrecisionExceedsMaxPrecision()
+        {
+            var ex = Assert.Throws<Exception>(() => Format.Parse($"x{Format.Parsed.MaxPrecision + 1}"));
+
+            Assert.Equal(Properties.Resources.PrecisionValueOutOfRange, ex.Message);
         }
 
         private static void Verify(Format.Parsed format, byte expectedPrecision, char expectedSymbol)

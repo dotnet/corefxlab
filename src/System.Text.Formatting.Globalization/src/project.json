@@ -1,4 +1,9 @@
 {
+  "name": "System.Text.Formatting.Globalization",
+  "namedResource": {
+    "System.Text.Formatting.locales.bin": "locales.bin"
+  },
+  "version": "1.0.0",
   "dependencies": {
     "System.Buffers": "0.1.0-*",
     "System.Collections": "4.0.10-*",

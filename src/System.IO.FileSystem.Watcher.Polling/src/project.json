@@ -1,4 +1,9 @@
 {
+  "name": "System.IO.FileSystem.Watcher.Polling",
+  "version": "1.0.0",
+  "namedResource": {
+    "System.IO.FileSystem.Watcher.Polling.Properties.Strings": "Properties/Strings.resx"
+  },
   "compilationOptions": {
     "allowUnsafe": true
   },
@@ -7,7 +12,7 @@
     "System.Diagnostics.Contracts": "4.0.0",
     "System.Diagnostics.Debug": "4.0.0",
     "System.Diagnostics.Tools": "4.0.0",
-    "System.Diagnostics.TraceSource": "4.0.0-*",
+    "System.Diagnostics.TraceSource": "4.0.0-beta-*",
     "System.Globalization": "4.0.0",
     "System.IO": "4.0.0",
     "System.Reflection": "4.0.0",
@@ -21,6 +26,6 @@
     "System.Threading.Timer": "4.0.0"
   },
   "frameworks": {
-    "dnxcore50": {}
+    "dnxcore50": { }
   }
 }

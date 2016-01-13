@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.FileSystem.Watcher.Polling.Properties;
 using System.Threading;
 
 //TODO: add support for UNC paths
@@ -62,7 +63,7 @@ namespace System.IO.FileSystem
         {
             if(_timer != null)
             {
-                throw new InvalidOperationException(SR.InvalidOperation_Extension);
+                throw new InvalidOperationException(Strings.InvalidOperation_Extension);
             }
             if(_extensionsToWatch == null)
             {

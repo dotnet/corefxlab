@@ -16,11 +16,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\System.Slices\src\System.Slices.csproj">
-      <Name>System.Slices</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="System\Text\UnicodeConstants.cs" />
     <Compile Include="System\Text\UnicodeCodePoint.cs" />
     <Compile Include="System\Text\Utf16\Utf16LittleEndianCodePointEnumerator.cs" />
