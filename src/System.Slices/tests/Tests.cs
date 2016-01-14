@@ -47,12 +47,47 @@ public class Tests
             }
         }
     }
+
+    [Fact]
+    public void TwoReadOnlySpansCreatedOverSameIntArrayAreEqual()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            var ints = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            // Try out two ways of creating a slice:
+            ReadOnlySpan<int> slice;
+            if (i == 0)
+            {
+                slice = new ReadOnlySpan<int>(ints);
+            }
+            else
+            {
+                slice = ints.Slice();
+            }
+            Assert.Equal(ints.Length, slice.Length);
+            // Now try out two ways of walking the slice's contents:
+            for (int j = 0; j < ints.Length; j++)
+            {
+                Assert.Equal(ints[j], slice[j]);
+            }
+            {
+                int j = 0;
+                foreach (var x in slice)
+                {
+                    Assert.Equal(ints[j], x);
+                    j++;
+                }
+            }
+        }
+    }
+
     [Fact]
     public void TestEndsWith() {
         
         var str = "Hello, Slice!";
-        Span<char> slice = str.Slice();
-        Span<char> slice2 = "Slice!".Slice();
+        ReadOnlySpan<char> slice = str.Slice();
+        ReadOnlySpan<char> slice2 = "Slice!".Slice();
         
         slice.EndsWith(slice2);
     }
@@ -62,7 +97,7 @@ public class Tests
     public void TwoSpansCreatedOverSameStringsAreEqual()
     {
         var str = "Hello, Slice!";
-        Span<char> slice = str.Slice();
+        ReadOnlySpan<char> slice = str.Slice();
         Assert.Equal(str.Length, slice.Length);
 
         // Now try out two ways of walking the slice's contents:
@@ -88,6 +123,32 @@ public class Tests
             byte* buffer = stackalloc byte[256];
             for (int i = 0; i < 256; i++) { buffer[i] = (byte)i; }
             Span<byte> slice = new Span<byte>(buffer, 256);
+            Assert.Equal(256, slice.Length);
+
+            // Now try out two ways of walking the slice's contents:
+            for (int j = 0; j < slice.Length; j++)
+            {
+                Assert.Equal(buffer[j], slice[j]);
+            }
+            {
+                int j = 0;
+                foreach (var x in slice)
+                {
+                    Assert.Equal(buffer[j], x);
+                    j++;
+                }
+            }
+        }
+    }
+
+    [Fact]
+    public void TwoReadOnlySpansCreatedOverSameByteArayAreEqual()
+    {
+        unsafe
+        {
+            byte* buffer = stackalloc byte[256];
+            for (int i = 0; i < 256; i++) { buffer[i] = (byte)i; }
+            ReadOnlySpan<byte> slice = new ReadOnlySpan<byte>(buffer, 256);
             Assert.Equal(256, slice.Length);
 
             // Now try out two ways of walking the slice's contents:
