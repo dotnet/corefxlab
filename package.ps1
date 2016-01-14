@@ -1,7 +1,7 @@
 ﻿Push-Location $PSScriptRoot
 [Environment]::CurrentDirectory = $PWD
 
-$version = [string]::Format("0.1.0-d{0}-1", (Get-Date).ToString("MMddyy"))
+$version = [string]::Format("0.1.0-e{0}-1", (Get-Date).ToString("yyMMdd"))
 $apiKey = $args[0]
 $nugetPath = ".\packages\NuGet.exe"
 
