@@ -407,7 +407,7 @@
           "lib/DNXCore50/System.Diagnostics.StackTrace.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23712": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1345,7 +1345,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00148": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00150": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -1987,7 +1987,7 @@
           "lib/DNXCore50/System.Diagnostics.StackTrace.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23712": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2952,7 +2952,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00148": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00150": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -3594,7 +3594,7 @@
           "lib/DNXCore50/System.Diagnostics.StackTrace.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23712": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -4559,7 +4559,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00148": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00150": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -5749,10 +5749,10 @@
         "System.Diagnostics.StackTrace.nuspec"
       ]
     },
-    "System.Diagnostics.Tools/4.0.1-rc2-23712": {
+    "System.Diagnostics.Tools/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sKM/NrhzXXCMffudYn/sl5qdg1rcv4oS/eKCvVhZgIibU5sDcHSABlwZe7X8qUoF5HZ6kYiq6HUI2J4ku7QCHg==",
+      "sha512": "HqTD5Yrtl8TDKhsKzMsP1u6s8BYYpuPzEU6Ko4+eIUBJ1GME8vFqtW5bxcT30kgbkNx4NqU8QV5kY4xoI/eJpQ==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.Tools.dll",
         "lib/MonoAndroid10/_._",
@@ -5795,8 +5795,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.dll",
-        "System.Diagnostics.Tools.4.0.1-rc2-23712.nupkg",
-        "System.Diagnostics.Tools.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Diagnostics.Tools.4.0.1-rc2-23713.nupkg",
+        "System.Diagnostics.Tools.4.0.1-rc2-23713.nupkg.sha512",
         "System.Diagnostics.Tools.nuspec"
       ]
     },
@@ -7579,14 +7579,14 @@
         "xunit.extensibility.execution.nuspec"
       ]
     },
-    "xunit.netcore.extensions/1.0.0-prerelease-00148": {
+    "xunit.netcore.extensions/1.0.0-prerelease-00150": {
       "type": "package",
       "serviceable": true,
-      "sha512": "D930uRLjMW8hydYb1A/3Mmq8IRqSw/kvG4YsQaKL4RG/LHewolsACNrjBRZ4+c0RPqrreFiLRFKJLd74zGBvhg==",
+      "sha512": "B2frotod6BbGDzGTiQc3EYRKWEy4vQEsOhYLXpVD/ZdRBl2gCwTMg0ROquhTvA5K4/uveNcx8ErZg/q8DiZQZw==",
       "files": [
         "lib/dotnet/Xunit.NetCore.Extensions.dll",
-        "xunit.netcore.extensions.1.0.0-prerelease-00148.nupkg",
-        "xunit.netcore.extensions.1.0.0-prerelease-00148.nupkg.sha512",
+        "xunit.netcore.extensions.1.0.0-prerelease-00150.nupkg",
+        "xunit.netcore.extensions.1.0.0-prerelease-00150.nupkg.sha512",
         "xunit.netcore.extensions.nuspec"
       ]
     },
