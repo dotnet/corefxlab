@@ -57,10 +57,10 @@
           "System.Threading": "4.0.0"
         }
       },
-      "System.Collections/4.0.11-rc2-23712": {
+      "System.Collections/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Runtime": "4.0.21-rc2-23712"
+          "System.Runtime": "4.0.21-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Collections.dll": {}
@@ -284,7 +284,7 @@
           "lib/dotnet/System.ObjectModel.dll": {}
         }
       },
-      "System.Private.Uri/4.0.1-rc2-23712": {
+      "System.Private.Uri/4.0.1-rc2-23713": {
         "type": "package",
         "compile": {
           "ref/dnxcore50/_._": {}
@@ -343,10 +343,10 @@
           "lib/DNXCore50/System.Resources.ResourceManager.dll": {}
         }
       },
-      "System.Runtime/4.0.21-rc2-23712": {
+      "System.Runtime/4.0.21-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Private.Uri": "4.0.1-rc2-23712"
+          "System.Private.Uri": "4.0.1-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Runtime.dll": {}
@@ -928,10 +928,10 @@
           "System.Threading": "4.0.0"
         }
       },
-      "System.Collections/4.0.11-rc2-23712": {
+      "System.Collections/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Runtime": "4.0.21-rc2-23712"
+          "System.Runtime": "4.0.21-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Collections.dll": {}
@@ -1155,7 +1155,7 @@
           "lib/dotnet/System.ObjectModel.dll": {}
         }
       },
-      "System.Private.Uri/4.0.1-rc2-23712": {
+      "System.Private.Uri/4.0.1-rc2-23713": {
         "type": "package",
         "compile": {
           "ref/dnxcore50/_._": {}
@@ -1214,10 +1214,10 @@
           "lib/DNXCore50/System.Resources.ResourceManager.dll": {}
         }
       },
-      "System.Runtime/4.0.21-rc2-23712": {
+      "System.Runtime/4.0.21-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Private.Uri": "4.0.1-rc2-23712"
+          "System.Private.Uri": "4.0.1-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Runtime.dll": {}
@@ -1802,10 +1802,10 @@
           "System.Threading": "4.0.0"
         }
       },
-      "System.Collections/4.0.11-rc2-23712": {
+      "System.Collections/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Runtime": "4.0.21-rc2-23712"
+          "System.Runtime": "4.0.21-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Collections.dll": {}
@@ -2029,7 +2029,7 @@
           "lib/dotnet/System.ObjectModel.dll": {}
         }
       },
-      "System.Private.Uri/4.0.1-rc2-23712": {
+      "System.Private.Uri/4.0.1-rc2-23713": {
         "type": "package",
         "compile": {
           "ref/dnxcore50/_._": {}
@@ -2088,10 +2088,10 @@
           "lib/DNXCore50/System.Resources.ResourceManager.dll": {}
         }
       },
-      "System.Runtime/4.0.21-rc2-23712": {
+      "System.Runtime/4.0.21-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Private.Uri": "4.0.1-rc2-23712"
+          "System.Private.Uri": "4.0.1-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Runtime.dll": {}
@@ -2998,10 +2998,10 @@
         "runtimes/win8-x86/native/api-ms-win-service-private-l1-1-1.dll"
       ]
     },
-    "System.Collections/4.0.11-rc2-23712": {
+    "System.Collections/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "/hsJ877ySUXQ5fyPNA8+XAFBRIY1FHhycJPklOQoJdkWKdst4ynEeKwQ+ZgqdU0qe3YI35MpR3OJ6Qy/4xr1dQ==",
+      "sha512": "YzFynSCfkNSfh69WOoZ/v+jmGfYCzfruDOrujZCcOOTUbcCpTKxi/XeX14dSGM1sbCuYh6iOxFwWN4h0IViItg==",
       "files": [
         "lib/DNXCore50/System.Collections.dll",
         "lib/MonoAndroid10/_._",
@@ -3055,8 +3055,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Collections.dll",
-        "System.Collections.4.0.11-rc2-23712.nupkg",
-        "System.Collections.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Collections.4.0.11-rc2-23713.nupkg",
+        "System.Collections.4.0.11-rc2-23713.nupkg.sha512",
         "System.Collections.nuspec"
       ]
     },
@@ -3620,15 +3620,15 @@
         "System.ObjectModel.nuspec"
       ]
     },
-    "System.Private.Uri/4.0.1-rc2-23712": {
+    "System.Private.Uri/4.0.1-rc2-23713": {
       "type": "package",
-      "sha512": "NhbekvmKGm8qNnOymtOBIm7zVRRSyho2GHLy++hW9FX1wDyp21XP58/bFEbQEVRPx7GKcpEKtYO8zDxfu3oTVw==",
+      "sha512": "P72i86Y0xSaisN/aYPgFH50UftT/h/IbkdaMezIrTCDWizBhjE2NOsk4u+6flW24/1oUMFyQoUoiBygMnsSR6A==",
       "files": [
         "ref/dnxcore50/_._",
         "ref/netcore50/_._",
         "runtime.json",
-        "System.Private.Uri.4.0.1-rc2-23712.nupkg",
-        "System.Private.Uri.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Private.Uri.4.0.1-rc2-23713.nupkg",
+        "System.Private.Uri.4.0.1-rc2-23713.nupkg.sha512",
         "System.Private.Uri.nuspec"
       ]
     },
@@ -3755,10 +3755,10 @@
         "System.Resources.ResourceManager.nuspec"
       ]
     },
-    "System.Runtime/4.0.21-rc2-23712": {
+    "System.Runtime/4.0.21-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "mgPEnRrlRcqPECGlxhBMRZaJX2KcSpT4LnFrhzEtHzC0H3v6LXUuhkdlE/OF9letHcQLx2EcFJwGhMYAEhU0DQ==",
+      "sha512": "lr7gpnlNghAcan3QfMuud/DgUcf4+QxJkXX3GiIVg0ehBhvnKs8rX/GwFMlYRSkZ4GMYFSizgqSkIe2QjHW/rQ==",
       "files": [
         "lib/DNXCore50/System.Runtime.dll",
         "lib/MonoAndroid10/_._",
@@ -3823,8 +3823,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Runtime.dll",
-        "System.Runtime.4.0.21-rc2-23712.nupkg",
-        "System.Runtime.4.0.21-rc2-23712.nupkg.sha512",
+        "System.Runtime.4.0.21-rc2-23713.nupkg",
+        "System.Runtime.4.0.21-rc2-23713.nupkg.sha512",
         "System.Runtime.nuspec"
       ]
     },

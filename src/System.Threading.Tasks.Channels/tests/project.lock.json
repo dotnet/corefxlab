@@ -36,13 +36,13 @@
           "System.Threading.Timer": "[4.0.1-beta-23409]"
         }
       },
-      "Microsoft.NETCore.Targets/1.0.1-rc2-23712": {
+      "Microsoft.NETCore.Targets/1.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "Microsoft.NETCore.Targets.DNXCore": "5.0.0-rc2-23712"
+          "Microsoft.NETCore.Targets.DNXCore": "5.0.0-rc2-23713"
         }
       },
-      "Microsoft.NETCore.Targets.DNXCore/5.0.0-rc2-23712": {
+      "Microsoft.NETCore.Targets.DNXCore/5.0.0-rc2-23713": {
         "type": "package"
       },
       "Microsoft.NETCore.TestHost/1.0.0-beta-23409": {
@@ -66,10 +66,10 @@
           "System.Threading.Tasks.Extensions": "4.0.0-rc2"
         }
       },
-      "System.Collections/4.0.11-rc2-23712": {
+      "System.Collections/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Runtime": "4.0.21-rc2-23712"
+          "System.Runtime": "4.0.21-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Collections.dll": {}
@@ -152,7 +152,7 @@
           "lib/DNXCore50/System.Diagnostics.StackTrace.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23712": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -316,7 +316,7 @@
           "lib/dotnet/System.ObjectModel.dll": {}
         }
       },
-      "System.Private.Uri/4.0.1-rc2-23712": {
+      "System.Private.Uri/4.0.1-rc2-23713": {
         "type": "package",
         "compile": {
           "ref/dnxcore50/_._": {}
@@ -375,10 +375,10 @@
           "lib/DNXCore50/System.Resources.ResourceManager.dll": {}
         }
       },
-      "System.Runtime/4.0.21-rc2-23712": {
+      "System.Runtime/4.0.21-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Private.Uri": "4.0.1-rc2-23712"
+          "System.Private.Uri": "4.0.1-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Runtime.dll": {}
@@ -512,7 +512,7 @@
           "lib/DNXCore50/System.Threading.Tasks.dll": {}
         }
       },
-      "System.Threading.Tasks.Extensions/4.0.0-rc2-23712": {
+      "System.Threading.Tasks.Extensions/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.0",
@@ -779,13 +779,13 @@
           "System.Threading.Timer": "[4.0.1-beta-23409]"
         }
       },
-      "Microsoft.NETCore.Targets/1.0.1-rc2-23712": {
+      "Microsoft.NETCore.Targets/1.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "Microsoft.NETCore.Targets.DNXCore": "5.0.0-rc2-23712"
+          "Microsoft.NETCore.Targets.DNXCore": "5.0.0-rc2-23713"
         }
       },
-      "Microsoft.NETCore.Targets.DNXCore/5.0.0-rc2-23712": {
+      "Microsoft.NETCore.Targets.DNXCore/5.0.0-rc2-23713": {
         "type": "package"
       },
       "Microsoft.NETCore.TestHost/1.0.0-beta-23409": {
@@ -794,7 +794,7 @@
       "Microsoft.NETCore.Windows.ApiSets/1.0.1-beta-23409": {
         "type": "package"
       },
-      "runtime.any.System.Linq.Expressions/4.0.11-rc2-23712": {
+      "runtime.any.System.Linq.Expressions/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -822,7 +822,7 @@
           "lib/dotnet5.4/System.Linq.Expressions.dll": {}
         }
       },
-      "runtime.win7.System.Console/4.0.0-rc2-23712": {
+      "runtime.win7.System.Console/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -851,7 +851,7 @@
           "runtimes/win7/lib/DNXCore50/System.Diagnostics.Debug.dll": {}
         }
       },
-      "runtime.win7.System.IO.FileSystem/4.0.1-rc2-23712": {
+      "runtime.win7.System.IO.FileSystem/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -875,7 +875,7 @@
           "runtimes/win7/lib/dotnet5.4/System.IO.FileSystem.dll": {}
         }
       },
-      "runtime.win7.System.IO.Pipes/4.0.0-rc2-23712": {
+      "runtime.win7.System.IO.Pipes/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -1090,10 +1090,10 @@
           "System.Threading.Tasks.Extensions": "4.0.0-rc2"
         }
       },
-      "System.Collections/4.0.11-rc2-23712": {
+      "System.Collections/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Runtime": "4.0.21-rc2-23712"
+          "System.Runtime": "4.0.21-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Collections.dll": {}
@@ -1102,7 +1102,7 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Collections.Concurrent/4.0.11-rc2-23712": {
+      "System.Collections.Concurrent/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -1122,7 +1122,7 @@
           "lib/dotnet5.4/System.Collections.Concurrent.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23712": {
+      "System.Console/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -1132,7 +1132,7 @@
           "ref/dotnet5.4/System.Console.dll": {}
         }
       },
-      "System.Diagnostics.Contracts/4.0.1-rc2-23712": {
+      "System.Diagnostics.Contracts/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1153,7 +1153,7 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.StackTrace/4.0.1-rc2-23712": {
+      "System.Diagnostics.StackTrace/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -1166,7 +1166,7 @@
           "lib/DNXCore50/System.Diagnostics.StackTrace.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23712": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1178,7 +1178,7 @@
           "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
-      "System.Diagnostics.Tracing/4.0.21-rc2-23712": {
+      "System.Diagnostics.Tracing/4.0.21-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1190,7 +1190,7 @@
           "lib/DNXCore50/System.Diagnostics.Tracing.dll": {}
         }
       },
-      "System.Globalization/4.0.11-rc2-23712": {
+      "System.Globalization/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1202,7 +1202,7 @@
           "lib/DNXCore50/System.Globalization.dll": {}
         }
       },
-      "System.Globalization.Calendars/4.0.1-rc2-23712": {
+      "System.Globalization.Calendars/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Globalization": "4.0.0",
@@ -1215,7 +1215,7 @@
           "lib/DNXCore50/System.Globalization.Calendars.dll": {}
         }
       },
-      "System.IO/4.1.0-rc2-23712": {
+      "System.IO/4.1.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.20",
@@ -1229,7 +1229,7 @@
           "lib/DNXCore50/System.IO.dll": {}
         }
       },
-      "System.IO.FileSystem/4.0.1-rc2-23712": {
+      "System.IO.FileSystem/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -1243,7 +1243,7 @@
           "ref/dotnet5.4/System.IO.FileSystem.dll": {}
         }
       },
-      "System.IO.FileSystem.Primitives/4.0.1-rc2-23712": {
+      "System.IO.FileSystem.Primitives/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.20"
@@ -1255,7 +1255,7 @@
           "lib/dotnet5.4/System.IO.FileSystem.Primitives.dll": {}
         }
       },
-      "System.IO.Pipes/4.0.0-rc2-23712": {
+      "System.IO.Pipes/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -1268,7 +1268,7 @@
           "ref/dotnet5.4/System.IO.Pipes.dll": {}
         }
       },
-      "System.Linq/4.0.1-rc2-23712": {
+      "System.Linq/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -1284,7 +1284,7 @@
           "lib/dotnet5.4/System.Linq.dll": {}
         }
       },
-      "System.Linq.Expressions/4.0.11-rc2-23712": {
+      "System.Linq.Expressions/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -1294,7 +1294,7 @@
           "ref/dotnet5.4/System.Linq.Expressions.dll": {}
         }
       },
-      "System.ObjectModel/4.0.11-rc2-23712": {
+      "System.ObjectModel/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -1310,13 +1310,13 @@
           "lib/dotnet5.4/System.ObjectModel.dll": {}
         }
       },
-      "System.Private.Uri/4.0.1-rc2-23712": {
+      "System.Private.Uri/4.0.1-rc2-23713": {
         "type": "package",
         "compile": {
           "ref/dnxcore50/_._": {}
         }
       },
-      "System.Reflection/4.1.0-rc2-23712": {
+      "System.Reflection/4.1.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -1330,7 +1330,7 @@
           "lib/DNXCore50/System.Reflection.dll": {}
         }
       },
-      "System.Reflection.Emit/4.0.1-rc2-23712": {
+      "System.Reflection.Emit/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -1346,7 +1346,7 @@
           "lib/DNXCore50/System.Reflection.Emit.dll": {}
         }
       },
-      "System.Reflection.Emit.ILGeneration/4.0.1-rc2-23712": {
+      "System.Reflection.Emit.ILGeneration/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -1360,7 +1360,7 @@
           "lib/DNXCore50/System.Reflection.Emit.ILGeneration.dll": {}
         }
       },
-      "System.Reflection.Emit.Lightweight/4.0.1-rc2-23712": {
+      "System.Reflection.Emit.Lightweight/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -1375,7 +1375,7 @@
           "lib/DNXCore50/System.Reflection.Emit.Lightweight.dll": {}
         }
       },
-      "System.Reflection.Extensions/4.0.1-rc2-23712": {
+      "System.Reflection.Extensions/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -1388,7 +1388,7 @@
           "lib/DNXCore50/System.Reflection.Extensions.dll": {}
         }
       },
-      "System.Reflection.Primitives/4.0.1-rc2-23712": {
+      "System.Reflection.Primitives/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1400,7 +1400,7 @@
           "lib/DNXCore50/System.Reflection.Primitives.dll": {}
         }
       },
-      "System.Reflection.TypeExtensions/4.1.0-rc2-23712": {
+      "System.Reflection.TypeExtensions/4.1.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -1413,7 +1413,7 @@
           "lib/DNXCore50/System.Reflection.TypeExtensions.dll": {}
         }
       },
-      "System.Resources.ResourceManager/4.0.1-rc2-23712": {
+      "System.Resources.ResourceManager/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Globalization": "4.0.0",
@@ -1427,10 +1427,10 @@
           "lib/DNXCore50/System.Resources.ResourceManager.dll": {}
         }
       },
-      "System.Runtime/4.0.21-rc2-23712": {
+      "System.Runtime/4.0.21-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Private.Uri": "4.0.1-rc2-23712"
+          "System.Private.Uri": "4.0.1-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Runtime.dll": {}
@@ -1448,7 +1448,7 @@
           "ref/dotnet/System.Runtime.Extensions.dll": {}
         }
       },
-      "System.Runtime.Handles/4.0.1-rc2-23712": {
+      "System.Runtime.Handles/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1460,7 +1460,7 @@
           "lib/DNXCore50/System.Runtime.Handles.dll": {}
         }
       },
-      "System.Runtime.InteropServices/4.0.21-rc2-23712": {
+      "System.Runtime.InteropServices/4.0.21-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -1475,7 +1475,7 @@
           "lib/DNXCore50/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Security.Principal/4.0.1-rc2-23712": {
+      "System.Security.Principal/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1487,7 +1487,7 @@
           "lib/dotnet5.1/System.Security.Principal.dll": {}
         }
       },
-      "System.Text.Encoding/4.0.11-rc2-23712": {
+      "System.Text.Encoding/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1499,7 +1499,7 @@
           "lib/DNXCore50/System.Text.Encoding.dll": {}
         }
       },
-      "System.Text.Encoding.Extensions/4.0.11-rc2-23712": {
+      "System.Text.Encoding.Extensions/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0",
@@ -1512,7 +1512,7 @@
           "lib/DNXCore50/System.Text.Encoding.Extensions.dll": {}
         }
       },
-      "System.Text.RegularExpressions/4.0.11-rc2-23712": {
+      "System.Text.RegularExpressions/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -1539,7 +1539,7 @@
           "ref/dotnet/System.Threading.dll": {}
         }
       },
-      "System.Threading.Overlapped/4.0.1-rc2-23712": {
+      "System.Threading.Overlapped/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0",
@@ -1552,7 +1552,7 @@
           "lib/DNXCore50/System.Threading.Overlapped.dll": {}
         }
       },
-      "System.Threading.Tasks/4.0.11-rc2-23712": {
+      "System.Threading.Tasks/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1564,7 +1564,7 @@
           "lib/DNXCore50/System.Threading.Tasks.dll": {}
         }
       },
-      "System.Threading.Tasks.Extensions/4.0.0-rc2-23712": {
+      "System.Threading.Tasks.Extensions/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.0",
@@ -1578,7 +1578,7 @@
           "lib/dotnet5.1/System.Threading.Tasks.Extensions.dll": {}
         }
       },
-      "System.Threading.Timer/4.0.1-rc2-23712": {
+      "System.Threading.Timer/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1590,7 +1590,7 @@
           "lib/DNXCore50/System.Threading.Timer.dll": {}
         }
       },
-      "System.Xml.ReaderWriter/4.0.11-rc2-23712": {
+      "System.Xml.ReaderWriter/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -1607,7 +1607,7 @@
           "System.Text.Encoding.Extensions": "4.0.10",
           "System.Text.RegularExpressions": "4.0.0",
           "System.Threading.Tasks": "4.0.10",
-          "System.Threading.Tasks.Extensions": "4.0.0-rc2-23712"
+          "System.Threading.Tasks.Extensions": "4.0.0-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Xml.ReaderWriter.dll": {}
@@ -1616,7 +1616,7 @@
           "lib/dotnet5.4/System.Xml.ReaderWriter.dll": {}
         }
       },
-      "System.Xml.XDocument/4.0.11-rc2-23712": {
+      "System.Xml.XDocument/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -1823,13 +1823,13 @@
           "System.Threading.Timer": "[4.0.1-beta-23409]"
         }
       },
-      "Microsoft.NETCore.Targets/1.0.1-rc2-23712": {
+      "Microsoft.NETCore.Targets/1.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "Microsoft.NETCore.Targets.DNXCore": "5.0.0-rc2-23712"
+          "Microsoft.NETCore.Targets.DNXCore": "5.0.0-rc2-23713"
         }
       },
-      "Microsoft.NETCore.Targets.DNXCore/5.0.0-rc2-23712": {
+      "Microsoft.NETCore.Targets.DNXCore/5.0.0-rc2-23713": {
         "type": "package"
       },
       "Microsoft.NETCore.TestHost/1.0.0-beta-23409": {
@@ -1838,7 +1838,7 @@
       "Microsoft.NETCore.Windows.ApiSets/1.0.1-beta-23409": {
         "type": "package"
       },
-      "runtime.any.System.Linq.Expressions/4.0.11-rc2-23712": {
+      "runtime.any.System.Linq.Expressions/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -1866,7 +1866,7 @@
           "lib/dotnet5.4/System.Linq.Expressions.dll": {}
         }
       },
-      "runtime.win7.System.Console/4.0.0-rc2-23712": {
+      "runtime.win7.System.Console/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -1895,7 +1895,7 @@
           "runtimes/win7/lib/DNXCore50/System.Diagnostics.Debug.dll": {}
         }
       },
-      "runtime.win7.System.IO.FileSystem/4.0.1-rc2-23712": {
+      "runtime.win7.System.IO.FileSystem/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -1919,7 +1919,7 @@
           "runtimes/win7/lib/dotnet5.4/System.IO.FileSystem.dll": {}
         }
       },
-      "runtime.win7.System.IO.Pipes/4.0.0-rc2-23712": {
+      "runtime.win7.System.IO.Pipes/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -2134,10 +2134,10 @@
           "System.Threading.Tasks.Extensions": "4.0.0-rc2"
         }
       },
-      "System.Collections/4.0.11-rc2-23712": {
+      "System.Collections/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Runtime": "4.0.21-rc2-23712"
+          "System.Runtime": "4.0.21-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Collections.dll": {}
@@ -2146,7 +2146,7 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Collections.Concurrent/4.0.11-rc2-23712": {
+      "System.Collections.Concurrent/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -2166,7 +2166,7 @@
           "lib/dotnet5.4/System.Collections.Concurrent.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23712": {
+      "System.Console/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -2176,7 +2176,7 @@
           "ref/dotnet5.4/System.Console.dll": {}
         }
       },
-      "System.Diagnostics.Contracts/4.0.1-rc2-23712": {
+      "System.Diagnostics.Contracts/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2197,7 +2197,7 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.StackTrace/4.0.1-rc2-23712": {
+      "System.Diagnostics.StackTrace/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -2210,7 +2210,7 @@
           "lib/DNXCore50/System.Diagnostics.StackTrace.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23712": {
+      "System.Diagnostics.Tools/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2222,7 +2222,7 @@
           "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
-      "System.Diagnostics.Tracing/4.0.21-rc2-23712": {
+      "System.Diagnostics.Tracing/4.0.21-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2234,7 +2234,7 @@
           "lib/DNXCore50/System.Diagnostics.Tracing.dll": {}
         }
       },
-      "System.Globalization/4.0.11-rc2-23712": {
+      "System.Globalization/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2246,7 +2246,7 @@
           "lib/DNXCore50/System.Globalization.dll": {}
         }
       },
-      "System.Globalization.Calendars/4.0.1-rc2-23712": {
+      "System.Globalization.Calendars/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Globalization": "4.0.0",
@@ -2259,7 +2259,7 @@
           "lib/DNXCore50/System.Globalization.Calendars.dll": {}
         }
       },
-      "System.IO/4.1.0-rc2-23712": {
+      "System.IO/4.1.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.20",
@@ -2273,7 +2273,7 @@
           "lib/DNXCore50/System.IO.dll": {}
         }
       },
-      "System.IO.FileSystem/4.0.1-rc2-23712": {
+      "System.IO.FileSystem/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -2287,7 +2287,7 @@
           "ref/dotnet5.4/System.IO.FileSystem.dll": {}
         }
       },
-      "System.IO.FileSystem.Primitives/4.0.1-rc2-23712": {
+      "System.IO.FileSystem.Primitives/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.20"
@@ -2299,7 +2299,7 @@
           "lib/dotnet5.4/System.IO.FileSystem.Primitives.dll": {}
         }
       },
-      "System.IO.Pipes/4.0.0-rc2-23712": {
+      "System.IO.Pipes/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -2312,7 +2312,7 @@
           "ref/dotnet5.4/System.IO.Pipes.dll": {}
         }
       },
-      "System.Linq/4.0.1-rc2-23712": {
+      "System.Linq/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -2328,7 +2328,7 @@
           "lib/dotnet5.4/System.Linq.dll": {}
         }
       },
-      "System.Linq.Expressions/4.0.11-rc2-23712": {
+      "System.Linq.Expressions/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -2338,7 +2338,7 @@
           "ref/dotnet5.4/System.Linq.Expressions.dll": {}
         }
       },
-      "System.ObjectModel/4.0.11-rc2-23712": {
+      "System.ObjectModel/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -2354,13 +2354,13 @@
           "lib/dotnet5.4/System.ObjectModel.dll": {}
         }
       },
-      "System.Private.Uri/4.0.1-rc2-23712": {
+      "System.Private.Uri/4.0.1-rc2-23713": {
         "type": "package",
         "compile": {
           "ref/dnxcore50/_._": {}
         }
       },
-      "System.Reflection/4.1.0-rc2-23712": {
+      "System.Reflection/4.1.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -2374,7 +2374,7 @@
           "lib/DNXCore50/System.Reflection.dll": {}
         }
       },
-      "System.Reflection.Emit/4.0.1-rc2-23712": {
+      "System.Reflection.Emit/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -2390,7 +2390,7 @@
           "lib/DNXCore50/System.Reflection.Emit.dll": {}
         }
       },
-      "System.Reflection.Emit.ILGeneration/4.0.1-rc2-23712": {
+      "System.Reflection.Emit.ILGeneration/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -2404,7 +2404,7 @@
           "lib/DNXCore50/System.Reflection.Emit.ILGeneration.dll": {}
         }
       },
-      "System.Reflection.Emit.Lightweight/4.0.1-rc2-23712": {
+      "System.Reflection.Emit.Lightweight/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -2419,7 +2419,7 @@
           "lib/DNXCore50/System.Reflection.Emit.Lightweight.dll": {}
         }
       },
-      "System.Reflection.Extensions/4.0.1-rc2-23712": {
+      "System.Reflection.Extensions/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -2432,7 +2432,7 @@
           "lib/DNXCore50/System.Reflection.Extensions.dll": {}
         }
       },
-      "System.Reflection.Primitives/4.0.1-rc2-23712": {
+      "System.Reflection.Primitives/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2444,7 +2444,7 @@
           "lib/DNXCore50/System.Reflection.Primitives.dll": {}
         }
       },
-      "System.Reflection.TypeExtensions/4.1.0-rc2-23712": {
+      "System.Reflection.TypeExtensions/4.1.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -2457,7 +2457,7 @@
           "lib/DNXCore50/System.Reflection.TypeExtensions.dll": {}
         }
       },
-      "System.Resources.ResourceManager/4.0.1-rc2-23712": {
+      "System.Resources.ResourceManager/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Globalization": "4.0.0",
@@ -2471,10 +2471,10 @@
           "lib/DNXCore50/System.Resources.ResourceManager.dll": {}
         }
       },
-      "System.Runtime/4.0.21-rc2-23712": {
+      "System.Runtime/4.0.21-rc2-23713": {
         "type": "package",
         "dependencies": {
-          "System.Private.Uri": "4.0.1-rc2-23712"
+          "System.Private.Uri": "4.0.1-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Runtime.dll": {}
@@ -2492,7 +2492,7 @@
           "ref/dotnet/System.Runtime.Extensions.dll": {}
         }
       },
-      "System.Runtime.Handles/4.0.1-rc2-23712": {
+      "System.Runtime.Handles/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2504,7 +2504,7 @@
           "lib/DNXCore50/System.Runtime.Handles.dll": {}
         }
       },
-      "System.Runtime.InteropServices/4.0.21-rc2-23712": {
+      "System.Runtime.InteropServices/4.0.21-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Reflection": "4.0.0",
@@ -2519,7 +2519,7 @@
           "lib/DNXCore50/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Security.Principal/4.0.1-rc2-23712": {
+      "System.Security.Principal/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2531,7 +2531,7 @@
           "lib/dotnet5.1/System.Security.Principal.dll": {}
         }
       },
-      "System.Text.Encoding/4.0.11-rc2-23712": {
+      "System.Text.Encoding/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2543,7 +2543,7 @@
           "lib/DNXCore50/System.Text.Encoding.dll": {}
         }
       },
-      "System.Text.Encoding.Extensions/4.0.11-rc2-23712": {
+      "System.Text.Encoding.Extensions/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0",
@@ -2556,7 +2556,7 @@
           "lib/DNXCore50/System.Text.Encoding.Extensions.dll": {}
         }
       },
-      "System.Text.RegularExpressions/4.0.11-rc2-23712": {
+      "System.Text.RegularExpressions/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -2583,7 +2583,7 @@
           "ref/dotnet/System.Threading.dll": {}
         }
       },
-      "System.Threading.Overlapped/4.0.1-rc2-23712": {
+      "System.Threading.Overlapped/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0",
@@ -2596,7 +2596,7 @@
           "lib/DNXCore50/System.Threading.Overlapped.dll": {}
         }
       },
-      "System.Threading.Tasks/4.0.11-rc2-23712": {
+      "System.Threading.Tasks/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2608,7 +2608,7 @@
           "lib/DNXCore50/System.Threading.Tasks.dll": {}
         }
       },
-      "System.Threading.Tasks.Extensions/4.0.0-rc2-23712": {
+      "System.Threading.Tasks.Extensions/4.0.0-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.0",
@@ -2622,7 +2622,7 @@
           "lib/dotnet5.1/System.Threading.Tasks.Extensions.dll": {}
         }
       },
-      "System.Threading.Timer/4.0.1-rc2-23712": {
+      "System.Threading.Timer/4.0.1-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -2634,7 +2634,7 @@
           "lib/DNXCore50/System.Threading.Timer.dll": {}
         }
       },
-      "System.Xml.ReaderWriter/4.0.11-rc2-23712": {
+      "System.Xml.ReaderWriter/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -2651,7 +2651,7 @@
           "System.Text.Encoding.Extensions": "4.0.10",
           "System.Text.RegularExpressions": "4.0.0",
           "System.Threading.Tasks": "4.0.10",
-          "System.Threading.Tasks.Extensions": "4.0.0-rc2-23712"
+          "System.Threading.Tasks.Extensions": "4.0.0-rc2-23713"
         },
         "compile": {
           "ref/dotnet5.4/System.Xml.ReaderWriter.dll": {}
@@ -2660,7 +2660,7 @@
           "lib/dotnet5.4/System.Xml.ReaderWriter.dll": {}
         }
       },
-      "System.Xml.XDocument/4.0.11-rc2-23712": {
+      "System.Xml.XDocument/4.0.11-rc2-23713": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.10",
@@ -2859,22 +2859,22 @@
         "runtime.json"
       ]
     },
-    "Microsoft.NETCore.Targets/1.0.1-rc2-23712": {
+    "Microsoft.NETCore.Targets/1.0.1-rc2-23713": {
       "type": "package",
-      "sha512": "GkamKEO0fbm5CuZdRsuu8qQ1na8Xur7+IFpYYnQBK9XGZ0G3NnusGli452k/OcW65kB4OxPNdFzADzT92EENZQ==",
+      "sha512": "jl9WrDqDHdZI+OrCPA1QomEXfpfkvmZiGgq4xxWNEEiorUH221TLIKe570Ib7J6VEhKnjanG0OPlZYHKUT7PdA==",
       "files": [
-        "Microsoft.NETCore.Targets.1.0.1-rc2-23712.nupkg",
-        "Microsoft.NETCore.Targets.1.0.1-rc2-23712.nupkg.sha512",
+        "Microsoft.NETCore.Targets.1.0.1-rc2-23713.nupkg",
+        "Microsoft.NETCore.Targets.1.0.1-rc2-23713.nupkg.sha512",
         "Microsoft.NETCore.Targets.nuspec",
         "runtime.json"
       ]
     },
-    "Microsoft.NETCore.Targets.DNXCore/5.0.0-rc2-23712": {
+    "Microsoft.NETCore.Targets.DNXCore/5.0.0-rc2-23713": {
       "type": "package",
-      "sha512": "M3bvlGNqs+xhi+PPZix/Zd36wcu+yfr+YZSkm2k9actADre2cUqn1nqqVqlv3fGRLbXXLHu+TN1zal8vk9oV8w==",
+      "sha512": "9KdUYtaKK1vTWSQdria7FbvwqdUePYeLlAwDBk64zLvY/jyKGc1ds4w+nW0i7IXuYUubqzpRWFZR9E9n2ZmSUQ==",
       "files": [
-        "Microsoft.NETCore.Targets.DNXCore.5.0.0-rc2-23712.nupkg",
-        "Microsoft.NETCore.Targets.DNXCore.5.0.0-rc2-23712.nupkg.sha512",
+        "Microsoft.NETCore.Targets.DNXCore.5.0.0-rc2-23713.nupkg",
+        "Microsoft.NETCore.Targets.DNXCore.5.0.0-rc2-23713.nupkg.sha512",
         "Microsoft.NETCore.Targets.DNXCore.nuspec",
         "runtime.json"
       ]
@@ -2899,10 +2899,10 @@
         "runtime.json"
       ]
     },
-    "runtime.any.System.Linq.Expressions/4.0.11-rc2-23712": {
+    "runtime.any.System.Linq.Expressions/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "C2OzeiPOTBpms+w2XVkcpPuaGPZu5SZxwDHSfBEQq6MTByk8wjQXHy0y1l1SHje5v5sPItdR7MszLoCldnHoqA==",
+      "sha512": "uu9SBOC8H/BV7jvJIN11z6c5FX7yhXE6KLAKe/f0w6GUvXQXHgi5WNSS+CJifF6/7f13e9oqARtpUM+MFwyNaQ==",
       "files": [
         "lib/dotnet5.4/System.Linq.Expressions.dll",
         "lib/MonoAndroid10/_._",
@@ -2915,20 +2915,20 @@
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
         "ref/dotnet/_._",
-        "runtime.any.System.Linq.Expressions.4.0.11-rc2-23712.nupkg",
-        "runtime.any.System.Linq.Expressions.4.0.11-rc2-23712.nupkg.sha512",
+        "runtime.any.System.Linq.Expressions.4.0.11-rc2-23713.nupkg",
+        "runtime.any.System.Linq.Expressions.4.0.11-rc2-23713.nupkg.sha512",
         "runtime.any.System.Linq.Expressions.nuspec",
         "runtimes/aot/lib/netcore50/_._"
       ]
     },
-    "runtime.win7.System.Console/4.0.0-rc2-23712": {
+    "runtime.win7.System.Console/4.0.0-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "TbSx1LaINSa7cXoNXtr/s5jtPNuxlq7Jyc7DHoFBPEkCJb0Jsjfu/1y0QV16r77TCQqq21XguGAC5wUnHntsyQ==",
+      "sha512": "aOFw6Bq2QSHVV0EvmmRfqtzVLe7mCboVt8QreOKjCWyR8hFZYKNBQspWivDOL/aute7Pd+gv0KrXSR0yLjMysw==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.Console.4.0.0-rc2-23712.nupkg",
-        "runtime.win7.System.Console.4.0.0-rc2-23712.nupkg.sha512",
+        "runtime.win7.System.Console.4.0.0-rc2-23713.nupkg",
+        "runtime.win7.System.Console.4.0.0-rc2-23713.nupkg.sha512",
         "runtime.win7.System.Console.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.Console.dll",
         "runtimes/win7/lib/net/_._"
@@ -2968,14 +2968,14 @@
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Debug.dll"
       ]
     },
-    "runtime.win7.System.IO.FileSystem/4.0.1-rc2-23712": {
+    "runtime.win7.System.IO.FileSystem/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "f5DUrS3XZrreNh1089T+rHIRm3YEdswerknErvBAndYrRB09onVhRs/eccm9DrUguJfNicEqanHNiuzNVb65bQ==",
+      "sha512": "+wfj7qyubOi+hw/qRZOG6552bM8GbvoDaeaJKfAMUvmI/oJeoyZr7lV91ysH5syj+Asx0WND2WcA70WuP0F95Q==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.IO.FileSystem.4.0.1-rc2-23712.nupkg",
-        "runtime.win7.System.IO.FileSystem.4.0.1-rc2-23712.nupkg.sha512",
+        "runtime.win7.System.IO.FileSystem.4.0.1-rc2-23713.nupkg",
+        "runtime.win7.System.IO.FileSystem.4.0.1-rc2-23713.nupkg.sha512",
         "runtime.win7.System.IO.FileSystem.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.IO.FileSystem.dll",
         "runtimes/win7/lib/net/_._",
@@ -2985,14 +2985,14 @@
         "runtimes/win7/lib/wpa81/_._"
       ]
     },
-    "runtime.win7.System.IO.Pipes/4.0.0-rc2-23712": {
+    "runtime.win7.System.IO.Pipes/4.0.0-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "nAeqMvYWS/1xCYunF6KR79nfGTmN5KbHj2v8SHh8gcqdL5iK/8Xv7ZZmBYaEswg7JICimLs0s/GZ+0HgEPQ7Yg==",
+      "sha512": "ILEbhS6Jtg++cscN3dbSwNh0ZQXbDhpgzwBDoQ9C/cDbWBTtwufsUykxKI+lXZBYRB8CdMX3FgnT82ZBHrcxKw==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.IO.Pipes.4.0.0-rc2-23712.nupkg",
-        "runtime.win7.System.IO.Pipes.4.0.0-rc2-23712.nupkg.sha512",
+        "runtime.win7.System.IO.Pipes.4.0.0-rc2-23713.nupkg",
+        "runtime.win7.System.IO.Pipes.4.0.0-rc2-23713.nupkg.sha512",
         "runtime.win7.System.IO.Pipes.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.IO.Pipes.dll",
         "runtimes/win7/lib/net/_._",
@@ -3483,10 +3483,10 @@
         "runtimes/win8-x86/native/api-ms-win-service-private-l1-1-1.dll"
       ]
     },
-    "System.Collections/4.0.11-rc2-23712": {
+    "System.Collections/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "/hsJ877ySUXQ5fyPNA8+XAFBRIY1FHhycJPklOQoJdkWKdst4ynEeKwQ+ZgqdU0qe3YI35MpR3OJ6Qy/4xr1dQ==",
+      "sha512": "YzFynSCfkNSfh69WOoZ/v+jmGfYCzfruDOrujZCcOOTUbcCpTKxi/XeX14dSGM1sbCuYh6iOxFwWN4h0IViItg==",
       "files": [
         "lib/DNXCore50/System.Collections.dll",
         "lib/MonoAndroid10/_._",
@@ -3540,8 +3540,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Collections.dll",
-        "System.Collections.4.0.11-rc2-23712.nupkg",
-        "System.Collections.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Collections.4.0.11-rc2-23713.nupkg",
+        "System.Collections.4.0.11-rc2-23713.nupkg.sha512",
         "System.Collections.nuspec"
       ]
     },
@@ -3577,10 +3577,10 @@
         "System.Collections.Concurrent.nuspec"
       ]
     },
-    "System.Collections.Concurrent/4.0.11-rc2-23712": {
+    "System.Collections.Concurrent/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "tDYqH/aiVLZ9W5QjW37jy+QaWZxwFatctqib+XkNHEN8GiKYWEb84UWCHpT2gnXjOJzF5nO66XLAf8rKu9JykA==",
+      "sha512": "frGMEfG0+BVzi8KrgeI0xxO+OVqAPN8m3g9XON4ddxwWwOnH9cfPssaIhkM9/HRd4i0nXG6OqNPUJwJjxjQGUQ==",
       "files": [
         "lib/dotnet5.4/System.Collections.Concurrent.dll",
         "lib/MonoAndroid10/_._",
@@ -3631,8 +3631,8 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "System.Collections.Concurrent.4.0.11-rc2-23712.nupkg",
-        "System.Collections.Concurrent.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Collections.Concurrent.4.0.11-rc2-23713.nupkg",
+        "System.Collections.Concurrent.4.0.11-rc2-23713.nupkg.sha512",
         "System.Collections.Concurrent.nuspec"
       ]
     },
@@ -3668,10 +3668,10 @@
         "System.Console.nuspec"
       ]
     },
-    "System.Console/4.0.0-rc2-23712": {
+    "System.Console/4.0.0-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "O1C8g7V74c8IC05uITn+k0WfUG88qI8+KTzmuZUYjh1gPWMHMX1yu4TK+P31znpwF6A6/L5v2jSjesCfpxZCDg==",
+      "sha512": "NWroAqHED11kgnd2yYJWEx3KrwGhbvwWvrrUGdrMya2V7oZoXNdDzaSZPe5l657e+49+VP2/mlCYf2iy1KnmUg==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -3695,8 +3695,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.Console.4.0.0-rc2-23712.nupkg",
-        "System.Console.4.0.0-rc2-23712.nupkg.sha512",
+        "System.Console.4.0.0-rc2-23713.nupkg",
+        "System.Console.4.0.0-rc2-23713.nupkg.sha512",
         "System.Console.nuspec"
       ]
     },
@@ -3723,10 +3723,10 @@
         "System.Diagnostics.Contracts.nuspec"
       ]
     },
-    "System.Diagnostics.Contracts/4.0.1-rc2-23712": {
+    "System.Diagnostics.Contracts/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "klWW6TR5dvJpOqr3aPPedmD4480+VhwfnwgeYuBdC1blAH16tQ0JKrUkI7uV+IOicWTlNvTPOH22ekR7/5TKog==",
+      "sha512": "bDaHUtbLlC356DFMFfkPxBlGXQHGZxsvFt0siP4p/4HOUG+aVwuQ93HI6Na6n4iJUu9yp7hOSDhuJOGT+oFCLQ==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.Contracts.dll",
         "lib/MonoAndroid10/_._",
@@ -3769,8 +3769,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Contracts.dll",
-        "System.Diagnostics.Contracts.4.0.1-rc2-23712.nupkg",
-        "System.Diagnostics.Contracts.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Diagnostics.Contracts.4.0.1-rc2-23713.nupkg",
+        "System.Diagnostics.Contracts.4.0.1-rc2-23713.nupkg.sha512",
         "System.Diagnostics.Contracts.nuspec"
       ]
     },
@@ -3870,10 +3870,10 @@
         "System.Diagnostics.StackTrace.nuspec"
       ]
     },
-    "System.Diagnostics.StackTrace/4.0.1-rc2-23712": {
+    "System.Diagnostics.StackTrace/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "DetrDqKianWK1GZ83AGsoNEt7htR/NM0SXmS8P6XB73Rw7pyo3oaXMSISH57q8dXKOfkqGGR4r0JE/Y7kr0oKQ==",
+      "sha512": "ghSGBhgLnjFcshHYsSeEQig/H5jw1NwE0NGiTd/bDmtmNoyIsceUVLkqoaqqA22DoSFFKqnuMMsPwQ7UInnWDA==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.StackTrace.dll",
         "lib/MonoAndroid10/_._",
@@ -3899,15 +3899,15 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.StackTrace.dll",
-        "System.Diagnostics.StackTrace.4.0.1-rc2-23712.nupkg",
-        "System.Diagnostics.StackTrace.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Diagnostics.StackTrace.4.0.1-rc2-23713.nupkg",
+        "System.Diagnostics.StackTrace.4.0.1-rc2-23713.nupkg.sha512",
         "System.Diagnostics.StackTrace.nuspec"
       ]
     },
-    "System.Diagnostics.Tools/4.0.1-rc2-23712": {
+    "System.Diagnostics.Tools/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sKM/NrhzXXCMffudYn/sl5qdg1rcv4oS/eKCvVhZgIibU5sDcHSABlwZe7X8qUoF5HZ6kYiq6HUI2J4ku7QCHg==",
+      "sha512": "HqTD5Yrtl8TDKhsKzMsP1u6s8BYYpuPzEU6Ko4+eIUBJ1GME8vFqtW5bxcT30kgbkNx4NqU8QV5kY4xoI/eJpQ==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.Tools.dll",
         "lib/MonoAndroid10/_._",
@@ -3950,8 +3950,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.dll",
-        "System.Diagnostics.Tools.4.0.1-rc2-23712.nupkg",
-        "System.Diagnostics.Tools.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Diagnostics.Tools.4.0.1-rc2-23713.nupkg",
+        "System.Diagnostics.Tools.4.0.1-rc2-23713.nupkg.sha512",
         "System.Diagnostics.Tools.nuspec"
       ]
     },
@@ -4009,10 +4009,10 @@
         "System.Diagnostics.Tracing.nuspec"
       ]
     },
-    "System.Diagnostics.Tracing/4.0.21-rc2-23712": {
+    "System.Diagnostics.Tracing/4.0.21-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "Ae2X3vamUHYodd2ZELfJz0BadvsKVa+WS7BBYSBabhPdckkhOUzGZJvpJdxvceH5Pa8X0Xjzvh/v2oMX6bMUEA==",
+      "sha512": "D6iHrPT7tkqGX9PWYdpS5Vjfyq6bFAHGsGjbMZfIN4cT/ozIQ2Ofx1U159nHUu4zD1y60m8JX08kkXFfcmhdeQ==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.Tracing.dll",
         "lib/MonoAndroid10/_._",
@@ -4075,8 +4075,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tracing.dll",
-        "System.Diagnostics.Tracing.4.0.21-rc2-23712.nupkg",
-        "System.Diagnostics.Tracing.4.0.21-rc2-23712.nupkg.sha512",
+        "System.Diagnostics.Tracing.4.0.21-rc2-23713.nupkg",
+        "System.Diagnostics.Tracing.4.0.21-rc2-23713.nupkg.sha512",
         "System.Diagnostics.Tracing.nuspec"
       ]
     },
@@ -4104,10 +4104,10 @@
         "System.Globalization.nuspec"
       ]
     },
-    "System.Globalization/4.0.11-rc2-23712": {
+    "System.Globalization/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "HBWJN7EHVvQWGuyBaZ+RspUC5TT+xc9nJ8sGeJLibA4rtXck7pm219mhp/0PguQOZ2i/SU3p39xIDR55a890Ng==",
+      "sha512": "gHlEyrWK/ilUpdQVbjWZDqAen7eGtN8k5BiysP+wjdzqqYVKqJ7JymKzQp+wjm6S0ooiuDtV9Wa99ho8w6sAGQ==",
       "files": [
         "lib/DNXCore50/System.Globalization.dll",
         "lib/MonoAndroid10/_._",
@@ -4161,8 +4161,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Globalization.dll",
-        "System.Globalization.4.0.11-rc2-23712.nupkg",
-        "System.Globalization.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Globalization.4.0.11-rc2-23713.nupkg",
+        "System.Globalization.4.0.11-rc2-23713.nupkg.sha512",
         "System.Globalization.nuspec"
       ]
     },
@@ -4190,10 +4190,10 @@
         "System.Globalization.Calendars.nuspec"
       ]
     },
-    "System.Globalization.Calendars/4.0.1-rc2-23712": {
+    "System.Globalization.Calendars/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "DCj8Kl6Dx6wfJ2k2JbQeSPa7vx5lhVVD+wGF2nqb9FPKJ5cQoS76ZVuJ6N+ENHxWUMlRj5AFoKf8pzUV0Kt24A==",
+      "sha512": "gAclTyN2jUUBwN/+m1eRmCWOnWw/rcucDt8xf+O+/5GwlTX4853wx5Dc+uebnaYrus+Vw0PSlZLS5D+xQrJnyg==",
       "files": [
         "lib/DNXCore50/System.Globalization.Calendars.dll",
         "lib/MonoAndroid10/_._",
@@ -4219,8 +4219,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Globalization.Calendars.dll",
-        "System.Globalization.Calendars.4.0.1-rc2-23712.nupkg",
-        "System.Globalization.Calendars.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Globalization.Calendars.4.0.1-rc2-23713.nupkg",
+        "System.Globalization.Calendars.4.0.1-rc2-23713.nupkg.sha512",
         "System.Globalization.Calendars.nuspec"
       ]
     },
@@ -4278,10 +4278,10 @@
         "System.IO.nuspec"
       ]
     },
-    "System.IO/4.1.0-rc2-23712": {
+    "System.IO/4.1.0-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "W0Zptky6DqFIspEzK0Fh1hlFffmt+sOSxBzvkwTZKJs0rnW0ZADe081P8U9OjUp0gJmqNesleA0u9bgzgEzGHg==",
+      "sha512": "xAwxcnHUUXDMHbW3AOQJuFv5YYoTtYzSxyhNWXeCBZ8GtidtDm5HU+1x+J4/8qUcXq40Bhk91oKgQZD1+QlOgg==",
       "files": [
         "lib/DNXCore50/System.IO.dll",
         "lib/MonoAndroid10/_._",
@@ -4337,8 +4337,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.IO.dll",
-        "System.IO.4.1.0-rc2-23712.nupkg",
-        "System.IO.4.1.0-rc2-23712.nupkg.sha512",
+        "System.IO.4.1.0-rc2-23713.nupkg",
+        "System.IO.4.1.0-rc2-23713.nupkg.sha512",
         "System.IO.nuspec"
       ]
     },
@@ -4375,10 +4375,10 @@
         "System.IO.FileSystem.nuspec"
       ]
     },
-    "System.IO.FileSystem/4.0.1-rc2-23712": {
+    "System.IO.FileSystem/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "545XpucsdlKKcOqh5dq3CqfMcDruZ15gMDOE6TXokC0Uo7ewsIg76wX0ioO9PMRMP+0Q0EbzR7fltdkbVFy63Q==",
+      "sha512": "tZDoWE8xHJnBPusCyzcVnmP5Ew+uIR4nfRIw0U6q/BxBKvQnFxFyFg+S4H8nRW7oHLDx8J4mW/lcu62qmzuaNg==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -4402,8 +4402,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.IO.FileSystem.4.0.1-rc2-23712.nupkg",
-        "System.IO.FileSystem.4.0.1-rc2-23712.nupkg.sha512",
+        "System.IO.FileSystem.4.0.1-rc2-23713.nupkg",
+        "System.IO.FileSystem.4.0.1-rc2-23713.nupkg.sha512",
         "System.IO.FileSystem.nuspec"
       ]
     },
@@ -4439,10 +4439,10 @@
         "System.IO.FileSystem.Primitives.nuspec"
       ]
     },
-    "System.IO.FileSystem.Primitives/4.0.1-rc2-23712": {
+    "System.IO.FileSystem.Primitives/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "T0M6MR8LHgki9I63ZzsBxBE1oY7DuqsV3RInbg98axlENus5+darg+LrGANVdBfRmWIdGRDEkDoUcOcvlXHkwA==",
+      "sha512": "y/55eJQaALhAvNxXR49pJ3Lf3wk7LS7N+ApYU/2KM0NhnxO+FyGtW9ylfA9Ofd5DHd0OTv71PmTL7xZrMdtR5A==",
       "files": [
         "lib/dotnet5.4/System.IO.FileSystem.Primitives.dll",
         "lib/MonoAndroid10/_._",
@@ -4466,8 +4466,8 @@
         "ref/net46/System.IO.FileSystem.Primitives.dll",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "System.IO.FileSystem.Primitives.4.0.1-rc2-23712.nupkg",
-        "System.IO.FileSystem.Primitives.4.0.1-rc2-23712.nupkg.sha512",
+        "System.IO.FileSystem.Primitives.4.0.1-rc2-23713.nupkg",
+        "System.IO.FileSystem.Primitives.4.0.1-rc2-23713.nupkg.sha512",
         "System.IO.FileSystem.Primitives.nuspec"
       ]
     },
@@ -4485,10 +4485,10 @@
         "System.IO.Pipes.nuspec"
       ]
     },
-    "System.IO.Pipes/4.0.0-rc2-23712": {
+    "System.IO.Pipes/4.0.0-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "x91Hyz3u9EZOX9+9IY+/PyU8YNN3mVTLglk7mLYFJBkR8Rdw57m77II0xpeDduad3xS6y7WVPt/Id61ZFUkVDg==",
+      "sha512": "DX+t+SDCmFvhJ9SlQ8PqWz9myuvADVhQqeqcktiHbOEYPO7qfx6nxN7uvGxNlcwRZCEubUvrCyWej46MbhoDLQ==",
       "files": [
         "lib/net46/System.IO.Pipes.dll",
         "ref/dotnet5.4/de/System.IO.Pipes.xml",
@@ -4504,8 +4504,8 @@
         "ref/dotnet5.4/zh-hant/System.IO.Pipes.xml",
         "ref/net46/System.IO.Pipes.dll",
         "runtime.json",
-        "System.IO.Pipes.4.0.0-rc2-23712.nupkg",
-        "System.IO.Pipes.4.0.0-rc2-23712.nupkg.sha512",
+        "System.IO.Pipes.4.0.0-rc2-23713.nupkg",
+        "System.IO.Pipes.4.0.0-rc2-23713.nupkg.sha512",
         "System.IO.Pipes.nuspec"
       ]
     },
@@ -4542,10 +4542,10 @@
         "System.Linq.nuspec"
       ]
     },
-    "System.Linq/4.0.1-rc2-23712": {
+    "System.Linq/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "2dXMgV/1aEkThfUfq3NpDQq+Nd9KFgU9ZjUKy6W93jTKgIa0XSgHiMFD7K78q0+VQbAtbhTIrCbAgixUi8AatA==",
+      "sha512": "KbCkGNHcNXNZst4QdMAfGp4rER7zEeWBe5v9LrCkJShz89r+j8Qu41x948dIrHxsGZAx8U6Ic2RTbnqrj0Rs+Q==",
       "files": [
         "lib/dotnet5.4/System.Linq.dll",
         "lib/MonoAndroid10/_._",
@@ -4587,8 +4587,8 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "System.Linq.4.0.1-rc2-23712.nupkg",
-        "System.Linq.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Linq.4.0.1-rc2-23713.nupkg",
+        "System.Linq.4.0.1-rc2-23713.nupkg.sha512",
         "System.Linq.nuspec"
       ]
     },
@@ -4640,10 +4640,10 @@
         "System.Linq.Expressions.nuspec"
       ]
     },
-    "System.Linq.Expressions/4.0.11-rc2-23712": {
+    "System.Linq.Expressions/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "ITiBxkGRRHWkhnwPsgbIhhAi27/RSbsduLjzQH041d6r+oW1lzLR4z7XSNqC+OPVTAm9k8IrkNQiRmTuYlDvXQ==",
+      "sha512": "qKj3pAxiArHwo82NpDKWLEVyxEOUrTqBP780HZds7FD2pkdCqBs6XeP1IoZ1Jbu8SL7lBPU3lLk6lKgteJhtDA==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -4695,8 +4695,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.Linq.Expressions.4.0.11-rc2-23712.nupkg",
-        "System.Linq.Expressions.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Linq.Expressions.4.0.11-rc2-23713.nupkg",
+        "System.Linq.Expressions.4.0.11-rc2-23713.nupkg.sha512",
         "System.Linq.Expressions.nuspec"
       ]
     },
@@ -4732,10 +4732,10 @@
         "System.ObjectModel.nuspec"
       ]
     },
-    "System.ObjectModel/4.0.11-rc2-23712": {
+    "System.ObjectModel/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "Ss9bXKgRachZpi5/VjqVaPAO0AfZwT4xH0vdwDIKXS7l/+Rxl9kyf6o76WNqGQPLakBz+WBcw8CTklm0EI+tEA==",
+      "sha512": "xf+vWtZGpD1SSGP8kfx6skuTAGLykrt+bPUnwBuWUlHmo/3/qiAPSdYPU4iFhp03Y2I16WduGUI4Iyhw9YNmTA==",
       "files": [
         "lib/dotnet5.4/System.ObjectModel.dll",
         "lib/MonoAndroid10/_._",
@@ -4788,20 +4788,20 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "System.ObjectModel.4.0.11-rc2-23712.nupkg",
-        "System.ObjectModel.4.0.11-rc2-23712.nupkg.sha512",
+        "System.ObjectModel.4.0.11-rc2-23713.nupkg",
+        "System.ObjectModel.4.0.11-rc2-23713.nupkg.sha512",
         "System.ObjectModel.nuspec"
       ]
     },
-    "System.Private.Uri/4.0.1-rc2-23712": {
+    "System.Private.Uri/4.0.1-rc2-23713": {
       "type": "package",
-      "sha512": "NhbekvmKGm8qNnOymtOBIm7zVRRSyho2GHLy++hW9FX1wDyp21XP58/bFEbQEVRPx7GKcpEKtYO8zDxfu3oTVw==",
+      "sha512": "P72i86Y0xSaisN/aYPgFH50UftT/h/IbkdaMezIrTCDWizBhjE2NOsk4u+6flW24/1oUMFyQoUoiBygMnsSR6A==",
       "files": [
         "ref/dnxcore50/_._",
         "ref/netcore50/_._",
         "runtime.json",
-        "System.Private.Uri.4.0.1-rc2-23712.nupkg",
-        "System.Private.Uri.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Private.Uri.4.0.1-rc2-23713.nupkg",
+        "System.Private.Uri.4.0.1-rc2-23713.nupkg.sha512",
         "System.Private.Uri.nuspec"
       ]
     },
@@ -4829,10 +4829,10 @@
         "System.Reflection.nuspec"
       ]
     },
-    "System.Reflection/4.1.0-rc2-23712": {
+    "System.Reflection/4.1.0-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "FjXv+iPDKk+10pWOtcBgiDfqluN0WG3IWfGC9stQQIvtxV43/6u86OdWjqxBIREeadRHEj+7tdl7wHkiEwGUhw==",
+      "sha512": "BE4/GsYY8RMJ4MtUoIGPGDHfaFX2RdOQi1sLdbR/e/i/26TmiwGjDnMV79EyUnkdBZLEyeHomBWKVBQ3RRFFVw==",
       "files": [
         "lib/DNXCore50/System.Reflection.dll",
         "lib/MonoAndroid10/_._",
@@ -4888,15 +4888,15 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Reflection.dll",
-        "System.Reflection.4.1.0-rc2-23712.nupkg",
-        "System.Reflection.4.1.0-rc2-23712.nupkg.sha512",
+        "System.Reflection.4.1.0-rc2-23713.nupkg",
+        "System.Reflection.4.1.0-rc2-23713.nupkg.sha512",
         "System.Reflection.nuspec"
       ]
     },
-    "System.Reflection.Emit/4.0.1-rc2-23712": {
+    "System.Reflection.Emit/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "m4moU4EGyviwVkR6qcFV2PmsuzB87godCGJMZLy9ZJSLiCU7mz/+R4QKdt6eI02V9apWEOCwSBjH1o+2ZcgGtw==",
+      "sha512": "E9Ngb6LnOqYXG/n7PArjNqYqbCnYo0UePo9ON7a/5Ey/yQ97Mp74SMY0/tJxJHR4b96cGn4WbDtZUukF8vrB6Q==",
       "files": [
         "lib/DNXCore50/System.Reflection.Emit.dll",
         "lib/MonoAndroid10/_._",
@@ -4918,15 +4918,15 @@
         "ref/net45/_._",
         "ref/xamarinmac20/_._",
         "runtimes/aot/lib/netcore50/_._",
-        "System.Reflection.Emit.4.0.1-rc2-23712.nupkg",
-        "System.Reflection.Emit.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Reflection.Emit.4.0.1-rc2-23713.nupkg",
+        "System.Reflection.Emit.4.0.1-rc2-23713.nupkg.sha512",
         "System.Reflection.Emit.nuspec"
       ]
     },
-    "System.Reflection.Emit.ILGeneration/4.0.1-rc2-23712": {
+    "System.Reflection.Emit.ILGeneration/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "ecpPHwaaZSqxN3jshsZgS05KzCzExN3qIP5QU7OZVnydnGZT3sG3/ckwAeQMEyZbWjK+h9YmrNnthmpITvs7Jg==",
+      "sha512": "4l9ftDNJqzb3S5L/7NlIgpKWLGlzGVB2NlH2MOPS79tX/6zGbyvvyJ5Gcuj37i64hChl6CCe6BxswiwSytxlGA==",
       "files": [
         "lib/DNXCore50/System.Reflection.Emit.ILGeneration.dll",
         "lib/net45/_._",
@@ -4946,15 +4946,15 @@
         "ref/net45/_._",
         "ref/wp80/_._",
         "runtimes/aot/lib/netcore50/_._",
-        "System.Reflection.Emit.ILGeneration.4.0.1-rc2-23712.nupkg",
-        "System.Reflection.Emit.ILGeneration.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Reflection.Emit.ILGeneration.4.0.1-rc2-23713.nupkg",
+        "System.Reflection.Emit.ILGeneration.4.0.1-rc2-23713.nupkg.sha512",
         "System.Reflection.Emit.ILGeneration.nuspec"
       ]
     },
-    "System.Reflection.Emit.Lightweight/4.0.1-rc2-23712": {
+    "System.Reflection.Emit.Lightweight/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "xPhg1wySVU5Qp6zZa7c6L/lQS5ca01bqBTzf+3XYgt3GQMAsMciE2eCa7m02IgBwy2h3MdSkqVMGHfnDzIpZ1w==",
+      "sha512": "bpyLxf93xjifjpfsBd917YA9c45s5GLw0804v7k4SHWUDdgsw5517KqCAsKjTGR/ghNsXrqtT9LehQsmoM5KgA==",
       "files": [
         "lib/DNXCore50/System.Reflection.Emit.Lightweight.dll",
         "lib/net45/_._",
@@ -4974,8 +4974,8 @@
         "ref/net45/_._",
         "ref/wp80/_._",
         "runtimes/aot/lib/netcore50/_._",
-        "System.Reflection.Emit.Lightweight.4.0.1-rc2-23712.nupkg",
-        "System.Reflection.Emit.Lightweight.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Reflection.Emit.Lightweight.4.0.1-rc2-23713.nupkg",
+        "System.Reflection.Emit.Lightweight.4.0.1-rc2-23713.nupkg.sha512",
         "System.Reflection.Emit.Lightweight.nuspec"
       ]
     },
@@ -5012,10 +5012,10 @@
         "System.Reflection.Extensions.nuspec"
       ]
     },
-    "System.Reflection.Extensions/4.0.1-rc2-23712": {
+    "System.Reflection.Extensions/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "57AUOzl7tggPrmClRXF1GxAmG4Zb5NC9uM33Md4DUhvSDXgTL6BGbYGWSVuxhDk1I//DrS+sOg8GfqaM0oixuA==",
+      "sha512": "nKBiKBRyq9wHjqUrftMR8VCQdnRbptPCK8InSuOEayVKRKIa+KzNC2njKuThqxl7XV4yV0MDtqPWfiMS+RH8MA==",
       "files": [
         "lib/DNXCore50/System.Reflection.Extensions.dll",
         "lib/MonoAndroid10/_._",
@@ -5058,8 +5058,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Reflection.Extensions.dll",
-        "System.Reflection.Extensions.4.0.1-rc2-23712.nupkg",
-        "System.Reflection.Extensions.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Reflection.Extensions.4.0.1-rc2-23713.nupkg",
+        "System.Reflection.Extensions.4.0.1-rc2-23713.nupkg.sha512",
         "System.Reflection.Extensions.nuspec"
       ]
     },
@@ -5096,10 +5096,10 @@
         "System.Reflection.Primitives.nuspec"
       ]
     },
-    "System.Reflection.Primitives/4.0.1-rc2-23712": {
+    "System.Reflection.Primitives/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "AfyQT5j3Dxt3d+7RrE8lh9uAR/kXGm+V57PkXBjbEtT88GcSGRm3HuNWI99eIANJJMRnGT69yLqyuw/Zl99ZPA==",
+      "sha512": "Ux9D4YRBz8dL2hiFSH93ceLnnwxbs4Fj98Fj5p+WjUSzFAPxohd7RFAdzTDDzP3WBJkhoBMtB3IEKFfD3GAuZA==",
       "files": [
         "lib/DNXCore50/System.Reflection.Primitives.dll",
         "lib/MonoAndroid10/_._",
@@ -5142,15 +5142,15 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Reflection.Primitives.dll",
-        "System.Reflection.Primitives.4.0.1-rc2-23712.nupkg",
-        "System.Reflection.Primitives.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Reflection.Primitives.4.0.1-rc2-23713.nupkg",
+        "System.Reflection.Primitives.4.0.1-rc2-23713.nupkg.sha512",
         "System.Reflection.Primitives.nuspec"
       ]
     },
-    "System.Reflection.TypeExtensions/4.1.0-rc2-23712": {
+    "System.Reflection.TypeExtensions/4.1.0-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "4ml4dDQYH8ZKeBnIcFdz6SB521r6GqfodfnMEf1/a61d1sqddFzEfytDVnV6omaWhycPxEcg1/gVHlExdvM/CA==",
+      "sha512": "iMYS+XdID+qmF1IcfgGNxRM0iViFkV0CJAf3hFnOnUJ8UnYMWi4J/3iqOT4JKTl/oVWusVdVQlwwDM+9mfRLjQ==",
       "files": [
         "lib/DNXCore50/System.Reflection.TypeExtensions.dll",
         "lib/MonoAndroid10/_._",
@@ -5176,8 +5176,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Reflection.TypeExtensions.dll",
-        "System.Reflection.TypeExtensions.4.1.0-rc2-23712.nupkg",
-        "System.Reflection.TypeExtensions.4.1.0-rc2-23712.nupkg.sha512",
+        "System.Reflection.TypeExtensions.4.1.0-rc2-23713.nupkg",
+        "System.Reflection.TypeExtensions.4.1.0-rc2-23713.nupkg.sha512",
         "System.Reflection.TypeExtensions.nuspec"
       ]
     },
@@ -5214,10 +5214,10 @@
         "System.Resources.ResourceManager.nuspec"
       ]
     },
-    "System.Resources.ResourceManager/4.0.1-rc2-23712": {
+    "System.Resources.ResourceManager/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "oNSTl8HyFuxEHO7Uq9BiipPZGaQr4IjfjA64LgTg43wdxFfCkhCMUaG/UAwsBBi4puTuO3MqFPohYs8luOA/Fw==",
+      "sha512": "/ODMhSKOlPIjTsA9OmP+X2GXU0FL0M6yfGsmQ/fi3N6K2kevyDFr7vsh4zOcrdPUGgu/lnDBQg85mXYgtoEPqg==",
       "files": [
         "lib/DNXCore50/System.Resources.ResourceManager.dll",
         "lib/MonoAndroid10/_._",
@@ -5260,15 +5260,15 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Resources.ResourceManager.dll",
-        "System.Resources.ResourceManager.4.0.1-rc2-23712.nupkg",
-        "System.Resources.ResourceManager.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Resources.ResourceManager.4.0.1-rc2-23713.nupkg",
+        "System.Resources.ResourceManager.4.0.1-rc2-23713.nupkg.sha512",
         "System.Resources.ResourceManager.nuspec"
       ]
     },
-    "System.Runtime/4.0.21-rc2-23712": {
+    "System.Runtime/4.0.21-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "mgPEnRrlRcqPECGlxhBMRZaJX2KcSpT4LnFrhzEtHzC0H3v6LXUuhkdlE/OF9letHcQLx2EcFJwGhMYAEhU0DQ==",
+      "sha512": "lr7gpnlNghAcan3QfMuud/DgUcf4+QxJkXX3GiIVg0ehBhvnKs8rX/GwFMlYRSkZ4GMYFSizgqSkIe2QjHW/rQ==",
       "files": [
         "lib/DNXCore50/System.Runtime.dll",
         "lib/MonoAndroid10/_._",
@@ -5333,8 +5333,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Runtime.dll",
-        "System.Runtime.4.0.21-rc2-23712.nupkg",
-        "System.Runtime.4.0.21-rc2-23712.nupkg.sha512",
+        "System.Runtime.4.0.21-rc2-23713.nupkg",
+        "System.Runtime.4.0.21-rc2-23713.nupkg.sha512",
         "System.Runtime.nuspec"
       ]
     },
@@ -5414,10 +5414,10 @@
         "System.Runtime.Handles.nuspec"
       ]
     },
-    "System.Runtime.Handles/4.0.1-rc2-23712": {
+    "System.Runtime.Handles/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "2lGiz0x2cjuUQISZFYVzXhF7y+R6+FOz350Wye4jutrz4CN5fhn8l3YmX6UwchLyDolh802auaxC4z6ID6hrOQ==",
+      "sha512": "pWwiTmeqFFCkZalyk3M6EDXvthdfztkIKkGJbtZ/wWVrFMTgjZaB/exZZYuWe0CoMCU7F7zhW2t0/cdQKPPxqw==",
       "files": [
         "lib/DNXCore50/System.Runtime.Handles.dll",
         "lib/MonoAndroid10/_._",
@@ -5443,8 +5443,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Runtime.Handles.dll",
-        "System.Runtime.Handles.4.0.1-rc2-23712.nupkg",
-        "System.Runtime.Handles.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Runtime.Handles.4.0.1-rc2-23713.nupkg",
+        "System.Runtime.Handles.4.0.1-rc2-23713.nupkg.sha512",
         "System.Runtime.Handles.nuspec"
       ]
     },
@@ -5492,10 +5492,10 @@
         "System.Runtime.InteropServices.nuspec"
       ]
     },
-    "System.Runtime.InteropServices/4.0.21-rc2-23712": {
+    "System.Runtime.InteropServices/4.0.21-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "Mr7kT/4rHyonMAzyakuunjFht4Iwx2TTvwxPWQSOUtdLxV8i36TdrW6dYpoICHzviTHBQoVw2DNrhH3E8u/X2A==",
+      "sha512": "iCKwUO/YAhPDqayGPVV8MC2QOcizG9mbsPplcjov113ihXKrscfacMPWV8DUkyAawN0zIevrOGz7HOAaazAVDg==",
       "files": [
         "lib/DNXCore50/System.Runtime.InteropServices.dll",
         "lib/MonoAndroid10/_._",
@@ -5558,8 +5558,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Runtime.InteropServices.dll",
-        "System.Runtime.InteropServices.4.0.21-rc2-23712.nupkg",
-        "System.Runtime.InteropServices.4.0.21-rc2-23712.nupkg.sha512",
+        "System.Runtime.InteropServices.4.0.21-rc2-23713.nupkg",
+        "System.Runtime.InteropServices.4.0.21-rc2-23713.nupkg.sha512",
         "System.Runtime.InteropServices.nuspec"
       ]
     },
@@ -5596,10 +5596,10 @@
         "System.Security.Principal.nuspec"
       ]
     },
-    "System.Security.Principal/4.0.1-rc2-23712": {
+    "System.Security.Principal/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "NNE1jVhOhwI145xfuxN7mFZl1+FQDYrcIZSfbWt6Tlcv10KMM8M589DntSka4erO3QmSXa4eRpnLGssGx/wC9Q==",
+      "sha512": "ZGdCTzxyXzo6zbDcB0hJRcAfwzjPPBDIemsvUxAvTq11Kz9RIb0+BW4wqqT0HeafpFcySJoIZ32mJXdjZFWMgw==",
       "files": [
         "lib/dotnet5.1/System.Security.Principal.dll",
         "lib/MonoAndroid10/_._",
@@ -5641,8 +5641,8 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "System.Security.Principal.4.0.1-rc2-23712.nupkg",
-        "System.Security.Principal.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Security.Principal.4.0.1-rc2-23713.nupkg",
+        "System.Security.Principal.4.0.1-rc2-23713.nupkg.sha512",
         "System.Security.Principal.nuspec"
       ]
     },
@@ -5670,10 +5670,10 @@
         "System.Text.Encoding.nuspec"
       ]
     },
-    "System.Text.Encoding/4.0.11-rc2-23712": {
+    "System.Text.Encoding/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "3NKfCFC2vDQPZDk3jXB15OSOGv9DH4AtETu1wSFH9o5q/Yy6LBN0+f+vWcZq4kQZogG01emr2Q9s9ash1iabiA==",
+      "sha512": "2oU7nw0gtW265dkrWnNkrWpKk9gEsMyZr1bL53U9MiaWqRiHwrfueRx2bl1xqJf7xBXkU3xCRLj229ZdStkRJQ==",
       "files": [
         "lib/DNXCore50/System.Text.Encoding.dll",
         "lib/MonoAndroid10/_._",
@@ -5727,8 +5727,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Text.Encoding.dll",
-        "System.Text.Encoding.4.0.11-rc2-23712.nupkg",
-        "System.Text.Encoding.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Text.Encoding.4.0.11-rc2-23713.nupkg",
+        "System.Text.Encoding.4.0.11-rc2-23713.nupkg.sha512",
         "System.Text.Encoding.nuspec"
       ]
     },
@@ -5756,10 +5756,10 @@
         "System.Text.Encoding.Extensions.nuspec"
       ]
     },
-    "System.Text.Encoding.Extensions/4.0.11-rc2-23712": {
+    "System.Text.Encoding.Extensions/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "A+ZURFvNJaLEH8zSz5EfDg/47XmVt/waco2dUkA8NYwgoJevnoEgIPKALEftK2BKwvxvpa3gbfbq0GAj9qJfZA==",
+      "sha512": "xeLsqXJpfhlaoHpL6tvO7oeWUQ8Tg2qOp7XfIuALhDSyvjsaZwDHWzcEHj1GJ5DQlFpkuerUfS82Ld0m82Vfcw==",
       "files": [
         "lib/DNXCore50/System.Text.Encoding.Extensions.dll",
         "lib/MonoAndroid10/_._",
@@ -5813,8 +5813,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Text.Encoding.Extensions.dll",
-        "System.Text.Encoding.Extensions.4.0.11-rc2-23712.nupkg",
-        "System.Text.Encoding.Extensions.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Text.Encoding.Extensions.4.0.11-rc2-23713.nupkg",
+        "System.Text.Encoding.Extensions.4.0.11-rc2-23713.nupkg.sha512",
         "System.Text.Encoding.Extensions.nuspec"
       ]
     },
@@ -5850,10 +5850,10 @@
         "System.Text.RegularExpressions.nuspec"
       ]
     },
-    "System.Text.RegularExpressions/4.0.11-rc2-23712": {
+    "System.Text.RegularExpressions/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "mOXs6cIHGnGz4u8fk5OBE3BdXj/GYpvtqSwPMtEgZXdxlXCZrwM6vaCBAF2NBUN6mkHgWCW35zCIcV/bxcDGfA==",
+      "sha512": "RtUYC3WWNGx4BuwYX1eXetngwjgfRDdrAqXmNCT3+WUbG1l/Qx96vIe35yitFJ/x6+Te/lNy9Gj/m39GgVTbLA==",
       "files": [
         "lib/dotnet5.4/System.Text.RegularExpressions.dll",
         "lib/MonoAndroid10/_._",
@@ -5906,8 +5906,8 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "System.Text.RegularExpressions.4.0.11-rc2-23712.nupkg",
-        "System.Text.RegularExpressions.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Text.RegularExpressions.4.0.11-rc2-23713.nupkg",
+        "System.Text.RegularExpressions.4.0.11-rc2-23713.nupkg.sha512",
         "System.Text.RegularExpressions.nuspec"
       ]
     },
@@ -5958,10 +5958,10 @@
         "System.Threading.Overlapped.nuspec"
       ]
     },
-    "System.Threading.Overlapped/4.0.1-rc2-23712": {
+    "System.Threading.Overlapped/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "no1VWf8pR3SWmjcd/XCNuCkx2ZyiahjjcnuZpoCFC3gfqvOC2GgCw8IYBqF96zXhoYQfYZLCbGwPzkoHs8BkbA==",
+      "sha512": "1syXeJSMNN9pJO3SJCBbHhqurbaixVYzRdxbNRnanI6/RQVOomRxtMG12OQUpqHPou/TCC6yZMnDOR4k6JwVFQ==",
       "files": [
         "lib/DNXCore50/System.Threading.Overlapped.dll",
         "lib/net46/System.Threading.Overlapped.dll",
@@ -5978,8 +5978,8 @@
         "ref/dotnet5.4/zh-hans/System.Threading.Overlapped.xml",
         "ref/dotnet5.4/zh-hant/System.Threading.Overlapped.xml",
         "ref/net46/System.Threading.Overlapped.dll",
-        "System.Threading.Overlapped.4.0.1-rc2-23712.nupkg",
-        "System.Threading.Overlapped.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Threading.Overlapped.4.0.1-rc2-23713.nupkg",
+        "System.Threading.Overlapped.4.0.1-rc2-23713.nupkg.sha512",
         "System.Threading.Overlapped.nuspec"
       ]
     },
@@ -6037,10 +6037,10 @@
         "System.Threading.Tasks.nuspec"
       ]
     },
-    "System.Threading.Tasks/4.0.11-rc2-23712": {
+    "System.Threading.Tasks/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "I1NMpT3EPk3n8io6EDbGWUGNom2TsF02K9odp5gM0yftomlvu25ABHOYxmuFcrjYn6ibAAwFLyt75uXzxE8FzA==",
+      "sha512": "BNtVa4BgN8KH6FfA7mwUUrOcnALq3/wZEM/rOf2htvQqKTRcZSG0juWzr4pKVLGo6gdOcuiJJYVcWhbu/xnnmA==",
       "files": [
         "lib/DNXCore50/System.Threading.Tasks.dll",
         "lib/MonoAndroid10/_._",
@@ -6094,22 +6094,22 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Threading.Tasks.dll",
-        "System.Threading.Tasks.4.0.11-rc2-23712.nupkg",
-        "System.Threading.Tasks.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Threading.Tasks.4.0.11-rc2-23713.nupkg",
+        "System.Threading.Tasks.4.0.11-rc2-23713.nupkg.sha512",
         "System.Threading.Tasks.nuspec"
       ]
     },
-    "System.Threading.Tasks.Extensions/4.0.0-rc2-23712": {
+    "System.Threading.Tasks.Extensions/4.0.0-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "8TXjR5za/AGpNi2Zhvvbvx4dZlphjKp+1fFUBYrR8FBLhbT+zZpVPcpy9f42cguYYj1wWsglw4/hTaDJDNnAuA==",
+      "sha512": "ffEfgIEKFoF7VqjhK7H9fK1NOaoKnGHjC8spOZgrtJqPpu2wRRBL4RekvRlryciv6ZnNJztfWVRd26aqELY0Lg==",
       "files": [
         "lib/dotnet5.1/System.Threading.Tasks.Extensions.dll",
         "lib/dotnet5.1/System.Threading.Tasks.Extensions.xml",
         "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.dll",
         "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.xml",
-        "System.Threading.Tasks.Extensions.4.0.0-rc2-23712.nupkg",
-        "System.Threading.Tasks.Extensions.4.0.0-rc2-23712.nupkg.sha512",
+        "System.Threading.Tasks.Extensions.4.0.0-rc2-23713.nupkg",
+        "System.Threading.Tasks.Extensions.4.0.0-rc2-23713.nupkg.sha512",
         "System.Threading.Tasks.Extensions.nuspec"
       ]
     },
@@ -6156,10 +6156,10 @@
         "System.Threading.Timer.nuspec"
       ]
     },
-    "System.Threading.Timer/4.0.1-rc2-23712": {
+    "System.Threading.Timer/4.0.1-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "g6oj1fGKhMT/mUGfL4PrstkbzIgtZ11ApByvwkmUDt4rD8nBCsBs7gqXWpooY6c/DlasK0Jn5SE4Vp6to6pI/A==",
+      "sha512": "TiJBoZ9PZ7S5NGS2Lt/469OMdGtWQY4fqpqqi7mNbY6XgFDrba0RGDP//3OcFpREb9icXAI3nLTdSB/961D89Q==",
       "files": [
         "lib/DNXCore50/System.Threading.Timer.dll",
         "lib/MonoAndroid10/_._",
@@ -6200,8 +6200,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Threading.Timer.dll",
-        "System.Threading.Timer.4.0.1-rc2-23712.nupkg",
-        "System.Threading.Timer.4.0.1-rc2-23712.nupkg.sha512",
+        "System.Threading.Timer.4.0.1-rc2-23713.nupkg",
+        "System.Threading.Timer.4.0.1-rc2-23713.nupkg.sha512",
         "System.Threading.Timer.nuspec"
       ]
     },
@@ -6237,10 +6237,10 @@
         "System.Xml.ReaderWriter.nuspec"
       ]
     },
-    "System.Xml.ReaderWriter/4.0.11-rc2-23712": {
+    "System.Xml.ReaderWriter/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "At6H41+OY9wX41i+1AcTwV38RARrUQCmkSWCQpvUPX/qfo1a9PKeL2w/qkApfq3zftsij9oPGHo5U5pc0LkYZA==",
+      "sha512": "dDIKUqeICeWt/QbM72TP94HahkKuiVgzMmdz6ebDTXMj/kecKXVWukt2oiuQJ/+OWxH/mn0yn2oyVBQd4jXTow==",
       "files": [
         "lib/dotnet5.4/System.Xml.ReaderWriter.dll",
         "lib/MonoAndroid10/_._",
@@ -6293,8 +6293,8 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "System.Xml.ReaderWriter.4.0.11-rc2-23712.nupkg",
-        "System.Xml.ReaderWriter.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Xml.ReaderWriter.4.0.11-rc2-23713.nupkg",
+        "System.Xml.ReaderWriter.4.0.11-rc2-23713.nupkg.sha512",
         "System.Xml.ReaderWriter.nuspec"
       ]
     },
@@ -6330,10 +6330,10 @@
         "System.Xml.XDocument.nuspec"
       ]
     },
-    "System.Xml.XDocument/4.0.11-rc2-23712": {
+    "System.Xml.XDocument/4.0.11-rc2-23713": {
       "type": "package",
       "serviceable": true,
-      "sha512": "TFog+Y82WvxYG6TL1w+lHJkgW3rVha3KEEG2n9IzaSyIYcqs59gLHGAIeDo79FRBQ/tL9ahCFbCSlsMmrVmkeg==",
+      "sha512": "ewh3tdVtXUayklzokSm5cSjVT3p94V09W7dgdP8/4NBHaVNBUvwkiH5T8Kzl9Iu6xmiyckp8M7F0u21X/XMXNQ==",
       "files": [
         "lib/dotnet5.4/System.Xml.XDocument.dll",
         "lib/MonoAndroid10/_._",
@@ -6386,8 +6386,8 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "System.Xml.XDocument.4.0.11-rc2-23712.nupkg",
-        "System.Xml.XDocument.4.0.11-rc2-23712.nupkg.sha512",
+        "System.Xml.XDocument.4.0.11-rc2-23713.nupkg",
+        "System.Xml.XDocument.4.0.11-rc2-23713.nupkg.sha512",
         "System.Xml.XDocument.nuspec"
       ]
     },
