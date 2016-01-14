@@ -49,5 +49,26 @@ namespace System
             return true;
         }
 
+		/// <summary>
+        /// Determines whether two read-only spans are equal (byte-wise) by comparing the elements by using memcmp
+        /// </summary>
+        /// <param name="first">A span of <#= many #> to compare to second.</param>
+        /// <param name="second">A span of <#= many #> T to compare to first.</param>
+        public static bool SequenceEqual(this ReadOnlySpan<<#= typeName #>> first, ReadOnlySpan<<#= typeName #>> second)
+        {
+            if (first.Length != second.Length) { return false; }
+
+            // pinvoke calls are expensive (mostly due to memory pinning) so we call memcmp only for big slices
+            if (first.Length >= <#= smallSliceLimit #>) { return MemoryUtils.MemCmp(first, second); }
+
+            // for small slices we just use simple loop
+            for (int i = 0; i < first.Length; i++) {
+                if (first.GetItemWithoutBoundariesCheck(i) != second.GetItemWithoutBoundariesCheck(i)) { 
+                    return false; 
+                }
+            }
+            return true;
+        }
+
 <#+}
 #>

@@ -23,9 +23,35 @@ namespace System.Slices.Tests
             SpansReferencingSameMemoryAreEqualInEveryAspect(ref span, ref structCopy);
         }
 
+        [CLSCompliant(false)]
+        [Theory]
+        [MemberData("ValidArraySegments")]
+        public void ReadOnlySpansReferencingSameMemoryAreEqualInEveryAspect(byte[] bytes, int start, int length)
+        {
+            var span = new ReadOnlySpan<byte>(bytes, start, length);
+            var pointingToSameMemory = new ReadOnlySpan<byte>(bytes, start, length);
+            var structCopy = span;
+
+            SpansReferencingSameMemoryAreEqualInEveryAspect(ref span, ref pointingToSameMemory);
+            SpansReferencingSameMemoryAreEqualInEveryAspect(ref span, ref structCopy);
+        }
+
         // ref is used just for the structCopy scenario, otherwise it would always be copy
 
         private static void SpansReferencingSameMemoryAreEqualInEveryAspect(ref Span<byte> span, ref Span<byte> pointingToSameMemory)
+        {
+            Assert.True(span.ReferenceEquals(pointingToSameMemory));
+            Assert.True(span.Equals(pointingToSameMemory));
+            Assert.True(span.Equals((Object)pointingToSameMemory));
+            Assert.Equal(span.GetHashCode(), pointingToSameMemory.GetHashCode());
+
+            Assert.True(span.SequenceEqual(pointingToSameMemory));
+            Assert.True(pointingToSameMemory.SequenceEqual(span));
+            Assert.True(span.BlockEquals(pointingToSameMemory));
+            Assert.True(pointingToSameMemory.BlockEquals(span));
+        }
+
+        private static void SpansReferencingSameMemoryAreEqualInEveryAspect(ref ReadOnlySpan<byte> span, ref ReadOnlySpan<byte> pointingToSameMemory)
         {
             Assert.True(span.ReferenceEquals(pointingToSameMemory));
             Assert.True(span.Equals(pointingToSameMemory));
@@ -82,12 +108,54 @@ namespace System.Slices.Tests
         [CLSCompliant(false)]
         [Theory]
         [MemberData("ValidArraySegments")]
+        public void ReadOnlySpansOfEqualValuesInSameOrderAreSequentiallyAndStructurallyEqual(byte[] bytes, int start, int length)
+        {
+            var bytesCopy = bytes.ToArray();
+
+            var span = new ReadOnlySpan<byte>(bytes, start, length);
+            var ofSameValues = new ReadOnlySpan<byte>(bytesCopy, start, length);
+
+            Assert.True(span.SequenceEqual(ofSameValues));
+            Assert.True(ofSameValues.SequenceEqual(span));
+            Assert.True(span.BlockEquals(ofSameValues));
+            Assert.True(ofSameValues.BlockEquals(span));
+
+            Assert.False(span.ReferenceEquals(ofSameValues));
+            Assert.False(span.Equals(ofSameValues));
+            Assert.False(span.Equals((Object)ofSameValues));
+            Assert.NotEqual(span.GetHashCode(), ofSameValues.GetHashCode());
+        }
+
+        [CLSCompliant(false)]
+        [Theory]
+        [MemberData("ValidArraySegments")]
         public void SpansOfDifferentValuesAreNotEqual(byte[] bytes, int start, int length)
         {
             var differentBytes = bytes.Select(value => ++value).ToArray();
 
             var span = new Span<byte>(bytes, start, length);
             var ofDifferentValues = new Span<byte>(differentBytes, start, length);
+
+            Assert.False(span.SequenceEqual(ofDifferentValues));
+            Assert.False(ofDifferentValues.SequenceEqual(span));
+            Assert.False(span.BlockEquals(ofDifferentValues));
+            Assert.False(ofDifferentValues.BlockEquals(span));
+
+            Assert.False(span.ReferenceEquals(ofDifferentValues));
+            Assert.False(span.Equals(ofDifferentValues));
+            Assert.False(span.Equals((Object)ofDifferentValues));
+            Assert.False(span.GetHashCode() == ofDifferentValues.GetHashCode());
+        }
+
+        [CLSCompliant(false)]
+        [Theory]
+        [MemberData("ValidArraySegments")]
+        public void ReadOnlySpanOfDifferentValuesAreNotEqual(byte[] bytes, int start, int length)
+        {
+            var differentBytes = bytes.Select(value => ++value).ToArray();
+
+            var span = new ReadOnlySpan<byte>(bytes, start, length);
+            var ofDifferentValues = new ReadOnlySpan<byte>(differentBytes, start, length);
 
             Assert.False(span.SequenceEqual(ofDifferentValues));
             Assert.False(ofDifferentValues.SequenceEqual(span));
@@ -117,6 +185,23 @@ namespace System.Slices.Tests
             Assert.NotEqual(span.GetHashCode(), ofSameValuesOfDifferentType.GetHashCode());
         }
 
+        [CLSCompliant(false)]
+        [Theory]
+        [MemberData("ValidArraySegments")]
+        public void ReadOnlySpansOfEqualValuesOfDifferentTypesInSameOrderAreStructurallyEqual(byte[] bytes, int start, int length)
+        {
+            var differentTypeButSameValues = bytes.Select(value => new SingleByteStruct(value)).ToArray();
+
+            var span = new ReadOnlySpan<byte>(bytes, start, length);
+            var ofSameValuesOfDifferentType = new ReadOnlySpan<SingleByteStruct>(differentTypeButSameValues, start, length);
+
+            Assert.True(span.BlockEquals(ofSameValuesOfDifferentType));
+            Assert.True(ofSameValuesOfDifferentType.BlockEquals(span));
+
+            Assert.False(span.Equals((Object)ofSameValuesOfDifferentType));
+            Assert.NotEqual(span.GetHashCode(), ofSameValuesOfDifferentType.GetHashCode());
+        }
+
         [Fact]
         public void SpansOfEqualValuesOfDifferentTypesAndDifferentSizesInSameOrderAreStructurallyEqual()
         {
@@ -136,19 +221,21 @@ namespace System.Slices.Tests
         }
 
         [Fact]
-        public void AddressOfStringCanBePinnedToo()
+        public void ReadOnlySpanOfEqualValuesOfDifferentTypesAndDifferentSizesInSameOrderAreStructurallyEqual()
         {
-            string veryLongString = string.Join(string.Empty, Enumerable.Repeat("JustAVeryLongText", 1000));
-            string sameString = string.Join(string.Empty, Enumerable.Repeat("JustAVeryLongText", 1000));
+            var guids = Enumerable.Range(0, 10).Select(_ => Guid.NewGuid()).ToArray();
+            var guidsBytes = guids.SelectMany(guid => guid.ToByteArray()).ToArray();
 
-            var slice = veryLongString.Slice();
-            var copy = sameString.Slice();
+            var spanOfGuids = new ReadOnlySpan<Guid>(guids);
+            var spanOfGuidsByteRepresentation = new ReadOnlySpan<byte>(guidsBytes);
 
-            Assert.True(slice.SequenceEqual(copy));
+            Assert.True(spanOfGuids.BlockEquals(spanOfGuidsByteRepresentation));
+            Assert.True(spanOfGuidsByteRepresentation.BlockEquals(spanOfGuids));
 
-            copy[copy.Length - 1] = ++copy[copy.Length - 1]; // just change something
+            guidsBytes[guidsBytes.Length - 1] = --guidsBytes[guidsBytes.Length - 1]; // make sure that comparison covers whole span
 
-            Assert.False(slice.SequenceEqual(copy));
+            Assert.False(spanOfGuids.BlockEquals(spanOfGuidsByteRepresentation));
+            Assert.False(spanOfGuidsByteRepresentation.BlockEquals(spanOfGuids));
         }
 
         [Fact]
@@ -171,6 +258,51 @@ namespace System.Slices.Tests
                 var stackSlice = new Span<int>(arrayAllocatedOnStack, arraySize);
                 var unmanagedHeapSlice = new Span<int>(arrayAllocatedOnUnmanagedHeap, arraySize);
                 var managedHeapSlice = new Span<int>(arrayAllocatedOnManagedHeap, 0, arraySize);
+
+                Assert.False(stackSlice.ReferenceEquals(unmanagedHeapSlice));
+                Assert.False(stackSlice.ReferenceEquals(managedHeapSlice));
+                Assert.False(unmanagedHeapSlice.ReferenceEquals(managedHeapSlice));
+
+                Assert.True(stackSlice.SequenceEqual(unmanagedHeapSlice));
+                Assert.True(stackSlice.SequenceEqual(managedHeapSlice));
+                Assert.True(unmanagedHeapSlice.SequenceEqual(stackSlice));
+                Assert.True(unmanagedHeapSlice.SequenceEqual(managedHeapSlice));
+                Assert.True(managedHeapSlice.SequenceEqual(unmanagedHeapSlice));
+                Assert.True(managedHeapSlice.SequenceEqual(stackSlice));
+
+                Assert.True(stackSlice.BlockEquals(unmanagedHeapSlice));
+                Assert.True(stackSlice.BlockEquals(managedHeapSlice));
+                Assert.True(unmanagedHeapSlice.BlockEquals(stackSlice));
+                Assert.True(unmanagedHeapSlice.BlockEquals(managedHeapSlice));
+                Assert.True(managedHeapSlice.BlockEquals(unmanagedHeapSlice));
+                Assert.True(managedHeapSlice.BlockEquals(stackSlice));
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(new IntPtr(arrayAllocatedOnUnmanagedHeap));
+            }
+        }
+
+        [Fact]
+        public unsafe void ReadOnlySlicesReferencingBothHeapsAndStackCanBeComparedForEquality()
+        {
+            const int arraySize = 100;
+            int[] arrayAllocatedOnManagedHeap = new int[arraySize];
+            int* arrayAllocatedOnStack = stackalloc int[arraySize];
+            int* arrayAllocatedOnUnmanagedHeap = (int*)Marshal.AllocHGlobal(arraySize * sizeof(int)).ToPointer();
+
+            try
+            {
+                for (int i = 0; i < arraySize; i++)
+                {
+                    arrayAllocatedOnManagedHeap[i] = i;
+                    arrayAllocatedOnStack[i] = i;
+                    arrayAllocatedOnUnmanagedHeap[i] = i;
+                }
+
+                var stackSlice = new ReadOnlySpan<int>(arrayAllocatedOnStack, arraySize);
+                var unmanagedHeapSlice = new ReadOnlySpan<int>(arrayAllocatedOnUnmanagedHeap, arraySize);
+                var managedHeapSlice = new ReadOnlySpan<int>(arrayAllocatedOnManagedHeap, 0, arraySize);
 
                 Assert.False(stackSlice.ReferenceEquals(unmanagedHeapSlice));
                 Assert.False(stackSlice.ReferenceEquals(managedHeapSlice));

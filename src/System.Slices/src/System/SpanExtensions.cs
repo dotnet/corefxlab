@@ -66,10 +66,10 @@ namespace System
         /// <exception cref="System.ArgumentException">
         /// Thrown if the 'str' parameter is null.
         /// </exception>
-        public static Span<char> Slice(this string str)
+        public static ReadOnlySpan<char> Slice(this string str)
         {
             Contract.Requires(str != null);
-            return new Span<char>(
+            return new ReadOnlySpan<char>(
                 str,
                 new UIntPtr((uint)SpanHelpers.OffsetToStringData),
                 str.Length
@@ -88,11 +88,12 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
-        public static Span<char> Slice(this string str, int start)
+        public static ReadOnlySpan<char> Slice(this string str, int start)
         {
             Contract.Requires(str != null);
             Contract.RequiresInInclusiveRange(start, (uint)str.Length);
-            return new Span<char>(
+
+            return new ReadOnlySpan<char>(
                 str,
                 new UIntPtr((uint)(SpanHelpers.OffsetToStringData + (start * sizeof(char)))),
                 str.Length - start
@@ -112,11 +113,11 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
-        public static Span<char> Slice(this string str, int start, int length)
+        public static ReadOnlySpan<char> Slice(this string str, int start, int length)
         {
             Contract.Requires(str != null);
             Contract.Requires(start + length <= str.Length);
-            return new Span<char>(
+            return new ReadOnlySpan<char>(
                 str,
                 new UIntPtr((uint)(SpanHelpers.OffsetToStringData + (start * sizeof(char)))),
                 length
@@ -149,10 +150,44 @@ namespace System
         }
 
         /// <summary>
+        /// Casts a Slice of one primitive type (T) to another primitive type (U).
+        /// These types may not contain managed objects, in order to preserve type
+        /// safety.  This is checked statically by a Roslyn analyzer.
+        /// </summary>
+        /// <param name="slice">The source slice, of type T.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<U> Cast<[Primitive]T, [Primitive]U>(this ReadOnlySpan<T> slice)
+            where T : struct
+            where U : struct
+        {
+            int countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
+            object obj = null;
+            UIntPtr offset = default(UIntPtr);
+
+            if (countOfU != 0)
+            {
+                obj = slice.Object;
+                offset = slice.Offset;
+            }
+            return new ReadOnlySpan<U>(obj, offset, countOfU);
+        }
+
+        /// <summary>
         /// Reads a structure of type T out of a slice of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Read<[Primitive]T>(this Span<byte> slice)
+            where T : struct
+        {
+            Contract.Requires(slice.Length >= PtrUtils.SizeOf<T>());
+            return PtrUtils.Get<T>(slice.Object, slice.Offset);
+        }
+
+        /// <summary>
+        /// Reads a structure of type T out of a slice of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T Read<[Primitive]T>(this ReadOnlySpan<byte> slice)
             where T : struct
         {
             Contract.Requires(slice.Length >= PtrUtils.SizeOf<T>());
@@ -176,6 +211,30 @@ namespace System
         /// <param name="first">A span of type T to compare to second.</param>
         /// <param name="second">A span of type T to compare to first.</param>
         public static bool SequenceEqual<T>(this Span<T> first, Span<T> second)
+            where T : struct, IEquatable<T>
+        {
+            if (first.Length != second.Length)
+            {
+                return false;
+            }
+
+            // we can not call memcmp here because structures might have nontrivial Equals implementation
+            for (int i = 0; i < first.Length; i++)
+            {
+                if (!first.GetItemWithoutBoundariesCheck(i).Equals(second.GetItemWithoutBoundariesCheck(i)))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Determines whether two spans are equal by comparing the elements by using generic Equals method
+        /// </summary>
+        /// <param name="first">A span of type T to compare to second.</param>
+        /// <param name="second">A span of type T to compare to first.</param>
+        public static bool SequenceEqual<T>(this ReadOnlySpan<T> first, ReadOnlySpan<T> second)
             where T : struct, IEquatable<T>
         {
             if (first.Length != second.Length)
@@ -226,13 +285,45 @@ namespace System
             return SequenceEqual(Cast<T, byte>(first), Cast<U, byte>(second));
         }
 
+        /// <summary>
+        /// Determines whether two spans are structurally (byte-wise) equal by comparing the elements by using memcmp
+        /// </summary>
+        /// <param name="first">A span, of type T to compare to second.</param>
+        /// <param name="second">A span, of type U to compare to first.</param>
+        public static bool BlockEquals<[Primitive]T, [Primitive]U>(this ReadOnlySpan<T> first, ReadOnlySpan<U> second)
+            where T : struct
+            where U : struct
+        {
+            var bytesCount = first.Length * PtrUtils.SizeOf<T>();
+            if (bytesCount != second.Length * PtrUtils.SizeOf<U>())
+            {
+                return false;
+            }
+
+            // perf: it is cheaper to compare 'n' long elements than 'n*8' bytes (in a loop)
+            if ((bytesCount & 0x00000007) == 0) // fast % sizeof(long)
+            {
+                return SequenceEqual(Cast<T, long>(first), Cast<U, long>(second));
+            }
+            if ((bytesCount & 0x00000003) == 0) // fast % sizeof(int)
+            {
+                return SequenceEqual(Cast<T, int>(first), Cast<U, int>(second));
+            }
+            if ((bytesCount & 0x00000001) == 0) // fast % sizeof(short)
+            {
+                return SequenceEqual(Cast<T, short>(first), Cast<U, short>(second));
+            }
+
+            return SequenceEqual(Cast<T, byte>(first), Cast<U, byte>(second));
+        }
+
         // Helper methods similar to System.ArrayExtension:
 
         // String helper methods, offering methods like String on Slice<char>:
         // TODO(joe): culture-sensitive comparisons.
         // TODO: should these move to satring related assembly
 
-        public static bool Contains(this Span<char> str, Span<char> value)
+        public static bool Contains(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
         {
             if (value.Length > str.Length)
             {
@@ -241,7 +332,7 @@ namespace System
             return str.IndexOf(value) >= 0;
         }
 
-        public static bool EndsWith(this Span<char> str, Span<char> value)
+        public static bool EndsWith(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
         {
             if (value.Length > str.Length)
             {
@@ -261,67 +352,67 @@ namespace System
             return true;
         }
 
-        public static int IndexOf(this Span<char> str, char value)
+        public static int IndexOf(this ReadOnlySpan<char> str, char value)
         {
             throw new NotImplementedException();
         }
 
-        public static int IndexOf(this Span<char> str, string value)
+        public static int IndexOf(this ReadOnlySpan<char> str, string value)
         {
             return IndexOf(str, value.Slice());
         }
 
-        public static int IndexOf(this Span<char> str, Span<char> value)
+        public static int IndexOf(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
         {
             throw new NotImplementedException();
         }
 
-        public static int IndexOfAny(this Span<char> str, params char[] values)
+        public static int IndexOfAny(this ReadOnlySpan<char> str, params char[] values)
         {
             throw new NotImplementedException();
         }
 
-        public static int IndexOfAny(this Span<char> str, params string[] values)
+        public static int IndexOfAny(this ReadOnlySpan<char> str, params string[] values)
         {
             throw new NotImplementedException();
         }
 
-        public static int IndexOfAny(this Span<char> str, params Span<char>[] values)
+        public static int IndexOfAny(this ReadOnlySpan<char> str, params ReadOnlySpan<char>[] values)
         {
             throw new NotImplementedException();
         }
 
-        public static int LastIndexOf(this Span<char> str, char value)
+        public static int LastIndexOf(this ReadOnlySpan<char> str, char value)
         {
             throw new NotImplementedException();
         }
 
-        public static int LastIndexOf(this Span<char> str, string value)
+        public static int LastIndexOf(this ReadOnlySpan<char> str, string value)
         {
             return LastIndexOf(str, value.Slice());
         }
 
-        public static int LastIndexOf(this Span<char> str, Span<char> value)
+        public static int LastIndexOf(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
         {
             throw new NotImplementedException();
         }
 
-        public static int LastIndexOfAny(this Span<char> str, params char[] values)
+        public static int LastIndexOfAny(this ReadOnlySpan<char> str, params char[] values)
         {
             throw new NotImplementedException();
         }
 
-        public static int LastIndexOfAny(this Span<char> str, params string[] values)
+        public static int LastIndexOfAny(this ReadOnlySpan<char> str, params string[] values)
         {
             throw new NotImplementedException();
         }
 
-        public static int LastIndexOfAny(this Span<char> str, params Span<char>[] values)
+        public static int LastIndexOfAny(this ReadOnlySpan<char> str, params ReadOnlySpan<char>[] values)
         {
             throw new NotImplementedException();
         }
 
-        public static SplitEnumerator Split(this Span<char> str, params char[] separator)
+        public static SplitEnumerator Split(this ReadOnlySpan<char> str, params char[] separator)
         {
             throw new NotImplementedException();
         }
@@ -330,7 +421,7 @@ namespace System
         {
         }
 
-        public static bool StartsWith(this Span<char> str, Span<char> value)
+        public static bool StartsWith(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
         {
             if (value.Length > str.Length)
             {
