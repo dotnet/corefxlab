@@ -17,6 +17,9 @@
     "System.Buffers": "0.1.0-*"
   },
   "frameworks": {
-    "dnxcore50": {}
+    "dnxcore50": { }
+  },
+  "scripts": {
+    "postcompile": "copy \"%project:Directory%\\libuv.dll\" \"%compile:OutputDir%\\libuv.dll\""
   }
 }
