@@ -70,11 +70,176 @@ namespace Json.Net.Tests {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671ebcfd88de5e8dac53641&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,951.98&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 36,
+        ///    &quot;email&quot;: &quot;clementsvillarreal@daycore.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (882) 479-2331&quot;,
+        ///    &quot;address&quot;: &quot;488 Grand Street, Hackneyville, Vermont, 5344&quot;,
+        ///    &quot;registered&quot;: &quot;2015-04-12T05:27:22 +07:00&quot;,
+        ///    &quot;latitude&quot;: -57.256693,
+        ///    &quot;longitude&quot;: 49.961028
+        ///  }
+        ///].
+        /// </summary>
+        internal static string Json300B {
+            get {
+                return ResourceManager.GetString("Json300B", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671eaf1eb61139592ea92ff&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;b825474f-3855-434e-930c-c3015f3b39ee&quot;,
+        ///    &quot;isActive&quot;: false,
+        ///    &quot;balance&quot;: &quot;$2,100.09&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 20,
+        ///    &quot;eyeColor&quot;: &quot;green&quot;,
+        ///    &quot;name&quot;: &quot;Zelma Blackburn&quot;,
+        ///    &quot;gender&quot;: &quot;female&quot;,
+        ///    &quot;company&quot;: &quot;AUTOMON&quot;,
+        ///    &quot;email&quot;: &quot;zelmablackburn@automon.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (935) 411-3028&quot;,
+        ///    &quot;address&quot;: &quot;358 Catherine Street, Takilma, New Hampshire, 9061&quot;,
+        ///    &quot;about&quot;: &quot;Ad ea o [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Json300KB {
+            get {
+                return ResourceManager.GetString("Json300KB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671eb0737b18866984067ac&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;3cfa77d7-29be-467f-a967-16bae78767e8&quot;,
+        ///    &quot;isActive&quot;: false,
+        ///    &quot;balance&quot;: &quot;$1,223.37&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 34,
+        ///    &quot;eyeColor&quot;: &quot;brown&quot;,
+        ///    &quot;name&quot;: &quot;Josephine Snider&quot;,
+        ///    &quot;gender&quot;: &quot;female&quot;,
+        ///    &quot;company&quot;: &quot;SYBIXTEX&quot;,
+        ///    &quot;email&quot;: &quot;josephinesnider@sybixtex.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (936) 525-3324&quot;,
+        ///    &quot;address&quot;: &quot;905 Marconi Place, Motley, Oregon, 3159&quot;,
+        ///    &quot;about&quot;: &quot;Ut id id conse [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Json30KB {
+            get {
+                return ResourceManager.GetString("Json30KB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671eb1b60a382ffb56b3946&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;8938d485-7ea7-4b57-ab02-cd7ff698a57e&quot;,
+        ///    &quot;isActive&quot;: true,
+        ///    &quot;balance&quot;: &quot;$3,138.66&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 28,
+        ///    &quot;eyeColor&quot;: &quot;blue&quot;,
+        ///    &quot;name&quot;: &quot;Susanne Wright&quot;,
+        ///    &quot;gender&quot;: &quot;female&quot;,
+        ///    &quot;company&quot;: &quot;VIXO&quot;,
+        ///    &quot;email&quot;: &quot;susannewright@vixo.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (836) 581-2698&quot;,
+        ///    &quot;address&quot;: &quot;367 Clifford Place, Benson, Northern Mariana Islands, 4627&quot;,
+        ///    &quot;about&quot;: &quot;Irure off [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Json3KB {
+            get {
+                return ResourceManager.GetString("Json3KB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;_id&quot;: &quot;5671eaaca9e4716fcbd76ae7&quot;,
+        ///    &quot;index&quot;: 0,
+        ///    &quot;guid&quot;: &quot;7e3e9119-fb70-4d8f-b6d0-4b3796c30c6f&quot;,
+        ///    &quot;isActive&quot;: false,
+        ///    &quot;balance&quot;: &quot;$1,237.86&quot;,
+        ///    &quot;picture&quot;: &quot;http://placehold.it/32x32&quot;,
+        ///    &quot;age&quot;: 26,
+        ///    &quot;eyeColor&quot;: &quot;blue&quot;,
+        ///    &quot;name&quot;: &quot;Erika Petersen&quot;,
+        ///    &quot;gender&quot;: &quot;female&quot;,
+        ///    &quot;company&quot;: &quot;OLYMPIX&quot;,
+        ///    &quot;email&quot;: &quot;erikapetersen@olympix.com&quot;,
+        ///    &quot;phone&quot;: &quot;+1 (987) 438-3484&quot;,
+        ///    &quot;address&quot;: &quot;161 Hampton Place, Longbranch, New York, 8123&quot;,
+        ///    &quot;about&quot;: &quot;Excepteur qui c [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Json3MB {
+            get {
+                return ResourceManager.GetString("Json3MB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///   {
+        ///      &quot;age&quot; : 30,
+        ///      &quot;first&quot; : &quot;John&quot;,
+        ///      &quot;last&quot; : &quot;Smith&quot;,
+        ///      &quot;phoneNumbers&quot; : [
+        ///         &quot;425-000-1212&quot;,
+        ///         &quot;425-000-1213&quot;
+        ///      ],
+        ///      &quot;address&quot; : {
+        ///         &quot;street&quot; : &quot;1 Microsoft Way&quot;,
+        ///         &quot;city&quot; : &quot;Redmond&quot;,
+        ///         &quot;zip&quot; : 98052
+        ///      }
+        ///   }
+        ///].
+        /// </summary>
+        internal static string ParseJson {
+            get {
+                return ResourceManager.GetString("ParseJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {  &quot;locked&quot;: false,  &quot;version&quot;: 1,  &quot;targets&quot;: {    &quot;DNXCore,Version=v5.0&quot;: {      &quot;Microsoft.CSharp/4.0.0&quot;: {        &quot;dependencies&quot;: {          &quot;System.Runtime&quot;: &quot;[4.0.20, )&quot;,          &quot;System.Dynamic.Runtime&quot;: &quot;[4.0.0, )&quot;,          &quot;System.Linq.Expressions&quot;: &quot;[4.0.0, )&quot;,          &quot;System.Runtime.InteropServices&quot;: &quot;[4.0.20, )&quot;,          &quot;System.Resources.ResourceManager&quot;: &quot;[4.0.0, )&quot;,          &quot;System.Linq&quot;: &quot;[4.0.0, )&quot;,          &quot;System.Reflection.TypeExtensions&quot;: &quot;[4.0.0, )&quot;,          &quot;System.Reflection. [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ProjectLockJson {
             get {
                 return ResourceManager.GetString("ProjectLockJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///	&quot;age&quot;: 30,
+        ///	&quot;first&quot;: &quot;John&quot;,
+        ///	&quot;last&quot;: &quot;Smith&quot;,
+        ///	&quot;phoneNumber&quot;: &quot;425-214-3151&quot;,
+        ///	&quot;street&quot;: &quot;1 Microsoft Way&quot;,
+        ///	&quot;city&quot;: &quot;Redmond&quot;,
+        ///	&quot;zip&quot;: 98052
+        ///}.
+        /// </summary>
+        internal static string SimpleObjectJson {
+            get {
+                return ResourceManager.GetString("SimpleObjectJson", resourceCulture);
             }
         }
     }
