@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using Xunit;
-
+ 
 namespace System.Slices.Tests
 {
     public class SlicesTests
@@ -93,6 +93,95 @@ namespace System.Slices.Tests
         public void ByteSpanCtorWithRangeThrowsArgumentOutOfRangeException(byte[] bytes, int start, int length)
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => { Span<byte> span = new Span<byte>(bytes, start, length); });
+        }
+
+        [CLSCompliant(false)]
+        [Theory]
+        [InlineData(new byte[0], 0, 0)]
+        [InlineData(new byte[1] { 0 }, 0, 0)]
+        [InlineData(new byte[1] { 0 }, 0, 1)]
+        [InlineData(new byte[2] { 0, 0 }, 0, 2)]
+        [InlineData(new byte[2] { 0, 0 }, 0, 1)]
+        [InlineData(new byte[2] { 0, 0 }, 1, 1)]
+        [InlineData(new byte[2] { 0, 0 }, 2, 0)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 0, 3)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 0, 2)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 1, 2)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 1, 1)]
+        public void ByteSpanSliceWithRangeValidCases(byte[] bytes, int start, int length)
+        {
+            Span<byte> span = new Span<byte>(bytes, start, length);
+        }
+
+        [CLSCompliant(false)]
+        [Theory]
+        [InlineData(new byte[0], 1, 0)]
+        [InlineData(new byte[0], 1, -1)]
+        [InlineData(new byte[0], 0, 1)]
+        [InlineData(new byte[0], -1, 0)]
+        [InlineData(new byte[0], 5, 5)]
+        [InlineData(new byte[1] { 0 }, 0, 2)]
+        [InlineData(new byte[1] { 0 }, 1, 1)]
+        [InlineData(new byte[1] { 0 }, -1, 2)]
+        [InlineData(new byte[2] { 0, 0 }, 0, 3)]
+        [InlineData(new byte[2] { 0, 0 }, 1, 2)]
+        [InlineData(new byte[2] { 0, 0 }, 2, 1)]
+        [InlineData(new byte[2] { 0, 0 }, 3, 0)]
+        [InlineData(new byte[2] { 0, 0 }, 1, -1)]
+        [InlineData(new byte[2] { 0, 0 }, 2, int.MaxValue)]
+        [InlineData(new byte[2] { 0, 0 }, int.MinValue, int.MinValue)]
+        [InlineData(new byte[2] { 0, 0 }, int.MaxValue, int.MaxValue)]
+        [InlineData(new byte[2] { 0, 0 }, int.MinValue, int.MaxValue)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 1, 3)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 2, 2)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 15, 0)]
+        public void ByteSpanSliceWithRangeThrowsArgumentOutOfRangeException1(byte[] bytes, int start, int length)
+        {
+            var span = new Span<byte>(bytes);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                Span<byte> slice = span.Slice(start, length);
+            });
+        }
+
+        [CLSCompliant(false)]
+        [Theory]
+        [InlineData(new byte[0], 0)]
+        [InlineData(new byte[1] { 0 }, 0)]
+        [InlineData(new byte[1] { 0 }, 1)]
+        [InlineData(new byte[2] { 0, 0 }, 0)]
+        [InlineData(new byte[2] { 0, 0 }, 1)]
+        [InlineData(new byte[2] { 0, 0 }, 2)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 0)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 1)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 2)]
+        [InlineData(new byte[3] { 0, 0, 0 }, 3)]
+        public void ByteSpanSliceWithStartRangeValidCases(byte[] bytes, int start)
+        {
+            Span<byte> span = new Span<byte>(bytes).Slice(start);
+        }
+
+        [CLSCompliant(false)]
+        [Theory]
+        [InlineData(new byte[0], int.MinValue)]
+        [InlineData(new byte[0], -1)]
+        [InlineData(new byte[0], 1)]
+        [InlineData(new byte[0], int.MaxValue)]
+        [InlineData(new byte[1] { 0 }, int.MinValue)]
+        [InlineData(new byte[1] { 0 }, -1)]
+        [InlineData(new byte[1] { 0 }, 2)]
+        [InlineData(new byte[1] { 0 }, int.MaxValue)]
+        [InlineData(new byte[2] { 0, 0 }, int.MinValue)]
+        [InlineData(new byte[2] { 0, 0 }, -1)]
+        [InlineData(new byte[2] { 0, 0 }, 3)]
+        [InlineData(new byte[2] { 0, 0 }, int.MaxValue)]
+        public void ByteSpanSliceWithStartRangeThrowsArgumentOutOfRangeException(byte[] bytes, int start)
+        {
+            var span = new Span<byte>(bytes);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                Span<byte> slice = span.Slice(start);
+            });
         }
     }
 }

@@ -91,7 +91,7 @@ namespace System
         public static Span<char> Slice(this string str, int start)
         {
             Contract.Requires(str != null);
-            Contract.RequiresInInclusiveRange(start, str.Length);
+            Contract.RequiresInInclusiveRange(start, (uint)str.Length);
             return new Span<char>(
                 str,
                 new UIntPtr((uint)(SpanHelpers.OffsetToStringData + (start * sizeof(char)))),

@@ -53,7 +53,7 @@ namespace System
         internal Span(T[] array, int start)
         {
             Contract.Requires(array != null);
-            Contract.RequiresInInclusiveRange(start, array.Length);
+            Contract.RequiresInInclusiveRange(start, (uint)array.Length);
             if (start < array.Length)
             {
                 Object = array;
@@ -85,9 +85,7 @@ namespace System
         public Span(T[] array, int start, int length)
         {
             Contract.Requires(array != null);
-            Contract.RequiresInInclusiveRange(start, array.Length);
-            Contract.RequiresNonNegative(length);
-            Contract.RequiresInInclusiveRange(start + length, array.Length);
+            Contract.RequiresInInclusiveRange(start, length, (uint)array.Length);
             if (start < array.Length)
             {
                 Object = array;
@@ -156,14 +154,14 @@ namespace System
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                Contract.RequiresInRange(index, Length);
+                Contract.RequiresInRange(index, (uint)Length);
                 return PtrUtils.Get<T>(
                     Object, Offset + (index * PtrUtils.SizeOf<T>()));
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                Contract.RequiresInRange(index, Length);
+                Contract.RequiresInRange(index, (uint)Length);
                 PtrUtils.Set<T>(
                     Object, Offset + (index * PtrUtils.SizeOf<T>()), value);
             }
@@ -236,9 +234,12 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> Slice(int start)
         {
-            return Slice(start, Length - start);
+            Contract.RequiresInInclusiveRange(start, (uint)Length);
+            return new Span<T>(
+                Object, Offset + (start * PtrUtils.SizeOf<T>()), Length - start);
         }
 
         /// <summary>
@@ -250,9 +251,10 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> Slice(int start, int length)
         {
-            Contract.Requires(start + length <= Length);
+            Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new Span<T>(
                 Object, Offset + (start * PtrUtils.SizeOf<T>()), length);
         }
