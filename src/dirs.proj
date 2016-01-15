@@ -8,7 +8,7 @@
     <Project Include="*\src\*.xproj" Exclude="@(ExcludeProjects)" />
     <Project Include="*\test*\**\*.csproj" Exclude="@(ExcludeProjects)" />
     <Project Include="*\test*\**\*.vbproj" Condition="'$(IncludeVbProjects)'!='false'" Exclude="@(ExcludeProjects)" />
-    <Project Include="*\test*\**\*.xproj" Exclude="@(ExcludeProjects)" />
+    <Project Include="*\test*\**\*.xproj" Exclude="@(ExcludeProjects);System.Text.Json\Tests\System.Text.Json.Tests.xproj;System.Text.Formatting\Tests\System.Text.Formatting.Tests.xproj" />
   </ItemGroup>
 
   <Import Project="..\dir.targets" />
