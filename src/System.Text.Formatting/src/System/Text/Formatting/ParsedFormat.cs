@@ -70,28 +70,7 @@ namespace System.Text.Formatting
         {
             return new Parsed(format, NoPrecision);
         }
-
-        //private static char CreateCharFromSymbol(Symbol symbol)
-        //{
-        //    switch (symbol)
-        //    {
-        //        case Symbol.B: return 'B';
-        //        case Symbol.D: return 'D';
-        //        case Symbol.E: return 'E';
-        //        case Symbol.F: return 'F';
-        //        case Symbol.G: return 'G';
-        //        case Symbol.g: return 'g';
-        //        case Symbol.N: return 'n';
-        //        case Symbol.O: return 'O';
-        //        case Symbol.P: return 'P';
-        //        case Symbol.R: return 'R';
-        //        case Symbol.t: return 't';
-        //        case Symbol.X: return 'X';
-        //        case Symbol.x: return 'x';
-        //        default:
-        //            throw new NotImplementedException();
-        //    }
-        //} 
+ 
         public struct Parsed
         {
             internal const byte MaxPrecision = 99;

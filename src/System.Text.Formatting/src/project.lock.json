@@ -3,16 +3,19 @@
   "version": 2,
   "targets": {
     "DNXCore,Version=v5.0": {
-      "System.Buffers/0.1.0-d123115-1": {
+      "System.Buffers/4.0.0-rc2-23714": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d123115-1"
+          "System.Diagnostics.Tracing": "4.0.0",
+          "System.Resources.ResourceManager": "4.0.0",
+          "System.Runtime": "4.0.0",
+          "System.Threading": "4.0.0"
         },
         "compile": {
-          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
+          "lib/dotnet5.2/System.Buffers.dll": {}
         },
         "runtime": {
-          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
+          "lib/dotnet5.2/System.Buffers.dll": {}
         }
       },
       "System.Collections/4.0.0": {
@@ -55,6 +58,15 @@
         },
         "runtime": {
           "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
+        }
+      },
+      "System.Diagnostics.Tracing/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Tracing.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -140,7 +152,7 @@
           "ref/dotnet/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Slices/0.1.0-d123115-1": {
+      "System.Slices/0.1.0-e160114-1": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -161,10 +173,10 @@
           "ref/dotnet/System.Text.Encoding.dll": {}
         }
       },
-      "System.Text.Utf8/0.1.0-d123115-1": {
+      "System.Text.Utf8/0.1.0-e160114-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d123115-1"
+          "System.Slices": "0.1.0-e160114-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Utf8.dll": {}
@@ -194,16 +206,19 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x86": {
-      "System.Buffers/0.1.0-d123115-1": {
+      "System.Buffers/4.0.0-rc2-23714": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d123115-1"
+          "System.Diagnostics.Tracing": "4.0.0",
+          "System.Resources.ResourceManager": "4.0.0",
+          "System.Runtime": "4.0.0",
+          "System.Threading": "4.0.0"
         },
         "compile": {
-          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
+          "lib/dotnet5.2/System.Buffers.dll": {}
         },
         "runtime": {
-          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
+          "lib/dotnet5.2/System.Buffers.dll": {}
         }
       },
       "System.Collections/4.0.0": {
@@ -246,6 +261,15 @@
         },
         "runtime": {
           "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
+        }
+      },
+      "System.Diagnostics.Tracing/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Tracing.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -331,7 +355,7 @@
           "ref/dotnet/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Slices/0.1.0-d123115-1": {
+      "System.Slices/0.1.0-e160114-1": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -352,10 +376,10 @@
           "ref/dotnet/System.Text.Encoding.dll": {}
         }
       },
-      "System.Text.Utf8/0.1.0-d123115-1": {
+      "System.Text.Utf8/0.1.0-e160114-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d123115-1"
+          "System.Slices": "0.1.0-e160114-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Utf8.dll": {}
@@ -385,16 +409,19 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x64": {
-      "System.Buffers/0.1.0-d123115-1": {
+      "System.Buffers/4.0.0-rc2-23714": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d123115-1"
+          "System.Diagnostics.Tracing": "4.0.0",
+          "System.Resources.ResourceManager": "4.0.0",
+          "System.Runtime": "4.0.0",
+          "System.Threading": "4.0.0"
         },
         "compile": {
-          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
+          "lib/dotnet5.2/System.Buffers.dll": {}
         },
         "runtime": {
-          "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll": {}
+          "lib/dotnet5.2/System.Buffers.dll": {}
         }
       },
       "System.Collections/4.0.0": {
@@ -437,6 +464,15 @@
         },
         "runtime": {
           "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
+        }
+      },
+      "System.Diagnostics.Tracing/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Tracing.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -522,7 +558,7 @@
           "ref/dotnet/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Slices/0.1.0-d123115-1": {
+      "System.Slices/0.1.0-e160114-1": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -543,10 +579,10 @@
           "ref/dotnet/System.Text.Encoding.dll": {}
         }
       },
-      "System.Text.Utf8/0.1.0-d123115-1": {
+      "System.Text.Utf8/0.1.0-e160114-1": {
         "type": "package",
         "dependencies": {
-          "System.Slices": "0.1.0-d123115-1"
+          "System.Slices": "0.1.0-e160114-1"
         },
         "compile": {
           "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Utf8.dll": {}
@@ -577,14 +613,14 @@
     }
   },
   "libraries": {
-    "System.Buffers/0.1.0-d123115-1": {
+    "System.Buffers/4.0.0-rc2-23714": {
       "type": "package",
       "serviceable": true,
-      "sha512": "WVA1UkAKXAkMw2MZ6p1GrD69zeGhG/fS0f8EECMq64gJ/qB9Z66Fu/Zx5k1M31jG8r725nDYHx/vv5/wuJK0lQ==",
+      "sha512": "AFsjzHF+LNfVf4Fx6SPIwUDfVHfAvc7YokF0ilJK2PRPaThELbsProytQjROnPxEiq5vqvyl6Fa7rx9haKC7nw==",
       "files": [
-        "lib/portable-net45+win8+wpa81+aspnetcore50/System.Buffers.dll",
-        "System.Buffers.0.1.0-d123115-1.nupkg",
-        "System.Buffers.0.1.0-d123115-1.nupkg.sha512",
+        "lib/dotnet5.2/System.Buffers.dll",
+        "System.Buffers.4.0.0-rc2-23714.nupkg",
+        "System.Buffers.4.0.0-rc2-23714.nupkg.sha512",
         "System.Buffers.nuspec"
       ]
     },
@@ -749,6 +785,52 @@
         "System.Diagnostics.Tools.4.0.0.nupkg",
         "System.Diagnostics.Tools.4.0.0.nupkg.sha512",
         "System.Diagnostics.Tools.nuspec"
+      ]
+    },
+    "System.Diagnostics.Tracing/4.0.0": {
+      "type": "package",
+      "sha512": "tzqQJPgD4bKs0eE5Gx9HEsxiHSBGcL42PImkjhwXTQK6iQbLTTB9mi+G7mUyEjlH8LUcm7F5QHEs+O+LpruOrQ==",
+      "files": [
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/win8/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "License.rtf",
+        "ref/dotnet/de/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/es/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/fr/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/it/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/ja/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/ko/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/ru/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/System.Diagnostics.Tracing.dll",
+        "ref/dotnet/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/zh-hans/System.Diagnostics.Tracing.xml",
+        "ref/dotnet/zh-hant/System.Diagnostics.Tracing.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/netcore50/de/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/es/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/fr/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/it/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/ja/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/ko/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/ru/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/System.Diagnostics.Tracing.dll",
+        "ref/netcore50/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/zh-hans/System.Diagnostics.Tracing.xml",
+        "ref/netcore50/zh-hant/System.Diagnostics.Tracing.xml",
+        "ref/win8/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "System.Diagnostics.Tracing.4.0.0.nupkg",
+        "System.Diagnostics.Tracing.4.0.0.nupkg.sha512",
+        "System.Diagnostics.Tracing.nuspec"
       ]
     },
     "System.Globalization/4.0.0": {
@@ -1105,14 +1187,13 @@
         "System.Runtime.InteropServices.nuspec"
       ]
     },
-    "System.Slices/0.1.0-d123115-1": {
+    "System.Slices/0.1.0-e160114-1": {
       "type": "package",
-      "serviceable": true,
-      "sha512": "VJ1+8mdj/hucrjk1/yiEZYYUf5dH6k1qcriSrQZnDmXH0SRM1U0FGkMTmqsE43rl9QzcZqG4aPKwu6NukekZvA==",
+      "sha512": "wyYlZrgjvryH9VGjnD+6PBO9ySy0KtlABoQKOPZZ/I62zLQLDCfxNL4CogA38LymkiUBJSZUVFICz/H0mFF8vw==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
-        "System.Slices.0.1.0-d123115-1.nupkg",
-        "System.Slices.0.1.0-d123115-1.nupkg.sha512",
+        "System.Slices.0.1.0-e160114-1.nupkg",
+        "System.Slices.0.1.0-e160114-1.nupkg.sha512",
         "System.Slices.nuspec"
       ]
     },
@@ -1164,14 +1245,14 @@
         "System.Text.Encoding.nuspec"
       ]
     },
-    "System.Text.Utf8/0.1.0-d123115-1": {
+    "System.Text.Utf8/0.1.0-e160114-1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "q3cjtdNBtkYXh5zuoJ/K42GerAdYjHrALAQn4iyP+mg3UM9bp6TuTw0hTi9ukkJitrUvD0+lzJaBX4pl2+KC4Q==",
+      "sha512": "3tfDThWWNiHC/O6XoVWpwBMXQNZ/Htuuz1GnOZNhaz88H1o5q2V+fmY2Unrqr6rodPi4x72t8e+4ZiujABwklA==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Text.Utf8.dll",
-        "System.Text.Utf8.0.1.0-d123115-1.nupkg",
-        "System.Text.Utf8.0.1.0-d123115-1.nupkg.sha512",
+        "System.Text.Utf8.0.1.0-e160114-1.nupkg",
+        "System.Text.Utf8.0.1.0-e160114-1.nupkg.sha512",
         "System.Text.Utf8.nuspec"
       ]
     },
@@ -1274,7 +1355,7 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "System.Buffers >= 0.1.0-*",
+      "System.Buffers >= 4.0.0-rc2-23714",
       "System.Collections >= 4.0.0",
       "System.Diagnostics.Contracts >= 4.0.0",
       "System.Diagnostics.Debug >= 4.0.0",
@@ -1287,9 +1368,9 @@
       "System.Runtime >= 4.0.0",
       "System.Runtime.Extensions >= 4.0.0",
       "System.Runtime.InteropServices >= 4.0.0",
-      "System.Slices >= 0.1.0-*",
+      "System.Slices >= 0.1.0-e160114-1",
       "System.Text.Encoding >= 4.0.0",
-      "System.Text.Utf8 >= 0.1.0-*",
+      "System.Text.Utf8 >= 0.1.0-e160114-1",
       "System.Threading >= 4.0.0"
     ],
     "DNXCore,Version=v5.0": []

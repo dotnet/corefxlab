@@ -10,7 +10,7 @@ namespace System.Text.Formatting.Tests
 {
     public partial class SystemTextFormattingTests
     {
-        ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(2048);
+        ArrayPool<byte> pool = ArrayPool<byte>.Shared;
 
         public SystemTextFormattingTests()
         {

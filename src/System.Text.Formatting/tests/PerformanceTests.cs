@@ -5,7 +5,6 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text.Formatting;
 using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
@@ -14,6 +13,7 @@ namespace System.Text.Formatting.Tests
 {
     public class PerfSmokeTests
     {
+        static ArrayPool<byte> pool = ArrayPool<byte>.Shared;
         const int numbersToWrite = 10000;
         static Stopwatch timer = new Stopwatch();
 
@@ -22,13 +22,12 @@ namespace System.Text.Formatting.Tests
 
         public void PrintTime([CallerMemberName] string memberName = "")
         {
-            Console.WriteLine(String.Format("{0} : Elapsed {1}ms", memberName, timer.ElapsedMilliseconds));
+            //Trace.WriteLine(string.Format("{0} : Elapsed {1}ms", memberName, timer.ElapsedMilliseconds));
         }
 
         [Fact]
         private void InvariantFormatIntDec()
         {
-            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)
             {
@@ -69,7 +68,6 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void InvariantFormatIntHex()
         {
-            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)
             {
@@ -110,7 +108,6 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void InvariantFormatStruct()
         {
-            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)
             {
@@ -131,7 +128,6 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void FormatGuid()
         {
-            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             var guid = Guid.NewGuid();
             var guidsToWrite = numbersToWrite / 10;
             timer.Restart();
@@ -174,7 +170,6 @@ namespace System.Text.Formatting.Tests
         [Fact]
         private void CustomCultureFormat()
         {
-            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             StringFormatter sb = new StringFormatter(numbersToWrite * 3, pool);
             sb.FormattingData = CreateCustomCulture();
 
@@ -225,7 +220,6 @@ namespace System.Text.Formatting.Tests
             string text = "Hello World!";
             int stringsToWrite = 2000;
             int size = stringsToWrite * text.Length + stringsToWrite;
-            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(100000);
             BufferFormatter formatter = new BufferFormatter(size, FormattingData.InvariantUtf8, pool);
 
             timer.Restart();

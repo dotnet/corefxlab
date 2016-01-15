@@ -10,22 +10,23 @@ namespace System.Text.Formatting
         byte[] _buffer;
         int _count;
         FormattingData _culture = FormattingData.InvariantUtf16;
-        ManagedBufferPool<byte> _pool;
+        ArrayPool<byte> _pool;
 
-        public StringFormatter(ManagedBufferPool<byte> pool) : this(64, pool)
+        public StringFormatter(ArrayPool<byte> pool) : this(64, pool)
         {
             Clear();
         }
 
-        public StringFormatter(int capacity, ManagedBufferPool<byte> pool)
+        public StringFormatter(int capacity, ArrayPool<byte> pool)
         {
             _pool = pool;
-            _buffer = _pool.RentBuffer(capacity * 2);
+            _buffer = _pool.Rent(capacity * 2);
         }
 
         public void Dispose()
         {
-            _pool.ReturnBuffer(ref _buffer);
+            _pool.Return(_buffer);
+            _buffer = null;
             _count = 0;
         }
 
@@ -81,7 +82,9 @@ namespace System.Text.Formatting
 
         void IFormatter.ResizeBuffer()
         {
-            _pool.EnlargeBuffer(ref _buffer, _buffer.Length * 2);
+            var temp = _buffer;
+            _buffer = _pool.Rent(_buffer.Length * 2);
+            _pool.Return(temp);
         }
         void IFormatter.CommitBytes(int bytes)
         {
