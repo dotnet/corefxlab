@@ -11,19 +11,19 @@ namespace System.Text.Formatting
         Stream _stream;
         FormattingData _formattingData;
         byte[] _buffer;
-        ManagedBufferPool<byte> _pool;
+        ArrayPool<byte> _pool;
 
-        public StreamFormatter(Stream stream, ManagedBufferPool<byte> pool) : this(stream, FormattingData.InvariantUtf16, pool)
+        public StreamFormatter(Stream stream, ArrayPool<byte> pool) : this(stream, FormattingData.InvariantUtf16, pool)
         {
         }
 
-        public StreamFormatter(Stream stream, FormattingData formattingData, ManagedBufferPool<byte> pool, int bufferSize = 256)
+        public StreamFormatter(Stream stream, FormattingData formattingData, ArrayPool<byte> pool, int bufferSize = 256)
         {
             _pool = pool;
             _buffer = null;
             if (bufferSize > 0)
             {
-                _buffer = _pool.RentBuffer(bufferSize);
+                _buffer = _pool.Rent(bufferSize);
             }
             _formattingData = formattingData;
             _stream = stream;
@@ -35,7 +35,7 @@ namespace System.Text.Formatting
             {
                 if (_buffer == null)
                 {
-                    _buffer = _pool.RentBuffer(256);
+                    _buffer = _pool.Rent(256);
                 }
                 return new Span<byte>(_buffer);
             }
@@ -51,7 +51,9 @@ namespace System.Text.Formatting
 
         void IFormatter.ResizeBuffer()
         {
-            _pool.EnlargeBuffer(ref _buffer, _buffer.Length * 2);
+            var temp = _buffer;
+            _buffer = _pool.Rent(_buffer.Length * 2);
+            _pool.Return(temp);
         }
 
         // ISSUE
@@ -70,7 +72,8 @@ namespace System.Text.Formatting
         /// </summary>
         public void Dispose()
         {
-            _pool.ReturnBuffer(ref _buffer);
+            _pool.Return(_buffer);
+            _buffer = null;
             _stream = null;
         }
     }

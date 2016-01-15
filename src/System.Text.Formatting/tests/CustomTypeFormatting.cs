@@ -40,13 +40,12 @@ namespace System.Text.Formatting.Tests
 
     public class CustomTypeFormatting
     {
-
+        static ArrayPool<byte> pool = ArrayPool<byte>.Shared;
 
         [Fact]
         public void CustomTypeToStreamUtf16()
         {
             byte[] buffer = new byte[1024];
-            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             MemoryStream stream = new MemoryStream(buffer);
             using(var writer = new StreamFormatter(stream, pool)) {
                 writer.Append(new Age(56));
@@ -62,7 +61,6 @@ namespace System.Text.Formatting.Tests
         {
             byte[] buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
-            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             using(var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8, pool)) {
                 writer.Append(new Age(56));
                 writer.Append(new Age(14, inMonths: true));
@@ -74,7 +72,6 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void CustomTypeToString()
         {
-            ManagedBufferPool<byte> pool = new ManagedBufferPool<byte>(1024);
             var sb = new StringFormatter(pool);
             sb.Append(new Age(56));
             sb.Append(new Age(14, inMonths: true));

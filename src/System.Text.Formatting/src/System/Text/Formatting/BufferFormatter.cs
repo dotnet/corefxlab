@@ -8,18 +8,18 @@ namespace System.Text.Formatting
         int _count;
 
         FormattingData _formattingData;
-        ManagedBufferPool<byte> _pool;
+        ArrayPool<byte> _pool;
 
-        public BufferFormatter(int capacity, FormattingData formattingData, ManagedBufferPool<byte> pool = null)
+        public BufferFormatter(int capacity, FormattingData formattingData, ArrayPool<byte> pool = null)
         {
             _formattingData = formattingData;
             _count = 0;
             _pool = pool;
             if(_pool == null)
             {
-                _pool = new ManagedBufferPool<byte>(capacity);
+                _pool = ArrayPool<byte>.Shared;
             }
-            _buffer = _pool.RentBuffer(capacity);
+            _buffer = _pool.Rent(capacity);
         }
 
         public byte[] Buffer
@@ -54,7 +54,9 @@ namespace System.Text.Formatting
 
         void IFormatter.ResizeBuffer()
         {
-            _pool.EnlargeBuffer(ref _buffer, _buffer.Length * 2);
+            var temp = _buffer;
+            _buffer = _pool.Rent(_buffer.Length * 2);
+            _pool.Return(temp);
         }
 
         void IFormatter.CommitBytes(int bytes)
