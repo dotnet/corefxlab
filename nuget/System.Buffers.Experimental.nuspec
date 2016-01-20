@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>System.Buffers</id>
+    <id>System.Buffers.Experimental</id>
     <version>$version$</version>
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
@@ -18,7 +18,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Buffers\System.Buffers.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
+    <file src="..\bin\Windows_NT.AnyCPU.Release\System.Buffers.Experimental\System.Buffers.Experimental.dll" target="lib/portable-net45+win8+wpa81+aspnetcore50"/>
   </files>
 </package>
 

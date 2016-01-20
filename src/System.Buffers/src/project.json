@@ -1,12 +1,12 @@
 {
-  "name": "System.Buffers",
+  "name": "System.Buffers.Experimental",
   "version": "1.0.0",
   "compilationOptions": {
     "allowUnsafe": true
   },
   "dependencies": {
     "System.Diagnostics.Debug": "4.0.0",
-    "System.Diagnostics.Tools": "4.0.1-beta-*",
+    "System.Diagnostics.Tools": "4.0.1-*",
     "System.Reflection.Primitives": "4.0.0",
     "System.Resources.ResourceManager": "4.0.0",
     "System.Runtime": "4.0.0",
