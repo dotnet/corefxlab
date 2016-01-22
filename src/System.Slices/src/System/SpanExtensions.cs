@@ -180,7 +180,7 @@ namespace System
             where T : struct
         {
             Contract.Requires(slice.Length >= PtrUtils.SizeOf<T>());
-            return PtrUtils.Get<T>(slice.Object, slice.Offset);
+            return PtrUtils.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace System
             where T : struct
         {
             Contract.Requires(slice.Length >= PtrUtils.SizeOf<T>());
-            return PtrUtils.Get<T>(slice.Object, slice.Offset);
+            return PtrUtils.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace System
             where T : struct
         {
             Contract.Requires(slice.Length >= PtrUtils.SizeOf<T>());
-            PtrUtils.Set(slice.Object, slice.Offset, value);
+            PtrUtils.Set(slice.Object, slice.Offset, (UIntPtr)0, value);
         }
 
         /// <summary>
