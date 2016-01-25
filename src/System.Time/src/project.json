@@ -12,6 +12,6 @@
     "System.Xml.ReaderWriter": "4.0.10"
   },
   "frameworks": {
-    "dnxcore50": {}
+    "dotnet5.6": { }
   }
 }

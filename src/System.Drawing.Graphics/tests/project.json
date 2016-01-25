@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "Microsoft.NETCore.Platforms": "1.0.1-*",
     "Microsoft.NETCore.Targets": "1.0.0",
     "FluentAssertions": "4.0.0-*",
     "System.Console":  "4.0.0-*",

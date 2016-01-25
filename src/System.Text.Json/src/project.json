@@ -22,6 +22,6 @@
     "System.Slices": "0.1.0-*"
   },
   "frameworks": {
-    "dnxcore50": {}
+    "dotnet5.6": { }
   }
 }

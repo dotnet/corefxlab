@@ -32,6 +32,12 @@
           "lib/dotnet/FluentAssertions.dll": {}
         }
       },
+      "Microsoft.NETCore.Platforms/1.0.1-rc3-23721": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Targets": "1.0.1-rc3-23721"
+        }
+      },
       "Microsoft.NETCore.Targets/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -47,7 +53,7 @@
           "ref/dotnet/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23629": {
+      "System.Console/4.0.0-rc3-23721": {
         "type": "package"
       },
       "System.Diagnostics.Debug/4.0.10": {
@@ -234,7 +240,7 @@
           "ref/dotnet/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23213": {
+      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23225": {
         "type": "package",
         "dependencies": {
           "System.Resources.ResourceManager": "4.0.0",
@@ -444,7 +450,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00141": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00153": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -500,6 +506,12 @@
           "lib/dotnet/FluentAssertions.dll": {}
         }
       },
+      "Microsoft.NETCore.Platforms/1.0.1-rc3-23721": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Targets": "1.0.1-rc3-23721"
+        }
+      },
       "Microsoft.NETCore.Targets/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -522,7 +534,7 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23629": {
+      "System.Console/4.0.0-rc3-23721": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -820,7 +832,7 @@
           "lib/DNXCore50/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23213": {
+      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23225": {
         "type": "package",
         "dependencies": {
           "System.Resources.ResourceManager": "4.0.0",
@@ -1055,7 +1067,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00141": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00153": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -1111,13 +1123,19 @@
           "lib/dotnet/FluentAssertions.dll": {}
         }
       },
+      "Microsoft.NETCore.Platforms/1.0.1-rc3-23721": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Targets": "1.0.1-rc3-23721"
+        }
+      },
       "Microsoft.NETCore.Targets/1.0.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.0.0"
         }
       },
-      "runtime.win7.System.Console/4.0.0-rc2-23629": {
+      "runtime.win7.System.Console/4.0.0-rc3-23721": {
         "type": "package",
         "compile": {
           "ref/dotnet/_._": {}
@@ -1132,7 +1150,7 @@
           "ref/dotnet/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23629": {
+      "System.Console/4.0.0-rc3-23721": {
         "type": "package"
       },
       "System.Diagnostics.Debug/4.0.10": {
@@ -1342,7 +1360,7 @@
           "ref/dotnet/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23213": {
+      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23225": {
         "type": "package",
         "dependencies": {
           "System.Resources.ResourceManager": "4.0.0",
@@ -1552,7 +1570,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00141": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00153": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -1608,13 +1626,19 @@
           "lib/dotnet/FluentAssertions.dll": {}
         }
       },
+      "Microsoft.NETCore.Platforms/1.0.1-rc3-23721": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Targets": "1.0.1-rc3-23721"
+        }
+      },
       "Microsoft.NETCore.Targets/1.0.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.0.0"
         }
       },
-      "runtime.win7.System.Console/4.0.0-rc2-23629": {
+      "runtime.win7.System.Console/4.0.0-rc3-23721": {
         "type": "package",
         "compile": {
           "ref/dotnet/_._": {}
@@ -1629,7 +1653,7 @@
           "ref/dotnet/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23629": {
+      "System.Console/4.0.0-rc3-23721": {
         "type": "package"
       },
       "System.Diagnostics.Debug/4.0.10": {
@@ -1839,7 +1863,7 @@
           "ref/dotnet/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23213": {
+      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23225": {
         "type": "package",
         "dependencies": {
           "System.Resources.ResourceManager": "4.0.0",
@@ -2049,7 +2073,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00141": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00153": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -2105,6 +2129,12 @@
           "lib/dotnet/FluentAssertions.dll": {}
         }
       },
+      "Microsoft.NETCore.Platforms/1.0.1-rc3-23721": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Targets": "1.0.1-rc3-23721"
+        }
+      },
       "Microsoft.NETCore.Targets/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -2115,7 +2145,7 @@
       "Microsoft.NETCore.Targets.DNXCore/4.9.0": {
         "type": "package"
       },
-      "runtime.win7.System.Console/4.0.0-rc2-23629": {
+      "runtime.win7.System.Console/4.0.0-rc3-23721": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -2147,7 +2177,7 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23629": {
+      "System.Console/4.0.0-rc3-23721": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -2460,7 +2490,7 @@
           "lib/DNXCore50/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23213": {
+      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23225": {
         "type": "package",
         "dependencies": {
           "System.Resources.ResourceManager": "4.0.0",
@@ -2695,7 +2725,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00141": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00153": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -2751,6 +2781,12 @@
           "lib/dotnet/FluentAssertions.dll": {}
         }
       },
+      "Microsoft.NETCore.Platforms/1.0.1-rc3-23721": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.NETCore.Targets": "1.0.1-rc3-23721"
+        }
+      },
       "Microsoft.NETCore.Targets/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -2761,7 +2797,7 @@
       "Microsoft.NETCore.Targets.DNXCore/4.9.0": {
         "type": "package"
       },
-      "runtime.win7.System.Console/4.0.0-rc2-23629": {
+      "runtime.win7.System.Console/4.0.0-rc3-23721": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -2793,7 +2829,7 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-rc2-23629": {
+      "System.Console/4.0.0-rc3-23721": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
@@ -3106,7 +3142,7 @@
           "lib/DNXCore50/System.Runtime.InteropServices.dll": {}
         }
       },
-      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23213": {
+      "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23225": {
         "type": "package",
         "dependencies": {
           "System.Resources.ResourceManager": "4.0.0",
@@ -3341,7 +3377,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00141": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00153": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -3456,6 +3492,16 @@
         "lib/xamarin.ios/FluentAssertions.Core.xml"
       ]
     },
+    "Microsoft.NETCore.Platforms/1.0.1-rc3-23721": {
+      "type": "package",
+      "sha512": "VB0QHiirhokm6Tl9Lwzcnw1lFuk2WwFs+XFfGHFWmXvvE4JZR1pkUSdXj7AXG1AAw9VWF75XAPTa4MicZG7LHg==",
+      "files": [
+        "Microsoft.NETCore.Platforms.1.0.1-rc3-23721.nupkg",
+        "Microsoft.NETCore.Platforms.1.0.1-rc3-23721.nupkg.sha512",
+        "Microsoft.NETCore.Platforms.nuspec",
+        "runtime.json"
+      ]
+    },
     "Microsoft.NETCore.Targets/1.0.0": {
       "type": "package",
       "sha512": "XfITpPjYLYRmAeZtb9diw6P7ylLQsSC1U2a/xj10iQpnHxkiLEBXop/psw15qMPuNca7lqgxWvzZGpQxphuXaw==",
@@ -3478,14 +3524,14 @@
         "runtime.json"
       ]
     },
-    "runtime.win7.System.Console/4.0.0-rc2-23629": {
+    "runtime.win7.System.Console/4.0.0-rc3-23721": {
       "type": "package",
       "serviceable": true,
-      "sha512": "VLR/5I2LVHx8cOSS6pOBcEKbb3Sr64Y9KMwkFzlqzi9yiyZf3gwO3u5AhfPy6SrJTsoXcqS2qmezwoe6RoU88A==",
+      "sha512": "iziVtRZytVNSraBj8B8I0Ags00H5MDm1jfQvAa6DSEGrgKCGb10dLdKbCuBP9nM7uIpovP6SiMTTAabtxAVmuQ==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.Console.4.0.0-rc2-23629.nupkg",
-        "runtime.win7.System.Console.4.0.0-rc2-23629.nupkg.sha512",
+        "runtime.win7.System.Console.4.0.0-rc3-23721.nupkg",
+        "runtime.win7.System.Console.4.0.0-rc3-23721.nupkg.sha512",
         "runtime.win7.System.Console.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.Console.dll",
         "runtimes/win7/lib/net/_._"
@@ -3525,10 +3571,10 @@
         "System.Collections.nuspec"
       ]
     },
-    "System.Console/4.0.0-rc2-23629": {
+    "System.Console/4.0.0-rc3-23721": {
       "type": "package",
       "serviceable": true,
-      "sha512": "/ydFXSMzvDhpy8KkYDy1wglgCYNnuNflgVUMG0WUaieMfWYifexDb1j6pat4uGYZt/dvm3ll3GvQHlfo/MmjDQ==",
+      "sha512": "osK7Wls0y6DWCB4WNRDbmlNo5njtX7pGiwwQW/UvW7hUPrHCSGYxfJomq+TTBYnwzbFDG3zTjcRl6c1EBcTAtQ==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -3552,8 +3598,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.Console.4.0.0-rc2-23629.nupkg",
-        "System.Console.4.0.0-rc2-23629.nupkg.sha512",
+        "System.Console.4.0.0-rc3-23721.nupkg",
+        "System.Console.4.0.0-rc3-23721.nupkg.sha512",
         "System.Console.nuspec"
       ]
     },
@@ -4226,10 +4272,10 @@
         "System.Runtime.InteropServices.nuspec"
       ]
     },
-    "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23213": {
+    "System.Runtime.InteropServices.RuntimeInformation/4.0.0-beta-23225": {
       "type": "package",
       "serviceable": true,
-      "sha512": "yzVJM7dF6XqnGTkv2IRufKs8AiqDpfdfBvMT5sVgY2fCtUXdkcjxiIWzaVIau8IYrJUlQDmSpeQ8NV6l1vz0Lg==",
+      "sha512": "l/lm50Ue66d/AQwAFbCPVpWMYpKbeLYAUN9Uh5VXKWk5POuSeKryG9qvHPX4W+QU4N1Hp1xdn7eD2jd7pbVZ6g==",
       "files": [
         "lib/dotnet/System.Runtime.InteropServices.RuntimeInformation.dll",
         "lib/MonoAndroid10/_._",
@@ -4241,8 +4287,8 @@
         "ref/MonoTouch10/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "System.Runtime.InteropServices.RuntimeInformation.4.0.0-beta-23213.nupkg",
-        "System.Runtime.InteropServices.RuntimeInformation.4.0.0-beta-23213.nupkg.sha512",
+        "System.Runtime.InteropServices.RuntimeInformation.4.0.0-beta-23225.nupkg",
+        "System.Runtime.InteropServices.RuntimeInformation.4.0.0-beta-23225.nupkg.sha512",
         "System.Runtime.InteropServices.RuntimeInformation.nuspec"
       ]
     },
@@ -4620,20 +4666,21 @@
         "xunit.extensibility.execution.nuspec"
       ]
     },
-    "xunit.netcore.extensions/1.0.0-prerelease-00141": {
+    "xunit.netcore.extensions/1.0.0-prerelease-00153": {
       "type": "package",
       "serviceable": true,
-      "sha512": "a4AdJqw3dE4m7DYchuZHY9y7W9NEyYh4weib5PwdZTJvx97W2GS6Vf73hjgEAvXbUKcZ2eeiOMo8gBvGzMohbQ==",
+      "sha512": "CiwOHfRFTr9vvT4ahsZ8MfvI4ebGZThLGBCCWOabm4ctRLrcVovlGNcPbQj/yKqV87k3npDtDH+qIBsHCDHB+A==",
       "files": [
         "lib/dotnet/Xunit.NetCore.Extensions.dll",
-        "xunit.netcore.extensions.1.0.0-prerelease-00141.nupkg",
-        "xunit.netcore.extensions.1.0.0-prerelease-00141.nupkg.sha512",
+        "xunit.netcore.extensions.1.0.0-prerelease-00153.nupkg",
+        "xunit.netcore.extensions.1.0.0-prerelease-00153.nupkg.sha512",
         "xunit.netcore.extensions.nuspec"
       ]
     }
   },
   "projectFileDependencyGroups": {
     "": [
+      "Microsoft.NETCore.Platforms >= 1.0.1-*",
       "Microsoft.NETCore.Targets >= 1.0.0",
       "FluentAssertions >= 4.0.0-*",
       "System.Console >= 4.0.0-*",

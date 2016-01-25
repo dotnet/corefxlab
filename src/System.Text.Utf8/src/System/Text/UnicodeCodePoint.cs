@@ -50,6 +50,7 @@ namespace System.Text
         public static explicit operator uint(UnicodeCodePoint codePoint) { return codePoint.Value; }
         [CLSCompliant(false)]
         public static explicit operator UnicodeCodePoint(uint value) { return new UnicodeCodePoint(value); }
+        public static explicit operator UnicodeCodePoint(int value) { return new UnicodeCodePoint((uint)value); }
 
         public bool Equals(UnicodeCodePoint other)
         {

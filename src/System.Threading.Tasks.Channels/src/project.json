@@ -13,6 +13,6 @@
     "System.Threading.Tasks.Extensions": "4.0.0-rc2-*"
   },
   "frameworks": {
-    "dnxcore50": { }
+    "dotnet5.6": { }
   }
 }

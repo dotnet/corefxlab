@@ -2,11 +2,23 @@
   "locked": true,
   "version": 2,
   "targets": {
-    ".NETPlatform,Version=v5.0": {
-      "Microsoft.NETCore.Targets/1.0.0": {
+    ".NETPlatform,Version=v5.6": {
+      "System.Diagnostics.Debug/4.0.10": {
         "type": "package",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.0.0"
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Debug.dll": {}
+        }
+      },
+      "System.Diagnostics.Tools/4.0.1-rc3-23722": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -132,11 +144,23 @@
         }
       }
     },
-    ".NETPlatform,Version=v5.0/win7-x86": {
-      "Microsoft.NETCore.Targets/1.0.0": {
+    ".NETPlatform,Version=v5.6/win7-x86": {
+      "System.Diagnostics.Debug/4.0.10": {
         "type": "package",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.0.0"
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Debug.dll": {}
+        }
+      },
+      "System.Diagnostics.Tools/4.0.1-rc3-23722": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -262,11 +286,23 @@
         }
       }
     },
-    ".NETPlatform,Version=v5.0/win7-x64": {
-      "Microsoft.NETCore.Targets/1.0.0": {
+    ".NETPlatform,Version=v5.6/win7-x64": {
+      "System.Diagnostics.Debug/4.0.10": {
         "type": "package",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.0.0"
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Debug.dll": {}
+        }
+      },
+      "System.Diagnostics.Tools/4.0.1-rc3-23722": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -394,15 +430,89 @@
     }
   },
   "libraries": {
-    "Microsoft.NETCore.Targets/1.0.0": {
+    "System.Diagnostics.Debug/4.0.10": {
       "type": "package",
-      "sha512": "XfITpPjYLYRmAeZtb9diw6P7ylLQsSC1U2a/xj10iQpnHxkiLEBXop/psw15qMPuNca7lqgxWvzZGpQxphuXaw==",
+      "serviceable": true,
+      "sha512": "pi2KthuvI2LWV2c2V+fwReDsDiKpNl040h6DcwFOb59SafsPT/V1fCy0z66OKwysurJkBMmp5j5CBe3Um+ub0g==",
       "files": [
-        "[Content_Types].xml",
-        "_rels/.rels",
-        "Microsoft.NETCore.Targets.nuspec",
-        "package/services/metadata/core-properties/5413a5ed3fde4121a1c9ee8feb12ba66.psmdcp",
-        "runtime.json"
+        "lib/DNXCore50/System.Diagnostics.Debug.dll",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net46/_._",
+        "lib/netcore50/System.Diagnostics.Debug.dll",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "ref/dotnet/de/System.Diagnostics.Debug.xml",
+        "ref/dotnet/es/System.Diagnostics.Debug.xml",
+        "ref/dotnet/fr/System.Diagnostics.Debug.xml",
+        "ref/dotnet/it/System.Diagnostics.Debug.xml",
+        "ref/dotnet/ja/System.Diagnostics.Debug.xml",
+        "ref/dotnet/ko/System.Diagnostics.Debug.xml",
+        "ref/dotnet/ru/System.Diagnostics.Debug.xml",
+        "ref/dotnet/System.Diagnostics.Debug.dll",
+        "ref/dotnet/System.Diagnostics.Debug.xml",
+        "ref/dotnet/zh-hans/System.Diagnostics.Debug.xml",
+        "ref/dotnet/zh-hant/System.Diagnostics.Debug.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net46/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Debug.dll",
+        "System.Diagnostics.Debug.4.0.10.nupkg",
+        "System.Diagnostics.Debug.4.0.10.nupkg.sha512",
+        "System.Diagnostics.Debug.nuspec"
+      ]
+    },
+    "System.Diagnostics.Tools/4.0.1-rc3-23722": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "rNoyWN1q7O5Ht4gSsiIW2+4wyuQ9/rbKz/tK7tu8OOvOnHnS7D6PnLOCUD6p43afPkOfFYPQ9BUIHJuK1ScUIg==",
+      "files": [
+        "lib/DNXCore50/System.Diagnostics.Tools.dll",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net45/_._",
+        "lib/netcore50/System.Diagnostics.Tools.dll",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "ref/dotnet5.1/de/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/es/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/fr/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/it/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/ja/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/ko/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/ru/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/System.Diagnostics.Tools.dll",
+        "ref/dotnet5.1/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/zh-hans/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/zh-hant/System.Diagnostics.Tools.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net45/_._",
+        "ref/netcore50/de/System.Diagnostics.Tools.xml",
+        "ref/netcore50/es/System.Diagnostics.Tools.xml",
+        "ref/netcore50/fr/System.Diagnostics.Tools.xml",
+        "ref/netcore50/it/System.Diagnostics.Tools.xml",
+        "ref/netcore50/ja/System.Diagnostics.Tools.xml",
+        "ref/netcore50/ko/System.Diagnostics.Tools.xml",
+        "ref/netcore50/ru/System.Diagnostics.Tools.xml",
+        "ref/netcore50/System.Diagnostics.Tools.dll",
+        "ref/netcore50/System.Diagnostics.Tools.xml",
+        "ref/netcore50/zh-hans/System.Diagnostics.Tools.xml",
+        "ref/netcore50/zh-hant/System.Diagnostics.Tools.xml",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.dll",
+        "System.Diagnostics.Tools.4.0.1-rc3-23722.nupkg",
+        "System.Diagnostics.Tools.4.0.1-rc3-23722.nupkg.sha512",
+        "System.Diagnostics.Tools.nuspec"
       ]
     },
     "System.Globalization/4.0.0": {
@@ -869,13 +979,14 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Microsoft.NETCore.Targets >= 1.0.0",
+      "System.Diagnostics.Debug >= 4.0.10-*",
+      "System.Diagnostics.Tools >= 4.0.1-*",
       "System.IO >= 4.0.10-*",
       "System.IO.FileSystem >= 4.0.0-*",
       "System.Resources.ResourceManager >= 4.0.0-*",
       "System.Runtime >= 4.0.20-*",
       "System.Runtime.InteropServices >= 4.0.20-*"
     ],
-    ".NETPlatform,Version=v5.0": []
+    ".NETPlatform,Version=v5.6": []
   }
 }

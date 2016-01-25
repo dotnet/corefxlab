@@ -2,7 +2,7 @@
   "name": "System.Text.Formatting.Globalization.Tests",
   "dependencies": {
     "Microsoft.NETCore.TestHost": "1.0.0-beta-23409",
-    "Microsoft.NETCore.Platforms": "1.0.1-beta-23409",
+    "Microsoft.NETCore.Platforms": "1.0.1-*",
     "Microsoft.NETCore.Runtime.CoreCLR": "1.0.1-beta-23409",
     "src": {
           "type": "build",

@@ -2,7 +2,7 @@
   "locked": true,
   "version": 2,
   "targets": {
-    "DNXCore,Version=v5.0": {
+    ".NETPlatform,Version=v5.6": {
       "System.Diagnostics.Debug/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -12,16 +12,13 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23707": {
+      "System.Diagnostics.Tools/4.0.1-rc3-23721": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
         },
         "compile": {
           "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -62,9 +59,6 @@
         },
         "compile": {
           "ref/dotnet/System.Reflection.Primitives.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Reflection.Primitives.dll": {}
         }
       },
       "System.Resources.ResourceManager/4.0.0": {
@@ -76,9 +70,6 @@
         },
         "compile": {
           "ref/dotnet/System.Resources.ResourceManager.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Resources.ResourceManager.dll": {}
         }
       },
       "System.Runtime/4.0.0": {
@@ -96,7 +87,7 @@
           "ref/dotnet/System.Runtime.Extensions.dll": {}
         }
       },
-      "System.Slices/0.1.0-d123115-1": {
+      "System.Slices/0.1.0-e160119-1": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -115,9 +106,6 @@
         },
         "compile": {
           "ref/dotnet/System.Text.Encoding.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Text.Encoding.dll": {}
         }
       },
       "System.Threading.Tasks/4.0.0": {
@@ -130,7 +118,7 @@
         }
       }
     },
-    "DNXCore,Version=v5.0/win7-x86": {
+    ".NETPlatform,Version=v5.6/win7-x86": {
       "System.Diagnostics.Debug/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -140,16 +128,13 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23707": {
+      "System.Diagnostics.Tools/4.0.1-rc3-23721": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
         },
         "compile": {
           "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -190,9 +175,6 @@
         },
         "compile": {
           "ref/dotnet/System.Reflection.Primitives.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Reflection.Primitives.dll": {}
         }
       },
       "System.Resources.ResourceManager/4.0.0": {
@@ -204,9 +186,6 @@
         },
         "compile": {
           "ref/dotnet/System.Resources.ResourceManager.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Resources.ResourceManager.dll": {}
         }
       },
       "System.Runtime/4.0.0": {
@@ -224,7 +203,7 @@
           "ref/dotnet/System.Runtime.Extensions.dll": {}
         }
       },
-      "System.Slices/0.1.0-d123115-1": {
+      "System.Slices/0.1.0-e160119-1": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -243,9 +222,6 @@
         },
         "compile": {
           "ref/dotnet/System.Text.Encoding.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Text.Encoding.dll": {}
         }
       },
       "System.Threading.Tasks/4.0.0": {
@@ -258,7 +234,7 @@
         }
       }
     },
-    "DNXCore,Version=v5.0/win7-x64": {
+    ".NETPlatform,Version=v5.6/win7-x64": {
       "System.Diagnostics.Debug/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -268,16 +244,13 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc2-23707": {
+      "System.Diagnostics.Tools/4.0.1-rc3-23721": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
         },
         "compile": {
           "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Diagnostics.Tools.dll": {}
         }
       },
       "System.Globalization/4.0.0": {
@@ -318,9 +291,6 @@
         },
         "compile": {
           "ref/dotnet/System.Reflection.Primitives.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Reflection.Primitives.dll": {}
         }
       },
       "System.Resources.ResourceManager/4.0.0": {
@@ -332,9 +302,6 @@
         },
         "compile": {
           "ref/dotnet/System.Resources.ResourceManager.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Resources.ResourceManager.dll": {}
         }
       },
       "System.Runtime/4.0.0": {
@@ -352,7 +319,7 @@
           "ref/dotnet/System.Runtime.Extensions.dll": {}
         }
       },
-      "System.Slices/0.1.0-d123115-1": {
+      "System.Slices/0.1.0-e160119-1": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -371,9 +338,6 @@
         },
         "compile": {
           "ref/dotnet/System.Text.Encoding.dll": {}
-        },
-        "runtime": {
-          "lib/DNXCore50/System.Text.Encoding.dll": {}
         }
       },
       "System.Threading.Tasks/4.0.0": {
@@ -436,10 +400,10 @@
         "System.Diagnostics.Debug.nuspec"
       ]
     },
-    "System.Diagnostics.Tools/4.0.1-rc2-23707": {
+    "System.Diagnostics.Tools/4.0.1-rc3-23721": {
       "type": "package",
       "serviceable": true,
-      "sha512": "ggOlvWQli4IMsevOZfqRjLbIp41YeS03k1FfcrfXbta9AlHo8Lo5qRDHfcYJics0V0ymr9XXPaS2A1NaU8jkgg==",
+      "sha512": "a6G5mSoe3aG5WSJS94ARpUzFiOkEMW6I/I4/R/Xx8M1fEEQzHcp8lOgKjcTBYX+trzj3V4EQ0TXA8twaiwETBw==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.Tools.dll",
         "lib/MonoAndroid10/_._",
@@ -482,8 +446,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.dll",
-        "System.Diagnostics.Tools.4.0.1-rc2-23707.nupkg",
-        "System.Diagnostics.Tools.4.0.1-rc2-23707.nupkg.sha512",
+        "System.Diagnostics.Tools.4.0.1-rc3-23721.nupkg",
+        "System.Diagnostics.Tools.4.0.1-rc3-23721.nupkg.sha512",
         "System.Diagnostics.Tools.nuspec"
       ]
     },
@@ -795,14 +759,13 @@
         "System.Runtime.Extensions.nuspec"
       ]
     },
-    "System.Slices/0.1.0-d123115-1": {
+    "System.Slices/0.1.0-e160119-1": {
       "type": "package",
-      "serviceable": true,
-      "sha512": "VJ1+8mdj/hucrjk1/yiEZYYUf5dH6k1qcriSrQZnDmXH0SRM1U0FGkMTmqsE43rl9QzcZqG4aPKwu6NukekZvA==",
+      "sha512": "dHD8xBNW1VEgm0xmKmGfFPRHA84ZawVs3eeQhjp4vpuvX29ml7L0e2VthUgsf5Fm6GgmjmYBeFvQCQt00OytWg==",
       "files": [
         "lib/portable-net45+win8+wpa81+aspnetcore50/System.Slices.dll",
-        "System.Slices.0.1.0-d123115-1.nupkg",
-        "System.Slices.0.1.0-d123115-1.nupkg.sha512",
+        "System.Slices.0.1.0-e160119-1.nupkg",
+        "System.Slices.0.1.0-e160119-1.nupkg.sha512",
         "System.Slices.nuspec"
       ]
     },
@@ -898,6 +861,6 @@
       "System.Text.Encoding >= 4.0.10",
       "System.Diagnostics.Debug >= 4.0.0"
     ],
-    "DNXCore,Version=v5.0": []
+    ".NETPlatform,Version=v5.6": []
   }
 }

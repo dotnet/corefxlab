@@ -1,6 +1,19 @@
 {
   "name": "System.IO.FileSystem.Watcher.Polling",
-  "version": "1.0.0",
+  "version": "0.1.0-*",
+  "description": "Polling file system watcher",
+  "authors": [
+      "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "tags": [
+      ".NET Core FileSystemWatcher Polling corefxlab"
+  ],
+  "releaseNotes": "Pre-release package, for testing only",
+  "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+  "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+  "projectUrl": "https://github.com/dotnet/corefxlab",
+  "requireLicenseAcceptance": true,
   "namedResource": {
     "System.IO.FileSystem.Watcher.Polling.Properties.Strings": "Properties/Strings.resx"
   },
@@ -9,23 +22,15 @@
   },
   "dependencies": {
     "System.Collections": "4.0.0",
-    "System.Diagnostics.Contracts": "4.0.0",
     "System.Diagnostics.Debug": "4.0.0",
-    "System.Diagnostics.Tools": "4.0.0",
-    "System.Diagnostics.TraceSource": "4.0.0-beta-*",
-    "System.Globalization": "4.0.0",
-    "System.IO": "4.0.0",
-    "System.Reflection": "4.0.0",
-    "System.Reflection.Primitives": "4.0.0",
+    "System.Diagnostics.TraceSource": "4.0.0-*",
     "System.Resources.ResourceManager": "4.0.0",
     "System.Runtime": "4.0.0",
     "System.Runtime.Extensions": "4.0.0",
     "System.Runtime.InteropServices": "4.0.0",
-    "System.Text.Encoding": "4.0.0",
-    "System.Threading": "4.0.0",
     "System.Threading.Timer": "4.0.0"
   },
   "frameworks": {
-    "dnxcore50": { }
+    "dotnet5.6": { }
   }
 }

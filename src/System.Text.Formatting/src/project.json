@@ -1,6 +1,19 @@
 {
   "name": "System.Text.Formatting",
-  "version": "1.0.0",
+  "version": "0.1.0-*",
+  "description": "Non-allocating formatting library",
+  "authors": [
+      "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "tags": [
+      ".NET formatting corefxlab"
+  ],
+  "releaseNotes": "Pre-release package, for testing only",
+  "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+  "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+  "projectUrl": "https://github.com/dotnet/corefxlab",
+  "requireLicenseAcceptance": true,
   "compilationOptions": {
     "allowUnsafe": true
   },
@@ -21,12 +34,12 @@
     "System.Runtime": "4.0.0",
     "System.Runtime.Extensions": "4.0.0",
     "System.Runtime.InteropServices": "4.0.0",
-    "System.Slices": "0.1.0-e160114-1",
+    "System.Slices": "0.1.0-*",
     "System.Text.Encoding": "4.0.0",
-    "System.Text.Utf8": "0.1.0-e160114-1",
+    "System.Text.Utf8": "0.1.0-*",
     "System.Threading": "4.0.0"
   },
   "frameworks": {
-    "dnxcore50": { }
+    "dotnet5.6": { }
   }
 }

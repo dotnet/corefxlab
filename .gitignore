@@ -7,6 +7,7 @@ syntax: glob
 *.user
 *.userosscache
 *.sln.docstates
+*.dll
 
 # Build results
 [Dd]ebug/

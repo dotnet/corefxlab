@@ -1,23 +1,32 @@
 ﻿{
   "name": "System.Net.Libuv",
-  "version": "1.0.0",
+  "version": "0.1.0-*",
+  "description": "libuv .NET Core wrapper",
+  "authors": [
+      "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "tags": [
+      ".NET libuv corefxlab"
+  ],
+  "releaseNotes": "Pre-release package, for testing only",
+  "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+  "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+  "projectUrl": "https://github.com/dotnet/corefxlab",
+  "requireLicenseAcceptance": true,
   "compilationOptions": {
     "allowUnsafe": true
   },
   "dependencies": {
-    "System.Diagnostics.Debug": "4.0.0",
-    "System.Reflection.Primitives": "4.0.0",
-    "System.Resources.ResourceManager": "4.0.0",
-    "System.Runtime": "4.0.0",
-    "System.Runtime.InteropServices": "4.0.0",
-    "System.Threading": "4.0.0",
-    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0-beta-23516",
+    "System.Runtime": "4.0.21-*",
+    "System.Runtime.InteropServices": "4.0.21-*",
+    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0-*",
     "System.Runtime.Extensions": "4.0.0",
     "System.Slices": "0.1.0-*",
     "System.Buffers": "0.1.0-*"
   },
   "frameworks": {
-    "dnxcore50": { }
+    "dotnet5.6": { }
   },
   "scripts": {
     "postcompile": "copy \"%project:Directory%\\libuv.dll\" \"%compile:OutputDir%\\libuv.dll\""
