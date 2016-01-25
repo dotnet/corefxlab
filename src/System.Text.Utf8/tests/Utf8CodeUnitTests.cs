@@ -8,6 +8,16 @@ namespace System.Text.Utf8.Tests
 {
     public class Utf8CodeUnitTests
     {
+        private const byte b0000_0000 = 0;
+        private const byte b0011_0000 = 48;
+        private const byte b0111_1111 = 127;
+        private const byte b1000_0000 = 128;
+        private const byte b1001_1001 = 153;
+        private const byte b1011_1111 = 191;
+        private const byte b1100_0000 = 192;
+        private const byte b1101_0000 = 208;
+        private const byte b1111_1111 = 255;
+
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
@@ -127,17 +137,17 @@ namespace System.Text.Utf8.Tests
 
         public static object[][] IsFirstCodeUnitInEncodedCodePointTestCases = new object[][] {
             // the only forbidden range is binary 1000 0000 - 1011 1111
-            new object[] { true, new Utf8CodeUnit(0b0000_0000) },
-            new object[] { true, new Utf8CodeUnit(0b0011_0000) },
-            new object[] { true, new Utf8CodeUnit(0b0111_1111) },
+            new object[] { true, new Utf8CodeUnit(b0000_0000) },
+            new object[] { true, new Utf8CodeUnit(b0011_0000) },
+            new object[] { true, new Utf8CodeUnit(b0111_1111) },
 
-            new object[] { false, new Utf8CodeUnit(0b1000_0000) },
-            new object[] { false, new Utf8CodeUnit(0b1001_1001) },
-            new object[] { false, new Utf8CodeUnit(0b1011_1111) },
+            new object[] { false, new Utf8CodeUnit(b1000_0000) },
+            new object[] { false, new Utf8CodeUnit(b1001_1001) },
+            new object[] { false, new Utf8CodeUnit(b1011_1111) },
 
-            new object[] { true, new Utf8CodeUnit(0b1100_0000) },
-            new object[] { true, new Utf8CodeUnit(0b1101_0000) },
-            new object[] { true, new Utf8CodeUnit(0b1111_1111) }
+            new object[] { true, new Utf8CodeUnit(b1100_0000) },
+            new object[] { true, new Utf8CodeUnit(b1101_0000) },
+            new object[] { true, new Utf8CodeUnit(b1111_1111) }
         };
 
         [Theory, MemberData("IsFirstCodeUnitInEncodedCodePointTestCases")]
@@ -204,17 +214,17 @@ namespace System.Text.Utf8.Tests
         }
 
         public static object[][] ConvertToCharTestCases = new object[][] {
-            new object[] { false, new Utf8CodeUnit(0b0000_0000) },
-            new object[] { false, new Utf8CodeUnit(0b0011_0000) },
-            new object[] { false, new Utf8CodeUnit(0b0111_1111) },
+            new object[] { false, new Utf8CodeUnit(b0000_0000) },
+            new object[] { false, new Utf8CodeUnit(b0011_0000) },
+            new object[] { false, new Utf8CodeUnit(b0111_1111) },
 
-            new object[] { true, new Utf8CodeUnit(0b1000_0000) },
-            new object[] { true, new Utf8CodeUnit(0b1001_1001) },
-            new object[] { true, new Utf8CodeUnit(0b1011_1111) },
+            new object[] { true, new Utf8CodeUnit(b1000_0000) },
+            new object[] { true, new Utf8CodeUnit(b1001_1001) },
+            new object[] { true, new Utf8CodeUnit(b1011_1111) },
 
-            new object[] { true, new Utf8CodeUnit(0b1100_0000) },
-            new object[] { true, new Utf8CodeUnit(0b1101_0000) },
-            new object[] { true, new Utf8CodeUnit(0b1111_1111) }
+            new object[] { true, new Utf8CodeUnit(b1100_0000) },
+            new object[] { true, new Utf8CodeUnit(b1101_0000) },
+            new object[] { true, new Utf8CodeUnit(b1111_1111) }
         };
 
         [Theory, MemberData("ConvertToCharTestCases")]

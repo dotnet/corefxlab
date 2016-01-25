@@ -57,12 +57,12 @@ namespace System.Text.Utf8.Tests
         public static object[][] LengthTestCases = {
             new object[] { 0, default(Utf8String) },
             new object[] { 0, Utf8String.Empty },
-            new object[] { 0, ""u8 },
-            new object[] { 4, "1258"u8 },
-            new object[] { 3, "\uABCD"u8 },
-            new object[] { 4, "a\uABEE"u8 },
-            new object[] { 5, "a\uABEEa"u8 },
-            new object[] { 8, "a\uABEE\uABCDa"u8 }
+            new object[] { 0, new Utf8String("")},
+            new object[] { 4, new Utf8String("1258")},
+            new object[] { 3, new Utf8String("\uABCD")},
+            new object[] { 4, new Utf8String("a\uABEE")},
+            new object[] { 5, new Utf8String("a\uABEEa")},
+            new object[] { 8, new Utf8String("a\uABEE\uABCDa")}
         };
 
         [Theory, MemberData("LengthTestCases")]
@@ -74,12 +74,12 @@ namespace System.Text.Utf8.Tests
         public static object[][] LengthInCodePointsTestCases = {
             new object[] { 0, default(Utf8String) },
             new object[] { 0, Utf8String.Empty },
-            new object[] { 0, ""u8 },
-            new object[] { 4, "1258"u8 },
-            new object[] { 1, "\uABCD"u8 },
-            new object[] { 2, "a\uABEE"u8 },
-            new object[] { 3, "a\uABEEa"u8 },
-            new object[] { 4, "a\uABEE\uABCDa"u8 }
+            new object[] { 0, new Utf8String("")},
+            new object[] { 4, new Utf8String("1258")},
+            new object[] { 1, new Utf8String("\uABCD")},
+            new object[] { 2, new Utf8String("a\uABEE")},
+            new object[] { 3, new Utf8String("a\uABEEa")},
+            new object[] { 4, new Utf8String("a\uABEE\uABCDa")}
         };
 
         [Theory, MemberData("LengthInCodePointsTestCases")]
@@ -91,12 +91,12 @@ namespace System.Text.Utf8.Tests
         public static object[][] ToStringTestCases = {
             new object[] { "", default(Utf8String) },
             new object[] { "", Utf8String.Empty },
-            new object[] { "", ""u8 },
-            new object[] { "1258", "1258"u8 },
-            new object[] { "\uABCD", "\uABCD"u8 },
-            new object[] { "a\uABEE", "a\uABEE"u8 },
-            new object[] { "a\uABEEa", "a\uABEEa"u8 },
-            new object[] { "a\uABEE\uABCDa", "a\uABEE\uABCDa"u8 }
+            new object[] { "", new Utf8String("")},
+            new object[] { "1258", new Utf8String("1258")},
+            new object[] { "\uABCD", new Utf8String("\uABCD")},
+            new object[] { "a\uABEE", new Utf8String("a\uABEE")},
+            new object[] { "a\uABEEa", new Utf8String("a\uABEEa")},
+            new object[] { "a\uABEE\uABCDa", new Utf8String("a\uABEE\uABCDa")}
         };
 
         [Theory, MemberData("ToStringTestCases")]
@@ -106,10 +106,10 @@ namespace System.Text.Utf8.Tests
         }
 
         public static object[][] StringEqualsTestCases_EmptyStrings = new object[][] {
-            new object[] { true, ""u8, ""u8 },
-            new object[] { true, ""u8, default(Utf8String) },
-            new object[] { true, ""u8, Utf8String.Empty },
-            new object[] { true, ""u8, new Utf8String("") },
+            new object[] { true, new Utf8String(""), new Utf8String("")},
+            new object[] { true, new Utf8String(""), default(Utf8String) },
+            new object[] { true, new Utf8String(""), Utf8String.Empty },
+            new object[] { true, new Utf8String(""), new Utf8String("") },
             new object[] { true, default(Utf8String), default(Utf8String) },
             new object[] { true, default(Utf8String), Utf8String.Empty },
             new object[] { true, default(Utf8String), new Utf8String("") },
@@ -117,30 +117,30 @@ namespace System.Text.Utf8.Tests
             new object[] { true, Utf8String.Empty, new Utf8String("") },
             new object[] { true, new Utf8String(""), new Utf8String("") },
 
-            new object[] { false, ""u8, " "u8 },
-            new object[] { false, ""u8, "a"u8 },
-            new object[] { false, ""u8, "\uABCD"u8 },
-            new object[] { false, ""u8, "abc"u8 },
-            new object[] { false, ""u8, "a\uABCD"u8 },
-            new object[] { false, ""u8, "\uABCDa"u8 }
+            new object[] { false, new Utf8String(""), new Utf8String(" ")},
+            new object[] { false, new Utf8String(""), new Utf8String("a")},
+            new object[] { false, new Utf8String(""), new Utf8String("\uABCD")},
+            new object[] { false, new Utf8String(""), new Utf8String("abc")},
+            new object[] { false, new Utf8String(""), new Utf8String("a\uABCD")},
+            new object[] { false, new Utf8String(""), new Utf8String("\uABCDa")}
         };
 
         public static object[][] StringEqualsTestCases_SimpleStrings = new object[][] {
-            new object[] { true, "a"u8, "a"u8 },
-            new object[] { true, "\uABCD"u8, "\uABCD"u8 },
-            new object[] { true, "abc"u8, "abc"u8 },
-            new object[] { true, "a\uABCDbc"u8, "a\uABCDbc"u8 },
+            new object[] { true, new Utf8String("a"), new Utf8String("a")},
+            new object[] { true, new Utf8String("\uABCD"), new Utf8String("\uABCD")},
+            new object[] { true, new Utf8String("abc"), new Utf8String("abc")},
+            new object[] { true, new Utf8String("a\uABCDbc"), new Utf8String("a\uABCDbc")},
 
-            new object[] { false, "a"u8, "b"u8 },
-            new object[] { false, "aaaaa"u8, "aaaab"u8 },
-            new object[] { false, "aaaaa"u8, "baaaa"u8 },
-            new object[] { false, "ababab"u8, "bababa"u8 },
-            new object[] { false, "abbbba"u8, "abbba"u8 },
-            new object[] { false, "aabcaa"u8, "aacbaa"u8 },
-            new object[] { false, "\uABCD"u8, "\uABCE"u8 },
-            new object[] { false, "abc"u8, "abcd"u8 },
-            new object[] { false, "abc"u8, "dabc"u8 },
-            new object[] { false, "ab\uABCDc"u8, "ab\uABCEc"u8 }
+            new object[] { false, new Utf8String("a"), new Utf8String("b")},
+            new object[] { false, new Utf8String("aaaaa"), new Utf8String("aaaab")},
+            new object[] { false, new Utf8String("aaaaa"), new Utf8String("baaaa")},
+            new object[] { false, new Utf8String("ababab"), new Utf8String("bababa")},
+            new object[] { false, new Utf8String("abbbba"), new Utf8String("abbba")},
+            new object[] { false, new Utf8String("aabcaa"), new Utf8String("aacbaa")},
+            new object[] { false, new Utf8String("\uABCD"), new Utf8String("\uABCE")},
+            new object[] { false, new Utf8String("abc"), new Utf8String("abcd")},
+            new object[] { false, new Utf8String("abc"), new Utf8String("dabc")},
+            new object[] { false, new Utf8String("ab\uABCDc"), new Utf8String("ab\uABCEc")}
         };
 
         // TODO: add cases for different lengths
@@ -162,11 +162,11 @@ namespace System.Text.Utf8.Tests
         }
 
         public static object[][] StartsWithCodeUnitTestCases = new object[][] {
-            new object[] { false, ""u8, (Utf8CodeUnit)'a' },
-            new object[] { false, "a"u8, (Utf8CodeUnit)'a' },
-            new object[] { false, "abc"u8, (Utf8CodeUnit)'a' },
-            new object[] { false, "b"u8, (Utf8CodeUnit)'a' },
-            new object[] { false, "ba"u8, (Utf8CodeUnit)'a' }
+            new object[] { false, new Utf8String(""), (Utf8CodeUnit)'a' },
+            new object[] { false, new Utf8String("a"), (Utf8CodeUnit)'a' },
+            new object[] { false, new Utf8String("abc"), (Utf8CodeUnit)'a' },
+            new object[] { false, new Utf8String("b"), (Utf8CodeUnit)'a' },
+            new object[] { false, new Utf8String("ba"), (Utf8CodeUnit)'a' }
         };
 
         [Theory]

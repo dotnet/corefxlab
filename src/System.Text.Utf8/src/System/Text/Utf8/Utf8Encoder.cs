@@ -8,15 +8,15 @@ namespace System.Text.Utf8
     public static class Utf8Encoder
     {
         // To get this to compile with dotnet cli, we need to temporarily un-binary the magic values
-        private const byte b0011_1111U = 63;
-        private const byte b1000_0000U = 128;
         private const byte b0000_0111U = 7;
-        private const byte b1111_0000U = 240;
-        private const byte b1100_0000U = 192;
         private const byte b0000_1111U = 15;
-        private const byte b1110_0000U = 224;
         private const byte b0001_1111U = 31;
+        private const byte b0011_1111U = 63;
         private const byte b0111_1111U = 127;
+        private const byte b1000_0000U = 128;
+        private const byte b1100_0000U = 192;
+        private const byte b1110_0000U = 224;
+        private const byte b1111_0000U = 240;
         private const byte b1111_1000U = 248;
 
         #region Decoder

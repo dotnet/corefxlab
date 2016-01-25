@@ -24,17 +24,17 @@ namespace System.Text.Utf8.Tests
         }
 
         public static object[][] Utf8StringToUtf16StringToUtf8StringRoundTripTestCases = {
-            new object[] { "abcdefghijklmnopqrstuvwxyz"u8 },
-            new object[] { "ABCDEFGHIJKLMNOPQRSTUVWXYZ"u8 },
-            new object[] { "0123456789"u8 },
-            new object[] { " ,.\r\n[]<>()"u8 },
-            new object[] { ""u8 },
-            new object[] { "1258"u8 },
-            new object[] { "1258Hello"u8 },
-            new object[] { "\uABCD"u8 },
-            new object[] { "a\uABEE"u8 },
-            new object[] { "a\uABEEa"u8 },
-            new object[] { "a\uABEE\uABCDa"u8 }
+            new object[] { new Utf8String("abcdefghijklmnopqrstuvwxyz")},
+            new object[] { new Utf8String("ABCDEFGHIJKLMNOPQRSTUVWXYZ")},
+            new object[] { new Utf8String("0123456789")},
+            new object[] { new Utf8String(" ,.\r\n[]<>()")},
+            new object[] { new Utf8String("")},
+            new object[] { new Utf8String("1258")},
+            new object[] { new Utf8String("1258Hello")},
+            new object[] { new Utf8String("\uABCD")},
+            new object[] { new Utf8String("a\uABEE")},
+            new object[] { new Utf8String("a\uABEEa")},
+            new object[] { new Utf8String("a\uABEE\uABCDa")}
         };
 
         [Theory, MemberData("Utf8StringToUtf16StringToUtf8StringRoundTripTestCases")]
@@ -47,12 +47,12 @@ namespace System.Text.Utf8.Tests
         public static object[][] EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSameTestCases = {
             new object[] { "", default(Utf8String) },
             new object[] { "", Utf8String.Empty },
-            new object[] { "", ""u8 },
-            new object[] { "1258", "1258"u8 },
-            new object[] { "\uABCD", "\uABCD"u8 },
-            new object[] { "a\uABEE", "a\uABEE"u8 },
-            new object[] { "a\uABEEa", "a\uABEEa"u8 },
-            new object[] { "a\uABEE\uABCDa", "a\uABEE\uABCDa"u8 }
+            new object[] { "", new Utf8String("")},
+            new object[] { "1258", new Utf8String("1258")},
+            new object[] { "\uABCD", new Utf8String("\uABCD")},
+            new object[] { "a\uABEE", new Utf8String("a\uABEE")},
+            new object[] { "a\uABEEa", new Utf8String("a\uABEEa")},
+            new object[] { "a\uABEE\uABCDa", new Utf8String("a\uABEE\uABCDa")}
         };
 
         [Theory, MemberData("EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSameTestCases")]
