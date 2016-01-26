@@ -21,7 +21,7 @@
           "ref/dotnet/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-rc3-23725": {
+      "System.Diagnostics.Tools/4.0.1-rc3-23726": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -118,7 +118,269 @@
           "ref/dotnet/System.Threading.Tasks.dll": {}
         }
       },
-      "System.Threading.Tasks.Extensions/4.0.0-rc3-23725": {
+      "System.Threading.Tasks.Extensions/4.0.0-rc3-23726": {
+        "type": "package",
+        "dependencies": {
+          "System.Collections": "4.0.0",
+          "System.Runtime": "4.0.0",
+          "System.Threading.Tasks": "4.0.0"
+        },
+        "compile": {
+          "lib/dotnet5.1/System.Threading.Tasks.Extensions.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.1/System.Threading.Tasks.Extensions.dll": {}
+        }
+      }
+    },
+    ".NETPlatform,Version=v5.6/win7-x86": {
+      "System.Collections/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Collections.dll": {}
+        }
+      },
+      "System.Diagnostics.Debug/4.0.10": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Debug.dll": {}
+        }
+      },
+      "System.Diagnostics.Tools/4.0.1-rc3-23726": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/System.Diagnostics.Tools.dll": {}
+        }
+      },
+      "System.Globalization/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Globalization.dll": {}
+        }
+      },
+      "System.IO/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0",
+          "System.Text.Encoding": "4.0.0",
+          "System.Threading.Tasks": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.IO.dll": {}
+        }
+      },
+      "System.Reflection/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.IO": "4.0.0",
+          "System.Reflection.Primitives": "4.0.0",
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Reflection.dll": {}
+        }
+      },
+      "System.Reflection.Primitives/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Reflection.Primitives.dll": {}
+        }
+      },
+      "System.Resources.ResourceManager/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Globalization": "4.0.0",
+          "System.Reflection": "4.0.0",
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Resources.ResourceManager.dll": {}
+        }
+      },
+      "System.Runtime/4.0.20": {
+        "type": "package",
+        "compile": {
+          "ref/dotnet/System.Runtime.dll": {}
+        }
+      },
+      "System.Text.Encoding/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Text.Encoding.dll": {}
+        }
+      },
+      "System.Threading/4.0.10": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0",
+          "System.Threading.Tasks": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Threading.dll": {}
+        }
+      },
+      "System.Threading.Tasks/4.0.10": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Threading.Tasks.dll": {}
+        }
+      },
+      "System.Threading.Tasks.Extensions/4.0.0-rc3-23726": {
+        "type": "package",
+        "dependencies": {
+          "System.Collections": "4.0.0",
+          "System.Runtime": "4.0.0",
+          "System.Threading.Tasks": "4.0.0"
+        },
+        "compile": {
+          "lib/dotnet5.1/System.Threading.Tasks.Extensions.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.1/System.Threading.Tasks.Extensions.dll": {}
+        }
+      }
+    },
+    ".NETPlatform,Version=v5.6/win7-x64": {
+      "System.Collections/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Collections.dll": {}
+        }
+      },
+      "System.Diagnostics.Debug/4.0.10": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Diagnostics.Debug.dll": {}
+        }
+      },
+      "System.Diagnostics.Tools/4.0.1-rc3-23726": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet5.1/System.Diagnostics.Tools.dll": {}
+        },
+        "runtime": {
+          "lib/dotnet5.4/System.Diagnostics.Tools.dll": {}
+        }
+      },
+      "System.Globalization/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Globalization.dll": {}
+        }
+      },
+      "System.IO/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0",
+          "System.Text.Encoding": "4.0.0",
+          "System.Threading.Tasks": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.IO.dll": {}
+        }
+      },
+      "System.Reflection/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.IO": "4.0.0",
+          "System.Reflection.Primitives": "4.0.0",
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Reflection.dll": {}
+        }
+      },
+      "System.Reflection.Primitives/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Reflection.Primitives.dll": {}
+        }
+      },
+      "System.Resources.ResourceManager/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Globalization": "4.0.0",
+          "System.Reflection": "4.0.0",
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Resources.ResourceManager.dll": {}
+        }
+      },
+      "System.Runtime/4.0.20": {
+        "type": "package",
+        "compile": {
+          "ref/dotnet/System.Runtime.dll": {}
+        }
+      },
+      "System.Text.Encoding/4.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Text.Encoding.dll": {}
+        }
+      },
+      "System.Threading/4.0.10": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0",
+          "System.Threading.Tasks": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Threading.dll": {}
+        }
+      },
+      "System.Threading.Tasks/4.0.10": {
+        "type": "package",
+        "dependencies": {
+          "System.Runtime": "4.0.0"
+        },
+        "compile": {
+          "ref/dotnet/System.Threading.Tasks.dll": {}
+        }
+      },
+      "System.Threading.Tasks.Extensions/4.0.0-rc3-23726": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.0",
@@ -136,12 +398,9 @@
   },
   "libraries": {
     "System.Collections/4.0.0": {
-      "sha512": "i2vsGDIEbWdHcUSNDPKZP/ZWod6o740el7mGTCy0dqbCxQh74W4QoC+klUwPEtGEFuvzJ7bJgvwJqscosVNyZQ==",
       "type": "package",
+      "sha512": "i2vsGDIEbWdHcUSNDPKZP/ZWod6o740el7mGTCy0dqbCxQh74W4QoC+klUwPEtGEFuvzJ7bJgvwJqscosVNyZQ==",
       "files": [
-        "License.rtf",
-        "System.Collections.4.0.0.nupkg.sha512",
-        "System.Collections.nuspec",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
         "lib/net45/_._",
@@ -150,10 +409,7 @@
         "lib/wpa81/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/dotnet/System.Collections.dll",
-        "ref/dotnet/System.Collections.xml",
+        "License.rtf",
         "ref/dotnet/de/System.Collections.xml",
         "ref/dotnet/es/System.Collections.xml",
         "ref/dotnet/fr/System.Collections.xml",
@@ -161,11 +417,13 @@
         "ref/dotnet/ja/System.Collections.xml",
         "ref/dotnet/ko/System.Collections.xml",
         "ref/dotnet/ru/System.Collections.xml",
+        "ref/dotnet/System.Collections.dll",
+        "ref/dotnet/System.Collections.xml",
         "ref/dotnet/zh-hans/System.Collections.xml",
         "ref/dotnet/zh-hant/System.Collections.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net45/_._",
-        "ref/netcore50/System.Collections.dll",
-        "ref/netcore50/System.Collections.xml",
         "ref/netcore50/de/System.Collections.xml",
         "ref/netcore50/es/System.Collections.xml",
         "ref/netcore50/fr/System.Collections.xml",
@@ -173,21 +431,23 @@
         "ref/netcore50/ja/System.Collections.xml",
         "ref/netcore50/ko/System.Collections.xml",
         "ref/netcore50/ru/System.Collections.xml",
+        "ref/netcore50/System.Collections.dll",
+        "ref/netcore50/System.Collections.xml",
         "ref/netcore50/zh-hans/System.Collections.xml",
         "ref/netcore50/zh-hant/System.Collections.xml",
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._"
+        "ref/xamarinmac20/_._",
+        "System.Collections.4.0.0.nupkg.sha512",
+        "System.Collections.nuspec"
       ]
     },
     "System.Diagnostics.Debug/4.0.10": {
-      "sha512": "pi2KthuvI2LWV2c2V+fwReDsDiKpNl040h6DcwFOb59SafsPT/V1fCy0z66OKwysurJkBMmp5j5CBe3Um+ub0g==",
       "type": "package",
+      "sha512": "pi2KthuvI2LWV2c2V+fwReDsDiKpNl040h6DcwFOb59SafsPT/V1fCy0z66OKwysurJkBMmp5j5CBe3Um+ub0g==",
       "files": [
-        "System.Diagnostics.Debug.4.0.10.nupkg.sha512",
-        "System.Diagnostics.Debug.nuspec",
         "lib/DNXCore50/System.Diagnostics.Debug.dll",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -195,10 +455,6 @@
         "lib/netcore50/System.Diagnostics.Debug.dll",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/dotnet/System.Diagnostics.Debug.dll",
-        "ref/dotnet/System.Diagnostics.Debug.xml",
         "ref/dotnet/de/System.Diagnostics.Debug.xml",
         "ref/dotnet/es/System.Diagnostics.Debug.xml",
         "ref/dotnet/fr/System.Diagnostics.Debug.xml",
@@ -206,23 +462,28 @@
         "ref/dotnet/ja/System.Diagnostics.Debug.xml",
         "ref/dotnet/ko/System.Diagnostics.Debug.xml",
         "ref/dotnet/ru/System.Diagnostics.Debug.xml",
+        "ref/dotnet/System.Diagnostics.Debug.dll",
+        "ref/dotnet/System.Diagnostics.Debug.xml",
         "ref/dotnet/zh-hans/System.Diagnostics.Debug.xml",
         "ref/dotnet/zh-hant/System.Diagnostics.Debug.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net46/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Debug.dll"
+        "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Debug.dll",
+        "System.Diagnostics.Debug.4.0.10.nupkg.sha512",
+        "System.Diagnostics.Debug.nuspec"
       ]
     },
-    "System.Diagnostics.Tools/4.0.1-rc3-23725": {
-      "sha512": "ExsQ40NoI1DBCDw1TikkdoFvuARuQ0xS6eFDhJ1fd9yJyLPHf1S8tYX191dtzQwCU08rw3BEIqFq11FBJz+QqQ==",
+    "System.Diagnostics.Tools/4.0.1-rc3-23726": {
       "type": "package",
+      "serviceable": true,
+      "sha512": "5wZGeoRhlbLIcZG8ravbyqTgc42f7k58oW2Zk8YeoUeJL5ja0E1rIqqKnVfHAjr55V0BnyesKASc2fd41reoEg==",
       "files": [
-        "System.Diagnostics.Tools.4.0.1-rc3-23725.nupkg.sha512",
-        "System.Diagnostics.Tools.nuspec",
+        "lib/dotnet5.4/System.Diagnostics.Tools.dll",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
-        "lib/dotnet5.4/System.Diagnostics.Tools.dll",
         "lib/net45/_._",
         "lib/netcore50/System.Diagnostics.Tools.dll",
         "lib/win8/_._",
@@ -230,10 +491,6 @@
         "lib/wpa81/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/dotnet5.1/System.Diagnostics.Tools.dll",
-        "ref/dotnet5.1/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/de/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/es/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/fr/System.Diagnostics.Tools.xml",
@@ -241,11 +498,13 @@
         "ref/dotnet5.1/ja/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/ko/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/ru/System.Diagnostics.Tools.xml",
+        "ref/dotnet5.1/System.Diagnostics.Tools.dll",
+        "ref/dotnet5.1/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/zh-hans/System.Diagnostics.Tools.xml",
         "ref/dotnet5.1/zh-hant/System.Diagnostics.Tools.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net45/_._",
-        "ref/netcore50/System.Diagnostics.Tools.dll",
-        "ref/netcore50/System.Diagnostics.Tools.xml",
         "ref/netcore50/de/System.Diagnostics.Tools.xml",
         "ref/netcore50/es/System.Diagnostics.Tools.xml",
         "ref/netcore50/fr/System.Diagnostics.Tools.xml",
@@ -253,6 +512,8 @@
         "ref/netcore50/ja/System.Diagnostics.Tools.xml",
         "ref/netcore50/ko/System.Diagnostics.Tools.xml",
         "ref/netcore50/ru/System.Diagnostics.Tools.xml",
+        "ref/netcore50/System.Diagnostics.Tools.dll",
+        "ref/netcore50/System.Diagnostics.Tools.xml",
         "ref/netcore50/zh-hans/System.Diagnostics.Tools.xml",
         "ref/netcore50/zh-hant/System.Diagnostics.Tools.xml",
         "ref/win8/_._",
@@ -260,16 +521,16 @@
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "runtimes/aot/lib/netcore50/System.Diagnostics.Tools.dll"
+        "runtimes/aot/lib/netcore50/System.Diagnostics.Tools.dll",
+        "System.Diagnostics.Tools.4.0.1-rc3-23726.nupkg",
+        "System.Diagnostics.Tools.4.0.1-rc3-23726.nupkg.sha512",
+        "System.Diagnostics.Tools.nuspec"
       ]
     },
     "System.Globalization/4.0.0": {
-      "sha512": "IBJyTo1y7ZtzzoJUA60T1XPvNTyw/wfFmjFoBFtlYfkekIOtD/AzDDIg0YdUa7eNtFEfliED2R7HdppTdU4t5A==",
       "type": "package",
+      "sha512": "IBJyTo1y7ZtzzoJUA60T1XPvNTyw/wfFmjFoBFtlYfkekIOtD/AzDDIg0YdUa7eNtFEfliED2R7HdppTdU4t5A==",
       "files": [
-        "License.rtf",
-        "System.Globalization.4.0.0.nupkg.sha512",
-        "System.Globalization.nuspec",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
         "lib/net45/_._",
@@ -278,10 +539,7 @@
         "lib/wpa81/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/dotnet/System.Globalization.dll",
-        "ref/dotnet/System.Globalization.xml",
+        "License.rtf",
         "ref/dotnet/de/System.Globalization.xml",
         "ref/dotnet/es/System.Globalization.xml",
         "ref/dotnet/fr/System.Globalization.xml",
@@ -289,11 +547,13 @@
         "ref/dotnet/ja/System.Globalization.xml",
         "ref/dotnet/ko/System.Globalization.xml",
         "ref/dotnet/ru/System.Globalization.xml",
+        "ref/dotnet/System.Globalization.dll",
+        "ref/dotnet/System.Globalization.xml",
         "ref/dotnet/zh-hans/System.Globalization.xml",
         "ref/dotnet/zh-hant/System.Globalization.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net45/_._",
-        "ref/netcore50/System.Globalization.dll",
-        "ref/netcore50/System.Globalization.xml",
         "ref/netcore50/de/System.Globalization.xml",
         "ref/netcore50/es/System.Globalization.xml",
         "ref/netcore50/fr/System.Globalization.xml",
@@ -301,22 +561,23 @@
         "ref/netcore50/ja/System.Globalization.xml",
         "ref/netcore50/ko/System.Globalization.xml",
         "ref/netcore50/ru/System.Globalization.xml",
+        "ref/netcore50/System.Globalization.dll",
+        "ref/netcore50/System.Globalization.xml",
         "ref/netcore50/zh-hans/System.Globalization.xml",
         "ref/netcore50/zh-hant/System.Globalization.xml",
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._"
+        "ref/xamarinmac20/_._",
+        "System.Globalization.4.0.0.nupkg.sha512",
+        "System.Globalization.nuspec"
       ]
     },
     "System.IO/4.0.0": {
-      "sha512": "MoCHQ0u5n0OMwUS8OX4Gl48qKiQziSW5cXvt82d+MmAcsLq9OL90+ihnu/aJ1h6OOYcBswrZAEuApfZha9w2lg==",
       "type": "package",
+      "sha512": "MoCHQ0u5n0OMwUS8OX4Gl48qKiQziSW5cXvt82d+MmAcsLq9OL90+ihnu/aJ1h6OOYcBswrZAEuApfZha9w2lg==",
       "files": [
-        "License.rtf",
-        "System.IO.4.0.0.nupkg.sha512",
-        "System.IO.nuspec",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
         "lib/net45/_._",
@@ -325,10 +586,7 @@
         "lib/wpa81/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/dotnet/System.IO.dll",
-        "ref/dotnet/System.IO.xml",
+        "License.rtf",
         "ref/dotnet/de/System.IO.xml",
         "ref/dotnet/es/System.IO.xml",
         "ref/dotnet/fr/System.IO.xml",
@@ -336,11 +594,13 @@
         "ref/dotnet/ja/System.IO.xml",
         "ref/dotnet/ko/System.IO.xml",
         "ref/dotnet/ru/System.IO.xml",
+        "ref/dotnet/System.IO.dll",
+        "ref/dotnet/System.IO.xml",
         "ref/dotnet/zh-hans/System.IO.xml",
         "ref/dotnet/zh-hant/System.IO.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net45/_._",
-        "ref/netcore50/System.IO.dll",
-        "ref/netcore50/System.IO.xml",
         "ref/netcore50/de/System.IO.xml",
         "ref/netcore50/es/System.IO.xml",
         "ref/netcore50/fr/System.IO.xml",
@@ -348,22 +608,23 @@
         "ref/netcore50/ja/System.IO.xml",
         "ref/netcore50/ko/System.IO.xml",
         "ref/netcore50/ru/System.IO.xml",
+        "ref/netcore50/System.IO.dll",
+        "ref/netcore50/System.IO.xml",
         "ref/netcore50/zh-hans/System.IO.xml",
         "ref/netcore50/zh-hant/System.IO.xml",
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._"
+        "ref/xamarinmac20/_._",
+        "System.IO.4.0.0.nupkg.sha512",
+        "System.IO.nuspec"
       ]
     },
     "System.Reflection/4.0.0": {
-      "sha512": "g96Rn8XuG7y4VfxPj/jnXroRJdQ8L3iN3k3zqsuzk4k3Nq4KMXARYiIO4BLW4GwX06uQpuYwRMcAC/aF117knQ==",
       "type": "package",
+      "sha512": "g96Rn8XuG7y4VfxPj/jnXroRJdQ8L3iN3k3zqsuzk4k3Nq4KMXARYiIO4BLW4GwX06uQpuYwRMcAC/aF117knQ==",
       "files": [
-        "License.rtf",
-        "System.Reflection.4.0.0.nupkg.sha512",
-        "System.Reflection.nuspec",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
         "lib/net45/_._",
@@ -372,10 +633,7 @@
         "lib/wpa81/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/dotnet/System.Reflection.dll",
-        "ref/dotnet/System.Reflection.xml",
+        "License.rtf",
         "ref/dotnet/de/System.Reflection.xml",
         "ref/dotnet/es/System.Reflection.xml",
         "ref/dotnet/fr/System.Reflection.xml",
@@ -383,11 +641,13 @@
         "ref/dotnet/ja/System.Reflection.xml",
         "ref/dotnet/ko/System.Reflection.xml",
         "ref/dotnet/ru/System.Reflection.xml",
+        "ref/dotnet/System.Reflection.dll",
+        "ref/dotnet/System.Reflection.xml",
         "ref/dotnet/zh-hans/System.Reflection.xml",
         "ref/dotnet/zh-hant/System.Reflection.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net45/_._",
-        "ref/netcore50/System.Reflection.dll",
-        "ref/netcore50/System.Reflection.xml",
         "ref/netcore50/de/System.Reflection.xml",
         "ref/netcore50/es/System.Reflection.xml",
         "ref/netcore50/fr/System.Reflection.xml",
@@ -395,29 +655,29 @@
         "ref/netcore50/ja/System.Reflection.xml",
         "ref/netcore50/ko/System.Reflection.xml",
         "ref/netcore50/ru/System.Reflection.xml",
+        "ref/netcore50/System.Reflection.dll",
+        "ref/netcore50/System.Reflection.xml",
         "ref/netcore50/zh-hans/System.Reflection.xml",
         "ref/netcore50/zh-hant/System.Reflection.xml",
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._"
+        "ref/xamarinmac20/_._",
+        "System.Reflection.4.0.0.nupkg.sha512",
+        "System.Reflection.nuspec"
       ]
     },
     "System.Reflection.Primitives/4.0.0": {
-      "sha512": "n9S0XpKv2ruc17FSnaiX6nV47VfHTZ1wLjKZlAirUZCvDQCH71mVp+Ohabn0xXLh5pK2PKp45HCxkqu5Fxn/lA==",
       "type": "package",
+      "sha512": "n9S0XpKv2ruc17FSnaiX6nV47VfHTZ1wLjKZlAirUZCvDQCH71mVp+Ohabn0xXLh5pK2PKp45HCxkqu5Fxn/lA==",
       "files": [
-        "System.Reflection.Primitives.4.0.0.nupkg.sha512",
-        "System.Reflection.Primitives.nuspec",
         "lib/DNXCore50/System.Reflection.Primitives.dll",
         "lib/net45/_._",
         "lib/netcore50/System.Reflection.Primitives.dll",
         "lib/win8/_._",
         "lib/wp80/_._",
         "lib/wpa81/_._",
-        "ref/dotnet/System.Reflection.Primitives.dll",
-        "ref/dotnet/System.Reflection.Primitives.xml",
         "ref/dotnet/de/System.Reflection.Primitives.xml",
         "ref/dotnet/es/System.Reflection.Primitives.xml",
         "ref/dotnet/fr/System.Reflection.Primitives.xml",
@@ -425,6 +685,8 @@
         "ref/dotnet/ja/System.Reflection.Primitives.xml",
         "ref/dotnet/ko/System.Reflection.Primitives.xml",
         "ref/dotnet/ru/System.Reflection.Primitives.xml",
+        "ref/dotnet/System.Reflection.Primitives.dll",
+        "ref/dotnet/System.Reflection.Primitives.xml",
         "ref/dotnet/zh-hans/System.Reflection.Primitives.xml",
         "ref/dotnet/zh-hant/System.Reflection.Primitives.xml",
         "ref/net45/_._",
@@ -433,23 +695,21 @@
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
-        "runtimes/win8-aot/lib/netcore50/System.Reflection.Primitives.dll"
+        "runtimes/win8-aot/lib/netcore50/System.Reflection.Primitives.dll",
+        "System.Reflection.Primitives.4.0.0.nupkg.sha512",
+        "System.Reflection.Primitives.nuspec"
       ]
     },
     "System.Resources.ResourceManager/4.0.0": {
-      "sha512": "qmqeZ4BJgjfU+G2JbrZt4Dk1LsMxO4t+f/9HarNY6w8pBgweO6jT+cknUH7c3qIrGvyUqraBhU45Eo6UtA0fAw==",
       "type": "package",
+      "sha512": "qmqeZ4BJgjfU+G2JbrZt4Dk1LsMxO4t+f/9HarNY6w8pBgweO6jT+cknUH7c3qIrGvyUqraBhU45Eo6UtA0fAw==",
       "files": [
-        "System.Resources.ResourceManager.4.0.0.nupkg.sha512",
-        "System.Resources.ResourceManager.nuspec",
         "lib/DNXCore50/System.Resources.ResourceManager.dll",
         "lib/net45/_._",
         "lib/netcore50/System.Resources.ResourceManager.dll",
         "lib/win8/_._",
         "lib/wp80/_._",
         "lib/wpa81/_._",
-        "ref/dotnet/System.Resources.ResourceManager.dll",
-        "ref/dotnet/System.Resources.ResourceManager.xml",
         "ref/dotnet/de/System.Resources.ResourceManager.xml",
         "ref/dotnet/es/System.Resources.ResourceManager.xml",
         "ref/dotnet/fr/System.Resources.ResourceManager.xml",
@@ -457,6 +717,8 @@
         "ref/dotnet/ja/System.Resources.ResourceManager.xml",
         "ref/dotnet/ko/System.Resources.ResourceManager.xml",
         "ref/dotnet/ru/System.Resources.ResourceManager.xml",
+        "ref/dotnet/System.Resources.ResourceManager.dll",
+        "ref/dotnet/System.Resources.ResourceManager.xml",
         "ref/dotnet/zh-hans/System.Resources.ResourceManager.xml",
         "ref/dotnet/zh-hant/System.Resources.ResourceManager.xml",
         "ref/net45/_._",
@@ -465,15 +727,15 @@
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
-        "runtimes/win8-aot/lib/netcore50/System.Resources.ResourceManager.dll"
+        "runtimes/win8-aot/lib/netcore50/System.Resources.ResourceManager.dll",
+        "System.Resources.ResourceManager.4.0.0.nupkg.sha512",
+        "System.Resources.ResourceManager.nuspec"
       ]
     },
     "System.Runtime/4.0.20": {
-      "sha512": "X7N/9Bz7jVPorqdVFO86ns1sX6MlQM+WTxELtx+Z4VG45x9+LKmWH0GRqjgKprUnVuwmfB9EJ9DQng14Z7/zwg==",
       "type": "package",
+      "sha512": "X7N/9Bz7jVPorqdVFO86ns1sX6MlQM+WTxELtx+Z4VG45x9+LKmWH0GRqjgKprUnVuwmfB9EJ9DQng14Z7/zwg==",
       "files": [
-        "System.Runtime.4.0.20.nupkg.sha512",
-        "System.Runtime.nuspec",
         "lib/DNXCore50/System.Runtime.dll",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -481,10 +743,6 @@
         "lib/netcore50/System.Runtime.dll",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/dotnet/System.Runtime.dll",
-        "ref/dotnet/System.Runtime.xml",
         "ref/dotnet/de/System.Runtime.xml",
         "ref/dotnet/es/System.Runtime.xml",
         "ref/dotnet/fr/System.Runtime.xml",
@@ -492,21 +750,24 @@
         "ref/dotnet/ja/System.Runtime.xml",
         "ref/dotnet/ko/System.Runtime.xml",
         "ref/dotnet/ru/System.Runtime.xml",
+        "ref/dotnet/System.Runtime.dll",
+        "ref/dotnet/System.Runtime.xml",
         "ref/dotnet/zh-hans/System.Runtime.xml",
         "ref/dotnet/zh-hant/System.Runtime.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net46/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "runtimes/win8-aot/lib/netcore50/System.Runtime.dll"
+        "runtimes/win8-aot/lib/netcore50/System.Runtime.dll",
+        "System.Runtime.4.0.20.nupkg.sha512",
+        "System.Runtime.nuspec"
       ]
     },
     "System.Text.Encoding/4.0.0": {
-      "sha512": "AMxFNOXpA6Ab8swULbXuJmoT2K5w6TnV3ObF5wsmEcIHQUJghoZtDVfVHb08O2wW15mOSI1i9Wg0Dx0pY13o8g==",
       "type": "package",
+      "sha512": "AMxFNOXpA6Ab8swULbXuJmoT2K5w6TnV3ObF5wsmEcIHQUJghoZtDVfVHb08O2wW15mOSI1i9Wg0Dx0pY13o8g==",
       "files": [
-        "License.rtf",
-        "System.Text.Encoding.4.0.0.nupkg.sha512",
-        "System.Text.Encoding.nuspec",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
         "lib/net45/_._",
@@ -515,10 +776,7 @@
         "lib/wpa81/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/dotnet/System.Text.Encoding.dll",
-        "ref/dotnet/System.Text.Encoding.xml",
+        "License.rtf",
         "ref/dotnet/de/System.Text.Encoding.xml",
         "ref/dotnet/es/System.Text.Encoding.xml",
         "ref/dotnet/fr/System.Text.Encoding.xml",
@@ -526,11 +784,13 @@
         "ref/dotnet/ja/System.Text.Encoding.xml",
         "ref/dotnet/ko/System.Text.Encoding.xml",
         "ref/dotnet/ru/System.Text.Encoding.xml",
+        "ref/dotnet/System.Text.Encoding.dll",
+        "ref/dotnet/System.Text.Encoding.xml",
         "ref/dotnet/zh-hans/System.Text.Encoding.xml",
         "ref/dotnet/zh-hant/System.Text.Encoding.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net45/_._",
-        "ref/netcore50/System.Text.Encoding.dll",
-        "ref/netcore50/System.Text.Encoding.xml",
         "ref/netcore50/de/System.Text.Encoding.xml",
         "ref/netcore50/es/System.Text.Encoding.xml",
         "ref/netcore50/fr/System.Text.Encoding.xml",
@@ -538,21 +798,23 @@
         "ref/netcore50/ja/System.Text.Encoding.xml",
         "ref/netcore50/ko/System.Text.Encoding.xml",
         "ref/netcore50/ru/System.Text.Encoding.xml",
+        "ref/netcore50/System.Text.Encoding.dll",
+        "ref/netcore50/System.Text.Encoding.xml",
         "ref/netcore50/zh-hans/System.Text.Encoding.xml",
         "ref/netcore50/zh-hant/System.Text.Encoding.xml",
         "ref/win8/_._",
         "ref/wp80/_._",
         "ref/wpa81/_._",
         "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._"
+        "ref/xamarinmac20/_._",
+        "System.Text.Encoding.4.0.0.nupkg.sha512",
+        "System.Text.Encoding.nuspec"
       ]
     },
     "System.Threading/4.0.10": {
-      "sha512": "0w6pRxIEE7wuiOJeKabkDgeIKmqf4ER1VNrs6qFwHnooEE78yHwi/bKkg5Jo8/pzGLm0xQJw0nEmPXt1QBAIUA==",
       "type": "package",
+      "sha512": "0w6pRxIEE7wuiOJeKabkDgeIKmqf4ER1VNrs6qFwHnooEE78yHwi/bKkg5Jo8/pzGLm0xQJw0nEmPXt1QBAIUA==",
       "files": [
-        "System.Threading.4.0.10.nupkg.sha512",
-        "System.Threading.nuspec",
         "lib/DNXCore50/System.Threading.dll",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -560,10 +822,6 @@
         "lib/netcore50/System.Threading.dll",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/dotnet/System.Threading.dll",
-        "ref/dotnet/System.Threading.xml",
         "ref/dotnet/de/System.Threading.xml",
         "ref/dotnet/es/System.Threading.xml",
         "ref/dotnet/fr/System.Threading.xml",
@@ -571,20 +829,24 @@
         "ref/dotnet/ja/System.Threading.xml",
         "ref/dotnet/ko/System.Threading.xml",
         "ref/dotnet/ru/System.Threading.xml",
+        "ref/dotnet/System.Threading.dll",
+        "ref/dotnet/System.Threading.xml",
         "ref/dotnet/zh-hans/System.Threading.xml",
         "ref/dotnet/zh-hant/System.Threading.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net46/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "runtimes/win8-aot/lib/netcore50/System.Threading.dll"
+        "runtimes/win8-aot/lib/netcore50/System.Threading.dll",
+        "System.Threading.4.0.10.nupkg.sha512",
+        "System.Threading.nuspec"
       ]
     },
     "System.Threading.Tasks/4.0.10": {
-      "sha512": "NOwJGDfk79jR0bnzosbXLVD/PdI8KzBeESoa3CofEM5v9R5EBfcI0Jyf18stx+0IYV9okmDIDxVtxq9TbnR9bQ==",
       "type": "package",
+      "sha512": "NOwJGDfk79jR0bnzosbXLVD/PdI8KzBeESoa3CofEM5v9R5EBfcI0Jyf18stx+0IYV9okmDIDxVtxq9TbnR9bQ==",
       "files": [
-        "System.Threading.Tasks.4.0.10.nupkg.sha512",
-        "System.Threading.Tasks.nuspec",
         "lib/DNXCore50/System.Threading.Tasks.dll",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -592,10 +854,6 @@
         "lib/netcore50/System.Threading.Tasks.dll",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/dotnet/System.Threading.Tasks.dll",
-        "ref/dotnet/System.Threading.Tasks.xml",
         "ref/dotnet/de/System.Threading.Tasks.xml",
         "ref/dotnet/es/System.Threading.Tasks.xml",
         "ref/dotnet/fr/System.Threading.Tasks.xml",
@@ -603,24 +861,32 @@
         "ref/dotnet/ja/System.Threading.Tasks.xml",
         "ref/dotnet/ko/System.Threading.Tasks.xml",
         "ref/dotnet/ru/System.Threading.Tasks.xml",
+        "ref/dotnet/System.Threading.Tasks.dll",
+        "ref/dotnet/System.Threading.Tasks.xml",
         "ref/dotnet/zh-hans/System.Threading.Tasks.xml",
         "ref/dotnet/zh-hant/System.Threading.Tasks.xml",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
         "ref/net46/_._",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "runtimes/win8-aot/lib/netcore50/System.Threading.Tasks.dll"
+        "runtimes/win8-aot/lib/netcore50/System.Threading.Tasks.dll",
+        "System.Threading.Tasks.4.0.10.nupkg.sha512",
+        "System.Threading.Tasks.nuspec"
       ]
     },
-    "System.Threading.Tasks.Extensions/4.0.0-rc3-23725": {
-      "sha512": "Ies2eP+2lL8FzvU3NISJALeXXt3qM8EJd7IMrfCi/LSMabhBexjjdcrIq0HVB0ELRRXRKWloVT5cLgu5VKbBag==",
+    "System.Threading.Tasks.Extensions/4.0.0-rc3-23726": {
       "type": "package",
+      "serviceable": true,
+      "sha512": "NOs3I5Pn3/NTuwgrJjAjxVp5hzd052o7lGrsc07lOl+DieZAKWlR5nV8BJJKkGSpZeJ6U5+ft9ScRTW+Rt1R5w==",
       "files": [
-        "System.Threading.Tasks.Extensions.4.0.0-rc3-23725.nupkg.sha512",
-        "System.Threading.Tasks.Extensions.nuspec",
         "lib/dotnet5.1/System.Threading.Tasks.Extensions.dll",
         "lib/dotnet5.1/System.Threading.Tasks.Extensions.xml",
         "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.dll",
-        "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.xml"
+        "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.xml",
+        "System.Threading.Tasks.Extensions.4.0.0-rc3-23726.nupkg",
+        "System.Threading.Tasks.Extensions.4.0.0-rc3-23726.nupkg.sha512",
+        "System.Threading.Tasks.Extensions.nuspec"
       ]
     }
   },

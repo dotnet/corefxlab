@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "System.Buffers": "4.0.0-*",
+    "System.Globalization": "4.0.10-*",
     "System.Slices": "0.1.0-*",
     "System.Text.Utf8": "0.1.0-*" 
   },
