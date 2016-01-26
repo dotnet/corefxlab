@@ -606,8 +606,7 @@
       "System.Collections >= 4.0.0",
       "System.Diagnostics.Debug >= 4.0.0",
       "System.Diagnostics.Tools >= 4.0.1-*",
-      "System.Resources.ResourceManager >= 4.0.0",
-      "System.Runtime >= 4.0.0"
+      "System.Resources.ResourceManager >= 4.0.0"
     ],
     ".NETPlatform,Version=v5.6": []
   }

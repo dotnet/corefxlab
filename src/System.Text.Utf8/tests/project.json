@@ -8,8 +8,6 @@
           "type": "build",
           "version": "0.1.0-*"
         },
-    "System.Console": "4.0.0-*",
-    "System.Slices": "0.1.0-*",
     "xunit": "2.1.0"
   },
   "frameworks": {

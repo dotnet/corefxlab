@@ -4,24 +4,17 @@
     "allowUnsafe": true
   },
   "dependencies": {
-    "Microsoft.NETCore.TestHost": "1.0.0-beta-23409",
     "Microsoft.NETCore.Platforms": "1.0.1-*",
-    "Microsoft.NETCore.Runtime.CoreCLR": "1.0.1-beta-23409",
     "src": {
           "type": "build",
-          "version": "1.0.0"
+          "version": "0.1.0-*"
         },
     "FluentAssertions": "4.0.1",
-    "Microsoft.NETCore": "5.0.0",
-    "System.Buffers": "0.1.0-*",
-    "System.Slices": "0.1.0-*",
-    "System.Text.Formatting": "0.1.0-*",
-    "xunit": "2.1.0",
-    "xunit.netcore.extensions": "1.0.0-prerelease-*",    
-    "xunit.console.netcore": "1.0.2-prerelease-00101",
-    "xunit.extensibility.execution": "2.1.0"
+    "xunit": "2.1.0"
   },
   "frameworks": {
-    "dnxcore50": {}
+    "dotnet5.6": {
+        "imports": "portable-net45+win8"
+     }
   }
 }

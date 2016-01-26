@@ -19,8 +19,6 @@
   },
   "dependencies": {
     "System.Diagnostics.Debug": "4.0.0",
-    "System.Runtime": "4.0.21-*",
-    "System.Runtime.InteropServices": "4.0.21-*",
     "System.Slices": "0.1.0-*",
     "System.Threading": "4.0.0"
   },

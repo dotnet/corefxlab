@@ -6,11 +6,8 @@
           "type": "build",
           "version": "0.1.0-*"
         },
-    "System.IO.FileSystem":  "4.0.0",
-    "System.Linq": "4.0.0-*",
-    "System.Linq.Expressions": "4.0.10-beta-*",
+    "System.Linq.Expressions": "4.0.10-*",
     "xunit": "2.1.0",
-    "xunit.netcore.extensions": "1.0.0-prerelease-00123"
   },
   "frameworks": {
     "dotnet5.6": {

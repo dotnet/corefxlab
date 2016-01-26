@@ -19,13 +19,12 @@ namespace System.Text.Formatting
         {
             return IntegerFormatter.TryFormatUInt64(value, 1, buffer, format, formattingData, out bytesWritten);
         }
-        [CLSCompliant(false)]
+
         public static bool TryFormat(this sbyte value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatInt64(value, 1, buffer, format, formattingData, out bytesWritten);
         }
 
-        [CLSCompliant(false)]
         public static bool TryFormat(this ushort value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatUInt64(value, 2, buffer, format, formattingData, out bytesWritten);
@@ -35,7 +34,6 @@ namespace System.Text.Formatting
             return IntegerFormatter.TryFormatInt64(value, 2, buffer, format, formattingData, out bytesWritten);
         }
 
-        [CLSCompliant(false)]
         public static bool TryFormat(this uint value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatUInt64(value, 4, buffer, format, formattingData, out bytesWritten);
@@ -45,7 +43,6 @@ namespace System.Text.Formatting
             return IntegerFormatter.TryFormatInt64(value, 4, buffer, format, formattingData, out bytesWritten);
         }
 
-        [CLSCompliant(false)]
         public static bool TryFormat(this ulong value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatUInt64(value, 8, buffer, format, formattingData, out bytesWritten);

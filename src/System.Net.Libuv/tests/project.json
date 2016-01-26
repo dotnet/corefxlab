@@ -6,10 +6,7 @@
           "type": "build",
           "version": "0.1.0-*"
         },
-    "Microsoft.NETCore": "5.0.0-*",
-    "System.Buffers": "0.1.0-*",
-    "xunit": "2.1.0",
-    "xunit.netcore.extensions": "1.0.0-prerelease-00123"
+    "xunit": "2.1.0"
   },
   "frameworks": {
     "dotnet5.6": {

@@ -93,14 +93,12 @@ namespace System.Text.Formatting
             }
         }
 
-        [CLSCompliant(false)]
         public bool TryWriteDigit(ulong digit, Span<byte> buffer, out int bytesWritten)
         {
             Precondition.Require(digit < 10);
             return TryWriteDigitOrSymbol(digit, buffer, out bytesWritten);
         }
 
-        [CLSCompliant(false)]
         public bool TryWriteSymbol(Symbol symbol, Span<byte> buffer, out int bytesWritten)
         {
             var symbolIndex = (ushort)symbol;
@@ -135,7 +133,6 @@ namespace System.Text.Formatting
             return true;
         }
 
-        [CLSCompliant(false)]
         public enum Symbol : ushort
         {
             DecimalSeparator = 10,

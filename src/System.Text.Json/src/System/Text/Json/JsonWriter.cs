@@ -10,7 +10,6 @@ namespace System.Text.Json
 {
     public struct JsonWriter : IDisposable
     {
-        ManagedBufferPool<byte> _pool;
         StreamFormatter _formatter;
         bool _wroteListItem;
         bool _prettyPrint;
@@ -21,8 +20,7 @@ namespace System.Text.Json
             _wroteListItem = false;
             _prettyPrint = prettyPrint;
             _indent = 0;
-            _pool = new ManagedBufferPool<byte>(2048);
-            _formatter = new StreamFormatter(stream, encoding == FormattingData.Encoding.Utf16 ? FormattingData.InvariantUtf16 : FormattingData.InvariantUtf8, _pool);
+            _formatter = new StreamFormatter(stream, encoding == FormattingData.Encoding.Utf16 ? FormattingData.InvariantUtf16 : FormattingData.InvariantUtf8, ArrayPool<byte>.Shared);
         }
 
         public void Dispose() {
@@ -72,7 +70,6 @@ namespace System.Text.Json
             WriteAttributeEnd();
         }
 
-        [CLSCompliant(false)]
         public void WriteAttribute(string name, sbyte value)
         {
             WriteMember(name);
@@ -87,7 +84,6 @@ namespace System.Text.Json
             WriteAttributeEnd();
         }
 
-        [CLSCompliant(false)]
         public void WriteAttribute(string name, ulong value)
         {
             WriteMember(name);
@@ -95,7 +91,6 @@ namespace System.Text.Json
             WriteAttributeEnd();
         }
 
-        [CLSCompliant(false)]
         public void WriteAttribute(string name, uint value)
         {
             WriteMember(name);
@@ -110,7 +105,6 @@ namespace System.Text.Json
             WriteAttributeEnd();
         }
 
-        [CLSCompliant(false)]
         public void WriteAttribute(string name, ushort value)
         {
             WriteMember(name);

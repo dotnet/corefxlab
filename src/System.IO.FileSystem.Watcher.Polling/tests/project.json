@@ -6,12 +6,9 @@
           "type": "build",
           "version": "0.1.0-*"
         },
-    "System.Console": "4.0.0-*",
     "System.IO.FileSystem": "4.0.1-*",
     "System.Threading.Thread": "4.0.0-*",
-    "System.Diagnostics.TraceSource": "4.0.0-*",
-    "xunit": "2.1.0",
-    "xunit.netcore.extensions": "1.0.0-prerelease-00123"
+    "xunit": "2.1.0"
   },
   "frameworks": {
     "dotnet5.6": {

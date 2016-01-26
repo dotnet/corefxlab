@@ -3,7 +3,7 @@
   "version": 2,
   "targets": {
     ".NETPlatform,Version=v5.6": {
-      "System.Collections/4.0.10": {
+      "System.Collections/4.0.0": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -42,10 +42,10 @@
           "ref/dotnet/System.Globalization.dll": {}
         }
       },
-      "System.IO/4.0.10": {
+      "System.IO/4.0.0": {
         "type": "package",
         "dependencies": {
-          "System.Runtime": "4.0.20",
+          "System.Runtime": "4.0.0",
           "System.Text.Encoding": "4.0.0",
           "System.Threading.Tasks": "4.0.0"
         },
@@ -118,7 +118,7 @@
           "ref/dotnet/System.Threading.Tasks.dll": {}
         }
       },
-      "System.Threading.Tasks.Extensions/4.0.0-rc2-23715": {
+      "System.Threading.Tasks.Extensions/4.0.0-rc3-23725": {
         "type": "package",
         "dependencies": {
           "System.Collections": "4.0.0",
@@ -135,17 +135,19 @@
     }
   },
   "libraries": {
-    "System.Collections/4.0.10": {
-      "sha512": "ux6ilcZZjV/Gp7JEZpe+2V1eTueq6NuoGRM3eZCFuPM25hLVVgCRuea6STW8hvqreIOE59irJk5/ovpA5xQipw==",
+    "System.Collections/4.0.0": {
+      "sha512": "i2vsGDIEbWdHcUSNDPKZP/ZWod6o740el7mGTCy0dqbCxQh74W4QoC+klUwPEtGEFuvzJ7bJgvwJqscosVNyZQ==",
       "type": "package",
       "files": [
-        "System.Collections.4.0.10.nupkg.sha512",
+        "License.rtf",
+        "System.Collections.4.0.0.nupkg.sha512",
         "System.Collections.nuspec",
-        "lib/DNXCore50/System.Collections.dll",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
-        "lib/net46/_._",
-        "lib/netcore50/System.Collections.dll",
+        "lib/net45/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
         "ref/MonoAndroid10/_._",
@@ -161,10 +163,23 @@
         "ref/dotnet/ru/System.Collections.xml",
         "ref/dotnet/zh-hans/System.Collections.xml",
         "ref/dotnet/zh-hant/System.Collections.xml",
-        "ref/net46/_._",
+        "ref/net45/_._",
+        "ref/netcore50/System.Collections.dll",
+        "ref/netcore50/System.Collections.xml",
+        "ref/netcore50/de/System.Collections.xml",
+        "ref/netcore50/es/System.Collections.xml",
+        "ref/netcore50/fr/System.Collections.xml",
+        "ref/netcore50/it/System.Collections.xml",
+        "ref/netcore50/ja/System.Collections.xml",
+        "ref/netcore50/ko/System.Collections.xml",
+        "ref/netcore50/ru/System.Collections.xml",
+        "ref/netcore50/zh-hans/System.Collections.xml",
+        "ref/netcore50/zh-hant/System.Collections.xml",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
         "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "runtimes/win8-aot/lib/netcore50/System.Collections.dll"
+        "ref/xamarinmac20/_._"
       ]
     },
     "System.Diagnostics.Debug/4.0.10": {
@@ -295,17 +310,19 @@
         "ref/xamarinmac20/_._"
       ]
     },
-    "System.IO/4.0.10": {
-      "sha512": "kghf1CeYT+W2lw8a50/GxFz5HR9t6RkL4BvjxtTp1NxtEFWywnMA9W8FH/KYXiDNThcw9u/GOViDON4iJFGXIQ==",
+    "System.IO/4.0.0": {
+      "sha512": "MoCHQ0u5n0OMwUS8OX4Gl48qKiQziSW5cXvt82d+MmAcsLq9OL90+ihnu/aJ1h6OOYcBswrZAEuApfZha9w2lg==",
       "type": "package",
       "files": [
-        "System.IO.4.0.10.nupkg.sha512",
+        "License.rtf",
+        "System.IO.4.0.0.nupkg.sha512",
         "System.IO.nuspec",
-        "lib/DNXCore50/System.IO.dll",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
-        "lib/net46/_._",
-        "lib/netcore50/System.IO.dll",
+        "lib/net45/_._",
+        "lib/win8/_._",
+        "lib/wp80/_._",
+        "lib/wpa81/_._",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
         "ref/MonoAndroid10/_._",
@@ -321,10 +338,23 @@
         "ref/dotnet/ru/System.IO.xml",
         "ref/dotnet/zh-hans/System.IO.xml",
         "ref/dotnet/zh-hant/System.IO.xml",
-        "ref/net46/_._",
+        "ref/net45/_._",
+        "ref/netcore50/System.IO.dll",
+        "ref/netcore50/System.IO.xml",
+        "ref/netcore50/de/System.IO.xml",
+        "ref/netcore50/es/System.IO.xml",
+        "ref/netcore50/fr/System.IO.xml",
+        "ref/netcore50/it/System.IO.xml",
+        "ref/netcore50/ja/System.IO.xml",
+        "ref/netcore50/ko/System.IO.xml",
+        "ref/netcore50/ru/System.IO.xml",
+        "ref/netcore50/zh-hans/System.IO.xml",
+        "ref/netcore50/zh-hant/System.IO.xml",
+        "ref/win8/_._",
+        "ref/wp80/_._",
+        "ref/wpa81/_._",
         "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "runtimes/win8-aot/lib/netcore50/System.IO.dll"
+        "ref/xamarinmac20/_._"
       ]
     },
     "System.Reflection/4.0.0": {
@@ -581,11 +611,11 @@
         "runtimes/win8-aot/lib/netcore50/System.Threading.Tasks.dll"
       ]
     },
-    "System.Threading.Tasks.Extensions/4.0.0-rc2-23715": {
-      "sha512": "Itt4iFhh/BOs8VwuHmzNlK0D5A2Fq0KkAifWVtV3IxH7fKA4npZlHO1ePpjCoGAvJ87RD7+aZs7BWIeB7Cy7Ig==",
+    "System.Threading.Tasks.Extensions/4.0.0-rc3-23725": {
+      "sha512": "Ies2eP+2lL8FzvU3NISJALeXXt3qM8EJd7IMrfCi/LSMabhBexjjdcrIq0HVB0ELRRXRKWloVT5cLgu5VKbBag==",
       "type": "package",
       "files": [
-        "System.Threading.Tasks.Extensions.4.0.0-rc2-23715.nupkg.sha512",
+        "System.Threading.Tasks.Extensions.4.0.0-rc3-23725.nupkg.sha512",
         "System.Threading.Tasks.Extensions.nuspec",
         "lib/dotnet5.1/System.Threading.Tasks.Extensions.dll",
         "lib/dotnet5.1/System.Threading.Tasks.Extensions.xml",
@@ -596,15 +626,13 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "System.Collections >= 4.0.10-*",
       "System.Diagnostics.Debug >= 4.0.10-*",
       "System.Diagnostics.Tools >= 4.0.1-*",
-      "System.IO >= 4.0.10",
       "System.Resources.ResourceManager >= 4.0.0-*",
       "System.Runtime >= 4.0.20",
       "System.Threading >= 4.0.10",
       "System.Threading.Tasks >= 4.0.10",
-      "System.Threading.Tasks.Extensions >= 4.0.0-rc2-*"
+      "System.Threading.Tasks.Extensions >= 4.0.0-*"
     ],
     ".NETPlatform,Version=v5.6": []
   }

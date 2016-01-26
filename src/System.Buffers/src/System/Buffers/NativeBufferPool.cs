@@ -76,7 +76,7 @@ namespace System.Buffers
 #if DEBUG
                 System.Diagnostics.Debugger.Break();
 #endif
-                buffer = new Span<T>(Marshal.AllocHGlobal(numberOfElements * Marshal.SizeOf(typeof(T))).ToPointer(), numberOfElements);
+                buffer = new Span<T>(Marshal.AllocHGlobal(numberOfElements * Marshal.SizeOf<T>()).ToPointer(), numberOfElements);
             }
             else
             {

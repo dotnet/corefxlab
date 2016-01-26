@@ -11,8 +11,7 @@ namespace System.Text.Formatting.Globalization.Tests
         [Fact]
         public void CustomCulture()
         {
-            var pool = new ManagedBufferPool<byte>(1024);
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter(ArrayPool<byte>.Shared);
             sb.FormattingData = FormattingDataProvider.CreateFormattingData("pl-PL");
 
             sb.Append(-10000, Format.Parse('N'));

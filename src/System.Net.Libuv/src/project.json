@@ -18,8 +18,6 @@
     "allowUnsafe": true
   },
   "dependencies": {
-    "System.Runtime": "4.0.21-*",
-    "System.Runtime.InteropServices": "4.0.21-*",
     "System.Runtime.InteropServices.RuntimeInformation": "4.0.0-*",
     "System.Runtime.Extensions": "4.0.0",
     "System.Slices": "0.1.0-*",

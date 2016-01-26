@@ -26,7 +26,7 @@ namespace System.Text.Formatting
             }
             formatter.CommitBytes(bytesWritten);
         }
-        [CLSCompliant(false)] 
+
         public static void Append<TFormatter>(this TFormatter formatter, sbyte value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
         {
             int bytesWritten;
@@ -38,7 +38,6 @@ namespace System.Text.Formatting
             formatter.CommitBytes(bytesWritten);
         }
 
-        [CLSCompliant(false)]
         public static void Append<TFormatter>(this TFormatter formatter, ushort value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
         {
             int bytesWritten;
@@ -60,7 +59,6 @@ namespace System.Text.Formatting
             formatter.CommitBytes(bytesWritten);
         }
 
-        [CLSCompliant(false)]
         public static void Append<TFormatter>(this TFormatter formatter, uint value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
         {
             int bytesWritten;
@@ -82,7 +80,6 @@ namespace System.Text.Formatting
             formatter.CommitBytes(bytesWritten);
         }
 
-        [CLSCompliant(false)]
         public static void Append<TFormatter>(this TFormatter formatter, ulong value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
         {
             int bytesWritten;
