@@ -8,6 +8,7 @@ syntax: glob
 *.userosscache
 *.sln.docstates
 *.dll
+project.lock.json
 
 # Build results
 [Dd]ebug/

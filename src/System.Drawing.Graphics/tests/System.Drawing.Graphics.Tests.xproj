@@ -8,7 +8,7 @@
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
     <ProjectGuid>C0219E93-1738-45A1-92CA-16693FAAEC1B</ProjectGuid>
-    <RootNamespace>System.Buffers.Tests</RootNamespace>
+    <RootNamespace>System.Drawing.Graphics.Tests</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
