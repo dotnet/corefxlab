@@ -87,5 +87,42 @@ namespace System.Text.Formatting {
                 return ResourceManager.GetString("UnableToParsePrecision", resourceCulture);
             }
         }
+
+        internal static string CreateInvalidParameters {
+            get {
+                return ResourceManager.GetString("CreateInvalidParameters", resourceCulture);
+            }
+        }
+
+        internal static string FileTypeNotSupported {
+            get {
+                return ResourceManager.GetString("FileTypeNotSupported", resourceCulture);
+            }
+        }
+        internal static string InvalidTransparencyPercent {
+            get {
+                return ResourceManager.GetString("InvalidTransparencyPercent", resourceCulture);
+            }
+        }
+        internal static string MalformedFilePath {
+            get {
+                return ResourceManager.GetString("MalformedFilePath", resourceCulture);
+            }
+        }
+        internal static string NullStreamReferenced {
+            get {
+                return ResourceManager.GetString("NullStreamReferenced", resourceCulture);
+            }
+        }
+        internal static string ResizeInvalidParameters {
+            get {
+                return ResourceManager.GetString("ResizeInvalidParameters", resourceCulture);
+            }
+        }
+        internal static string WriteToFileFailed {
+            get {
+                return ResourceManager.GetString("WriteToFileFailed", resourceCulture);
+            }
+        }
     }
 }

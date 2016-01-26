@@ -3,7 +3,7 @@
 
 using System.IO;
 using System.Runtime.InteropServices;
-
+using System.Text.Formatting;
 
 namespace System.Drawing.Graphics
 {
@@ -14,7 +14,7 @@ namespace System.Drawing.Graphics
         {
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException(SR.Format(SR.MalformedFilePath, filePath));
+                throw new FileNotFoundException(string.Format(Strings.MalformedFilePath, filePath));
             }
             else if (DLLImports.gdSupportsFileType(filePath, false))
             {
@@ -29,7 +29,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new FileLoadException(SR.Format(SR.FileTypeNotSupported, filePath));
+                throw new FileLoadException(string.Format(Strings.FileTypeNotSupported, filePath));
             }
         }
 
@@ -41,14 +41,14 @@ namespace System.Drawing.Graphics
 
             if (!DLLImports.gdSupportsFileType(filePath, true))
             {
-                throw new InvalidOperationException(SR.Format(SR.FileTypeNotSupported, filePath));
+                throw new InvalidOperationException(string.Format(Strings.FileTypeNotSupported, filePath));
             }
             else
             {
 
                 if (!DLLImports.gdImageFile(img.gdImageStructPtr, filePath))
                 {
-                    throw new FileLoadException(SR.Format(SR.WriteToFileFailed, filePath));
+                    throw new FileLoadException(string.Format(Strings.WriteToFileFailed, filePath));
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new InvalidOperationException(SR.NullStreamReferenced);
+                throw new InvalidOperationException(Strings.NullStreamReferenced);
             }
             
         }

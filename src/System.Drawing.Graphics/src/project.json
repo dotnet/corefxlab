@@ -17,6 +17,10 @@
   "compilationOptions": {
     "allowUnsafe": true
   },
+  "compileExclude": [ "**/*.OSX.cs", "**/*.Linux.cs"],
+  "namedResource": {
+    "System.Drawing.Graphics.Resources": "Resources/Strings.resx"
+  },
   "dependencies": {
     "System.Diagnostics.Debug": "4.0.10-*",
     "System.Diagnostics.Tools": "4.0.1-*",

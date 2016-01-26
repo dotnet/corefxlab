@@ -1,24 +1,17 @@
 {
   "dependencies": {
     "Microsoft.NETCore.Platforms": "1.0.1-*",
-    "Microsoft.NETCore.Targets": "1.0.0",
+    "src": {
+          "type": "build",
+          "version": "0.1.0-*"
+        },
     "FluentAssertions": "4.0.0-*",
-    "System.Console":  "4.0.0-*",
-    "System.IO":  "4.0.10-*",
     "System.IO.FileSystem":  "4.0.0-*",
-    "System.Reflection": "4.0.10-*",
-    "System.Runtime": "4.0.20-*",
-    "System.Runtime.Extensions": "4.0.10-*",
-    "xunit": "2.1.0",
-    "xunit.netcore.extensions": "1.0.0-*"
+    "xunit": "2.1.0"
   },
   "frameworks": {
-    "dotnet": {},
-    "dnxcore50": {}
-  },
-  "supports": {
-    "net46.app": {},
-    "uwp.10.0.app": {},
-    "dnxcore50.app": {}
+    "dotnet5.6": {
+        "imports": "portable-net45+win8"
+     }
   }
 }
