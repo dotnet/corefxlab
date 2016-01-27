@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Drawing.Graphics", "src\System.Drawing.Graphics.csproj", "{091712F4-3894-4D0B-9403-39D115621208}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Drawing.Graphics", "src\System.Drawing.Graphics.xproj", "{091712F4-3894-4D0B-9403-39D115621208}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Drawing.Graphics.Tests", "tests\System.Drawing.Graphics.Tests.csproj", "{C0219E93-1738-45A1-92CA-16693FAAEC1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Drawing.Graphics.Tests", "tests\System.Drawing.Graphics.Tests.xproj", "{C0219E93-1738-45A1-92CA-16693FAAEC1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

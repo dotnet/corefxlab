@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Text.Utf8.Tests", "tests\System.Text.Utf8.Tests.csproj", "{DD942FDB-184A-4D9F-8A1E-3D531858A4B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Text.Utf8.Tests", "tests\System.Text.Utf8.Tests.xproj", "{DD942FDB-184A-4D9F-8A1E-3D531858A4B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Text.Utf8", "src\System.Text.Utf8.csproj", "{C5FD8740-19EA-4BCC-B518-7F16B55D23CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Text.Utf8", "src\System.Text.Utf8.xproj", "{C5FD8740-19EA-4BCC-B518-7F16B55D23CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
