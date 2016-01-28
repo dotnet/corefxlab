@@ -10,7 +10,6 @@ namespace System.Slices.Tests
 {
     public class EqualityTests
     {
-        [CLSCompliant(false)]
         [Theory]
         [MemberData("ValidArraySegments")]
         public void SpansReferencingSameMemoryAreEqualInEveryAspect(byte[] bytes, int start, int length)
@@ -23,7 +22,6 @@ namespace System.Slices.Tests
             SpansReferencingSameMemoryAreEqualInEveryAspect(ref span, ref structCopy);
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [MemberData("ValidArraySegments")]
         public void ReadOnlySpansReferencingSameMemoryAreEqualInEveryAspect(byte[] bytes, int start, int length)
@@ -84,7 +82,6 @@ namespace System.Slices.Tests
             Assert.True(spanFromNonEmptyArrayButWithZeroLength.SequenceEqual(emptySpan));
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [MemberData("ValidArraySegments")]
         public void SpansOfEqualValuesInSameOrderAreSequentiallyAndStructurallyEqual(byte[] bytes, int start, int length)
@@ -105,7 +102,6 @@ namespace System.Slices.Tests
             Assert.NotEqual(span.GetHashCode(), ofSameValues.GetHashCode());
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [MemberData("ValidArraySegments")]
         public void ReadOnlySpansOfEqualValuesInSameOrderAreSequentiallyAndStructurallyEqual(byte[] bytes, int start, int length)
@@ -126,7 +122,6 @@ namespace System.Slices.Tests
             Assert.NotEqual(span.GetHashCode(), ofSameValues.GetHashCode());
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [MemberData("ValidArraySegments")]
         public void SpansOfDifferentValuesAreNotEqual(byte[] bytes, int start, int length)
@@ -147,7 +142,6 @@ namespace System.Slices.Tests
             Assert.False(span.GetHashCode() == ofDifferentValues.GetHashCode());
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [MemberData("ValidArraySegments")]
         public void ReadOnlySpanOfDifferentValuesAreNotEqual(byte[] bytes, int start, int length)
@@ -168,7 +162,6 @@ namespace System.Slices.Tests
             Assert.False(span.GetHashCode() == ofDifferentValues.GetHashCode());
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [MemberData("ValidArraySegments")]
         public void SpansOfEqualValuesOfDifferentTypesInSameOrderAreStructurallyEqual(byte[] bytes, int start, int length)
@@ -185,7 +178,6 @@ namespace System.Slices.Tests
             Assert.NotEqual(span.GetHashCode(), ofSameValuesOfDifferentType.GetHashCode());
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [MemberData("ValidArraySegments")]
         public void ReadOnlySpansOfEqualValuesOfDifferentTypesInSameOrderAreStructurallyEqual(byte[] bytes, int start, int length)
@@ -378,7 +370,6 @@ namespace System.Slices.Tests
             Assert.True(nans.BlockEquals(nans));
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [InlineData(1)]
         [InlineData(7)]

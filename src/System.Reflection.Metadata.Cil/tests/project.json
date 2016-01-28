@@ -1,26 +1,22 @@
 {
   "name":"System.Reflection.Metadata.Cil.Tests",
-    "dependencies": {
-        "Microsoft.NETCore.TestHost": "1.0.0-beta-23409",
-        "Microsoft.NETCore.Platforms": "1.0.1-beta-23409",
-        "Microsoft.NETCore.Runtime.CoreCLR": "1.0.1-beta-23409",
-        "System.Console": "4.0.0-beta-23516",
-        "System.IO.FileSystem": "4.0.0",
-        "src":  {
-          "type": "build",
-          "version": "1.0.0"
-        },
-        "xunit": "2.1.0",
-        "xunit.console.netcore": "1.0.2-prerelease-00101",
-        "xunit.extensibility.execution": "2.1.0",
-        "System.Linq.Expressions": "4.0.10-beta-23109"
+  "dependencies": {
+    "Microsoft.NETCore.Platforms": "1.0.1-*",
+    "System.Console": "4.0.0-*",
+    "System.IO.FileSystem": "4.0.0",
+    "src":  {
+      "type": "build",
+      "version": "0.1.0-*"
     },
+    "xunit": "2.1.0",
+    "xunit.console.netcore": "1.0.2-prerelease-00101",
+    "xunit.extensibility.execution": "2.1.0",
+    "System.Linq.Expressions": "4.0.10-*"
+  },
   "frameworks": {
-    "dnxcore50": {
-      "dependencies":{
-        "System.Reflection.Metadata": "1.1.0-alpha-00014"
-      }
-    }
+    "dotnet5.6": {
+        "imports": "portable-net45+win8"
+     }
   },
   "resource": "Assemblies/demo1.exe"
 }

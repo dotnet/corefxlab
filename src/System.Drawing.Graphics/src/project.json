@@ -1,6 +1,29 @@
 {
+  "name": "System.Drawing.Graphics",
+  "version": "0.1.0-*",
+  "description": "CLI commandline command parsing",
+  "authors": [
+      "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "tags": [
+      "Command line parsing support corefxlab"
+  ],
+  "releaseNotes": "Pre-release package, for testing only",
+  "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+  "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+  "projectUrl": "https://github.com/dotnet/corefxlab",
+  "requireLicenseAcceptance": true,
+  "compilationOptions": {
+    "allowUnsafe": true
+  },
+  "compileExclude": [ "**/*.OSX.cs", "**/*.Linux.cs"],
+  "namedResource": {
+    "System.Drawing.Graphics.Resources": "Resources/Strings.resx"
+  },
   "dependencies": {
-    "Microsoft.NETCore.Targets": "1.0.0",
+    "System.Diagnostics.Debug": "4.0.10-*",
+    "System.Diagnostics.Tools": "4.0.1-*",
     "System.IO": "4.0.10-*",
     "System.IO.FileSystem":  "4.0.0-*",
     "System.Resources.ResourceManager": "4.0.0-*",
@@ -8,11 +31,6 @@
     "System.Runtime.InteropServices": "4.0.20-*"
   },
   "frameworks": {
-    "dotnet": {}
-  },  
-  "supports": {
-    "net46.app": {},
-    "uwp.10.0.app": {},
-    "dnxcore50.app": {}
+    "dotnet5.6": { }
   }
 }

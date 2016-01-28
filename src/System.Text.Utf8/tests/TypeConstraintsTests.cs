@@ -9,7 +9,7 @@ namespace System.Text.Utf8.Tests
 
         public TypeConstraintsTests()
         {
-            _anyUtf8String = "anyString"u8;
+            _anyUtf8String = new Utf8String("anyString");
         }
 
         [Fact]

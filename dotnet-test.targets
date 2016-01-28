@@ -13,10 +13,10 @@
     <TestCommandLine>$(TestProgram) $(TestArguments) {XunitTraitOptions}</TestCommandLine>
   </PropertyGroup>
 
-  <Target Name="CopyTestToTestDirectory" 
+  <!--<Target Name="CopyTestToTestDirectory" 
           BeforeTargets="RunTestsForProject">
     <Message Text="Running CopyTestToTestDirectory: $(TestPath)%(TestTargetFramework.Folder)" Importance="High" />
 
     <Exec Command="$(DotnetExe) publish &quot;$(ProjectJson)&quot; -o &quot;$(TestPath)%(TestTargetFramework.Folder)&quot; -f dnxcore50 -r win7-x64" />
-  </Target>
+  </Target>-->
 </Project>

@@ -1,23 +1,28 @@
 {
   "name": "System.CommandLine",
-  "version": "1.0.0",
+  "version": "0.1.0-*",
+  "description": "CLI commandline command parsing",
+  "authors": [
+      "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "tags": [
+      "Command line parsing support corefxlab"
+  ],
+  "releaseNotes": "Pre-release package, for testing only",
+  "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+  "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+  "projectUrl": "https://github.com/dotnet/corefxlab",
+  "requireLicenseAcceptance": true,
   "dependencies": {
     "System.Collections": "4.0.10-*",
-    "System.Console": "4.0.0-beta-*",
-    "System.Diagnostics.Debug": "4.0.10-*",
+    "System.Console": "4.0.0-*",
     "System.Diagnostics.Tools": "4.0.1-*",
-    "System.IO": "4.0.10",
     "System.IO.FileSystem": "4.0.0",
-    "System.Linq": "4.0.0-*",
-    "System.Reflection.Primitives": "4.0.0",
-    "System.Resources.ResourceManager": "4.0.0-*",
-    "System.Runtime": "4.0.20",
-    "System.Runtime.Extensions": "4.0.10",
-    "System.Runtime.InteropServices": "4.0.20-*",
-    "System.Threading": "4.0.10"
+    "System.Linq": "4.0.0-*"
   },
   "frameworks": {
-    "dnxcore50": { }
+    "dotnet5.6": { }
   },
   "namedResource": {
     "System.Strings": "System/Strings.resx"

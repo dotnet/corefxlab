@@ -109,7 +109,6 @@ namespace System
         /// </summary>
         /// <param name="ptr">An unmanaged pointer to memory.</param>
         /// <param name="length">The number of T elements the memory contains.</param>
-        [CLSCompliant(false)]
         public unsafe Span(void* ptr, int length)
         {
             Contract.Requires(length >= 0);
@@ -136,7 +135,6 @@ namespace System
             get { return Length == 0; }
         }
 
-        [CLSCompliant(false)]
         public unsafe void* UnsafePointer
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -439,8 +439,6 @@ namespace System
             return true;
         }
 
-
-        [CLSCompliant(false)]
         public unsafe static void Set(this Span<byte> bytes, byte* values, int length)
         {
             if (bytes.Length < length)

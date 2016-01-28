@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.Formatting;
 
 namespace System.Drawing.Graphics
 {
@@ -72,7 +73,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                string rsc = SR.Format(SR.CreateInvalidParameters, width, height);
+                string rsc = string.Format(Strings.CreateInvalidParameters, width, height);
                 throw new InvalidOperationException(rsc);
             }
         }

@@ -4,7 +4,7 @@
     <!-- This was the only place I could find where this was guaranteed to be executed. The other targets I tried work in some cases (build.cmd) but not others (msbuild). I went with this simple approach for now. -->
     <Exec Command="$(DotnetExe) restore &quot;$(ProjectJson)&quot;" StandardOutputImportance="Low" CustomErrorRegularExpression="^Unable to locate .*" />
 
-    <Exec Command="$(DotnetExe) build -o &quot;$(outputPath)&quot;" />
+    <Exec Command="$(DotnetExe) build -o &quot;$(outputPath).TrimEnd('\')&quot;" />
   </Target>
 
   <Target Name="BuildAndTest" DependsOnTargets="Build;Test" />
@@ -13,5 +13,5 @@
           Condition="'$(PrereleaseResolveNuGetPackages)'=='true'">
   </Target>
 
-  <Import Project="$(MSBuildThisFileDirectory)dotnet-test.targets" Condition="'$(IsTestProject)'=='true' and '$(ExcldueTestsImport)'!='true'" />
+  <Import Project="$(MSBuildThisFileDirectory)dotnet-test.targets" Condition="'$(IsTestProject)'=='true' and '$(ExcludeTestsImport)'!='true'" />
 </Project>

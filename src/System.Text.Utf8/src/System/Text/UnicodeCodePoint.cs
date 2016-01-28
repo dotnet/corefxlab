@@ -7,15 +7,12 @@ namespace System.Text
 {
     public struct UnicodeCodePoint : IEquatable<UnicodeCodePoint>
     {
-        // TODO: make all methods CLSCompliant
-        [CLSCompliant(false)]
         public UnicodeCodePoint(uint value) : this()
         {
             // TODO: Should we check if value is supported or just make it no-op and let people use IsSupportedCodePoint
             Value = value;
         }
 
-        [CLSCompliant(false)]
         public uint Value { get; private set; }
 
         // TODO: Do we need to put these attributes everywhere or is compiler gonna do the right thing?
@@ -46,10 +43,9 @@ namespace System.Text
         }
         #endregion
 
-        [CLSCompliant(false)]
         public static explicit operator uint(UnicodeCodePoint codePoint) { return codePoint.Value; }
-        [CLSCompliant(false)]
         public static explicit operator UnicodeCodePoint(uint value) { return new UnicodeCodePoint(value); }
+        public static explicit operator UnicodeCodePoint(int value) { return new UnicodeCodePoint((uint)value); }
 
         public bool Equals(UnicodeCodePoint other)
         {

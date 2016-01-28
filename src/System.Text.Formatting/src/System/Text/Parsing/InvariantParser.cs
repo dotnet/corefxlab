@@ -9,7 +9,6 @@ namespace System.Text.Parsing
 {
     public static class InvariantParser
     {
-        [CLSCompliant(false)]
         public static bool TryParse(Span<byte> text, FormattingData.Encoding encoding, out uint value, out int bytesConsumed)
         {
             Precondition.Require(text.Length > 0);
@@ -61,7 +60,6 @@ namespace System.Text.Parsing
             return true;
         }
 
-        [CLSCompliant(false)]
         public static bool TryParse(Utf8String text, out uint value, out int bytesConsumed)
         {
             Precondition.Require(text.Length > 0);
@@ -100,7 +98,6 @@ namespace System.Text.Parsing
             return true;
         }
 
-        [CLSCompliant(false)]
         public static bool TryParse(Utf8String text, out ulong value, out int bytesConsumed)
         {
             Precondition.Require(text.Length > 0);

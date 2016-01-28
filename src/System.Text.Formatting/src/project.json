@@ -1,6 +1,19 @@
 {
   "name": "System.Text.Formatting",
-  "version": "1.0.0",
+  "version": "0.1.0-*",
+  "description": "Non-allocating formatting library",
+  "authors": [
+      "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "tags": [
+      ".NET formatting corefxlab"
+  ],
+  "releaseNotes": "Pre-release package, for testing only",
+  "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+  "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+  "projectUrl": "https://github.com/dotnet/corefxlab",
+  "requireLicenseAcceptance": true,
   "compilationOptions": {
     "allowUnsafe": true
   },
@@ -8,25 +21,12 @@
     "System.Text.Formatting.Properties.Resources": "Properties/Resources.resx"
   },
   "dependencies": {
-    "System.Buffers": "4.0.0-rc2-23714",
-    "System.Collections": "4.0.0",
-    "System.Diagnostics.Contracts": "4.0.0",
-    "System.Diagnostics.Debug": "4.0.0",
-    "System.Diagnostics.Tools": "4.0.0",
-    "System.Globalization": "4.0.0",
-    "System.IO": "4.0.0",
-    "System.Reflection": "4.0.0",
-    "System.Reflection.Primitives": "4.0.0",
-    "System.Resources.ResourceManager": "4.0.0",
-    "System.Runtime": "4.0.0",
-    "System.Runtime.Extensions": "4.0.0",
-    "System.Runtime.InteropServices": "4.0.0",
-    "System.Slices": "0.1.0-e160114-1",
-    "System.Text.Encoding": "4.0.0",
-    "System.Text.Utf8": "0.1.0-e160114-1",
-    "System.Threading": "4.0.0"
+    "System.Buffers": "4.0.0-*",
+    "System.Globalization": "4.0.10-*",
+    "System.Slices": "0.1.0-*",
+    "System.Text.Utf8": "0.1.0-*" 
   },
   "frameworks": {
-    "dnxcore50": { }
+    "dotnet5.6": { }
   }
 }

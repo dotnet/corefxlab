@@ -28,7 +28,7 @@ namespace System.Text.Http.Tests
 
         public GivenIFormatterExtensionsForHttp()
         {
-            _formatter = new BufferFormatter(124, FormattingData.InvariantUtf8, ManagedBufferPool<byte>.SharedByteBufferPool);
+            _formatter = new BufferFormatter(124, FormattingData.InvariantUtf8, ArrayPool<byte>.Shared);
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace System.Text.Http.Tests
 
             result.Should().ContainInOrder(_statusLineInBytes);
 
-            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
+            ArrayPool<byte>.Shared.Return(result);
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace System.Text.Http.Tests
 
             result.Should().ContainInOrder(_headerInBytes);
 
-            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
+            ArrayPool<byte>.Shared.Return(result);
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace System.Text.Http.Tests
 
             result.Should().ContainInOrder(_httpHeaderSectionDelineatorInBytes);
 
-            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
+            ArrayPool<byte>.Shared.Return(result);
         }
 
         [Fact]
@@ -79,8 +79,8 @@ namespace System.Text.Http.Tests
 
             result.Should().ContainInOrder(_httpBodyInBytes);
 
-            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
-        }        
+            ArrayPool<byte>.Shared.Return(result);
+        }
 
         [Fact]
         public void It_is_possible_to_update_the_value_of_a_header()
@@ -94,7 +94,7 @@ namespace System.Text.Http.Tests
 
             result.Should().ContainInOrder(_updatedHeaderInBytes);
 
-            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
+            ArrayPool<byte>.Shared.Return(result);
         }
 
         [Fact]
@@ -116,7 +116,7 @@ namespace System.Text.Http.Tests
             result.Should().ContainInOrder(_headerInBytes);
             result.Should().ContainInOrder(fillingArray);
 
-            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
+            ArrayPool<byte>.Shared.Return(result);
         }
 
         [Fact]
@@ -160,13 +160,13 @@ namespace System.Text.Http.Tests
 
             result.Should().ContainInOrder(_httpMessageInBytes);
 
-            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref result);
+            ArrayPool<byte>.Shared.Return(result);
         }
 
         [Fact]
         public void WriteHttpHeader_resizes_the_buffer_taking_into_consideration_the_reserver()
         {
-            _formatter = new BufferFormatter(32, FormattingData.InvariantUtf8, ManagedBufferPool<byte>.SharedByteBufferPool);
+            _formatter = new BufferFormatter(32, FormattingData.InvariantUtf8, ArrayPool<byte>.Shared);
 
             var httpHeaderBuffer =
                 _formatter.WriteHttpHeader(GetUtf8EncodedString("Connection"), GetUtf8EncodedString("close"));

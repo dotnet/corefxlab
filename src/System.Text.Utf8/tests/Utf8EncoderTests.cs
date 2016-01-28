@@ -81,38 +81,38 @@ namespace System.Text.Utf8.Tests
             // empty
             new object[] { new byte[0], default(Utf8String) },
             new object[] { new byte[0], Utf8String.Empty },
-            new object[] { new byte[0], ""u8 },
+            new object[] { new byte[0], new Utf8String("")},
             // ascii
-            new object[] { new byte[] { 0x61 }, "a"u8 },
-            new object[] { new byte[] { 0x61, 0x62, 0x63 }, "abc"u8 },
-            new object[] { new byte[] { 0x41, 0x42, 0x43, 0x44 }, "ABCD"u8 },
-            new object[] { new byte[] { 0x30, 0x31, 0x32, 0x33, 0x34 }, "01234"u8 },
-            new object[] { new byte[] { 0x20, 0x2c, 0x2e, 0x0d, 0x0a, 0x5b, 0x5d, 0x3c, 0x3e, 0x28, 0x29 },  " ,.\r\n[]<>()"u8 },
+            new object[] { new byte[] { 0x61 }, new Utf8String("a")},
+            new object[] { new byte[] { 0x61, 0x62, 0x63 }, new Utf8String("abc")},
+            new object[] { new byte[] { 0x41, 0x42, 0x43, 0x44 }, new Utf8String("ABCD")},
+            new object[] { new byte[] { 0x30, 0x31, 0x32, 0x33, 0x34 }, new Utf8String("01234")},
+            new object[] { new byte[] { 0x20, 0x2c, 0x2e, 0x0d, 0x0a, 0x5b, 0x5d, 0x3c, 0x3e, 0x28, 0x29 },  new Utf8String(" ,.\r\n[]<>()")},
             // edge cases for multibyte characters
-            new object[] { new byte[] { 0x7f }, "\u007f"u8 },
-            new object[] { new byte[] { 0xc2, 0x80 }, "\u0080"u8 },
-            new object[] { new byte[] { 0xdf, 0xbf }, "\u07ff"u8 },
-            new object[] { new byte[] { 0xe0, 0xa0, 0x80 }, "\u0800"u8 },
-            new object[] { new byte[] { 0xef, 0xbf, 0xbf }, "\uffff"u8 },
+            new object[] { new byte[] { 0x7f }, new Utf8String("\u007f")},
+            new object[] { new byte[] { 0xc2, 0x80 }, new Utf8String("\u0080")},
+            new object[] { new byte[] { 0xdf, 0xbf }, new Utf8String("\u07ff")},
+            new object[] { new byte[] { 0xe0, 0xa0, 0x80 }, new Utf8String("\u0800")},
+            new object[] { new byte[] { 0xef, 0xbf, 0xbf }, new Utf8String("\uffff")},
             // ascii mixed with multibyte characters
             // 1 code unit + 2 code units
-            new object[] { new byte[] { 0x61, 0xc2, 0x80 }, "a\u0080"u8 },
+            new object[] { new byte[] { 0x61, 0xc2, 0x80 }, new Utf8String("a\u0080")},
             // 2 code units + 1 code unit
-            new object[] { new byte[] { 0xc2, 0x80, 0x61 }, "\u0080a"u8 },
+            new object[] { new byte[] { 0xc2, 0x80, 0x61 }, new Utf8String("\u0080a")},
             // 1 code unit + 2 code units + 1 code unit
-            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61 }, "a\u0080a"u8 },
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61 }, new Utf8String("a\u0080a")},
             // 3 code units + 2 code units
-            new object[] { new byte[] { 0xe0, 0xa0, 0x80, 0xc2, 0x80 }, "\u0800\u0080"u8 },
+            new object[] { new byte[] { 0xe0, 0xa0, 0x80, 0xc2, 0x80 }, new Utf8String("\u0800\u0080")},
             // 2 code units + 3 code units
-            new object[] { new byte[] { 0xc2, 0x80, 0xe0, 0xa0, 0x80 }, "\u0080\u0800"u8 },
+            new object[] { new byte[] { 0xc2, 0x80, 0xe0, 0xa0, 0x80 }, new Utf8String("\u0080\u0800")},
             // 2 code units + 3 code units
-            new object[] { new byte[] { 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf }, "\u0080a\uffff"u8 },
+            new object[] { new byte[] { 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf }, new Utf8String("\u0080a\uffff")},
             // 1 code unit + 2 code units + 3 code units
-            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0xef, 0xbf, 0xbf }, "a\u0080\uffff"u8 },
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0xef, 0xbf, 0xbf }, new Utf8String("a\u0080\uffff")},
             // 2 code units + 3 code units + 1 code unit
-            new object[] { new byte[] { 0xc2, 0x80, 0xef, 0xbf, 0xbf, 0x61 }, "\u0080\uffffa"u8 },
+            new object[] { new byte[] { 0xc2, 0x80, 0xef, 0xbf, 0xbf, 0x61 }, new Utf8String("\u0080\uffffa")},
             // 1 code unit + 2 code units + 3 code units
-            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf, 0x61 }, "a\u0080a\uffffa"u8 }
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf, 0x61 }, new Utf8String("a\u0080a\uffffa")}
             // TODO: Add case with 4 byte character - it is impossible to do using string literals, need to create it using code point
         };
         [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]

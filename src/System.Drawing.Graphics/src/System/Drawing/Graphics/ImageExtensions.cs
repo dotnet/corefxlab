@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
 using System.Runtime.InteropServices;
+using System.Text.Formatting;
 
 namespace System.Drawing.Graphics
 {
@@ -47,7 +48,7 @@ namespace System.Drawing.Graphics
             }
             else
             {
-                throw new InvalidOperationException(SR.Format(SR.ResizeInvalidParameters, width, height));
+                throw new InvalidOperationException(string.Format(Strings.ResizeInvalidParameters, width, height));
             }
         }
 
@@ -56,7 +57,7 @@ namespace System.Drawing.Graphics
         {
             if (opacityMultiplier > 1 || opacityMultiplier < 0)
             {
-                throw new InvalidOperationException(SR.Format(SR.InvalidTransparencyPercent, opacityMultiplier));
+                throw new InvalidOperationException(string.Format(Strings.InvalidTransparencyPercent, opacityMultiplier));
             }
 
             double alphaAdjustment = 1 - opacityMultiplier;

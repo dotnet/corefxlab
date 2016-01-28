@@ -82,7 +82,6 @@ namespace System.Slices.Tests
             }
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [InlineData(new byte[0], 0, 0)]
         [InlineData(new byte[1] { 0 }, 0, 0)]
@@ -100,7 +99,6 @@ namespace System.Slices.Tests
             Span<byte> span = new Span<byte>(bytes, start, length);
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [InlineData(new byte[0], 0, 0)]
         [InlineData(new byte[1] { 0 }, 0, 0)]
@@ -130,7 +128,6 @@ namespace System.Slices.Tests
             Assert.Throws<ArgumentException>(() => { ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(null, 0, 0); });
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [InlineData(new byte[0], 1, 0)]
         [InlineData(new byte[0], 1, -1)]
@@ -157,7 +154,6 @@ namespace System.Slices.Tests
             Assert.Throws<ArgumentOutOfRangeException>(() => { Span<byte> span = new Span<byte>(bytes, start, length); });
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [InlineData(new byte[0], 0, 0)]
         [InlineData(new byte[1] { 0 }, 0, 0)]
@@ -175,7 +171,6 @@ namespace System.Slices.Tests
             Span<byte> span = new Span<byte>(bytes, start, length);
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [InlineData(new byte[0], 1, 0)]
         [InlineData(new byte[0], 1, -1)]
@@ -206,7 +201,6 @@ namespace System.Slices.Tests
             });
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [InlineData(new byte[0], 0)]
         [InlineData(new byte[1] { 0 }, 0)]
@@ -223,7 +217,6 @@ namespace System.Slices.Tests
             Span<byte> span = new Span<byte>(bytes).Slice(start);
         }
 
-        [CLSCompliant(false)]
         [Theory]
         [InlineData(new byte[0], int.MinValue)]
         [InlineData(new byte[0], -1)]
