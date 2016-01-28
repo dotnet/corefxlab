@@ -5,10 +5,10 @@
   <ItemGroup>
     <Project Include="*\src\*.csproj" Exclude="@(ExcludeProjects)" />
     <Project Include="*\src\*.vbproj" Condition="'$(IncludeVbProjects)'!='false'" Exclude="@(ExcludeProjects)" />
-    <Project Include="*\src\*.xproj" Exclude="@(ExcludeProjects);System.Reflection.Metadata.Cil/src/System.Reflection.Metadata.Cil.xproj" />
+    <Project Include="*\src\*.xproj" Exclude="@(ExcludeProjects);System.Reflection.Metadata.Cil\src\System.Reflection.Metadata.Cil.xproj" />
     <Project Include="*\test*\**\*.csproj" Exclude="@(ExcludeProjects)" />
     <Project Include="*\test*\**\*.vbproj" Condition="'$(IncludeVbProjects)'!='false'" Exclude="@(ExcludeProjects)" />
-    <Project Include="*\test*\**\*.xproj" Exclude="@(ExcludeProjects);System.Reflection.Metadata.Cil/Tests/System.Reflection.Metadata.Cil.Tests.xproj" />
+    <!--<Project Include="*\test*\**\*.xproj" Exclude="@(ExcludeProjects)" />-->
   </ItemGroup>
 
   <Import Project="..\dir.targets" />
