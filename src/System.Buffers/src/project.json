@@ -1,5 +1,5 @@
 {
-  "name": "System.Buffers",
+  "name": "System.Buffers.Experimental",
   "version": "0.1.0-*",
   "description": "Pool of unmanaged Span<byte> values",
   "authors": [
