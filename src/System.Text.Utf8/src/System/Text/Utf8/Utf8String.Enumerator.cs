@@ -12,14 +12,14 @@ namespace System.Text.Utf8
         {
             private Span<byte>.Enumerator _enumerator;
 
-            public unsafe Enumerator(Span<byte> buffer)
+            public Enumerator(Span<byte> buffer)
             {
                 _enumerator = buffer.GetEnumerator();
             }
 
             object IEnumerator.Current { get { return Current; } }
 
-            public unsafe Utf8CodeUnit Current
+            public Utf8CodeUnit Current
             {
                 get
                 {

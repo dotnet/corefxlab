@@ -17,7 +17,7 @@ namespace System.Text.Utf16
                 return false;
             }
 
-            uint codePointValue = (uint)buffer[0] | ((uint)buffer[1] << 8);
+            uint codePointValue = buffer.Read<ushort>();
             encodedBytes = 2;
             if (UnicodeCodePoint.IsSurrogate((UnicodeCodePoint)codePointValue))
             {
@@ -37,7 +37,7 @@ namespace System.Text.Utf16
                 // high surrogate contains 10 first bits of the code point
                 codePointValue <<= 10;
 
-                uint lowSurrogate = (uint)buffer[2] | ((uint)buffer[3] << 8);
+                uint lowSurrogate = buffer.Read<uint>() >> 16;
                 if (!UnicodeCodePoint.IsLowSurrogate((UnicodeCodePoint)lowSurrogate))
                 {
                     codePoint = default(UnicodeCodePoint);
@@ -82,8 +82,7 @@ namespace System.Text.Utf16
             {
                 unchecked
                 {
-                    buffer[0] = (byte)((uint)codePoint);
-                    buffer[1] = (byte)((uint)codePoint >> 8);
+                    buffer.Write((ushort)codePoint);
                 }
             }
             else
@@ -92,11 +91,8 @@ namespace System.Text.Utf16
                 {
                     uint highSurrogate = ((uint)codePoint >> 10) + UnicodeConstants.Utf16HighSurrogateFirstCodePoint;
                     uint lowSurrogate = ((uint)codePoint & MaskLow10Bits) + UnicodeConstants.Utf16LowSurrogateFirstCodePoint;
-                    buffer[0] = (byte)highSurrogate;
-                    buffer[1] = (byte)(highSurrogate >> 8);
 
-                    buffer[2] = (byte)lowSurrogate;
-                    buffer[3] = (byte)(lowSurrogate >> 8);
+                    buffer.Write(highSurrogate | (lowSurrogate << 16));
                 }
             }
             return true;
