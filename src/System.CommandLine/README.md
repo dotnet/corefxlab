@@ -36,9 +36,9 @@ So the question is: why a new one? There are a couple of reasons:
    setting properties.
 
 3. We want an experience that achieves an extremely minimal setup in terms of
-   lines of required for parsing.
+   lines of code required for parsing.
 
-While some of the libraries solve some of the aspects none of them solve the
+While some of the libraries solve some of these aspects none of them solve the
 combination.
 
 Of course, providing a command line parser isn't just providing a parsing
@@ -65,7 +65,7 @@ time for the BCL to provide a built-in experience as well.
 * Should we provide a help request handler?
 * Should we expose the response file hander?
 * Should we allow "empty" commands, so that the tool can support options without
-  an command, like `git --version`?
+  a command, like `git --version`?
 
 ## Syntax
 
