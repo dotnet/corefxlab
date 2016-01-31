@@ -82,9 +82,7 @@ namespace System
         public ReadOnlySpan(T[] array, int start, int length)
         {
             Contract.Requires(array != null);
-            Contract.RequiresInInclusiveRange(start, (uint)array.Length);
-            Contract.RequiresNonNegative(length);
-            Contract.RequiresInInclusiveRange(start + length, (uint)array.Length);
+            Contract.RequiresInInclusiveRange(start, length, (uint)array.Length);
             if (start < array.Length)
             {
                 Object = array;
@@ -208,9 +206,12 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<T> Slice(int start)
         {
-            return Slice(start, Length - start);
+            Contract.RequiresInInclusiveRange(start, (uint)Length);
+            return new ReadOnlySpan<T>(
+                Object, Offset + (start * PtrUtils.SizeOf<T>()), Length - start);
         }
 
         /// <summary>
@@ -222,9 +223,10 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<T> Slice(int start, int length)
         {
-            Contract.Requires(start + length <= Length);
+            Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new ReadOnlySpan<T>(
                 Object, Offset + (start * PtrUtils.SizeOf<T>()), length);
         }
