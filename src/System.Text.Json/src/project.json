@@ -16,6 +16,7 @@
   "requireLicenseAcceptance": true,
   "dependencies": {
     "System.Buffers": "4.0.0-*",
+    "System.Runtime.Extensions": "4.0.0-*",
     "System.Text.Formatting": "0.1.0-*"
   },
   "frameworks": {
