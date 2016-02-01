@@ -294,5 +294,34 @@ namespace System.Text.Json.Tests.Resources {
                 return ResourceManager.GetString("ProjectLockJson", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///	&quot;425-214-3151&quot;,
+        ///	25
+        ///].
+        /// </summary>
+        internal static string SimpleArrayJson {
+            get {
+                return ResourceManager.GetString("SimpleArrayJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///	&quot;age&quot;: 30,
+        ///	&quot;first&quot;: &quot;John&quot;,
+        ///	&quot;last&quot;: &quot;Smith&quot;,
+        ///	&quot;phoneNumber&quot;: &quot;425-214-3151&quot;,
+        ///	&quot;street&quot;: &quot;1 Microsoft Way&quot;,
+        ///	&quot;city&quot;: &quot;Redmond&quot;,
+        ///	&quot;zip&quot;: 98052
+        ///}.
+        /// </summary>
+        internal static string SimpleObjectJson {
+            get {
+                return ResourceManager.GetString("SimpleObjectJson", resourceCulture);
+            }
+        }
     }
 }
