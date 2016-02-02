@@ -18,10 +18,10 @@
     "allowUnsafe": true
   },
   "dependencies": {
-    "System.Runtime": "4.0.21-*",
-    "System.Runtime.InteropServices": "4.0.21-*"
+    "System.Runtime": "4.0.0",
+    "System.Runtime.InteropServices": "4.0.0"
   },
   "frameworks": {
-    "dotnet5.6": { }
+    "dotnet5.1": { }
   }
 }
