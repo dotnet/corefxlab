@@ -1,17 +1,19 @@
 {
   "name": "System.CommandLine.Tests",
   "dependencies": {
-    "Microsoft.NETCore.Platforms": "1.0.1-*",
+    "NETStandard.Library": "1.0.0-rc2-23728",
     "src": {
           "type": "build",
           "version": "0.1.0-*"
         },
     "System.Linq.Expressions": "4.0.10-*",
     "xunit": "2.1.0",
+    "dotnet-test-xunit": "1.0.0-dev-45337-57"
   },
   "frameworks": {
-    "dotnet5.6": {
+    "dnxcore50": {
         "imports": "portable-net45+win8"
      }
-  }
+  },
+  "testRunner": "xunit"
 }

@@ -53,6 +53,9 @@
     <NuGetSourceList Include="https:%2F%2Fwww.nuget.org/api/v2" />
     <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-core" />
     <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-corefxlab" />
+    <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/coreclr-xunit/api/v2" />
+    <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-cli" />
+    <NuGetSourceList Include="https:%2F%2Fwww.myget.org/F/aspnetcidev/api/v3/index.json" />    
   </ItemGroup>
 
   <!-- Common nuget properties -->
@@ -86,6 +89,9 @@
     <DnuSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-buildtools/" />
     <DnuSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-corefxlab/" />    
     <DnuSourceList Include="https:%2F%2Fwww.nuget.org/api/v2/" />
+    <DnuSourceList Include="https:%2F%2Fwww.myget.org/F/coreclr-xunit/api/v2/" />
+    <DnuSourceList Include="https:%2F%2Fwww.myget.org/F/dotnet-cli/" />
+    <DnuSourceList Include="https:%2F%2Fwww.myget.org/F/aspnetcidev/" />   
   </ItemGroup>
 
     <!-- list of directories to perform batch restore -->
