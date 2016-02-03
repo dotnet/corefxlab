@@ -26,7 +26,7 @@ namespace System.Buffers
             _lock = new SpinLock();
 
             int bufferLength = numberOfBuffers * _elementsInBuffer;
-            _buffer = Marshal.AllocHGlobal(bufferLength * Marshal.SizeOf<T>());
+            _buffer = Marshal.AllocHGlobal(bufferLength * Marshal.SizeOf(typeof(T)));
             _slices = new Span<T>?[numberOfBuffers];
 
             for (int i = 0; i < bufferLength; i+= _elementsInBuffer)
@@ -72,7 +72,7 @@ namespace System.Buffers
             {
                 // We can safely exit
                 _lock.Exit(false);
-                buffer = new Span<T>(Marshal.AllocHGlobal(_elementsInBuffer * Marshal.SizeOf<T>()).ToPointer(), _elementsInBuffer);
+                buffer = new Span<T>(Marshal.AllocHGlobal(_elementsInBuffer * Marshal.SizeOf(typeof(T))).ToPointer(), _elementsInBuffer);
             }
             else
             {
