@@ -6,7 +6,7 @@
   "dependencies": {
     "NETStandard.Library": "1.0.0-rc2-23728",
     "src": {
-      "type": "build",
+      "target": "project",
       "version": "0.1.0-*"
     },
     "System.Linq": "4.0.1-*",
