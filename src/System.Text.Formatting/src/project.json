@@ -16,7 +16,7 @@
   "requireLicenseAcceptance": true,
   "compilationOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../../tools/Key.snk"
   },
   "namedResource": {
     "System.Text.Formatting.Properties.Resources": "Properties/Resources.resx"

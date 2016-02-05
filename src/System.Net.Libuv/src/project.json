@@ -16,7 +16,7 @@
   "requireLicenseAcceptance": true,
   "compilationOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../../tools/Key.snk"
   },  
   "dependencies": {
     "System.Buffers.Experimental": "0.1.0-*",

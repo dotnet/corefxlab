@@ -13,7 +13,7 @@
     "dotnet-test-xunit": "1.0.0-dev-45337-57"
   },
   "compilationOptions": {
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../../tools/Key.snk"
   },
   "frameworks": {
     "dnxcore50": {

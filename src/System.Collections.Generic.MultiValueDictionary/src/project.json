@@ -18,7 +18,7 @@
     "Properties.Resources": "Properties/Resources.resx"
   },
   "compilationOptions": {
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../../tools/Key.snk"
   },
   "dependencies": {
     "System.Collections": "4.0.0",

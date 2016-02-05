@@ -16,7 +16,7 @@
   "requireLicenseAcceptance": true,
   "compilationOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../../tools/Key.snk"
   },  
   "compileExclude": [ "**/*.OSX.cs", "**/*.Linux.cs"],
   "namedResource": {
