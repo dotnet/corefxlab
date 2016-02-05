@@ -17,6 +17,9 @@
   "namedResource": {
     "Properties.Resources": "Properties/Resources.resx"
   },
+  "compilationOptions": {
+    "keyFile": "../../../tools/Key.snk"
+  },
   "dependencies": {
     "System.Collections": "4.0.0",
     "System.Diagnostics.Debug": "4.0.0",

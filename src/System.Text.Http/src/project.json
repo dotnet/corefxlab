@@ -14,6 +14,9 @@
   "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
   "projectUrl": "https://github.com/dotnet/corefxlab",
   "requireLicenseAcceptance": true,
+  "compilationOptions": {
+    "keyFile": "../../../tools/Key.snk"
+  },
   "dependencies": {
     "System.Slices": "0.1.0-*",
     "System.Text.Formatting": "0.1.0-*",

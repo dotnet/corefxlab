@@ -15,7 +15,8 @@
   "projectUrl": "https://github.com/dotnet/corefxlab",
   "requireLicenseAcceptance": true,
   "compilationOptions": {
-    "allowUnsafe": true
+    "allowUnsafe": true,
+    "keyFile": "../../../tools/Key.snk"
   },
   "dependencies": {
     "System.Runtime": "4.0.0",

@@ -17,6 +17,9 @@
   "namedResource": {
     "System.Time.Resources.Strings": "Properties/Strings.resx"
   },
+  "compilationOptions": {
+    "keyFile": "../../../tools/Key.snk"
+  },
   "dependencies": {
     "System.Diagnostics.Contracts": "4.0.0-*",
     "System.Xml.ReaderWriter": "4.0.10"

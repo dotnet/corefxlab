@@ -15,8 +15,9 @@
   "projectUrl": "https://github.com/dotnet/corefxlab",
   "requireLicenseAcceptance": true,
   "compilationOptions": {
-    "allowUnsafe": true
-  },
+    "allowUnsafe": true,
+    "keyFile": "../../../tools/Key.snk"
+  },  
   "compileExclude": [ "**/*.OSX.cs", "**/*.Linux.cs"],
   "namedResource": {
     "Resources.Strings": "Resources/Strings.resx"
