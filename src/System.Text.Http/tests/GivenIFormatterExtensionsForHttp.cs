@@ -163,7 +163,7 @@ namespace System.Text.Http.Tests
             ArrayPool<byte>.Shared.Return(result);
         }
 
-        [Fact]
+        [Fact(Skip = "Issue https://github.com/dotnet/corefxlab/issues/599")]
         public void WriteHttpHeader_resizes_the_buffer_taking_into_consideration_the_reserver()
         {
             _formatter = new BufferFormatter(32, FormattingData.InvariantUtf8, ArrayPool<byte>.Shared);

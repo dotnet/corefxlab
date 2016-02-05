@@ -1,22 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- This is a hack to make sure that the right file is being picked up to be run for tests using the xproj file name. The TestTargetFilename should be set correctly to the name inside project.json, but it is not. -->
-  <PropertyGroup>
-  	<XunitArguments>$(MSBuildProjectName).dll $(XunitOptions)</XunitArguments>
-
-    <TestProgram Condition="'$(TestHost)'!=''">$(TestHost)</TestProgram>
-    <TestArguments Condition="'$(TestHost)'!=''">$(XunitExecutable) $(XunitArguments)</TestArguments>
-
-    <TestProgram Condition="'$(TestHost)'==''">$(XunitExecutable)</TestProgram>
-    <TestArguments Condition="'$(TestHost)'==''">$(XunitArguments)</TestArguments>
-
-    <TestCommandLine>$(TestProgram) $(TestArguments) {XunitTraitOptions}</TestCommandLine>
+  <PropertyGroup>  	
+    <TestCommandLine>(set DOTNET_HOME=$(DotnetPath)) &amp; $(DotnetExe) test &quot;$(ProjectJson)&quot; {XunitTraitOptions}</TestCommandLine>
   </PropertyGroup>
+  
+  <Target Name="RunTestsForProject"
+          DependsOnTargets="DiscoverTestInputs"
+          AfterTargets="CheckTestCategories"
+          Inputs="@(RunTestsForProjectInputs)"
+          Outputs="$(TestsSuccessfulSemaphore);$(TestPath)%(TestTargetFramework.Folder)\$(XunitResultsFileName)"
+          Condition="'$(TestDisabled)'!='true'">
 
-  <!--<Target Name="CopyTestToTestDirectory" 
+    <PropertyGroup>
+      <XunitTraitOptions Condition="'@(RunWithTraits)'!=''">$(XunitTraitOptions) -trait category=@(RunWithTraits, ' -trait category=') </XunitTraitOptions>
+      <XunitTraitOptions Condition="'@(RunWithoutTraits)'!=''">$(XunitTraitOptions) -notrait category=@(RunWithoutTraits, ' -notrait category=') </XunitTraitOptions>
+    </PropertyGroup>
+
+    <!-- Replace the {XunitTraitOptions} place holder with the actual traits.  We use the place holder
+         because code coverage needs to have a bit of the test command line after the traits (it adds ending quotes
+         to one of its options).  Simply appending the traits would break code coverage. -->
+    <PropertyGroup>
+      <TestCommandLine>$(TestCommandLine.Replace('{XunitTraitOptions}', '$(XunitTraitOptions)'))</TestCommandLine>
+    </PropertyGroup>
+   
+    <Exec Command="$(TestCommandLine)"
+          ContinueOnError="true">
+      <Output PropertyName="TestRunExitCode" TaskParameter="ExitCode" />
+    </Exec>
+
+    <Error Condition="'$(TestRunExitCode)' != '0'" Text="One or more tests failed while running tests from '$(MSBuildProjectName)' please check log for details!" />
+    <Touch Condition="'$(TestRunExitCode)' == '0'" Files="$(TestsSuccessfulSemaphore)" AlwaysCreate="true" />
+  </Target>
+
+  <Target Name="CopyTestToTestDirectory" 
           BeforeTargets="RunTestsForProject">
     <Message Text="Running CopyTestToTestDirectory: $(TestPath)%(TestTargetFramework.Folder)" Importance="High" />
 
-    <Exec Command="$(DotnetExe) publish &quot;$(ProjectJson)&quot; -o &quot;$(TestPath)%(TestTargetFramework.Folder)&quot; -f dnxcore50 -r win7-x64" />
-  </Target>-->
+    <MakeDir Directories="$(TestPath)%(TestTargetFramework.Folder)" />
+
+    <Exec Command="$(DotnetExe) build &quot;$(ProjectJson)&quot;" />
+  </Target>
 </Project>

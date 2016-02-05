@@ -8,7 +8,7 @@
     <Project Include="*\src\*.xproj" Exclude="@(ExcludeProjects);System.Reflection.Metadata.Cil\src\System.Reflection.Metadata.Cil.xproj" />
     <Project Include="*\test*\**\*.csproj" Exclude="@(ExcludeProjects)" />
     <Project Include="*\test*\**\*.vbproj" Condition="'$(IncludeVbProjects)'!='false'" Exclude="@(ExcludeProjects)" />
-    <!--<Project Include="*\test*\**\*.xproj" Exclude="@(ExcludeProjects)" />-->
+    <Project Include="*\test*\**\*.xproj" Exclude="@(ExcludeProjects);System.Reflection.Metadata.Cil\Tests\System.Reflection.Metadata.Cil.Tests.xproj;System.Drawing.Graphics\Tests\System.Drawing.Graphics.Tests.xproj;System.Text.Json\Tests\System.Text.Json.Tests.xproj" />
   </ItemGroup>
 
   <Import Project="..\dir.targets" />
