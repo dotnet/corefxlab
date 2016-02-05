@@ -74,9 +74,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DotnetPath Condition="'$(DotnetPath)'==''">$(ProjectDir)dotnet/</DotnetPath>
+    <DotnetPath Condition="'$(DotnetPath)'==''">$(ProjectDir)dotnet\</DotnetPath>
     <DotnetPackagePath Condition="'$(DotnetPackagePath)'==''">$(DotnetPath)dotnet.zip</DotnetPackagePath>
-    <DotnetBinPath Condition="'$(DotnetBinPath)'==''">$(DotnetPath)bin/</DotnetBinPath>
+    <DotnetBinPath Condition="'$(DotnetBinPath)'==''">$(DotnetPath)bin\</DotnetBinPath>
     <DotnetExe Condition="'$(DotnetExe)'==''">$(DotnetBinPath)dotnet</DotnetExe>
   </PropertyGroup>
 

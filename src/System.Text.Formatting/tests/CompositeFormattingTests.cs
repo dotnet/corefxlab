@@ -21,7 +21,7 @@ namespace System.Text.Formatting.Tests
             CultureInfo.CurrentUICulture = culture;
         }
 
-        [Fact]
+        [Fact(Skip = "Issue https://github.com/dotnet/corefxlab/issues/599")]
         public void CompositeFormattingBasics()
         {
             var time = DateTime.UtcNow;

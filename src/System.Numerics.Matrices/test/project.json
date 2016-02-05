@@ -1,4 +1,5 @@
 {
+  "name": "System.Numerics.Matrices.Tests",
   "dependencies": {
     "NETStandard.Library": "1.0.0-rc2-23728",
     "src": {
