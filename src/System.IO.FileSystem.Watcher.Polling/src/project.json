@@ -18,8 +18,9 @@
     "System.IO.FileSystem.Watcher.Polling.Properties.Strings": "Properties/Strings.resx"
   },
   "compilationOptions": {
-    "allowUnsafe": true
-  },
+    "allowUnsafe": true,
+    "keyFile": "../../tools/Key.snk"
+  },  
   "dependencies": {
     "System.Collections": "4.0.0",
     "System.Diagnostics.Debug": "4.0.0",

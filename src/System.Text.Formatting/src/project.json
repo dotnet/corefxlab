@@ -15,7 +15,8 @@
   "projectUrl": "https://github.com/dotnet/corefxlab",
   "requireLicenseAcceptance": true,
   "compilationOptions": {
-    "allowUnsafe": true
+    "allowUnsafe": true,
+    "keyFile": "../../tools/Key.snk"
   },
   "namedResource": {
     "System.Text.Formatting.Properties.Resources": "Properties/Resources.resx"

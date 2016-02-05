@@ -17,6 +17,9 @@
   "namedResource": {
     "System.Text.Formatting.locales.bin": "locales.bin"
   },
+  "compilationOptions": {
+    "keyFile": "../../tools/Key.snk"
+  },
   "dependencies": {
     "System.Diagnostics.Tools": "4.0.1-*",
     "System.Slices": "0.1.0-*",
