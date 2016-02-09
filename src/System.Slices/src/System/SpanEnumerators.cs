@@ -29,23 +29,31 @@ namespace System
         /// </summary>
         public struct Enumerator
         {
-            Span<T> _span;    // The slice being enumerated.
-            int _position; // The current position.
+            private readonly object _object;
+            private readonly UIntPtr _offset;
+            private readonly int _length;
+            private int _position;
 
             internal Enumerator(Span<T> span)
             {
-                _span = span;
+                _object = span.Object;
+                _offset = span.Offset;
+                _length = span.Length;
                 _position = -1;
             }
 
             public T Current
             {
-                get { return _span[_position]; }
+                get
+                {
+                    Contract.RequiresInRange(_position, (uint)_length);
+                    return PtrUtils.Get<T>(_object, _offset, (UIntPtr)_position);
+                }
             }
 
             public bool MoveNext()
             {
-                return ++_position < _span.Length;
+                return ++_position < _length;
             }
 
             public void Reset()
@@ -72,7 +80,7 @@ namespace System
 
             public T Current
             {
-                get { return _span.GetItemWithoutBoundariesCheck(_position); }
+                get { return _span[_position]; }
             }
 
             object IEnumerator.Current
@@ -88,13 +96,7 @@ namespace System
 
             public bool MoveNext()
             {
-                int nextItemIndex = _position + 1;
-                if (nextItemIndex < _span.Length)
-                {
-                    _position = nextItemIndex;
-                    return true;
-                }
-                return false;
+                return ++_position < _span.Length;
             }
 
             public void Reset()
