@@ -155,7 +155,7 @@ namespace System.Text.Utf8
             {
                 int realEncodedBytes;
                 // TODO: Inline decoding, as the invalid surrogate check can be done faster
-                bool ret = TryDecodeCodePoint(buffer.Slice(buffer.Length - encodedBytes, encodedBytes), out codePoint, out realEncodedBytes);
+                bool ret = TryDecodeCodePoint(buffer.Slice(buffer.Length - encodedBytes), out codePoint, out realEncodedBytes);
                 if (ret && encodedBytes != realEncodedBytes)
                 {
                     // invalid surrogate character
@@ -222,19 +222,22 @@ namespace System.Text.Utf8
                     buffer[0] = (byte)(b0111_1111U & codePoint.Value);
                     return true;
                 case 2:
-                    buffer[0] = (byte)(((codePoint.Value >> 6) & b0001_1111U) | b1100_0000U);
-                    buffer[1] = (byte)(((codePoint.Value >> 0) & b0011_1111U) | b1000_0000U);
+                    byte b0 = (byte)(((codePoint.Value >> 6) & b0001_1111U) | b1100_0000U);
+                    byte b1 = (byte)(((codePoint.Value >> 0) & b0011_1111U) | b1000_0000U);
+                    buffer.Write((ushort)(b0 | b1 << 8));
                     return true;
                 case 3:
-                    buffer[0] = (byte)(((codePoint.Value >> 12) & b0000_1111U) | b1110_0000U);
-                    buffer[1] = (byte)(((codePoint.Value >> 6) & b0011_1111U) | b1000_0000U);
+                    b0 = (byte)(((codePoint.Value >> 12) & b0000_1111U) | b1110_0000U);
+                    b1 = (byte)(((codePoint.Value >> 6) & b0011_1111U) | b1000_0000U);
+                    buffer.Write((ushort)(b0 | b1 << 8));
                     buffer[2] = (byte)(((codePoint.Value >> 0) & b0011_1111U) | b1000_0000U);
                     return true;
                 case 4:
-                    buffer[0] = (byte)(((codePoint.Value >> 18) & b0000_0111U) | b1111_0000U);
-                    buffer[1] = (byte)(((codePoint.Value >> 12) & b0011_1111U) | b1000_0000U);
-                    buffer[2] = (byte)(((codePoint.Value >> 6) & b0011_1111U) | b1000_0000U);
-                    buffer[3] = (byte)(((codePoint.Value >> 0) & b0011_1111U) | b1000_0000U);
+                    b0 = (byte)(((codePoint.Value >> 18) & b0000_0111U) | b1111_0000U);
+                    b1 = (byte)(((codePoint.Value >> 12) & b0011_1111U) | b1000_0000U);
+                    byte b2 = (byte)(((codePoint.Value >> 6) & b0011_1111U) | b1000_0000U);
+                    byte b3 = (byte)(((codePoint.Value >> 0) & b0011_1111U) | b1000_0000U);
+                    buffer.Write((uint)(b0 | b1 << 8 | b2 << 16 | b3 << 24));
                     return true;
                 default:
                     return false;

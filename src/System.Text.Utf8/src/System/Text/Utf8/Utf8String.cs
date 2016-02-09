@@ -156,28 +156,42 @@ namespace System.Text.Utf8
                     len++;
                 }
             }
-
-            char[] characters = new char[len];
+                       
             unsafe
             {
-                fixed (char* pinnedCharacters = characters)
-                {
-                    Span<byte> buffer = new Span<byte>((byte*)pinnedCharacters, len * 2);
-                    foreach (var codePoint in CodePoints)
-                    {
-                        int bytesEncoded;
-                        if (!Utf16LittleEndianEncoder.TryEncodeCodePoint(codePoint, buffer, out bytesEncoded))
-                        {
-                            // TODO: Change Exception type
-                            throw new Exception("invalid character");
-                        }
-                        buffer = buffer.Slice(bytesEncoded);
-                    }
-                }
-            }
+                Span<byte> buffer;
+                char* stackChars = null;
+                char[] characters = null;
 
-            // TODO: We already have a char[] and this will copy, how to avoid that
-            return new string(characters);
+                if (len <= 256)
+                {
+                    char* stackallocedChars = stackalloc char[len];
+                    stackChars = stackallocedChars;
+                    buffer = new Span<byte>(stackChars, len * 2);
+                }
+                else
+                {
+                    // HACK: Can System.Buffers be used here?
+                    characters = new char[len];
+                    buffer = characters.Slice().Cast<char, byte>();
+                }
+
+                foreach (var codePoint in CodePoints)
+                {
+                    int bytesEncoded;
+                    if (!Utf16LittleEndianEncoder.TryEncodeCodePoint(codePoint, buffer, out bytesEncoded))
+                    {
+                        // TODO: Change Exception type
+                        throw new Exception("invalid character");
+                    }
+                    buffer = buffer.Slice(bytesEncoded);
+                }
+
+                // TODO: We already have a char[] and this will copy, how to avoid that
+                return stackChars != null 
+                    ? new string(stackChars, 0, len)
+                    : new string(characters);
+            }
         }
 
         public bool ReferenceEquals(Utf8String other)
@@ -339,6 +353,8 @@ namespace System.Text.Utf8
         // TODO: Should this be public?
         public int IndexOf(Utf8CodeUnit codeUnit)
         {
+            // TODO: _buffer.IndexOf(codeUnit.Value); when Span has it
+
             for (int i = 0; i < Length; i++)
             {
                 if (codeUnit == this[i])
@@ -626,38 +642,33 @@ namespace System.Text.Utf8
             }
 
             byte[] bytes = new byte[len];
-            unsafe
+           
+            Span<byte> p = new Span<byte>(bytes);
+            for (int i = 0; i < s.Length; /* intentionally no increment */)
             {
-                fixed (byte* array_pinned = bytes)
+                UnicodeCodePoint codePoint;
+                int encodedChars;
+                if (Utf16LittleEndianEncoder.TryDecodeCodePointFromString(s, i, out codePoint, out encodedChars))
                 {
-                    Span<byte> p = new Span<byte>(array_pinned, len);
-                    for (int i = 0; i < s.Length; /* intentionally no increment */)
+                    i += encodedChars;
+                    int encodedBytes;
+                    if (Utf8Encoder.TryEncodeCodePoint(codePoint, p, out encodedBytes))
                     {
-                        UnicodeCodePoint codePoint;
-                        int encodedChars;
-                        if (Utf16LittleEndianEncoder.TryDecodeCodePointFromString(s, i, out codePoint, out encodedChars))
-                        {
-                            i += encodedChars;
-                            int encodedBytes;
-                            if (Utf8Encoder.TryEncodeCodePoint(codePoint, p, out encodedBytes))
-                            {
-                                p = p.Slice(encodedBytes);
-                            }
-                            else
-                            {
-                                // TODO: Fix exception type
-                                throw new Exception("Internal error: Utf16Decoder somehow got CodePoint out of range or the buffer is too small");
-                            }
-                        }
-                        else
-                        {
-                            // TODO: Fix exception type
-                            throw new Exception("Internal error: we did pre-validation of the string, nothing should go wrong");
-                        }
+                        p = p.Slice(encodedBytes);
+                    }
+                    else
+                    {
+                        // TODO: Fix exception type
+                        throw new Exception("Internal error: Utf16Decoder somehow got CodePoint out of range or the buffer is too small");
                     }
                 }
+                else
+                {
+                    // TODO: Fix exception type
+                    throw new Exception("Internal error: we did pre-validation of the string, nothing should go wrong");
+                }
             }
-
+        
             return bytes;
         }
 
