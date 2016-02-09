@@ -217,23 +217,6 @@ public class Tests
     }
 
     [Fact]
-    public void IntArraySpanCastedToByteArraySpanHasSameBytesAsOriginalArray()
-    {
-        var ints = new int[100000];
-        Random r = new Random(42324232);
-        for (int i = 0; i < ints.Length; i++) { ints[i] = r.Next(); }
-        var bytes = ints.Slice().Cast<int, byte>();
-        Assert.Equal(bytes.Length, ints.Length * sizeof(int));
-        for (int i = 0; i < ints.Length; i++)
-        {
-            Assert.Equal(bytes[i * 4], (ints[i] & 0xff));
-            Assert.Equal(bytes[i * 4 + 1], (ints[i] >> 8 & 0xff));
-            Assert.Equal(bytes[i * 4 + 2], (ints[i] >> 16 & 0xff));
-            Assert.Equal(bytes[i * 4 + 3], (ints[i] >> 24 & 0xff));
-        }
-    }
-
-    [Fact]
     public bool TestPerfLoop()
     {
         var ints = new int[10000];

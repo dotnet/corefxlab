@@ -7,6 +7,7 @@ namespace System
 {
     static class Contract
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Requires(bool condition)
         {
             if (!condition)

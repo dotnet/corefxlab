@@ -120,5 +120,18 @@ namespace System
             add         // add the offset
             ret")]
         public static UIntPtr ComputeAddress(object obj, UIntPtr offset) { return UIntPtr.Zero; }
+               
+        [ILSub(@"
+            .maxstack 2
+            ldarg.0
+            conv.i
+            sizeof !!T
+            mul  
+            sizeof !!U
+            div
+            ret")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static IntPtr CountOfU<T, U>(uint countOfT) { return default(IntPtr); }
+
     }
 }
