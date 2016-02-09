@@ -155,15 +155,13 @@ namespace System
             get
             {
                 Contract.RequiresInRange(index, (uint)Length);
-                return PtrUtils.Get<T>(
-                    Object, Offset + (index * PtrUtils.SizeOf<T>()));
+                return PtrUtils.Get<T>(Object, Offset, (UIntPtr)index);
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private set
             {
                 Contract.RequiresInRange(index, (uint)Length);
-                PtrUtils.Set<T>(
-                    Object, Offset + (index * PtrUtils.SizeOf<T>()), value);
+                PtrUtils.Set(Object, Offset, (UIntPtr)index, value);
             }
         }
 
@@ -282,8 +280,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal T GetItemWithoutBoundariesCheck(int index)
         {
-            return PtrUtils.Get<T>(
-                    Object, Offset + (index * PtrUtils.SizeOf<T>()));
+            return PtrUtils.Get<T>(Object, Offset, (UIntPtr)index);
         }
     }
 }
