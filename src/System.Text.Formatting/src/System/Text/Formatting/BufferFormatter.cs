@@ -56,6 +56,7 @@ namespace System.Text.Formatting
         {
             var temp = _buffer;
             _buffer = _pool.Rent(_buffer.Length * 2);
+            Array.Copy(temp, 0, _buffer, 0, _count);
             _pool.Return(temp);
         }
 

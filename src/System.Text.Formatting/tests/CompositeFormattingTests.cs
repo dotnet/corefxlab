@@ -21,14 +21,14 @@ namespace System.Text.Formatting.Tests
             CultureInfo.CurrentUICulture = culture;
         }
 
-        [Fact(Skip = "Issue https://github.com/dotnet/corefxlab/issues/599")]
+        [Fact]
         public void CompositeFormattingBasics()
         {
-            var time = DateTime.UtcNow;
+            var time = new DateTime(2016, 2, 9, 4, 1, 59, DateTimeKind.Utc);
             using (var formatter = new StringFormatter(pool))
             {
-                formatter.Format("{2} - Error {0}. File {1} not found.", 404, "index.html", time);
-                Assert.Equal(time.ToString("G") + " - Error 404. File index.html not found.", formatter.ToString());
+                formatter.Format("{2:G} - Error {0}. File {1} not found.", 404, "index.html", time);
+                Assert.Equal("2/9/2016 4:01:59 AM - Error 404. File index.html not found.", formatter.ToString());
             }
         }
 
