@@ -1,0 +1,17 @@
+﻿{
+  "name": "System.Net.Libuv.Tests",
+  "dependencies": {
+    "NETStandard.Library": "1.0.0-rc2-23728",
+    "System.Net.Libuv": {
+          "target": "project"
+        },
+    "xunit": "2.1.0",
+    "dotnet-test-xunit": "1.0.0-dev-45337-57"
+  },
+  "frameworks": {
+    "dnxcore50": {
+        "imports": "portable-net45+win8"
+     }
+  },
+  "testRunner": "xunit"
+}
