@@ -5,6 +5,12 @@
     <TestCommandLine>(set DOTNET_HOME=$(DotnetPath)) &amp; $(DotnetExe) test &quot;$(ProjectJson)&quot; {XunitTraitOptions}</TestCommandLine>
   </PropertyGroup>
   
+  <Target Name="Build">
+    <!-- This was the only place I could find where this was guaranteed to be executed. The other targets I tried work in some cases (build.cmd) but not others (msbuild). I went with this simple approach for now. -->
+    <Exec Command="$(DotnetExe) restore &quot;$(ProjectJson)&quot;" StandardOutputImportance="Low" CustomErrorRegularExpression="^Unable to locate .*" />
+    <Exec Command="$(DotnetExe) build &quot;$(ProjectJson)&quot;" />
+  </Target>
+  
   <Target Name="RunTestsForProject"
           DependsOnTargets="DiscoverTestInputs"
           AfterTargets="CheckTestCategories"
@@ -37,8 +43,6 @@
           BeforeTargets="RunTestsForProject">
     <Message Text="Running CopyTestToTestDirectory: $(TestPath)%(TestTargetFramework.Folder)" Importance="High" />
 
-    <MakeDir Directories="$(TestPath)%(TestTargetFramework.Folder)" />
-
-    <Exec Command="$(DotnetExe) build &quot;$(ProjectJson)&quot;" />
+    <MakeDir Directories="$(TestPath)%(TestTargetFramework.Folder)" />    
   </Target>
 </Project>

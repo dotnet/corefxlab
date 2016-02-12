@@ -1,26 +1,15 @@
 <Project ToolsVersion="12.0" DefaultTargets="BuildAndTest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="dir.props" />
-  <Import Project="BuildValues.props" />
+  <Import Project="..\dir.props" />
 
   <ItemGroup>
     <Project Include="*\*.csproj" Exclude="@(ExcludeProjects)" />
     <Project Include="*\*.vbproj" Condition="'$(IncludeVbProjects)'!='false'" Exclude="@(ExcludeProjects)" />
-    <Project Include="*\*.xproj" Exclude="@(ExcludeProjects);System.Reflection.Metadata.Cil\System.Reflection.Metadata.Cil.xproj" />    
+    <Project Include="*\*.xproj" Exclude="@(ExcludeProjects);System.Reflection.Metadata.Cil.Tests\System.Reflection.Metadata.Cil.Tests.xproj;System.Drawing.Graphics.Tests\System.Drawing.Graphics.Tests.xproj;System.Text.Json.Tests\System.Text.Json.Tests.xproj" />
   </ItemGroup>
 
   <Import Project="..\dir.targets" />
 
   <Import Project="..\dir.traversal.targets" />
-
-  <Import Project="$(ToolsDir)packages.targets" Condition="Exists('$(ToolsDir)packages.targets') and '$(ImportGetNuGetPackageVersions)' != 'false'" />
-  <Import Project="$(ToolsDir)UpdateBuildValues.targets" Condition="Exists('$(ToolsDir)UpdateBuildValues.targets')" />
-
-  <PropertyGroup Condition="Exists('$(ToolsDir)packages.targets') and '$(ImportGetNuGetPackageVersions)' != 'false'">
-    <TraversalBuildDependsOn>
-      $(TraversalBuildDependsOn);
-      BuildPackages;
-    </TraversalBuildDependsOn>
-  </PropertyGroup>
 
   <PropertyGroup>
     <GenerateCodeCoverageReportForAll>true</GenerateCodeCoverageReportForAll>
