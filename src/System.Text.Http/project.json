@@ -23,6 +23,6 @@
     "System.Text.Utf8": "0.1.0-*"
   },
   "frameworks": {
-    "dotnet5.6": { }
+    "dotnet5.2": { }
   }
 }
