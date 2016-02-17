@@ -25,7 +25,7 @@
     "System.Slices": "0.1.0-*"
   },
   "frameworks": {
-    "dotnet5.6": { }
+    "dotnet5.2": { }
   },
   "scripts": {
     "postcompile": "copy_libuv \"%project:Directory%\" \"%compile:OutputDir%\""

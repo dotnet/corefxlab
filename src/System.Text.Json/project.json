@@ -23,7 +23,7 @@
     "System.Text.Formatting": "0.1.0-*"
   },
   "frameworks": {
-    "dotnet5.6": { }
+    "dotnet5.2": { }
   },
   "compileExclude": ["experiments"]
 }

@@ -23,6 +23,6 @@
     "System.Runtime.Extensions": "4.0.10"
   },
   "frameworks": {
-    "dotnet5.6": { }
+    "dotnet5.2": { }
   }
 }
