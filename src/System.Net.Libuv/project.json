@@ -28,6 +28,6 @@
     "dotnet5.6": { }
   },
   "scripts": {
-    "postcompile": "copy \"%project:Directory%\\libuv.dll\" \"%compile:OutputDir%\\libuv.dll\""
+    "postcompile": "copy_libuv \"%project:Directory%\" \"%compile:OutputDir%\""
   }
 }
