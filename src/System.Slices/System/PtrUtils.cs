@@ -39,7 +39,7 @@ namespace System
 
         /// <summary>
         /// Takes a (possibly null) object reference, plus an offset in bytes, plus an index,
-        /// adds them, and safetly dereferences the target (untyped!) address in
+        /// adds them, and safely dereferences the target (untyped!) address in
         /// a way that the GC will be okay with.  It yields a value of type T.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
