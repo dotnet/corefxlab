@@ -4,7 +4,7 @@
 $apiKey = $args[0]
 $nugetPath = ".\packages\NuGet.exe"
 
-foreach ($file in [System.IO.Directory]::EnumerateFiles(".\nuget\Release", "*.nupkg")) {
+foreach ($file in [System.IO.Directory]::EnumerateFiles(".\nuget", "*.nupkg")) {
     try {
         Write-Host "Pushing package $file to MyGet..."
         $arguments = "push $file $apiKey -Source https://dotnet.myget.org/F/dotnet-corefxlab/api/v2/package"
