@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -341,6 +342,21 @@ namespace System
                 return Equals((Span<T>)obj);
             }
             return false;
+        }
+
+        public ReadOnlySpan<T>.Enumerator GetEnumerator()
+        {
+            return new ReadOnlySpan<T>.Enumerator(Object, Offset, Length);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new ReadOnlySpan<T>.EnumeratorObject(this);
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return new ReadOnlySpan<T>.EnumeratorObject(this);
         }
 
         /// <summary>

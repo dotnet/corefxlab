@@ -41,7 +41,7 @@ namespace System.Slices.Tests
             Assert.NotSame(array, span.CreateArray());
             Assert.False(span.Equals(array));
 
-            Span<byte>.Enumerator it = span.GetEnumerator();
+            ReadOnlySpan<byte>.Enumerator it = span.GetEnumerator();
             for (int i = 0; i < span.Length; i++)
             {
                 Assert.True(it.MoveNext());
