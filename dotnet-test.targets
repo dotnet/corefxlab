@@ -6,8 +6,7 @@
   </PropertyGroup>
   
   <Target Name="Build">
-    <!-- This was the only place I could find where this was guaranteed to be executed. The other targets I tried work in some cases (build.cmd) but not others (msbuild). I went with this simple approach for now. -->
-    <Exec Command="$(DotnetExe) restore &quot;$(ProjectJson)&quot;" StandardOutputImportance="Low" CustomErrorRegularExpression="^Unable to locate .*" />
+    <!-- This was the only place I could find where this was guaranteed to be executed. The other targets I tried work in some cases (build.cmd) but not others (msbuild). I went with this simple approach for now. -->    
     <Exec Command="$(DotnetExe) build &quot;$(ProjectJson)&quot;" />
   </Target>
   

@@ -2,7 +2,6 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Target Name="Build">
     <!-- This was the only place I could find where this was guaranteed to be executed. The other targets I tried work in some cases (build.cmd) but not others (msbuild). I went with this simple approach for now. -->
-    <Exec Command="$(DotnetExe) restore &quot;$(ProjectJson)&quot;" StandardOutputImportance="Low" CustomErrorRegularExpression="^Unable to locate .*" />
     <Exec Command="$(DotnetExe) pack &quot;$(ProjectJson)&quot; -o &quot;$(ProjectDir)nuget&quot; -c Release --version-suffix $([System.DateTime]::Now.ToString(&quot;eyyMMdd-1&quot;))" />
   </Target>
 
