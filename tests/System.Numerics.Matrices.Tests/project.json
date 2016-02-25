@@ -1,12 +1,12 @@
 {
   "name": "System.Numerics.Matrices.Tests",
   "dependencies": {
-    "NETStandard.Library": "1.0.0-rc2-23728",
+    "NETStandard.Library": "1.0.0-rc2-23811",
     "System.Numerics.Matrices": {
           "target": "project"
         },
     "xunit": "2.1.0",
-    "dotnet-test-xunit": "1.0.0-dev-45337-57"
+    "dotnet-test-xunit": "1.0.0-dev-79755-47"
   },
   "frameworks": {
      "dnxcore50": {
