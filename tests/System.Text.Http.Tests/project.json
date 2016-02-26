@@ -4,7 +4,7 @@
     "allowUnsafe": true
   },
   "dependencies": {
-    "NETStandard.Library": "1.0.0-rc2-23728",
+    "NETStandard.Library": "1.0.0-rc2-23811",
     "System.Text.Http": {
           "target": "project"
         },
