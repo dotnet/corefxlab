@@ -14,6 +14,7 @@ namespace System.CommandLine
         private readonly List<ArgumentCommand> _commands = new List<ArgumentCommand>();
         private readonly List<Argument> _options = new List<Argument>();
         private readonly List<Argument> _parameters = new List<Argument>();
+        private readonly List<string> _errors = new List<string>();
 
         private ArgumentParser _parser;
         private ArgumentCommand _definedCommand;
@@ -52,12 +53,7 @@ namespace System.CommandLine
                 var helpText = GetHelpText();
                 Console.Error.Write(helpText);
 
-                // TODO: This should use Environment.Exit(0) but this API isn't available yet.
-#if NET_FX
-                Environment.Exit(0);
-#else
-                Environment.FailFast(string.Empty);
-#endif
+                return;
             }
 
             // Check for invalid or missing command
@@ -84,9 +80,12 @@ namespace System.CommandLine
                 var message = string.Format(Strings.ExtraParameterFmt, parameter);
                 ReportError(message);
             }
+
+            if (HasErrors && !HandleErrors)
+                throw new AggregateException(_errors.Select(m => new ArgumentSyntaxException(m)));
         }
 
-        private bool IsHelpRequested()
+        public bool IsHelpRequested()
         {
             return Parser.GetUnreadOptionNames()
                          .Any(a => string.Equals(a, @"-?", StringComparison.Ordinal) ||
@@ -97,18 +96,9 @@ namespace System.CommandLine
         public void ReportError(string message)
         {
             if (HandleErrors)
-            {
                 Console.Error.WriteLine(Strings.ErrorWithMessageFmt, message);
 
-                // TODO: This should use Environment.Exit(1) but this API isn't available yet.
-#if NET_FX
-                Environment.Exit(1);
-#else
-                Environment.FailFast(string.Empty);
-#endif
-            }
-
-            throw new ArgumentSyntaxException(message);
+            _errors.Add(message);
         }
 
         public ArgumentCommand<T> DefineCommand<T>(string name, T value)
@@ -326,6 +316,8 @@ namespace System.CommandLine
             {
                 var message = string.Format(Strings.ResponseFileDoesNotExistFmt, fileName);
                 ReportError(message);
+
+                return null;
             }
 
             return File.ReadLines(fileName);
@@ -350,6 +342,11 @@ namespace System.CommandLine
         public bool HandleHelp { get; set; }
 
         public bool HandleResponseFiles { get; set; }
+
+        public bool HasErrors
+        {
+            get { return _errors.Count > 0; }
+        }
 
         private ArgumentParser Parser
         {
