@@ -21,7 +21,7 @@
     "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
-    "System.Diagnostics.Tools": "4.0.1-*",
+    "System.Diagnostics.Tools": "4.0.1-rc3-23823",
     "System.Slices": "0.1.0-*",
     "System.Text.Formatting": "0.1.0-*",
     "System.Text.Utf8": "0.1.0-*"

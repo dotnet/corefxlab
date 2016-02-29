@@ -20,7 +20,7 @@
   },  
   "dependencies": {
     "System.Buffers.Experimental": "0.1.0-*",
-    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0-*",
+    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0-rc3-23823",
     "System.Runtime.Extensions": "4.0.0",
     "System.Slices": "0.1.0-*"
   },
