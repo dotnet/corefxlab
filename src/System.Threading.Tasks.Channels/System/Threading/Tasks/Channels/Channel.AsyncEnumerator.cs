@@ -21,7 +21,7 @@ namespace System.Threading.Tasks.Channels
                 _cancellationToken = cancellationToken;
             }
 
-            public T Current { get { return _current; } }
+            public T Current => _current;
 
             public Task<bool> MoveNextAsync()
             {

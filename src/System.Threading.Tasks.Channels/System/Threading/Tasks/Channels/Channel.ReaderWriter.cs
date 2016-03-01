@@ -34,12 +34,10 @@ namespace System.Threading.Tasks.Channels
 
         private class Reader<T> : Interactor<T>
         {
-            internal static Reader<T> Create(CancellationToken cancellationToken)
-            {
-                return cancellationToken.CanBeCanceled ?
+            internal static Reader<T> Create(CancellationToken cancellationToken) =>
+                cancellationToken.CanBeCanceled ?
                     new CancelableReader<T>(cancellationToken) :
                     new Reader<T>();
-            }
         }
 
         private class Writer<T> : Interactor<VoidResult>
@@ -70,7 +68,7 @@ namespace System.Threading.Tasks.Channels
                 }, this);
             }
 
-            protected override void Dispose() { _registration.Dispose(); }
+            protected override void Dispose() => _registration.Dispose();
         }
 
         private sealed class CancelableWriter<T> : Writer<T>
@@ -87,7 +85,7 @@ namespace System.Threading.Tasks.Channels
                 }, this);
             }
 
-            protected override void Dispose() { _registration.Dispose(); }
+            protected override void Dispose() => _registration.Dispose();
         }
 
     }

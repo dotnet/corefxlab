@@ -16,7 +16,7 @@ namespace System.Threading.Tasks.Channels
             private int _tail; // Last valid element in the queue
             private int _size; // Number of elements.
 
-            public int Count { get { return _size; } }
+            public int Count => _size;
 
             public void Enqueue(T item)
             {

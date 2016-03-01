@@ -119,14 +119,14 @@ namespace System.Threading.Tasks.Channels
             private Task<KeyValuePair<bool, T>> _nextAvailable;
 
             /// <summary>The object to use to synchronize all state on this channel.</summary>
-            private object SyncObj { get { return _source; } }
+            private object SyncObj => _source;
 
             internal DeserializationChannel(Stream source)
             {
                 _source = new BinaryReader(source);
             }
 
-            public Task Completion { get { return _completion.Task; } }
+            public Task Completion => _completion.Task;
 
             public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {

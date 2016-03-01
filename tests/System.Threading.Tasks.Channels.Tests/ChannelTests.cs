@@ -89,7 +89,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void GetAwaiter_InvalidSource_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.GetAwaiter<int>(null));
+            Assert.Throws<NullReferenceException>(() => Channel.GetAwaiter<int>(null));
         }
 
         [Fact]

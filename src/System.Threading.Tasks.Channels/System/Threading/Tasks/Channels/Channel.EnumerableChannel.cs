@@ -18,7 +18,7 @@ namespace System.Threading.Tasks.Channels
             private bool _currentIsNext;
 
             /// <summary>The object used to synchronize access to state in the channel.</summary>
-            private object SyncObj { get { return _completion; } }
+            private object SyncObj => _completion;
 
             /// <summary>Initializes the channel, getting an enumerator from the enumerable.</summary>
             internal EnumerableChannel(IEnumerable<T> source)
@@ -26,7 +26,7 @@ namespace System.Threading.Tasks.Channels
                 _source = source.GetEnumerator();
             }
 
-            public Task Completion { get { return _completion.Task; } }
+            public Task Completion => _completion.Task;
 
             public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {

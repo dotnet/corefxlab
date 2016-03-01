@@ -22,9 +22,9 @@ namespace System.Threading.Tasks.Channels
             private Reader<T> _blockedReader;
             private Reader<bool> _waitingReader;
 
-            private object SyncObj { get { return _items; } }
+            private object SyncObj => _items;
 
-            public Task Completion { get { return _completion.Task; } }
+            public Task Completion => _completion.Task;
 
             public bool TryComplete(Exception error = null)
             {
@@ -196,13 +196,10 @@ namespace System.Threading.Tasks.Channels
             }
 
             /// <summary>Gets the number of items in the channel.  This should only be used by the debugger.</summary>
-            private int ItemsCountForDebugger { get { return _items.Count; } }
+            private int ItemsCountForDebugger => _items.Count;
 
             /// <summary>Gets an enumerator the debugger can use to show the contents of the channel.</summary>
-            IEnumerator<T> IDebugEnumerable<T>.GetEnumerator()
-            {
-                return _items.GetEnumerator();
-            }
+            IEnumerator<T> IDebugEnumerable<T>.GetEnumerator() => _items.GetEnumerator();
         }
     }
 }
