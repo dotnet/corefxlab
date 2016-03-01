@@ -14,7 +14,7 @@ namespace System.Collections.Concurrent
     /// <typeparam name="T">Specifies the type of data contained in the queue.</typeparam>
     [DebuggerDisplay("Count = {Count}")]
     [DebuggerTypeProxy(typeof(SingleProducerSingleConsumerQueue<>.SingleProducerSingleConsumerQueue_DebugView))]
-    internal sealed class SingleProducerSingleConsumerQueue<T>
+    public sealed class SingleProducerSingleConsumerQueue<T> : IEnumerable<T>
     {
         // Design:
         //
@@ -49,9 +49,9 @@ namespace System.Collections.Concurrent
         // in the same way to avoid reading _first on the hot path.
 
         /// <summary>The initial size to use for segments (in number of elements).</summary>
-        private const int INIT_SEGMENT_SIZE = 32; // must be a power of 2
+        private const int InitialSegmentSize = 32; // must be a power of 2
         /// <summary>The maximum size to use for segments (in number of elements).</summary>
-        private const int MAX_SEGMENT_SIZE = 0x1000000; // this could be made as large as Int32.MaxValue / 2
+        private const int MaxSegmentSize = 0x1000000; // this could be made as large as Int32.MaxValue / 2
 
         /// <summary>The head of the linked list of segments.</summary>
         private volatile Segment _head;
@@ -59,16 +59,16 @@ namespace System.Collections.Concurrent
         private volatile Segment _tail;
 
         /// <summary>Initializes the queue.</summary>
-        internal SingleProducerSingleConsumerQueue()
+        public SingleProducerSingleConsumerQueue()
         {
             // Validate constants in ctor rather than in an explicit cctor that would cause perf degradation
-            Debug.Assert(INIT_SEGMENT_SIZE > 0, "Initial segment size must be > 0.");
-            Debug.Assert((INIT_SEGMENT_SIZE & (INIT_SEGMENT_SIZE - 1)) == 0, "Initial segment size must be a power of 2");
-            Debug.Assert(INIT_SEGMENT_SIZE <= MAX_SEGMENT_SIZE, "Initial segment size should be <= maximum.");
-            Debug.Assert(MAX_SEGMENT_SIZE < Int32.MaxValue / 2, "Max segment size * 2 must be < Int32.MaxValue, or else overflow could occur.");
+            Debug.Assert(InitialSegmentSize > 0, "Initial segment size must be > 0.");
+            Debug.Assert((InitialSegmentSize & (InitialSegmentSize - 1)) == 0, "Initial segment size must be a power of 2");
+            Debug.Assert(InitialSegmentSize <= MaxSegmentSize, "Initial segment size should be <= maximum.");
+            Debug.Assert(MaxSegmentSize < int.MaxValue / 2, "Max segment size * 2 must be < Int32.MaxValue, or else overflow could occur.");
 
             // Initialize the queue
-            _head = _tail = new Segment(INIT_SEGMENT_SIZE);
+            _head = _tail = new Segment(InitialSegmentSize);
         }
 
         /// <summary>Enqueues an item into the queue.</summary>
@@ -106,7 +106,7 @@ namespace System.Collections.Concurrent
 
             int newSegmentSize = _tail._array.Length << 1; // double size
             Debug.Assert(newSegmentSize > 0, "The max size should always be small enough that we don't overflow.");
-            if (newSegmentSize > MAX_SEGMENT_SIZE) newSegmentSize = MAX_SEGMENT_SIZE;
+            if (newSegmentSize > MaxSegmentSize) newSegmentSize = MaxSegmentSize;
 
             var newSegment = new Segment(newSegmentSize);
             newSegment._array[0] = item;
@@ -197,7 +197,7 @@ namespace System.Collections.Concurrent
         }
 
         /// <summary>Gets an enumerable for the collection.</summary>
-        /// <remarks>WARNING: This should only be used for debugging purposes.  It is not safe to be used concurrently.</remarks>
+        /// <remarks>This method is not safe to use concurrently with any other members that may mutate the collection.</remarks>
         public IEnumerator<T> GetEnumerator()
         {
             for (Segment segment = _head; segment != null; segment = segment._next)
@@ -211,8 +211,10 @@ namespace System.Collections.Concurrent
             }
         }
 
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
         /// <summary>Gets the number of items in the collection.</summary>
-        /// <remarks>WARNING: This should only be used for debugging purposes.  It is not meant to be used concurrently.</remarks>
+        /// <remarks>This method is not safe to use concurrently with any other members that may mutate the collection.</remarks>
         internal int Count
         {
             get
@@ -294,30 +296,19 @@ namespace System.Collections.Concurrent
 
             /// <summary>Gets the contents of the list.</summary>
             [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-            public T[] Items
-            {
-                get
-                {
-                    List<T> list = new List<T>();
-                    foreach (T item in _queue)
-                        list.Add(item);
-                    return list.ToArray();
-                }
-            }
+            public T[] Items => new List<T>(_queue).ToArray();
         }
     }
 
 
     /// <summary>A placeholder class for common padding constants and eventually routines.</summary>
-    static class PaddingHelpers
+    internal static class PaddingHelpers
     {
         /// <summary>A size greater than or equal to the size of the most common CPU cache lines.</summary>
         internal const int CACHE_LINE_SIZE = 128;
     }
 
     /// <summary>Padding structure used to minimize false sharing in SingleProducerSingleConsumerQueue{T}.</summary>
-    [StructLayout(LayoutKind.Explicit, Size = PaddingHelpers.CACHE_LINE_SIZE - sizeof(Int32))] // Based on common case of 64-byte cache lines
-    struct PaddingFor32
-    {
-    }
+    [StructLayout(LayoutKind.Explicit, Size = PaddingHelpers.CACHE_LINE_SIZE - sizeof(int))] // Based on common case of 64-byte cache lines
+    internal struct PaddingFor32 { }
 }

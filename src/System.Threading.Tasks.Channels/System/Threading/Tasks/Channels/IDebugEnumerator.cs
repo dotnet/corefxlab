@@ -24,6 +24,6 @@ namespace System.Threading.Tasks.Channels
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public T[] Items { get; private set; }
+        public T[] Items { get; }
     }
 }

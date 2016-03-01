@@ -12,7 +12,7 @@ namespace System.Threading.Tasks.Channels
     public static partial class Channel
     {
         /// <summary>Sentinel object used to indicate being done writing.</summary>
-        private static readonly Exception s_doneWritingSentinel = new Exception("s_doneWritingSentinel");
+        private static readonly Exception s_doneWritingSentinel = new Exception(nameof(s_doneWritingSentinel));
         /// <summary>A cached task with a Boolean true result.</summary>
         private static readonly Task<bool> s_trueTask = Task.FromResult(true);
         /// <summary>A cached task with a Boolean false result.</summary>
@@ -30,7 +30,7 @@ namespace System.Threading.Tasks.Channels
         public static IChannel<T> Create<T>(int bufferedCapacity = Unbounded, bool singleReaderWriter = false)
         {
             if (bufferedCapacity <= 0 && bufferedCapacity != Unbounded)
-                throw new ArgumentOutOfRangeException("bufferedCapacity");
+                throw new ArgumentOutOfRangeException(nameof(bufferedCapacity));
 
             return bufferedCapacity == Unbounded ?
                 singleReaderWriter ? 
@@ -45,10 +45,7 @@ namespace System.Threading.Tasks.Channels
         /// </summary>
         /// <typeparam name="T">Specifies the type of data stored in the channel.</typeparam>
         /// <returns>The new channel.</returns>
-        public static IChannel<T> CreateUnbuffered<T>()
-        {
-            return new UnbufferedChannel<T>();
-        }
+        public static IChannel<T> CreateUnbuffered<T>() => new UnbufferedChannel<T>();
 
         /// <summary>Creates a channel for reading <typeparamref name="T"/> instances from the source stream.</summary>
         /// <typeparam name="T">Specifies the type of data to be read.  This must be an unmanaged/primitive type.</typeparam>
@@ -57,9 +54,9 @@ namespace System.Threading.Tasks.Channels
         public static IReadableChannel<T> ReadFromStream<T>(Stream source)
         {
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             if (!source.CanRead)
-                throw new ArgumentException(Properties.Resources.ArgumentException_SourceStreamNotReadable, "source");
+                throw new ArgumentException(Properties.Resources.ArgumentException_SourceStreamNotReadable, nameof(source));
 
             return new DeserializationChannel<T>(source);
         }
@@ -71,10 +68,10 @@ namespace System.Threading.Tasks.Channels
         public static IWritableChannel<T> WriteToStream<T>(Stream destination)
         {
             if (destination == null)
-                throw new ArgumentNullException("destination");
+                throw new ArgumentNullException(nameof(destination));
             if (!destination.CanWrite)
-                throw new ArgumentException(Properties.Resources.ArgumentException_DestinationStreamNotWritable, "destination");
-
+                throw new ArgumentException(Properties.Resources.ArgumentException_DestinationStreamNotWritable, nameof(destination));
+        
             return new SerializationChannel<T>(destination);
         }
 
@@ -85,7 +82,7 @@ namespace System.Threading.Tasks.Channels
         public static IReadableChannel<T> CreateFromTask<T>(Task<T> source)
         {
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             return new TaskChannel<T>(source);
         }
@@ -97,7 +94,7 @@ namespace System.Threading.Tasks.Channels
         public static IReadableChannel<T> CreateFromEnumerable<T>(IEnumerable<T> source)
         {
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             return new EnumerableChannel<T>(source);
         }
@@ -109,7 +106,7 @@ namespace System.Threading.Tasks.Channels
         public static IObservable<T> AsObservable<T>(this IReadableChannel<T> source)
         {
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             return (IObservable<T>)s_channelToObservable.GetValue(
                 source, 
@@ -117,7 +114,7 @@ namespace System.Threading.Tasks.Channels
         }
 
         /// <summary>Table mapping from a channel to the shared observable wrapping it.</summary>
-        private static ConditionalWeakTable<object, object> s_channelToObservable = new ConditionalWeakTable<object, object>();
+        private static readonly ConditionalWeakTable<object, object> s_channelToObservable = new ConditionalWeakTable<object, object>();
 
         /// <summary>Creates an observer for a writeable channel.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
@@ -126,7 +123,8 @@ namespace System.Threading.Tasks.Channels
         public static IObserver<T> AsObserver<T>(this IWritableChannel<T> target)
         {
             if (target == null)
-                throw new ArgumentNullException("target");
+                throw new ArgumentNullException(nameof(target));
+
             return new ChannelObserver<T>(target);
         }
 
@@ -139,9 +137,7 @@ namespace System.Threading.Tasks.Channels
         /// </remarks>
         public static ValueTaskAwaiter<T> GetAwaiter<T>(this IReadableChannel<T> channel)
         {
-            if (channel == null)
-                throw new ArgumentNullException("channel");
-
+            // No explicit null check.  await'ing something that's null can produce a NullReferenceException.
             return channel.ReadAsync().GetAwaiter();
         }
 
@@ -154,7 +150,7 @@ namespace System.Threading.Tasks.Channels
             this IReadableChannel<T> channel, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (channel == null)
-                throw new ArgumentNullException("channel");
+                throw new ArgumentNullException(nameof(channel));
 
             return new AsyncEnumerator<T>(channel, cancellationToken);
         }
@@ -164,20 +160,14 @@ namespace System.Threading.Tasks.Channels
         /// <param name="channel">The channel from which to read.</param>
         /// <param name="action">The action to invoke with data read from the channel.</param>
         /// <returns>This builder.</returns>
-        public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Action<T> action)
-        {
-            return new CaseBuilder().CaseRead(channel, action);
-        }
+        public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Action<T> action) => new CaseBuilder().CaseRead(channel, action);
 
         /// <summary>Creates a case-select builder and adds a case for channel reading.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <param name="channel">The channel from which to read.</param>
         /// <param name="func">The asynchronous function to invoke with data read from the channel.</param>
         /// <returns>This builder.</returns>
-        public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Func<T, Task> func)
-        {
-            return new CaseBuilder().CaseRead(channel, func);
-        }
+        public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Func<T, Task> func) => new CaseBuilder().CaseRead(channel, func);
 
         /// <summary>Creates a case-select builder and adds a case for channel writing.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
@@ -185,10 +175,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="item">The data to write to the channel</param>
         /// <param name="action">The action to invoke after the data has been written.</param>
         /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action)
-        {
-            return new CaseBuilder().CaseWrite(channel, item, action);
-        }
+        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action) => new CaseBuilder().CaseWrite(channel, item, action);
 
         /// <summary>Creates a case-select builder and adds a case for channel writing.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
@@ -196,10 +183,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="item">The data to write to the channel</param>
         /// <param name="func">The asynchronous function to invoke after the data has been written.</param>
         /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func)
-        {
-            return new CaseBuilder().CaseWrite(channel, item, func);
-        }
+        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func) => new CaseBuilder().CaseWrite(channel, item, func);
 
         /// <summary>Mark the channel as being complete, meaning no more items will be written to it.</summary>
         /// <param name="channel">The channel to mark as complete.</param>
@@ -208,7 +192,7 @@ namespace System.Threading.Tasks.Channels
         public static void Complete<T>(this IWritableChannel<T> channel, Exception error = null)
         {
             if (channel == null)
-                throw new ArgumentNullException("channel");
+                throw new ArgumentNullException(nameof(channel));
             if (!channel.TryComplete(error))
                 throw CreateInvalidCompletionException();
         }
@@ -262,16 +246,11 @@ namespace System.Threading.Tasks.Channels
         }
 
         /// <summary>Creates an exception detailing concurrent use of a single reader/writer channel.</summary>
-        private static Exception CreateSingleReaderWriterMisuseException()
-        {
-            return new InvalidOperationException(Properties.Resources.InvalidOperationException_SingleReaderWriterUsedConcurrently).InitializeStackTrace();
-        }
+        private static Exception CreateSingleReaderWriterMisuseException() =>
+            new InvalidOperationException(Properties.Resources.InvalidOperationException_SingleReaderWriterUsedConcurrently).InitializeStackTrace();
 
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>
-        private static Exception CreateInvalidCompletionException()
-        {
-            return new ClosedChannelException().InitializeStackTrace();
-        }
+        private static Exception CreateInvalidCompletionException() => new ClosedChannelException().InitializeStackTrace();
 
         /// <summary>Exception thrown when a channel is used incorrectly after it's been closed.</summary>
         private sealed class ClosedChannelException : InvalidOperationException
@@ -284,8 +263,7 @@ namespace System.Threading.Tasks.Channels
         /// <returns>The same exception.</returns>
         private static Exception InitializeStackTrace(this Exception exc)
         {
-            try { throw exc; }
-            catch { return exc; }
+            try { throw exc; } catch { return exc; }
         }
 
     }

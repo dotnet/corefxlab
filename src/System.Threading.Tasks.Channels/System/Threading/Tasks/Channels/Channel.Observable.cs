@@ -19,20 +19,11 @@ namespace System.Threading.Tasks.Channels
                 _channel = channel;
             }
 
-            public void OnCompleted()
-            {
-                _channel.Complete();
-            }
+            public void OnCompleted() => _channel.Complete();
 
-            public void OnError(Exception error)
-            {
-                _channel.Complete(error);
-            }
+            public void OnError(Exception error) => _channel.Complete(error);
 
-            public void OnNext(T value)
-            {
-                _channel.WriteAsync(value).GetAwaiter().GetResult();
-            }
+            public void OnNext(T value) => _channel.WriteAsync(value).GetAwaiter().GetResult();
         }
 
         /// <summary>Provides an observable for a readable channel.</summary>
@@ -51,7 +42,7 @@ namespace System.Threading.Tasks.Channels
             public IDisposable Subscribe(IObserver<T> observer)
             {
                 if (observer == null)
-                    throw new ArgumentNullException("observer");
+                    throw new ArgumentNullException(nameof(observer));
 
                 lock (_observers)
                 {

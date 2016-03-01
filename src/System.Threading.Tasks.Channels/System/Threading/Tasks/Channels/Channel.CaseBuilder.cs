@@ -31,9 +31,9 @@ namespace System.Threading.Tasks.Channels
             public CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Action<T> action)
             {
                 if (channel == null)
-                    throw new ArgumentNullException("channel");
+                    throw new ArgumentNullException(nameof(channel));
                 if (action == null)
-                    throw new ArgumentNullException("action");
+                    throw new ArgumentNullException(nameof(action));
                 _cases.Add(new SyncReadCase<T>(channel, action));
                 return this;
             }
@@ -50,9 +50,9 @@ namespace System.Threading.Tasks.Channels
             public CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Func<T, Task> func)
             {
                 if (channel == null)
-                    throw new ArgumentNullException("channel");
+                    throw new ArgumentNullException(nameof(channel));
                 if (func == null)
-                    throw new ArgumentNullException("func");
+                    throw new ArgumentNullException(nameof(func));
                 _cases.Add(new AsyncReadCase<T>(channel, func));
                 return this;
             }
@@ -69,9 +69,9 @@ namespace System.Threading.Tasks.Channels
             public CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action)
             {
                 if (channel == null)
-                    throw new ArgumentNullException("channel");
+                    throw new ArgumentNullException(nameof(channel));
                 if (action == null)
-                    throw new ArgumentNullException("action");
+                    throw new ArgumentNullException(nameof(action));
                 _cases.Add(new SyncWriteCase<T>(channel, item, action));
                 return this;
             }
@@ -88,9 +88,9 @@ namespace System.Threading.Tasks.Channels
             public CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func)
             {
                 if (channel == null)
-                    throw new ArgumentNullException("channel");
+                    throw new ArgumentNullException(nameof(channel));
                 if (func == null)
-                    throw new ArgumentNullException("func");
+                    throw new ArgumentNullException(nameof(func));
                 _cases.Add(new AsyncWriteCase<T>(channel, item, func));
                 return this;
             }
@@ -104,7 +104,7 @@ namespace System.Threading.Tasks.Channels
             public CaseBuilder CaseDefault(Action action)
             {
                 if (action == null)
-                    throw new ArgumentNullException("action");
+                    throw new ArgumentNullException(nameof(action));
                 if (_default != null)
                     throw new InvalidOperationException(Properties.Resources.InvalidOperationException_DefaultCaseAlreadyExists);
                 _default = new SyncDefaultCase(action);
@@ -120,7 +120,7 @@ namespace System.Threading.Tasks.Channels
             public CaseBuilder CaseDefault(Func<Task> func)
             {
                 if (func == null)
-                    throw new ArgumentNullException("func");
+                    throw new ArgumentNullException(nameof(func));
                 if (_default != null)
                     throw new InvalidOperationException(Properties.Resources.InvalidOperationException_DefaultCaseAlreadyExists);
                 _default = new AsyncDefaultCase(func);
@@ -144,7 +144,7 @@ namespace System.Threading.Tasks.Channels
             public Task<int> SelectUntilAsync(Func<int, bool> conditionFunc, CancellationToken cancellationToken = default(CancellationToken))
             {
                 if (conditionFunc == null)
-                    throw new ArgumentNullException("conditionFunc");
+                    throw new ArgumentNullException(nameof(conditionFunc));
                 return SelectUntilAsyncCore(conditionFunc, cancellationToken);
             }
 

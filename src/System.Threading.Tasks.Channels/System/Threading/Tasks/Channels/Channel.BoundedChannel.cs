@@ -30,7 +30,7 @@ namespace System.Threading.Tasks.Channels
             /// <summary>Set to non-null once Complete has been called.</summary>
             private Exception _doneWriting;
             /// <summary>Gets an object used to synchronize all state on the instance.</summary>
-            private object SyncObj { get { return _items; } }
+            private object SyncObj => _items;
 
             /// <summary>Initializes the <see cref="BoundedChannel{T}"/>.</summary>
             /// <param name="bufferedCapacity">The positive bounded capacity for the channel.</param>
@@ -40,7 +40,7 @@ namespace System.Threading.Tasks.Channels
                 _bufferedCapacity = bufferedCapacity;
             }
 
-            public Task Completion { get { return _completion.Task; } }
+            public Task Completion => _completion.Task;
             
             [Conditional("DEBUG")]
             private void AssertInvariants()
@@ -347,13 +347,10 @@ namespace System.Threading.Tasks.Channels
             }
 
             /// <summary>Gets the number of items in the channel.  This should only be used by the debugger.</summary>
-            private int ItemsCountForDebugger { get { return _items.Count; } }
+            private int ItemsCountForDebugger => _items.Count;
 
             /// <summary>Gets an enumerator the debugger can use to show the contents of the channel.</summary>
-            IEnumerator<T> IDebugEnumerable<T>.GetEnumerator()
-            {
-                return _items.GetEnumerator();
-            }
+            IEnumerator<T> IDebugEnumerable<T>.GetEnumerator() => _items.GetEnumerator();
         }
     }
 }

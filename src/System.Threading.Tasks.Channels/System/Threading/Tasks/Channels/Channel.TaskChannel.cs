@@ -43,7 +43,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            public Task Completion { get { return _completion.Task; } }
+            public Task Completion => _completion.Task;
 
             public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {
@@ -113,10 +113,7 @@ namespace System.Threading.Tasks.Channels
                 }
             }
 
-            private bool TransitionRead()
-            {
-                return _completion.TrySetResult(default(VoidResult));
-            }
+            private bool TransitionRead() => _completion.TrySetResult(default(VoidResult));
         }
     }
 }

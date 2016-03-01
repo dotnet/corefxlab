@@ -25,9 +25,9 @@ namespace System.Threading.Tasks.Channels
             private readonly SimpleQueue<Reader<bool>> _waitingWriters = new SimpleQueue<Reader<bool>>();
 
             /// <summary>Gets an object used to synchronize all state on the instance.</summary>
-            private object SyncObj { get { return _completion; } }
+            private object SyncObj => _completion;
 
-            public Task Completion { get { return _completion.Task; } }
+            public Task Completion => _completion.Task;
 
             [Conditional("DEBUG")]
             private void AssertInvariants()
@@ -258,10 +258,10 @@ namespace System.Threading.Tasks.Channels
             }
 
             /// <summary>Gets the number of writers waiting on the channel.  This should only be used by the debugger.</summary>
-            private int WaitingWritersCountForDebugger { get { return _waitingWriters.Count; } }
+            private int WaitingWritersCountForDebugger => _waitingWriters.Count;
 
             /// <summary>Gets the number of readers waiting on the channel.  This should only be used by the debugger.</summary>
-            private int WaitingReadersCountForDebugger { get { return _waitingReaders.Count; } }
+            private int WaitingReadersCountForDebugger => _waitingReaders.Count;
 
             private sealed class DebugView
             {
@@ -272,9 +272,9 @@ namespace System.Threading.Tasks.Channels
                     _channel = channel;
                 }
 
-                public int WaitingReaders { get { return _channel._waitingReaders.Count; } }
-                public int WaitingWriters { get { return _channel._waitingWriters.Count; } }
-                public int BlockedReaders { get { return _channel._blockedReaders.Count; } }
+                public int WaitingReaders => _channel._waitingReaders.Count;
+                public int WaitingWriters => _channel._waitingWriters.Count;
+                public int BlockedReaders => _channel._blockedReaders.Count;
                 public T[] BlockedWriters
                 {
                     get
