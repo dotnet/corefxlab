@@ -25,7 +25,9 @@
     "System.Slices": "0.1.0-*"
   },
   "frameworks": {
-    "dotnet5.2": { }
+        "netstandard1.1": {
+            "imports": [ "dotnet5.2" ]
+        }
   },
   "scripts": {
     "postcompile": "copy_libuv \"%project:Directory%\" \"%compile:OutputDir%\""

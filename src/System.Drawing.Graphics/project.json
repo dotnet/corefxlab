@@ -32,6 +32,8 @@
     "System.Runtime.InteropServices": "4.0.20-*"
   },
   "frameworks": {
-    "dotnet5.6": { }
+        "netstandard1.5": {
+            "imports": [ "dotnet5.6" ]
+        }
   }
 }
