@@ -23,7 +23,9 @@
     "System.Text.Formatting": "0.1.0-*"
   },
   "frameworks": {
-    "dotnet5.2": { }
+        "netstandard1.1": {
+            "imports": [ "dotnet5.2" ]
+        }
   },
   "compileExclude": ["experiments"]
 }

@@ -25,6 +25,8 @@
     "System.Xml.ReaderWriter": "4.0.10"
   },
   "frameworks": {
-    "dotnet5.2": { }
+      "netstandard1.1": {
+          "imports": [ "dotnet5.2" ]
+      }
   }
 }

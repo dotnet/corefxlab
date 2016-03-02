@@ -27,6 +27,8 @@
     "System.Threading.Tasks.Extensions": "4.0.0-rc3-23823"
   },
   "frameworks": {
-    "dotnet5.2": { }
+        "netstandard1.1": {
+            "imports": [ "dotnet5.2" ]
+        }
   }
 }
