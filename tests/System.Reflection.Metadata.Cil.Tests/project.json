@@ -1,7 +1,8 @@
 {
   "name":"System.Reflection.Metadata.Cil.Tests",
   "dependencies": {
-    "NETStandard.Library": "1.0.0-rc2-23811",
+    "NETStandard.Library": "1.0.0-rc3-23901",
+    "System.IO.Compression" : "4.1.0-rc3-23901",
     "System.Console": "4.0.0-*",
     "System.IO.FileSystem": "4.0.0",
     "System.Reflection.Metadata.Cil":  {
@@ -15,9 +16,9 @@
     "keyFile": "../../tools/Key.snk"
   },
   "frameworks": {
-    "dnxcore50": {
-        "imports": "portable-net45+win8"
-     }
+        "netstandardapp1.5": {
+            "imports": [ "dnxcore50", "portable-net45+win8" ]
+        }
   },
   "resource": "Assemblies/demo1.exe",
   "testRunner": "xunit"
