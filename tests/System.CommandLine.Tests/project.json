@@ -1,7 +1,8 @@
 {
   "name": "System.CommandLine.Tests",
   "dependencies": {
-    "NETStandard.Library": "1.0.0-rc2-23811",
+    "NETStandard.Library": "1.0.0-rc3-23902",
+    "System.IO.Compression" : "4.1.0-rc3-23902",
     "System.CommandLine": {
       "target": "project"
     },
@@ -13,9 +14,9 @@
     "keyFile": "../../tools/test_key.snk"
   },
   "frameworks": {
-    "dnxcore50": {
-      "imports": "portable-net45+win8"
-    }
+        "netstandardapp1.5": {
+            "imports": [ "dnxcore50", "portable-net45+win8" ]
+        }
   },
   "testRunner": "xunit"
 }
