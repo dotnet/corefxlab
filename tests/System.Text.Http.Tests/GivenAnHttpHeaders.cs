@@ -114,5 +114,17 @@ Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4
 
             action.ShouldThrow<ArgumentException>();
         }
+
+        [Fact]
+        public void CanParseBodylessRequest()
+        {
+            var request = new Utf8String("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").CopyBytes().Slice();
+            var parsed = HttpRequest.Parse(request);
+            Assert.Equal(HttpMethod.Get, parsed.RequestLine.Method);
+            Assert.Equal(HttpVersion.V1_1, parsed.RequestLine.Version);
+            Assert.Equal(new Utf8String("/"), parsed.RequestLine.RequestUri);
+            Assert.Equal(1, parsed.Headers.Count);
+            Assert.Equal(0, parsed.Body.Length);
+        } 
     }
 }

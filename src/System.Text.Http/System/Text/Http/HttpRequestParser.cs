@@ -73,16 +73,16 @@ namespace System.Text.Http
             int parsed;
             HttpRequestLine requestLine;
             if (!HttpRequestParser.TryParseRequestLine(bytes, out requestLine, out parsed)){
-                throw new NotImplementedException();
+                throw new NotImplementedException("request line parser");
             }
             bytes = bytes.Slice(parsed);
 
             HttpHeaders headers;
             if (!HttpRequestParser.TryParseHeaders(bytes, out headers, out parsed))
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException("headers parser");
             }
-            var body = bytes.Slice(parsed + 4); // TODO: this needs to verify two newlines 
+            var body = bytes.Slice(parsed);
 
             var request = new HttpRequest(requestLine, headers, body);
 
@@ -286,12 +286,8 @@ namespace System.Text.Http
 
         internal static bool TryParseHeaders(Span<byte> bytes, out HttpHeaders headers, out int parsed)
         {
-            for(int i=0; i<bytes.Length; i++)
+            for(int i=0; i<bytes.Length - 3; i++)
             {
-                if(i > bytes.Length - 4)
-                {
-                    break;
-                }
                 if(bytes[i] == '\r' && bytes[i+1] == '\n' && bytes[i+2] == '\r' && bytes[i+3] == '\n')
                 {
                     parsed = i + 4;
