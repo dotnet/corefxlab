@@ -203,7 +203,7 @@ namespace System
             }
 
             // TODO(joe): specialize to use a fast memcpy if T is pointerless.
-            for (int i = 0; i < Length; i++)
+            for (int i = 0; i < values.Length; i++)
             {
                 this[i] = values[i];
             }

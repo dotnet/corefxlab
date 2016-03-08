@@ -243,5 +243,29 @@ namespace System.Slices.Tests
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => { ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(bytes, start, length); });
         }
+
+        [Fact]
+        public void SetSpan()
+        {
+            var destination = new Span<byte>(new byte[100]);
+            var source = new Span<byte>(new byte[] { 1, 2, 3 });
+            destination.Set(source);
+            for(int i=0; i < source.Length; i++)
+            {
+                Assert.Equal(source[i], destination[i]);
+            }
+        }
+
+        [Fact]
+        public void SetArray()
+        {
+            var destination = new Span<byte>(new byte[100]);
+            var source = new byte[] { 1, 2, 3 };
+            destination.Set(source);
+            for (int i = 0; i < source.Length; i++)
+            {
+                Assert.Equal(source[i], destination[i]);
+            }
+        }
     }
 }
