@@ -18,11 +18,7 @@
     "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
-    "System.Collections": "4.0.10-*",
-    "System.Console": "4.0.0-rc3-23823",
-    "System.Diagnostics.Tools": "4.0.1-rc3-23823",
-    "System.IO.FileSystem": "4.0.0",
-    "System.Linq": "4.0.0-*"
+    "NETStandard.Library": "1.0.0-rc2-23728"
   },
   "frameworks": {
         "netstandard1.3": {
