@@ -51,13 +51,7 @@ namespace System.CommandLine
             {
                 var helpText = GetHelpText();
                 Console.Error.Write(helpText);
-
-                // TODO: This should use Environment.Exit(0) but this API isn't available yet.
-#if NET_FX
                 Environment.Exit(0);
-#else
-                Environment.FailFast(string.Empty);
-#endif
             }
 
             // Check for invalid or missing command
@@ -99,13 +93,7 @@ namespace System.CommandLine
             if (HandleErrors)
             {
                 Console.Error.WriteLine(Strings.ErrorWithMessageFmt, message);
-
-                // TODO: This should use Environment.Exit(1) but this API isn't available yet.
-#if NET_FX
                 Environment.Exit(1);
-#else
-                Environment.FailFast(string.Empty);
-#endif
             }
 
             throw new ArgumentSyntaxException(message);
@@ -333,14 +321,9 @@ namespace System.CommandLine
 
         private static string GetApplicationName()
         {
-            // TODO: This should use Environment.GetCommandLineArgs() but this API isn't available yet.
-#if NET_FX
             var processPath = Environment.GetCommandLineArgs()[0];
             var processName = Path.GetFileNameWithoutExtension(processPath);
             return processName;
-#else
-            return string.Empty;
-#endif
         }
 
         public string ApplicationName { get; set; }
