@@ -319,5 +319,117 @@ namespace System.Slices.Tests
                 Assert.False(spanA.TryCopyTo(spanB));
             }
         }
+
+        [Theory]
+        // copy whole buffer
+        [InlineData(
+            new byte[] { 1, 2, 3, 4, 5, 6 },
+            new byte[] { 1, 2, 3, 4, 5, 6 }, 0, 6,
+            new byte[] { 7, 7, 7, 7, 7, 7 })]
+        // copy first half
+        [InlineData(
+            new byte[] { 1, 2, 3, 4, 5, 6 },
+            new byte[] { 1, 2, 3, 7, 7, 7 }, 0, 3,
+            new byte[] { 7, 7, 7, 4, 5, 6 })]
+        // copy second half
+        [InlineData(
+            new byte[] { 4, 5, 6, 7, 7, 7 },
+            new byte[] { 7, 7, 7, 4, 5, 6 }, 3, 3,
+            new byte[] { 7, 7, 7, 7, 7, 7 })]
+        // copy no bytes starting from index 0
+        [InlineData(
+            new byte[] { 1, 2, 3, 4, 5, 6 },
+            new byte[] { 7, 7, 7, 7, 7, 7 }, 0, 0,
+            new byte[] { 1, 2, 3, 4, 5, 6 })]
+        // copy no bytes starting from index 3
+        [InlineData(
+            new byte[] { 1, 2, 3, 4, 5, 6 },
+            new byte[] { 7, 7, 7, 7, 7, 7 }, 3, 0,
+            new byte[] { 1, 2, 3, 4, 5, 6 })]
+        // copy no bytes starting at the end
+        [InlineData(
+            new byte[] { 7, 7, 7, 4, 5, 6 },
+            new byte[] { 1, 2, 3, 7, 7, 7 }, 6, 0,
+            new byte[] { 7, 7, 7, 4, 5, 6 })]
+        // copy first byte of 1 element array
+        [InlineData(
+            new byte[] { 6, 2, 3, 4, 5, 6 },
+            new byte[] { 6 }, 0, 1,
+            new byte[] { 1, 2, 3, 4, 5, 6 })]       
+        public void SpanCopyToArrayTwoDifferentBuffersValidCases(byte[] expected, byte[] a, int aidx, int acount, byte[] b)
+        {
+            if (expected != null)
+            {
+                Span<byte> spanA = new Span<byte>(a, aidx, acount);
+
+                Assert.True(spanA.TryCopyTo(b));
+                Assert.Equal(expected, b);
+
+                Span<byte> spanExpected = new Span<byte>(expected);
+                Span<byte> spanBAll = new Span<byte>(b);
+                Assert.True(spanExpected.SequenceEqual(spanBAll));
+            }
+            else
+            {
+                Span<byte> spanA = new Span<byte>(a, aidx, acount);
+                Assert.False(spanA.TryCopyTo(b));
+            }
+        }
+
+        [Theory]
+        // copy whole buffer
+        [InlineData(
+            new byte[] { 1, 2, 3, 4, 5, 6 },
+            new byte[] { 1, 2, 3, 4, 5, 6 }, 0, 6,
+            new byte[] { 7, 7, 7, 7, 7, 7 })]
+        // copy first half
+        [InlineData(
+            new byte[] { 1, 2, 3, 4, 5, 6 },
+            new byte[] { 1, 2, 3, 7, 7, 7 }, 0, 3,
+            new byte[] { 7, 7, 7, 4, 5, 6 })]
+        // copy second half
+        [InlineData(
+            new byte[] { 4, 5, 6, 7, 7, 7 },
+            new byte[] { 7, 7, 7, 4, 5, 6 }, 3, 3,
+            new byte[] { 7, 7, 7, 7, 7, 7 })]
+        // copy no bytes starting from index 0
+        [InlineData(
+            new byte[] { 1, 2, 3, 4, 5, 6 },
+            new byte[] { 7, 7, 7, 7, 7, 7 }, 0, 0,
+            new byte[] { 1, 2, 3, 4, 5, 6 })]
+        // copy no bytes starting from index 3
+        [InlineData(
+            new byte[] { 1, 2, 3, 4, 5, 6 },
+            new byte[] { 7, 7, 7, 7, 7, 7 }, 3, 0,
+            new byte[] { 1, 2, 3, 4, 5, 6 })]
+        // copy no bytes starting at the end
+        [InlineData(
+            new byte[] { 7, 7, 7, 4, 5, 6 },
+            new byte[] { 1, 2, 3, 7, 7, 7 }, 6, 0,
+            new byte[] { 7, 7, 7, 4, 5, 6 })]
+        // copy first byte of 1 element array
+        [InlineData(
+            new byte[] { 6, 2, 3, 4, 5, 6 },
+            new byte[] { 6 }, 0, 1,
+            new byte[] { 1, 2, 3, 4, 5, 6 })]
+        public void ROSpanCopyToArrayTwoDifferentBuffersValidCases(byte[] expected, byte[] a, int aidx, int acount, byte[] b)
+        {
+            if (expected != null)
+            {
+                ReadOnlySpan<byte> spanA = new ReadOnlySpan<byte>(a, aidx, acount);
+
+                Assert.True(spanA.TryCopyTo(b));
+                Assert.Equal(expected, b);
+
+                ReadOnlySpan<byte> spanExpected = new ReadOnlySpan<byte>(expected);
+                ReadOnlySpan<byte> spanBAll = new ReadOnlySpan<byte>(b);
+                Assert.True(spanExpected.SequenceEqual(spanBAll));
+            }
+            else
+            {
+                ReadOnlySpan<byte> spanA = new ReadOnlySpan<byte>(a, aidx, acount);
+                Assert.False(spanA.TryCopyTo(b));
+            }
+        }
     }
 }
