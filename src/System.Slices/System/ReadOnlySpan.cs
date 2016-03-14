@@ -198,6 +198,26 @@ namespace System
         }
 
         /// <summary>
+        /// Copies the contents of this span into an array.  The destination
+        /// must be at least as big as the source, and may be bigger.
+        /// </summary>
+        /// <param name="dest">The span to copy items into.</param>
+        public bool TryCopyTo(T[] dest)
+        {
+            if (Length > dest.Length)
+            {
+                return false;
+            }
+
+            // TODO(joe): specialize to use a fast memcpy if T is pointerless.
+            for (int i = 0; i < Length; i++)
+            {
+                dest[i] = this[i];
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Forms a slice out of the given span, beginning at 'start'.
         /// </summary>
         /// <param name="start">The index at which to begin this slice.</param>
