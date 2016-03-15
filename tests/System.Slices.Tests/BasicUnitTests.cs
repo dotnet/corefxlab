@@ -267,5 +267,39 @@ namespace System.Slices.Tests
                 Assert.Equal(source[i], destination[i]);
             }
         }
+
+        [Fact]
+        public void GetArray()
+        {
+            var original = new int[] { 1, 2, 3 };
+            ArraySegment<int> array;
+            Span<int> slice;
+
+            slice = new Span<int>(original, 1, 2);
+            unsafe
+            {
+                Assert.True(slice.TryGetArray(null, out array));
+            }
+            Assert.Equal(2, array.Array[array.Offset + 0]);
+            Assert.Equal(3, array.Array[array.Offset + 1]);
+
+            slice = new Span<int>(original, 0, 3);
+            unsafe
+            {
+                Assert.True(slice.TryGetArray(null, out array));
+            }
+            Assert.Equal(1, array.Array[array.Offset + 0]);
+            Assert.Equal(2, array.Array[array.Offset + 1]);
+            Assert.Equal(3, array.Array[array.Offset + 2]);
+
+            slice = new Span<int>(original, 0, 0);
+            unsafe
+            {
+                Assert.True(slice.TryGetArray(null, out array));
+            }
+            Assert.Equal(0, array.Offset);
+            Assert.Equal(original, array.Array);
+            Assert.Equal(0, array.Count);
+        }
     }
 }

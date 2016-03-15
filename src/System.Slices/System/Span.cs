@@ -142,6 +142,28 @@ namespace System
         }
 
         /// <summary>
+        /// Gets array if the slice is over an array
+        /// </summary>
+        /// <param name="dummy">dummy is just to make the call unsafe; feel free to pass void</param>
+        /// <param name="array"></param>
+        /// <returns>true if it's a span over an array; otherwise false (if over a pointer)</returns>
+        public unsafe bool TryGetArray(void* dummy, out ArraySegment<T> array)
+        {
+            var a = Object as T[];
+            if (a == null)
+            {
+                array = new ArraySegment<T>();
+                return false;
+            }
+
+            var offsetToData = SpanHelpers<T>.OffsetToArrayData;
+
+            var index = (int)((Offset.ToUInt32() - offsetToData) / PtrUtils.SizeOf<T>());
+            array = new ArraySegment<T>(a, index, Length);
+            return true;
+        }
+
+        /// <summary>
         /// Fetches the element at the specified index.
         /// </summary>
         /// <exception cref="System.ArgumentOutOfRangeException">
