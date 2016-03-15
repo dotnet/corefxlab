@@ -13,7 +13,7 @@ namespace System.Text.Utf8
     [DebuggerDisplay("{ToString()}u8")]
     public partial struct Utf8String : IEnumerable<Utf8CodeUnit>, IEquatable<Utf8String>, IComparable<Utf8String> 
     {
-        private Span<byte> _buffer;
+        private ReadOnlySpan<byte> _buffer;
 
         private const int StringNotFound = -1;
 
@@ -21,35 +21,35 @@ namespace System.Text.Utf8
 
         // TODO: Validate constructors, When should we copy? When should we just use the underlying array?
         // TODO: Should we be immutable/readonly?
-        public Utf8String(Span<byte> buffer)
+        public Utf8String(ReadOnlySpan<byte> buffer)
         {
             _buffer = buffer;
         }
 
         public Utf8String(byte[] utf8bytes)
         {
-            _buffer = new Span<byte>(utf8bytes);
+            _buffer = new ReadOnlySpan<byte>(utf8bytes);
         }
 
         public Utf8String(byte[] utf8bytes, int index, int length)
         {
-            _buffer = new Span<byte>(utf8bytes, index, length);
+            _buffer = new ReadOnlySpan<byte>(utf8bytes, index, length);
         }
 
         // TODO: reevaluate implementation
         public Utf8String(IEnumerable<UnicodeCodePoint> codePoints)
         {
             int len = GetUtf8LengthInBytes(codePoints);
-            _buffer = new Span<byte>(new byte[len]);
-            Span<byte> span = _buffer;
+            var newSpan = new Span<byte>(new byte[len]);
+            _buffer = newSpan;
             foreach (UnicodeCodePoint codePoint in codePoints)
             {
                 int encodedBytes;
-                if (!Utf8Encoder.TryEncodeCodePoint(codePoint, span, out encodedBytes))
+                if (!Utf8Encoder.TryEncodeCodePoint(codePoint, newSpan, out encodedBytes))
                 {
                     throw new ArgumentException("Invalid code point", "codePoints");
                 }
-                span = span.Slice(encodedBytes);
+                newSpan = newSpan.Slice(encodedBytes);
             }
         }
 
@@ -62,11 +62,11 @@ namespace System.Text.Utf8
 
             if (s == string.Empty)
             {
-                _buffer = Span<byte>.Empty;
+                _buffer = ReadOnlySpan<byte>.Empty;
             }
             else
             {
-                _buffer = new Span<byte>(GetUtf8BytesFromString(s));
+                _buffer = new ReadOnlySpan<byte>(GetUtf8BytesFromString(s));
             }
         }
 
@@ -643,7 +643,7 @@ namespace System.Text.Utf8
 
             byte[] bytes = new byte[len];
            
-            Span<byte> p = new Span<byte>(bytes);
+            var p = new Span<byte>(bytes);
             for (int i = 0; i < s.Length; /* intentionally no increment */)
             {
                 UnicodeCodePoint codePoint;

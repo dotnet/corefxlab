@@ -93,7 +93,7 @@ namespace System.Text.Utf8
             return true;
         }
 
-        public static bool TryDecodeCodePoint(Span<byte> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        public static bool TryDecodeCodePoint(ReadOnlySpan<byte> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
         {
             if (buffer.Length == 0)
             {
@@ -120,10 +120,10 @@ namespace System.Text.Utf8
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool TryFindEncodedCodePointBytesCountGoingBackwards(Span<byte> buffer, out int encodedBytes)
+        private static bool TryFindEncodedCodePointBytesCountGoingBackwards(ReadOnlySpan<byte> buffer, out int encodedBytes)
         {
             encodedBytes = 1;
-            Span<byte> it = buffer;
+            ReadOnlySpan<byte> it = buffer;
             // TODO: Should we have something like: Span<byte>.(Slice from the back)
             for (; encodedBytes <= UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint; encodedBytes++, it = it.Slice(0, it.Length - 1))
             {
@@ -149,7 +149,7 @@ namespace System.Text.Utf8
         // TODO: Name TBD
         // TODO: optimize?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryDecodeCodePointBackwards(Span<byte> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        public static bool TryDecodeCodePointBackwards(ReadOnlySpan<byte> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
         {
             if (TryFindEncodedCodePointBytesCountGoingBackwards(buffer, out encodedBytes))
             {
