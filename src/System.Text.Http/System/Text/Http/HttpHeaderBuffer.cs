@@ -41,22 +41,22 @@ namespace System.Text.Http
             }
         }
 
-        internal static Span<byte> SliceTo(this Span<byte> buffer, char terminator, out int consumedBytes)
+        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, char terminator, out int consumedBytes)
         {
             return buffer.SliceTo((byte)terminator, out consumedBytes);
         }
 
-        internal static Span<byte> SliceTo(this Span<byte> buffer, int start, char terminator, out int consumedBytes)
+        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, char terminator, out int consumedBytes)
         {
             return buffer.SliceTo(start, (byte)terminator, out consumedBytes);
         }
 
-        internal static Span<byte> SliceTo(this Span<byte> buffer, byte terminator, out int consumedBytes)
+        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, byte terminator, out int consumedBytes)
         {
             return buffer.SliceTo(0, terminator, out consumedBytes);
         }
 
-        internal static Span<byte> SliceTo(this Span<byte> buffer, int start, byte terminator, out int consumedBytes)
+        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, byte terminator, out int consumedBytes)
         {
             var index = start;
             var count = 0;
@@ -75,22 +75,22 @@ namespace System.Text.Http
             return Span<byte>.Empty;
         }
 
-        internal static Span<byte> SliceTo(this Span<byte> buffer, char terminatorFirst, char terminatorSecond, out int consumedBytes)
+        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, char terminatorFirst, char terminatorSecond, out int consumedBytes)
         {
             return buffer.SliceTo((byte)terminatorFirst, (byte)terminatorSecond, out consumedBytes);
         }
 
-        internal static Span<byte> SliceTo(this Span<byte> buffer, int start, char terminatorFirst, char terminatorSecond, out int consumedBytes)
+        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, char terminatorFirst, char terminatorSecond, out int consumedBytes)
         {
             return buffer.SliceTo(start, (byte)terminatorFirst, (byte)terminatorSecond, out consumedBytes);
         }
 
-        internal static Span<byte> SliceTo(this Span<byte> buffer, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
+        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
         {
             return buffer.SliceTo(0, terminatorFirst, terminatorSecond, out consumedBytes);
         }
 
-        internal static Span<byte> SliceTo(this Span<byte> buffer, int start, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
+        internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
         {
             var index = start;
             var count = 0;
