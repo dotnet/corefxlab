@@ -9,7 +9,7 @@ namespace System.Text.Http
         private readonly Utf8String _headerString;
         private int _count;
         
-        public HttpHeaders(Span<byte> bytes)
+        public HttpHeaders(ReadOnlySpan<byte> bytes)
         {
             _headerString = new Utf8String(bytes);
             _count = -1;

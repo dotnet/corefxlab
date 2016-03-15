@@ -35,7 +35,7 @@ namespace System.Text.Http
     {
         private HttpRequestLine _requestLine;
         private HttpHeaders _headers;
-        private Span<byte> _body;
+        private ReadOnlySpan<byte> _body;
 
         public HttpRequestLine RequestLine
         {
@@ -53,7 +53,7 @@ namespace System.Text.Http
             }
         }
 
-        public Span<byte> Body
+        public ReadOnlySpan<byte> Body
         {
             get
             {
@@ -61,14 +61,14 @@ namespace System.Text.Http
             }
         }
 
-        public HttpRequest(HttpRequestLine requestLine, HttpHeaders headers, Span<byte> bytes)
+        public HttpRequest(HttpRequestLine requestLine, HttpHeaders headers, ReadOnlySpan<byte> bytes)
         {
             _requestLine = requestLine;
             _headers = headers;
             _body = bytes;
         }
 
-        public static HttpRequest Parse(Span<byte> bytes)
+        public static HttpRequest Parse(ReadOnlySpan<byte> bytes)
         {
             int parsed;
             HttpRequestLine requestLine;
@@ -101,9 +101,9 @@ namespace System.Text.Http
         internal const byte s_LF = 10; // line feed
         internal const byte s_HT = 9;   // horizontal TAB
 
-        private Span<byte> buffer;
+        private ReadOnlySpan<byte> buffer;
 
-        public Span<byte> Buffer
+        public ReadOnlySpan<byte> Buffer
         {
             get
             {
@@ -154,7 +154,7 @@ namespace System.Text.Http
 
         internal HttpVersion ReadHttpVersion()
         {
-            Span<byte> oldBuffer = Buffer;
+            ReadOnlySpan<byte> oldBuffer = Buffer;
             Utf8String version = ReadHttpVersionAsUtf8String();
 
             if (version.Equals(s_Http1_1))
@@ -200,13 +200,13 @@ namespace System.Text.Http
         static readonly Utf8String s_Put = new Utf8String("PUT ");
         static readonly Utf8String s_Delete = new Utf8String("DELETE ");
 
-        public static bool TryParseRequestLine(Span<byte> buffer, out HttpRequestLine requestLine)
+        public static bool TryParseRequestLine(ReadOnlySpan<byte> buffer, out HttpRequestLine requestLine)
         {
             int parsedBytes;
             return TryParseRequestLine(buffer, out requestLine, out parsedBytes);
         }
 
-        internal static bool TryParseRequestLine(Span<byte> buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
+        internal static bool TryParseRequestLine(ReadOnlySpan<byte> buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
         {
             requestLine = new HttpRequestLine();
             totalParsedBytes = 0;
@@ -227,7 +227,7 @@ namespace System.Text.Http
             return true;
         }
 
-        internal static bool TryParseMethod(Span<byte> buffer, out HttpMethod method, out int parsedBytes)
+        internal static bool TryParseMethod(ReadOnlySpan<byte> buffer, out HttpMethod method, out int parsedBytes)
         {
             var bufferString = new Utf8String(buffer);
             if(bufferString.StartsWith(s_Get))
@@ -262,20 +262,20 @@ namespace System.Text.Http
             parsedBytes = 0;
             return false;
         }
-        internal static bool TryParseRequestUri(Span<byte> buffer, out Utf8String requestUri, out int parsedBytes)
+        internal static bool TryParseRequestUri(ReadOnlySpan<byte> buffer, out Utf8String requestUri, out int parsedBytes)
         {
             var uriSpan = buffer.SliceTo(HttpRequestReader.s_SP, out parsedBytes);
             requestUri = new Utf8String(uriSpan);
             return parsedBytes != 0;
         }
-        internal static bool TryParseHttpVersion(Span<byte> buffer, out Utf8String httpVersion, out int parsedBytes)
+        internal static bool TryParseHttpVersion(ReadOnlySpan<byte> buffer, out Utf8String httpVersion, out int parsedBytes)
         {
             var versionSpan = buffer.SliceTo(HttpRequestReader.s_CR, HttpRequestReader.s_LF, out parsedBytes);
             httpVersion = new Utf8String(versionSpan);
             return parsedBytes != 0;
         }
 
-        internal static bool StartsWith(this Span<byte> left, Span<byte> right)
+        internal static bool StartsWith(this ReadOnlySpan<byte> left, ReadOnlySpan<byte> right)
         {
             if (left.Length < right.Length) return false;
             for (int index = 0; index < right.Length; index++) {
@@ -284,7 +284,7 @@ namespace System.Text.Http
             return true;
         }
 
-        internal static bool TryParseHeaders(Span<byte> bytes, out HttpHeaders headers, out int parsed)
+        internal static bool TryParseHeaders(ReadOnlySpan<byte> bytes, out HttpHeaders headers, out int parsed)
         {
             for(int i=0; i<bytes.Length - 3; i++)
             {
