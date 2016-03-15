@@ -11,12 +11,12 @@ namespace System.Text.Utf8
         // TODO: Name TBD
         public struct CodePointReverseEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
         {
-            private Span<byte> _buffer;
+            private ReadOnlySpan<byte> _buffer;
             private int _index;
             private int _currentLenCache;
             private const int ResetIndex = -UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint - 1;
 
-            public unsafe CodePointReverseEnumerator(Span<byte> buffer) : this()
+            public unsafe CodePointReverseEnumerator(ReadOnlySpan<byte> buffer) : this()
             {
                 _buffer = buffer;
 
@@ -53,7 +53,7 @@ namespace System.Text.Utf8
                         throw new InvalidOperationException("Current does not exist");
                     }
 
-                    Span<byte> buffer = _buffer.Slice(0, _index);
+                    ReadOnlySpan<byte> buffer = _buffer.Slice(0, _index);
                     UnicodeCodePoint ret;
                     bool succeeded = Utf8Encoder.TryDecodeCodePointBackwards(buffer, out ret, out _currentLenCache);
 

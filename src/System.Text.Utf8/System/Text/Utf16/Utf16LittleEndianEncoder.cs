@@ -7,7 +7,7 @@ namespace System.Text.Utf16
     {
         const uint MaskLow10Bits = 0x3FF;
 
-        public static bool TryDecodeCodePoint(Span<byte> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        public static bool TryDecodeCodePoint(ReadOnlySpan<byte> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
         {
             if (buffer.Length < 2)
             {
