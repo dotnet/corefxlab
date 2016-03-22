@@ -19,6 +19,7 @@
     "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
+    "System.Runtime": "4.0.0",
     "System.Buffers": "4.0.0-rc3-23901",
     "System.Diagnostics.Debug": "4.0.0",
     "System.Slices": "0.1.0-*",
