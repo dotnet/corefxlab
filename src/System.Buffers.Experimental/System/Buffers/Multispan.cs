@@ -33,7 +33,7 @@ namespace System.Buffers
             }
         }
 
-        public int CopyTo(byte[] array)
+        public int CopyTo(T[] array)
         {
             Array.Copy(_head.Array, _head.Offset, array, 0, _head.Count);
             int index = _head.Count;
