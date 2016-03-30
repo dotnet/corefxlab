@@ -52,9 +52,7 @@ namespace ILSub
             string[] tokens = new string[]
             {
                 @".class private auto ansi beforefieldinit System.ILSub",
-                "}",
-                "}",
-                "\n"
+                "} // end of class System.ILSub",
             };
 
             return FindContainingAllTokensInOrder(s, 0, s.Length, tokens);
@@ -65,9 +63,7 @@ namespace ILSub
             string[] tokens = new string[]
             {
                 @".method ",
-                "{",
-                "}",
-                "\n"
+                "} // end of method",
             };
 
             return FindContainingAllTokensInOrder(s, startIndex, endIndex, tokens);
@@ -87,7 +83,7 @@ namespace ILSub
 
             Match ret = new Match();
             ret.Index = s.IndexOf("{", methodDef.Index, methodDef.EndIndex - methodDef.Index);
-            ret.EndIndex = s.LastIndexOf("}", methodDef.EndIndex - 1, methodDef.EndIndex - methodDef.Index);
+            ret.EndIndex = s.LastIndexOf("  } // end of method", methodDef.EndIndex - 1, methodDef.EndIndex - methodDef.Index);
             //string x = StringFromMatch(methodDef);
 
             if (ret.Index == -1 || ret.EndIndex == -1)
@@ -106,33 +102,33 @@ namespace ILSub
         {
             string[] tokens = new string[]
             {
-                @".custom instance void System.ILSub::.ctor(string)",
-                "( ",
-                " )",
-                "\n"
+                @".custom instance void System.ILSub::.ctor(string) = {string('",
+                "')}\r\n"
             };
 
             return FindContainingAllTokensInOrder(s, startIndex, endIndex, tokens);
         }
 
-        static Match FindILSubBytes(string s, int startIndex, int endIndex)
+        static Match FindILSubText(string s, int startIndex, int endIndex)
         {
             string[] tokens = new string[]
             {
-                "( ",
-                " )"
+                "{string('",
+                "')}\r\n"
             };
 
-            Match bytes = FindContainingAllTokensInOrder(s, startIndex, endIndex, tokens);
-            if (bytes != null)
+            Match text = FindContainingAllTokensInOrder(s, startIndex, endIndex, tokens);
+
+            if (text != null)
             {
-                bytes.Index = bytes.Index + tokens[0].Length;
-                bytes.EndIndex = bytes.EndIndex - tokens[tokens.Length - 1].Length;
+                text.Index = text.Index + tokens[0].Length;
+                text.EndIndex = text.EndIndex - tokens[tokens.Length - 1].Length;
             }
-            return bytes;
+
+            return text;
         }
 
-        static bool FindMethodWithILSubInstance(string s, int startIndex, int endIndex, out Match methodBody, out Match constructorBytes)
+        static bool FindMethodWithILSubInstance(string s, int startIndex, int endIndex, out Match methodBody, out Match ilText)
         {
             while (true)
             {
@@ -140,7 +136,7 @@ namespace ILSub
                 if (method == null)
                 {
                     methodBody = null;
-                    constructorBytes = null;
+                    ilText = null;
                     return false;
                 }
                 startIndex = method.EndIndex;
@@ -150,7 +146,7 @@ namespace ILSub
                 methodBody = GetMethodBody(s, method);
                 if (methodBody == null)
                 {
-                    constructorBytes = null;
+                    ilText = null;
                     continue;
                 }
 
@@ -163,101 +159,18 @@ namespace ILSub
                 }
                 string dbg3 = StringFromMatch(s, ilSub);
 
-                constructorBytes = FindILSubBytes(s, ilSub.Index, ilSub.EndIndex);
-                if (constructorBytes == null)
+                methodBody.Index = ilSub.Index;
+
+                ilText = FindILSubText(s, ilSub.Index, ilSub.EndIndex);
+                if (ilText == null)
                 {
                     throw new Exception("internal error");
                 }
 
-                string dbg4 = StringFromMatch(s, constructorBytes);
+                string dbg4 = StringFromMatch(s, ilText);
 
                 return true;
             }
-        }
-
-        static bool IsHex(char c)
-        {
-            return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
-        }
-
-        static byte HexToByte(char c)
-        {
-            if (c >= '0' && c <= '9')
-                return (byte)(c - '0');
-            if (c >= 'A' && c <= 'F')
-                return (byte)(c - 'A' + 10);
-            if (c >= 'a' && c <= 'f')
-                return (byte)(c - 'a' + 10);
-            throw new Exception("internal error");
-        }
-
-        static byte[] GetBytes(string s, Match constructorBytes)
-        {
-            string dbg0 = StringFromMatch(s, constructorBytes);
-            List<byte> bytes = new List<byte>();
-            bool possibleCommentStart = false;
-            for (int i = constructorBytes.Index; i < constructorBytes.EndIndex;)
-            {
-                while (i < constructorBytes.EndIndex && !IsHex(s[i]))
-                {
-                    if (!possibleCommentStart && s[i] == '/')
-                    {
-                        possibleCommentStart = true;
-                        i++;
-                        continue;
-                    }
-                    if (possibleCommentStart)
-                    {
-                        if (s[i] == '/')
-                        {
-                            do
-                            {
-                                i++;
-                            } while (i < constructorBytes.EndIndex && s[i] != '\n');
-                            i++;
-                            continue;
-                        }
-                        else
-                        {
-                            possibleCommentStart = false;
-                        }
-                    }
-                    i++;
-                }
-
-                if (i < constructorBytes.EndIndex)
-                {
-                    byte hi = HexToByte(s[i]);
-                    i++;
-                    if (i < constructorBytes.EndIndex)
-                    {
-                        if (IsHex(s[i]))
-                        {
-                            bytes.Add((byte)((hi << 4) | HexToByte(s[i])));
-                            i++;
-                            continue;
-                        }
-                    }
-                    throw new Exception("internal error");
-                }
-            }
-
-            if (bytes.Count < 6)
-            {
-                throw new Exception("internal error");
-            }
-
-            if (bytes[bytes.Count - 2] != 0)
-            {
-                throw new Exception("internal error");
-            }
-
-            if (bytes[bytes.Count - 1] != 0)
-            {
-                throw new Exception("internal error");
-            }
-
-            return bytes.ToArray();
         }
 
         static string RewriteIL(string input)
@@ -275,16 +188,19 @@ namespace ILSub
             while (i < input.Length)
             {
                 Match methodBody;
-                Match constructorBytes;
-                if (!FindMethodWithILSubInstance(input, i, input.Length, out methodBody, out constructorBytes))
+                Match ilText;
+                if (!FindMethodWithILSubInstance(input, i, input.Length, out methodBody, out ilText))
                 {
                     sb.Append(input, i, input.Length - i);
                     return sb.ToString();
                 }
 
                 sb.Append(input, i, methodBody.Index - i);
-                byte[] bytes = GetBytes(input, constructorBytes);
-                sb.Append(Encoding.UTF8.GetString(bytes, 4, bytes.Length - 6));
+
+                var ilSb = new StringBuilder(input, ilText.Index, ilText.EndIndex - ilText.Index, ilText.EndIndex - ilText.Index);
+                ilSb.Replace(@"\n", "\n").Replace(@"\r", "\r").Replace(@"\t", "\t");
+
+                sb.Append(ilSb);
                 sb.AppendLine();
                 i = methodBody.EndIndex;
             }

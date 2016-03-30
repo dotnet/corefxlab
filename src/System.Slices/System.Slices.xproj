@@ -20,7 +20,7 @@
     <ILDasm Condition="'$(ILDasm)' == '' AND Exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools\ildasm.exe')">$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools\ildasm.exe</ILDasm>
     <ILAsm Condition="'$(ILAsm)' == '' AND Exists('ilasm.exe')">ilasm.exe</ILAsm>
     <ILAsm Condition="'$(ILAsm)' == '' AND Exists('$(WinDir)\Microsoft.NET\Framework\v4.0.30319\ilasm.exe')">$(WinDir)\Microsoft.NET\Framework\v4.0.30319\ilasm.exe</ILAsm>
-    <DecompileToILCommand>"$(ILDasm)" /linenum /out:"$(TargetDir)$(TargetName).beforerewrite.il" /nobar "$(TargetPath)"</DecompileToILCommand>
+    <DecompileToILCommand>"$(ILDasm)" /caverbal /linenum /out:"$(TargetDir)$(TargetName).beforerewrite.il" /nobar "$(TargetPath)"</DecompileToILCommand>
     <RewriteILCommand>"$([System.IO.Path]::GetFullPath('$(SourceDir)System.Slices\tools\ILSub\ILSub.exe'))" "$(TargetDir)$(TargetName).beforerewrite.il" "$(TargetDir)$(TargetName).rewritten.il"</RewriteILCommand>
     <RecompileILCommand>"$(ILAsm)" /pdb /quiet /dll /out:$(TargetPath) /nologo $(TargetDir)$(TargetName).rewritten.il</RecompileILCommand>
     <PostBuildEvent Condition="'$(ILDasm)' != '' AND '$(ILAsm)' != ''">$(DecompileToILCommand) &amp;&amp; $(RewriteILCommand) &amp;&amp; $(RecompileILCommand)</PostBuildEvent>
