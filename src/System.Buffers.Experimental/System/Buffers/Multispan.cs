@@ -16,7 +16,7 @@ namespace System.Buffers
     /// Also, be extra careful when disposing this type. If you dispose the original instance and its copy, 
     /// the pool used by this type will be corrupted.
     /// </remarks>
-    public struct Multispan<T> 
+    public struct Multispan<T>
     {
         ArraySegment<T> _head;
         ArraySegment<T>[] _tail;
@@ -58,12 +58,59 @@ namespace System.Buffers
             }
         }
 
+        /// <summary>
+        /// Removes items from the instance.
+        /// </summary>
+        /// <param name="itemCount">Number of items to remove</param>
+        /// <returns></returns>
+        /// <remarks>DO NOT dispose the original and then slice. Either the original or the sliced instance can be disposed, but not both.</remarks>
+        public Multispan<T> Slice(int itemCount)
+        {
+            var result = new Multispan<T>();
+            var first = GetAt(0);
+
+            // if the only thing needing slicing is the head
+            if (first.Count > itemCount)
+            {
+                result._head = _head.Slice(itemCount);
+                EnsureTailCapacity(ref result, _count - 1);
+                result._count = _count;
+                Array.Copy(_tail, result._tail, _count - 1);
+                return result;
+            }
+
+            // head will be removed; this computes how many tail segments need to be removed
+            // and how many items from the first segment that is not removed
+            var itemsLeftToRemove = itemCount - first.Count;
+            int tailSegmentsToRemove = 1; // one is moved to the head
+            for (int tailIndex = 0; tailIndex < _count - 1; tailIndex++)
+            {
+                if (itemsLeftToRemove == 0) { break; }
+                var segment = _tail[tailIndex];
+                if (segment.Count >= itemsLeftToRemove)
+                {
+                    break;
+                }
+                else {
+                    tailSegmentsToRemove++;
+                    itemsLeftToRemove -= segment.Count;
+                }
+            }
+
+            result._head = _tail[tailSegmentsToRemove - 1].Slice(itemsLeftToRemove);
+            result._count = _count - tailSegmentsToRemove;
+            if (result._count == 1) return result; // we don't need tail; this multispan has just head
+            EnsureTailCapacity(ref result, result._count - 1);
+            Array.Copy(_tail, tailSegmentsToRemove, result._tail, 0, result._count - 1);
+            return result;
+        }
+
         public struct Enumerator
         {
-            private Multispan<T>_buffer;
+            private Multispan<T> _buffer;
             int _index;
 
-            internal Enumerator(Multispan<T>buffer)
+            internal Enumerator(Multispan<T> buffer)
             {
                 _buffer = buffer;
                 _index = -1;
@@ -152,15 +199,28 @@ namespace System.Buffers
                 }
                 else if (_count > _tail.Length)
                 {
-                    var newSegments = ArrayPool<ArraySegment<T>>.Shared.Rent(_tail.Length * 2);
-                    _tail.CopyTo(newSegments, 0);
-                    ArrayPool<ArraySegment<T>>.Shared.Return(_tail);
-                    _tail = newSegments;
+                    EnsureTailCapacity(ref this, _count);
                 }
                 _tail[_count - 1] = buffer;
                 _count++;
             }
             return _count - 1;
+        }
+
+        private static void EnsureTailCapacity<T>(ref Multispan<T> ms, int count)
+        {
+            int desired = (ms._tail == null) ? 4 : ms._tail.Length * 2;
+            while (desired < count)
+            {
+                desired = desired * 2;
+            }
+            var newSegments = ArrayPool<ArraySegment<T>>.Shared.Rent(desired);
+            if (ms._tail != null)
+            {
+                ms._tail.CopyTo(newSegments, 0);
+                ArrayPool<ArraySegment<T>>.Shared.Return(ms._tail);
+            }
+            ms._tail = newSegments;
         }
 
         /// <summary>
@@ -213,4 +273,17 @@ namespace System.Buffers
             return new Span<T>(segment.Array, segment.Offset, segment.Count);
         }
     }
+
+    static class Extensions
+    {
+        public static ArraySegment<T> Slice<T>(this ArraySegment<T> source, int count)
+        {
+            var result = new ArraySegment<T>(source.Array, source.Offset + count, source.Count - count);
+            return result;
+        }
+    }
 }
+
+
+
+

@@ -38,5 +38,37 @@ namespace System.Buffers.Tests
             ints.Dispose();
             Assert.Equal(0, ints.Count);
         }
+
+        [InlineData(0, 60)]
+        [InlineData(5, 55)]
+        [InlineData(10, 50)]
+        [InlineData(15, 45)]
+        [InlineData(30, 30)]
+        [InlineData(35, 25)]
+        [InlineData(60, 0)]
+        [Theory]
+        public void Slicing(int sliceIndex, int expectedTotalItems)
+        {
+            var ms = new Multispan<byte>();
+            Initialize(ref ms);
+
+            var slice = ms.Slice(sliceIndex);
+            Assert.Equal(expectedTotalItems, slice.TotalItemCount());
+
+            ms.Dispose();
+        }
+
+        private static void Initialize(ref Multispan<byte> ms)
+        {
+            Assert.Equal(0, ms.TotalItemCount());
+
+            ms.AppendNewSegment(10);
+            ms.ResizeSegment(0, 10);
+            ms.AppendNewSegment(20);
+            ms.ResizeSegment(1, 20);
+            ms.AppendNewSegment(30);
+            ms.ResizeSegment(2, 30);
+            Assert.Equal(60, ms.TotalItemCount());
+        }
     }
 }
