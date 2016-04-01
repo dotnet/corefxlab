@@ -317,6 +317,66 @@ namespace System
             return SequenceEqual(Cast<T, byte>(first), Cast<U, byte>(second));
         }
 
+        /// <summary>Searches for the specified value and returns the index of the first occurrence within the entire <see cref="T:System.Span" />.</summary>
+        /// <returns>The zero-based index of the first occurrence of <paramref name="value" /> within the entire <paramref name="slice" />, if found; otherwise, –1.</returns>
+        /// <param name="slice">The <see cref="T:System.Span" /> to search.</param>
+        /// <param name="value">The value to locate in <paramref name="slice" />.</param>
+        /// <typeparam name="T">The type of the elements of the slice.</typeparam>
+        [ILSub(@"   
+            .maxstack 3
+            .locals([0] uint8 & addr,
+                    [1] native uint i,
+                    [2] native uint length)
+            ldarg.0
+            ldfld      int32 valuetype System.ReadOnlySpan`1<!!T>::Length
+            dup
+            stloc.2
+            brfalse.s  EMPTY_SPAN
+ 
+            ldarg.0
+            ldfld      object valuetype System.ReadOnlySpan`1<!!T>::Object
+            stloc.0     
+            ldloc.0     
+            ldarg.0
+            ldfld      native uint valuetype System.ReadOnlySpan`1<!!T>::Offset
+
+            add         
+            stloc.0 
+
+            ldc.i4.0    
+            stloc.1
+            
+        LOOP_START:
+            ldloc.0
+            ldloc.1     
+            sizeof !!T  
+            conv.u  
+            mul         
+            add         
+            ldarg.1
+            constrained. !!T
+            callvirt   instance bool class [System.Runtime]System.IEquatable`1<!!T>::Equals(!0)
+            brfalse.s   NOT_EQUAL
+            ldloc.1     
+            ret 
+     
+        NOT_EQUAL:  
+            ldloc.1     
+            ldc.i4.1    
+            add         
+            stloc.1    
+            ldloc.1     
+            ldloc.2     
+            blt.s       LOOP_START
+        EMPTY_SPAN:
+            ldc.i4.m1 
+            ret")]
+        public static int IndexOf<T>(this ReadOnlySpan<T> slice, T value)
+           where T : struct, IEquatable<T>
+        {
+            return 0;
+        }
+
         // Helper methods similar to System.ArrayExtension:
 
         // String helper methods, offering methods like String on Slice<char>:
@@ -350,11 +410,6 @@ namespace System
             }
 
             return true;
-        }
-
-        public static int IndexOf(this ReadOnlySpan<char> str, char value)
-        {
-            throw new NotImplementedException();
         }
 
         public static int IndexOf(this ReadOnlySpan<char> str, string value)
