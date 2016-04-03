@@ -14,7 +14,7 @@ namespace System
     public static partial class SpanExtensions
     {
 <# 
-    GenerateSequenceEqualMethod(typeName: "byte", many: "bytes", smallSliceLimit: 512);
+    GenerateSequenceEqualMethod(typeName: "byte", many: "bytes", smallSliceLimit: 320);
     GenerateSequenceEqualMethod(typeName: "char", many: "characters", smallSliceLimit: 512);
     GenerateSequenceEqualMethod(typeName: "short", many: "shorts", smallSliceLimit: 512);
     GenerateSequenceEqualMethod(typeName: "int", many: "integers", smallSliceLimit: 512 / 2);
@@ -35,18 +35,9 @@ namespace System
         /// <param name="second">A span of <#= many #> T to compare to first.</param>
         public static bool SequenceEqual(this Span<<#= typeName #>> first, Span<<#= typeName #>> second)
         {
-            if (first.Length != second.Length) { return false; }
-
-            // pinvoke calls are expensive (mostly due to memory pinning) so we call memcmp only for big slices
-            if (first.Length >= <#= smallSliceLimit #>) { return MemoryUtils.MemCmp(first, second); }
-
-            // for small slices we just use simple loop
-            for (int i = 0; i < first.Length; i++) {
-                if (first.GetItemWithoutBoundariesCheck(i) != second.GetItemWithoutBoundariesCheck(i)) { 
-                    return false; 
-                }
-            }
-            return true;
+            return first.Length >= <#= smallSliceLimit #>
+                ? MemoryUtils.MemCmp(first, second)
+                : SequenceEqual<<#= typeName #>>(first, second);
         }
 
 		/// <summary>
@@ -56,18 +47,9 @@ namespace System
         /// <param name="second">A span of <#= many #> T to compare to first.</param>
         public static bool SequenceEqual(this ReadOnlySpan<<#= typeName #>> first, ReadOnlySpan<<#= typeName #>> second)
         {
-            if (first.Length != second.Length) { return false; }
-
-            // pinvoke calls are expensive (mostly due to memory pinning) so we call memcmp only for big slices
-            if (first.Length >= <#= smallSliceLimit #>) { return MemoryUtils.MemCmp(first, second); }
-
-            // for small slices we just use simple loop
-            for (int i = 0; i < first.Length; i++) {
-                if (first.GetItemWithoutBoundariesCheck(i) != second.GetItemWithoutBoundariesCheck(i)) { 
-                    return false; 
-                }
-            }
-            return true;
+            return first.Length >= <#= smallSliceLimit #>
+                ? MemoryUtils.MemCmp(first, second)
+                : SequenceEqual<<#= typeName #>>(first, second);
         }
 
 <#+}
