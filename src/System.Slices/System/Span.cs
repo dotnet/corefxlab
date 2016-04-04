@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System
@@ -12,6 +13,8 @@ namespace System
     /// to regular accesses and is a struct so that creation and subslicing do
     /// not require additional allocations.  It is type- and memory-safe.
     /// </summary>
+    [DebuggerTypeProxy(typeof(SpanDebuggerView<>))]
+    [DebuggerDisplay("Length = {Length}")]
     public partial struct Span<T> : IEnumerable<T>, IEquatable<Span<T>>
     {
         /// <summary>A managed array/string; or null for native ptrs.</summary>

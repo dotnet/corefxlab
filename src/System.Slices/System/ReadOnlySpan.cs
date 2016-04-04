@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System
@@ -9,6 +10,8 @@ namespace System
     /// <summary>
     /// ReadOnlySpan is a read-only view over Span<typeparam name="T"></typeparam>
     /// </summary>
+    [DebuggerTypeProxy(typeof(SpanDebuggerView<>))]
+    [DebuggerDisplay("Length = {Length}")]
     public partial struct ReadOnlySpan<T> : IEnumerable<T>, IEquatable<ReadOnlySpan<T>>
     {
         /// <summary>A managed array/string; or null for native ptrs.</summary>
