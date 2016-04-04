@@ -1,0 +1,32 @@
+{
+  "name": "System.Binary",  
+  "version": "0.1.0-*",
+  "description": "Non-allocating ninary reader and writer",
+  "authors": [
+      "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "tags": [
+      ".NET non-allocating binary readers and writers"
+  ],
+  "releaseNotes": "Pre-release package, for testing only",
+  "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+  "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+  "projectUrl": "https://github.com/dotnet/corefxlab",
+  "requireLicenseAcceptance": true,
+  "compilationOptions": {
+    "keyFile": "../../tools/Key.snk"
+  },
+  "dependencies": {
+    "System.Diagnostics.Debug": "4.0.0",
+    "System.Diagnostics.Tools": "4.0.0",
+    "System.Runtime": "4.0.0-*",
+    "System.Slices": "0.1.0-*",
+    "System.Resources.ResourceManager": "4.0.0"
+  },
+  "frameworks": {
+        "netstandard1.0": {
+            "imports": [ "dotnet5.1" ]
+        }
+  }
+}
