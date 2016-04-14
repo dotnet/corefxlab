@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Buffers", "src\System.Buffers.Experimental\System.Buffers.xproj", "{C5FD8740-19EA-4BCC-B518-7F16B55D23CA}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Buffers.Experimental", "src\System.Buffers.Experimental\System.Buffers.Experimental.xproj", "{C5FD8740-19EA-4BCC-B518-7F16B55D23CA}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Slices", "src\System.Slices\System.Slices.xproj", "{4B8DF630-B446-47D1-8BEF-D11A0F3AF16A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CD55246E-4E2D-4648-B6C0-7EFFDD4A91AC}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Collections", "src\System.Collections.Generic.MultiValueDictionary\System.Collections.xproj", "{D5FF747F-7A0B-9003-885A-FE9A63E755E5}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Collections.Generic.MultiValueDictionary", "src\System.Collections.Generic.MultiValueDictionary\System.Collections.Generic.MultiValueDictionary.xproj", "{D5FF747F-7A0B-9003-885A-FE9A63E755E5}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.CommandLine", "src\System.CommandLine\System.CommandLine.xproj", "{0A365F6D-AF33-4DD1-ABF3-BE45A5F8E642}"
 EndProject
