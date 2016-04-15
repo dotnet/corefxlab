@@ -115,13 +115,13 @@
 
     <!-- Download latest dotnet -->
     <DownloadFile FileName="$(DotnetPackagePath)"
-                  Address="https://dotnetcli.blob.core.windows.net/dotnet/dev/Binaries/Latest/dotnet-win-x64.latest.zip"
+                  Address="https://dotnetcli.blob.core.windows.net/dotnet/beta/Binaries/Latest/dotnet-dev-win-x64.latest.zip"
                   Condition="!Exists('$(DotnetPackagePath)') and '$(OsEnvironment)'=='Windows_NT'" />
 
-    <Exec Command="curl -sSL --create-dirs -o $(DotnetPackagePath) https://dotnetcli.blob.core.windows.net/dotnet/dev/Binaries/Latest/dotnet-win-x64.latest.zip"
+    <Exec Command="curl -sSL --create-dirs -o $(DotnetPackagePath) https://dotnetcli.blob.core.windows.net/dotnet/beta/Binaries/Latest/dotnet-dev-ubuntu-x64.latest.tar.gz"
           Condition="!Exists('$(DotnetPackagePath)') and '$(OsEnvironment)'=='Unix'" />
 
-    <UnzipFile ZipFilePath="$(DotnetPackagePath)" ZipOutputDirectory="$(DotnetPath)" Condition="Exists('$(DotnetPackagePath)') and !Exists('$(DotnetBinPath)') and '$(OsEnvironment)'=='Windows_NT'" />
+    <UnzipFile ZipFilePath="$(DotnetPackagePath)" ZipOutputDirectory="$(DotnetPath)" Condition="Exists('$(DotnetPackagePath)') and !Exists('$(DotnetExe)') and '$(OsEnvironment)'=='Windows_NT'" />
 
     <!--
       Touch our semaphore file to ensure Inputs/Outputs comparison for this target will show that we're up to date.
