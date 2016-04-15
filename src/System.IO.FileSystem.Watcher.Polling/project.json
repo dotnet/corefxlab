@@ -22,17 +22,17 @@
     "keyFile": "../../tools/Key.snk"
   },  
   "dependencies": {
-    "System.Collections": "4.0.0",
-    "System.Diagnostics.Debug": "4.0.0",
-    "System.Diagnostics.TraceSource": "4.0.0-rc3-23823",
-    "System.Resources.ResourceManager": "4.0.0",
-    "System.Runtime.Extensions": "4.0.0",
-    "System.Runtime.InteropServices": "4.0.0",
-    "System.Threading.Timer": "4.0.0"
+    "System.Collections": "4.0.11-rc3-24025-00",
+    "System.Diagnostics.Debug": "4.0.11-rc3-24025-00",
+    "System.Diagnostics.TraceSource": "4.0.0-rc3-24025-00",
+    "System.Resources.ResourceManager": "4.0.1-rc3-24025-00",
+    "System.Runtime.Extensions": "4.1.0-rc3-24025-00",
+    "System.Runtime.InteropServices": "4.1.0-rc3-24025-00",
+    "System.Threading.Timer": "4.0.1-rc3-24025-00"
   },
   "frameworks": {
-        "netstandard1.3": {
-            "imports": [ "dotnet5.4" ]
-        }
+    "netstandard1.3": {
+        "imports": [ "dotnet5.4" ]
+    }
   }
 }

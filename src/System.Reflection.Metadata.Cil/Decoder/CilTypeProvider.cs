@@ -101,17 +101,11 @@ namespace System.Reflection.Metadata.Cil.Decoder
             return type;
         }
 
-        public CilType GetModifiedType(CilType unmodifiedType, ImmutableArray<CustomModifier<CilType>> customModifiers)
+        public CilType GetModifiedType(MetadataReader reader, bool isRequired, CilType modifier, CilType unmodifiedType)
         {
-            unmodifiedType.Append(" ");
-
-            foreach(var modifier in customModifiers)
-            {
-                unmodifiedType.Append(modifier.IsRequired ? "modreq(" : "modopt(");
-                unmodifiedType.Append(modifier.Type.ToString());
-                unmodifiedType.Append(")");
-            }
-
+            unmodifiedType.Append(isRequired ? " modreq(" : " modopt(");
+            unmodifiedType.Append(modifier.ToString());
+            unmodifiedType.Append(")");
             return unmodifiedType;
         }
 
@@ -199,34 +193,27 @@ namespace System.Reflection.Metadata.Cil.Decoder
             return elementType;
         }
 
-        public CilType GetTypeFromDefinition(TypeDefinitionHandle handle, bool? isValueType)
+        public CilType GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, SignatureTypeHandleCode code)
         {
-            bool _isValueType = false;
-            bool _isClass = false;
-
-            if (isValueType != null)
-            {
-                _isValueType = isValueType.Value;
-                _isClass = !_isValueType;
-            }
+            bool _isValueType = (code == SignatureTypeHandleCode.Class);
+            bool _isClass = (code == SignatureTypeHandleCode.ValueType);
 
             CilType type = new CilType(GetFullName(Reader.GetTypeDefinition(handle)), _isValueType, _isClass);
             return type;
         }
 
-        public CilType GetTypeFromReference(TypeReferenceHandle handle, bool? isValueType)
+        public CilType GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, SignatureTypeHandleCode code)
         {
-            bool _isValueType = false;
-            bool _isClass = false;
-
-            if (isValueType != null)
-            {
-                _isValueType = isValueType.Value;
-                _isClass = !_isValueType;
-            }
+            bool _isValueType = (code == SignatureTypeHandleCode.Class);
+            bool _isClass = (code == SignatureTypeHandleCode.ValueType);
 
             CilType type = new CilType(GetFullName(Reader.GetTypeReference(handle)), _isValueType, _isClass);
             return type;
+        }
+
+        public CilType GetTypeFromSpecification(MetadataReader reader, TypeSpecificationHandle handle, SignatureTypeHandleCode code)
+        {
+            return Reader.GetTypeSpecification(handle).DecodeSignature(this);
         }
 
         public string GetParameterList(MethodSignature<CilType> signature, ParameterHandleCollection? parameters = null)

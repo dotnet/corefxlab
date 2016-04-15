@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Reflection.Metadata.Cil.Decoder;
 using System.Reflection.Metadata.Cil.Instructions;
 using System.Reflection.Metadata.Cil.Visitor;
+using System.Reflection.Metadata.Decoding;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 

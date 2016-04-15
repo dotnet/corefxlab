@@ -31,9 +31,12 @@
     "System.Runtime": "4.0.20-*",
     "System.Runtime.InteropServices": "4.0.20-*"
   },
+  "packInclude": {
+    "runtimes/win7-x64/native/": "libgd.dll"
+  },
   "frameworks": {
-        "netstandard1.5": {
-            "imports": [ "dotnet5.6" ]
-        }
+      "netstandard1.5": {
+          "imports": [ "dotnet5.6" ]
+      }
   }
 }
