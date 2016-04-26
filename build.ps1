@@ -1,4 +1,8 @@
-﻿Write-Host "Commencing full build."
+﻿Param(
+    [string]$Configuration="Debug"
+)
+
+Write-Host "Commencing full build for Configuration=$Configuration."
 
 if (!(Test-Path "dotnet\dotnet.exe")) {
     Write-Host "dotnet.exe not installed, downloading and installing."
@@ -21,7 +25,7 @@ $projectsFailed = New-Object System.Collections.Generic.List[String]
 
 foreach ($file in [System.IO.Directory]::EnumerateFiles(".\src", "project.json", "AllDirectories")) {
     Write-Host "Building $file..."
-    .\dotnet\dotnet.exe build $file
+    .\dotnet\dotnet.exe build $file -c $Configuration
 
     if (!$?) {
         Write-Error "Failed to build project $file"
@@ -32,7 +36,7 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles(".\src", "project.json",
 
 foreach ($file in [System.IO.Directory]::EnumerateFiles(".\tests", "project.json", "AllDirectories")) {
     Write-Host "Building and running tests for project $file..."
-    .\dotnet\dotnet.exe test $file -notrait category=performance -notrait category=outerloop
+    .\dotnet\dotnet.exe test $file -c $Configuration -notrait category=performance -notrait category=outerloop
 
     if (!$?) {
         Write-Error "Some tests failed in project $file"
