@@ -15,7 +15,7 @@ def branch = GithubBranchName
         def newJobName = Utilities.getFullJobName(project, configuration, isPR)
         
         // Define build string
-        def buildString = """call build.cmd /p:Configuration=${configuration}"""
+        def buildString = """call powershell -NoProfile ./build.ps1 -Configuration ${configuration}"""
 
         // Create a new job with the specified name.  The brace opens a new closure
         // and calls made within that closure apply to the newly created job.

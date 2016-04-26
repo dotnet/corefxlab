@@ -1,0 +1,35 @@
+{
+  "dependencies": {
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0-rc2-3002485"
+    },
+    "System.Drawing.Graphics": {
+      "target": "project"
+    },
+    "FluentAssertions": "4.0.0-*",
+    "System.IO.FileSystem":  "4.0.1-24011-00",
+    "xunit": "2.1.0",
+    "dotnet-test-xunit": "1.0.0-dev-140469-38"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "netstandardapp1.5",
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
+    }
+  },
+  "content": [
+    "*.png",
+    "*.jpg",
+    "TestPictures/*.png",
+    "TestPictures/*.jpg",
+    "libgd.dll"
+  ],
+  "testRunner": "xunit",
+  "runtimes": {
+    "win7-x64": {}
+  }
+}

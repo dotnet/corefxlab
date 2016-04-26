@@ -26,7 +26,7 @@ namespace System.Reflection.Metadata.Cil.Tests
         {
             var watch = new Stopwatch();
 
-            var path = "demo1.exe";
+            var path = Path.Combine(AppContext.BaseDirectory, "Demo1.exe");
             if (!File.Exists(path))
             {                
                 var thisAssembly = typeof(CilTests).GetTypeInfo().Assembly;
@@ -35,7 +35,7 @@ namespace System.Reflection.Metadata.Cil.Tests
 
                 var fileName = GetFileNameFromResourceName(resourceName);
 
-                using (var fileStream = File.Create(fileName))
+                using (var fileStream = File.Create(Path.Combine(AppContext.BaseDirectory, fileName)))
                 {
                     using (var resource = thisAssembly.GetManifestResourceStream(resourceName))
                     {
@@ -44,7 +44,7 @@ namespace System.Reflection.Metadata.Cil.Tests
                 }
             }
 
-            const string outputDirectory = "Output";
+            string outputDirectory = AppContext.BaseDirectory;
             if (!File.Exists(outputDirectory))
             {
                 Directory.CreateDirectory(outputDirectory);
@@ -59,8 +59,6 @@ namespace System.Reflection.Metadata.Cil.Tests
                 file.WriteLine("//Time elapsed: " + watch.Elapsed);
                 assembly.Dispose();
             }
-            
-            Assert.True(true);
         }
     }
 }
