@@ -249,3 +249,6 @@ tools/
 
 #dotnet cli
 [Dd]otnet/
+
+# Nuget.exe
+nuget.exe
