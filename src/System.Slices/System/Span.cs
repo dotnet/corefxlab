@@ -141,7 +141,7 @@ namespace System
         public unsafe void* UnsafePointer
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Offset.ToPointer(); }
+            get { return PtrUtils.ComputeAddress(Object, Offset).ToPointer(); }
         }
 
         /// <summary>
