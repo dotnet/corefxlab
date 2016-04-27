@@ -6,12 +6,12 @@ setlocal
 if not defined VisualStudioVersion (
     if defined VS140COMNTOOLS (
         call "%VS140COMNTOOLS%\VsDevCmd.bat"
-        goto :Build
+        goto :Package
     )
 
-    echo Error: build.cmd requires Visual Studio 2015.
+    echo Error: package.cmd requires Visual Studio 2015.
     exit /b 1
 )
 
-:Build
-powershell -NoProfile %~dp0scripts\build.ps1 %*
+:Package
+powershell -NoProfile %~dp0scripts\package.ps1 %*
