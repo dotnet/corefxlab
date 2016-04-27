@@ -6,26 +6,28 @@ Write-Host "Commencing full build for Configuration=$Configuration."
 
 if (!(Test-Path "dotnet\dotnet.exe")) {
     Write-Host "dotnet.exe not installed, downloading and installing."
-    .\install-dotnet.ps1
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -InstallDir $PSScriptRoot\..\dotnet"
     if (!$?) {
         Write-Error "Failed to install dotnet.exe, aborting build."
         exit -1
     }
 }
 
+$dotnetExePath="$PSScriptRoot\..\dotnet\dotnet.exe"
+
 Write-Host "Restoring all packages"
-.\dotnet\dotnet.exe restore src tests
-    if (!$?) {
-      Write-Error "Failed to restore packages."
-      exit -1
-    }
+Invoke-Expression "$dotnetExePath restore src tests"
+if (!$?) {
+    Write-Error "Failed to restore packages."
+    exit -1
+}
 
 $errorsEncountered = 0
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
-foreach ($file in [System.IO.Directory]::EnumerateFiles(".\src", "project.json", "AllDirectories")) {
+foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", "project.json", "AllDirectories")) {
     Write-Host "Building $file..."
-    .\dotnet\dotnet.exe build $file -c $Configuration
+    Invoke-Expression "$dotnetExePath build $file -c $Configuration"
 
     if (!$?) {
         Write-Error "Failed to build project $file"
@@ -34,9 +36,9 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles(".\src", "project.json",
     }
 }
 
-foreach ($file in [System.IO.Directory]::EnumerateFiles(".\tests", "project.json", "AllDirectories")) {
+foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "project.json", "AllDirectories")) {
     Write-Host "Building and running tests for project $file..."
-    .\dotnet\dotnet.exe test $file -c $Configuration -notrait category=performance -notrait category=outerloop
+    Invoke-Expression "$dotnetExePath test $file -c $Configuration -notrait category=performance -notrait category=outerloop"
 
     if (!$?) {
         Write-Error "Some tests failed in project $file"
