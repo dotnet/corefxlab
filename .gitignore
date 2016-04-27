@@ -252,3 +252,6 @@ tools/
 
 # Nuget.exe
 nuget.exe
+
+# VS Code Files
+.vscode
