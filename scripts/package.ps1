@@ -21,7 +21,8 @@ Function Ensure-Nuget-Exists {
 Write-Host "** Building all NuGet packages. **"
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$repoRoot\src", "project.json", "AllDirectories")) {
     Write-Host "Creating NuGet package for $file..."
-    Invoke-Expression "$dotnetExePath pack $file -c $Configuration -o $packagesPath"
+    $dateSuffix = [System.DateTime]::Now.ToString('eyyMMdd-1')
+    Invoke-Expression "$dotnetExePath pack $file -c $Configuration -o $packagesPath --version-suffix $dateSuffix"
 
     if (!$?) {
         Write-Error "Failed to create NuGet package for project $file"
