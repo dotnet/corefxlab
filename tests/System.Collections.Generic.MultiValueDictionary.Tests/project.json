@@ -6,7 +6,7 @@
       "version": "1.0.0-rc2-3002611"
     },
     "System.Collections.Generic.MultiValueDictionary": {
-          "target": "project"
+      "target": "project"
     },
     "xunit": "2.1.0",
     "dotnet-test-xunit": "1.0.0-dev-140469-38"
@@ -20,6 +20,8 @@
       ]
     }
   },
-  "compileExclude": "Performance/*.cs",
+  "buildOptions": {
+    "compile": "Generic/**/*.cs"
+  },
   "testRunner": "xunit"
 }

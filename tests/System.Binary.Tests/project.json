@@ -1,6 +1,6 @@
 {
   "name": "System.Binary.Tests",
-  "compilationOptions": {
+  "buildOptions": {
     "allowUnsafe": true
   },
   "dependencies": {

@@ -3,25 +3,30 @@
   "version": "0.1.0-*",
   "description": "Non-allocating formatting library",
   "authors": [
-      "Microsoft Corporation"
+    "Microsoft Corporation"
   ],
   "copyright": "Microsoft Corporation, All rights reserved",
-  "tags": [
+  "packOptions": {
+    "tags": [
       ".NET formatting corefxlab"
-  ],
-  "releaseNotes": "Pre-release package, for testing only",
-  "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
-  "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
-  "projectUrl": "https://github.com/dotnet/corefxlab",
-  "requireLicenseAcceptance": true,
-  "compilationOptions": {
+    ],
+    "releaseNotes": "Pre-release package, for testing only",
+    "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+    "projectUrl": "https://github.com/dotnet/corefxlab",
+    "requireLicenseAcceptance": true
+  },
+  "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../tools/Key.snk",
+    "compile": ["System/**/*.cs", "Properties/**/*.cs"],
+    "embed": {
+      "include": "Properties/Resources.resx",
+      "mappings": {
+        "System.Text.Formatting.Properties.Resources": "Properties/Resources.resx"
+      }
+    }
   },
-  "namedResource": {
-    "System.Text.Formatting.Properties.Resources": "Properties/Resources.resx"
-  },
-  "compileExclude": ["GenerateCompatibilityTests"],
   "dependencies": {
     "System.Buffers": "4.0.0-rc3-23901",
     "System.Globalization": "4.0.10",
@@ -29,8 +34,8 @@
     "System.Text.Utf8": "0.1.0-*" 
   },
   "frameworks": {
-        "netstandard1.1": {
-            "imports": [ "dotnet5.2" ]
-        }
+    "netstandard1.1": {
+      "imports": [ "dotnet5.2" ]
+    }
   }
 }

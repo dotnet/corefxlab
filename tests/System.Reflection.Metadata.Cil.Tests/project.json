@@ -20,6 +20,10 @@
       ]
     }
   },
-  "resource": "Assemblies/demo1.exe",
+  "buildOptions": {
+    "embed": {
+      "include": "Assemblies/demo1.exe",
+    }
+  },
   "testRunner": "xunit"
 }

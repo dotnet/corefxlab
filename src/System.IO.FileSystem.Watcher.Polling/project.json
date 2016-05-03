@@ -3,23 +3,25 @@
   "version": "0.1.0-*",
   "description": "Polling file system watcher",
   "authors": [
-      "Microsoft Corporation"
+    "Microsoft Corporation"
   ],
   "copyright": "Microsoft Corporation, All rights reserved",
-  "tags": [
+  "packOptions": {
+    "tags": [
       ".NET Core FileSystemWatcher Polling corefxlab"
-  ],
-  "releaseNotes": "Pre-release package, for testing only",
-  "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
-  "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
-  "projectUrl": "https://github.com/dotnet/corefxlab",
-  "requireLicenseAcceptance": true,
-  "namedResource": {
-    "System.IO.FileSystem.Watcher.Polling.Properties.Strings": "Properties/Strings.resx"
+    ],
+    "releaseNotes": "Pre-release package, for testing only",
+    "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+    "projectUrl": "https://github.com/dotnet/corefxlab",
+    "requireLicenseAcceptance": true
   },
-  "compilationOptions": {
+  "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../tools/Key.snk",
+    "embed": {
+      "System.IO.FileSystem.Watcher.Polling.Properties.Strings": "Properties/Strings.resx"
+    }
   },  
   "dependencies": {
     "System.Collections": "4.0.11-rc3-24025-00",
@@ -32,7 +34,7 @@
   },
   "frameworks": {
     "netstandard1.3": {
-        "imports": [ "dotnet5.4" ]
+      "imports": [ "dotnet5.4" ]
     }
   }
 }

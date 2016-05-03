@@ -1,6 +1,6 @@
 {
   "name": "System.Slices.Tests",
-  "compilationOptions": {
+  "buildOptions": {
     "allowUnsafe": true
   },
   "dependencies": {

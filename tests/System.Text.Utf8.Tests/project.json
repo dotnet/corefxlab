@@ -1,5 +1,5 @@
 {
-  "compilationOptions": {
+  "buildOptions": {
     "allowUnsafe": true
   },
   "dependencies": {
