@@ -3,7 +3,7 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.0-rc2-3002485"
+      "version": "1.0.0-rc2-3002611"
     },
     "System.Numerics.Matrices": {
           "target": "project"
