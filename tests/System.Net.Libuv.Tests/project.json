@@ -3,7 +3,7 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.0-rc2-3002485"
+      "version": "1.0.0-rc2-3002611"
     },
     "System.IO.Compression" : "4.1.0-rc3-23902",
     "System.Net.Libuv": {

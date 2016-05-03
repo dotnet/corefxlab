@@ -3,7 +3,7 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.0-rc2-3002485"
+      "version": "1.0.0-rc2-3002611"
     },
     "System.CommandLine": {
       "target": "project"
@@ -12,7 +12,7 @@
     "xunit": "2.1.0",
     "dotnet-test-xunit": "1.0.0-dev-140469-38"
   },
-  "compilationOptions": {
+  "buildOptions": {
     "keyFile": "../../tools/test_key.snk"
   },
   "frameworks": {

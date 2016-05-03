@@ -1,19 +1,22 @@
 {
   "name": "System.Text.Json.Tests",
-  "namedResource": {
-    "System.Text.Json.Tests.Resources.TestJson": "Resources/TestJson.resx"
-  },
-  "compilationOptions": {
-    "allowUnsafe": true
+  "buildOptions": {
+    "allowUnsafe": true,
+    "embed": {
+      "include": "Resources/TestJson.resx",
+      "mappings": {
+        "System.Text.Json.Tests.Resources.TestJson": "Resources/TestJson.resx"
+      },
+    }
   },
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.0-rc2-3002485"
+      "version": "1.0.0-rc2-3002611"
     },
     "System.Text.Json": {
-          "target": "project"
-        },
+      "target": "project"
+    },
     "System.Console": "4.0.0-rc3-24011-00",
     "xunit": "2.1.0",
     "xunit.netcore.extensions": "1.0.0-prerelease-*",
