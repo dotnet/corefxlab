@@ -141,6 +141,10 @@ namespace System.Text.Utf8
             return s.ToString();
         }
 
+        public ReadOnlySpan<byte> Bytes
+        {
+            get { return _buffer; }
+        }
         public override string ToString()
         {
             // get length first
