@@ -48,7 +48,7 @@
 [cmdletbinding()]
 param(
    [string]$Channel="preview",
-   [string]$Version="1.0.0-rc2-002611",
+   [string]$Version="1.0.0-preview1-002702",
    [string]$InstallDir="dotnet",
    [string]$Architecture="<auto>",
    [switch]$DebugSymbols, # TODO: Switch does not work yet. Symbols zip is not being uploaded yet.

@@ -19,7 +19,10 @@
   "buildOptions": {
     "allowUnsafe": true,
     "keyFile": "../../tools/Key.snk",
-    "compile": ["System/**/*.cs", "Properties/**/*.cs"],
+    "compile": { 
+        "include": [ "System/**/*.cs", "Properties/**/*.cs" ],
+        "exclude": [ "GenerateCompatibilityTests/**/*.cs" ]
+    },
     "embed": {
       "include": "Properties/Resources.resx",
       "mappings": {

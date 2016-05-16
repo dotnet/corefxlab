@@ -22,11 +22,17 @@
   "buildOptions": {
     "allowUnsafe": true,
     "keyFile": "../../tools/Key.snk",
-    "compile": [
-      "Properties/*.cs",
-      "System/Drawing/Graphics/*.cs",
-      "System/Drawing/Graphics/Interop/Windows/*.cs"
-    ],
+    "compile": {
+      "include": [
+        "Properties/*.cs",
+        "System/Drawing/Graphics/*.cs",
+        "System/Drawing/Graphics/Interop/Windows/*.cs"
+      ],
+      "exclude": [
+        "System/Drawing/graphics/Interop/Linux/*.cs",
+        "System/Drawing/graphics/Interop/OSX/*.cs",
+      ]
+    },
     "embed": {
       "Resources.Strings": "Properties/Strings.resx"
     },
