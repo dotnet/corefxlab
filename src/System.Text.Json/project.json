@@ -18,7 +18,10 @@
   },
   "buildOptions": {
     "keyFile": "../../tools/Key.snk",
-    "compile": ["System/**/*.cs"]
+    "compile": {
+        "include": [ "System/**/*.cs" ],
+        "exclude": [ "experiments/**/*.cs" ]
+    }
   },
   "dependencies": {
     "System.Buffers": "4.0.0-rc3-23901",
