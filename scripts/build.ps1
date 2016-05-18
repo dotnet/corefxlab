@@ -1,5 +1,6 @@
 ﻿Param(
-    [string]$Configuration="Debug"
+    [string]$Configuration="Debug",
+    [string]$Restore="true"
 )
 
 Write-Host "Commencing full build for Configuration=$Configuration."
@@ -15,11 +16,13 @@ if (!(Test-Path "dotnet\dotnet.exe")) {
 
 $dotnetExePath="$PSScriptRoot\..\dotnet\dotnet.exe"
 
-Write-Host "Restoring all packages"
-Invoke-Expression "$dotnetExePath restore src tests"
-if (!$?) {
-    Write-Error "Failed to restore packages."
-    exit -1
+if ($Restore -eq "true") {
+    Write-Host "Restoring all packages"
+    Invoke-Expression "$dotnetExePath restore src tests"
+    if (!$?) {
+        Write-Error "Failed to restore packages."
+        exit -1
+    }
 }
 
 $errorsEncountered = 0

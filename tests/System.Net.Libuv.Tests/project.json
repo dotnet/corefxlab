@@ -5,10 +5,8 @@
       "type": "platform",
       "version": "1.0.0-rc2-3002702"
     },
-    "System.IO.Compression" : "4.1.0-rc3-23902",
-    "System.Net.Libuv": {
-          "target": "project"
-        },
+    "System.IO.Compression" : "4.1.0-rc2-24027",
+    "System.Net.Libuv": { "target": "project" },
     "xunit": "2.1.0",
     "dotnet-test-xunit": "1.0.0-rc2-173361-36"
   },

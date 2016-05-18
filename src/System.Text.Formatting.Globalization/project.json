@@ -26,7 +26,7 @@
     }
   },
   "dependencies": {
-    "System.Diagnostics.Tools": "4.0.1-rc2-*",
+    "NETStandard.Library": "1.5.0-rc2-24027",
     "System.Slices": { "target": "project" },
     "System.Text.Formatting": { "target": "project" },
     "System.Text.Utf8": { "target": "project" }

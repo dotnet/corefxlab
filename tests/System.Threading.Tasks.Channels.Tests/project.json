@@ -5,10 +5,8 @@
       "type": "platform",
       "version": "1.0.0-rc2-3002702"
     },
-    "System.Threading.Tasks.Channels": {
-      "target": "project"
-    },
-    "System.IO.Pipes": "4.0.0-rc3-24011-00",
+    "System.Threading.Tasks.Channels": { "target": "project" },
+    "System.IO.Pipes": "4.0.0-rc2-24027",
     "xunit": "2.1.0",
     "dotnet-test-xunit": "1.0.0-rc2-173361-36"
   },

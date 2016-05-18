@@ -21,10 +21,10 @@
     "keyFile": "../../tools/Key.snk"
   },  
   "dependencies": {
-    "System.Buffers.Experimental": "0.1.0-*",
-    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0-rc3-23901",
-    "System.Runtime.Extensions": "4.0.0",
-    "System.Slices": "0.1.0-*"
+    "NETStandard.Library": "1.5.0-rc2-24027",
+    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0-rc2-24027",
+    "System.Buffers.Experimental": { "target": "project" },
+    "System.Slices": { "target": "project" },
   },
   "frameworks": {
         "netstandard1.1": {
