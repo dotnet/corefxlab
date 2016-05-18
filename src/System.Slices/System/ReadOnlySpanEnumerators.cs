@@ -10,7 +10,7 @@ namespace System
     {
         public Enumerator GetEnumerator()
         {
-            return new Enumerator(this);
+            return new Enumerator(Object, Offset, Length);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -29,23 +29,31 @@ namespace System
         /// </summary>
         public struct Enumerator
         {
-            ReadOnlySpan<T> _span;    // The slice being enumerated.
-            int _position; // The current position.
+            private readonly object _object;
+            private readonly UIntPtr _offset;
+            private readonly int _length;
+            private int _position;
 
-            internal Enumerator(ReadOnlySpan<T> span)
+            internal Enumerator(object obj, UIntPtr offset, int length)
             {
-                _span = span;
+                _object = obj;
+                _offset = offset;
+                _length = length;
                 _position = -1;
             }
 
             public T Current
             {
-                get { return _span[_position]; }
+                get
+                {
+                    Contract.RequiresInRange(_position, (uint)_length);
+                    return PtrUtils.Get<T>(_object, _offset, (UIntPtr)_position);
+                }
             }
 
             public bool MoveNext()
             {
-                return ++_position < _span.Length;
+                return ++_position < _length;
             }
 
             public void Reset()
@@ -59,7 +67,7 @@ namespace System
         /// it is used by LINQ and foreach when Slice is accessed via <see cref="IEnumerable{T}"/>
         /// it is reference type to avoid boxing when calling interface methods on stuctures
         /// </summary>
-        private class EnumeratorObject : IEnumerator<T>
+        internal class EnumeratorObject : IEnumerator<T>
         {
             ReadOnlySpan<T> _span;    // The slice being enumerated.
             int _position; // The current position.
@@ -72,7 +80,7 @@ namespace System
 
             public T Current
             {
-                get { return _span.GetItemWithoutBoundariesCheck(_position); }
+                get { return _span[_position]; }
             }
 
             object IEnumerator.Current
@@ -82,7 +90,7 @@ namespace System
 
             public void Dispose()
             {
-                _span = default(ReadOnlySpan<T>);
+                _span = default(Span<T>);
                 _position = -1;
             }
 
