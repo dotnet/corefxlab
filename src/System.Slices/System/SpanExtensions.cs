@@ -248,23 +248,80 @@ namespace System
         /// </summary>
         /// <param name="first">A span of type T to compare to second.</param>
         /// <param name="second">A span of type T to compare to first.</param>
+        [ILSub(@"
+            .maxstack 4
+            .locals([0] uint8 & baseAddr1,
+                    [1] uint8 & baseAddr2,
+                    [2] native uint i,
+                    [3] native uint length)
+            ldarg.0
+            ldfld      int32 valuetype System.Span`1<!!T>::Length
+            dup
+            stloc.3
+            ldarg.1
+            ldfld      int32 valuetype System.Span`1<!!T>::Length
+            ceq
+            brfalse.s  NOT_EQUAL
+
+            ldloc.3
+            brzero.s  EQUAL
+ 
+            ldarg.0
+            ldfld      object valuetype System.Span`1<!!T>::Object
+            stloc.0     
+            ldloc.0     
+            ldarg.0
+            ldfld      native uint valuetype System.Span`1<!!T>::Offset
+            add         
+            stloc.0 
+
+            ldarg.1
+            ldfld      object valuetype System.Span`1<!!T>::Object
+            stloc.1     
+            ldloc.1    
+            ldarg.1
+            ldfld      native uint valuetype System.Span`1<!!T>::Offset
+            add         
+            stloc.1 
+
+            ldc.i4.0    
+            stloc.2
+
+        LOOP_START:
+            ldloc.0
+            ldloc.2     
+            sizeof !!T  
+            mul         
+            add  
+
+            ldloc.1
+            ldloc.2     
+            sizeof !!T  
+            mul         
+            add 
+            ldobj  !!T  
+      
+            constrained. !!T
+            callvirt   instance bool class [System.Runtime]System.IEquatable`1<!!T>::Equals(!0)
+            brfalse.s  NOT_EQUAL
+            ldloc.2     
+            ldc.i4.1    
+            add         
+            stloc.2    
+            ldloc.2     
+            ldloc.3     
+            blt.s      LOOP_START
+
+        EQUAL:
+            ldc.i4.1 
+            ret
+        NOT_EQUAL:
+            ldc.i4.0   
+            ret ")]
         public static bool SequenceEqual<T>(this Span<T> first, Span<T> second)
             where T : struct, IEquatable<T>
-        {
-            if (first.Length != second.Length)
-            {
-                return false;
-            }
-
-            // we can not call memcmp here because structures might have nontrivial Equals implementation
-            for (int i = 0; i < first.Length; i++)
-            {
-                if (!first.GetItemWithoutBoundariesCheck(i).Equals(second.GetItemWithoutBoundariesCheck(i)))
-                {
-                    return false;
-                }
-            }
-            return true;
+        { 
+            return false;
         }
 
         /// <summary>
@@ -272,25 +329,92 @@ namespace System
         /// </summary>
         /// <param name="first">A span of type T to compare to second.</param>
         /// <param name="second">A span of type T to compare to first.</param>
+        [ILSub(@"
+            .maxstack 4
+            .locals([0] uint8 & baseAddr1,
+                    [1] uint8 & baseAddr2,
+                    [2] native uint i,
+                    [3] native uint length)
+            ldarg.0
+            ldfld      int32 valuetype System.ReadOnlySpan`1<!!T>::Length
+            dup
+            stloc.3
+            ldarg.1
+            ldfld      int32 valuetype System.ReadOnlySpan`1<!!T>::Length
+            ceq
+            brfalse.s  NOT_EQUAL
+
+            ldloc.3
+            brzero.s  EQUAL
+ 
+            ldarg.0
+            ldfld      object valuetype System.ReadOnlySpan`1<!!T>::Object
+            stloc.0     
+            ldloc.0     
+            ldarg.0
+            ldfld      native uint valuetype System.ReadOnlySpan`1<!!T>::Offset
+            add         
+            stloc.0 
+
+            ldarg.1
+            ldfld      object valuetype System.ReadOnlySpan`1<!!T>::Object
+            stloc.1     
+            ldloc.1    
+            ldarg.1
+            ldfld      native uint valuetype System.ReadOnlySpan`1<!!T>::Offset
+            add         
+            stloc.1 
+
+            ldc.i4.0    
+            stloc.2
+
+        LOOP_START:
+            ldloc.0
+            ldloc.2     
+            sizeof !!T  
+            mul         
+            add  
+
+            ldloc.1
+            ldloc.2     
+            sizeof !!T  
+            mul         
+            add 
+            ldobj  !!T  
+      
+            constrained. !!T
+            callvirt   instance bool class [System.Runtime]System.IEquatable`1<!!T>::Equals(!0)
+            brfalse.s  NOT_EQUAL
+            ldloc.2     
+            ldc.i4.1    
+            add         
+            stloc.2    
+            ldloc.2     
+            ldloc.3     
+            blt.s      LOOP_START
+
+        EQUAL:
+            ldc.i4.1 
+            ret
+        NOT_EQUAL:
+            ldc.i4.0   
+            ret ")]
         public static bool SequenceEqual<T>(this ReadOnlySpan<T> first, ReadOnlySpan<T> second)
             where T : struct, IEquatable<T>
         {
-            if (first.Length != second.Length)
-            {
-                return false;
-            }
-
-            // we can not call memcmp here because structures might have nontrivial Equals implementation
-            for (int i = 0; i < first.Length; i++)
-            {
-                if (!first.GetItemWithoutBoundariesCheck(i).Equals(second.GetItemWithoutBoundariesCheck(i)))
-                {
-                    return false;
-                }
-            }
-            return true;
+            return false;
         }
 
+        /// <summary>
+        /// Determines whether two spans are equal by comparing the elements by using generic Equals method
+        /// </summary>
+        /// <param name="first">A span of type T to compare to second.</param>
+        /// <param name="second">A span of type T to compare to first.</param>
+        public static bool SequenceEqual<T>(this Span<T> first, ReadOnlySpan<T> second)
+            where T : struct, IEquatable<T>
+        {
+            return SequenceEqual((ReadOnlySpan<T>)first, second);
+        }
         /// <summary>
         /// Determines whether two spans are structurally (byte-wise) equal by comparing the elements by using memcmp
         /// </summary>

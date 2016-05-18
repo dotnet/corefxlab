@@ -14,6 +14,11 @@ namespace System
         internal static bool MemCmp<[Primitive]T>(Span<T> first, Span<T> second)
             where T : struct
         {
+            if (first.Length != second.Length)
+            {
+                return false;
+            }
+
             unsafe
             {
                 // prevent GC from moving memory
@@ -79,6 +84,11 @@ namespace System
         internal static bool MemCmp<[Primitive]T>(ReadOnlySpan<T> first, ReadOnlySpan<T> second)
             where T : struct
         {
+            if (first.Length != second.Length)
+            {
+                return false;
+            }
+
             unsafe
             {
                 // prevent GC from moving memory
