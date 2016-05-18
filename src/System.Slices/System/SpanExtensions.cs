@@ -137,15 +137,34 @@ namespace System
             where T : struct
             where U : struct
         {
-            int countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
-            object obj = null;
-            UIntPtr offset = default(UIntPtr);
+            int countOfU;
 
-            if (countOfU != 0)
+            /// This comparison is a jittime constant
+            if (PtrUtils.SizeOf<T>() > PtrUtils.SizeOf<U>())
             {
-                obj = slice.Object;
-                offset = slice.Offset;
+                IntPtr count = PtrUtils.CountOfU<T, U>((uint)slice.Length);
+                unsafe
+                {
+                    // We can't compare IntPtrs, so have to resort to pointer comparison
+                    bool fits = (byte*)count <= (byte*)int.MaxValue;
+                    Contract.Requires(fits);
+                    countOfU = (int)count.ToPointer();
+                }
             }
+            else
+            {
+                countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
+            }
+            
+            object obj = slice.Object;
+            UIntPtr offset = slice.Offset; 
+
+            if (countOfU == 0)
+            {
+                obj = null;
+                offset = (UIntPtr)0;
+            }
+
             return new Span<U>(obj, offset, countOfU);
         }
 
@@ -160,15 +179,34 @@ namespace System
             where T : struct
             where U : struct
         {
-            int countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
-            object obj = null;
-            UIntPtr offset = default(UIntPtr);
+            int countOfU;
 
-            if (countOfU != 0)
+            /// This comparison is a jittime constant
+            if (PtrUtils.SizeOf<T>() > PtrUtils.SizeOf<U>())
             {
-                obj = slice.Object;
-                offset = slice.Offset;
+                IntPtr count = PtrUtils.CountOfU<T, U>((uint)slice.Length);
+                unsafe
+                {
+                    // We can't compare IntPtrs, so have to resort to pointer comparison
+                    bool fits = (byte*)count <= (byte*)int.MaxValue;
+                    Contract.Requires(fits);
+                    countOfU = (int)count.ToPointer();
+                }
             }
+            else
+            {
+                countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
+            }
+
+            object obj = slice.Object;
+            UIntPtr offset = slice.Offset;
+
+            if (countOfU == 0)
+            {
+                obj = null;
+                offset = (UIntPtr)0;
+            }
+
             return new ReadOnlySpan<U>(obj, offset, countOfU);
         }
 
