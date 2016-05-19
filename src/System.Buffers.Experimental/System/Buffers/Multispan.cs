@@ -207,7 +207,7 @@ namespace System.Buffers
             return _count - 1;
         }
 
-        private static void EnsureTailCapacity<T>(ref Multispan<T> ms, int count)
+        private static void EnsureTailCapacity(ref Multispan<T> ms, int count)
         {
             int desired = (ms._tail == null) ? 4 : ms._tail.Length * 2;
             while (desired < count)

@@ -18,7 +18,7 @@
     "System.Console": "4.0.0-rc2-24027",
     "xunit": "2.1.0",
     "xunit.netcore.extensions": "1.0.0-prerelease-*",
-    "dotnet-test-xunit": "1.0.0-rc2-173361-36"
+    "dotnet-test-xunit": "1.0.0-rc2-173384-19"
   },
   "frameworks": {
     "netcoreapp1.0": {

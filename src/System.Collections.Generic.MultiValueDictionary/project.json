@@ -14,11 +14,8 @@
     "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
     "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
     "projectUrl": "https://github.com/dotnet/corefxlab",
-    "requireLicenseAcceptance": true,
-    },
-  "namedResource": {
-    "Properties.Resources": "Properties/Resources.resx"
-  },
+    "requireLicenseAcceptance": true
+  }, 
   "buildOptions": {
     "keyFile": "../../tools/Key.snk",
     "embed": {

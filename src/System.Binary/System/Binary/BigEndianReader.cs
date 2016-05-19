@@ -32,7 +32,7 @@ namespace System.Binary.BigEndian
         {
             short result = data[0];
             result <<= 8;
-            result |= data[1];
+            result |= (short)data[1];
             return result;
         }
 
@@ -40,7 +40,7 @@ namespace System.Binary.BigEndian
         {
             short result = data[0];
             result <<= 8;
-            result |= data[1];
+            result |= (short)data[1];
             return result;
         }
 

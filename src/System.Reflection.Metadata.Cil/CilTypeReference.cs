@@ -14,7 +14,6 @@ namespace System.Reflection.Metadata.Cil
         private CilReaders _readers;
         private string _name;
         private string _namespace;
-        private CilEntity _resolutionScope;
         private string _fullName;
         private int _token;
 
