@@ -32,11 +32,29 @@ namespace System
                 throw NewArgumentOutOfRangeException();
             }
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RequiresInRange(uint start, uint length)
+        {
+            if (start >= length)
+            {
+                throw NewArgumentOutOfRangeException();
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RequiresInInclusiveRange(int start, uint length)
         {
             if ((uint)start > length)
+            {
+                throw NewArgumentOutOfRangeException();
+            }
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RequiresInInclusiveRange(uint start, uint length)
+        {
+            if (start > length)
             {
                 throw NewArgumentOutOfRangeException();
             }
@@ -48,6 +66,17 @@ namespace System
             if ((uint)start > existingLength
                 || length < 0
                 || (uint)(start + length) > existingLength)
+            {
+                throw NewArgumentOutOfRangeException();
+            }
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RequiresInInclusiveRange(uint start, uint length, uint existingLength)
+        {
+            if (start > existingLength
+                || length < 0
+                || (start + length) > existingLength)
             {
                 throw NewArgumentOutOfRangeException();
             }

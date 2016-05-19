@@ -234,6 +234,20 @@ namespace System
             return new ReadOnlySpan<T>(
                 Object, Offset + (start * PtrUtils.SizeOf<T>()), Length - start);
         }
+        
+        /// <summary>
+        /// Forms a slice out of the given span, beginning at 'start'.
+        /// </summary>
+        /// <param name="start">The index at which to begin this slice.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
+        /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<T> Slice(uint start)
+        {
+            Contract.RequiresInInclusiveRange(start, (uint)Length);
+            return new Span<T>(Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), Length - (int)start);
+        }
 
         /// <summary>
         /// Forms a slice out of the given span, beginning at 'start', and
@@ -250,6 +264,23 @@ namespace System
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new ReadOnlySpan<T>(
                 Object, Offset + (start * PtrUtils.SizeOf<T>()), length);
+        }
+        
+        /// <summary>
+        /// Forms a slice out of the given span, beginning at 'start', and
+        /// ending at 'end' (exclusive).
+        /// </summary>
+        /// <param name="start">The index at which to begin this slice.</param>
+        /// <param name="end">The index at which to end this slice (exclusive).</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
+        /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<T> Slice(uint start, uint length)
+        {
+            Contract.RequiresInInclusiveRange(start, length, (uint)Length);
+            return new Span<T>(
+                Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), (int)length);
         }
 
         /// <summary>
