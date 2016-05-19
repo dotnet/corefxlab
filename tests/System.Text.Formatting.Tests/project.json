@@ -1,6 +1,6 @@
 {
   "name": "System.Text.Formatting.Tests",
-  "compilationOptions": {
+  "buildOptions": {
     "allowUnsafe": true,
     "keyFile": "../../tools/test_key.snk"
   },
@@ -11,7 +11,7 @@
     },
     "System.Text.Formatting": { "target": "project" },
     "xunit": "2.1.0",
-    "dotnet-test-xunit": "1.0.0-rc2-173361-36"
+    "dotnet-test-xunit": "1.0.0-rc2-173384-19"
   },
   "frameworks": {
     "netcoreapp1.0": {
