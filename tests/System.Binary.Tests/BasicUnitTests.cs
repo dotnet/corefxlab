@@ -5,7 +5,7 @@ using System.Binary.BigEndian;
  
 namespace System.Binary.Tests
 {
-    public class BigEndianReaderTests
+    public class BigEndianTests
     {
         [Theory]
         [InlineData(new byte[] { 0, 0,  }, 0)]
@@ -117,6 +117,21 @@ namespace System.Binary.Tests
             var roSpan = new ReadOnlySpan<byte>(bytes);
             value = span.ReadInt64();
             Assert.Equal(expected, value);
+        }
+        
+        [Theory]
+        [InlineData(uint.MaxValue)]
+        [InlineData(uint.MinValue)]
+        [InlineData(0xFF000000)]
+        [InlineData(0x00FF0000)]
+        [InlineData(0x0000FF00)]
+        [InlineData(0x000000FF)]
+        public void WriteUInt32(uint value)
+        {
+            var span = new Span<byte>(new byte[4]);
+            span.WriteUInt32(value);
+            uint read = span.ReadUInt32();
+            Assert.Equal(value,read);         
         }
     }
 }
