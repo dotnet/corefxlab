@@ -28,6 +28,8 @@ namespace System
         /// <exception cref="System.ArgumentException">
         /// Thrown if the 'array' parameter is null.
         /// </exception>
+        /// 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan(T[] array)
         {
             Contract.Requires(array != null);
@@ -50,6 +52,7 @@ namespace System
         /// </exception>
         // TODO: Should we have this overload? It is really confusing when you also have Span(T* array, int length)
         //       While with Slice it makes sense it might not in here.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal ReadOnlySpan(T[] array, int start)
         {
             Contract.Requires(array != null);
@@ -82,6 +85,7 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan(T[] array, int start, int length)
         {
             Contract.Requires(array != null);
@@ -109,6 +113,7 @@ namespace System
         /// </summary>
         /// <param name="ptr">An unmanaged pointer to memory.</param>
         /// <param name="length">The number of T elements the memory contains.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe ReadOnlySpan(void* ptr, int length)
         {
             Contract.Requires(length >= 0);
