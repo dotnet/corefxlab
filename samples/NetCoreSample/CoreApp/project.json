@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "Microsoft.NETCore.Console": "1.0.0-rc2-23608"
+    "Microsoft.NETCore.App": "1.0.0-rc2-3002702"
   },
   "runtimes": {
     "win7-x64": { },
@@ -8,6 +8,6 @@
     "osx.10.10-x64": { }
   },
   "frameworks": {
-    "dnxcore50": { }
+    "netcoreapp1.0": { }
   }
 }

@@ -12,14 +12,15 @@
     <AssemblyName>coreApp</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkIdentifier>DNXCore</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>.NETCoreApp</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-    <NuGetTargetMoniker>DNXCore,Version=v5.0</NuGetTargetMoniker>
+    <NuGetTargetMoniker>.NETCoreApp,Version=v1.0</NuGetTargetMoniker>
     <BaseNuGetRuntimeIdentifier>win7</BaseNuGetRuntimeIdentifier>
-    <HostExe>coreconsole</HostExe>
+    <HostExe>dotnet</HostExe>
     <HostExtension>.exe</HostExtension>
     <NoStdLib>true</NoStdLib>
+    <NoWarn>$(NoWarn);1701</NoWarn>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -92,7 +93,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
@@ -107,8 +108,8 @@
     <DebugEngines>{2E36F1D4-B23C-435D-AB41-18E608940038}</DebugEngines>
   </PropertyGroup>
   <PropertyGroup>
-    <!-- We don't use any of MSBuild's resolution logic for resolving the framework, so just set these two 
-             properties to any folder that exists to skip the GetReferenceAssemblyPaths task (not target) and 
+    <!-- We don't use any of MSBuild's resolution logic for resolving the framework, so just set these two
+             properties to any folder that exists to skip the GetReferenceAssemblyPaths task (not target) and
              to prevent it from outputting a warning (MSB3644).
         -->
     <_TargetFrameworkDirectories>$(MSBuildThisFileDirectory)</_TargetFrameworkDirectories>

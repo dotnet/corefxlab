@@ -13,13 +13,14 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectGuid>{FB5F6EE7-B1D6-4563-8016-A7D9DCFEC68C}</ProjectGuid>
-    <TargetFrameworkIdentifier>DNXCore</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <NuGetTargetMoniker>DNXCore,Version=v5.0</NuGetTargetMoniker>
+    <TargetFrameworkIdentifier>.NETCoreApp</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
+    <NuGetTargetMoniker>.NETCoreApp,Version=v1.0</NuGetTargetMoniker>
     <NuGetRuntimeIdentifier>win7-x64</NuGetRuntimeIdentifier>
     <CopyNuGetImplementations>true</CopyNuGetImplementations>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <NoStdLib>true</NoStdLib>
+    <NoWarn>$(NoWarn);1701</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,8 +63,18 @@
   <PropertyGroup>
     <StartWorkingDirectory Condition="'$(StartWorkingDirectory)' == ''">$(TargetDir)</StartWorkingDirectory>
     <StartAction Condition="'$(StartAction)' == ''">Program</StartAction>
-    <StartProgram Condition="'$(StartProgram)' == ''">$(TargetDir)\corerun.exe</StartProgram>
+    <StartProgram Condition="'$(StartProgram)' == ''">$(TargetDir)\dotnet.exe</StartProgram>
     <StartArguments Condition="'$(StartArguments)' == ''">xunit.console.netcore.exe $(TargetPath) -wait</StartArguments>
     <DebugEngines>{2E36F1D4-B23C-435D-AB41-18E608940038}</DebugEngines>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- We don't use any of MSBuild's resolution logic for resolving the framework, so just set these two
+             properties to any folder that exists to skip the GetReferenceAssemblyPaths task (not target) and
+             to prevent it from outputting a warning (MSB3644).
+        -->
+    <_TargetFrameworkDirectories>$(MSBuildThisFileDirectory)</_TargetFrameworkDirectories>
+    <_FullFrameworkReferenceAssemblyPaths>$(MSBuildThisFileDirectory)</_FullFrameworkReferenceAssemblyPaths>
+    <!-- MSBuild thinks all EXEs need binding redirects, not so for CoreCLR! -->
+    <AutoUnifyAssemblyReferences>true</AutoUnifyAssemblyReferences>
   </PropertyGroup>
 </Project>
