@@ -66,6 +66,7 @@ namespace System
         /// <exception cref="System.ArgumentException">
         /// Thrown if the 'str' parameter is null.
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ReadOnlySpan<char> Slice(this string str)
         {
             Contract.Requires(str != null);
@@ -88,6 +89,7 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ReadOnlySpan<char> Slice(this string str, int start)
         {
             Contract.Requires(str != null);
@@ -113,10 +115,11 @@ namespace System
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ReadOnlySpan<char> Slice(this string str, int start, int length)
         {
             Contract.Requires(str != null);
-            Contract.Requires(start + length <= str.Length);
+            Contract.RequiresInInclusiveRange(start, length, (uint)str.Length);
             return new ReadOnlySpan<char>(
                 str,
                 new UIntPtr((uint)(SpanHelpers.OffsetToStringData + (start * sizeof(char)))),
