@@ -301,5 +301,26 @@ namespace System.Slices.Tests
             Assert.Equal(original, array.Array);
             Assert.Equal(0, array.Count);
         }
+
+        [Fact]
+        public void CovariantSlicesNotSupported1()
+        {
+            object[] array = new string[10];
+            Assert.Throws<ArgumentException>(() => { var slice = new Span<object>(array); });
+        }
+
+        [Fact]
+        public void CovariantSlicesNotSupported2()
+        {
+            object[] array = new string[10];
+            Assert.Throws<ArgumentException>(() => { var slice = array.Slice(0); });
+        }
+
+        [Fact]
+        public void CovariantSlicesNotSupported3()
+        {
+            object[] array = new string[10];
+            Assert.Throws<ArgumentException>(() => { var slice = new Span<object>(array, 0, 10); });
+        }
     }
 }

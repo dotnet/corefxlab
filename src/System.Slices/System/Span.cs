@@ -35,6 +35,7 @@ namespace System
         public Span(T[] array)
         {
             Contract.Requires(array != null);
+            Contract.Requires(default(T) != null || array.GetType() == typeof(T[]));
             Object = array;
             Offset = new UIntPtr((uint)SpanHelpers<T>.OffsetToArrayData);
             Length = array.Length;
@@ -57,6 +58,7 @@ namespace System
         internal Span(T[] array, int start)
         {
             Contract.Requires(array != null);
+            Contract.Requires(default(T) != null || array.GetType() == typeof(T[]));
             Contract.RequiresInInclusiveRange(start, (uint)array.Length);
             if (start < array.Length)
             {
@@ -89,6 +91,7 @@ namespace System
         public Span(T[] array, int start, int length)
         {
             Contract.Requires(array != null);
+            Contract.Requires(default(T) != null || array.GetType() == typeof(T[]));
             Contract.RequiresInInclusiveRange(start, length, (uint)array.Length);
             if (start < array.Length)
             {
