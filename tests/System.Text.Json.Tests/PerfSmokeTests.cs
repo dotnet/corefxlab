@@ -52,6 +52,7 @@ namespace System.Text.Json.Tests
 
             for (var j = 0; j < NumberOfSamples; j++)
             {
+                GC.Collect(2);
                 var memoryBefore = GC.GetTotalMemory(true);
                 Timer.Restart();
                 for (var i = 0; i < NumberOfIterations; i++)
@@ -63,7 +64,7 @@ namespace System.Text.Json.Tests
                 var consumption = memoryAfter - memoryBefore;
                 timeIterReadResults.Add(time);
                 memoryIterReadResults.Add(consumption);
-                Assert.True(consumption <= ExpectedMemoryBenchMark);
+                Assert.True(consumption <= ExpectedMemoryBenchMark, consumption.ToString());
             }
             Output(timeIterReadResults.Average().ToString(CultureInfo.InvariantCulture));
             Output((memoryIterReadResults.Average()).ToString(CultureInfo.InvariantCulture));
