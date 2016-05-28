@@ -58,10 +58,9 @@ namespace System.Threading.Tasks.Channels
             public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {
                 T item;
-                if (TryRead(out item))
-                    return item;
-
-                return ReadAsyncCore(cancellationToken);
+                return TryRead(out item) ?
+                    new ValueTask<T>(item) :
+                    ReadAsyncCore(cancellationToken);
             }
 
             private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
@@ -71,17 +70,17 @@ namespace System.Threading.Tasks.Channels
                     T item;
 
                     if (TryReadCore(out item))
-                        return item;
+                        return new ValueTask<T>(item);
 
                     if (_doneWriting != null)
-                        return Task.FromException<T>(_doneWriting != s_doneWritingSentinel ? _doneWriting : CreateInvalidCompletionException());
+                        return new ValueTask<T>(Task.FromException<T>(_doneWriting != s_doneWritingSentinel ? _doneWriting : CreateInvalidCompletionException()));
 
                     if (_blockedReader != null)
-                        return Task.FromException<T>(CreateSingleReaderWriterMisuseException());
+                        return new ValueTask<T>(Task.FromException<T>(CreateSingleReaderWriterMisuseException()));
 
                     Reader<T> reader = Reader<T>.Create(cancellationToken);
                     _blockedReader = reader;
-                    return reader.Task;
+                    return new ValueTask<T>(reader.Task);
                 }
             }
 

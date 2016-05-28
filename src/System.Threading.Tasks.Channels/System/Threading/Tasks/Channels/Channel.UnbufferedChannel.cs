@@ -88,16 +88,15 @@ namespace System.Threading.Tasks.Channels
             public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {
                 T item;
-                if (TryRead(out item))
-                    return item;
-
-                return ReadAsyncCore(cancellationToken);
+                return TryRead(out item) ?
+                    new ValueTask<T>(item) :
+                    ReadAsyncCore(cancellationToken);
             }
 
             private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
             {
                 if (cancellationToken.IsCancellationRequested)
-                    return Task.FromCanceled<T>(cancellationToken);
+                    return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
 
                 lock (SyncObj)
                 {
@@ -106,7 +105,7 @@ namespace System.Threading.Tasks.Channels
                     // If we're already completed, nothing to read.
                     if (_completion.Task.IsCompleted)
                     {
-                        return Task.FromException<T>(_completion.Task.IsFaulted ? _completion.Task.Exception.InnerException : CreateInvalidCompletionException());
+                        return new ValueTask<T>(Task.FromException<T>(_completion.Task.IsFaulted ? _completion.Task.Exception.InnerException : CreateInvalidCompletionException()));
                     }
 
                     // If there are any blocked writers, find one to pair up with
@@ -117,7 +116,7 @@ namespace System.Threading.Tasks.Channels
                         Writer<T> w = _blockedWriters.Dequeue();
                         if (w.Success(default(VoidResult)))
                         {
-                            return w.Item;
+                            return new ValueTask<T>(w.Item);
                         }
                     }
 
@@ -128,7 +127,7 @@ namespace System.Threading.Tasks.Channels
                     // And let any waiting writers know it's their lucky day.
                     WakeUpWaiters(_waitingWriters, true);
 
-                    return r.Task;
+                    return new ValueTask<T>(r.Task);
                 }
             }
 

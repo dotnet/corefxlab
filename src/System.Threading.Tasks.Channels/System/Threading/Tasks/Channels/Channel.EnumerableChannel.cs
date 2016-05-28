@@ -32,7 +32,7 @@ namespace System.Threading.Tasks.Channels
             {
                 // Fast-path cancellation check
                 if (cancellationToken.IsCancellationRequested)
-                    return Task.FromCanceled<T>(cancellationToken);
+                    return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
 
                 lock (SyncObj)
                 {
@@ -41,12 +41,12 @@ namespace System.Threading.Tasks.Channels
                     if (!_completion.Task.IsCompleted && (_currentIsNext || MoveNext()))
                     {
                         _currentIsNext = false;
-                        return _source.Current;
+                        return new ValueTask<T>(_source.Current);
                     }
                 }
 
                 // No more data is available.  Fail.
-                return Task.FromException<T>(CreateInvalidCompletionException());
+                return new ValueTask<T>(Task.FromException<T>(CreateInvalidCompletionException()));
             }
 
             public bool TryRead(out T item)
