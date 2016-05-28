@@ -332,7 +332,6 @@ namespace System.Reflection.Metadata.Cil.Decoder
 
         internal static IEnumerable<string> DecodeGenericParameters(MethodDefinition methodDefinition, CilMethodDefinition method)
         {
-            int count = method.Signature.GenericParameterCount;
             foreach (var handle in methodDefinition.GetGenericParameters())
             {
                 var parameter = method._readers.MdReader.GetGenericParameter(handle);
@@ -457,7 +456,6 @@ namespace System.Reflection.Metadata.Cil.Decoder
             if (IsTypeSpecification(parentToken))
             {
                 var typeSpecificationHandle = MetadataTokens.TypeSpecificationHandle(parentToken);
-                var typeSpecification = metadataReader.GetTypeSpecification(typeSpecificationHandle);
                 type = SignatureDecoder.DecodeType(typeSpecificationHandle, provider, null).ToString();
             }
             else
@@ -558,7 +556,6 @@ namespace System.Reflection.Metadata.Cil.Decoder
             var handle = MetadataTokens.MethodDefinitionHandle(token);
             var definition = metadataReader.GetMethodDefinition(handle);
             var parent = definition.GetDeclaringType();
-            MethodSignature<CilType> signature = SignatureDecoder.DecodeMethodSignature(definition.Signature, provider);
             var parentType = SignatureDecoder.DecodeType(parent, provider, null);
             return string.Format("{0}::{1}", parentType.ToString(false), GetString(metadataReader, definition.Name));
         }
