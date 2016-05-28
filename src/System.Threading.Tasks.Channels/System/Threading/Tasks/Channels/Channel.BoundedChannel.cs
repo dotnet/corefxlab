@@ -128,7 +128,7 @@ namespace System.Threading.Tasks.Channels
             {
                 // Fast-path cancellation check
                 if (cancellationToken.IsCancellationRequested)
-                    return Task.FromCanceled<T>(cancellationToken);
+                    return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
 
                 lock (SyncObj)
                 {
@@ -137,20 +137,20 @@ namespace System.Threading.Tasks.Channels
                     // If there are any items, hand one back.
                     if (_items.Count > 0)
                     {
-                        return DequeueItemAndPostProcess();
+                        return new ValueTask<T>(DequeueItemAndPostProcess());
                     }
 
                     // There weren't any items.  If we're done writing so that there
                     // will never be more items, fail.
                     if (_doneWriting != null)
                     {
-                        return Task.FromException<T>(_doneWriting != s_doneWritingSentinel ? _doneWriting : CreateInvalidCompletionException());
+                        return new ValueTask<T>(Task.FromException<T>(_doneWriting != s_doneWritingSentinel ? _doneWriting : CreateInvalidCompletionException()));
                     }
 
                     // Otherwise, queue the reader.
                     var reader = Reader<T>.Create(cancellationToken);
                     _blockedReaders.Enqueue(reader);
-                    return reader.Task;
+                    return new ValueTask<T>(reader.Task);
                 }
             }
 

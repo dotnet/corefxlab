@@ -132,7 +132,7 @@ namespace System.Threading.Tasks.Channels
             {
                 // Fast-path cancellation check
                 if (cancellationToken.IsCancellationRequested)
-                    return Task.FromCanceled<T>(cancellationToken);
+                    return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
 
                 lock (SyncObj)
                 {
@@ -155,27 +155,27 @@ namespace System.Threading.Tasks.Channels
                         {
                             if (next.Result.Key)
                             {
-                                return next.Result.Value;
+                                return new ValueTask<T>(next.Result.Value);
                             }
                             else
                             {
-                                return Task.FromException<T>(CreateInvalidCompletionException());
+                                return new ValueTask<T>(Task.FromException<T>(CreateInvalidCompletionException()));
                             }
                         }
                         else
                         {
-                            return PropagateErrorAsync<T>(next);
+                            return new ValueTask<T>(PropagateErrorAsync<T>(next));
                         }
                     }
 
                     // Otherwise, wait for it asynchronously
-                    return next.ContinueWith(t =>
+                    return new ValueTask<T>(next.ContinueWith(t =>
                     {
                         KeyValuePair<bool, T> result = t.GetAwaiter().GetResult();
                         if (!result.Key)
                             throw CreateInvalidCompletionException();
                         return result.Value;
-                    }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+                    }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default));
                 }
             }
 

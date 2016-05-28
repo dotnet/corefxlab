@@ -49,28 +49,28 @@ namespace System.Threading.Tasks.Channels
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    return Task.FromCanceled<T>(cancellationToken);
+                    return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
                 }
 
                 switch (_task.Status)
                 {
                     case TaskStatus.Faulted:
-                        return _task;
+                        return new ValueTask<T>(_task);
 
                     case TaskStatus.Canceled:
-                        return Task.FromException<T>(CreateInvalidCompletionException());
+                        return new ValueTask<T>(Task.FromException<T>(CreateInvalidCompletionException()));
 
                     case TaskStatus.RanToCompletion:
-                        return TransitionRead() ?
+                        return new ValueTask<T>(TransitionRead() ?
                             _task :
-                            Task.FromException<T>(CreateInvalidCompletionException());
+                            Task.FromException<T>(CreateInvalidCompletionException()));
 
                     default:
-                        return _task.ContinueWith((_,s) =>
+                        return new ValueTask<T>(_task.ContinueWith((_, s) =>
                         {
                             TaskChannel<T> thisRef = (TaskChannel<T>)s;
                             return thisRef.ReadAsync(CancellationToken.None).GetAwaiter().GetResult();
-                        }, this, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+                        }, this, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default));
                 }
             }
 

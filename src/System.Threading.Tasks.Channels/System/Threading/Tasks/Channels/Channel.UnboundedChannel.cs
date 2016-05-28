@@ -90,16 +90,15 @@ namespace System.Threading.Tasks.Channels
             public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
             {
                 T item;
-                if (TryRead(out item))
-                    return item;
-
-                return ReadAsyncCore(cancellationToken);
+                return TryRead(out item) ?
+                    new ValueTask<T>(item) :
+                    ReadAsyncCore(cancellationToken);
             }
 
             public ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
             {
                 if (cancellationToken.IsCancellationRequested)
-                    return Task.FromCanceled<T>(cancellationToken);
+                    return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
 
                 lock (SyncObj)
                 {
@@ -116,17 +115,17 @@ namespace System.Threading.Tasks.Channels
                             CompleteWithOptionalError(_completion, _doneWriting);
                         }
 
-                        return item;
+                        return new ValueTask<T>(item);
                     }
 
                     // There are no items, so if we're done writing, fail.
                     if (_doneWriting != null)
-                        return Task.FromException<T>(_doneWriting != s_doneWritingSentinel ? _doneWriting : CreateInvalidCompletionException());
+                        return new ValueTask<T>(Task.FromException<T>(_doneWriting != s_doneWritingSentinel ? _doneWriting : CreateInvalidCompletionException()));
 
                     // Otherwise, queue the reader.
                     var reader = Reader<T>.Create(cancellationToken);
                     _blockedReaders.Enqueue(reader);
-                    return reader.Task;
+                    return new ValueTask<T>(reader.Task);
                 }
             }
 
