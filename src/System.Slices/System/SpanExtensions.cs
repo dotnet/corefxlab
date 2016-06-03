@@ -220,7 +220,7 @@ namespace System
         public static T Read<[Primitive]T>(this Span<byte> slice)
             where T : struct
         {
-            Contract.Requires(slice.Length >= PtrUtils.SizeOf<T>());
+            Contract.RequiresInInclusiveRange(PtrUtils.SizeOf<T>(), (uint)slice.Length);
             return PtrUtils.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
         }
 
@@ -231,7 +231,7 @@ namespace System
         public static T Read<[Primitive]T>(this ReadOnlySpan<byte> slice)
             where T : struct
         {
-            Contract.Requires(slice.Length >= PtrUtils.SizeOf<T>());
+            Contract.RequiresInInclusiveRange(PtrUtils.SizeOf<T>(), (uint)slice.Length);
             return PtrUtils.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
         }
 
@@ -242,7 +242,7 @@ namespace System
         public static void Write<[Primitive]T>(this Span<byte> slice, T value)
             where T : struct
         {
-            Contract.Requires(slice.Length >= PtrUtils.SizeOf<T>());
+            Contract.RequiresInInclusiveRange(PtrUtils.SizeOf<T>(), (uint)slice.Length);
             PtrUtils.Set(slice.Object, slice.Offset, (UIntPtr)0, value);
         }
 
