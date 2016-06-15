@@ -61,31 +61,31 @@ namespace System.Text.Parsing
             value = 0;
             bytesConsumed = 0;
 
-            for (int byteIndex = startIndex; byteIndex < text.Length; byteIndex++)
+            for (int byteIndex = startIndex; byteIndex < text.Length; byteIndex++) // loop through the byte array
             {
-                if (text[byteIndex] < '0' || text[byteIndex] > '9')
+                if (text[byteIndex] < '0' || text[byteIndex] > '9') // if the next character is not a digit
                 {
-                    if (bytesConsumed == 0)
+                    if (bytesConsumed == 0) // check to see if we've processed any digits at all
                     {
-                        value = default(ulong);
+                        value = default(ulong); // if we haven't, set value to 0 and return false
                         return false;
                     }
                     else
                     {
-                        return true;
+                        return true; // otherwise return true
                     }
                 }
-                ulong candidate = value * 10;
-                candidate += (ulong)text[byteIndex] - '0';
-                if (candidate >= value)
+                ulong candidate = value * 10; // left shift the value
+                candidate += (ulong)text[byteIndex] - '0'; // parse the current digit to a ulong and add it to the temporary value
+                if (candidate >= value) // if it was a digit 0-9, this should be true
                 {
                     value = candidate;
                 }
-                else
+                else // this should never happen, but just in case
                 {
                     return true;
                 }
-                bytesConsumed++;
+                bytesConsumed++; // increment the number of bytes consumed, then loop
             }
 
             return true;
@@ -95,7 +95,7 @@ namespace System.Text.Parsing
             value = 0;
             bytesConsumed = 0;
 
-            for (int byteIndex = startIndex; byteIndex < text.Length; byteIndex++)
+            for (int byteIndex = startIndex; ; byteIndex++)
             {
                 if (text[byteIndex] < '0' || text[byteIndex] > '9')
                 {
@@ -121,8 +121,6 @@ namespace System.Text.Parsing
                 }
                 bytesConsumed++;
             }
-
-            return true;
         }
     }
 }
