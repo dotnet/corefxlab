@@ -90,5 +90,39 @@ namespace System.Text.Parsing
 
             return true;
         }
+        unsafe public static bool TryParse(byte *text, int startIndex, out ulong value, out int bytesConsumed)
+        {
+            value = 0;
+            bytesConsumed = 0;
+
+            for (int byteIndex = startIndex; byteIndex < text.Length; byteIndex++)
+            {
+                if (text[byteIndex] < '0' || text[byteIndex] > '9')
+                {
+                    if (bytesConsumed == 0)
+                    {
+                        value = default(ulong);
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                ulong candidate = value * 10;
+                candidate += (ulong)text[byteIndex] - '0';
+                if (candidate >= value)
+                {
+                    value = candidate;
+                }
+                else
+                {
+                    return true;
+                }
+                bytesConsumed++;
+            }
+
+            return true;
+        }
     }
 }
