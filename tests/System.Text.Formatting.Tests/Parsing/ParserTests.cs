@@ -22,9 +22,9 @@ namespace System.Text.Formatting.Tests
             int bytesConsumed;
             bool result = InvariantParser.TryParse(text, index, out parsedValue, out bytesConsumed);
 
-            Assert.Equal(result, expectSuccess);
-            Assert.Equal(parsedValue, expectedValue);
-            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
         [Theory]
@@ -47,9 +47,9 @@ namespace System.Text.Formatting.Tests
 
             bool result = InvariantParser.TryParse(arrayPointer, index, out parsedValue, out bytesConsumed);
 
-            Assert.Equal(result, expectSuccess);
-            Assert.Equal(parsedValue, expectedValue);
-            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
         [Theory]
@@ -65,9 +65,9 @@ namespace System.Text.Formatting.Tests
             int bytesConsumed;
             bool result = InvariantParser.TryParse(text, index, out parsedValue, out bytesConsumed);
 
-            Assert.Equal(result, expectSuccess);
-            Assert.Equal(parsedValue, expectedValue);
-            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
         [Theory]
@@ -87,9 +87,9 @@ namespace System.Text.Formatting.Tests
 
             bool result = InvariantParser.TryParse(arrayPointer, index, out parsedValue, out bytesConsumed);
 
-            Assert.Equal(result, expectSuccess);
-            Assert.Equal(parsedValue, expectedValue);
-            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
         [Theory]
@@ -105,9 +105,9 @@ namespace System.Text.Formatting.Tests
             int bytesConsumed;
             bool result = InvariantParser.TryParse(text, index, out parsedValue, out bytesConsumed);
 
-            Assert.Equal(result, expectSuccess);
-            Assert.Equal(parsedValue, expectedValue);
-            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
         [Theory]
@@ -127,9 +127,9 @@ namespace System.Text.Formatting.Tests
 
             bool result = InvariantParser.TryParse(arrayPointer, index, out parsedValue, out bytesConsumed);
 
-            Assert.Equal(result, expectSuccess);
-            Assert.Equal(parsedValue, expectedValue);
-            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
         [Theory]
@@ -145,9 +145,9 @@ namespace System.Text.Formatting.Tests
             int bytesConsumed;
             bool result = InvariantParser.TryParse(text, index, out parsedValue, out bytesConsumed);
 
-            Assert.Equal(result, expectSuccess);
-            Assert.Equal(parsedValue, expectedValue);
-            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
         [Theory]
@@ -167,9 +167,9 @@ namespace System.Text.Formatting.Tests
 
             bool result = InvariantParser.TryParse(arrayPointer, index, out parsedValue, out bytesConsumed);
 
-            Assert.Equal(result, expectSuccess);
-            Assert.Equal(parsedValue, expectedValue);
-            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
     }
 }
