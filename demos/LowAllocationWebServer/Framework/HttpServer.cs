@@ -1,13 +1,13 @@
-﻿using Microsoft.Net.Http.Server.Socket;
+﻿using Microsoft.Net.Sockets;
+using System;
 using System.Buffers;
 using System.Diagnostics;
-using System.Text;
 using System.Text.Formatting;
-using System.Text.Utf8;
 using System.Text.Http;
+using System.Text.Utf8;
 using System.Threading;
 
-namespace System.Net.Http.Buffered
+namespace Microsoft.Net.Http
 {
     public abstract class HttpServer
     {
@@ -63,7 +63,7 @@ namespace System.Net.Http.Buffered
         {
             Log.LogVerbose("Processing Request");
             
-            var requestBuffer = ManagedBufferPool<byte>.SharedByteBufferPool.RentBuffer(RequestBufferSize);
+            var requestBuffer = ArrayPool<byte>.Shared.Rent(RequestBufferSize);
             var requestByteCount = socket.Receive(requestBuffer);
 
             if(requestByteCount == 0) {
@@ -78,14 +78,19 @@ namespace System.Net.Http.Buffered
             var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
             WriteResponse(formatter, request);
 
-            ManagedBufferPool<byte>.SharedByteBufferPool.ReturnBuffer(ref requestBuffer);
+            ArrayPool<byte>.Shared.Return(requestBuffer);
 
-            socket.Send(formatter.Buffer.Slice(formatter.CommitedByteCount));
+            var response = formatter.Buffer.Slice(0, formatter.CommitedByteCount);
+
+            Console.WriteLine("Response:");
+            Console.WriteLine(new Utf8String(response));
+
+            socket.Send(response);
             socket.Close();
 
             if (Log.IsVerbose)
             {
-                Log.LogMessage(Log.Level.Verbose, "Request Processed", DateTime.UtcNow.Ticks);
+                Log.LogMessage(Log.Level.Verbose, "Request Processed and Response Sent", DateTime.UtcNow.Ticks);
             }
         }
 

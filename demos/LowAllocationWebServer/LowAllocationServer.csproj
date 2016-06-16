@@ -38,37 +38,46 @@
     <StartupObject>Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.Text.Http\src\System.Text.Http.csproj">
-      <Name>System.Text.Http</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\System.Text.Formatting\src\System.Text.Formatting.csproj">
-      <Name>System.Text.Formatting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\System.Text.Utf8\src\System.Text.Utf8.csproj">
-      <Name>System.Text.Utf8</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\System.Buffers\src\System.Buffers.csproj">
-      <Name>System.Buffers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\System.Slices\src\System.Slices.csproj">
-      <Name>System.Slices</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Log.cs" />
-    <Compile Include="HttpServer.cs" />
+    <Compile Include="Framework\HttpServer.cs" />
+    <Compile Include="Framework\Log.cs" />
+    <Compile Include="Framework\RoutingTable.cs" />
+    <Compile Include="Framework\SocketInterop.cs" />
+    <Compile Include="Framework\TcpServer.cs" />
     <Compile Include="main.cs" />
-    <Compile Include="RoutingTable.cs" />
     <Compile Include="SampleServer.cs" />
-    <Compile Include="SocketInterop.cs" />
-    <Compile Include="TcpServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="nuget.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Buffers">
+      <HintPath>..\..\..\packages\System.Buffers.4.0.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Slices">
+      <HintPath>..\..\..\packages\System.Slices.0.1.0-e160616-1\lib\netstandard1.0\System.Slices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Formatting">
+      <HintPath>..\..\..\packages\System.Text.Formatting.0.1.0-e160616-1\lib\netstandard1.1\System.Text.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Http">
+      <HintPath>..\..\..\packages\System.Text.Http.0.1.0-e160616-1\lib\netstandard1.1\System.Text.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Json">
+      <HintPath>..\..\..\packages\System.Text.Json.0.1.0-e160616-1\lib\netstandard1.1\System.Text.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Utf8">
+      <HintPath>..\..\..\packages\System.Text.Utf8.0.1.0-e160616-1\lib\netstandard1.0\System.Text.Utf8.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

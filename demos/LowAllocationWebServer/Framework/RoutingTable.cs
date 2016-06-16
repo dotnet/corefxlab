@@ -1,20 +1,22 @@
-﻿using System.Text.Http;
+﻿using System;
+using System.Text.Http;
 using System.Text.Utf8;
 
-namespace System.Net.Http.Buffered
+namespace Microsoft.Net.Http
 {
     public class ApiRoutingTable<T>
     {
         const int tablecapacity = 20;
         Utf8String[] Uris = new Utf8String[tablecapacity];
         T[] Apis = new T[tablecapacity];
+        HttpMethod[] Verbs = new HttpMethod[tablecapacity];
         int count;
 
         public T Map(HttpRequestLine requestLine)
         {
             for(int i=0; i<count; i++)
             {
-                if (requestLine.RequestUri.Equals(Uris[i])) return Apis[i];
+                if (requestLine.RequestUri.Equals(Uris[i]) && requestLine.Method == Verbs[i]) return Apis[i];
             }
             return default(T);
         }
@@ -22,9 +24,9 @@ namespace System.Net.Http.Buffered
         public void Add(T request, HttpMethod method, Utf8String requestUri)
         {
             if (count == tablecapacity) throw new NotImplementedException("ApiReoutingTable does not resize yet.");
-            if (method != HttpMethod.Get) throw new NotImplementedException("HttpRoutingTable.Add not implemented for verbs other than Get");
             Uris[count] = requestUri;
             Apis[count] = request;
+            Verbs[count] = method;
             count++;
         }
 
