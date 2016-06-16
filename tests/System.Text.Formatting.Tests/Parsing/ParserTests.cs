@@ -91,5 +91,85 @@ namespace System.Text.Formatting.Tests
             Assert.Equal(parsedValue, expectedValue);
             Assert.Equal(bytesConsumed, expectedBytesConsumed);
         }
+
+        [Theory]
+        [InlineData(new byte[] { 0x31, 0x37, 0x32, 0x38 } /* "1728" */, true, 0, 1728, 4)]
+        [InlineData(new byte[] { 0xCF, 0xA0, 0x20, 0xDF, 0xB7, 0xDE, 0x96, 0xDD, 0xAE, 0x33, 0x37, 0x35, 0x31, 0x31 }, // stuff + "37511"
+            true, 9, 37511, 5)]
+        [InlineData(new byte[] { 0x39, 0x38, 0x37, 0x66, 0x61, 0x64, 0x66, 0x61, 0x6B, 0x6A, 0x6C, 0x66, 0x68, 0x6B }, // "987" + trailing text
+            true, 0, 987, 3)]
+        [InlineData(new byte[] { 0x49, 0x20, 0x61, 0x6D, 0x20, 0x31 } /* I am 1 */, false, 0, 0, 0)]
+        public void ParseUtf8ByteArrayToUshort(byte[] text, bool expectSuccess, int index, ushort expectedValue, int expectedBytesConsumed)
+        {
+            ushort parsedValue;
+            int bytesConsumed;
+            bool result = InvariantParser.TryParse(text, index, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(result, expectSuccess);
+            Assert.Equal(parsedValue, expectedValue);
+            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 0x31, 0x37, 0x32, 0x38 } /* "1728" */, true, 0, 1728, 4)]
+        [InlineData(new byte[] { 0xCF, 0xA0, 0x20, 0xDF, 0xB7, 0xDE, 0x96, 0xDD, 0xAE, 0x33, 0x37, 0x35, 0x31, 0x31 }, // stuff + "37511"
+            true, 9, 37511, 5)]
+        [InlineData(new byte[] { 0x39, 0x38, 0x37, 0x66, 0x61, 0x64, 0x66, 0x61, 0x6B, 0x6A, 0x6C, 0x66, 0x68, 0x6B }, // "987" + trailing text
+            true, 0, 987, 3)]
+        [InlineData(new byte[] { 0x49, 0x20, 0x61, 0x6D, 0x20, 0x31 } /* I am 1 */, false, 0, 0, 0)]
+        public unsafe void ParseUtf8ByteStarToUshort(byte[] text, bool expectSuccess, int index, ushort expectedValue, int expectedBytesConsumed)
+        {
+            ushort parsedValue;
+            int bytesConsumed;
+
+            GCHandle arrayPinned = GCHandle.Alloc(text, GCHandleType.Pinned);
+            byte* arrayPointer = (byte*)arrayPinned.AddrOfPinnedObject();
+
+            bool result = InvariantParser.TryParse(arrayPointer, index, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(result, expectSuccess);
+            Assert.Equal(parsedValue, expectedValue);
+            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 0x31, 0x37, 0x32 } /* "178" */, true, 0, 172, 3)]
+        [InlineData(new byte[] { 0xCF, 0xA0, 0x20, 0xDF, 0xB7, 0xDE, 0x96, 0xDD, 0xAE, 0x33, 0x37 }, // stuff + "37"
+            true, 9, 37, 2)]
+        [InlineData(new byte[] { 0x31, 0x38, 0x37, 0x66, 0x61, 0x64, 0x66, 0x61, 0x6B, 0x6A, 0x6C, 0x66, 0x68, 0x6B }, // "187" + trailing text
+            true, 0, 187, 3)]
+        [InlineData(new byte[] { 0x49, 0x20, 0x61, 0x6D, 0x20, 0x31 } /* I am 1 */, false, 0, 0, 0)]
+        public unsafe void ParseUtf8ByteArrayToByte(byte[] text, bool expectSuccess, int index, byte expectedValue, int expectedBytesConsumed)
+        {
+            byte parsedValue;
+            int bytesConsumed;
+            bool result = InvariantParser.TryParse(text, index, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(result, expectSuccess);
+            Assert.Equal(parsedValue, expectedValue);
+            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+        }
+
+        [Theory]
+        [InlineData(new byte[] { 0x31, 0x37, 0x32 } /* "172" */, true, 0, 172, 3)]
+        [InlineData(new byte[] { 0xCF, 0xA0, 0x20, 0xDF, 0xB7, 0xDE, 0x96, 0xDD, 0xAE, 0x33, 0x37 }, // stuff + "37"
+            true, 9, 37, 2)]
+        [InlineData(new byte[] { 0x31, 0x38, 0x37, 0x66, 0x61, 0x64, 0x66, 0x61, 0x6B, 0x6A, 0x6C, 0x66, 0x68, 0x6B }, // "187" + trailing text
+            true, 0, 187, 3)]
+        [InlineData(new byte[] { 0x49, 0x20, 0x61, 0x6D, 0x20, 0x31 } /* I am 1 */, false, 0, 0, 0)]
+        public unsafe void ParseUtf8ByteStarToByte(byte[] text, bool expectSuccess, int index, byte expectedValue, int expectedBytesConsumed)
+        {
+            byte parsedValue;
+            int bytesConsumed;
+
+            GCHandle arrayPinned = GCHandle.Alloc(text, GCHandleType.Pinned);
+            byte* arrayPointer = (byte*)arrayPinned.AddrOfPinnedObject();
+
+            bool result = InvariantParser.TryParse(arrayPointer, index, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(result, expectSuccess);
+            Assert.Equal(parsedValue, expectedValue);
+            Assert.Equal(bytesConsumed, expectedBytesConsumed);
+        }
     }
 }
