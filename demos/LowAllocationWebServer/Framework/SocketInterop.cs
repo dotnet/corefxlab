@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Microsoft.Net.Http.Server.Socket.Interop
+namespace Microsoft.Net.Interop
 {
     public static class SocketImports
     {

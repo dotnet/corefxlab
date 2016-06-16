@@ -1,8 +1,7 @@
-﻿using Microsoft.Net.Http.Server.Socket.Interop;
+﻿using Microsoft.Net.Interop;
 using System;
-using System.Net.Http.Buffered;
 
-namespace Microsoft.Net.Http.Server.Socket
+namespace Microsoft.Net.Sockets
 {
     public struct TcpServer
     {
