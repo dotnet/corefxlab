@@ -133,5 +133,14 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IntPtr CountOfU<T, U>(uint countOfT) { return default(IntPtr); }
 
+        [ILSub(@"
+            .maxstack 3
+            ldarg.1
+            ldarg.0
+            ldarg.2
+            cpblk
+            ret")]
+        public static void Copy(UIntPtr source, UIntPtr destination, int byteCount)
+        {}
     }
 }
