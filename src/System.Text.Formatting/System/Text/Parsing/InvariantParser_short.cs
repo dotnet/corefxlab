@@ -14,7 +14,7 @@ namespace System.Text.Parsing
         /// <param name="value">The parsed value.</param>
         /// <param name="bytesConsumed">The length (in bytes) of the unparsed value within the UTF-8 buffer.</param>
         /// <returns>True if parsing is successful; false otherwise.</returns>
-		public static bool TryParse(byte[] text, int startIndex, out int value, out int bytesConsumed)
+		public static bool TryParse(byte[] text, int startIndex, out short value, out int bytesConsumed)
         {
             Precondition.Require(text.Length > 0);
 
@@ -47,15 +47,15 @@ namespace System.Text.Parsing
                         return true; // otherwise return true
                     }
                 }
-                int candidate = (value * 10); // left shift the value
-                candidate += (text[byteIndex] - '0'); // parse the current digit to an int and add it to the temporary value
+                short candidate = (short)(value * 10); // left shift the value
+                candidate += (short)(text[byteIndex] - '0'); // parse the current digit to a short and add it to the temporary value
                 if (candidate >= value) // if it was a digit 0-9, this should be true
                 {
                     value = candidate;
                 }
                 else // for signed types this will occur at the min values as overflow occurs during addition, so we handle that
                 {
-                    if (candidate == int.MinValue)
+                    if (candidate == short.MinValue)
                     {
                         bytesConsumed++;
                         value = candidate;
@@ -77,7 +77,7 @@ namespace System.Text.Parsing
             return true;
         }
 
-        unsafe public static bool TryParse(byte* text, int startIndex, out int value, out int bytesConsumed)
+        unsafe public static bool TryParse(byte* text, int startIndex, out short value, out int bytesConsumed)
         {
             value = 0;
             bytesConsumed = 0;
@@ -108,15 +108,15 @@ namespace System.Text.Parsing
                         return true;
                     }
                 }
-                int candidate = (value * 10);
-                candidate += (text[byteIndex] - '0');
+                short candidate = (short)(value * 10);
+                candidate += (short)(text[byteIndex] - '0');
                 if (candidate >= value)
                 {
                     value = candidate;
                 }
                 else // for signed types this will occur at the min values as overflow occurs during addition, so we handle that
                 {
-                    if (candidate == int.MinValue)
+                    if (candidate == short.MinValue)
                     {
                         bytesConsumed++;
                         value = candidate;
