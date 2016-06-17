@@ -76,6 +76,74 @@ namespace System.Text.Parsing
 
             return true;
         }
+        public static bool TryParse(byte[] text, int startIndex, out uint value, out int bytesConsumed)
+        {
+            Precondition.Require(text.Length > 0);
+
+            value = 0;
+            bytesConsumed = 0;
+
+            for (int byteIndex = startIndex; byteIndex < text.Length; byteIndex++)
+            {
+                if (text[byteIndex] < '0' || text[byteIndex] > '9')
+                {
+                    if (bytesConsumed == 0)
+                    {
+                        value = default(uint);
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                uint candidate = value * 10;
+                candidate += (uint)text[byteIndex] - '0';
+                if (candidate >= value)
+                {
+                    value = candidate;
+                }
+                else
+                {
+                    return true;
+                }
+                bytesConsumed++;
+            }
+
+            return true;
+        }
+        unsafe public static bool TryParse(byte* text, int startIndex, out uint value, out int bytesConsumed)
+        {
+            value = 0;
+            bytesConsumed = 0;
+
+            for (int byteIndex = startIndex; ; byteIndex++)
+            {
+                if (text[byteIndex] < '0' || text[byteIndex] > '9')
+                {
+                    if (bytesConsumed == 0)
+                    {
+                        value = default(uint);
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                uint candidate = value * 10;
+                candidate += (uint)text[byteIndex] - '0';
+                if (candidate >= value)
+                {
+                    value = candidate;
+                }
+                else
+                {
+                    return true;
+                }
+                bytesConsumed++;
+            }
+        }
 
         public static bool TryParse(ReadOnlySpan<byte> text, FormattingData.Encoding encoding, out uint value, out int bytesConsumed)
         {
