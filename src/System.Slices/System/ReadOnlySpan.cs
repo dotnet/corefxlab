@@ -189,18 +189,24 @@ namespace System
         /// Copies the contents of this span into another.  The destination
         /// must be at least as big as the source, and may be bigger.
         /// </summary>
-        /// <param name="dest">The span to copy items into.</param>
-        public bool TryCopyTo(Span<T> dest)
+        /// <param name="destination">The span to copy items into.</param>
+        public bool TryCopyTo(Span<T> destination)
         {
-            if (Length > dest.Length)
-            {
+            if (Length > destination.Length) {
                 return false;
             }
 
-            // TODO(joe): specialize to use a fast memcpy if T is pointerless.
-            for (int i = 0; i < Length; i++)
-            {
-                dest[i] = this[i];
+            // For native memory, use bulk copy
+            if (Object == null && destination.Object == null) {
+                var source = PtrUtils.ComputeAddress(Object, Offset);
+                var destinationPtr = PtrUtils.ComputeAddress(destination.Object, destination.Offset);
+                var byteCount = Length * PtrUtils.SizeOf<T>();
+                PtrUtils.Copy(source, destinationPtr, byteCount);
+                return true;
+            }
+
+            for (int i = 0; i < Length; i++) {
+                destination[i] = this[i];
             }
             return true;
         }

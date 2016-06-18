@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Runtime.InteropServices;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -318,6 +319,37 @@ namespace System.Slices.Tests
                 Span<byte> spanB = new Span<byte>(b, bidx, bcount);
                 Assert.False(spanA.TryCopyTo(spanB));
             }
+
+            ReadOnlySpanOfByteCopyToAnotherSpanOfByteTwoDifferentBuffersValidCasesNative(expected, a, aidx, acount, b, bidx, bcount);
+        }
+
+        public unsafe void ReadOnlySpanOfByteCopyToAnotherSpanOfByteTwoDifferentBuffersValidCasesNative(byte[] expected, byte[] a, int aidx, int acount, byte[] b, int bidx, int bcount)
+        {
+            IntPtr pa = Marshal.AllocHGlobal(a.Length);
+            Span<byte> na = new Span<byte>(pa.ToPointer(), a.Length);
+            na.Set(a);
+
+            IntPtr pb = Marshal.AllocHGlobal(b.Length);
+            Span<byte> nb = new Span<byte>(pb.ToPointer(), b.Length);
+            nb.Set(b);
+
+            ReadOnlySpan<byte> spanA = na.Slice(aidx, acount);
+            Span<byte> spanB = nb.Slice(bidx, bcount);
+
+            if (expected != null) {               
+                Assert.True(spanA.TryCopyTo(spanB));
+                Assert.Equal(expected, b);
+
+                ReadOnlySpan<byte> spanExpected = new ReadOnlySpan<byte>(expected);
+                ReadOnlySpan<byte> spanBAll = new ReadOnlySpan<byte>(b);
+                Assert.True(spanExpected.SequenceEqual(spanBAll));
+            }
+            else {
+                Assert.False(spanA.TryCopyTo(spanB));
+            }
+
+            Marshal.FreeHGlobal(pa);
+            Marshal.FreeHGlobal(pb);
         }
 
         [Theory]
