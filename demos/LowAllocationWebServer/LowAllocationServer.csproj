@@ -58,28 +58,23 @@
       <HintPath>..\..\..\packages\System.Buffers.4.0.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Slices, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="System.Slices">
       <HintPath>..\..\..\packages\System.Slices.0.1.0-e160620-1\lib\netstandard1.0\System.Slices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Formatting, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="System.Text.Formatting">
       <HintPath>..\..\..\packages\System.Text.Formatting.0.1.0-e160620-1\lib\netstandard1.1\System.Text.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Http, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="System.Text.Http">
       <HintPath>..\..\..\packages\System.Text.Http.0.1.0-e160620-1\lib\netstandard1.1\System.Text.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Json, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="System.Text.Json">
       <HintPath>..\..\..\packages\System.Text.Json.0.1.0-e160620-1\lib\netstandard1.1\System.Text.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Utf8, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="System.Text.Utf8">
       <HintPath>..\..\..\packages\System.Text.Utf8.0.1.0-e160620-1\lib\netstandard1.0\System.Text.Utf8.dll</HintPath>
       <Private>True</Private>
     </Reference>
