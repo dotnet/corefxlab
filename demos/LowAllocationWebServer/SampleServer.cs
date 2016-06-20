@@ -53,11 +53,10 @@ class SampleRestServer : HttpServer
     // This method is a bit of a mess. We need to fix many Http and Json APIs
     void WriteResponseForPostJson(BufferFormatter formatter, HttpRequestLine requestLine, ReadOnlySpan<byte> body)
     {
-        var bodyText = new Utf8String(body);
-        Console.WriteLine(bodyText);
+        Console.WriteLine(new Utf8String(body));
 
         //uint requestedCount = ReadCountUsingReader(bodyText).GetValueOrDefault(1);
-        uint requestedCount = ReadCountUsingNonAllocatingDom(bodyText).GetValueOrDefault(1);
+        uint requestedCount = ReadCountUsingNonAllocatingDom(body).GetValueOrDefault(1);
 
         // this needs to be fixed. It allocated unnecesarily
         var buffer = ArrayPool<byte>.Shared.Rent(2048);
@@ -120,10 +119,10 @@ class SampleRestServer : HttpServer
         formatter.Append(body);
     }
 
-    uint? ReadCountUsingReader(Utf8String json)
+    uint? ReadCountUsingReader(ReadOnlySpan<byte> json)
     {
         uint count;
-        var reader = new JsonReader(json);
+        var reader = new JsonReader(new Utf8String(json));
         while (reader.Read()) {
             switch (reader.TokenType) {
                 case JsonReader.JsonTokenType.Property:
@@ -142,14 +141,11 @@ class SampleRestServer : HttpServer
         return null;
     }
 
-    uint? ReadCountUsingNonAllocatingDom(Utf8String json)
+    uint? ReadCountUsingNonAllocatingDom(ReadOnlySpan<byte> json)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(4096);
-        json.CopyTo(buffer); // TODO: we need to eliminate the copy
-        var parser = new JsonParser(buffer, json.Length);
-        var o = parser.Parse();
-        uint count = (uint)o["Count"];
-        ArrayPool<byte>.Shared.Return(buffer);
+        var parser = new JsonParser(json.CreateArray(), json.Length); // TODO: eliminate allocation
+        JsonParseObject jsonObject = parser.Parse();
+        uint count = (uint)jsonObject["Count"];
         return count;
     }
 }
