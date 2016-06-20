@@ -5,7 +5,6 @@ using Microsoft.Net.Http;
 using System;
 using System.Buffers;
 using System.Diagnostics;
-using System.IO;
 using System.Text.Formatting;
 using System.Text.Http;
 using System.Text.Json;
@@ -55,21 +54,21 @@ class SampleRestServer : HttpServer
     {
         Console.WriteLine(new Utf8String(body));
 
-        //uint requestedCount = ReadCountUsingReader(bodyText).GetValueOrDefault(1);
-        uint requestedCount = ReadCountUsingNonAllocatingDom(body).GetValueOrDefault(1);
+        uint requestedCount = ReadCountUsingReader(body).GetValueOrDefault(1);
+        //uint requestedCount = ReadCountUsingNonAllocatingDom(body).GetValueOrDefault(1);
 
-        // this needs to be fixed. It allocated unnecesarily
+        // TODO: this needs to be written directly to the buffer after content length reservation is implemented.
         var buffer = ArrayPool<byte>.Shared.Rent(2048);
-        var stream = new MemoryStream(buffer);
-        var json = new JsonWriter(stream, FormattingData.Encoding.Utf8, prettyPrint: true);
+        var spanFormatter = new SpanFormatter(buffer.Slice(), FormattingData.InvariantUtf8);
+        var json = new JsonWriter<SpanFormatter>(spanFormatter,  prettyPrint: true);
         json.WriteObjectStart();
         json.WriteArrayStart();
         for (int i = 0; i < requestedCount; i++) {
-            json.WriteString(DateTime.UtcNow.ToString()); // this needs to not allocate. There needs to be overload to WriteString that takes T:IBufferFormattable
+            json.WriteString(DateTime.UtcNow.ToString()); // TODO: this needs to not allocate.
         }
         json.WriteArrayEnd(); ;
         json.WriteObjectEnd();
-        var responseBodyText = new Utf8String(buffer, 0, (int)stream.Position);
+        var responseBodyText = new Utf8String(buffer, 0, spanFormatter.CommitedByteCount);
 
         formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
         formatter.Append(new Utf8String("Content-Length : "));
