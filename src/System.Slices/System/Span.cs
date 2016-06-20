@@ -256,7 +256,7 @@ namespace System
             return true;
         }
 
-        public void Set(Span<T> values)
+        public void Set(ReadOnlySpan<T> values)
         {
             if (Length < values.Length)
             {
