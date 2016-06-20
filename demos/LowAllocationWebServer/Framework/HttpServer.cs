@@ -97,38 +97,37 @@ namespace Microsoft.Net.Http
         protected virtual void WriteResponseFor400(BufferFormatter formatter, Span<byte> receivedBytes) // Bad Request
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", receivedBytes.Length);
-            WriteCommonHeaders(formatter, "1.1", "400", "Bad Request", false);
+            WriteCommonHeaders(formatter, HttpVersion.V1_1, 400, "Bad Request", false);
             formatter.Append(HttpNewline);
         }
 
         protected virtual void WriteResponseFor404(BufferFormatter formatter, HttpRequestLine requestLine) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", requestLine);
-            WriteCommonHeaders(formatter, "1.1", "404", "Not Found", false);
+            WriteCommonHeaders(formatter, HttpVersion.V1_1, 404, "Not Found", false);
             formatter.Append(HttpNewline);
         }
 
         // TODO: this should not be here. Also, this should not allocate
         protected static void WriteCommonHeaders(
             BufferFormatter formatter,
-            string version,
-            string statuCode,
+            HttpVersion version,
+            int statuCode,
             string reasonCode,
             bool keepAlive)
         {
             var currentTime = DateTime.UtcNow;
-            formatter.WriteHttpStatusLine(
-                new Utf8String(version), 
-                new Utf8String(statuCode), 
-                new Utf8String(reasonCode));
-            formatter.WriteHttpHeader(new Utf8String("Date"), new Utf8String(currentTime.ToString("R")));
-            formatter.WriteHttpHeader(new Utf8String("Server"), new Utf8String(".NET Core Sample Serve"));
-            formatter.WriteHttpHeader(new Utf8String("Last-Modified"), new Utf8String(currentTime.ToString("R")));
-            formatter.WriteHttpHeader(new Utf8String("Content-Type"), new Utf8String("text/html; charset=UTF-8"));
-            
+            formatter.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
+            formatter.Append(new Utf8String("Date : ")); formatter.Append(currentTime, 'R');
+            formatter.AppendHttpNewLine();
+            formatter.Append("Server : .NET Core Sample Serve");
+            formatter.AppendHttpNewLine();
+            formatter.Append("Content-Type : text/html; charset=UTF-8");
+            formatter.AppendHttpNewLine();
+
             if (!keepAlive)
             {
-                formatter.WriteHttpHeader(new Utf8String("Connection"), new Utf8String("close"));
+                formatter.Append("Connection : close");
             }
         }
 
