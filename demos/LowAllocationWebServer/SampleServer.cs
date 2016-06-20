@@ -53,7 +53,6 @@ class SampleRestServer : HttpServer
     // This method is a bit of a mess. We need to fix many Http and Json APIs
     void WriteResponseForPostJson(BufferFormatter formatter, HttpRequestLine requestLine, ReadOnlySpan<byte> body)
     {
-
         var bodyText = new Utf8String(body);
         Console.WriteLine(bodyText);
 
@@ -74,14 +73,14 @@ class SampleRestServer : HttpServer
         var responseBodyText = new Utf8String(buffer, 0, (int)stream.Position);
 
         formatter.WriteHttpStatusLine(new Utf8String("1.1"), new Utf8String("200"), new Utf8String("OK"));
-        formatter.WriteHttpHeader(new Utf8String("Content-Length"), new Utf8String(responseBodyText.Length.ToString())); // all these allocations (sic!)
+        var contentLength = formatter.WriteHttpHeader(new Utf8String("Content-Length"), Utf8String.Empty, 10); 
         formatter.WriteHttpHeader(new Utf8String("Content-Type"), new Utf8String("text/plain; charset=UTF-8"));
         formatter.WriteHttpHeader(new Utf8String("Server"), new Utf8String(".NET Core Sample Serve"));
-        // TODO: this needs to not allocate
-        formatter.WriteHttpHeader(new Utf8String("Date"), new Utf8String(DateTime.UtcNow.ToString("R"))); // this bad
+        formatter.WriteHttpHeader(new Utf8String("Date"), new Utf8String(DateTime.UtcNow.ToString("R"))); // TODO: this needs to not allocate
         formatter.EndHttpHeaderSection();
         formatter.WriteHttpBody(responseBodyText);
 
+        contentLength.UpdateValue(responseBodyText.Length.ToString()); // all these allocations (sic!)
         ArrayPool<byte>.Shared.Return(buffer);
     }
 

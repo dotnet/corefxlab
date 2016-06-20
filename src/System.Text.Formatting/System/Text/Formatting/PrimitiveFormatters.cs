@@ -190,5 +190,21 @@ namespace System.Text.Formatting
             }
             return true;
         }
+
+        public static bool TryFormat(this Utf8String value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        {
+            if (formattingData.IsUtf16) {
+                throw new NotImplementedException();
+            }
+
+            if(buffer.Length < value.Length) {
+                bytesWritten = 0;
+                return false;
+            }
+
+            buffer.Set(value.Bytes);
+            bytesWritten = value.Length;
+            return true;
+        }
     }
 }
