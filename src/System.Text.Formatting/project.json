@@ -32,11 +32,13 @@
   },
   "dependencies": {
     "System.Runtime": "4.0.0",
-    "System.Buffers" : "4.0.0",
+    "System.Buffers": "4.0.0",
     "System.Runtime.InteropServices": "4.0.0",
     "System.Diagnostics.Debug": "4.0.0",
     "System.Text.Utf8": { "target": "project" },
-    "System.Slices": { "target": "project" }
+    "System.Slices": { "target": "project" },
+    "System.Text.Primitives": { "target": "project" },
+    "System.Buffers.Experimental": { "target": "project" }
   },
   "frameworks": {
     "netstandard1.1": {

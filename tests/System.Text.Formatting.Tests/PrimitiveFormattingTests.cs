@@ -4,6 +4,8 @@
 using System.Buffers;
 using System.Globalization;
 using System.IO;
+using System.Text;
+using System.Text.Utf8;
 using Xunit;
 
 namespace System.Text.Formatting.Tests
@@ -333,7 +335,8 @@ namespace System.Text.Formatting.Tests
                 utf8Writer.Append("World!");
                 utf8Writer.Append("\u0391"); // greek alpha
                 utf8Writer.Append("\uD950\uDF21");
-                AssertUtf8Equal(buffer.Slice(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21");
+                utf8Writer.Append(new Utf8String("Hello"));
+                AssertUtf8Equal(buffer.Slice(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21Hello");
             }
 
             stream.Position = 0;

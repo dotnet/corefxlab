@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using System.Text;
 
 namespace System.Text.Formatting
 {
@@ -63,7 +64,7 @@ namespace System.Text.Formatting
         void IFormatter.CommitBytes(int bytes)
         {
             _count += bytes;
-            if(_count >= _buffer.Length)
+            if(_count > _buffer.Length)
             {
                 throw new InvalidOperationException("More bytes commited than returned from FreeBuffer");
             }

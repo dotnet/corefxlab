@@ -1,30 +1,25 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Formatting;
+using System.Text;
 
 namespace System.Text.Json
 {
-    public struct JsonWriter : IDisposable
+    public struct JsonWriter<TFormatter> where TFormatter: IFormatter
     {
-        StreamFormatter _formatter;
+        TFormatter _formatter;
         bool _wroteListItem;
         bool _prettyPrint;
         int _indent;
 
-        public JsonWriter(Stream stream, FormattingData.Encoding encoding, bool prettyPrint = false)
+        public JsonWriter(TFormatter formatter, bool prettyPrint = false)
         {
             _wroteListItem = false;
             _prettyPrint = prettyPrint;
             _indent = 0;
-            _formatter = new StreamFormatter(stream, encoding == FormattingData.Encoding.Utf16 ? FormattingData.InvariantUtf16 : FormattingData.InvariantUtf8, ArrayPool<byte>.Shared);
-        }
-
-        public void Dispose() {
-            _formatter.Dispose();
+            _formatter = formatter;
         }
 
         public bool PrettyPrint { get { return _prettyPrint; } set { _prettyPrint = value; } }

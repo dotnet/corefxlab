@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Text;
+using System.Text.Utf8;
+
 namespace System.Text.Formatting
 {
     public static class IFormatterExtensions
@@ -117,6 +120,16 @@ namespace System.Text.Formatting
             int bytesWritten;
             while (!value.TryFormat(formatter.FreeBuffer, format, formatter.FormattingData, out bytesWritten))
             {
+                formatter.ResizeBuffer();
+                bytesWritten = 0;
+            }
+            formatter.CommitBytes(bytesWritten);
+        }
+
+        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        {
+            int bytesWritten;
+            while (!value.TryFormat(formatter.FreeBuffer, format, formatter.FormattingData, out bytesWritten)) {
                 formatter.ResizeBuffer();
                 bytesWritten = 0;
             }

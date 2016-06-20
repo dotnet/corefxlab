@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+using System.Text;
 
 namespace System.Text.Formatting {
 
@@ -365,7 +366,7 @@ namespace System.Text.Formatting {
                 }
 
                 _currentIndex++;
-                var parsedFormat = formatSpecifier.HasValue ? System.Text.Formatting.Format.Parse(formatSpecifier.Value): default(System.Text.Formatting.Format.Parsed);
+                var parsedFormat = formatSpecifier.HasValue ? System.Text.Format.Parse(formatSpecifier.Value): default(System.Text.Format.Parsed);
                 return CompositeSegment.InsertionPoint(arg, parsedFormat);
             }
 

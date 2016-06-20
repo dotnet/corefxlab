@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Text;
+
 namespace System.Text.Formatting
 {
     // this interface would be implemented by types that want to support formatting, i.e. TextWriter/StringBuilder-like types.

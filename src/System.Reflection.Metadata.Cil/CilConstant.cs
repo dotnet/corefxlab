@@ -46,7 +46,6 @@ namespace System.Reflection.Metadata.Cil
 
         public string GetValueString()
         {
-            BlobReader reader = _readers.MdReader.GetBlobReader(_constant.Value);
             object value = Value;
             switch (TypeCode)
             {

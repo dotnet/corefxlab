@@ -212,18 +212,26 @@ namespace System
         /// Copies the contents of this span into another.  The destination
         /// must be at least as big as the source, and may be bigger.
         /// </summary>
-        /// <param name="dest">The span to copy items into.</param>
-        public bool TryCopyTo(Span<T> dest)
+        /// <param name="destination">The span to copy items into.</param>
+        public bool TryCopyTo(Span<T> destination)
         {
-            if (Length > dest.Length)
+            if (Length > destination.Length)
             {
                 return false;
             }
 
-            // TODO(joe): specialize to use a fast memcpy if T is pointerless.
+            // For native memory, use bulk copy
+            if (Object==null && destination.Object==null) {
+                var source = PtrUtils.ComputeAddress(Object, Offset);
+                var destinationPtr = PtrUtils.ComputeAddress(destination.Object, destination.Offset);
+                var byteCount = Length * PtrUtils.SizeOf<T>();
+                PtrUtils.Copy(source, destinationPtr, byteCount);
+                return true;
+            }
+
             for (int i = 0; i < Length; i++)
             {
-                dest[i] = this[i];
+                destination[i] = this[i];
             }
             return true;
         }
@@ -248,16 +256,23 @@ namespace System
             return true;
         }
 
-        public void Set(Span<T> values)
+        public void Set(ReadOnlySpan<T> values)
         {
             if (Length < values.Length)
             {
                 throw new ArgumentOutOfRangeException("values");
             }
 
-            // TODO(joe): specialize to use a fast memcpy if T is pointerless.
-            for (int i = 0; i < values.Length; i++)
-            {
+            // For native memory, use bulk copy
+            if (Object == null && values.Object == null) {
+                var source = PtrUtils.ComputeAddress(values.Object, values.Offset);
+                var destination = PtrUtils.ComputeAddress(Object, Offset);
+                var byteCount = values.Length * PtrUtils.SizeOf<T>();
+                PtrUtils.Copy(source, destination, byteCount);
+                return;
+            }
+
+            for (int i = 0; i < values.Length; i++) {
                 this[i] = values[i];
             }
         }

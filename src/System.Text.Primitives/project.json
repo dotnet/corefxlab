@@ -1,0 +1,39 @@
+{
+  "copyright": "Microsoft Corporation, All rights reserved.",
+  "name": "System.Text.Primitives",
+  "version": "0.1.0-*",
+  "description": "Low-level methods and architecture for .NET text handling",
+  "authors": [
+    "Microsoft Corporation"
+  ],
+  "packOptions": {
+    "tags": [
+      ".NET formatting corefxlab"
+    ],
+    "releaseNotes": "Pre-release package, for testing only",
+    "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+    "projectUrl": "https://github.com/dotnet/corefxlab",
+    "requireLicenseAcceptance": true
+  },
+  "buildOptions": {
+    "allowUnsafe": true,
+    "keyFile": "../../tools/Key.snk",
+    "compile": {
+      "include": [ "System/**/*.cs", "Properties/**/*.cs" ],
+      "exclude": [ "GenerateCompatibilityTests/**/*.cs" ]
+    }
+  },
+  "dependencies": {
+    "System.Runtime": "4.0.0",
+    "System.Buffers": "4.0.0",
+    "System.Runtime.InteropServices": "4.0.0",
+    "System.Diagnostics.Debug": "4.0.0",
+    "System.Text.Utf8": { "target": "project" }
+  },
+  "frameworks": {
+    "netstandard1.1": {
+      "imports": [ "dotnet5.2" ]
+    }
+  }
+}

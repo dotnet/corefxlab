@@ -6,6 +6,7 @@
 using System;
 using System.Globalization;
 using Xunit;
+using System.Text;
 
 namespace System.Text.Formatting.Tests
 {
