@@ -244,7 +244,7 @@ namespace System.Buffers
         public void ResizeSegment(int index, int newItemCount)
         {
             var segment = GetAt(index);
-            if (segment.Count < newItemCount)
+            if (segment.Array.Length < newItemCount)
             {
                 ArrayPool<T>.Shared.Return(segment.Array);
                 var newArray = ArrayPool<T>.Shared.Rent(newItemCount);
@@ -252,7 +252,7 @@ namespace System.Buffers
                 if (index == 0) _head = newSegment;
                 else _tail[index - 1] = newSegment;
             }
-            if (segment.Count > newItemCount)
+            if (segment.Array.Length >= newItemCount)
             {
                 if (index == 0) { _head = new ArraySegment<T>(_head.Array, _head.Offset, newItemCount); }
                 else {
