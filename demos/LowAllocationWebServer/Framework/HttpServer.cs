@@ -75,18 +75,27 @@ namespace Microsoft.Net.Http
             var request = HttpRequest.Parse(requestBytes);
             Log.LogRequest(request);
 
-            var formatter = new BufferFormatter(1024, FormattingData.InvariantUtf8);
-            WriteResponse(formatter, request);
+            using (var responseData = new SharedData()) {
+                var response = new HttpResponse(responseData);
+                WriteResponse(response, request);
+                ArrayPool<byte>.Shared.Return(requestBuffer);
 
-            ArrayPool<byte>.Shared.Return(requestBuffer);
+                // TODO: this whole thing about segment order is very bad. It needs to be designed.
+                for (int index = 0; index < responseData.Count; index++) {
+                    var segment = responseData[index];
+                    if (segment.Item1 == 0) {
+                        socket.Send(segment.Item2);
+                    }
+                }
+                for (int index = 0; index < responseData.Count; index++) {
+                    var segment = responseData[index];
+                    if (segment.Item1 == 1) {
+                        socket.Send(segment.Item2);
+                    }
+                }
 
-            var response = formatter.Buffer.Slice(0, formatter.CommitedByteCount);
-
-            Console.WriteLine("Response:");
-            Console.WriteLine(new Utf8String(response));
-
-            socket.Send(response);
-            socket.Close();
+                socket.Close();
+            }
 
             if (Log.IsVerbose)
             {
@@ -94,43 +103,43 @@ namespace Microsoft.Net.Http
             }
         }
 
-        protected virtual void WriteResponseFor400(BufferFormatter formatter, Span<byte> receivedBytes) // Bad Request
+        protected virtual void WriteResponseFor400(HttpResponse response, Span<byte> receivedBytes) // Bad Request
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", receivedBytes.Length);
-            WriteCommonHeaders(formatter, HttpVersion.V1_1, 400, "Bad Request", false);
-            formatter.Append(HttpNewline);
+            WriteCommonHeaders(response, HttpVersion.V1_1, 400, "Bad Request", false);
+            response.Headers.Append(HttpNewline);
         }
 
-        protected virtual void WriteResponseFor404(BufferFormatter formatter, HttpRequestLine requestLine) // Not Found
+        protected virtual void WriteResponseFor404(HttpResponse response, HttpRequestLine requestLine) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", requestLine);
-            WriteCommonHeaders(formatter, HttpVersion.V1_1, 404, "Not Found", false);
-            formatter.Append(HttpNewline);
+            WriteCommonHeaders(response, HttpVersion.V1_1, 404, "Not Found", false);
+            response.Headers.Append(HttpNewline);
         }
 
         // TODO: this should not be here. Also, this should not allocate
         protected static void WriteCommonHeaders(
-            BufferFormatter formatter,
+            HttpResponse formatter,
             HttpVersion version,
             int statuCode,
             string reasonCode,
             bool keepAlive)
         {
             var currentTime = DateTime.UtcNow;
-            formatter.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
-            formatter.Append(new Utf8String("Date : ")); formatter.Append(currentTime, 'R');
-            formatter.AppendHttpNewLine();
-            formatter.Append("Server : .NET Core Sample Serve");
-            formatter.AppendHttpNewLine();
-            formatter.Append("Content-Type : text/html; charset=UTF-8");
-            formatter.AppendHttpNewLine();
+            formatter.Headers.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
+            formatter.Headers.Append(new Utf8String("Date : ")); formatter.Headers.Append(currentTime, 'R');
+            formatter.Headers.AppendHttpNewLine();
+            formatter.Headers.Append("Server : .NET Core Sample Serve");
+            formatter.Headers.AppendHttpNewLine();
+            formatter.Headers.Append("Content-Type : text/html; charset=UTF-8");
+            formatter.Headers.AppendHttpNewLine();
 
             if (!keepAlive)
             {
-                formatter.Append("Connection : close");
+                formatter.Headers.Append("Connection : close");
             }
         }
 
-        protected abstract void WriteResponse(BufferFormatter formatter, HttpRequest request);
+        protected abstract void WriteResponse(HttpResponse response, HttpRequest request);
     }
 }

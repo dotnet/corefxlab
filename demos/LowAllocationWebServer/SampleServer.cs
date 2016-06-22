@@ -3,7 +3,6 @@
 
 using Microsoft.Net.Http;
 using System;
-using System.Buffers;
 using System.Diagnostics;
 using System.Text.Formatting;
 using System.Text.Http;
@@ -29,93 +28,81 @@ class SampleRestServer : HttpServer
         Apis.Add(Api.PostJson, HttpMethod.Post, requestUri: "/json"); // post body along the lines of: "{ "Count" = "3" }" 
     }
 
-    protected override void WriteResponse(BufferFormatter formatter, HttpRequest request)
+    protected override void WriteResponse(HttpResponse response, HttpRequest request)
     {
         var api = Apis.Map(request.RequestLine);
         switch (api) {
             case Api.HelloWorld:
-                WriteResponseForHelloWorld(formatter);
+                WriteResponseForHelloWorld(response);
                 break;
             case Api.GetTime:
-                WriteResponseForGetTime(formatter, request.RequestLine);
+                WriteResponseForGetTime(response, request.RequestLine);
                 break;
             case Api.PostJson:
-                WriteResponseForPostJson(formatter, request.RequestLine, request.Body);
+                WriteResponseForPostJson(response, request.RequestLine, request.Body);
                 break;
             default:
-                // TODO: this should be built into the base class
-                WriteResponseFor404(formatter, request.RequestLine);
+                WriteResponseFor404(response, request.RequestLine);
                 break;
         }
     }
 
-    // This method is a bit of a mess. We need to fix many Http and Json APIs
-    void WriteResponseForPostJson(BufferFormatter formatter, HttpRequestLine requestLine, ReadOnlySpan<byte> body)
+    void WriteResponseForPostJson(HttpResponse response, HttpRequestLine requestLine, ReadOnlySpan<byte> body)
     {
-        Console.WriteLine(new Utf8String(body));
-
         uint requestedCount = ReadCountUsingReader(body).GetValueOrDefault(1);
-        //uint requestedCount = ReadCountUsingNonAllocatingDom(body).GetValueOrDefault(1);
 
-        // TODO: this needs to be written directly to the buffer after content length reservation is implemented.
-        var buffer = ArrayPool<byte>.Shared.Rent(2048);
-        var spanFormatter = new SpanFormatter(buffer.Slice(), FormattingData.InvariantUtf8);
-        var json = new JsonWriter<SpanFormatter>(spanFormatter,  prettyPrint: true);
+        var json = new JsonWriter<ResponseFormatter>(response.Body, prettyPrint: false);
         json.WriteObjectStart();
         json.WriteArrayStart();
         for (int i = 0; i < requestedCount; i++) {
             json.WriteString(DateTime.UtcNow.ToString()); // TODO: this needs to not allocate.
         }
-        json.WriteArrayEnd(); ;
+        json.WriteArrayEnd();
         json.WriteObjectEnd();
-        var responseBodyText = new Utf8String(buffer, 0, spanFormatter.CommitedByteCount);
 
-        formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
-        formatter.Append(new Utf8String("Content-Length : "));
-        formatter.Append(responseBodyText.Length);
-        formatter.AppendHttpNewLine();
-        formatter.Append("Content-Type : text/plain; charset=UTF-8");
-        formatter.AppendHttpNewLine();
-        formatter.Append("Server : .NET Core Sample Serve");
-        formatter.AppendHttpNewLine();
-        formatter.Append(new Utf8String("Date : "));
-        formatter.Append(DateTime.UtcNow.ToString("R"));
-        formatter.AppendHttpNewLine();
-        formatter.AppendHttpNewLine();
-        formatter.Append(responseBodyText);
-
-        ArrayPool<byte>.Shared.Return(buffer);
+        var headers = response.Headers;
+        headers.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
+        headers.Append("Content-Length : ");
+        headers.Append(response.Body.CommitedBytes);
+        headers.AppendHttpNewLine();
+        headers.Append("Content-Type : text/plain; charset=UTF-8");
+        headers.AppendHttpNewLine();
+        headers.Append("Server : .NET Core Sample Serve");
+        headers.AppendHttpNewLine();
+        headers.Append("Date : ");
+        headers.Append(DateTime.UtcNow, 'R');
+        headers.AppendHttpNewLine();
+        headers.AppendHttpNewLine();
     }
 
-    static void WriteResponseForHelloWorld(BufferFormatter formatter)
+    static void WriteResponseForHelloWorld(HttpResponse formatter)
     {
-        var responseBodyText = new Utf8String("Hello, World");
+        formatter.Body.Append("Hello, World");
 
-        formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
-        formatter.Append(new Utf8String("Content-Length : "));
-        formatter.Append(responseBodyText.Length);
-        formatter.AppendHttpNewLine();
-        formatter.Append("Content-Type : text/plain; charset=UTF-8");
-        formatter.AppendHttpNewLine();
-        formatter.Append("Server : .NET Core Sample Serve");
-        formatter.AppendHttpNewLine();
-        formatter.Append(new Utf8String("Date : "));
-        formatter.Append(DateTime.UtcNow.ToString("R"));
-        formatter.AppendHttpNewLine();
-        formatter.AppendHttpNewLine();
-        formatter.Append(responseBodyText);
+        formatter.Headers.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
+        formatter.Headers.Append("Content-Length : ");
+        formatter.Headers.Append(formatter.Body.CommitedBytes);
+        formatter.Headers.AppendHttpNewLine();
+        formatter.Headers.Append("Content-Type : text/plain; charset=UTF-8");
+        formatter.Headers.AppendHttpNewLine();
+        formatter.Headers.Append("Server : .NET Core Sample Serve");
+        formatter.Headers.AppendHttpNewLine();
+        formatter.Headers.Append("Date : ");
+        formatter.Headers.Append(DateTime.UtcNow, 'R');
+        formatter.Headers.AppendHttpNewLine();
+        formatter.Headers.AppendHttpNewLine();
     }
 
-    static void WriteResponseForGetTime(BufferFormatter formatter, HttpRequestLine request)
+    static void WriteResponseForGetTime(HttpResponse formatter, HttpRequestLine request)
     {
-        // TODO: this needs to not allocate.
-        var body = string.Format(@"<html><head><title>Time</title></head><body>{0}</body></html>", DateTime.UtcNow.ToString("O"));
+        formatter.Body.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
+
         WriteCommonHeaders(formatter, HttpVersion.V1_1, 200, "OK", keepAlive: false);
-        formatter.Append(new Utf8String("Content-Length : "));
-        formatter.Append(body.Length);
-        formatter.AppendHttpNewLine();
-        formatter.AppendHttpNewLine();
-        formatter.Append(body);
+        formatter.Headers.Append("Content-Length : ");
+        formatter.Headers.Append(formatter.Body.CommitedBytes);
+        formatter.Headers.AppendHttpNewLine();
+        formatter.Headers.AppendHttpNewLine();
+
     }
 
     uint? ReadCountUsingReader(ReadOnlySpan<byte> json)
@@ -148,4 +135,5 @@ class SampleRestServer : HttpServer
         return count;
     }
 }
+
 
