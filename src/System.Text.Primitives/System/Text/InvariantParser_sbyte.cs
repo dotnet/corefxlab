@@ -20,10 +20,18 @@ namespace System.Text
             value = 0;
             bytesConsumed = 0;
             bool negative = false;
+            bool signed = false;
 
             if (utf8Text[index] == '-')
             {
                 negative = true;
+                signed = true;
+                index++;
+                bytesConsumed++;
+            }
+            else if (utf8Text[index] == '+')
+            {
+                signed = true;
                 index++;
                 bytesConsumed++;
             }
@@ -33,7 +41,7 @@ namespace System.Text
                 byte nextByte = utf8Text[byteIndex];
                 if (nextByte < '0' || nextByte > '9') // if the next character is not a digit
                 {
-                    if (bytesConsumed == 1 && negative) // if the first character happened to be a '-', we reset the byte counter so logic proceeds as normal.
+                    if (bytesConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
                     {
                         bytesConsumed = 0;
                     }
