@@ -57,7 +57,7 @@ class SampleRestServer : HttpServer
         json.WriteObjectStart();
         json.WriteArrayStart();
         for (int i = 0; i < requestedCount; i++) {
-            json.WriteString(DateTime.UtcNow.ToString()); // TODO: this needs to not allocate.
+            json.WriteString("hello!"); 
         }
         json.WriteArrayEnd();
         json.WriteObjectEnd();
