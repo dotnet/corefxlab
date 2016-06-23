@@ -8,6 +8,7 @@ using System.Threading;
 
 namespace System.Buffers
 {
+    [Obsolete("Use ArrayPool<T> instead. It can be found in CoreFx System.Buffers package.")]
     public sealed class ManagedBufferPool<T> where T : struct
     {
         private const int NUMBER_OF_BUFFERS_IN_BUCKET = 50;

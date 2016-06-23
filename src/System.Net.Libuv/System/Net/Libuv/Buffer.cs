@@ -22,12 +22,12 @@ namespace System.Net.Libuv
 
         internal static void FreeBuffer(Span<byte> buffer)
         {
-            _pool.ReturnBuffer(ref buffer);
+            _pool.Return(buffer);
         }
 
         static void OnAllocateUnixBuffer(IntPtr memoryBuffer, uint length, out Unix buffer)
         {
-            var memory = _pool.RentBuffer((int)length);
+            var memory = _pool.Rent((int)length);
             unsafe
             {
                 buffer = new Unix((IntPtr)memory.UnsafePointer, (uint)memory.Length);
@@ -36,7 +36,7 @@ namespace System.Net.Libuv
 
         static void OnAllocateWindowsBuffer(IntPtr memoryBuffer, uint length, out Windows buffer)
         {
-            var memory = _pool.RentBuffer((int)length);
+            var memory = _pool.Rent((int)length);
             unsafe
             {
                 buffer = new Windows((IntPtr)memory.UnsafePointer, (uint)memory.Length);
