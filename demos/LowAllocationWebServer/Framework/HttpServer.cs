@@ -129,7 +129,7 @@ namespace Microsoft.Net.Http
             formatter.Headers.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
             formatter.Headers.Append(new Utf8String("Date : ")); formatter.Headers.Append(currentTime, 'R');
             formatter.Headers.AppendHttpNewLine();
-            formatter.Headers.Append("Server : .NET Core Sample Serve");
+            formatter.Headers.Append("Server : .NET Core Sample Server");
             formatter.Headers.AppendHttpNewLine();
             formatter.Headers.Append("Content-Type : text/html; charset=UTF-8");
             formatter.Headers.AppendHttpNewLine();

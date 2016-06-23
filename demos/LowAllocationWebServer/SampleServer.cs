@@ -69,7 +69,7 @@ class SampleRestServer : HttpServer
         headers.AppendHttpNewLine();
         headers.Append("Content-Type : text/plain; charset=UTF-8");
         headers.AppendHttpNewLine();
-        headers.Append("Server : .NET Core Sample Serve");
+        headers.Append("Server : .NET Core Sample Server");
         headers.AppendHttpNewLine();
         headers.Append("Date : ");
         headers.Append(DateTime.UtcNow, 'R');
@@ -87,7 +87,7 @@ class SampleRestServer : HttpServer
         response.Headers.AppendHttpNewLine();
         response.Headers.Append("Content-Type : text/plain; charset=UTF-8");
         response.Headers.AppendHttpNewLine();
-        response.Headers.Append("Server : .NET Core Sample Serve");
+        response.Headers.Append("Server : .NET Core Sample Server");
         response.Headers.AppendHttpNewLine();
         response.Headers.Append("Date : ");
         response.Headers.Append(DateTime.UtcNow, 'R');
