@@ -1,14 +1,159 @@
-﻿using Microsoft.Net.Sockets;
-using System;
+﻿using System;
 using System.Buffers;
-using System.Diagnostics;
 using System.Text.Formatting;
-using System.Text.Http;
-using System.Text.Utf8;
-using System.Threading;
 
 namespace Microsoft.Net.Http
 {
+    // this is a set of buffers used to format the response.
+    // it's optimized for cases where the headers and body fit into a single buffer (each)
+    // TODO: I am not thrilled by the desing of the type. We shoudl look into this more.
+    public class SharedData : IDisposable
+    {
+        Segment _first;
+        Segment _second;
+        Segment[] _rest;
+        int _count;
+
+        public int Count { get { return _count; } }
+
+        public Segment this[int index] {
+            get {
+                if (index == 0) return _first;
+                if (index == 1) return _second;
+                return _rest[index - 2];
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_first.Array.Array != null) ArrayPool<byte>.Shared.Return(_first.Array.Array);
+            if (_second.Array.Array != null) ArrayPool<byte>.Shared.Return(_second.Array.Array);
+            if (_rest != null) {
+                for (int i = 0; i < _count - 2; i++) {
+                    if (_rest[i].Array.Array != null) ArrayPool<byte>.Shared.Return(_rest[i].Array.Array);
+                }
+                ArrayPool<Segment>.Shared.Return(_rest);
+            }
+        }
+
+        public Span<byte> GetFree(int id)
+        {
+            var last = GetLast(id);
+            if (last == null) return Span<byte>.Empty;
+            return last.Value.Free;
+        }
+
+        private Segment? GetLast(int id)
+        {
+            if (_rest != null) {
+                for (int index = _count - 1; index >= 0; index--) {
+                    if (_rest[index].Id == id) {
+                        return _rest[index];
+                    }
+                }
+            }
+            if (_second.Id == id) return _second;
+            if (_first.Id == id) return _first;
+            return null;
+        }
+
+        private int GetLastIndex(int id)
+        {
+            if (_rest != null) {
+                for (int index = _count - 1; index >= 0; index--) {
+                    if (_rest[index].Id == id) {
+                        return index;
+                    }
+                }
+            }
+            if (_second.Id == id) return -1;
+            if (_first.Id == id) return -2;
+            return -3;
+        }
+
+        public void Allocate(int size, int id)
+        {
+            var newArray = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(size), 0, 0);
+            var newSegment = new Segment(newArray, id);
+            if (_count == 0) _first = newSegment;
+            else if (_count == 1) _second = newSegment;
+            else {
+                if (_count == 2 || _rest.Length == _count - 2) {
+                    var newSize = _count==2?4:_rest.Length << 1;
+                    var largerSegments = ArrayPool<Segment>.Shared.Rent(newSize);
+                    if (_rest != null) {
+                        _rest.CopyTo(largerSegments, 0);
+                        ArrayPool<Segment>.Shared.Return(_rest);
+                    }
+                   _rest = largerSegments;
+                }
+                _rest[_count - 2] = newSegment;
+            }
+            _count++;
+        }
+
+        public void Commit(int id, int bytes)
+        {
+            var freeIndex = GetLastIndex(id);
+            if (freeIndex < -2) {
+                throw new AggregateException("invalid id");
+            }
+
+            if (freeIndex == -2) {
+                var segment = _first.Array;
+                _first.Array = new ArraySegment<byte>(segment.Array, 0, segment.Count + bytes);
+            }
+            else if (freeIndex == -1) {
+                var segment = _second.Array;
+                _second.Array = new ArraySegment<byte>(segment.Array, 0, segment.Count + bytes);
+            }
+            else {
+                var segment = _rest[freeIndex].Array;
+                _rest[freeIndex].Array = new ArraySegment<byte>(segment.Array, 0, segment.Count + bytes);
+            }
+        }
+
+        internal int Commited(int id)
+        {
+            int total = 0;
+            if (_rest != null) {
+                for (int i = 0; i < _count - 2; i++) {
+                    if (_rest[i].Id == id) {
+                        total += _rest[i].Array.Count;
+                    }
+                }
+            }
+            if (_first.Id == id) total += _first.Array.Count;
+            if (_second.Id == id) total += _second.Array.Count;
+            return total;
+        }
+
+        public struct Segment
+        {
+            internal ArraySegment<byte> Array;
+            public int Id;
+
+            public Segment(ArraySegment<byte> array, int id)
+            {
+                Array = array;
+                Id = id;
+            }
+
+            public Span<byte> Commited
+            {
+                get { return Array.Array.Slice(Array.Offset, Array.Count); }
+            }
+
+            public Span<byte> Free
+            {
+                get {
+                    var start = Array.Offset + Array.Count;
+                    return Array.Array.Slice(start, Array.Array.Length - start);
+                }
+            }
+        }
+    }
+
     public struct HttpResponse
     {
         SharedData _data;
@@ -19,95 +164,8 @@ namespace Microsoft.Net.Http
         }
 
         public ResponseFormatter Body { get { return new ResponseFormatter(_data, 1); } }
-        public ResponseFormatter Headers { get { return new ResponseFormatter(_data, 0); } }
+        public ResponseFormatter Headers { get { return new ResponseFormatter(_data, 2); } }
     }
-
-    public class SharedData : IDisposable
-    {
-        ArraySegment<byte>[] _segments = new ArraySegment<byte>[0];
-        int[] _ids = new int[0];
-        int _count;
-
-        public int Count { get { return _count; } }
-
-        public Tuple<int, Span<byte>> this[int index] {
-            get {
-                var segment = _segments[index];
-                return Tuple.Create(_ids[index], segment.Array.Slice(segment.Offset, segment.Count));
-            }
-        }
-
-        public void Dispose()
-        {
-            ArraySegment<byte>[] local;
-            lock (_segments) {
-                local = _segments;
-                _segments = null;
-            }
-
-            for(int i=0; i<_count; i++) {
-                ArrayPool<byte>.Shared.Return(local[i].Array);
-            }
-        }
-
-        public Span<byte> GetFree(int id)
-        {
-            var freeIndex = GetFreeIndex(id);
-            if (freeIndex < 0) return Span<byte>.Empty;
-            var segment = _segments[freeIndex];
-            return segment.Array.Slice(segment.Count, segment.Array.Length - segment.Count);
-        }
-
-        private int GetFreeIndex(int id)
-        {
-            for (int index = _count - 1; index >= 0; index--) {
-                if (_ids[index] == id) {
-                    return index;
-                }
-            }
-            return -1;
-        }
-
-        public void Allocate(int size, int id)
-        {
-            lock (_segments) {
-                if (_count == _segments.Length) {
-                    var newSize = Math.Max(4, _segments.Length << 1);
-                    var largerSegments = new ArraySegment<byte>[newSize];
-                    var largerIds = new int[newSize];
-                    _segments.CopyTo(largerSegments, 0);
-                    _ids.CopyTo(largerIds, 0);
-                    _segments = largerSegments;
-                    _ids = largerIds;
-                }
-
-                _segments[_count] = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(size), 0, 0);
-                _ids[_count++] = id;
-            }
-        }
-
-        public void Commit(int id, int bytes)
-        {
-            var freeIndex = GetFreeIndex(id);
-            if (freeIndex < 0) {
-                throw new AggregateException("invalid id");
-            }
-            var segment = _segments[freeIndex];
-            _segments[freeIndex] = new ArraySegment<byte>(segment.Array, 0, segment.Count + bytes);
-        }
-
-        internal int Commited(int id)
-        {
-            int total = 0;
-            for(int i=0; i<_count; i++) {
-                if (_ids[i] == id) {
-                    total += _segments[i].Count;
-                }
-            }
-            return total;
-        }
-    }
-
 
     public struct ResponseFormatter : IFormatter
     {

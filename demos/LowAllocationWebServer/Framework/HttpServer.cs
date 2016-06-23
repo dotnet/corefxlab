@@ -83,14 +83,14 @@ namespace Microsoft.Net.Http
                 // TODO: this whole thing about segment order is very bad. It needs to be designed.
                 for (int index = 0; index < responseData.Count; index++) {
                     var segment = responseData[index];
-                    if (segment.Item1 == 0) {
-                        socket.Send(segment.Item2);
+                    if (segment.Id == 2) {
+                        socket.Send(segment.Commited);
                     }
                 }
                 for (int index = 0; index < responseData.Count; index++) {
                     var segment = responseData[index];
-                    if (segment.Item1 == 1) {
-                        socket.Send(segment.Item2);
+                    if (segment.Id == 1) {
+                        socket.Send(segment.Commited);
                     }
                 }
 
