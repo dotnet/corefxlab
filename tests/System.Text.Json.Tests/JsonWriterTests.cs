@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text.Json;
+using System.Text;
 using Xunit;
 
 namespace System.Text.Formatting.Tests

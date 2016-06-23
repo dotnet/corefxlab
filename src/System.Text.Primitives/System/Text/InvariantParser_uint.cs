@@ -2,21 +2,20 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.Text.Formatting;
 using System.Text.Utf8;
 
-namespace System.Text.Parsing
+namespace System.Text
 {
     public static partial class InvariantParser
     {
-        public static bool TryParse(string utf8Text, int index, int count, out uint value, out int charactersConsumed)
+        public static bool TryParse(string text, int index, int count, out uint value, out int charactersConsumed)
         {
             Precondition.Require(count > 0);
-            Precondition.Require(utf8Text.Length >= index + count);
+            Precondition.Require(text.Length >= index + count);
 
             unsafe
             {
-                fixed (char* pText = utf8Text)
+                fixed (char* pText = text)
                 {
                     char* pSubstring = pText + index;
                     var span = new Span<byte>((byte*)pSubstring, count << 1);
@@ -28,11 +27,11 @@ namespace System.Text.Parsing
             }
         }
 
-        public static bool TryParse(ReadOnlySpan<char> utf8Text, out uint value, out int charactersConsumed)
+        public static bool TryParse(ReadOnlySpan<char> text, out uint value, out int charactersConsumed)
         {
-            Precondition.Require(utf8Text.Length > 0);
+            Precondition.Require(text.Length > 0);
 
-            ReadOnlySpan<byte> span = utf8Text.Cast<char, byte>();
+            ReadOnlySpan<byte> span = text.Cast<char, byte>();
             int bytesConsumed;
             var result = TryParse(span, FormattingData.Encoding.Utf16, out value, out bytesConsumed);
             charactersConsumed = bytesConsumed >> 1;
@@ -67,10 +66,6 @@ namespace System.Text.Parsing
                 {
                     value = candidate;
                 }
-                else
-                {
-                    return true;
-                }
                 bytesConsumed++;
             }
 
@@ -104,10 +99,6 @@ namespace System.Text.Parsing
                 {
                     value = candidate;
                 }
-                else
-                {
-                    return true;
-                }
                 bytesConsumed++;
             }
 
@@ -138,10 +129,6 @@ namespace System.Text.Parsing
                 if (candidate >= value)
                 {
                     value = candidate;
-                }
-                else
-                {
-                    return true;
                 }
                 bytesConsumed++;
             }

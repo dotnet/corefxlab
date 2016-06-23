@@ -3,6 +3,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Text.Formatting;
+using System.Text;
 
 namespace System.Text.Json
 {

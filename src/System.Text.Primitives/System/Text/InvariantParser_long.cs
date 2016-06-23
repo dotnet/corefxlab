@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Text.Formatting;
 using System.Text.Utf8;
 
-namespace System.Text.Parsing
+namespace System.Text
 {
     public static partial class InvariantParser
     {
@@ -14,7 +13,7 @@ namespace System.Text.Parsing
         /// <param name="value">The parsed value.</param>
         /// <param name="bytesConsumed">The length (in bytes) of the unparsed value within the UTF-8 buffer.</param>
         /// <returns>True if parsing is successful; false otherwise.</returns>
-		public static bool TryParse(byte[] utf8Text, int index, out sbyte value, out int bytesConsumed)
+		public static bool TryParse(byte[] utf8Text, int index, out long value, out int bytesConsumed)
         {
             Precondition.Require(utf8Text.Length > 0);
 
@@ -47,20 +46,20 @@ namespace System.Text.Parsing
                     {
                         if (negative) // We check if the value is negative at the very end to save on comp time
                         {
-                            value = (sbyte)-value;
+                            value = -value;
                         }
                         return true; // otherwise return true
                     }
                 }
-                sbyte candidate = (sbyte)(value * 10); // left shift the value
-                candidate += (sbyte)(nextByte - '0'); // parse the current digit to a sbyte and add it to the temporary value
+                long candidate = (value * 10); // left shift the value
+                candidate += (nextByte - '0'); // parse the current digit to a long and add it to the temporary value
                 if (candidate >= value) // if it was a digit 0-9, this should be true
                 {
                     value = candidate;
                 }
                 else // for signed types this will occur at the min values as overflow occurs during addition, so we handle that
                 {
-                    if (candidate == sbyte.MinValue)
+                    if (candidate == long.MinValue)
                     {
                         bytesConsumed++;
                         value = candidate;
@@ -68,7 +67,7 @@ namespace System.Text.Parsing
                     }
                     if (negative) // We check if the value is negative at the very end to save on comp time
                     {
-                        value = (sbyte)-value;
+                        value = -value;
                     }
                     return true;
                 }
@@ -77,12 +76,12 @@ namespace System.Text.Parsing
 
             if (negative) // We check if the value is negative at the very end to save on comp time
             {
-                value = (sbyte)-value;
+                value = -value;
             }
             return true;
         }
 
-        unsafe public static bool TryParse(byte* utf8Text, int index, int length, out sbyte value, out int bytesConsumed)
+        unsafe public static bool TryParse(byte* utf8Text, int index, int length, out long value, out int bytesConsumed)
         {
             value = 0;
             bytesConsumed = 0;
@@ -113,20 +112,20 @@ namespace System.Text.Parsing
                     {
                         if (negative) // We check if the value is negative at the very end to save on comp time
                         {
-                            value = (sbyte)-value;
+                            value = -value;
                         }
                         return true;
                     }
                 }
-                sbyte candidate = (sbyte)(value * 10);
-                candidate += (sbyte)(nextByte - '0');
+                long candidate = (value * 10);
+                candidate += (nextByte - '0');
                 if (candidate >= value)
                 {
                     value = candidate;
                 }
                 else // for signed types this will occur at the min values as overflow occurs during addition, so we handle that
                 {
-                    if (candidate == sbyte.MinValue)
+                    if (candidate == long.MinValue)
                     {
                         bytesConsumed++;
                         value = candidate;
@@ -134,7 +133,7 @@ namespace System.Text.Parsing
                     }
                     if (negative) // We check if the value is negative at the very end to save on comp time
                     {
-                        value = (sbyte)-value;
+                        value = -value;
                     }
                     return true;
                 }

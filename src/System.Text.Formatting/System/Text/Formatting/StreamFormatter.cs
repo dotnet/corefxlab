@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.Buffers;
+using System.Text;
 
 namespace System.Text.Formatting
 {

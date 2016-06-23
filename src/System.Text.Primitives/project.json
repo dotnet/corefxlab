@@ -1,11 +1,11 @@
 {
-  "name": "System.Text.Formatting",
+  "copyright": "Microsoft Corporation, All rights reserved.",
+  "name": "System.Text.Primitives",
   "version": "0.1.0-*",
-  "description": "Non-allocating formatting library",
+  "description": "Low-level methods and architecture for .NET text handling",
   "authors": [
     "Microsoft Corporation"
   ],
-  "copyright": "Microsoft Corporation, All rights reserved",
   "packOptions": {
     "tags": [
       ".NET formatting corefxlab"
@@ -19,15 +19,9 @@
   "buildOptions": {
     "allowUnsafe": true,
     "keyFile": "../../tools/Key.snk",
-    "compile": { 
-        "include": [ "System/**/*.cs", "Properties/**/*.cs" ],
-        "exclude": [ "GenerateCompatibilityTests/**/*.cs" ]
-    },
-    "embed": {
-      "include": "Properties/Resources.resx",
-      "mappings": {
-        "System.Text.Formatting.Properties.Resources": "Properties/Resources.resx"
-      }
+    "compile": {
+      "include": [ "System/**/*.cs", "Properties/**/*.cs" ],
+      "exclude": [ "GenerateCompatibilityTests/**/*.cs" ]
     }
   },
   "dependencies": {
@@ -35,10 +29,7 @@
     "System.Buffers": "4.0.0",
     "System.Runtime.InteropServices": "4.0.0",
     "System.Diagnostics.Debug": "4.0.0",
-    "System.Text.Utf8": { "target": "project" },
-    "System.Slices": { "target": "project" },
-    "System.Text.Primitives": { "target": "project" },
-    "System.Buffers.Experimental": { "target": "project" }
+    "System.Text.Utf8": { "target": "project" }
   },
   "frameworks": {
     "netstandard1.1": {

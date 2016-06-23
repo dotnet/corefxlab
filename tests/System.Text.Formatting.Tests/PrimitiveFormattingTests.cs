@@ -4,6 +4,7 @@
 using System.Buffers;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Text.Utf8;
 using Xunit;
 

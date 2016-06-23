@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Text.Formatting;
 using System.Text.Utf8;
 
-namespace System.Text.Parsing
+namespace System.Text
 {
     public static partial class InvariantParser
     {
@@ -14,7 +13,7 @@ namespace System.Text.Parsing
         /// <param name="value">The parsed value.</param>
         /// <param name="bytesConsumed">The length (in bytes) of the unparsed value within the UTF-8 buffer.</param>
         /// <returns>True if parsing is successful; false otherwise.</returns>
-		public static bool TryParse(byte[] utf8Text, int index, out long value, out int bytesConsumed)
+		public static bool TryParse(byte[] utf8Text, int index, out int value, out int bytesConsumed)
         {
             Precondition.Require(utf8Text.Length > 0);
 
@@ -52,15 +51,15 @@ namespace System.Text.Parsing
                         return true; // otherwise return true
                     }
                 }
-                long candidate = (value * 10); // left shift the value
-                candidate += (nextByte - '0'); // parse the current digit to a long and add it to the temporary value
+                int candidate = (value * 10); // left shift the value
+                candidate += (nextByte - '0'); // parse the current digit to an int and add it to the temporary value
                 if (candidate >= value) // if it was a digit 0-9, this should be true
                 {
                     value = candidate;
                 }
                 else // for signed types this will occur at the min values as overflow occurs during addition, so we handle that
                 {
-                    if (candidate == long.MinValue)
+                    if (candidate == int.MinValue)
                     {
                         bytesConsumed++;
                         value = candidate;
@@ -82,7 +81,7 @@ namespace System.Text.Parsing
             return true;
         }
 
-        unsafe public static bool TryParse(byte* utf8Text, int index, int length, out long value, out int bytesConsumed)
+        unsafe public static bool TryParse(byte* utf8Text, int index, int length, out int value, out int bytesConsumed)
         {
             value = 0;
             bytesConsumed = 0;
@@ -118,7 +117,7 @@ namespace System.Text.Parsing
                         return true;
                     }
                 }
-                long candidate = (value * 10);
+                int candidate = (value * 10);
                 candidate += (nextByte - '0');
                 if (candidate >= value)
                 {
@@ -126,7 +125,7 @@ namespace System.Text.Parsing
                 }
                 else // for signed types this will occur at the min values as overflow occurs during addition, so we handle that
                 {
-                    if (candidate == long.MinValue)
+                    if (candidate == int.MinValue)
                     {
                         bytesConsumed++;
                         value = candidate;

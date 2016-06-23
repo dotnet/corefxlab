@@ -1,14 +1,12 @@
-﻿using System;
-using System.Buffers;
-using System.Text;
+﻿using System.Buffers;
 using System.Text.Formatting;
+using System.Text;
 using System.Text.Utf8;
 using FluentAssertions;
 using Xunit;
-using System.Text.Http;
 
 namespace System.Text.Http.Tests
-{   
+{
     public class GivenIFormatterExtensionsForHttp
     {
         private const string HttpBody = "Body Part1";

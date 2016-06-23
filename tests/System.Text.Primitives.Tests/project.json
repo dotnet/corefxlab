@@ -1,0 +1,26 @@
+{
+  "name": "System.Text.Tests",
+  "buildOptions": {
+    "allowUnsafe": true,
+    "keyFile": "../../tools/test_key.snk"
+  },
+  "dependencies": {
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0-rc2-3002702"
+    },
+    "System.Text.Primitives": { "target": "project" },
+    "xunit": "2.1.0",
+    "dotnet-test-xunit": "1.0.0-rc2-173384-19"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "netstandardapp1.5",
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
+    }
+  },
+  "testRunner": "xunit"
+}

@@ -73,6 +73,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Time.Tests", "tests\
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Reflection.Metadata.Cil", "src\System.Reflection.Metadata.Cil\System.Reflection.Metadata.Cil.xproj", "{12D7B81D-26FD-4BCA-9D72-AFDEA900BAAC}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Text.Primitives", "src\System.Text.Primitives\System.Text.Primitives.xproj", "{80E6332B-DC83-4DFC-9C19-8D89E988BA4E}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Text.Primitives.Tests", "tests\System.Text.Primitives.Tests\System.Text.Primitives.Tests.xproj", "{67B42C20-D98A-420B-82C0-04AFD963E650}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -211,6 +215,14 @@ Global
 		{12D7B81D-26FD-4BCA-9D72-AFDEA900BAAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12D7B81D-26FD-4BCA-9D72-AFDEA900BAAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12D7B81D-26FD-4BCA-9D72-AFDEA900BAAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80E6332B-DC83-4DFC-9C19-8D89E988BA4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80E6332B-DC83-4DFC-9C19-8D89E988BA4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80E6332B-DC83-4DFC-9C19-8D89E988BA4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80E6332B-DC83-4DFC-9C19-8D89E988BA4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67B42C20-D98A-420B-82C0-04AFD963E650}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67B42C20-D98A-420B-82C0-04AFD963E650}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67B42C20-D98A-420B-82C0-04AFD963E650}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67B42C20-D98A-420B-82C0-04AFD963E650}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -249,5 +261,7 @@ Global
 		{D5281344-D323-4E13-8BC7-4F39814AD4A6} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{872C74A2-97BD-4672-9674-BC361419AF32} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{12D7B81D-26FD-4BCA-9D72-AFDEA900BAAC} = {4B000021-5278-4F2A-B734-DE49F55D4024}
+		{80E6332B-DC83-4DFC-9C19-8D89E988BA4E} = {4B000021-5278-4F2A-B734-DE49F55D4024}
+		{67B42C20-D98A-420B-82C0-04AFD963E650} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 	EndGlobalSection
 EndGlobal

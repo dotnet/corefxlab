@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using System.Text.Parsing;
+using System.Text;
 using Xunit;
 
 namespace System.Text.Formatting.Tests

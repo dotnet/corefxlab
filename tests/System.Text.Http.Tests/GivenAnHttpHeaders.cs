@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Text;
+﻿using System.Collections;
 using FluentAssertions;
 using Xunit;
-using System.Text.Http;
 using System.Text.Utf8;
 
 namespace System.Text.Http.Tests

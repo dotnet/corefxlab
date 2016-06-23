@@ -5,6 +5,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Xunit;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]

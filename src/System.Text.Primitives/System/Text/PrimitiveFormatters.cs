@@ -4,7 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Text.Utf8;
 
-namespace System.Text.Formatting
+namespace System.Text
 {
     /// <summary>
     /// Pseudo-implementations of IBufferFormattable interface for primitive types

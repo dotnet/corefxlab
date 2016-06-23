@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Formatting 
+namespace System.Text 
 {
     internal static class FloatFormatter
     {

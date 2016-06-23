@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Text.Formatting;
 using System.Text.Utf8;
 
-namespace System.Text.Parsing
+namespace System.Text
 {
     public static partial class InvariantParser
     {
@@ -14,7 +13,7 @@ namespace System.Text.Parsing
         /// <param name="value">The parsed value.</param>
         /// <param name="bytesConsumed">The length (in bytes) of the unparsed value within the UTF-8 buffer.</param>
         /// <returns>True if parsing is successful; false otherwise.</returns>
-		public static bool TryParse(byte[] utf8Text, int index, out ushort value, out int bytesConsumed)
+		public static bool TryParse(byte[] utf8Text, int index, out byte value, out int bytesConsumed)
         {
             Precondition.Require(utf8Text.Length > 0);
 
@@ -28,7 +27,7 @@ namespace System.Text.Parsing
                 {
                     if (bytesConsumed == 0) // check to see if we've processed any digits at all
                     {
-                        value = default(ushort); // if we haven't, set value to 0 and return false
+                        value = default(byte); // if we haven't, set value to 0 and return false
                         return false;
                     }
                     else
@@ -36,8 +35,8 @@ namespace System.Text.Parsing
                         return true; // otherwise return true
                     }
                 }
-                ushort candidate = (ushort)(value * 10); // left shift the value
-                candidate += (ushort)(nextByte - '0'); // parse the current digit to a ushort and add it to the temporary value
+                byte candidate = (byte)(value * 10); // left shift the value
+                candidate += (byte)(nextByte - '0'); // parse the current digit to a byte and add it to the temporary value
                 if (candidate >= value) // if it was a digit 0-9, this should be true
                 {
                     value = candidate;
@@ -51,7 +50,7 @@ namespace System.Text.Parsing
 
             return true;
         }
-        unsafe public static bool TryParse(byte* utf8Text, int index, int length, out ushort value, out int bytesConsumed)
+        unsafe public static bool TryParse(byte* utf8Text, int index, int length, out byte value, out int bytesConsumed)
         {
             value = 0;
             bytesConsumed = 0;
@@ -63,7 +62,7 @@ namespace System.Text.Parsing
                 {
                     if (bytesConsumed == 0)
                     {
-                        value = default(ushort);
+                        value = default(byte);
                         return false;
                     }
                     else
@@ -71,15 +70,11 @@ namespace System.Text.Parsing
                         return true;
                     }
                 }
-                ushort candidate = (ushort)(value * 10);
-                candidate += (ushort)(nextByte - '0');
+                byte candidate = (byte)(value * 10);
+                candidate += (byte)(nextByte - '0');
                 if (candidate >= value)
                 {
                     value = candidate;
-                }
-                else
-                {
-                    return true;
                 }
                 bytesConsumed++;
             }

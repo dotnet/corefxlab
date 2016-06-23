@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Text.Formatting
+namespace System.Text
 {
     public struct FormattingData
     {
@@ -106,7 +106,7 @@ namespace System.Text.Formatting
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool TryWriteDigitOrSymbol(ulong digitOrSymbolIndex, Span<byte> buffer, out int bytesWritten)
+        public bool TryWriteDigitOrSymbol(ulong digitOrSymbolIndex, Span<byte> buffer, out int bytesWritten)
         {
             byte[] bytes = _digitsAndSymbols[digitOrSymbolIndex];
             bytesWritten = bytes.Length;
@@ -144,20 +144,20 @@ namespace System.Text.Formatting
             Exponent = 16,
         }
 
-        internal bool IsInvariantUtf16
+        public bool IsInvariantUtf16
         {
             get { return _digitsAndSymbols == s_invariantUtf16._digitsAndSymbols; }
         }
-        internal bool IsInvariantUtf8
+        public bool IsInvariantUtf8
         {
             get { return _digitsAndSymbols == s_invariantUtf8._digitsAndSymbols; }
         }
 
-        internal bool IsUtf16
+        public bool IsUtf16
         {
             get { return _encoding == Encoding.Utf16; }
         }
-        internal bool IsUtf8
+        public bool IsUtf8
         {
             get { return _encoding == Encoding.Utf8; }
         }
