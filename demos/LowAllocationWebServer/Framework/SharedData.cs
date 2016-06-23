@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Text;
 using System.Text.Formatting;
 
 namespace Microsoft.Net.Http
