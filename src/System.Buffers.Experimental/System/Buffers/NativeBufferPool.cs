@@ -18,7 +18,7 @@ namespace System.Buffers
 
         private static NativeBufferPool<byte> _sharedInstance = null;
 
-        public static NativeBufferPool<byte> SharedByteBufferPool
+        public static NativeBufferPool<byte> Shared
         {
             get
             {
@@ -65,7 +65,7 @@ namespace System.Buffers
             }
         }
 
-        public Span<T> RentBuffer(int numberOfElements, bool clearBuffer = false)
+        public Span<T> Rent(int numberOfElements, bool clearBuffer = false)
         {
             if (_disposed)
                 throw new ObjectDisposedException("NativeBufferPool");
@@ -108,7 +108,7 @@ namespace System.Buffers
             throw new NotImplementedException();
         }
 
-        public void ReturnBuffer(ref Span<T> buffer, bool clearBuffer = false)
+        public void Return(Span<T> buffer, bool clearBuffer = false)
         {
             if (_disposed)
                 throw new ObjectDisposedException("NativeBufferPool");
