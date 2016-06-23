@@ -38,6 +38,7 @@
     <StartupObject>Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Framework\SharedData.cs" />
     <Compile Include="Framework\HttpServer.cs" />
     <Compile Include="Framework\Log.cs" />
     <Compile Include="Framework\RoutingTable.cs" />
