@@ -75,7 +75,12 @@ namespace Microsoft.Net.Http
             var request = HttpRequest.Parse(requestBytes);
             Log.LogRequest(request);
 
-            using (var responseData = new SharedData()) {
+            // SharedData is the only per request allocation that I think needs to stay.
+            // It allows for reliably returning buffers to the pool (as there are no copies of the object)
+            // TODO: one thing I want to optimize here is allocation of the arrays for buffers.
+            // The arrays should not be allocated for single header and single body and
+            // if arrays are needed, they should be pooled.
+            using (var responseData = new SharedData()) { 
                 var response = new HttpResponse(responseData);
                 WriteResponse(response, request);
                 ArrayPool<byte>.Shared.Return(requestBuffer);
@@ -117,7 +122,6 @@ namespace Microsoft.Net.Http
             response.Headers.Append(HttpNewline);
         }
 
-        // TODO: this should not be here. Also, this should not allocate
         protected static void WriteCommonHeaders(
             HttpResponse formatter,
             HttpVersion version,
@@ -127,7 +131,7 @@ namespace Microsoft.Net.Http
         {
             var currentTime = DateTime.UtcNow;
             formatter.Headers.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
-            formatter.Headers.Append(new Utf8String("Date : ")); formatter.Headers.Append(currentTime, 'R');
+            formatter.Headers.Append("Date : "); formatter.Headers.Append(currentTime, 'R');
             formatter.Headers.AppendHttpNewLine();
             formatter.Headers.Append("Server : .NET Core Sample Serve");
             formatter.Headers.AppendHttpNewLine();

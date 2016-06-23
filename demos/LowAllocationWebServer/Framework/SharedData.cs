@@ -73,7 +73,10 @@ namespace Microsoft.Net.Http
             lock (_segments) {
                 if (_count == _segments.Length) {
                     var newSize = Math.Max(4, _segments.Length << 1);
-                    var largerSegments = new ArraySegment<byte>[newSize];
+                    // TODO: this SharedData array allocation should be eliminated.
+                    // if response has one header buffer and one body buffer, the buffers should be stored in dedicated fields.
+                    // otherwise, the arrays should come from the pool
+                    var largerSegments = new ArraySegment<byte>[newSize]; 
                     var largerIds = new int[newSize];
                     _segments.CopyTo(largerSegments, 0);
                     _ids.CopyTo(largerIds, 0);

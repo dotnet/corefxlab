@@ -26,7 +26,7 @@ class SampleRestServer : HttpServer
     {
         Apis.Add(Api.HelloWorld, HttpMethod.Get, requestUri: "/plaintext");
         Apis.Add(Api.GetTime, HttpMethod.Get, requestUri: "/time");
-        Apis.Add(Api.PostJson, HttpMethod.Post, requestUri: "/json"); // post body along the lines of: "{ "Count" = "3" }" 
+        Apis.Add(Api.PostJson, HttpMethod.Post, requestUri: "/json"); // post body along the lines of: "{ "Count" = 3 }" 
     }
 
     protected override void WriteResponse(HttpResponse response, HttpRequest request)
@@ -109,21 +109,22 @@ class SampleRestServer : HttpServer
 
     uint ReadCountUsingReader(ReadOnlySpan<byte> json)
     {
-        uint count;
+
         var reader = new JsonReader(new Utf8String(json));
         while (reader.Read()) {
             switch (reader.TokenType) {
                 case JsonReader.JsonTokenType.Property:
                     var name = reader.GetName();
                     var value = reader.GetValue();
-                    Console.WriteLine("Property {0} = {1}", name, value);
+                    if (Log.IsVerbose) { Log.LogVerbose(string.Format("Property {0} = {1}", name, value)); }
                     if (name == "Count") {
-                        if (!InvariantParser.TryParse(value, out count)) {
-                            return 1;
+                        uint count;
+                        if (InvariantParser.TryParse(value, out count)) {
+                            return count;
                         }
-                        return count;
+                        return 1;
                     }
-                    break;
+                 break;
             }
         }
         return 1;
