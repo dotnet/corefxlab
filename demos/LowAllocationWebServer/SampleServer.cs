@@ -3,6 +3,7 @@
 
 using Microsoft.Net.Http;
 using System;
+using System.Buffers;
 using System.Diagnostics;
 using System.Text.Formatting;
 using System.Text.Http;
@@ -49,7 +50,8 @@ class SampleRestServer : HttpServer
 
     void WriteResponseForPostJson(HttpResponse response, HttpRequestLine requestLine, ReadOnlySpan<byte> body)
     {
-        uint requestedCount = ReadCountUsingReader(body).GetValueOrDefault(1);
+        uint requestedCount = ReadCountUsingReader(body); // this is more complex but very efficient
+        //uint requestedCount = ReadCountUsingNonAllocatingDom(body); // This is simpler but for now does a copy
 
         var json = new JsonWriter<ResponseFormatter>(response.Body, prettyPrint: false);
         json.WriteObjectStart();
@@ -75,37 +77,37 @@ class SampleRestServer : HttpServer
         headers.AppendHttpNewLine();
     }
 
-    static void WriteResponseForHelloWorld(HttpResponse formatter)
+    static void WriteResponseForHelloWorld(HttpResponse response)
     {
-        formatter.Body.Append("Hello, World");
+        response.Body.Append("Hello, World");
 
-        formatter.Headers.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
-        formatter.Headers.Append("Content-Length : ");
-        formatter.Headers.Append(formatter.Body.CommitedBytes);
-        formatter.Headers.AppendHttpNewLine();
-        formatter.Headers.Append("Content-Type : text/plain; charset=UTF-8");
-        formatter.Headers.AppendHttpNewLine();
-        formatter.Headers.Append("Server : .NET Core Sample Serve");
-        formatter.Headers.AppendHttpNewLine();
-        formatter.Headers.Append("Date : ");
-        formatter.Headers.Append(DateTime.UtcNow, 'R');
-        formatter.Headers.AppendHttpNewLine();
-        formatter.Headers.AppendHttpNewLine();
+        response.Headers.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
+        response.Headers.Append("Content-Length : ");
+        response.Headers.Append(response.Body.CommitedBytes);
+        response.Headers.AppendHttpNewLine();
+        response.Headers.Append("Content-Type : text/plain; charset=UTF-8");
+        response.Headers.AppendHttpNewLine();
+        response.Headers.Append("Server : .NET Core Sample Serve");
+        response.Headers.AppendHttpNewLine();
+        response.Headers.Append("Date : ");
+        response.Headers.Append(DateTime.UtcNow, 'R');
+        response.Headers.AppendHttpNewLine();
+        response.Headers.AppendHttpNewLine();
     }
 
-    static void WriteResponseForGetTime(HttpResponse formatter, HttpRequestLine request)
+    static void WriteResponseForGetTime(HttpResponse response, HttpRequestLine request)
     {
-        formatter.Body.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
+        response.Body.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
 
-        WriteCommonHeaders(formatter, HttpVersion.V1_1, 200, "OK", keepAlive: false);
-        formatter.Headers.Append("Content-Length : ");
-        formatter.Headers.Append(formatter.Body.CommitedBytes);
-        formatter.Headers.AppendHttpNewLine();
-        formatter.Headers.AppendHttpNewLine();
+        WriteCommonHeaders(response, HttpVersion.V1_1, 200, "OK", keepAlive: false);
+        response.Headers.Append("Content-Length : ");
+        response.Headers.Append(response.Body.CommitedBytes);
+        response.Headers.AppendHttpNewLine();
+        response.Headers.AppendHttpNewLine();
 
     }
 
-    uint? ReadCountUsingReader(ReadOnlySpan<byte> json)
+    uint ReadCountUsingReader(ReadOnlySpan<byte> json)
     {
         uint count;
         var reader = new JsonReader(new Utf8String(json));
@@ -117,21 +119,24 @@ class SampleRestServer : HttpServer
                     Console.WriteLine("Property {0} = {1}", name, value);
                     if (name == "Count") {
                         if (!InvariantParser.TryParse(value, out count)) {
-                            return null;
+                            return 1;
                         }
                         return count;
                     }
                     break;
             }
         }
-        return null;
+        return 1;
     }
 
-    uint? ReadCountUsingNonAllocatingDom(ReadOnlySpan<byte> json)
-    {
-        var parser = new JsonParser(json.CreateArray(), json.Length); // TODO: eliminate allocation
+    uint ReadCountUsingNonAllocatingDom(ReadOnlySpan<byte> json)
+    {    
+        var array = ArrayPool<byte>.Shared.Rent(json.Length << 2);
+        json.TryCopyTo(array); // TODO: this should be eliminated. JsonParser should rent array for the database
+        var parser = new JsonParser(array, json.Length); 
         JsonParseObject jsonObject = parser.Parse();
         uint count = (uint)jsonObject["Count"];
+        ArrayPool<byte>.Shared.Return(array);
         return count;
     }
 }
