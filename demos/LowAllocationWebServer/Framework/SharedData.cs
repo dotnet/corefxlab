@@ -9,6 +9,8 @@ namespace Microsoft.Net.Http
     // TODO: I am not thrilled by the desing of the type. We shoudl look into this more.
     public class SharedData : IDisposable
     {
+        readonly static ArrayPool<byte> s_pool = ArrayPool<byte>.Shared;
+
         Segment _first;
         Segment _second;
         Segment[] _rest;
@@ -26,11 +28,11 @@ namespace Microsoft.Net.Http
 
         public void Dispose()
         {
-            if (_first.Array.Array != null) ArrayPool<byte>.Shared.Return(_first.Array.Array);
-            if (_second.Array.Array != null) ArrayPool<byte>.Shared.Return(_second.Array.Array);
+            if (_first.Array.Array != null) s_pool.Return(_first.Array.Array);
+            if (_second.Array.Array != null) s_pool.Return(_second.Array.Array);
             if (_rest != null) {
                 for (int i = 0; i < _count - 2; i++) {
-                    if (_rest[i].Array.Array != null) ArrayPool<byte>.Shared.Return(_rest[i].Array.Array);
+                    if (_rest[i].Array.Array != null) s_pool.Return(_rest[i].Array.Array);
                 }
                 ArrayPool<Segment>.Shared.Return(_rest);
             }
@@ -73,19 +75,19 @@ namespace Microsoft.Net.Http
 
         public void Allocate(int size, int id)
         {
-            var newArray = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(size), 0, 0);
+            var newArray = new ArraySegment<byte>(s_pool.Rent(size), 0, 0);
             var newSegment = new Segment(newArray, id);
             if (_count == 0) _first = newSegment;
             else if (_count == 1) _second = newSegment;
             else {
                 if (_count == 2 || _rest.Length == _count - 2) {
                     var newSize = _count==2?4:_rest.Length << 1;
-                    var largerSegments = ArrayPool<Segment>.Shared.Rent(newSize);
+                    var largerRest = ArrayPool<Segment>.Shared.Rent(newSize);
                     if (_rest != null) {
-                        _rest.CopyTo(largerSegments, 0);
+                        _rest.CopyTo(largerRest, 0);
                         ArrayPool<Segment>.Shared.Return(_rest);
                     }
-                   _rest = largerSegments;
+                   _rest = largerRest;
                 }
                 _rest[_count - 2] = newSegment;
             }
