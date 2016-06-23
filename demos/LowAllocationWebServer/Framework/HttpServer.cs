@@ -11,6 +11,8 @@ namespace Microsoft.Net.Http
 {
     public abstract class HttpServer
     {
+        readonly static ArrayPool<byte> s_pool = ArrayPool<byte>.Shared;
+
         protected static Utf8String HttpNewline = new Utf8String(new byte[] { 13, 10 });
 
         protected volatile bool _isCancelled = false;
@@ -63,7 +65,7 @@ namespace Microsoft.Net.Http
         {
             Log.LogVerbose("Processing Request");
             
-            var requestBuffer = ArrayPool<byte>.Shared.Rent(RequestBufferSize);
+            var requestBuffer = s_pool.Rent(RequestBufferSize);
             var requestByteCount = socket.Receive(requestBuffer);
 
             if(requestByteCount == 0) {
@@ -78,7 +80,7 @@ namespace Microsoft.Net.Http
             using (var responseData = new SharedData()) {
                 var response = new HttpResponse(responseData);
                 WriteResponse(response, request);
-                ArrayPool<byte>.Shared.Return(requestBuffer);
+                s_pool.Return(requestBuffer);
 
                 // TODO: this whole thing about segment order is very bad. It needs to be designed.
                 for (int index = 0; index < responseData.Count; index++) {

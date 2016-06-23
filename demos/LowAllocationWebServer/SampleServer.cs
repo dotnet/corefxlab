@@ -50,8 +50,7 @@ class SampleRestServer : HttpServer
 
     void WriteResponseForPostJson(HttpResponse response, HttpRequestLine requestLine, ReadOnlySpan<byte> body)
     {
-        uint requestedCount = ReadCountUsingReader(body); // this is more complex but very efficient
-        //uint requestedCount = ReadCountUsingNonAllocatingDom(body); // This is simpler but for now does a copy
+        uint requestedCount = ReadCount(body);
 
         var json = new JsonWriter<ResponseFormatter>(response.Body, prettyPrint: false);
         json.WriteObjectStart();
@@ -107,7 +106,7 @@ class SampleRestServer : HttpServer
 
     }
 
-    uint ReadCountUsingReader(ReadOnlySpan<byte> json)
+    uint ReadCount(ReadOnlySpan<byte> json)
     {
         uint count;
         var reader = new JsonReader(new Utf8String(json));
@@ -127,17 +126,6 @@ class SampleRestServer : HttpServer
             }
         }
         return 1;
-    }
-
-    uint ReadCountUsingNonAllocatingDom(ReadOnlySpan<byte> json)
-    {    
-        var array = ArrayPool<byte>.Shared.Rent(json.Length << 2);
-        json.TryCopyTo(array); // TODO: this should be eliminated. JsonParser should rent array for the database
-        var parser = new JsonParser(array, json.Length); 
-        JsonParseObject jsonObject = parser.Parse();
-        uint count = (uint)jsonObject["Count"];
-        ArrayPool<byte>.Shared.Return(array);
-        return count;
     }
 }
 
