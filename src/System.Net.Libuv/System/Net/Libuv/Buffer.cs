@@ -6,7 +6,7 @@ namespace System.Net.Libuv
 {
     internal class UVBuffer
     {
-        static NativeBufferPool<byte> _pool = new NativeBufferPool<byte>(1024);
+        static NativeBufferPool _pool = new NativeBufferPool(1024);
         public readonly static UVBuffer Default = new UVBuffer();
 
         public static UVInterop.alloc_callback_unix AllocateUnixBuffer { get; set; }

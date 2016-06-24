@@ -8,17 +8,17 @@ using System.Threading;
 
 namespace System.Buffers
 {
-    public unsafe sealed class NativeBufferPool<T> : IDisposable where T : struct
+    public unsafe sealed class NativeBufferPool : IDisposable
     {
         private const int NUMBER_OF_BUFFERS_IN_BUCKET = 50;
         private int _maxElements;
-        private NativeBufferBucket<T>[] _buckets;
+        private NativeBufferBucket[] _buckets;
 
         private bool _disposed;
 
-        private static NativeBufferPool<byte> _sharedInstance = null;
+        private static NativeBufferPool _sharedInstance = null;
 
-        public static NativeBufferPool<byte> Shared
+        public static NativeBufferPool Shared
         {
             get
             {
@@ -26,7 +26,7 @@ namespace System.Buffers
                 {
                     // 2MB taken as the default since the average HTTP page is 1.9MB
                     // per http://httparchive.org/interesting.php, as of October 2015
-                    NativeBufferPool<byte> newPool = new NativeBufferPool<byte>(2048000);
+                    NativeBufferPool newPool = new NativeBufferPool(2048000);
                     if (Interlocked.CompareExchange(ref _sharedInstance, newPool, null) != null)
                         newPool.Dispose();
                 }
@@ -39,7 +39,7 @@ namespace System.Buffers
         {
             int maxBuckets = BufferUtilities.SelectBucketIndex(maxElementsInBuffer);
             _maxElements = maxElementsInBuffer;
-            _buckets = new NativeBufferBucket<T>[maxBuckets + 1];
+            _buckets = new NativeBufferBucket[maxBuckets + 1];
         }
 
         ~NativeBufferPool()
@@ -57,7 +57,7 @@ namespace System.Buffers
         {
             if (disposing)
             {
-                foreach (NativeBufferBucket<T> bucket in _buckets)
+                foreach (NativeBufferBucket bucket in _buckets)
                     if (bucket != null)
                         bucket.Dispose();
 
@@ -65,64 +65,54 @@ namespace System.Buffers
             }
         }
 
-        public Span<T> Rent(int numberOfElements, bool clearBuffer = false)
+        public Span<byte> Rent(int numberOfElements, bool clearBuffer = false)
         {
             if (_disposed)
                 throw new ObjectDisposedException("NativeBufferPool");
 
-            Span<T> buffer;
+            Span<byte> buffer;
             if (numberOfElements > _maxElements)
             {
 #if DEBUG
                 System.Diagnostics.Debugger.Break();
 #endif
-                buffer = new Span<T>(Marshal.AllocHGlobal(numberOfElements * Marshal.SizeOf(typeof(T))).ToPointer(), numberOfElements);
+                buffer = new Span<byte>(Marshal.AllocHGlobal(numberOfElements * Marshal.SizeOf(typeof(byte))).ToPointer(), numberOfElements);
             }
             else
             {
                 int index = BufferUtilities.SelectBucketIndex(numberOfElements);
-                NativeBufferBucket<T> bucket = Volatile.Read(ref _buckets[index]);
+                NativeBufferBucket bucket = Volatile.Read(ref _buckets[index]);
                 if (bucket == null)
                 {
-                    NativeBufferBucket<T> newBucket = new NativeBufferBucket<T>(BufferUtilities.GetMaxSizeForBucket(index), NUMBER_OF_BUFFERS_IN_BUCKET);
+                    NativeBufferBucket newBucket = new NativeBufferBucket(BufferUtilities.GetMaxSizeForBucket(index), NUMBER_OF_BUFFERS_IN_BUCKET);
                     if (Interlocked.CompareExchange(ref _buckets[index], newBucket, null) != null)
                         newBucket.Dispose();
 
                     bucket = _buckets[index];
                 }
 
-                buffer = bucket.Rent();
+                var rented = bucket.Rent();
+                buffer = new Span<byte>(rented._memory, rented._length);
             }
 
-            if (clearBuffer) BufferUtilities.ClearSpan<T>(buffer);
+            if (clearBuffer) BufferUtilities.ClearSpan(buffer);
             return buffer;
         }
 
-        public void EnlargeBuffer(ref Span<T> buffer, int newSize, bool clearFreeSpace = false)
+        public void Return(Span<byte> buffer, bool clearBuffer = false)
         {
             if (_disposed)
                 throw new ObjectDisposedException("NativeBufferPool");
 
-            // Still need to figure out how to handle the resizing without allocating more
-            // spans to put into the resized-span's original bucket
-            throw new NotImplementedException();
-        }
-
-        public void Return(Span<T> buffer, bool clearBuffer = false)
-        {
-            if (_disposed)
-                throw new ObjectDisposedException("NativeBufferPool");
-
-            if (clearBuffer) BufferUtilities.ClearSpan<T>(buffer);
+            if (clearBuffer) BufferUtilities.ClearSpan(buffer);
 
             if (buffer.Length > _maxElements)
             {
                 Marshal.FreeHGlobal(new IntPtr(buffer.UnsafePointer));
-                buffer = default(Span<T>);
             }
             else
             {
-                _buckets[BufferUtilities.SelectBucketIndex(buffer.Length)].Return(ref buffer);
+                _buckets[BufferUtilities.SelectBucketIndex(buffer.Length)].Return(new NativeBuffer(buffer.UnsafePointer, 0));
             }
         }
     }
