@@ -51,46 +51,56 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="nuget.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Buffers">
-      <HintPath>..\..\..\packages\System.Buffers.4.0.1-beta-24223-09\lib\netstandard1.1\System.Buffers.dll</HintPath>
+    <Reference Include="System.Buffers, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\System.Buffers.4.0.1-beta-24224-02\lib\netstandard1.1\System.Buffers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Buffers.Experimental">
-      <HintPath>..\..\..\packages\System.Buffers.Experimental.0.1.0-e160623-1\lib\netstandard1.1\System.Buffers.Experimental.dll</HintPath>
+    <Reference Include="System.Buffers.Experimental, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\System.Buffers.Experimental.0.1.0-e160624-1\lib\netstandard1.1\System.Buffers.Experimental.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Slices">
-      <HintPath>..\..\..\packages\System.Slices.0.1.0-e160623-1\lib\netstandard1.0\System.Slices.dll</HintPath>
+    <Reference Include="System.Slices, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\System.Slices.0.1.0-e160624-1\lib\netstandard1.0\System.Slices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Formatting">
-      <HintPath>..\..\..\packages\System.Text.Formatting.0.1.0-e160623-1\lib\netstandard1.1\System.Text.Formatting.dll</HintPath>
+    <Reference Include="System.Text.Formatting, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\System.Text.Formatting.0.1.0-e160624-1\lib\netstandard1.1\System.Text.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Http">
-      <HintPath>..\..\..\packages\System.Text.Http.0.1.0-e160623-1\lib\netstandard1.1\System.Text.Http.dll</HintPath>
+    <Reference Include="System.Text.Http, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\System.Text.Http.0.1.0-e160624-1\lib\netstandard1.1\System.Text.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Json">
-      <HintPath>..\..\..\packages\System.Text.Json.0.1.0-e160621-1\lib\netstandard1.1\System.Text.Json.dll</HintPath>
+    <Reference Include="System.Text.Json, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\System.Text.Json.0.1.0-e160624-1\lib\netstandard1.1\System.Text.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Primitives">
-      <HintPath>..\..\..\packages\System.Text.Primitives.0.1.0-e160623-1\lib\netstandard1.1\System.Text.Primitives.dll</HintPath>
+    <Reference Include="System.Text.Primitives, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\System.Text.Primitives.0.1.0-e160624-1\lib\netstandard1.1\System.Text.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Text.Utf8">
-      <HintPath>..\..\..\packages\System.Text.Utf8.0.1.0-e160623-1\lib\netstandard1.0\System.Text.Utf8.dll</HintPath>
+    <Reference Include="System.Text.Utf8, Version=0.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\System.Text.Utf8.0.1.0-e160624-1\lib\netstandard1.0\System.Text.Utf8.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions">
-      <HintPath>..\..\..\packages\System.Threading.Tasks.Extensions.4.0.1-beta-24223-09\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\System.Threading.Tasks.Extensions.4.0.1-beta-24224-02\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
