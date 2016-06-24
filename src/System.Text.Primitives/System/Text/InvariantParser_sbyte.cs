@@ -59,27 +59,30 @@ namespace System.Text
                         return true; // otherwise return true
                     }
                 }
-                sbyte candidate = (sbyte)(value * 10); // left shift the value
-                candidate += (sbyte)(nextByte - '0'); // parse the current digit to a sbyte and add it to the temporary value
-                if (candidate >= value) // if it was a digit 0-9, this should be true
+                try
                 {
+                    sbyte candidate = checked((sbyte)(value * 10 + nextByte - '0')); // parse the current digit to a sbyte and add it to the left-shifted value
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++; // increment the number of bytes consumed, then loop
                 }
-                else // for signed types this will occur at the min values as overflow occurs during addition, so we handle that
+                catch (OverflowException e)
                 {
-                    if (candidate == sbyte.MinValue)
+                    sbyte candidate = (sbyte)((value * 10) + nextByte - '0'); 
+                    if (negative && candidate == sbyte.MinValue)
                     {
                         bytesConsumed++;
                         value = candidate;
                         return true;
                     }
-                    if (negative) // We check if the value is negative at the very end to save on comp time
+                    else
                     {
-                        value = (sbyte)-value;
+                        value = 0;
+                        bytesConsumed = 0;
+                        return false;
                     }
-                    return true;
                 }
-                bytesConsumed++; // increment the number of bytes consumed, then loop
             }
 
             if (negative) // We check if the value is negative at the very end to save on comp time
@@ -125,27 +128,31 @@ namespace System.Text
                         return true;
                     }
                 }
-                sbyte candidate = (sbyte)(value * 10);
-                candidate += (sbyte)(nextByte - '0');
-                if (candidate >= value)
+                try
                 {
-                    value = candidate;
+                    sbyte candidate = checked((sbyte)(value * 10 + nextByte - '0')); // parse the current digit to a sbyte and add it to the left-shifted value
+                    if (candidate >= value) // if it was a digit 0-9, this should be true
+                    {
+                        value = candidate;
+                    }
+                    bytesConsumed++; // increment the number of bytes consumed, then loop
                 }
-                else // for signed types this will occur at the min values as overflow occurs during addition, so we handle that
+                catch (OverflowException e)
                 {
-                    if (candidate == sbyte.MinValue)
+                    sbyte candidate = (sbyte)((value * 10) + nextByte - '0');
+                    if (negative && candidate == sbyte.MinValue)
                     {
                         bytesConsumed++;
                         value = candidate;
                         return true;
                     }
-                    if (negative) // We check if the value is negative at the very end to save on comp time
+                    else
                     {
-                        value = (sbyte)-value;
+                        value = 0;
+                        bytesConsumed = 0;
+                        return false;
                     }
-                    return true;
                 }
-                bytesConsumed++;
             }
             return true;
         }

@@ -59,27 +59,30 @@ namespace System.Text
                         return true; // otherwise return true
                     }
                 }
-                long candidate = (value * 10); // left shift the value
-                candidate += (nextByte - '0'); // parse the current digit to a long and add it to the temporary value
-                if (candidate >= value) // if it was a digit 0-9, this should be true
+                try
                 {
+                    long candidate = checked(value * 10 + (nextByte - '0')); // parse the current digit to a long and add it to the left-shifted value
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++; // increment the number of bytes consumed, then loop
                 }
-                else // for signed types this will occur at the min values as overflow occurs during addition, so we handle that
-                {
-                    if (candidate == long.MinValue)
+               catch (OverflowException e)
+               {
+                    long candidate = (value * 10) + nextByte - '0';
+                    if (negative && candidate == long.MinValue)
                     {
                         bytesConsumed++;
                         value = candidate;
                         return true;
                     }
-                    if (negative) // We check if the value is negative at the very end to save on comp time
+                    else
                     {
-                        value = -value;
+                        value = 0;
+                        bytesConsumed = 0;
+                        return false;
                     }
-                    return true;
                 }
-                bytesConsumed++; // increment the number of bytes consumed, then loop
             }
 
             if (negative) // We check if the value is negative at the very end to save on comp time
@@ -125,27 +128,30 @@ namespace System.Text
                         return true;
                     }
                 }
-                long candidate = (value * 10);
-                candidate += (nextByte - '0');
-                if (candidate >= value)
+                try
                 {
+                    long candidate = checked(value * 10 + (nextByte - '0')); // parse the current digit to a long and add it to the left-shifted value
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++; // increment the number of bytes consumed, then loop
                 }
-                else // for signed types this will occur at the min values as overflow occurs during addition, so we handle that
+                catch (OverflowException e)
                 {
-                    if (candidate == long.MinValue)
+                    long candidate = (value * 10) + nextByte - '0';
+                    if (negative && candidate == long.MinValue)
                     {
                         bytesConsumed++;
                         value = candidate;
                         return true;
                     }
-                    if (negative) // We check if the value is negative at the very end to save on comp time
+                    else
                     {
-                        value = -value;
+                        value = 0;
+                        bytesConsumed = 0;
+                        return false;
                     }
-                    return true;
                 }
-                bytesConsumed++;
             }
             return true;
         }

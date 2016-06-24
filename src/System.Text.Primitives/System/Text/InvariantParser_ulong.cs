@@ -30,13 +30,20 @@ namespace System.Text
                         return true;
                     }
                 }
-                ulong candidate = value * 10;
-                candidate += (ulong)nextByte - '0';
-                if (candidate >= value)
+                try
                 {
+                    ulong candidate = checked(value * 10 + nextByte - '0');
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++;
                 }
-                bytesConsumed++;
+                catch (OverflowException e)
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
             }
 
             return true;
@@ -71,17 +78,20 @@ namespace System.Text
                         return true; // otherwise return true
                     }
                 }
-                ulong candidate = value * 10; // left shift the value
-                candidate += (ulong)nextByte - '0'; // parse the current digit to a ulong and add it to the temporary value
-                if (candidate >= value) // if it was a digit 0-9, this should be true
+                try
                 {
+                    ulong candidate = checked(value * 10 + nextByte - '0'); // parse the current digit to a ulong and add it to the temporary value
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++; // increment the number of bytes consumed, then loop
                 }
-                else // this should never happen, but just in case
+                catch (OverflowException e)
                 {
-                    return true;
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
                 }
-                bytesConsumed++; // increment the number of bytes consumed, then loop
             }
 
             return true;
@@ -106,13 +116,20 @@ namespace System.Text
                         return true;
                     }
                 }
-                ulong candidate = value * 10;
-                candidate += (ulong)nextByte - '0';
-                if (candidate >= value)
+                try
                 {
+                    ulong candidate = checked(value * 10 + nextByte - '0'); // parse the current digit to a ulong and add it to the temporary value
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++; // increment the number of bytes consumed, then loop
                 }
-                bytesConsumed++;
+                catch (OverflowException e)
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
             }
             return true;
         }

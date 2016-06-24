@@ -1,5 +1,5 @@
 {
-  "name": "System.Text.Tests",
+  "name": "System.Text.Primitives.Tests",
   "buildOptions": {
     "allowUnsafe": true,
     "keyFile": "../../tools/test_key.snk"

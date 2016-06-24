@@ -35,17 +35,20 @@ namespace System.Text
                         return true; // otherwise return true
                     }
                 }
-                byte candidate = (byte)(value * 10); // left shift the value
-                candidate += (byte)(nextByte - '0'); // parse the current digit to a byte and add it to the temporary value
-                if (candidate >= value) // if it was a digit 0-9, this should be true
+                try
                 {
+                    byte candidate = checked((byte)(value * 10 + nextByte - '0')); // left shift the value and add the nextByte.
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++; // increment the number of bytes consumed, then loop
                 }
-                else // this should never happen, but just in case
+                catch (OverflowException e) // catch any overflow
                 {
-                    return true;
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
                 }
-                bytesConsumed++; // increment the number of bytes consumed, then loop
             }
 
             return true;
@@ -70,13 +73,20 @@ namespace System.Text
                         return true;
                     }
                 }
-                byte candidate = (byte)(value * 10);
-                candidate += (byte)(nextByte - '0');
-                if (candidate >= value)
+                try
                 {
+                    byte candidate = checked((byte)(value * 10 + nextByte - '0')); // left shift the value and add the nextByte.
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++; // increment the number of bytes consumed, then loop
                 }
-                bytesConsumed++;
+                catch (OverflowException e) // catch any overflow
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
             }
             return true;
         }
