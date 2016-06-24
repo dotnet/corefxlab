@@ -9,11 +9,22 @@ using System.Threading;
 
 namespace System.Buffers
 {
-    internal unsafe sealed class NativeBufferBucket<T> : IDisposable where T : struct
+    unsafe struct NativeBuffer { 
+
+        public byte* _memory;
+        public int _length;
+        public NativeBuffer(void* memory, int length)
+        {
+            _memory = (byte*)memory;
+            _length = length;
+        }
+    }
+
+    internal unsafe sealed class NativeBufferBucket : IDisposable
     {
         private volatile int _index;
-        private IntPtr _buffer;
-        private Span<T>?[] _slices;
+        private IntPtr _allocatedMemory;
+        private NativeBuffer?[] _buffers;
         private int _elementsInBuffer;
         private SpinLock _lock;
 
@@ -26,12 +37,12 @@ namespace System.Buffers
             _lock = new SpinLock();
 
             int bufferLength = numberOfBuffers * _elementsInBuffer;
-            _buffer = Marshal.AllocHGlobal(bufferLength * Marshal.SizeOf(typeof(T)));
-            _slices = new Span<T>?[numberOfBuffers];
+            _allocatedMemory = Marshal.AllocHGlobal(bufferLength * Marshal.SizeOf(typeof(byte)));
+            _buffers = new NativeBuffer?[numberOfBuffers];
 
             for (int i = 0; i < bufferLength; i+= _elementsInBuffer)
             {
-                _slices[i / _elementsInBuffer] = new Span<T>((_buffer + i).ToPointer(), _elementsInBuffer);
+                _buffers[i / _elementsInBuffer] = new NativeBuffer((_allocatedMemory + i).ToPointer(), _elementsInBuffer);
             }
         }
 
@@ -48,19 +59,19 @@ namespace System.Buffers
 
         private void Dispose(bool disposing)
         {
-            Marshal.FreeHGlobal(_buffer);
+            Marshal.FreeHGlobal(_allocatedMemory);
             if (disposing)
             {
                 _disposed = true; // don't touch in the finalizer
             }
         }
 
-        internal Span<T> Rent()
+        internal NativeBuffer Rent()
         {
             if (_disposed)
                 throw new ObjectDisposedException("NativeBufferBucket");
 
-            Span<T> buffer;
+            NativeBuffer buffer;
 
             // Use a lightweight spinlock for our super-short lock
             bool taken = false;
@@ -68,16 +79,16 @@ namespace System.Buffers
             Debug.Assert(taken);
 
             // Check if all of our buffers have been used
-            if (_index >= _slices.Length)
+            if (_index >= _buffers.Length)
             {
                 // We can safely exit
                 _lock.Exit(false);
-                buffer = new Span<T>(Marshal.AllocHGlobal(_elementsInBuffer * Marshal.SizeOf(typeof(T))).ToPointer(), _elementsInBuffer);
+                buffer = new NativeBuffer(Marshal.AllocHGlobal(_elementsInBuffer * Marshal.SizeOf(typeof(byte))).ToPointer(), _elementsInBuffer);
             }
             else
             {
-                buffer = _slices[_index].Value;
-                _slices[_index] = null;
+                buffer = _buffers[_index].Value;
+                _buffers[_index] = null;
                 _index++;
                 _lock.Exit(false);
             }
@@ -85,7 +96,7 @@ namespace System.Buffers
             return buffer;
         }
 
-        internal void Return(ref Span<T> buffer)
+        internal void Return(NativeBuffer buffer)
         {
             if (_disposed)
                 throw new ObjectDisposedException("NativeBufferBucket");
@@ -99,13 +110,12 @@ namespace System.Buffers
             // deallocate the buffer since we must have alloc'd one on-demand
             if (_index <= 0)
             {
-                Marshal.FreeHGlobal(new IntPtr(buffer.UnsafePointer));
-                buffer = default(Span<T>);
+                Marshal.FreeHGlobal(new IntPtr(buffer._memory));
             }
             else
             {
                 _index--;
-                _slices[_index] = buffer;
+                _buffers[_index] = buffer;
             }
 
             _lock.Exit(false);
