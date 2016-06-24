@@ -23,34 +23,24 @@ class SampleRestServer : HttpServer
 
     public SampleRestServer(Log log, ushort port, byte address1, byte address2, byte address3, byte address4) : base(log, port, address1, address2, address3, address4)
     {
-        Apis.Add(Api.HelloWorld, HttpMethod.Get, requestUri: "/plaintext");
-        Apis.Add(Api.GetTime, HttpMethod.Get, requestUri: "/time");
-        Apis.Add(Api.PostJson, HttpMethod.Post, requestUri: "/json"); // post body along the lines of: "{ "Count" = "3" }" 
+        Apis.Add(HttpMethod.Get, "/plaintext", Api.HelloWorld, WriteResponseForHelloWorld);
+        Apis.Add(HttpMethod.Get, "/time", Api.GetTime, WriteResponseForGetTime);
+        Apis.Add(HttpMethod.Post, "/json",  Api.PostJson, WriteResponseForPostJson); // post body along the lines of: "{ "Count" = "3" }" 
     }
 
-    protected override void WriteResponse(HttpResponse response, HttpRequest request)
+    protected override void WriteResponse(HttpRequest request, HttpResponse response)
     {
-        var api = Apis.Map(request.RequestLine);
-        switch (api) {
-            case Api.HelloWorld:
-                WriteResponseForHelloWorld(response);
-                break;
-            case Api.GetTime:
-                WriteResponseForGetTime(response, request.RequestLine);
-                break;
-            case Api.PostJson:
-                WriteResponseForPostJson(response, request.RequestLine, request.Body);
-                break;
-            default:
-                WriteResponseFor404(response, request.RequestLine);
-                break;
+        if (!Apis.TryHandle(request, response)) {
+            WriteResponseFor404(request, response);
         }
     }
 
-    void WriteResponseForPostJson(HttpResponse response, HttpRequestLine requestLine, ReadOnlySpan<byte> body)
+    void WriteResponseForPostJson(HttpRequest request, HttpResponse response)
     {
-        uint requestedCount = ReadCount(body);
+        // read request JSON
+        uint requestedCount = ReadCount(request.Body);
 
+        // write response JSON
         var json = new JsonWriter<ResponseFormatter>(response.Body, prettyPrint: false);
         json.WriteObjectStart();
         json.WriteArrayStart();
@@ -60,6 +50,7 @@ class SampleRestServer : HttpServer
         json.WriteArrayEnd();
         json.WriteObjectEnd();
 
+        // write headers
         var headers = response.Headers;
         headers.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
         headers.Append("Content-Length : ");
@@ -75,7 +66,7 @@ class SampleRestServer : HttpServer
         headers.AppendHttpNewLine();
     }
 
-    static void WriteResponseForHelloWorld(HttpResponse response)
+    static void WriteResponseForHelloWorld(HttpRequest request, HttpResponse response)
     {
         response.Body.Append("Hello, World");
 
@@ -93,7 +84,7 @@ class SampleRestServer : HttpServer
         response.Headers.AppendHttpNewLine();
     }
 
-    static void WriteResponseForGetTime(HttpResponse response, HttpRequestLine request)
+    static void WriteResponseForGetTime(HttpRequest request, HttpResponse response)
     {
         response.Body.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
 
@@ -102,7 +93,6 @@ class SampleRestServer : HttpServer
         response.Headers.Append(response.Body.CommitedBytes);
         response.Headers.AppendHttpNewLine();
         response.Headers.AppendHttpNewLine();
-
     }
 
     uint ReadCount(ReadOnlySpan<byte> json)

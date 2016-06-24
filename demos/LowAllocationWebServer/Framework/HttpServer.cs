@@ -79,7 +79,7 @@ namespace Microsoft.Net.Http
 
             using (var responseData = new SharedData()) {
                 var response = new HttpResponse(responseData);
-                WriteResponse(response, request);
+                WriteResponse(request, response);
                 s_pool.Return(requestBuffer);
 
                 // TODO: this whole thing about segment order is very bad. It needs to be designed.
@@ -105,21 +105,21 @@ namespace Microsoft.Net.Http
             }
         }
 
-        protected virtual void WriteResponseFor400(HttpResponse response, Span<byte> receivedBytes) // Bad Request
+        protected virtual void WriteResponseFor400(Span<byte> requestBytes, HttpResponse response) // Bad Request
         {
-            Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", receivedBytes.Length);
+            Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", requestBytes.Length);
             WriteCommonHeaders(response, HttpVersion.V1_1, 400, "Bad Request", false);
             response.Headers.Append(HttpNewline);
         }
 
-        protected virtual void WriteResponseFor404(HttpResponse response, HttpRequestLine requestLine) // Not Found
+        protected virtual void WriteResponseFor404(HttpRequest request, HttpResponse response) // Not Found
         {
-            Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", requestLine);
+            Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.RequestLine);
             WriteCommonHeaders(response, HttpVersion.V1_1, 404, "Not Found", false);
             response.Headers.Append(HttpNewline);
         }
 
-        // TODO: this should not be here. Also, this should not allocate
+        // TODO: this is not a very general purpose routine. Maybe should not be in this base class?
         protected static void WriteCommonHeaders(
             HttpResponse formatter,
             HttpVersion version,
@@ -142,6 +142,6 @@ namespace Microsoft.Net.Http
             }
         }
 
-        protected abstract void WriteResponse(HttpResponse response, HttpRequest request);
+        protected abstract void WriteResponse(HttpRequest request, HttpResponse response);
     }
 }
