@@ -7,7 +7,7 @@ namespace Microsoft.Net.Http
 {
     // this is a set of buffers used to format the response.
     // it's optimized for cases where the headers and body fit into a single buffer (each)
-    // TODO: I am not thrilled by the desing of the type. We shoudl look into this more.
+    // TODO: I am not thrilled by the desing of the type. We should look into this more.
     public class SharedData : IDisposable
     {
         readonly static ArrayPool<byte> s_pool = ArrayPool<byte>.Shared;
