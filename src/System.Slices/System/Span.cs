@@ -215,24 +215,28 @@ namespace System
         /// <param name="destination">The span to copy items into.</param>
         public bool TryCopyTo(Span<T> destination)
         {
-            if (Length > destination.Length)
-            {
+            // There are some benefits of making local copies. See https://github.com/dotnet/coreclr/issues/5556
+            var dest = destination;
+            var src = this;
+            
+            if (src.Length > dest.Length)
                 return false;
-            }
 
-            // For native memory, use bulk copy
-            if (Object==null && destination.Object==null) {
-                var source = PtrUtils.ComputeAddress(Object, Offset);
-                var destinationPtr = PtrUtils.ComputeAddress(destination.Object, destination.Offset);
-                var byteCount = Length * PtrUtils.SizeOf<T>();
-                PtrUtils.Copy(source, destinationPtr, byteCount);
-                return true;
-            }
-
-            for (int i = 0; i < Length; i++)
+            if (default(T) != null && MemoryUtils.IsPrimitiveValueType<T>())
             {
-                destination[i] = this[i];
+                PtrUtils.CopyBlock(src.Object, src.Offset, dest.Object, dest.Offset,
+                                   src.Length * PtrUtils.SizeOf<T>());
             }
+            else
+            {
+                for (int i = 0; i < src.Length; i++)
+                {
+                    // We don't check bounds here as we are surely within them
+                    T value = PtrUtils.Get<T>(src.Object, src.Offset, (UIntPtr)i);
+                    PtrUtils.Set(dest.Object, dest.Offset, (UIntPtr)i, value);
+                }
+            }
+
             return true;
         }
 
@@ -241,53 +245,24 @@ namespace System
         /// must be at least as big as the source, and may be bigger.
         /// </summary>
         /// <param name="dest">The span to copy items into.</param>
-        public bool TryCopyTo(T[] dest)
+        public bool TryCopyTo(T[] destination)
         {
-            if (Length > dest.Length)
-            {
-                return false;
-            }
-
-            // TODO(joe): specialize to use a fast memcpy if T is pointerless.
-            for (int i = 0; i < Length; i++)
-            {
-                dest[i] = this[i];
-            }
-            return true;
+            return TryCopyTo(destination.Slice());
         }
 
         public void Set(ReadOnlySpan<T> values)
         {
-            if (Length < values.Length)
+            if (!values.TryCopyTo(this))
             {
                 throw new ArgumentOutOfRangeException("values");
-            }
-
-            // For native memory, use bulk copy
-            if (Object == null && values.Object == null) {
-                var source = PtrUtils.ComputeAddress(values.Object, values.Offset);
-                var destination = PtrUtils.ComputeAddress(Object, Offset);
-                var byteCount = values.Length * PtrUtils.SizeOf<T>();
-                PtrUtils.Copy(source, destination, byteCount);
-                return;
-            }
-
-            for (int i = 0; i < values.Length; i++) {
-                this[i] = values[i];
             }
         }
 
         public void Set(T[] values)
         {
-            if (Length < values.Length)
+            if (!values.Slice().TryCopyTo(this))
             {
                 throw new ArgumentOutOfRangeException("values");
-            }
-
-            // TODO(joe): specialize to use a fast memcpy if T is pointerless.
-            for (int i = 0; i < values.Length; i++)
-            {
-                this[i] = values[i];
             }
         }
 
@@ -410,18 +385,5 @@ namespace System
         {
             return new ReadOnlySpan<T>.EnumeratorObject(this);
         }
-
-        /// <summary>
-        /// Returns item from given index without the boundaries check
-        /// use only in places where moving outside the boundaries is impossible
-        /// gain: performance: no boundaries check (single operation) 
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal T GetItemWithoutBoundariesCheck(int index)
-        {
-            return PtrUtils.Get<T>(Object, Offset, (UIntPtr)index);
-        }
     }
 }
-
-
