@@ -139,6 +139,11 @@ namespace System
             Length = length;
         }
 
+        public static implicit operator Span<T>(T[] array)
+        {
+            return new Span<T>(array);
+        }
+
         public static Span<T> Empty { get { return default(Span<T>); } }
 
         public bool IsEmpty
@@ -339,6 +344,12 @@ namespace System
                 Offset == other.Offset && Length == other.Length;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal bool StructuralEquals(object obj, UIntPtr offset, int length)
+        {
+            return Object == obj && Offset == offset && Length == length;
+        }
+
         public override int GetHashCode()
         {
             unchecked
@@ -370,6 +381,10 @@ namespace System
             }
             return false;
         }
+
+        public bool Equals(ReadOnlySpan<T> other) => StructuralEquals(other.Object, other.Offset, other.Length);
+        public static bool operator ==(Span<T> span1, Span<T> span2) => span1.Equals(span2);
+        public static bool operator !=(Span<T> span1, Span<T> span2) => !span1.Equals(span2);
 
         public ReadOnlySpan<T>.Enumerator GetEnumerator()
         {

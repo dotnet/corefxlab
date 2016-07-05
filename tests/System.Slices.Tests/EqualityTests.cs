@@ -34,11 +34,141 @@ namespace System.Slices.Tests
             SpansReferencingSameMemoryAreEqualInEveryAspect(ref span, ref structCopy);
         }
 
+        [Theory]
+        [MemberData("FullArraySegments")]
+        public void SpanArrayEquivalenceAndImplicitCastsAreEqual(byte[] bytes)
+        {
+            var span = new Span<byte>(bytes);
+            var readOnlySpan = new ReadOnlySpan<byte>(bytes);
+            ReadOnlySpan<byte> impReadOnlySpan = span;
+            Span<byte> impSpanArray = bytes;
+            ReadOnlySpan<byte> impReadOnlySpanArray = bytes;
+
+            Assert.True(span == bytes);
+            Assert.False(span != bytes);
+            Assert.True(readOnlySpan == bytes);
+            Assert.False(readOnlySpan != bytes);
+            Assert.True(impReadOnlySpan == bytes);
+            Assert.False(impReadOnlySpan != bytes);
+            Assert.True(impSpanArray == bytes);
+            Assert.False(impSpanArray != bytes);
+            Assert.True(impReadOnlySpanArray == bytes);
+            Assert.False(impReadOnlySpanArray != bytes);
+
+            Assert.True(bytes == span);
+            Assert.False(bytes != span);
+            Assert.True(readOnlySpan == span);
+            Assert.False(readOnlySpan != span);
+            Assert.True(impReadOnlySpan == span);
+            Assert.False(impReadOnlySpan != span);
+            Assert.True(impSpanArray == span);
+            Assert.False(impSpanArray != span);
+            Assert.True(impReadOnlySpanArray == span);
+            Assert.False(impReadOnlySpanArray != span);
+
+            Assert.True(span == readOnlySpan);
+            Assert.False(span != readOnlySpan);
+            Assert.True(bytes == readOnlySpan);
+            Assert.False(bytes != readOnlySpan);
+            Assert.True(impReadOnlySpan == readOnlySpan);
+            Assert.False(impReadOnlySpan != readOnlySpan);
+            Assert.True(impSpanArray == readOnlySpan);
+            Assert.False(impSpanArray != readOnlySpan);
+            Assert.True(impReadOnlySpanArray == readOnlySpan);
+            Assert.False(impReadOnlySpanArray != readOnlySpan);
+
+            Assert.True(span == impSpanArray);
+            Assert.False(span != impSpanArray);
+            Assert.True(readOnlySpan == impSpanArray);
+            Assert.False(readOnlySpan != impSpanArray);
+            Assert.True(bytes == impSpanArray);
+            Assert.False(bytes != impSpanArray);
+            Assert.True(impReadOnlySpan == impSpanArray);
+            Assert.False(impReadOnlySpan != impSpanArray);
+            Assert.True(impReadOnlySpanArray == impSpanArray);
+            Assert.False(impReadOnlySpanArray != impSpanArray);
+
+            Assert.True(span == impReadOnlySpan);
+            Assert.False(span != impReadOnlySpan);
+            Assert.True(readOnlySpan == impReadOnlySpan);
+            Assert.False(readOnlySpan != impReadOnlySpan);
+            Assert.True(bytes == impReadOnlySpan);
+            Assert.False(bytes != impReadOnlySpan);
+            Assert.True(impSpanArray == impReadOnlySpan);
+            Assert.False(impSpanArray != impReadOnlySpan);
+            Assert.True(impReadOnlySpanArray == impReadOnlySpan);
+            Assert.False(impReadOnlySpanArray != impReadOnlySpan);
+
+            Assert.True(span == impReadOnlySpanArray);
+            Assert.False(span != impReadOnlySpanArray);
+            Assert.True(readOnlySpan == impReadOnlySpanArray);
+            Assert.False(readOnlySpan != impReadOnlySpanArray);
+            Assert.True(impReadOnlySpan == impReadOnlySpanArray);
+            Assert.False(impReadOnlySpan != impReadOnlySpanArray);
+            Assert.True(impSpanArray == impReadOnlySpanArray);
+            Assert.False(impSpanArray != impReadOnlySpanArray);
+            Assert.True(bytes == impReadOnlySpanArray);
+            Assert.False(bytes != impReadOnlySpanArray);
+
+            Assert.True(span.Equals(bytes));
+            Assert.True(span.Equals(readOnlySpan));
+            Assert.True(readOnlySpan.Equals(bytes));
+            Assert.True(readOnlySpan.Equals(span));
+
+            Assert.False(span.Equals((object)bytes));
+            Assert.False(span.Equals((object)readOnlySpan));
+            Assert.False(readOnlySpan.Equals((object)bytes));
+            Assert.False(readOnlySpan.Equals((object)span));
+        }
+
+        [Theory]
+        [MemberData("ValidArraySegments")]
+        public void RangedSpanEquivalenceAndImplicitCastsAreEqual(byte[] bytes, int start, int length)
+        {
+            var span = new Span<byte>(bytes, start, length);
+            var readOnlySpan = new ReadOnlySpan<byte>(bytes, start, length);
+            ReadOnlySpan<byte> impReadOnlySpan = span;
+
+            Assert.True(readOnlySpan == span);
+            Assert.False(readOnlySpan != span);
+            Assert.True(impReadOnlySpan == span);
+            Assert.False(impReadOnlySpan != span);
+
+            Assert.True(span == readOnlySpan);
+            Assert.False(span != readOnlySpan);
+            Assert.True(impReadOnlySpan == readOnlySpan);
+            Assert.False(impReadOnlySpan != readOnlySpan);
+
+            Assert.True(span == impReadOnlySpan);
+            Assert.False(span != impReadOnlySpan);
+            Assert.True(readOnlySpan == impReadOnlySpan);
+            Assert.False(readOnlySpan != impReadOnlySpan);
+
+            Assert.True(span.Equals(readOnlySpan));
+            Assert.True(readOnlySpan.Equals(span));
+            Assert.True(span.Equals(impReadOnlySpan));
+            Assert.True(readOnlySpan.Equals(impReadOnlySpan));
+            Assert.True(impReadOnlySpan.Equals(readOnlySpan));
+            Assert.True(impReadOnlySpan.Equals(span));
+
+            Assert.False(span.Equals((object)readOnlySpan));
+            Assert.False(readOnlySpan.Equals((object)span));
+            Assert.False(span.Equals((object)impReadOnlySpan));
+            Assert.False(impReadOnlySpan.Equals((object)span));
+
+            Assert.True(readOnlySpan.Equals((object)impReadOnlySpan));
+            Assert.True(impReadOnlySpan.Equals((object)readOnlySpan));
+        }
+
         // ref is used just for the structCopy scenario, otherwise it would always be copy
 
         private static void SpansReferencingSameMemoryAreEqualInEveryAspect(ref Span<byte> span, ref Span<byte> pointingToSameMemory)
         {
             Assert.True(span.ReferenceEquals(pointingToSameMemory));
+            Assert.True(span == pointingToSameMemory);
+            Assert.True(pointingToSameMemory == span);
+            Assert.False(span != pointingToSameMemory);
+            Assert.False(pointingToSameMemory != span);
             Assert.True(span.Equals(pointingToSameMemory));
             Assert.True(span.Equals((Object)pointingToSameMemory));
             Assert.Equal(span.GetHashCode(), pointingToSameMemory.GetHashCode());
@@ -52,6 +182,10 @@ namespace System.Slices.Tests
         private static void SpansReferencingSameMemoryAreEqualInEveryAspect(ref ReadOnlySpan<byte> span, ref ReadOnlySpan<byte> pointingToSameMemory)
         {
             Assert.True(span.ReferenceEquals(pointingToSameMemory));
+            Assert.True(span == pointingToSameMemory);
+            Assert.True(pointingToSameMemory == span);
+            Assert.False(span != pointingToSameMemory);
+            Assert.False(pointingToSameMemory != span);
             Assert.True(span.Equals(pointingToSameMemory));
             Assert.True(span.Equals((Object)pointingToSameMemory));
             Assert.Equal(span.GetHashCode(), pointingToSameMemory.GetHashCode());
@@ -96,6 +230,11 @@ namespace System.Slices.Tests
             Assert.True(span.BlockEquals(ofSameValues));
             Assert.True(ofSameValues.BlockEquals(span));
 
+            Assert.False(span == ofSameValues);
+            Assert.True(span != ofSameValues);
+            Assert.False(ofSameValues == span);
+            Assert.True(ofSameValues != span);
+
             Assert.False(span.ReferenceEquals(ofSameValues));
             Assert.False(span.Equals(ofSameValues));
             Assert.False(span.Equals((Object)ofSameValues));
@@ -115,6 +254,11 @@ namespace System.Slices.Tests
             Assert.True(ofSameValues.SequenceEqual(span));
             Assert.True(span.BlockEquals(ofSameValues));
             Assert.True(ofSameValues.BlockEquals(span));
+
+            Assert.False(span == ofSameValues);
+            Assert.True(span != ofSameValues);
+            Assert.False(ofSameValues == span);
+            Assert.True(ofSameValues != span);
 
             Assert.False(span.ReferenceEquals(ofSameValues));
             Assert.False(span.Equals(ofSameValues));
@@ -136,6 +280,11 @@ namespace System.Slices.Tests
             Assert.False(span.BlockEquals(ofDifferentValues));
             Assert.False(ofDifferentValues.BlockEquals(span));
 
+            Assert.False(span == ofDifferentValues);
+            Assert.True(span != ofDifferentValues);
+            Assert.False(ofDifferentValues == span);
+            Assert.True(ofDifferentValues != span);
+
             Assert.False(span.ReferenceEquals(ofDifferentValues));
             Assert.False(span.Equals(ofDifferentValues));
             Assert.False(span.Equals((Object)ofDifferentValues));
@@ -155,6 +304,11 @@ namespace System.Slices.Tests
             Assert.False(ofDifferentValues.SequenceEqual(span));
             Assert.False(span.BlockEquals(ofDifferentValues));
             Assert.False(ofDifferentValues.BlockEquals(span));
+
+            Assert.False(span == ofDifferentValues);
+            Assert.True(span != ofDifferentValues);
+            Assert.False(ofDifferentValues == span);
+            Assert.True(ofDifferentValues != span);
 
             Assert.False(span.ReferenceEquals(ofDifferentValues));
             Assert.False(span.Equals(ofDifferentValues));
@@ -255,6 +409,20 @@ namespace System.Slices.Tests
                 Assert.False(stackSlice.ReferenceEquals(managedHeapSlice));
                 Assert.False(unmanagedHeapSlice.ReferenceEquals(managedHeapSlice));
 
+                Assert.False(stackSlice == unmanagedHeapSlice);
+                Assert.False(stackSlice == managedHeapSlice);
+                Assert.False(unmanagedHeapSlice == managedHeapSlice);
+                Assert.False(unmanagedHeapSlice == stackSlice);
+                Assert.False(managedHeapSlice == stackSlice);
+                Assert.False(managedHeapSlice == unmanagedHeapSlice);
+
+                Assert.True(stackSlice != unmanagedHeapSlice);
+                Assert.True(stackSlice != managedHeapSlice);
+                Assert.True(unmanagedHeapSlice != managedHeapSlice);
+                Assert.True(unmanagedHeapSlice != stackSlice);
+                Assert.True(managedHeapSlice != stackSlice);
+                Assert.True(managedHeapSlice != unmanagedHeapSlice);
+
                 Assert.True(stackSlice.SequenceEqual(unmanagedHeapSlice));
                 Assert.True(stackSlice.SequenceEqual(managedHeapSlice));
                 Assert.True(unmanagedHeapSlice.SequenceEqual(stackSlice));
@@ -299,6 +467,20 @@ namespace System.Slices.Tests
                 Assert.False(stackSlice.ReferenceEquals(unmanagedHeapSlice));
                 Assert.False(stackSlice.ReferenceEquals(managedHeapSlice));
                 Assert.False(unmanagedHeapSlice.ReferenceEquals(managedHeapSlice));
+
+                Assert.False(stackSlice == unmanagedHeapSlice);
+                Assert.False(stackSlice == managedHeapSlice);
+                Assert.False(unmanagedHeapSlice == managedHeapSlice);
+                Assert.False(unmanagedHeapSlice == stackSlice);
+                Assert.False(managedHeapSlice == stackSlice);
+                Assert.False(managedHeapSlice == unmanagedHeapSlice);
+
+                Assert.True(stackSlice != unmanagedHeapSlice);
+                Assert.True(stackSlice != managedHeapSlice);
+                Assert.True(unmanagedHeapSlice != managedHeapSlice);
+                Assert.True(unmanagedHeapSlice != stackSlice);
+                Assert.True(managedHeapSlice != stackSlice);
+                Assert.True(managedHeapSlice != unmanagedHeapSlice);
 
                 Assert.True(stackSlice.SequenceEqual(unmanagedHeapSlice));
                 Assert.True(stackSlice.SequenceEqual(managedHeapSlice));
@@ -428,6 +610,20 @@ namespace System.Slices.Tests
                     new object[] { new byte[3] { 0, 0, 0 }, 1, 2},
                     new object[] { new byte[3] { 0, 0, 0 }, 1, 1},
                     new object[] { Enumerable.Range(0, 100000).Select(i => (byte)i).ToArray(), 0, 100000 }
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> FullArraySegments
+        {
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { new byte[1] { 0 } },
+                    new object[] { new byte[2] { 0, 0 } },
+                    new object[] { new byte[3] { 0, 0, 0 } },
+                    new object[] { Enumerable.Range(0, 100000).Select(i => (byte)i).ToArray() }
                 };
             }
         }

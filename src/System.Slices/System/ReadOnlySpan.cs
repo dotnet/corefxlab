@@ -133,6 +133,11 @@ namespace System
             Length = length;
         }
 
+        public static implicit operator ReadOnlySpan<T>(T[] array)
+        {
+            return new ReadOnlySpan<T>(array);
+        }
+
         public static implicit operator ReadOnlySpan<T>(Span<T> slice)
         {
             return new ReadOnlySpan<T>(slice.Object, slice.Offset, slice.Length);
@@ -325,6 +330,11 @@ namespace System
             return ReferenceEquals(other);
         }
 
+        public bool Equals(Span<T> other)
+        {
+            return other.StructuralEquals(Object, Offset, Length);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is ReadOnlySpan<T>)
@@ -333,5 +343,8 @@ namespace System
             }
             return false;
         }
+
+        public static bool operator ==(ReadOnlySpan<T> span1, ReadOnlySpan<T> span2) => span1.Equals(span2);
+        public static bool operator !=(ReadOnlySpan<T> span1, ReadOnlySpan<T> span2) => !span1.Equals(span2);
     }
 }
