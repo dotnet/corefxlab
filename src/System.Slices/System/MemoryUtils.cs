@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System
@@ -145,6 +146,28 @@ namespace System
                     }
                 }
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static bool IsPrimitiveValueType<T>()
+        {
+            // When inlined in the caller this all become a JIT time constant.
+            // HACK: what about AOT scenarions?
+
+            return typeof(T) == typeof(byte) ||
+                   typeof(T) == typeof(char) ||
+                   typeof(T) == typeof(sbyte) ||
+                   typeof(T) == typeof(short) ||
+                   typeof(T) == typeof(ushort) ||
+                   typeof(T) == typeof(int) ||
+                   typeof(T) == typeof(uint) ||
+                   typeof(T) == typeof(long) ||
+                   typeof(T) == typeof(ulong) ||
+                   typeof(T) == typeof(IntPtr) ||
+                   typeof(T) == typeof(UIntPtr) ||
+                   typeof(T) == typeof(float) ||
+                   typeof(T) == typeof(double) ||
+                   typeof(T) == typeof(bool);
         }
     }
 }

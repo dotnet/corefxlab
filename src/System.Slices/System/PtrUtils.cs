@@ -135,12 +135,22 @@ namespace System
 
         [ILSub(@"
             .maxstack 3
-            ldarg.1
-            ldarg.0
-            ldarg.2
+            .locals([0] uint8 & destAddr, 
+                    [1] uint8 & scrAddr)
+            ldarg.2     // load destObj
+            stloc.0     // convert the object pointer to a byref
+            ldloc.0     // load the object pointer as a byref
+            ldarg.3     // load destOffset
+            add         // add destOffset
+            ldarg.0     // load srcObj
+            stloc.1     // convert the object pointer to a byref
+            ldloc.1     // load the object pointer as a byref
+            ldarg.1     // load srcOffset
+            add         // add srcOffset
+            ldarg.s 4   // load byteCount
             cpblk
             ret")]
-        public static void Copy(UIntPtr source, UIntPtr destination, int byteCount)
+        public static void CopyBlock(object srcObj, UIntPtr srcOffset, object destObj, UIntPtr destOffset, int byteCount)
         {}
     }
 }
