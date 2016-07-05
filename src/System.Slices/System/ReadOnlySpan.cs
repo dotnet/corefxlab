@@ -251,10 +251,10 @@ namespace System
         /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> Slice(uint start)
+        public ReadOnlySpan<T> Slice(uint start)
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
-            return new Span<T>(Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), Length - (int)start);
+            return new ReadOnlySpan<T>(Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), Length - (int)start);
         }
 
         /// <summary>
@@ -284,10 +284,10 @@ namespace System
         /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
         /// </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> Slice(uint start, uint length)
+        public ReadOnlySpan<T> Slice(uint start, uint length)
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
-            return new Span<T>(
+            return new ReadOnlySpan<T>(
                 Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), (int)length);
         }
 
