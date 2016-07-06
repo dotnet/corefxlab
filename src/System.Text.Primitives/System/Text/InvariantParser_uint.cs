@@ -60,13 +60,20 @@ namespace System.Text
                         return true;
                     }
                 }
-                uint candidate = value * 10;
-                candidate += (uint)nextByte - '0';
-                if (candidate >= value)
+                try
                 {
+                    uint candidate = checked(value * 10 + nextByte - '0');
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++;
                 }
-                bytesConsumed++;
+                catch (OverflowException e)
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
             }
 
             return true;
@@ -93,13 +100,20 @@ namespace System.Text
                         return true;
                     }
                 }
-                uint candidate = value * 10;
-                candidate += (uint)nextByte - '0';
-                if (candidate >= value)
+                try
                 {
+                    uint candidate = checked(value * 10 + nextByte - '0');
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++;
                 }
-                bytesConsumed++;
+                catch (OverflowException e)
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
             }
 
             return true;
@@ -124,13 +138,20 @@ namespace System.Text
                         return true;
                     }
                 }
-                uint candidate = value * 10;
-                candidate += (uint)nextByte - '0';
-                if (candidate >= value)
+                try
                 {
+                    uint candidate = checked(value * 10 + nextByte - '0');
+                    Debug.Assert(candidate >= value);
+
                     value = candidate;
+                    bytesConsumed++;
                 }
-                bytesConsumed++;
+                catch (OverflowException e)
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
             }
             return true;
         }
@@ -164,7 +185,8 @@ namespace System.Text
                         value = default(uint);
                         return false;
                     }
-                    else {
+                    else
+                    {
                         return true;
                     }
                 }
@@ -174,7 +196,8 @@ namespace System.Text
                 {
                     value = candidate;
                 }
-                else {
+                else
+                {
                     return true;
                 }
                 bytesConsumed++;

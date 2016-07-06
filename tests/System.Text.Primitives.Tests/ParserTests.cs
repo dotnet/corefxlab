@@ -2,7 +2,7 @@
 using System.Text;
 using Xunit;
 
-namespace System.Text.Formatting.Tests
+namespace System.Text.Primitives.Tests
 {
     public class ParserTests
     {
@@ -17,7 +17,8 @@ namespace System.Text.Formatting.Tests
         [InlineData("blahblahh1751110", true, 9, 1751110, 7)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("The biggest ulong is 9223372036854775808.", true, 21, 9223372036854775808, 19)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("18446744073709551616", false, 0, 0, 0)] // overflow test
         public void ParseUtf8ByteArrayToUlong(string text, bool expectSuccess, int index, ulong expectedValue, int expectedBytesConsumed)
         {
             ulong parsedValue;
@@ -34,7 +35,8 @@ namespace System.Text.Formatting.Tests
         [InlineData("blahblahh1751110", true, 9, 1751110, 7)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("The biggest ulong is 9223372036854775808.", true, 21, 9223372036854775808, 19)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("18446744073709551616", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToUlong(string text, bool expectSuccess, int index, ulong expectedValue, int expectedBytesConsumed)
         {
             ulong parsedValue;
@@ -57,7 +59,8 @@ namespace System.Text.Formatting.Tests
         [InlineData("1728", true, 0, 1728, 4)]
         [InlineData("blahblahh1751110", true, 9, 1751110, 7)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("4294967296", false, 0, 0, 0)] // overflow test
         public void ParseUtf8ByteArrayToUint(string text, bool expectSuccess, int index, uint expectedValue, int expectedBytesConsumed)
         {
             uint parsedValue;
@@ -73,7 +76,8 @@ namespace System.Text.Formatting.Tests
         [InlineData("1728", true, 0, 1728, 4)]
         [InlineData("blahblahh1751110", true, 9, 1751110, 7)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("4294967296", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToUint(string text, bool expectSuccess, int index, uint expectedValue, int expectedBytesConsumed)
         {
             uint parsedValue;
@@ -96,7 +100,8 @@ namespace System.Text.Formatting.Tests
         [InlineData("1728", true, 0, 1728, 4)]
         [InlineData("blahblahh37511", true, 9, 37511, 5)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("65536", false, 0, 0, 0)] // overflow test
         public void ParseUtf8ByteArrayToUshort(string text, bool expectSuccess, int index, ushort expectedValue, int expectedBytesConsumed)
         {
             ushort parsedValue;
@@ -112,7 +117,8 @@ namespace System.Text.Formatting.Tests
         [InlineData("1728", true, 0, 1728, 4)]
         [InlineData("blahblahh37511", true, 9, 37511, 5)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("65536", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToUshort(string text, bool expectSuccess, int index, ushort expectedValue, int expectedBytesConsumed)
         {
             ushort parsedValue;
@@ -135,7 +141,8 @@ namespace System.Text.Formatting.Tests
         [InlineData("172", true, 0, 172, 3)]
         [InlineData("blahblahh37", true, 9, 37, 2)]
         [InlineData("187abhced", true, 0, 187, 3)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("256", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteArrayToByte(string text, bool expectSuccess, int index, byte expectedValue, int expectedBytesConsumed)
         {
             byte parsedValue;
@@ -151,7 +158,8 @@ namespace System.Text.Formatting.Tests
         [InlineData("172", true, 0, 172, 3)]
         [InlineData("blahblahh37", true, 9, 37, 2)]
         [InlineData("187abhced", true, 0, 187, 3)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("256", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToByte(string text, bool expectSuccess, int index, byte expectedValue, int expectedBytesConsumed)
         {
             byte parsedValue;
@@ -176,8 +184,10 @@ namespace System.Text.Formatting.Tests
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("The smallest long is -9223372036854775808.", true, 21, -9223372036854775808, 20)]
         [InlineData("Letthem-32984eatcake", true, 7, -32984, 6)]
-        [InlineData("-A", false, 0, 0, 0)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("9223372036854775808", false, 0, 0, 0)] // positive overflow test
+        [InlineData("-9223372036854775809", false, 0, 0, 0)] // negative overflow test
         public void ParseUtf8ByteArrayToLong(string text, bool expectSuccess, int index, long expectedValue, int expectedBytesConsumed)
         {
             long parsedValue;
@@ -195,7 +205,10 @@ namespace System.Text.Formatting.Tests
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("The smallest long is -9223372036854775808.", true, 21, -9223372036854775808, 20)]
         [InlineData("Letthem-32984eatcake", true, 7, -32984, 6)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("9223372036854775808", false, 0, 0, 0)] // positive overflow test
+        [InlineData("-9223372036854775809", false, 0, 0, 0)] // negative overflow test
         public unsafe void ParseUtf8ByteStarToLong(string text, bool expectSuccess, int index, long expectedValue, int expectedBytesConsumed)
         {
             long parsedValue;
@@ -220,8 +233,10 @@ namespace System.Text.Formatting.Tests
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("-2147483648", true, 0, -2147483648, 11)]
         [InlineData("Letthem-32984eatcake", true, 7, -32984, 6)]
-        [InlineData("-A", false, 0, 0, 0)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("2147483648", false, 0, 0, 0)] // positive overflow test
+        [InlineData("-2147483649", false, 0, 0, 0)] // negative overflow test
         public void ParseUtf8ByteArrayToInt(string text, bool expectSuccess, int index, int expectedValue, int expectedBytesConsumed)
         {
             int parsedValue;
@@ -239,7 +254,10 @@ namespace System.Text.Formatting.Tests
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("-2147483648", true, 0, -2147483648, 11)]
         [InlineData("Letthem-32984eatcake", true, 7, -32984, 6)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("2147483648", false, 0, 0, 0)] // positive overflow test
+        [InlineData("-2147483649", false, 0, 0, 0)] // negative overflow test
         public unsafe void ParseUtf8ByteStarToInt(string text, bool expectSuccess, int index, int expectedValue, int expectedBytesConsumed)
         {
             int parsedValue;
@@ -264,8 +282,10 @@ namespace System.Text.Formatting.Tests
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("-32768", true, 0, -32768, 6)]
         [InlineData("Letthem-32684eatcake", true, 7, -32684, 6)]
-        [InlineData("-A", false, 0, 0, 0)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("32768", false, 0, 0, 0)] // positive overflow test
+        [InlineData("-32769", false, 0, 0, 0)] // negative overflow test
         public void ParseUtf8ByteArrayToShort(string text, bool expectSuccess, int index, short expectedValue, int expectedBytesConsumed)
         {
             short parsedValue;
@@ -282,8 +302,10 @@ namespace System.Text.Formatting.Tests
         [InlineData("blahblahh17511", true, 9, 17511, 5)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("-32768", true, 0, -32768, 6)]
-        [InlineData("Letthem-32684eatcake", true, 7, -32684, 6)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("32768", false, 0, 0, 0)] // positive overflow test
+        [InlineData("-32769", false, 0, 0, 0)] // negative overflow test
         public unsafe void ParseUtf8ByteStarToShort(string text, bool expectSuccess, int index, short expectedValue, int expectedBytesConsumed)
         {
             short parsedValue;
@@ -308,8 +330,10 @@ namespace System.Text.Formatting.Tests
         [InlineData("127acndasjfh", true, 0, 127, 3)]
         [InlineData("-128", true, 0, -128, 4)]
         [InlineData("Letthem-126eatcake", true, 7, -126, 4)]
-        [InlineData("-A", false, 0, 0, 0)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("128", false, 0, 0, 0)] // positive overflow test
+        [InlineData("-129", false, 0, 0, 0)] // negative overflow test
         public void ParseUtf8ByteArrayToSbyte(string text, bool expectSuccess, int index, sbyte expectedValue, int expectedBytesConsumed)
         {
             sbyte parsedValue;
@@ -327,7 +351,10 @@ namespace System.Text.Formatting.Tests
         [InlineData("127acndasjfh", true, 0, 127, 3)]
         [InlineData("-128", true, 0, -128, 4)]
         [InlineData("Letthem-126eatcake", true, 7, -126, 4)]
-        [InlineData("I am 1", false, 0, 0, 0)]
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("128", false, 0, 0, 0)] // positive overflow test
+        [InlineData("-129", false, 0, 0, 0)] // negative overflow test
         public unsafe void ParseUtf8ByteStarToSbyte(string text, bool expectSuccess, int index, sbyte expectedValue, int expectedBytesConsumed)
         {
             sbyte parsedValue;
