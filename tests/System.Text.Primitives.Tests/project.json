@@ -1,5 +1,5 @@
 {
-  "name": "System.Text.Tests",
+  "name": "System.Text.Primitives.Tests",
   "buildOptions": {
     "allowUnsafe": true,
     "keyFile": "../../tools/test_key.snk"
@@ -11,7 +11,9 @@
     },
     "System.Text.Primitives": { "target": "project" },
     "xunit": "2.1.0",
-    "dotnet-test-xunit": "1.0.0-rc2-173384-19"
+    "dotnet-test-xunit": "1.0.0-rc2-173384-19",
+    "Microsoft.DotNet.xunit.performance": "1.0.0-alpha-build0038",
+    "BenchmarkDotNet": "0.9.8"
   },
   "frameworks": {
     "netcoreapp1.0": {
