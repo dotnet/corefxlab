@@ -16,7 +16,7 @@ namespace System
     /// </summary>
     [DebuggerTypeProxy(typeof(SpanDebuggerView<>))]
     [DebuggerDisplay("Length = {Length}")]
-    public partial struct Span<T> : IEnumerable<T>, IEquatable<Span<T>>
+    public partial struct Span<T> : IEnumerable<T>, IEquatable<Span<T>>, IEquatable<ReadOnlySpan<T>>, IEquatable<T[]>
     {
         /// <summary>A managed array/string; or null for native ptrs.</summary>
         internal readonly object Object;
@@ -373,6 +373,7 @@ namespace System
             return ReferenceEquals(other);
         }
 
+
         public override bool Equals(object obj)
         {
             if (obj is Span<T>)
@@ -383,6 +384,7 @@ namespace System
         }
 
         public bool Equals(ReadOnlySpan<T> other) => StructuralEquals(other.Object, other.Offset, other.Length);
+        public bool Equals(T[] other) => Equals(new Span<T>(other));
         public static bool operator ==(Span<T> span1, Span<T> span2) => span1.Equals(span2);
         public static bool operator !=(Span<T> span1, Span<T> span2) => !span1.Equals(span2);
 
