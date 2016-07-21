@@ -16,10 +16,10 @@ namespace System.IO.FileSystem
     /// </summary>
     /// <remarks>
     /// This type is similar to FileSystemWatcher, but unlike FileSystemWatcher it is fully reliable,
-    /// at the cost of some perfromance overhead. 
-    /// Instead of relying on Win32 file notification APIs, it preodically scans the watched directory to discover changes.
+    /// at the cost of some performance overhead. 
+    /// Instead of relying on Win32 file notification APIs, it periodically scans the watched directory to discover changes.
     /// This means that sooner or later it will discover every change.
-    /// FileSystemWatcher's Win32 APIs can drop some events in rare circumstances, which is often acceptable compromise.
+    /// FileSystemWatcher's Win32 APIs can drop some events in rare circumstances, which is often an acceptable compromise.
     /// In scenarios where events cannot be missed, PollingWatcher should be used.
     /// Note: When a watched file is renamed, one or two notifications will be made.
     /// Note: When no changes are detected, PollingWatcher will not allocate memory on the GC heap.
