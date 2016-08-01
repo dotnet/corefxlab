@@ -58,10 +58,10 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // Min value
         private static void BaselineArrayByteParse(string text)
         {
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 byte value;
-                byte[] utf8ByteArray = UtfEncode(text);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -142,13 +142,13 @@ namespace System.Text.Primitives.Tests
         {
 			int length = text.Length;
 			byte[] utf8ByteArray = UtfEncode(text);
+            byte* unmanagedBytePtr;
+            unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
+            Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
             {
                 byte value;
                 int bytesConsumed;
-                byte* unmanagedBytePtr;
-                unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
-                Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -156,7 +156,58 @@ namespace System.Text.Primitives.Tests
                         InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
                     }
                 }
-                Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+            }
+            Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        private static void BaselineArbitraryLengthBufferToByte(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                byte value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        int currentIndex = start;
+                        char currentChar = text[currentIndex];
+                        while (currentChar >= '0' && currentChar <= '9')
+                        {
+                            currentChar = text[currentIndex];
+                            currentIndex++;
+                        }
+                        Byte.TryParse(decodedText.Substring(start, currentIndex - start), NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        private static void ByteArrayArbitraryLengthBufferToByte(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                byte value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                    }
+                }
             }
         }
         #endregion
@@ -197,10 +248,10 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private static void BaselineArrayUshortParse(string text)
         {
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 ushort value;
-                byte[] utf8ByteArray = UtfEncode(text);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -281,19 +332,72 @@ namespace System.Text.Primitives.Tests
         {
 			int length = text.Length;
 			byte[] utf8ByteArray = UtfEncode(text);
+            byte* unmanagedBytePtr;
+            unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
+            Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
             {
                 ushort value;
                 int bytesConsumed;
-                byte* unmanagedBytePtr;
-                unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
-                Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++) 
 						InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
                 }
-                Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+            }
+            Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        private static void BaselineArbitraryLengthBufferToUshort(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                ushort value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        int currentIndex = start;
+                        char currentChar = text[currentIndex];
+                        while (currentChar >= '0' && currentChar <= '9')
+                        {
+                            currentChar = text[currentIndex];
+                            currentIndex++;
+                        }
+                        UInt16.TryParse(decodedText.Substring(start, currentIndex - start), NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        private static void ByteArrayArbitraryLengthBufferToUShort(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                ushort value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                    }
+                }
             }
         }
         #endregion
@@ -334,10 +438,10 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private static void BaselineArrayUintParse(string text)
         {
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 uint value;
-                byte[] utf8ByteArray = UtfEncode(text);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -367,8 +471,10 @@ namespace System.Text.Primitives.Tests
                 int bytesConsumed;
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LOAD_ITERATIONS; i++) 
-						InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                    }
                 }
             }
         }
@@ -416,13 +522,13 @@ namespace System.Text.Primitives.Tests
         {
 			int length = text.Length;
 			byte[] utf8ByteArray = UtfEncode(text);
+            byte* unmanagedBytePtr;
+            unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
+            Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
             {
                 uint value;
                 int bytesConsumed;
-                byte* unmanagedBytePtr;
-                unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
-                Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -430,7 +536,62 @@ namespace System.Text.Primitives.Tests
                         InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
                     }
                 }
-                Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+            }
+            Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        [InlineData("this is definitely 20000021% a buffer")]
+        private static void BaselineArbitraryLengthBufferToUint(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                uint value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        int currentIndex = start;
+                        char currentChar = text[currentIndex];
+                        while (currentChar >= '0' && currentChar <= '9')
+                        {
+                            currentChar = text[currentIndex];
+                            currentIndex++;
+                        }
+                        UInt32.TryParse(decodedText.Substring(start, currentIndex - start), NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        [InlineData("this is definitely 20000021% a buffer")]
+        private static void ByteArrayArbitraryLengthBufferToUint(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                uint value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                    }
+                }
             }
         }
         #endregion
@@ -471,10 +632,10 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private static void BaselineArrayUlongParse(string text)
         {
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 ulong value;
-                byte[] utf8ByteArray = UtfEncode(text);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -555,13 +716,13 @@ namespace System.Text.Primitives.Tests
         {
 			int length = text.Length;
 			byte[] utf8ByteArray = UtfEncode(text);
+            byte* unmanagedBytePtr;
+            unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
+            Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
             {
                 ulong value;
                 int bytesConsumed;
-                byte* unmanagedBytePtr;
-                unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
-                Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -569,7 +730,64 @@ namespace System.Text.Primitives.Tests
                         InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
                     }
                 }
-                Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+            }
+            Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        [InlineData("this is definitely 20000021% a buffer")]
+        [InlineData("HTTP 1.1 / POST http://example.org/form some stuff 281203218485 Four Four Eight\r\n\r\n")]
+        private static void BaselineArbitraryLengthBufferToUlong(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                ulong value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        int currentIndex = start;
+                        char currentChar = text[currentIndex];
+                        while (currentChar >= '0' && currentChar <= '9')
+                        {
+                            currentChar = text[currentIndex];
+                            currentIndex++;
+                        }
+                        UInt64.TryParse(decodedText.Substring(start, currentIndex - start), NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        [InlineData("this is definitely 20000021% a buffer")]
+        [InlineData("HTTP 1.1 / POST http://example.org/form some stuff 281203218485 Four Four Eight\r\n\r\n")]
+        private static void ByteArrayArbitraryLengthBufferToUlong(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                ulong value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                    }
+                }
             }
         }
         #endregion
@@ -616,10 +834,10 @@ namespace System.Text.Primitives.Tests
         [InlineData("-128")] // min value
         private static void BaselineArraySbyteParse(string text)
         {
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 sbyte value;
-                byte[] utf8ByteArray = UtfEncode(text);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -709,13 +927,13 @@ namespace System.Text.Primitives.Tests
         {
 			int length = text.Length;
 			byte[] utf8ByteArray = UtfEncode(text);
+            byte* unmanagedBytePtr;
+            unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
+            Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
             {
                 sbyte value;
                 int bytesConsumed;
-                byte* unmanagedBytePtr;
-                unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
-                Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -723,7 +941,64 @@ namespace System.Text.Primitives.Tests
                         InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
                     }
                 }
-                Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+            }
+            Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -29\r\n\r\n")]
+        private static void BaselineArbitraryLengthBufferToSbyte(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+            if (text[start - 1] == '-')
+                start -= 1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                long value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        int currentIndex = start;
+                        char currentChar = text[currentIndex];
+                        while (currentChar >= '0' && currentChar <= '9')
+                        {
+                            currentChar = text[currentIndex];
+                            currentIndex++;
+                        }
+                        Int64.TryParse(decodedText.Substring(start, currentIndex - start), NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -29\r\n\r\n")]
+        private static void ByteArrayArbitraryLengthBufferToSbyte(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+            if (text[start - 1] == '-')
+                start -= 1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                long value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                    }
+                }
             }
         }
         #endregion
@@ -770,10 +1045,10 @@ namespace System.Text.Primitives.Tests
         [InlineData("-32768")] // min value
         private static void BaselineArrayShortParse(string text)
         {
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 short value;
-                byte[] utf8ByteArray = UtfEncode(text);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -863,13 +1138,13 @@ namespace System.Text.Primitives.Tests
         {
 			int length = text.Length;
 			byte[] utf8ByteArray = UtfEncode(text);
+            byte* unmanagedBytePtr;
+            unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
+            Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
             {
                 short value;
                 int bytesConsumed;
-                byte* unmanagedBytePtr;
-                unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
-                Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -877,7 +1152,68 @@ namespace System.Text.Primitives.Tests
                         InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
                     }
                 }
-                Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+            }
+            Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -29\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -20654\r\n\r\n")]
+        private static void BaselineArbitraryLengthBufferToShort(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+            if (text[start - 1] == '-')
+                start -= 1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                long value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        int currentIndex = start;
+                        char currentChar = text[currentIndex];
+                        while (currentChar >= '0' && currentChar <= '9')
+                        {
+                            currentChar = text[currentIndex];
+                            currentIndex++;
+                        }
+                        Int64.TryParse(decodedText.Substring(start, currentIndex - start), NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -29\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -20654\r\n\r\n")]
+        private static void ByteArrayArbitraryLengthBufferToShort(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+            if (text[start - 1] == '-')
+                start -= 1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                long value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                    }
+                }
             }
         }
         #endregion
@@ -924,10 +1260,10 @@ namespace System.Text.Primitives.Tests
         [InlineData("-2147483648")] // min value
         private static void BaselineArrayIntParse(string text)
         {
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
-                byte[] utf8ByteArray = UtfEncode(text);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -1017,13 +1353,13 @@ namespace System.Text.Primitives.Tests
         {
 			int length = text.Length;
 			byte[] utf8ByteArray = UtfEncode(text);
+            byte* unmanagedBytePtr;
+            unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
+            Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
                 int bytesConsumed;
-                byte* unmanagedBytePtr;
-                unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
-                Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -1031,7 +1367,70 @@ namespace System.Text.Primitives.Tests
                         InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
                     }
                 }
-                Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+            }
+            Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        [InlineData("this is definitely 20000021% a buffer")]
+        [InlineData("HTTP 1.1 / UPDATE -29\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -20654\r\n\r\n")]
+        private static void BaselineArbitraryLengthBufferToInt(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+            if (text[start - 1] == '-')
+                start -= 1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                long value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        int currentIndex = start;
+                        char currentChar = text[currentIndex];
+                        while (currentChar >= '0' && currentChar <= '9')
+                        {
+                            currentChar = text[currentIndex];
+                            currentIndex++;
+                        }
+                        Int64.TryParse(decodedText.Substring(start, currentIndex - start), NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        [InlineData("this is definitely 20000021% a buffer")]
+        [InlineData("HTTP 1.1 / UPDATE -29\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -20654\r\n\r\n")]
+        private static void ByteArrayArbitraryLengthBufferToInt(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+            if (text[start - 1] == '-')
+                start -= 1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                long value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                    }
+                }
             }
         }
         #endregion
@@ -1078,10 +1477,10 @@ namespace System.Text.Primitives.Tests
         [InlineData("-9223372036854775808")] // min value
         private static void BaselineArrayLongParse(string text)
         {
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 long value;
-                byte[] utf8ByteArray = UtfEncode(text);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -1171,13 +1570,13 @@ namespace System.Text.Primitives.Tests
         {
 			int length = text.Length;
 			byte[] utf8ByteArray = UtfEncode(text);
+            byte* unmanagedBytePtr;
+            unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
+            Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
             {
                 long value;
                 int bytesConsumed;
-                byte* unmanagedBytePtr;
-                unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
-                Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -1185,7 +1584,72 @@ namespace System.Text.Primitives.Tests
                         InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
                     }
                 }
-                Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+            }
+            Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        [InlineData("this is definitely 20000021% a buffer")]
+        [InlineData("HTTP 1.1 / POST http://example.org/form some stuff 281203218485 Four Four Eight\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -29\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -20654\r\n\r\n")]
+        private static void BaselineArbitraryLengthBufferToLong(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+            if (text[start - 1] == '-')
+                start -= 1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                long value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        int currentIndex = start;
+                        char currentChar = text[currentIndex];
+                        while (currentChar >= '0' && currentChar <= '9')
+                        {
+                            currentChar = text[currentIndex];
+                            currentIndex++;
+                        }
+                        Int64.TryParse(decodedText.Substring(start, currentIndex - start), NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj2\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=26,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer 26655\r\n")]
+        [InlineData("this is definitely 20000021% a buffer")]
+        [InlineData("HTTP 1.1 / POST http://example.org/form some stuff 281203218485 Four Four Eight\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -29\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE -20654\r\n\r\n")]
+        private static void ByteArrayArbitraryLengthToLong(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('2');
+            if (text[start - 1] == '-')
+                start -= 1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                long value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                    }
+                }
             }
         }
         #endregion
