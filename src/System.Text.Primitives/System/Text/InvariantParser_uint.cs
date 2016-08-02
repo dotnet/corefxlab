@@ -47,8 +47,8 @@ namespace System.Text
 
             for (int byteIndex = 0; byteIndex < utf8Text.Length; byteIndex++)
             {
-                byte nextByte = (byte)utf8Text[byteIndex];
-                if (nextByte < '0' || nextByte > '9')
+                byte nextByteVal = (byte)((byte)utf8Text[byteIndex] - '0');
+                if (nextByteVal > 9)
                 {
                     if (bytesConsumed == 0)
                     {
@@ -60,20 +60,22 @@ namespace System.Text
                         return true;
                     }
                 }
-                try
-                {
-                    uint candidate = checked(value * 10 + nextByte - '0');
-                    Debug.Assert(candidate >= value);
-
-                    value = candidate;
-                    bytesConsumed++;
-                }
-                catch (OverflowException e)
+                else if (value > UInt32.MaxValue / 10) // overflow
                 {
                     value = 0;
                     bytesConsumed = 0;
                     return false;
                 }
+                else if (value > 0 && UInt32.MaxValue - value * 10 < nextByteVal) // overflow
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
+                uint candidate = value * 10 + nextByteVal;
+
+                value = candidate;
+                bytesConsumed++;
             }
 
             return true;
@@ -87,8 +89,8 @@ namespace System.Text
 
             for (int byteIndex = index; byteIndex < utf8Text.Length; byteIndex++)
             {
-                byte nextByte = utf8Text[byteIndex];
-                if (nextByte < '0' || nextByte > '9')
+                byte nextByteVal = (byte)(utf8Text[byteIndex] - '0');
+                if (nextByteVal > 9)
                 {
                     if (bytesConsumed == 0)
                     {
@@ -100,20 +102,22 @@ namespace System.Text
                         return true;
                     }
                 }
-                try
-                {
-                    uint candidate = checked(value * 10 + nextByte - '0');
-                    Debug.Assert(candidate >= value);
-
-                    value = candidate;
-                    bytesConsumed++;
-                }
-                catch (OverflowException e)
+                else if (value > UInt32.MaxValue / 10) // overflow
                 {
                     value = 0;
                     bytesConsumed = 0;
                     return false;
                 }
+                else if (value > 0 && UInt32.MaxValue - value * 10 < nextByteVal) // overflow
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
+                uint candidate = value * 10 + nextByteVal;
+
+                value = candidate;
+                bytesConsumed++;
             }
 
             return true;
@@ -125,8 +129,8 @@ namespace System.Text
 
             for (int byteIndex = index; byteIndex < length + index; byteIndex++)
             {
-                byte nextByte = utf8Text[byteIndex];
-                if (nextByte < '0' || nextByte > '9')
+                byte nextByteVal = (byte)(utf8Text[byteIndex] - '0');
+                if (nextByteVal > 9)
                 {
                     if (bytesConsumed == 0)
                     {
@@ -138,20 +142,22 @@ namespace System.Text
                         return true;
                     }
                 }
-                try
-                {
-                    uint candidate = checked(value * 10 + nextByte - '0');
-                    Debug.Assert(candidate >= value);
-
-                    value = candidate;
-                    bytesConsumed++;
-                }
-                catch (OverflowException e)
+                else if (value > UInt32.MaxValue / 10) // overflow
                 {
                     value = 0;
                     bytesConsumed = 0;
                     return false;
                 }
+                else if (value > 0 && UInt32.MaxValue - value * 10 < nextByteVal) // overflow
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
+                uint candidate = value * 10 + nextByteVal;
+
+                value = candidate;
+                bytesConsumed++;
             }
             return true;
         }

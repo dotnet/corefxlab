@@ -22,8 +22,8 @@ namespace System.Text
 
             for (int byteIndex = index; byteIndex < utf8Text.Length; byteIndex++) // loop through the byte array
             {
-                byte nextByte = utf8Text[byteIndex];
-                if (nextByte < '0' || nextByte > '9') // if the next character is not a digit
+                byte nextByteVal = (byte)(utf8Text[byteIndex] - '0');
+                if (nextByteVal > 9) // if the next character is not a digit
                 {
                     if (bytesConsumed == 0) // check to see if we've processed any digits at all
                     {
@@ -35,20 +35,22 @@ namespace System.Text
                         return true; // otherwise return true
                     }
                 }
-                try
-                {
-                    ushort candidate = checked((ushort)(value * 10 + nextByte - '0')); // parse the current digit to a ushort and add it to the temporary value
-                    Debug.Assert(candidate >= value);
-
-                    value = candidate;
-                    bytesConsumed++; // increment the number of bytes consumed, then loop
-                }
-                catch (OverflowException e)
+                else if (value > UInt16.MaxValue / 10) // overflow
                 {
                     value = 0;
                     bytesConsumed = 0;
                     return false;
                 }
+                else if (value > 0 && UInt16.MaxValue - value * 10 < nextByteVal) // overflow
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
+                ushort candidate = (ushort)(value * 10 + nextByteVal); // parse the current digit to a ushort and add it to the temporary value
+
+                value = candidate;
+                bytesConsumed++; // increment the number of bytes consumed, then loop
             }
 
             return true;
@@ -60,8 +62,8 @@ namespace System.Text
 
             for (int byteIndex = index; byteIndex < length + index; byteIndex++)
             {
-                byte nextByte = utf8Text[byteIndex];
-                if (nextByte < '0' || nextByte > '9')
+                byte nextByteVal = (byte)(utf8Text[byteIndex] - '0');
+                if (nextByteVal > 9) // if the next character is not a digit
                 {
                     if (bytesConsumed == 0)
                     {
@@ -73,20 +75,22 @@ namespace System.Text
                         return true;
                     }
                 }
-                try
-                {
-                    ushort candidate = checked((ushort)(value * 10 + nextByte - '0')); // parse the current digit to a ushort and add it to the temporary value
-                    Debug.Assert(candidate >= value);
-
-                    value = candidate;
-                    bytesConsumed++; // increment the number of bytes consumed, then loop
-                }
-                catch (OverflowException e)
+                else if (value > UInt16.MaxValue / 10) // overflow
                 {
                     value = 0;
                     bytesConsumed = 0;
                     return false;
                 }
+                else if (value > 0 && UInt16.MaxValue - value * 10 < nextByteVal) // overflow
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
+                ushort candidate = (ushort)(value * 10 + nextByteVal); // parse the current digit to a ushort and add it to the temporary value
+
+                value = candidate;
+                bytesConsumed++; // increment the number of bytes consumed, then loop
             }
             return true;
         }

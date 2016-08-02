@@ -17,6 +17,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("blahblahh1751110", true, 9, 1751110, 7)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("The biggest ulong is 9223372036854775808.", true, 21, 9223372036854775808, 19)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("18446744073709551615", true, 0, 18446744073709551615, 20)] // max value
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("18446744073709551616", false, 0, 0, 0)] // overflow test
         public void ParseUtf8ByteArrayToUlong(string text, bool expectSuccess, int index, ulong expectedValue, int expectedBytesConsumed)
@@ -35,6 +37,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("blahblahh1751110", true, 9, 1751110, 7)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("The biggest ulong is 9223372036854775808.", true, 21, 9223372036854775808, 19)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("18446744073709551615", true, 0, 18446744073709551615, 20)] // max value
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("18446744073709551616", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToUlong(string text, bool expectSuccess, int index, ulong expectedValue, int expectedBytesConsumed)
@@ -59,6 +63,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("1728", true, 0, 1728, 4)]
         [InlineData("blahblahh1751110", true, 9, 1751110, 7)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("4294967295", true, 0, 4294967295, 10)] // max value
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("4294967296", false, 0, 0, 0)] // overflow test
         public void ParseUtf8ByteArrayToUint(string text, bool expectSuccess, int index, uint expectedValue, int expectedBytesConsumed)
@@ -76,6 +82,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("1728", true, 0, 1728, 4)]
         [InlineData("blahblahh1751110", true, 9, 1751110, 7)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("4294967295", true, 0, 4294967295, 10)] // max value
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("4294967296", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToUint(string text, bool expectSuccess, int index, uint expectedValue, int expectedBytesConsumed)
@@ -100,6 +108,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("1728", true, 0, 1728, 4)]
         [InlineData("blahblahh37511", true, 9, 37511, 5)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("65535", true, 0, 65535, 5)] // max value
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("65536", false, 0, 0, 0)] // overflow test
         public void ParseUtf8ByteArrayToUshort(string text, bool expectSuccess, int index, ushort expectedValue, int expectedBytesConsumed)
@@ -117,6 +127,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("1728", true, 0, 1728, 4)]
         [InlineData("blahblahh37511", true, 9, 37511, 5)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("65535", true, 0, 65535, 5)] // max value
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("65536", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToUshort(string text, bool expectSuccess, int index, ushort expectedValue, int expectedBytesConsumed)
@@ -141,6 +153,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("172", true, 0, 172, 3)]
         [InlineData("blahblahh37", true, 9, 37, 2)]
         [InlineData("187abhced", true, 0, 187, 3)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("255", true, 0, 255, 3)] // max value
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("256", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteArrayToByte(string text, bool expectSuccess, int index, byte expectedValue, int expectedBytesConsumed)
@@ -158,6 +172,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("172", true, 0, 172, 3)]
         [InlineData("blahblahh37", true, 9, 37, 2)]
         [InlineData("187abhced", true, 0, 187, 3)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("255", true, 0, 255, 3)] // max value
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("256", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToByte(string text, bool expectSuccess, int index, byte expectedValue, int expectedBytesConsumed)
@@ -184,6 +200,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("The smallest long is -9223372036854775808.", true, 21, -9223372036854775808, 20)]
         [InlineData("Letthem-32984eatcake", true, 7, -32984, 6)]
+        [InlineData("9223372036854775807", true, 0, 9223372036854775807, 19)] // max
+        [InlineData("-9223372036854775808", true, 0, -9223372036854775808, 20)] // min
         [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("9223372036854775808", false, 0, 0, 0)] // positive overflow test
@@ -205,6 +223,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("The smallest long is -9223372036854775808.", true, 21, -9223372036854775808, 20)]
         [InlineData("Letthem-32984eatcake", true, 7, -32984, 6)]
+        [InlineData("9223372036854775807", true, 0, 9223372036854775807, 19)] // max
+        [InlineData("-9223372036854775808", true, 0, -9223372036854775808, 20)] // min
         [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("9223372036854775808", false, 0, 0, 0)] // positive overflow test
@@ -233,6 +253,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("-2147483648", true, 0, -2147483648, 11)]
         [InlineData("Letthem-32984eatcake", true, 7, -32984, 6)]
+        [InlineData("2147483647", true, 0, 2147483647, 10)] // max
+        [InlineData("-2147483648", true, 0, -2147483648, 11)] // min
         [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("2147483648", false, 0, 0, 0)] // positive overflow test
@@ -254,6 +276,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("-2147483648", true, 0, -2147483648, 11)]
         [InlineData("Letthem-32984eatcake", true, 7, -32984, 6)]
+        [InlineData("2147483647", true, 0, 2147483647, 10)] // max
+        [InlineData("-2147483648", true, 0, -2147483648, 11)] // min
         [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("2147483648", false, 0, 0, 0)] // positive overflow test
@@ -282,6 +306,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("-32768", true, 0, -32768, 6)]
         [InlineData("Letthem-32684eatcake", true, 7, -32684, 6)]
+        [InlineData("32767", true, 0, 32767, 5)] // max
+        [InlineData("-32768", true, 0, -32768, 6)] // min
         [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("32768", false, 0, 0, 0)] // positive overflow test
@@ -302,6 +328,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("blahblahh17511", true, 9, 17511, 5)]
         [InlineData("987abcdefg", true, 0, 987, 3)]
         [InlineData("-32768", true, 0, -32768, 6)]
+        [InlineData("32767", true, 0, 32767, 5)] // max
+        [InlineData("-32768", true, 0, -32768, 6)] // min
         [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("32768", false, 0, 0, 0)] // positive overflow test
@@ -325,11 +353,11 @@ namespace System.Text.Primitives.Tests
 
         #region sbyte
         [Theory]
-        [InlineData("127", true, 0, 127, 3)]
         [InlineData("blahblahh125", true, 9, 125, 3)]
         [InlineData("127acndasjfh", true, 0, 127, 3)]
-        [InlineData("-128", true, 0, -128, 4)]
         [InlineData("Letthem-126eatcake", true, 7, -126, 4)]
+        [InlineData("127", true, 0, 127, 3)] // max
+        [InlineData("-128", true, 0, -128, 4)] // min
         [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("128", false, 0, 0, 0)] // positive overflow test
@@ -346,11 +374,11 @@ namespace System.Text.Primitives.Tests
         }
 
         [Theory]
-        [InlineData("127", true, 0, 127, 3)]
         [InlineData("blahblahh125", true, 9, 125, 3)]
         [InlineData("127acndasjfh", true, 0, 127, 3)]
-        [InlineData("-128", true, 0, -128, 4)]
         [InlineData("Letthem-126eatcake", true, 7, -126, 4)]
+        [InlineData("127", true, 0, 127, 3)] // max
+        [InlineData("-128", true, 0, -128, 4)] // min
         [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("128", false, 0, 0, 0)] // positive overflow test
