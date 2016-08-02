@@ -38,8 +38,8 @@ namespace System.Text
 
             for (int byteIndex = index; byteIndex < utf8Text.Length; byteIndex++) // loop through the byte array
             {
-                byte nextByte = utf8Text[byteIndex];
-                if (nextByte < '0' || nextByte > '9') // if the next character is not a digit
+                byte nextByteVal = (byte)(utf8Text[byteIndex] - '0');
+                if (nextByteVal > 9) // if the next character is not a digit
                 {
                     if (bytesConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
                     {
@@ -52,40 +52,31 @@ namespace System.Text
                     }
                     else
                     {
-                        if (negative) // We check if the value is negative at the very end to save on comp time
+                        if (negative && value != SByte.MinValue) // We check if the value is negative at the very end to save on comp time
                         {
                             value = (sbyte)-value;
                         }
                         return true; // otherwise return true
                     }
                 }
-                try
+                else if (value > SByte.MaxValue / 10) // overflow
                 {
-                    sbyte candidate = checked((sbyte)(value * 10 + nextByte - '0')); // parse the current digit to a sbyte and add it to the left-shifted value
-                    Debug.Assert(candidate >= value);
-
-                    value = candidate;
-                    bytesConsumed++; // increment the number of bytes consumed, then loop
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
                 }
-                catch (OverflowException e)
+                else if (value > 0 && (SByte.MaxValue - value * 10) + (negative ? 1 : 0) < nextByteVal) // overflow (+1 allows for overflow for min value)
                 {
-                    sbyte candidate = (sbyte)((value * 10) + nextByte - '0'); 
-                    if (negative && candidate == sbyte.MinValue)
-                    {
-                        bytesConsumed++;
-                        value = candidate;
-                        return true;
-                    }
-                    else
-                    {
-                        value = 0;
-                        bytesConsumed = 0;
-                        return false;
-                    }
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
                 }
+                sbyte candidate = (sbyte)(value * 10 + nextByteVal); // parse the current digit to a sbyte and add it to the left-shifted value
+                value = candidate;
+                bytesConsumed++; // increment the number of bytes consumed, then loop
             }
 
-            if (negative) // We check if the value is negative at the very end to save on comp time
+            if (negative && value != SByte.MinValue) // We check if the value is negative at the very end to save on comp time
             {
                 value = (sbyte)-value;
             }
@@ -97,20 +88,28 @@ namespace System.Text
             value = 0;
             bytesConsumed = 0;
             bool negative = false;
+            bool signed = false;
 
             if (utf8Text[index] == '-')
             {
                 negative = true;
+                signed = true;
+                index++;
+                bytesConsumed++;
+            }
+            else if (utf8Text[index] == '+')
+            {
+                signed = true;
                 index++;
                 bytesConsumed++;
             }
 
             for (int byteIndex = index; byteIndex < length + index; byteIndex++)
             {
-                byte nextByte = utf8Text[byteIndex];
-                if (nextByte < '0' || nextByte > '9')
+                byte nextByteVal = (byte)(utf8Text[byteIndex] - '0');
+                if (nextByteVal > 9)
                 {
-                    if (bytesConsumed == 1 && negative) // if the first character happened to be a '-', we reset the byte counter so logic proceeds as normal.
+                    if (bytesConsumed == 1 && signed) // if the first character happened to be a '-', we reset the byte counter so logic proceeds as normal.
                     {
                         bytesConsumed = 0;
                     }
@@ -121,38 +120,32 @@ namespace System.Text
                     }
                     else
                     {
-                        if (negative) // We check if the value is negative at the very end to save on comp time
+                        if (negative && value != SByte.MinValue) // We check if the value is negative at the very end to save on comp time
                         {
                             value = (sbyte)-value;
                         }
                         return true;
                     }
                 }
-                try
+                else if (value > SByte.MaxValue / 10) // overflow
                 {
-                    sbyte candidate = checked((sbyte)(value * 10 + nextByte - '0')); // parse the current digit to a sbyte and add it to the left-shifted value
-                    if (candidate >= value) // if it was a digit 0-9, this should be true
-                    {
-                        value = candidate;
-                    }
-                    bytesConsumed++; // increment the number of bytes consumed, then loop
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
                 }
-                catch (OverflowException e)
+                else if (value > 0 && (SByte.MaxValue - value * 10) + (negative ? 1 : 0) < nextByteVal) // overflow (+1 allows for overflow for min value)
                 {
-                    sbyte candidate = (sbyte)((value * 10) + nextByte - '0');
-                    if (negative && candidate == sbyte.MinValue)
-                    {
-                        bytesConsumed++;
-                        value = candidate;
-                        return true;
-                    }
-                    else
-                    {
-                        value = 0;
-                        bytesConsumed = 0;
-                        return false;
-                    }
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
                 }
+                sbyte candidate = (sbyte)(value * 10 + nextByteVal); // parse the current digit to a sbyte and add it to the left-shifted value
+                value = candidate;
+                bytesConsumed++; // increment the number of bytes consumed, then loop
+            }
+            if (negative && value != SByte.MinValue) // We check if the value is negative at the very end to save on comp time
+            {
+                value = (sbyte)-value;
             }
             return true;
         }

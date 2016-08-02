@@ -342,7 +342,9 @@ namespace System.Text.Primitives.Tests
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
                         InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                    }
                 }
             }
             Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
@@ -800,7 +802,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("128")] // +1 overflow
         [InlineData("500")] // basic overflow
         [InlineData("1281995")] // heavy overflow
-        [InlineData("0124")] // leading zero
+        [InlineData("0127")] // leading zero
         [InlineData("00000000120")] // many leading zeroes
         [InlineData("0")] // zero
         [InlineData("127")] // max value
@@ -827,7 +829,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("128")] // +1 overflow
         [InlineData("500")] // basic overflow
         [InlineData("1281995")] // heavy overflow
-        [InlineData("0124")] // leading zero
+        [InlineData("0127")] // leading zero
         [InlineData("00000000120")] // many leading zeroes
         [InlineData("0")] // zero
         [InlineData("127")] // max value
@@ -856,7 +858,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("128")] // +1 overflow
         [InlineData("500")] // basic overflow
         [InlineData("1281995")] // heavy overflow
-        [InlineData("0124")] // leading zero
+        [InlineData("0127")] // leading zero
         [InlineData("00000000120")] // many leading zeroes
         [InlineData("0")] // zero
         [InlineData("127")] // max value

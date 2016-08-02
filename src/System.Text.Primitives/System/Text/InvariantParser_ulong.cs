@@ -17,8 +17,8 @@ namespace System.Text
 
             for (int byteIndex = 0; byteIndex < utf8Text.Length; byteIndex++)
             {
-                byte nextByte = (byte)utf8Text[byteIndex];
-                if (nextByte < '0' || nextByte > '9')
+                byte nextByteVal = (byte)((byte)utf8Text[byteIndex] - '0');
+                if (nextByteVal > 9)
                 {
                     if (bytesConsumed == 0)
                     {
@@ -30,20 +30,22 @@ namespace System.Text
                         return true;
                     }
                 }
-                try
-                {
-                    ulong candidate = checked(value * 10 + nextByte - '0');
-                    Debug.Assert(candidate >= value);
-
-                    value = candidate;
-                    bytesConsumed++;
-                }
-                catch (OverflowException e)
+                else if (value > UInt64.MaxValue / 10) // overflow
                 {
                     value = 0;
                     bytesConsumed = 0;
                     return false;
                 }
+                else if (UInt64.MaxValue - value * 10 < (ulong)(nextByteVal)) // overflow
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
+                ulong candidate = value * 10 + nextByteVal ;
+
+                value = candidate;
+                bytesConsumed++;
             }
 
             return true;
@@ -65,8 +67,8 @@ namespace System.Text
 
             for (int byteIndex = index; byteIndex < utf8Text.Length; byteIndex++) // loop through the byte array
             {
-                byte nextByte = utf8Text[byteIndex];
-                if (nextByte < '0' || nextByte > '9') // if the next character is not a digit
+                byte nextByteVal = (byte)(utf8Text[byteIndex] - '0');
+                if (nextByteVal > 9) // if the next character is not a digit
                 {
                     if (bytesConsumed == 0) // check to see if we've processed any digits at all
                     {
@@ -78,20 +80,22 @@ namespace System.Text
                         return true; // otherwise return true
                     }
                 }
-                try
-                {
-                    ulong candidate = checked(value * 10 + nextByte - '0'); // parse the current digit to a ulong and add it to the temporary value
-                    Debug.Assert(candidate >= value);
-
-                    value = candidate;
-                    bytesConsumed++; // increment the number of bytes consumed, then loop
-                }
-                catch (OverflowException e)
+                else if (value > UInt64.MaxValue / 10) // overflow
                 {
                     value = 0;
                     bytesConsumed = 0;
                     return false;
                 }
+                else if (value > 0 && UInt64.MaxValue - value * 10 < (ulong)(nextByteVal)) // overflow
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
+                ulong candidate = value * 10 + nextByteVal;
+
+                value = candidate;
+                bytesConsumed++;
             }
 
             return true;
@@ -103,8 +107,8 @@ namespace System.Text
 
             for (int byteIndex = index; byteIndex < length + index; byteIndex++)
             {
-                byte nextByte = utf8Text[byteIndex];
-                if (nextByte < '0' || nextByte > '9')
+                byte nextByteVal = (byte)(utf8Text[byteIndex] - '0');
+                if (nextByteVal > 9)
                 {
                     if (bytesConsumed == 0)
                     {
@@ -116,20 +120,22 @@ namespace System.Text
                         return true;
                     }
                 }
-                try
-                {
-                    ulong candidate = checked(value * 10 + nextByte - '0'); // parse the current digit to a ulong and add it to the temporary value
-                    Debug.Assert(candidate >= value);
-
-                    value = candidate;
-                    bytesConsumed++; // increment the number of bytes consumed, then loop
-                }
-                catch (OverflowException e)
+                else if (value > UInt64.MaxValue / 10) // overflow
                 {
                     value = 0;
                     bytesConsumed = 0;
                     return false;
                 }
+                else if (value > 0 && UInt64.MaxValue - value * 10 < (ulong)(nextByteVal)) // overflow
+                {
+                    value = 0;
+                    bytesConsumed = 0;
+                    return false;
+                }
+                ulong candidate = value * 10 + nextByteVal;
+
+                value = candidate;
+                bytesConsumed++;
             }
             return true;
         }
