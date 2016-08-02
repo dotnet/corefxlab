@@ -84,7 +84,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // Min value
         private static void ByteArrayToByte(string text)
         {
-			byte[] utf8ByteArray = UtfEncode(text);
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 byte value;
@@ -110,8 +110,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // Min value
         private unsafe static void ByteStarToByte(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 byte value;
@@ -140,8 +140,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // Min value
         private unsafe static void ByteStarUnmanagedToByte(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -274,7 +274,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private static void ByteArrayToUshort(string text)
         {
-			byte[] utf8ByteArray = UtfEncode(text);
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 ushort value;
@@ -300,8 +300,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private unsafe static void ByteStarToUshort(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 ushort value;
@@ -330,8 +330,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private unsafe static void ByteStarUnmanagedToUshort(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -341,8 +341,8 @@ namespace System.Text.Primitives.Tests
                 int bytesConsumed;
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < LOAD_ITERATIONS; i++) 
-						InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
                 }
             }
             Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
@@ -386,7 +386,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             int start = text.IndexOf('2');
-
+            
             foreach (var iteration in Benchmark.Iterations)
             {
                 ushort value;
@@ -464,7 +464,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private static void ByteArrayToUint(string text)
         {
-			byte[] utf8ByteArray = UtfEncode(text);
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 uint value;
@@ -490,8 +490,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private unsafe static void ByteStarToUint(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 uint value;
@@ -520,8 +520,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private unsafe static void ByteStarUnmanagedToUint(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -658,8 +658,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private static void ByteArrayToUlong(string text)
         {
-			byte[] utf8ByteArray = UtfEncode(text);
-			ulong value;
+            byte[] utf8ByteArray = UtfEncode(text);
+            ulong value;
             foreach (var iteration in Benchmark.Iterations)
             {
                 int bytesConsumed;
@@ -684,8 +684,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private unsafe static void ByteStarToUlong(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 ulong value;
@@ -714,8 +714,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private unsafe static void ByteStarUnmanagedToUlong(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -863,7 +863,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("-128")] // min value
         private static void ByteArrayToSbyte(string text)
         {
-			byte[] utf8ByteArray = UtfEncode(text);
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 sbyte value;
@@ -892,8 +892,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("-128")] // min value
         private unsafe static void ByteStarToSbyte(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 sbyte value;
@@ -925,8 +925,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("-128")] // min value
         private unsafe static void ByteStarUnmanagedToSbyte(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -1074,7 +1074,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("-32768")] // min value
         private static void ByteArrayToShort(string text)
         {
-			byte[] utf8ByteArray = UtfEncode(text);
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 short value;
@@ -1103,8 +1103,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("-32768")] // min value
         private unsafe static void ByteStarToShort(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 short value;
@@ -1136,8 +1136,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("-32768")] // min value
         private unsafe static void ByteStarUnmanagedToShort(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -1289,7 +1289,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("-2147483648")] // min value
         private static void ByteArrayToInt(string text)
         {
-			byte[] utf8ByteArray = UtfEncode(text);
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
@@ -1318,8 +1318,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("-2147483648")] // min value
         private unsafe static void ByteStarToInt(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
@@ -1351,8 +1351,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("-2147483648")] // min value
         private unsafe static void ByteStarUnmanagedToInt(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -1506,7 +1506,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("-9223372036854775808")] // min value
         private static void ByteArrayToLong(string text)
         {
-			byte[] utf8ByteArray = UtfEncode(text);
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
@@ -1535,8 +1535,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("-9223372036854775808")] // min value
         private unsafe static void ByteStarToLong(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
@@ -1568,8 +1568,8 @@ namespace System.Text.Primitives.Tests
         [InlineData("-9223372036854775808")] // min value
         private unsafe static void ByteStarUnmanagedToLong(string text)
         {
-			int length = text.Length;
-			byte[] utf8ByteArray = UtfEncode(text);
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
