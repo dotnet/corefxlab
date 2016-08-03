@@ -20,8 +20,8 @@
     "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
-    "System.Runtime": "4.0.0",
-    "System.Diagnostics.Debug": "4.0.0",
+    "System.Runtime": "4.1.0",
+    "System.Diagnostics.Debug": "4.0.11",
     "System.Text.Utf8": { "target": "project" },
     "System.Text.Formatting": { "target": "project" },
     "System.Slices": { "target": "project" }
