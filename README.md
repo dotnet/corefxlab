@@ -12,6 +12,11 @@ They do formatting with minimum GC heap allocations (1/6 of allocations in some 
 This can result in significant performance wins for software that does a lot of text formatting for the Web, e.g. generating HTML, JSON, XML. 
 See more information on this component and code samples at the [Wiki]( https://github.com/dotnet/corefxlab/wiki). 
 
+* **System.Text.Primitives**
+The System.Text.Primitives library contains fast, non-allocating integral parsing APIs. They are designed for scenarios in which a byte buffer
+and an index are accepted as input and a parsed value is desired as output (e.g. in a web server). These APIs present significant performance gains
+over converting the buffer to a string, indexing into the string, and then parsing.
+
 * **System.IO.FileSystem.Watcher.Polling**. 
 .NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
 This component, PollingWatcher, allows to monitory directory changes by polling, and so will never miss a change. It is optimized to minimize 
