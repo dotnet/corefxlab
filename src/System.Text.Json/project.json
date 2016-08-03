@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "System.Runtime": "4.0.0",
+    "System.Runtime": "4.1.0",
     "System.Runtime.Extensions": "4.0.0",
     "System.Text.Utf8": { "target": "project" },
     "System.Text.Formatting": { "target": "project" },
