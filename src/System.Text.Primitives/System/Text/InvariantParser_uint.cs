@@ -40,7 +40,13 @@ namespace System.Text
 
         public static bool TryParse(Utf8String utf8Text, out uint value, out int bytesConsumed)
         {
-            Precondition.Require(utf8Text.Length > 0);
+            // Precondition replacement
+            if (utf8Text.Length < 1)
+            {
+                value = 0;
+                bytesConsumed = 0;
+                return false;
+            }
 
             value = 0;
             bytesConsumed = 0;
@@ -82,7 +88,13 @@ namespace System.Text
         }
         public static bool TryParse(byte[] utf8Text, int index, out uint value, out int bytesConsumed)
         {
-            Precondition.Require(utf8Text.Length > 0);
+            // Precondition replacement
+            if (utf8Text.Length < 1 || index < 0 || index >= utf8Text.Length)
+            {
+                value = 0;
+                bytesConsumed = 0;
+                return false;
+            }
 
             value = 0;
             bytesConsumed = 0;
@@ -124,6 +136,14 @@ namespace System.Text
         }
         unsafe public static bool TryParse(byte* utf8Text, int index, int length, out uint value, out int bytesConsumed)
         {
+            // Precondition replacement
+            if (length < 1 || index < 0)
+            {
+                value = 0;
+                bytesConsumed = 0;
+                return false;
+            }
+
             value = 0;
             bytesConsumed = 0;
 
