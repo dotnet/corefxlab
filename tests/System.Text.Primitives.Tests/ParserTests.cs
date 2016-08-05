@@ -399,5 +399,29 @@ namespace System.Text.Primitives.Tests
             }
         }
         #endregion
+
+        #region float
+
+        [Theory]
+        [InlineData(".1728", true, 0, 0.1728f, 5)]
+        [InlineData("blahblahh175.1110", true, 9, 175.1110f, 8)]
+        [InlineData("+98.7abcdefg", true, 0, 98.7, 5)]
+        [InlineData("A small float is -0.10000000001", true, 17, -0.10000000001f, 14)]
+        [InlineData("-3400000000000000000000000", true, 0, -3400000000000000000000000f, 26)] // min value
+        [InlineData("3400000000000000000000000", true, 0, 3400000000000000000000000f, 25)] // max value
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("1844674407370955161600000000000000000000000000000000000000", false, 0, 0, 0)] // overflow test
+        public void ParseUtf8ByteArrayToFloat(string text, bool expectSuccess, int index, float expectedValue, int expectedBytesConsumed)
+        {
+            float parsedValue;
+            int bytesConsumed;
+            bool result = InvariantParser.TryParse(UtfEncode(text), index, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+        #endregion
     }
 }
