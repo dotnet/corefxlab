@@ -407,8 +407,13 @@ namespace System.Text.Primitives.Tests
         [InlineData("blahblahh175.1110", true, 9, 175.1110f, 8)]
         [InlineData("+98.7abcdefg", true, 0, 98.7, 5)]
         [InlineData("A small float is -0.10000000001", true, 17, -0.10000000001f, 14)]
+        [InlineData("1.45e12", true, 0, 1.45e12f, 7)]
+        [InlineData("1E-8", true, 0, 1e-8f, 4)]
         [InlineData("-3400000000000000000000000", true, 0, -3400000000000000000000000f, 26)] // min value
         [InlineData("3400000000000000000000000", true, 0, 3400000000000000000000000f, 25)] // max value
+        [InlineData("Infinity", true, 0, float.PositiveInfinity, 8)]
+        [InlineData("-Infinity", true, 0, float.NegativeInfinity, 9)]
+        [InlineData("NaN", true, 0, float.NaN, 3)]
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData("1844674407370955161600000000000000000000000000000000000000", false, 0, 0, 0)] // overflow test
         public void ParseUtf8ByteArrayToFloat(string text, bool expectSuccess, int index, float expectedValue, int expectedBytesConsumed)
@@ -420,6 +425,95 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+        [Theory]
+        [InlineData(".1728", true, 0, 0.1728f, 5)]
+        [InlineData("blahblahh175.1110", true, 9, 175.1110f, 8)]
+        [InlineData("+98.7abcdefg", true, 0, 98.7, 5)]
+        [InlineData("A small float is -0.10000000001", true, 17, -0.10000000001f, 14)]
+        [InlineData("1.45e12", true, 0, 1.45e12f, 7)]
+        [InlineData("1E-8", true, 0, 1e-8f, 4)]
+        [InlineData("-3400000000000000000000000", true, 0, -3400000000000000000000000f, 26)] // min value
+        [InlineData("3400000000000000000000000", true, 0, 3400000000000000000000000f, 25)] // max value
+        [InlineData("Infinity", true, 0, float.PositiveInfinity, 8)]
+        [InlineData("-Infinity", true, 0, float.NegativeInfinity, 9)]
+        [InlineData("NaN", true, 0, float.NaN, 3)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("1844674407370955161600000000000000000000000000000000000000", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf8ByteStarToFloat(string text, bool expectSuccess, int index, float expectedValue, int expectedBytesConsumed)
+        {
+            byte[] utf8Array = UtfEncode(text);
+
+            float parsedValue;
+            int bytesConsumed;
+            fixed (byte* arrayPointer = utf8Array)
+            {
+                bool result = InvariantParser.TryParse(arrayPointer, index, utf8Array.Length, out parsedValue, out bytesConsumed);
+
+                Assert.Equal(expectSuccess, result);
+                Assert.Equal(expectedValue, parsedValue);
+                Assert.Equal(expectedBytesConsumed, bytesConsumed);
+            }
+        }
+
+        #endregion
+
+        #region double
+
+        [Theory]
+        [InlineData(".1728", true, 0, 0.1728, 5)]
+        [InlineData("blahblahh175.1110", true, 9, 175.1110, 8)]
+        [InlineData("+98.25abcdefg", true, 0, 98.25, 6)]
+        [InlineData("A small float is -0.10000000001", true, 17, -0.10000000001, 14)]
+        [InlineData("1.45e12", true, 0, 1.45e12, 7)]
+        [InlineData("1E-8", true, 0, 1e-8, 4)]
+        [InlineData("-5e-304", true, 0, -5e-304, 7)] // min value
+        [InlineData("1.7e308", true, 0, 1.7e308, 7)] // max value
+        [InlineData("Infinity", true, 0, double.PositiveInfinity, 8)]
+        [InlineData("-Infinity", true, 0, double.NegativeInfinity, 9)]
+        [InlineData("NaN", true, 0, double.NaN, 3)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("1.6540654e100000", false, 0, 0, 0)] // overflow test
+        public void ParseUtf8ByteArrayToDouble(string text, bool expectSuccess, int index, double expectedValue, int expectedBytesConsumed)
+        {
+            double parsedValue;
+            int bytesConsumed;
+            bool result = InvariantParser.TryParse(UtfEncode(text), index, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+        [Theory]
+        [InlineData(".1728", true, 0, 0.1728, 5)]
+        [InlineData("blahblahh175.1110", true, 9, 175.1110, 8)]
+        [InlineData("+98.25abcdefg", true, 0, 98.25, 6)]
+        [InlineData("A small float is -0.10000000001", true, 17, -0.10000000001, 14)]
+        [InlineData("1.45e12", true, 0, 1.45e12, 7)]
+        [InlineData("1E-8", true, 0, 1e-8, 4)]
+        [InlineData("-5e-304", true, 0, -5e-304, 7)] // min value
+        [InlineData("1.7e308", true, 0, 1.7e308, 7)] // max value
+        [InlineData("Infinity", true, 0, double.PositiveInfinity, 8)]
+        [InlineData("-Infinity", true, 0, double.NegativeInfinity, 9)]
+        [InlineData("NaN", true, 0, double.NaN, 3)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("1.6540654e100000", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf8ByteStarToDouble(string text, bool expectSuccess, int index, double expectedValue, int expectedBytesConsumed)
+        {
+            byte[] utf8Array = UtfEncode(text);
+
+            double parsedValue;
+            int bytesConsumed;
+            fixed (byte* arrayPointer = utf8Array)
+            {
+                bool result = InvariantParser.TryParse(arrayPointer, index, utf8Array.Length, out parsedValue, out bytesConsumed);
+
+                Assert.Equal(expectSuccess, result);
+                Assert.Equal(expectedValue, parsedValue);
+                Assert.Equal(expectedBytesConsumed, bytesConsumed);
+            }
         }
 
         #endregion
