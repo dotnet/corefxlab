@@ -517,5 +517,54 @@ namespace System.Text.Primitives.Tests
         }
 
         #endregion
+
+        #region bool
+        [Theory]
+        [InlineData("blahblahhTrue", true, 9, true, 4)]
+        [InlineData("trueacndasjfh", true, 0, true, 4)]
+        [InlineData("LetthemFALSEeatcake", true, 7, false, 5)]
+        [InlineData("false", true, 0, false, 5)]
+        [InlineData("FaLsE", true, 0, false, 5)]
+        [InlineData("0", true, 0, false, 1)]
+        [InlineData("1", true, 0, true, 1)]
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        public void ParseUtf8ByteArrayToBool(string text, bool expectSuccess, int index, bool expectedValue, int expectedBytesConsumed)
+        {
+            bool parsedValue;
+            int bytesConsumed;
+            bool result = InvariantParser.TryParse(UtfEncode(text), index, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+        [Theory]
+        [InlineData("blahblahhTrue", true, 9, true, 4)]
+        [InlineData("trueacndasjfh", true, 0, true, 4)]
+        [InlineData("LetthemFALSEeatcake", true, 7, false, 5)]
+        [InlineData("false", true, 0, false, 5)]
+        [InlineData("FaLsE", true, 0, false, 5)]
+        [InlineData("0", true, 0, false, 1)]
+        [InlineData("1", true, 0, true, 1)]
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        public unsafe void ParseUtf8ByteStarToBool(string text, bool expectSuccess, int index, bool expectedValue, int expectedBytesConsumed)
+        {
+            bool parsedValue;
+            int bytesConsumed;
+
+            byte[] textBytes = UtfEncode(text);
+            fixed (byte* arrayPointer = textBytes)
+            {
+                bool result = InvariantParser.TryParse(arrayPointer, index, textBytes.Length, out parsedValue, out bytesConsumed);
+
+                Assert.Equal(expectSuccess, result);
+                Assert.Equal(expectedValue, parsedValue);
+                Assert.Equal(expectedBytesConsumed, bytesConsumed);
+            }
+        }
+        #endregion
     }
 }
