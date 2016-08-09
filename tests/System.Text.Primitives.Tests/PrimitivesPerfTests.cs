@@ -1655,5 +1655,210 @@ namespace System.Text.Primitives.Tests
             }
         }
         #endregion
+
+        #region bool
+        [Benchmark]
+        [InlineData("0")]
+        [InlineData("1")]
+        [InlineData("true")]
+        [InlineData("TRUE")]
+        [InlineData("True")]
+        [InlineData("false")]
+        [InlineData("FALSE")]
+        [InlineData("False")]
+        [InlineData("SuperpositionofTrueandFalse")]
+        private static void BaselineBoolParse(string text)
+        {
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                bool value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        Boolean.TryParse(text, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("0")]
+        [InlineData("1")]
+        [InlineData("true")]
+        [InlineData("TRUE")]
+        [InlineData("True")]
+        [InlineData("false")]
+        [InlineData("FALSE")]
+        [InlineData("False")]
+        [InlineData("SuperpositionofTrueandFalse")]
+        private static void BaselineArrayBoolParse(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                bool value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        Boolean.TryParse(decodedText, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("0")]
+        [InlineData("1")]
+        [InlineData("true")]
+        [InlineData("TRUE")]
+        [InlineData("True")]
+        [InlineData("false")]
+        [InlineData("FALSE")]
+        [InlineData("False")]
+        [InlineData("SuperpositionofTrueandFalse")]
+        private static void ByteArrayToBool(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                bool value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("0")]
+        [InlineData("1")]
+        [InlineData("true")]
+        [InlineData("TRUE")]
+        [InlineData("True")]
+        [InlineData("false")]
+        [InlineData("FALSE")]
+        [InlineData("False")]
+        [InlineData("SuperpositionofTrueandFalse")]
+        private unsafe static void ByteStarToBool(string text)
+        {
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                bool value;
+                int bytesConsumed;
+                fixed (byte* utf8ByteStar = utf8ByteArray)
+                {
+                    using (iteration.StartMeasurement())
+                    {
+                        for (int i = 0; i < LOAD_ITERATIONS; i++)
+                        {
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, out value, out bytesConsumed);
+                        }
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("0")]
+        [InlineData("1")]
+        [InlineData("true")]
+        [InlineData("TRUE")]
+        [InlineData("True")]
+        [InlineData("false")]
+        [InlineData("FALSE")]
+        [InlineData("False")]
+        [InlineData("SuperpositionofTrueandFalse")]
+        private unsafe static void ByteStarUnmanagedToBool(string text)
+        {
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
+            byte* unmanagedBytePtr;
+            unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
+            Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                bool value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                    }
+                }
+            }
+            Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj=true\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=FALSE,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer =false\r\n")]
+        [InlineData("this is definitely =true a buffer")]
+        [InlineData("HTTP 1.1 / POST http://example.org/form some stuff this=FALSE Four Four Eight\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE fact=0\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE fact=1\r\n\r\n")]
+        private static void BaselineArbitraryLengthBufferToBool(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('=') + 1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                long value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        int currentIndex = start;
+                        char currentChar = text[currentIndex];
+                        while (currentChar >= '0' && currentChar <= '9')
+                        {
+                            currentChar = text[currentIndex];
+                            currentIndex++;
+                        }
+                        Int64.TryParse(decodedText.Substring(start, currentIndex - start), NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("safljasldkfjsldkj=true\r\n\r\n")]
+        [InlineData("HTTP 1.1 / GET http://example.com/index.php?test=FALSE,etc=blah\r\n\r\n")]
+        [InlineData("buffer buffer buffer buffer =false\r\n")]
+        [InlineData("this is definitely =true a buffer")]
+        [InlineData("HTTP 1.1 / POST http://example.org/form some stuff this=FALSE Four Four Eight\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE fact=0\r\n\r\n")]
+        [InlineData("HTTP 1.1 / UPDATE fact=1\r\n\r\n")]
+        private static void ByteArrayArbitraryLengthToBool(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            int start = text.IndexOf('=') + 1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                long value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }
