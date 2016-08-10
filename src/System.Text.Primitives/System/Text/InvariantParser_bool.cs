@@ -117,7 +117,7 @@ namespace System.Text
             bytesConsumed = 0;
             value = default(bool);
 
-            if (utf8Text.Length < 1 || index < 0 || index >= utf8Text.Length)
+            if (utf8Text.Length < 1 ||  (uint)index >= utf8Text.Length)
             {
                 return false;
             }

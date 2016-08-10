@@ -67,7 +67,7 @@ namespace System.Text
 		public static bool TryParse(byte[] utf8Text, int index, out ulong value, out int bytesConsumed)
         {
             // Precondition replacement
-            if (utf8Text.Length < 1 || index < 0 || index >= utf8Text.Length)
+            if (utf8Text.Length < 1 ||  (uint)index >= utf8Text.Length)
             {
                 value = 0;
                 bytesConsumed = 0;
