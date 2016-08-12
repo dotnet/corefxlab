@@ -1511,7 +1511,7 @@ namespace System.Text.Primitives.Tests
             byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
-                int value;
+                long value;
                 int bytesConsumed;
                 using (iteration.StartMeasurement())
                 {
@@ -1541,7 +1541,7 @@ namespace System.Text.Primitives.Tests
             byte[] utf8ByteArray = UtfEncode(text);
             foreach (var iteration in Benchmark.Iterations)
             {
-                int value;
+                long value;
                 int bytesConsumed;
                 fixed (byte* utf8ByteStar = utf8ByteArray)
                 {
