@@ -9,7 +9,7 @@ namespace System.Text
     public static partial class InvariantParser
     {
         #region Helper Methods
-        private static bool isTrue(byte[] utf8Text, int index)
+        private static bool IsTrue(byte[] utf8Text, int index)
         {
             if (utf8Text.Length - index < 4)
                 return false;
@@ -32,7 +32,7 @@ namespace System.Text
 
             return true;
         }
-        private unsafe static bool isTrue(byte* utf8Text, int index, int length)
+        private unsafe static bool IsTrue(byte* utf8Text, int index, int length)
         {
             if (length < 4)
                 return false;
@@ -56,7 +56,7 @@ namespace System.Text
             return true;
         }
 
-        private static bool isFalse(byte[] utf8Text, int index)
+        private static bool IsFalse(byte[] utf8Text, int index)
         {
             if (utf8Text.Length - index < 5)
                 return false;
@@ -83,7 +83,7 @@ namespace System.Text
 
             return true;
         }
-        private unsafe static bool isFalse(byte* utf8Text, int index, int length)
+        private unsafe static bool IsFalse(byte* utf8Text, int index, int length)
         {
             if (length < 5)
                 return false;
@@ -112,7 +112,8 @@ namespace System.Text
         }
         #endregion
 
-        public static bool TryParse(byte[] utf8Text, int index, out bool value, out int bytesConsumed)
+        public static bool TryParse(byte[] utf8Text, int index, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat,
+            out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;
             value = default(bool);
@@ -122,39 +123,46 @@ namespace System.Text
                 return false;
             }
 
-            byte firstByte = utf8Text[index];
+            if (cultureAndEncodingInfo.IsInvariantUtf8)
+            {
 
-            if (firstByte == '1')
-            {
-                bytesConsumed = 1;
-                value = true;
-                return true;
+                byte firstByte = utf8Text[index];
+
+                if (firstByte == '1')
+                {
+                    bytesConsumed = 1;
+                    value = true;
+                    return true;
+                }
+                else if (firstByte == '0')
+                {
+                    bytesConsumed = 1;
+                    value = false;
+                    return true;
+                }
+                else if (IsTrue(utf8Text, index))
+                {
+                    bytesConsumed = 4;
+                    value = true;
+                    return true;
+                }
+                else if (IsFalse(utf8Text, index))
+                {
+                    bytesConsumed = 5;
+                    value = false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else if (firstByte == '0')
-            {
-                bytesConsumed = 1;
-                value = false;
-                return true;
-            }
-            else if (isTrue(utf8Text, index))
-            {
-                bytesConsumed = 4;
-                value = true;
-                return true;
-            }
-            else if (isFalse(utf8Text, index))
-            {
-                bytesConsumed = 5;
-                value = false;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
-        public static unsafe bool TryParse(byte* utf8Text, int index, int length, out bool value, out int bytesConsumed)
+        public static unsafe bool TryParse(byte* utf8Text, int index, int length, FormattingData cultureAndEncodingInfo,
+            Format.Parsed numericFormat, out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;
             value = default(bool);
@@ -164,36 +172,41 @@ namespace System.Text
                 return false;
             }
 
-            byte firstByte = utf8Text[index];
+            if (cultureAndEncodingInfo.IsInvariantUtf8)
+            {
+                byte firstByte = utf8Text[index];
 
-            if (firstByte == '1')
-            {
-                bytesConsumed = 1;
-                value = true;
-                return true;
+                if (firstByte == '1')
+                {
+                    bytesConsumed = 1;
+                    value = true;
+                    return true;
+                }
+                else if (firstByte == '0')
+                {
+                    bytesConsumed = 1;
+                    value = false;
+                    return true;
+                }
+                else if (IsTrue(utf8Text, index, length))
+                {
+                    bytesConsumed = 4;
+                    value = true;
+                    return true;
+                }
+                else if (IsFalse(utf8Text, index, length))
+                {
+                    bytesConsumed = 5;
+                    value = false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else if (firstByte == '0')
-            {
-                bytesConsumed = 1;
-                value = false;
-                return true;
-            }
-            else if (isTrue(utf8Text, index, length))
-            {
-                bytesConsumed = 4;
-                value = true;
-                return true;
-            }
-            else if (isFalse(utf8Text, index, length))
-            {
-                bytesConsumed = 5;
-                value = false;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
     }
 }
