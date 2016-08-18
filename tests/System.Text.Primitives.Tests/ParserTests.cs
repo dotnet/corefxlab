@@ -518,6 +518,51 @@ namespace System.Text.Primitives.Tests
 
         #endregion
 
+        #region decimal
+
+        [Theory]
+        [InlineData(".1728", true, 0, 0.1728, 5)]
+        [InlineData("blahblahh175.1110", true, 9, 175.1110, 8)]
+        [InlineData("+98.25abcdefg", true, 0, 98.25, 6)]
+        [InlineData("A small float is -0.10000000001", true, 17, -0.10000000001, 14)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("1111111111111111111111111111111111111111111111111111111111", false, 0, 0, 0)] // overflow test
+        public void ParseUtf8ByteArrayToDecimal(string text, bool expectSuccess, int index, decimal expectedValue, int expectedBytesConsumed)
+        {
+            decimal parsedValue;
+            int bytesConsumed;
+            bool result = InvariantParser.TryParse(UtfEncode(text), index, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+        [Theory]
+        [InlineData(".1728", true, 0, 0.1728, 5)]
+        [InlineData("blahblahh175.1110", true, 9, 175.1110, 8)]
+        [InlineData("+98.25abcdefg", true, 0, 98.25, 6)]
+        [InlineData("A small float is -0.10000000001", true, 17, -0.10000000001, 14)]
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData("1111111111111111111111111111111111111111111111111111111111", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf8ByteStarToDecimal(string text, bool expectSuccess, int index, decimal expectedValue, int expectedBytesConsumed)
+        {
+            byte[] utf8Array = UtfEncode(text);
+
+            decimal parsedValue;
+            int bytesConsumed;
+            fixed (byte* arrayPointer = utf8Array)
+            {
+                bool result = InvariantParser.TryParse(arrayPointer, index, utf8Array.Length, out parsedValue, out bytesConsumed);
+
+                Assert.Equal(expectSuccess, result);
+                Assert.Equal(expectedValue, parsedValue);
+                Assert.Equal(expectedBytesConsumed, bytesConsumed);
+            }
+        }
+
+        #endregion
+
         #region bool
         [Theory]
         [InlineData("blahblahhTrue", true, 9, true, 4)]
@@ -562,6 +607,70 @@ namespace System.Text.Primitives.Tests
 
                 Assert.Equal(expectSuccess, result);
                 Assert.Equal(expectedValue, parsedValue);
+                Assert.Equal(expectedBytesConsumed, bytesConsumed);
+            }
+        }
+        #endregion
+
+        #region uri
+        [Theory]
+        [InlineData("http://www.example.com/", true, 0, "http://www.example.com/", 23)]
+        [InlineData("https://www.example.org/important.php?true=true", true, 0, "https://www.example.org/important.php?true=true", 47)]
+        [InlineData("http://msw", true, 0, "http://msw", 10)]
+        [InlineData("ftp://example.org", true, 0, "ftp://example.org", 17)]
+        [InlineData("file:///C:\\Users", true, 0, "file:///C:\\Users", 16)]
+        [InlineData("C:\\Users", true, 0, "C:\\Users", 8)]
+        [InlineData("rtsp://192.168.1.1", true, 0, "rtsp://192.168.1.1", 18)]
+        [InlineData("HTTP 1.1 / GET http://www.example.org; ...", true, 15, "http://www.example.org", 22)]
+        [InlineData("http://&5", false, 0, "", 0)]
+        [InlineData("(*)$#*(", false, 0, "", 0)]
+        [InlineData("HTTP 1.1 / GET http://www.example.org; ...", false, 4, "", 0)] // bad index
+        [InlineData("197", false, 0, "", 0)]
+        [InlineData("://////888.4.4.4", false, 0, "", 0)]
+        public void ParseUtf8ByteArrayToUri(string text, bool expectSuccess, int index, string expectedValue, int expectedBytesConsumed)
+        {
+            Uri parsedValue;
+            int bytesConsumed;
+            bool result = InvariantParser.TryParse(UtfEncode(text), index, out parsedValue, out bytesConsumed);
+
+
+            Assert.Equal(expectSuccess, result);
+            if (expectedValue != "")
+                Assert.Equal(new Uri(expectedValue), parsedValue);
+            else
+                Assert.Equal(null, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+        [Theory]
+        [InlineData("http://www.example.com/", true, 0, "http://www.example.com/", 23)]
+        [InlineData("https://www.example.org/important.php?true=true", true, 0, "https://www.example.org/important.php?true=true", 47)]
+        [InlineData("http://msw", true, 0, "http://msw", 10)]
+        [InlineData("ftp://example.org", true, 0, "ftp://example.org", 17)]
+        [InlineData("file:///C:\\Users", true, 0, "file:///C:\\Users", 16)]
+        [InlineData("C:\\Users", true, 0, "C:\\Users", 8)]
+        [InlineData("rtsp://192.168.1.1", true, 0, "rtsp://192.168.1.1", 18)]
+        [InlineData("HTTP 1.1 / GET http://www.example.org; ...", true, 15, "http://www.example.org", 22)]
+        [InlineData("http://&5", false, 0, "", 0)]
+        [InlineData("(*)$#*(", false, 0, "", 0)]
+        [InlineData("HTTP 1.1 / GET http://www.example.org; ...", false, 4, "", 0)] // bad index
+        [InlineData("197", false, 0, "", 0)]
+        [InlineData("://////888.4.4.4", false, 0, "", 0)]
+        public unsafe void ParseUtf8ByteStarToUri(string text, bool expectSuccess, int index, string expectedValue, int expectedBytesConsumed)
+        {
+            Uri parsedValue;
+            int bytesConsumed;
+
+            byte[] textBytes = UtfEncode(text);
+            fixed (byte* arrayPointer = textBytes)
+            {
+                bool result = InvariantParser.TryParse(arrayPointer, index, textBytes.Length, out parsedValue, out bytesConsumed);
+
+                Assert.Equal(expectSuccess, result);
+                if (expectedValue != "")
+                    Assert.Equal(new Uri(expectedValue), parsedValue);
+                else
+                    Assert.Equal(null, parsedValue);
                 Assert.Equal(expectedBytesConsumed, bytesConsumed);
             }
         }
