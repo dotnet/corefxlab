@@ -73,6 +73,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Text.Primitives.Test
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Text.Primitives", "src\System.Text.Primitives\System.Text.Primitives.xproj", "{80E6332B-DC83-4DFC-9C19-8D89E988BA4E}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.Numerics.Dec64", "src\System.Numerics.Dec64\System.Numerics.Dec64.xproj", "{329B9BE5-3F34-42A2-9E8C-D7BDD6B1EE55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -211,6 +213,10 @@ Global
 		{80E6332B-DC83-4DFC-9C19-8D89E988BA4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80E6332B-DC83-4DFC-9C19-8D89E988BA4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80E6332B-DC83-4DFC-9C19-8D89E988BA4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{329B9BE5-3F34-42A2-9E8C-D7BDD6B1EE55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{329B9BE5-3F34-42A2-9E8C-D7BDD6B1EE55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{329B9BE5-3F34-42A2-9E8C-D7BDD6B1EE55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{329B9BE5-3F34-42A2-9E8C-D7BDD6B1EE55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -249,5 +255,6 @@ Global
 		{D5281344-D323-4E13-8BC7-4F39814AD4A6} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{67B42C20-D98A-420B-82C0-04AFD963E650} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{80E6332B-DC83-4DFC-9C19-8D89E988BA4E} = {4B000021-5278-4F2A-B734-DE49F55D4024}
+		{329B9BE5-3F34-42A2-9E8C-D7BDD6B1EE55} = {4B000021-5278-4F2A-B734-DE49F55D4024}
 	EndGlobalSection
 EndGlobal
