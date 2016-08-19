@@ -1033,9 +1033,9 @@ namespace System.Text.Primitives.Tests
         }
 
 		#endregion
-
+        
 		#region bool
-		
+
         [Theory]
         [InlineData("blahblahhTrue", true, 9, true, 4)]
         [InlineData("trueacndasjfh", true, 0, true, 4)]
