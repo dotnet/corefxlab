@@ -89,11 +89,13 @@ namespace System.Text.Primitives.Tests
             {
                 byte value;
                 int bytesConsumed;
+                FormattingData fd = FormattingData.InvariantUtf8;
+                Format.Parsed nf = new Format.Parsed('N');
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -112,6 +114,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 byte value;
@@ -122,7 +126,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            InvariantParser.TryParse(utf8ByteStar, 0, length, out value, out bytesConsumed);
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -142,6 +146,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -153,7 +159,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -196,6 +202,8 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             int start = text.IndexOf('2');
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -205,7 +213,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -275,6 +283,8 @@ namespace System.Text.Primitives.Tests
         private static void ByteArrayToUshort(string text)
         {
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 ushort value;
@@ -283,7 +293,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -302,6 +312,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 ushort value;
@@ -312,7 +324,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            InvariantParser.TryParse(utf8ByteStar, 0, length, out value, out bytesConsumed);
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -332,6 +344,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -343,7 +357,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -388,6 +402,8 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             int start = text.IndexOf('2');
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -397,7 +413,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -467,6 +483,8 @@ namespace System.Text.Primitives.Tests
         private static void ByteArrayToUint(string text)
         {
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 uint value;
@@ -475,7 +493,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -494,6 +512,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 uint value;
@@ -504,7 +524,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            InvariantParser.TryParse(utf8ByteStar, 0, length, out value, out bytesConsumed);
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -524,6 +544,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -535,7 +557,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -582,6 +604,8 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             int start = text.IndexOf('2');
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -591,7 +615,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -661,6 +685,8 @@ namespace System.Text.Primitives.Tests
         private static void ByteArrayToUlong(string text)
         {
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             ulong value;
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -669,7 +695,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -688,6 +714,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 ulong value;
@@ -698,7 +726,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            InvariantParser.TryParse(utf8ByteStar, 0, length, out value, out bytesConsumed);
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -718,6 +746,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -729,7 +759,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -777,6 +807,8 @@ namespace System.Text.Primitives.Tests
         private static void ByteArrayArbitraryLengthBufferToUlong(string text)
         {
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             int start = text.IndexOf('2');
 
             foreach (var iteration in Benchmark.Iterations)
@@ -787,7 +819,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -866,6 +898,8 @@ namespace System.Text.Primitives.Tests
         private static void ByteArrayToSbyte(string text)
         {
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 sbyte value;
@@ -874,7 +908,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -896,6 +930,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 sbyte value;
@@ -906,7 +942,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            InvariantParser.TryParse(utf8ByteStar, 0, length, out value, out bytesConsumed);
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -929,6 +965,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -940,7 +978,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -989,16 +1027,18 @@ namespace System.Text.Primitives.Tests
             int start = text.IndexOf('2');
             if (text[start - 1] == '-')
                 start -= 1;
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
-                long value;
+                sbyte value;
                 int bytesConsumed;
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1077,6 +1117,8 @@ namespace System.Text.Primitives.Tests
         private static void ByteArrayToShort(string text)
         {
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 short value;
@@ -1085,7 +1127,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1107,6 +1149,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 short value;
@@ -1117,7 +1161,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            InvariantParser.TryParse(utf8ByteStar, 0, length, out value, out bytesConsumed);
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -1140,6 +1184,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -1151,7 +1197,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1204,16 +1250,18 @@ namespace System.Text.Primitives.Tests
             int start = text.IndexOf('2');
             if (text[start - 1] == '-')
                 start -= 1;
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
-                long value;
+                short value;
                 int bytesConsumed;
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1292,6 +1340,8 @@ namespace System.Text.Primitives.Tests
         private static void ByteArrayToInt(string text)
         {
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
@@ -1300,7 +1350,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1322,6 +1372,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
@@ -1332,7 +1384,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            InvariantParser.TryParse(utf8ByteStar, 0, length, out value, out bytesConsumed);
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -1356,6 +1408,8 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
@@ -1366,7 +1420,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1421,16 +1475,18 @@ namespace System.Text.Primitives.Tests
             int start = text.IndexOf('2');
             if (text[start - 1] == '-')
                 start -= 1;
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
-                long value;
+                int value;
                 int bytesConsumed;
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1509,6 +1565,8 @@ namespace System.Text.Primitives.Tests
         private static void ByteArrayToLong(string text)
         {
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 long value;
@@ -1517,7 +1575,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1539,6 +1597,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 long value;
@@ -1549,7 +1609,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            InvariantParser.TryParse(utf8ByteStar, 0, length, out value, out bytesConsumed);
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -1572,6 +1632,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -1583,7 +1645,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1640,6 +1702,8 @@ namespace System.Text.Primitives.Tests
             int start = text.IndexOf('2');
             if (text[start - 1] == '-')
                 start -= 1;
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -1649,7 +1713,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1722,6 +1786,8 @@ namespace System.Text.Primitives.Tests
         private static void ByteArrayToBool(string text)
         {
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 bool value;
@@ -1730,7 +1796,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, 0, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1750,6 +1816,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 bool value;
@@ -1760,7 +1828,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            InvariantParser.TryParse(utf8ByteStar, 0, length, out value, out bytesConsumed);
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -1781,6 +1849,8 @@ namespace System.Text.Primitives.Tests
         {
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -1792,7 +1862,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, out value, out bytesConsumed);
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1814,7 +1884,7 @@ namespace System.Text.Primitives.Tests
 
             foreach (var iteration in Benchmark.Iterations)
             {
-                long value;
+                bool value;
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -1827,7 +1897,7 @@ namespace System.Text.Primitives.Tests
                             currentChar = text[currentIndex];
                             currentIndex++;
                         }
-                        Int64.TryParse(decodedText.Substring(start, currentIndex - start), NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                        Boolean.TryParse(decodedText.Substring(start, currentIndex - start), out value);
                     }
                 }
             }
@@ -1845,16 +1915,18 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             int start = text.IndexOf('=') + 1;
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
-                long value;
+                bool value;
                 int bytesConsumed;
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        InvariantParser.TryParse(utf8ByteArray, start, out value, out bytesConsumed);
+                        InvariantParser.TryParse(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
