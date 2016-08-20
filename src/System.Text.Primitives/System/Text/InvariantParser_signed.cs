@@ -180,8 +180,89 @@ namespace System.Text
 				}
                 return true;
             }
+			else
+			{
+				int byteIndex = index;
+				int codeUnitsConsumed = 0;
+                while (byteIndex < utf8Text.Length)
+                {
+                    uint result;
+					int oldIndex = byteIndex;
+                    bool success = cultureAndEncodingInfo.TryParseNextCodingUnit(ref utf8Text, ref byteIndex, out result);
 
-            return false;
+                    if (!success || result > 9)
+                    {
+						if (bytesConsumed == 0 && result == (int)FormattingData.Symbol.MinusSign)
+						{
+							negative = true;
+							signed = true;
+                            bytesConsumed += byteIndex - oldIndex;
+							codeUnitsConsumed++;
+						}
+						else if (bytesConsumed == 0 && result == (int)FormattingData.Symbol.PlusSign)
+						{
+							negative = true;
+							signed = true;
+                            bytesConsumed += byteIndex - oldIndex;
+						}
+						else if (codeUnitsConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
+                        {
+                            bytesConsumed = 0;
+							return false;
+                        }
+                        else if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            if (negative) // We check if the value is negative at the very end to save on comp time
+                            {
+                                value = (sbyte)-value;
+								if (value > 0)
+								{
+									value = 0;
+									bytesConsumed = 0;
+									return false;
+								}
+                            }
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > SByte.MaxValue / 10)
+                    {
+                        value = default(sbyte);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 8 because the max values for unsigned types all end in 7s.
+					// The min values all end in 8s, which is why that addition exists.
+                    else if (value == SByte.MaxValue / 10 &&  result >= 8 + (negative ? 1 : 0) ) // overflow
+                    {
+                        value = default(sbyte);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+					else
+					{
+						value = (sbyte)(value * 10 + result); // left shift the value and add the nextByte
+						bytesConsumed += byteIndex - oldIndex;
+						codeUnitsConsumed++;
+					}
+                }
+
+				if (negative) // We check if the value is negative at the very end to save on comp time
+                {
+                    value = (sbyte)-value;
+					if (value > 0)
+					{
+						value = default(sbyte);
+						bytesConsumed = 0;
+						return false;
+					}
+                }
+                return true; // otherwise return true
+			}
         }
 
 		public static unsafe bool TryParse(byte* utf8Text, int index, int length, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat, 
@@ -518,8 +599,89 @@ namespace System.Text
 				}
                 return true;
             }
+			else
+			{
+				int byteIndex = index;
+				int codeUnitsConsumed = 0;
+                while (byteIndex < utf8Text.Length)
+                {
+                    uint result;
+					int oldIndex = byteIndex;
+                    bool success = cultureAndEncodingInfo.TryParseNextCodingUnit(ref utf8Text, ref byteIndex, out result);
 
-            return false;
+                    if (!success || result > 9)
+                    {
+						if (bytesConsumed == 0 && result == (int)FormattingData.Symbol.MinusSign)
+						{
+							negative = true;
+							signed = true;
+                            bytesConsumed += byteIndex - oldIndex;
+							codeUnitsConsumed++;
+						}
+						else if (bytesConsumed == 0 && result == (int)FormattingData.Symbol.PlusSign)
+						{
+							negative = true;
+							signed = true;
+                            bytesConsumed += byteIndex - oldIndex;
+						}
+						else if (codeUnitsConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
+                        {
+                            bytesConsumed = 0;
+							return false;
+                        }
+                        else if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            if (negative) // We check if the value is negative at the very end to save on comp time
+                            {
+                                value = (short)-value;
+								if (value > 0)
+								{
+									value = 0;
+									bytesConsumed = 0;
+									return false;
+								}
+                            }
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > Int16.MaxValue / 10)
+                    {
+                        value = default(short);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 8 because the max values for unsigned types all end in 7s.
+					// The min values all end in 8s, which is why that addition exists.
+                    else if (value == Int16.MaxValue / 10 &&  result >= 8 + (negative ? 1 : 0) ) // overflow
+                    {
+                        value = default(short);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+					else
+					{
+						value = (short)(value * 10 + result); // left shift the value and add the nextByte
+						bytesConsumed += byteIndex - oldIndex;
+						codeUnitsConsumed++;
+					}
+                }
+
+				if (negative) // We check if the value is negative at the very end to save on comp time
+                {
+                    value = (short)-value;
+					if (value > 0)
+					{
+						value = default(short);
+						bytesConsumed = 0;
+						return false;
+					}
+                }
+                return true; // otherwise return true
+			}
         }
 
 		public static unsafe bool TryParse(byte* utf8Text, int index, int length, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat, 
@@ -856,8 +1018,89 @@ namespace System.Text
 				}
                 return true;
             }
+			else
+			{
+				int byteIndex = index;
+				int codeUnitsConsumed = 0;
+                while (byteIndex < utf8Text.Length)
+                {
+                    uint result;
+					int oldIndex = byteIndex;
+                    bool success = cultureAndEncodingInfo.TryParseNextCodingUnit(ref utf8Text, ref byteIndex, out result);
 
-            return false;
+                    if (!success || result > 9)
+                    {
+						if (bytesConsumed == 0 && result == (int)FormattingData.Symbol.MinusSign)
+						{
+							negative = true;
+							signed = true;
+                            bytesConsumed += byteIndex - oldIndex;
+							codeUnitsConsumed++;
+						}
+						else if (bytesConsumed == 0 && result == (int)FormattingData.Symbol.PlusSign)
+						{
+							negative = true;
+							signed = true;
+                            bytesConsumed += byteIndex - oldIndex;
+						}
+						else if (codeUnitsConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
+                        {
+                            bytesConsumed = 0;
+							return false;
+                        }
+                        else if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            if (negative) // We check if the value is negative at the very end to save on comp time
+                            {
+                                value = (int)-value;
+								if (value > 0)
+								{
+									value = 0;
+									bytesConsumed = 0;
+									return false;
+								}
+                            }
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > Int32.MaxValue / 10)
+                    {
+                        value = default(int);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 8 because the max values for unsigned types all end in 7s.
+					// The min values all end in 8s, which is why that addition exists.
+                    else if (value == Int32.MaxValue / 10 &&  result >= 8 + (negative ? 1 : 0) ) // overflow
+                    {
+                        value = default(int);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+					else
+					{
+						value = (int)(value * 10 + result); // left shift the value and add the nextByte
+						bytesConsumed += byteIndex - oldIndex;
+						codeUnitsConsumed++;
+					}
+                }
+
+				if (negative) // We check if the value is negative at the very end to save on comp time
+                {
+                    value = (int)-value;
+					if (value > 0)
+					{
+						value = default(int);
+						bytesConsumed = 0;
+						return false;
+					}
+                }
+                return true; // otherwise return true
+			}
         }
 
 		public static unsafe bool TryParse(byte* utf8Text, int index, int length, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat, 
@@ -1194,8 +1437,89 @@ namespace System.Text
 				}
                 return true;
             }
+			else
+			{
+				int byteIndex = index;
+				int codeUnitsConsumed = 0;
+                while (byteIndex < utf8Text.Length)
+                {
+                    uint result;
+					int oldIndex = byteIndex;
+                    bool success = cultureAndEncodingInfo.TryParseNextCodingUnit(ref utf8Text, ref byteIndex, out result);
 
-            return false;
+                    if (!success || result > 9)
+                    {
+						if (bytesConsumed == 0 && result == (int)FormattingData.Symbol.MinusSign)
+						{
+							negative = true;
+							signed = true;
+                            bytesConsumed += byteIndex - oldIndex;
+							codeUnitsConsumed++;
+						}
+						else if (bytesConsumed == 0 && result == (int)FormattingData.Symbol.PlusSign)
+						{
+							negative = true;
+							signed = true;
+                            bytesConsumed += byteIndex - oldIndex;
+						}
+						else if (codeUnitsConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
+                        {
+                            bytesConsumed = 0;
+							return false;
+                        }
+                        else if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            if (negative) // We check if the value is negative at the very end to save on comp time
+                            {
+                                value = (long)-value;
+								if (value > 0)
+								{
+									value = 0;
+									bytesConsumed = 0;
+									return false;
+								}
+                            }
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > Int64.MaxValue / 10)
+                    {
+                        value = default(long);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 8 because the max values for unsigned types all end in 7s.
+					// The min values all end in 8s, which is why that addition exists.
+                    else if (value == Int64.MaxValue / 10 &&  result >= 8 + (negative ? 1 : 0) ) // overflow
+                    {
+                        value = default(long);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+					else
+					{
+						value = (long)(value * 10 + result); // left shift the value and add the nextByte
+						bytesConsumed += byteIndex - oldIndex;
+						codeUnitsConsumed++;
+					}
+                }
+
+				if (negative) // We check if the value is negative at the very end to save on comp time
+                {
+                    value = (long)-value;
+					if (value > 0)
+					{
+						value = default(long);
+						bytesConsumed = 0;
+						return false;
+					}
+                }
+                return true; // otherwise return true
+			}
         }
 
 		public static unsafe bool TryParse(byte* utf8Text, int index, int length, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat, 

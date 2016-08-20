@@ -70,6 +70,86 @@ namespace System.Text.Primitives.Tests
 #>
 		#region <#= unsignedPrimitives[i] #>
 
+		[Theory]
+        [InlineData("<#= midValue #>", true, 0, <#= midValue #>, <#= midValue.Length #>)]
+        [InlineData("blahblahh<#= randValue #>", true, 9, <#= randValue #>, <#= randValue.Length #>)]
+        [InlineData("<#= randValue #>abhced", true, 0, <#= randValue #>, <#= randValue.Length #>)]
+        [InlineData("<#= minValue #>", true, 0, <#= minValue #>, <#= minValueLength #>)] // min value
+        [InlineData("<#= maxValue #>", true, 0, <#= maxValue #>, <#= maxValueLength #>)] // max value
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("<#= overflowValue #>", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseCustomCultureByteArrayTo<#= capitalizedPrimitive #>(string text, bool expectSuccess, int index, <#= unsignedPrimitives[i] #> expectedValue, int expectedBytesConsumed)
+        {
+            <#= unsignedPrimitives[i] #> parsedValue;
+            int bytesConsumed;
+            var utf8digitsAndSymbols = new byte[][] {
+                new byte[] { 48, },
+                new byte[] { 49, },
+                new byte[] { 50, },
+                new byte[] { 51, },
+                new byte[] { 52, },
+                new byte[] { 53, },
+                new byte[] { 54, },
+                new byte[] { 55, },
+                new byte[] { 56, },
+                new byte[] { 57, }, // digit 9
+                new byte[] { 46, }, // decimal separator
+                null, // so that it is != to uft8DigitsAndSymbols
+                new byte[] { 73, 110, 102, 105, 110, 105, 116, 121, },
+                new byte[] { 45, }, // minus sign
+                new byte[] { 43, }, // plus sign
+                new byte[] { 78, 97, 78, }, // NaN
+                new byte[] { 69, }, // E
+            };
+            var utf8ParsingTrie = new FormattingData.TrieNode[]
+            {
+                new FormattingData.TrieNode { valueOrNumChildren = 17, index = 0x3004390D },
+                new FormattingData.TrieNode { valueOrNumChildren = 43, index = 18 },
+                new FormattingData.TrieNode { valueOrNumChildren = 45, index = 19 },
+                new FormattingData.TrieNode { valueOrNumChildren = 46, index = 20 },
+                new FormattingData.TrieNode { valueOrNumChildren = 48, index = 21 },
+                new FormattingData.TrieNode { valueOrNumChildren = 49, index = 22 },
+                new FormattingData.TrieNode { valueOrNumChildren = 50, index = 23 },
+                new FormattingData.TrieNode { valueOrNumChildren = 51, index = 24 },
+                new FormattingData.TrieNode { valueOrNumChildren = 52, index = 25 },
+                new FormattingData.TrieNode { valueOrNumChildren = 53, index = 26 },
+                new FormattingData.TrieNode { valueOrNumChildren = 54, index = 27 },
+                new FormattingData.TrieNode { valueOrNumChildren = 55, index = 28 },
+                new FormattingData.TrieNode { valueOrNumChildren = 56, index = 29 },
+                new FormattingData.TrieNode { valueOrNumChildren = 57, index = 30 },
+                new FormattingData.TrieNode { valueOrNumChildren = 69, index = 31 },
+                new FormattingData.TrieNode { valueOrNumChildren = 73, index = 32 },
+                new FormattingData.TrieNode { valueOrNumChildren = 78, index = 33 },
+                new FormattingData.TrieNode { valueOrNumChildren = 101, index = 34 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 14 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 13 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 10 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 0 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 1 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 2 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 3 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 4 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 5 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 6 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 7 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 8 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 9 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 12 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 15 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+            };
+
+            FormattingData fd = new FormattingData(utf8digitsAndSymbols, utf8ParsingTrie, FormattingData.Encoding.Utf8);
+            Format.Parsed nf = new Format.Parsed('R');
+            bool result = InvariantParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
 <#
 			foreach (var utfEncoding in utfEncodings)
 			{
@@ -90,7 +170,7 @@ namespace System.Text.Primitives.Tests
             <#= unsignedPrimitives[i] #> parsedValue;
             int bytesConsumed;
             FormattingData fd = FormattingData.InvariantUtf<#= utfEncoding #>;
-            Format.Parsed nf = new Format.Parsed('G');
+            Format.Parsed nf = new Format.Parsed('R');
             bool result = InvariantParser.TryParse(UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>), index, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
@@ -114,7 +194,7 @@ namespace System.Text.Primitives.Tests
 
             byte[] textBytes = UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>);
             FormattingData fd = FormattingData.InvariantUtf<#= utfEncoding #>;
-            Format.Parsed nf = new Format.Parsed('G');
+            Format.Parsed nf = new Format.Parsed('R');
             fixed (byte* arrayPointer = textBytes)
             {
                 bool result = InvariantParser.TryParse(arrayPointer, index, textBytes.Length, fd, nf, out parsedValue, out bytesConsumed);
@@ -173,6 +253,171 @@ namespace System.Text.Primitives.Tests
 
 #>
 		#region <#= signedPrimitives[i] #>
+
+		[Theory]
+        [InlineData("111", true, 0, 111, 3)]
+        [InlineData("blahblahh<#= midValue #>", true, 9, <#= midValue #>, <#= midValue.Length #>)]
+        [InlineData("<#= randValue #>abcdefg", true, 0, <#= randValue #>, <#= randValue.Length #>)]
+        [InlineData("The smallest of this type is <#= minValue #>.", true, 29, <#= minValue #>, <#= minValueLength #>)]
+        [InlineData("Letthem<#= midMinValue #>eatcake", true, 7, <#= midMinValue #>, <#= midMinValue.Length #>)]
+        [InlineData("<#= maxValue #>", true, 0, <#= maxValue #>, <#= maxValueLength #>)] // max
+        [InlineData("<#= minValue #>", true, 0, <#= minValue #>, <#= minValueLength #>)] // min
+        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("<#= overflowValue #>", false, 0, 0, 0)] // positive overflow test
+        [InlineData("<#= underflowValue #>", false, 0, 0, 0)] // negative overflow test
+        public unsafe void ParseCustomCultureByteArrayTo<#= capitalizedPrimitive #>(string text, bool expectSuccess, int index, <#= signedPrimitives[i] #> expectedValue, int expectedBytesConsumed)
+        {
+            <#= signedPrimitives[i] #> parsedValue;
+            int bytesConsumed;
+            var utf8digitsAndSymbols = new byte[][] {
+                new byte[] { 48, },
+                new byte[] { 49, },
+                new byte[] { 50, },
+                new byte[] { 51, },
+                new byte[] { 52, },
+                new byte[] { 53, },
+                new byte[] { 54, },
+                new byte[] { 55, },
+                new byte[] { 56, },
+                new byte[] { 57, }, // digit 9
+                new byte[] { 46, }, // decimal separator
+                null, // so that it is != to uft8DigitsAndSymbols
+                new byte[] { 73, 110, 102, 105, 110, 105, 116, 121, },
+                new byte[] { 45, }, // minus sign
+                new byte[] { 43, }, // plus sign
+                new byte[] { 78, 97, 78, }, // NaN
+                new byte[] { 69, }, // E
+            };
+            var utf8ParsingTrie = new FormattingData.TrieNode[]
+            {
+                new FormattingData.TrieNode { valueOrNumChildren = 17, index = 0x3004390D },
+                new FormattingData.TrieNode { valueOrNumChildren = 43, index = 18 },
+                new FormattingData.TrieNode { valueOrNumChildren = 45, index = 19 },
+                new FormattingData.TrieNode { valueOrNumChildren = 46, index = 20 },
+                new FormattingData.TrieNode { valueOrNumChildren = 48, index = 21 },
+                new FormattingData.TrieNode { valueOrNumChildren = 49, index = 22 },
+                new FormattingData.TrieNode { valueOrNumChildren = 50, index = 23 },
+                new FormattingData.TrieNode { valueOrNumChildren = 51, index = 24 },
+                new FormattingData.TrieNode { valueOrNumChildren = 52, index = 25 },
+                new FormattingData.TrieNode { valueOrNumChildren = 53, index = 26 },
+                new FormattingData.TrieNode { valueOrNumChildren = 54, index = 27 },
+                new FormattingData.TrieNode { valueOrNumChildren = 55, index = 28 },
+                new FormattingData.TrieNode { valueOrNumChildren = 56, index = 29 },
+                new FormattingData.TrieNode { valueOrNumChildren = 57, index = 30 },
+                new FormattingData.TrieNode { valueOrNumChildren = 69, index = 31 },
+                new FormattingData.TrieNode { valueOrNumChildren = 73, index = 32 },
+                new FormattingData.TrieNode { valueOrNumChildren = 78, index = 33 },
+                new FormattingData.TrieNode { valueOrNumChildren = 101, index = 34 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 14 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 13 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 10 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 0 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 1 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 2 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 3 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 4 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 5 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 6 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 7 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 8 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 9 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 12 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 15 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+            };
+
+            FormattingData fd = new FormattingData(utf8digitsAndSymbols, utf8ParsingTrie, FormattingData.Encoding.Utf8);
+            Format.Parsed nf = new Format.Parsed('R');
+            bool result = InvariantParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+		[Theory]
+        [InlineData("๑๑๑", true, 0, 111, 9)]
+        [InlineData("เรื่องเหลวไหล๒๗", true, 39, 27, 6)]
+        [InlineData("๕๖กขฃคฅฆง", true, 0, 56, 6)]
+        [InlineData("ที่เล็กที่สุดของประเภทนี้คือลบ๑๒๘.", true, 84, -128, 15)]
+        [InlineData("ปล่อยให้พวกเขา ลบ๒๘ กินเค้ก", true, 43, -28, 12)]
+        [InlineData("๑๒๗", true, 0, 127, 9)] // max
+        [InlineData("ลบ๑๒๘", true, 0, -128, 15)] // min
+        [InlineData("ลบA", false, 0, 0, 0)] // invalid character after a sign
+        [InlineData("I am ๑", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("ลป๑", false, 0, 0, 0)] // 
+        public unsafe void ParseCustomCultureThaiByteArrayTo<#= capitalizedPrimitive #>(string text, bool expectSuccess, int index, <#= signedPrimitives[i] #> expectedValue, int expectedBytesConsumed)
+        {
+            <#= signedPrimitives[i] #> parsedValue;
+            int bytesConsumed;
+            var thaiUtf8DigitsAndSymbols = new byte[][]
+            {
+                new byte[] { 0xe0, 0xb9, 0x90 }, new byte[] { 0xe0, 0xb9, 0x91 }, new byte[] { 0xe0, 0xb9, 0x92 },
+                new byte[] { 0xe0, 0xb9, 0x93 }, new byte[] { 0xe0, 0xb9, 0x94 }, new byte[] { 0xe0, 0xb9, 0x95 }, new byte[] { 0xe0, 0xb9, 0x96 },
+                new byte[] { 0xe0, 0xb9, 0x97 }, new byte[] { 0xe0, 0xb9, 0x98 }, new byte[] { 0xe0, 0xb9, 0x99 }, new byte[] { 0xE0, 0xB8, 0x88, 0xE0, 0xB8, 0x94 }, null,
+                new byte[] { 0xE0, 0xB8, 0xAA, 0xE0, 0xB8, 0xB4, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x87, 0xE0, 0xB8, 0x97, 0xE0, 0xB8, 0xB5, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x83,
+                    0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0x8D, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x82, 0xE0, 0xB8, 0x95, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0xA5, 0xE0,
+                    0xB8, 0xB7, 0xE0, 0xB8, 0xAD, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0x81, 0xE0, 0xB8, 0xB4, 0xE0, 0xB8, 0x99 },
+                new byte[] { 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x9A }, new byte[] { 43 }, new byte[] { 0xE0, 0xB9, 0x84, 0xE0, 0xB8, 0xA1, 0xE0, 0xB9, 0x88, 0xE0, 0xB9,
+                    0x83, 0xE0, 0xB8, 0x8A, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x95, 0xE0, 0xB8, 0xB1, 0xE0, 0xB8, 0xA7, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x82 },
+                new byte[] { 69 }, new byte[] { 101 },
+            };
+            var thaiUtf8ParsingTrie = new FormattingData.TrieNode[]
+            {
+                new FormattingData.TrieNode { valueOrNumChildren = 4, index = 0 },
+                new FormattingData.TrieNode { valueOrNumChildren = 43, index = 5 },
+                new FormattingData.TrieNode { valueOrNumChildren = 69, index = 6 },
+                new FormattingData.TrieNode { valueOrNumChildren = 101, index = 7 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0xE0, index = 8 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 14 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+                new FormattingData.TrieNode { valueOrNumChildren = 2, index = 0 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0xB8, index = 11 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0xB9, index = 15 },
+                new FormattingData.TrieNode { valueOrNumChildren = 3, index = 0 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x88, index = 27 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0xA5, index = 28 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0xAA, index = 29 },
+                new FormattingData.TrieNode { valueOrNumChildren = 11, index = -1878877941 /* 0x9002990B */ },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x84, index = 30 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x90, index = 31 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x91, index = 32 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x92, index = 33 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x93, index = 34 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x94, index = 35 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x95, index = 36 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x96, index = 37 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x97, index = 38 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x98, index = 39 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0x99, index = 40 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 10 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 13 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 12 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 15 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 0 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 1 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 2 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 3 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 4 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 5 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 6 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 7 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 8 },
+                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 9 },
+            };
+            FormattingData fd = new FormattingData(thaiUtf8DigitsAndSymbols, thaiUtf8ParsingTrie, FormattingData.Encoding.Utf8);
+            Format.Parsed nf = new Format.Parsed('R');
+            bool result = InvariantParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
 
 <#
 			foreach (var utfEncoding in utfEncodings)

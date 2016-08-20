@@ -100,8 +100,46 @@ namespace System.Text
                 }
                 return true;
             }
+			else
+            {
+                int byteIndex = index;
+                while (byteIndex < utf8Text.Length)
+                {
+                    uint result;
+					int oldIndex = byteIndex;
+                    bool success = cultureAndEncodingInfo.TryParseNextCodingUnit(ref utf8Text, ref byteIndex, out result);
 
-            return false;
+                    if (!success || result > 9)
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > Byte.MaxValue / 10)
+                    {
+                        value = default(byte);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == Byte.MaxValue / 10 && result >= 6) // overflow
+                    {
+                        value = default(byte);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (byte)(value * 10 + result); // left shift the value and add the nextByte
+                    bytesConsumed += byteIndex - oldIndex;
+                }
+
+                return true;
+            }
         }
 
 		public static unsafe bool TryParse(byte* utf8Text, int index, int length, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat, 
@@ -285,8 +323,46 @@ namespace System.Text
                 }
                 return true;
             }
+			else
+            {
+                int byteIndex = index;
+                while (byteIndex < utf8Text.Length)
+                {
+                    uint result;
+					int oldIndex = byteIndex;
+                    bool success = cultureAndEncodingInfo.TryParseNextCodingUnit(ref utf8Text, ref byteIndex, out result);
 
-            return false;
+                    if (!success || result > 9)
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt16.MaxValue / 10)
+                    {
+                        value = default(ushort);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt16.MaxValue / 10 && result >= 6) // overflow
+                    {
+                        value = default(ushort);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (ushort)(value * 10 + result); // left shift the value and add the nextByte
+                    bytesConsumed += byteIndex - oldIndex;
+                }
+
+                return true;
+            }
         }
 
 		public static unsafe bool TryParse(byte* utf8Text, int index, int length, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat, 
@@ -470,8 +546,46 @@ namespace System.Text
                 }
                 return true;
             }
+			else
+            {
+                int byteIndex = index;
+                while (byteIndex < utf8Text.Length)
+                {
+                    uint result;
+					int oldIndex = byteIndex;
+                    bool success = cultureAndEncodingInfo.TryParseNextCodingUnit(ref utf8Text, ref byteIndex, out result);
 
-            return false;
+                    if (!success || result > 9)
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt32.MaxValue / 10)
+                    {
+                        value = default(uint);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt32.MaxValue / 10 && result >= 6) // overflow
+                    {
+                        value = default(uint);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (uint)(value * 10 + result); // left shift the value and add the nextByte
+                    bytesConsumed += byteIndex - oldIndex;
+                }
+
+                return true;
+            }
         }
 
 		public static unsafe bool TryParse(byte* utf8Text, int index, int length, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat, 
@@ -655,8 +769,46 @@ namespace System.Text
                 }
                 return true;
             }
+			else
+            {
+                int byteIndex = index;
+                while (byteIndex < utf8Text.Length)
+                {
+                    uint result;
+					int oldIndex = byteIndex;
+                    bool success = cultureAndEncodingInfo.TryParseNextCodingUnit(ref utf8Text, ref byteIndex, out result);
 
-            return false;
+                    if (!success || result > 9)
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt64.MaxValue / 10)
+                    {
+                        value = default(ulong);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt64.MaxValue / 10 && result >= 6) // overflow
+                    {
+                        value = default(ulong);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (ulong)(value * 10 + result); // left shift the value and add the nextByte
+                    bytesConsumed += byteIndex - oldIndex;
+                }
+
+                return true;
+            }
         }
 
 		public static unsafe bool TryParse(byte* utf8Text, int index, int length, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat, 
