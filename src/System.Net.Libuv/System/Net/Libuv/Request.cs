@@ -100,7 +100,7 @@ namespace System.Net.Libuv
             var request = GCHandle.FromIntPtr(uvRequest->data).Target as CallbackRequest;
             if (request == null)
             {
-                Environment.FailFast("invalid callback");
+                throw new Exception("invalid callback");
             }
             else
             {
@@ -128,7 +128,7 @@ namespace System.Net.Libuv
             var request = GCHandle.FromIntPtr(uvRequest->data).Target as DisposeRequest;
             if (request == null)
             {
-                Environment.FailFast("invalid callback");
+                throw new Exception("invalid callback");
             }
             else
             {

@@ -34,11 +34,11 @@ namespace System.Net.Libuv
             {
                 UVException.ThrowIfError(UVInterop.uv_accept(listener.Handle, connection.Handle));
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 stream.Dispose();
                 connection.Dispose();
-                Environment.FailFast(e.ToString());
+                throw;
             }
 
             if (listener.ConnectionAccepted != null)
