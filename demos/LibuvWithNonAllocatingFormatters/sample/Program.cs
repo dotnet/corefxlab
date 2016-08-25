@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Libuv;
+using System.Text;
 using System.Text.Formatting;
 using System.Text.Utf8;
 using System.Threading.Tasks;
