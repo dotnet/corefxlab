@@ -22,6 +22,168 @@ namespace System.Text.Primitives.Tests
 
         private static int LOAD_ITERATIONS = 1000;
 
+        #region utf-8 basic culture specific
+
+        [Benchmark]
+        [InlineData("1147483647")] // standard parse
+        [InlineData("-1147483647")] // standard negative parse
+        [InlineData("+1147483647")] // explicit positive parse
+        [InlineData("2147483648")] // +1 overflow
+        [InlineData("5000000000")] // basic overflow
+        [InlineData("128199519951281995")] // heavy overflow
+        [InlineData("0127")] // leading zero
+        [InlineData("00000000120")] // many leading zeroes
+        [InlineData("0")] // zero
+        [InlineData("2147483647")] // max value
+        [InlineData("-2147483648")] // min value
+        private static void Utf8CultureBaselineIntParse(string text)
+        {
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                int value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        Int32.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("1147483647")] // standard parse
+        [InlineData("-1147483647")] // standard negative parse
+        [InlineData("+1147483647")] // explicit positive parse
+        [InlineData("2147483648")] // +1 overflow
+        [InlineData("5000000000")] // basic overflow
+        [InlineData("128199519951281995")] // heavy overflow
+        [InlineData("0127")] // leading zero
+        [InlineData("00000000120")] // many leading zeroes
+        [InlineData("0")] // zero
+        [InlineData("2147483647")] // max value
+        [InlineData("-2147483648")] // min value
+        private static void Utf8CultureBaselineArrayIntParse(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                int value;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        string decodedText = UtfDecode(utf8ByteArray);
+                        Int32.TryParse(decodedText, NumberStyles.None, CultureInfo.InvariantCulture, out value);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("1147483647")] // standard parse
+        [InlineData("-1147483647")] // standard negative parse
+        [InlineData("+1147483647")] // explicit positive parse
+        [InlineData("2147483648")] // +1 overflow
+        [InlineData("5000000000")] // basic overflow
+        [InlineData("128199519951281995")] // heavy overflow
+        [InlineData("0127")] // leading zero
+        [InlineData("00000000120")] // many leading zeroes
+        [InlineData("0")] // zero
+        [InlineData("2147483647")] // max value
+        [InlineData("-2147483648")] // min value
+        private static void Utf8CultureByteArrayToInt(string text)
+        {
+            byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                int value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("1147483647")] // standard parse
+        [InlineData("-1147483647")] // standard negative parse
+        [InlineData("+1147483647")] // explicit positive parse
+        [InlineData("2147483648")] // +1 overflow
+        [InlineData("5000000000")] // basic overflow
+        [InlineData("128199519951281995")] // heavy overflow
+        [InlineData("0127")] // leading zero
+        [InlineData("00000000120")] // many leading zeroes
+        [InlineData("0")] // zero
+        [InlineData("2147483647")] // max value
+        [InlineData("-2147483648")] // min value
+        private unsafe static void Utf8CultureByteStarToInt(string text)
+        {
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                int value;
+                int bytesConsumed;
+                fixed (byte* utf8ByteStar = utf8ByteArray)
+                {
+                    using (iteration.StartMeasurement())
+                    {
+                        for (int i = 0; i < LOAD_ITERATIONS; i++)
+                        {
+                            InvariantParser.TryParse(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                        }
+                    }
+                }
+            }
+        }
+
+        [Benchmark]
+        [InlineData("1147483647")] // standard parse
+        [InlineData("-1147483647")] // standard negative parse
+        [InlineData("+1147483647")] // explicit positive parse
+        [InlineData("2147483648")] // +1 overflow
+        [InlineData("5000000000")] // basic overflow
+        [InlineData("128199519951281995")] // heavy overflow
+        [InlineData("0127")] // leading zero
+        [InlineData("00000000120")] // many leading zeroes
+        [InlineData("0")] // zero
+        [InlineData("2147483647")] // max value
+        [InlineData("-2147483648")] // min value
+        private unsafe static void Utf8CultureByteStarUnmanagedToInt(string text)
+        {
+            int length = text.Length;
+            byte[] utf8ByteArray = UtfEncode(text);
+            byte* unmanagedBytePtr;
+            FormattingData fd = FormattingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('N');
+            unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
+            Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                int value;
+                int bytesConsumed;
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < LOAD_ITERATIONS; i++)
+                    {
+                        InvariantParser.TryParse(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                    }
+                }
+            }
+            Marshal.FreeHGlobal((IntPtr)unmanagedBytePtr);
+        }
+
+        #endregion
+
         #region byte
         [Benchmark]
         [InlineData("128")] // standard parse
