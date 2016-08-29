@@ -20,6 +20,7 @@
 
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Utf8;
 using Xunit;
 
 namespace System.Text.Primitives.Tests
@@ -596,41 +597,43 @@ namespace System.Text.Primitives.Tests
         [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
-        public void ParseUtf8ByteArrayToBool(string text, bool expectSuccess, int index, bool expectedValue, int expectedBytesConsumed)
+        public unsafe void ParseBool(string text, bool expectSuccess, int index, bool expectedValue, int expectedBytesConsumed)
         {
+		    bool result;
             bool parsedValue;
             int bytesConsumed;
-            FormattingData fd = FormattingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
-            bool result = InvariantParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+			var utf8String = new Utf8String(text);
+			byte[] utf8Bytes = utf8String.CopyBytes();
+			ReadOnlySpan<byte> utf8BytesSlice = new ReadOnlySpan<byte>(utf8Bytes);
 
+			// System.String
+			result = InvariantParser.TryParse(text, index, FormattingData.InvariantUtf16, 'N', out parsedValue, out bytesConsumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
-        }
 
-        [Theory]
-        [InlineData("blahblahhTrue", true, 9, true, 4)]
-        [InlineData("trueacndasjfh", true, 0, true, 4)]
-        [InlineData("LetthemFALSEeatcake", true, 7, false, 5)]
-        [InlineData("false", true, 0, false, 5)]
-        [InlineData("FaLsE", true, 0, false, 5)]
-        [InlineData("0", true, 0, false, 1)]
-        [InlineData("1", true, 0, true, 1)]
-        [InlineData("-A", false, 0, 0, 0)] // invalid character after a sign
-        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
-        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
-        public unsafe void ParseUtf8ByteStarToBool(string text, bool expectSuccess, int index, bool expectedValue, int expectedBytesConsumed)
-        {
-            bool parsedValue;
-            int bytesConsumed;
-            FormattingData fd = FormattingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+			// Utf8String
+			result = InvariantParser.TryParse(utf8String.Substring(index), FormattingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
 
-            byte[] textBytes = UtfEncode(text, false);
-            fixed (byte* arrayPointer = textBytes)
+			// byte[]
+			result = InvariantParser.TryParse(utf8Bytes, index, FormattingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+
+			// ReadOnlySpan<byte>
+			result = InvariantParser.TryParse(utf8BytesSlice, FormattingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+
+			// byte*
+            fixed (byte* arrayPointer = utf8Bytes)
             {
-                bool result = InvariantParser.TryParse(arrayPointer, index, textBytes.Length, fd, nf,
+                result = InvariantParser.TryParse(arrayPointer, index, utf8Bytes.Length, FormattingData.InvariantUtf8, 'N',
                     out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
