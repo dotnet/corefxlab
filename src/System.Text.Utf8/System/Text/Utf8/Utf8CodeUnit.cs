@@ -62,6 +62,30 @@ namespace System.Text.Utf8
             return !left.Equals(right);
         }
 
+        public static bool operator ==(Utf8CodeUnit left, char right)
+        {
+            char leftChar = (char)left.Value;
+            return leftChar == right;
+        }
+
+        public static bool operator !=(Utf8CodeUnit left, char right)
+        {
+            char leftChar = (char)left.Value;
+            return leftChar != right;
+        }
+
+        public static bool operator ==(char left, Utf8CodeUnit right)
+        {
+            char rightChar = (char)right.Value;
+            return left == rightChar;
+        }
+
+        public static bool operator !=(char left, Utf8CodeUnit right)
+        {
+            char rightChar = (char)right.Value;
+            return left != rightChar;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsFirstCodeUnitInEncodedCodePoint(Utf8CodeUnit codeUnit)
         {
