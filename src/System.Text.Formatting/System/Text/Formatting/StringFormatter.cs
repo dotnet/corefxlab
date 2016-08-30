@@ -81,13 +81,19 @@ namespace System.Text.Formatting
             }
         }
 
-        void IFormatter.ResizeBuffer()
+        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
         {
+            var newSize = desiredFreeBytesHint + _buffer.Length - _count;
+            if(desiredFreeBytesHint == -1){
+                newSize = _buffer.Length * 2;
+            }
+
             var temp = _buffer;
-            _buffer = _pool.Rent(_buffer.Length * 2);
+            _buffer = _pool.Rent(newSize);
             Array.Copy(temp, 0, _buffer, 0, _count);
             _pool.Return(temp);
         }
+
         void IFormatter.CommitBytes(int bytes)
         {
             _count += bytes;

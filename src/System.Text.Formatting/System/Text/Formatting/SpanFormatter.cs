@@ -42,7 +42,7 @@ namespace System.Text.Formatting
             }
         }
 
-        void IFormatter.ResizeBuffer()
+        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
         {
             throw new InvalidOperationException("cannot resize fixed size buffers.");
         }

@@ -13,7 +13,8 @@ namespace System.Text.Formatting
         Span<byte> FreeBuffer { get; }
         void CommitBytes(int bytes);
 
-        void ResizeBuffer();
+        /// <summary>desiredFreeBytesHint == -1 means "i don't care"</summary>
+        void ResizeBuffer(int desiredFreeBytesHint = -1);
 
         FormattingData FormattingData { get; }
     }
