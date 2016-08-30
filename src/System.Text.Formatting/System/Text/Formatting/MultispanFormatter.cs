@@ -40,9 +40,13 @@ namespace System.Text.Formatting
             }
         }
 
-        void IFormatter.ResizeBuffer()
+        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
         {
-            var index = _buffer.AppendNewSegment(_segmentSize);
+            var newSize = _segmentSize;
+            if(desiredFreeBytesHint != -1){
+                newSize = desiredFreeBytesHint;
+            }
+            var index = _buffer.AppendNewSegment(newSize);
             _lastFull = _buffer.Last;
             _buffer.ResizeSegment(index, 0);
         }

@@ -50,10 +50,14 @@ namespace System.Text.Formatting
             }
         }
 
-        void IFormatter.ResizeBuffer()
+        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
         {
+            var newSize = _buffer.Length * 2;
+            if(desiredFreeBytesHint != -1){
+                newSize = desiredFreeBytesHint;
+            }
             var temp = _buffer;
-            _buffer = _pool.Rent(_buffer.Length * 2);
+            _buffer = _pool.Rent(newSize);
             _pool.Return(temp);
         }
 
