@@ -1,0 +1,34 @@
+{
+  "name": "System.Binary.Base64",  
+  "version": "0.1.0-*",
+  "description": "Non-allocating Base64 encoder and decoded",
+  "authors": [
+    "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "packOptions": {
+    "tags": [
+      ".NET non-allocating Base64 encoder and decoder"
+    ],
+    "releaseNotes": "Pre-release package, for testing only",
+    "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+    "projectUrl": "https://github.com/dotnet/corefxlab",
+    "requireLicenseAcceptance": true,
+  },
+  "buildOptions": {
+    "keyFile": "../../tools/Key.snk"
+  },
+  "dependencies": {
+    "System.Runtime": "4.0.0",
+    "System.Runtime.InteropServices": "4.0.0",
+    "System.Diagnostics.Debug": "4.0.0",
+    "System.Slices": { "target": "project" },
+    "System.Text.Utf8": { "target": "project" }
+  },
+  "frameworks": {
+    "netstandard1.0": {
+      "imports": [ "dotnet5.1" ]
+    }
+  }
+}
