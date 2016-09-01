@@ -19,6 +19,7 @@ namespace System.Binary
                 s_decodingMap[nextChar] = (byte)indexOfChar;
             }
         }
+        
         public static int ComputeEncodedLength(int inputLength)
         {
             var third = inputLength / 3;
@@ -26,7 +27,7 @@ namespace System.Binary
             if(thirdTimes3 == inputLength) return third * 4;
             return third * 4 + 4;
         }
-
+        
         public static void Encode(byte b0, byte b1, byte b2, out byte r0, out byte r1, out byte r2, out byte r3)
         {
             int i0 = b0 >> 2;
@@ -42,7 +43,13 @@ namespace System.Binary
             r3 = s_encodingMap[i3];
         }
 
-        public static void Encode(ReadOnlySpan<byte> source, Span<byte> destination)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <returns>Number of bytes written to the destination.</returns>
+        public static int Encode(ReadOnlySpan<byte> source, Span<byte> destination)
         {
             int di = 0;
             int si = 0;
@@ -55,26 +62,22 @@ namespace System.Binary
                 destination[di++] = b3;
             }
 
-            if (si == source.Length) { return; }
-
             if (si == source.Length - 1) {
                 Encode(source[si], 0, 0, out b0, out b1, out b2, out b3);
                 destination[di++] = b0;
                 destination[di++] = b1;
                 destination[di++] = s_encodingMap[64];
                 destination[di++] = s_encodingMap[64];
-                return;
             }
-            if(si == source.Length - 2) {
+            else if(si == source.Length - 2) {
                 Encode(source[si++], source[si], 0, out b0, out b1, out b2, out b3);
                 destination[di++] = b0;
                 destination[di++] = b1;
                 destination[di++] = b2;
                 destination[di++] = s_encodingMap[64];
-                return;
             }
 
-            throw new NotImplementedException();
+            return di; 
         }
 
         public static void Decode(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
@@ -89,7 +92,49 @@ namespace System.Binary
             r2 = (byte)(i2<<6 | i3);
         }
 
-        public static void Decode(ReadOnlySpan<byte> source, Span<byte> destination)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns>Number of bytes written to the buffer.</returns>
+        public static int DecodeInPlace(Span<byte> buffer)
+        {
+            int di = 0;
+            int si = 0;
+            byte r0, r1, r2;
+            int padding = 0;
+
+            if (buffer[buffer.Length - 1] == s_encodingMap[64]) {
+                padding = 1;
+                if (buffer[buffer.Length - 2] == s_encodingMap[64]) padding = 2;
+            }
+
+            for (; si < buffer.Length - (padding!=0?4:0);) {
+                Decode(buffer[si++], buffer[si++], buffer[si++], buffer[si++], out r0, out r1, out r2);
+                buffer[di++] = r0;
+                buffer[di++] = r1;
+                buffer[di++] = r2;
+            }
+
+            if (padding != 0) {
+                Decode(buffer[si++], buffer[si++], buffer[si++], buffer[si++], out r0, out r1, out r2);
+                buffer[di++] = r0;
+
+                if (padding == 1) {
+                    buffer[di++] = r1;
+                }
+            }
+
+            return di;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <returns>Number of bytes written to the destination.</returns>
+        public static int Decode(ReadOnlySpan<byte> source, Span<byte> destination)
         {
             int di = 0;
             int si = 0;
@@ -114,9 +159,10 @@ namespace System.Binary
 
                 if (padding == 1) {
                     destination[di++] = r1;
-
                 }
             }
+
+            return di;
         }
     }
 }
