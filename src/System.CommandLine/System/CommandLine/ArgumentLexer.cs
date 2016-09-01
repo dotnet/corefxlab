@@ -38,7 +38,7 @@ namespace System.CommandLine
 
             var hasSeenDashDash = false;
 
-            foreach (var arg in ExpandReponseFiles(args, responseFileReader))
+            foreach (var arg in ExpandResponseFiles(args, responseFileReader))
             {
                 // If we've seen a -- already, then we'll treat one as a plain name, that is
                 // without a modifier or value.
@@ -105,7 +105,7 @@ namespace System.CommandLine
             return result.ToArray();
         }
 
-        private static IEnumerable<string> ExpandReponseFiles(IEnumerable<string> args, Func<string, IEnumerable<string>> responseFileReader)
+        private static IEnumerable<string> ExpandResponseFiles(IEnumerable<string> args, Func<string, IEnumerable<string>> responseFileReader)
         {
             foreach (var arg in args)
             {
