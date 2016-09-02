@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text.Utf8;
+using System.Runtime.CompilerServices;
 
 namespace System.Binary
 {
@@ -28,19 +29,46 @@ namespace System.Binary
             return third * 4 + 4;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Encode(byte b0, byte b1, byte b2, out byte r0, out byte r1, out byte r2, out byte r3)
         {
             int i0 = b0 >> 2;
             r0 = s_encodingMap[i0];
 
-            int i1 = (b0 & 3) << 4 | (b1 >> 4);
+            int i1 = (b0 & 0x3) << 4 | (b1 >> 4);
             r1 = s_encodingMap[i1];
 
-            int i2 = (b1 & 15) << 2 | (b2 >> 6);
+            int i2 = (b1 & 0xF) << 2 | (b2 >> 6);
             r2 = s_encodingMap[i2];
 
-            int i3 = b2 & 63;
+            int i3 = b2 & 0x3F;
             r3 = s_encodingMap[i3];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int Encode(ReadOnlySpan<byte> threeBytes)
+        {
+            Diagnostics.Debug.Assert(threeBytes.Length > 2);
+
+            byte b0 = threeBytes[0];
+            byte b1 = threeBytes[1];
+            byte b2 = threeBytes[2];
+
+            int i3 = b2 & 0x3F;
+            int result = s_encodingMap[i3];
+            result <<= 8;
+
+            int i2 = (b1 & 0xF) << 2 | (b2 >> 6);
+            result |=  s_encodingMap[i2];
+            result <<= 8;
+
+            int i1 = (b0 & 0x3) << 4 | (b1 >> 4);
+            result |= s_encodingMap[i1];
+            result <<= 8;
+
+            int i0 = b0 >> 2;
+            result |= s_encodingMap[i0];
+            return result;
         }
 
         /// <summary>
@@ -55,11 +83,10 @@ namespace System.Binary
             int si = 0;
             byte b0, b1, b2, b3;
             for (; si<source.Length - 2;) {
-                Encode(source[si++], source[si++], source[si++], out b0, out b1, out b2, out b3);
-                destination[di++] = b0;
-                destination[di++] = b1;
-                destination[di++] = b2;
-                destination[di++] = b3;
+                var result = Encode(source.Slice(si));
+                si += 3;
+                destination.Slice(di).Write(result);
+                di += 4;
             }
 
             if (si == source.Length - 1) {
@@ -80,6 +107,7 @@ namespace System.Binary
             return di; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Decode(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
         {
             byte i0 = s_decodingMap[b0];
