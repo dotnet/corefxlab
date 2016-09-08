@@ -12,15 +12,16 @@ namespace System
         {
             if (!condition)
             {
-                throw NewArgumentException();
+                ThrowArgumentException();
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RequiresNonNegative(int n)
         {
             if (n < 0)
             {
-                throw NewArgumentOutOfRangeException();
+                ThrowArgumentOutOfRangeException();
             }
         }
 
@@ -29,7 +30,7 @@ namespace System
         {
             if ((uint)start >= length)
             {
-                throw NewArgumentOutOfRangeException();
+                ThrowArgumentOutOfRangeException();
             }
         }
         
@@ -38,7 +39,7 @@ namespace System
         {
             if (start >= length)
             {
-                throw NewArgumentOutOfRangeException();
+                ThrowArgumentOutOfRangeException();
             }
         }
 
@@ -47,7 +48,7 @@ namespace System
         {
             if ((uint)start > length)
             {
-                throw NewArgumentOutOfRangeException();
+                ThrowArgumentOutOfRangeException();
             }
         }
         
@@ -56,7 +57,7 @@ namespace System
         {
             if (start > length)
             {
-                throw NewArgumentOutOfRangeException();
+                ThrowArgumentOutOfRangeException();
             }
         }
 
@@ -67,7 +68,7 @@ namespace System
                 || length < 0
                 || (uint)(start + length) > existingLength)
             {
-                throw NewArgumentOutOfRangeException();
+                ThrowArgumentOutOfRangeException();
             }
         }
         
@@ -78,21 +79,18 @@ namespace System
                 || length < 0
                 || (start + length) > existingLength)
             {
-                throw NewArgumentOutOfRangeException();
+                ThrowArgumentOutOfRangeException();
             }
         }
 
-        
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Exception NewArgumentException()
+        private static void ThrowArgumentException()
         {
-            return new ArgumentException();
+            throw new ArgumentException();
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static Exception NewArgumentOutOfRangeException()
+        private static void ThrowArgumentOutOfRangeException()
         {
-            return new ArgumentOutOfRangeException();
+            throw new ArgumentOutOfRangeException();
         }
     }
 }
