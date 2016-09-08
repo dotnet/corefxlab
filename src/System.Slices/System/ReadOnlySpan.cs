@@ -12,7 +12,7 @@ namespace System
     /// </summary>
     [DebuggerTypeProxy(typeof(SpanDebuggerView<>))]
     [DebuggerDisplay("Length = {Length}")]
-    public partial struct ReadOnlySpan<T> : IEnumerable<T>, IEquatable<ReadOnlySpan<T>>
+    public partial struct ReadOnlySpan<T> : IEnumerable<T>, IEquatable<Span<T>>, IEquatable<ReadOnlySpan<T>>, IEquatable<T[]>
     {
         /// <summary>A managed array/string; or null for native ptrs.</summary>
         internal readonly object Object;
@@ -131,6 +131,11 @@ namespace System
             Object = obj;
             Offset = offset;
             Length = length;
+        }
+
+        public static implicit operator ReadOnlySpan<T>(T[] array)
+        {
+            return new ReadOnlySpan<T>(array);
         }
 
         public static implicit operator ReadOnlySpan<T>(Span<T> slice)
@@ -325,6 +330,11 @@ namespace System
             return ReferenceEquals(other);
         }
 
+        public bool Equals(Span<T> other)
+        {
+            return other.StructuralEquals(Object, Offset, Length);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is ReadOnlySpan<T>)
@@ -333,5 +343,9 @@ namespace System
             }
             return false;
         }
+
+        public bool Equals(T[] other) => Equals(new ReadOnlySpan<T>(other));
+        public static bool operator ==(ReadOnlySpan<T> span1, ReadOnlySpan<T> span2) => span1.Equals(span2);
+        public static bool operator !=(ReadOnlySpan<T> span1, ReadOnlySpan<T> span2) => !span1.Equals(span2);
     }
 }
