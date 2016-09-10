@@ -153,20 +153,20 @@ namespace System
             int countOfU;
 
             /// This comparison is a jittime constant
-            if (PtrUtils.SizeOf<T>() > PtrUtils.SizeOf<U>())
+            if (Unsafe.SizeOf<T>() > Unsafe.SizeOf<U>())
             {
-                IntPtr count = PtrUtils.CountOfU<T, U>((uint)slice.Length);
-                unsafe
+                long count;
+                checked
                 {
-                    // We can't compare IntPtrs, so have to resort to pointer comparison
-                    bool fits = (byte*)count <= (byte*)int.MaxValue;
-                    Contract.Requires(fits);
-                    countOfU = (int)count.ToPointer();
+                    count = ((uint) slice.Length*Unsafe.SizeOf<T>())/Unsafe.SizeOf<U>();
                 }
+                bool fits = count <= int.MaxValue;
+                Contract.Requires(fits);
+                countOfU = (int)count;
             }
             else
             {
-                countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
+                countOfU = slice.Length * Unsafe.SizeOf<T>() / Unsafe.SizeOf<U>();
             }
             
             object obj = slice.Object;
@@ -195,20 +195,20 @@ namespace System
             int countOfU;
 
             /// This comparison is a jittime constant
-            if (PtrUtils.SizeOf<T>() > PtrUtils.SizeOf<U>())
+            if (Unsafe.SizeOf<T>() > Unsafe.SizeOf<U>())
             {
-                IntPtr count = PtrUtils.CountOfU<T, U>((uint)slice.Length);
-                unsafe
+                long count;
+                checked
                 {
-                    // We can't compare IntPtrs, so have to resort to pointer comparison
-                    bool fits = (byte*)count <= (byte*)int.MaxValue;
-                    Contract.Requires(fits);
-                    countOfU = (int)count.ToPointer();
+                    count = ((uint)slice.Length * Unsafe.SizeOf<T>()) / Unsafe.SizeOf<U>();
                 }
+                bool fits = count <= int.MaxValue;
+                Contract.Requires(fits);
+                countOfU = (int)count;
             }
             else
             {
-                countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
+                countOfU = slice.Length * Unsafe.SizeOf<T>() / Unsafe.SizeOf<U>();
             }
 
             object obj = slice.Object;
@@ -230,7 +230,7 @@ namespace System
         public static T Read<[Primitive]T>(this Span<byte> slice)
             where T : struct
         {
-            Contract.RequiresInInclusiveRange(PtrUtils.SizeOf<T>(), (uint)slice.Length);
+            Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
             return PtrUtils.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
         }
 
@@ -241,7 +241,7 @@ namespace System
         public static T Read<[Primitive]T>(this ReadOnlySpan<byte> slice)
             where T : struct
         {
-            Contract.RequiresInInclusiveRange(PtrUtils.SizeOf<T>(), (uint)slice.Length);
+            Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
             return PtrUtils.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
         }
 
@@ -252,7 +252,7 @@ namespace System
         public static void Write<[Primitive]T>(this Span<byte> slice, T value)
             where T : struct
         {
-            Contract.RequiresInInclusiveRange(PtrUtils.SizeOf<T>(), (uint)slice.Length);
+            Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
             PtrUtils.Set(slice.Object, slice.Offset, (UIntPtr)0, value);
         }
 
@@ -261,161 +261,38 @@ namespace System
         /// </summary>
         /// <param name="first">A span of type T to compare to second.</param>
         /// <param name="second">A span of type T to compare to first.</param>
-        [ILSub(@"
-            .maxstack 4
-            .locals([0] uint8 & baseAddr1,
-                    [1] uint8 & baseAddr2,
-                    [2] native uint i,
-                    [3] native uint length)
-            ldarg.0
-            ldfld      int32 valuetype System.Span`1<!!T>::Length
-            dup
-            stloc.3
-            ldarg.1
-            ldfld      int32 valuetype System.Span`1<!!T>::Length
-            ceq
-            brfalse.s  NOT_EQUAL
-
-            ldloc.3
-            brzero.s  EQUAL
- 
-            ldarg.0
-            ldfld      object valuetype System.Span`1<!!T>::Object
-            stloc.0     
-            ldloc.0     
-            ldarg.0
-            ldfld      native uint valuetype System.Span`1<!!T>::Offset
-            add         
-            stloc.0 
-
-            ldarg.1
-            ldfld      object valuetype System.Span`1<!!T>::Object
-            stloc.1     
-            ldloc.1    
-            ldarg.1
-            ldfld      native uint valuetype System.Span`1<!!T>::Offset
-            add         
-            stloc.1 
-
-            ldc.i4.0    
-            stloc.2
-
-        LOOP_START:
-            ldloc.0
-            ldloc.2     
-            sizeof !!T  
-            mul         
-            add  
-
-            ldloc.1
-            ldloc.2     
-            sizeof !!T  
-            mul         
-            add 
-            ldobj  !!T  
-      
-            constrained. !!T
-            callvirt   instance bool class [System.Runtime]System.IEquatable`1<!!T>::Equals(!0)
-            brfalse.s  NOT_EQUAL
-            ldloc.2     
-            ldc.i4.1    
-            add         
-            stloc.2    
-            ldloc.2     
-            ldloc.3     
-            blt.s      LOOP_START
-
-        EQUAL:
-            ldc.i4.1 
-            ret
-        NOT_EQUAL:
-            ldc.i4.0   
-            ret ")]
-        public static bool SequenceEqual<T>(this Span<T> first, Span<T> second)
-            where T : struct, IEquatable<T>
-        { 
-            return false;
-        }
-
-        /// <summary>
-        /// Determines whether two spans are equal by comparing the elements by using generic Equals method
-        /// </summary>
-        /// <param name="first">A span of type T to compare to second.</param>
-        /// <param name="second">A span of type T to compare to first.</param>
-        [ILSub(@"
-            .maxstack 4
-            .locals([0] uint8 & baseAddr1,
-                    [1] uint8 & baseAddr2,
-                    [2] native uint i,
-                    [3] native uint length)
-            ldarg.0
-            ldfld      int32 valuetype System.ReadOnlySpan`1<!!T>::Length
-            dup
-            stloc.3
-            ldarg.1
-            ldfld      int32 valuetype System.ReadOnlySpan`1<!!T>::Length
-            ceq
-            brfalse.s  NOT_EQUAL
-
-            ldloc.3
-            brzero.s  EQUAL
- 
-            ldarg.0
-            ldfld      object valuetype System.ReadOnlySpan`1<!!T>::Object
-            stloc.0     
-            ldloc.0     
-            ldarg.0
-            ldfld      native uint valuetype System.ReadOnlySpan`1<!!T>::Offset
-            add         
-            stloc.0 
-
-            ldarg.1
-            ldfld      object valuetype System.ReadOnlySpan`1<!!T>::Object
-            stloc.1     
-            ldloc.1    
-            ldarg.1
-            ldfld      native uint valuetype System.ReadOnlySpan`1<!!T>::Offset
-            add         
-            stloc.1 
-
-            ldc.i4.0    
-            stloc.2
-
-        LOOP_START:
-            ldloc.0
-            ldloc.2     
-            sizeof !!T  
-            mul         
-            add  
-
-            ldloc.1
-            ldloc.2     
-            sizeof !!T  
-            mul         
-            add 
-            ldobj  !!T  
-      
-            constrained. !!T
-            callvirt   instance bool class [System.Runtime]System.IEquatable`1<!!T>::Equals(!0)
-            brfalse.s  NOT_EQUAL
-            ldloc.2     
-            ldc.i4.1    
-            add         
-            stloc.2    
-            ldloc.2     
-            ldloc.3     
-            blt.s      LOOP_START
-
-        EQUAL:
-            ldc.i4.1 
-            ret
-        NOT_EQUAL:
-            ldc.i4.0   
-            ret ")]
         public static bool SequenceEqual<T>(this ReadOnlySpan<T> first, ReadOnlySpan<T> second)
             where T : struct, IEquatable<T>
         {
-            return false;
+            if (first.Length != second.Length)
+            {
+                return false;
+            }
+
+            var e1 = first.GetEnumerator();
+            var e2 = second.GetEnumerator();
+
+            var more = e1.MoveNext();
+            if (e2.MoveNext() != more)
+            {
+                return false;
+            }
+
+            while (more)
+            {
+                if (!e1.Current.Equals(e2.Current))
+                {
+                    return false;
+                }
+
+                more = e1.MoveNext();
+                if (e2.MoveNext() != more)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -437,8 +314,8 @@ namespace System
             where T : struct
             where U : struct
         {
-            var bytesCount = first.Length * PtrUtils.SizeOf<T>();
-            if (bytesCount != second.Length * PtrUtils.SizeOf<U>())
+            var bytesCount = first.Length * Unsafe.SizeOf<T>();
+            if (bytesCount != second.Length * Unsafe.SizeOf<U>())
             {
                 return false;
             }
@@ -469,8 +346,8 @@ namespace System
             where T : struct
             where U : struct
         {
-            var bytesCount = first.Length * PtrUtils.SizeOf<T>();
-            if (bytesCount != second.Length * PtrUtils.SizeOf<U>())
+            var bytesCount = first.Length * Unsafe.SizeOf<T>();
+            if (bytesCount != second.Length * Unsafe.SizeOf<U>())
             {
                 return false;
             }
@@ -497,59 +374,20 @@ namespace System
         /// <param name="slice">The <see cref="T:System.Span" /> to search.</param>
         /// <param name="value">The value to locate in <paramref name="slice" />.</param>
         /// <typeparam name="T">The type of the elements of the slice.</typeparam>
-        [ILSub(@"   
-            .maxstack 3
-            .locals([0] uint8 & addr,
-                    [1] native uint i,
-                    [2] native uint length)
-            ldarg.0
-            ldfld      int32 valuetype System.ReadOnlySpan`1<!!T>::Length
-            dup
-            stloc.2
-            brfalse.s  EMPTY_SPAN
- 
-            ldarg.0
-            ldfld      object valuetype System.ReadOnlySpan`1<!!T>::Object
-            stloc.0     
-            ldloc.0     
-            ldarg.0
-            ldfld      native uint valuetype System.ReadOnlySpan`1<!!T>::Offset
-
-            add         
-            stloc.0 
-
-            ldc.i4.0    
-            stloc.1
-            
-        LOOP_START:
-            ldloc.0
-            ldloc.1     
-            sizeof !!T  
-            conv.u  
-            mul         
-            add         
-            ldarg.1
-            constrained. !!T
-            callvirt   instance bool class [System.Runtime]System.IEquatable`1<!!T>::Equals(!0)
-            brfalse.s   NOT_EQUAL
-            ldloc.1     
-            ret 
-     
-        NOT_EQUAL:  
-            ldloc.1     
-            ldc.i4.1    
-            add         
-            stloc.1    
-            ldloc.1     
-            ldloc.2     
-            blt.s       LOOP_START
-        EMPTY_SPAN:
-            ldc.i4.m1 
-            ret")]
         public static int IndexOf<T>(this ReadOnlySpan<T> slice, T value)
            where T : struct, IEquatable<T>
         {
-            return 0;
+            var index = 0;
+            foreach (var item in slice)
+            {
+                if (value.Equals(item))
+                {
+                    return index;
+                }
+
+                index++;
+            }
+            return -1;
         }
 
         // Helper methods similar to System.ArrayExtension:

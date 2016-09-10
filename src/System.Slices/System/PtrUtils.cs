@@ -2,16 +2,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System
 {
-    // This class will be removed in post build step, every instance of it will inject IL passed to the constructor as string
-    [AttributeUsage(AttributeTargets.Method)]
-    class ILSub : Attribute
-    {
-        public ILSub(string il) { }
-    }
-
     /// <summary>
     /// A collection of unsafe helper methods that we cannot implement in C#.
     /// NOTE: these can be used for VeryBadThings(tm), so tread with care...
@@ -32,125 +26,46 @@ namespace System
         // depends on it working... (okay, I still feel a little dirty.)
 
         /// <summary>
-        /// Takes a (possibly null) object reference, plus an offset in bytes,
-        /// adds them, and safetly dereferences the target (untyped!) address in
-        /// a way that the GC will be okay with.  It yields a value of type T.
-        /// </summary>
-
-        /// <summary>
         /// Takes a (possibly null) object reference, plus an offset in bytes, plus an index,
         /// adds them, and safely dereferences the target (untyped!) address in
         /// a way that the GC will be okay with.  It yields a value of type T.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ILSub(@"            
-            .maxstack 3
-            .locals([0] uint8 & addr)
-            ldarg.0     // load the object
-            stloc.0     // convert the object pointer to a byref
-            ldloc.0     // load the object pointer as a byref
-            ldarg.1     // load the offset
-            add         // add the offset
-            ldarg.2     // load the index
-            sizeof !!T  // load size of T
-            mul         // multiply the index and size of T
-            add         // add the result
-            ldobj !!T   // load a T value from the computed address
-            ret")]
-        public static T Get<T>(object obj, UIntPtr offset, UIntPtr index) { return default(T); }
+        public static unsafe T Get<T>(object obj, UIntPtr offset, UIntPtr index)
+        {
+            return Unsafe.Read<T>(*(byte**)Unsafe.AsPointer(ref obj) + offset.ToUInt64() + index.ToUInt32() * Unsafe.SizeOf<T>());
+        }
 
         /// <summary>
         /// Takes a (possibly null) object reference, plus an offset in bytes, plus an index,
         /// adds them, and safely stores the value of type T in a way that the
         /// GC will be okay with.
         /// </summary>
-        [ILSub(@"            
-            .maxstack 3
-            .locals([0] uint8 & addr)
-            ldarg.0     // load the object
-            stloc.0     // convert the object pointer to a byref
-            ldloc.0     // load the object pointer as a byref
-            ldarg.1     // load the offset
-            add         // add the offset
-            ldarg.2     // load the index
-            sizeof !!T  // load size of T
-            mul         // multiply the index and size of T
-            add         // add the result
-            ldarg.3     // load the value to store
-            stobj !!T   // store a T value to the computed address
-            ret")]
-        public static void Set<T>(object obj, UIntPtr offset, UIntPtr index, T val) { }
+        public static unsafe void Set<T>(object obj, UIntPtr offset, UIntPtr index, T val)
+        {
+            Unsafe.Write(*(byte**)Unsafe.AsPointer(ref obj) + offset.ToUInt64() + index.ToUInt32() * Unsafe.SizeOf<T>(), val);
+        }
+
+        public static unsafe void CopyBlock(object srcObj, UIntPtr srcOffset, object destObj, UIntPtr destOffset, int byteCount)
+        {
+            Unsafe.CopyBlock(*(byte**)Unsafe.AsPointer(ref destObj) + (ulong)destOffset, *(byte**)Unsafe.AsPointer(ref srcObj) + (ulong)srcOffset, (uint)byteCount);
+        }
 
         /// <summary>
         /// Computes the number of bytes offset from an array object reference
         /// to its first element, in a way the GC will be okay with.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ILSub(@"
-            ldarg.0
-            ldc.i4 0
-            ldelema !!T
-            ldarg.0
-            sub
-            ret")]
-        public static int ElemOffset<T>(T[] arr) { return default(int); }
-
-        /// <summary>
-        /// Computes the size of any type T.  This includes managed object types
-        /// which C# complains about (because it is architecture dependent).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ILSub(@"
-            sizeof !!T
-            ret")]
-        public static int SizeOf<T>() { return default(int); }
-
-        /// <summary>
-        /// computes the address of object reference plus an offset in bytes
-        /// </summary>
-        /// <param name="obj">*must* be pinned (for managed arrays and strings) or can be null (unmanaged arrays)</param>
-        /// <param name="offset">offset to add (can be offset to managed array element or pointer to unmanaged array)</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ILSub(@"
-            .maxstack 2
-            .locals ([0] uint8& addr)
-            ldarg.0     // load the object
-            conv.u      // since the arg must be pinned, there is no need to deal with byref local (as in Get method)
-            ldarg.1     // load the offset
-            add         // add the offset
-            ret")]
-        public static UIntPtr ComputeAddress(object obj, UIntPtr offset) { return UIntPtr.Zero; }
-               
-        [ILSub(@"
-            .maxstack 2
-            ldarg.0
-            conv.i
-            sizeof !!T
-            mul  
-            sizeof !!U
-            div
-            ret")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IntPtr CountOfU<T, U>(uint countOfT) { return default(IntPtr); }
-
-        [ILSub(@"
-            .maxstack 3
-            .locals([0] uint8 & destAddr, 
-                    [1] uint8 & scrAddr)
-            ldarg.2     // load destObj
-            stloc.0     // convert the object pointer to a byref
-            ldloc.0     // load the object pointer as a byref
-            ldarg.3     // load destOffset
-            add         // add destOffset
-            ldarg.0     // load srcObj
-            stloc.1     // convert the object pointer to a byref
-            ldloc.1     // load the object pointer as a byref
-            ldarg.1     // load srcOffset
-            add         // add srcOffset
-            ldarg.s 4   // load byteCount
-            cpblk
-            ret")]
-        public static void CopyBlock(object srcObj, UIntPtr srcOffset, object destObj, UIntPtr destOffset, int byteCount)
-        {}
+        public static unsafe int ElemOffset<T>(T[] arr)
+        {
+            var handle = GCHandle.Alloc(arr, GCHandleType.Pinned);
+            try
+            {
+                return (int)((byte*)Unsafe.AsPointer(ref arr[0]) - *(byte**)Unsafe.AsPointer(ref arr));
+            }
+            finally
+            {
+                handle.Free();
+            }
+        }
     }
 }

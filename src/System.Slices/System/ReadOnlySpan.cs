@@ -61,7 +61,7 @@ namespace System
             {
                 Object = array;
                 Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
+                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * Unsafe.SizeOf<T>())));
                 Length = array.Length - start;
             }
             else
@@ -94,7 +94,7 @@ namespace System
             {
                 Object = array;
                 Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
+                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * Unsafe.SizeOf<T>())));
                 Length = length;
             }
             else
@@ -229,7 +229,7 @@ namespace System
             if (default(T) != null && MemoryUtils.IsPrimitiveValueType<T>())
             {
                 PtrUtils.CopyBlock(src.Object, src.Offset, dest.Object, dest.Offset,
-                                   src.Length * PtrUtils.SizeOf<T>());
+                                   src.Length * Unsafe.SizeOf<T>());
             }
             else
             {
@@ -267,7 +267,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
             return new ReadOnlySpan<T>(
-                Object, Offset + (start * PtrUtils.SizeOf<T>()), Length - start);
+                Object, Offset + (start * Unsafe.SizeOf<T>()), Length - start);
         }
         
         /// <summary>
@@ -281,7 +281,7 @@ namespace System
         public ReadOnlySpan<T> Slice(uint start)
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
-            return new ReadOnlySpan<T>(Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), Length - (int)start);
+            return new ReadOnlySpan<T>(Object, Offset + (((int)start) * Unsafe.SizeOf<T>()), Length - (int)start);
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new ReadOnlySpan<T>(
-                Object, Offset + (start * PtrUtils.SizeOf<T>()), length);
+                Object, Offset + (start * Unsafe.SizeOf<T>()), length);
         }
         
         /// <summary>
@@ -315,7 +315,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new ReadOnlySpan<T>(
-                Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), (int)length);
+                Object, Offset + (((int)start) * Unsafe.SizeOf<T>()), (int)length);
         }
 
         /// <summary>

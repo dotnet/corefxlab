@@ -28,11 +28,11 @@ namespace System
 
                 try
                 {
-                    byte* firstPointer = (byte*)PtrUtils.ComputeAddress(first.Object, first.Offset).ToPointer();
-                    byte* secondPointer = (byte*)PtrUtils.ComputeAddress(second.Object, second.Offset).ToPointer();
+                    byte* firstPointer = ComputeAddress(first.Object, first.Offset);
+                    byte* secondPointer = ComputeAddress(second.Object, second.Offset);
 
                     int step = sizeof(void*) * 5;
-                    int totalBytesCount = first.Length * PtrUtils.SizeOf<T>();
+                    int totalBytesCount = first.Length * Unsafe.SizeOf<T>();
                     byte* firstPointerLimit = firstPointer + (totalBytesCount - step);
 
                     if (totalBytesCount > step)
@@ -98,11 +98,11 @@ namespace System
 
                 try
                 {
-                    byte* firstPointer = (byte*)PtrUtils.ComputeAddress(first.Object, first.Offset).ToPointer();
-                    byte* secondPointer = (byte*)PtrUtils.ComputeAddress(second.Object, second.Offset).ToPointer();
+                    byte* firstPointer = ComputeAddress(first.Object, first.Offset);
+                    byte* secondPointer = ComputeAddress(second.Object, second.Offset);
 
                     int step = sizeof(void*) * 5;
-                    int totalBytesCount = first.Length * PtrUtils.SizeOf<T>();
+                    int totalBytesCount = first.Length * Unsafe.SizeOf<T>();
                     byte* firstPointerLimit = firstPointer + (totalBytesCount - step);
 
                     if (totalBytesCount > step)
@@ -146,6 +146,12 @@ namespace System
                     }
                 }
             }
+        }
+
+        private static unsafe byte* ComputeAddress(object obj, UIntPtr offset)
+        {
+            // obj must be pinned 
+            return *(byte**)Unsafe.AsPointer(ref obj) + offset.ToUInt64();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
