@@ -20,19 +20,17 @@
     "allowUnsafe": true,
     "keyFile": "../../tools/Key.snk",
     "compile": {
-        "include": [ "System/*.cs" ],
-        "exclude": [ "tools/**/*.cs" ]
-     }
+      "include": [ "System/*.cs" ],
+      "exclude": [ "tools/**/*.cs" ]
+    }
   },
   "dependencies": {
-    "System.Runtime": "4.0.0",
-    "System.Runtime.InteropServices": "4.0.0",
-    "System.Diagnostics.Debug": "4.0.0"
+    "System.Runtime": "4.1.0",
+    "System.Runtime.InteropServices": "4.1.0",
+    "System.Diagnostics.Debug": "4.0.11"
   },
   "frameworks": {
-    "netstandard1.0": {
-      "imports": [ "dotnet5.1" ]
-    }
+    "netstandard1.1": {}
   },
   "scripts": {
     "postcompile": "re_write_il.cmd %compile:OutputDir% %compile:OutputFile%"

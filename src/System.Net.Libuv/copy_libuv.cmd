@@ -1,1 +1,0 @@
-copy %1\libuv.dll %2\libuv.dll
