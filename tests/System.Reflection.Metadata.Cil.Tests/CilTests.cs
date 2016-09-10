@@ -21,14 +21,14 @@ namespace System.Reflection.Metadata.Cil.Tests
             return parts[parts.Length - 2] + "." + parts[parts.Length - 1];
         }
 
-        [Fact]
+        [Fact(Skip = "System.Reflection.Metadata needs to be updated to 1.3.0")]
         public void TestMethod1()
         {
             var watch = new Stopwatch();
 
             var path = Path.Combine(AppContext.BaseDirectory, "Demo1.exe");
             if (!File.Exists(path))
-            {                
+            {
                 var thisAssembly = typeof(CilTests).GetTypeInfo().Assembly;
                 var resourceName =
                     thisAssembly.GetManifestResourceNames().First(r => r.EndsWith("Demo1.exe"));
