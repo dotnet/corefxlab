@@ -1,5 +1,5 @@
 {
-  "name": "System.Text.Json",  
+  "name": "System.Text.Json",
   "version": "0.1.0-*",
   "description": "Non-allocating JSON reader and writer",
   "authors": [
@@ -19,20 +19,19 @@
   "buildOptions": {
     "keyFile": "../../tools/Key.snk",
     "compile": {
-        "include": [ "System/**/*.cs" ],
-        "exclude": [ "experiments/**/*.cs" ]
+      "include": [ "System/**/*.cs" ],
+      "exclude": [ "experiments/**/*.cs" ]
     }
   },
   "dependencies": {
     "System.Runtime": "4.1.0",
-    "System.Runtime.Extensions": "4.0.0",
+    "System.Runtime.Extensions": "4.1.0",
     "System.Text.Utf8": { "target": "project" },
     "System.Text.Formatting": { "target": "project" },
     "System.Slices": { "target": "project" }
   },
   "frameworks": {
     "netstandard1.1": {
-      "imports": [ "dotnet5.2" ]
     }
-  },
+  }
 }

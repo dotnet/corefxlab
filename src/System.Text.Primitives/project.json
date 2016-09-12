@@ -27,12 +27,11 @@
   "dependencies": {
     "System.Buffers": "4.0.0",
     "System.Collections": "4.0.11",
-    "System.Runtime.InteropServices": "4.0.0",
+    "System.Runtime.InteropServices": "4.1.0",
     "System.Text.Utf8": { "target": "project" }
   },
   "frameworks": {
     "netstandard1.1": {
-      "imports": [ "dotnet5.2" ]
     }
   }
 }

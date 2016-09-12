@@ -14,21 +14,19 @@
     "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
     "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
     "projectUrl": "https://github.com/dotnet/corefxlab",
-    "requireLicenseAcceptance": true,
+    "requireLicenseAcceptance": true
   },
   "buildOptions": {
     "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
-    "System.Runtime": "4.0.0",
-    "System.Runtime.InteropServices": "4.0.0",
-    "System.Diagnostics.Debug": "4.0.0",
+    "System.Runtime": "4.1.0",
+    "System.Diagnostics.Debug": "4.0.11",
     "System.Slices": { "target": "project" },
     "System.Text.Utf8": { "target": "project" }
   },
   "frameworks": {
-    "netstandard1.0": {
-      "imports": [ "dotnet5.1" ]
+    "netstandard1.1": {
     }
   }
 }

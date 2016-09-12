@@ -3,12 +3,12 @@
   "version": "0.1.0-*",
   "description": "libuv .NET Core wrapper",
   "authors": [
-      "Microsoft Corporation"
+    "Microsoft Corporation"
   ],
   "copyright": "Microsoft Corporation, All rights reserved",
   "packOptions": {
     "tags": [
-        ".NET libuv corefxlab"
+      ".NET libuv corefxlab"
     ],
     "releaseNotes": "Pre-release package, for testing only",
     "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
@@ -19,8 +19,9 @@
   "buildOptions": {
     "allowUnsafe": true,
     "keyFile": "../../tools/Key.snk"
-  },  
+  },
   "dependencies": {
+    "Libuv": "1.9.0",
     "System.Runtime": "4.1.0",
     "System.Buffers": "4.0.0",
     "System.Runtime.InteropServices": "4.1.0",
@@ -29,14 +30,10 @@
     "System.Text.Primitives": { "target": "project" },
     "System.Runtime.InteropServices.RuntimeInformation": "4.0.0",
     "System.Buffers.Experimental": { "target": "project" },
-    "System.Slices": { "target": "project" },
+    "System.Slices": { "target": "project" }
   },
   "frameworks": {
-        "netstandard1.1": {
-            "imports": [ "dotnet5.2" ]
-        }
-  },
-  "scripts": {
-    "postcompile": "copy_libuv \"%project:Directory%\" \"%compile:OutputDir%\""
+    "netstandard1.1": {
+    }
   }
 }
