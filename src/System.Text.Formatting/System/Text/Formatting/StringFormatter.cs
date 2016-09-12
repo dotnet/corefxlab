@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Buffers;
 using System.Text;
 
@@ -64,7 +65,7 @@ namespace System.Text.Formatting
             return text;
         }
 
-        Span<byte> IFormatter.FreeBuffer
+        Span<byte> IStream.AvaliableBytes
         {
             get { return new Span<byte>(_buffer, _count, _buffer.Length - _count); }
         }
@@ -81,20 +82,19 @@ namespace System.Text.Formatting
             }
         }
 
-        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
+        bool IStream.TryEnsureAvaliable(int minimunByteCount)
         {
-            var newSize = desiredFreeBytesHint + _buffer.Length - _count;
-            if(desiredFreeBytesHint == -1){
-                newSize = _buffer.Length * 2;
-            }
-
+            var newSize = _buffer.Length * 2;
+            if(newSize < minimunByteCount) newSize = minimunByteCount;
             var temp = _buffer;
             _buffer = _pool.Rent(newSize);
             Array.Copy(temp, 0, _buffer, 0, _count);
             _pool.Return(temp);
+
+            return true;
         }
 
-        void IFormatter.CommitBytes(int bytes)
+        void IStream.Advance(int bytes)
         {
             _count += bytes;
         }

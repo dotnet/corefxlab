@@ -31,14 +31,14 @@ namespace System.Text.Http
 
         public static void AppendHttpNewLine<TFormatter>(this TFormatter formatter) where TFormatter : IFormatter
         {
-            var buffer = formatter.FreeBuffer;
+            var buffer = formatter.AvaliableBytes;
             while(buffer.Length < 2) {
-                formatter.ResizeBuffer();
-                buffer = formatter.FreeBuffer;
+                formatter.TryEnsureAvaliable(2);
+                buffer = formatter.AvaliableBytes;
             }
             buffer[0] = 13;
             buffer[1] = 10;
-            formatter.CommitBytes(2);
+            formatter.Advance(2);
         }
     }
 }
