@@ -1,0 +1,25 @@
+﻿{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "allowUnsafe": true,
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "System.Text.Json": {
+      "target": "project"
+    },
+    "System.Text.Http": {
+      "target": "project"
+    },
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+    }
+  }
+}
