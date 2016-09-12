@@ -269,7 +269,7 @@ namespace System.Slices.Tests
         }
 
         [Fact]
-        public void GetArray()
+        public void GetArrayOrPointer()
         {
             var original = new int[] { 1, 2, 3 };
             ArraySegment<int> array;
@@ -278,7 +278,9 @@ namespace System.Slices.Tests
             slice = new Span<int>(original, 1, 2);
             unsafe
             {
-                Assert.True(slice.TryGetArray(null, out array));
+                void* p;
+                Assert.True(slice.TryGetArrayElseGetPointer(out array, out p));
+                Assert.True(null == p);
             }
             Assert.Equal(2, array.Array[array.Offset + 0]);
             Assert.Equal(3, array.Array[array.Offset + 1]);
@@ -286,7 +288,9 @@ namespace System.Slices.Tests
             slice = new Span<int>(original, 0, 3);
             unsafe
             {
-                Assert.True(slice.TryGetArray(null, out array));
+                void* p;
+                Assert.True(slice.TryGetArrayElseGetPointer(out array, out p));
+                Assert.True(null == p);
             }
             Assert.Equal(1, array.Array[array.Offset + 0]);
             Assert.Equal(2, array.Array[array.Offset + 1]);
@@ -295,11 +299,37 @@ namespace System.Slices.Tests
             slice = new Span<int>(original, 0, 0);
             unsafe
             {
-                Assert.True(slice.TryGetArray(null, out array));
+                void* p;
+                Assert.True(slice.TryGetArrayElseGetPointer(out array, out p));
+                Assert.True(null == p);
             }
             Assert.Equal(0, array.Offset);
             Assert.Equal(original, array.Array);
             Assert.Equal(0, array.Count);
+
+            unsafe {
+                fixed(int* pBytes = original){
+                    slice = new Span<int>(pBytes, 1);
+                    void* p;
+                    Assert.False(slice.TryGetArrayElseGetPointer(out array, out p));
+                    Assert.True(null != p);
+                    Assert.Equal(null, array.Array);
+                    Assert.Equal(0, array.Offset);
+                    Assert.Equal(0, array.Count);
+                }
+            }
+       
+            unsafe {
+                fixed(int* pBytes = original){
+                    var roSlice = new ReadOnlySpan<int>(pBytes, 1);
+                    void* p;
+                    Assert.False(slice.TryGetArrayElseGetPointer(out array, out p));
+                    Assert.True(null != p);
+                    Assert.Equal(null, array.Array);
+                    Assert.Equal(0, array.Offset);
+                    Assert.Equal(0, array.Count);
+                }
+            }
         }
 
         [Fact]

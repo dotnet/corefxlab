@@ -80,7 +80,16 @@ namespace System.Net.Libuv
         {
             EnsureNotDisposed();
 
-            IntPtr ptrData = (IntPtr)data.UnsafePointer;
+            ArraySegment<byte> array;
+            void* pointer;
+            IntPtr ptrData;
+            if(data.TryGetArrayElseGetPointer(out array, out pointer)){
+                throw new NotImplementedException("needs to pin the array");
+            }
+            else {
+                ptrData = (IntPtr)pointer;
+            }
+            
             if (IsUnix)
             {
                 var buffer = new UVBuffer.Unix(ptrData, (uint)data.Length);
