@@ -172,7 +172,6 @@ namespace System
             return true;
         }
 
-        [Obsolete("use TryGetArrayElseGetPointer instead")]
         public unsafe void* UnsafeReadOnlyPointer
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
