@@ -106,13 +106,21 @@ namespace System.Buffers
 
             if (clearBuffer) BufferUtilities.ClearSpan(buffer);
 
-            if (buffer.Length > _maxElements)
-            {
-                Marshal.FreeHGlobal(new IntPtr(buffer.UnsafePointer));
-            }
-            else
-            {
-                _buckets[BufferUtilities.SelectBucketIndex(buffer.Length)].Return(new NativeBuffer(buffer.UnsafePointer, 0));
+            unsafe {
+                void* pointer;
+                ArraySegment<byte> array;
+                if(buffer.TryGetArrayElseGetPointer(out array, out pointer)){
+                    throw new Exception("this span was not rented from this pool");
+                }
+
+                if (buffer.Length > _maxElements)
+                {
+                    Marshal.FreeHGlobal(new IntPtr(pointer));
+                }
+                else
+                {
+                    _buckets[BufferUtilities.SelectBucketIndex(buffer.Length)].Return(new NativeBuffer(pointer, 0));
+                }
             }
         }
     }

@@ -151,18 +151,36 @@ namespace System
             get { return Length == 0; }
         }
 
+        /// <summary>
+        /// Gets array if the slice is over an array, otherwise gets a pointer to memory.
+        /// </summary>
+        /// <returns>true if it's a span over an array; otherwise false (if over a pointer)</returns>
+        /// <remarks>This method can be used for interop, while we are waiting for proper pinning support</remarks>
+        public unsafe bool TryGetArrayElseGetPointer(out ArraySegment<T> array, out void* pointer)
+        {
+            var a = Object as T[];
+            if (a == null)
+            {
+                array = new ArraySegment<T>();
+                pointer = PtrUtils.ComputeAddress(Object, Offset).ToPointer();
+                return false;
+            }
+
+            var offsetToData = SpanHelpers<T>.OffsetToArrayData;
+            var index = (int)((Offset.ToUInt32() - offsetToData) / PtrUtils.SizeOf<T>());
+            array = new ArraySegment<T>(a, index, Length);
+            pointer = null;
+            return true;
+        }
+
+        [Obsolete("use TryGetArrayElseGetPointer instead")]
         public unsafe void* UnsafePointer
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return PtrUtils.ComputeAddress(Object, Offset).ToPointer(); }
         }
 
-        /// <summary>
-        /// Gets array if the slice is over an array
-        /// </summary>
-        /// <param name="dummy">dummy is just to make the call unsafe; feel free to pass void</param>
-        /// <param name="array"></param>
-        /// <returns>true if it's a span over an array; otherwise false (if over a pointer)</returns>
+        [Obsolete("use TryGetArrayElseGetPointer instead")]
         public unsafe bool TryGetArray(void* dummy, out ArraySegment<T> array)
         {
             var a = Object as T[];

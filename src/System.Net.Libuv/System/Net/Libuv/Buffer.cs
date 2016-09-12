@@ -30,7 +30,12 @@ namespace System.Net.Libuv
             var memory = _pool.Rent((int)length);
             unsafe
             {
-                buffer = new Unix((IntPtr)memory.UnsafePointer, (uint)memory.Length);
+                ArraySegment<byte> array;
+                void* pointer;
+                if(memory.TryGetArrayElseGetPointer(out array, out pointer)){
+                    throw new NotImplementedException("needs to pin the array");
+                }
+                buffer = new Unix(new IntPtr(pointer), (uint)memory.Length);
             }
         }
 
@@ -39,7 +44,12 @@ namespace System.Net.Libuv
             var memory = _pool.Rent((int)length);
             unsafe
             {
-                buffer = new Windows((IntPtr)memory.UnsafePointer, (uint)memory.Length);
+                ArraySegment<byte> array;
+                void* pointer;
+                if(memory.TryGetArrayElseGetPointer(out array, out pointer)){
+                    throw new NotImplementedException("needs to pin the array");
+                }
+                buffer = new Windows(new IntPtr(pointer), (uint)memory.Length);
             }
         }
 
