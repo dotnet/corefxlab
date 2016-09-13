@@ -34,7 +34,7 @@ namespace System
         {
             Contract.Requires(array != null);
             Object = array;
-            Offset = new UIntPtr((uint)SpanHelpers<T>.OffsetToArrayData);
+            Offset = UIntPtr.Zero;
             Length = array.Length;
         }
 
@@ -60,8 +60,7 @@ namespace System
             if (start < array.Length)
             {
                 Object = array;
-                Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
+                Offset = new UIntPtr((uint)start);
                 Length = array.Length - start;
             }
             else
@@ -93,8 +92,7 @@ namespace System
             if (start < array.Length)
             {
                 Object = array;
-                Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
+                Offset = new UIntPtr((uint)start);
                 Length = length;
             }
             else
@@ -161,15 +159,20 @@ namespace System
             if (a == null)
             {
                 array = new ArraySegment<T>();
-                pointer = PtrUtils.ComputeAddress(Object, Offset).ToPointer();
+                pointer = ComputeAddress(Object, Offset);
                 return false;
             }
 
-            var offsetToData = SpanHelpers<T>.OffsetToArrayData;
-            var index = (int)((Offset.ToUInt32() - offsetToData) / PtrUtils.SizeOf<T>());
-            array = new ArraySegment<T>(a, index, Length);
+            array = new ArraySegment<T>(a, (int)Offset.ToUInt32(), Length);
             pointer = null;
             return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe byte* ComputeAddress(object obj, UIntPtr offset)
+        {
+            // obj must be pinned 
+            return *(byte**)Unsafe.AsPointer(ref obj) + offset.ToUInt64();
         }
 
         public unsafe void* UnsafeReadOnlyPointer
@@ -229,7 +232,7 @@ namespace System
             if (default(T) != null && MemoryUtils.IsPrimitiveValueType<T>())
             {
                 PtrUtils.CopyBlock(src.Object, src.Offset, dest.Object, dest.Offset,
-                                   src.Length * PtrUtils.SizeOf<T>());
+                                   src.Length * Unsafe.SizeOf<T>());
             }
             else
             {
@@ -267,7 +270,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
             return new ReadOnlySpan<T>(
-                Object, Offset + (start * PtrUtils.SizeOf<T>()), Length - start);
+                Object, Offset + (start * Unsafe.SizeOf<T>()), Length - start);
         }
         
         /// <summary>
@@ -281,7 +284,7 @@ namespace System
         public ReadOnlySpan<T> Slice(uint start)
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
-            return new ReadOnlySpan<T>(Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), Length - (int)start);
+            return new ReadOnlySpan<T>(Object, Offset + (((int)start) * Unsafe.SizeOf<T>()), Length - (int)start);
         }
 
         /// <summary>
@@ -298,7 +301,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new ReadOnlySpan<T>(
-                Object, Offset + (start * PtrUtils.SizeOf<T>()), length);
+                Object, Offset + (start * Unsafe.SizeOf<T>()), length);
         }
         
         /// <summary>
@@ -315,7 +318,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new ReadOnlySpan<T>(
-                Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), (int)length);
+                Object, Offset + (((int)start) * Unsafe.SizeOf<T>()), (int)length);
         }
 
         /// <summary>

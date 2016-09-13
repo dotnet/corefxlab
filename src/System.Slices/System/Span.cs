@@ -38,7 +38,7 @@ namespace System
             Contract.Requires(array != null);
             Contract.Requires(default(T) != null || array.GetType() == typeof(T[]));
             Object = array;
-            Offset = new UIntPtr((uint)SpanHelpers<T>.OffsetToArrayData);
+            Offset = UIntPtr.Zero;
             Length = array.Length;
         }
 
@@ -65,8 +65,7 @@ namespace System
             if (start < array.Length)
             {
                 Object = array;
-                Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
+                Offset = new UIntPtr((uint)start);
                 Length = array.Length - start;
             }
             else
@@ -99,8 +98,7 @@ namespace System
             if (start < array.Length)
             {
                 Object = array;
-                Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
+                Offset = new UIntPtr((uint)start);
                 Length = length;
             }
             else
@@ -162,21 +160,33 @@ namespace System
             if (a == null)
             {
                 array = new ArraySegment<T>();
-                pointer = PtrUtils.ComputeAddress(Object, Offset).ToPointer();
+                pointer = ComputeAddress(Object, Offset);
                 return false;
             }
 
-            var offsetToData = SpanHelpers<T>.OffsetToArrayData;
-            var index = (int)((Offset.ToUInt32() - offsetToData) / PtrUtils.SizeOf<T>());
-            array = new ArraySegment<T>(a, index, Length);
+            array = new ArraySegment<T>(a, (int)Offset.ToUInt32(), Length);
             pointer = null;
             return true;
         }
 
+        /// <summary>
+        /// Gets an unsafe pointer to the start of the span, the span must be on pinned or native memory
+        /// </summary>
         public unsafe void* UnsafePointer
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return PtrUtils.ComputeAddress(Object, Offset).ToPointer(); }
+            get
+            {
+                // Can't use ref on readonly, so intermidate call
+                return ComputeAddress(Object, Offset);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe byte* ComputeAddress(object obj, UIntPtr offset)
+        {
+            // obj must be pinned 
+            return *(byte**)Unsafe.AsPointer(ref obj) + offset.ToUInt64();
         }
 
         [Obsolete("use TryGetArrayElseGetPointer instead")]
@@ -188,11 +198,8 @@ namespace System
                 array = new ArraySegment<T>();
                 return false;
             }
-
-            var offsetToData = SpanHelpers<T>.OffsetToArrayData;
-
-            var index = (int)((Offset.ToUInt32() - offsetToData) / PtrUtils.SizeOf<T>());
-            array = new ArraySegment<T>(a, index, Length);
+            
+            array = new ArraySegment<T>(a, (int)Offset.ToUInt32(), Length);
             return true;
         }
 
@@ -247,7 +254,7 @@ namespace System
             if (default(T) != null && MemoryUtils.IsPrimitiveValueType<T>())
             {
                 PtrUtils.CopyBlock(src.Object, src.Offset, dest.Object, dest.Offset,
-                                   src.Length * PtrUtils.SizeOf<T>());
+                                   src.Length * Unsafe.SizeOf<T>());
             }
             else
             {
@@ -299,7 +306,7 @@ namespace System
         public Span<T> Slice(int start)
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
-            return new Span<T>(Object, Offset + (start * PtrUtils.SizeOf<T>()), Length - start);
+            return new Span<T>(Object, Offset + (start * Unsafe.SizeOf<T>()), Length - start);
         }
         
         /// <summary>
@@ -313,7 +320,7 @@ namespace System
         public Span<T> Slice(uint start)
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
-            return new Span<T>(Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), Length - (int)start);
+            return new Span<T>(Object, Offset + (((int)start) * Unsafe.SizeOf<T>()), Length - (int)start);
         }
 
         /// <summary>
@@ -330,7 +337,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new Span<T>(
-                Object, Offset + (start * PtrUtils.SizeOf<T>()), length);
+                Object, Offset + (start * Unsafe.SizeOf<T>()), length);
         }
         
         /// <summary>
@@ -347,7 +354,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new Span<T>(
-                Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), (int)length);
+                Object, Offset + (((int)start) * Unsafe.SizeOf<T>()), (int)length);
         }
 
         /// <summary>
