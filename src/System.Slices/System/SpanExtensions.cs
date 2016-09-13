@@ -82,7 +82,7 @@ namespace System
             Contract.Requires(str != null);
             return new ReadOnlySpan<char>(
                 str,
-                new UIntPtr((uint)SpanHelpers.OffsetToStringData),
+                UIntPtr.Zero,
                 str.Length
             );
         }
@@ -107,7 +107,7 @@ namespace System
 
             return new ReadOnlySpan<char>(
                 str,
-                new UIntPtr((uint)(SpanHelpers.OffsetToStringData + (start * sizeof(char)))),
+                new UIntPtr((uint)start),
                 str.Length - start
             );
         }
@@ -132,7 +132,7 @@ namespace System
             Contract.RequiresInInclusiveRange(start, length, (uint)str.Length);
             return new ReadOnlySpan<char>(
                 str,
-                new UIntPtr((uint)(SpanHelpers.OffsetToStringData + (start * sizeof(char)))),
+                new UIntPtr((uint)start),
                 length
             );
         }

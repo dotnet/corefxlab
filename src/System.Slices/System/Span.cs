@@ -38,7 +38,7 @@ namespace System
             Contract.Requires(array != null);
             Contract.Requires(default(T) != null || array.GetType() == typeof(T[]));
             Object = array;
-            Offset = new UIntPtr((uint)SpanHelpers<T>.OffsetToArrayData);
+            Offset = UIntPtr.Zero;
             Length = array.Length;
         }
 
@@ -65,8 +65,7 @@ namespace System
             if (start < array.Length)
             {
                 Object = array;
-                Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * Unsafe.SizeOf<T>())));
+                Offset = new UIntPtr((uint)start);
                 Length = array.Length - start;
             }
             else
@@ -99,8 +98,7 @@ namespace System
             if (start < array.Length)
             {
                 Object = array;
-                Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * Unsafe.SizeOf<T>())));
+                Offset = new UIntPtr((uint)start);
                 Length = length;
             }
             else
@@ -166,13 +164,12 @@ namespace System
                 return false;
             }
 
-            var offsetToData = SpanHelpers<T>.OffsetToArrayData;
-            var index = (int)((Offset.ToUInt32() - offsetToData) / Unsafe.SizeOf<T>());
-            array = new ArraySegment<T>(a, index, Length);
+            array = new ArraySegment<T>(a, (int)Offset.ToUInt32(), Length);
             pointer = null;
             return true;
         }
 
+        /// <summary>
         /// Gets an unsafe pointer to the start of the span, the span must be on pinned or native memory
         /// </summary>
         public unsafe void* UnsafePointer
@@ -201,11 +198,8 @@ namespace System
                 array = new ArraySegment<T>();
                 return false;
             }
-
-            var offsetToData = SpanHelpers<T>.OffsetToArrayData;
-
-            var index = (int)((Offset.ToUInt32() - offsetToData) / Unsafe.SizeOf<T>());
-            array = new ArraySegment<T>(a, index, Length);
+            
+            array = new ArraySegment<T>(a, (int)Offset.ToUInt32(), Length);
             return true;
         }
 
