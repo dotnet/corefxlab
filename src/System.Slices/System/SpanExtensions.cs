@@ -579,7 +579,7 @@ namespace System
 
         public static int IndexOf(this ReadOnlySpan<char> str, string value)
         {
-            return IndexOf(str, value.Slice());
+            return IndexOf(str, value);
         }
 
         public static int IndexOf(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
@@ -609,7 +609,7 @@ namespace System
 
         public static int LastIndexOf(this ReadOnlySpan<char> str, string value)
         {
-            return LastIndexOf(str, value.Slice());
+            return LastIndexOf(str, value);
         }
 
         public static int LastIndexOf(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)

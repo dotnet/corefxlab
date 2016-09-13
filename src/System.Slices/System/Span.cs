@@ -223,10 +223,10 @@ namespace System
         /// allocates, so should generally be avoided, however is sometimes
         /// necessary to bridge the gap with APIs written in terms of arrays.
         /// </summary>
-        public T[] CreateArray()
+        public T[] ToArray()
         {
             var dest = new T[Length];
-            TryCopyTo(dest.Slice());
+            TryCopyTo(dest);
             return dest;
         }
 
@@ -269,7 +269,7 @@ namespace System
         /// <param name="dest">The span to copy items into.</param>
         public bool TryCopyTo(T[] destination)
         {
-            return TryCopyTo(destination.Slice());
+            return TryCopyTo(destination);
         }
 
         public void Set(ReadOnlySpan<T> values)

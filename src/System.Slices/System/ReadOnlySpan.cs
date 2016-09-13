@@ -208,7 +208,7 @@ namespace System
         public T[] CreateArray()
         {
             var dest = new T[Length];
-            TryCopyTo(dest.Slice());
+            TryCopyTo(dest);
             return dest;
         }
 
