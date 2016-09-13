@@ -60,6 +60,16 @@ namespace System
         }
 
         /// <summary>
+        /// Creates a new slice over the portion of the target array segment.
+        /// </summary>
+        /// <param name="arraySegment">The target array segment.</param>
+        /// </exception>
+        public static Span<T> Slice<T>(this ArraySegment<T> arraySegment)
+        {
+            return new Span<T>(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+        }
+
+        /// <summary>
         /// Creates a new slice over the portion of the target string.
         /// </summary>
         /// <param name="str">The target string.</param>
