@@ -10,7 +10,7 @@ namespace System.Slices.Tests
         public void ByteSpanEmptyCreateArrayTest()
         {
             var empty = Span<byte>.Empty;
-            var array = empty.CreateArray();
+            var array = empty.ToArray();
             Assert.Equal(0, array.Length);
         }
 
