@@ -4,8 +4,15 @@ using Xunit;
 
 namespace System.Buffers.Tests
 {
-    public class BufferPoolTests
+    public class NativeBufferPoolTests
     {
-
+        [Fact]
+        public void BasicsWork() {
+            var pool = System.Buffers.NativeBufferPool.Shared;
+            var buffer = pool.Rent(10);
+            pool.Return(buffer);
+            buffer = pool.Rent(10); 
+            pool.Return(buffer);
+        }
     }
 }
