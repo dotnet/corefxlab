@@ -1,6 +1,7 @@
-﻿using System.Buffers;
-using System.Collections.Generic;
+﻿using System.Text.Utf8;
 using Xunit;
+using System.Text;
+using System.Collections.Generic;
 
 namespace System.Buffers.Tests
 {
@@ -58,6 +59,65 @@ namespace System.Buffers.Tests
             ms.Dispose();
         }
 
+        [Fact]
+        public void MultispanEnumeration()
+        {
+            {
+                Multispan<byte> collection = ToMultispan("A");
+                Assert.Equal(1, collection.Count);
+                Position position = Position.BeforeFirst;
+                var item = collection.TryGetItem(ref position);
+                Assert.True(position.IsEnd);
+                Assert.Equal(item[0], (byte)'A');
+                collection.Dispose();
+            }
+            {
+                Multispan<byte> collection = ToMultispan("A", "B");
+                Assert.Equal(2, collection.Count);
+                Position position = Position.BeforeFirst;
+                var item1 = collection.TryGetItem(ref position);
+                Assert.True(position.IsValid);
+                Assert.Equal(item1[0], (byte)'A');
+                var item2 = collection.TryGetItem(ref position);
+                Assert.Equal(item2[0], (byte)'B');
+                Assert.True(position.IsEnd);
+                collection.Dispose();
+            }
+        }
+
+        [Fact]
+        public void MultispanParsing()
+        {
+            uint value;
+            Multispan<byte> collection;
+
+            collection = ToMultispan("12");
+            value = collection.ParseUInt32();
+            Assert.Equal(12u, value);
+            collection.Dispose();
+
+            collection = ToMultispan("12_", "34");
+            value = collection.ParseUInt32();
+            Assert.Equal(12u, value);
+            collection.Dispose();
+
+            collection = ToMultispan("12", "34");
+            value = collection.ParseUInt32();
+            Assert.Equal(1234u, value);
+            collection.Dispose();
+
+            collection = ToMultispan("12", "34_", "56");
+            value = collection.ParseUInt32();
+            Assert.Equal(1234u, value);
+            collection.Dispose();
+
+            // TODO: this is NYI
+            //collection = ToMultispan("12", "34", "56");
+            //value = collection.ParseUInt32();
+            //Assert.Equal(123456u, value);
+            //collection.Dispose();
+        }
+
         private static void Initialize(ref Multispan<byte> ms)
         {
             Assert.Equal(0, ms.TotalItemCount());
@@ -69,6 +129,31 @@ namespace System.Buffers.Tests
             ms.AppendNewSegment(30);
             ms.ResizeSegment(2, 30);
             Assert.Equal(60, ms.TotalItemCount());
+        }
+
+        public static Multispan<byte> ToMultispan(params string[] sections)
+        {
+            var result = new Multispan<byte>();
+            for (int i = 0; i < sections.Length; i++) {
+                var bytes = new Utf8String(sections[i]).Bytes.CreateArray();
+                result.AppendNewSegment(bytes.Length);
+                result.Last.Set(bytes);
+                result.ResizeSegment(i, bytes.Length);
+            }
+            return result;
+        }
+    }
+
+    static class TestingExtensions
+    {
+        public static uint ParseUInt32(this Multispan<byte> bytes)
+        {
+            int consumed;
+            uint value;
+            if (!bytes.TryParseUInt32(FormattingData.InvariantUtf8, out value, out consumed)) {
+                throw new ArgumentException();
+            }
+            return value;
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
+
 namespace System.Buffers
 {
     /// <summary>
@@ -16,7 +18,7 @@ namespace System.Buffers
     /// Also, be extra careful when disposing this type. If you dispose the original instance and its copy, 
     /// the pool used by this type will be corrupted.
     /// </remarks>
-    public struct Multispan<T>
+    public struct Multispan<T> : ISequence<Span<T>>
     {
         ArraySegment<T> _head;
         ArraySegment<T>[] _tail;
@@ -271,6 +273,23 @@ namespace System.Buffers
         private static Span<T> AsSlice(ArraySegment<T> segment)
         {
             return new Span<T>(segment.Array, segment.Offset, segment.Count);
+        }
+
+        public Span<T> TryGetItem(ref Position position)
+        {
+            if (!position.IsEnd && position.IntegerPosition < _count) {
+                var item = this[position.IntegerPosition++];
+                if (position.IntegerPosition >= _count) position = Position.End;
+                return item;
+            } else {
+                position = Position.Invalid;
+                return default(Span<T>);
+            }
+        }
+
+        Enumerator<Span<T>> ISequence<Span<T>>.GetEnumerator()
+        {
+            return new Enumerator<Span<T>>(this);
         }
     }
 
