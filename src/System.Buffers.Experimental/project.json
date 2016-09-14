@@ -24,6 +24,7 @@
     "System.Buffers": "4.0.0",
     "System.Diagnostics.Debug": "4.0.11",
     "System.Slices": { "target": "project" },
+    "System.Text.Primitives": { "target": "project" },
     "System.Threading": "4.0.11"
   },
   "frameworks": {
