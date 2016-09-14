@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
-    public unsafe sealed class NativeBufferPool : IDisposable
+    public unsafe sealed class NativeBufferPool : BufferPool
     {
         static NativeBufferPool s_shared = new NativeBufferPool(4096);
         object _lock = new object();
@@ -28,21 +28,8 @@ namespace System.Buffers
             _bufferCount = bufferCount;
             _memory = Marshal.AllocHGlobal(_bufferSize * _bufferCount);
         }
-
-        ~NativeBufferPool()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            if (!_disposed) {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-        }
-
-        void Dispose(bool disposing)
+ 
+        protected override void Dispose(bool disposing)
         {
             lock (_lock) {
                 if (_disposed) return;
@@ -51,7 +38,7 @@ namespace System.Buffers
             Marshal.FreeHGlobal(_memory);
         }
 
-        public Span<byte> Rent(int numberOfBytes)
+        public override Bytes Rent(int numberOfBytes)
         {
             if (numberOfBytes < 1) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
@@ -70,14 +57,15 @@ namespace System.Buffers
                     throw new NotImplementedException("no more buffers to rent");
             }
 
-            return new Span<byte>((byte*)(_memory + i * _bufferSize), _bufferSize);
+            return new Bytes((byte*)(_memory + i * _bufferSize), _bufferSize);
         }
 
-        public void Return(Span<byte> buffer)
+        public override void Return(Bytes buffer)
         {
+            var span = (Span<byte>)buffer;
             void* pointer;
             ArraySegment<byte> array;
-            if(buffer.TryGetArrayElseGetPointer(out array, out pointer)) {
+            if(span.TryGetArrayElseGetPointer(out array, out pointer)) {
                 throw new Exception("not rented from this pool");
             }
             var memory = new IntPtr(pointer).ToInt64();

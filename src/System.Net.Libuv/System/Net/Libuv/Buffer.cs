@@ -20,36 +20,38 @@ namespace System.Net.Libuv
             AllocWindowsBuffer = OnAllocateWindowsBuffer;
         }
 
-        internal static void FreeBuffer(Span<byte> buffer)
+        internal static void FreeBuffer(Bytes buffer)
         {
             _pool.Return(buffer);
         }
 
         static void OnAllocateUnixBuffer(IntPtr memoryBuffer, uint length, out Unix buffer)
         {
-            var memory = _pool.Rent((int)length);
+            var rented = _pool.Rent((int)length);
+            var span = (Span<byte>)rented;
             unsafe
             {
                 ArraySegment<byte> array;
                 void* pointer;
-                if(memory.TryGetArrayElseGetPointer(out array, out pointer)){
+                if(span.TryGetArrayElseGetPointer(out array, out pointer)){
                     throw new NotImplementedException("needs to pin the array");
                 }
-                buffer = new Unix(new IntPtr(pointer), (uint)memory.Length);
+                buffer = new Unix(new IntPtr(pointer), (uint)rented.Length);
             }
         }
 
         static void OnAllocateWindowsBuffer(IntPtr memoryBuffer, uint length, out Windows buffer)
         {
-            var memory = _pool.Rent((int)length);
+            var rented = _pool.Rent((int)length);
+            var span = (Span<byte>)rented;
             unsafe
             {
                 ArraySegment<byte> array;
                 void* pointer;
-                if(memory.TryGetArrayElseGetPointer(out array, out pointer)){
+                if(span.TryGetArrayElseGetPointer(out array, out pointer)){
                     throw new NotImplementedException("needs to pin the array");
                 }
-                buffer = new Windows(new IntPtr(pointer), (uint)memory.Length);
+                buffer = new Windows(new IntPtr(pointer), (uint)rented.Length);
             }
         }
 
@@ -69,8 +71,9 @@ namespace System.Net.Libuv
             {
                 unsafe
                 {
-                    var readSlice = new Span<byte>((byte*)Buffer, (int)Length);
-                    FreeBuffer(readSlice);
+                    Length = 0;
+                    Buffer = IntPtr.Zero;
+                    FreeBuffer(new Bytes((byte*)Buffer.ToPointer(), (int)Length));
                 }
             }
         }
@@ -91,8 +94,9 @@ namespace System.Net.Libuv
             {
                 unsafe
                 {
-                    var readSlice = new Span<byte>((byte*)Buffer, (int)Length);
-                    FreeBuffer(readSlice);
+                    Length = IntPtr.Zero;
+                    Buffer = IntPtr.Zero;
+                    FreeBuffer(new Bytes((byte*)Buffer.ToPointer(), Length.ToInt32()));
                 }
             }
         }
