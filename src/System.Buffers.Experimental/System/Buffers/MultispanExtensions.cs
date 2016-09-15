@@ -9,13 +9,13 @@ namespace System.Buffers
 {
     public static class MultispanExtensions
     {
-        public static bool TryParseUInt32<TMultispan>(this TMultispan bytes, FormattingData encoding, out uint value, out int consumed) where TMultispan : ISequence<Span<byte>>
+        public static bool TryParseUInt32<TMultispan>(this TMultispan bytes, EncodingData encoding, out uint value, out int consumed) where TMultispan : ISequence<Span<byte>>
         {
             Position position = Position.BeforeFirst;
             var first = bytes.TryGetItem(ref position);
             if (!position.IsValid) throw new ArgumentException("bytes cannot be empty");
 
-            if (!InvariantParser.TryParse(first, FormattingData.Encoding.Utf8, out value, out consumed)) {
+            if (!PrimitiveParser.TryParse(first, EncodingData.Encoding.Utf8, out value, out consumed)) {
                 return false; // TODO: maybe we should continue in some cases, e.g. if the first span ends in a decimal separator
                                 // ... cont, maybe consumed could be set even if TryParse returns false
             }
@@ -43,7 +43,7 @@ namespace System.Buffers
 
             second.Slice(0, numberOfBytesFromSecond).TryCopyTo(temp.Slice(first.Length));
 
-            if (!InvariantParser.TryParse(temp, FormattingData.Encoding.Utf8, out value, out consumed)) {
+            if (!PrimitiveParser.TryParse(temp, EncodingData.Encoding.Utf8, out value, out consumed)) {
                 return false;
             }
 

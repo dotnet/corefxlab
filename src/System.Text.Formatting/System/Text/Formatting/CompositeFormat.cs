@@ -139,7 +139,7 @@ namespace System.Text.Formatting {
             for (int i = 0; i < count; i++)
             {
                 int bytesWritten;
-                while (!whole[i+index].TryFormat(buffer, default(Format.Parsed), formatter.FormattingData, out bytesWritten))
+                while (!whole[i+index].TryFormat(buffer, default(Format.Parsed), formatter.Encoding, out bytesWritten))
                 {
                     Debug.Assert(false, "this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
                 }

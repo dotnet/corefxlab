@@ -15,7 +15,7 @@ namespace System.Text.Formatting.Tests
         public void MultispanFormatterBasics()
         {
             var data = new Multispan<byte>();
-            var formatter = new MultispanFormatter(data, 10, FormattingData.InvariantUtf8);
+            var formatter = new MultispanFormatter(data, 10, EncodingData.InvariantUtf8);
             formatter.Append(new string('x', 10));
             formatter.Append(new string('x', 8));
             formatter.Append(new string('x', 8));

@@ -6,7 +6,7 @@ using System.Text.Utf8;
 
 namespace System.Text
 {
-    public static partial class InvariantParser
+    public static partial class PrimitiveParser
     {
         #region Helper Methods
         private static bool IsTrue(byte[] utf8Text, int index)
@@ -270,7 +270,7 @@ namespace System.Text
         }
         #endregion
 
-        public static bool TryParse(ReadOnlySpan<byte> text, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat, out bool value, out int bytesConsumed)
+        public static bool TryParse(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed format, out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;
             value = default(bool);
@@ -278,7 +278,7 @@ namespace System.Text
                 return false;
             }
 
-            if (cultureAndEncodingInfo.IsInvariantUtf8) {
+            if (encoding.IsInvariantUtf8) {
 
                 byte firstCodeUnit = text[0];
 
@@ -310,7 +310,7 @@ namespace System.Text
             return false;
         }
 
-        public static bool TryParse(byte[] text, int index, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat,
+        public static bool TryParse(byte[] text, int index, EncodingData encoding, Format.Parsed format,
             out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;
@@ -321,7 +321,7 @@ namespace System.Text
                 return false;
             }
 
-            if (cultureAndEncodingInfo.IsInvariantUtf8)
+            if (encoding.IsInvariantUtf8)
             {
 
                 byte firstByte = text[index];
@@ -359,7 +359,7 @@ namespace System.Text
             return false;
         }
 
-        public static unsafe bool TryParse(byte* text, int index, int length, FormattingData cultureAndEncodingInfo,
+        public static unsafe bool TryParse(byte* text, int index, int length, EncodingData encoding,
             Format.Parsed numericFormat, out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;
@@ -370,7 +370,7 @@ namespace System.Text
                 return false;
             }
 
-            if (cultureAndEncodingInfo.IsInvariantUtf8)
+            if (encoding.IsInvariantUtf8)
             {
                 byte firstByte = text[index];
 
@@ -407,7 +407,7 @@ namespace System.Text
             return false;
         }
 
-        public static bool TryParse(string text, int index, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat,
+        public static bool TryParse(string text, int index, Format.Parsed format,
           out bool value, out int charactersConsumed)
         {
             charactersConsumed = 0;
@@ -417,39 +417,34 @@ namespace System.Text
                 return false;
             }
 
-            if (cultureAndEncodingInfo.IsInvariantUtf16) {
+            char firstCodeUnit = text[index];
 
-                char firstCodeUnit = text[index];
-
-                if (firstCodeUnit == '1') {
-                    charactersConsumed = 1;
-                    value = true;
-                    return true;
-                }
-                else if (firstCodeUnit == '0') {
-                    charactersConsumed = 1;
-                    value = false;
-                    return true;
-                }
-                else if (IsTrue(text, index)) {
-                    charactersConsumed = 4;
-                    value = true;
-                    return true;
-                }
-                else if (IsFalse(text, index)) {
-                    charactersConsumed = 5;
-                    value = false;
-                    return true;
-                }
-                else {
-                    return false;
-                }
+            if (firstCodeUnit == '1') {
+                charactersConsumed = 1;
+                value = true;
+                return true;
             }
-
-            return false;
+            else if (firstCodeUnit == '0') {
+                charactersConsumed = 1;
+                value = false;
+                return true;
+            }
+            else if (IsTrue(text, index)) {
+                charactersConsumed = 4;
+                value = true;
+                return true;
+            }
+            else if (IsFalse(text, index)) {
+                charactersConsumed = 5;
+                value = false;
+                return true;
+            }
+            else {
+                return false;
+            }
         }
 
-        public static bool TryParse(Utf8String text, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat,
+        public static bool TryParse(Utf8String text, Format.Parsed format,
             out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;
@@ -458,37 +453,31 @@ namespace System.Text
                 return false;
             }
 
-            if (cultureAndEncodingInfo.IsInvariantUtf8) {
+            Utf8CodeUnit firstCodeUnit = text[0];
 
-                Utf8CodeUnit firstCodeUnit = text[0];
-
-                if (firstCodeUnit == '1') {
-                    bytesConsumed = 1;
-                    value = true;
-                    return true;
-                }
-                else if (firstCodeUnit == '0') {
-                    bytesConsumed = 1;
-                    value = false;
-                    return true;
-                }
-                else if (IsTrue(text)) {
-                    bytesConsumed = 4;
-                    value = true;
-                    return true;
-                }
-                else if (IsFalse(text)) {
-                    bytesConsumed = 5;
-                    value = false;
-                    return true;
-                }
-                else {
-                    return false;
-                }
+            if (firstCodeUnit == '1') {
+                bytesConsumed = 1;
+                value = true;
+                return true;
             }
-
-            // TODO: all these overalods need to handle non-Invariant culture. Some of the overloads need to also handle UTF16.
-            return false;
+            else if (firstCodeUnit == '0') {
+                bytesConsumed = 1;
+                value = false;
+                return true;
+            }
+            else if (IsTrue(text)) {
+                bytesConsumed = 4;
+                value = true;
+                return true;
+            }
+            else if (IsFalse(text)) {
+                bytesConsumed = 5;
+                value = false;
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     }
 }

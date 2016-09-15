@@ -204,11 +204,11 @@ namespace Microsoft.Net.Http
 
         public int CommitedBytes { get { return _data.Commited(_order); } }
 
-        public FormattingData FormattingData
+        public EncodingData Encoding
         {
             get
             {
-                return FormattingData.InvariantUtf8;
+                return EncodingData.InvariantUtf8;
             }
         }
 

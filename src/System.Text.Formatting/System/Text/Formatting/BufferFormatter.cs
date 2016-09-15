@@ -8,12 +8,12 @@ namespace System.Text.Formatting
         byte[] _buffer;
         int _count;
 
-        FormattingData _formattingData;
+        EncodingData _encoding;
         ArrayPool<byte> _pool;
 
-        public BufferFormatter(int capacity, FormattingData formattingData, ArrayPool<byte> pool = null)
+        public BufferFormatter(int capacity, EncodingData encoding, ArrayPool<byte> pool = null)
         {
-            _formattingData = formattingData;
+            _encoding = encoding;
             _count = 0;
             _pool = pool;
             if(_pool == null)
@@ -45,11 +45,11 @@ namespace System.Text.Formatting
             }
         }
 
-        FormattingData IFormatter.FormattingData
+        EncodingData IFormatter.Encoding
         {
             get
             {
-                return _formattingData;
+                return _encoding;
             }
         }
 

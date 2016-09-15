@@ -7,15 +7,15 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text 
 {
-    public static partial class PrimitiveFormatters
+    public static partial class PrimitiveFormatter
     {
-        public static bool TryFormat(this double value, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this double value, Span<byte> buffer, Span<char> format, EncodingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this double value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this double value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -25,13 +25,13 @@ namespace System.Text
             return FloatFormatter.TryFormatNumber(value, false, buffer, format, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this float value, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this float value, Span<byte> buffer, Span<char> format, EncodingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this float value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this float value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             if (format.IsDefault)
             {

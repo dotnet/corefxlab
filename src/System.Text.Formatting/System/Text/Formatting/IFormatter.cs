@@ -16,6 +16,6 @@ namespace System.Text.Formatting
         /// <summary>desiredFreeBytesHint == -1 means "i don't care"</summary>
         void ResizeBuffer(int desiredFreeBytesHint = -1);
 
-        FormattingData FormattingData { get; }
+        EncodingData Encoding { get; }
     }
 }

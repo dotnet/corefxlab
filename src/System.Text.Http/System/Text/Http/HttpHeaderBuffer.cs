@@ -6,12 +6,12 @@ namespace System.Text.Http
     {
         //TODO: Issue #390: Switch HttpHeaderBuffer to use Slices.Span.
         private Span<byte> _bytes;
-        private readonly FormattingData _formattingData;
+        private readonly EncodingData _encoding;
 
-        public HttpHeaderBuffer(Span<byte> bytes, FormattingData formattingData)
+        public HttpHeaderBuffer(Span<byte> bytes, EncodingData encoding)
         {
             _bytes = bytes;
-            _formattingData = formattingData;
+            _encoding = encoding;
         }
 
         public void UpdateValue(string newValue)
@@ -22,7 +22,7 @@ namespace System.Text.Http
             }
 
             int bytesWritten;
-            newValue.TryFormat(_bytes, default(Format.Parsed), _formattingData, out bytesWritten);            
+            newValue.TryFormat(_bytes, default(Format.Parsed), _encoding, out bytesWritten);            
 
             _bytes.SetFromRestOfSpanToEmpty(newValue.Length);
         }        

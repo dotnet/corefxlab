@@ -7,11 +7,11 @@ namespace System.Text.Formatting
         Span<byte> _buffer;
         int _count;
 
-        FormattingData _formattingData;
+        EncodingData _encoding;
 
-        public SpanFormatter(Span<byte> buffer, FormattingData formattingData)
+        public SpanFormatter(Span<byte> buffer, EncodingData encoding)
         {
-            _formattingData = formattingData;
+            _encoding = encoding;
             _count = 0;
             _buffer = buffer;
         }
@@ -34,11 +34,11 @@ namespace System.Text.Formatting
             }
         }
 
-        FormattingData IFormatter.FormattingData
+        EncodingData IFormatter.Encoding
         {
             get
             {
-                return _formattingData;
+                return _encoding;
             }
         }
 

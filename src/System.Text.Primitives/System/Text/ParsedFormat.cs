@@ -18,7 +18,7 @@ namespace System.Text
             uint precision = NoPrecision;
             if (format.Length > 1)
             {
-                if (!InvariantParser.TryParse(format, 1, format.Length - 1, out precision))
+                if (!PrimitiveParser.TryParse(format, 1, format.Length - 1, out precision))
                 {
                     throw new NotImplementedException("Unable to parse precision specification");
                 }
@@ -47,7 +47,7 @@ namespace System.Text
             {
                 var span = format.Slice(1, format.Length - 1);
 
-                if (!InvariantParser.TryParse(span, out precision))
+                if (!PrimitiveParser.TryParse(span, out precision))
                 {
                     throw new NotImplementedException("UnableToParsePrecision");
                 }

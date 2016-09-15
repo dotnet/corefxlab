@@ -12,48 +12,48 @@ namespace System.Text
     /// <remarks>
     /// Holds extension methods for formatting types that cannot implement IBufferFormattable for layering reasons.
     /// </remarks>
-    public static partial class PrimitiveFormatters
+    public static partial class PrimitiveFormatter
     {
         #region Integers
-        public static bool TryFormat(this byte value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this byte value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatUInt64(value, 1, buffer, format, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this sbyte value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this sbyte value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatInt64(value, 1, buffer, format, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this ushort value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this ushort value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatUInt64(value, 2, buffer, format, formattingData, out bytesWritten);
         }
-        public static bool TryFormat(this short value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this short value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatInt64(value, 2, buffer, format, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this uint value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this uint value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatUInt64(value, 4, buffer, format, formattingData, out bytesWritten);
         }
-        public static bool TryFormat(this int value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this int value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatInt64(value, 4, buffer, format, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this ulong value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this ulong value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatUInt64(value, 8, buffer, format, formattingData, out bytesWritten);
         }
-        public static bool TryFormat(this long value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this long value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             return IntegerFormatter.TryFormatInt64(value, 8, buffer, format, formattingData, out bytesWritten);
         }
         #endregion
 
-        public static bool TryFormat(this char value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this char value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             if (formattingData.IsUtf16)
             {
@@ -107,7 +107,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormat(this string value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this string value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
 
             if (formattingData.IsUtf16)
@@ -191,7 +191,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormat(this Utf8String value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this Utf8String value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             if (formattingData.IsUtf16) {
                 throw new NotImplementedException();

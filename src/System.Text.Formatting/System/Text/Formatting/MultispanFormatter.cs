@@ -7,11 +7,11 @@ namespace System.Text.Formatting
         Multispan<byte> _buffer;
         int _segmentSize;
         Span<byte> _lastFull;
-        FormattingData _formattingData;
+        EncodingData _encoding;
 
-        public MultispanFormatter(Multispan<byte> buffer, int segmentSize, FormattingData formattingData)
+        public MultispanFormatter(Multispan<byte> buffer, int segmentSize, EncodingData encoding)
         {
-            _formattingData = formattingData;
+            _encoding = encoding;
             _segmentSize = segmentSize;
             _buffer = buffer;
             int index = _buffer.AppendNewSegment(_segmentSize); // TODO: is this the right thing to do? Should Multispan be resilient to empty segment list?
@@ -32,11 +32,11 @@ namespace System.Text.Formatting
             }
         }
 
-        FormattingData IFormatter.FormattingData
+        EncodingData IFormatter.Encoding
         {
             get
             {
-                return _formattingData;
+                return _encoding;
             }
         }
 

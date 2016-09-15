@@ -6,7 +6,7 @@ using System.Text.Utf8;
 
 namespace System.Text
 {
-    public static partial class InvariantParser
+    public static partial class PrimitiveParser
     {
         public static bool TryParse(byte[] utf8Text, int index, out decimal value, out int bytesConsumed)
         {

@@ -2,10 +2,10 @@
 using System.Text.Utf8;
 using Xunit;
 
-namespace System.Text.Formatting.Tests
+namespace System.Text.Primitives.Tests
 {
     // TODO: add negative tests (not a number, overflow, etc.)
-    public class InvariantParserTests
+    public partial class PrimitiveParserTests
     {
         [Theory]
         [InlineData("0", 0, 1, 0, 1)]
@@ -20,7 +20,7 @@ namespace System.Text.Formatting.Tests
         {
             uint parsedValue;
             int charsConsumed;
-            bool result = InvariantParser.TryParse(text, index, count, out parsedValue, out charsConsumed);
+            bool result = PrimitiveParser.TryParse(text, index, count, out parsedValue, out charsConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, parsedValue);
@@ -39,7 +39,7 @@ namespace System.Text.Formatting.Tests
             var span = new ReadOnlySpan<char>(text.ToCharArray());
             uint parsedValue;
             int charsConsumed;
-            bool result = InvariantParser.TryParse(span, out parsedValue, out charsConsumed);
+            bool result = PrimitiveParser.TryParse(span, out parsedValue, out charsConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, parsedValue);
@@ -59,7 +59,7 @@ namespace System.Text.Formatting.Tests
 
             uint parsedValue;
             int bytesConsumed;
-            bool result = InvariantParser.TryParse(utf8, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParse(utf8, out parsedValue, out bytesConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, parsedValue);
@@ -80,7 +80,7 @@ namespace System.Text.Formatting.Tests
 
             uint parsedValue;
             int bytesConsumed;
-            bool result = InvariantParser.TryParse(span, FormattingData.Encoding.Utf8, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParse(span, EncodingData.Encoding.Utf8, out parsedValue, out bytesConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, parsedValue);

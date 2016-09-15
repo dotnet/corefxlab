@@ -6,7 +6,7 @@ using System.Text.Utf8;
 
 namespace System.Text
 {
-    public static partial class InvariantParser
+    public static partial class PrimitiveParser
     {
         public static bool TryParse(string text, int index, int count, out uint value, out int charactersConsumed)
         {
@@ -20,7 +20,7 @@ namespace System.Text
                     char* pSubstring = pText + index;
                     var span = new Span<byte>((byte*)pSubstring, count << 1);
                     int bytesConsumed;
-                    var result = TryParse(span, FormattingData.Encoding.Utf16, out value, out bytesConsumed);
+                    var result = TryParse(span, EncodingData.Encoding.Utf16, out value, out bytesConsumed);
                     charactersConsumed = bytesConsumed >> 1;
                     return result;
                 }
@@ -33,15 +33,15 @@ namespace System.Text
 
             ReadOnlySpan<byte> span = text.Cast<char, byte>();
             int bytesConsumed;
-            var result = TryParse(span, FormattingData.Encoding.Utf16, out value, out bytesConsumed);
+            var result = TryParse(span, EncodingData.Encoding.Utf16, out value, out bytesConsumed);
             charactersConsumed = bytesConsumed >> 1;
             return result;
         }
 
-        public static bool TryParse(Utf8String utf8Text, out uint value, out int bytesConsumed)
+        public static bool TryParse(Utf8String text, out uint value, out int bytesConsumed)
         {
             // Precondition replacement
-            if (utf8Text.Length < 1)
+            if (text.Length < 1)
             {
                 value = 0;
                 bytesConsumed = 0;
@@ -51,9 +51,9 @@ namespace System.Text
             value = 0;
             bytesConsumed = 0;
 
-            for (int byteIndex = 0; byteIndex < utf8Text.Length; byteIndex++)
+            for (int byteIndex = 0; byteIndex < text.Length; byteIndex++)
             {
-                byte nextByteVal = (byte)((byte)utf8Text[byteIndex] - '0');
+                byte nextByteVal = (byte)((byte)text[byteIndex] - '0');
                 if (nextByteVal > 9)
                 {
                     if (bytesConsumed == 0)
@@ -86,28 +86,28 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParse(ReadOnlySpan<byte> utf8Text, FormattingData.Encoding encoding, out uint value, out int bytesConsumed)
+        public static bool TryParse(ReadOnlySpan<byte> text, EncodingData.Encoding encoding, out uint value, out int bytesConsumed)
         {
-            Precondition.Require(utf8Text.Length > 0);
-            Precondition.Require(encoding == FormattingData.Encoding.Utf8 || utf8Text.Length > 1);
+            Precondition.Require(text.Length > 0);
+            Precondition.Require(encoding == EncodingData.Encoding.Utf8 || text.Length > 1);
 
             value = 0;
             bytesConsumed = 0;
 
-            if (utf8Text[0] == '0')
+            if (text[0] == '0')
             {
-                if (encoding == FormattingData.Encoding.Utf16)
+                if (encoding == EncodingData.Encoding.Utf16)
                 {
                     bytesConsumed = 2;
-                    return utf8Text[1] == 0;
+                    return text[1] == 0;
                 }
                 bytesConsumed = 1;
                 return true;
             }
 
-            for (int byteIndex = 0; byteIndex < utf8Text.Length; byteIndex++)
+            for (int byteIndex = 0; byteIndex < text.Length; byteIndex++)
             {
-                byte nextByte = utf8Text[byteIndex];
+                byte nextByte = text[byteIndex];
                 if (nextByte < '0' || nextByte > '9')
                 {
                     if (bytesConsumed == 0)
@@ -131,10 +131,10 @@ namespace System.Text
                     return true;
                 }
                 bytesConsumed++;
-                if (encoding == FormattingData.Encoding.Utf16)
+                if (encoding == EncodingData.Encoding.Utf16)
                 {
                     byteIndex++;
-                    if (byteIndex >= utf8Text.Length || utf8Text[byteIndex] != 0)
+                    if (byteIndex >= text.Length || text[byteIndex] != 0)
                     {
                         return false;
                     }
@@ -146,22 +146,22 @@ namespace System.Text
         }
 
         #region helpers
-        public static bool TryParse(string utf8Text, int index, int count, out uint value)
+        public static bool TryParse(string text, int index, int count, out uint value)
         {
             int charactersConsumed;
-            return TryParse(utf8Text, index, count, out value, out charactersConsumed);
+            return TryParse(text, index, count, out value, out charactersConsumed);
         }
 
-        public static bool TryParse(ReadOnlySpan<char> utf8Text, out uint value)
+        public static bool TryParse(ReadOnlySpan<char> text, out uint value)
         {
             int charactersConsumed;
-            return TryParse(utf8Text, out value, out charactersConsumed);
+            return TryParse(text, out value, out charactersConsumed);
         }
 
-        public static bool TryParse(Utf8String utf8Text, out uint value)
+        public static bool TryParse(Utf8String text, out uint value)
         {
             int bytesConsumed;
-            return TryParse(utf8Text, out value, out bytesConsumed);
+            return TryParse(text, out value, out bytesConsumed);
         }
         #endregion
     }
