@@ -1,4 +1,5 @@
-﻿using System.Buffers;
+﻿using System;
+using System.Buffers;
 using System.Text;
 
 namespace System.Text.Formatting
@@ -37,7 +38,7 @@ namespace System.Text.Formatting
             _count = 0;
         }
 
-        Span<byte> IFormatter.FreeBuffer
+        Span<byte> IStream.AvaliableBytes
         {
             get
             {
@@ -53,20 +54,20 @@ namespace System.Text.Formatting
             }
         }
 
-        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
+        bool IStream.TryEnsureAvaliable(int minimunByteCount)
         {
-            var newSize = desiredFreeBytesHint + _buffer.Length - _count;
-            if(desiredFreeBytesHint == -1){
-                newSize = _buffer.Length * 2;
-            }
+            var newSize = minimunByteCount + _buffer.Length - _count;
+            if(newSize < minimunByteCount) newSize = minimunByteCount;
 
             var temp = _buffer;
             _buffer = _pool.Rent(newSize);
             Array.Copy(temp, 0, _buffer, 0, _count);
             _pool.Return(temp);
+
+            return true;
         }
 
-        void IFormatter.CommitBytes(int bytes)
+        void IStream.Advance(int bytes)
         {
             _count += bytes;
             if(_count > _buffer.Length)

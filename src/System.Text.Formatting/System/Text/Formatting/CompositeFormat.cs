@@ -126,12 +126,12 @@ namespace System.Text.Formatting {
         // TODO: this should be removed and an ability to append substrings should be added
         static void Append<TFormatter>(this TFormatter formatter, string whole, int index, int count) where TFormatter : IFormatter
         {
-            var buffer = formatter.FreeBuffer;
+            var buffer = formatter.AvaliableBytes;
             var maxBytes = count << 4; // this is the worst case, i.e. 4 bytes per char
             while(buffer.Length < maxBytes)
             {
-                formatter.ResizeBuffer();
-                buffer = formatter.FreeBuffer;
+                formatter.TryEnsureAvaliable();
+                buffer = formatter.AvaliableBytes;
             }
 
             // this should ne optimized using fixed pointer to substring, but I will wait with this till we design proper substring
@@ -147,7 +147,7 @@ namespace System.Text.Formatting {
                 buffer = buffer.Slice(bytesWritten);
             }
 
-            formatter.CommitBytes(totalWritten);
+            formatter.Advance(totalWritten);
         }
 
         static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format) where TFormatter : IFormatter

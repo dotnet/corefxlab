@@ -1,4 +1,5 @@
-﻿using System.Buffers;
+﻿using System;
+using System.Buffers;
 
 namespace System.Text.Formatting
 {
@@ -24,7 +25,7 @@ namespace System.Text.Formatting
             get { return _buffer; }
         }
 
-        Span<byte> IFormatter.FreeBuffer
+        Span<byte> IStream.AvaliableBytes
         {
             get
             {
@@ -40,18 +41,18 @@ namespace System.Text.Formatting
             }
         }
 
-        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
+        bool IStream.TryEnsureAvaliable(int minimunByteCount)
         {
             var newSize = _segmentSize;
-            if(desiredFreeBytesHint != -1){
-                newSize = desiredFreeBytesHint;
-            }
+            if(newSize < minimunByteCount) newSize = minimunByteCount;
             var index = _buffer.AppendNewSegment(newSize);
             _lastFull = _buffer.Last;
             _buffer.ResizeSegment(index, 0);
+
+            return true;
         }
 
-        void IFormatter.CommitBytes(int bytes)
+        void IStream.Advance(int bytes)
         {
             var lastSegmentCommited = _buffer.Last.Length + bytes;
             if(lastSegmentCommited > _lastFull.Length)

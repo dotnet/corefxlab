@@ -26,7 +26,7 @@ namespace System.Text.Formatting
             _count = 0;
         }
 
-        Span<byte> IFormatter.FreeBuffer
+        Span<byte> IStream.AvaliableBytes
         {
             get
             {
@@ -42,12 +42,14 @@ namespace System.Text.Formatting
             }
         }
 
-        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
+        bool IStream.TryEnsureAvaliable(int minimunByteCount)
         {
-            throw new InvalidOperationException("cannot resize fixed size buffers.");
+            if(_count > _buffer.Length - minimunByteCount) throw new Exception("End of stream");
+            return true;
+
         }
 
-        void IFormatter.CommitBytes(int bytes)
+        void IStream.Advance(int bytes)
         {
             _count += bytes;
             if(_count > _buffer.Length)
