@@ -146,7 +146,7 @@ namespace System
         /// <summary>
         /// Gets ArraySegment containing the ReadOnlySpan's data.
         /// </summary>
-        /// <remarks>This method can be used for interop, as array data is mutable an array is allocated and copy of the data is returned.</remarks>
+        /// <remarks>This method can be used for interop, as array data is mutable, an array is allocated and copy of the data is returned in it.</remarks>
         public static explicit operator ArraySegment<T>(ReadOnlySpan<T> span)
         {
             // Array data is mutable, always create copy of data in array
