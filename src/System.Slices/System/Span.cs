@@ -144,6 +144,25 @@ namespace System
             return new Span<T>(array);
         }
 
+        /// <summary>
+        /// Gets ArraySegment containing the Span's data.
+        /// </summary>
+        /// <remarks>This method can be used for interop. If the Span is not over an array, an array is allocated and copy of the data is returned.</remarks>
+        public static explicit operator ArraySegment<T>(Span<T> span)
+        {
+            var a = span.Object as T[];
+            if (a != null)
+            {
+                // Is array, return array directly
+                var offsetToData = SpanHelpers<T>.OffsetToArrayData;
+                var index = (int)((span.Offset.ToUInt32() - offsetToData) / PtrUtils.SizeOf<T>());
+                return new ArraySegment<T>(a, index, span.Length);
+            }
+
+            // Not array, create copy of data in array
+            return new ArraySegment<T>(span.CreateArray());
+        }
+
         public static Span<T> Empty { get { return default(Span<T>); } }
 
         public bool IsEmpty
