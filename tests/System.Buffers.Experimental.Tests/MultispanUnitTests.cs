@@ -150,7 +150,7 @@ namespace System.Buffers.Tests
         {
             int consumed;
             uint value;
-            if (!bytes.TryParseUInt32(FormattingData.InvariantUtf8, out value, out consumed)) {
+            if (!bytes.TryParseUInt32(EncodingData.InvariantUtf8, out value, out consumed)) {
                 throw new ArgumentException();
             }
             return value;

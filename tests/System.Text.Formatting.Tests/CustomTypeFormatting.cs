@@ -19,14 +19,14 @@ namespace System.Text.Formatting.Tests
             _inMonths = inMonths;
         }
 
-        public bool TryFormat(Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public bool TryFormat(Span<byte> buffer, Format.Parsed format, EncodingData encoding, out int bytesWritten)
         {
-            if (!PrimitiveFormatters.TryFormat(_age, buffer, format, formattingData, out bytesWritten)) return false;
+            if (!PrimitiveFormatter.TryFormat(_age, buffer, format, encoding, out bytesWritten)) return false;
 
 
             char symbol = _inMonths ? 'm' : 'y';
             int symbolBytes;
-            if (!PrimitiveFormatters.TryFormat(symbol, buffer.Slice(bytesWritten), format, formattingData, out symbolBytes)) return false;
+            if (!PrimitiveFormatter.TryFormat(symbol, buffer.Slice(bytesWritten), format, encoding, out symbolBytes)) return false;
 
             bytesWritten += symbolBytes;
             return true;
@@ -61,7 +61,7 @@ namespace System.Text.Formatting.Tests
         {
             byte[] buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
-            using(var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8, pool)) {
+            using(var writer = new StreamFormatter(stream, EncodingData.InvariantUtf8, pool)) {
                 writer.Append(new Age(56));
                 writer.Append(new Age(14, inMonths: true));
                 var writtenText = Encoding.UTF8.GetString(buffer, 0, (int)stream.Position);

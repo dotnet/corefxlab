@@ -11,7 +11,7 @@ namespace System.Text.Formatting.Tests
         public void WriteJsonUtf8()
         {
             var buffer = new byte[1024];
-            var formatter = new SpanFormatter(buffer.Slice(), FormattingData.InvariantUtf8);            
+            var formatter = new SpanFormatter(buffer.Slice(), EncodingData.InvariantUtf8);            
             var json = new JsonWriter<SpanFormatter>(formatter, prettyPrint: true);
             Write(ref json);
             var str = Encoding.UTF8.GetString(buffer, 0, formatter.CommitedByteCount);
@@ -22,7 +22,7 @@ namespace System.Text.Formatting.Tests
         public void WriteJsonUtf16()
         {
             var buffer = new byte[1024];
-            var formatter = new SpanFormatter(buffer.Slice(), FormattingData.InvariantUtf16);            
+            var formatter = new SpanFormatter(buffer.Slice(), EncodingData.InvariantUtf16);            
             var json = new JsonWriter<SpanFormatter>(formatter, prettyPrint: false);
             Write(ref json);
             var str = Encoding.Unicode.GetString(buffer, 0, formatter.CommitedByteCount);

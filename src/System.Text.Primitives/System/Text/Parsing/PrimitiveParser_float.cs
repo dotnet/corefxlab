@@ -6,59 +6,59 @@ using System.Text.Utf8;
 
 namespace System.Text
 {
-    public static partial class InvariantParser
+    public static partial class PrimitiveParser
     {
-        public static bool TryParse(byte[] utf8Text, int index, FormattingData cultureAndEncodingInfo, Format.Parsed numericFormat,
-            out double value, out int bytesConsumed)
+        public static bool TryParse(byte[] text, int index, EncodingData encoding, Format.Parsed format,
+            out float value, out int bytesConsumed)
         {
             // Precondition replacement
-            if (utf8Text.Length < 1 || index < 0 || index >= utf8Text.Length)
+            if (text.Length < 1 || index < 0 || index >= text.Length)
             {
                 value = 0;
                 bytesConsumed = 0;
                 return false;
             }
 
-            value = 0.0;
+            value = 0f;
             bytesConsumed = 0;
 
-            if (cultureAndEncodingInfo.IsInvariantUtf8)
+            if (encoding.IsInvariantUtf8)
             {
-                string doubleString = "";
+                string floatString = "";
                 bool decimalPlace = false, e = false, signed = false, digitLast = false, eLast = false;
 
-                if ((utf8Text.Length - index) >= 3 && utf8Text[index] == 'N' && utf8Text[index + 1] == 'a' && utf8Text[index + 2] == 'N')
+                if ((text.Length - index) >= 3 && text[index] == 'N' && text[index + 1] == 'a' && text[index + 2] == 'N')
                 {
-                    value = double.NaN;
+                    value = float.NaN;
                     bytesConsumed = 3;
                     return true;
                 }
-                if (utf8Text[index] == '-' || utf8Text[index] == '+')
+                if (text[index] == '-' || text[index] == '+')
                 {
                     signed = true;
-                    doubleString += (char)utf8Text[index];
+                    floatString += (char)text[index];
                     index++;
                     bytesConsumed++;
                 }
-                if ((utf8Text.Length - index) >= 8 && utf8Text[index] == 'I' && utf8Text[index + 1] == 'n' &&
-                    utf8Text[index + 2] == 'f' && utf8Text[index + 3] == 'i' && utf8Text[index + 4] == 'n' &&
-                    utf8Text[index + 5] == 'i' && utf8Text[index + 6] == 't' && utf8Text[index + 7] == 'y')
+                if ((text.Length - index) >= 8 && text[index] == 'I' && text[index + 1] == 'n' &&
+                    text[index + 2] == 'f' && text[index + 3] == 'i' && text[index + 4] == 'n' &&
+                    text[index + 5] == 'i' && text[index + 6] == 't' && text[index + 7] == 'y')
                 {
-                    if (signed && utf8Text[index - 1] == '-')
+                    if (signed && text[index - 1] == '-')
                     {
-                        value = double.NegativeInfinity;
+                        value = float.NegativeInfinity;
                     }
                     else
                     {
-                        value = double.PositiveInfinity;
+                        value = float.PositiveInfinity;
                     }
                     bytesConsumed += 8;
                     return true;
                 }
 
-                for (int byteIndex = index; byteIndex < utf8Text.Length; byteIndex++)
+                for (int byteIndex = index; byteIndex < text.Length; byteIndex++)
                 {
-                    byte nextByte = utf8Text[byteIndex];
+                    byte nextByte = text[byteIndex];
                     byte nextByteVal = (byte)(nextByte - '0');
 
                     if (nextByteVal > 9)
@@ -75,20 +75,20 @@ namespace System.Text
                             }
                             bytesConsumed++;
                             decimalPlace = true;
-                            doubleString += (char)nextByte;
+                            floatString += (char)nextByte;
                         }
                         else if (!e && nextByte == 'e' || nextByte == 'E')
                         {
                             e = true;
                             eLast = true;
                             bytesConsumed++;
-                            doubleString += (char)nextByte;
+                            floatString += (char)nextByte;
                         }
                         else if (eLast && nextByte == '+' || nextByte == '-')
                         {
                             eLast = false;
                             bytesConsumed++;
-                            doubleString += (char)nextByte;
+                            floatString += (char)nextByte;
                         }
                         else if ((decimalPlace && signed && bytesConsumed == 2) || ((signed || decimalPlace) && bytesConsumed == 1))
                         {
@@ -98,7 +98,7 @@ namespace System.Text
                         }
                         else
                         {
-                            if (double.TryParse(doubleString, out value))
+                            if (float.TryParse(floatString, out value))
                             {
                                 return true;
                             }
@@ -116,7 +116,7 @@ namespace System.Text
                         if (!digitLast)
                             digitLast = true;
                         bytesConsumed++;
-                        doubleString += (char)nextByte;
+                        floatString += (char)nextByte;
                     }
                 }
 
@@ -128,7 +128,7 @@ namespace System.Text
                 }
                 else
                 {
-                    if (double.TryParse(doubleString, out value))
+                    if (float.TryParse(floatString, out value))
                     {
                         return true;
                     }
@@ -143,8 +143,8 @@ namespace System.Text
             return false;
         }
 
-        public unsafe static bool TryParse(byte* utf8Text, int index, int length, FormattingData cultureAndEncodingInfo,
-            Format.Parsed numericFormat, out double value, out int bytesConsumed)
+        public unsafe static bool TryParse(byte* text, int index, int length, EncodingData encoding,
+            Format.Parsed format, out float value, out int bytesConsumed)
         {
             // Precondition replacement
             if (length < 1 || index < 0)
@@ -154,38 +154,38 @@ namespace System.Text
                 return false;
             }
 
-            value = 0.0;
+            value = 0f;
             bytesConsumed = 0;
 
-            if (cultureAndEncodingInfo.IsInvariantUtf8)
+            if (encoding.IsInvariantUtf8)
             {
-                string doubleString = "";
+                string floatString = "";
                 bool decimalPlace = false, e = false, signed = false, digitLast = false, eLast = false;
 
-                if ((length) >= 3 && utf8Text[index] == 'N' && utf8Text[index + 1] == 'a' && utf8Text[index + 2] == 'N')
+                if ((length) >= 3 && text[index] == 'N' && text[index + 1] == 'a' && text[index + 2] == 'N')
                 {
-                    value = double.NaN;
+                    value = float.NaN;
                     bytesConsumed = 3;
                     return true;
                 }
-                if (utf8Text[index] == '-' || utf8Text[index] == '+')
+                if (text[index] == '-' || text[index] == '+')
                 {
                     signed = true;
-                    doubleString += (char)utf8Text[index];
+                    floatString += (char)text[index];
                     index++;
                     bytesConsumed++;
                 }
-                if ((length - index) >= 8 && utf8Text[index] == 'I' && utf8Text[index + 1] == 'n' &&
-                    utf8Text[index + 2] == 'f' && utf8Text[index + 3] == 'i' && utf8Text[index + 4] == 'n' &&
-                    utf8Text[index + 5] == 'i' && utf8Text[index + 6] == 't' && utf8Text[index + 7] == 'y')
+                if ((length - index) >= 8 && text[index] == 'I' && text[index + 1] == 'n' &&
+                    text[index + 2] == 'f' && text[index + 3] == 'i' && text[index + 4] == 'n' &&
+                    text[index + 5] == 'i' && text[index + 6] == 't' && text[index + 7] == 'y')
                 {
-                    if (signed && utf8Text[index - 1] == '-')
+                    if (signed && text[index - 1] == '-')
                     {
-                        value = double.NegativeInfinity;
+                        value = float.NegativeInfinity;
                     }
                     else
                     {
-                        value = double.PositiveInfinity;
+                        value = float.PositiveInfinity;
                     }
                     bytesConsumed += 8;
                     return true;
@@ -193,7 +193,7 @@ namespace System.Text
 
                 for (int byteIndex = index; byteIndex < length; byteIndex++)
                 {
-                    byte nextByte = utf8Text[byteIndex];
+                    byte nextByte = text[byteIndex];
                     byte nextByteVal = (byte)(nextByte - '0');
 
                     if (nextByteVal > 9)
@@ -210,20 +210,20 @@ namespace System.Text
                             }
                             bytesConsumed++;
                             decimalPlace = true;
-                            doubleString += (char)nextByte;
+                            floatString += (char)nextByte;
                         }
                         else if (!e && nextByte == 'e' || nextByte == 'E')
                         {
                             e = true;
                             eLast = true;
                             bytesConsumed++;
-                            doubleString += (char)nextByte;
+                            floatString += (char)nextByte;
                         }
                         else if (eLast && nextByte == '+' || nextByte == '-')
                         {
                             eLast = false;
                             bytesConsumed++;
-                            doubleString += (char)nextByte;
+                            floatString += (char)nextByte;
                         }
                         else if ((decimalPlace && signed && bytesConsumed == 2) || ((signed || decimalPlace) && bytesConsumed == 1))
                         {
@@ -233,7 +233,7 @@ namespace System.Text
                         }
                         else
                         {
-                            if (double.TryParse(doubleString, out value))
+                            if (float.TryParse(floatString, out value))
                             {
                                 return true;
                             }
@@ -251,7 +251,7 @@ namespace System.Text
                         if (!digitLast)
                             digitLast = true;
                         bytesConsumed++;
-                        doubleString += (char)nextByte;
+                        floatString += (char)nextByte;
                     }
                 }
 
@@ -263,7 +263,7 @@ namespace System.Text
                 }
                 else
                 {
-                    if (double.TryParse(doubleString, out value))
+                    if (float.TryParse(floatString, out value))
                     {
                         return true;
                     }
@@ -274,7 +274,6 @@ namespace System.Text
                     }
                 }
             }
-
             return false;
         }
     }

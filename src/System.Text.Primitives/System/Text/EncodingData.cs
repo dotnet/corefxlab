@@ -8,10 +8,10 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
-    public struct FormattingData
+    public struct EncodingData
     {
-        private static FormattingData s_invariantUtf16;
-        private static FormattingData s_invariantUtf8;
+        private static EncodingData s_invariantUtf16;
+        private static EncodingData s_invariantUtf8;
         private byte[][] _digitsAndSymbols; // this could be flattened into a single array
         private TrieNode[] _parsingTrie;
         private Encoding _encoding;
@@ -46,14 +46,14 @@ namespace System.Text
         }
 
         // TODO: make these private once bin file generator is used
-        public FormattingData(byte[][] digitsAndSymbols, TrieNode[] parsingTrie, Encoding encoding)
+        public EncodingData(byte[][] digitsAndSymbols, TrieNode[] parsingTrie, Encoding encoding)
         {
             _digitsAndSymbols = digitsAndSymbols;
             _encoding = encoding;
             _parsingTrie = parsingTrie;
         }
 
-        public FormattingData(byte[][] digitsAndSymbols, Encoding encoding)
+        public EncodingData(byte[][] digitsAndSymbols, Encoding encoding)
         {
             _digitsAndSymbols = digitsAndSymbols;
             _encoding = encoding;
@@ -104,7 +104,7 @@ namespace System.Text
 
         // it might be worth compacting the data into a single byte array.
         // Also, it would be great if we could freeze it.
-        static FormattingData()
+        static EncodingData()
         {
             var utf16digitsAndSymbols = new byte[][] {
                 new byte[] { 48, 0, }, // digit 0
@@ -127,7 +127,7 @@ namespace System.Text
                 new byte[] { 101, 0, }, // e
             };
 
-            s_invariantUtf16 = new FormattingData(utf16digitsAndSymbols, Encoding.Utf16);
+            s_invariantUtf16 = new EncodingData(utf16digitsAndSymbols, Encoding.Utf16);
 
             var utf8digitsAndSymbols = new byte[][] {
                 new byte[] { 48, },
@@ -150,10 +150,10 @@ namespace System.Text
                 new byte[] { 101, }, // e
             };
 
-            s_invariantUtf8 = new FormattingData(utf8digitsAndSymbols, Encoding.Utf8);
+            s_invariantUtf8 = new EncodingData(utf8digitsAndSymbols, Encoding.Utf8);
         }
 
-        public static FormattingData InvariantUtf16
+        public static EncodingData InvariantUtf16
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -161,7 +161,7 @@ namespace System.Text
                 return s_invariantUtf16;
             }
         }
-        public static FormattingData InvariantUtf8
+        public static EncodingData InvariantUtf8
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get

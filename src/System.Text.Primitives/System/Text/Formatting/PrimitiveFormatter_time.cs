@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text 
 {
-    public static partial class PrimitiveFormatters
+    public static partial class PrimitiveFormatter
     {
         static readonly string[] s_dayNames = { "Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, " };
         static readonly string[] s_monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
@@ -19,13 +19,13 @@ namespace System.Text
         static readonly Format.Parsed t = new Format.Parsed('t'); 
         const int FractionalTimeScale = 10000000;
 
-        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, Span<char> format, EncodingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -38,20 +38,20 @@ namespace System.Text
 
                     if (formattingData.IsUtf16)
                     {
-                        return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, FormattingData.InvariantUtf16, out bytesWritten);
+                        return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, EncodingData.InvariantUtf16, out bytesWritten);
                     }
                     else
                     {
-                        return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, FormattingData.InvariantUtf8, out bytesWritten);
+                        return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, EncodingData.InvariantUtf8, out bytesWritten);
                     }
                 case 'O':
                     if (formattingData.IsUtf16)
                     {
-                        return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, FormattingData.InvariantUtf16, out bytesWritten);
+                        return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, EncodingData.InvariantUtf16, out bytesWritten);
                     }
                     else
                     {
-                        return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, FormattingData.InvariantUtf8, out bytesWritten);
+                        return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, EncodingData.InvariantUtf8, out bytesWritten);
                     }
                 case 'G':
                     return TryFormatDateTimeFormagG(value.DateTime, buffer, formattingData, out bytesWritten);
@@ -60,13 +60,13 @@ namespace System.Text
             }
         }
 
-        public static bool TryFormat(this DateTime value, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this DateTime value, Span<byte> buffer, Span<char> format, EncodingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this DateTime value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this DateTime value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -80,20 +80,20 @@ namespace System.Text
                     var utc = value.ToUniversalTime();
                     if (formattingData.IsUtf16)
                     {
-                        return TryFormatDateTimeRfc1123(utc, buffer, FormattingData.InvariantUtf16, out bytesWritten);
+                        return TryFormatDateTimeRfc1123(utc, buffer, EncodingData.InvariantUtf16, out bytesWritten);
                     }
                     else
                     {
-                        return TryFormatDateTimeRfc1123(utc, buffer, FormattingData.InvariantUtf8, out bytesWritten);
+                        return TryFormatDateTimeRfc1123(utc, buffer, EncodingData.InvariantUtf8, out bytesWritten);
                     }
                 case 'O':
                     if (formattingData.IsUtf16)
                     {
-                        return TryFormatDateTimeFormatO(value, true, buffer, FormattingData.InvariantUtf16, out bytesWritten);
+                        return TryFormatDateTimeFormatO(value, true, buffer, EncodingData.InvariantUtf16, out bytesWritten);
                     }
                     else
                     {
-                        return TryFormatDateTimeFormatO(value, true, buffer, FormattingData.InvariantUtf8, out bytesWritten);
+                        return TryFormatDateTimeFormatO(value, true, buffer, EncodingData.InvariantUtf8, out bytesWritten);
                     }
                 case 'G':
                     return TryFormatDateTimeFormagG(value, buffer, formattingData, out bytesWritten);
@@ -102,7 +102,7 @@ namespace System.Text
             }      
         }
 
-        static bool TryFormatDateTimeFormagG(DateTime value, Span<byte> buffer, FormattingData formattingData, out int bytesWritten)
+        static bool TryFormatDateTimeFormagG(DateTime value, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
         {
             // for now it only works for invariant culture
             if(!formattingData.IsInvariantUtf16 && !formattingData.IsInvariantUtf8)
@@ -151,7 +151,7 @@ namespace System.Text
             return true;
         }
 
-        static bool TryFormatDateTimeFormatO(DateTimeOffset value, bool isDateTime, Span<byte> buffer, FormattingData formattingData, out int bytesWritten)
+        static bool TryFormatDateTimeFormatO(DateTimeOffset value, bool isDateTime, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
         {
             bytesWritten = 0;
             if (!TryWriteInt32(value.Year, buffer, D4, formattingData, ref bytesWritten)) { return false; }
@@ -197,7 +197,7 @@ namespace System.Text
             return true;
         }
 
-        static bool TryFormatDateTimeRfc1123(DateTime value, Span<byte> buffer, FormattingData formattingData, out int bytesWritten)
+        static bool TryFormatDateTimeRfc1123(DateTime value, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
         {
             bytesWritten = 0;
             if (!TryWriteString(s_dayNames[(int)value.DayOfWeek], buffer, formattingData, ref bytesWritten)) { return false; }
@@ -216,13 +216,13 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, Span<char> format, EncodingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -239,7 +239,7 @@ namespace System.Text
             return TryFormatTimeSpanT(value, buffer, formattingData, out bytesWritten);
         }
 
-        private static bool TryFormatTimeSpanG(TimeSpan value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        private static bool TryFormatTimeSpanG(TimeSpan value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             bytesWritten = 0;
 
@@ -298,7 +298,7 @@ namespace System.Text
             return true;
         }
 
-        private static bool TryFormatTimeSpanT(TimeSpan value, Span<byte> buffer, FormattingData formattingData, out int bytesWritten)
+        private static bool TryFormatTimeSpanT(TimeSpan value, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
         {
             bytesWritten = 0;
 

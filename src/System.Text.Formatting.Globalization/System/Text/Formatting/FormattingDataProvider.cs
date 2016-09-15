@@ -13,12 +13,12 @@ namespace System.Text.Formatting
     // The data were produced from Unicode Locale Data Repository: http://cldr.unicode.org
     // using a custom tool that I will try to clean, debug, and commit to this repo.
     // For now, the data might contain errors.
-    public class FormattingDataProvider
+    public class EncodingProvider
     {
-        public static FormattingData CreateFormattingData(string localeId)
+        public static EncodingData CreateEncoding(string localeId)
         {
             var resourceName = "System.Text.Formatting.locales.bin";
-            var resourceStream = typeof(FormattingDataProvider).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName);
+            var resourceStream = typeof(EncodingProvider).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName);
             if (resourceStream == null)
             {
                 throw new Exception("resource missing");
@@ -26,11 +26,11 @@ namespace System.Text.Formatting
 
             using (resourceStream)
             {
-                return CreateFormattingData(localeId, resourceStream);
+                return CreateEncoding(localeId, resourceStream);
             }
         }
 
-        private static FormattingData CreateFormattingData(string localeId, Stream resourceStream)
+        private static EncodingData CreateEncoding(string localeId, Stream resourceStream)
         {
             const int maxIdLength = 15;
             const int recordSize = 20;
@@ -45,7 +45,7 @@ namespace System.Text.Formatting
 
             byte[] idBytes = new byte[maxIdLength];
             int idByteCount;
-            if (!localeId.TryFormat(new Span<byte>(idBytes), default(Format.Parsed), FormattingData.InvariantUtf8, out idByteCount))
+            if (!localeId.TryFormat(new Span<byte>(idBytes), default(Format.Parsed), EncodingData.InvariantUtf8, out idByteCount))
             {
                 throw new Exception("bad locale id");
             }
@@ -92,7 +92,7 @@ namespace System.Text.Formatting
                 Array.Copy(data, stringStart, utf16digitsAndSymbols[stringIndex], 0, stringLength);
             }
 
-            return new FormattingData(utf16digitsAndSymbols, FormattingData.Encoding.Utf16);
+            return new EncodingData(utf16digitsAndSymbols, EncodingData.Encoding.Utf16);
         }
 
         static ushort ReadUInt16At(byte[] data, int ushortIndex)

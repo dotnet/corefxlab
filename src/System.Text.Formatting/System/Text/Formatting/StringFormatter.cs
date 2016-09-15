@@ -10,7 +10,7 @@ namespace System.Text.Formatting
     {
         byte[] _buffer;
         int _count;
-        FormattingData _culture = FormattingData.InvariantUtf16;
+        EncodingData _culture = EncodingData.InvariantUtf16;
         ArrayPool<byte> _pool;
 
         public StringFormatter(ArrayPool<byte> pool) : this(64, pool)
@@ -60,7 +60,7 @@ namespace System.Text.Formatting
         }
         public override string ToString()
         {
-            var text = Encoding.Unicode.GetString(_buffer, 0, _count);
+            var text = Text.Encoding.Unicode.GetString(_buffer, 0, _count);
             return text;
         }
 
@@ -69,7 +69,7 @@ namespace System.Text.Formatting
             get { return new Span<byte>(_buffer, _count, _buffer.Length - _count); }
         }
 
-        public FormattingData FormattingData
+        public EncodingData Encoding
         {
             get
             {

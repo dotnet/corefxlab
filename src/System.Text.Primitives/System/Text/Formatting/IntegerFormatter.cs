@@ -10,7 +10,7 @@ namespace System.Text
     internal static class IntegerFormatter
     {
         // TODO: format should be ReadOnlySpan<char>
-        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
+        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, Span<char> format, EncodingData formattingData, out int bytesWritten)
         {
             Precondition.Require(numberOfBytes <= sizeof(long));
 
@@ -18,7 +18,7 @@ namespace System.Text
             return TryFormatInt64(value, numberOfBytes, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             Precondition.Require(numberOfBytes <= sizeof(long));
 
@@ -34,7 +34,7 @@ namespace System.Text
             else
             {
                 int minusSignBytes = 0;
-                if(!formattingData.TryWriteSymbol(FormattingData.Symbol.MinusSign, buffer, out minusSignBytes))
+                if(!formattingData.TryWriteSymbol(EncodingData.Symbol.MinusSign, buffer, out minusSignBytes))
                 {
                     bytesWritten = 0;
                     return false;
@@ -51,13 +51,13 @@ namespace System.Text
             }
         }
 
-        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, Span<char> format, FormattingData formattingData, out int bytesWritten)
+        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, Span<char> format, EncodingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormatUInt64(value, numberOfBytes, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             if(format.Symbol == 'g')
             {
@@ -310,7 +310,7 @@ namespace System.Text
         // It does it twice to avoid reversing the formatted buffer, which can be tricky given it should handle arbitrary cultures.
         // One optimization I thought we could do is to do div/mod once and store digits in a temp buffer (but that would allocate). Modification to the idea would be to store the digits in a local struct
         // Another idea possibly worth tying would be to special case cultures that have constant digit size, and go back to the format + reverse buffer approach.
-        private static bool TryFormatDecimal(ulong value, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        private static bool TryFormatDecimal(ulong value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             if(format.IsDefault)
             {
@@ -380,7 +380,7 @@ namespace System.Text
                     if (digitsCount + trailingZerosCount > 0)
                     {
                         // There is a new group immediately after the first digit
-                        if (!formattingData.TryWriteSymbol(FormattingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!formattingData.TryWriteSymbol(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
@@ -395,7 +395,7 @@ namespace System.Text
                 {
                     if (digitsLeftInGroup == 0)
                     {
-                        if (!formattingData.TryWriteSymbol(FormattingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!formattingData.TryWriteSymbol(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
@@ -421,7 +421,7 @@ namespace System.Text
                 {
                     if (digitsLeftInGroup == 0)
                     {
-                        if (!formattingData.TryWriteSymbol(FormattingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!formattingData.TryWriteSymbol(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
@@ -473,7 +473,7 @@ namespace System.Text
 
                 if (trailingZerosAfterDecimalCount > 0)
                 {
-                    if (!formattingData.TryWriteSymbol(FormattingData.Symbol.DecimalSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!formattingData.TryWriteSymbol(EncodingData.Symbol.DecimalSeparator, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;

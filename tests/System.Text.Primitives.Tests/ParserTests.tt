@@ -25,7 +25,7 @@ using Xunit;
 
 namespace System.Text.Primitives.Tests
 {
-	public class ParserTests
+	public partial class PrimitiveParserTests
     {
         private byte[] UtfEncode(string s, bool utf16)
         {
@@ -103,48 +103,48 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 78, 97, 78, }, // NaN
                 new byte[] { 69, }, // E
             };
-            var utf8ParsingTrie = new FormattingData.TrieNode[]
+            var utf8ParsingTrie = new EncodingData.TrieNode[]
             {
-                new FormattingData.TrieNode { valueOrNumChildren = 17, index = 0x3004390D },
-                new FormattingData.TrieNode { valueOrNumChildren = 43, index = 18 },
-                new FormattingData.TrieNode { valueOrNumChildren = 45, index = 19 },
-                new FormattingData.TrieNode { valueOrNumChildren = 46, index = 20 },
-                new FormattingData.TrieNode { valueOrNumChildren = 48, index = 21 },
-                new FormattingData.TrieNode { valueOrNumChildren = 49, index = 22 },
-                new FormattingData.TrieNode { valueOrNumChildren = 50, index = 23 },
-                new FormattingData.TrieNode { valueOrNumChildren = 51, index = 24 },
-                new FormattingData.TrieNode { valueOrNumChildren = 52, index = 25 },
-                new FormattingData.TrieNode { valueOrNumChildren = 53, index = 26 },
-                new FormattingData.TrieNode { valueOrNumChildren = 54, index = 27 },
-                new FormattingData.TrieNode { valueOrNumChildren = 55, index = 28 },
-                new FormattingData.TrieNode { valueOrNumChildren = 56, index = 29 },
-                new FormattingData.TrieNode { valueOrNumChildren = 57, index = 30 },
-                new FormattingData.TrieNode { valueOrNumChildren = 69, index = 31 },
-                new FormattingData.TrieNode { valueOrNumChildren = 73, index = 32 },
-                new FormattingData.TrieNode { valueOrNumChildren = 78, index = 33 },
-                new FormattingData.TrieNode { valueOrNumChildren = 101, index = 34 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 14 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 13 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 10 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 0 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 1 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 2 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 3 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 4 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 5 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 6 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 7 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 8 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 9 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 12 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 15 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+                new EncodingData.TrieNode { valueOrNumChildren = 17, index = 0x3004390D },
+                new EncodingData.TrieNode { valueOrNumChildren = 43, index = 18 },
+                new EncodingData.TrieNode { valueOrNumChildren = 45, index = 19 },
+                new EncodingData.TrieNode { valueOrNumChildren = 46, index = 20 },
+                new EncodingData.TrieNode { valueOrNumChildren = 48, index = 21 },
+                new EncodingData.TrieNode { valueOrNumChildren = 49, index = 22 },
+                new EncodingData.TrieNode { valueOrNumChildren = 50, index = 23 },
+                new EncodingData.TrieNode { valueOrNumChildren = 51, index = 24 },
+                new EncodingData.TrieNode { valueOrNumChildren = 52, index = 25 },
+                new EncodingData.TrieNode { valueOrNumChildren = 53, index = 26 },
+                new EncodingData.TrieNode { valueOrNumChildren = 54, index = 27 },
+                new EncodingData.TrieNode { valueOrNumChildren = 55, index = 28 },
+                new EncodingData.TrieNode { valueOrNumChildren = 56, index = 29 },
+                new EncodingData.TrieNode { valueOrNumChildren = 57, index = 30 },
+                new EncodingData.TrieNode { valueOrNumChildren = 69, index = 31 },
+                new EncodingData.TrieNode { valueOrNumChildren = 73, index = 32 },
+                new EncodingData.TrieNode { valueOrNumChildren = 78, index = 33 },
+                new EncodingData.TrieNode { valueOrNumChildren = 101, index = 34 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 14 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 13 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 10 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 0 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 1 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 2 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 3 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 4 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 5 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 6 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 7 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 8 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 9 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 12 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 15 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 16 },
             };
 
-            FormattingData fd = new FormattingData(utf8digitsAndSymbols, utf8ParsingTrie, FormattingData.Encoding.Utf8);
+            EncodingData fd = new EncodingData(utf8digitsAndSymbols, utf8ParsingTrie, EncodingData.Encoding.Utf8);
             Format.Parsed nf = new Format.Parsed('R');
-            bool result = InvariantParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -170,9 +170,9 @@ namespace System.Text.Primitives.Tests
         {
             <#= unsignedPrimitives[i] #> parsedValue;
             int bytesConsumed;
-            FormattingData fd = FormattingData.InvariantUtf<#= utfEncoding #>;
+            EncodingData fd = EncodingData.InvariantUtf<#= utfEncoding #>;
             Format.Parsed nf = new Format.Parsed('R');
-            bool result = InvariantParser.TryParse(UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>), index, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParse(UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>), index, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -194,11 +194,11 @@ namespace System.Text.Primitives.Tests
             int bytesConsumed;
 
             byte[] textBytes = UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>);
-            FormattingData fd = FormattingData.InvariantUtf<#= utfEncoding #>;
+            EncodingData fd = EncodingData.InvariantUtf<#= utfEncoding #>;
             Format.Parsed nf = new Format.Parsed('R');
             fixed (byte* arrayPointer = textBytes)
             {
-                bool result = InvariantParser.TryParse(arrayPointer, index, textBytes.Length, fd, nf, out parsedValue, out bytesConsumed);
+                bool result = PrimitiveParser.TryParse(arrayPointer, index, textBytes.Length, fd, nf, out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
                 Assert.Equal(expectedValue, parsedValue);
@@ -291,48 +291,48 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 78, 97, 78, }, // NaN
                 new byte[] { 69, }, // E
             };
-            var utf8ParsingTrie = new FormattingData.TrieNode[]
+            var utf8ParsingTrie = new EncodingData.TrieNode[]
             {
-                new FormattingData.TrieNode { valueOrNumChildren = 17, index = 0x3004390D },
-                new FormattingData.TrieNode { valueOrNumChildren = 43, index = 18 },
-                new FormattingData.TrieNode { valueOrNumChildren = 45, index = 19 },
-                new FormattingData.TrieNode { valueOrNumChildren = 46, index = 20 },
-                new FormattingData.TrieNode { valueOrNumChildren = 48, index = 21 },
-                new FormattingData.TrieNode { valueOrNumChildren = 49, index = 22 },
-                new FormattingData.TrieNode { valueOrNumChildren = 50, index = 23 },
-                new FormattingData.TrieNode { valueOrNumChildren = 51, index = 24 },
-                new FormattingData.TrieNode { valueOrNumChildren = 52, index = 25 },
-                new FormattingData.TrieNode { valueOrNumChildren = 53, index = 26 },
-                new FormattingData.TrieNode { valueOrNumChildren = 54, index = 27 },
-                new FormattingData.TrieNode { valueOrNumChildren = 55, index = 28 },
-                new FormattingData.TrieNode { valueOrNumChildren = 56, index = 29 },
-                new FormattingData.TrieNode { valueOrNumChildren = 57, index = 30 },
-                new FormattingData.TrieNode { valueOrNumChildren = 69, index = 31 },
-                new FormattingData.TrieNode { valueOrNumChildren = 73, index = 32 },
-                new FormattingData.TrieNode { valueOrNumChildren = 78, index = 33 },
-                new FormattingData.TrieNode { valueOrNumChildren = 101, index = 34 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 14 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 13 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 10 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 0 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 1 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 2 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 3 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 4 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 5 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 6 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 7 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 8 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 9 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 12 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 15 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+                new EncodingData.TrieNode { valueOrNumChildren = 17, index = 0x3004390D },
+                new EncodingData.TrieNode { valueOrNumChildren = 43, index = 18 },
+                new EncodingData.TrieNode { valueOrNumChildren = 45, index = 19 },
+                new EncodingData.TrieNode { valueOrNumChildren = 46, index = 20 },
+                new EncodingData.TrieNode { valueOrNumChildren = 48, index = 21 },
+                new EncodingData.TrieNode { valueOrNumChildren = 49, index = 22 },
+                new EncodingData.TrieNode { valueOrNumChildren = 50, index = 23 },
+                new EncodingData.TrieNode { valueOrNumChildren = 51, index = 24 },
+                new EncodingData.TrieNode { valueOrNumChildren = 52, index = 25 },
+                new EncodingData.TrieNode { valueOrNumChildren = 53, index = 26 },
+                new EncodingData.TrieNode { valueOrNumChildren = 54, index = 27 },
+                new EncodingData.TrieNode { valueOrNumChildren = 55, index = 28 },
+                new EncodingData.TrieNode { valueOrNumChildren = 56, index = 29 },
+                new EncodingData.TrieNode { valueOrNumChildren = 57, index = 30 },
+                new EncodingData.TrieNode { valueOrNumChildren = 69, index = 31 },
+                new EncodingData.TrieNode { valueOrNumChildren = 73, index = 32 },
+                new EncodingData.TrieNode { valueOrNumChildren = 78, index = 33 },
+                new EncodingData.TrieNode { valueOrNumChildren = 101, index = 34 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 14 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 13 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 10 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 0 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 1 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 2 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 3 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 4 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 5 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 6 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 7 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 8 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 9 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 12 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 15 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 16 },
             };
 
-            FormattingData fd = new FormattingData(utf8digitsAndSymbols, utf8ParsingTrie, FormattingData.Encoding.Utf8);
+            EncodingData fd = new EncodingData(utf8digitsAndSymbols, utf8ParsingTrie, EncodingData.Encoding.Utf8);
             Format.Parsed nf = new Format.Parsed('R');
-            bool result = InvariantParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -367,53 +367,53 @@ namespace System.Text.Primitives.Tests
                     0x83, 0xE0, 0xB8, 0x8A, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x95, 0xE0, 0xB8, 0xB1, 0xE0, 0xB8, 0xA7, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x82 },
                 new byte[] { 69 }, new byte[] { 101 },
             };
-            var thaiUtf8ParsingTrie = new FormattingData.TrieNode[]
+            var thaiUtf8ParsingTrie = new EncodingData.TrieNode[]
             {
-                new FormattingData.TrieNode { valueOrNumChildren = 4, index = 0 },
-                new FormattingData.TrieNode { valueOrNumChildren = 43, index = 5 },
-                new FormattingData.TrieNode { valueOrNumChildren = 69, index = 6 },
-                new FormattingData.TrieNode { valueOrNumChildren = 101, index = 7 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0xE0, index = 8 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 14 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 16 },
-                new FormattingData.TrieNode { valueOrNumChildren = 2, index = 0 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0xB8, index = 11 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0xB9, index = 15 },
-                new FormattingData.TrieNode { valueOrNumChildren = 3, index = 0 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x88, index = 27 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0xA5, index = 28 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0xAA, index = 29 },
-                new FormattingData.TrieNode { valueOrNumChildren = 11, index = -1878877941 /* 0x9002990B */ },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x84, index = 30 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x90, index = 31 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x91, index = 32 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x92, index = 33 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x93, index = 34 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x94, index = 35 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x95, index = 36 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x96, index = 37 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x97, index = 38 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x98, index = 39 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0x99, index = 40 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 10 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 13 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 12 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 15 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 0 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 1 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 2 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 3 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 4 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 5 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 6 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 7 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 8 },
-                new FormattingData.TrieNode { valueOrNumChildren = 0, index = 9 },
+                new EncodingData.TrieNode { valueOrNumChildren = 4, index = 0 },
+                new EncodingData.TrieNode { valueOrNumChildren = 43, index = 5 },
+                new EncodingData.TrieNode { valueOrNumChildren = 69, index = 6 },
+                new EncodingData.TrieNode { valueOrNumChildren = 101, index = 7 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0xE0, index = 8 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 14 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 16 },
+                new EncodingData.TrieNode { valueOrNumChildren = 2, index = 0 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0xB8, index = 11 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0xB9, index = 15 },
+                new EncodingData.TrieNode { valueOrNumChildren = 3, index = 0 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x88, index = 27 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0xA5, index = 28 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0xAA, index = 29 },
+                new EncodingData.TrieNode { valueOrNumChildren = 11, index = -1878877941 /* 0x9002990B */ },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x84, index = 30 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x90, index = 31 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x91, index = 32 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x92, index = 33 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x93, index = 34 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x94, index = 35 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x95, index = 36 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x96, index = 37 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x97, index = 38 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x98, index = 39 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0x99, index = 40 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 10 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 13 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 12 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 15 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 0 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 1 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 2 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 3 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 4 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 5 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 6 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 7 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 8 },
+                new EncodingData.TrieNode { valueOrNumChildren = 0, index = 9 },
             };
-            FormattingData fd = new FormattingData(thaiUtf8DigitsAndSymbols, thaiUtf8ParsingTrie, FormattingData.Encoding.Utf8);
+            EncodingData fd = new EncodingData(thaiUtf8DigitsAndSymbols, thaiUtf8ParsingTrie, EncodingData.Encoding.Utf8);
             Format.Parsed nf = new Format.Parsed('R');
-            bool result = InvariantParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -442,9 +442,9 @@ namespace System.Text.Primitives.Tests
         {
             <#= signedPrimitives[i] #> parsedValue;
             int bytesConsumed;
-            FormattingData fd = FormattingData.InvariantUtf<#= utfEncoding #>;
+            EncodingData fd = EncodingData.InvariantUtf<#= utfEncoding #>;
             Format.Parsed nf = new Format.Parsed('N');
-            bool result = InvariantParser.TryParse(UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>), index, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParse(UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>), index, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -468,13 +468,13 @@ namespace System.Text.Primitives.Tests
         {
             <#= signedPrimitives[i] #> parsedValue;
             int bytesConsumed;
-            FormattingData fd = FormattingData.InvariantUtf<#= utfEncoding #>;
+            EncodingData fd = EncodingData.InvariantUtf<#= utfEncoding #>;
             Format.Parsed nf = new Format.Parsed('N');
 
             byte[] textBytes = UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>);
             fixed (byte* arrayPointer = textBytes)
             {
-                bool result = InvariantParser.TryParse(arrayPointer, index, textBytes.Length, fd, nf,
+                bool result = PrimitiveParser.TryParse(arrayPointer, index, textBytes.Length, fd, nf,
                     out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
@@ -537,9 +537,9 @@ namespace System.Text.Primitives.Tests
         {
             <#= floatingPointPrimitives[i] #> parsedValue;
             int bytesConsumed;
-            FormattingData fd = FormattingData.InvariantUtf8;
+            EncodingData fd = EncodingData.InvariantUtf8;
             Format.Parsed nf = new Format.Parsed('N');
-            bool result = InvariantParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParse(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -564,13 +564,13 @@ namespace System.Text.Primitives.Tests
         {
             <#= floatingPointPrimitives[i] #> parsedValue;
             int bytesConsumed;
-            FormattingData fd = FormattingData.InvariantUtf8;
+            EncodingData fd = EncodingData.InvariantUtf8;
             Format.Parsed nf = new Format.Parsed('N');
 
             byte[] textBytes = UtfEncode(text, false);
             fixed (byte* arrayPointer = textBytes)
             {
-                bool result = InvariantParser.TryParse(arrayPointer, index, textBytes.Length, fd, nf,
+                bool result = PrimitiveParser.TryParse(arrayPointer, index, textBytes.Length, fd, nf,
                     out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
@@ -607,25 +607,25 @@ namespace System.Text.Primitives.Tests
 			ReadOnlySpan<byte> utf8BytesSlice = new ReadOnlySpan<byte>(utf8Bytes);
 
 			// System.String
-			result = InvariantParser.TryParse(text, index, FormattingData.InvariantUtf16, 'N', out parsedValue, out bytesConsumed);
+			result = PrimitiveParser.TryParse(text, index, 'N', out parsedValue, out bytesConsumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
 
 			// Utf8String
-			result = InvariantParser.TryParse(utf8String.Substring(index), FormattingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
+			result = PrimitiveParser.TryParse(utf8String.Substring(index), 'N', out parsedValue, out bytesConsumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
 
 			// byte[]
-			result = InvariantParser.TryParse(utf8Bytes, index, FormattingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
+			result = PrimitiveParser.TryParse(utf8Bytes, index, EncodingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
 
 			// ReadOnlySpan<byte>
-			result = InvariantParser.TryParse(utf8BytesSlice, FormattingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
+			result = PrimitiveParser.TryParse(utf8Bytes.Slice(index), EncodingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
@@ -633,7 +633,7 @@ namespace System.Text.Primitives.Tests
 			// byte*
             fixed (byte* arrayPointer = utf8Bytes)
             {
-                result = InvariantParser.TryParse(arrayPointer, index, utf8Bytes.Length, FormattingData.InvariantUtf8, 'N',
+                result = PrimitiveParser.TryParse(arrayPointer, index, utf8Bytes.Length, EncodingData.InvariantUtf8, 'N',
                     out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
@@ -657,7 +657,7 @@ namespace System.Text.Primitives.Tests
         {
             decimal parsedValue;
             int bytesConsumed;
-            bool result = InvariantParser.TryParse(UtfEncode(text, false), index, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParse(UtfEncode(text, false), index, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -679,7 +679,7 @@ namespace System.Text.Primitives.Tests
             int bytesConsumed;
             fixed (byte* arrayPointer = utf8Array)
             {
-                bool result = InvariantParser.TryParse(arrayPointer, index, utf8Array.Length, out parsedValue, out bytesConsumed);
+                bool result = PrimitiveParser.TryParse(arrayPointer, index, utf8Array.Length, out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
                 Assert.Equal(expectedValue, parsedValue);
@@ -708,7 +708,7 @@ namespace System.Text.Primitives.Tests
         {
             Uri parsedValue;
             int bytesConsumed;
-            bool result = InvariantParser.TryParse(UtfEncode(text, false), index, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParse(UtfEncode(text, false), index, out parsedValue, out bytesConsumed);
 
 
             Assert.Equal(expectSuccess, result);
@@ -741,7 +741,7 @@ namespace System.Text.Primitives.Tests
             byte[] textBytes = UtfEncode(text, false);
             fixed (byte* arrayPointer = textBytes)
             {
-                bool result = InvariantParser.TryParse(arrayPointer, index, textBytes.Length, out parsedValue, out bytesConsumed);
+                bool result = PrimitiveParser.TryParse(arrayPointer, index, textBytes.Length, out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
                 if (expectedValue != "")

@@ -9,7 +9,7 @@ namespace System.Text
 {
     internal static class FloatFormatter
     {
-        public static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, Format.Parsed format, FormattingData formattingData, out int bytesWritten)
+        public static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 'E' || format.Symbol == 'F');
 
@@ -18,21 +18,21 @@ namespace System.Text
 
             if (Double.IsNaN(value))
             {
-                return formattingData.TryWriteSymbol(FormattingData.Symbol.NaN, buffer, out bytesWritten);
+                return formattingData.TryWriteSymbol(EncodingData.Symbol.NaN, buffer, out bytesWritten);
             }
 
             if (Double.IsInfinity(value))
             {
                 if (Double.IsNegativeInfinity(value))
                 {
-                    if (!formattingData.TryWriteSymbol(FormattingData.Symbol.MinusSign, buffer, out written))
+                    if (!formattingData.TryWriteSymbol(EncodingData.Symbol.MinusSign, buffer, out written))
                     {
                         bytesWritten = 0;
                         return false;
                     }
                     bytesWritten += written;
                 }
-                if (!formattingData.TryWriteSymbol(FormattingData.Symbol.InfinitySign, buffer.Slice(bytesWritten), out written))
+                if (!formattingData.TryWriteSymbol(EncodingData.Symbol.InfinitySign, buffer.Slice(bytesWritten), out written))
                 {
                     bytesWritten = 0;
                     return false;

@@ -314,7 +314,7 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            using(var writer = new StreamFormatter(stream, FormattingData.InvariantUtf8, pool)) {
+            using(var writer = new StreamFormatter(stream, EncodingData.InvariantUtf8, pool)) {
                 writer.Append(100);
                 writer.Append(-100);
                 writer.Append('h');
@@ -329,7 +329,7 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            using(var utf8Writer = new StreamFormatter(stream, FormattingData.InvariantUtf8, pool)) {
+            using(var utf8Writer = new StreamFormatter(stream, EncodingData.InvariantUtf8, pool)) {
                 utf8Writer.Append("Hello");
                 utf8Writer.Append(" ");
                 utf8Writer.Append("World!");
@@ -340,7 +340,7 @@ namespace System.Text.Formatting.Tests
             }
 
             stream.Position = 0;
-            using(var utf16Writer = new StreamFormatter(stream, FormattingData.InvariantUtf16, pool)) {
+            using(var utf16Writer = new StreamFormatter(stream, EncodingData.InvariantUtf16, pool)) {
                 utf16Writer.Append("Hello");
                 utf16Writer.Append(" ");
                 utf16Writer.Append("World!");
