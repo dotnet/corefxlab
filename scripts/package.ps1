@@ -1,7 +1,7 @@
 ﻿Param(
     [string]$Configuration="Debug",
     [string]$ApiKey,
-    [string]$BuildVersion
+    [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1')
 )
 
 $repoRoot = "$PSScriptRoot\.."
