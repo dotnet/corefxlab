@@ -75,9 +75,11 @@ namespace System.Buffers
             if (first.Count > itemCount)
             {
                 result._head = _head.Slice(itemCount);
-                EnsureTailCapacity(ref result, _count - 1);
                 result._count = _count;
-                Array.Copy(_tail, result._tail, _count - 1);
+                if (Count > 1) {
+                    EnsureTailCapacity(ref result, _count - 1);
+                    Array.Copy(_tail, result._tail, _count - 1);
+                }
                 return result;
             }
 

@@ -40,6 +40,24 @@ namespace System.Buffers.Tests
             Assert.Equal(0, ints.Count);
         }
 
+        [Fact]
+        public void SingleSpanMultispanBasics()
+        {
+            var ints = new Multispan<int>();
+            Assert.Equal(0, ints.Count);
+
+            int index1 = ints.AppendNewSegment(10);
+            Assert.Equal(1, ints.Count);
+            Assert.Equal(0, index1);
+            Span<int> segment1 = ints[index1];
+            Assert.True(segment1.Length >= 10);
+            var sliced = ints.Slice(1);
+
+            ints.Dispose();
+            Assert.Equal(0, ints.Count);
+        }
+
+
         [InlineData(0, 60)]
         [InlineData(5, 55)]
         [InlineData(10, 50)]
