@@ -71,9 +71,9 @@ namespace System.Net.Libuv
             {
                 unsafe
                 {
+                    FreeBuffer(new Bytes((byte*)Buffer.ToPointer(), (int)Length));
                     Length = 0;
                     Buffer = IntPtr.Zero;
-                    FreeBuffer(new Bytes((byte*)Buffer.ToPointer(), (int)Length));
                 }
             }
         }
@@ -94,9 +94,9 @@ namespace System.Net.Libuv
             {
                 unsafe
                 {
+                    FreeBuffer(new Bytes((byte*)Buffer.ToPointer(), Length.ToInt32()));
                     Length = IntPtr.Zero;
                     Buffer = IntPtr.Zero;
-                    FreeBuffer(new Bytes((byte*)Buffer.ToPointer(), Length.ToInt32()));
                 }
             }
         }
