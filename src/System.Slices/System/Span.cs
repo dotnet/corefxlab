@@ -400,6 +400,36 @@ namespace System
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the current span is a slice of the supplied span
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsSliceOf(Span<T> parentSpan)
+        {
+            var elementSize = PtrUtils.SizeOf<T>();
+            return Object == parentSpan.Object // either both pointers (both null), or same array instance
+                && parentSpan.Offset.ToUInt64() <= Offset.ToUInt64() // parent must start earlier (or equal start)
+                && parentSpan.Offset.ToUInt64() + (ulong)(Length * elementSize) >= Offset.ToUInt64() + (ulong)(Length * elementSize); // parent must  end later (or equal end)
+        }
+
+        /// <summary>
+        /// Determines whether the current span is a slice of the supplied span
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsSliceOf(Span<T> parentSpan, out int start)
+        {
+            if (IsSliceOf(parentSpan))
+            {
+                start = (int)((Offset.ToUInt64() - parentSpan.Offset.ToUInt64()) / (ulong)PtrUtils.SizeOf<T>());
+                return true;
+            }
+            else
+            {
+                start = 0;
+                return false;
+            }
+        }
+
         public bool Equals(ReadOnlySpan<T> other) => StructuralEquals(other.Object, other.Offset, other.Length);
         public bool Equals(T[] other) => Equals(new Span<T>(other));
         public static bool operator ==(Span<T> span1, Span<T> span2) => span1.Equals(span2);
