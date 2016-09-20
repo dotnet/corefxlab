@@ -34,9 +34,9 @@ This project augments the date and time APIs in .NET.  It adds two new core type
 It also provides extension methods to enhance the functionality of the existing `DateTime`, `DateTimeOffset` and `TimeZoneInfo` types.
 
 * **System.Collections.Generic.MultiValueDictionary**.
-The MultiValueDictionary is a generic collection that functions similarly to a Dictionary<TKey, ICollection<TValue>> with some added validation
-and ease of use functions. It can also be compared to a Lookup with the exception that the MultiValueDictionary is mutable. It allows custom 
-setting of the internal collections so that uniqueness of values can be chosen by specifying either a HashSet<TValue> or List<TValue>. Some of the
+The `MultiValueDictionary` is a generic collection that functions similarly to a `Dictionary<TKey, ICollection<TValue>>` with some added validation
+and ease of use functions. It can also be compared to a Lookup with the exception that the `MultiValueDictionary` is mutable. It allows custom 
+setting of the internal collections so that uniqueness of values can be chosen by specifying either a `HashSet<TValue>` or `List<TValue>`. Some of the
 design decisions as well as introductions to usage can be found in the old blog posts introducing it [here](http://blogs.msdn.com/b/dotnet/archive/2014/06/20/would-you-like-a-multidictionary.aspx) and [here](http://blogs.msdn.com/b/dotnet/archive/2014/08/05/multidictionary-becomes-multivaluedictionary.aspx).
 
 * **System.CommandLine**.
