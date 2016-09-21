@@ -78,6 +78,11 @@ namespace System.Text.Utf8
         {
         }
 
+        public static explicit operator Utf8String(ArraySegment<byte> arraySegment)
+        {
+            return new Utf8String(arraySegment);
+        }
+
         static byte[] CreateArrayFromFieldHandle(RuntimeFieldHandle utf8Data, int length)
         {
             var array = new byte[length];
