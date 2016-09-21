@@ -1,5 +1,5 @@
 {
-  "name": "System.Binary.Tests",
+  "name": "System.Binary.Base64.Tests",
   "buildOptions": {
     "allowUnsafe": true
   },

@@ -107,6 +107,40 @@ namespace System.Binary
             return di; 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer">Buffer containing source bytes and empty space for the encoded bytes</param>
+        /// <param name="sourceLength">Number of bytes to encode.</param>
+        /// <returns>Number of bytes written to the buffer.</returns>
+        public static int EncodeInPlace(Span<byte> buffer, int sourceLength)
+        {
+            var encodedLength = ComputeEncodedLength(sourceLength);
+            if (buffer.Length < encodedLength) throw new ArgumentException("buffer too small.");
+
+            var leftover = sourceLength - sourceLength / 3 * 3; // how many bytes after packs of 3
+
+            var destinationIndex = encodedLength - 4;
+            var sourceIndex = sourceLength - leftover;
+
+            // encode last pack to avoid conditional in the main loop
+            if (leftover != 0) {
+                var sourceSlice = buffer.Slice(sourceIndex, leftover);
+                var desitnationSlice = buffer.Slice(destinationIndex, 4);
+                destinationIndex -= 4;
+                Encode(sourceSlice, desitnationSlice);
+            }
+
+            for (int index = sourceIndex - 3; index>=0; index -= 3) {
+                var sourceSlice = buffer.Slice(index, 3);
+                var desitnationSlice = buffer.Slice(destinationIndex, 4);
+                destinationIndex -= 4;
+                Encode(sourceSlice, desitnationSlice);
+            }
+
+            return encodedLength;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Decode(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
         {

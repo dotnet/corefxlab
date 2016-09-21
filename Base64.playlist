@@ -1,0 +1,1 @@
+<Playlist Version="1.0"><Add Test="System.Binary.Tests.Base64Tests.EncodeInPlace" /><Add Test="System.Binary.Tests.Base64Tests.DecodeInPlace" /><Add Test="System.Binary.Tests.Base64Tests.BasicEncodingDecoding" /></Playlist>
