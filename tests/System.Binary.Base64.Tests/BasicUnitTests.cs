@@ -67,5 +67,32 @@ namespace System.Binary.Tests
                 }
             }
         }
+
+        [Fact]
+        public void EncodeInPlace()
+        {
+            const int numberOfBytes = 15;
+
+            var list = new List<byte>();
+            for (int value = 0; value < numberOfBytes; value++) {
+                list.Add((byte)value);
+            }
+            // padding
+            for (int i = 0; i < (numberOfBytes / 3) + 2; i++) {
+                list.Add(0);
+            }
+
+            var testBytes = list.ToArray();
+
+            for (int numberOfBytesToTest = 1; numberOfBytesToTest <= numberOfBytes; numberOfBytesToTest++) {
+                var copy = testBytes.Clone();               
+                var expectedText = Convert.ToBase64String(testBytes, 0, numberOfBytesToTest);
+
+                var encoded = Base64.EncodeInPlace(testBytes, numberOfBytesToTest);
+                var encodedText = new Utf8String(testBytes, 0, encoded).ToString();
+
+                Assert.Equal(expectedText, encodedText);
+            }
+        }
     }
 }
