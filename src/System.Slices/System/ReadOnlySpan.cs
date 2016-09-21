@@ -143,6 +143,11 @@ namespace System
             return new ReadOnlySpan<T>(slice.Object, slice.Offset, slice.Length);
         }
 
+        public static implicit operator ReadOnlySpan<T>(ArraySegment<T> arraySegment)
+        {
+            return new ReadOnlySpan<T>(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+        }
+
         public static ReadOnlySpan<T> Empty { get { return default(ReadOnlySpan<T>); } }
 
         public bool IsEmpty
