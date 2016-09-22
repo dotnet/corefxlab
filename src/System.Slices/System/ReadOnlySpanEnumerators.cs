@@ -3,6 +3,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime;
 
 namespace System
 {
@@ -47,7 +48,7 @@ namespace System
                 get
                 {
                     Contract.RequiresInRange(_position, (uint)_length);
-                    return PtrUtils.Get<T>(_object, _offset, (UIntPtr)_position);
+                    return UnsafeUtilities.Get<T>(_object, _offset, (UIntPtr)_position);
                 }
             }
 

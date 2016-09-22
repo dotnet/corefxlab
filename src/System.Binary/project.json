@@ -17,10 +17,12 @@
     "requireLicenseAcceptance": true
   },
   "buildOptions": {
+    "allowUnsafe": true,
     "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
     "System.Runtime": "4.1.0",
+    "System.Runtime.Extensions": "4.1.0",
     "System.Diagnostics.Debug": "4.0.11",
     "System.Slices": { "target": "project" }
   },

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime;
 using System.Runtime.CompilerServices;
 
 namespace System
@@ -153,9 +154,9 @@ namespace System
             int countOfU;
 
             /// This comparison is a jittime constant
-            if (PtrUtils.SizeOf<T>() > PtrUtils.SizeOf<U>())
+            if (UnsafeUtilities.SizeOf<T>() > UnsafeUtilities.SizeOf<U>())
             {
-                IntPtr count = PtrUtils.CountOfU<T, U>((uint)slice.Length);
+                IntPtr count = UnsafeUtilities.CountOfU<T, U>((uint)slice.Length);
                 unsafe
                 {
                     // We can't compare IntPtrs, so have to resort to pointer comparison
@@ -166,7 +167,7 @@ namespace System
             }
             else
             {
-                countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
+                countOfU = slice.Length * UnsafeUtilities.SizeOf<T>() / UnsafeUtilities.SizeOf<U>();
             }
             
             object obj = slice.Object;
@@ -195,9 +196,9 @@ namespace System
             int countOfU;
 
             /// This comparison is a jittime constant
-            if (PtrUtils.SizeOf<T>() > PtrUtils.SizeOf<U>())
+            if (UnsafeUtilities.SizeOf<T>() > UnsafeUtilities.SizeOf<U>())
             {
-                IntPtr count = PtrUtils.CountOfU<T, U>((uint)slice.Length);
+                IntPtr count = UnsafeUtilities.CountOfU<T, U>((uint)slice.Length);
                 unsafe
                 {
                     // We can't compare IntPtrs, so have to resort to pointer comparison
@@ -208,7 +209,7 @@ namespace System
             }
             else
             {
-                countOfU = slice.Length * PtrUtils.SizeOf<T>() / PtrUtils.SizeOf<U>();
+                countOfU = slice.Length * UnsafeUtilities.SizeOf<T>() / UnsafeUtilities.SizeOf<U>();
             }
 
             object obj = slice.Object;
@@ -230,8 +231,8 @@ namespace System
         public static T Read<[Primitive]T>(this Span<byte> slice)
             where T : struct
         {
-            Contract.RequiresInInclusiveRange(PtrUtils.SizeOf<T>(), (uint)slice.Length);
-            return PtrUtils.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
+            Contract.RequiresInInclusiveRange(UnsafeUtilities.SizeOf<T>(), (uint)slice.Length);
+            return UnsafeUtilities.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
         }
 
         /// <summary>
@@ -241,8 +242,8 @@ namespace System
         public static T Read<[Primitive]T>(this ReadOnlySpan<byte> slice)
             where T : struct
         {
-            Contract.RequiresInInclusiveRange(PtrUtils.SizeOf<T>(), (uint)slice.Length);
-            return PtrUtils.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
+            Contract.RequiresInInclusiveRange(UnsafeUtilities.SizeOf<T>(), (uint)slice.Length);
+            return UnsafeUtilities.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
         }
 
         /// <summary>
@@ -252,8 +253,8 @@ namespace System
         public static void Write<[Primitive]T>(this Span<byte> slice, T value)
             where T : struct
         {
-            Contract.RequiresInInclusiveRange(PtrUtils.SizeOf<T>(), (uint)slice.Length);
-            PtrUtils.Set(slice.Object, slice.Offset, (UIntPtr)0, value);
+            Contract.RequiresInInclusiveRange(UnsafeUtilities.SizeOf<T>(), (uint)slice.Length);
+            UnsafeUtilities.Set(slice.Object, slice.Offset, (UIntPtr)0, value);
         }
 
         /// <summary>
@@ -437,8 +438,8 @@ namespace System
             where T : struct
             where U : struct
         {
-            var bytesCount = first.Length * PtrUtils.SizeOf<T>();
-            if (bytesCount != second.Length * PtrUtils.SizeOf<U>())
+            var bytesCount = first.Length * UnsafeUtilities.SizeOf<T>();
+            if (bytesCount != second.Length * UnsafeUtilities.SizeOf<U>())
             {
                 return false;
             }
@@ -469,8 +470,8 @@ namespace System
             where T : struct
             where U : struct
         {
-            var bytesCount = first.Length * PtrUtils.SizeOf<T>();
-            if (bytesCount != second.Length * PtrUtils.SizeOf<U>())
+            var bytesCount = first.Length * UnsafeUtilities.SizeOf<T>();
+            if (bytesCount != second.Length * UnsafeUtilities.SizeOf<U>())
             {
                 return false;
             }

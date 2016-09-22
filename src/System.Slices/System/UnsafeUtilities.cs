@@ -11,13 +11,90 @@ namespace System
     {
         public ILSub(string il) { }
     }
+}
 
+namespace System.Runtime
+{
     /// <summary>
     /// A collection of unsafe helper methods that we cannot implement in C#.
     /// NOTE: these can be used for VeryBadThings(tm), so tread with care...
     /// </summary>
-    sealed class PtrUtils
+    public sealed class UnsafeUtilities
     {
+         [ILSub(@"
+            .maxstack 1
+            ldarg.0
+            ldobj !!T
+            ret
+         ")]
+         public unsafe static T Read<T>(void* source) {
+            throw new Exception();
+         } // end of method Unsafe::Read
+
+        [ILSub(@"
+            .maxstack 2
+            ldarg.0
+            ldarg.1
+            stobj !!T
+            ret
+        ")]
+        public unsafe static void Write<T>(void* destination, T value) { 
+        } 
+
+        /// <summary>
+        /// Reverses a primitive value - performs an endianness swap
+        /// </summary> 
+        public static unsafe T Reverse<[Primitive]T>(T value) where T : struct
+        {
+            // note: relying on JIT goodness here!
+            if (typeof(T) == typeof(byte) || typeof(T) == typeof(sbyte)) {
+                return value;
+            }
+            else if (typeof(T) == typeof(ushort) || typeof(T) == typeof(short)) {
+                ushort val = 0;
+                UnsafeUtilities.Write(&val, value);
+                val = (ushort)((val >> 8) | (val << 8));
+                return UnsafeUtilities.Read<T>(&val);
+            }
+            else if (typeof(T) == typeof(uint) || typeof(T) == typeof(int)
+                || typeof(T) == typeof(float)) {
+                uint val = 0;
+                UnsafeUtilities.Write(&val, value);
+                val = (val << 24)
+                    | ((val & 0xFF00) << 8)
+                    | ((val & 0xFF0000) >> 8)
+                    | (val >> 24);
+                return UnsafeUtilities.Read<T>(&val);
+            }
+            else if (typeof(T) == typeof(ulong) || typeof(T) == typeof(long)
+                || typeof(T) == typeof(double)) {
+                ulong val = 0;
+                UnsafeUtilities.Write(&val, value);
+                val = (val << 56)
+                    | ((val & 0xFF00) << 40)
+                    | ((val & 0xFF0000) << 24)
+                    | ((val & 0xFF000000) << 8)
+                    | ((val & 0xFF00000000) >> 8)
+                    | ((val & 0xFF0000000000) >> 24)
+                    | ((val & 0xFF000000000000) >> 40)
+                    | (val >> 56);
+                return UnsafeUtilities.Read<T>(&val);
+            }
+            else {
+                // default implementation
+                int len = SizeOf<T>();
+                var val = stackalloc byte[len];
+                UnsafeUtilities.Write(val, value);
+                int to = len >> 1, dest = len - 1;
+                for (int i = 0; i < to; i++) {
+                    var tmp = val[i];
+                    val[i] = val[dest];
+                    val[dest--] = tmp;
+                }
+                return UnsafeUtilities.Read<T>(val);
+            }
+        }
+
         // WARNING:
         // The Get and Set methods below do some tricky things.  They accept
         // a managed 'object' and 'native uint' offset, and sometimes manufacture
@@ -57,7 +134,7 @@ namespace System
             add         // add the result
             ldobj !!T   // load a T value from the computed address
             ret")]
-        public static T Get<T>(object obj, UIntPtr offset, UIntPtr index) { return default(T); }
+        internal static T Get<T>(object obj, UIntPtr offset, UIntPtr index) { return default(T); }
 
         /// <summary>
         /// Takes a (possibly null) object reference, plus an offset in bytes, plus an index,
@@ -79,7 +156,7 @@ namespace System
             ldarg.3     // load the value to store
             stobj !!T   // store a T value to the computed address
             ret")]
-        public static void Set<T>(object obj, UIntPtr offset, UIntPtr index, T val) { }
+        internal static void Set<T>(object obj, UIntPtr offset, UIntPtr index, T val) { }
 
         /// <summary>
         /// Computes the number of bytes offset from an array object reference
@@ -93,7 +170,7 @@ namespace System
             ldarg.0
             sub
             ret")]
-        public static int ElemOffset<T>(T[] arr) { return default(int); }
+        internal static int ElemOffset<T>(T[] arr) { return default(int); }
 
         /// <summary>
         /// Computes the size of any type T.  This includes managed object types
@@ -119,7 +196,7 @@ namespace System
             ldarg.1     // load the offset
             add         // add the offset
             ret")]
-        public static UIntPtr ComputeAddress(object obj, UIntPtr offset) { return UIntPtr.Zero; }
+        internal static UIntPtr ComputeAddress(object obj, UIntPtr offset) { return UIntPtr.Zero; }
                
         [ILSub(@"
             .maxstack 2
@@ -131,7 +208,7 @@ namespace System
             div
             ret")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static IntPtr CountOfU<T, U>(uint countOfT) { return default(IntPtr); }
+        internal static IntPtr CountOfU<T, U>(uint countOfT) { return default(IntPtr); }
 
         [ILSub(@"
             .maxstack 3
@@ -150,7 +227,7 @@ namespace System
             ldarg.s 4   // load byteCount
             cpblk
             ret")]
-        public static void CopyBlock(object srcObj, UIntPtr srcOffset, object destObj, UIntPtr destOffset, int byteCount)
+        internal static void CopyBlock(object srcObj, UIntPtr srcOffset, object destObj, UIntPtr destOffset, int byteCount)
         {}
     }
 }

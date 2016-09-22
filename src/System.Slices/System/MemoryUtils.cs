@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -28,11 +29,11 @@ namespace System
 
                 try
                 {
-                    byte* firstPointer = (byte*)PtrUtils.ComputeAddress(first.Object, first.Offset).ToPointer();
-                    byte* secondPointer = (byte*)PtrUtils.ComputeAddress(second.Object, second.Offset).ToPointer();
+                    byte* firstPointer = (byte*)UnsafeUtilities.ComputeAddress(first.Object, first.Offset).ToPointer();
+                    byte* secondPointer = (byte*)UnsafeUtilities.ComputeAddress(second.Object, second.Offset).ToPointer();
 
                     int step = sizeof(void*) * 5;
-                    int totalBytesCount = first.Length * PtrUtils.SizeOf<T>();
+                    int totalBytesCount = first.Length * UnsafeUtilities.SizeOf<T>();
                     byte* firstPointerLimit = firstPointer + (totalBytesCount - step);
 
                     if (totalBytesCount > step)
@@ -98,11 +99,11 @@ namespace System
 
                 try
                 {
-                    byte* firstPointer = (byte*)PtrUtils.ComputeAddress(first.Object, first.Offset).ToPointer();
-                    byte* secondPointer = (byte*)PtrUtils.ComputeAddress(second.Object, second.Offset).ToPointer();
+                    byte* firstPointer = (byte*)UnsafeUtilities.ComputeAddress(first.Object, first.Offset).ToPointer();
+                    byte* secondPointer = (byte*)UnsafeUtilities.ComputeAddress(second.Object, second.Offset).ToPointer();
 
                     int step = sizeof(void*) * 5;
-                    int totalBytesCount = first.Length * PtrUtils.SizeOf<T>();
+                    int totalBytesCount = first.Length * UnsafeUtilities.SizeOf<T>();
                     byte* firstPointerLimit = firstPointer + (totalBytesCount - step);
 
                     if (totalBytesCount > step)
