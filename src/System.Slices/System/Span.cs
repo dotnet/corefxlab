@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 
 namespace System
@@ -66,7 +67,7 @@ namespace System
             {
                 Object = array;
                 Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
+                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * UnsafeUtilities.SizeOf<T>())));
                 Length = array.Length - start;
             }
             else
@@ -100,7 +101,7 @@ namespace System
             {
                 Object = array;
                 Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * PtrUtils.SizeOf<T>())));
+                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * UnsafeUtilities.SizeOf<T>())));
                 Length = length;
             }
             else
@@ -167,12 +168,12 @@ namespace System
             if (a == null)
             {
                 array = new ArraySegment<T>();
-                pointer = PtrUtils.ComputeAddress(Object, Offset).ToPointer();
+                pointer = UnsafeUtilities.ComputeAddress(Object, Offset).ToPointer();
                 return false;
             }
 
             var offsetToData = SpanHelpers<T>.OffsetToArrayData;
-            var index = (int)((Offset.ToUInt32() - offsetToData) / PtrUtils.SizeOf<T>());
+            var index = (int)((Offset.ToUInt32() - offsetToData) / UnsafeUtilities.SizeOf<T>());
             array = new ArraySegment<T>(a, index, Length);
             pointer = null;
             return true;
@@ -181,7 +182,7 @@ namespace System
         public unsafe void* UnsafePointer
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return PtrUtils.ComputeAddress(Object, Offset).ToPointer(); }
+            get { return UnsafeUtilities.ComputeAddress(Object, Offset).ToPointer(); }
         }
 
         [Obsolete("use TryGetArrayElseGetPointer instead")]
@@ -196,7 +197,7 @@ namespace System
 
             var offsetToData = SpanHelpers<T>.OffsetToArrayData;
 
-            var index = (int)((Offset.ToUInt32() - offsetToData) / PtrUtils.SizeOf<T>());
+            var index = (int)((Offset.ToUInt32() - offsetToData) / UnsafeUtilities.SizeOf<T>());
             array = new ArraySegment<T>(a, index, Length);
             return true;
         }
@@ -213,13 +214,13 @@ namespace System
             get
             {
                 Contract.RequiresInRange(index, (uint)Length);
-                return PtrUtils.Get<T>(Object, Offset, (UIntPtr)index);
+                return UnsafeUtilities.Get<T>(Object, Offset, (UIntPtr)index);
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 Contract.RequiresInRange(index, (uint)Length);
-                PtrUtils.Set(Object, Offset, (UIntPtr)index, value);
+                UnsafeUtilities.Set(Object, Offset, (UIntPtr)index, value);
             }
         }
 
@@ -251,16 +252,16 @@ namespace System
 
             if (default(T) != null && MemoryUtils.IsPrimitiveValueType<T>())
             {
-                PtrUtils.CopyBlock(src.Object, src.Offset, dest.Object, dest.Offset,
-                                   src.Length * PtrUtils.SizeOf<T>());
+                UnsafeUtilities.CopyBlock(src.Object, src.Offset, dest.Object, dest.Offset,
+                                   src.Length * UnsafeUtilities.SizeOf<T>());
             }
             else
             {
                 for (int i = 0; i < src.Length; i++)
                 {
                     // We don't check bounds here as we are surely within them
-                    T value = PtrUtils.Get<T>(src.Object, src.Offset, (UIntPtr)i);
-                    PtrUtils.Set(dest.Object, dest.Offset, (UIntPtr)i, value);
+                    T value = UnsafeUtilities.Get<T>(src.Object, src.Offset, (UIntPtr)i);
+                    UnsafeUtilities.Set(dest.Object, dest.Offset, (UIntPtr)i, value);
                 }
             }
 
@@ -304,7 +305,7 @@ namespace System
         public Span<T> Slice(int start)
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
-            return new Span<T>(Object, Offset + (start * PtrUtils.SizeOf<T>()), Length - start);
+            return new Span<T>(Object, Offset + (start * UnsafeUtilities.SizeOf<T>()), Length - start);
         }
         
         /// <summary>
@@ -318,7 +319,7 @@ namespace System
         public Span<T> Slice(uint start)
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
-            return new Span<T>(Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), Length - (int)start);
+            return new Span<T>(Object, Offset + (((int)start) * UnsafeUtilities.SizeOf<T>()), Length - (int)start);
         }
 
         /// <summary>
@@ -335,7 +336,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new Span<T>(
-                Object, Offset + (start * PtrUtils.SizeOf<T>()), length);
+                Object, Offset + (start * UnsafeUtilities.SizeOf<T>()), length);
         }
         
         /// <summary>
@@ -352,7 +353,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new Span<T>(
-                Object, Offset + (((int)start) * PtrUtils.SizeOf<T>()), (int)length);
+                Object, Offset + (((int)start) * UnsafeUtilities.SizeOf<T>()), (int)length);
         }
 
         /// <summary>

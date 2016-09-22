@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime;
+
 namespace System
 {
     /// <summary>
@@ -24,7 +26,7 @@ namespace System
         /// The offset, in bytes, to the first element of an array of type T.
         /// </summary>
         internal static readonly int OffsetToArrayData =
-            PtrUtils.ElemOffset<T>(new T[1]);
+            UnsafeUtilities.ElemOffset<T>(new T[1]);
     }
 }
 
