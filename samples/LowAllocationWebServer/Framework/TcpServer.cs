@@ -121,7 +121,7 @@ namespace Microsoft.Net.Sockets
     public struct TcpConnection
     {
         IntPtr _handle;
-        internal TcpConnection(IntPtr handle)
+        public TcpConnection(IntPtr handle)
         {
             _handle = handle;
         }
@@ -159,49 +159,82 @@ namespace Microsoft.Net.Sockets
 
         public int Send(Span<byte> bytes)
         {
-            unsafe
-            {
-                IntPtr ptr = new IntPtr(bytes.UnsafePointer);
-                int bytesSent = SocketImports.send(_handle, ptr, bytes.Length, 0);
-                if (bytesSent == SocketImports.SOCKET_ERROR)
-                {
-                    var error = SocketImports.WSAGetLastError();
-                    throw new Exception(String.Format("send failed with {0}", error));
+            unsafe {
+                ArraySegment<byte> segment;
+                void* pinned;
+                if (bytes.TryGetArrayElseGetPointer(out segment, out pinned)) {
+                    return Send(segment);
                 }
-                return bytesSent;
-            }
-        }
-
-        public int Send(byte[] bytes, int count)
-        {
-            unsafe
-            {
-                fixed (byte* buffer = bytes)
-                {
-                    IntPtr ptr = new IntPtr(buffer);
-                    int bytesSent = SocketImports.send(_handle, ptr, count, 0);
-                    if (bytesSent == SocketImports.SOCKET_ERROR)
-                    {
-                        var error = SocketImports.WSAGetLastError();
-                        throw new Exception(String.Format("send failed with {0}", error));
-                    }
-                    return bytesSent;
+                else {
+                    var pointer = new IntPtr(pinned);
+                    return SendPinned(pointer, bytes.Length);
                 }
             }
         }
 
-        internal int Receive(Span<byte> buffer)
+        public int Send(ArraySegment<byte> buffer)
         {
-            unsafe
-            {
-                IntPtr ptr = new IntPtr(buffer.UnsafePointer);
-                int bytesReceived = SocketImports.recv(Handle, ptr, buffer.Length, 0);
-                if (bytesReceived < 0) {
-                    var error = SocketImports.WSAGetLastError();
-                    throw new Exception(String.Format("receive failed with {0}", error));
+            return Send(buffer.Array, buffer.Offset, buffer.Count);
+        }
+
+        public int Send(byte[] bytes, int offset, int count)
+        {
+            unsafe {
+                fixed (byte* buffer = bytes) {
+                    IntPtr pointer = new IntPtr(buffer + offset);
+                    return SendPinned(pointer, count);
                 }
-                return bytesReceived;
             }
+        }
+
+        public int Receive(Span<byte> buffer)
+        {
+            unsafe {
+                ArraySegment<byte> segment;
+                void* pinned;
+                if (buffer.TryGetArrayElseGetPointer(out segment, out pinned)) {
+                    return Receive(segment);
+                }
+                else {
+                    IntPtr pointer = new IntPtr(pinned);
+                    return ReceivePinned(pointer, buffer.Length);
+                }
+            }
+        }
+
+        public int Receive(ArraySegment<byte> buffer)
+        {
+            return Receive(buffer.Array, buffer.Offset, buffer.Count);
+        }
+
+        public int Receive(byte[] array, int offset, int count)
+        {
+            unsafe {
+                fixed (byte* buffer = array) {
+                    IntPtr pointer = new IntPtr(buffer + offset);
+                    return ReceivePinned(pointer, count);
+                }
+            }
+        }
+
+        private unsafe int SendPinned(IntPtr buffer, int length)
+        {
+            int bytesSent = SocketImports.send(_handle, buffer, length, 0);
+            if (bytesSent == SocketImports.SOCKET_ERROR) {
+                var error = SocketImports.WSAGetLastError();
+                throw new Exception(String.Format("send failed with {0}", error));
+            }
+            return bytesSent;
+        }
+
+        private int ReceivePinned(IntPtr ptr, int length)
+        {
+            int bytesReceived = SocketImports.recv(Handle, ptr, length, 0);
+            if (bytesReceived < 0) {
+                var error = SocketImports.WSAGetLastError();
+                throw new Exception(String.Format("receive failed with {0}", error));
+            }
+            return bytesReceived;
         }
     }
 }
