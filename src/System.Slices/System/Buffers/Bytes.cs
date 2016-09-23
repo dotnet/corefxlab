@@ -17,6 +17,12 @@ namespace System.Buffers
         unsafe byte* _memory;
         int _memoryLength;
 
+        public Bytes(byte[] array)
+        {
+            _segment = new ArraySegment<byte>(array);
+            unsafe { _memory = null; }
+            _memoryLength = 0;
+        }
         public Bytes(ArraySegment<byte> segment)
         {
             _segment = segment;
