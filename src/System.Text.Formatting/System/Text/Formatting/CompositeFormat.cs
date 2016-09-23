@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Text;
+using System.Text.Utf8;
 
 namespace System.Text.Formatting {
 
@@ -213,16 +214,31 @@ namespace System.Text.Formatting {
                 formatter.Append(str, format);
                 return;
             }
+            var utf8 = value as Utf8String?;
+            if (utf8 != null) {
+                formatter.Append(utf8.Value, format);
+                return;
+            }
             var dt = value as DateTime?;
             if (dt != null)
             {
                 formatter.Append(dt.Value, format);
                 return;
             }
+            var dto = value as DateTimeOffset?;
+            if (dto != null) {
+                formatter.Append(dto.Value, format);
+                return;
+            }
             var ts = value as TimeSpan?;
             if (ts != null)
             {
                 formatter.Append(ts.Value, format);
+                return;
+            }
+            var guid = value as Guid?;
+            if (guid != null) {
+                formatter.Append(guid.Value, format);
                 return;
             }
             #endregion

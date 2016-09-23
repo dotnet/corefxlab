@@ -194,7 +194,16 @@ namespace System.Text
         public static bool TryFormat(this Utf8String value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
         {
             if (formattingData.IsUtf16) {
-                throw new NotImplementedException();
+                bytesWritten = 0;
+                int justWritten;
+                foreach(var cp in value.CodePoints) {
+                    if(!Utf16.Utf16LittleEndianEncoder.TryEncodeCodePoint(cp, buffer.Slice(bytesWritten), out justWritten)) {
+                        bytesWritten = 0;
+                        return false;
+                    }
+                    bytesWritten += justWritten ;
+                }
+                return true;
             }
 
             if(buffer.Length < value.Length) {

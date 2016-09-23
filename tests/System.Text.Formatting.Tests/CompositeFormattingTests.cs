@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Globalization;
+using System.Text.Utf8;
 using Xunit;
 
 namespace System.Text.Formatting.Tests
@@ -29,6 +30,36 @@ namespace System.Text.Formatting.Tests
             {
                 formatter.Format("{2:G} - Error {0}. File {1} not found.", 404, "index.html", time);
                 Assert.Equal("2/9/2016 4:01:59 AM - Error 404. File index.html not found.", formatter.ToString());
+            }
+        }
+
+        [Fact]
+        public void CompositeFormattingUtf8String()
+        {
+            var value = new Utf8String("hello world!");
+            using (var formatter = new StringFormatter(pool)) {
+                formatter.Format("{0}#{1}", value, value);
+                Assert.Equal("hello world!#hello world!", formatter.ToString());
+            }
+        }
+
+        [Fact]
+        public void CompositeFormattingDateTimeOffset()
+        {
+            var value = new DateTimeOffset(2016, 9, 23, 10, 53, 1, 1, TimeSpan.FromHours(1));
+            using (var formatter = new StringFormatter(pool)) {
+                formatter.Format("{0}#{1}", value, value);
+                Assert.Equal("9/23/2016 10:53:01 AM#9/23/2016 10:53:01 AM", formatter.ToString());
+            }
+        }
+
+        [Fact]
+        public void CompositeFormattingGuid()
+        {
+            var value = Guid.NewGuid();
+            using (var formatter = new StringFormatter(pool)) {
+                formatter.Format("{0}#{1}", value, value);
+                Assert.Equal(value.ToString() +"#"+value.ToString(), formatter.ToString());
             }
         }
 
