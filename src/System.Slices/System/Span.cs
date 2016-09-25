@@ -15,7 +15,7 @@ namespace System
     /// </summary>
     [DebuggerTypeProxy(typeof(SpanDebuggerView<>))]
     [DebuggerDisplay("Length = {Length}")]
-    public partial struct Span<T> : IEquatable<Span<T>>, IEquatable<ReadOnlySpan<T>>, IEquatable<T[]>
+    public struct Span<T> : IEquatable<T[]>
     {
         /// <summary>A managed array/string; or null for native ptrs.</summary>
         internal readonly object Object;
@@ -389,29 +389,16 @@ namespace System
         /// Checks to see if two spans point at the same memory.  Note that
         /// this does *not* check to see if the *contents* are equal.
         /// </summary>
-        public bool Equals(Span<T> other)
-        {
-            return ReferenceEquals(other);
-        }
-
-
-        public override bool Equals(object obj)
-        {
-            if (obj is Span<T>)
-            {
-                return Equals((Span<T>)obj);
-            }
-            return false;
-        }
+        public bool Equals(Span<T> other) => ReferenceEquals(other);
 
         public bool Equals(ReadOnlySpan<T> other) => StructuralEquals(other.Object, other.Offset, other.Length);
+
         public bool Equals(T[] other) => Equals(new Span<T>(other));
+
         public static bool operator ==(Span<T> span1, Span<T> span2) => span1.Equals(span2);
+
         public static bool operator !=(Span<T> span1, Span<T> span2) => !span1.Equals(span2);
 
-        public ReadOnlySpan<T>.Enumerator GetEnumerator()
-        {
-            return new ReadOnlySpan<T>.Enumerator(Object, Offset, Length);
-        }
+        public ReadOnlySpan<T>.Enumerator GetEnumerator() => new ReadOnlySpan<T>.Enumerator(Object, Offset, Length);
     }
 }
