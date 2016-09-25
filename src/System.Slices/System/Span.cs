@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.CompilerServices;
@@ -17,7 +15,7 @@ namespace System
     /// </summary>
     [DebuggerTypeProxy(typeof(SpanDebuggerView<>))]
     [DebuggerDisplay("Length = {Length}")]
-    public partial struct Span<T> : IEnumerable<T>, IEquatable<Span<T>>, IEquatable<ReadOnlySpan<T>>, IEquatable<T[]>
+    public partial struct Span<T> : IEquatable<Span<T>>, IEquatable<ReadOnlySpan<T>>, IEquatable<T[]>
     {
         /// <summary>A managed array/string; or null for native ptrs.</summary>
         internal readonly object Object;
@@ -414,16 +412,6 @@ namespace System
         public ReadOnlySpan<T>.Enumerator GetEnumerator()
         {
             return new ReadOnlySpan<T>.Enumerator(Object, Offset, Length);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new ReadOnlySpan<T>.EnumeratorObject(this);
-        }
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
-        {
-            return new ReadOnlySpan<T>.EnumeratorObject(this);
         }
     }
 }

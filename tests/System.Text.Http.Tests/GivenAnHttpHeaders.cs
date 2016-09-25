@@ -54,7 +54,7 @@ Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4
         [Fact]
         public void It_returns_empty_string_when_header_is_not_present()
         {
-            ((IEnumerable)_httpHeaders["Content-Length"]).Should().BeEmpty();
+            _httpHeaders["Content-Length"].Length.Should().Be(0);
         }
 
         [Fact]

@@ -8,16 +8,14 @@ namespace System.Text.Utf8
 {
     partial struct Utf8String
     {
-        public struct Enumerator : IEnumerator<Utf8CodeUnit>, IEnumerator
+        public struct Enumerator
         {
             private ReadOnlySpan<byte>.Enumerator _enumerator;
 
-            public Enumerator(ReadOnlySpan<byte> buffer)
+            internal Enumerator(ReadOnlySpan<byte> buffer)
             {
                 _enumerator = buffer.GetEnumerator();
             }
-
-            object IEnumerator.Current { get { return Current; } }
 
             public Utf8CodeUnit Current
             {
@@ -25,10 +23,6 @@ namespace System.Text.Utf8
                 {
                     return (Utf8CodeUnit)_enumerator.Current;
                 }
-            }
-
-            void IDisposable.Dispose()
-            {
             }
 
             public bool MoveNext()
