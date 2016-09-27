@@ -83,6 +83,8 @@ namespace System
             }
         }
 
+        internal static InvalidOperationException InvalidOperationExceptionForBoxingSpans() => new InvalidOperationException("Spans must not be boxed");
+
         private static void ThrowArgumentException()
         {
             throw new ArgumentException();

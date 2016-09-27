@@ -385,6 +385,8 @@ namespace System
             }
         }
 
+        public override bool Equals(object obj) { throw Contract.InvalidOperationExceptionForBoxingSpans(); }
+
         /// <summary>
         /// Checks to see if two spans point at the same memory.  Note that
         /// this does *not* check to see if the *contents* are equal.
