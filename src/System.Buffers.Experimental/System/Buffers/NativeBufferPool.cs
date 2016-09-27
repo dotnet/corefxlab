@@ -62,11 +62,11 @@ namespace System.Buffers
 
         public override void Return(Memory<byte> buffer)
         {
-            ArraySegment<byte> array;
-            if(buffer.TryGetArray(out array)) {
+            void* pointer;
+            if(!buffer.TryGetPointer(out pointer)) {
                 throw new Exception("not rented from this pool");
             }
-            var memory = new IntPtr(buffer.UnsafePointer).ToInt64();
+            var memory = new IntPtr(pointer).ToInt64();
             if(memory < _memory.ToInt64() || memory > _memory.ToInt64() + _bufferSize * _bufferCount) {
                 throw new Exception("not rented from this pool");
             }

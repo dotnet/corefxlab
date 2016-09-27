@@ -30,7 +30,12 @@ namespace System.Net.Libuv
             var rented = _pool.Rent((int)length);
             unsafe
             {
-                buffer = new Unix(new IntPtr(rented.UnsafePointer), (uint)rented.Length);
+                void* pointer;
+                if (!rented.TryGetPointer(out pointer))
+                {
+                    throw new InvalidOperationException("The native pointer isn't available because the memory isn't pinned");
+                }
+                buffer = new Unix(new IntPtr(pointer), (uint)rented.Length);
             }
         }
 
@@ -40,7 +45,12 @@ namespace System.Net.Libuv
 
             unsafe
             {
-                buffer = new Windows(new IntPtr(rented.UnsafePointer), (uint)rented.Length);
+                void* pointer;
+                if (!rented.TryGetPointer(out pointer))
+                {
+                    throw new InvalidOperationException("The native pointer isn't available because the memory isn't pinned");
+                }
+                buffer = new Windows(new IntPtr(pointer), (uint)rented.Length);
             }
         }
 

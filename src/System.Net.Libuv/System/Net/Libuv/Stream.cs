@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace System.Net.Libuv
 {
     unsafe public abstract class UVStream : UVHandle
-    {     
+    {
         uv_stream_t* _stream;
 
         protected UVStream(UVLoop loop, HandleType type) : base(loop, type)
@@ -54,7 +54,7 @@ namespace System.Net.Libuv
         public unsafe void TryWrite(byte[] data, int length)
         {
             Debug.Assert(data != null);
-            if(data.Length < length)
+            if (data.Length < length)
             {
                 throw new ArgumentOutOfRangeException("length");
             }
@@ -82,16 +82,23 @@ namespace System.Net.Libuv
             // This can work with Span<byte> because it's synchronous but we need pinning support
             EnsureNotDisposed();
 
-            IntPtr ptrData = (IntPtr)data.UnsafePointer;
+            void* pointer;
+            if (!data.TryGetPointer(out pointer))
+            {
+                throw new InvalidOperationException("Pointer not available");
+            }
+
+            IntPtr ptrData = (IntPtr)pointer;
+            var length = data.Length;
 
             if (IsUnix)
             {
-                var buffer = new UVBuffer.Unix(ptrData, (uint)data.Length);
+                var buffer = new UVBuffer.Unix(ptrData, (uint)length);
                 UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
             }
             else
             {
-                var buffer = new UVBuffer.Windows(ptrData, (uint)data.Length);
+                var buffer = new UVBuffer.Windows(ptrData, (uint)length);
                 UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
             }
         }
@@ -122,7 +129,7 @@ namespace System.Net.Libuv
                     Dispose();
                     buffer.Dispose();
                 }
-                else if(error == UVError.ECONNRESET)
+                else if (error == UVError.ECONNRESET)
                 {
                     Debug.Assert(buffer.Buffer == IntPtr.Zero && buffer.Length == 0);
                     // no need to dispose

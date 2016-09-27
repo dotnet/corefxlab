@@ -158,17 +158,18 @@ namespace Microsoft.Net.Sockets
             SocketImports.closesocket(_handle);
         }
 
-        public int Send(Memory<byte> bytes)
+        public int Send(Memory<byte> buffer)
         {
             // This can work with Span<byte> because it's synchronous but we need pinning support
             unsafe {
                 ArraySegment<byte> segment;
-                if (bytes.TryGetArray(out segment)) {
+                if (buffer.TryGetArray(out segment)) {
                     return Send(segment);
                 }
                 else {
-                    var pointer = new IntPtr(bytes.UnsafePointer);
-                    return SendPinned(pointer, bytes.Length);
+                    void* pointer;
+                    buffer.TryGetPointer(out pointer);
+                    return SendPinned(new IntPtr(pointer), buffer.Length);
                 }
             }
         }
@@ -198,8 +199,9 @@ namespace Microsoft.Net.Sockets
                     return Receive(segment);
                 }
                 else {
-                    IntPtr pointer = new IntPtr(buffer.UnsafePointer);
-                    return ReceivePinned(pointer, buffer.Length);
+                    void* pointer;
+                    buffer.TryGetPointer(out pointer);
+                    return ReceivePinned(new IntPtr(pointer), buffer.Length);
                 }
             }
         }

@@ -90,9 +90,15 @@ namespace LibuvWithNonAllocatingFormatters
                         formatter.Format(" @ {0:O}", DateTime.UtcNow);
                     }
 
-                    var response = new Memory<byte>(formatter.Buffer, 0, formatter.CommitedByteCount); // formatter should have a property for written bytes
-
-                    connection.TryWrite(response);
+                    unsafe
+                    {
+                        fixed (byte* ptr = formatter.Buffer)
+                        {
+                            // formatter should have a property for written bytes
+                            var response = new Memory<byte>(formatter.Buffer, 0, formatter.CommitedByteCount, isPinned: true);
+                            connection.TryWrite(response);
+                        }
+                    }
                     connection.Dispose();
                 };
 

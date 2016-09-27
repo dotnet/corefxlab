@@ -3,6 +3,7 @@
 
 using System;
 using System.Runtime;
+using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
@@ -33,18 +34,24 @@ namespace System.Buffers
             _memoryLength = length;
         }
 
-        public unsafe Memory(T[] array) : this(array, 0, array.Length)
+        public unsafe Memory(T[] array) : this(array, 0, array?.Length ?? 0)
         {
         }
 
         public unsafe Memory(T[] array, int offset, int length, bool isPinned = false)
         {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
             unsafe
             {
                 if (isPinned)
                 {
+                    // TODO: Use new Unsafe.AsPointer(ref array[0])
                     // The caller pinned the array so we can safely get the pointer
-                    _memory = (void*)UnsafeUtilities.ComputeAddress(array, new UIntPtr(0));
+                    _memory = Unsafe.AsPointer(ref array[0]);
                 }
                 else
                 {
@@ -74,7 +81,10 @@ namespace System.Buffers
                 {
                     unsafe
                     {
-                        return new Span<T>(UnsafePointer, Length);
+                        void* pointer;
+                        // This shouldn't fail
+                        TryGetPointer(out pointer);
+                        return new Span<T>(pointer, Length);
                     }
                 }
             }
@@ -92,19 +102,6 @@ namespace System.Buffers
             return memory.Span;
         }
 
-        public unsafe void* UnsafePointer
-        {
-            get
-            {
-                if (_memory == null)
-                {
-                    throw new InvalidOperationException("The native pointer isn't available because the memory isn't pinned");
-                }
-
-                return (byte*)_memory + (UnsafeUtilities.SizeOf<T>() * _offset);
-            }
-        }
-
         public int Length => _memoryLength;
 
         public unsafe Memory<T> Slice(int offset, int length)
@@ -112,10 +109,22 @@ namespace System.Buffers
             // TODO: Bounds check
             if (_array == null)
             {
-                return new Memory<T>((byte*)_memory + (UnsafeUtilities.SizeOf<T>() * offset), length);
+                return new Memory<T>(Add(_memory, offset), length);
             }
 
             return new Memory<T>(_array, _offset + offset, length, _memory != null);
+        }
+
+        public unsafe bool TryGetPointer(out void* pointer)
+        {
+            if (_memory == null)
+            {
+                pointer = null;
+                return false;
+            }
+
+            pointer = Add(_memory, _offset);
+            return true;
         }
 
         public bool TryGetArray(out ArraySegment<T> buffer)
@@ -127,6 +136,12 @@ namespace System.Buffers
             }
             buffer = new ArraySegment<T>(_array, _offset, Length);
             return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe void* Add(void* pointer, int offset)
+        {
+            return (byte*)pointer + ((ulong)UnsafeUtilities.SizeOf<T>() * (ulong)offset);
         }
     }
 }

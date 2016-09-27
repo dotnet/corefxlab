@@ -297,7 +297,8 @@ namespace System.Slices.Tests
                 fixed(int* pBytes = original){
                     slice = new Memory<int>(pBytes, 1);
                     Assert.False(slice.TryGetArray(out array));
-                    void* p = slice.UnsafePointer;
+                    void* p;
+                    Assert.True(slice.TryGetPointer(out p));
                     Assert.True(null != p);
                     Assert.Equal(null, array.Array);
                     Assert.Equal(0, array.Offset);
@@ -309,7 +310,8 @@ namespace System.Slices.Tests
                 fixed(int* pBytes = original){
                     var roSlice = new ReadOnlySpan<int>(pBytes, 1);
                     Assert.False(slice.TryGetArray(out array));
-                    void* p = slice.UnsafePointer;
+                    void* p;
+                    Assert.True(slice.TryGetPointer(out p));
                     Assert.True(null != p);
                     Assert.Equal(null, array.Array);
                     Assert.Equal(0, array.Offset);
