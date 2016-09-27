@@ -5,9 +5,9 @@ namespace System.Buffers
 {
     public abstract class BufferPool : IDisposable
     {
-        public abstract Bytes Rent(int minimumBufferSize);
+        public abstract Memory<byte> Rent(int minimumBufferSize);
 
-        public abstract void Return(Bytes buffer);
+        public abstract void Return(Memory<byte> buffer);
 
         public void Dispose()
         {

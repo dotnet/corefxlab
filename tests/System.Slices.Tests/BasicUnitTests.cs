@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System.Buffers;
 using Xunit;
- 
+
 namespace System.Slices.Tests
 {
     public class SlicesTests
@@ -273,45 +274,30 @@ namespace System.Slices.Tests
         {
             var original = new int[] { 1, 2, 3 };
             ArraySegment<int> array;
-            Span<int> slice;
+            Memory<int> slice;
 
-            slice = new Span<int>(original, 1, 2);
-            unsafe
-            {
-                void* p;
-                Assert.True(slice.TryGetArrayElseGetPointer(out array, out p));
-                Assert.True(null == p);
-            }
+            slice = new Memory<int>(original, 1, 2);
+            Assert.True(slice.TryGetArray(out array));
             Assert.Equal(2, array.Array[array.Offset + 0]);
             Assert.Equal(3, array.Array[array.Offset + 1]);
 
-            slice = new Span<int>(original, 0, 3);
-            unsafe
-            {
-                void* p;
-                Assert.True(slice.TryGetArrayElseGetPointer(out array, out p));
-                Assert.True(null == p);
-            }
+            slice = new Memory<int>(original, 0, 3);
+            Assert.True(slice.TryGetArray(out array));
             Assert.Equal(1, array.Array[array.Offset + 0]);
             Assert.Equal(2, array.Array[array.Offset + 1]);
             Assert.Equal(3, array.Array[array.Offset + 2]);
 
-            slice = new Span<int>(original, 0, 0);
-            unsafe
-            {
-                void* p;
-                Assert.True(slice.TryGetArrayElseGetPointer(out array, out p));
-                Assert.True(null == p);
-            }
+            slice = new Memory<int>(original, 0, 0);
+            Assert.True(slice.TryGetArray(out array));
             Assert.Equal(0, array.Offset);
             Assert.Equal(original, array.Array);
             Assert.Equal(0, array.Count);
 
             unsafe {
                 fixed(int* pBytes = original){
-                    slice = new Span<int>(pBytes, 1);
-                    void* p;
-                    Assert.False(slice.TryGetArrayElseGetPointer(out array, out p));
+                    slice = new Memory<int>(pBytes, 1);
+                    Assert.False(slice.TryGetArray(out array));
+                    void* p = slice.UnsafePointer;
                     Assert.True(null != p);
                     Assert.Equal(null, array.Array);
                     Assert.Equal(0, array.Offset);
@@ -322,8 +308,8 @@ namespace System.Slices.Tests
             unsafe {
                 fixed(int* pBytes = original){
                     var roSlice = new ReadOnlySpan<int>(pBytes, 1);
-                    void* p;
-                    Assert.False(slice.TryGetArrayElseGetPointer(out array, out p));
+                    Assert.False(slice.TryGetArray(out array));
+                    void* p = slice.UnsafePointer;
                     Assert.True(null != p);
                     Assert.Equal(null, array.Array);
                     Assert.Equal(0, array.Offset);

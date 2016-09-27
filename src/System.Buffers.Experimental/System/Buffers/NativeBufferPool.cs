@@ -38,7 +38,7 @@ namespace System.Buffers
             Marshal.FreeHGlobal(_memory);
         }
 
-        public override Bytes Rent(int numberOfBytes)
+        public override Memory<byte> Rent(int numberOfBytes)
         {
             if (numberOfBytes < 1) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
@@ -57,18 +57,16 @@ namespace System.Buffers
                     throw new NotImplementedException("no more buffers to rent");
             }
 
-            return new Bytes((byte*)(_memory + i * _bufferSize), _bufferSize);
+            return new Memory<byte>((byte*)(_memory + i * _bufferSize), _bufferSize);
         }
 
-        public override void Return(Bytes buffer)
+        public override void Return(Memory<byte> buffer)
         {
-            var span = (Span<byte>)buffer;
-            void* pointer;
             ArraySegment<byte> array;
-            if(span.TryGetArrayElseGetPointer(out array, out pointer)) {
+            if(buffer.TryGetArray(out array)) {
                 throw new Exception("not rented from this pool");
             }
-            var memory = new IntPtr(pointer).ToInt64();
+            var memory = new IntPtr(buffer.UnsafePointer).ToInt64();
             if(memory < _memory.ToInt64() || memory > _memory.ToInt64() + _bufferSize * _bufferCount) {
                 throw new Exception("not rented from this pool");
             }

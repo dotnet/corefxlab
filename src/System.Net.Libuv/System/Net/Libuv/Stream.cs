@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace System.Net.Libuv
@@ -26,7 +27,7 @@ namespace System.Net.Libuv
             }
         }
 
-        public event Action<Span<byte>> ReadCompleted;
+        public event Action<Memory<byte>> ReadCompleted;
         public event Action EndOfStream;
 
         public unsafe void TryWrite(byte[] data)
@@ -76,20 +77,13 @@ namespace System.Net.Libuv
             }
         }
 
-        public unsafe void TryWrite(Span<byte> data)
+        public unsafe void TryWrite(Memory<byte> data)
         {
+            // This can work with Span<byte> because it's synchronous but we need pinning support
             EnsureNotDisposed();
 
-            ArraySegment<byte> array;
-            void* pointer;
-            IntPtr ptrData;
-            if(data.TryGetArrayElseGetPointer(out array, out pointer)){
-                throw new NotImplementedException("needs to pin the array");
-            }
-            else {
-                ptrData = (IntPtr)pointer;
-            }
-            
+            IntPtr ptrData = (IntPtr)data.UnsafePointer;
+
             if (IsUnix)
             {
                 var buffer = new UVBuffer.Unix(ptrData, (uint)data.Length);
@@ -143,7 +137,7 @@ namespace System.Net.Libuv
             }
             else
             {
-                var readSlice = new Span<byte>((byte*)buffer.Buffer, (int)bytesRead);
+                var readSlice = new Memory<byte>((byte*)buffer.Buffer, (int)bytesRead);
                 OnReadCompleted(readSlice);
                 buffer.Dispose();
             }
@@ -172,13 +166,15 @@ namespace System.Net.Libuv
             }
             else
             {
-                var readSlice = new Span<byte>((byte*)buffer.Buffer, (int)bytesRead);
+                // This can be a Span<byte> but the samples pass it directly to TryWrite which
+                // needs to unpack the data and turn it back into either an array or native memory
+                var readSlice = new Memory<byte>((byte*)buffer.Buffer, (int)bytesRead);
                 OnReadCompleted(readSlice);
                 buffer.Dispose();
             }
         }
 
-        void OnReadCompleted(Span<byte> bytesRead)
+        void OnReadCompleted(Memory<byte> bytesRead)
         {
             if (ReadCompleted != null)
             {

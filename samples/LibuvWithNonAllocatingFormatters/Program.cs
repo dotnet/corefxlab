@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Libuv;
@@ -69,7 +70,7 @@ namespace LibuvWithNonAllocatingFormatters
                     Console.WriteLine("connection accepted");
                 }
 
-                connection.ReadCompleted += (Span<byte> data) =>
+                connection.ReadCompleted += (data) =>
                 {
                     if (log)
                     {
@@ -89,7 +90,7 @@ namespace LibuvWithNonAllocatingFormatters
                         formatter.Format(" @ {0:O}", DateTime.UtcNow);
                     }
 
-                    var response = formatter.Buffer.Slice(0, formatter.CommitedByteCount); // formatter should have a property for written bytes
+                    var response = new Memory<byte>(formatter.Buffer, 0, formatter.CommitedByteCount); // formatter should have a property for written bytes
 
                     connection.TryWrite(response);
                     connection.Dispose();

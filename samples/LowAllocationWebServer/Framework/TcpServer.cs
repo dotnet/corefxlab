@@ -1,5 +1,6 @@
 ﻿using Microsoft.Net.Interop;
 using System;
+using System.Buffers;
 
 namespace Microsoft.Net.Sockets
 {
@@ -157,16 +158,16 @@ namespace Microsoft.Net.Sockets
             SocketImports.closesocket(_handle);
         }
 
-        public int Send(Span<byte> bytes)
+        public int Send(Memory<byte> bytes)
         {
+            // This can work with Span<byte> because it's synchronous but we need pinning support
             unsafe {
                 ArraySegment<byte> segment;
-                void* pinned;
-                if (bytes.TryGetArrayElseGetPointer(out segment, out pinned)) {
+                if (bytes.TryGetArray(out segment)) {
                     return Send(segment);
                 }
                 else {
-                    var pointer = new IntPtr(pinned);
+                    var pointer = new IntPtr(bytes.UnsafePointer);
                     return SendPinned(pointer, bytes.Length);
                 }
             }
@@ -187,16 +188,17 @@ namespace Microsoft.Net.Sockets
             }
         }
 
-        public int Receive(Span<byte> buffer)
+        public int Receive(Memory<byte> buffer)
         {
-            unsafe {
+            // This can work with Span<byte> because it's synchronous but we need pinning support
+            unsafe
+            {
                 ArraySegment<byte> segment;
-                void* pinned;
-                if (buffer.TryGetArrayElseGetPointer(out segment, out pinned)) {
+                if (buffer.TryGetArray(out segment)) {
                     return Receive(segment);
                 }
                 else {
-                    IntPtr pointer = new IntPtr(pinned);
+                    IntPtr pointer = new IntPtr(buffer.UnsafePointer);
                     return ReceivePinned(pointer, buffer.Length);
                 }
             }
