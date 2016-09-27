@@ -7,7 +7,7 @@ using System.Text;
 
 namespace System.Text.Json
 {
-    public struct JsonWriter<TFormatter> where TFormatter: IFormatter
+    public struct JsonWriter<TFormatter> where TFormatter: ITextOutput
     {
         TFormatter _formatter;
         bool _wroteListItem;

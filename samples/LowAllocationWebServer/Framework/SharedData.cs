@@ -191,7 +191,7 @@ namespace Microsoft.Net.Http
         public ResponseFormatter Headers { get { return new ResponseFormatter(_data, 2); } }
     }
 
-    public struct ResponseFormatter : IFormatter
+    public struct ResponseFormatter : ITextOutput
     {
         int _order;
         SharedData _data;
@@ -212,7 +212,7 @@ namespace Microsoft.Net.Http
             }
         }
 
-        public Span<byte> FreeBuffer
+        public Span<byte> Buffer
         {
             get
             {
@@ -221,14 +221,14 @@ namespace Microsoft.Net.Http
             }
         }
 
-        public void CommitBytes(int bytes)
+        public void Advance(int bytes)
         {
             _data.Commit(_order, bytes);
         }
 
-        public void ResizeBuffer(int desiredFreeBytesHint = -1)
+        public void Enlarge(int desiredBufferLength = 0)
         {
-            _data.Allocate(desiredFreeBytesHint == -1 ? 1024 : desiredFreeBytesHint, _order);
+            _data.Allocate(desiredBufferLength == 0 ? 1024 : desiredBufferLength, _order);
         }
     }
 }

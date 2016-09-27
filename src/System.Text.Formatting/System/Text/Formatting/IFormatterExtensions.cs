@@ -8,309 +8,309 @@ namespace System.Text.Formatting
 {
     public static class IFormatterExtensions
     {
-        public static void Append<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format = default(Format.Parsed)) where T : IBufferFormattable where TFormatter : IFormatter
+        public static void Append<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format = default(Format.Parsed)) where T : IBufferFormattable where TFormatter : ITextOutput
         {
             while(!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format = default(Format.Parsed)) where T : IBufferFormattable where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format = default(Format.Parsed)) where T : IBufferFormattable where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if(!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if(!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, byte value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, byte value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, byte value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, byte value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if(!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if(!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, sbyte value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, sbyte value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, sbyte value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, sbyte value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, ushort value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, ushort value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, ushort value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, ushort value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, short value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, short value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, short value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, short value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, uint value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, uint value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, uint value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, uint value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, int value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, int value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, int value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, int value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, ulong value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, ulong value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, ulong value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, ulong value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, long value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, long value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, long value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, long value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, char value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, char value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, char value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, char value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, string value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, string value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, Guid value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, Guid value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, Guid value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, Guid value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, DateTime value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, DateTime value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTime value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTime value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, DateTimeOffset value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, DateTimeOffset value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTimeOffset value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTimeOffset value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, TimeSpan value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, TimeSpan value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, TimeSpan value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, TimeSpan value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, float value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, float value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, float value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, float value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, double value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static void Append<TFormatter>(this TFormatter formatter, double value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
-                formatter.ResizeBuffer();
+                formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, double value, Format.Parsed format = default(Format.Parsed)) where TFormatter : IFormatter
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, double value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.FreeBuffer, format, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
                 return false;
             }
-            formatter.CommitBytes(bytesWritten);
+            formatter.Advance(bytesWritten);
             return true;
         }
     }

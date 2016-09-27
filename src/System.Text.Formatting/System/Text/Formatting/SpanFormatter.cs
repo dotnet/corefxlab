@@ -2,7 +2,7 @@
 
 namespace System.Text.Formatting
 {
-    public class SpanFormatter : IFormatter
+    public class SpanFormatter : ITextOutput
     {
         Span<byte> _buffer;
         int _count;
@@ -26,7 +26,7 @@ namespace System.Text.Formatting
             _count = 0;
         }
 
-        Span<byte> IFormatter.FreeBuffer
+        Span<byte> IOutput.Buffer
         {
             get
             {
@@ -34,25 +34,24 @@ namespace System.Text.Formatting
             }
         }
 
-        EncodingData IFormatter.Encoding
-        {
-            get
-            {
-                return _encoding;
-            }
-        }
-
-        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
+        void IOutput.Enlarge(int desiredBufferLength)
         {
             throw new InvalidOperationException("cannot resize fixed size buffers.");
         }
 
-        void IFormatter.CommitBytes(int bytes)
+        void IOutput.Advance(int bytes)
         {
             _count += bytes;
             if(_count > _buffer.Length)
             {
                 throw new InvalidOperationException("More bytes commited than returned from FreeBuffer");
+            }
+        }
+
+        EncodingData ITextOutput.Encoding
+        {
+            get {
+                return _encoding;
             }
         }
     }

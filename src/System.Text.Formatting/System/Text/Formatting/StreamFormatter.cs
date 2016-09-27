@@ -7,7 +7,7 @@ using System.Text;
 
 namespace System.Text.Formatting
 {
-    public struct StreamFormatter : IFormatter, IDisposable
+    public struct StreamFormatter : ITextOutput, IDisposable
     {
         Stream _stream;
         EncodingData _encoding;
@@ -30,7 +30,7 @@ namespace System.Text.Formatting
             _stream = stream;
         }
 
-        Span<byte> IFormatter.FreeBuffer
+        Span<byte> IOutput.Buffer
         {
             get
             {
@@ -42,19 +42,11 @@ namespace System.Text.Formatting
             }
         }
 
-        EncodingData IFormatter.Encoding
-        {
-            get
-            {
-                return _encoding;
-            }
-        }
-
-        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
+        void IOutput.Enlarge(int desiredBufferLength)
         {
             var newSize = _buffer.Length * 2;
-            if(desiredFreeBytesHint != -1){
-                newSize = desiredFreeBytesHint;
+            if(desiredBufferLength != 0){
+                newSize = desiredBufferLength;
             }
             var temp = _buffer;
             _buffer = _pool.Rent(newSize);
@@ -67,9 +59,16 @@ namespace System.Text.Formatting
         // A stack frame could write more data to the buffer, and then when the frame pops, the infroamtion about how much was written could be lost. 
         // On the other hand, I cannot make this type a class and keep using it as it can be used today (i.e. pass streams around and create instances of this type on demand).
         // Too bad we don't support move semantics and stack only structs.
-        void IFormatter.CommitBytes(int bytes)
+        void IOutput.Advance(int bytes)
         {
             _stream.Write(_buffer, 0, bytes);
+        }
+
+        EncodingData ITextOutput.Encoding
+        {
+            get {
+                return _encoding;
+            }
         }
 
         /// <summary>

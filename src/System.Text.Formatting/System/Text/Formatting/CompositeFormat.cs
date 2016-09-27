@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Utf8;
@@ -14,7 +15,7 @@ namespace System.Text.Formatting {
     // not never box.
     public static class CompositeFormattingExtensions
     {
-        public static void Format<TFormatter, T0>(this TFormatter formatter, string compositeFormat, T0 arg0) where TFormatter : IFormatter
+        public static void Format<TFormatter, T0>(this TFormatter formatter, string compositeFormat, T0 arg0) where TFormatter : ITextOutput
         {
             var reader = new CompositeFormatReader(compositeFormat);
             while (true)
@@ -34,7 +35,7 @@ namespace System.Text.Formatting {
             }
         }
 
-        public static void Format<TFormatter, T0, T1>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1) where TFormatter : IFormatter
+        public static void Format<TFormatter, T0, T1>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1) where TFormatter : ITextOutput
         {
             var reader = new CompositeFormatReader(compositeFormat);
             while (true)
@@ -55,7 +56,7 @@ namespace System.Text.Formatting {
             }
         }
 
-        public static void Format<TFormatter, T0, T1, T2>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2) where TFormatter : IFormatter
+        public static void Format<TFormatter, T0, T1, T2>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2) where TFormatter : ITextOutput
         {
             var reader = new CompositeFormatReader(compositeFormat);
             while (true)
@@ -77,7 +78,7 @@ namespace System.Text.Formatting {
             }
         }
 
-        public static void Format<TFormatter, T0, T1, T2, T3>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2, T3 arg3) where TFormatter : IFormatter
+        public static void Format<TFormatter, T0, T1, T2, T3>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2, T3 arg3) where TFormatter : ITextOutput
         {
             var reader = new CompositeFormatReader(compositeFormat);
             while (true)
@@ -100,7 +101,7 @@ namespace System.Text.Formatting {
             }
         }
 
-        public static void Format<TFormatter, T0, T1, T2, T3, T4>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4) where TFormatter : IFormatter
+        public static void Format<TFormatter, T0, T1, T2, T3, T4>(this TFormatter formatter, string compositeFormat, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4) where TFormatter : ITextOutput
         {
             var reader = new CompositeFormatReader(compositeFormat);
             while (true)
@@ -125,14 +126,14 @@ namespace System.Text.Formatting {
         }
 
         // TODO: this should be removed and an ability to append substrings should be added
-        static void Append<TFormatter>(this TFormatter formatter, string whole, int index, int count) where TFormatter : IFormatter
+        static void Append<TFormatter>(this TFormatter formatter, string whole, int index, int count) where TFormatter : ITextOutput
         {
-            var buffer = formatter.FreeBuffer;
+            var buffer = formatter.Buffer;
             var maxBytes = count << 4; // this is the worst case, i.e. 4 bytes per char
             while(buffer.Length < maxBytes)
             {
-                formatter.ResizeBuffer();
-                buffer = formatter.FreeBuffer;
+                formatter.Enlarge(maxBytes);
+                buffer = formatter.Buffer;
             }
 
             // this should ne optimized using fixed pointer to substring, but I will wait with this till we design proper substring
@@ -148,10 +149,10 @@ namespace System.Text.Formatting {
                 buffer = buffer.Slice(bytesWritten);
             }
 
-            formatter.CommitBytes(totalWritten);
+            formatter.Advance(totalWritten);
         }
 
-        static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format) where TFormatter : IFormatter
+        static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format) where TFormatter : ITextOutput
         {
             #region Built in types
             var i32 = value as int?;
