@@ -13,7 +13,7 @@ namespace System.Text.Http
 
         private const int ULongMaxValueNumberOfCharacters = 20;
 
-        public static void AppendHttpStatusLine<TFormatter>(this TFormatter formatter, HttpVersion version, int statusCode, Utf8String reasonCode) where TFormatter : IFormatter
+        public static void AppendHttpStatusLine<TFormatter>(this TFormatter formatter, HttpVersion version, int statusCode, Utf8String reasonCode) where TFormatter : ITextOutput
         {
             switch (version) {
                 case HttpVersion.V1_0: formatter.Append(Http10); break;
@@ -29,16 +29,16 @@ namespace System.Text.Http
             formatter.AppendHttpNewLine();
         }
 
-        public static void AppendHttpNewLine<TFormatter>(this TFormatter formatter) where TFormatter : IFormatter
+        public static void AppendHttpNewLine<TFormatter>(this TFormatter formatter) where TFormatter : ITextOutput
         {
-            var buffer = formatter.FreeBuffer;
+            var buffer = formatter.Buffer;
             while(buffer.Length < 2) {
-                formatter.ResizeBuffer();
-                buffer = formatter.FreeBuffer;
+                formatter.Enlarge(2);
+                buffer = formatter.Buffer;
             }
             buffer[0] = 13;
             buffer[1] = 10;
-            formatter.CommitBytes(2);
+            formatter.Advance(2);
         }
     }
 }

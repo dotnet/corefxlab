@@ -3,7 +3,7 @@ using System.Text;
 
 namespace System.Text.Formatting
 {
-    public class BufferFormatter : IFormatter
+    public class BufferFormatter : ITextOutput
     {
         byte[] _buffer;
         int _count;
@@ -37,7 +37,7 @@ namespace System.Text.Formatting
             _count = 0;
         }
 
-        Span<byte> IFormatter.FreeBuffer
+        Span<byte> IOutput.Buffer
         {
             get
             {
@@ -45,18 +45,17 @@ namespace System.Text.Formatting
             }
         }
 
-        EncodingData IFormatter.Encoding
+        public EncodingData Encoding
         {
-            get
-            {
+            get {
                 return _encoding;
             }
         }
 
-        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
+        void IOutput.Enlarge(int desiredBufferLength)
         {
-            var newSize = desiredFreeBytesHint + _buffer.Length - _count;
-            if(desiredFreeBytesHint == -1){
+            var newSize = desiredBufferLength + _buffer.Length - _count;
+            if(desiredBufferLength == 0){
                 newSize = _buffer.Length * 2;
             }
 
@@ -66,7 +65,7 @@ namespace System.Text.Formatting
             _pool.Return(temp);
         }
 
-        void IFormatter.CommitBytes(int bytes)
+        void IOutput.Advance(int bytes)
         {
             _count += bytes;
             if(_count > _buffer.Length)

@@ -2,7 +2,7 @@
 
 namespace System.Text.Formatting
 {
-    public class MultispanFormatter : IFormatter
+    public class MultispanFormatter : ITextOutput
     {
         Multispan<byte> _buffer;
         int _segmentSize;
@@ -24,7 +24,7 @@ namespace System.Text.Formatting
             get { return _buffer; }
         }
 
-        Span<byte> IFormatter.FreeBuffer
+        Span<byte> IOutput.Buffer
         {
             get
             {
@@ -32,26 +32,25 @@ namespace System.Text.Formatting
             }
         }
 
-        EncodingData IFormatter.Encoding
+        EncodingData ITextOutput.Encoding
         {
-            get
-            {
+            get {
                 return _encoding;
             }
         }
 
-        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
+        void IOutput.Enlarge(int desiredBufferLength)
         {
             var newSize = _segmentSize;
-            if(desiredFreeBytesHint != -1){
-                newSize = desiredFreeBytesHint;
+            if(desiredBufferLength != 0){
+                newSize = desiredBufferLength;
             }
             var index = _buffer.AppendNewSegment(newSize);
             _lastFull = _buffer.Last;
             _buffer.ResizeSegment(index, 0);
         }
 
-        void IFormatter.CommitBytes(int bytes)
+        void IOutput.Advance(int bytes)
         {
             var lastSegmentCommited = _buffer.Last.Length + bytes;
             if(lastSegmentCommited > _lastFull.Length)

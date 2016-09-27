@@ -6,7 +6,7 @@ using System.Text;
 
 namespace System.Text.Formatting
 {
-    public class StringFormatter : IFormatter, IDisposable
+    public class StringFormatter : ITextOutput, IDisposable
     {
         byte[] _buffer;
         int _count;
@@ -64,7 +64,7 @@ namespace System.Text.Formatting
             return text;
         }
 
-        Span<byte> IFormatter.FreeBuffer
+        Span<byte> IOutput.Buffer
         {
             get { return new Span<byte>(_buffer, _count, _buffer.Length - _count); }
         }
@@ -81,10 +81,10 @@ namespace System.Text.Formatting
             }
         }
 
-        void IFormatter.ResizeBuffer(int desiredFreeBytesHint)
+        void IOutput.Enlarge(int desiredBufferLength)
         {
-            var newSize = desiredFreeBytesHint + _buffer.Length - _count;
-            if(desiredFreeBytesHint == -1){
+            var newSize = desiredBufferLength + _buffer.Length - _count;
+            if(desiredBufferLength == 0){
                 newSize = _buffer.Length * 2;
             }
 
@@ -94,7 +94,7 @@ namespace System.Text.Formatting
             _pool.Return(temp);
         }
 
-        void IFormatter.CommitBytes(int bytes)
+        void IOutput.Advance(int bytes)
         {
             _count += bytes;
         }
