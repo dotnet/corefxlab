@@ -229,5 +229,51 @@ namespace System.Runtime
             ret")]
         internal static void CopyBlock(object srcObj, UIntPtr srcOffset, object destObj, UIntPtr destOffset, int byteCount)
         {}
+
+        /// <summary>
+        /// Computes the address of an element relative to a pointer -
+        /// essentially returning simply: ((T*)root) + offset;
+        /// 
+        /// This cannot be expressed in C#, and the naive approach
+        /// leads to int32 overflow problems; the "fix" to the naive
+        /// approach (ulong) leads to suboptimal x86 performance.
+        /// </summary>
+        [ILSub(@"
+        .maxstack 8
+        ldarg.0 // load the base pointer
+        ldarg.1 // load the offset
+        conv.i  // convert the offset to a native integer
+        sizeof !!T  // load size of T
+        mul // multiply size by offset
+        add // add product to base pointer
+        ret // return")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe void* GetElementAddress<T>(void* root, uint offset)
+        {
+            // slow version used for illustration only
+            return ((byte*)root) + ((ulong)offset * (ulong)SizeOf<T>());
+        }
+        /// <summary>
+        /// Computes the address of an element relative to a pointer -
+        /// essentially returning simply: ((T*)root) + offset;
+        /// 
+        /// This cannot be expressed in C#, and the naive approach
+        /// leads to int32 overflow problems; the "fix" to the naive
+        /// approach (ulong) leads to suboptimal x86 performance.
+        /// </summary>
+        [ILSub(@"
+        .maxstack 8
+        ldarg.0 // load the base pointer
+        ldarg.1 // load the offset
+        sizeof !!T  // load size of T
+        mul // multiply size by offset
+        add // add product to base pointer
+        ret // return")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe UIntPtr GetElementAddress<T>(UIntPtr root, UIntPtr offset)
+        {
+            // bad impl for compat only
+            return (UIntPtr)GetElementAddress<T>((void*)root, (uint)offset);
+        }
     }
 }

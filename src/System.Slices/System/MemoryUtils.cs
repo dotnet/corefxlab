@@ -33,10 +33,10 @@ namespace System
                     byte* secondPointer = (byte*)UnsafeUtilities.ComputeAddress(second.Object, second.Offset).ToPointer();
 
                     int step = sizeof(void*) * 5;
-                    int totalBytesCount = first.Length * UnsafeUtilities.SizeOf<T>();
-                    byte* firstPointerLimit = firstPointer + (totalBytesCount - step);
+                    ulong totalBytesCount = (ulong)first.Length * (ulong)UnsafeUtilities.SizeOf<T>();
+                    byte* firstPointerLimit = firstPointer + (totalBytesCount - (ulong)step);
 
-                    if (totalBytesCount > step)
+                    if (totalBytesCount > (ulong)step)
                     {
                         while (firstPointer < firstPointerLimit)
                         {   // IMPORTANT: in order to get HUGE benefits of loop unrolling on x86 we use break instead of return
@@ -103,10 +103,10 @@ namespace System
                     byte* secondPointer = (byte*)UnsafeUtilities.ComputeAddress(second.Object, second.Offset).ToPointer();
 
                     int step = sizeof(void*) * 5;
-                    int totalBytesCount = first.Length * UnsafeUtilities.SizeOf<T>();
-                    byte* firstPointerLimit = firstPointer + (totalBytesCount - step);
+                    ulong totalBytesCount = (ulong)first.Length * (ulong)UnsafeUtilities.SizeOf<T>();
+                    byte* firstPointerLimit = firstPointer + (totalBytesCount - (ulong)step);
 
-                    if (totalBytesCount > step)
+                    if (totalBytesCount > (ulong)step)
                     {
                         while (firstPointer < firstPointerLimit)
                         {   // IMPORTANT: in order to get HUGE benefits of loop unrolling on x86 we use break instead of return

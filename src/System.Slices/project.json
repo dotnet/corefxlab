@@ -14,7 +14,7 @@
     "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
     "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
     "projectUrl": "https://github.com/dotnet/corefxlab",
-    "requireLicenseAcceptance": true,
+    "requireLicenseAcceptance": true
   },
   "buildOptions": {
     "allowUnsafe": true,
