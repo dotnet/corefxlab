@@ -46,7 +46,7 @@ namespace System.Text.Formatting
         }
 
         //TODO: this should use Span<byte>
-        public void Append(Span<char> substring)
+        public void Append(ReadOnlySpan<char> substring)
         {
             for (int i = 0; i < substring.Length; i++)
             {

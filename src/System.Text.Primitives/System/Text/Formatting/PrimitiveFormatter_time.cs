@@ -19,7 +19,7 @@ namespace System.Text
         static readonly Format.Parsed t = new Format.Parsed('t'); 
         const int FractionalTimeScale = 10000000;
 
-        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, Span<char> format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
@@ -60,7 +60,7 @@ namespace System.Text
             }
         }
 
-        public static bool TryFormat(this DateTime value, Span<byte> buffer, Span<char> format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this DateTime value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
@@ -216,7 +216,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, Span<char> format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
         {
             Format.Parsed parsedFormat = Format.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
