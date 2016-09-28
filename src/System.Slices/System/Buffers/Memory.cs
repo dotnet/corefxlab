@@ -34,11 +34,11 @@ namespace System.Buffers
             _memoryLength = length;
         }
 
-        public unsafe Memory(T[] array) : this(array, 0, array?.Length ?? 0)
+        public Memory(T[] array) : this(array, 0, array?.Length ?? 0)
         {
         }
 
-        public unsafe Memory(T[] array, int offset, int length, bool isPinned = false)
+        public Memory(T[] array, int offset, int length)
         {
             if (array == null)
             {
@@ -47,11 +47,31 @@ namespace System.Buffers
 
             unsafe
             {
-                if (isPinned)
+                _memory = null;
+            }
+
+            _array = array;
+            _offset = offset;
+            _memoryLength = length;
+        }
+
+        public unsafe Memory(T[] array, int offset, int length, void* pointer = null)
+        {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            unsafe
+            {
+                if (pointer != null)
                 {
-                    // TODO: Use new Unsafe.AsPointer(ref array[0])
-                    // The caller pinned the array so we can safely get the pointer
-                    _memory = Unsafe.AsPointer(ref array[0]);
+                    _memory = Unsafe.AsPointer(ref array[offset]);
+
+                    if (_memory != pointer)
+                    {
+                        throw new ArgumentException(nameof(pointer));
+                    }
                 }
                 else
                 {
@@ -112,7 +132,7 @@ namespace System.Buffers
                 return new Memory<T>(Add(_memory, offset), length);
             }
 
-            return new Memory<T>(_array, _offset + offset, length, _memory != null);
+            return new Memory<T>(_array, _offset + offset, length, _memory == null ? null : Add(_memory, offset));
         }
 
         public unsafe bool TryGetPointer(out void* pointer)
@@ -123,7 +143,7 @@ namespace System.Buffers
                 return false;
             }
 
-            pointer = Add(_memory, _offset);
+            pointer = _memory;
             return true;
         }
 

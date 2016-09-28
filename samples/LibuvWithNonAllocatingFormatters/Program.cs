@@ -95,7 +95,7 @@ namespace LibuvWithNonAllocatingFormatters
                         fixed (byte* ptr = formatter.Buffer)
                         {
                             // formatter should have a property for written bytes
-                            var response = new Memory<byte>(formatter.Buffer, 0, formatter.CommitedByteCount, isPinned: true);
+                            var response = new Memory<byte>(formatter.Buffer, 0, formatter.CommitedByteCount, pointer: ptr);
                             connection.TryWrite(response);
                         }
                     }
