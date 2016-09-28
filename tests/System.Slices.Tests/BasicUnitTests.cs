@@ -397,7 +397,7 @@ namespace System.Slices.Tests
 
                 fixed (byte* ptr = data)
                 {
-                    var memory = new Memory<byte>(data, 5, data.Length, ptr + 5);
+                    var memory = new Memory<byte>(data, 5, 5, ptr + 5);
                     Assert.Equal(5, memory.Length);
                     var span = memory.Span;
                     for (int i = 0; i < 5; i++)
