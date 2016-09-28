@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 
@@ -557,7 +558,7 @@ namespace System
 
         // String helper methods, offering methods like String on Slice<char>:
         // TODO(joe): culture-sensitive comparisons.
-        // TODO: should these move to satring related assembly
+        // TODO: should these move to string/text related assembly
 
         public static bool Contains(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
         {
@@ -672,15 +673,13 @@ namespace System
 
         public unsafe static void Set(this Span<byte> bytes, byte* values, int length)
         {
-            if (bytes.Length < length)
-            {
+            if (bytes.Length < length) {
                 throw new ArgumentOutOfRangeException("values");
             }
 
-            // TODO(joe): specialize to use a fast memcpy if T is pointerless.
-            for (int i = 0; i < length; i++)
-            {
-                bytes[i] = values[i];
+            var valuesSpan = new Span<byte>(values, length);
+            if (!valuesSpan.TryCopyTo(bytes)) {
+                throw new Exception("internal error"); // this should never happen
             }
         }
     }

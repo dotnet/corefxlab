@@ -35,7 +35,7 @@ namespace System.Text
         }
 
         // TODO: format should be ReadOnlySpan<T>
-        public static Format.Parsed Parse(Span<char> format)
+        public static Format.Parsed Parse(ReadOnlySpan<char> format)
         {
             if (format.Length == 0)
             {

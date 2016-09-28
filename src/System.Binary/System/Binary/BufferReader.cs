@@ -19,6 +19,20 @@ namespace System.Binary
         /// Reads a structure of type <typeparamref name="T"/> out of a span of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T ReadBigEndian<[Primitive]T>(this ReadOnlySpan<byte> span) where T : struct
+            => BitConverter.IsLittleEndian ? UnsafeUtilities.Reverse(span.Read<T>()) : span.Read<T>();
+
+        /// <summary>
+        /// Reads a structure of type <typeparamref name="T"/> out of a span of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T ReadLittleEndian<[Primitive]T>(this ReadOnlySpan<byte> span) where T : struct
+            => BitConverter.IsLittleEndian ? span.Read<T>() : UnsafeUtilities.Reverse(span.Read<T>());
+
+        /// <summary>
+        /// Reads a structure of type <typeparamref name="T"/> out of a span of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T ReadBigEndian<[Primitive]T>(this Span<byte> span) where T : struct
             => BitConverter.IsLittleEndian ? UnsafeUtilities.Reverse(span.Read<T>()) : span.Read<T>();
 
