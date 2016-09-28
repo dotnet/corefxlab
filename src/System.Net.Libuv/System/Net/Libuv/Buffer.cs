@@ -20,7 +20,7 @@ namespace System.Net.Libuv
             AllocWindowsBuffer = OnAllocateWindowsBuffer;
         }
 
-        internal static void FreeBuffer(Bytes buffer)
+        internal static void FreeBuffer(Memory<byte> buffer)
         {
             _pool.Return(buffer);
         }
@@ -28,13 +28,12 @@ namespace System.Net.Libuv
         static void OnAllocateUnixBuffer(IntPtr memoryBuffer, uint length, out Unix buffer)
         {
             var rented = _pool.Rent((int)length);
-            var span = (Span<byte>)rented;
             unsafe
             {
-                ArraySegment<byte> array;
                 void* pointer;
-                if(span.TryGetArrayElseGetPointer(out array, out pointer)){
-                    throw new NotImplementedException("needs to pin the array");
+                if (!rented.TryGetPointer(out pointer))
+                {
+                    throw new InvalidOperationException("The native pointer isn't available because the memory isn't pinned");
                 }
                 buffer = new Unix(new IntPtr(pointer), (uint)rented.Length);
             }
@@ -43,13 +42,13 @@ namespace System.Net.Libuv
         static void OnAllocateWindowsBuffer(IntPtr memoryBuffer, uint length, out Windows buffer)
         {
             var rented = _pool.Rent((int)length);
-            var span = (Span<byte>)rented;
+
             unsafe
             {
-                ArraySegment<byte> array;
                 void* pointer;
-                if(span.TryGetArrayElseGetPointer(out array, out pointer)){
-                    throw new NotImplementedException("needs to pin the array");
+                if (!rented.TryGetPointer(out pointer))
+                {
+                    throw new InvalidOperationException("The native pointer isn't available because the memory isn't pinned");
                 }
                 buffer = new Windows(new IntPtr(pointer), (uint)rented.Length);
             }
@@ -71,7 +70,7 @@ namespace System.Net.Libuv
             {
                 unsafe
                 {
-                    FreeBuffer(new Bytes((byte*)Buffer.ToPointer(), (int)Length));
+                    FreeBuffer(new Memory<byte>(Buffer.ToPointer(), (int)Length));
                     Length = 0;
                     Buffer = IntPtr.Zero;
                 }
@@ -94,7 +93,7 @@ namespace System.Net.Libuv
             {
                 unsafe
                 {
-                    FreeBuffer(new Bytes((byte*)Buffer.ToPointer(), Length.ToInt32()));
+                    FreeBuffer(new Memory<byte>((byte*)Buffer.ToPointer(), Length.ToInt32()));
                     Length = IntPtr.Zero;
                     Buffer = IntPtr.Zero;
                 }

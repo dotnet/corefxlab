@@ -16,7 +16,7 @@ namespace EchoService
 
             listener.ConnectionAccepted += (Tcp connection) =>
             {
-                connection.ReadCompleted += (Span<byte> data) =>
+                connection.ReadCompleted += (data) =>
                 {
                     connection.TryWrite(data);
                 };

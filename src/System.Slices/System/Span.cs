@@ -154,51 +154,6 @@ namespace System
         }
 
         /// <summary>
-        /// Gets array if the slice is over an array, otherwise gets a pointer to memory.
-        /// </summary>
-        /// <returns>true if it's a span over an array; otherwise false (if over a pointer)</returns>
-        /// <remarks>This method can be used for interop, while we are waiting for proper pinning support</remarks>
-        public unsafe bool TryGetArrayElseGetPointer(out ArraySegment<T> array, out void* pointer)
-        {
-            var a = Object as T[];
-            if (a == null)
-            {
-                array = new ArraySegment<T>();
-                pointer = UnsafeUtilities.ComputeAddress(Object, Offset).ToPointer();
-                return false;
-            }
-
-            var offsetToData = SpanHelpers<T>.OffsetToArrayData;
-            var index = (int)((Offset.ToUInt32() - offsetToData) / UnsafeUtilities.SizeOf<T>());
-            array = new ArraySegment<T>(a, index, Length);
-            pointer = null;
-            return true;
-        }
-
-        public unsafe void* UnsafePointer
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return UnsafeUtilities.ComputeAddress(Object, Offset).ToPointer(); }
-        }
-
-        [Obsolete("use TryGetArrayElseGetPointer instead")]
-        public unsafe bool TryGetArray(void* dummy, out ArraySegment<T> array)
-        {
-            var a = Object as T[];
-            if (a == null)
-            {
-                array = new ArraySegment<T>();
-                return false;
-            }
-
-            var offsetToData = SpanHelpers<T>.OffsetToArrayData;
-
-            var index = (int)((Offset.ToUInt32() - offsetToData) / UnsafeUtilities.SizeOf<T>());
-            array = new ArraySegment<T>(a, index, Length);
-            return true;
-        }
-
-        /// <summary>
         /// Fetches the element at the specified index.
         /// </summary>
         /// <exception cref="System.ArgumentOutOfRangeException">

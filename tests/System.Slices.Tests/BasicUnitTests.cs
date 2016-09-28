@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System.Buffers;
+using System.Runtime.InteropServices;
 using Xunit;
- 
+
 namespace System.Slices.Tests
 {
     public class SlicesTests
@@ -250,7 +252,7 @@ namespace System.Slices.Tests
             var destination = new Span<byte>(new byte[100]);
             var source = new Span<byte>(new byte[] { 1, 2, 3 });
             destination.Set(source);
-            for(int i=0; i < source.Length; i++)
+            for (int i = 0; i < source.Length; i++)
             {
                 Assert.Equal(source[i], destination[i]);
             }
@@ -273,61 +275,184 @@ namespace System.Slices.Tests
         {
             var original = new int[] { 1, 2, 3 };
             ArraySegment<int> array;
-            Span<int> slice;
+            Memory<int> slice;
 
-            slice = new Span<int>(original, 1, 2);
-            unsafe
-            {
-                void* p;
-                Assert.True(slice.TryGetArrayElseGetPointer(out array, out p));
-                Assert.True(null == p);
-            }
+            slice = new Memory<int>(original, 1, 2);
+            Assert.True(slice.TryGetArray(out array));
             Assert.Equal(2, array.Array[array.Offset + 0]);
             Assert.Equal(3, array.Array[array.Offset + 1]);
 
-            slice = new Span<int>(original, 0, 3);
-            unsafe
-            {
-                void* p;
-                Assert.True(slice.TryGetArrayElseGetPointer(out array, out p));
-                Assert.True(null == p);
-            }
+            slice = new Memory<int>(original, 0, 3);
+            Assert.True(slice.TryGetArray(out array));
             Assert.Equal(1, array.Array[array.Offset + 0]);
             Assert.Equal(2, array.Array[array.Offset + 1]);
             Assert.Equal(3, array.Array[array.Offset + 2]);
 
-            slice = new Span<int>(original, 0, 0);
-            unsafe
-            {
-                void* p;
-                Assert.True(slice.TryGetArrayElseGetPointer(out array, out p));
-                Assert.True(null == p);
-            }
+            slice = new Memory<int>(original, 0, 0);
+            Assert.True(slice.TryGetArray(out array));
             Assert.Equal(0, array.Offset);
             Assert.Equal(original, array.Array);
             Assert.Equal(0, array.Count);
 
-            unsafe {
-                fixed(int* pBytes = original){
-                    slice = new Span<int>(pBytes, 1);
+            unsafe
+            {
+                fixed (int* pBytes = original)
+                {
+                    slice = new Memory<int>(pBytes, 1);
+                    Assert.False(slice.TryGetArray(out array));
                     void* p;
-                    Assert.False(slice.TryGetArrayElseGetPointer(out array, out p));
+                    Assert.True(slice.TryGetPointer(out p));
                     Assert.True(null != p);
                     Assert.Equal(null, array.Array);
                     Assert.Equal(0, array.Offset);
                     Assert.Equal(0, array.Count);
                 }
             }
-       
-            unsafe {
-                fixed(int* pBytes = original){
+
+            unsafe
+            {
+                fixed (int* pBytes = original)
+                {
                     var roSlice = new ReadOnlySpan<int>(pBytes, 1);
+                    Assert.False(slice.TryGetArray(out array));
                     void* p;
-                    Assert.False(slice.TryGetArrayElseGetPointer(out array, out p));
+                    Assert.True(slice.TryGetPointer(out p));
                     Assert.True(null != p);
                     Assert.Equal(null, array.Array);
                     Assert.Equal(0, array.Offset);
                     Assert.Equal(0, array.Count);
+                }
+            }
+        }
+
+        [Fact]
+        public void TryGetPointerReturnsFalseIfNotPinned()
+        {
+            var data = new byte[10];
+            var memory = new Memory<byte>(data, 0, data.Length);
+            unsafe
+            {
+                void* pointer;
+                Assert.False(memory.TryGetPointer(out pointer));
+            }
+        }
+
+        [Fact]
+        public void TryGetPointerReturnsTrueIfPointerUsed()
+        {
+            unsafe
+            {
+                IntPtr raw = Marshal.AllocHGlobal(10);
+                var memory = new Memory<byte>((void*)raw, 10);
+                void* pointer;
+                Assert.True(memory.TryGetPointer(out pointer));
+                Assert.True(raw.ToPointer() == pointer);
+                Marshal.FreeHGlobal(raw);
+            }
+        }
+
+        [Fact]
+        public void TryGetPointerReturnsTrueIfArrayAndPrePinned()
+        {
+            unsafe
+            {
+                var data = new byte[10];
+                fixed (byte* ptr = data)
+                {
+                    var memory = new Memory<byte>(data, 0, data.Length, ptr);
+                    void* pointer;
+                    Assert.True(memory.TryGetPointer(out pointer));
+                    Assert.True(ptr == pointer);
+                }
+            }
+        }
+
+        [Fact]
+        public void MemoryCtorThrowsIfPtrDoesNotMatchArrayArgs()
+        {
+            Assert.Throws<ArgumentException>(() =>
+            {
+                unsafe
+                {
+                    var data = new byte[10];
+
+                    fixed (byte* ptr = data)
+                    {
+                        var memory = new Memory<byte>(data, 0, data.Length, ptr + 1);
+                    }
+                }
+            });
+        }
+
+        [Fact]
+        public void MemoryCtorSubArrayWithPinnedPtr()
+        {
+            unsafe
+            {
+                var data = new byte[10];
+                for (int i = 0; i < data.Length; i++)
+                {
+                    data[i] = (byte)i;
+                }
+
+                fixed (byte* ptr = data)
+                {
+                    var memory = new Memory<byte>(data, 5, 5, ptr + 5);
+                    Assert.Equal(5, memory.Length);
+                    var span = memory.Span;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        Assert.Equal(span[i], i + 5);
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public void SliceArrayBackedMemory()
+        {
+            var data = new byte[10];
+
+            for (int i = 0; i < 10; i++)
+            {
+                data[i] = (byte)i;
+            }
+
+            var memory = new Memory<byte>(data, 0, data.Length);
+            var slice = memory.Slice(0, 5);
+            var span = slice.Span;
+            for (int i = 0; i < 5; i++)
+            {
+                Assert.Equal(i, span[i]);
+            }
+
+            var subSlice = slice.Slice(2, 1);
+            Assert.Equal(2, subSlice.Span[0]);
+        }
+
+        [Fact]
+        public void SlicePointerBackedMemory()
+        {
+            unsafe
+            {
+                var data = new byte[10];
+                for (int i = 0; i < 10; i++)
+                {
+                    data[i] = (byte)i;
+                }
+
+                fixed (byte* ptr = data)
+                {
+                    var memory = new Memory<byte>(ptr, data.Length);
+                    var slice = memory.Slice(0, 5);
+                    var span = slice.Span;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        Assert.Equal(i, span[i]);
+                    }
+
+                    var subSlice = slice.Slice(2, 1);
+                    Assert.Equal(2, subSlice.Span[0]);
                 }
             }
         }

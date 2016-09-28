@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Libuv;
@@ -20,7 +21,7 @@ namespace QotdService
 
             listener.ConnectionAccepted += (Tcp connection) =>
             {
-                connection.ReadCompleted += (Span<byte> data) =>
+                connection.ReadCompleted += (data) =>
                 {
                     quote.CopyTo(buffer);
                     connection.TryWrite(buffer, quote.Length);

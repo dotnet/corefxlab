@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace System.Net.Libuv
 {
     unsafe public abstract class UVStream : UVHandle
-    {     
+    {
         uv_stream_t* _stream;
 
         protected UVStream(UVLoop loop, HandleType type) : base(loop, type)
@@ -26,7 +27,7 @@ namespace System.Net.Libuv
             }
         }
 
-        public event Action<Span<byte>> ReadCompleted;
+        public event Action<Memory<byte>> ReadCompleted;
         public event Action EndOfStream;
 
         public unsafe void TryWrite(byte[] data)
@@ -53,7 +54,7 @@ namespace System.Net.Libuv
         public unsafe void TryWrite(byte[] data, int length)
         {
             Debug.Assert(data != null);
-            if(data.Length < length)
+            if (data.Length < length)
             {
                 throw new ArgumentOutOfRangeException("length");
             }
@@ -76,28 +77,28 @@ namespace System.Net.Libuv
             }
         }
 
-        public unsafe void TryWrite(Span<byte> data)
+        public unsafe void TryWrite(Memory<byte> data)
         {
+            // This can work with Span<byte> because it's synchronous but we need pinning support
             EnsureNotDisposed();
 
-            ArraySegment<byte> array;
             void* pointer;
-            IntPtr ptrData;
-            if(data.TryGetArrayElseGetPointer(out array, out pointer)){
-                throw new NotImplementedException("needs to pin the array");
+            if (!data.TryGetPointer(out pointer))
+            {
+                throw new InvalidOperationException("Pointer not available");
             }
-            else {
-                ptrData = (IntPtr)pointer;
-            }
-            
+
+            IntPtr ptrData = (IntPtr)pointer;
+            var length = data.Length;
+
             if (IsUnix)
             {
-                var buffer = new UVBuffer.Unix(ptrData, (uint)data.Length);
+                var buffer = new UVBuffer.Unix(ptrData, (uint)length);
                 UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
             }
             else
             {
-                var buffer = new UVBuffer.Windows(ptrData, (uint)data.Length);
+                var buffer = new UVBuffer.Windows(ptrData, (uint)length);
                 UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
             }
         }
@@ -128,7 +129,7 @@ namespace System.Net.Libuv
                     Dispose();
                     buffer.Dispose();
                 }
-                else if(error == UVError.ECONNRESET)
+                else if (error == UVError.ECONNRESET)
                 {
                     Debug.Assert(buffer.Buffer == IntPtr.Zero && buffer.Length == 0);
                     // no need to dispose
@@ -143,7 +144,7 @@ namespace System.Net.Libuv
             }
             else
             {
-                var readSlice = new Span<byte>((byte*)buffer.Buffer, (int)bytesRead);
+                var readSlice = new Memory<byte>((byte*)buffer.Buffer, (int)bytesRead);
                 OnReadCompleted(readSlice);
                 buffer.Dispose();
             }
@@ -172,13 +173,15 @@ namespace System.Net.Libuv
             }
             else
             {
-                var readSlice = new Span<byte>((byte*)buffer.Buffer, (int)bytesRead);
+                // This can be a Span<byte> but the samples pass it directly to TryWrite which
+                // needs to unpack the data and turn it back into either an array or native memory
+                var readSlice = new Memory<byte>((byte*)buffer.Buffer, (int)bytesRead);
                 OnReadCompleted(readSlice);
                 buffer.Dispose();
             }
         }
 
-        void OnReadCompleted(Span<byte> bytesRead)
+        void OnReadCompleted(Memory<byte> bytesRead)
         {
             if (ReadCompleted != null)
             {
