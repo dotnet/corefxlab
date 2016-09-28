@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.CompilerServices;
@@ -13,7 +12,7 @@ namespace System
     /// </summary>
     [DebuggerTypeProxy(typeof(SpanDebuggerView<>))]
     [DebuggerDisplay("Length = {Length}")]
-    public partial struct ReadOnlySpan<T> : IEnumerable<T>, IEquatable<Span<T>>, IEquatable<ReadOnlySpan<T>>, IEquatable<T[]>
+    public partial struct ReadOnlySpan<T> : IEquatable<T[]>
     {
         /// <summary>A managed array/string; or null for native ptrs.</summary>
         internal readonly object Object;
@@ -149,12 +148,9 @@ namespace System
             return new ReadOnlySpan<T>(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
         }
 
-        public static ReadOnlySpan<T> Empty { get { return default(ReadOnlySpan<T>); } }
+        public static ReadOnlySpan<T> Empty => default(ReadOnlySpan<T>);
 
-        public bool IsEmpty
-        {
-            get { return Length == 0; }
-        }
+        public bool IsEmpty => Length == 0; 
 
         /// <summary>
         /// Gets array if the slice is over an array, otherwise gets a pointer to memory.
@@ -349,31 +345,20 @@ namespace System
             }
         }
 
+        public override bool Equals(object obj) { throw Contract.InvalidOperationExceptionForBoxingSpans(); }
+
         /// <summary>
         /// Checks to see if two spans point at the same memory.  Note that
         /// this does *not* check to see if the *contents* are equal.
         /// </summary>
-        public bool Equals(ReadOnlySpan<T> other)
-        {
-            return ReferenceEquals(other);
-        }
+        public bool Equals(ReadOnlySpan<T> other) => ReferenceEquals(other);
 
-        public bool Equals(Span<T> other)
-        {
-            return other.StructuralEquals(Object, Offset, Length);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is ReadOnlySpan<T>)
-            {
-                return Equals((ReadOnlySpan<T>)obj);
-            }
-            return false;
-        }
+        public bool Equals(Span<T> other) => other.StructuralEquals(Object, Offset, Length);
 
         public bool Equals(T[] other) => Equals(new ReadOnlySpan<T>(other));
+
         public static bool operator ==(ReadOnlySpan<T> span1, ReadOnlySpan<T> span2) => span1.Equals(span2);
+
         public static bool operator !=(ReadOnlySpan<T> span1, ReadOnlySpan<T> span2) => !span1.Equals(span2);
     }
 }

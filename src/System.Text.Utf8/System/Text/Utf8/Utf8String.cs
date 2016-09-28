@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -11,7 +10,7 @@ using System.Text.Utf16;
 namespace System.Text.Utf8
 {
     [DebuggerDisplay("{ToString()}u8")]
-    public partial struct Utf8String : IEnumerable<Utf8CodeUnit>, IEquatable<Utf8String>, IComparable<Utf8String> 
+    public partial struct Utf8String : IEquatable<Utf8String>, IComparable<Utf8String> 
     {
         private ReadOnlySpan<byte> _buffer;
 
@@ -106,16 +105,6 @@ namespace System.Text.Utf8
         public Enumerator GetEnumerator()
         {
             return new Enumerator(_buffer);
-        }
-
-        IEnumerator<Utf8CodeUnit> IEnumerable<Utf8CodeUnit>.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         public CodePointEnumerable CodePoints
