@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Sequences;
 using System.Text;
 
 namespace System.Buffers

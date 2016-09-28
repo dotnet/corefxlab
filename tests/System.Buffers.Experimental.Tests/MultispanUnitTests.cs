@@ -2,6 +2,7 @@
 using Xunit;
 using System.Text;
 using System.Collections.Generic;
+using System.Collections.Sequences;
 
 namespace System.Buffers.Tests
 {
