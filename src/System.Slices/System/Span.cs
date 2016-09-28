@@ -64,8 +64,7 @@ namespace System
             if (start < array.Length)
             {
                 Object = array;
-                Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * UnsafeUtilities.SizeOf<T>())));
+                Offset = UnsafeUtilities.GetElementAddress<T>((UIntPtr)SpanHelpers<T>.OffsetToArrayData, (UIntPtr)start);
                 Length = array.Length - start;
             }
             else
@@ -98,8 +97,7 @@ namespace System
             if (start < array.Length)
             {
                 Object = array;
-                Offset = new UIntPtr(
-                    (uint)(SpanHelpers<T>.OffsetToArrayData + (start * UnsafeUtilities.SizeOf<T>())));
+                Offset = UnsafeUtilities.GetElementAddress<T>((UIntPtr)SpanHelpers<T>.OffsetToArrayData, (UIntPtr)start);
                 Length = length;
             }
             else
@@ -250,6 +248,7 @@ namespace System
 
             if (default(T) != null && MemoryUtils.IsPrimitiveValueType<T>())
             {
+                // review: (#848) - overflow and alignment
                 UnsafeUtilities.CopyBlock(src.Object, src.Offset, dest.Object, dest.Offset,
                                    src.Length * UnsafeUtilities.SizeOf<T>());
             }
@@ -303,7 +302,7 @@ namespace System
         public Span<T> Slice(int start)
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
-            return new Span<T>(Object, Offset + (start * UnsafeUtilities.SizeOf<T>()), Length - start);
+            return new Span<T>(Object, UnsafeUtilities.GetElementAddress<T>(Offset, (UIntPtr)start), Length - start);
         }
         
         /// <summary>
@@ -317,7 +316,7 @@ namespace System
         public Span<T> Slice(uint start)
         {
             Contract.RequiresInInclusiveRange(start, (uint)Length);
-            return new Span<T>(Object, Offset + (((int)start) * UnsafeUtilities.SizeOf<T>()), Length - (int)start);
+            return new Span<T>(Object, UnsafeUtilities.GetElementAddress<T>(Offset, (UIntPtr)start), Length - (int)start);
         }
 
         /// <summary>
@@ -334,7 +333,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new Span<T>(
-                Object, Offset + (start * UnsafeUtilities.SizeOf<T>()), length);
+                Object, UnsafeUtilities.GetElementAddress<T>(Offset, (UIntPtr)start), length);
         }
         
         /// <summary>
@@ -351,7 +350,7 @@ namespace System
         {
             Contract.RequiresInInclusiveRange(start, length, (uint)Length);
             return new Span<T>(
-                Object, Offset + (((int)start) * UnsafeUtilities.SizeOf<T>()), (int)length);
+                Object, UnsafeUtilities.GetElementAddress<T>(Offset, (UIntPtr)start), (int)length);
         }
 
         /// <summary>

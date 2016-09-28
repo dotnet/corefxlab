@@ -168,7 +168,7 @@ namespace System
             }
             else
             {
-                countOfU = slice.Length * UnsafeUtilities.SizeOf<T>() / UnsafeUtilities.SizeOf<U>();
+                countOfU = (int)(((ulong)slice.Length * (ulong)UnsafeUtilities.SizeOf<T>()) / (ulong)UnsafeUtilities.SizeOf<U>());
             }
             
             object obj = slice.Object;
@@ -210,7 +210,7 @@ namespace System
             }
             else
             {
-                countOfU = slice.Length * UnsafeUtilities.SizeOf<T>() / UnsafeUtilities.SizeOf<U>();
+                countOfU = (int)(((ulong)slice.Length * (ulong)UnsafeUtilities.SizeOf<T>()) / (ulong)UnsafeUtilities.SizeOf<U>());
             }
 
             object obj = slice.Object;
@@ -439,8 +439,8 @@ namespace System
             where T : struct
             where U : struct
         {
-            var bytesCount = first.Length * UnsafeUtilities.SizeOf<T>();
-            if (bytesCount != second.Length * UnsafeUtilities.SizeOf<U>())
+            var bytesCount = (ulong)first.Length * (ulong)UnsafeUtilities.SizeOf<T>();
+            if (bytesCount != (ulong)second.Length * (ulong)UnsafeUtilities.SizeOf<U>())
             {
                 return false;
             }
@@ -471,8 +471,8 @@ namespace System
             where T : struct
             where U : struct
         {
-            var bytesCount = first.Length * UnsafeUtilities.SizeOf<T>();
-            if (bytesCount != second.Length * UnsafeUtilities.SizeOf<U>())
+            var bytesCount = (ulong)first.Length * (ulong)UnsafeUtilities.SizeOf<T>();
+            if (bytesCount != (ulong)second.Length * (ulong)UnsafeUtilities.SizeOf<U>())
             {
                 return false;
             }
