@@ -18,7 +18,7 @@ namespace System.Buffers
     /// Also, be extra careful when disposing this type. If you dispose the original instance and its copy, 
     /// the pool used by this type will be corrupted.
     /// </remarks>
-    public struct Multispan<T> : ISequence<Span<T>>
+    public struct Multispan<T> : ISpanSequence<T>
     {
         ArraySegment<T> _head;
         ArraySegment<T>[] _tail;
@@ -277,21 +277,34 @@ namespace System.Buffers
             return new Span<T>(segment.Array, segment.Offset, segment.Count);
         }
 
-        public Span<T> TryGetItem(ref Position position)
+        SpanSequenceEnumerator<T> ISpanSequence<T>.GetEnumerator()
         {
-            if (!position.IsEnd && position.IntegerPosition < _count) {
-                var item = this[position.IntegerPosition++];
-                if (position.IntegerPosition >= _count) position = Position.End;
-                return item;
-            } else {
-                position = Position.Invalid;
-                return default(Span<T>);
-            }
+            return new SpanSequenceEnumerator<T>(this);
         }
 
-        SequenceEnumerator<Span<T>> ISequence<Span<T>>.GetEnumerator()
+        public Span<T> GetAt(ref Position position, bool advance = false)
         {
-            return new SequenceEnumerator<Span<T>>(this);
+            if(_count == 0) {
+                position = Position.Invalid;
+                return default(Span<T>);
+            } 
+
+            if(position.Equals(Position.BeforeFirst)) {
+                position = Position.First;
+                return default(Span<T>);
+            }
+
+            if (position.IntegerPosition < _count) {
+                var item = this[position.IntegerPosition];
+                if (advance) {
+                    position.IntegerPosition++;
+                    if (position.IntegerPosition >= _count) position = Position.AfterLast;
+                }
+                return item;
+            } 
+
+            position = Position.Invalid;
+            return default(Span<T>);
         }
     }
 

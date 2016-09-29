@@ -5,22 +5,28 @@ using System.Runtime.CompilerServices;
 
 namespace System.Collections.Sequences
 {
-    public struct Position
+    public struct Position : IEquatable<Position>
     {
         public int IntegerPosition;
         public object ObjectPosition;
 
-        public static Position End = new Position() { IntegerPosition = int.MinValue };
-        public static Position Invalid = new Position() { IntegerPosition = int.MinValue + 1 };
-        public static Position BeforeFirst = new Position();
+        public static Position BeforeFirst = new Position() { IntegerPosition = -1 };
+        public static Position First = new Position();
+        public static Position AfterLast = new Position() { IntegerPosition = int.MaxValue - 1 };
+        public static Position Invalid = new Position() { IntegerPosition = int.MaxValue };
 
         public bool IsValid {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return IntegerPosition != Invalid.IntegerPosition; }
+            get { return IntegerPosition <= AfterLast.IntegerPosition; }
         }
         public bool IsEnd {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return IntegerPosition == End.IntegerPosition; }
+            get { return IntegerPosition == AfterLast.IntegerPosition; }
+        }
+
+        public bool Equals(Position other)
+        {
+            return IntegerPosition == other.IntegerPosition && ObjectPosition == other.ObjectPosition;
         }
     }
 }

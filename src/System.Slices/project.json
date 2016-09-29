@@ -25,6 +25,7 @@
     }
   },
   "dependencies": {
+    "System.Collections.Sequences": { "target": "project" },
     "System.Runtime": "4.1.0",
     "System.Runtime.InteropServices": "4.1.0",
     "System.Diagnostics.Debug": "4.0.11",

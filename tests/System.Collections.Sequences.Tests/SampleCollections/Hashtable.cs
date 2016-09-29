@@ -87,20 +87,59 @@ namespace System.Collections.Sequences
             }
         }
 
-        public KeyValuePair<K, V> TryGetItem(ref Position position)
+        public KeyValuePair<K, V> GetAt(ref Position position, bool advance = false)
         {
             if (!position.IsValid) throw new InvalidOperationException();
 
-            var index = position.IntegerPosition;
-            while (index < _entries.Length) {
-                var entry = _entries[index];
-                if (entry.IsEmpty) { index++; continue; }
-                position.IntegerPosition = index + 1;
-                return entry._pair;
+            if (_count == 0 | position.Equals(Position.AfterLast)) {
+                position = Position.Invalid;
+                return default(KeyValuePair<K, V>);
             }
 
-            position = Position.Invalid;
-            return default(KeyValuePair<K, V>);
+            if (position.Equals(Position.BeforeFirst)) {
+                position = Position.Invalid;
+                if (advance) {
+                    position.IntegerPosition = FindFirstStartingAt(0);
+                }
+                return default(KeyValuePair<K, V>);
+            }
+
+            if(position.Equals(Position.First)) {
+                var first = FindFirstStartingAt(0);
+                if(first == -1) {
+                    position = Position.Invalid;
+                    return default(KeyValuePair<K, V>);
+                }
+
+                position.IntegerPosition = first;
+            }
+
+            var index = position.IntegerPosition;
+            var entry = _entries[index];
+            if (entry.IsEmpty) {
+                throw new InvalidOperationException();
+            }
+
+            if (advance) {
+                var first = FindFirstStartingAt(index + 1);
+                position.IntegerPosition = first;
+                if (first == -1) {
+                    position = Position.AfterLast;
+                }
+            }
+
+            return entry._pair;
+        }
+
+        private int FindFirstStartingAt(int index)
+        {
+            for (int i = index; i < _entries.Length; i++) {
+                if (!_entries[i].IsEmpty) {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         public SequenceEnumerator<KeyValuePair<K, V>> GetEnumerator()

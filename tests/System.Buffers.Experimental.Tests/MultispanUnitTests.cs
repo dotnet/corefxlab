@@ -84,8 +84,8 @@ namespace System.Buffers.Tests
             {
                 Multispan<byte> collection = ToMultispan("A");
                 Assert.Equal(1, collection.Count);
-                Position position = Position.BeforeFirst;
-                var item = collection.TryGetItem(ref position);
+                Position position = Position.First;
+                var item = collection.GetAt(ref position, advance:true);
                 Assert.True(position.IsEnd);
                 Assert.Equal(item[0], (byte)'A');
                 collection.Dispose();
@@ -93,11 +93,11 @@ namespace System.Buffers.Tests
             {
                 Multispan<byte> collection = ToMultispan("A", "B");
                 Assert.Equal(2, collection.Count);
-                Position position = Position.BeforeFirst;
-                var item1 = collection.TryGetItem(ref position);
+                Position position = Position.First;
+                var item1 = collection.GetAt(ref position, advance:true);
                 Assert.True(position.IsValid);
                 Assert.Equal(item1[0], (byte)'A');
-                var item2 = collection.TryGetItem(ref position);
+                var item2 = collection.GetAt(ref position, advance:true);
                 Assert.Equal(item2[0], (byte)'B');
                 Assert.True(position.IsEnd);
                 collection.Dispose();
@@ -154,7 +154,7 @@ namespace System.Buffers.Tests
         {
             var result = new Multispan<byte>();
             for (int i = 0; i < sections.Length; i++) {
-                var bytes = new Utf8String(sections[i]).Bytes.CreateArray();
+                var bytes = Encoding.UTF8.GetBytes(sections[i]);
                 result.AppendNewSegment(bytes.Length);
                 result.Last.Set(bytes);
                 result.ResizeSegment(i, bytes.Length);

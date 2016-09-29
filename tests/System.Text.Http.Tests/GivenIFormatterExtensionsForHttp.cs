@@ -34,11 +34,10 @@ namespace System.Text.Http.Tests
         {            
             _formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
 
-            var result = _formatter.Buffer;
+            var result = _formatter.Written;
 
-            result.Should().ContainInOrder(_statusLineInBytes);
-
-            ArrayPool<byte>.Shared.Return(result);
+            result.Slice().SequenceEqual(_statusLineInBytes);
+            _formatter.Clear();
         }
 
         //[Fact]
@@ -125,11 +124,10 @@ namespace System.Text.Http.Tests
             _formatter.AppendHttpNewLine();
             _formatter.Append(HttpBody);
 
-            var result = _formatter.Buffer;
+            var result = _formatter.Written;
 
-            result.Should().ContainInOrder(_httpMessageInBytes);
-
-            ArrayPool<byte>.Shared.Return(result);
+            result.Slice().SequenceEqual(_httpMessageInBytes);
+            _formatter.Clear();
         }
 
         //[Fact(Skip = "Issue https://github.com/dotnet/corefxlab/issues/599")]

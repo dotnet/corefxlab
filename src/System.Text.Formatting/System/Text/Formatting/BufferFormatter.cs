@@ -1,74 +1,57 @@
 ﻿using System.Buffers;
-using System.Text;
+using System.Collections.Sequences;
 
 namespace System.Text.Formatting
 {
     public class BufferFormatter : ITextOutput
     {
-        byte[] _buffer;
-        int _count;
-
+        ResizableArray<byte> _buffer;
         EncodingData _encoding;
         ArrayPool<byte> _pool;
 
         public BufferFormatter(int capacity, EncodingData encoding, ArrayPool<byte> pool = null)
         {
+            _pool = pool != null ? pool : ArrayPool<byte>.Shared;
             _encoding = encoding;
-            _count = 0;
-            _pool = pool;
-            if(_pool == null)
-            {
-                _pool = ArrayPool<byte>.Shared;
-            }
-            _buffer = _pool.Rent(capacity);
+            _buffer = new ResizableArray<byte>(_pool.Rent(capacity));
         }
 
-        public byte[] Buffer
-        {
-            get { return _buffer; }
-        }
-        public int CommitedByteCount
-        {
-            get { return _count; }
+        public int CommitedByteCount => _buffer.Count;
+
+        public void Clear() {
+            _buffer._count = 0;
         }
 
-        public void Clear()
-        {
-            _count = 0;
-        }
 
-        Span<byte> IOutput.Buffer
-        {
-            get
-            {
-                return new Span<byte>(_buffer, _count, _buffer.Length - _count);
-            }
-        }
+        public ArraySegment<byte> Free => _buffer.Free;
+        public ArraySegment<byte> Written => _buffer.Full;
 
-        public EncodingData Encoding
-        {
-            get {
-                return _encoding;
-            }
-        }
+        public EncodingData Encoding => _encoding;
+
+        public Span<byte> Buffer => Free.Slice();
 
         void IOutput.Enlarge(int desiredBufferLength)
         {
-            var newSize = desiredBufferLength + _buffer.Length - _count;
-            if(desiredBufferLength == 0){
-                newSize = _buffer.Length * 2;
+            if (desiredBufferLength < 1) desiredBufferLength = 1;
+            var doubleCount = _buffer.Count * 2;
+            int newSize = doubleCount + desiredBufferLength;
+
+            try {
+                var newArray = _pool.Rent(newSize);
+                var oldArray = _buffer.Resize(newArray);
+                _pool.Return(oldArray);
+            }
+            catch {
+                throw new Exception(string.Format("{0} {1} {2}", desiredBufferLength, _buffer.Count, newSize));
+                throw;
             }
 
-            var temp = _buffer;
-            _buffer = _pool.Rent(newSize);
-            Array.Copy(temp, 0, _buffer, 0, _count);
-            _pool.Return(temp);
         }
 
         void IOutput.Advance(int bytes)
         {
-            _count += bytes;
-            if(_count > _buffer.Length)
+            _buffer._count += bytes;
+            if(_buffer._count > _buffer.Count)
             {
                 throw new InvalidOperationException("More bytes commited than returned from FreeBuffer");
             }
