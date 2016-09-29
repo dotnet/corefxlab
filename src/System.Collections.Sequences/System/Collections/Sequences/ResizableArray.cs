@@ -31,6 +31,11 @@ namespace System.Collections.Sequences
             _array[_count++] = item;
         }
 
+        public void Clear()
+        {
+            _count = 0;
+        }
+
         public T[] Resize(int newSize = -1)
         {
             var oldArray = _array;
@@ -51,7 +56,7 @@ namespace System.Collections.Sequences
 
         public T[] Resize(T[] newArray)
         {
-            if (newArray.Length < _count) throw new Exception(String.Format("{0} {1}", newArray.Length, _count));
+            if (newArray.Length < _count) throw new ArgumentOutOfRangeException(nameof(newArray));
             var oldArray = _array;
             Array.Copy(_array, 0, newArray, 0, _count);
             _array = newArray;
@@ -102,7 +107,7 @@ namespace System.Collections.Sequences
             return false;
         }
 
-        public ArraySegment<T> Full => new ArraySegment<T>(_array, 0, _count);
+        public ArraySegment<T> Items => new ArraySegment<T>(_array, 0, _count);
         public ArraySegment<T> Free => new ArraySegment<T>(_array, _count, _array.Length - _count);
     }
 }

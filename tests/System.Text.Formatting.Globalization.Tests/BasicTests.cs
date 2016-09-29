@@ -12,7 +12,7 @@ namespace System.Text.Formatting.Globalization.Tests
         [Fact]
         public void CustomCulture()
         {
-            var sb = new StringFormatter(ArrayPool<byte>.Shared);
+            var sb = new StringFormatter();
             sb.Encoding = EncodingProvider.CreateEncoding("pl-PL");
 
             sb.Append(-10000, Format.Parse('N'));

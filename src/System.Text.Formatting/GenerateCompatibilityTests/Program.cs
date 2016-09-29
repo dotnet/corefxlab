@@ -75,7 +75,7 @@ class Program
         writer.WriteLine("public void {0}({1} value, string format)", helperName, typeName);
         writer.WriteLine("{");
         writer.WriteLine("    var parsed = Format.Parse(format);");
-        writer.WriteLine("    var formatter = new StringFormatter(pool);");
+        writer.WriteLine("    var formatter = new StringFormatter();");
         writer.WriteLine("    formatter.Append(value, parsed);");
         writer.WriteLine("    var result = formatter.ToString();");
         writer.WriteLine("    var clrResult = value.ToString(format, CultureInfo.InvariantCulture);");

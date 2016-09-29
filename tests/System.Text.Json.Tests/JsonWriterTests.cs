@@ -10,27 +10,29 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void WriteJsonUtf8()
         {
-            var buffer = new byte[1024];
-            var formatter = new SpanFormatter(buffer.Slice(), EncodingData.InvariantUtf8);            
-            var json = new JsonWriter<SpanFormatter>(formatter, prettyPrint: true);
+            var formatter = new BufferFormatter(1024, EncodingData.InvariantUtf8);            
+            var json = new JsonWriter<BufferFormatter>(formatter, prettyPrint: true);
             Write(ref json);
-            var str = Encoding.UTF8.GetString(buffer, 0, formatter.CommitedByteCount);
+
+            var formatted = formatter.Formatted;
+            var str = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
             Assert.Equal(expected, str.Replace("\n", "").Replace(" ", ""));
         }
 
         [Fact]
         public void WriteJsonUtf16()
         {
-            var buffer = new byte[1024];
-            var formatter = new SpanFormatter(buffer.Slice(), EncodingData.InvariantUtf16);            
-            var json = new JsonWriter<SpanFormatter>(formatter, prettyPrint: false);
+            var formatter = new BufferFormatter(1024, EncodingData.InvariantUtf16);
+            var json = new JsonWriter<BufferFormatter>(formatter, prettyPrint: false);
             Write(ref json);
-            var str = Encoding.Unicode.GetString(buffer, 0, formatter.CommitedByteCount);
+
+            var formatted = formatter.Formatted;
+            var str = Encoding.Unicode.GetString(formatted.Array, formatted.Offset, formatted.Count);
             Assert.Equal(expected, str.Replace(" ", ""));
         }
 
         static string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052}}";
-        static void Write(ref JsonWriter<SpanFormatter> json)
+        static void Write(ref JsonWriter<BufferFormatter> json)
         {
             json.WriteObjectStart();
             json.WriteAttribute("age", 30);
