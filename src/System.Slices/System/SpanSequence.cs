@@ -9,7 +9,7 @@ namespace System
     public interface ISpanSequence<T>
     {
         SpanSequenceEnumerator<T> GetEnumerator();
-        Span<T> GetAt(ref Position position, bool advance = false);
+        bool TryGet(ref Position position, out Span<T> item, bool advance = false);
     }
 
     public struct SpanSequenceEnumerator<T>
@@ -26,14 +26,18 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            var result = _sequence.GetAt(ref _position, advance:true);
-            return _position.IsValid;
+            Span<T> span;
+            return _sequence.TryGet(ref _position, out span, advance:true);
         }
 
         public Span<T> Current {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                return _sequence.GetAt(ref _position);
+                Span<T> span;
+                if(_sequence.TryGet(ref _position, out span, advance: false)) {
+                    return span;
+                }
+                throw new InvalidOperationException();
             }
         }
     }

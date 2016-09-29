@@ -9,27 +9,19 @@ namespace System.Collections.Sequences
     {
         Position _position;
         ISequence<T> _sequence;
+        T _current;
 
-        public SequenceEnumerator(ISequence<T> sequence)
-        {
+        public SequenceEnumerator(ISequence<T> sequence) {
             _sequence = sequence;
             _position = Position.BeforeFirst;
+            _current = default(T);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext()
-        {
-            _sequence.GetAt(ref _position, advance: true);
-            if (_position.IsValid && !_position.Equals(Position.AfterLast)) { 
-            }
-            return false;
+        public bool MoveNext() {
+            return _sequence.TryGet(ref _position, out _current, advance: true);
         }
 
-        public T Current {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get {
-                return _sequence.GetAt(ref _position);
-            }
-        }
+        public T Current => _current;
     }
 }

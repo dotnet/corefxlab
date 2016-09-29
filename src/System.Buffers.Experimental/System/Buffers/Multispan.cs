@@ -282,29 +282,30 @@ namespace System.Buffers
             return new SpanSequenceEnumerator<T>(this);
         }
 
-        public Span<T> GetAt(ref Position position, bool advance = false)
+        public bool TryGet(ref Position position, out Span<T> item, bool advance = false)
         {
-            if(_count == 0) {
-                position = Position.Invalid;
-                return default(Span<T>);
-            } 
+            item = default(Span<T>);
 
-            if(position.Equals(Position.BeforeFirst)) {
-                position = Position.First;
-                return default(Span<T>);
+            if (_count == 0) {
+                position = Position.AfterLast;
+                return false;
             }
 
-            if (position.IntegerPosition < _count) {
-                var item = this[position.IntegerPosition];
-                if (advance) {
-                    position.IntegerPosition++;
-                    if (position.IntegerPosition >= _count) position = Position.AfterLast;
-                }
-                return item;
-            } 
+            if (position.Equals(Position.BeforeFirst)) {
+                if(advance) position = Position.First;
+                return false;
+            }
 
-            position = Position.Invalid;
-            return default(Span<T>);
+            if (position.Equals(Position.AfterLast)) {
+                return false;
+            }
+
+            item = this[position.IntegerPosition];
+            if (advance) {
+                position.IntegerPosition++;
+                if (position.IntegerPosition >= _count) position = Position.AfterLast;
+            }
+            return true;
         }
     }
 

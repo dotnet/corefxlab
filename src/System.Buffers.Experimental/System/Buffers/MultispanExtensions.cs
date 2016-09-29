@@ -13,18 +13,23 @@ namespace System.Buffers
         public static bool TryParseUInt32<TMultispan>(this TMultispan bytes, EncodingData encoding, out uint value, out int consumed) where TMultispan : ISpanSequence<byte>
         {
             Position position = Position.First;
-            var first = bytes.GetAt(ref position, advance:true);
-            if (!position.IsValid) throw new ArgumentException("bytes cannot be empty");
+            Span<byte> first;
+            if (!bytes.TryGet(ref position, out first, advance: true)) {
+                throw new ArgumentException("bytes cannot be empty");
+            }
 
             if (!PrimitiveParser.TryParse(first, EncodingData.Encoding.Utf8, out value, out consumed)) {
                 return false; // TODO: maybe we should continue in some cases, e.g. if the first span ends in a decimal separator
                                 // ... cont, maybe consumed could be set even if TryParse returns false
             }
-            if (position.IsEnd || first.Length > consumed) {
+            if (position.Equals(Position.AfterLast) || first.Length > consumed) {
                 return true;
             }
 
-            var second = bytes.GetAt(ref position, advance: true);
+            Span<byte> second;
+            if (!bytes.TryGet(ref position, out second, advance: true)) {
+                throw new ArgumentException("bytes cannot be empty");
+            }
 
             Span<byte> temp;
             int numberOfBytesFromSecond = second.Length;
@@ -48,7 +53,7 @@ namespace System.Buffers
                 return false;
             }
 
-            if (position.IsEnd || temp.Length > consumed) {
+            if (position.Equals(Position.AfterLast) || temp.Length > consumed) {
                 return true;
             }
 

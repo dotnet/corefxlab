@@ -73,32 +73,33 @@ namespace System.Collections.Sequences
             }
         }
 
-        public T GetAt(ref Position position, bool advance = false)
+        public bool TryGet(ref Position position, out T item, bool advance = false)
         {
-            if( _count == 0) {
-                position = Position.Invalid;
-                return default(T);
+            item = default(T);
+
+            if ( _count == 0) {
+                position = Position.AfterLast;
+                return false;
             }
 
             if (position.Equals(Position.BeforeFirst)) {
-                position = Position.Invalid;
                 if (advance) {
                     position = Position.First;
                 }
-                return default(T);
+                return false;
             }
 
             if (position.IntegerPosition < _count) {
-                var item = _array[position.IntegerPosition];
+                item = _array[position.IntegerPosition];
                 if (advance) {
                     position.IntegerPosition++;
                     if (position.IntegerPosition == _count) position = Position.AfterLast;
                 }
-                return item;
+                return true;
             }
 
-            position = Position.Invalid;
-            return default(T);
+            position = Position.AfterLast;
+            return false;
         }
 
         public ArraySegment<T> Full => new ArraySegment<T>(_array, 0, _count);

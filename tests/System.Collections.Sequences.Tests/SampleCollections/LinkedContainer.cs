@@ -28,34 +28,57 @@ namespace System.Collections.Sequences
             }
         }
 
-        public T GetAt(ref Position position, bool advance = false)
+        public bool TryGet(ref Position position, out T item, bool advance = false)
         {
-            if (position.Equals(Position.BeforeFirst)) {
-                if (advance && _count != 0) position = Position.First;
-                else position = Position.Invalid;
-                return default(T);
-            }
-            if (_head != null && position.IsValid && !position.IsEnd) {
-                var node = (Node)position.ObjectPosition;
-                if (node == null) { node = _head; }
-                var result = node._item;
-                if (advance) {
-                    if (node._next != null) {
-                        position.ObjectPosition = node._next;
-                    } else {
-                        position = Position.AfterLast;
-                    }
-                }
-                return result;
+            item = default(T);
+
+            if(_count == 0) {
+                position = Position.AfterLast;
+                return false;
             }
 
-            position = Position.Invalid;
-            return default(T);
+            if (position.Equals(Position.BeforeFirst)) {
+                if (advance) position = Position.First;
+                return false;
+            }
+
+            if (position.Equals(Position.AfterLast)) {
+                return false;
+            }
+
+            if(position.Equals(Position.First)) {
+                item = _head._item;
+                if (advance) position.ObjectPosition = _head._next;
+                if (position.ObjectPosition == null) position = Position.AfterLast;
+                return true;
+            }
+
+            var node = (Node)position.ObjectPosition;
+            
+            if (node == null) {
+                position = Position.AfterLast;
+                return false;
+            }
+
+            if (advance) {
+                if (node._next != null) {
+                    position.ObjectPosition = node._next;
+                    if (position.ObjectPosition == null) position = Position.AfterLast;
+                }
+                else {
+                    position = Position.AfterLast;
+                }
+            }
+
+            item = node._item;
+            return true;
         }
 
         public SequenceEnumerator<T> GetEnumerator()
         {
             return new SequenceEnumerator<T>(this);
         }
+
+
     }
 }

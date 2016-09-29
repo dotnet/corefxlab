@@ -13,16 +13,15 @@ namespace System.Collections.Sequences
         public static Position BeforeFirst = new Position() { IntegerPosition = -1 };
         public static Position First = new Position();
         public static Position AfterLast = new Position() { IntegerPosition = int.MaxValue - 1 };
-        public static Position Invalid = new Position() { IntegerPosition = int.MaxValue };
 
-        public bool IsValid {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return IntegerPosition <= AfterLast.IntegerPosition; }
-        }
-        public bool IsEnd {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return IntegerPosition == AfterLast.IntegerPosition; }
-        }
+        //public bool IsValid {
+        //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //    get { return IntegerPosition <= AfterLast.IntegerPosition; }
+        //}
+        //public bool IsEnd {
+        //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //    get { return IntegerPosition == AfterLast.IntegerPosition; }
+        //}
 
         public bool Equals(Position other)
         {

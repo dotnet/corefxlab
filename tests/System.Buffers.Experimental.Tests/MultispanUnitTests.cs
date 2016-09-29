@@ -81,25 +81,26 @@ namespace System.Buffers.Tests
         [Fact]
         public void MultispanEnumeration()
         {
+            Span<byte> span;
             {
                 Multispan<byte> collection = ToMultispan("A");
                 Assert.Equal(1, collection.Count);
                 Position position = Position.First;
-                var item = collection.GetAt(ref position, advance:true);
-                Assert.True(position.IsEnd);
-                Assert.Equal(item[0], (byte)'A');
+
+                Assert.True(collection.TryGet(ref position, out span, advance: true));
+                Assert.True(position.Equals(Position.AfterLast));
+                Assert.Equal(span[0], (byte)'A');
                 collection.Dispose();
             }
             {
                 Multispan<byte> collection = ToMultispan("A", "B");
                 Assert.Equal(2, collection.Count);
                 Position position = Position.First;
-                var item1 = collection.GetAt(ref position, advance:true);
-                Assert.True(position.IsValid);
-                Assert.Equal(item1[0], (byte)'A');
-                var item2 = collection.GetAt(ref position, advance:true);
-                Assert.Equal(item2[0], (byte)'B');
-                Assert.True(position.IsEnd);
+                Assert.True(collection.TryGet(ref position, out span, advance: true));
+                Assert.Equal(span[0], (byte)'A');
+                Assert.True(collection.TryGet(ref position, out span, advance: true));
+                Assert.Equal(span[0], (byte)'B');
+                Assert.True(position.Equals(Position.AfterLast));
                 collection.Dispose();
             }
         }

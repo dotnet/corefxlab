@@ -13,7 +13,7 @@ namespace System.Collections.Sequences
         /// <param name="advance"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        T GetAt(ref Position position, bool advance = false);
+        bool TryGet(ref Position position, out T item, bool advance = false);
 
         SequenceEnumerator<T> GetEnumerator();
     }
