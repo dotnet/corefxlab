@@ -87,31 +87,30 @@ namespace System.Collections.Sequences
             }
         }
 
-        public KeyValuePair<K, V> GetAt(ref Position position, bool advance = false)
+        public bool TryGet(ref Position position, out KeyValuePair<K, V> item, bool advance = false)
         {
-            if (!position.IsValid) throw new InvalidOperationException();
+            item = default(KeyValuePair<K, V>);
 
             if (_count == 0 | position.Equals(Position.AfterLast)) {
-                position = Position.Invalid;
-                return default(KeyValuePair<K, V>);
+                position = Position.AfterLast;
+                return false;
             }
 
             if (position.Equals(Position.BeforeFirst)) {
-                position = Position.Invalid;
                 if (advance) {
                     position.IntegerPosition = FindFirstStartingAt(0);
                 }
-                return default(KeyValuePair<K, V>);
+                return false;
             }
 
-            if(position.Equals(Position.First)) {
-                var first = FindFirstStartingAt(0);
-                if(first == -1) {
-                    position = Position.Invalid;
-                    return default(KeyValuePair<K, V>);
+            if (position.Equals(Position.First)) {
+                var firstOccupiedSlot = FindFirstStartingAt(0);
+                if (firstOccupiedSlot == -1) {
+                    position = Position.AfterLast;
+                    return false;
                 }
 
-                position.IntegerPosition = first;
+                position.IntegerPosition = firstOccupiedSlot;
             }
 
             var index = position.IntegerPosition;
@@ -128,7 +127,8 @@ namespace System.Collections.Sequences
                 }
             }
 
-            return entry._pair;
+            item = entry._pair;
+            return true;
         }
 
         private int FindFirstStartingAt(int index)

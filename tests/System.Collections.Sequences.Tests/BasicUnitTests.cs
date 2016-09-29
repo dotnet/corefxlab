@@ -11,23 +11,27 @@ namespace System.Collections.Sequences.Tests
         [InlineData(new int[] { 1, 2, 3})]
         public void ArrayList(int[] array)
         {
-            var collection = new ArrayList<int>();
-            foreach (var item in array) collection.Add(item);
+            ArrayList<int> collection = CreateArrayList(array);
 
-            int arrayIndex = 0;
-            // TODO: I don't like that people need to loop over IsValid, instead of !IsEnd. It's not intuitive.
             var position = Position.First;
-            while (true) {
-                var item = collection.GetAt(ref position, advance: true);
-                if (!position.IsValid) break;
+            int arrayIndex = 0;
+            int item;
+            while (collection.TryGet(ref position, out item, advance: true)) {
                 Assert.Equal(array[arrayIndex++], item);
             }
 
             arrayIndex = 0;
             var sequence = (ISequence<int>)collection;
-            foreach(var item in sequence) {
-                Assert.Equal(array[arrayIndex++], item);
+            foreach (var sequenceItem in sequence) {
+                Assert.Equal(array[arrayIndex++], sequenceItem);
             }
+        }
+
+        private static ArrayList<int> CreateArrayList(int[] array)
+        {
+            var collection = new ArrayList<int>();
+            foreach (var arrayItem in array) collection.Add(arrayItem);
+            return collection;
         }
 
         [Theory]
@@ -36,22 +40,27 @@ namespace System.Collections.Sequences.Tests
         [InlineData(new int[] { 1, 2, 3 })]
         public void LinkedContainer(int[] array)
         {
+            LinkedContainer<int> collection = CreateLinkedContainer(array);
+
+            var position = Position.First;
+            int arrayIndex = array.Length;
+            int item;
+            while (collection.TryGet(ref position, out item, advance: true)) {
+                Assert.Equal(array[--arrayIndex], item);
+            }
+
+            arrayIndex = array.Length;
+            var sequence = (ISequence<int>)collection;
+            foreach (var sequenceItem in sequence) {
+                Assert.Equal(array[--arrayIndex], sequenceItem);
+            }
+        }
+
+        private static LinkedContainer<int> CreateLinkedContainer(int[] array)
+        {
             var collection = new LinkedContainer<int>();
             foreach (var item in array) collection.Add(item); // this adds to front
-
-            int arrayIndex = array.Length - 1;
-            var position = Position.First;
-            while (true) {
-                var item = collection.GetAt(ref position, advance:true);
-                if (!position.IsValid) break;
-                Assert.Equal(array[arrayIndex--], item);
-            }
-
-            arrayIndex = array.Length - 1;
-            var sequence = (ISequence<int>)collection;
-            foreach (var item in sequence) {
-                Assert.Equal(array[arrayIndex--], item);
-            }
+            return collection;
         }
 
         [Theory]
@@ -60,22 +69,27 @@ namespace System.Collections.Sequences.Tests
         [InlineData(new int[] { 1, 2, 3 })]
         public void Hashtable(int[] array)
         {
-            var collection = new Hashtable<int, string>(EqualityComparer<int>.Default);
-            foreach (var item in array) collection.Add(item, item.ToString());
+            Hashtable<int, string> collection = CreateHashtable(array);
 
             int arrayIndex = 0;
             var position = Position.First;
-            while (true) {
-                var item = collection.GetAt(ref position, advance: true);
-                if (!position.IsValid) break;
+            KeyValuePair<int, string> item;
+            while (collection.TryGet(ref position, out item, advance: true)) {
                 Assert.Equal(array[arrayIndex++], item.Key);
             }
 
             arrayIndex = 0;
             var sequence = (ISequence<KeyValuePair<int, string>>)collection;
-            foreach (var item in sequence) {
-                Assert.Equal(array[arrayIndex++], item.Key);
+            foreach (var sequenceItem in sequence) {
+                Assert.Equal(array[arrayIndex++], sequenceItem.Key);
             }
+        }
+
+        private static Hashtable<int, string> CreateHashtable(int[] array)
+        {
+            var collection = new Hashtable<int, string>(EqualityComparer<int>.Default);
+            foreach (var item in array) collection.Add(item, item.ToString());
+            return collection;
         }
     }
 }

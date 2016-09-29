@@ -32,14 +32,14 @@ namespace System.Collections.Sequences
             _items.Add(item);
         }
 
-        public T GetAt(ref Position position, bool advance = false)
-        {
-            return _items.GetAt(ref position, advance);
-        }
-
         public SequenceEnumerator<T> GetEnumerator()
         {
             return new SequenceEnumerator<T>(this);
+        }
+
+        public bool TryGet(ref Position position, out T item, bool advance = false)
+        {
+            return _items.TryGet(ref position, out item, advance);
         }
     }
 }
