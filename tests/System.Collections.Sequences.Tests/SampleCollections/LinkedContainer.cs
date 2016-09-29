@@ -28,16 +28,23 @@ namespace System.Collections.Sequences
             }
         }
 
-        public T TryGetItem(ref Position position)
+        public T GetAt(ref Position position, bool advance = false)
         {
+            if (position.Equals(Position.BeforeFirst)) {
+                if (advance && _count != 0) position = Position.First;
+                else position = Position.Invalid;
+                return default(T);
+            }
             if (_head != null && position.IsValid && !position.IsEnd) {
                 var node = (Node)position.ObjectPosition;
                 if (node == null) { node = _head; }
                 var result = node._item;
-                if (node._next != null) {
-                    position.ObjectPosition = node._next;
-                } else {
-                    position = Position.End;
+                if (advance) {
+                    if (node._next != null) {
+                        position.ObjectPosition = node._next;
+                    } else {
+                        position = Position.AfterLast;
+                    }
                 }
                 return result;
             }

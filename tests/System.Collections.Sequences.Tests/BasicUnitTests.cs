@@ -16,9 +16,9 @@ namespace System.Collections.Sequences.Tests
 
             int arrayIndex = 0;
             // TODO: I don't like that people need to loop over IsValid, instead of !IsEnd. It's not intuitive.
-            var position = Position.BeforeFirst;
+            var position = Position.First;
             while (true) {
-                var item = collection.TryGetItem(ref position);
+                var item = collection.GetAt(ref position, advance: true);
                 if (!position.IsValid) break;
                 Assert.Equal(array[arrayIndex++], item);
             }
@@ -40,9 +40,9 @@ namespace System.Collections.Sequences.Tests
             foreach (var item in array) collection.Add(item); // this adds to front
 
             int arrayIndex = array.Length - 1;
-            var position = Position.BeforeFirst;
+            var position = Position.First;
             while (true) {
-                var item = collection.TryGetItem(ref position);
+                var item = collection.GetAt(ref position, advance:true);
                 if (!position.IsValid) break;
                 Assert.Equal(array[arrayIndex--], item);
             }
@@ -64,9 +64,9 @@ namespace System.Collections.Sequences.Tests
             foreach (var item in array) collection.Add(item, item.ToString());
 
             int arrayIndex = 0;
-            var position = Position.BeforeFirst;
+            var position = Position.First;
             while (true) {
-                var item = collection.TryGetItem(ref position);
+                var item = collection.GetAt(ref position, advance: true);
                 if (!position.IsValid) break;
                 Assert.Equal(array[arrayIndex++], item.Key);
             }

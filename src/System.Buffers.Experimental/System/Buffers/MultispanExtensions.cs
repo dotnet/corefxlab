@@ -10,10 +10,10 @@ namespace System.Buffers
 {
     public static class MultispanExtensions
     {
-        public static bool TryParseUInt32<TMultispan>(this TMultispan bytes, EncodingData encoding, out uint value, out int consumed) where TMultispan : ISequence<Span<byte>>
+        public static bool TryParseUInt32<TMultispan>(this TMultispan bytes, EncodingData encoding, out uint value, out int consumed) where TMultispan : ISpanSequence<byte>
         {
-            Position position = Position.BeforeFirst;
-            var first = bytes.TryGetItem(ref position);
+            Position position = Position.First;
+            var first = bytes.GetAt(ref position, advance:true);
             if (!position.IsValid) throw new ArgumentException("bytes cannot be empty");
 
             if (!PrimitiveParser.TryParse(first, EncodingData.Encoding.Utf8, out value, out consumed)) {
@@ -24,7 +24,7 @@ namespace System.Buffers
                 return true;
             }
 
-            var second = bytes.TryGetItem(ref position);
+            var second = bytes.GetAt(ref position, advance: true);
 
             Span<byte> temp;
             int numberOfBytesFromSecond = second.Length;

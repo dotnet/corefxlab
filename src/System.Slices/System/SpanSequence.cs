@@ -1,16 +1,23 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Sequences;
 using System.Runtime.CompilerServices;
 
-namespace System.Collections.Sequences
+namespace System
 {
-    public struct SequenceEnumerator<T>
+    public interface ISpanSequence<T>
+    {
+        SpanSequenceEnumerator<T> GetEnumerator();
+        Span<T> GetAt(ref Position position, bool advance = false);
+    }
+
+    public struct SpanSequenceEnumerator<T>
     {
         Position _position;
-        ISequence<T> _sequence;
+        ISpanSequence<T> _sequence;
 
-        public SequenceEnumerator(ISequence<T> sequence)
+        public SpanSequenceEnumerator(ISpanSequence<T> sequence)
         {
             _sequence = sequence;
             _position = Position.BeforeFirst;
@@ -19,13 +26,11 @@ namespace System.Collections.Sequences
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            _sequence.GetAt(ref _position, advance: true);
-            if (_position.IsValid && !_position.Equals(Position.AfterLast)) { 
-            }
-            return false;
+            var result = _sequence.GetAt(ref _position, advance:true);
+            return _position.IsValid;
         }
 
-        public T Current {
+        public Span<T> Current {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 return _sequence.GetAt(ref _position);
@@ -33,3 +38,4 @@ namespace System.Collections.Sequences
         }
     }
 }
+

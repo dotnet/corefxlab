@@ -6,7 +6,14 @@ namespace System.Collections.Sequences
     // new interface
     public interface ISequence<T>
     {
-        T TryGetItem(ref Position position);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="advance"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        T GetAt(ref Position position, bool advance = false);
 
         SequenceEnumerator<T> GetEnumerator();
     }
