@@ -14,7 +14,7 @@ namespace System.Text.Formatting.Tests
         public void CheckTimeSpan(TimeSpan value, string format)
         {
             var parsed = Format.Parse(format);
-            var formatter = new StringFormatter(pool);
+            var formatter = new StringFormatter();
             formatter.Append(value, parsed);
             var result = formatter.ToString();
             var clrResult = value.ToString(format, CultureInfo.InvariantCulture);

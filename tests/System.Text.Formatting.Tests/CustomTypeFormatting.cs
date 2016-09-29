@@ -72,7 +72,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void CustomTypeToString()
         {
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
             sb.Append(new Age(56));
             sb.Append(new Age(14, inMonths: true));
             Assert.Equal(sb.ToString(), "56y14m");

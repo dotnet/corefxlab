@@ -15,17 +15,9 @@ namespace System.Collections.Sequences
             _items = new ResizableArray<T>(capacity);
         }
 
-        public int Length {
-            get {
-                return _items.Count;
-            }
-        }
+        public int Length => _items.Count;
 
-        public T this[int index] {
-            get {
-                return _items[index];
-            }
-        }
+        public T this[int index] => _items[index];
 
         public void Add(T item)
         {

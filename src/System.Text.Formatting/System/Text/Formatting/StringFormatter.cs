@@ -2,38 +2,33 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections.Sequences;
 using System.Text;
 
 namespace System.Text.Formatting
 {
     public class StringFormatter : ITextOutput, IDisposable
     {
-        byte[] _buffer;
-        int _count;
-        EncodingData _culture = EncodingData.InvariantUtf16;
+        ResizableArray<byte> _buffer;
         ArrayPool<byte> _pool;
+        public EncodingData Encoding { get; set; } = EncodingData.InvariantUtf16;
 
-        public StringFormatter(ArrayPool<byte> pool) : this(64, pool)
+        public StringFormatter(int characterCapacity = 32, ArrayPool<byte> pool = null)
         {
-            Clear();
-        }
-
-        public StringFormatter(int capacity, ArrayPool<byte> pool)
-        {
-            _pool = pool;
-            _buffer = _pool.Rent(capacity * 2);
+            if (pool == null) _pool = ArrayPool<byte>.Shared;
+            else _pool = pool;
+            _buffer = new ResizableArray<byte>(_pool.Rent(characterCapacity * 2));
         }
 
         public void Dispose()
         {
-            _pool.Return(_buffer);
-            _buffer = null;
-            _count = 0;
+            _pool.Return(_buffer._array);
+            _buffer._count = 0;
         }
 
         public void Append(char character) {
-            _buffer[_count++] = (byte)character;
-            _buffer[_count++] = (byte)(character >> 8);
+            _buffer.Add((byte)character);
+            _buffer.Add((byte)(character >> 8));
         }
 
         //TODO: this should use Span<byte>
@@ -56,47 +51,30 @@ namespace System.Text.Formatting
 
         public void Clear()
         {
-            _count = 0;
+            _buffer.Clear();
         }
+
         public override string ToString()
         {
-            var text = Text.Encoding.Unicode.GetString(_buffer, 0, _count);
+            var text = Text.Encoding.Unicode.GetString(_buffer._array, 0, _buffer._count);
             return text;
         }
 
-        Span<byte> IOutput.Buffer
-        {
-            get { return new Span<byte>(_buffer, _count, _buffer.Length - _count); }
-        }
-
-        public EncodingData Encoding
-        {
-            get
-            {
-                return _culture;
-            }
-            set
-            {
-                _culture = value;
-            }
-        }
+        Span<byte> IOutput.Buffer => _buffer.Free.Slice();
 
         void IOutput.Enlarge(int desiredBufferLength)
         {
-            var newSize = desiredBufferLength + _buffer.Length - _count;
-            if(desiredBufferLength == 0){
-                newSize = _buffer.Length * 2;
-            }
-
-            var temp = _buffer;
-            _buffer = _pool.Rent(newSize);
-            Array.Copy(temp, 0, _buffer, 0, _count);
-            _pool.Return(temp);
+            if (desiredBufferLength < 1) desiredBufferLength = 1;
+            var doubleCount = _buffer.Free.Count * 2;
+            int newSize = desiredBufferLength > doubleCount ? desiredBufferLength : doubleCount;
+            var newArray = _pool.Rent(newSize + _buffer.Count);
+            var oldArray = _buffer.Resize(newArray);
+            _pool.Return(oldArray);
         }
 
         void IOutput.Advance(int bytes)
         {
-            _count += bytes;
+            _buffer._count += bytes;
         }
     }
 }

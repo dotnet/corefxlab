@@ -49,7 +49,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void CustomCulture()
         {
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
             sb.Encoding = Culture5;
 
             sb.Append(-1234567890);

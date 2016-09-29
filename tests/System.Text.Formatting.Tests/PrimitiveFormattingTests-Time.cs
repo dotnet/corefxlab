@@ -12,7 +12,7 @@ namespace System.Text.Formatting.Tests
         public void FormatDateTimeOffsetO()
         {
             var time = DateTimeOffset.UtcNow;
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
 
             sb.Append(time, 'O');
             Assert.Equal(time.ToString("O", CultureInfo.InvariantCulture), sb.ToString());
@@ -23,7 +23,7 @@ namespace System.Text.Formatting.Tests
         public void FormatDateTimeOffsetR()
         {
             var time = DateTimeOffset.UtcNow;
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
 
             sb.Append(time, 'R');
             Assert.Equal(time.ToString("R"), sb.ToString());
@@ -34,7 +34,7 @@ namespace System.Text.Formatting.Tests
         public void FormatDateTimeOffsetG()
         {
             var time = DateTimeOffset.UtcNow;
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
 
             sb.Append(time, 'G');
             Assert.Equal(time.ToString("G"), sb.ToString());
@@ -45,7 +45,7 @@ namespace System.Text.Formatting.Tests
         public void FormatDateTimeO()
         {
             var time = DateTime.UtcNow;
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
 
             sb.Append(time, 'O');
             Assert.Equal(time.ToString("O", CultureInfo.InvariantCulture), sb.ToString());
@@ -56,7 +56,7 @@ namespace System.Text.Formatting.Tests
         public void FormatDateTimeR()
         {
             var time = DateTime.UtcNow;
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
 
             sb.Append(time, 'R');
             Assert.Equal(time.ToString("R"), sb.ToString());
@@ -67,7 +67,7 @@ namespace System.Text.Formatting.Tests
         public void FormatDateTimeG()
         {
             var time = DateTime.UtcNow;
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
 
             sb.Append(time, 'G');
             Assert.Equal(time.ToString("G"), sb.ToString());
@@ -78,7 +78,7 @@ namespace System.Text.Formatting.Tests
         public void FormatTimeSpan()
         {
             var time = new TimeSpan(1000, 23, 40, 30, 12345);
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
 
             sb.Append(time);
             Assert.Equal(time.ToString("", CultureInfo.InvariantCulture), sb.ToString());

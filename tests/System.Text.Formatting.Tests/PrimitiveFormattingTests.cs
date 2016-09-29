@@ -29,7 +29,7 @@ namespace System.Text.Formatting.Tests
 
         private void CheckByte(byte value, string format, string expected)
         {
-            var formatter = new StringFormatter(pool);
+            var formatter = new StringFormatter();
             var parsed = Format.Parse(format);
             formatter.Clear();
             formatter.Append(value, parsed);
@@ -104,7 +104,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void Int64BasicTests()
         {
-            var formatter = new StringFormatter(pool);
+            var formatter = new StringFormatter();
             CheckInt64(long.MinValue, null, "-9223372036854775808", formatter);
             CheckInt64(-10, null, "-10", formatter);
             CheckInt64(-1, null, "-1", formatter);
@@ -161,7 +161,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FloatFormatting()
         {
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
 
             sb.Append(Double.NaN);
             var result = sb.ToString();
@@ -186,7 +186,7 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void FormatDefault()
         {
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
             sb.Append('C');
             sb.Append((sbyte)-10);
             sb.Append((byte)99);
@@ -204,7 +204,7 @@ namespace System.Text.Formatting.Tests
         public void FormatD()
         {
             var format = Format.Parse("D");
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
             sb.Append((short)-10, format);
@@ -221,7 +221,7 @@ namespace System.Text.Formatting.Tests
         public void FormatDPrecision()
         {
             var format = Format.Parse("D3");
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
             sb.Append((short)-10, format);
@@ -238,7 +238,7 @@ namespace System.Text.Formatting.Tests
         public void FormatG()
         {
             var format = Format.Parse("G");
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
             sb.Append((short)-10, format);
@@ -255,7 +255,7 @@ namespace System.Text.Formatting.Tests
         public void FormatNPrecision()
         {
             var format = Format.Parse("N1");
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
             sb.Append((sbyte)-10, format);
             sb.Append((byte)99, format);
             sb.Append((short)-10, format);
@@ -274,7 +274,7 @@ namespace System.Text.Formatting.Tests
             var x = Format.Parse("x");
             var X = Format.Parse("X");
 
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
             sb.Append((ulong)255, x);
             sb.Append((uint)255, X);
             Assert.Equal("ffFF", sb.ToString());
@@ -294,7 +294,7 @@ namespace System.Text.Formatting.Tests
             var x = Format.Parse("x10");
             var X = Format.Parse("X10");
 
-            var sb = new StringFormatter(pool);
+            var sb = new StringFormatter();
             sb.Append((ulong)255, x);
             sb.Append((uint)255, X);
             Assert.Equal("00000000ff00000000FF", sb.ToString());

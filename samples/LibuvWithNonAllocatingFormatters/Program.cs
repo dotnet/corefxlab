@@ -90,7 +90,7 @@ namespace LibuvWithNonAllocatingFormatters
                         formatter.Format(" @ {0:O}", DateTime.UtcNow);
                     }
 
-                    var segment = formatter.Written;
+                    var segment = formatter.Formatted;
                     unsafe {
                         fixed (byte* p = segment.Array) {
                             var response = new Memory<byte>(segment.Array, segment.Offset, segment.Count, pointer: p);
