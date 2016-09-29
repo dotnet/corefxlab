@@ -15,7 +15,7 @@ namespace System.Buffers
     /// </remarks>
     public struct Memory<T>
     {
-        public static unsafe Memory<T> Empty = new Memory<T>(null, 0, 0);
+        public static unsafe Memory<T> Empty = default(Memory<T>);
 
         private readonly T[] _array;
         private readonly int _offset;
@@ -24,11 +24,12 @@ namespace System.Buffers
 
         public unsafe Memory(void* pointer, int length)
         {
-            unsafe
+            if (pointer == null)
             {
-                _memory = pointer;
+                throw new ArgumentNullException(nameof(pointer));
             }
 
+            _memory = pointer;
             _array = null;
             _offset = 0;
             _memoryLength = length;

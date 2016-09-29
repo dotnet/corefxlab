@@ -271,6 +271,20 @@ namespace System.Slices.Tests
         }
 
         [Fact]
+        public void EmptyMemoryAcessible()
+        {
+            var empty = Memory<byte>.Empty;
+            Assert.Equal(0, empty.Length);
+            ArraySegment<byte> data;
+            Assert.False(empty.TryGetArray(out data));
+            unsafe
+            {
+                void* pointer;
+                Assert.False(empty.TryGetPointer(out pointer));
+            }
+        }
+
+        [Fact]
         public void GetArrayOrPointer()
         {
             var original = new int[] { 1, 2, 3 };
