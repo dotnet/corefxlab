@@ -10,8 +10,8 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void WriteJsonUtf8()
         {
-            var formatter = new BufferFormatter(1024, EncodingData.InvariantUtf8);            
-            var json = new JsonWriter<BufferFormatter>(formatter, prettyPrint: true);
+            var formatter = new ArrayFormatter(1024, EncodingData.InvariantUtf8);            
+            var json = new JsonWriter<ArrayFormatter>(formatter, prettyPrint: true);
             Write(ref json);
 
             var formatted = formatter.Formatted;
@@ -22,8 +22,8 @@ namespace System.Text.Formatting.Tests
         [Fact]
         public void WriteJsonUtf16()
         {
-            var formatter = new BufferFormatter(1024, EncodingData.InvariantUtf16);
-            var json = new JsonWriter<BufferFormatter>(formatter, prettyPrint: false);
+            var formatter = new ArrayFormatter(1024, EncodingData.InvariantUtf16);
+            var json = new JsonWriter<ArrayFormatter>(formatter, prettyPrint: false);
             Write(ref json);
 
             var formatted = formatter.Formatted;
@@ -32,7 +32,7 @@ namespace System.Text.Formatting.Tests
         }
 
         static string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052}}";
-        static void Write(ref JsonWriter<BufferFormatter> json)
+        static void Write(ref JsonWriter<ArrayFormatter> json)
         {
             json.WriteObjectStart();
             json.WriteAttribute("age", 30);

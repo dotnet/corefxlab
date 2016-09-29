@@ -221,7 +221,7 @@ namespace System.Text.Formatting.Tests
             string text = "Hello World!";
             int stringsToWrite = 2000;
             int size = stringsToWrite * text.Length + stringsToWrite;
-            BufferFormatter formatter = new BufferFormatter(size, EncodingData.InvariantUtf8, pool);
+            ArrayFormatter formatter = new ArrayFormatter(size, EncodingData.InvariantUtf8, pool);
 
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)

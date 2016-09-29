@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Text;
 using System.Text.Utf8;
 
 namespace System.Text.Formatting
 {
-    public static class IFormatterExtensions
+    public static class ITextOutputExtensions
     {
         public static void Append<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format = default(Format.Parsed)) where T : IBufferFormattable where TFormatter : ITextOutput
         {

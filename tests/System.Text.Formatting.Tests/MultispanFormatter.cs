@@ -15,22 +15,27 @@ namespace System.Text.Formatting.Tests
         public void MultispanFormatterBasics()
         {
             var data = new Multispan<byte>();
-            var formatter = new MultispanFormatter(data, 10, EncodingData.InvariantUtf8);
+            data.AppendNewSegment(10);
+            data.AppendNewSegment(10);
+            data.AppendNewSegment(10);
+            data.AppendNewSegment(10);
+
+            var formatter = new SequenceFormatter(data, EncodingData.InvariantUtf8);
             formatter.Append(new string('x', 10));
             formatter.Append(new string('x', 8));
             formatter.Append(new string('x', 8));
             formatter.Append(new string('x', 5));
             formatter.Append(new string('x', 5));
 
-            data = formatter.Multispan;
-
-            var bytesWritten = data.TotalItemCount();
+            var bytesWritten = formatter.TotalWritten;
             Assert.Equal(36, bytesWritten);
 
-            var array = new byte[bytesWritten];
-            data.CopyTo(array);
-            foreach(byte b in array) {
-                Assert.Equal((byte)'x', b);
+            foreach(var slice in data) {
+                for(int i=0; i<slice.Length; i++) {
+                    if (bytesWritten == 0) return; 
+                    Assert.Equal((byte)'x', slice[i]);
+                    bytesWritten--;
+                }
             }
         }
     }

@@ -3,13 +3,13 @@ using System.Collections.Sequences;
 
 namespace System.Text.Formatting
 {
-    public class BufferFormatter : ITextOutput
+    public class ArrayFormatter : ITextOutput
     {
         ResizableArray<byte> _buffer;
         EncodingData _encoding;
         ArrayPool<byte> _pool;
 
-        public BufferFormatter(int capacity, EncodingData encoding, ArrayPool<byte> pool = null)
+        public ArrayFormatter(int capacity, EncodingData encoding, ArrayPool<byte> pool = null)
         {
             _pool = pool != null ? pool : ArrayPool<byte>.Shared;
             _encoding = encoding;

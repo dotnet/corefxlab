@@ -61,7 +61,7 @@ namespace LibuvWithNonAllocatingFormatters
             var loop = new UVLoop();
 
             var listener = new TcpListener(s_ipAddress, s_port, loop);
-            var formatter = new BufferFormatter(512, EncodingData.InvariantUtf8);
+            var formatter = new ArrayFormatter(512, EncodingData.InvariantUtf8);
 
             listener.ConnectionAccepted += (Tcp connection) =>
             {

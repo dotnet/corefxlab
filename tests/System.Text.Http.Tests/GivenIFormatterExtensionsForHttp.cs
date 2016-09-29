@@ -21,12 +21,12 @@ namespace System.Text.Http.Tests
         private readonly byte[] _httpBodyInBytes = Utf8Encoding.GetBytes(HttpBody);
         private readonly byte[] _httpMessageInBytes = Utf8Encoding.GetBytes(HttpMessage);
 
-        private BufferFormatter _formatter;
+        private ArrayFormatter _formatter;
         private static readonly UTF8Encoding Utf8Encoding = new UTF8Encoding();
 
         public GivenIFormatterExtensionsForHttp()
         {
-            _formatter = new BufferFormatter(124, EncodingData.InvariantUtf8, ArrayPool<byte>.Shared);
+            _formatter = new ArrayFormatter(124, EncodingData.InvariantUtf8, ArrayPool<byte>.Shared);
         }
 
         [Fact]
