@@ -52,6 +52,21 @@ namespace System.Buffers
         {
             get { return this[Count - 1]; }
         }
+
+        public int? TotalLength
+        {
+            get {
+                return TotalItemCount();
+            }
+        }
+
+        int? ISpanSequence<T>.Count
+        {
+            get {
+                return _count;
+            }
+        }
+
         public Span<T> this[int index]
         {
             get

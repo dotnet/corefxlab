@@ -1,16 +1,52 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Text;
 
 namespace System.Buffers
 {
-    public static class MultispanExtensions
+    public static class ExperimentalSequenceExtensions
     {
-        public static bool TryParseUInt32<TMultispan>(this TMultispan bytes, EncodingData encoding, out uint value, out int consumed) where TMultispan : ISpanSequence<byte>
+        public delegate TResult FuncOfSpan<T, TResult>(Span<T> span);
+        public delegate void ActionOfSpan<T>(Span<T> span);
+
+        public static TResult Do<T, TResult>(this ISpanSequence<T> buffer, FuncOfSpan<T, TResult> function)
+        {
+            Span<T> flat;
+            if (buffer.Count < 2) flat = buffer.Flatten();
+            if (buffer.TotalLength < 128) {
+                unsafe
+                {
+                    var stackArray = stackalloc byte[128];
+                    flat = new Span<T>(stackArray, 128);
+                    if (!buffer.TryCopyTo(ref flat, 0)) {
+                        throw new Exception(nameof(buffer) + ".TotalLength returned bad value.");
+                    }
+                }
+            }
+            else flat = buffer.Flatten();
+
+            return function(flat);
+        }
+
+        public static void Do<T>(this ISpanSequence<T> buffer, ActionOfSpan<T> action)
+        {
+            Span<T> flat;
+            if (buffer.Count < 2) flat = buffer.Flatten();
+            if (buffer.TotalLength < 128) {
+                unsafe
+                {
+                    var stackArray = stackalloc byte[128];
+                    flat = new Span<T>(stackArray, 128);
+                }
+            }
+            else flat = buffer.Flatten();
+
+            action(flat);
+        }
+
+        public static bool TryParseUInt32<TSequence>(this TSequence bytes, EncodingData encoding, out uint value, out int consumed) where TSequence : ISpanSequence<byte>
         {
             Position position = Position.First;
             Span<byte> first;
@@ -60,5 +96,4 @@ namespace System.Buffers
             throw new NotImplementedException();
         }
     }
-
 }

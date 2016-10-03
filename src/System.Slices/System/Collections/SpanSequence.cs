@@ -9,6 +9,16 @@ namespace System.Collections.Sequences
     {
         SpanSequenceEnumerator<T> GetEnumerator();
         bool TryGet(ref Position position, out Span<T> item, bool advance = false);
+
+        /// <summary>
+        /// Total number of items (Ts) in all spans in the sequence.
+        /// </summary>
+        int? TotalLength { get; }
+
+        /// <summary>
+        /// Number of spans in the sequence.
+        /// </summary>
+        int? Count { get; }
     }
 
     public struct SpanSequenceEnumerator<T>
