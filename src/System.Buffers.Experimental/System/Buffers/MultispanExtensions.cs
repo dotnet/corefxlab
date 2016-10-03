@@ -45,9 +45,9 @@ namespace System.Buffers
                 }
             }
 
-            first.TryCopyTo(temp);
+            first.CopyTo(temp);
 
-            second.Slice(0, numberOfBytesFromSecond).TryCopyTo(temp.Slice(first.Length));
+            second.Slice(0, numberOfBytesFromSecond).CopyTo(temp.Slice(first.Length));
 
             if (!PrimitiveParser.TryParse(temp, EncodingData.Encoding.Utf8, out value, out consumed)) {
                 return false;

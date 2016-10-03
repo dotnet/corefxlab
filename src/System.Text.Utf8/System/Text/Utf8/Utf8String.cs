@@ -476,20 +476,12 @@ namespace System.Text.Utf8
 
         public void CopyTo(Span<byte> buffer)
         {
-            if (buffer.Length < Length)
-            {
-                throw new ArgumentException("buffer");
-            }
-
-            if (!_buffer.TryCopyTo(buffer))
-            {
-                throw new Exception("Internal error: range check already done, no errors expected here");
-            }
+            _buffer.CopyTo(buffer);
         }
 
         public void CopyTo(byte[] buffer)
         {
-            CopyTo(new Span<byte>(buffer));
+            _buffer.CopyTo(buffer);
         }
 
         // TODO: write better hashing function
@@ -728,7 +720,7 @@ namespace System.Text.Utf8
         // TODO: Name TBD, CopyArray? GetBytes?
         public byte[] CopyBytes()
         {
-            return _buffer.CreateArray();
+            return _buffer.ToArray();
         }
 
         public Utf8CodeUnit[] CopyCodeUnits()

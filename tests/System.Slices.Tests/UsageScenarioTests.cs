@@ -39,7 +39,7 @@ namespace System.Slices.Tests
             Span<byte> span = new Span<byte>(array);
             Assert.Equal(array.Length, span.Length);
 
-            Assert.NotSame(array, span.CreateArray());
+            Assert.NotSame(array, span.ToArray());
             Assert.True(span.Equals(array));
 
             ReadOnlySpan<byte>.Enumerator it = span.GetEnumerator();
@@ -88,7 +88,7 @@ namespace System.Slices.Tests
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(array);
             Assert.Equal(array.Length, span.Length);
 
-            Assert.NotSame(array, span.CreateArray());
+            Assert.NotSame(array, span.ToArray());
             Assert.True(span.Equals(array));
 
             ReadOnlySpan<byte>.Enumerator it = span.GetEnumerator();
@@ -203,7 +203,7 @@ namespace System.Slices.Tests
                 Span<byte> spanA = new Span<byte>(a, aidx, acount);
                 Span<byte> spanB = new Span<byte>(b, bidx, bcount);
 
-                Assert.True(spanA.TryCopyTo(spanB));
+                spanA.CopyTo(spanB);
                 Assert.Equal(expected, b);
 
                 Span<byte> spanExpected = new Span<byte>(expected);
@@ -214,7 +214,7 @@ namespace System.Slices.Tests
             {
                 Span<byte> spanA = new Span<byte>(a, aidx, acount);
                 Span<byte> spanB = new Span<byte>(b, bidx, bcount);
-                Assert.False(spanA.TryCopyTo(spanB));
+                Assert.ThrowsAny<Exception>(() => { spanA.CopyTo(spanB); });
             }
         }
 
@@ -306,7 +306,7 @@ namespace System.Slices.Tests
                 ReadOnlySpan<byte> spanA = new ReadOnlySpan<byte>(a, aidx, acount);
                 Span<byte> spanB = new Span<byte>(b, bidx, bcount);
 
-                Assert.True(spanA.TryCopyTo(spanB));
+                spanA.CopyTo(spanB);
                 Assert.Equal(expected, b);
 
                 ReadOnlySpan<byte> spanExpected = new ReadOnlySpan<byte>(expected);
@@ -317,7 +317,7 @@ namespace System.Slices.Tests
             {
                 ReadOnlySpan<byte> spanA = new ReadOnlySpan<byte>(a, aidx, acount);
                 Span<byte> spanB = new Span<byte>(b, bidx, bcount);
-                Assert.False(spanA.TryCopyTo(spanB));
+                Assert.ThrowsAny<Exception>(() => { spanA.CopyTo(spanB); });              
             }
 
             ReadOnlySpanOfByteCopyToAnotherSpanOfByteTwoDifferentBuffersValidCasesNative(expected, a, aidx, acount, b, bidx, bcount);
@@ -337,7 +337,7 @@ namespace System.Slices.Tests
             Span<byte> spanB = nb.Slice(bidx, bcount);
 
             if (expected != null) {               
-                Assert.True(spanA.TryCopyTo(spanB));
+                spanA.CopyTo(spanB);
                 Assert.Equal(expected, b);
 
                 ReadOnlySpan<byte> spanExpected = new ReadOnlySpan<byte>(expected);
@@ -345,7 +345,7 @@ namespace System.Slices.Tests
                 Assert.True(spanExpected.SequenceEqual(spanBAll));
             }
             else {
-                Assert.False(spanA.TryCopyTo(spanB));
+                Assert.ThrowsAny<Exception>(() => { spanA.CopyTo(spanB); });
             }
 
             Marshal.FreeHGlobal(pa);
@@ -394,7 +394,7 @@ namespace System.Slices.Tests
             {
                 Span<byte> spanA = new Span<byte>(a, aidx, acount);
 
-                Assert.True(spanA.TryCopyTo(b));
+                spanA.CopyTo(b);
                 Assert.Equal(expected, b);
 
                 Span<byte> spanExpected = new Span<byte>(expected);
@@ -404,7 +404,7 @@ namespace System.Slices.Tests
             else
             {
                 Span<byte> spanA = new Span<byte>(a, aidx, acount);
-                Assert.False(spanA.TryCopyTo(b));
+                Assert.ThrowsAny<Exception>(() => { spanA.CopyTo(b); });
             }
         }
 
@@ -450,7 +450,7 @@ namespace System.Slices.Tests
             {
                 ReadOnlySpan<byte> spanA = new ReadOnlySpan<byte>(a, aidx, acount);
 
-                Assert.True(spanA.TryCopyTo(b));
+                spanA.CopyTo(b);
                 Assert.Equal(expected, b);
 
                 ReadOnlySpan<byte> spanExpected = new ReadOnlySpan<byte>(expected);
@@ -460,7 +460,7 @@ namespace System.Slices.Tests
             else
             {
                 ReadOnlySpan<byte> spanA = new ReadOnlySpan<byte>(a, aidx, acount);
-                Assert.False(spanA.TryCopyTo(b));
+                Assert.ThrowsAny<Exception>(() => { spanA.CopyTo(b); });
             }
         }
     }

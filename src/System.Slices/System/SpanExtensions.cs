@@ -673,14 +673,8 @@ namespace System
 
         public unsafe static void Set(this Span<byte> bytes, byte* values, int length)
         {
-            if (bytes.Length < length) {
-                throw new ArgumentOutOfRangeException("values");
-            }
-
             var valuesSpan = new Span<byte>(values, length);
-            if (!valuesSpan.TryCopyTo(bytes)) {
-                throw new Exception("internal error"); // this should never happen
-            }
+            valuesSpan.CopyTo(bytes);
         }
     }
 }

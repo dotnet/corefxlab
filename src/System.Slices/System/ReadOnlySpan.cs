@@ -177,10 +177,10 @@ namespace System
         /// allocates, so should generally be avoided, however is sometimes
         /// necessary to bridge the gap with APIs written in terms of arrays.
         /// </summary>
-        public T[] CreateArray()
+        public T[] ToArray()
         {
             var dest = new T[Length];
-            TryCopyTo(dest.Slice());
+            CopyTo(dest.Slice());
             return dest;
         }
 
@@ -189,14 +189,13 @@ namespace System
         /// must be at least as big as the source, and may be bigger.
         /// </summary>
         /// <param name="destination">The span to copy items into.</param>
-        public bool TryCopyTo(Span<T> destination)
+        public void CopyTo(Span<T> destination)
         {
             // There are some benefits of making local copies. See https://github.com/dotnet/coreclr/issues/5556
             var dest = destination;
             var src = this;
 
-            if (src.Length > dest.Length)
-                return false;
+            Contract.Requires(src.Length <= dest.Length);
 
             if (default(T) != null && MemoryUtils.IsPrimitiveValueType<T>())
             {
@@ -213,8 +212,6 @@ namespace System
                     UnsafeUtilities.Set(dest.Object, dest.Offset, (UIntPtr)i, value);
                 }
             }
-
-            return true;
         }
 
         /// <summary>
@@ -222,10 +219,10 @@ namespace System
         /// must be at least as big as the source, and may be bigger.
         /// </summary>
         /// <param name="destination">The span to copy items into.</param>
-        public bool TryCopyTo(T[] destination)
+        public void CopyTo(T[] destination)
         {
             var src = new Span<T>(Object, Offset, Length);
-            return src.TryCopyTo(destination);
+            src.CopyTo(destination);
         }
 
         /// <summary>
@@ -328,8 +325,8 @@ namespace System
 
         public bool Equals(T[] other) => Equals(new ReadOnlySpan<T>(other));
 
-        public static bool operator ==(ReadOnlySpan<T> span1, ReadOnlySpan<T> span2) => span1.Equals(span2);
+        public static bool operator ==(ReadOnlySpan<T> left, ReadOnlySpan<T> right) => left.Equals(right);
 
-        public static bool operator !=(ReadOnlySpan<T> span1, ReadOnlySpan<T> span2) => !span1.Equals(span2);
+        public static bool operator !=(ReadOnlySpan<T> left, ReadOnlySpan<T> right) => !left.Equals(right);
     }
 }
