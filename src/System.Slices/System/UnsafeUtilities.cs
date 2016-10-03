@@ -28,7 +28,7 @@ namespace System.Runtime
             ret
          ")]
          public unsafe static T Read<T>(void* source) {
-            throw new Exception();
+            throw new Exception("ILSub did not execute.");
          } // end of method Unsafe::Read
 
         [ILSub(@"
@@ -38,7 +38,8 @@ namespace System.Runtime
             stobj !!T
             ret
         ")]
-        public unsafe static void Write<T>(void* destination, T value) { 
+        public unsafe static void Write<T>(void* destination, T value) {
+            throw new Exception("ILSub did not execute.");
         } 
 
         /// <summary>
@@ -134,7 +135,9 @@ namespace System.Runtime
             add         // add the result
             ldobj !!T   // load a T value from the computed address
             ret")]
-        internal static T Get<T>(object obj, UIntPtr offset, UIntPtr index) { return default(T); }
+        internal static T Get<T>(object obj, UIntPtr offset, UIntPtr index) {
+            throw new Exception("ILSub did not execute.");
+        }
 
         /// <summary>
         /// Takes a (possibly null) object reference, plus an offset in bytes, plus an index,
@@ -156,7 +159,9 @@ namespace System.Runtime
             ldarg.3     // load the value to store
             stobj !!T   // store a T value to the computed address
             ret")]
-        internal static void Set<T>(object obj, UIntPtr offset, UIntPtr index, T val) { }
+        internal static void Set<T>(object obj, UIntPtr offset, UIntPtr index, T val) {
+            throw new Exception("ILSub did not execute.");
+        }
 
         /// <summary>
         /// Computes the number of bytes offset from an array object reference
@@ -170,7 +175,7 @@ namespace System.Runtime
             ldarg.0
             sub
             ret")]
-        internal static int ElemOffset<T>(T[] arr) { return default(int); }
+        internal static int ElemOffset<T>(T[] arr) { throw new Exception("ILSub did not execute."); }
 
         /// <summary>
         /// Computes the size of any type T.  This includes managed object types
@@ -180,7 +185,7 @@ namespace System.Runtime
         [ILSub(@"
             sizeof !!T
             ret")]
-        public static int SizeOf<T>() { return default(int); }
+        public static int SizeOf<T>() { throw new Exception("ILSub did not execute."); }
 
         /// <summary>
         /// computes the address of object reference plus an offset in bytes
@@ -196,7 +201,7 @@ namespace System.Runtime
             ldarg.1     // load the offset
             add         // add the offset
             ret")]
-        internal static UIntPtr ComputeAddress(object obj, UIntPtr offset) { return UIntPtr.Zero; }
+        internal static UIntPtr ComputeAddress(object obj, UIntPtr offset) { throw new Exception("ILSub did not execute."); }
                
         [ILSub(@"
             .maxstack 2
@@ -208,7 +213,7 @@ namespace System.Runtime
             div
             ret")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static IntPtr CountOfU<T, U>(uint countOfT) { return default(IntPtr); }
+        internal static IntPtr CountOfU<T, U>(uint countOfT) { throw new Exception("ILSub did not execute."); }
 
         [ILSub(@"
             .maxstack 3
@@ -227,8 +232,9 @@ namespace System.Runtime
             ldarg.s 4   // load byteCount
             cpblk
             ret")]
-        internal static void CopyBlock(object srcObj, UIntPtr srcOffset, object destObj, UIntPtr destOffset, int byteCount)
-        {}
+        internal static void CopyBlock(object srcObj, UIntPtr srcOffset, object destObj, UIntPtr destOffset, int byteCount) {
+            throw new Exception("ILSub did not execute.");
+        }
 
         /// <summary>
         /// Computes the address of an element relative to a pointer -

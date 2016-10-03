@@ -31,6 +31,15 @@ namespace System.Collections.Sequences
             _array[_count++] = item;
         }
 
+        public void AddAll(T[] items)
+        {
+            if (items.Length > _array.Length - _count) {
+                throw new ArgumentOutOfRangeException(nameof(items));
+            }
+            items.CopyTo(_array, _count);
+            _count += items.Length;
+        }
+
         public void Clear()
         {
             _count = 0;

@@ -42,9 +42,29 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
+        public void SequenceWorks()
+        {
+            var ms = new Multispan<byte>();
+            Initialize(ref ms);
+            var values = new byte[] { 1, 2, 7 };
+            ms[0].Set(values);
+            ms[1].Set(values);
+            ms[2].Set(values);
+
+            var sum = ms.Do((all) => {
+                int acumulator = 0;
+                foreach (var i in all) acumulator += i;
+                return acumulator;
+            });
+
+            Assert.Equal(30, sum);
+        }
+
+        [Fact]
         public void SingleSpanMultispanBasics()
         {
             var ints = new Multispan<int>();
+
             Assert.Equal(0, ints.Count);
 
             int index1 = ints.AppendNewSegment(10);
