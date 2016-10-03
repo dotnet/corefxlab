@@ -70,13 +70,13 @@ namespace System.Text.Formatting
                 var previous = Previous;
                 var spaceInPrevious = previous.Length - _previousWrittenBytes;
                 if(spaceInPrevious < bytes) {
-                    if (!current.Slice(0, spaceInPrevious).TryCopyTo(previous.Slice(_previousWrittenBytes))) throw new NotImplementedException();
-                    current.Slice(spaceInPrevious, bytes - spaceInPrevious).TryCopyTo(current);
+                    current.Slice(0, spaceInPrevious).CopyTo(previous.Slice(_previousWrittenBytes));
+                    current.Slice(spaceInPrevious, bytes - spaceInPrevious).CopyTo(current);
                     _previousWrittenBytes = -1;
                     _currentWrittenBytes = bytes - spaceInPrevious;
                 }
                 else {
-                    if (!current.Slice(0, bytes).TryCopyTo(previous.Slice(_previousWrittenBytes))) throw new NotImplementedException();
+                    current.Slice(0, bytes).CopyTo(previous.Slice(_previousWrittenBytes));
                     _currentPosition = _previousPosition;
                     _currentWrittenBytes = _previousWrittenBytes + bytes;
                 }

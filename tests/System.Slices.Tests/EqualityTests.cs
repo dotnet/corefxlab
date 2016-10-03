@@ -511,7 +511,7 @@ namespace System.Slices.Tests
             // we just don't call memcmp for these structures
             var sliceOfStructuresWithCustomEquals =
                 Enumerable.Range(0, 200).Select(index => new CustomStructWithNonTrivialEquals(index)).ToArray().Slice();
-            var sliceOfSameBytes = sliceOfStructuresWithCustomEquals.CreateArray().Slice();
+            var sliceOfSameBytes = sliceOfStructuresWithCustomEquals.ToArray().Slice();
 
             Assert.False(sliceOfStructuresWithCustomEquals.SequenceEqual(sliceOfSameBytes));
             Assert.False(sliceOfSameBytes.SequenceEqual(sliceOfStructuresWithCustomEquals));
@@ -564,7 +564,7 @@ namespace System.Slices.Tests
         public void AllBytesAreTakenUnderConsideration(int bytesCount)
         {
             var slice = Enumerable.Range(0, bytesCount).Select(index => (byte)index).ToArray().Slice();
-            var copy = slice.CreateArray().Slice();
+            var copy = slice.ToArray().Slice();
 
             for (int i = 0; i < bytesCount; i++)
             {

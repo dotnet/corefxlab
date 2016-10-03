@@ -19,7 +19,7 @@ namespace System
         {
             get
             {
-                return _slice.CreateArray();
+                return _slice.ToArray();
             }
         }
     }

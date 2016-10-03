@@ -180,10 +180,10 @@ namespace System
         /// allocates, so should generally be avoided, however is sometimes
         /// necessary to bridge the gap with APIs written in terms of arrays.
         /// </summary>
-        public T[] CreateArray()
+        public T[] ToArray()
         {
             var dest = new T[Length];
-            TryCopyTo(dest.Slice());
+            CopyTo(dest.Slice());
             return dest;
         }
 
@@ -192,14 +192,13 @@ namespace System
         /// must be at least as big as the source, and may be bigger.
         /// </summary>
         /// <param name="destination">The span to copy items into.</param>
-        public bool TryCopyTo(Span<T> destination)
+        public void CopyTo(Span<T> destination)
         {
             // There are some benefits of making local copies. See https://github.com/dotnet/coreclr/issues/5556
             var dest = destination;
             var src = this;
-            
-            if (src.Length > dest.Length)
-                return false;
+
+            Contract.Requires(src.Length <= dest.Length);
 
             if (default(T) != null && MemoryUtils.IsPrimitiveValueType<T>())
             {
@@ -216,8 +215,6 @@ namespace System
                     UnsafeUtilities.Set(dest.Object, dest.Offset, (UIntPtr)i, value);
                 }
             }
-
-            return true;
         }
 
         /// <summary>
@@ -225,25 +222,19 @@ namespace System
         /// must be at least as big as the source, and may be bigger.
         /// </summary>
         /// <param name="dest">The span to copy items into.</param>
-        public bool TryCopyTo(T[] destination)
+        public void CopyTo(T[] destination)
         {
-            return TryCopyTo(destination.Slice());
+            CopyTo(destination.Slice());
         }
 
         public void Set(ReadOnlySpan<T> values)
         {
-            if (!values.TryCopyTo(this))
-            {
-                throw new ArgumentOutOfRangeException("values");
-            }
+            values.CopyTo(this);
         }
 
         public void Set(T[] values)
         {
-            if (!values.Slice().TryCopyTo(this))
-            {
-                throw new ArgumentOutOfRangeException("values");
-            }
+            values.Slice().CopyTo(this);
         }
 
         /// <summary>
@@ -351,9 +342,9 @@ namespace System
 
         public bool Equals(T[] other) => Equals(new Span<T>(other));
 
-        public static bool operator ==(Span<T> span1, Span<T> span2) => span1.Equals(span2);
+        public static bool operator ==(Span<T> left, Span<T> right) => left.Equals(right);
 
-        public static bool operator !=(Span<T> span1, Span<T> span2) => !span1.Equals(span2);
+        public static bool operator !=(Span<T> left, Span<T> right) => !left.Equals(right);
 
         public ReadOnlySpan<T>.Enumerator GetEnumerator() => new ReadOnlySpan<T>.Enumerator(Object, Offset, Length);
     }
