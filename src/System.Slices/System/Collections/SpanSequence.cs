@@ -1,10 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Sequences;
 using System.Runtime.CompilerServices;
 
-namespace System
+namespace System.Collections.Sequences
 {
     public interface ISpanSequence<T>
     {
