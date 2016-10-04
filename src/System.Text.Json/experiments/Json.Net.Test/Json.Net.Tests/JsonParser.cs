@@ -26,7 +26,7 @@ namespace Json.Net.Tests
             Value = 6
         };
 
-        public enum JsonValueType
+        public enum JsonDb.JsonValueType
         {
             String,
             Number,
@@ -80,7 +80,7 @@ namespace Json.Net.Tests
                     case JsonTokenType.ObjectStart:
                         CopyNumber(_index);
                         CopyNumber(-1);
-                        CopyByte((byte)JsonValueType.Object);
+                        CopyByte((byte)JsonDb.JsonValueType.Object);
                         PushOnObjectStack(numPairs, topOfStackObj);
                         topOfStackObj -= 8;
                         numPairs = 0;
@@ -95,7 +95,7 @@ namespace Json.Net.Tests
                     case JsonTokenType.ArrayStart:
                         CopyNumber(_index);
                         CopyNumber(-1);
-                        CopyByte((byte)JsonValueType.Array);
+                        CopyByte((byte)JsonDb.JsonValueType.Array);
                         PushOnArrayStack(numValues, topOfStackArr);
                         topOfStackArr -= 8;
                         numValues = 0;
@@ -176,7 +176,7 @@ namespace Json.Net.Tests
                 var typeCode = _buffer[locationOfTypeCode];
                 var length = GetIntFrom(locationOfLength);
 
-                if (length == -1 && (lookingForObject ? typeCode == (byte)JsonValueType.Object : typeCode == (byte)JsonValueType.Array))
+                if (length == -1 && (lookingForObject ? typeCode == (byte)JsonDb.JsonValueType.Object : typeCode == (byte)JsonDb.JsonValueType.Array))
                 {
                     numFound++;
                 }
@@ -187,7 +187,7 @@ namespace Json.Net.Tests
                 }
                 else
                 {
-                    if (length > 0 && (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array))
+                    if (length > 0 && (typeCode == (byte)JsonDb.JsonValueType.Object || typeCode == (byte)JsonDb.JsonValueType.Array))
                     {
                         rowCounter += length;
                     }
@@ -215,7 +215,7 @@ namespace Json.Net.Tests
             _index++;
         }
 
-        private JsonValueType GetJsonValueType()
+        private JsonDb.JsonValueType GetJsonDb.JsonValueType()
         {
             var nextByte = _buffer[_index];
 
@@ -227,37 +227,37 @@ namespace Json.Net.Tests
 
             if (nextByte == '"')
             {
-                return JsonValueType.String;
+                return JsonDb.JsonValueType.String;
             }
 
             if (nextByte == '{')
             {
-                return JsonValueType.Object;
+                return JsonDb.JsonValueType.Object;
             }
 
             if (nextByte == '[')
             {
-                return JsonValueType.Array;
+                return JsonDb.JsonValueType.Array;
             }
 
             if (nextByte == 't')
             {
-                return JsonValueType.True;
+                return JsonDb.JsonValueType.True;
             }
 
             if (nextByte == 'f')
             {
-                return JsonValueType.False;
+                return JsonDb.JsonValueType.False;
             }
 
             if (nextByte == 'n')
             {
-                return JsonValueType.Null;
+                return JsonDb.JsonValueType.Null;
             }
 
             if (nextByte == '-' || (nextByte >= '0' && nextByte <= '9'))
             {
-                return JsonValueType.Number;
+                return JsonDb.JsonValueType.Number;
             }
 
             throw new FormatException("Invalid json, tried to read char '" + nextByte + "'.");
@@ -265,27 +265,27 @@ namespace Json.Net.Tests
 
         private void GetValue()
         {
-            var type = GetJsonValueType();
+            var type = GetJsonDb.JsonValueType();
             SkipEmpty();
             switch (type)
             {
-                case JsonValueType.String:
+                case JsonDb.JsonValueType.String:
                     ReadStringValue();
                     return;
-                case JsonValueType.Number:
+                case JsonDb.JsonValueType.Number:
                     ReadNumberValue();
                     return;
-                case JsonValueType.True:
+                case JsonDb.JsonValueType.True:
                     ReadTrueValue();
                     return;
-                case JsonValueType.False:
+                case JsonDb.JsonValueType.False:
                     ReadFalseValue();
                     return;
-                case JsonValueType.Null:
+                case JsonDb.JsonValueType.Null:
                     ReadNullValue();
                     return;
-                case JsonValueType.Object:
-                case JsonValueType.Array:
+                case JsonDb.JsonValueType.Object:
+                case JsonDb.JsonValueType.Array:
                     return;
                 default:
                     throw new ArgumentException("Invalid json value type '" + type + "'.");
