@@ -58,6 +58,12 @@ namespace System.Buffers.Tests
             });
 
             Assert.Equal(30, sum);
+
+            int capturedSum = 0;
+            ms.Do((all) => {
+                foreach (var i in all) capturedSum += i;
+            });
+            Assert.Equal(30, capturedSum);
         }
 
         [Fact]
