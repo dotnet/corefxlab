@@ -3,7 +3,7 @@ using System.Text.Utf8;
 
 namespace System.Text.Json.Tests
 {
-    public class Json
+    public class TestDom
     {
         public Object Object { get; set; }
 
@@ -11,14 +11,14 @@ namespace System.Text.Json.Tests
 
         public Value Value { get; set; }
 
-        public Json this[string index]
+        public TestDom this[string index]
         {
             get
             {
                 if (Object == null) throw new NullReferenceException();
                 if (Object.Pairs == null) throw new NullReferenceException();
 
-                var json = new Json();
+                var json = new TestDom();
                 foreach (var pair in Object.Pairs)
                 {
                     if (pair.Name == index)
@@ -50,7 +50,7 @@ namespace System.Text.Json.Tests
             }
         }
 
-        public Json this[int index]
+        public TestDom this[int index]
         {
             get
             {
@@ -60,7 +60,7 @@ namespace System.Text.Json.Tests
                 if (index < 0 || index >= values.Count) throw new IndexOutOfRangeException();
                 Value value = values[index];
 
-                var json = new Json();
+                var json = new TestDom();
                 switch (value.Type)
                 {
                     case Value.ValueType.Object:
@@ -84,7 +84,7 @@ namespace System.Text.Json.Tests
             }
         }
 
-        public static explicit operator string (Json json)
+        public static explicit operator string (TestDom json)
         {
             if (json == null || json.Value == null) throw new NullReferenceException();
 
@@ -102,7 +102,7 @@ namespace System.Text.Json.Tests
             }
         }
 
-        public static explicit operator double (Json json)
+        public static explicit operator double (TestDom json)
         {
             if (json == null || json.Value == null) throw new NullReferenceException();
 
@@ -117,7 +117,7 @@ namespace System.Text.Json.Tests
             }
         }
 
-        public static explicit operator bool (Json json)
+        public static explicit operator bool (TestDom json)
         {
             if (json == null || json.Value == null) throw new NullReferenceException();
 

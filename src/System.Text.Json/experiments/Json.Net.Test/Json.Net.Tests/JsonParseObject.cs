@@ -23,7 +23,7 @@ namespace Json.Net.Tests
         {
             var typeCode = _buffer[_start + 8];
 
-            if (typeCode == (byte)JsonParser.JsonValueType.Object || typeCode == (byte)JsonParser.JsonValueType.Array)
+            if (typeCode == (byte)JsonParser.JsonDb.JsonValueType.Object || typeCode == (byte)JsonParser.JsonDb.JsonValueType.Array)
             {
                 int length = BitConverter.ToInt32(_buffer, _start + 4);
                 if (length == 0) return false;
@@ -52,7 +52,7 @@ namespace Json.Net.Tests
                     throw new KeyNotFoundException();
                 }
 
-                if (typeCode != (byte)JsonParser.JsonValueType.Object)
+                if (typeCode != (byte)JsonParser.JsonDb.JsonValueType.Object)
                 {
                     throw new NullReferenceException();
                 }
@@ -62,7 +62,7 @@ namespace Json.Net.Tests
                     length = BitConverter.ToInt32(_buffer, i + 4);
                     typeCode = _buffer[i + 8];
 
-                    if (typeCode == (byte)JsonParser.JsonValueType.Object || typeCode == (byte)JsonParser.JsonValueType.Array)
+                    if (typeCode == (byte)JsonParser.JsonDb.JsonValueType.Object || typeCode == (byte)JsonParser.JsonDb.JsonValueType.Array)
                     {
                         i += length * RowSize;
                         continue;
@@ -76,7 +76,7 @@ namespace Json.Net.Tests
 
                         typeCode = _buffer[newStart + 8];
 
-                        if (typeCode == (byte)JsonParser.JsonValueType.Object || typeCode == (byte)JsonParser.JsonValueType.Array)
+                        if (typeCode == (byte)JsonParser.JsonDb.JsonValueType.Object || typeCode == (byte)JsonParser.JsonDb.JsonValueType.Array)
                         {
                             length = BitConverter.ToInt32(_buffer, newStart + 4);
                             newEnd = newEnd + RowSize * length;
@@ -87,7 +87,7 @@ namespace Json.Net.Tests
 
                     typeCode = _buffer[i + RowSize + 8];
 
-                    if (typeCode != (byte)JsonParser.JsonValueType.Object && typeCode != (byte)JsonParser.JsonValueType.Array)
+                    if (typeCode != (byte)JsonParser.JsonDb.JsonValueType.Object && typeCode != (byte)JsonParser.JsonDb.JsonValueType.Array)
                     {
                         i += RowSize;
                     }
@@ -123,7 +123,7 @@ namespace Json.Net.Tests
                     throw new IndexOutOfRangeException();
                 }
 
-                if (typeCode != (byte)JsonParser.JsonValueType.Array)
+                if (typeCode != (byte)JsonParser.JsonDb.JsonValueType.Array)
                 {
                     throw new NullReferenceException();
                 }
@@ -138,7 +138,7 @@ namespace Json.Net.Tests
                         int newStart = i;
                         int newEnd = i + RowSize;
 
-                        if (typeCode == (byte)JsonParser.JsonValueType.Object || typeCode == (byte)JsonParser.JsonValueType.Array)
+                        if (typeCode == (byte)JsonParser.JsonDb.JsonValueType.Object || typeCode == (byte)JsonParser.JsonDb.JsonValueType.Array)
                         {
                             length = BitConverter.ToInt32(_buffer, i + 4);
                             newEnd = newEnd + RowSize * length;
@@ -146,7 +146,7 @@ namespace Json.Net.Tests
                         return new JsonParseObject(_buffer, newStart, newEnd);
                     }
 
-                    if (typeCode == (byte)JsonParser.JsonValueType.Object || typeCode == (byte)JsonParser.JsonValueType.Array)
+                    if (typeCode == (byte)JsonParser.JsonDb.JsonValueType.Object || typeCode == (byte)JsonParser.JsonDb.JsonValueType.Array)
                     {
                         length = BitConverter.ToInt32(_buffer, i + 4);
                         i += length * RowSize;
@@ -173,7 +173,7 @@ namespace Json.Net.Tests
         {
             var typeCode = json._buffer[json._start + 8];
 
-            if (typeCode == (byte)JsonParser.JsonValueType.Object || typeCode == (byte)JsonParser.JsonValueType.Array)
+            if (typeCode == (byte)JsonParser.JsonDb.JsonValueType.Object || typeCode == (byte)JsonParser.JsonDb.JsonValueType.Array)
             {
                 throw new InvalidCastException();
             }
@@ -187,7 +187,7 @@ namespace Json.Net.Tests
         {
             var typeCode = json._buffer[json._start + 8];
 
-            if (typeCode == (byte)JsonParser.JsonValueType.Object || typeCode == (byte)JsonParser.JsonValueType.Array)
+            if (typeCode == (byte)JsonParser.JsonDb.JsonValueType.Object || typeCode == (byte)JsonParser.JsonDb.JsonValueType.Array)
             {
                 throw new InvalidCastException();
             }
@@ -220,7 +220,7 @@ namespace Json.Net.Tests
         {
             var typeCode = json._buffer[json._start + 8];
 
-            if (typeCode == (byte)JsonParser.JsonValueType.Object || typeCode == (byte)JsonParser.JsonValueType.Array)
+            if (typeCode == (byte)JsonParser.JsonDb.JsonValueType.Object || typeCode == (byte)JsonParser.JsonDb.JsonValueType.Array)
             {
                 throw new InvalidCastException();
             }
@@ -257,7 +257,7 @@ namespace Json.Net.Tests
         {
             var typeCode = json._buffer[json._start + 8];
 
-            if (typeCode == (byte)JsonParser.JsonValueType.Object || typeCode == (byte)JsonParser.JsonValueType.Array)
+            if (typeCode == (byte)JsonParser.JsonDb.JsonValueType.Object || typeCode == (byte)JsonParser.JsonDb.JsonValueType.Array)
             {
                 throw new InvalidCastException();
             }

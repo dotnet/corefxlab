@@ -3,7 +3,7 @@
 
 namespace System.Text.Json
 {
-    public struct JsonParser : IDisposable
+    internal struct JsonParser : IDisposable
     {
         private byte[] _buffer;
         private int _index;
@@ -11,12 +11,12 @@ namespace System.Text.Json
         private int _dbIndex;
         private int _insideObject;
         private int _insideArray;
-        public JsonTokenType TokenType;
+        private JsonTokenType TokenType;
         private bool _jsonStartIsObject;
 
         private const int RowSize = 9;  // Do not change, unless you also change FindLocation
 
-        public enum JsonTokenType
+        private enum JsonTokenType
         {
             // Start = 0 state reserved for internal use
             ObjectStart = 1,
@@ -26,17 +26,6 @@ namespace System.Text.Json
             Property = 5,
             Value = 6
         };
-
-        public enum JsonValueType
-        {
-            String,
-            Number,
-            Object,
-            Array,
-            True,
-            False,
-            Null
-        }
 
         public JsonParser(byte[] buffer, int lengthOfJson)
         {
@@ -63,7 +52,7 @@ namespace System.Text.Json
         {
         }
 
-        public JsonParseObject Parse()
+        public JsonObject Parse()
         {
             int numValues = 0;
             int numPairs = 0;
@@ -81,7 +70,7 @@ namespace System.Text.Json
                     case JsonTokenType.ObjectStart:
                         CopyNumber(_index);
                         CopyNumber(-1);
-                        CopyByte((byte)JsonValueType.Object);
+                        CopyByte((byte)JsonObject.JsonValueType.Object);
                         PushOnObjectStack(numPairs, topOfStackObj);
                         topOfStackObj -= 8;
                         numPairs = 0;
@@ -96,7 +85,7 @@ namespace System.Text.Json
                     case JsonTokenType.ArrayStart:
                         CopyNumber(_index);
                         CopyNumber(-1);
-                        CopyByte((byte)JsonValueType.Array);
+                        CopyByte((byte)JsonObject.JsonValueType.Array);
                         PushOnArrayStack(numValues, topOfStackArr);
                         topOfStackArr -= 8;
                         numValues = 0;
@@ -141,7 +130,7 @@ namespace System.Text.Json
                 Console.WriteLine(BitConverter.ToInt32(_buffer, i));
             }*/
 
-            return new JsonParseObject(_buffer, _end + 1, _dbIndex);
+            return new JsonObject(_buffer, _end + 1, _dbIndex);
         }
 
         private void PushOnObjectStack(int val, int topOfStack)
@@ -177,7 +166,7 @@ namespace System.Text.Json
                 var typeCode = _buffer[locationOfTypeCode];
                 var length = GetIntFrom(locationOfLength);
 
-                if (length == -1 && (lookingForObject ? typeCode == (byte)JsonValueType.Object : typeCode == (byte)JsonValueType.Array))
+                if (length == -1 && (lookingForObject ? typeCode == (byte)JsonObject.JsonValueType.Object : typeCode == (byte)JsonObject.JsonValueType.Array))
                 {
                     numFound++;
                 }
@@ -188,7 +177,7 @@ namespace System.Text.Json
                 }
                 else
                 {
-                    if (length > 0 && (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array))
+                    if (length > 0 && (typeCode == (byte)JsonObject.JsonValueType.Object || typeCode == (byte)JsonObject.JsonValueType.Array))
                     {
                         rowCounter += length;
                     }
@@ -216,7 +205,7 @@ namespace System.Text.Json
             _index++;
         }
 
-        private JsonValueType GetJsonValueType()
+        private JsonObject.JsonValueType GetJsonDb()
         {
             var nextByte = _buffer[_index];
 
@@ -228,37 +217,37 @@ namespace System.Text.Json
 
             if (nextByte == '"')
             {
-                return JsonValueType.String;
+                return JsonObject.JsonValueType.String;
             }
 
             if (nextByte == '{')
             {
-                return JsonValueType.Object;
+                return JsonObject.JsonValueType.Object;
             }
 
             if (nextByte == '[')
             {
-                return JsonValueType.Array;
+                return JsonObject.JsonValueType.Array;
             }
 
             if (nextByte == 't')
             {
-                return JsonValueType.True;
+                return JsonObject.JsonValueType.True;
             }
 
             if (nextByte == 'f')
             {
-                return JsonValueType.False;
+                return JsonObject.JsonValueType.False;
             }
 
             if (nextByte == 'n')
             {
-                return JsonValueType.Null;
+                return JsonObject.JsonValueType.Null;
             }
 
             if (nextByte == '-' || (nextByte >= '0' && nextByte <= '9'))
             {
-                return JsonValueType.Number;
+                return JsonObject.JsonValueType.Number;
             }
 
             throw new FormatException("Invalid json, tried to read char '" + nextByte + "'.");
@@ -266,27 +255,27 @@ namespace System.Text.Json
 
         private void GetValue()
         {
-            var type = GetJsonValueType();
+            var type = GetJsonDb();
             SkipEmpty();
             switch (type)
             {
-                case JsonValueType.String:
+                case JsonObject.JsonValueType.String:
                     ReadStringValue();
                     return;
-                case JsonValueType.Number:
+                case JsonObject.JsonValueType.Number:
                     ReadNumberValue();
                     return;
-                case JsonValueType.True:
+                case JsonObject.JsonValueType.True:
                     ReadTrueValue();
                     return;
-                case JsonValueType.False:
+                case JsonObject.JsonValueType.False:
                     ReadFalseValue();
                     return;
-                case JsonValueType.Null:
+                case JsonObject.JsonValueType.Null:
                     ReadNullValue();
                     return;
-                case JsonValueType.Object:
-                case JsonValueType.Array:
+                case JsonObject.JsonValueType.Object:
+                case JsonObject.JsonValueType.Array:
                     return;
                 default:
                     throw new ArgumentException("Invalid json value type '" + type + "'.");

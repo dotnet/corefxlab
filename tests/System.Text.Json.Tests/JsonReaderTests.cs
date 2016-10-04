@@ -45,102 +45,6 @@ namespace System.Text.Json.Tests
             Assert.Equal(zipCode, 98052);
         }
 
-
-        [Fact]
-        public void ParseSimpleJson()
-        {
-            var str = TestJson.SimpleArrayJson;
-            int strLength = str.Length;
-            var buffer = new byte[4096];
-            for (var i = 0; i < strLength; i++)
-            {
-                buffer[i] = (byte)str[i];
-            }
-
-            var json = new JsonParser(buffer, strLength);
-            var parseObject = json.Parse();
-            var phoneNum = (string)parseObject[0];
-            var age = (int)parseObject[1];
-            
-            Assert.Equal(phoneNum, "425-214-3151");
-            Assert.Equal(age, 25);
-
-            str = TestJson.SimpleObjectJson;
-            strLength = str.Length;
-            buffer = new byte[4096];
-            for (var i = 0; i < strLength; i++)
-            {
-                buffer[i] = (byte)str[i];
-            }
-
-            json = new JsonParser(buffer, strLength);
-            parseObject = json.Parse();
-            age = (int)parseObject["age"];
-            var ageStr = (string)parseObject["age"];
-            var first = (string)parseObject["first"];
-            var last = (string)parseObject["last"];
-            var phoneNumber = (string)parseObject["phoneNumber"];
-            var street = (string)parseObject["street"];
-            var city = (string)parseObject["city"];
-            var zip = (int)parseObject["zip"];
-
-            Assert.Equal(age, 30);
-            Assert.Equal(ageStr, "30");
-            Assert.Equal(first, "John");
-            Assert.Equal(last, "Smith");
-            Assert.Equal(phoneNumber, "425-214-3151");
-            Assert.Equal(street, "1 Microsoft Way");
-            Assert.Equal(city, "Redmond");
-            Assert.Equal(zip, 98052);
-        }
-
-        [Fact]
-        public void ParseNestedJson()
-        {
-            var str = TestJson.ParseJson;
-            int strLength = str.Length;
-            var buffer = new byte[4096];
-            for (var i = 0; i < strLength; i++)
-            {
-                buffer[i] = (byte)str[i];
-            }
-
-            var json = new JsonParser(buffer, strLength);
-            var x = json.Parse();
-            var person = x[0];
-            var age = (double)person["age"];
-            var first = (string)person["first"];
-            var last = (string)person["last"];
-            var phoneNums = person["phoneNumbers"];
-            var phoneNum1 = (string)phoneNums[0];
-            var phoneNum2 = (string)phoneNums[1];
-            var address = person["address"];
-            var street = (string)address["street"];
-            var city = (string)address["city"];
-            var zipCode = (double)address["zip"];
-
-            // Exceptional use case
-            //var a = x[1];                             // IndexOutOfRangeException
-            //var b = x["age"];                         // NullReferenceException
-            //var c = person[0];                        // NullReferenceException
-            //var d = address["cit"];                   // KeyNotFoundException
-            //var e = address[0];                       // NullReferenceException
-            //var f = (double)address["city"];          // InvalidCastException
-            //var g = (bool)address["city"];            // InvalidCastException
-            //var h = (string)address["zip"];           // Integer converted to string implicitly
-            //var i = (string)person["phoneNumbers"];   // InvalidCastException
-            //var j = (string)person;                   // InvalidCastException
-
-            Assert.Equal(age, 30);
-            Assert.Equal(first, "John");
-            Assert.Equal(last, "Smith");
-            Assert.Equal(phoneNum1, "425-000-1212");
-            Assert.Equal(phoneNum2, "425-000-1213");
-            Assert.Equal(street, "1 Microsoft Way");
-            Assert.Equal(city, "Redmond");
-            Assert.Equal(zipCode, 98052);
-        }
-
         [Fact]
         public void ReadBasicJson()
         {
@@ -232,7 +136,7 @@ namespace System.Text.Json.Tests
             Assert.Equal(json, TestJson.ExpectedLargeJson);
         }
 
-        private static Json CreateJson()
+        private static TestDom CreateJson()
         {
             var valueAge = new Value
             {
@@ -351,14 +255,14 @@ namespace System.Text.Json.Tests
 
             var pairs = new List<Pair> {pairAge, pairFirst, pairLast, pairPhone, pairAddress};
             var obj = new Object {Pairs = pairs};
-            var json = new Json {Object = obj};
+            var json = new TestDom {Object = obj};
 
             return json;
         }
 
-        private static Json ReadJson(string jsonString)
+        private static TestDom ReadJson(string jsonString)
         {
-            var json = new Json();
+            var json = new TestDom();
             if (string.IsNullOrEmpty(jsonString))
             {
                 return json;
