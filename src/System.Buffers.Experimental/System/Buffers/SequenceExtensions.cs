@@ -39,6 +39,9 @@ namespace System.Buffers
                 {
                     var stackArray = stackalloc byte[128];
                     flat = new Span<T>(stackArray, 128);
+                    if (!buffer.TryCopyTo(ref flat, 0)) {
+                        throw new Exception(nameof(buffer) + ".TotalLength returned bad value.");
+                    }
                 }
             }
             else flat = buffer.Flatten();
