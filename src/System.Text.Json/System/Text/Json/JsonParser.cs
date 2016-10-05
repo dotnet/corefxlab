@@ -1,17 +1,21 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Text.Utf8;
+
 namespace System.Text.Json
 {
-    internal struct JsonParser : IDisposable
+    internal struct JsonParser
     {
-        private byte[] _buffer;
-        private int _index;
-        private int _end;
+        private Span<byte> _db;
+        private ReadOnlySpan<byte> _values;
+
+        private int _valuesIndex;
         private int _dbIndex;
+
         private int _insideObject;
         private int _insideArray;
-        private JsonTokenType TokenType;
+        private JsonTokenType _tokenType;
         private bool _jsonStartIsObject;
 
         private const int RowSize = 9;  // Do not change, unless you also change FindLocation
@@ -27,86 +31,77 @@ namespace System.Text.Json
             Value = 6
         };
 
-        public JsonParser(byte[] buffer, int lengthOfJson)
+        public JsonObject Parse(ReadOnlySpan<byte> utf8Json)
         {
-            _buffer = buffer;
+            var db = new byte[utf8Json.Length * 2];
+            return Parse(utf8Json, db);
+        }
+
+        public JsonObject Parse(ReadOnlySpan<byte> utf8Json, Span<byte> db)
+        {
+            _values = utf8Json;
+            _db = db;
+
             _insideObject = 0;
             _insideArray = 0;
-            TokenType = 0;
-            _index = 0;
-            _end = lengthOfJson;
+            _tokenType = 0;
+            _valuesIndex = 0;
+            _dbIndex = 0;
+            _jsonStartIsObject = false;
 
-            var nextByte = _buffer[_index];
-            while (isWhiteSpace(nextByte) || nextByte == 0)
-            {
-                _index++;
-                nextByte = _buffer[_index];
-            }
+            SkipWhitespace();
 
-            _dbIndex = _end + 1;
+            _jsonStartIsObject = _values[_valuesIndex] == '{';
 
-            _jsonStartIsObject = _buffer[_index] == '{';
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public JsonObject Parse()
-        {
             int numValues = 0;
             int numPairs = 0;
             int numObj = 0;
             int numArr = 0;
 
-            int topOfStackObj = _buffer.Length - 1;
-            int topOfStackArr = _buffer.Length - 1;
+            int topOfStackObj = _db.Length - 1;
+            int topOfStackArr = _db.Length - 1;
 
-            while (Read())
-            {
-                var tokenType = TokenType;
-                switch (tokenType)
-                {
+            while (Read()) {
+                var tokenType = _tokenType;
+                switch (tokenType) {
                     case JsonTokenType.ObjectStart:
-                        CopyNumber(_index);
-                        CopyNumber(-1);
-                        CopyByte((byte)JsonObject.JsonValueType.Object);
-                        PushOnObjectStack(numPairs, topOfStackObj);
-                        topOfStackObj -= 8;
+                        _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
+                        _db.Slice(_dbIndex).Write<int>(-1); _dbIndex += 4;
+                        _db.Slice(_dbIndex).Write(JsonObject.JsonValueType.Object); _dbIndex += 1;
+                        _db.Slice(topOfStackObj - 8).Write<int>(numPairs); topOfStackObj -= 8;
                         numPairs = 0;
                         numObj++;
                         break;
                     case JsonTokenType.ObjectEnd:
-                        CopyNumberAtLocation(numPairs, FindLocation(numObj - 1, true));
+                        _db.Slice(FindLocation(numObj - 1, true)).Write<int>(numPairs);
                         numObj--;
-                        numPairs += PopFromObjectStack(topOfStackObj);
+                        numPairs += _db.Slice(topOfStackObj).Read<int>();
                         topOfStackObj += 8;
                         break;
                     case JsonTokenType.ArrayStart:
-                        CopyNumber(_index);
-                        CopyNumber(-1);
-                        CopyByte((byte)JsonObject.JsonValueType.Array);
-                        PushOnArrayStack(numValues, topOfStackArr);
-                        topOfStackArr -= 8;
+                        _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
+                        _db.Slice(_dbIndex).Write<int>(-1); _dbIndex += 4;
+                        _db.Slice(_dbIndex).Write(JsonObject.JsonValueType.Array); _dbIndex += 1;
+                        _db.Slice(topOfStackArr - 4).Write<int>(numValues); topOfStackArr -= 8;
                         numValues = 0;
                         numArr++;
                         break;
                     case JsonTokenType.ArrayEnd:
-                        CopyNumberAtLocation(numValues, FindLocation(numArr - 1, false));
+                        _db.Slice(FindLocation(numArr - 1, false)).Write<int>(numValues);
                         numArr--;
-                        numValues += PopFromArrayStack(topOfStackArr);
+                        numValues += _db.Slice(topOfStackArr + 4).Read<int>();
                         topOfStackArr += 8;
                         break;
                     case JsonTokenType.Property:
-                        GetName();
+                        ParseName();
                         numPairs++;
-                        GetValue();
+                        ParseValue();
                         numPairs++;
                         numValues++;
                         numValues++;
                         break;
                     case JsonTokenType.Value:
-                        GetValue();
+                        ParseValue();
                         numValues++;
                         numPairs++;
                         break;
@@ -115,164 +110,104 @@ namespace System.Text.Json
                 }
             }
 
-            /*for(int i = _end+1; i < _dbIndex; i+=RowSize)
-            {
-                Console.Write(i + ":");
-                Console.Write(BitConverter.ToInt32(_buffer, i) + ":");
-                Console.Write(i + 4 + ":");
-                Console.Write(BitConverter.ToInt32(_buffer, i + 4) + ":");
-                Console.Write(i + 8 + ":");
-                Console.WriteLine(_buffer[i + 8]);
-            }*/
-
-            /*for (int i = _buffer.Length - 1 - 4; i > _buffer.Length - 1 - 48; i-=4)
-            {
-                Console.WriteLine(BitConverter.ToInt32(_buffer, i));
-            }*/
-
-            return new JsonObject(_buffer, _end + 1, _dbIndex);
-        }
-
-        private void PushOnObjectStack(int val, int topOfStack)
-        {
-            CopyNumberAtLocation(val, topOfStack - 8);
-        }
-        private int PopFromObjectStack(int topOfStack)
-        {
-            return GetIntFrom(topOfStack);
-        }
-
-        private void PushOnArrayStack(int val, int topOfStack)
-        {
-            CopyNumberAtLocation(val, topOfStack - 4);
-        }
-        private int PopFromArrayStack(int topOfStack)
-        {
-            return GetIntFrom(topOfStack + 4);
+            return new JsonObject(_values, _db.Slice(0, _dbIndex));
         }
 
         private int FindLocation(int index, bool lookingForObject)
         {
-            int startRow = _end + 1;
-            int rowCounter = 0;
+            int rowNumber = 0;
             int numFound = 0;
 
-            while (true)
-            {
-                int numberOfRows = (rowCounter << 3) + rowCounter; // multiply by RowSize which is 9
-                int locationStart = startRow + numberOfRows;
-                int locationOfTypeCode = locationStart + 8;
-                int locationOfLength = locationStart + 4;
-                var typeCode = _buffer[locationOfTypeCode];
-                var length = GetIntFrom(locationOfLength);
+            while (true) {
+                int rowStartOffset = (rowNumber << 3) + rowNumber; // multiply by RowSize which is 9
+                int lengthOffset = rowStartOffset + 4;
+                var typeCode = _db.Slice(rowStartOffset + 8).Read<JsonObject.JsonValueType>();
+                var length = _db.Slice(rowStartOffset + 4).Read<int>();
 
-                if (length == -1 && (lookingForObject ? typeCode == (byte)JsonObject.JsonValueType.Object : typeCode == (byte)JsonObject.JsonValueType.Array))
-                {
+                if (length == -1 && (lookingForObject ? typeCode == JsonObject.JsonValueType.Object : typeCode == JsonObject.JsonValueType.Array)) {
                     numFound++;
                 }
 
-                if (index == numFound - 1)
-                {
-                    return locationOfLength;
-                }
-                else
-                {
-                    if (length > 0 && (typeCode == (byte)JsonObject.JsonValueType.Object || typeCode == (byte)JsonObject.JsonValueType.Array))
-                    {
-                        rowCounter += length;
+                if (index == numFound - 1) {
+                    return lengthOffset;
+                } else {
+                    if (length > 0 && (typeCode == JsonObject.JsonValueType.Object || typeCode == JsonObject.JsonValueType.Array)) {
+                        rowNumber += length;
                     }
-                    rowCounter++;
+                    rowNumber++;
                 }
             }
-        }
-
-        private int GetIntFrom(int loc)
-        {
-            return BitConverter.ToInt32(_buffer, loc);
         }
 
         private bool Read()
         {
-            var canRead = _index < _end;
+            var canRead = _valuesIndex < _values.Length;
             if (canRead) MoveToNextTokenType();
             return canRead;
         }
 
-        private void GetName()
+        private void ParseName()
         {
-            SkipEmpty();
-            ReadStringValue();
-            _index++;
+            SkipWhitespace();
+            ParseStringValue();
+            _valuesIndex++;
         }
 
-        private JsonObject.JsonValueType GetJsonDb()
+        private JsonObject.JsonValueType PeekType()
         {
-            var nextByte = _buffer[_index];
+            SkipWhitespace();
 
-            while (isWhiteSpace(nextByte))
-            {
-                _index++;
-                nextByte = _buffer[_index];
-            }
+            var nextByte = _values[_valuesIndex];
 
-            if (nextByte == '"')
-            {
+            if (nextByte == '"') {
                 return JsonObject.JsonValueType.String;
             }
 
-            if (nextByte == '{')
-            {
+            if (nextByte == '{') {
                 return JsonObject.JsonValueType.Object;
             }
 
-            if (nextByte == '[')
-            {
+            if (nextByte == '[') {
                 return JsonObject.JsonValueType.Array;
             }
 
-            if (nextByte == 't')
-            {
+            if (nextByte == 't') {
                 return JsonObject.JsonValueType.True;
             }
 
-            if (nextByte == 'f')
-            {
+            if (nextByte == 'f') {
                 return JsonObject.JsonValueType.False;
             }
 
-            if (nextByte == 'n')
-            {
+            if (nextByte == 'n') {
                 return JsonObject.JsonValueType.Null;
             }
 
-            if (nextByte == '-' || (nextByte >= '0' && nextByte <= '9'))
-            {
+            if (nextByte == '-' || (nextByte >= '0' && nextByte <= '9')) {
                 return JsonObject.JsonValueType.Number;
             }
 
             throw new FormatException("Invalid json, tried to read char '" + nextByte + "'.");
         }
 
-        private void GetValue()
+        private void ParseValue()
         {
-            var type = GetJsonDb();
-            SkipEmpty();
-            switch (type)
-            {
+            var type = PeekType();
+            switch (type) {
                 case JsonObject.JsonValueType.String:
-                    ReadStringValue();
+                    ParseStringValue();
                     return;
                 case JsonObject.JsonValueType.Number:
-                    ReadNumberValue();
+                    ParseNumberValue();
                     return;
                 case JsonObject.JsonValueType.True:
-                    ReadTrueValue();
+                    ParseTrueValue();
                     return;
                 case JsonObject.JsonValueType.False:
-                    ReadFalseValue();
+                    ParseFalseValue();
                     return;
                 case JsonObject.JsonValueType.Null:
-                    ReadNullValue();
+                    ParseNullValue();
                     return;
                 case JsonObject.JsonValueType.Object:
                 case JsonObject.JsonValueType.Array:
@@ -282,269 +217,215 @@ namespace System.Text.Json
             }
         }
 
-        private void ReadStringValue()
+        private void ParseStringValue()
         {
-            _index++;
-            var count = _index;
-            do
-            {
-                while (_buffer[count] != '"')
-                {
+            _valuesIndex++;
+            var count = _valuesIndex;
+            do {
+                while (_values[count] != '"') {
                     count++;
                 }
                 count++;
             } while (AreNumOfBackSlashesAtEndOfStringOdd(count - 2));
 
-            var strLength = count - _index;
+            var strLength = count - _valuesIndex;
 
-            CopyData(_index, strLength - 1);
-
-            _index += strLength;
-
-            SkipEmpty();
-        }
-
-        private void CopyData(int startingIndex, int length)
-        {
-            CopyNumber(startingIndex);
-            CopyNumber(length);
+            _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
+            _db.Slice(_dbIndex).Write<int>(strLength - 1); _dbIndex += 4;
             _dbIndex += 1;
-        }
 
-        private void CopyNumber(int num)
-        {
-            _buffer[_dbIndex] = (byte)num;
-            _buffer[_dbIndex + 1] = (byte)(num >> 8);
-            _buffer[_dbIndex + 2] = (byte)(num >> 16);
-            _buffer[_dbIndex + 3] = (byte)(num >> 24);
-            _dbIndex += 4;
-        }
+            _valuesIndex += strLength;
 
-        private void CopyByte(byte num)
-        {
-            _buffer[_dbIndex] = num;
-            _dbIndex += 1;
-        }
-
-        private void CopyNumberAtLocation(int num, int loc)
-        {
-            _buffer[loc] = (byte)num;
-            _buffer[loc + 1] = (byte)(num >> 8);
-            _buffer[loc + 2] = (byte)(num >> 16);
-            _buffer[loc + 3] = (byte)(num >> 24);
+            SkipWhitespace();
         }
 
         private bool AreNumOfBackSlashesAtEndOfStringOdd(int count)
         {
-            var length = count - _index;
+            var length = count - _valuesIndex;
             if (length < 0) return false;
-            var nextByte = _buffer[count];
+            var nextByte = _values[count];
             if (nextByte != '\\') return false;
             var numOfBackSlashes = 0;
-            while (nextByte == '\\')
-            {
+            while (nextByte == '\\') {
                 numOfBackSlashes++;
                 if ((length - numOfBackSlashes) < 0) return numOfBackSlashes % 2 != 0;
-                nextByte = _buffer[count - numOfBackSlashes];
+                nextByte = _values[count - numOfBackSlashes];
             }
             return numOfBackSlashes % 2 != 0;
         }
 
-        private void ReadNumberValue(bool copyData = false)
+        private void ParseNumberValue()
         {
-            var count = _index;
+            var count = _valuesIndex;
 
-            var nextByte = _buffer[count];
-            if (nextByte == '-')
-            {
+            var nextByte = _values[count];
+            if (nextByte == '-') {
                 count++;
             }
 
-            nextByte = _buffer[count];
-            while (nextByte >= '0' && nextByte <= '9')
-            {
+            nextByte = _values[count];
+            while (nextByte >= '0' && nextByte <= '9') {
                 count++;
-                nextByte = _buffer[count];
+                nextByte = _values[count];
             }
 
-            if (nextByte == '.')
-            {
+            if (nextByte == '.') {
                 count++;
             }
 
-            nextByte = _buffer[count];
-            while (nextByte >= '0' && nextByte <= '9')
-            {
+            nextByte = _values[count];
+            while (nextByte >= '0' && nextByte <= '9') {
                 count++;
-                nextByte = _buffer[count];
+                nextByte = _values[count];
             }
 
-            if (nextByte == 'e' || nextByte == 'E')
-            {
+            if (nextByte == 'e' || nextByte == 'E') {
                 count++;
-                nextByte = _buffer[count];
-                if (nextByte == '-' || nextByte == '+')
-                {
+                nextByte = _values[count];
+                if (nextByte == '-' || nextByte == '+') {
                     count++;
                 }
-                nextByte = _buffer[count];
-                while (nextByte >= '0' && nextByte <= '9')
-                {
+                nextByte = _values[count];
+                while (nextByte >= '0' && nextByte <= '9') {
                     count++;
-                    nextByte = _buffer[count];
+                    nextByte = _values[count];
                 }
             }
 
-            var length = count - _index;
-            CopyData(_index, count - _index);
+            var length = count - _valuesIndex;
 
-            _index += length;
-            SkipEmpty();
+            _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
+            _db.Slice(_dbIndex).Write<int>(count - _valuesIndex); _dbIndex += 4;
+            _dbIndex += 1;
+
+            _valuesIndex += length;
+            SkipWhitespace();
         }
 
-        private void ReadTrueValue(bool copyData = false)
+        private void ParseTrueValue()
         {
-            CopyData(_index, 4);
+            _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
+            _db.Slice(_dbIndex).Write<int>(4); _dbIndex += 4;
+            _dbIndex += 1;
 
-            if (_buffer[_index + 1] != 'r' || _buffer[_index + 2] != 'u' || _buffer[_index + 3] != 'e')
-            {
+            if (_values[_valuesIndex + 1] != 'r' || _values[_valuesIndex + 2] != 'u' || _values[_valuesIndex + 3] != 'e') {
                 throw new FormatException("Invalid json, tried to read 'true'.");
             }
 
-            _index += 4;
+            _valuesIndex += 4;
 
-            SkipEmpty();
+            SkipWhitespace();
         }
 
-        private void ReadFalseValue(bool copyData = false)
+        private void ParseFalseValue()
         {
-            CopyData(_index, 5);
+            _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
+            _db.Slice(_dbIndex).Write(JsonObject.JsonValueType.False); _dbIndex += 4; // TODO: can this advance by 1?
+            _dbIndex += 1;
 
-            if (_buffer[_index + 1] != 'a' || _buffer[_index + 2] != 'l' || _buffer[_index + 3] != 's' || _buffer[_index + 4] != 'e')
-            {
+            if (_values[_valuesIndex + 1] != 'a' || _values[_valuesIndex + 2] != 'l' || _values[_valuesIndex + 3] != 's' || _values[_valuesIndex + 4] != 'e') {
                 throw new FormatException("Invalid json, tried to read 'false'.");
             }
 
-            _index += 5;
+            _valuesIndex += 5;
 
-            SkipEmpty();
+            SkipWhitespace();
         }
 
-        private void ReadNullValue(bool copyData = false)
+        private void ParseNullValue()
         {
-            CopyData(_index, 4);
+            _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
+            _db.Slice(_dbIndex).Write(JsonObject.JsonValueType.True); _dbIndex += 4;
+            _dbIndex += 1;
 
-            if (_buffer[_index + 1] != 'u' || _buffer[_index + 2] != 'l' || _buffer[_index + 3] != 'l')
-            {
+            if (_values[_valuesIndex + 1] != 'u' || _values[_valuesIndex + 2] != 'l' || _values[_valuesIndex + 3] != 'l') {
                 throw new FormatException("Invalid json, tried to read 'null'.");
             }
 
-            _index += 4;
+            _valuesIndex += 4;
 
-            SkipEmpty();
+            SkipWhitespace();
         }
 
-        private void SkipEmpty()
+        private void SkipWhitespace()
         {
-            var nextByte = _buffer[_index];
-
-            while (isWhiteSpace(nextByte))
-            {
-                _index++;
-                nextByte = _buffer[_index];
+            while (Utf8String.IsWhiteSpace(_values[_valuesIndex])) {
+                _valuesIndex++;
             }
-        }
-
-        private static bool isWhiteSpace(byte nextByte)
-        {
-            return nextByte == ' ' || nextByte == '\n' || nextByte == '\r' || nextByte == '\t';
         }
 
         private void MoveToNextTokenType()
         {
-            var nextByte = _buffer[_index];
-            while (isWhiteSpace(nextByte))
-            {
-                _index++;
-                nextByte = _buffer[_index];
-            }
+            SkipWhitespace();
 
-            switch (TokenType)
-            {
+            var nextByte = _values[_valuesIndex];
+
+            switch (_tokenType) {
                 case JsonTokenType.ObjectStart:
-                    if (nextByte != '}')
-                    {
-                        TokenType = JsonTokenType.Property;
+                    if (nextByte != '}') {
+                        _tokenType = JsonTokenType.Property;
                         return;
                     }
                     break;
                 case JsonTokenType.ObjectEnd:
-                    if (nextByte == ',')
-                    {
-                        _index++;
-                        if (_insideObject == _insideArray)
-                        {
-                            TokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
+                    if (nextByte == ',') {
+                        _valuesIndex++;
+                        if (_insideObject == _insideArray) {
+                            _tokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
                             return;
                         }
-                        TokenType = _insideObject > _insideArray ? JsonTokenType.Property : JsonTokenType.Value;
+                        _tokenType = _insideObject > _insideArray ? JsonTokenType.Property : JsonTokenType.Value;
                         return;
                     }
                     break;
                 case JsonTokenType.ArrayStart:
-                    if (nextByte != ']')
-                    {
-                        TokenType = JsonTokenType.Value;
+                    if (nextByte != ']') {
+                        _tokenType = JsonTokenType.Value;
                         return;
                     }
                     break;
                 case JsonTokenType.ArrayEnd:
-                    if (nextByte == ',')
-                    {
-                        _index++;
-                        if (_insideObject == _insideArray)
-                        {
-                            TokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
+                    if (nextByte == ',') {
+                        _valuesIndex++;
+                        if (_insideObject == _insideArray) {
+                            _tokenType = !_jsonStartIsObject ? JsonTokenType.Property : JsonTokenType.Value;
                             return;
                         }
-                        TokenType = _insideObject > _insideArray ? JsonTokenType.Property : JsonTokenType.Value;
+                        _tokenType = _insideObject > _insideArray ? JsonTokenType.Property : JsonTokenType.Value;
                         return;
                     }
                     break;
                 case JsonTokenType.Property:
-                    if (nextByte == ',')
-                    {
-                        _index++;
+                    if (nextByte == ',') {
+                        _valuesIndex++;
                         return;
                     }
                     break;
                 case JsonTokenType.Value:
-                    if (nextByte == ',')
-                    {
-                        _index++;
+                    if (nextByte == ',') {
+                        _valuesIndex++;
                         return;
                     }
                     break;
             }
 
-            _index++;
-            switch (nextByte)
-            {
+            _valuesIndex++;
+            switch (nextByte) {
                 case (byte)'{':
                     _insideObject++;
-                    TokenType = JsonTokenType.ObjectStart;
+                    _tokenType = JsonTokenType.ObjectStart;
                     return;
                 case (byte)'}':
                     _insideObject--;
-                    TokenType = JsonTokenType.ObjectEnd;
+                    _tokenType = JsonTokenType.ObjectEnd;
                     return;
                 case (byte)'[':
                     _insideArray++;
-                    TokenType = JsonTokenType.ArrayStart;
+                    _tokenType = JsonTokenType.ArrayStart;
                     return;
                 case (byte)']':
                     _insideArray--;
-                    TokenType = JsonTokenType.ArrayEnd;
+                    _tokenType = JsonTokenType.ArrayEnd;
                     return;
                 default:
                     throw new FormatException("Unable to get next token type. Check json format.");

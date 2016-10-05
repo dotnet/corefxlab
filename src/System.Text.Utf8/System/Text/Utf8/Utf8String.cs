@@ -727,5 +727,10 @@ namespace System.Text.Utf8
         {
             throw new NotImplementedException();
         }
+
+        public static bool IsWhiteSpace(byte codePoint)
+        {
+            return codePoint == ' ' || codePoint == '\n' || codePoint == '\r' || codePoint == '\t';
+        }
     }
 }

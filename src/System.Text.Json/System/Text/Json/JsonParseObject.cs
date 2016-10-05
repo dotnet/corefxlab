@@ -8,144 +8,109 @@ namespace System.Text.Json
 {
     public struct JsonObject
     {
-        private byte[] _buffer;
-        private int _start;
-        private int _end;
+        private ReadOnlySpan<byte> _db; // TODO: should it be ReadOnlySpan?
+        private ReadOnlySpan<byte> _values;
 
         private const int RowSize = 9;
 
-        // TODO: this should take two spans (ideally pointing to the same buffer)
-        public static JsonObject Parse(byte[] buffer, int lengthOfJson)
+        public static JsonObject Parse(ReadOnlySpan<byte> utf8Json)
         {
-            var parser = new JsonParser(buffer, lengthOfJson);
-            var result = parser.Parse();
+            var parser = new JsonParser();
+            var result = parser.Parse(utf8Json);
             return result;
         }
 
-        internal JsonObject(byte[] buffer, int start, int end)
+        public static JsonObject Parse(ReadOnlySpan<byte> utf8Json, Span<byte> db)
         {
-            _buffer = buffer;
-            _start = start;
-            _end = end;
+            var parser = new JsonParser();
+            var result = parser.Parse(utf8Json, db);
+            return result;
         }
 
-        public bool HasValue()
+        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db)
         {
-            var typeCode = _buffer[_start + 8];
-
-            if (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array)
-            {
-                int length = BitConverter.ToInt32(_buffer, _start + 4);
-                if (length == 0) return false;
-                return true;
-            }
-            else
-            {
-                int location = BitConverter.ToInt32(_buffer, _start);
-                if (_buffer[location - 1] == '"' && _buffer[location + 4] == '"')
-                {
-                    return true;
-                }
-                return (_buffer[location] != 'n' || _buffer[location + 1] != 'u' || _buffer[location + 2] != 'l' || _buffer[location + 3] != 'l');
-            }
+            _db = db;
+            _values = values;
         }
 
-        public JsonObject this[string index]
-        {
-            get
-            {
-                int length = BitConverter.ToInt32(_buffer, _start + 4);
-                var typeCode = _buffer[_start + 8];
+        public JsonObject this[string name] {
+            get {
+                int length = Length;
+                var valueType = _db.Slice(8).Read<JsonValueType>();
 
-                if (length == 0)
-                {
+                if (length == 0) {
                     throw new KeyNotFoundException();
                 }
 
-                if (typeCode != (byte)JsonValueType.Object)
-                {
+                if (valueType != JsonValueType.Object) {
                     throw new NullReferenceException();
                 }
 
-                for (int i = _start + RowSize; i <= _end; i += RowSize)
-                {
-                    length = BitConverter.ToInt32(_buffer, i + 4);
-                    typeCode = _buffer[i + 8];
+                for (int i = RowSize; i <= _db.Length; i += RowSize) {
+                    length = _db.Slice(i + 4).Read<int>();
+                    valueType = _db.Slice(i + 8).Read<JsonValueType>();
 
-                    if (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array)
-                    {
+                    if (valueType == JsonValueType.Object || valueType == JsonValueType.Array) {
                         i += length * RowSize;
                         continue;
                     }
 
-                    int location = BitConverter.ToInt32(_buffer, i);
-                    if (isEqual(index, _buffer, location, length))
-                    {
+                    int location = _db.Slice(i).Read<int>();
+                    if (new Utf8String(_values.Slice(location, length)) == name) {
                         int newStart = i + RowSize;
                         int newEnd = newStart + RowSize;
 
-                        typeCode = _buffer[newStart + 8];
+                        valueType = _db.Slice(newStart + 8).Read<JsonValueType>();
 
-                        if (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array)
-                        {
-                            length = BitConverter.ToInt32(_buffer, newStart + 4);
+                        if (valueType == JsonValueType.Object || valueType == JsonValueType.Array) {
+                            length = _db.Slice(newStart + 4).Read<int>();
                             newEnd = newEnd + RowSize * length;
                         }
 
-                        return new JsonObject(_buffer, newStart, newEnd);
+                        return new JsonObject(_values, _db.Slice(newStart, newEnd - newStart));
                     }
 
-                    typeCode = _buffer[i + RowSize + 8];
+                    valueType = _db.Slice(i + RowSize + 8).Read<JsonValueType>();
 
-                    if (typeCode != (byte)JsonValueType.Object && typeCode != (byte)JsonValueType.Array)
-                    {
+                    if (valueType != JsonValueType.Object && valueType != JsonValueType.Array) {
                         i += RowSize;
                     }
                 }
 
                 throw new KeyNotFoundException();
-
             }
         }
-        
-        public JsonObject this[int index]
-        {
-            get
-            {
-                int length = BitConverter.ToInt32(_buffer, _start + 4);
-                var typeCode = _buffer[_start + 8];
 
-                if (index < 0 || index >= length)
-                {
+        public JsonObject this[int index] {
+            get {
+                int length = Length;
+                var valueType = Type;
+
+                if (index < 0 || index >= length) {
                     throw new IndexOutOfRangeException();
                 }
 
-                if (typeCode != (byte)JsonValueType.Array)
-                {
+                if (valueType != JsonValueType.Array) {
                     throw new NullReferenceException();
                 }
 
                 int counter = 0;
-                for (int i = _start + RowSize; i <= _end; i += RowSize)
-                {
-                    typeCode = _buffer[i + 8];
+                for (int i = RowSize; i <= _db.Length; i += RowSize) {
+                    valueType = _db.Slice(i + 8).Read<JsonValueType>();
 
-                    if (index == counter)
-                    {
+                    if (index == counter) {
                         int newStart = i;
                         int newEnd = i + RowSize;
 
-                        if (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array)
-                        {
-                            length = BitConverter.ToInt32(_buffer, i + 4);
+                        if (valueType == JsonValueType.Object || valueType == JsonValueType.Array) {
+                            length = _db.Slice(i + 4).Read<int>();
                             newEnd = newEnd + RowSize * length;
                         }
-                        return new JsonObject(_buffer, newStart, newEnd);
+                        return new JsonObject(_values, _db.Slice(newStart, newEnd - newStart));
                     }
 
-                    if (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array)
-                    {
-                        length = BitConverter.ToInt32(_buffer, i + 4);
+                    if (valueType == JsonValueType.Object || valueType == JsonValueType.Array) {
+                        length = _db.Slice(i + 4).Read<int>();
                         i += length * RowSize;
                     }
 
@@ -156,99 +121,70 @@ namespace System.Text.Json
             }
         }
 
-        public JsonValueType Type
+        public static explicit operator string(JsonObject json)
         {
-            get {
-                var typeCode = _buffer[_start + 8];
-                var type = (JsonValueType)typeCode;
-                return type;
-            }
-        }
-
-        public static explicit operator string (JsonObject json)
-        {
-            return GetUtf8String(json).ToString();
+            var utf8 = (Utf8String)json;
+            return utf8.ToString();
         }
 
         public static explicit operator Utf8String(JsonObject json)
         {
-            return GetUtf8String(json);
+            if (!json.IsSimpleValue) {
+                throw new InvalidCastException();
+            }
+
+            int location = json.Location;
+            int length = json.Length;
+            return new Utf8String(json._values.Slice(location, length));
         }
 
-        private static Utf8String GetUtf8String(JsonObject json)
+        public static explicit operator bool(JsonObject json)
         {
-            var typeCode = json._buffer[json._start + 8];
-
-            if (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array)
-            {
+            if (!json.IsSimpleValue) {
                 throw new InvalidCastException();
             }
 
-            int location = BitConverter.ToInt32(json._buffer, json._start);
-            int length = BitConverter.ToInt32(json._buffer, json._start + 4);
-            return new Utf8String(json._buffer, location, length);
-        }
-
-        public static explicit operator bool (JsonObject json)
-        {
-            var typeCode = json._buffer[json._start + 8];
-
-            if (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array)
-            {
+            int length = json.Length;
+            if (length < 4 || length > 5) {
                 throw new InvalidCastException();
             }
 
-            int length = BitConverter.ToInt32(json._buffer, json._start + 4);
-            if (length < 4 || length > 5)
-            {
-                throw new InvalidCastException();
-            }
+            int location = json.Location;
+            bool isTrue = json._values[location] == 't' && json._values[location + 1] == 'r' && json._values[location + 2] == 'u' && json._values[location + 3] == 'e';
+            bool isFalse = json._values[location] == 'f' && json._values[location + 1] == 'a' && json._values[location + 2] == 'l' && json._values[location + 3] == 's' && json._values[location + 4] == 'e';
 
-            int location = BitConverter.ToInt32(json._buffer, json._start);
-            bool isTrue = json._buffer[location] == 't' && json._buffer[location + 1] == 'r' && json._buffer[location + 2] == 'u' && json._buffer[location + 3] == 'e';
-            bool isFalse = json._buffer[location] == 'f' && json._buffer[location + 1] == 'a' && json._buffer[location + 2] == 'l' && json._buffer[location + 3] == 's' && json._buffer[location + 4] == 'e';
-
-            if (isTrue)
-            {
+            if (isTrue) {
                 return true;
-            }
-            else if (isFalse)
-            {
+            } else if (isFalse) {
                 return false;
-            }
-            else
-            {
+            } else {
                 throw new InvalidCastException();
             }
         }
 
-        public static explicit operator int (JsonObject json)
+        public static explicit operator int(JsonObject json)
         {
-            var typeCode = json._buffer[json._start + 8];
+            var type = json.Type;
 
-            if (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array)
-            {
+            if (type == JsonValueType.Object || type == JsonValueType.Array) {
                 throw new InvalidCastException();
             }
 
-            int location = BitConverter.ToInt32(json._buffer, json._start);
-            int length = BitConverter.ToInt32(json._buffer, json._start + 4);
+            int location = json.Location;
+            int length = json.Length;
 
             int count = location;
             bool isNegative = false;
-            var nextByte = json._buffer[count];
-            if (nextByte == '-')
-            {
+            var nextByte = json._values[count];
+            if (nextByte == '-') {
                 isNegative = true;
                 count++;
             }
 
             int result = 0;
-            while (count - location < length)
-            {
-                nextByte = json._buffer[count];
-                if (nextByte < '0' || nextByte > '9')
-                {
+            while (count - location < length) {
+                nextByte = json._values[count];
+                if (nextByte < '0' || nextByte > '9') {
                     throw new InvalidCastException(); // return isNegative ? result * -1 : result;
                 }
                 int digit = nextByte - '0';
@@ -259,56 +195,60 @@ namespace System.Text.Json
             return isNegative ? result * -1 : result;
         }
 
-        public static explicit operator double (JsonObject json)
-        {
-            var typeCode = json._buffer[json._start + 8];
+        internal int Location => _db.Read<int>();
+        internal int Length => _db.Slice(4).Read<int>();
+        internal JsonValueType Type => _db.Slice(8).Read<JsonValueType>();
+        internal bool IsSimpleValue {
+            get {
+                var type = Type;
+                return type != JsonValueType.Object && type != JsonValueType.Array;
+            }
+        }
 
-            if (typeCode == (byte)JsonValueType.Object || typeCode == (byte)JsonValueType.Array)
-            {
+        public static explicit operator double(JsonObject json)
+        {
+            var typeCode = json.Type;
+
+            if (typeCode == JsonValueType.Object || typeCode == JsonValueType.Array) {
                 throw new InvalidCastException();
             }
 
-            int location = BitConverter.ToInt32(json._buffer, json._start);
-            int length = BitConverter.ToInt32(json._buffer, json._start + 4);
+            int location = json.Location;
+            int length = json.Length;
 
             int count = location;
             bool isNegative = false;
-            var nextByte = json._buffer[count];
-            if (nextByte == '-')
-            {
+            var nextByte = json._values[count];
+            if (nextByte == '-') {
                 isNegative = true;
                 count++;
-                nextByte = json._buffer[count];
+                nextByte = json._values[count];
             }
 
-            if (nextByte < '0' || nextByte > '9' || count - location >= length)
-            {
+            if (nextByte < '0' || nextByte > '9' || count - location >= length) {
                 throw new InvalidCastException();
             }
 
             int integerPart = 0;
-            while (nextByte >= '0' && nextByte <= '9' && count - location < length)
-            {
+            while (nextByte >= '0' && nextByte <= '9' && count - location < length) {
                 int digit = nextByte - '0';
                 integerPart = integerPart * 10 + digit;
                 count++;
-                nextByte = json._buffer[count];
+                nextByte = json._values[count];
             }
 
             double result = integerPart;
 
             int decimalPart = 0;
-            if (nextByte == '.')
-            {
+            if (nextByte == '.') {
                 count++;
                 int numberOfDigits = count;
-                nextByte = json._buffer[count];
-                while (nextByte >= '0' && nextByte <= '9' && count - location < length)
-                {
+                nextByte = json._values[count];
+                while (nextByte >= '0' && nextByte <= '9' && count - location < length) {
                     int digit = nextByte - '0';
                     decimalPart = decimalPart * 10 + digit;
                     count++;
-                    nextByte = json._buffer[count];
+                    nextByte = json._values[count];
                 }
                 numberOfDigits = count - numberOfDigits;
                 double divisor = Math.Pow(10, numberOfDigits);
@@ -317,32 +257,27 @@ namespace System.Text.Json
 
             int exponentPart = 0;
             bool isExpNegative = false;
-            if (nextByte == 'e' || nextByte == 'E')
-            {
+            if (nextByte == 'e' || nextByte == 'E') {
                 count++;
-                nextByte = json._buffer[count];
-                if (nextByte == '-' || nextByte == '+')
-                {
-                    if (nextByte == '-')
-                    {
+                nextByte = json._values[count];
+                if (nextByte == '-' || nextByte == '+') {
+                    if (nextByte == '-') {
                         isExpNegative = true;
                     }
                     count++;
                 }
-                nextByte = json._buffer[count];
-                while (nextByte >= '0' && nextByte <= '9' && count - location < length)
-                {
+                nextByte = json._values[count];
+                while (nextByte >= '0' && nextByte <= '9' && count - location < length) {
                     int digit = nextByte - '0';
                     exponentPart = exponentPart * 10 + digit;
                     count++;
-                    nextByte = json._buffer[count];
+                    nextByte = json._values[count];
                 }
 
                 result *= (Math.Pow(10, isExpNegative ? exponentPart * -1 : exponentPart));
             }
 
-            if (count - location > length)
-            {
+            if (count - location > length) {
                 throw new InvalidCastException();
             }
 
@@ -350,26 +285,32 @@ namespace System.Text.Json
 
         }
 
-        public enum JsonValueType
+        public enum JsonValueType : byte
         {
-            String,
-            Number,
-            Object,
-            Array,
-            True,
-            False,
-            Null
+            String = 0,
+            Number = 1,
+            Object = 2,
+            Array  = 3,
+            True   = 4,
+            False  = 5,
+            Null   = 6
         }
 
-        private bool isEqual(string str, byte[] buffer, int location, int length)
+        public bool HasValue()
         {
-            if (str.Length != length) return false;
-            for (int i = 0; i < length; i++) {
-                if (str[i] != buffer[location + i]) {
-                    return false;
+            var typeCode = Type;
+
+            if (typeCode == JsonValueType.Object || typeCode == JsonValueType.Array) {
+                int length = Length;
+                if (length == 0) return false;
+                return true;
+            } else {
+                int location = Location;
+                if (_values[location - 1] == '"' && _values[location + 4] == '"') {
+                    return true;
                 }
+                return (_values[location] != 'n' || _values[location + 1] != 'u' || _values[location + 2] != 'l' || _values[location + 3] != 'l');
             }
-            return true;
         }
     }
 }

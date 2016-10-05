@@ -9,8 +9,8 @@ namespace System.Text.Json.Tests
         [Fact]
         public void ParseArrayWithEmptySpace()
         {
-            var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson);
-            var parsedObject = JsonObject.Parse(buffer.Array, buffer.Count);
+            var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson, 60);
+            var parsedObject = JsonObject.Parse(buffer.Slice(), buffer.Array.Slice(buffer.Count, buffer.Array.Length - buffer.Count));
             var phoneNumber = (string)parsedObject[0];
             var age = (int)parsedObject[1];
 
@@ -18,11 +18,11 @@ namespace System.Text.Json.Tests
             Assert.Equal(age, 25);
         }
 
-        [Fact(Skip = "feature NYI")]
+        [Fact]
         public void ParseArrayNoEmptySpace()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson, emptySpaceSize:0);
-            var parsedObject = JsonObject.Parse(buffer.Array, buffer.Count);
+            var parsedObject = JsonObject.Parse(buffer.Array.Slice());
             var phoneNumber = (string)parsedObject[0];
             var age = (int)parsedObject[1];
 
@@ -34,7 +34,7 @@ namespace System.Text.Json.Tests
         public void ParseSimpleObject()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleObjectJson);
-            var parsedObject = JsonObject.Parse(buffer.Array, buffer.Count);
+            var parsedObject = JsonObject.Parse(buffer.Slice(), buffer.Array.Slice(buffer.Count, buffer.Array.Length - buffer.Count));
 
             var age = (int)parsedObject["age"];
             var ageStrring = (string)parsedObject["age"];
@@ -59,7 +59,7 @@ namespace System.Text.Json.Tests
         public void ParseNestedJson()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.ParseJson);
-            var parsedObject = JsonObject.Parse(buffer.Array, buffer.Count);
+            var parsedObject = JsonObject.Parse(buffer.Slice(), buffer.Array.Slice(buffer.Count, buffer.Array.Length - buffer.Count));
 
             var person = parsedObject[0];
             var age = (double)person["age"];
