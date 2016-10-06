@@ -113,7 +113,7 @@ namespace LowAllocationWebServer
                         Console.WriteLine("Property {0} = {1}", name, value);
                         if (name == "Count")
                         {
-                            if (!PrimitiveParser.TryParse(value, out count))
+                            if (!PrimitiveParser.TryParseUIn32(value, out count))
                             {
                                 return 1;
                             }

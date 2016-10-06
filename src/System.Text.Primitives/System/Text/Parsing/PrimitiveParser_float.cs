@@ -8,7 +8,7 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {
-        public static bool TryParse(byte[] text, int index, EncodingData encoding, Format.Parsed format,
+        public static bool TryParseSingle(byte[] text, int index, EncodingData encoding, Format.Parsed format,
             out float value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -143,7 +143,7 @@ namespace System.Text
             return false;
         }
 
-        public unsafe static bool TryParse(byte* text, int index, int length, EncodingData encoding,
+        public unsafe static bool TryParseSingle(byte* text, int index, int length, EncodingData encoding,
             Format.Parsed format, out float value, out int bytesConsumed)
         {
             // Precondition replacement

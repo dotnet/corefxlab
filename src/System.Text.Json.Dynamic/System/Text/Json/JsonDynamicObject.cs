@@ -98,7 +98,7 @@ namespace System.Text.Json
                 throw new InvalidOperationException();
             }
             int consumed;
-            return PrimitiveParser.TryParse(jsonValue.Value, out value, out consumed);
+            return PrimitiveParser.TryParseUIn32(jsonValue.Value, out value, out consumed);
         }
 
 

@@ -33,50 +33,121 @@ namespace System.Text.Json
             _values = values;
         }
 
-        public JsonObject this[string name] {
-            get {
-                int length = Length;
-                var valueType = _db.Slice(8).Read<JsonValueType>();
+        public bool TryGetValue(Utf8String propertyName, out JsonObject value)
+        {
+            int length = Length;
+            var valueType = _db.Slice(8).Read<JsonValueType>();
 
-                if (length == 0) {
-                    throw new KeyNotFoundException();
+            if (length == 0) {
+                throw new KeyNotFoundException();
+            }
+
+            if (valueType != JsonValueType.Object) {
+                throw new NullReferenceException();
+            }
+
+            for (int i = RowSize; i <= _db.Length; i += RowSize) {
+                length = _db.Slice(i + 4).Read<int>();
+                valueType = _db.Slice(i + 8).Read<JsonValueType>();
+
+                if (valueType == JsonValueType.Object || valueType == JsonValueType.Array) {
+                    i += length * RowSize;
+                    continue;
                 }
 
-                if (valueType != JsonValueType.Object) {
-                    throw new NullReferenceException();
-                }
+                int location = _db.Slice(i).Read<int>();
+                if (new Utf8String(_values.Slice(location, length)) == propertyName) {
+                    int newStart = i + RowSize;
+                    int newEnd = newStart + RowSize;
 
-                for (int i = RowSize; i <= _db.Length; i += RowSize) {
-                    length = _db.Slice(i + 4).Read<int>();
-                    valueType = _db.Slice(i + 8).Read<JsonValueType>();
+                    valueType = _db.Slice(newStart + 8).Read<JsonValueType>();
 
                     if (valueType == JsonValueType.Object || valueType == JsonValueType.Array) {
-                        i += length * RowSize;
-                        continue;
+                        length = _db.Slice(newStart + 4).Read<int>();
+                        newEnd = newEnd + RowSize * length;
                     }
 
-                    int location = _db.Slice(i).Read<int>();
-                    if (new Utf8String(_values.Slice(location, length)) == name) {
-                        int newStart = i + RowSize;
-                        int newEnd = newStart + RowSize;
-
-                        valueType = _db.Slice(newStart + 8).Read<JsonValueType>();
-
-                        if (valueType == JsonValueType.Object || valueType == JsonValueType.Array) {
-                            length = _db.Slice(newStart + 4).Read<int>();
-                            newEnd = newEnd + RowSize * length;
-                        }
-
-                        return new JsonObject(_values, _db.Slice(newStart, newEnd - newStart));
-                    }
-
-                    valueType = _db.Slice(i + RowSize + 8).Read<JsonValueType>();
-
-                    if (valueType != JsonValueType.Object && valueType != JsonValueType.Array) {
-                        i += RowSize;
-                    }
+                    value = new JsonObject(_values, _db.Slice(newStart, newEnd - newStart));
+                    return true;
                 }
 
+                valueType = _db.Slice(i + RowSize + 8).Read<JsonValueType>();
+
+                if (valueType != JsonValueType.Object && valueType != JsonValueType.Array) {
+                    i += RowSize;
+                }
+            }
+
+            value = default(JsonObject);
+            return false;
+        }
+
+        public bool TryGetValue(string propertyName, out JsonObject value)
+        {
+            int length = Length;
+            var valueType = _db.Slice(8).Read<JsonValueType>();
+
+            if (length == 0) {
+                throw new KeyNotFoundException();
+            }
+
+            if (valueType != JsonValueType.Object) {
+                throw new NullReferenceException();
+            }
+
+            for (int i = RowSize; i <= _db.Length; i += RowSize) {
+                length = _db.Slice(i + 4).Read<int>();
+                valueType = _db.Slice(i + 8).Read<JsonValueType>();
+
+                if (valueType == JsonValueType.Object || valueType == JsonValueType.Array) {
+                    i += length * RowSize;
+                    continue;
+                }
+
+                int location = _db.Slice(i).Read<int>();
+                if (new Utf8String(_values.Slice(location, length)) == propertyName) {
+                    int newStart = i + RowSize;
+                    int newEnd = newStart + RowSize;
+
+                    valueType = _db.Slice(newStart + 8).Read<JsonValueType>();
+
+                    if (valueType == JsonValueType.Object || valueType == JsonValueType.Array) {
+                        length = _db.Slice(newStart + 4).Read<int>();
+                        newEnd = newEnd + RowSize * length;
+                    }
+
+                    value = new JsonObject(_values, _db.Slice(newStart, newEnd - newStart));
+                    return true;
+                }
+
+                valueType = _db.Slice(i + RowSize + 8).Read<JsonValueType>();
+
+                if (valueType != JsonValueType.Object && valueType != JsonValueType.Array) {
+                    i += RowSize;
+                }
+            }
+
+            value = default(JsonObject);
+            return false;
+        }
+
+        public JsonObject this[Utf8String name]
+        {
+            get {
+                JsonObject value;
+                if(TryGetValue(name, out value)) {
+                    return value;
+                }
+                throw new KeyNotFoundException();
+            }
+        }
+
+        public JsonObject this[string name] {
+            get {
+                JsonObject value;
+                if (TryGetValue(name, out value)) {
+                    return value;
+                }
                 throw new KeyNotFoundException();
             }
         }
@@ -195,16 +266,6 @@ namespace System.Text.Json
             return isNegative ? result * -1 : result;
         }
 
-        internal int Location => _db.Read<int>();
-        internal int Length => _db.Slice(4).Read<int>();
-        internal JsonValueType Type => _db.Slice(8).Read<JsonValueType>();
-        internal bool IsSimpleValue {
-            get {
-                var type = Type;
-                return type != JsonValueType.Object && type != JsonValueType.Array;
-            }
-        }
-
         public static explicit operator double(JsonObject json)
         {
             var typeCode = json.Type;
@@ -283,6 +344,16 @@ namespace System.Text.Json
 
             return isNegative ? result * -1 : result;
 
+        }
+
+        internal int Location => _db.Read<int>();
+        internal int Length => _db.Slice(4).Read<int>();
+        public JsonValueType Type => _db.Slice(8).Read<JsonValueType>();
+        internal bool IsSimpleValue {
+            get {
+                var type = Type;
+                return type != JsonValueType.Object && type != JsonValueType.Array;
+            }
         }
 
         public enum JsonValueType : byte

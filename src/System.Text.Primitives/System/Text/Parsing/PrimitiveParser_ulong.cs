@@ -8,7 +8,7 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {      
-        public static bool TryParse(Utf8String text, Format.Parsed numericFormat, 
+        public static bool TryParseUInt64(Utf8String text, Format.Parsed numericFormat, 
             out ulong value, out int bytesConsumed)
         {
             // Precondition replacement

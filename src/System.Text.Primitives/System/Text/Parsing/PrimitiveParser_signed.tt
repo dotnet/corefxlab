@@ -22,7 +22,7 @@ for (int i = 0; i < primitives.Length; i++)
 {
 	#>
 		#region <#= primitives[i] #>
-		public static bool TryParse(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
+		public static bool TryParse<#=classes[i]#>(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
             out <#= primitives[i] #> value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -275,7 +275,7 @@ for (int i = 0; i < primitives.Length; i++)
 			}
         }
 
-		public static unsafe bool TryParse(byte* text, int index, int length, EncodingData encoding, Format.Parsed numericFormat, 
+		public static unsafe bool TryParse<#=classes[i]#>(byte* text, int index, int length, EncodingData encoding, Format.Parsed numericFormat, 
             out <#= primitives[i] #> value, out int bytesConsumed)
         {
             // Precondition replacement

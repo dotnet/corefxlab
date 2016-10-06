@@ -45,6 +45,10 @@ namespace System.Text.Json.Tests
             var city = (string)parsedObject["city"];
             var zip = (int)parsedObject["zip"];
 
+            JsonObject age2;
+            Assert.True(parsedObject.TryGetValue("age", out age2));
+            Assert.Equal((int)age2, 30);
+
             Assert.Equal(age, 30);
             Assert.Equal(ageStrring, "30");
             Assert.Equal(first, "John");
