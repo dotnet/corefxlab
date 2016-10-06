@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
+
 namespace System.Text.Utf16
 {
     public static class Utf16LittleEndianEncoder
@@ -66,9 +68,7 @@ namespace System.Text.Utf16
                 return false;
             }
 
-            // TODO: Can we add this in UnicodeCodePoint class?
-            // Should be represented as Surrogate?
-            encodedBytes = ((uint)codePoint >= 0x10000) ? 4 : 2;
+            encodedBytes = UnicodeCodePoint.IsBmp(codePoint) ? 2 : 4;
 
             if (buffer.Length < encodedBytes)
             {
@@ -89,9 +89,9 @@ namespace System.Text.Utf16
             {
                 unchecked
                 {
-                    uint highSurrogate = ((uint)codePoint >> 10) + UnicodeConstants.Utf16HighSurrogateFirstCodePoint;
-                    uint lowSurrogate = ((uint)codePoint & MaskLow10Bits) + UnicodeConstants.Utf16LowSurrogateFirstCodePoint;
-
+                    uint codePointValue = (uint)codePoint;
+                    uint highSurrogate = ((codePointValue - 0x010000u) >> 10) + UnicodeConstants.Utf16HighSurrogateFirstCodePoint;
+                    uint lowSurrogate = (codePointValue & MaskLow10Bits) + UnicodeConstants.Utf16LowSurrogateFirstCodePoint;
                     buffer.Write(highSurrogate | (lowSurrogate << 16));
                 }
             }
