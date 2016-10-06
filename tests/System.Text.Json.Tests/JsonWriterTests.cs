@@ -2,8 +2,9 @@
 using System.Text.Json;
 using System.Text;
 using Xunit;
+using System.Text.Formatting;
 
-namespace System.Text.Formatting.Tests
+namespace System.Text.Json.Tests
 {
     public class CompositeFormattingTests
     {

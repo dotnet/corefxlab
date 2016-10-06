@@ -1,10 +1,80 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
 using System.Text.Utf8;
 
 namespace System.Text.Json
 {
+    internal struct DbRow
+    {
+        public int ValueIndex;                // index in JSON payload
+        public int LengthOrNumberOfRows;      // length of text in JSON payload
+        public JsonObject.JsonValueType Type; // type of JSON construct (e.g. Object, Array, Number)
+
+        public const int UnknownNumberOfRows = -1;
+
+        public DbRow(JsonObject.JsonValueType type, int valueIndex, int lengthOrNumberOfRows = UnknownNumberOfRows)
+        {
+            ValueIndex = valueIndex;
+            LengthOrNumberOfRows = lengthOrNumberOfRows;
+            Type = type;
+        }
+    }
+
+    internal struct TwoStacks
+    {
+        Span<byte> _db;
+        int topOfStackObj;
+        int topOfStackArr;
+
+        int objectStackCount;
+        int arrayStackCount;
+
+        public int ObjectStackCount => objectStackCount;
+
+        public int ArrayStackCount => arrayStackCount;
+
+        public TwoStacks(Span<byte> db)
+        {
+            _db = db;
+            topOfStackObj = _db.Length - 1;
+            topOfStackArr = _db.Length - 1;
+            objectStackCount = 0;
+            arrayStackCount = 0;
+        }
+
+        public void PushObject(int value)
+        {
+            _db.Slice(topOfStackObj - 8).Write<int>(value);
+            topOfStackObj -= 8;
+            objectStackCount++;
+        }
+
+        public void PushArray(int value)
+        {
+            _db.Slice(topOfStackArr - 4).Write<int>(value);
+            topOfStackArr -= 8;
+            arrayStackCount++;
+        }
+
+        public int PopObject()
+        {
+            objectStackCount--;
+            var value = _db.Slice(topOfStackObj).Read<int>();
+            topOfStackObj += 8;
+            return value;
+        }
+
+        public int PopArray()
+        {
+            arrayStackCount--;
+            var value = _db.Slice(topOfStackArr + 4).Read<int>();
+            topOfStackArr += 8;
+            return value;
+        }
+    }
+
     internal struct JsonParser
     {
         private Span<byte> _db;
@@ -18,8 +88,6 @@ namespace System.Text.Json
         private JsonTokenType _tokenType;
         private bool _jsonStartIsObject;
 
-        private const int RowSize = 9;  // Do not change, unless you also change FindLocation
-
         private enum JsonTokenType
         {
             // Start = 0 state reserved for internal use
@@ -30,6 +98,10 @@ namespace System.Text.Json
             Property = 5,
             Value = 6
         };
+
+        private static ReadOnlySpan<byte> s_false = new Utf8String("false").Bytes;
+        private static ReadOnlySpan<byte> s_true = new Utf8String("true").Bytes;
+        private static ReadOnlySpan<byte> s_null = new Utf8String("null").Bytes;
 
         public JsonObject Parse(ReadOnlySpan<byte> utf8Json)
         {
@@ -53,57 +125,42 @@ namespace System.Text.Json
 
             _jsonStartIsObject = _values[_valuesIndex] == '{';
 
-            int numValues = 0;
-            int numPairs = 0;
-            int numObj = 0;
-            int numArr = 0;
+            int arrayItemsCount = 0;
+            int numberOfRowsForMembers = 0;
 
-            int topOfStackObj = _db.Length - 1;
-            int topOfStackArr = _db.Length - 1;
+            TwoStacks stack = new TwoStacks(_db);
 
             while (Read()) {
                 var tokenType = _tokenType;
                 switch (tokenType) {
                     case JsonTokenType.ObjectStart:
-                        _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
-                        _db.Slice(_dbIndex).Write<int>(-1); _dbIndex += 4;
-                        _db.Slice(_dbIndex).Write(JsonObject.JsonValueType.Object); _dbIndex += 1;
-                        _db.Slice(topOfStackObj - 8).Write<int>(numPairs); topOfStackObj -= 8;
-                        numPairs = 0;
-                        numObj++;
+                        AppendDbRow(JsonObject.JsonValueType.Object, _valuesIndex);
+                        stack.PushObject(numberOfRowsForMembers);
+                        numberOfRowsForMembers = 0;
                         break;
                     case JsonTokenType.ObjectEnd:
-                        _db.Slice(FindLocation(numObj - 1, true)).Write<int>(numPairs);
-                        numObj--;
-                        numPairs += _db.Slice(topOfStackObj).Read<int>();
-                        topOfStackObj += 8;
+                        _db.Slice(FindLocation(stack.ObjectStackCount - 1, true)).Write<int>(numberOfRowsForMembers);
+                        numberOfRowsForMembers += stack.PopObject();
                         break;
                     case JsonTokenType.ArrayStart:
-                        _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
-                        _db.Slice(_dbIndex).Write<int>(-1); _dbIndex += 4;
-                        _db.Slice(_dbIndex).Write(JsonObject.JsonValueType.Array); _dbIndex += 1;
-                        _db.Slice(topOfStackArr - 4).Write<int>(numValues); topOfStackArr -= 8;
-                        numValues = 0;
-                        numArr++;
+                        AppendDbRow(JsonObject.JsonValueType.Array, _valuesIndex);
+                        stack.PushArray(arrayItemsCount);
+                        arrayItemsCount = 0;
                         break;
                     case JsonTokenType.ArrayEnd:
-                        _db.Slice(FindLocation(numArr - 1, false)).Write<int>(numValues);
-                        numArr--;
-                        numValues += _db.Slice(topOfStackArr + 4).Read<int>();
-                        topOfStackArr += 8;
+                        _db.Slice(FindLocation(stack.ArrayStackCount - 1, false)).Write<int>(arrayItemsCount);
+                        arrayItemsCount += stack.PopArray();
                         break;
                     case JsonTokenType.Property:
-                        ParseName();
-                        numPairs++;
+                        ParsePropertyName();
                         ParseValue();
-                        numPairs++;
-                        numValues++;
-                        numValues++;
+                        numberOfRowsForMembers++;
+                        numberOfRowsForMembers++;
                         break;
                     case JsonTokenType.Value:
                         ParseValue();
-                        numValues++;
-                        numPairs++;
+                        arrayItemsCount++;
+                        numberOfRowsForMembers++;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -119,38 +176,32 @@ namespace System.Text.Json
             int numFound = 0;
 
             while (true) {
-                int rowStartOffset = (rowNumber << 3) + rowNumber; // multiply by RowSize which is 9
-                int lengthOffset = rowStartOffset + 4;
-                var typeCode = _db.Slice(rowStartOffset + 8).Read<JsonObject.JsonValueType>();
-                var length = _db.Slice(rowStartOffset + 4).Read<int>();
+                int rowStartOffset = rowNumber * JsonObject.RowSize;
+                var row = _db.Slice(rowStartOffset).Read<DbRow>();
 
-                if (length == -1 && (lookingForObject ? typeCode == JsonObject.JsonValueType.Object : typeCode == JsonObject.JsonValueType.Array)) {
+                int lengthOffset = rowStartOffset + 4;
+                
+                if (row.LengthOrNumberOfRows == -1 && (lookingForObject ? row.Type == JsonObject.JsonValueType.Object : row.Type == JsonObject.JsonValueType.Array)) {
                     numFound++;
                 }
 
                 if (index == numFound - 1) {
                     return lengthOffset;
                 } else {
-                    if (length > 0 && (typeCode == JsonObject.JsonValueType.Object || typeCode == JsonObject.JsonValueType.Array)) {
-                        rowNumber += length;
+                    if (row.LengthOrNumberOfRows > 0 && (row.Type == JsonObject.JsonValueType.Object || row.Type == JsonObject.JsonValueType.Array)) {
+                        rowNumber += row.LengthOrNumberOfRows;
                     }
                     rowNumber++;
                 }
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool Read()
         {
             var canRead = _valuesIndex < _values.Length;
             if (canRead) MoveToNextTokenType();
             return canRead;
-        }
-
-        private void ParseName()
-        {
-            SkipWhitespace();
-            ParseStringValue();
-            _valuesIndex++;
         }
 
         private JsonObject.JsonValueType PeekType()
@@ -187,7 +238,15 @@ namespace System.Text.Json
                 return JsonObject.JsonValueType.Number;
             }
 
-            throw new FormatException("Invalid json, tried to read char '" + nextByte + "'.");
+            throw new FormatException("Invalid json, tried to read char '" + nextByte + " at " + _valuesIndex + "'.");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ParsePropertyName()
+        {
+            SkipWhitespace();
+            ParseString();
+            _valuesIndex++;
         }
 
         private void ParseValue()
@@ -195,158 +254,107 @@ namespace System.Text.Json
             var type = PeekType();
             switch (type) {
                 case JsonObject.JsonValueType.String:
-                    ParseStringValue();
-                    return;
+                    ParseString();
+                    break;
                 case JsonObject.JsonValueType.Number:
-                    ParseNumberValue();
-                    return;
+                    ParseNumber();
+                    break;
                 case JsonObject.JsonValueType.True:
-                    ParseTrueValue();
+                    ParseLiteral(JsonObject.JsonValueType.True, s_true);
                     return;
                 case JsonObject.JsonValueType.False:
-                    ParseFalseValue();
-                    return;
+                    ParseLiteral(JsonObject.JsonValueType.False, s_false);
+                    break;
                 case JsonObject.JsonValueType.Null:
-                    ParseNullValue();
-                    return;
+                    ParseLiteral(JsonObject.JsonValueType.Null, s_null);
+                    break;
                 case JsonObject.JsonValueType.Object:
                 case JsonObject.JsonValueType.Array:
-                    return;
+                    break;
                 default:
                     throw new ArgumentException("Invalid json value type '" + type + "'.");
             }
         }
 
-        private void ParseStringValue()
+        private void ParseString()
         {
-            _valuesIndex++;
-            var count = _valuesIndex;
+            _valuesIndex++; // eat quote
+
+            var indexOfClosingQuote = _valuesIndex;
             do {
-                while (_values[count] != '"') {
-                    count++;
-                }
-                count++;
-            } while (AreNumOfBackSlashesAtEndOfStringOdd(count - 2));
+                indexOfClosingQuote = _values.Slice(indexOfClosingQuote).IndexOf((byte)'"');
+            } while (AreNumOfBackSlashesAtEndOfStringOdd(_valuesIndex + indexOfClosingQuote - 2));
 
-            var strLength = count - _valuesIndex;
+            AppendDbRow(JsonObject.JsonValueType.String, _valuesIndex, indexOfClosingQuote);
 
-            _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
-            _db.Slice(_dbIndex).Write<int>(strLength - 1); _dbIndex += 4;
-            _dbIndex += 1;
-
-            _valuesIndex += strLength;
-
+            _valuesIndex += indexOfClosingQuote + 1;
             SkipWhitespace();
         }
 
-        private bool AreNumOfBackSlashesAtEndOfStringOdd(int count)
+        private void ParseNumber()
         {
-            var length = count - _valuesIndex;
-            if (length < 0) return false;
-            var nextByte = _values[count];
-            if (nextByte != '\\') return false;
-            var numOfBackSlashes = 0;
-            while (nextByte == '\\') {
-                numOfBackSlashes++;
-                if ((length - numOfBackSlashes) < 0) return numOfBackSlashes % 2 != 0;
-                nextByte = _values[count - numOfBackSlashes];
-            }
-            return numOfBackSlashes % 2 != 0;
-        }
+            var nextIndex = _valuesIndex;
 
-        private void ParseNumberValue()
-        {
-            var count = _valuesIndex;
-
-            var nextByte = _values[count];
+            var nextByte = _values[nextIndex];
             if (nextByte == '-') {
-                count++;
+                nextIndex++;
             }
 
-            nextByte = _values[count];
+            nextByte = _values[nextIndex];
             while (nextByte >= '0' && nextByte <= '9') {
-                count++;
-                nextByte = _values[count];
+                nextIndex++;
+                nextByte = _values[nextIndex];
             }
 
             if (nextByte == '.') {
-                count++;
+                nextIndex++;
             }
 
-            nextByte = _values[count];
+            nextByte = _values[nextIndex];
             while (nextByte >= '0' && nextByte <= '9') {
-                count++;
-                nextByte = _values[count];
+                nextIndex++;
+                nextByte = _values[nextIndex];
             }
 
             if (nextByte == 'e' || nextByte == 'E') {
-                count++;
-                nextByte = _values[count];
+                nextIndex++;
+                nextByte = _values[nextIndex];
                 if (nextByte == '-' || nextByte == '+') {
-                    count++;
+                    nextIndex++;
                 }
-                nextByte = _values[count];
+                nextByte = _values[nextIndex];
                 while (nextByte >= '0' && nextByte <= '9') {
-                    count++;
-                    nextByte = _values[count];
+                    nextIndex++;
+                    nextByte = _values[nextIndex];
                 }
             }
 
-            var length = count - _valuesIndex;
+            var length = nextIndex - _valuesIndex;
 
-            _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
-            _db.Slice(_dbIndex).Write<int>(count - _valuesIndex); _dbIndex += 4;
-            _dbIndex += 1;
+            AppendDbRow(JsonObject.JsonValueType.Number, _valuesIndex, length);
 
             _valuesIndex += length;
             SkipWhitespace();
         }
 
-        private void ParseTrueValue()
+        private void ParseLiteral(JsonObject.JsonValueType literal, ReadOnlySpan<byte> expected)
         {
-            _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
-            _db.Slice(_dbIndex).Write<int>(4); _dbIndex += 4;
-            _dbIndex += 1;
-
-            if (_values[_valuesIndex + 1] != 'r' || _values[_valuesIndex + 2] != 'u' || _values[_valuesIndex + 3] != 'e') {
-                throw new FormatException("Invalid json, tried to read 'true'.");
+            if (!_values.Slice(_valuesIndex).StartsWith(expected)) {
+                throw new FormatException("Invalid json, tried to read " + literal.ToString());
             }
-
-            _valuesIndex += 4;
-
+            AppendDbRow(JsonObject.JsonValueType.True, _valuesIndex, expected.Length);
+            _valuesIndex += expected.Length;
             SkipWhitespace();
         }
 
-        private void ParseFalseValue()
+        private void AppendDbRow(JsonObject.JsonValueType type, int valueIndex, int LengthOrNumberOfRows = DbRow.UnknownNumberOfRows)
         {
-            _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
-            _db.Slice(_dbIndex).Write(JsonObject.JsonValueType.False); _dbIndex += 4; // TODO: can this advance by 1?
-            _dbIndex += 1;
-
-            if (_values[_valuesIndex + 1] != 'a' || _values[_valuesIndex + 2] != 'l' || _values[_valuesIndex + 3] != 's' || _values[_valuesIndex + 4] != 'e') {
-                throw new FormatException("Invalid json, tried to read 'false'.");
-            }
-
-            _valuesIndex += 5;
-
-            SkipWhitespace();
+            var dbRow = new DbRow(type, valueIndex, LengthOrNumberOfRows);
+            _db.Slice(_dbIndex).Write(dbRow);
+            _dbIndex += JsonObject.RowSize;
         }
 
-        private void ParseNullValue()
-        {
-            _db.Slice(_dbIndex).Write<int>(_valuesIndex); _dbIndex += 4;
-            _db.Slice(_dbIndex).Write(JsonObject.JsonValueType.True); _dbIndex += 4;
-            _dbIndex += 1;
-
-            if (_values[_valuesIndex + 1] != 'u' || _values[_valuesIndex + 2] != 'l' || _values[_valuesIndex + 3] != 'l') {
-                throw new FormatException("Invalid json, tried to read 'null'.");
-            }
-
-            _valuesIndex += 4;
-
-            SkipWhitespace();
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SkipWhitespace()
         {
             while (Utf8String.IsWhiteSpace(_values[_valuesIndex])) {
@@ -430,6 +438,21 @@ namespace System.Text.Json
                 default:
                     throw new FormatException("Unable to get next token type. Check json format.");
             }
+        }
+
+        private bool AreNumOfBackSlashesAtEndOfStringOdd(int count)
+        {
+            var length = count - _valuesIndex;
+            if (length < 0) return false;
+            var nextByte = _values[count];
+            if (nextByte != '\\') return false;
+            var numOfBackSlashes = 0;
+            while (nextByte == '\\') {
+                numOfBackSlashes++;
+                if ((length - numOfBackSlashes) < 0) return numOfBackSlashes % 2 != 0;
+                nextByte = _values[count - numOfBackSlashes];
+            }
+            return numOfBackSlashes % 2 != 0;
         }
     }
 }

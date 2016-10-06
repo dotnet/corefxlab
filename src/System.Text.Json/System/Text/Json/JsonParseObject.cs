@@ -8,10 +8,10 @@ namespace System.Text.Json
 {
     public struct JsonObject
     {
-        private ReadOnlySpan<byte> _db; // TODO: should it be ReadOnlySpan?
+        private ReadOnlySpan<byte> _db; 
         private ReadOnlySpan<byte> _values;
 
-        private const int RowSize = 9;
+        internal const int RowSize = 9; // Do not change, unless you also change FindLocation
 
         public static JsonObject Parse(ReadOnlySpan<byte> utf8Json)
         {
