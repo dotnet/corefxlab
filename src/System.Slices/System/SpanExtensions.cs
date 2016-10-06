@@ -430,6 +430,14 @@ namespace System
         {
             return SequenceEqual((ReadOnlySpan<T>)first, second);
         }
+
+        public static bool StartsWith<T>(this ReadOnlySpan<T> items, ReadOnlySpan<T> slice)
+            where T : struct, IEquatable<T>
+        {
+            if (slice.Length > items.Length) return false;
+            return items.Slice(0, slice.Length).SequenceEqual(slice);
+        }
+
         /// <summary>
         /// Determines whether two spans are structurally (byte-wise) equal by comparing the elements by using memcmp
         /// </summary>
@@ -664,6 +672,21 @@ namespace System
             {
                 if (str[i] != value[i])
                 {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool StartsWith(this ReadOnlySpan<byte> bytes, ReadOnlySpan<byte> slice)
+        {
+            if (slice.Length > bytes.Length) {
+                return false;
+            }
+
+            for (int i = 0; i < slice.Length; i++) {
+                if (bytes[i] != slice[i]) {
                     return false;
                 }
             }

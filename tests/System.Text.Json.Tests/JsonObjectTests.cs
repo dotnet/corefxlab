@@ -95,6 +95,18 @@ namespace System.Text.Json.Tests
             //var j = (string)person;                   // InvalidCastException
         }
 
+        [Fact]
+        public void ParseBoolean()
+        {
+            var buffer = StringToUtf8BufferWithEmptySpace("[true,false]", 60);
+            var parsedObject = JsonObject.Parse(buffer.Slice(), buffer.Array.Slice(buffer.Count, buffer.Array.Length - buffer.Count));
+            var first = (bool)parsedObject[0];
+            var second = (bool)parsedObject[1];
+
+            Assert.Equal(true, first);
+            Assert.Equal(false, second);
+        }
+
         private static ArraySegment<byte> StringToUtf8BufferWithEmptySpace(string testString, int emptySpaceSize = 2048)
         {
             var utf8Bytes = new Utf8String(testString).Bytes;
