@@ -41,6 +41,12 @@ namespace System.Text
         {
             return codePoint.Value >= UnicodeConstants.Utf16HighSurrogateFirstCodePoint && codePoint.Value <= UnicodeConstants.Utf16HighSurrogateLastCodePoint;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsBmp(UnicodeCodePoint codePoint)
+        {
+            return ((uint)codePoint < 0x10000);
+        }
         #endregion
 
         public static explicit operator uint(UnicodeCodePoint codePoint) { return codePoint.Value; }
@@ -81,6 +87,11 @@ namespace System.Text
         public static bool IsWhitespace(UnicodeCodePoint codePoint)
         {
             return Array.BinarySearch<uint>(UnicodeConstants.SortedWhitespaceCodePoints, codePoint.Value) >= 0;
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString("x");
         }
     }
 }

@@ -149,7 +149,7 @@ namespace System.Text.Utf8
             foreach (var codePoint in CodePoints)
             {
                 len++;
-                if (UnicodeCodePoint.IsSurrogate(codePoint))
+                if (!UnicodeCodePoint.IsBmp(codePoint))
                 {
                     len++;
                 }
@@ -161,7 +161,7 @@ namespace System.Text.Utf8
                 char* stackChars = null;
                 char[] characters = null;
 
-                if (len <= 256)
+                if (len <= 256) 
                 {
                     char* stackallocedChars = stackalloc char[len];
                     stackChars = stackallocedChars;
