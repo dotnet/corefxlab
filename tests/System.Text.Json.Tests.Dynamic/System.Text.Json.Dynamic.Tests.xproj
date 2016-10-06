@@ -6,10 +6,10 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>b6fbb81f-241f-4603-9510-e269f843f6cb</ProjectGuid>
-    <RootNamespace>System.Text.Json.Tests</RootNamespace>
+    <RootNamespace>System.Text.Json.Dynamic.Tests</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
+    <ProjectGuid>b6fbb81f-241f-4603-9510-e269f843f6cb</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>

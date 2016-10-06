@@ -8,7 +8,7 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {
-        public static bool TryParse(byte[] utf8Text, int index, out decimal value, out int bytesConsumed)
+        public static bool TryParseDecimal(byte[] utf8Text, int index, out decimal value, out int bytesConsumed)
         {
             // Precondition replacement
             if (utf8Text.Length < 1 || index < 0 || index >= utf8Text.Length)
@@ -90,7 +90,7 @@ namespace System.Text
             }
         }
 
-        public unsafe static bool TryParse(byte* utf8Text, int index, int length, out decimal value, out int bytesConsumed)
+        public unsafe static bool TryParseDecimal(byte* utf8Text, int index, int length, out decimal value, out int bytesConsumed)
         {
             // Precondition replacement
             if (length < 1 || index < 0)

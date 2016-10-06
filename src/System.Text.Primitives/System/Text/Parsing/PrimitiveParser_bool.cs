@@ -270,7 +270,7 @@ namespace System.Text
         }
         #endregion
 
-        public static bool TryParse(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed format, out bool value, out int bytesConsumed)
+        public static bool TryParseBoolean(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed format, out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;
             value = default(bool);
@@ -310,7 +310,7 @@ namespace System.Text
             return false;
         }
 
-        public static bool TryParse(byte[] text, int index, EncodingData encoding, Format.Parsed format,
+        public static bool TryParseBoolean(byte[] text, int index, EncodingData encoding, Format.Parsed format,
             out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;
@@ -359,7 +359,7 @@ namespace System.Text
             return false;
         }
 
-        public static unsafe bool TryParse(byte* text, int index, int length, EncodingData encoding,
+        public static unsafe bool TryParseBoolean(byte* text, int index, int length, EncodingData encoding,
             Format.Parsed numericFormat, out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;
@@ -407,7 +407,7 @@ namespace System.Text
             return false;
         }
 
-        public static bool TryParse(string text, int index, Format.Parsed format,
+        public static bool TryParseBoolean(string text, int index, Format.Parsed format,
           out bool value, out int charactersConsumed)
         {
             charactersConsumed = 0;
@@ -444,7 +444,7 @@ namespace System.Text
             }
         }
 
-        public static bool TryParse(Utf8String text, Format.Parsed format,
+        public static bool TryParseBoolean(Utf8String text, Format.Parsed format,
             out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;

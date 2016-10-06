@@ -8,7 +8,7 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {
-        public static bool TryParse(string text, int index, int count, out uint value, out int charactersConsumed)
+        public static bool TryParseUIn32(string text, int index, int count, out uint value, out int charactersConsumed)
         {
             Precondition.Require(count > 0);
             Precondition.Require(text.Length >= index + count);
@@ -20,25 +20,25 @@ namespace System.Text
                     char* pSubstring = pText + index;
                     var span = new Span<byte>((byte*)pSubstring, count << 1);
                     int bytesConsumed;
-                    var result = TryParse(span, EncodingData.Encoding.Utf16, out value, out bytesConsumed);
+                    var result = TryParseUIn32(span, EncodingData.Encoding.Utf16, out value, out bytesConsumed);
                     charactersConsumed = bytesConsumed >> 1;
                     return result;
                 }
             }
         }
 
-        public static bool TryParse(ReadOnlySpan<char> text, out uint value, out int charactersConsumed)
+        public static bool TryParseUIn32(ReadOnlySpan<char> text, out uint value, out int charactersConsumed)
         {
             Precondition.Require(text.Length > 0);
 
             ReadOnlySpan<byte> span = text.Cast<char, byte>();
             int bytesConsumed;
-            var result = TryParse(span, EncodingData.Encoding.Utf16, out value, out bytesConsumed);
+            var result = TryParseUIn32(span, EncodingData.Encoding.Utf16, out value, out bytesConsumed);
             charactersConsumed = bytesConsumed >> 1;
             return result;
         }
 
-        public static bool TryParse(Utf8String text, out uint value, out int bytesConsumed)
+        public static bool TryParseUIn32(Utf8String text, out uint value, out int bytesConsumed)
         {
             // Precondition replacement
             if (text.Length < 1)
@@ -86,7 +86,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParse(ReadOnlySpan<byte> text, EncodingData.Encoding encoding, out uint value, out int bytesConsumed)
+        public static bool TryParseUIn32(ReadOnlySpan<byte> text, EncodingData.Encoding encoding, out uint value, out int bytesConsumed)
         {
             Precondition.Require(text.Length > 0);
             Precondition.Require(encoding == EncodingData.Encoding.Utf8 || text.Length > 1);
@@ -146,22 +146,22 @@ namespace System.Text
         }
 
         #region helpers
-        public static bool TryParse(string text, int index, int count, out uint value)
+        public static bool TryParseUIn32(string text, int index, int count, out uint value)
         {
             int charactersConsumed;
-            return TryParse(text, index, count, out value, out charactersConsumed);
+            return TryParseUIn32(text, index, count, out value, out charactersConsumed);
         }
 
-        public static bool TryParse(ReadOnlySpan<char> text, out uint value)
+        public static bool TryParseUIn32(ReadOnlySpan<char> text, out uint value)
         {
             int charactersConsumed;
-            return TryParse(text, out value, out charactersConsumed);
+            return TryParseUIn32(text, out value, out charactersConsumed);
         }
 
-        public static bool TryParse(Utf8String text, out uint value)
+        public static bool TryParseUIn32(Utf8String text, out uint value)
         {
             int bytesConsumed;
-            return TryParse(text, out value, out bytesConsumed);
+            return TryParseUIn32(text, out value, out bytesConsumed);
         }
         #endregion
     }
