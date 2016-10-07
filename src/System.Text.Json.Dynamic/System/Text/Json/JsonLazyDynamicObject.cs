@@ -6,7 +6,7 @@ using System.Text.Utf8;
 
 namespace System.Text.Json
 {
-    public class JsonLazyDynamicObject : DynamicObject
+    public class JsonLazyDynamicObject : DynamicObject, IDisposable
     {
         JsonObject _dom;
 
@@ -136,6 +136,11 @@ namespace System.Text.Json
 
             result = null;
             return false;
+        }
+
+        public void Dispose()
+        {
+            _dom.Dispose();
         }
     }
 }

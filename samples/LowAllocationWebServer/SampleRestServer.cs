@@ -40,8 +40,10 @@ namespace LowAllocationWebServer
         void WriteResponseForPostJson(HttpRequest request, HttpResponse response)
         {
             // read request json
-            var dom = JsonObject.Parse(request.Body);
-            var requestedCount = (int)dom["Count"];
+            int requestedCount;
+            using (var dom = JsonObject.Parse(request.Body)) {
+                requestedCount = (int)dom["Count"];
+            }
 
             // write response JSON
             var jsonWriter = new JsonWriter<ResponseFormatter>(response.Body, prettyPrint: false);

@@ -136,6 +136,11 @@ namespace System.Buffers
             return new Memory<T>(_array, _offset + offset, length, _memory == null ? null : Add(_memory, offset));
         }
 
+        public unsafe Memory<T> Slice(int offset)
+        {
+            return Slice(offset, Length - offset);
+        }
+
         public unsafe bool TryGetPointer(out void* pointer)
         {
             if (_memory == null)
