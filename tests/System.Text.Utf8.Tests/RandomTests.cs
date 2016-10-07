@@ -653,7 +653,7 @@ namespace System.Text.Utf8.Tests
         [InlineData("aaabaaa", 'a')]
         [InlineData("abababab", 'a')]
         [InlineData("abababab", 'b')]
-        public void IndexOfUtf8Character(string s, char character)
+        public void IndexOfUtf8CharacterTest(string s, char character)
         {
             int expected = s.IndexOf(character);
 
@@ -681,7 +681,7 @@ namespace System.Text.Utf8.Tests
         [InlineData(false, 0, "abc", "bc")]
         [InlineData(false, 0, "abc", "bc")]
         [InlineData(false, 1, "abc", "c")]
-        public void IsSubstringAt(bool expected, int position, string s, string substring)
+        public void IsSubstringAtTest(bool expected, int position, string s, string substring)
         {
             Utf8String u8s = new Utf8String(s);
             Utf8String u8substring = new Utf8String(substring);
