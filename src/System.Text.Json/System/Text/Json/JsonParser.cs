@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Text.Utf8;
 
@@ -24,10 +25,10 @@ namespace System.Text.Json
 
     internal struct TwoStacks
     {
-        Span<byte> _db;
+        Span<byte> _memory;
         int topOfStackObj;
         int topOfStackArr;
-
+        int capacity;
         int objectStackCount;
         int arrayStackCount;
 
@@ -35,33 +36,48 @@ namespace System.Text.Json
 
         public int ArrayStackCount => arrayStackCount;
 
+        public bool IsFull {
+            get {
+                return objectStackCount >= capacity || arrayStackCount >= capacity;
+            }
+        }
+
         public TwoStacks(Span<byte> db)
         {
-            _db = db;
-            topOfStackObj = _db.Length - 1;
-            topOfStackArr = _db.Length - 1;
+            _memory = db;
+            topOfStackObj = _memory.Length;
+            topOfStackArr = _memory.Length;
             objectStackCount = 0;
             arrayStackCount = 0;
+            capacity = _memory.Length/8;
         }
 
-        public void PushObject(int value)
+        public bool TryPushObject(int value)
         {
-            _db.Slice(topOfStackObj - 8).Write<int>(value);
-            topOfStackObj -= 8;
-            objectStackCount++;
+            if (!IsFull) {
+                _memory.Slice(topOfStackObj - 8).Write<int>(value);
+                topOfStackObj -= 8;
+                objectStackCount++;
+                return true;
+            }
+            return false;
         }
 
-        public void PushArray(int value)
+        public bool TryPushArray(int value)
         {
-            _db.Slice(topOfStackArr - 4).Write<int>(value);
-            topOfStackArr -= 8;
-            arrayStackCount++;
+            if (!IsFull) {
+                _memory.Slice(topOfStackArr - 4).Write<int>(value);
+                topOfStackArr -= 8;
+                arrayStackCount++;
+                return true;
+            }
+            return false;
         }
 
         public int PopObject()
         {
             objectStackCount--;
-            var value = _db.Slice(topOfStackObj).Read<int>();
+            var value = _memory.Slice(topOfStackObj).Read<int>();
             topOfStackObj += 8;
             return value;
         }
@@ -69,9 +85,15 @@ namespace System.Text.Json
         public int PopArray()
         {
             arrayStackCount--;
-            var value = _db.Slice(topOfStackArr + 4).Read<int>();
+            var value = _memory.Slice(topOfStackArr + 4).Read<int>();
             topOfStackArr += 8;
             return value;
+        }
+
+        internal void Resize(Memory<byte> newStackMemory)
+        {
+            _memory.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).CopyTo(newStackMemory);
+            _memory = newStackMemory;
         }
     }
 
@@ -79,6 +101,9 @@ namespace System.Text.Json
     {
         private Span<byte> _db;
         private ReadOnlySpan<byte> _values;
+        private Memory<byte> _scratch;
+        BufferPool _pool;
+        TwoStacks _stack;
 
         private int _valuesIndex;
         private int _dbIndex;
@@ -103,17 +128,17 @@ namespace System.Text.Json
         private static ReadOnlySpan<byte> s_true = new Utf8String("true").Bytes;
         private static ReadOnlySpan<byte> s_null = new Utf8String("null").Bytes;
 
-        public JsonObject Parse(ReadOnlySpan<byte> utf8Json)
+        public JsonObject Parse(ReadOnlySpan<byte> utf8Json, BufferPool pool = null)
         {
-            var db = new byte[utf8Json.Length * 4];
-            return Parse(utf8Json, db);
-        }
+            _pool = pool;
+            if (_pool == null) _pool = ManagedBufferPool.Shared;
+            _scratch = _pool.Rent(utf8Json.Length * 4);         
 
-        public JsonObject Parse(ReadOnlySpan<byte> utf8Json, Span<byte> db)
-        {
+            int dbLength = _scratch.Length / 2;
+            _db = _scratch.Slice(0, dbLength);
+            _stack = new TwoStacks(_scratch.Slice(dbLength));
+
             _values = utf8Json;
-            _db = db;
-
             _insideObject = 0;
             _insideArray = 0;
             _tokenType = 0;
@@ -128,28 +153,30 @@ namespace System.Text.Json
             int arrayItemsCount = 0;
             int numberOfRowsForMembers = 0;
 
-            TwoStacks stack = new TwoStacks(_db);
-
             while (Read()) {
                 var tokenType = _tokenType;
                 switch (tokenType) {
                     case JsonTokenType.ObjectStart:
                         AppendDbRow(JsonObject.JsonValueType.Object, _valuesIndex);
-                        stack.PushObject(numberOfRowsForMembers);
+                        while(!_stack.TryPushObject(numberOfRowsForMembers)) {
+                            ResizeDb();
+                        }
                         numberOfRowsForMembers = 0;
                         break;
                     case JsonTokenType.ObjectEnd:
-                        _db.Slice(FindLocation(stack.ObjectStackCount - 1, true)).Write<int>(numberOfRowsForMembers);
-                        numberOfRowsForMembers += stack.PopObject();
+                        _db.Slice(FindLocation(_stack.ObjectStackCount - 1, true)).Write<int>(numberOfRowsForMembers);
+                        numberOfRowsForMembers += _stack.PopObject();
                         break;
                     case JsonTokenType.ArrayStart:
                         AppendDbRow(JsonObject.JsonValueType.Array, _valuesIndex);
-                        stack.PushArray(arrayItemsCount);
+                        while (!_stack.TryPushArray(arrayItemsCount)) {
+                            ResizeDb();
+                        }
                         arrayItemsCount = 0;
                         break;
                     case JsonTokenType.ArrayEnd:
-                        _db.Slice(FindLocation(stack.ArrayStackCount - 1, false)).Write<int>(arrayItemsCount);
-                        arrayItemsCount += stack.PopArray();
+                        _db.Slice(FindLocation(_stack.ArrayStackCount - 1, false)).Write<int>(arrayItemsCount);
+                        arrayItemsCount += _stack.PopArray();
                         break;
                     case JsonTokenType.Property:
                         ParsePropertyName();
@@ -167,7 +194,25 @@ namespace System.Text.Json
                 }
             }
 
-            return new JsonObject(_values, _db.Slice(0, _dbIndex));
+            var result =  new JsonObject(_values, _db.Slice(0, _dbIndex), _pool, _scratch);
+            _scratch = Memory<byte>.Empty;
+            return result;
+        }
+
+        private void ResizeDb()
+        {
+            var oldData = _scratch.Span;
+            var newScratch = _pool.Rent(_scratch.Length * 2);
+            int dbLength = newScratch.Length / 2;
+
+            var newDb = newScratch.Slice(0, dbLength);
+            _db.Slice(0, _valuesIndex).CopyTo(newDb);
+            _db = newDb;
+
+            var newStackMemory = newScratch.Slice(dbLength);
+            _stack.Resize(newStackMemory);
+            _pool.Return(_scratch);
+            _scratch = newScratch;
         }
 
         private int FindLocation(int index, bool lookingForObject)
@@ -347,11 +392,17 @@ namespace System.Text.Json
             SkipWhitespace();
         }
 
-        private void AppendDbRow(JsonObject.JsonValueType type, int valueIndex, int LengthOrNumberOfRows = DbRow.UnknownNumberOfRows)
+        private bool AppendDbRow(JsonObject.JsonValueType type, int valueIndex, int LengthOrNumberOfRows = DbRow.UnknownNumberOfRows)
         {
+            var newIndex = _dbIndex + JsonObject.RowSize;
+            if (newIndex >= _db.Length) {
+                ResizeDb();
+            }
+
             var dbRow = new DbRow(type, valueIndex, LengthOrNumberOfRows);
             _db.Slice(_dbIndex).Write(dbRow);
-            _dbIndex += JsonObject.RowSize;
+            _dbIndex = newIndex;
+            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

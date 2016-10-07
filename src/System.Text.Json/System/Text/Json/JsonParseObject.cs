@@ -1,16 +1,19 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Collections.Generic;
 using System.Text.Utf8;
 
 namespace System.Text.Json
 {
-    public struct JsonObject
+    public struct JsonObject : IDisposable
     {
+        private BufferPool _pool;
+        private Memory<byte> _dbMemory;
         private ReadOnlySpan<byte> _db; 
         private ReadOnlySpan<byte> _values;
-
+                
         internal const int RowSize = 9; // Do not change, unless you also change FindLocation
 
         public static JsonObject Parse(ReadOnlySpan<byte> utf8Json)
@@ -20,17 +23,19 @@ namespace System.Text.Json
             return result;
         }
 
-        public static JsonObject Parse(ReadOnlySpan<byte> utf8Json, Span<byte> db)
+        public static JsonObject Parse(ReadOnlySpan<byte> utf8Json, BufferPool pool = null)
         {
             var parser = new JsonParser();
-            var result = parser.Parse(utf8Json, db);
+            var result = parser.Parse(utf8Json, pool);
             return result;
         }
 
-        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db)
+        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, BufferPool pool = null, Memory<byte> dbMemory = default(Memory<byte>))
         {
             _db = db;
             _values = values;
+            _pool = pool;
+            _dbMemory = dbMemory;
         }
 
         public bool TryGetValue(Utf8String propertyName, out JsonObject value)
@@ -67,7 +72,7 @@ namespace System.Text.Json
                         newEnd = newEnd + RowSize * length;
                     }
 
-                    value = new JsonObject(_values, _db.Slice(newStart, newEnd - newStart));
+                    value = new JsonObject(_values, _db.Slice(newStart, newEnd - newStart), null, Memory<byte>.Empty);
                     return true;
                 }
 
@@ -382,6 +387,15 @@ namespace System.Text.Json
                 }
                 return (_values[location] != 'n' || _values[location + 1] != 'u' || _values[location + 2] != 'l' || _values[location + 3] != 'l');
             }
+        }
+
+        public void Dispose()
+        {
+            if (_pool == null) throw new InvalidOperationException("only root object can (and should) be disposed.");
+            _db = ReadOnlySpan<byte>.Empty;
+            _values = ReadOnlySpan<byte>.Empty;
+            _pool.Return(_dbMemory);
+            _dbMemory = Memory<byte>.Empty;
         }
     }
 }

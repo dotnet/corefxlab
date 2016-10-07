@@ -28,7 +28,8 @@
     "System.Runtime.Extensions": "4.1.0",
     "System.Text.Utf8": { "target": "project" },
     "System.Text.Formatting": { "target": "project" },
-    "System.Slices": { "target": "project" }
+    "System.Slices": { "target": "project" },
+    "System.Buffers.Experimental": { "target": "project" }
   },
   "frameworks": {
     "netstandard1.1": {

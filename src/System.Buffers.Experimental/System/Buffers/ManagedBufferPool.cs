@@ -3,7 +3,6 @@
 
 namespace System.Buffers
 {
-    [Obsolete("Use ArrayPool<T> instead. It can be found in CoreFx System.Buffers package.")]
     public sealed class ManagedBufferPool : BufferPool
     {
         static ManagedBufferPool s_shared = new ManagedBufferPool();
