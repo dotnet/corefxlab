@@ -15,9 +15,9 @@ namespace System.Text.Json
             _dom = dom;
         }
 
-        public static JsonLazyDynamicObject Parse(Utf8String text)
+        public static JsonLazyDynamicObject Parse(ReadOnlySpan<byte> utf8Json)
         {
-            var dom = JsonObject.Parse(text.Bytes);
+            var dom = JsonObject.Parse(utf8Json);
             var result = new JsonLazyDynamicObject(dom);
             return result;
         }

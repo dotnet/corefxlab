@@ -125,6 +125,11 @@ namespace System.Text.Utf8
             }
         }
 
+        public static implicit operator ReadOnlySpan<byte>(Utf8String utf8)
+        {
+            return utf8.Bytes;
+        }
+
         public static explicit operator Utf8String(string s)
         {
             return new Utf8String(s);

@@ -202,7 +202,7 @@ namespace Microsoft.Net.Http
             _order = order;
         }
 
-        public int CommitedBytes { get { return _data.Commited(_order); } }
+        public int WrittenBytes { get { return _data.Commited(_order); } }
 
         public EncodingData Encoding
         {

@@ -19,14 +19,14 @@ namespace System.Text.Json
             _properties = properties;
         }
 
-        public static JsonDynamicObject Parse(Utf8String text, int expectedNumberOfProperties = -1)
+        public static JsonDynamicObject Parse(ReadOnlySpan<byte> utf8, int expectedNumberOfProperties = -1)
         {
             Stack<JsonDynamicObject> stack = new Stack<JsonDynamicObject>();
-            if(expectedNumberOfProperties == -1) { expectedNumberOfProperties = text.Length >> 3; }
+            if(expectedNumberOfProperties == -1) { expectedNumberOfProperties = utf8.Length >> 3; }
             var properties = new Dictionary<JsonProperty, JsonValue>(expectedNumberOfProperties);
             stack.Push(new JsonDynamicObject(properties));
 
-            var reader = new JsonReader(text);
+            var reader = new JsonReader(new Utf8String(utf8));
             while (reader.Read())
             {
                 switch (reader.TokenType)
@@ -100,7 +100,6 @@ namespace System.Text.Json
             int consumed;
             return PrimitiveParser.TryParseUIn32(jsonValue.Value, out value, out consumed);
         }
-
 
         public bool TryGetString(Utf8String property, out Utf8String value)
         {
