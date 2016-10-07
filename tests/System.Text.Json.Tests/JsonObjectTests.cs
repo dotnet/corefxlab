@@ -10,9 +10,10 @@ namespace System.Text.Json.Tests
         [Fact]
         public void DynamicArrayLazy()
         {
-            dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("[true, false]"));
-            Assert.Equal(true, json[0]);
-            Assert.Equal(false, json[1]);
+            using (dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("[true, false]"))) {
+                Assert.Equal(true, json[0]);
+                Assert.Equal(false, json[1]);
+            }
         }
 
         [Fact]
