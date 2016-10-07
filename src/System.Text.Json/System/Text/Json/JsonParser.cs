@@ -342,7 +342,7 @@ namespace System.Text.Json
             if (!_values.Slice(_valuesIndex).StartsWith(expected)) {
                 throw new FormatException("Invalid json, tried to read " + literal.ToString());
             }
-            AppendDbRow(JsonObject.JsonValueType.True, _valuesIndex, expected.Length);
+            AppendDbRow(literal, _valuesIndex, expected.Length);
             _valuesIndex += expected.Length;
             SkipWhitespace();
         }
