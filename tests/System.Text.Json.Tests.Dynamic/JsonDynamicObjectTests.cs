@@ -7,23 +7,28 @@ namespace System.Text.Json.Dynamic.Tests
     public class JsonDynamicObjectTests
     {
         [Fact]
+        public void DynamicArrayLazy()
+        {
+            dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("[true, false]"));
+            Assert.Equal(true, json[0]);
+            Assert.Equal(false, json[1]);
+        }
+
+        [Fact]
         public void NestedEagerReadLazy()
         {
             dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("{ \"FirstName\": \"John\", \"LastName\": \"Smith\", \"Address\": { \"Street\": \"21 2nd Street\", \"City\": \"New York\", \"State\": \"NY\", \"Zip\": \"10021-3100\" }, \"IsAlive\": true, \"Age\": 25, \"Spouse\":null }"));
-            Assert.Equal("John", (string)json.FirstName);
-            Assert.Equal("Smith", (string)json.LastName);
-            Assert.Equal(true, (bool)json.IsAlive);
-            Assert.Equal(25, (int)json.Age);
-            //Assert.Equal(null, (object)json.Spouse);
-            //Assert.Equal(6, (int)json.Count);
+            Assert.Equal("John", json.FirstName);
+            Assert.Equal("Smith", json.LastName);
+            Assert.Equal(true, json.IsAlive);
+            Assert.Equal(25, json.Age);
+            Assert.Equal(null, json.Spouse);
 
-            // TODO: enable this
-            //dynamic address = json.Address;
-            //Assert.Equal(new Utf8String("21 2nd Street"), (Utf8String)address.Street);
-            //Assert.Equal(new Utf8String("New York"), (Utf8String)address.City);
-            //Assert.Equal(new Utf8String("NY"), (Utf8String)address.State);
-            //Assert.Equal(new Utf8String("10021-3100"), (Utf8String)address.Zip);
-            //Assert.Equal(4, (int)address.Count);
+            dynamic address = json.Address;
+            Assert.Equal("21 2nd Street", address.Street);
+            Assert.Equal("New York", address.City);
+            Assert.Equal("NY", address.State);
+            Assert.Equal("10021-3100", address.Zip);
         }
 
         [Fact]

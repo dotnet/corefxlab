@@ -76,8 +76,12 @@ namespace System.Text.Json
                 case JsonObject.JsonValueType.String:
                     result = (string)jsonObject;
                     break;
-                case JsonObject.JsonValueType.Array:
                 case JsonObject.JsonValueType.Object:
+                    result = new JsonLazyDynamicObject(jsonObject);
+                    break;
+                case JsonObject.JsonValueType.Array:
+                    result = new JsonLazyDynamicObject(jsonObject);
+                    break;
                 default:
                     throw new NotImplementedException();
             }
@@ -87,6 +91,50 @@ namespace System.Text.Json
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
+            return false;
+        }
+
+        public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
+        {
+            if(indexes.Length != 1 || !(indexes[0] is int)) {
+                result = null;
+                return false;
+            }
+
+            var index = (int)indexes[0];
+
+            if (_dom.Type == JsonObject.JsonValueType.Array) {
+                var resultObject = _dom[index];
+
+                switch (resultObject.Type) {
+                    case JsonObject.JsonValueType.Number:
+                        result = (object)(int)resultObject;
+                        break;
+                    case JsonObject.JsonValueType.True:
+                        result = (object)true;
+                        break;
+                    case JsonObject.JsonValueType.False:
+                        result = (object)false;
+                        break;
+                    case JsonObject.JsonValueType.Null:
+                        result = null;
+                        break;
+                    case JsonObject.JsonValueType.String:
+                        result = (string)resultObject;
+                        break;
+                    case JsonObject.JsonValueType.Object:
+                        result = new JsonLazyDynamicObject(resultObject);
+                        break;
+                    case JsonObject.JsonValueType.Array:
+                        result = new JsonLazyDynamicObject(resultObject);
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+                return true;
+            }
+
+            result = null;
             return false;
         }
     }

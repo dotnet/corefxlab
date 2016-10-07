@@ -105,7 +105,7 @@ namespace System.Text.Json
 
         public JsonObject Parse(ReadOnlySpan<byte> utf8Json)
         {
-            var db = new byte[utf8Json.Length * 2];
+            var db = new byte[utf8Json.Length * 4];
             return Parse(utf8Json, db);
         }
 
