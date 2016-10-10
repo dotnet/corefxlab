@@ -9,26 +9,28 @@ namespace System.Text.Json.Dynamic.Tests
         [Fact]
         public void DynamicArrayLazy()
         {
-            dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("[true, false]"));
-            Assert.Equal(true, json[0]);
-            Assert.Equal(false, json[1]);
+            using (dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("[true, false]"))) {
+                Assert.Equal(true, json[0]);
+                Assert.Equal(false, json[1]);
+            }
         }
 
         [Fact]
         public void NestedEagerReadLazy()
         {
-            dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("{ \"FirstName\": \"John\", \"LastName\": \"Smith\", \"Address\": { \"Street\": \"21 2nd Street\", \"City\": \"New York\", \"State\": \"NY\", \"Zip\": \"10021-3100\" }, \"IsAlive\": true, \"Age\": 25, \"Spouse\":null }"));
-            Assert.Equal("John", json.FirstName);
-            Assert.Equal("Smith", json.LastName);
-            Assert.Equal(true, json.IsAlive);
-            Assert.Equal(25, json.Age);
-            Assert.Equal(null, json.Spouse);
+            using(dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("{ \"FirstName\": \"John\", \"LastName\": \"Smith\", \"Address\": { \"Street\": \"21 2nd Street\", \"City\": \"New York\", \"State\": \"NY\", \"Zip\": \"10021-3100\" }, \"IsAlive\": true, \"Age\": 25, \"Spouse\":null }"))){
+                Assert.Equal("John", json.FirstName);
+                Assert.Equal("Smith", json.LastName);
+                Assert.Equal(true, json.IsAlive);
+                Assert.Equal(25, json.Age);
+                Assert.Equal(null, json.Spouse);
 
-            dynamic address = json.Address;
-            Assert.Equal("21 2nd Street", address.Street);
-            Assert.Equal("New York", address.City);
-            Assert.Equal("NY", address.State);
-            Assert.Equal("10021-3100", address.Zip);
+                dynamic address = json.Address;
+                Assert.Equal("21 2nd Street", address.Street);
+                Assert.Equal("New York", address.City);
+                Assert.Equal("NY", address.State);
+                Assert.Equal("10021-3100", address.Zip);
+            }
         }
 
         [Fact]
