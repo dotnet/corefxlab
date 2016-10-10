@@ -167,7 +167,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe void* Add(void* pointer, int offset)
         {
-            return (byte*)pointer + ((ulong)UnsafeUtilities.SizeOf<T>() * (ulong)offset);
+            return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }
     }
 }

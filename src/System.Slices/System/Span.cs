@@ -204,7 +204,7 @@ namespace System
             {
                 // review: (#848) - overflow and alignment
                 UnsafeUtilities.CopyBlock(src.Object, src.Offset, dest.Object, dest.Offset,
-                                   src.Length * UnsafeUtilities.SizeOf<T>());
+                                   src.Length * Unsafe.SizeOf<T>());
             }
             else
             {

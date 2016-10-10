@@ -21,27 +21,6 @@ namespace System.Runtime
     /// </summary>
     public sealed class UnsafeUtilities
     {
-         [ILSub(@"
-            .maxstack 1
-            ldarg.0
-            ldobj !!T
-            ret
-         ")]
-         public unsafe static T Read<T>(void* source) {
-            throw new Exception("ILSub did not execute.");
-         } // end of method Unsafe::Read
-
-        [ILSub(@"
-            .maxstack 2
-            ldarg.0
-            ldarg.1
-            stobj !!T
-            ret
-        ")]
-        public unsafe static void Write<T>(void* destination, T value) {
-            throw new Exception("ILSub did not execute.");
-        } 
-
         /// <summary>
         /// Reverses a primitive value - performs an endianness swap
         /// </summary> 
@@ -53,24 +32,24 @@ namespace System.Runtime
             }
             else if (typeof(T) == typeof(ushort) || typeof(T) == typeof(short)) {
                 ushort val = 0;
-                UnsafeUtilities.Write(&val, value);
+                Unsafe.Write(&val, value);
                 val = (ushort)((val >> 8) | (val << 8));
-                return UnsafeUtilities.Read<T>(&val);
+                return Unsafe.Read<T>(&val);
             }
             else if (typeof(T) == typeof(uint) || typeof(T) == typeof(int)
                 || typeof(T) == typeof(float)) {
                 uint val = 0;
-                UnsafeUtilities.Write(&val, value);
+                Unsafe.Write(&val, value);
                 val = (val << 24)
                     | ((val & 0xFF00) << 8)
                     | ((val & 0xFF0000) >> 8)
                     | (val >> 24);
-                return UnsafeUtilities.Read<T>(&val);
+                return Unsafe.Read<T>(&val);
             }
             else if (typeof(T) == typeof(ulong) || typeof(T) == typeof(long)
                 || typeof(T) == typeof(double)) {
                 ulong val = 0;
-                UnsafeUtilities.Write(&val, value);
+                Unsafe.Write(&val, value);
                 val = (val << 56)
                     | ((val & 0xFF00) << 40)
                     | ((val & 0xFF0000) << 24)
@@ -79,20 +58,20 @@ namespace System.Runtime
                     | ((val & 0xFF0000000000) >> 24)
                     | ((val & 0xFF000000000000) >> 40)
                     | (val >> 56);
-                return UnsafeUtilities.Read<T>(&val);
+                return Unsafe.Read<T>(&val);
             }
             else {
                 // default implementation
-                int len = SizeOf<T>();
+                int len = Unsafe.SizeOf<T>();
                 var val = stackalloc byte[len];
-                UnsafeUtilities.Write(val, value);
+                Unsafe.Write(val, value);
                 int to = len >> 1, dest = len - 1;
                 for (int i = 0; i < to; i++) {
                     var tmp = val[i];
                     val[i] = val[dest];
                     val[dest--] = tmp;
                 }
-                return UnsafeUtilities.Read<T>(val);
+                return Unsafe.Read<T>(val);
             }
         }
 
@@ -108,12 +87,6 @@ namespace System.Runtime
         // a T value "just work."  This would be a dirty little undocumented trick
         // that made me need to take a shower, were it not for the fact that C++/CLI
         // depends on it working... (okay, I still feel a little dirty.)
-
-        /// <summary>
-        /// Takes a (possibly null) object reference, plus an offset in bytes,
-        /// adds them, and safetly dereferences the target (untyped!) address in
-        /// a way that the GC will be okay with.  It yields a value of type T.
-        /// </summary>
 
         /// <summary>
         /// Takes a (possibly null) object reference, plus an offset in bytes, plus an index,
@@ -135,7 +108,8 @@ namespace System.Runtime
             add         // add the result
             ldobj !!T   // load a T value from the computed address
             ret")]
-        internal static T Get<T>(object obj, UIntPtr offset, UIntPtr index) {
+        internal static T Get<T>(object obj, UIntPtr offset, UIntPtr index)
+        {
             throw new Exception("ILSub did not execute.");
         }
 
@@ -159,7 +133,8 @@ namespace System.Runtime
             ldarg.3     // load the value to store
             stobj !!T   // store a T value to the computed address
             ret")]
-        internal static void Set<T>(object obj, UIntPtr offset, UIntPtr index, T val) {
+        internal static void Set<T>(object obj, UIntPtr offset, UIntPtr index, T val)
+        {
             throw new Exception("ILSub did not execute.");
         }
 
@@ -176,16 +151,6 @@ namespace System.Runtime
             sub
             ret")]
         internal static int ElemOffset<T>(T[] arr) { throw new Exception("ILSub did not execute."); }
-
-        /// <summary>
-        /// Computes the size of any type T.  This includes managed object types
-        /// which C# complains about (because it is architecture dependent).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ILSub(@"
-            sizeof !!T
-            ret")]
-        public static int SizeOf<T>() { throw new Exception("ILSub did not execute."); }
 
         /// <summary>
         /// computes the address of object reference plus an offset in bytes
@@ -232,7 +197,8 @@ namespace System.Runtime
             ldarg.s 4   // load byteCount
             cpblk
             ret")]
-        internal static void CopyBlock(object srcObj, UIntPtr srcOffset, object destObj, UIntPtr destOffset, int byteCount) {
+        internal static void CopyBlock(object srcObj, UIntPtr srcOffset, object destObj, UIntPtr destOffset, int byteCount)
+        {
             throw new Exception("ILSub did not execute.");
         }
 
@@ -257,7 +223,7 @@ namespace System.Runtime
         internal static unsafe void* GetElementAddress<T>(void* root, uint offset)
         {
             // slow version used for illustration only
-            return ((byte*)root) + ((ulong)offset * (ulong)SizeOf<T>());
+            return ((byte*)root) + ((ulong)offset * (ulong)Unsafe.SizeOf<T>());
         }
         /// <summary>
         /// Computes the address of an element relative to a pointer -

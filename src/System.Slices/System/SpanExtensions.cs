@@ -155,7 +155,7 @@ namespace System
             int countOfU;
 
             /// This comparison is a jittime constant
-            if (UnsafeUtilities.SizeOf<T>() > UnsafeUtilities.SizeOf<U>())
+            if (Unsafe.SizeOf<T>() > Unsafe.SizeOf<U>())
             {
                 IntPtr count = UnsafeUtilities.CountOfU<T, U>((uint)slice.Length);
                 unsafe
@@ -168,7 +168,7 @@ namespace System
             }
             else
             {
-                countOfU = (int)(((ulong)slice.Length * (ulong)UnsafeUtilities.SizeOf<T>()) / (ulong)UnsafeUtilities.SizeOf<U>());
+                countOfU = (int)(((ulong)slice.Length * (ulong)Unsafe.SizeOf<T>()) / (ulong)Unsafe.SizeOf<U>());
             }
             
             object obj = slice.Object;
@@ -197,7 +197,7 @@ namespace System
             int countOfU;
 
             /// This comparison is a jittime constant
-            if (UnsafeUtilities.SizeOf<T>() > UnsafeUtilities.SizeOf<U>())
+            if (Unsafe.SizeOf<T>() > Unsafe.SizeOf<U>())
             {
                 IntPtr count = UnsafeUtilities.CountOfU<T, U>((uint)slice.Length);
                 unsafe
@@ -210,7 +210,7 @@ namespace System
             }
             else
             {
-                countOfU = (int)(((ulong)slice.Length * (ulong)UnsafeUtilities.SizeOf<T>()) / (ulong)UnsafeUtilities.SizeOf<U>());
+                countOfU = (int)(((ulong)slice.Length * (ulong)Unsafe.SizeOf<T>()) / (ulong)Unsafe.SizeOf<U>());
             }
 
             object obj = slice.Object;
@@ -232,7 +232,7 @@ namespace System
         public static T Read<[Primitive]T>(this Span<byte> slice)
             where T : struct
         {
-            Contract.RequiresInInclusiveRange(UnsafeUtilities.SizeOf<T>(), (uint)slice.Length);
+            Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
             return UnsafeUtilities.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
         }
 
@@ -243,7 +243,7 @@ namespace System
         public static T Read<[Primitive]T>(this ReadOnlySpan<byte> slice)
             where T : struct
         {
-            Contract.RequiresInInclusiveRange(UnsafeUtilities.SizeOf<T>(), (uint)slice.Length);
+            Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
             return UnsafeUtilities.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
         }
 
@@ -254,7 +254,7 @@ namespace System
         public static void Write<[Primitive]T>(this Span<byte> slice, T value)
             where T : struct
         {
-            Contract.RequiresInInclusiveRange(UnsafeUtilities.SizeOf<T>(), (uint)slice.Length);
+            Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
             UnsafeUtilities.Set(slice.Object, slice.Offset, (UIntPtr)0, value);
         }
 
@@ -447,8 +447,8 @@ namespace System
             where T : struct
             where U : struct
         {
-            var bytesCount = (ulong)first.Length * (ulong)UnsafeUtilities.SizeOf<T>();
-            if (bytesCount != (ulong)second.Length * (ulong)UnsafeUtilities.SizeOf<U>())
+            var bytesCount = (ulong)first.Length * (ulong)Unsafe.SizeOf<T>();
+            if (bytesCount != (ulong)second.Length * (ulong)Unsafe.SizeOf<U>())
             {
                 return false;
             }
@@ -479,8 +479,8 @@ namespace System
             where T : struct
             where U : struct
         {
-            var bytesCount = (ulong)first.Length * (ulong)UnsafeUtilities.SizeOf<T>();
-            if (bytesCount != (ulong)second.Length * (ulong)UnsafeUtilities.SizeOf<U>())
+            var bytesCount = (ulong)first.Length * (ulong)Unsafe.SizeOf<T>();
+            if (bytesCount != (ulong)second.Length * (ulong)Unsafe.SizeOf<U>())
             {
                 return false;
             }

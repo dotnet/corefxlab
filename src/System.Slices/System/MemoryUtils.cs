@@ -33,7 +33,7 @@ namespace System
                     byte* secondPointer = (byte*)UnsafeUtilities.ComputeAddress(second.Object, second.Offset).ToPointer();
 
                     int step = sizeof(void*) * 5;
-                    ulong totalBytesCount = (ulong)first.Length * (ulong)UnsafeUtilities.SizeOf<T>();
+                    ulong totalBytesCount = (ulong)first.Length * (ulong)Unsafe.SizeOf<T>();
                     byte* firstPointerLimit = firstPointer + (totalBytesCount - (ulong)step);
 
                     if (totalBytesCount > (ulong)step)
@@ -103,7 +103,7 @@ namespace System
                     byte* secondPointer = (byte*)UnsafeUtilities.ComputeAddress(second.Object, second.Offset).ToPointer();
 
                     int step = sizeof(void*) * 5;
-                    ulong totalBytesCount = (ulong)first.Length * (ulong)UnsafeUtilities.SizeOf<T>();
+                    ulong totalBytesCount = (ulong)first.Length * (ulong)Unsafe.SizeOf<T>();
                     byte* firstPointerLimit = firstPointer + (totalBytesCount - (ulong)step);
 
                     if (totalBytesCount > (ulong)step)
