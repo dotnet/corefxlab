@@ -22,6 +22,259 @@ for (int i = 0; i < primitives.Length; i++)
 {
 	#>
 		#region <#= primitives[i] #>
+		public static bool TryParse<#=classes[i]#>(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed numericFormat,
+            out <#= primitives[i] #> value, out int bytesConsumed)
+        {
+            // Precondition replacement
+            if (text.Length < 1)
+            {
+                value = default(<#= primitives[i] #>);
+                bytesConsumed = 0;
+                return false;
+            }
+
+            value = default(<#= primitives[i] #>);
+            bytesConsumed = 0;
+            bool negative = false;
+            bool signed = false;
+
+			int index = 0;
+            if (encoding.IsInvariantUtf8)
+            {
+                if (text[index] == '-')
+                {
+                    negative = true;
+                    signed = true;
+                    index++;
+                    bytesConsumed++;
+                }
+                else if (text[index] == '+')
+                {
+                    signed = true;
+                    index++;
+                    bytesConsumed++;
+                }
+
+                for (int byteIndex = index; byteIndex < text.Length; byteIndex++) // loop through the byte array
+                {
+                    byte nextByteVal = (byte)(text[byteIndex] - '0');
+                    if (nextByteVal > 9) // if nextByteVal > 9, we know it is not a digit because any value less than '0' will overflow
+										 // to greater than 9 since byte is an unsigned type.
+                    {
+                        if (bytesConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
+                        {
+                            bytesConsumed = 0;
+                        }
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            if (negative) // We check if the value is negative at the very end to save on comp time
+                            {
+                                value = (<#= primitives[i] #>)-value;
+								if (value > 0)
+								{
+									value = 0;
+									bytesConsumed = 0;
+									return false;
+								}
+                            }
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > <#= classes[i] #>.MaxValue / 10) // overflow
+                    {
+                        value = default(<#= primitives[i] #>);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 8 because the max values for unsigned types all end in 7s.
+					// The min values all end in 8s, which is why that addition exists.
+                    else if (value == <#= classes[i] #>.MaxValue / 10 &&  nextByteVal >= 8 + (negative ? 1 : 0) ) // overflow
+                    {
+                        value = default(<#= primitives[i] #>);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    value = (<#= primitives[i] #>)(value * 10 + nextByteVal); // parse the current digit to a <#= primitives[i] #> and add it to the left-shifted value
+                    bytesConsumed++; // increment the number of bytes consumed, then loop
+                }
+
+                if (negative) // We check if the value is negative at the very end to save on comp time
+                {
+                    value = (<#= primitives[i] #>)-value;
+					if (value > 0)
+					{
+						value = 0;
+						bytesConsumed = 0;
+						return false;
+					}
+				}
+                return true;
+            }
+            else if (encoding.IsInvariantUtf16)
+            {
+                if (text[index] == '-' && text[index + 1] == 0)
+                {
+                    negative = true;
+                    signed = true;
+                    index += 2;
+                    bytesConsumed += 2;
+                }
+                else if (text[index] == '+' && text[index + 1] == 0)
+                {
+                    signed = true;
+                    index += 2;
+                    bytesConsumed += 2;
+                }
+
+                for (int byteIndex = index; byteIndex < text.Length - 1; byteIndex += 2) // loop through the byte array two bytes at a time for UTF-16
+                {
+                    byte byteAfterNext = text[byteIndex + 1];
+                    byte nextByteVal = (byte)(text[byteIndex] - '0');
+                    if (nextByteVal > 9 || byteAfterNext != 0) // if the second byte isn't zero, this isn't an ASCII-equivalent code unit and we can quit here
+															   // if nextByteVal > 9, we know it is not a digit because any value less than '0' will overflow
+															   // to greater than 9 since byte is an unsigned type.
+                    {
+                        if (bytesConsumed == 2 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal
+                        {
+                            bytesConsumed = 0;
+                        }
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            if (negative) // We check if the value is negative at the very end to save on comp time
+                            {
+                                value = (<#= primitives[i] #>)-value;
+								if (value > 0)
+								{
+									value = 0;
+									bytesConsumed = 0;
+									return false;
+								}
+							}
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > <#= classes[i] #>.MaxValue / 10) // overflow
+                    {
+                        value = default(<#= primitives[i] #>);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+					// This next check uses a hardcoded 8 because the max values for unsigned types all end in 7s.
+					// The min values all end in 8s, which is why that addition exists.
+                    else if (value == <#= classes[i] #>.MaxValue / 10 &&  nextByteVal >= 8 + (negative ? 1 : 0) ) // overflow
+                    {
+                        value = default(<#= primitives[i] #>);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    value = (<#= primitives[i] #>)(value * 10 + nextByteVal); // parse the current digit to a <#= primitives[i] #> and add it to the left-shifted value
+                    bytesConsumed += 2; // increment the number of bytes consumed, then loop
+                }
+
+                if (negative) // We check if the value is negative at the very end to save on comp time
+                {
+                    value = (<#= primitives[i] #>)-value;
+					if (value > 0)
+					{
+						value = 0;
+						bytesConsumed = 0;
+						return false;
+					}
+				}
+                return true;
+            }
+			else
+			{
+				int codeUnitsConsumed = 0;
+                while (bytesConsumed < text.Length)
+                {
+                    uint result;
+					int consumed;
+                    bool success = encoding.TryParseNextCodingUnit(text.Slice(bytesConsumed), out result, out consumed);
+
+                    if (!success || result > 9)
+                    {
+						if (bytesConsumed == 0 && result == (int)EncodingData.Symbol.MinusSign)
+						{
+							negative = true;
+							signed = true;
+                            bytesConsumed += consumed;
+							codeUnitsConsumed++;
+						}
+						else if (bytesConsumed == 0 && result == (int)EncodingData.Symbol.PlusSign)
+						{
+							negative = true;
+							signed = true;
+                            bytesConsumed += consumed;
+						}
+						else if (codeUnitsConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
+                        {
+                            bytesConsumed = 0;
+							return false;
+                        }
+                        else if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            if (negative) // We check if the value is negative at the very end to save on comp time
+                            {
+                                value = (<#= primitives[i] #>)-value;
+								if (value > 0)
+								{
+									value = 0;
+									bytesConsumed = 0;
+									return false;
+								}
+                            }
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > <#= classes[i] #>.MaxValue / 10)
+                    {
+                        value = default(<#= primitives[i] #>);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 8 because the max values for unsigned types all end in 7s.
+					// The min values all end in 8s, which is why that addition exists.
+                    else if (value == <#= classes[i] #>.MaxValue / 10 &&  result >= 8 + (negative ? 1 : 0) ) // overflow
+                    {
+                        value = default(<#= primitives[i] #>);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+					else
+					{
+						value = (<#= primitives[i] #>)(value * 10 + result); // left shift the value and add the nextByte
+						bytesConsumed += consumed;
+						codeUnitsConsumed++;
+					}
+                }
+
+				if (negative) // We check if the value is negative at the very end to save on comp time
+                {
+                    value = (<#= primitives[i] #>)-value;
+					if (value > 0)
+					{
+						value = default(<#= primitives[i] #>);
+						bytesConsumed = 0;
+						return false;
+					}
+                }
+                return true; // otherwise return true
+			}
+        }
+
 		public static bool TryParse<#=classes[i]#>(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
             out <#= primitives[i] #> value, out int bytesConsumed)
         {

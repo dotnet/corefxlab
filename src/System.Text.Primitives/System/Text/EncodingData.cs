@@ -176,7 +176,50 @@ namespace System.Text
         /// <param name="nextByte">The next byte to be parsed</param>
         /// <param name="bytesParsed">The total number of bytes parsed (will be zero until a code unit is deciphered)</param>
         /// <returns></returns>
-        public bool TryParseNextCodingUnit(ref byte[] buffer, ref int bufferIndex, out uint value)
+        internal bool TryParseNextCodingUnit(ReadOnlySpan<byte> buffer, out uint value, out int consumed)
+        {
+            int trieIndex = 0;
+            int codeUnitIndex = 0;
+            consumed = 0;
+            while (true) {
+                if (_parsingTrie[trieIndex].valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
+                {
+                    if (VerifyCodeUnit(buffer, codeUnitIndex, _parsingTrie[trieIndex].index)) {
+                        consumed = _digitsAndSymbols[_parsingTrie[trieIndex].index].Length - codeUnitIndex;
+                        value = (uint)_parsingTrie[trieIndex].index;  // return the parsed value
+                        return true;
+                    }
+                    else {
+                        value = 0;
+                        consumed = 0;
+                        return false;
+                    }
+                }
+                else {
+                    int search = BinarySearch(trieIndex, codeUnitIndex, buffer[0]);    // we search the _parsingTrie for the nextByte
+
+                    if (search > 0)   // if we found a node
+                    {
+                        trieIndex = _parsingTrie[search].index;
+                        consumed++;
+                        codeUnitIndex++;
+                    }
+                    else {
+                        value = 0;
+                        consumed = 0;
+                        return false;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Parse the next byte in a byte array. Will return either a DigitOrSymbol value, an InvalidCharacter, or a Continue
+        /// </summary>
+        /// <param name="nextByte">The next byte to be parsed</param>
+        /// <param name="bytesParsed">The total number of bytes parsed (will be zero until a code unit is deciphered)</param>
+        /// <returns></returns>
+        internal bool TryParseNextCodingUnit(ref byte[] buffer, ref int bufferIndex, out uint value)
         {
             int trieIndex = 0;
             int codeUnitIndex = 0;
@@ -224,6 +267,20 @@ namespace System.Text
             for (int i = 0; i < codeUnitLength - codeUnitIndex; i++)
             {
                 if (buffer[i + index] != _digitsAndSymbols[digitOrSymbol][i + codeUnitIndex])
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool VerifyCodeUnit(ReadOnlySpan<byte> buffer, int codeUnitIndex, int digitOrSymbol)
+        {
+            int codeUnitLength = _digitsAndSymbols[digitOrSymbol].Length;
+            if (codeUnitIndex == codeUnitLength - 1)
+                return true;
+
+            for (int i = 0; i < codeUnitLength - codeUnitIndex; i++) {
+                if (buffer[i] != _digitsAndSymbols[digitOrSymbol][i + codeUnitIndex])
                     return false;
             }
 
