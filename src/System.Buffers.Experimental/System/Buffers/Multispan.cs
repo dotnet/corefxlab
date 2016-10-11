@@ -60,7 +60,7 @@ namespace System.Buffers
             }
         }
 
-        int? ISpanSequence<T>.Count
+        int? IReadOnlySpanSequence<T>.Count
         {
             get {
                 return _count;
@@ -321,6 +321,19 @@ namespace System.Buffers
                 if (position.IntegerPosition >= _count) position = Position.AfterLast;
             }
             return true;
+        }
+
+        public bool TryGet(ref Position position, out ReadOnlySpan<T> item, bool advance = false)
+        {
+            Span<T> span;
+            var result = TryGet(ref position, out span, advance);
+            item = span;
+            return result;
+        }
+
+        ReadOnlySpanSequenceEnumerator<T> IReadOnlySpanSequence<T>.GetEnumerator()
+        {
+            return new ReadOnlySpanSequenceEnumerator<T>(this);
         }
     }
 
