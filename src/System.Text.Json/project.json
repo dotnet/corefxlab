@@ -17,6 +17,7 @@
     "requireLicenseAcceptance": true
   },
   "buildOptions": {
+    "allowUnsafe": true,
     "keyFile": "../../tools/Key.snk",
     "compile": {
       "include": [ "System/**/*.cs" ],
