@@ -62,6 +62,11 @@ or
 https://dotnet.myget.org/F/dotnet-corefxlab/api/v3/index.json (preview support)
 ```
 
+Symbols:
+```
+https://dotnet.myget.org/F/dotnet-corefxlab/symbols/
+```
+
 You can add this feed among your NuGet sources and install the packages (keep in mind that packages are pre-release packages).
 
 ## License
