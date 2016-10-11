@@ -132,6 +132,37 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
+        public void SpanForeach()
+        {
+            {
+                Multispan<byte> collection = ToMultispan("A");
+                Assert.Equal(1, collection.Count);
+                foreach (var item in collection) {
+                    Assert.Equal(item[0], (byte)'A');
+                }           
+                collection.Dispose();
+            }
+            {
+                Multispan<byte> collection = ToMultispan("A", "B");
+                Assert.Equal(2, collection.Count);
+                int itemIndex = 0;
+                foreach (var item in collection) {
+                    switch (itemIndex++) {
+                        case 0:
+                            Assert.Equal(item[0], (byte)'A');
+                            break;
+                        case 1:
+                            Assert.Equal(item[0], (byte)'B');
+                            break;
+                        default:
+                            throw new Exception("expected two items in the collection");
+                    }
+                }
+                collection.Dispose();
+            }
+        }
+
+        [Fact]
         public void ReadOnlySpanEnumeration()
         {
             ReadOnlySpan<byte> span;

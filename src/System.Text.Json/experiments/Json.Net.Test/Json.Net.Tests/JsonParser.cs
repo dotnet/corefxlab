@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Utf8;
 
 namespace Json.Net.Tests
 {
@@ -26,7 +27,7 @@ namespace Json.Net.Tests
             Value = 6
         };
 
-        public enum JsonDb.JsonValueType
+        public enum JsonValueType
         {
             String,
             Number,
@@ -47,7 +48,7 @@ namespace Json.Net.Tests
             _end = lengthOfJson;
 
             var nextByte = _buffer[_index];
-            while (isWhiteSpace(nextByte) || nextByte == 0)
+            while (Utf8String.IsWhiteSpace(nextByte) || nextByte == 0)
             {
                 _index++;
                 nextByte = _buffer[_index];
@@ -219,7 +220,7 @@ namespace Json.Net.Tests
         {
             var nextByte = _buffer[_index];
 
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = _buffer[_index];
@@ -458,22 +459,17 @@ namespace Json.Net.Tests
         {
             var nextByte = _buffer[_index];
 
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = _buffer[_index];
             }
         }
 
-        private static bool isWhiteSpace(byte nextByte)
-        {
-            return nextByte == ' ' || nextByte == '\n' || nextByte == '\r' || nextByte == '\t';
-        }
-
         private void MoveToNextTokenType()
         {
             var nextByte = _buffer[_index];
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = _buffer[_index];

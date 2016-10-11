@@ -23,7 +23,7 @@ namespace Json.Net.Tests
             Value = 6
         };
 
-        public enum JsonDb.JsonValueType
+        public enum JsonValueType
         {
             String,
             Number,
@@ -77,7 +77,7 @@ namespace Json.Net.Tests
         {
             var nextByte = (byte)_str[_index];
 
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];
@@ -280,22 +280,17 @@ namespace Json.Net.Tests
         {
             var nextByte = (byte)_str[_index];
 
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];
             }
         }
 
-        private static bool isWhiteSpace(byte nextByte)
-        {
-            return nextByte == ' ' || nextByte == '\n' || nextByte == '\r' || nextByte == '\t';
-        }
-
         private void MoveToNextTokenType()
         {
             var nextByte = (byte)_str[_index];
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];

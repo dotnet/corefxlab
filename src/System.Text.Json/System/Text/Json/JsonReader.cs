@@ -79,7 +79,7 @@ namespace System.Text.Json
         {
             var nextByte = (byte) _str[_index];
 
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];
@@ -282,22 +282,17 @@ namespace System.Text.Json
         {
             var nextByte = (byte)_str[_index];
 
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];
             }
         }
 
-        private static bool isWhiteSpace(byte nextByte)
-        {
-            return nextByte == ' ' || nextByte == '\n' || nextByte == '\r' || nextByte == '\t';
-        }
-
         private void MoveToNextTokenType()
         {
             var nextByte = (byte) _str[_index];
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];
