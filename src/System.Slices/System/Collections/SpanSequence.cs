@@ -26,7 +26,10 @@ namespace System.Collections.Sequences
         public bool MoveNext()
         {
             Span<T> span;
-            return _sequence.TryGet(ref _position, out span, advance:true);
+            var result = _sequence.TryGet(ref _position, out span, advance: true);
+            if (_position == Position.First) return true;
+            if (_position == Position.AfterLast) return false;
+            return result;
         }
 
         public Span<T> Current {
