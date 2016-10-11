@@ -3,23 +3,34 @@
 
 using System.Buffers;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text.Utf8;
 
 namespace System.Text.Json
 {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     internal struct DbRow
     {
-        public int ValueIndex;                // index in JSON payload
-        public int LengthOrNumberOfRows;      // length of text in JSON payload
+        public static int Size;
+
+        public int Location;                // index in JSON payload
+        public int Length;      // length of text in JSON payload
         public JsonObject.JsonValueType Type; // type of JSON construct (e.g. Object, Array, Number)
 
         public const int UnknownNumberOfRows = -1;
 
         public DbRow(JsonObject.JsonValueType type, int valueIndex, int lengthOrNumberOfRows = UnknownNumberOfRows)
         {
-            ValueIndex = valueIndex;
-            LengthOrNumberOfRows = lengthOrNumberOfRows;
+            Location = valueIndex;
+            Length = lengthOrNumberOfRows;
             Type = type;
+        }
+
+        public bool IsSimpleValue => Type != JsonObject.JsonValueType.Object && Type != JsonObject.JsonValueType.Array;
+
+        static DbRow()
+        {
+            unsafe { Size = sizeof(DbRow); }
         }
     }
 
@@ -221,20 +232,20 @@ namespace System.Text.Json
             int numFound = 0;
 
             while (true) {
-                int rowStartOffset = rowNumber * JsonObject.RowSize;
+                int rowStartOffset = rowNumber * DbRow.Size;
                 var row = _db.Slice(rowStartOffset).Read<DbRow>();
 
                 int lengthOffset = rowStartOffset + 4;
                 
-                if (row.LengthOrNumberOfRows == -1 && (lookingForObject ? row.Type == JsonObject.JsonValueType.Object : row.Type == JsonObject.JsonValueType.Array)) {
+                if (row.Length == -1 && (lookingForObject ? row.Type == JsonObject.JsonValueType.Object : row.Type == JsonObject.JsonValueType.Array)) {
                     numFound++;
                 }
 
                 if (index == numFound - 1) {
                     return lengthOffset;
                 } else {
-                    if (row.LengthOrNumberOfRows > 0 && (row.Type == JsonObject.JsonValueType.Object || row.Type == JsonObject.JsonValueType.Array)) {
-                        rowNumber += row.LengthOrNumberOfRows;
+                    if (row.Length > 0 && (row.Type == JsonObject.JsonValueType.Object || row.Type == JsonObject.JsonValueType.Array)) {
+                        rowNumber += row.Length;
                     }
                     rowNumber++;
                 }
@@ -394,7 +405,7 @@ namespace System.Text.Json
 
         private bool AppendDbRow(JsonObject.JsonValueType type, int valueIndex, int LengthOrNumberOfRows = DbRow.UnknownNumberOfRows)
         {
-            var newIndex = _dbIndex + JsonObject.RowSize;
+            var newIndex = _dbIndex + DbRow.Size;
             if (newIndex >= _db.Length) {
                 ResizeDb();
             }

@@ -5,18 +5,28 @@ using System.Runtime.CompilerServices;
 
 namespace System.Collections.Sequences
 {
-    public interface ISpanSequence<T> : IReadOnlySpanSequence<T>
+    public interface IReadOnlySpanSequence<T>
     {
-        new SpanSequenceEnumerator<T> GetEnumerator();
-        bool TryGet(ref Position position, out Span<T> item, bool advance = false);
+        ReadOnlySpanSequenceEnumerator<T> GetEnumerator();
+        bool TryGet(ref Position position, out ReadOnlySpan<T> item, bool advance = false);
+
+        /// <summary>
+        /// Total number of items (Ts) in all spans in the sequence.
+        /// </summary>
+        int? TotalLength { get; }
+
+        /// <summary>
+        /// Number of spans in the sequence.
+        /// </summary>
+        int? Count { get; }
     }
 
-    public struct SpanSequenceEnumerator<T>
+    public struct ReadOnlySpanSequenceEnumerator<T>
     {
         Position _position;
-        ISpanSequence<T> _sequence;
+        IReadOnlySpanSequence<T> _sequence;
 
-        public SpanSequenceEnumerator(ISpanSequence<T> sequence)
+        public ReadOnlySpanSequenceEnumerator(IReadOnlySpanSequence<T> sequence)
         {
             _sequence = sequence;
             _position = Position.BeforeFirst;
@@ -25,14 +35,14 @@ namespace System.Collections.Sequences
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            Span<T> span;
+            ReadOnlySpan<T> span;
             return _sequence.TryGet(ref _position, out span, advance:true);
         }
 
-        public Span<T> Current {
+        public ReadOnlySpan<T> Current {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                Span<T> span;
+                ReadOnlySpan<T> span;
                 if(_sequence.TryGet(ref _position, out span, advance: false)) {
                     return span;
                 }

@@ -10,8 +10,6 @@ namespace Json.Net.Tests
         private int _start;
         private int _end;
 
-        private const int RowSize = 9;
-
         public JsonParseObject(byte[] buffer, int start, int end)
         {
             _buffer = buffer;
