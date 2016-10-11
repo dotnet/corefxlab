@@ -225,17 +225,14 @@ namespace System.Text.Json
                 throw new InvalidCastException();
             }
 
-            int location = json.Location;
-            bool isTrue = json._values[location] == 't' && json._values[location + 1] == 'r' && json._values[location + 2] == 'u' && json._values[location + 3] == 'e';
-            bool isFalse = json._values[location] == 'f' && json._values[location + 1] == 'a' && json._values[location + 2] == 'l' && json._values[location + 3] == 's' && json._values[location + 4] == 'e';
+            var slice = json._values.Slice(json.Location);
 
-            if (isTrue) {
-                return true;
-            } else if (isFalse) {
-                return false;
-            } else {
+            bool result;
+            int consumed;
+            if(!PrimitiveParser.TryParseBoolean(slice, EncodingData.InvariantUtf8, default(Format.Parsed), out result, out consumed)){
                 throw new InvalidCastException();
             }
+            return result;
         }
 
         public static explicit operator int(JsonObject json)
@@ -246,29 +243,14 @@ namespace System.Text.Json
                 throw new InvalidCastException();
             }
 
-            int location = json.Location;
-            int length = json.Length;
+            var slice = json._values.Slice(json.Location);
 
-            int count = location;
-            bool isNegative = false;
-            var nextByte = json._values[count];
-            if (nextByte == '-') {
-                isNegative = true;
-                count++;
+            int result;
+            int consumed;
+            if (!PrimitiveParser.TryParseInt32(slice, EncodingData.InvariantUtf8, default(Format.Parsed), out result, out consumed)) {
+                throw new InvalidCastException();
             }
-
-            int result = 0;
-            while (count - location < length) {
-                nextByte = json._values[count];
-                if (nextByte < '0' || nextByte > '9') {
-                    throw new InvalidCastException(); // return isNegative ? result * -1 : result;
-                }
-                int digit = nextByte - '0';
-                result = result * 10 + digit;
-                count++;
-            }
-
-            return isNegative ? result * -1 : result;
+            return result;
         }
 
         public static explicit operator double(JsonObject json)
