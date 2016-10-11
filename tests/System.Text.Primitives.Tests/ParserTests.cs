@@ -131,6 +131,29 @@ namespace System.Text.Primitives.Tests
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
         [InlineData("256", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf8SpanToByte(string text, bool expectSuccess, int index, byte expectedValue, int expectedBytesConsumed)
+        {
+            byte parsedValue;
+            int bytesConsumed;
+            EncodingData fd = EncodingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('R');
+			var span = UtfEncode(text, false).Slice(index);
+            bool result = PrimitiveParser.TryParseByte(span, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+		[Theory]
+        [InlineData("55", true, 0, 55, 2)]
+        [InlineData("blahblahh68", true, 9, 68, 2)]
+        [InlineData("68abhced", true, 0, 68, 2)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("255", true, 0, 255, 3)] // max value
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("256", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToByte(string text, bool expectSuccess, int index, byte expectedValue, int expectedBytesConsumed)
         {
             byte parsedValue;
@@ -165,6 +188,29 @@ namespace System.Text.Primitives.Tests
             EncodingData fd = EncodingData.InvariantUtf16;
             Format.Parsed nf = new Format.Parsed('R');
             bool result = PrimitiveParser.TryParseByte(UtfEncode(text, true), index, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+		[Theory]
+        [InlineData("55", true, 0, 55, 4)]
+        [InlineData("blahblahh68", true, 18, 68, 4)]
+        [InlineData("68abhced", true, 0, 68, 4)]
+        [InlineData("0", true, 0, 0, 2)] // min value
+        [InlineData("255", true, 0, 255, 6)] // max value
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("256", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf16SpanToByte(string text, bool expectSuccess, int index, byte expectedValue, int expectedBytesConsumed)
+        {
+            byte parsedValue;
+            int bytesConsumed;
+            EncodingData fd = EncodingData.InvariantUtf16;
+            Format.Parsed nf = new Format.Parsed('R');
+			var span = UtfEncode(text, true).Slice(index);
+            bool result = PrimitiveParser.TryParseByte(span, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -313,6 +359,29 @@ namespace System.Text.Primitives.Tests
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
         [InlineData("65536", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf8SpanToUshort(string text, bool expectSuccess, int index, ushort expectedValue, int expectedBytesConsumed)
+        {
+            ushort parsedValue;
+            int bytesConsumed;
+            EncodingData fd = EncodingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('R');
+			var span = UtfEncode(text, false).Slice(index);
+            bool result = PrimitiveParser.TryParseUInt16(span, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+		[Theory]
+        [InlineData("5535", true, 0, 5535, 4)]
+        [InlineData("blahblahh6836", true, 9, 6836, 4)]
+        [InlineData("6836abhced", true, 0, 6836, 4)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("65535", true, 0, 65535, 5)] // max value
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("65536", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToUshort(string text, bool expectSuccess, int index, ushort expectedValue, int expectedBytesConsumed)
         {
             ushort parsedValue;
@@ -347,6 +416,29 @@ namespace System.Text.Primitives.Tests
             EncodingData fd = EncodingData.InvariantUtf16;
             Format.Parsed nf = new Format.Parsed('R');
             bool result = PrimitiveParser.TryParseUInt16(UtfEncode(text, true), index, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+		[Theory]
+        [InlineData("5535", true, 0, 5535, 8)]
+        [InlineData("blahblahh6836", true, 18, 6836, 8)]
+        [InlineData("6836abhced", true, 0, 6836, 8)]
+        [InlineData("0", true, 0, 0, 2)] // min value
+        [InlineData("65535", true, 0, 65535, 10)] // max value
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("65536", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf16SpanToUshort(string text, bool expectSuccess, int index, ushort expectedValue, int expectedBytesConsumed)
+        {
+            ushort parsedValue;
+            int bytesConsumed;
+            EncodingData fd = EncodingData.InvariantUtf16;
+            Format.Parsed nf = new Format.Parsed('R');
+			var span = UtfEncode(text, true).Slice(index);
+            bool result = PrimitiveParser.TryParseUInt16(span, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -495,6 +587,29 @@ namespace System.Text.Primitives.Tests
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
         [InlineData("4294967296", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf8SpanToUint(string text, bool expectSuccess, int index, uint expectedValue, int expectedBytesConsumed)
+        {
+            uint parsedValue;
+            int bytesConsumed;
+            EncodingData fd = EncodingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('R');
+			var span = UtfEncode(text, false).Slice(index);
+            bool result = PrimitiveParser.TryParseUInt32(span, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+		[Theory]
+        [InlineData("294967295", true, 0, 294967295, 9)]
+        [InlineData("blahblahh354864498", true, 9, 354864498, 9)]
+        [InlineData("354864498abhced", true, 0, 354864498, 9)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("4294967295", true, 0, 4294967295, 10)] // max value
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("4294967296", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToUint(string text, bool expectSuccess, int index, uint expectedValue, int expectedBytesConsumed)
         {
             uint parsedValue;
@@ -529,6 +644,29 @@ namespace System.Text.Primitives.Tests
             EncodingData fd = EncodingData.InvariantUtf16;
             Format.Parsed nf = new Format.Parsed('R');
             bool result = PrimitiveParser.TryParseUInt32(UtfEncode(text, true), index, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+		[Theory]
+        [InlineData("294967295", true, 0, 294967295, 18)]
+        [InlineData("blahblahh354864498", true, 18, 354864498, 18)]
+        [InlineData("354864498abhced", true, 0, 354864498, 18)]
+        [InlineData("0", true, 0, 0, 2)] // min value
+        [InlineData("4294967295", true, 0, 4294967295, 20)] // max value
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("4294967296", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf16SpanToUint(string text, bool expectSuccess, int index, uint expectedValue, int expectedBytesConsumed)
+        {
+            uint parsedValue;
+            int bytesConsumed;
+            EncodingData fd = EncodingData.InvariantUtf16;
+            Format.Parsed nf = new Format.Parsed('R');
+			var span = UtfEncode(text, true).Slice(index);
+            bool result = PrimitiveParser.TryParseUInt32(span, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -677,6 +815,29 @@ namespace System.Text.Primitives.Tests
         [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
         [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
         [InlineData("18446744073709551616", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf8SpanToUlong(string text, bool expectSuccess, int index, ulong expectedValue, int expectedBytesConsumed)
+        {
+            ulong parsedValue;
+            int bytesConsumed;
+            EncodingData fd = EncodingData.InvariantUtf8;
+            Format.Parsed nf = new Format.Parsed('R');
+			var span = UtfEncode(text, false).Slice(index);
+            bool result = PrimitiveParser.TryParseUInt64(span, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+		[Theory]
+        [InlineData("8446744073709551615", true, 0, 8446744073709551615, 19)]
+        [InlineData("blahblahh6745766045317562215", true, 9, 6745766045317562215, 19)]
+        [InlineData("6745766045317562215abhced", true, 0, 6745766045317562215, 19)]
+        [InlineData("0", true, 0, 0, 1)] // min value
+        [InlineData("18446744073709551615", true, 0, 18446744073709551615, 20)] // max value
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("18446744073709551616", false, 0, 0, 0)] // overflow test
         public unsafe void ParseUtf8ByteStarToUlong(string text, bool expectSuccess, int index, ulong expectedValue, int expectedBytesConsumed)
         {
             ulong parsedValue;
@@ -711,6 +872,29 @@ namespace System.Text.Primitives.Tests
             EncodingData fd = EncodingData.InvariantUtf16;
             Format.Parsed nf = new Format.Parsed('R');
             bool result = PrimitiveParser.TryParseUInt64(UtfEncode(text, true), index, fd, nf, out parsedValue, out bytesConsumed);
+
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedBytesConsumed, bytesConsumed);
+        }
+
+		[Theory]
+        [InlineData("8446744073709551615", true, 0, 8446744073709551615, 38)]
+        [InlineData("blahblahh6745766045317562215", true, 18, 6745766045317562215, 38)]
+        [InlineData("6745766045317562215abhced", true, 0, 6745766045317562215, 38)]
+        [InlineData("0", true, 0, 0, 2)] // min value
+        [InlineData("18446744073709551615", true, 0, 18446744073709551615, 40)] // max value
+        [InlineData("I am 1", false, 0, 0, 0)] // invalid character test
+        [InlineData(" !", false, 0, 0, 0)] // invalid character test w/ char < '0'
+        [InlineData("18446744073709551616", false, 0, 0, 0)] // overflow test
+        public unsafe void ParseUtf16SpanToUlong(string text, bool expectSuccess, int index, ulong expectedValue, int expectedBytesConsumed)
+        {
+            ulong parsedValue;
+            int bytesConsumed;
+            EncodingData fd = EncodingData.InvariantUtf16;
+            Format.Parsed nf = new Format.Parsed('R');
+			var span = UtfEncode(text, true).Slice(index);
+            bool result = PrimitiveParser.TryParseUInt64(span, fd, nf, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);

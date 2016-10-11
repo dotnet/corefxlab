@@ -12,6 +12,136 @@ namespace System.Text
     public static partial class PrimitiveParser
     {
 		#region byte
+		public static bool TryParseByte(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed numericFormat,
+            out byte value, out int bytesConsumed)
+		{
+			// Precondition replacement
+            if (text.Length < 1)
+            {
+                value = default(byte);
+                bytesConsumed = 0;
+                return false;
+            }
+
+            value = default(byte);
+            bytesConsumed = 0;
+
+            if (encoding.IsInvariantUtf8)
+            {
+                for (int byteIndex = 0; byteIndex < text.Length; byteIndex++) // loop through the byte array
+                {
+                    byte nextByteVal = (byte)(text[byteIndex] - '0');
+                    if (nextByteVal > 9) // if nextByteVal > 9, we know it is not a digit because any value less than '0' will overflow
+										 // to greater than 9 since byte is an unsigned type.
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > Byte.MaxValue / 10)
+                    {
+                        value = default(byte);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == Byte.MaxValue / 10 &&  nextByteVal >= 6) // overflow
+                    {
+                        value = default(byte);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (byte)(value * 10 + nextByteVal); // left shift the value and add the nextByte
+                    bytesConsumed++;
+                }
+				return true;
+            }
+            else if (encoding.IsInvariantUtf16)
+            {
+                for (int byteIndex = 0; byteIndex < text.Length - 1; byteIndex += 2) // loop through the byte array two bytes at a time for UTF-16
+                {
+                    byte byteAfterNext = text[byteIndex + 1];
+                    byte nextByteVal = (byte)(text[byteIndex] - '0');
+                    if (nextByteVal > 9 || byteAfterNext != 0)  // if the second byte isn't zero, this isn't an ASCII-equivalent code unit and we can quit here
+																// if nextByteVal > 9, we know it is not a digit because any value less than '0' will overflow
+																// to greater than 9 since byte is an unsigned type.
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > Byte.MaxValue / 10)
+                    {
+                        value = default(byte);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == Byte.MaxValue / 10 &&  nextByteVal >= 6) // overflow
+                    {
+                        value = default(byte);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (byte)(value * 10 + nextByteVal); // left shift the value and add the nextByte
+                    bytesConsumed += 2;
+                }
+                return true;
+            }
+			else
+            {
+                int byteIndex = 0;
+                while (byteIndex < text.Length)
+                {
+                    uint result;
+					int consumed;
+                    bool success = encoding.TryParseNextCodingUnit(text.Slice(byteIndex), out result, out consumed);
+
+                    if (!success || result > 9)
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > Byte.MaxValue / 10)
+                    {
+                        value = default(byte);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == Byte.MaxValue / 10 && result >= 6) // overflow
+                    {
+                        value = default(byte);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (byte)(value * 10 + result); // left shift the value and add the nextByte
+                    bytesConsumed += consumed;
+                }
+
+                return true;
+            }
+        }
+
 		public static bool TryParseByte(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
             out byte value, out int bytesConsumed)
 		{
@@ -235,6 +365,136 @@ namespace System.Text
 		#endregion
 
 		#region ushort
+		public static bool TryParseUInt16(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed numericFormat,
+            out ushort value, out int bytesConsumed)
+		{
+			// Precondition replacement
+            if (text.Length < 1)
+            {
+                value = default(ushort);
+                bytesConsumed = 0;
+                return false;
+            }
+
+            value = default(ushort);
+            bytesConsumed = 0;
+
+            if (encoding.IsInvariantUtf8)
+            {
+                for (int byteIndex = 0; byteIndex < text.Length; byteIndex++) // loop through the byte array
+                {
+                    byte nextByteVal = (byte)(text[byteIndex] - '0');
+                    if (nextByteVal > 9) // if nextByteVal > 9, we know it is not a digit because any value less than '0' will overflow
+										 // to greater than 9 since byte is an unsigned type.
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt16.MaxValue / 10)
+                    {
+                        value = default(ushort);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt16.MaxValue / 10 &&  nextByteVal >= 6) // overflow
+                    {
+                        value = default(ushort);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (ushort)(value * 10 + nextByteVal); // left shift the value and add the nextByte
+                    bytesConsumed++;
+                }
+				return true;
+            }
+            else if (encoding.IsInvariantUtf16)
+            {
+                for (int byteIndex = 0; byteIndex < text.Length - 1; byteIndex += 2) // loop through the byte array two bytes at a time for UTF-16
+                {
+                    byte byteAfterNext = text[byteIndex + 1];
+                    byte nextByteVal = (byte)(text[byteIndex] - '0');
+                    if (nextByteVal > 9 || byteAfterNext != 0)  // if the second byte isn't zero, this isn't an ASCII-equivalent code unit and we can quit here
+																// if nextByteVal > 9, we know it is not a digit because any value less than '0' will overflow
+																// to greater than 9 since byte is an unsigned type.
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt16.MaxValue / 10)
+                    {
+                        value = default(ushort);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt16.MaxValue / 10 &&  nextByteVal >= 6) // overflow
+                    {
+                        value = default(ushort);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (ushort)(value * 10 + nextByteVal); // left shift the value and add the nextByte
+                    bytesConsumed += 2;
+                }
+                return true;
+            }
+			else
+            {
+                int byteIndex = 0;
+                while (byteIndex < text.Length)
+                {
+                    uint result;
+					int consumed;
+                    bool success = encoding.TryParseNextCodingUnit(text.Slice(byteIndex), out result, out consumed);
+
+                    if (!success || result > 9)
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt16.MaxValue / 10)
+                    {
+                        value = default(ushort);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt16.MaxValue / 10 && result >= 6) // overflow
+                    {
+                        value = default(ushort);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (ushort)(value * 10 + result); // left shift the value and add the nextByte
+                    bytesConsumed += consumed;
+                }
+
+                return true;
+            }
+        }
+
 		public static bool TryParseUInt16(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
             out ushort value, out int bytesConsumed)
 		{
@@ -458,6 +718,136 @@ namespace System.Text
 		#endregion
 
 		#region uint
+		public static bool TryParseUInt32(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed numericFormat,
+            out uint value, out int bytesConsumed)
+		{
+			// Precondition replacement
+            if (text.Length < 1)
+            {
+                value = default(uint);
+                bytesConsumed = 0;
+                return false;
+            }
+
+            value = default(uint);
+            bytesConsumed = 0;
+
+            if (encoding.IsInvariantUtf8)
+            {
+                for (int byteIndex = 0; byteIndex < text.Length; byteIndex++) // loop through the byte array
+                {
+                    byte nextByteVal = (byte)(text[byteIndex] - '0');
+                    if (nextByteVal > 9) // if nextByteVal > 9, we know it is not a digit because any value less than '0' will overflow
+										 // to greater than 9 since byte is an unsigned type.
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt32.MaxValue / 10)
+                    {
+                        value = default(uint);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt32.MaxValue / 10 &&  nextByteVal >= 6) // overflow
+                    {
+                        value = default(uint);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (uint)(value * 10 + nextByteVal); // left shift the value and add the nextByte
+                    bytesConsumed++;
+                }
+				return true;
+            }
+            else if (encoding.IsInvariantUtf16)
+            {
+                for (int byteIndex = 0; byteIndex < text.Length - 1; byteIndex += 2) // loop through the byte array two bytes at a time for UTF-16
+                {
+                    byte byteAfterNext = text[byteIndex + 1];
+                    byte nextByteVal = (byte)(text[byteIndex] - '0');
+                    if (nextByteVal > 9 || byteAfterNext != 0)  // if the second byte isn't zero, this isn't an ASCII-equivalent code unit and we can quit here
+																// if nextByteVal > 9, we know it is not a digit because any value less than '0' will overflow
+																// to greater than 9 since byte is an unsigned type.
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt32.MaxValue / 10)
+                    {
+                        value = default(uint);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt32.MaxValue / 10 &&  nextByteVal >= 6) // overflow
+                    {
+                        value = default(uint);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (uint)(value * 10 + nextByteVal); // left shift the value and add the nextByte
+                    bytesConsumed += 2;
+                }
+                return true;
+            }
+			else
+            {
+                int byteIndex = 0;
+                while (byteIndex < text.Length)
+                {
+                    uint result;
+					int consumed;
+                    bool success = encoding.TryParseNextCodingUnit(text.Slice(byteIndex), out result, out consumed);
+
+                    if (!success || result > 9)
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt32.MaxValue / 10)
+                    {
+                        value = default(uint);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt32.MaxValue / 10 && result >= 6) // overflow
+                    {
+                        value = default(uint);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (uint)(value * 10 + result); // left shift the value and add the nextByte
+                    bytesConsumed += consumed;
+                }
+
+                return true;
+            }
+        }
+
 		public static bool TryParseUInt32(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
             out uint value, out int bytesConsumed)
 		{
@@ -681,6 +1071,136 @@ namespace System.Text
 		#endregion
 
 		#region ulong
+		public static bool TryParseUInt64(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed numericFormat,
+            out ulong value, out int bytesConsumed)
+		{
+			// Precondition replacement
+            if (text.Length < 1)
+            {
+                value = default(ulong);
+                bytesConsumed = 0;
+                return false;
+            }
+
+            value = default(ulong);
+            bytesConsumed = 0;
+
+            if (encoding.IsInvariantUtf8)
+            {
+                for (int byteIndex = 0; byteIndex < text.Length; byteIndex++) // loop through the byte array
+                {
+                    byte nextByteVal = (byte)(text[byteIndex] - '0');
+                    if (nextByteVal > 9) // if nextByteVal > 9, we know it is not a digit because any value less than '0' will overflow
+										 // to greater than 9 since byte is an unsigned type.
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt64.MaxValue / 10)
+                    {
+                        value = default(ulong);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt64.MaxValue / 10 &&  nextByteVal >= 6) // overflow
+                    {
+                        value = default(ulong);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (ulong)(value * 10 + nextByteVal); // left shift the value and add the nextByte
+                    bytesConsumed++;
+                }
+				return true;
+            }
+            else if (encoding.IsInvariantUtf16)
+            {
+                for (int byteIndex = 0; byteIndex < text.Length - 1; byteIndex += 2) // loop through the byte array two bytes at a time for UTF-16
+                {
+                    byte byteAfterNext = text[byteIndex + 1];
+                    byte nextByteVal = (byte)(text[byteIndex] - '0');
+                    if (nextByteVal > 9 || byteAfterNext != 0)  // if the second byte isn't zero, this isn't an ASCII-equivalent code unit and we can quit here
+																// if nextByteVal > 9, we know it is not a digit because any value less than '0' will overflow
+																// to greater than 9 since byte is an unsigned type.
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt64.MaxValue / 10)
+                    {
+                        value = default(ulong);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt64.MaxValue / 10 &&  nextByteVal >= 6) // overflow
+                    {
+                        value = default(ulong);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (ulong)(value * 10 + nextByteVal); // left shift the value and add the nextByte
+                    bytesConsumed += 2;
+                }
+                return true;
+            }
+			else
+            {
+                int byteIndex = 0;
+                while (byteIndex < text.Length)
+                {
+                    uint result;
+					int consumed;
+                    bool success = encoding.TryParseNextCodingUnit(text.Slice(byteIndex), out result, out consumed);
+
+                    if (!success || result > 9)
+                    {
+                        if (bytesConsumed == 0) // check to see if we've processed any digits at all
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true; // otherwise return true
+                        }
+                    }
+                    else if (value > UInt64.MaxValue / 10)
+                    {
+                        value = default(ulong);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+                    // This next check uses a hardcoded 6 because the max values for unsigned types all end in 5s.
+                    else if (value == UInt64.MaxValue / 10 && result >= 6) // overflow
+                    {
+                        value = default(ulong);
+                        bytesConsumed = 0;
+                        return false;
+                    }
+
+                    value = (ulong)(value * 10 + result); // left shift the value and add the nextByte
+                    bytesConsumed += consumed;
+                }
+
+                return true;
+            }
+        }
+
 		public static bool TryParseUInt64(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
             out ulong value, out int bytesConsumed)
 		{
