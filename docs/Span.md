@@ -209,3 +209,14 @@ For most structs, tearing is at most a correctness bug and can be dealt with by 
 
 The only other way (besides synchronizing access, which would be not practical) to avoid this issue is to make Span a stack-only type, i.e. its instances can reside only on the stack (which is accessed by one thread). 
 
+##Span will be stack only
+Span\<T\> will be a stack-only type; more precisely, it will be a by-ref type (just like its field in the fast implementation). This means that Spans cannot be boxed, cannot appear as a field of a non-stack-only type, and cannot be used as a generic argument. However, Span\<T\> can be used as a type of method arguments or return values. 
+
+We chose to make span stack-only as it solves several problems:
+- Efficient representation and access: Span\<T\> can be just managed pointer and length.
+- Efficient GC tracking: limit number of interior pointers that the GC have to track. Tracking of interior pointers in the heap during GC would be pretty expensive.
+- Safe concurrency (struct tearing discussed above): Span<T> assignment does not have to be atomic. Atomic assignment would be required for storing Span\<T\> on the heap to avoid data tearing issues.
+- Safe lifetime: Safe code cannot create dangling pointers by storing it on the heap when Span\<T\> points to unmanaged memory or stack memory. The unsafe stack frame responsible for creating unsafe Span is responsible for ensuring that it won’t escape the scope.
+- Reliable buffer pooling: buffers can be rented from a pool, wrapped in spans, the spans passed to user code, and when the stack unwinds, the program can reliably return the buffer to the pool as it can be sure that there are no outstanding references to the buffer.
+
+The fast representation makes the type automatically stack-only, i.e. the constraint will be enforced by CLR type loader. This restriction should also be enforced by managed language compilers and/or analyzers for better developer experience. For the slow span, language compiler checks and/or analyzers is the only option (as the runtimes won't enforce the stack-only restriction).
