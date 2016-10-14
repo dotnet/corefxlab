@@ -86,3 +86,35 @@ Modern servers are often designed as, often reactive, pipelines of components do
 Span\<byte\> is very useful for implementing transformation routines of such data pipelines. First, Span\<T\> allows the server to freely switch between managed and native buffers depending on situation/settings. For example, Windows RIO sockets work best with native buffers, and libuv Kestrel works best with pinned managed arrays. Secondly, it allows complicated transtormation algorights to be implementd in safe code without the need to resort to using raw pointers. Lastly, fact that Span\<T\> is slicable, allows the piepline to abstract the phisical chunks of buffers to logical chunks relevant to particular section of the pipeline.
 
 The stack-only nature of spans (see more on this below), allows pooled memory to be safely returned to the pool after the transformations pipeline complete, and allows the pipeline to pass only the relevant slice of the buffer to each transformation routine/component. In other words, Span\<T\> aids in lifetime management of pooled buffers, so critical to perfromance of today's servers.
+
+####Discontinuous Buffers
+As alluded to before, data pipelines often process data in chunks as they arrives at a socket. This creates problems for data transformation routines, e.g. parsing, which have to deal with processing data that can reside in two or more buffers. For example, there might be a need to parse an integer residing partially in one buffer and partially in another. Since spans can abstract stack memory, they can solve this problem in a very elegant and performant way as illustrated in the following routine from ASP.NET Channels pipeline ([full source](https://github.com/davidfowl/Channels/blob/master/src/Channels.Text.Primitives/ReadableBufferExtensions.cs#L81)):
+```c#
+public unsafe static uint GetUInt32(this ReadableBuffer buffer) {
+    ReadOnlySpan<byte> textSpan;
+
+    if (buffer.IsSingleSpan) { // if data in single buffer, it’s easy
+        textSpan = buffer.First.Span;
+    }
+    else if (buffer.Length < 128) { // else, consider temp buffer on stack
+        var data = stackalloc byte[128];
+        var destination = new Span<byte>(data, 128);
+        buffer.CopyTo(destination);
+        textSpan = destination.Slice(0, buffer.Length);
+    }
+    else {
+        // else pay the cost of allocating an array
+        textSpan = new ReadOnlySpan<byte>(buffer.ToArray());
+    }
+
+    uint value;
+    var utf8Buffer = new Utf8String(textSpan);
+    // yet the actual parsing routine is always the same and simple
+    if (!PrimitiveParser.TryParseUInt32(utf8Buffer, out value)) {
+        throw new InvalidOperationException();
+    }
+    return value;
+} 
+```
+
+
