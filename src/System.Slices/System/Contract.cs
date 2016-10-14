@@ -78,7 +78,16 @@ namespace System
                 ThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static unsafe void RequiresOneNotNull<T>(T[] array, void* pointer)
+        {
+            if (array == null && pointer == null)
+            {
+                ThrowHelper.ThrowArgumentException();
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RequiresInInclusiveRange( uint start, uint length)
         {
