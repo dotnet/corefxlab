@@ -220,3 +220,36 @@ We chose to make span stack-only as it solves several problems:
 - Reliable buffer pooling: buffers can be rented from a pool, wrapped in spans, the spans passed to user code, and when the stack unwinds, the program can reliably return the buffer to the pool as it can be sure that there are no outstanding references to the buffer.
 
 The fast representation makes the type automatically stack-only, i.e. the constraint will be enforced by CLR type loader. This restriction should also be enforced by managed language compilers and/or analyzers for better developer experience. For the slow span, language compiler checks and/or analyzers is the only option (as the runtimes won't enforce the stack-only restriction).
+
+##Memory\<T\>
+As alluded to above, in the upcoming months, many data transformation components in .NET (e.g. Base64Encoding, compressions, formatting, parsing) will provide APIs operating on memory buffers. We will do this work to develop no-copy/low-allocation end-2-end data pipelines, like the ASP.NET Channels. These APIs will use a collection of types, including, but not limited to Span\<T\> to represent various data pipeline primitives and exchange types.
+
+This new collection of types must be usable by two distinct sets of customers: 
+- Productivity developers (99% case): these are the developers who use LINQ, async, lambdas, etc., and often for good reasons care more about productivity than squeezing the last cycles out of some low level transformation routines.  
+- Low level developers (1% case): our library and framework authors for whom perf is a critical aspect of their work. 
+
+Even though the goals are each group are different, they rely on each other to be successful. One is a necessary consumer of the other. 
+
+A stack only type with the associated tradeoffs is great for low level developers writing data transformation routines. Productivity developers, writing apps, may not be so thrilled when they realize that when using stack-only types, they lose many of the language features they rely on to get their jobs done (e.g. async await). And so, a stack only type simply can’t be the primary exchange type we recommend for high level developers/scenarios/APIs.
+
+For the whole platform to be successful, we must add an exchange type, currently called Memory\<T\>, that can be used with the full power of the language, i.e. it’s not stack-only. Memory\<T\> can be seen as a “promise” of a Span. It can be freely used in generics, stored on the heap, used with async await, and all the other language features we all love. When Memory\<T\> is finally ready to be manipulated by a data transformation routine, it will be temporarly converted to a span (the promise will be realized), which will provide much more efficient (remember "on pair with array") access to the buffer's data.
+
+See a prototype of Memory\<T\> at https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/Memory.cs. Note that the prototype is curently not tearing safe. We will make it safe in the upcomming weeks.
+
+#Other Random Thoughts
+
+##Optimizations
+We need to enable the existing array bounds check optimizations for Span – in both the static compiler and the JIT – to make its perfromance on par with arrays. Longer term, we should optimize struct passing and construction to make slicing operations on Spans more efficient. Today, we recommend that Spans are sliced only when a shorted span needs to be passed to a different routine. Within a single routine, code should do index arithmetic to access subranges of spans. 
+
+##Conversions
+Span\<T\> will support reinterpret cast conversions to Span\<byte\>. It will also support unsafe casts between arbitrary primitive types. The reason for this limitation is that some processors don’t support efficient unaligned memory access.
+
+##Platform Support Plans
+We want to ship Span\<T\> as a nugget fat package available for .NET Standard 1.1 and above. Runtimes that support by-ref fields and returns will get the fast two filed span. Other runtimes will get the slower three-field span. 
+
+##Relationship to Array Slicing
+Since Span\<T\> will be a stack only-type, it’s not well suited as the general representation of array slice. When an array is sliced, majority of our users expect the result to be either an array, or at least a type that is very similar to the array (e.g. ArraySegment<T>). We will design array slicing separately from Span<T>.
+
+##Covariance
+Unlike T[], Span<T> will not support covariant casts, i.e. cast Span<Subtype> to Span<Basetype>. Because of that, we won’t be doing covariance checks when storing references in spans.
+
