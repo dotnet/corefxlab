@@ -39,7 +39,7 @@ namespace System
         {
             if (ptr0 != ptr1)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.pointer);
+                ThrowHelper.ThrowArgumentException(ExceptionArgument.pointer);
             }
         }
 
