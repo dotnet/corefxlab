@@ -192,4 +192,20 @@ public struct Span<T> {
 A prototype of this design can be found at https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Span.cs.
 In this representation, the Span\<T\>'s indexer will add the _pointer and the address of _relocatableObject before accessing items in the Span. This will make the accessor slower, but it will ensure that when the GC moves the sliced object (e.g. array) in memory, the indexer still accesses the right memory location. Note that if the Span wraps a managed object, the _pointer field will be the offset off the object's root to the objects data slice, but if the Span wraps a native memory, the _pointer will point to the memory and the _relocatableObject will be set to null (zero). In either case, adding the pointer and the address of the object (null == 0) results in the right "effective" address.
 
+##Struct Tearing
+Struct tearing is a threading issue that affects all structs larger than what can be atomically updated on the target processor architecture. For example, some 64-bit processors can only update one 64-bit aligned memory block atomically. This means that some processors won’t be able to update both the _pointer and the _length fields of the Span atomically. This in turn means that the following code, might result in another thread observing _pointer and _length fields belonging to two different spans (the original one and the one being assigned to the field):
+```c#
+interanl class Bufer {
+    Span<byte> _memory = new byte[1024];
+
+    public void Resize(int newSize) {
+        _memory = new byte[newSize]; // this will not update atomically
+    }
+
+    public byte this[int index] => _memory[index]; // this might see partial update
+}
+```
+For most structs, tearing is at most a correctness bug and can be dealt with by making the fields (typed as the tearable struct type) non-public and synchronizing access to them. But since Span needs to be as fast as the array, access to the field cannot be synchronized. Also, because of the fact that Span accesses (and writes to) memory directly, having the _pointer and the _length be out of sync could result in memory safety being compromised. 
+
+The only other way (besides synchronizing access, which would be not practical) to avoid this issue is to make Span a stack-only type, i.e. its instances can reside only on the stack (which is accessed by one thread). 
 
