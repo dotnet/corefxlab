@@ -78,7 +78,7 @@ The .NET Framework design philosophy has focused almost solely on productivity f
 
 But the landscape has shifted since our platform was conceived almost 20 years ago. We now target non-Windows operating systems, our developers write cloud hosted services demanding different tradeoffs than client-server applications, the state of art patterns have moved away from once popular technologies like XML, UTF16, SOAP (to name a few), and the hardware running today’s software is very different than what was available 20 years ago. 
 
-When we analyze the gaps we have today and the requirements of today’s high sclae servers, we realize that we need to provide modern no-copy, low-allocation, and UTF8 data transformation APIs that are efficient, reliable, and easy to use. Prototypes of such APIs are available in [Corfxlab repo]( https://github.com/dotnet/corefxlab), and Span\<T\> is one of the main fundamental building blocks for these APIs.
+When we analyze the gaps we have today and the requirements of today’s high sclae servers, we realize that we need to provide modern no-copy, low-allocation, and UTF8 data transformation APIs that are efficient, reliable, and easy to use. Prototypes of such APIs are available in [corefxlab repository]( https://github.com/dotnet/corefxlab), and Span\<T\> is one of the main fundamental building blocks for these APIs.
 
 ###Data Pipelines
 Modern servers are often designed as, often reactive, pipelines of components doing transformations on byte buffers. For example, such pipeline in a web server might consist of the following transformations: socket fills in a buffer -> HTTP parsing -> decompression -> Base 64 decoding -> routing -> HTML writing -> HTML escaping -> HTTP writing -> compression -> socket writing. 
@@ -117,4 +117,28 @@ public unsafe static uint GetUInt32(this ReadableBuffer buffer) {
 } 
 ```
 
+###Non-Allocating Substring
+Modern server protocols are more often than not text based, and so it's not surprising that such servers often create and manipulate lots of strings. 
 
+One of the most common basic string operations is string slicing. Currently, System.String.Substring is the main .NET API for creating slices of a string, but the API is inefficient as it creates a new string to represent the slice and copies the characters from the original string to the new string slice. Because of this inefficiency, high performance servers shy away from using this API, where they can (in their internals), and pay the cost in the publicly facing APIs.
+
+ReadOnlySpan\<char\> could be a much more efficient standard representation of a subsection of a string:
+```c#
+public struct ReadOnlypan<T> {
+    public Span(T[] array)
+    public Span(T[] array, int index)
+    public Span(T[] array, int index, int length)
+    public unsafe Span(void* memory, int length)
+
+    public int Length { get; }
+    public T [int index] { get; }
+
+    public ReadOnlypan <T> Slice(int index)
+    public ReadOnlypan <T> Slice(int index, int count)
+
+    public bool TryCopyTo(T[] destination);
+    public bool TryCopyTo(Span<T> destination);
+}
+
+ReadOnlySpan<char> lengthText = "content-length:123".Slice(15);
+```
