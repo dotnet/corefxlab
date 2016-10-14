@@ -24,10 +24,7 @@ namespace System.Buffers
 
         public unsafe Memory(void* pointer, int length)
         {
-            if (pointer == null)
-            {
-                throw new ArgumentNullException(nameof(pointer));
-            }
+            Contract.RequiresNotNull(ExceptionArgument.pointer, pointer);
 
             _memory = pointer;
             _array = null;
@@ -41,10 +38,7 @@ namespace System.Buffers
 
         public Memory(T[] array, int offset, int length)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
+            Contract.RequiresNotNull(ExceptionArgument.array, array);
 
             unsafe
             {
@@ -58,10 +52,7 @@ namespace System.Buffers
 
         public unsafe Memory(T[] array, int offset, int length, void* pointer = null)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
+            Contract.RequiresNotNull(ExceptionArgument.array, array);
 
             unsafe
             {
@@ -69,10 +60,7 @@ namespace System.Buffers
                 {
                     _memory = Unsafe.AsPointer(ref array[offset]);
 
-                    if (_memory != pointer)
-                    {
-                        throw new ArgumentException(nameof(pointer));
-                    }
+                    Contract.RequiresSameReference(_memory, pointer);
                 }
                 else
                 {

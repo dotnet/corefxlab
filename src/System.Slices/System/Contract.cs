@@ -5,14 +5,41 @@ using System.Runtime.CompilerServices;
 
 namespace System
 {
-    static class Contract
+    internal static class Contract
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Requires(bool condition)
         {
             if (!condition)
             {
-                ThrowArgumentException();
+                ThrowHelper.ThrowArgumentException();
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RequiresNotNull<T>(ExceptionArgument argument, T obj) where T : class 
+        {
+            if (obj == null)
+            {
+                ThrowHelper.ThrowArgumentNullException(argument);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void RequiresNotNull(ExceptionArgument argument, void* ptr)
+        {
+            if (ptr == null)
+            {
+                ThrowHelper.ThrowArgumentNullException(argument);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void RequiresSameReference(void* ptr0, void* ptr1)
+        {
+            if (ptr0 != ptr1)
+            {
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.pointer);
             }
         }
 
@@ -21,7 +48,7 @@ namespace System
         {
             if (n < 0)
             {
-                ThrowArgumentOutOfRangeException();
+                ThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
 
@@ -30,7 +57,7 @@ namespace System
         {
             if ((uint)start >= length)
             {
-                ThrowArgumentOutOfRangeException();
+                ThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
         
@@ -39,7 +66,7 @@ namespace System
         {
             if (start >= length)
             {
-                ThrowArgumentOutOfRangeException();
+                ThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
 
@@ -48,16 +75,16 @@ namespace System
         {
             if ((uint)start > length)
             {
-                ThrowArgumentOutOfRangeException();
+                ThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RequiresInInclusiveRange(uint start, uint length)
+        public static void RequiresInInclusiveRange( uint start, uint length)
         {
             if (start > length)
             {
-                ThrowArgumentOutOfRangeException();
+                ThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
 
@@ -68,7 +95,7 @@ namespace System
                 || length < 0
                 || (uint)(start + length) > existingLength)
             {
-                ThrowArgumentOutOfRangeException();
+                ThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
         
@@ -76,23 +103,10 @@ namespace System
         public static void RequiresInInclusiveRange(uint start, uint length, uint existingLength)
         {
             if (start > existingLength
-                || length < 0
                 || (start + length) > existingLength)
             {
-                ThrowArgumentOutOfRangeException();
+                ThrowHelper.ThrowArgumentOutOfRangeException();
             }
-        }
-
-        internal static InvalidOperationException InvalidOperationExceptionForBoxingSpans() => new InvalidOperationException("Spans must not be boxed");
-
-        private static void ThrowArgumentException()
-        {
-            throw new ArgumentException();
-        }
-
-        private static void ThrowArgumentOutOfRangeException()
-        {
-            throw new ArgumentOutOfRangeException();
         }
     }
 }

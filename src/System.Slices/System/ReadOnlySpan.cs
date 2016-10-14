@@ -313,7 +313,7 @@ namespace System
             }
         }
 
-        public override bool Equals(object obj) { throw Contract.InvalidOperationExceptionForBoxingSpans(); }
+        public override bool Equals(object obj) { ThrowHelper.ThrowInvalidOperationException_ForBoxingSpans(); return false; }
 
         /// <summary>
         /// Checks to see if two spans point at the same memory.  Note that
