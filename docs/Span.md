@@ -1,0 +1,1 @@
+Placeholder for Span<T> design document
