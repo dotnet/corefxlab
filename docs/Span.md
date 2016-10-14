@@ -158,3 +158,38 @@ Today, unmanaged buffers passed over unmanaged to managed boundary are frequentl
 
 Secondly, a number of performance critical APIs in the Framework take unsafe pointers as input. Examples include Encoding.GetChars or Buffer.MemoryCopy. Over time, we should provide more safe APIs that use Span<T>, which will allow more code to compile as safe but still preserve its performance characteristics. 
 
+#Requirements
+To support the scenarios described above, Span\<T\> must meet the following requirements:
+
+1.	Ability to wrap managed and native memory
+2.	Performance characteristics on par with arrays
+3.	Be memory safe
+
+#Design/Representation
+We will provide two different implementations of Span\<T\>: 
+- Fast Span (avaliable on runtimes with special support for spans)
+- Slow Span (avaliable on all current .NET runtimes, even existing ones, e.g. .NET 4.5) 
+
+The fast implementation, will rely on "ref field" support and will look as follows:
+
+```c#
+public struct Span<T> {
+    internal ref T _pointer;
+    internal int _length;
+}
+```
+
+A prototype of such fast Span\<T\> can be found at https://github.com/dotnet/coreclr/blob/SpanOfT/src/mscorlib/src/System/Span.cs. Through the magic of the ref field, it can support slicing without requiring a strong pointer to the root of the sliced object. The GC is able to trace the interior pointer, keep the root object alive, and update the interior pointer if the object is relocated during a collection.
+
+A different representation will be implemented for platforms that don’t support ref fields (interior pointers):
+```c#
+public struct Span<T> {
+    internal IntPtr _pointer;
+    internal object _relocatableObject;
+    internal int _length;
+}
+```
+A prototype of this design can be found at https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Span.cs.
+In this representation, the Span\<T\>'s indexer will add the _pointer and the address of _relocatableObject before accessing items in the Span. This will make the accessor slower, but it will ensure that when the GC moves the sliced object (e.g. array) in memory, the indexer still accesses the right memory location. Note that if the Span wraps a managed object, the _pointer field will be the offset off the object's root to the objects data slice, but if the Span wraps a native memory, the _pointer will point to the memory and the _relocatableObject will be set to null (zero). In either case, adding the pointer and the address of the object (null == 0) results in the right "effective" address.
+
+
