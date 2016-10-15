@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Span\<T\> is a new type we are adding to the platform to represent contiguous regions of arbitrary memory, with perfromance characteristics on par with T[]. Its APIs are similar to the array, but unlike arrays, it can point to either managed or native memory, or to memory allocated on the stack. 
+Span\<T\> is a new type we are adding to the platform to represent contiguous regions of arbitrary memory, with performance characteristics on par with T[]. Its APIs are similar to the array, but unlike arrays, it can point to either managed or native memory, or to memory allocated on the stack. 
 
 ```c#
 // managed memory
