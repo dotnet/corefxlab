@@ -248,8 +248,8 @@ Span\<T\> will support reinterpret cast conversions to Span\<byte\>. It will als
 We want to ship Span\<T\> as a nugget fat package available for .NET Standard 1.1 and above. Runtimes that support by-ref fields and returns will get the fast two filed span. Other runtimes will get the slower three-field span. 
 
 ##Relationship to Array Slicing
-Since Span\<T\> will be a stack only-type, it’s not well suited as the general representation of array slice. When an array is sliced, majority of our users expect the result to be either an array, or at least a type that is very similar to the array (e.g. ArraySegment<T>). We will design array slicing separately from Span<T>.
+Since Span\<T\> will be a stack only-type, it’s not well suited as the general representation of array slice. When an array is sliced, majority of our users expect the result to be either an array, or at least a type that is very similar to the array (e.g. ArraySegment\<T\>). We will design array slicing separately from Span\<T\>.
 
 ##Covariance
-Unlike T[], Span<T> will not support covariant casts, i.e. cast Span<Subtype> to Span<Basetype>. Because of that, we won’t be doing covariance checks when storing references in spans.
+Unlike T[], Span<T> will not support covariant casts, i.e. cast Span\<Subtype\> to Span\<Basetype\>. Because of that, we won’t be doing covariance checks when storing references in spans.
 
