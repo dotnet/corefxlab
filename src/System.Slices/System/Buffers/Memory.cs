@@ -24,10 +24,7 @@ namespace System.Buffers
 
         public unsafe Memory(void* pointer, int length)
         {
-            if (pointer == null)
-            {
-                throw new ArgumentNullException(nameof(pointer));
-            }
+            Contract.RequiresNotNull(ExceptionArgument.pointer, pointer);
 
             _memory = pointer;
             _array = null;
@@ -41,10 +38,7 @@ namespace System.Buffers
 
         public Memory(T[] array, int offset, int length)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
+            Contract.RequiresNotNull(ExceptionArgument.array, array);
 
             unsafe
             {
@@ -58,10 +52,7 @@ namespace System.Buffers
 
         public unsafe Memory(T[] array, int offset, int length, void* pointer = null)
         {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
+            Contract.RequiresNotNull(ExceptionArgument.array, array);
 
             unsafe
             {
@@ -69,14 +60,34 @@ namespace System.Buffers
                 {
                     _memory = Unsafe.AsPointer(ref array[offset]);
 
-                    if (_memory != pointer)
-                    {
-                        throw new ArgumentException(nameof(pointer));
-                    }
+                    Contract.RequiresSameReference(_memory, pointer);
                 }
                 else
                 {
                     _memory = null;
+                }
+            }
+
+            _array = array;
+            _offset = offset;
+            _memoryLength = length;
+        }
+
+        internal unsafe Memory(int offset, int length, T[] array, void* pointer = null)
+        {
+            Contract.RequiresOneNotNull(array, pointer);
+
+            unsafe
+            {
+                if (array != null && pointer != null)
+                {
+                    _memory = Unsafe.AsPointer(ref array[offset]);
+
+                    Contract.RequiresSameReference(_memory, pointer);
+                }
+                else
+                {
+                    _memory = pointer;
                 }
             }
 
@@ -128,12 +139,7 @@ namespace System.Buffers
         public unsafe Memory<T> Slice(int offset, int length)
         {
             // TODO: Bounds check
-            if (_array == null)
-            {
-                return new Memory<T>(Add(_memory, offset), length);
-            }
-
-            return new Memory<T>(_array, _offset + offset, length, _memory == null ? null : Add(_memory, offset));
+            return new Memory<T>(_offset + offset, length, _array, _memory == null ? null : Add(_memory, offset));
         }
 
         public unsafe Memory<T> Slice(int offset)

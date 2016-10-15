@@ -46,10 +46,12 @@ namespace System.Collections.Sequences
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
                 ReadOnlySpan<T> span;
-                if(_sequence.TryGet(ref _position, out span, advance: false)) {
-                    return span;
+                if(!_sequence.TryGet(ref _position, out span, advance: false))
+                {
+                    ThrowHelper.ThrowInvalidOperationException();
                 }
-                throw new InvalidOperationException();
+
+                return span;
             }
         }
     }

@@ -255,3 +255,4 @@ nuget.exe
 
 # VS Code Files
 .vscode
+*.props

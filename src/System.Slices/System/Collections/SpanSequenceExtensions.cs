@@ -58,10 +58,11 @@ namespace System.Collections.Sequences
         {
             Span<T> result;
             var first = Position.First;
-            if(sequence.TryGet(ref first, out result)) {
-                return result;
+            if(!sequence.TryGet(ref first, out result)) {
+                ThrowHelper.ThrowInvalidOperationException();
             }
-            throw new Exception();
+
+            return result;
         }
 
         /// <summary>

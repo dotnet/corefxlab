@@ -154,7 +154,7 @@ namespace System
         {
             int countOfU;
 
-            /// This comparison is a jittime constant
+            // This comparison is a jittime constant
             if (Unsafe.SizeOf<T>() > Unsafe.SizeOf<U>())
             {
                 IntPtr count = UnsafeUtilities.CountOfU<T, U>((uint)slice.Length);
@@ -196,7 +196,7 @@ namespace System
         {
             int countOfU;
 
-            /// This comparison is a jittime constant
+            // This comparison is a jittime constant
             if (Unsafe.SizeOf<T>() > Unsafe.SizeOf<U>())
             {
                 IntPtr count = UnsafeUtilities.CountOfU<T, U>((uint)slice.Length);
