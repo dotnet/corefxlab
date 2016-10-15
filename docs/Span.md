@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Span\<T\> is a new type we are adding to the platform to represent contiguous regions of arbitrary memory, with perfromance characteristics on pair with T[]. Its APIs are similar to the array, but unlike arrays, it can point to either managed or native memory, or to memory allocated on the stack. 
+Span\<T\> is a new type we are adding to the platform to represent contiguous regions of arbitrary memory, with perfromance characteristics on par with T[]. Its APIs are similar to the array, but unlike arrays, it can point to either managed or native memory, or to memory allocated on the stack. 
 
 ```c#
 // managed memory
@@ -232,7 +232,7 @@ Even though the goals are each group are different, they rely on each other to b
 
 A stack only type with the associated tradeoffs is great for low level developers writing data transformation routines. Productivity developers, writing apps, may not be so thrilled when they realize that when using stack-only types, they lose many of the language features they rely on to get their jobs done (e.g. async await). And so, a stack only type simply can’t be the primary exchange type we recommend for high level developers/scenarios/APIs.
 
-For the whole platform to be successful, we must add an exchange type, currently called Memory\<T\>, that can be used with the full power of the language, i.e. it’s not stack-only. Memory\<T\> can be seen as a “promise” of a Span. It can be freely used in generics, stored on the heap, used with async await, and all the other language features we all love. When Memory\<T\> is finally ready to be manipulated by a data transformation routine, it will be temporarly converted to a span (the promise will be realized), which will provide much more efficient (remember "on pair with array") access to the buffer's data.
+For the whole platform to be successful, we must add an exchange type, currently called Memory\<T\>, that can be used with the full power of the language, i.e. it’s not stack-only. Memory\<T\> can be seen as a “promise” of a Span. It can be freely used in generics, stored on the heap, used with async await, and all the other language features we all love. When Memory\<T\> is finally ready to be manipulated by a data transformation routine, it will be temporarly converted to a span (the promise will be realized), which will provide much more efficient (remember "on par with array") access to the buffer's data.
 
 See a prototype of Memory\<T\> at https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/Memory.cs. Note that the prototype is curently not tearing safe. We will make it safe in the upcomming weeks.
 
