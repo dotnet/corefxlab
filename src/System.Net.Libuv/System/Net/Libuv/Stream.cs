@@ -27,7 +27,7 @@ namespace System.Net.Libuv
             }
         }
 
-        public event Action<Memory<byte>> ReadCompleted;
+        public event Action<UnsafeMemory<byte>> ReadCompleted;
         public event Action EndOfStream;
 
         public unsafe void TryWrite(byte[] data)
@@ -77,7 +77,7 @@ namespace System.Net.Libuv
             }
         }
 
-        public unsafe void TryWrite(Memory<byte> data)
+        public unsafe void TryWrite(UnsafeMemory<byte> data)
         {
             // This can work with Span<byte> because it's synchronous but we need pinning support
             EnsureNotDisposed();
@@ -144,7 +144,7 @@ namespace System.Net.Libuv
             }
             else
             {
-                var readSlice = new Memory<byte>((byte*)buffer.Buffer, (int)bytesRead);
+                var readSlice = new UnsafeMemory<byte>((byte*)buffer.Buffer, (int)bytesRead);
                 OnReadCompleted(readSlice);
                 buffer.Dispose();
             }
@@ -175,13 +175,13 @@ namespace System.Net.Libuv
             {
                 // This can be a Span<byte> but the samples pass it directly to TryWrite which
                 // needs to unpack the data and turn it back into either an array or native memory
-                var readSlice = new Memory<byte>((byte*)buffer.Buffer, (int)bytesRead);
+                var readSlice = new UnsafeMemory<byte>((byte*)buffer.Buffer, (int)bytesRead);
                 OnReadCompleted(readSlice);
                 buffer.Dispose();
             }
         }
 
-        void OnReadCompleted(Memory<byte> bytesRead)
+        void OnReadCompleted(UnsafeMemory<byte> bytesRead)
         {
             if (ReadCompleted != null)
             {

@@ -20,7 +20,7 @@ namespace System.Net.Libuv
             AllocWindowsBuffer = OnAllocateWindowsBuffer;
         }
 
-        internal static void FreeBuffer(Memory<byte> buffer)
+        internal static void FreeBuffer(UnsafeMemory<byte> buffer)
         {
             _pool.Return(buffer);
         }
@@ -70,7 +70,7 @@ namespace System.Net.Libuv
             {
                 unsafe
                 {
-                    FreeBuffer(new Memory<byte>(Buffer.ToPointer(), (int)Length));
+                    FreeBuffer(new UnsafeMemory<byte>(Buffer.ToPointer(), (int)Length));
                     Length = 0;
                     Buffer = IntPtr.Zero;
                 }
@@ -93,7 +93,7 @@ namespace System.Net.Libuv
             {
                 unsafe
                 {
-                    FreeBuffer(new Memory<byte>((byte*)Buffer.ToPointer(), Length.ToInt32()));
+                    FreeBuffer(new UnsafeMemory<byte>((byte*)Buffer.ToPointer(), Length.ToInt32()));
                     Length = IntPtr.Zero;
                     Buffer = IntPtr.Zero;
                 }

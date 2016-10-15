@@ -273,7 +273,7 @@ namespace System.Slices.Tests
         [Fact]
         public void EmptyMemoryAcessible()
         {
-            var empty = Memory<byte>.Empty;
+            var empty = UnsafeMemory<byte>.Empty;
             Assert.Equal(0, empty.Length);
             ArraySegment<byte> data;
             Assert.False(empty.TryGetArray(out data));
@@ -289,20 +289,20 @@ namespace System.Slices.Tests
         {
             var original = new int[] { 1, 2, 3 };
             ArraySegment<int> array;
-            Memory<int> slice;
+            UnsafeMemory<int> slice;
 
-            slice = new Memory<int>(original, 1, 2);
+            slice = new UnsafeMemory<int>(original, 1, 2);
             Assert.True(slice.TryGetArray(out array));
             Assert.Equal(2, array.Array[array.Offset + 0]);
             Assert.Equal(3, array.Array[array.Offset + 1]);
 
-            slice = new Memory<int>(original, 0, 3);
+            slice = new UnsafeMemory<int>(original, 0, 3);
             Assert.True(slice.TryGetArray(out array));
             Assert.Equal(1, array.Array[array.Offset + 0]);
             Assert.Equal(2, array.Array[array.Offset + 1]);
             Assert.Equal(3, array.Array[array.Offset + 2]);
 
-            slice = new Memory<int>(original, 0, 0);
+            slice = new UnsafeMemory<int>(original, 0, 0);
             Assert.True(slice.TryGetArray(out array));
             Assert.Equal(0, array.Offset);
             Assert.Equal(original, array.Array);
@@ -312,7 +312,7 @@ namespace System.Slices.Tests
             {
                 fixed (int* pBytes = original)
                 {
-                    slice = new Memory<int>(pBytes, 1);
+                    slice = new UnsafeMemory<int>(pBytes, 1);
                     Assert.False(slice.TryGetArray(out array));
                     void* p;
                     Assert.True(slice.TryGetPointer(out p));
@@ -343,7 +343,7 @@ namespace System.Slices.Tests
         public void TryGetPointerReturnsFalseIfNotPinned()
         {
             var data = new byte[10];
-            var memory = new Memory<byte>(data, 0, data.Length);
+            var memory = new UnsafeMemory<byte>(data, 0, data.Length);
             unsafe
             {
                 void* pointer;
@@ -357,7 +357,7 @@ namespace System.Slices.Tests
             unsafe
             {
                 IntPtr raw = Marshal.AllocHGlobal(10);
-                var memory = new Memory<byte>((void*)raw, 10);
+                var memory = new UnsafeMemory<byte>((void*)raw, 10);
                 void* pointer;
                 Assert.True(memory.TryGetPointer(out pointer));
                 Assert.True(raw.ToPointer() == pointer);
@@ -373,7 +373,7 @@ namespace System.Slices.Tests
                 var data = new byte[10];
                 fixed (byte* ptr = data)
                 {
-                    var memory = new Memory<byte>(data, 0, data.Length, ptr);
+                    var memory = new UnsafeMemory<byte>(data, 0, data.Length, ptr);
                     void* pointer;
                     Assert.True(memory.TryGetPointer(out pointer));
                     Assert.True(ptr == pointer);
@@ -392,7 +392,7 @@ namespace System.Slices.Tests
 
                     fixed (byte* ptr = data)
                     {
-                        var memory = new Memory<byte>(data, 0, data.Length, ptr + 1);
+                        var memory = new UnsafeMemory<byte>(data, 0, data.Length, ptr + 1);
                     }
                 }
             });
@@ -411,7 +411,7 @@ namespace System.Slices.Tests
 
                 fixed (byte* ptr = data)
                 {
-                    var memory = new Memory<byte>(data, 5, 5, ptr + 5);
+                    var memory = new UnsafeMemory<byte>(data, 5, 5, ptr + 5);
                     Assert.Equal(5, memory.Length);
                     var span = memory.Span;
                     for (int i = 0; i < 5; i++)
@@ -432,7 +432,7 @@ namespace System.Slices.Tests
                 data[i] = (byte)i;
             }
 
-            var memory = new Memory<byte>(data, 0, data.Length);
+            var memory = new UnsafeMemory<byte>(data, 0, data.Length);
             var slice = memory.Slice(0, 5);
             var span = slice.Span;
             for (int i = 0; i < 5; i++)
@@ -457,7 +457,7 @@ namespace System.Slices.Tests
 
                 fixed (byte* ptr = data)
                 {
-                    var memory = new Memory<byte>(ptr, data.Length);
+                    var memory = new UnsafeMemory<byte>(ptr, data.Length);
                     var slice = memory.Slice(0, 5);
                     var span = slice.Span;
                     for (int i = 0; i < 5; i++)

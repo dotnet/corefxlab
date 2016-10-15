@@ -38,7 +38,7 @@ namespace System.Buffers
             Marshal.FreeHGlobal(_memory);
         }
 
-        public override Memory<byte> Rent(int numberOfBytes)
+        public override UnsafeMemory<byte> Rent(int numberOfBytes)
         {
             if (numberOfBytes < 1) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
@@ -57,10 +57,10 @@ namespace System.Buffers
                     throw new NotImplementedException("no more buffers to rent");
             }
 
-            return new Memory<byte>((byte*)(_memory + i * _bufferSize), _bufferSize);
+            return new UnsafeMemory<byte>((byte*)(_memory + i * _bufferSize), _bufferSize);
         }
 
-        public override void Return(Memory<byte> buffer)
+        public override void Return(UnsafeMemory<byte> buffer)
         {
             void* pointer;
             if(!buffer.TryGetPointer(out pointer)) {

@@ -162,9 +162,9 @@ namespace Microsoft.Net.Http
                 Id = id;
             }
 
-            public Memory<byte> Commited
+            public UnsafeMemory<byte> Commited
             {
-                get { return new Memory<byte>(Array.Array, Array.Offset, Array.Count); }
+                get { return new UnsafeMemory<byte>(Array.Array, Array.Offset, Array.Count); }
             }
 
             public Span<byte> Free

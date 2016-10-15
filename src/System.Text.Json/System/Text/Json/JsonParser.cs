@@ -101,7 +101,7 @@ namespace System.Text.Json
             return value;
         }
 
-        internal void Resize(Memory<byte> newStackMemory)
+        internal void Resize(UnsafeMemory<byte> newStackMemory)
         {
             _memory.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).CopyTo(newStackMemory);
             _memory = newStackMemory;
@@ -112,7 +112,7 @@ namespace System.Text.Json
     {
         private Span<byte> _db;
         private ReadOnlySpan<byte> _values;
-        private Memory<byte> _scratch;
+        private UnsafeMemory<byte> _scratch;
         BufferPool _pool;
         TwoStacks _stack;
 
@@ -206,7 +206,7 @@ namespace System.Text.Json
             }
 
             var result =  new JsonObject(_values, _db.Slice(0, _dbIndex), _pool, _scratch);
-            _scratch = Memory<byte>.Empty;
+            _scratch = UnsafeMemory<byte>.Empty;
             return result;
         }
 
