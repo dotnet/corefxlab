@@ -125,10 +125,10 @@ One of the most common basic string operations is string slicing. Currently, Sys
 ReadOnlySpan\<char\> could be a much more efficient standard representation of a subsection of a string:
 ```c#
 public struct ReadOnlySpan<T> {
-    public Span(T[] array)
-    public Span(T[] array, int index)
-    public Span(T[] array, int index, int length)
-    public unsafe Span(void* memory, int length)
+    public ReadOnlySpan(T[] array)
+    public ReadOnlySpan(T[] array, int index)
+    public ReadOnlySpan(T[] array, int index, int length)
+    public unsafe ReadOnlySpan(void* memory, int length)
 
     public int Length { get; }
     public T this[int index] { get; }
