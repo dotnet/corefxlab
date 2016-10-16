@@ -59,7 +59,7 @@ public struct Span<T> {
     public static implicit operator Span<T> (T[] array);
 
     public int Length { get; }
-    public ref T [int index] { get; }
+    public ref T this[int index] { get; }
 
     public Span<T> Slice(int index);
     public Span<T> Slice(int index, int length);
@@ -124,17 +124,17 @@ One of the most common basic string operations is string slicing. Currently, Sys
 
 ReadOnlySpan\<char\> could be a much more efficient standard representation of a subsection of a string:
 ```c#
-public struct ReadOnlypan<T> {
+public struct ReadOnlySpan<T> {
     public Span(T[] array)
     public Span(T[] array, int index)
     public Span(T[] array, int index, int length)
     public unsafe Span(void* memory, int length)
 
     public int Length { get; }
-    public T [int index] { get; }
+    public T this[int index] { get; }
 
-    public ReadOnlypan <T> Slice(int index)
-    public ReadOnlypan <T> Slice(int index, int count)
+    public ReadOnlySpan <T> Slice(int index)
+    public ReadOnlySpan <T> Slice(int index, int count)
 
     public bool TryCopyTo(T[] destination);
     public bool TryCopyTo(Span<T> destination);
