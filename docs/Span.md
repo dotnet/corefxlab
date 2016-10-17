@@ -154,7 +154,7 @@ public static class SpanParsingExtensions {
     static bool TryParse(this ReadOnlySpan<char> text, out int value)
 }
 
-"content-length:123".Substring(15).TryParse(out int value);
+"content-length:123".Slice(15).TryParse(out int value);
 ```
 The API can be further improved (take in Span\<byte\>) to parse text buffers regardless of the encoding (e.g. UTF8)
 ```c#
@@ -163,7 +163,7 @@ public static class SpanParsingExtensions {
 }
 
 var byteArray = new byte[]{49, 50, 51};
-var bytesFromStringSlice = "content-length:123".Substring(15).As<byte>();
+var bytesFromStringSlice = "content-length:123".Slice(15).As<byte>();
 var bytesFromUtf8StringSlice = new Utf8String("content-length:123").Slice(15);
 
 byteArray.TryParse(EncodingData.Utf8, out int value);
