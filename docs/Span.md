@@ -74,7 +74,7 @@ In addition, we will provide a read-only version of Span\<T\>. The ReadOnlySpan\
 ## Scenarios
 Span\<T\> is a small, but critical, building block for a much larger effort to provide .NET APIs to enable development of high scalability server applications.
 
-The .NET Framework design philosophy has focused almost solely on productivity for developers writing application software. In addition, many of the Framework’s design decisions were made assuming Windows client-server applications circa 1999. This design philosophy is big part of .NET’s success as .NET is universally viewed as a very high productivity platform.
+The .NET Framework design philosophy has focused almost solely on productivity for developers writing application software. In addition, many of the Framework’s design decisions were made assuming Windows client-server applications circa 1999. This design philosophy is a big part of .NET’s success as .NET is universally viewed as a very high productivity platform.
 
 But the landscape has shifted since our platform was conceived almost 20 years ago. We now target non-Windows operating systems, our developers write cloud hosted services demanding different tradeoffs than client-server applications, the state of art patterns have moved away from once popular technologies like XML, UTF16, SOAP (to name a few), and the hardware running today’s software is very different than what was available 20 years ago. 
 
@@ -85,7 +85,7 @@ Modern servers are often designed as, often reactive, pipelines of components do
 
 Span\<byte\> is very useful for implementing transformation routines of such data pipelines. First, Span\<T\> allows the server to freely switch between managed and native buffers depending on situation/settings. For example, Windows RIO sockets work best with native buffers, and libuv Kestrel works best with pinned managed arrays. Secondly, it allows complicated transformation algorithms to be implemented in safe code without the need to resort to using raw pointers. Lastly, the fact that Span\<T\> is slicable allows the pipeline to abstract away the physical chunks of buffers, treating them as uniform logical chunks relevant to that particular section of the pipeline.
 
-The stack-only nature of spans (see more on this below) allows pooled memory to be safely returned to the pool after the transformation pipeline completes, and allows the pipeline to pass only the relevant slice of the buffer to each transformation routine/component. In other words, Span\<T\> aids in lifetime management of pooled buffers, which is critical to the performance of today's servers.
+The stack-only nature of Span\<T\> (see more on this below) allows pooled memory to be safely returned to the pool after the transformation pipeline completes, and allows the pipeline to pass only the relevant slice of the buffer to each transformation routine/component. In other words, Span\<T\> aids in lifetime management of pooled buffers, which is critical to the performance of today's servers.
 
 ####Discontinuous Buffers
 As alluded to before, data pipelines often process data in chunks as they arrive at a socket. This creates problems for data transformation routines such as parsing, which often have to deal with data that can reside in two or more buffers. For example, there might be a need to parse an integer residing partially in one buffer and partially in another. Since spans can abstract stack memory, they can solve this problem in a very elegant and performant way as illustrated in the following routine from ASP.NET Channels pipeline ([full source](https://github.com/davidfowl/Channels/blob/master/src/Channels.Text.Primitives/ReadableBufferExtensions.cs#L81)):
@@ -118,7 +118,7 @@ public unsafe static uint GetUInt32(this ReadableBuffer buffer) {
 ```
 
 ###Non-Allocating Substring
-Modern server protocols are more often than not text based, and so it's not surprising that such servers often create and manipulate lots of strings. 
+Modern server protocols are more often than not text-based, and so it's not surprising that such servers often create and manipulate lots of strings. 
 
 One of the most common basic string operations is string slicing. Currently, System.String.Substring is the main .NET API for creating slices of a string, but the API is inefficient as it creates a new string to represent the slice and copies the characters from the original string to the new string slice. Because of this inefficiency, high performance servers shy away from using this API, where they can (in their internals), and pay the cost in the publicly facing APIs.
 
@@ -163,12 +163,12 @@ To support the scenarios described above, Span\<T\> must meet the following requ
 
 1.	Ability to wrap managed and native memory
 2.	Performance characteristics on par with arrays
-3.	Be memory safe
+3.	Be memory-safe
 
 #Design/Representation
 We will provide two different implementations of Span\<T\>: 
-- Fast Span (availiable on runtimes with special support for spans)
-- Slow Span (availiable on all current .NET runtimes, even existing ones, e.g. .NET 4.5) 
+- Fast Span\<T\> (availiable on runtimes with special support for spans)
+- Slow Span\<T\> (availiable on all current .NET runtimes, even existing ones, e.g. .NET 4.5) 
 
 The fast implementation, will rely on "ref field" support and will look as follows:
 
@@ -179,7 +179,7 @@ public struct Span<T> {
 }
 ```
 
-A prototype of such fast Span\<T\> can be found at https://github.com/dotnet/coreclr/blob/SpanOfT/src/mscorlib/src/System/Span.cs. Through the magic of the ref field, it can support slicing without requiring a strong pointer to the root of the sliced object. The GC is able to trace the interior pointer, keep the root object alive, and update the interior pointer if the object is relocated during a collection.
+A prototype of such fast Span\<T\> can be found at https://github.com/dotnet/coreclr/blob/SpanOfT/src/mscorlib/src/System/Span.cs. Through the magic of the "ref field", it can support slicing without requiring a strong pointer to the root of the sliced object. The GC is able to trace the interior pointer, keep the root object alive, and update the interior pointer if the object is relocated during a collection.
 
 A different representation will be implemented for platforms that don’t support ref fields (interior pointers):
 ```c#
@@ -195,7 +195,7 @@ In this representation, the Span\<T\>'s indexer will add the _pointer and the ad
 ##Struct Tearing
 Struct tearing is a threading issue that affects all structs larger than what can be atomically updated on the target processor architecture. For example, some 64-bit processors can only update one 64-bit aligned memory block atomically. This means that some processors won’t be able to update both the _pointer and the _length fields of the Span atomically. This in turn means that the following code, might result in another thread observing _pointer and _length fields belonging to two different spans (the original one and the one being assigned to the field):
 ```c#
-interanl class Bufer {
+internal class Buffer {
     Span<byte> _memory = new byte[1024];
 
     public void Resize(int newSize) {
@@ -209,28 +209,28 @@ For most structs, tearing is at most a correctness bug and can be dealt with by 
 
 The only other way (besides synchronizing access, which would be not practical) to avoid this issue is to make Span a stack-only type, i.e. its instances can reside only on the stack (which is accessed by one thread). 
 
-##Span will be stack only
+##Span\<T\> will be stack-only
 Span\<T\> will be a stack-only type; more precisely, it will be a by-ref type (just like its field in the fast implementation). This means that Spans cannot be boxed, cannot appear as a field of a non-stack-only type, and cannot be used as a generic argument. However, Span\<T\> can be used as a type of method arguments or return values. 
 
-We chose to make span stack-only as it solves several problems:
+We chose to make Span\<T\> stack-only as it solves several problems:
 - Efficient representation and access: Span\<T\> can be just managed pointer and length.
 - Efficient GC tracking: limit number of interior pointers that the GC have to track. Tracking of interior pointers in the heap during GC would be pretty expensive.
 - Safe concurrency (struct tearing discussed above): Span<T> assignment does not have to be atomic. Atomic assignment would be required for storing Span\<T\> on the heap to avoid data tearing issues.
 - Safe lifetime: Safe code cannot create dangling pointers by storing it on the heap when Span\<T\> points to unmanaged memory or stack memory. The unsafe stack frame responsible for creating unsafe Span is responsible for ensuring that it won’t escape the scope.
 - Reliable buffer pooling: buffers can be rented from a pool, wrapped in spans, the spans passed to user code, and when the stack unwinds, the program can reliably return the buffer to the pool as it can be sure that there are no outstanding references to the buffer.
 
-The fast representation makes the type automatically stack-only, i.e. the constraint will be enforced by CLR type loader. This restriction should also be enforced by managed language compilers and/or analyzers for better developer experience. For the slow span, language compiler checks and/or analyzers is the only option (as the runtimes won't enforce the stack-only restriction).
+The fast representation makes the type instances automatically stack-only, i.e. the constraint will be enforced by the CLR type loader. This restriction should also be enforced by managed language compilers and/or analyzers for better developer experience. For the slow Span\<T\>, language compiler checks and/or analyzers is the only option (as the runtimes won't enforce the stack-only restriction).
 
 ##Memory\<T\>
-As alluded to above, in the upcoming months, many data transformation components in .NET (e.g. Base64Encoding, compressions, formatting, parsing) will provide APIs operating on memory buffers. We will do this work to develop no-copy/low-allocation end-2-end data pipelines, like the ASP.NET Channels. These APIs will use a collection of types, including, but not limited to Span\<T\> to represent various data pipeline primitives and exchange types.
+As alluded to above, in the upcoming months, many data transformation components in .NET (e.g. Base64Encoding, compressions, formatting, parsing) will provide APIs operating on memory buffers. We will do this work to develop no-copy/low-allocation end-to-end data pipelines, like the ASP.NET Channels. These APIs will use a collection of types, including, but not limited to, Span\<T\>, to represent various data pipeline primitives and exchange types.
 
 This new collection of types must be usable by two distinct sets of customers: 
 - Productivity developers (99% case): these are the developers who use LINQ, async, lambdas, etc., and often for good reasons care more about productivity than squeezing the last cycles out of some low level transformation routines.  
-- Low level developers (1% case): our library and framework authors for whom perf is a critical aspect of their work. 
+- Low level developers (1% case): our library and framework authors for whom performance is a critical aspect of their work. 
 
-Even though the goals are each group are different, they rely on each other to be successful. One is a necessary consumer of the other. 
+Even though the goals of each group are different, they rely on each other to be successful. One is a necessary consumer of the other. 
 
-A stack only type with the associated tradeoffs is great for low level developers writing data transformation routines. Productivity developers, writing apps, may not be so thrilled when they realize that when using stack-only types, they lose many of the language features they rely on to get their jobs done (e.g. async await). And so, a stack only type simply can’t be the primary exchange type we recommend for high level developers/scenarios/APIs.
+A stack-only type with the associated trade-offs is great for low level developers writing data transformation routines. Productivity developers, writing apps, may not be so thrilled when they realize that when using stack-only types, they lose many of the language features they rely on to get their jobs done (e.g. async await). And so, a stack-only type simply can’t be the primary exchange type we recommend for high level developers/scenarios/APIs.
 
 For the whole platform to be successful, we must add an exchange type, currently called Memory\<T\>, that can be used with the full power of the language, i.e. it’s not stack-only. Memory\<T\> can be seen as a “promise” of a Span. It can be freely used in generics, stored on the heap, used with async await, and all the other language features we all love. When Memory\<T\> is finally ready to be manipulated by a data transformation routine, it will be temporarly converted to a span (the promise will be realized), which will provide much more efficient (remember "on par with array") access to the buffer's data.
 
@@ -239,17 +239,16 @@ See a prototype of Memory\<T\> at https://github.com/dotnet/corefxlab/blob/maste
 #Other Random Thoughts
 
 ##Optimizations
-We need to enable the existing array bounds check optimizations for Span – in both the static compiler and the JIT – to make its performance on par with arrays. Longer term, we should optimize struct passing and construction to make slicing operations on Spans more efficient. Today, we recommend that Spans are sliced only when a shorted span needs to be passed to a different routine. Within a single routine, code should do index arithmetic to access subranges of spans. 
+We need to enable the existing array bounds check optimizations for Span\<T\> – in both the static compiler and the JIT – to make its performance on par with arrays. Longer term, we should optimize struct passing and construction to make slicing operations on Spans more efficient. Today, we recommend that Spans are sliced only when a shorted span needs to be passed to a different routine. Within a single routine, code should do index arithmetic to access subranges of spans. 
 
 ##Conversions
 Span\<T\> will support reinterpret cast conversions to Span\<byte\>. It will also support unsafe casts between arbitrary primitive types. The reason for this limitation is that some processors don’t support efficient unaligned memory access.
 
 ##Platform Support Plans
-We want to ship Span\<T\> as a nugget fat package available for .NET Standard 1.1 and above. Runtimes that support by-ref fields and returns will get the fast two filed span. Other runtimes will get the slower three-field span. 
+We want to ship Span\<T\> as a NuGet fat package available for .NET Standard 1.1 and above. Runtimes that support by-ref fields and returns will get the fast ref-field Span\<T\>. Other runtimes will get the slower three-field Span\<T\>. 
 
 ##Relationship to Array Slicing
-Since Span\<T\> will be a stack only-type, it’s not well suited as the general representation of array slice. When an array is sliced, majority of our users expect the result to be either an array, or at least a type that is very similar to the array (e.g. ArraySegment\<T\>). We will design array slicing separately from Span\<T\>.
+Since Span\<T\> will be a stack-only type, it’s not well suited as the general representation of array slice. When an array is sliced, majority of our users expect the result to be either an array, or at least a type that is very similar to the array (e.g. ArraySegment\<T\>). We will design array slicing separately from Span\<T\>.
 
 ##Covariance
-Unlike T[], Span<T> will not support covariant casts, i.e. cast Span\<Subtype\> to Span\<Basetype\>. Because of that, we won’t be doing covariance checks when storing references in spans.
-
+Unlike T[], Span<T> will not support covariant casts, i.e. cast Span\<Subtype\> to Span\<Basetype\>. Because of that, we won’t be doing covariance checks when storing references in Span\<T\> instances.
