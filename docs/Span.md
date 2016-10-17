@@ -76,7 +76,7 @@ Span\<T\> is a small, but critical, building block for a much larger effort to p
 
 The .NET Framework design philosophy has focused almost solely on productivity for developers writing application software. In addition, many of the Framework’s design decisions were made assuming Windows client-server applications circa 1999. This design philosophy is a big part of .NET’s success as .NET is universally viewed as a very high productivity platform.
 
-But the landscape has shifted since our platform was conceived almost 20 years ago. We now target non-Windows operating systems, our developers write cloud hosted services demanding different tradeoffs than client-server applications, the state of art patterns have moved away from once popular technologies like XML, UTF16, SOAP (to name a few), and the hardware running today’s software is very different than what was available 20 years ago. 
+But the landscape has shifted since our platform was conceived almost 20 years ago. We now target non-Windows operating systems, our developers write cloud hosted services demanding different tradeoffs than client-server applications, the state of the art patterns have moved away from once popular technologies like XML, UTF16, SOAP (to name a few), and the hardware running today’s software is very different than what was available 20 years ago. 
 
 When we analyze the gaps we have today and the requirements of today’s high scale servers, we realize that we need to provide modern no-copy, low-allocation, and UTF8 data transformation APIs that are efficient, reliable, and easy to use. Prototypes of such APIs are available in [corefxlab repository]( https://github.com/dotnet/corefxlab), and Span\<T\> is one of the main fundamental building blocks for these APIs.
 
@@ -149,12 +149,12 @@ TODO
 TODO
 
 ###Buffer Pooling
-Span\<T\> can be used to pool memory from a large single buffer allocated on the native heap. This decreases [pointless] work the GC needs to perform to manage pooled buffers, which never get collected anyway, but often need to be permanently pinned, which is bad for the system. Also, the fact that native memory does not move, lowers the cost of interop and the cost of pool related error checking (e.g. checking if a buffer is already returned to the pool).
+Span\<T\> can be used to pool memory from a large single buffer allocated on the native heap. This decreases [pointless] work the GC needs to perform to manage pooled buffers, which never get collected anyway, but often need to be permanently pinned, which is bad for the system. Also, the fact that native memory does not move lowers the cost of interop and the cost of pool related error checking (e.g. checking if a buffer is already returned to the pool).
 
 Separatelly, the stack-only nature of Span\<T\> makes lifetime management of pooled memry more relaible; it helps in avoiding use-after-free errors with pooled memory. Without Span\<T\>, it’s often not clear when a pooled buffer that was passed to a separate module can be returned to the pool, as the module could be holding to the buffer for later use. With Span\<T\>, the server pipeline can be sure that there are no more references to the buffer after the stack pops to the frame that first allocated the span and passed it down to other modules.
 
 ###Native code interop
-Today, unmanaged buffers passed over unmanaged to managed boundary are frequently copied to byte[] to allow safe access from managed code. Span\<T\> can eliminate the need to copy on many such scenarios.
+Today, unmanaged buffers passed over unmanaged to managed boundary are frequently copied to byte[] to allow safe access from managed code. Span\<T\> can eliminate the need to copy in many such scenarios.
 
 Secondly, a number of performance critical APIs in the Framework take unsafe pointers as input. Examples include Encoding.GetChars or Buffer.MemoryCopy. Over time, we should provide more safe APIs that use Span<T>, which will allow more code to compile as safe but still preserve its performance characteristics. 
 
