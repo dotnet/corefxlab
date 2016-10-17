@@ -143,7 +143,7 @@ public struct ReadOnlySpan<T> {
 ReadOnlySpan<char> lengthText = "content-length:123".Slice(15);
 ```
 ###Parsing
-Current, the .NET parsing APIs require the exact string representing the text being parsed to be passed as the argument to the APIs:
+Currently, the .NET parsing APIs require the exact string representing the text being parsed to be passed as the argument to the APIs:
 ```c#
     int value = int.Parse("123");
     int value = int.Parse("content-length:123".Substring(15)); // this allocates
