@@ -162,10 +162,15 @@ public static class SpanParsingExtensions {
     static bool TryParse(this ReadOnlySpan<byte> text, EncodingData encoding, out int value)
 }
 
-new byte[]{49, 50, 51}.TryParse(EncodingData.Utf8, out int value);
-"content-length:123".Substring(15).As<byte>().TryParse(EncodingData.Utf16, out int value);
-new Utf8String("content-length:123").Slice(15).TryParse(EncodingData.Utf8, out int value);
+var byteArray = new byte[]{49, 50, 51};
+var bytesFromStringSlice = "content-length:123".Substring(15).As<byte>();
+var bytesFromUtf8StringSlice = new Utf8String("content-length:123").Slice(15);
+
+byteArray.TryParse(EncodingData.Utf8, out int value);
+bytesFromStringSlice.TryParse(EncodingData.Utf16, out int value);
+bytesFromUtf8StringSlice.TryParse(EncodingData.Utf8, out int value);
 ```
+
 ###Formatting
 Similarly, formatting (the reverse of parsing) can be very elegantly and efficiently done on existing memory buffers backed by slices of arrays, native buffers, and stack allocated arrays. For Example, the following routine from [corfxlab](https://github.com/dotnet/corefxlab/blob/master/src/System.Text.Primitives/System/Text/Formatting/PrimitiveFormatter.cs#L41) formats an integer (as UTF8 text) into an arbitrary byte buffer:
 ```c#
