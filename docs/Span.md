@@ -167,8 +167,8 @@ To support the scenarios described above, Span\<T\> must meet the following requ
 
 #Design/Representation
 We will provide two different implementations of Span\<T\>: 
-- Fast Span (avaliable on runtimes with special support for spans)
-- Slow Span (avaliable on all current .NET runtimes, even existing ones, e.g. .NET 4.5) 
+- Fast Span (availiable on runtimes with special support for spans)
+- Slow Span (availiable on all current .NET runtimes, even existing ones, e.g. .NET 4.5) 
 
 The fast implementation, will rely on "ref field" support and will look as follows:
 
@@ -234,12 +234,12 @@ A stack only type with the associated tradeoffs is great for low level developer
 
 For the whole platform to be successful, we must add an exchange type, currently called Memory\<T\>, that can be used with the full power of the language, i.e. it’s not stack-only. Memory\<T\> can be seen as a “promise” of a Span. It can be freely used in generics, stored on the heap, used with async await, and all the other language features we all love. When Memory\<T\> is finally ready to be manipulated by a data transformation routine, it will be temporarly converted to a span (the promise will be realized), which will provide much more efficient (remember "on par with array") access to the buffer's data.
 
-See a prototype of Memory\<T\> at https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/Memory.cs. Note that the prototype is curently not tearing safe. We will make it safe in the upcomming weeks.
+See a prototype of Memory\<T\> at https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/Memory.cs. Note that the prototype is currently not tearing safe. We will make it safe in the upcoming weeks.
 
 #Other Random Thoughts
 
 ##Optimizations
-We need to enable the existing array bounds check optimizations for Span – in both the static compiler and the JIT – to make its perfromance on par with arrays. Longer term, we should optimize struct passing and construction to make slicing operations on Spans more efficient. Today, we recommend that Spans are sliced only when a shorted span needs to be passed to a different routine. Within a single routine, code should do index arithmetic to access subranges of spans. 
+We need to enable the existing array bounds check optimizations for Span – in both the static compiler and the JIT – to make its performance on par with arrays. Longer term, we should optimize struct passing and construction to make slicing operations on Spans more efficient. Today, we recommend that Spans are sliced only when a shorted span needs to be passed to a different routine. Within a single routine, code should do index arithmetic to access subranges of spans. 
 
 ##Conversions
 Span\<T\> will support reinterpret cast conversions to Span\<byte\>. It will also support unsafe casts between arbitrary primitive types. The reason for this limitation is that some processors don’t support efficient unaligned memory access.
