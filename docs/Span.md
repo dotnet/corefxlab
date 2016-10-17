@@ -167,7 +167,10 @@ new byte[]{49, 50, 51}.TryParse(EncodingData.Utf8, out int value);
 new Utf8String("content-length:123").Slice(15).TryParse(EncodingData.Utf8, out int value);
 ```
 ###Formatting
-TODO
+Similarly, formatting (the reverse of parsing) can be very elegantly and efficiently done on existing memory buffers backed by slices of arrays, native buffers, and stack allocated arrays. For Example, the following routine from [corfxlab](https://github.com/dotnet/corefxlab/blob/master/src/System.Text.Primitives/System/Text/Formatting/PrimitiveFormatter.cs#L41) formats an integer (as UTF8 text) into an arbitrary byte buffer:
+```c#
+public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWritten)
+```
 
 ###Buffer Pooling
 Span\<T\> can be used to pool memory from a large single buffer allocated on the native heap. This decreases [pointless] work the GC needs to perform to manage pooled buffers, which never get collected anyway, but often need to be permanently pinned, which is bad for the system. Also, the fact that native memory does not move lowers the cost of interop and the cost of pool related error checking (e.g. checking if a buffer is already returned to the pool).
@@ -265,6 +268,13 @@ We need to enable the existing array bounds check optimizations for Span\<T\> �
 ##Conversions
 Span\<T\> will support reinterpret cast conversions to Span\<byte\>. It will also support unsafe casts between arbitrary primitive types. The reason for this limitation is that some processors don’t support efficient unaligned memory access.
 
+A prototype of such API can be found [here](https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/SpanExtensions.cs#L151), and the API can be used as follows:
+```c#
+var bytes = new Span<byte>(buffer);
+var characters = bytes.Cast<byte, char>();
+if(char.IsLower(characters[0]) { ... }
+```
+
 ##Platform Support Plans
 We want to ship Span\<T\> as a NuGet fat package available for .NET Standard 1.1 and above. Runtimes that support by-ref fields and returns will get the fast ref-field Span\<T\>. Other runtimes will get the slower three-field Span\<T\>. 
 
@@ -273,3 +283,12 @@ Since Span\<T\> will be a stack-only type, it’s not well suited as the general
 
 ##Covariance
 Unlike T[], Span<T> will not support covariant casts, i.e. cast Span\<Subtype\> to Span\<Basetype\>. Because of that, we won’t be doing covariance checks when storing references in Span\<T\> instances.
+
+##Language Support
+Separately from this document, we should explore language features to better support Span\<T\>:
+
+1. Slicing syntax, i.e. a[1..5] calls a.Slice(1, 5).
+2. First class stack-only types, i.e. compiler errors, transitively make types containing stack-only fields stack-only, stack-only generic constraint.
+3. Generalize the pin operation, i.e. syntax for pinning Span\<T\>. 
+4. Ability to call (T[] array, int index, int count) API with ArraySegment\<T\> argument.
+
