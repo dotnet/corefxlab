@@ -143,8 +143,29 @@ public struct ReadOnlySpan<T> {
 ReadOnlySpan<char> lengthText = "content-length:123".Slice(15);
 ```
 ###Parsing
-TODO
+Currently, the .NET parsing APIs require the exact string representing the text being parsed to be passed as the argument to the APIs:
+```c#
+    int value = int.Parse("123");
+    int value = int.Parse("content-length:123".Substring(15)); // this allocates
+```
+We do not have APIs that can parse a slice of a string or a text buffer without the need to first allocate a substring representing the text being parsed. ReadOnlySpan\<char\>-based APIs, together with non-allocating substring APIs discussed above, could solve this problem:
+```c#
+public static class SpanParsingExtensions {
+    static bool TryParse(this ReadOnlySpan<char> text, out int value)
+}
 
+"content-length:123".Substring(15).TryParse(out int value);
+```
+The API can be further improved (take in Span\<byte\>) to parse text buffers regardless of the encoding (e.g. UTF8)
+```c#
+public static class SpanParsingExtensions {
+    static bool TryParse(this ReadOnlySpan<byte> text, EncodingData encoding, out int value)
+}
+
+new byte[]{49, 50, 51}.TryParse(EncodingData.Utf8, out int value);
+"content-length:123".Substring(15).As<byte>().TryParse(EncodingData.Utf16, out int value);
+new Utf8String("content-length:123").Slice(15).TryParse(EncodingData.Utf8, out int value);
+```
 ###Formatting
 TODO
 
