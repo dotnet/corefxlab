@@ -297,3 +297,19 @@ Separately from this document, we should explore language features to better sup
 3. Generalize the pin operation, i.e. syntax for pinning Span\<T\>. 
 4. Ability to call (T[] array, int index, int count) API with ArraySegment\<T\> argument.
 
+#Open Issues
+
+1. Detailed design of Memory\<T\>
+    - Representation
+    - Operations
+    - Lifetime
+2. Detailed design of language support from Span\<T\>
+    - First class stack-only support
+    - Slicing syntax
+    - Generic constraints
+    - PrimitiveAttribute; what do we do with it?
+3. Pinning
+4. Span\<T\> API design details
+    - Type of the Length property
+    - Namespace and type name 
+5. Details of runtime optimizations
