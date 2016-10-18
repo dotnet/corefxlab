@@ -290,25 +290,53 @@ Since Span\<T\> will be a stack-only type, it’s not well suited as the general
 Unlike T[], Span<T> will not support covariant casts, i.e. cast Span\<Subtype\> to Span\<Basetype\>. Because of that, we won’t be doing covariance checks when storing references in Span\<T\> instances.
 
 ##Language Support
-Separately from this document, we should explore language features to better support Span\<T\>:
+Separately from this document, we are exploring language features to better support Span\<T\>:
 
-1. Slicing syntax, i.e. a[1..5] calls a.Slice(1, 5).
-2. First class stack-only types, i.e. compiler errors, transitively make types containing stack-only fields stack-only, stack-only generic constraint.
-3. Generalize the pin operation, i.e. syntax for pinning Span\<T\>. 
-4. Ability to call (T[] array, int index, int count) API with ArraySegment\<T\> argument.
+1. Enforcement of Stack-Only Type Restrictions 
 
+    Span\<T\> and ReadOnlySpan\<T> will be included in the set of built-in stack-only types. Any other struct containing one of these will be transitivelly considered a stac-only type. The compiler will error if a stack-only type is used in a disallowed context, e.g. used as a type argument, placed on the heap (boxed, passed to asynchronous call, used as a field of a class, etc.) 
+
+2. Language Support for pinning
+
+    ```c#
+    Span<byte> buffer = ...
+    fixed(byte* pBuffer = buffer){
+        ...
+    }
+    ```
+
+3. Slicing syntax
+
+    C# compiler will add slicing syntax, and Memory\<T\>, Span\<T\>, and ReadOnlySpan\<T\> will support it. The details are TBD, but imagine that a[1..5] calls a.Slice(1, 5) or a.Slice(new Range(1, 5)). 
+    ```c#
+    Span<T> span = ...
+    var slice = span[1..5];
+    ```
+
+4. Safe Span\<T\> stackalloc 
+    ```c#
+    void SafeMethod() {
+        var buffer = stackalloc Span<byte>(128);
+        PrimitiveFormatter.TryFormat(buffer, DateTime.Now, ...);
+    }
+    ```
+
+5. Primitive constraint
+
+    Some Span\<T\> operations are valid only for so called primitive type arguments. For example, the [reinterpret cast operation](https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/SpanExtensions.cs#L151). 
+
+    We are exploring adding the ability to constrain type parameters to primitive types, i.e. types that are bit blittable. The cast operation would constrain its type parameters as follows:
+    ```c#
+    public static Span<U> Cast<T, U>(this Span<T> slice) where T:primitive where U:primitive
+    { ... }
+    ```
+    
 #Open Issues
 
 1. Detailed design of Memory\<T\>
     - Representation
     - Operations
-    - Lifetime
-2. Detailed design of language support from Span\<T\>
-    - First class stack-only support
-    - Slicing syntax
-    - Generic constraints
-    - PrimitiveAttribute; what do we do with it?
-3. Pinning
+    - Lifetime/Pinning
 4. Span\<T\> API design details
     - Type of the Length property
     - Namespace and type name 
