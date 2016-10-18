@@ -4,6 +4,7 @@
 using System;
 using System.Runtime;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
@@ -13,14 +14,15 @@ namespace System.Buffers
     /// <remarks>
     /// This struct is not safe for multithreaded access, i.e. it's subject to struct tearing that can result in unsafe memory access. 
     /// </remarks>
+    [StructLayout(LayoutKind.Sequential)]
     public struct Memory<T>
     {
         public static unsafe Memory<T> Empty = default(Memory<T>);
 
         private readonly T[] _array;
-        private readonly int _offset;
         private readonly unsafe void* _memory;
         private readonly int _memoryLength;
+        private readonly int _offset;
 
         public unsafe Memory(void* pointer, int length)
         {
