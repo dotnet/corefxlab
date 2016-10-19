@@ -294,7 +294,7 @@ Separately from this document, we are exploring language features to better supp
 
 1. Enforcement of Stack-Only Type Restrictions 
 
-    Span\<T\> and ReadOnlySpan\<T> will be included in the set of built-in stack-only types. Any other struct containing one of these will be transitivelly considered a stac-only type. The compiler will error if a stack-only type is used in a disallowed context, e.g. used as a type argument, placed on the heap (boxed, passed to asynchronous call, used as a field of a class, etc.) 
+    Span\<T\> and ReadOnlySpan\<T> will be included in the set of built-in stack-only types. Any other struct containing one of these will be transitively considered a stack-only type. The compiler will error if a stack-only type is used in a disallowed context, e.g. used as a type argument, placed on the heap (boxed, passed to asynchronous call, used as a field of a class, etc.) 
 
 2. Language Support for pinning
 
