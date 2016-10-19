@@ -93,7 +93,7 @@ namespace LibuvWithNonAllocatingFormatters
                     var segment = formatter.Formatted;
                     unsafe {
                         fixed (byte* p = segment.Array) {
-                            var response = new Memory<byte>(segment.Array, segment.Offset, segment.Count, pointer: p);
+                            var response = new UnsafeMemory<byte>(segment.Array, segment.Offset, segment.Count, pointer: p);
                             connection.TryWrite(response);
                         }
                     }

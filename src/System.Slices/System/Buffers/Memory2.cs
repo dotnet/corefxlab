@@ -4,47 +4,51 @@ using System.Threading;
 
 namespace System
 {
-    public struct Memory2<T> 
+    public struct Memory<T> 
     {
-        MemoryManager<T> _manager;
+        OwnedMemory<T> _owner;
         long _id;
         int _index;
         int _length;
 
-        internal Memory2(MemoryManager<T> manager, long id)
-            : this(manager, id, 0, manager.GetSpan(id).Length)
+        internal Memory(OwnedMemory<T> owner, long id)
+            : this(owner, id, 0, owner.GetSpan(id).Length)
         { }
 
-        private Memory2(MemoryManager<T> manager, long id, int index, int length)
+        private Memory(OwnedMemory<T> owner, long id, int index, int length)
         {
-            _manager = manager;
+            _owner = owner;
             _id = id;
             _index = index;
             _length = length;
         }
 
-        public static Memory2<T> Empty => EmptyManager.Shared.Memory;
+        public static implicit operator ReadOnlyMemory<T>(Memory<T> memory)
+        {
+            return new ReadOnlyMemory<T>(memory._owner, memory._id, memory._index, memory._length);
+        }
+        public static Memory<T> Empty => OwnerEmptyMemory.Shared.Memory;
 
         public int Length => _length;
 
         public bool IsEmpty => Length == 0;
 
-        public Memory2<T> Slice(int index)
+        public Memory<T> Slice(int index)
         {
-            return new Memory2<T>(_manager, _id, _index + index, _length - index);
+            return new Memory<T>(_owner, _id, _index + index, _length - index);
         }
-        public Memory2<T> Slice(int index, int length)
+        public Memory<T> Slice(int index, int length)
         {
-            return new Memory2<T>(_manager, _id, _index + index, length);
+            return new Memory<T>(_owner, _id, _index + index, length);
         }
 
-        public Span<T> Span => _manager.GetSpan(_id).Slice(_index, _length);
+        public Span<T> Span => _owner.GetSpan(_id).Slice(_index, _length);
 
-        public DisposableReservation Reserve() => new DisposableReservation(_manager, _id);
+        public DisposableReservation Reserve() => new DisposableReservation(_owner, _id);
 
         public unsafe bool TryGetPointer(out void* pointer)
         {
-            if (!_manager.TryGetPointer(_id, out pointer)) {
+            if (!_owner.TryGetPointer(_id, out pointer)) {
                 return false;
             }
             pointer = Add(pointer, _index);
@@ -53,7 +57,7 @@ namespace System
 
         public bool TryGetArray(out ArraySegment<T> buffer)
         {
-            if (!_manager.TryGetArray(_id, out buffer)) {
+            if (!_owner.TryGetArray(_id, out buffer)) {
                 return false;
             }
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
@@ -62,26 +66,26 @@ namespace System
 
         public struct DisposableReservation : IDisposable
         {
-            MemoryManager<T> _manager;
+            OwnedMemory<T> _owner;
             long _id;
 
-            internal DisposableReservation(MemoryManager<T> manager, long id)
+            internal DisposableReservation(OwnedMemory<T> owner, long id)
             {
                 _id = id;
-                _manager = manager;
-                _manager.AddReference(_id);
+                _owner = owner;
+                _owner.AddReference(_id);
             }
 
             public void Dispose()
             {
-                _manager.ReleaseReference(_id);
-                _manager = null;
+                _owner.ReleaseReference(_id);
+                _owner = null;
             }
         }
 
-        class EmptyManager : MemoryManager<T>
+        internal class OwnerEmptyMemory : OwnedMemory<T>
         {
-            public readonly static MemoryManager<T> Shared = new EmptyManager();
+            public readonly static OwnedMemory<T> Shared = new OwnerEmptyMemory();
             readonly static ArraySegment<T> s_empty = new ArraySegment<T>(new T[0], 0, 0);
               
             protected override bool TryGetArrayCore(out ArraySegment<T> buffer)

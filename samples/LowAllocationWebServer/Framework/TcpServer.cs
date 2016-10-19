@@ -158,7 +158,7 @@ namespace Microsoft.Net.Sockets
             SocketImports.closesocket(_handle);
         }
 
-        public int Send(Memory<byte> buffer)
+        public int Send(UnsafeMemory<byte> buffer)
         {
             // This can work with Span<byte> because it's synchronous but we need pinning support
             unsafe {
@@ -189,7 +189,7 @@ namespace Microsoft.Net.Sockets
             }
         }
 
-        public int Receive(Memory<byte> buffer)
+        public int Receive(UnsafeMemory<byte> buffer)
         {
             // This can work with Span<byte> because it's synchronous but we need pinning support
             unsafe

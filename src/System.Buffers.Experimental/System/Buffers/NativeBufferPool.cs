@@ -38,7 +38,7 @@ namespace System.Buffers
             Marshal.FreeHGlobal(_memory);
         }
 
-        public override Memory<byte> Rent(int numberOfBytes)
+        public override OwnedMemory<byte> Rent(int numberOfBytes)
         {
             if (numberOfBytes < 1) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
@@ -57,16 +57,15 @@ namespace System.Buffers
                     throw new NotImplementedException("no more buffers to rent");
             }
 
-            return new Memory<byte>((byte*)(_memory + i * _bufferSize), _bufferSize);
+            return new BufferManager(new IntPtr((byte*)(_memory + i * _bufferSize)), _bufferSize);
         }
 
-        public override void Return(Memory<byte> buffer)
+        public override void Return(OwnedMemory<byte> buffer)
         {
-            void* pointer;
-            if(!buffer.TryGetPointer(out pointer)) {
-                throw new Exception("not rented from this pool");
-            }
-            var memory = new IntPtr(pointer).ToInt64();
+            var pooledBuffer = buffer as BufferManager;
+            if (pooledBuffer == null) throw new Exception();
+
+            var memory = pooledBuffer.Pointer.ToInt64();
             if(memory < _memory.ToInt64() || memory > _memory.ToInt64() + _bufferSize * _bufferCount) {
                 throw new Exception("not rented from this pool");
             }
@@ -75,8 +74,48 @@ namespace System.Buffers
             var index = offset / _bufferSize;
 
             lock (_lock) {
+                buffer.Dispose();
                 if (_rented[index] == false) throw new Exception("this buffer is not rented");
                 _rented[index] = false;
+            }
+        }
+
+        sealed class BufferManager : OwnedMemory<byte>
+        {
+            IntPtr _memory;
+            int _length;
+
+            public BufferManager(IntPtr memory, int length)
+            {
+                _length = length;
+                _memory = memory;
+            }
+
+            public IntPtr Pointer => _memory;
+
+            protected override void DisposeCore()
+            {
+                _memory = IntPtr.Zero;
+            }
+
+            protected override Span<byte> GetSpanCore()
+            {
+                unsafe
+                {
+                    return new Span<byte>(_memory.ToPointer(), _length);
+                }
+            }
+
+            protected override unsafe bool TryGetPointerCore(out void* pointer)
+            {
+                pointer = _memory.ToPointer();
+                return true;
+            }
+
+            protected override bool TryGetArrayCore(out ArraySegment<byte> buffer)
+            {
+                buffer = default(ArraySegment<byte>);
+                return false;
             }
         }
     }

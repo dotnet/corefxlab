@@ -6,7 +6,6 @@ namespace System.Net.Libuv
 {
     internal class UVBuffer
     {
-        static NativeBufferPool _pool = new NativeBufferPool(1024);
         public readonly static UVBuffer Default = new UVBuffer();
 
         public static UVInterop.alloc_callback_unix AllocateUnixBuffer { get; set; }
@@ -20,38 +19,16 @@ namespace System.Net.Libuv
             AllocWindowsBuffer = OnAllocateWindowsBuffer;
         }
 
-        internal static void FreeBuffer(Memory<byte> buffer)
-        {
-            _pool.Return(buffer);
-        }
-
         static void OnAllocateUnixBuffer(IntPtr memoryBuffer, uint length, out Unix buffer)
         {
-            var rented = _pool.Rent((int)length);
-            unsafe
-            {
-                void* pointer;
-                if (!rented.TryGetPointer(out pointer))
-                {
-                    throw new InvalidOperationException("The native pointer isn't available because the memory isn't pinned");
-                }
-                buffer = new Unix(new IntPtr(pointer), (uint)rented.Length);
-            }
+            var memory = Marshal.AllocHGlobal((int)length);
+            buffer = new Unix(memory, length);
         }
 
         static void OnAllocateWindowsBuffer(IntPtr memoryBuffer, uint length, out Windows buffer)
-        {
-            var rented = _pool.Rent((int)length);
-
-            unsafe
-            {
-                void* pointer;
-                if (!rented.TryGetPointer(out pointer))
-                {
-                    throw new InvalidOperationException("The native pointer isn't available because the memory isn't pinned");
-                }
-                buffer = new Windows(new IntPtr(pointer), (uint)rented.Length);
-            }
+        {     
+            var memory = Marshal.AllocHGlobal((int)length);
+            buffer = new Windows(memory, length);
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -68,12 +45,9 @@ namespace System.Net.Libuv
 
             internal void Dispose()
             {
-                unsafe
-                {
-                    FreeBuffer(new Memory<byte>(Buffer.ToPointer(), (int)Length));
-                    Length = 0;
-                    Buffer = IntPtr.Zero;
-                }
+                Marshal.FreeHGlobal(Buffer);
+                Length = 0;
+                Buffer = IntPtr.Zero;            
             }
         }
 
@@ -91,12 +65,9 @@ namespace System.Net.Libuv
 
             internal void Dispose()
             {
-                unsafe
-                {
-                    FreeBuffer(new Memory<byte>((byte*)Buffer.ToPointer(), Length.ToInt32()));
-                    Length = IntPtr.Zero;
-                    Buffer = IntPtr.Zero;
-                }
+                Marshal.FreeHGlobal(Buffer);
+                Length = IntPtr.Zero;
+                Buffer = IntPtr.Zero;
             }
         }
     }

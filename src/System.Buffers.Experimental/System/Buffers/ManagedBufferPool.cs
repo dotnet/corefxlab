@@ -15,21 +15,19 @@ namespace System.Buffers
             }
         }
 
-        public override Memory<byte> Rent(int minimumBufferSize)
+        public override OwnedMemory<byte> Rent(int minimumBufferSize)
         {
             var array = ArrayPool<byte>.Shared.Rent(minimumBufferSize);
-            return new Memory<byte>(array, 0, array.Length);
+            return new OwnedArray<byte>(array);
         }
 
-        public override void Return(Memory<byte> buffer)
+        public override void Return(OwnedMemory<byte> buffer)
         {
             ArraySegment<byte> segment;
-            unsafe
-            {
-                if(!buffer.TryGetArray(out segment)) {
-                    throw new Exception("this buffer was not rented from this pool.");
-                }
+            if (!buffer.Memory.TryGetArray(out segment)) {
+                throw new Exception();
             }
+            buffer.Dispose();
             ArrayPool<byte>.Shared.Return(segment.Array);
         }
 
