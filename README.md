@@ -4,6 +4,9 @@ This repo is for experimentation and exploring new ideas that may or may not mak
 
 Currently, this repo contains the following experimental components:
 
+* **System.Slices**
+A set of features for representing and manipulating managed, native, and stack memory. The package includes types Span\<T\>, ReadOnlySpan\<T\>, and Memory\<T\>. See more information about the features at [Span\<T\>.md](https://github.com/dotnet/corefxlab/blob/master/docs/Span.md)
+
 * **System.Text.Formatting**. 
 System.Text.Formatting APIs are similar to the existing StringBuilder and TextWriter APIs. 
 They are designed to format values into text streams and to build complex strings. 
