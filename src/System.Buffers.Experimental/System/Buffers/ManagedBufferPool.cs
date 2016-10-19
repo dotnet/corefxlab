@@ -15,13 +15,13 @@ namespace System.Buffers
             }
         }
 
-        public override Memory<byte> Rent(int minimumBufferSize)
+        public override UnsafeMemory<byte> Rent(int minimumBufferSize)
         {
             var array = ArrayPool<byte>.Shared.Rent(minimumBufferSize);
-            return new Memory<byte>(array, 0, array.Length);
+            return new UnsafeMemory<byte>(array, 0, array.Length);
         }
 
-        public override void Return(Memory<byte> buffer)
+        public override void Return(UnsafeMemory<byte> buffer)
         {
             ArraySegment<byte> segment;
             unsafe
