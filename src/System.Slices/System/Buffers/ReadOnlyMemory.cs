@@ -23,6 +23,12 @@ namespace System
             _length = length;
         }
 
+        public static implicit operator ReadOnlyMemory<T>(T[] array)
+        {
+            var owner = new OwnedArray<T>(array);
+            return owner.Memory;
+        }
+
         public static ReadOnlyMemory<T> Empty => Memory<T>.Empty;
 
         public int Length => _length;

@@ -27,6 +27,13 @@ namespace System
         {
             return new ReadOnlyMemory<T>(memory._owner, memory._id, memory._index, memory._length);
         }
+
+        public static implicit operator Memory<T>(T[] array)
+        {
+            var owner = new OwnedArray<T>(array);
+            return owner.Memory;
+        }
+
         public static Memory<T> Empty => OwnerEmptyMemory.Shared.Memory;
 
         public int Length => _length;
@@ -107,6 +114,8 @@ namespace System
             {
                 return Span<T>.Empty;
             }
+
+            public override int Length => 0;
         }
 
         static unsafe void* Add(void* pointer, int offset)

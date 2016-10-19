@@ -12,6 +12,12 @@ namespace System.Buffers
         const long InitializedId = long.MinValue;
         
         public Memory<T> Memory => new Memory<T>(this, _id);
+        public Span<T> Span => GetSpanCore();
+
+        public static implicit operator OwnedMemory<T>(T[] array)
+        {
+            return new OwnedArray<T>(array);
+        }
 
         public void Dispose()
         {
