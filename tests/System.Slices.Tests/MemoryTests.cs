@@ -8,16 +8,41 @@ namespace System.Slices.Tests
     public class MemoryTests
     {
         [Fact]
-        public void ArrayMemory()
+        public void SimpleTest()
+        {
+            {
+                OwnedArray<byte> memory = new byte[1024];
+                var span = memory.Span;
+                span[10] = 10;
+                Assert.Equal(10, memory.Array[10]);
+            }
+
+            using(var memory = new OwnedNativeMemory(1024)) {
+                var span = memory.Span;
+                span[10] = 10;
+                unsafe { Assert.Equal(10, memory.Pointer[10]); }
+            }
+
+            using (OwnedPinnedArray<byte> memory = new byte[1024]) {
+                var span = memory.Span;
+                span[10] = 10;
+                Assert.Equal(10, memory.Array[10]);
+
+                unsafe { Assert.Equal(10, memory.Pointer[10]); }
+            }
+        }
+
+        [Fact]
+        public void ArrayMemoryLifetime()
         {
             Memory<byte> copyStoredForLater;
 
-            using (var manager = new OwnedArray<byte>(1024)) {
-                Memory<byte> memory = manager.Memory;
+            using (var owner = new OwnedArray<byte>(1024)) {
+                Memory<byte> memory = owner.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
                 using (memorySlice.Reserve()) { // increments the "outstanding span" refcount
-                    Assert.Throws<InvalidOperationException>(() => { manager.Dispose(); }); // memory is reserved; cannot dispose
+                    Assert.Throws<InvalidOperationException>(() => { owner.Dispose(); }); // memory is reserved; cannot dispose
                     Span<byte> span = memorySlice.Span;
                     span[0] = 255;
 
@@ -34,16 +59,16 @@ namespace System.Slices.Tests
         }
 
         [Fact]
-        public void NativeMemory()
+        public void NativeMemoryLifetime()
         {
             Memory<byte> copyStoredForLater;
 
-            using (var manager = new OwnedNativeMemory(1024)) {
-                Memory<byte> memory = manager.Memory;
+            using (var owner = new OwnedNativeMemory(1024)) {
+                Memory<byte> memory = owner.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
                 using (memorySlice.Reserve()) {
-                    Assert.Throws<InvalidOperationException>(() => { manager.Dispose(); }); // memory is reserved; cannot dispose
+                    Assert.Throws<InvalidOperationException>(() => { owner.Dispose(); }); // memory is reserved; cannot dispose
                     Span<byte> span = memorySlice.Span;
                     span[0] = 255;
 
@@ -63,19 +88,19 @@ namespace System.Slices.Tests
         }
 
         [Fact]
-        public unsafe void PinnedArrayMemory()
+        public unsafe void PinnedArrayMemoryLifetime()
         {
             Memory<byte> copyStoredForLater;
 
             var bytes = new byte[1024];
 
             fixed (byte* pBytes = bytes) {
-                using (var manager = new OwnedPinnedArray<byte>(bytes, pBytes)) {
-                    Memory<byte> memory = manager.Memory;
+                using (var owner = new OwnedPinnedArray<byte>(bytes, pBytes)) {
+                    Memory<byte> memory = owner.Memory;
                     Memory<byte> memorySlice = memory.Slice(10);
                     copyStoredForLater = memorySlice;
                     using (memorySlice.Reserve()) {
-                        Assert.Throws<InvalidOperationException>(() => { manager.Dispose(); }); // memory is reserved; cannot dispose
+                        Assert.Throws<InvalidOperationException>(() => { owner.Dispose(); }); // memory is reserved; cannot dispose
 
                         Span<byte> span = memorySlice.Span;
                         span[0] = 255;

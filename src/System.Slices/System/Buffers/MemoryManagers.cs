@@ -6,6 +6,19 @@ namespace System.Buffers
     public sealed class OwnedArray<T> : OwnedMemory<T>
     {
         T[] _array;
+
+        public T[] Array => _array;
+
+        public static implicit operator T[](OwnedArray<T> owner)
+        {
+            return owner._array;
+        }
+
+        public static implicit operator OwnedArray<T>(T[] array)
+        {
+            return new OwnedArray<T>(array);
+        }
+
         public OwnedArray(int length)
         {
             _array = new T[length];
@@ -29,19 +42,28 @@ namespace System.Buffers
             return false;
         }
 
+        public override int Length => _array.Length;
+
         protected override void DisposeCore() => _array = null;
         protected override Span<T> GetSpanCore() => _array;
     }
 
-    public sealed class OwnedNativeMemory : OwnedMemory<byte>
+    public class OwnedNativeMemory : OwnedMemory<byte>
     {
         IntPtr _memory;
         int _length;
 
-        public OwnedNativeMemory(int length)
-        {
+        public OwnedNativeMemory(int length) : this(length, Marshal.AllocHGlobal(length))
+        { }
+
+        protected OwnedNativeMemory(int length, IntPtr address) {
+            _memory = address;
             _length = length;
-            _memory = Marshal.AllocHGlobal(length);
+        }
+
+        public static implicit operator IntPtr(OwnedNativeMemory owner)
+        {
+            return owner._memory;
         }
 
         ~OwnedNativeMemory()
@@ -52,9 +74,14 @@ namespace System.Buffers
         protected override void DisposeCore()
         {
             if (_memory != IntPtr.Zero) {
-                Marshal.FreeHGlobal(_memory);
+                Free();
                 _memory = IntPtr.Zero;
             }
+        }
+
+        protected virtual void Free()
+        {
+            Marshal.FreeHGlobal(_memory);
         }
 
         protected override Span<byte> GetSpanCore()
@@ -64,6 +91,10 @@ namespace System.Buffers
                 return new Span<byte>(_memory.ToPointer(), _length);
             }
         }
+
+        public override int Length => _length;
+
+        public unsafe byte* Pointer => (byte*)_memory.ToPointer();
 
         protected override unsafe bool TryGetPointerCore(out void* pointer)
         {
@@ -83,20 +114,51 @@ namespace System.Buffers
     {
         private T[] _array;
         private unsafe void* _pointer;
+        private GCHandle _handle;
 
-        public unsafe OwnedPinnedArray(T[] array, void* pointer)
+        public unsafe OwnedPinnedArray(T[] array, void* pointer, GCHandle handle = default(GCHandle))
         {
             Contract.Requires(array != null);
             Contract.Requires(pointer != null);
             _array = array;
             _pointer = Unsafe.AsPointer(ref array[0]);
+            _handle = handle;
             if(_pointer != pointer) {
                 throw new InvalidOperationException();
             }
         }
 
+        public unsafe OwnedPinnedArray(T[] array)
+        {
+            Contract.Requires(array != null);
+            _array = array;
+            _handle = GCHandle.Alloc(array, GCHandleType.Pinned);
+            _pointer = _handle.AddrOfPinnedObject().ToPointer();
+        }
+
+        public static implicit operator OwnedPinnedArray<T>(T[] array)
+        {
+            return new OwnedPinnedArray<T>(array);
+        }
+
+        public unsafe byte* Pointer => (byte*)_pointer;
+        public T[] Array => _array;
+
+        public unsafe static implicit operator IntPtr(OwnedPinnedArray<T> owner)
+        {
+            return new IntPtr(owner._pointer);
+        }
+
+        public static implicit operator T[] (OwnedPinnedArray<T> owner)
+        {
+            return owner._array;
+        }
+
         protected override void DisposeCore()
         {
+            if (_handle.IsAllocated) {
+                _handle.Free();
+            }
             _array = null;
             unsafe {
                 _pointer = null;
@@ -119,5 +181,7 @@ namespace System.Buffers
             buffer = new ArraySegment<T>(_array, 0, _array.Length);
             return true;
         }
+
+        public override int Length => _array.Length;
     }
 }
