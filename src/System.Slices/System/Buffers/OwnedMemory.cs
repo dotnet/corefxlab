@@ -2,7 +2,7 @@
 
 namespace System.Buffers
 {
-    public abstract class MemoryManager<T> : IDisposable
+    public abstract class OwnedMemory<T> : IDisposable
     {
         long _id;
         int _references;
@@ -11,7 +11,7 @@ namespace System.Buffers
 
         const long InitializedId = long.MinValue;
         
-        public Memory2<T> Memory => new Memory2<T>(this, _id);
+        public Memory<T> Memory => new Memory<T>(this, _id);
 
         public void Dispose()
         {
@@ -26,23 +26,25 @@ namespace System.Buffers
 
         public void AddReference(long id)
         {
-            if (_id != id) throw new ObjectDisposedException(nameof(Memory2<T>));
+            if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
             Interlocked.Increment(ref _references);
         }
         public void ReleaseReference(long id)
         {
-            if (_id != id) throw new ObjectDisposedException(nameof(Memory2<T>));
+            if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
             Interlocked.Decrement(ref _references);
         }
 
         public virtual void Initialize()
         {
             if(!IsDisposed) {
-                throw new InvalidOperationException("manager has to be disposed to initialize");
+                throw new InvalidOperationException("this instance has to be disposed to initialize");
             }
             _id = Interlocked.Increment(ref _nextId);
             _references = 0;
         }
+
+        public virtual int Length => Memory.Length;
 
         // abstract members
         protected abstract Span<T> GetSpanCore();
@@ -55,24 +57,24 @@ namespace System.Buffers
         // used by Memory<T>
         internal unsafe bool TryGetPointer(long id, out void* pointer)
         {
-            if (_id != id) throw new ObjectDisposedException(nameof(Memory2<T>));
+            if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
             return TryGetPointerCore(out pointer);
         }
 
         internal bool TryGetArray(long id, out ArraySegment<T> buffer)
         {
-            if (_id != id) throw new ObjectDisposedException(nameof(Memory2<T>));
+            if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
             return TryGetArrayCore(out buffer);
         }
 
         internal Span<T> GetSpan(long id)
         {
-            if (_id != id) throw new ObjectDisposedException(nameof(Memory2<T>));
+            if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
             return GetSpanCore();
         }
 
         // protected
-        protected MemoryManager()
+        protected OwnedMemory()
         {
             _id = InitializedId;
             Initialize();

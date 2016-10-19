@@ -10,11 +10,11 @@ namespace System.Slices.Tests
         [Fact]
         public void ArrayMemory()
         {
-            Memory2<byte> copyStoredForLater;
+            Memory<byte> copyStoredForLater;
 
-            using (var manager = new ArrayManager<byte>(1024)) {
-                Memory2<byte> memory = manager.Memory;
-                Memory2<byte> memorySlice = memory.Slice(10);
+            using (var manager = new OwnedArray<byte>(1024)) {
+                Memory<byte> memory = manager.Memory;
+                Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
                 using (memorySlice.Reserve()) { // increments the "outstanding span" refcount
                     Assert.Throws<InvalidOperationException>(() => { manager.Dispose(); }); // memory is reserved; cannot dispose
@@ -36,11 +36,11 @@ namespace System.Slices.Tests
         [Fact]
         public void NativeMemory()
         {
-            Memory2<byte> copyStoredForLater;
+            Memory<byte> copyStoredForLater;
 
-            using (var manager = new NativeMemoryManager(1024)) {
-                Memory2<byte> memory = manager.Memory;
-                Memory2<byte> memorySlice = memory.Slice(10);
+            using (var manager = new OwnedNativeMemory(1024)) {
+                Memory<byte> memory = manager.Memory;
+                Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
                 using (memorySlice.Reserve()) {
                     Assert.Throws<InvalidOperationException>(() => { manager.Dispose(); }); // memory is reserved; cannot dispose
@@ -65,14 +65,14 @@ namespace System.Slices.Tests
         [Fact]
         public unsafe void PinnedArrayMemory()
         {
-            Memory2<byte> copyStoredForLater;
+            Memory<byte> copyStoredForLater;
 
             var bytes = new byte[1024];
 
             fixed (byte* pBytes = bytes) {
-                using (var manager = new PinnedArrayManager<byte>(bytes, pBytes)) {
-                    Memory2<byte> memory = manager.Memory;
-                    Memory2<byte> memorySlice = memory.Slice(10);
+                using (var manager = new OwnedPinnedArray<byte>(bytes, pBytes)) {
+                    Memory<byte> memory = manager.Memory;
+                    Memory<byte> memorySlice = memory.Slice(10);
                     copyStoredForLater = memorySlice;
                     using (memorySlice.Reserve()) {
                         Assert.Throws<InvalidOperationException>(() => { manager.Dispose(); }); // memory is reserved; cannot dispose

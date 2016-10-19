@@ -13,16 +13,16 @@ namespace System.Buffers
     /// <remarks>
     /// This struct is not safe for multithreaded access, i.e. it's subject to struct tearing that can result in unsafe memory access. 
     /// </remarks>
-    public struct Memory<T>
+    public struct UnsafeMemory<T>
     {
-        public static unsafe Memory<T> Empty = default(Memory<T>);
+        public static unsafe UnsafeMemory<T> Empty = default(UnsafeMemory<T>);
 
         private readonly T[] _array;
         private readonly int _offset;
         private readonly unsafe void* _memory;
         private readonly int _memoryLength;
 
-        public unsafe Memory(void* pointer, int length)
+        public unsafe UnsafeMemory(void* pointer, int length)
         {
             Contract.RequiresNotNull(ExceptionArgument.pointer, pointer);
 
@@ -32,11 +32,11 @@ namespace System.Buffers
             _memoryLength = length;
         }
 
-        public Memory(T[] array) : this(array, 0, array?.Length ?? 0)
+        public UnsafeMemory(T[] array) : this(array, 0, array?.Length ?? 0)
         {
         }
 
-        public Memory(T[] array, int offset, int length)
+        public UnsafeMemory(T[] array, int offset, int length)
         {
             Contract.RequiresNotNull(ExceptionArgument.array, array);
 
@@ -50,7 +50,7 @@ namespace System.Buffers
             _memoryLength = length;
         }
 
-        public unsafe Memory(T[] array, int offset, int length, void* pointer = null)
+        public unsafe UnsafeMemory(T[] array, int offset, int length, void* pointer = null)
         {
             Contract.RequiresNotNull(ExceptionArgument.array, array);
 
@@ -73,7 +73,7 @@ namespace System.Buffers
             _memoryLength = length;
         }
 
-        internal unsafe Memory(int offset, int length, T[] array, void* pointer = null)
+        internal unsafe UnsafeMemory(int offset, int length, T[] array, void* pointer = null)
         {
             Contract.RequiresOneNotNull(array, pointer);
 
@@ -124,25 +124,25 @@ namespace System.Buffers
 
         public bool IsEmpty => Length == 0;
 
-        public static implicit operator Span<T>(Memory<T> memory)
+        public static implicit operator Span<T>(UnsafeMemory<T> memory)
         {
             return memory.Span;
         }
 
-        public static implicit operator ReadOnlySpan<T>(Memory<T> memory)
+        public static implicit operator ReadOnlySpan<T>(UnsafeMemory<T> memory)
         {
             return memory.Span;
         }
 
         public int Length => _memoryLength;
 
-        public unsafe Memory<T> Slice(int offset, int length)
+        public unsafe UnsafeMemory<T> Slice(int offset, int length)
         {
             // TODO: Bounds check
-            return new Memory<T>(_offset + offset, length, _array, _memory == null ? null : Add(_memory, offset));
+            return new UnsafeMemory<T>(_offset + offset, length, _array, _memory == null ? null : Add(_memory, offset));
         }
 
-        public unsafe Memory<T> Slice(int offset)
+        public unsafe UnsafeMemory<T> Slice(int offset)
         {
             return Slice(offset, Length - offset);
         }

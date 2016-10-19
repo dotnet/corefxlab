@@ -10,7 +10,7 @@ namespace System.Text.Json
     public struct JsonObject : IDisposable
     {
         private BufferPool _pool;
-        private Memory<byte> _dbMemory;
+        private OwnedMemory<byte> _dbMemory;
         private ReadOnlySpan<byte> _db; 
         private ReadOnlySpan<byte> _values;
 
@@ -28,7 +28,7 @@ namespace System.Text.Json
             return result;
         }
 
-        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, BufferPool pool = null, Memory<byte> dbMemory = default(Memory<byte>))
+        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, BufferPool pool = null, OwnedMemory<byte> dbMemory = null)
         {
             _db = db;
             _values = values;
@@ -65,7 +65,7 @@ namespace System.Text.Json
                         newEnd = newEnd + DbRow.Size * record.Length;
                     }
 
-                    value = new JsonObject(_values, _db.Slice(newStart, newEnd - newStart), null, Memory<byte>.Empty);
+                    value = new JsonObject(_values, _db.Slice(newStart, newEnd - newStart));
                     return true;
                 }
 
@@ -346,7 +346,7 @@ namespace System.Text.Json
             _db = ReadOnlySpan<byte>.Empty;
             _values = ReadOnlySpan<byte>.Empty;
             _pool.Return(_dbMemory);
-            _dbMemory = Memory<byte>.Empty;
+            _dbMemory = null;
         }
     }
 }

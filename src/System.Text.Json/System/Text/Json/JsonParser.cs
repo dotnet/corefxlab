@@ -36,7 +36,7 @@ namespace System.Text.Json
 
     internal struct TwoStacks
     {
-        Span<byte> _memory;
+        Memory<byte> _memory;
         int topOfStackObj;
         int topOfStackArr;
         int capacity;
@@ -53,7 +53,7 @@ namespace System.Text.Json
             }
         }
 
-        public TwoStacks(Span<byte> db)
+        public TwoStacks(Memory<byte> db)
         {
             _memory = db;
             topOfStackObj = _memory.Length;
@@ -66,7 +66,7 @@ namespace System.Text.Json
         public bool TryPushObject(int value)
         {
             if (!IsFull) {
-                _memory.Slice(topOfStackObj - 8).Write<int>(value);
+                _memory.Slice(topOfStackObj - 8).Span.Write<int>(value);
                 topOfStackObj -= 8;
                 objectStackCount++;
                 return true;
@@ -77,7 +77,7 @@ namespace System.Text.Json
         public bool TryPushArray(int value)
         {
             if (!IsFull) {
-                _memory.Slice(topOfStackArr - 4).Write<int>(value);
+                _memory.Slice(topOfStackArr - 4).Span.Write<int>(value);
                 topOfStackArr -= 8;
                 arrayStackCount++;
                 return true;
@@ -88,7 +88,7 @@ namespace System.Text.Json
         public int PopObject()
         {
             objectStackCount--;
-            var value = _memory.Slice(topOfStackObj).Read<int>();
+            var value = _memory.Slice(topOfStackObj).Span.Read<int>();
             topOfStackObj += 8;
             return value;
         }
@@ -96,23 +96,24 @@ namespace System.Text.Json
         public int PopArray()
         {
             arrayStackCount--;
-            var value = _memory.Slice(topOfStackArr + 4).Read<int>();
+            var value = _memory.Slice(topOfStackArr + 4).Span.Read<int>();
             topOfStackArr += 8;
             return value;
         }
 
         internal void Resize(Memory<byte> newStackMemory)
         {
-            _memory.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).CopyTo(newStackMemory);
+            _memory.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).Span.CopyTo(newStackMemory.Span);
             _memory = newStackMemory;
         }
     }
 
     internal struct JsonParser
     {
-        private Span<byte> _db;
-        private ReadOnlySpan<byte> _values;
-        private Memory<byte> _scratch;
+        private Memory<byte> _db;
+        private ReadOnlySpan<byte> _values; // TODO: this should be ReadOnlyMemory<byte>
+        private Memory<byte> _scratchMemory;
+        private OwnedMemory<byte> _scratchManager;
         BufferPool _pool;
         TwoStacks _stack;
 
@@ -143,11 +144,12 @@ namespace System.Text.Json
         {
             _pool = pool;
             if (_pool == null) _pool = ManagedBufferPool.Shared;
-            _scratch = _pool.Rent(utf8Json.Length * 4);         
+            _scratchManager = _pool.Rent(utf8Json.Length * 4);
+            _scratchMemory = _scratchManager.Memory;
 
-            int dbLength = _scratch.Length / 2;
-            _db = _scratch.Slice(0, dbLength);
-            _stack = new TwoStacks(_scratch.Slice(dbLength));
+            int dbLength = _scratchMemory.Length / 2;
+            _db = _scratchMemory.Slice(0, dbLength);
+            _stack = new TwoStacks(_scratchMemory.Slice(dbLength));
 
             _values = utf8Json;
             _insideObject = 0;
@@ -175,7 +177,7 @@ namespace System.Text.Json
                         numberOfRowsForMembers = 0;
                         break;
                     case JsonTokenType.ObjectEnd:
-                        _db.Slice(FindLocation(_stack.ObjectStackCount - 1, true)).Write<int>(numberOfRowsForMembers);
+                        _db.Span.Slice(FindLocation(_stack.ObjectStackCount - 1, true)).Write<int>(numberOfRowsForMembers);
                         numberOfRowsForMembers += _stack.PopObject();
                         break;
                     case JsonTokenType.ArrayStart:
@@ -186,7 +188,7 @@ namespace System.Text.Json
                         arrayItemsCount = 0;
                         break;
                     case JsonTokenType.ArrayEnd:
-                        _db.Slice(FindLocation(_stack.ArrayStackCount - 1, false)).Write<int>(arrayItemsCount);
+                        _db.Span.Slice(FindLocation(_stack.ArrayStackCount - 1, false)).Write<int>(arrayItemsCount);
                         arrayItemsCount += _stack.PopArray();
                         break;
                     case JsonTokenType.Property:
@@ -205,25 +207,25 @@ namespace System.Text.Json
                 }
             }
 
-            var result =  new JsonObject(_values, _db.Slice(0, _dbIndex), _pool, _scratch);
-            _scratch = Memory<byte>.Empty;
+            var result =  new JsonObject(_values, _db.Slice(0, _dbIndex).Span, _pool, _scratchManager);
+            _scratchManager = null;
             return result;
         }
 
         private void ResizeDb()
         {
-            var oldData = _scratch.Span;
-            var newScratch = _pool.Rent(_scratch.Length * 2);
+            var oldData = _scratchMemory.Span;
+            var newScratch = _pool.Rent(_scratchMemory.Length * 2);
             int dbLength = newScratch.Length / 2;
 
-            var newDb = newScratch.Slice(0, dbLength);
-            _db.Slice(0, _valuesIndex).CopyTo(newDb);
+            var newDb = newScratch.Memory.Slice(0, dbLength);
+            _db.Slice(0, _valuesIndex).Span.CopyTo(newDb.Span);
             _db = newDb;
 
-            var newStackMemory = newScratch.Slice(dbLength);
+            var newStackMemory = newScratch.Memory.Slice(dbLength);
             _stack.Resize(newStackMemory);
-            _pool.Return(_scratch);
-            _scratch = newScratch;
+            _pool.Return(_scratchManager);
+            _scratchManager = newScratch;
         }
 
         private int FindLocation(int index, bool lookingForObject)
@@ -233,7 +235,7 @@ namespace System.Text.Json
 
             while (true) {
                 int rowStartOffset = rowNumber * DbRow.Size;
-                var row = _db.Slice(rowStartOffset).Read<DbRow>();
+                var row = _db.Slice(rowStartOffset).Span.Read<DbRow>();
 
                 int lengthOffset = rowStartOffset + 4;
                 
@@ -411,7 +413,7 @@ namespace System.Text.Json
             }
 
             var dbRow = new DbRow(type, valueIndex, LengthOrNumberOfRows);
-            _db.Slice(_dbIndex).Write(dbRow);
+            _db.Span.Slice(_dbIndex).Write(dbRow);
             _dbIndex = newIndex;
             return true;
         }
