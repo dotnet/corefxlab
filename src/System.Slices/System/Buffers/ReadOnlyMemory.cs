@@ -23,7 +23,7 @@ namespace System
 
         public static implicit operator ReadOnlyMemory<T>(T[] array)
         {
-            var owner = new OwnedArray<T>(array);
+            var owner = new OwnedMemory<T>(array);
             return owner.Memory;
         }
 

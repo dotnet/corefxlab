@@ -10,9 +10,14 @@ namespace System.Buffers.Tests
         public void BasicsWork() {
             var pool = System.Buffers.NativeBufferPool.Shared;
             var buffer = pool.Rent(10);
-            pool.Return(buffer);
-            buffer = pool.Rent(10); 
-            pool.Return(buffer);
+            buffer.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() => {
+                var mem = buffer.Memory;
+            });
+
+            buffer = pool.Rent(10);
+            buffer.Dispose();
         }
     }
 }

@@ -29,11 +29,11 @@ namespace System
 
         public static implicit operator Memory<T>(T[] array)
         {
-            var owner = new OwnedArray<T>(array);
+            var owner = new OwnedMemory<T>(array);
             return owner.Memory;
         }
 
-        public static Memory<T> Empty => OwnerEmptyMemory.Shared.Memory;
+        public static Memory<T> Empty => OwnedMemory<T>.Empty.Memory;
 
         public int Length => _length;
 
@@ -74,34 +74,6 @@ namespace System
             }
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
             return true;
-        }
-
-        internal class OwnerEmptyMemory : OwnedMemory<T>
-        {
-            public readonly static OwnedMemory<T> Shared = new OwnerEmptyMemory();
-            readonly static ArraySegment<T> s_empty = new ArraySegment<T>(new T[0], 0, 0);
-              
-            protected override bool TryGetArrayCore(out ArraySegment<T> buffer)
-            {
-                buffer = s_empty;
-                return true;
-            }
-
-            protected override unsafe bool TryGetPointerCore(out void* pointer)
-            {
-                pointer = null;
-                return false;
-            }
-
-            protected override void DisposeCore()
-            { }
-
-            protected override Span<T> GetSpanCore()
-            {
-                return Span<T>.Empty;
-            }
-
-            public override int Length => 0;
         }
 
         internal static unsafe void* Add(void* pointer, int offset)
