@@ -1,6 +1,5 @@
 ﻿using System.Buffers;
 using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace System
 {
@@ -62,32 +61,19 @@ namespace System
             return true;
         }
 
-        public bool TryGetArray(out ArraySegment<T> buffer)
+        /// <summary>
+        /// Array segment for the memory instance.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="dummy">This parameter is here just to make the API unsafe. Feel free to pass null.</param>
+        /// <returns></returns>
+        public unsafe bool TryGetArray(out ArraySegment<T> buffer, void* dummy)
         {
             if (!_owner.TryGetArray(_id, out buffer)) {
                 return false;
             }
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
             return true;
-        }
-
-        public struct DisposableReservation : IDisposable
-        {
-            OwnedMemory<T> _owner;
-            long _id;
-
-            internal DisposableReservation(OwnedMemory<T> owner, long id)
-            {
-                _id = id;
-                _owner = owner;
-                _owner.AddReference(_id);
-            }
-
-            public void Dispose()
-            {
-                _owner.ReleaseReference(_id);
-                _owner = null;
-            }
         }
 
         internal class OwnerEmptyMemory : OwnedMemory<T>
@@ -118,9 +104,28 @@ namespace System
             public override int Length => 0;
         }
 
-        static unsafe void* Add(void* pointer, int offset)
+        internal static unsafe void* Add(void* pointer, int offset)
         {
             return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
+        }
+    }
+
+    public struct DisposableReservation : IDisposable
+    {
+        IKnown _owner;
+        long _id;
+
+        internal DisposableReservation(IKnown owner, long id)
+        {
+            _id = id;
+            _owner = owner;
+            _owner.AddReference(_id);
+        }
+
+        public void Dispose()
+        {
+            _owner.ReleaseReference(_id);
+            _owner = null;
         }
     }
 }

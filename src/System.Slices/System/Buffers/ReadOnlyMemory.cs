@@ -1,6 +1,4 @@
 ﻿using System.Buffers;
-using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace System
 {
@@ -48,23 +46,28 @@ namespace System
 
         public DisposableReservation Reserve() => new DisposableReservation(_owner, _id);
 
-        public struct DisposableReservation : IDisposable
+        public unsafe bool TryGetPointer(out void* pointer)
         {
-            OwnedMemory<T> _owner;
-            long _id;
-
-            internal DisposableReservation(OwnedMemory<T> owner, long id)
-            {
-                _id = id;
-                _owner = owner;
-                _owner.AddReference(_id);
+            if (!_owner.TryGetPointer(_id, out pointer)) {
+                return false;
             }
+            pointer = Memory<T>.Add(pointer, _index);
+            return true;
+        }
 
-            public void Dispose()
-            {
-                _owner.ReleaseReference(_id);
-                _owner = null;
+        /// <summary>
+        /// Array segment for the memory instance.
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="dummy">This parameter is here just to make the API unsafe. Feel free to pass null.</param>
+        /// <returns></returns>
+        public unsafe bool TryGetArray(out ArraySegment<T> buffer, void* dummy)
+        {
+            if (!_owner.TryGetArray(_id, out buffer)) {
+                return false;
             }
+            buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
+            return true;
         }
     }
 }
