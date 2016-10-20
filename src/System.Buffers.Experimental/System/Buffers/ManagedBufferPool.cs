@@ -23,12 +23,10 @@ namespace System.Buffers
 
         public override void Return(OwnedMemory<byte> buffer)
         {
-            ArraySegment<byte> segment;
-            if (!buffer.Memory.TryGetArray(out segment)) {
-                throw new Exception();
-            }
+            var ownedArray = buffer as OwnedArray<byte>;
+            if (ownedArray == null) throw new InvalidOperationException("buffer not rented from this pool");
+            ArrayPool<byte>.Shared.Return(ownedArray.Array);
             buffer.Dispose();
-            ArrayPool<byte>.Shared.Return(segment.Array);
         }
 
         protected override void Dispose(bool disposing)

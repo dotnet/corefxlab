@@ -2,7 +2,16 @@
 
 namespace System.Buffers
 {
-    public abstract class OwnedMemory<T> : IDisposable
+    /// <summary>
+    /// Known only to some by its secret name
+    /// </summary>
+    internal interface IKnown
+    {
+        void AddReference(long secretId);
+        void ReleaseReference(long secretId);
+    }
+
+    public abstract class OwnedMemory<T> : IDisposable, IKnown
     {
         long _id;
         int _references;
