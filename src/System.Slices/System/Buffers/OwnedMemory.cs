@@ -43,12 +43,17 @@ namespace System.Buffers
         {
             if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
             Interlocked.Increment(ref _references);
+            OnReferenceCountChanged();
         }
         public void ReleaseReference(long id)
         {
             if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
             Interlocked.Decrement(ref _references);
+            OnReferenceCountChanged();
         }
+
+        protected virtual void OnReferenceCountChanged()
+        { }
 
         public virtual void Initialize()
         {
