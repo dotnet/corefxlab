@@ -61,13 +61,7 @@ namespace System
             return true;
         }
 
-        /// <summary>
-        /// Array segment for the memory instance.
-        /// </summary>
-        /// <param name="buffer"></param>
-        /// <param name="dummy">This parameter is here just to make the API unsafe. Feel free to pass null.</param>
-        /// <returns></returns>
-        public unsafe bool TryGetArray(out ArraySegment<T> buffer, void* dummy)
+        public bool TryGetArray(out ArraySegment<T> buffer)
         {
             if (!_owner.TryGetArray(_id, out buffer)) {
                 return false;
