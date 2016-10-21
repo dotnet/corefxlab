@@ -52,21 +52,31 @@ namespace System.Buffers
             _id = InitializedId;
         }
 
-        protected OwnedMemory(T[] array, int arrayOffset, IntPtr pointer, int length, IMemoryDisposer<T> owner = null) : this(owner)
+        protected OwnedMemory(T[] array, IMemoryDisposer <T> owner = null)
+            : this(array, 0, IntPtr.Zero, array.Length, owner)
+        {}
+
+        protected OwnedMemory(T[] array, int arrayOffset, IntPtr pointer, int length, IMemoryDisposer<T> owner = null)
+            : this(owner)
         {
             ReInitialize(array, arrayOffset, pointer, length);
         }
 
-        protected OwnedMemory(ArraySegment<T> segment, IntPtr pointer, IMemoryDisposer<T> owner = null) : this(owner)
+        protected OwnedMemory(ArraySegment<T> segment, IMemoryDisposer<T> owner = null)
+            : this(segment, IntPtr.Zero, owner)
+        {}
+
+        protected OwnedMemory(ArraySegment<T> segment, IntPtr pointer, IMemoryDisposer<T> owner = null)
+            : this(owner)
         {
             ReInitialize(segment.Array, segment.Offset, pointer, segment.Count);
         }
 
-        protected OwnedMemory(ArraySegment<T> segment, IMemoryDisposer<T> owner = null) : this(segment, IntPtr.Zero, owner)
-        {}
+        protected void ReInitialize(ArraySegment<T> segment, IntPtr pointer)
+            => ReInitialize(segment.Array, segment.Offset, pointer, segment.Count);
 
-        protected OwnedMemory(T[] array, IMemoryDisposer <T> owner = null) : this(array, 0, IntPtr.Zero, array.Length, owner)
-        {}
+        protected void ReInitialize(ArraySegment<T> segment)
+            => ReInitialize(segment, IntPtr.Zero);
 
         protected void ReInitialize(T[] array, int arrayOffset, IntPtr pointer, int length)
         {
