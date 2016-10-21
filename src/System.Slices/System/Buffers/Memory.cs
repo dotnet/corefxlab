@@ -48,6 +48,11 @@ namespace System
             return new Memory<T>(_owner, _id, _index + index, length);
         }
 
+        public OwnedMemory<T> Clone(IMemoryDisposer<T> newOwner = null)
+        {
+            return new OwnedArray<T>(Span.ToArray(), newOwner);
+        }
+
         public Span<T> Span => _owner.GetSpan(_id).Slice(_index, _length);
 
         public DisposableReservation Reserve() => new DisposableReservation(_owner, _id);
