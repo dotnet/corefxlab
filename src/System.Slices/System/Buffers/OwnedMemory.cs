@@ -187,6 +187,8 @@ namespace System.Buffers
 
         public int ReferenceCount => _references;
 
+        public long BufferId => _id;
+
         public void AddReference(long id)
         {
             if (_id != id || IsDisposed) ThrowObjectDisposed();
