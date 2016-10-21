@@ -35,6 +35,11 @@ namespace System
             throw GetInvalidOperationException();
         }
 
+        public static void ThrowObjectDisposedException(ExceptionArgument argument)
+        {
+            throw GetObjectDisposedException(argument);
+        }
+
         public static void ThrowInvalidOperationException_ForBoxingSpans()
         {
             throw GetInvalidOperationException_ForBoxingSpans();
@@ -77,6 +82,12 @@ namespace System
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
+        private static InvalidOperationException GetObjectDisposedException(ExceptionArgument argument)
+        {
+            return new ObjectDisposedException(GetArgumentName(argument));
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static InvalidOperationException GetInvalidOperationException_ForBoxingSpans()
         {
             return new InvalidOperationException("Spans must not be boxed");
@@ -94,6 +105,8 @@ namespace System
     internal enum ExceptionArgument
     {
         pointer,
-        array
+        array,
+        Memory,
+        type
     }
 }

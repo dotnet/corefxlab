@@ -8,27 +8,41 @@ namespace System.Slices.Tests
     public class MemoryTests
     {
         [Fact]
-        public void SimpleTestS()
+        public unsafe void SimpleTestS()
         {
             {
-                OwnedArray<byte> memory = new byte[1024];
+                OwnedMemory<byte> memory = (OwnedMemory<byte>)new byte[1024];
                 var span = memory.Span;
                 span[10] = 10;
-                Assert.Equal(10, memory.Array[10]);
+                ArraySegment<byte> arraySegment;
+
+                Assert.True(memory.Memory.TryGetArray(out arraySegment, null));
+                Assert.Equal(10, arraySegment.Array[10]);
             }
 
-            using(var memory = new OwnedNativeMemory(1024)) {
+            using(var memory = new OwnedMemory<byte>(1024, MemoryType.Native)) {
                 var span = memory.Span;
                 span[10] = 10;
-                unsafe { Assert.Equal(10, memory.Pointer[10]); }
+                void* pointer;
+
+                Assert.True(memory.Memory.TryGetPointer(out pointer));
+                unsafe { Assert.Equal(10, ((byte*)pointer)[10]); }
             }
 
-            using (OwnedPinnedArray<byte> memory = new byte[1024]) {
+            using (var memory = new OwnedMemory<byte>(1024, MemoryType.Pinned)) {
                 var span = memory.Span;
                 span[10] = 10;
-                Assert.Equal(10, memory.Array[10]);
 
-                unsafe { Assert.Equal(10, memory.Pointer[10]); }
+                ArraySegment<byte> arraySegment;
+
+                Assert.True(memory.Memory.TryGetArray(out arraySegment, null));
+                Assert.Equal(10, arraySegment.Array[10]);
+                unsafe
+                { 
+                    void* pointer;
+                    Assert.True(memory.Memory.TryGetPointer(out pointer));
+                    Assert.Equal(10, ((byte*)pointer)[10]);
+                }
             }
         }
 
@@ -36,7 +50,7 @@ namespace System.Slices.Tests
         public void ArrayMemoryLifetime()
         {
             Memory<byte> copyStoredForLater;
-            using (var owner = new OwnedArray<byte>(1024)) {
+            using (var owner = new OwnedMemory<byte>(1024)) {
                 Memory<byte> memory = owner.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
@@ -57,7 +71,7 @@ namespace System.Slices.Tests
         public void NativeMemoryLifetime()
         {
             Memory<byte> copyStoredForLater;
-            using (var owner = new OwnedNativeMemory(1024)) {
+            using (var owner = new OwnedMemory<byte>(1024, MemoryType.Native)) {
                 Memory<byte> memory = owner.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
@@ -80,7 +94,7 @@ namespace System.Slices.Tests
             Memory<byte> copyStoredForLater;
             var bytes = new byte[1024];
             fixed (byte* pBytes = bytes) {
-                using (var owner = new OwnedPinnedArray<byte>(bytes, pBytes)) {
+                using (var owner = new OwnedMemory<byte>(bytes, pBytes)) {
                     Memory<byte> memory = owner.Memory;
                     Memory<byte> memorySlice = memory.Slice(10);
                     copyStoredForLater = memorySlice;
