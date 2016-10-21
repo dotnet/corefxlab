@@ -82,40 +82,14 @@ namespace System.Buffers
 
         sealed class BufferManager : OwnedMemory<byte>
         {
-            IntPtr _memory;
-            int _length;
+            public BufferManager(IntPtr memory, int length) : base(null, 0, memory, length)
+            {}
 
-            public BufferManager(IntPtr memory, int length)
-            {
-                _length = length;
-                _memory = memory;
-            }
-
-            public IntPtr Pointer => _memory;
+            public IntPtr Pointer => _pointer;
 
             protected override void DisposeCore()
             {
-                _memory = IntPtr.Zero;
-            }
-
-            protected override Span<byte> GetSpanCore()
-            {
-                unsafe
-                {
-                    return new Span<byte>(_memory.ToPointer(), _length);
-                }
-            }
-
-            protected override unsafe bool TryGetPointerCore(out void* pointer)
-            {
-                pointer = _memory.ToPointer();
-                return true;
-            }
-
-            protected override bool TryGetArrayCore(out ArraySegment<byte> buffer)
-            {
-                buffer = default(ArraySegment<byte>);
-                return false;
+                _pointer = IntPtr.Zero;
             }
         }
     }
