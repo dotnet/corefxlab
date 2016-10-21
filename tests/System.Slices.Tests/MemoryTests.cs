@@ -97,5 +97,53 @@ namespace System.Slices.Tests
                 var span = copyStoredForLater.Span;
             });
         }
+
+        [Fact]
+        public unsafe void ReferenceCounting()
+        {
+            var owned = new CustomMemory();
+            var memory = owned.Memory;
+            Assert.Equal(0, owned.ReferenceCountChangeCount);
+            Assert.Equal(0, owned.ReferenceCount);
+            using (memory.Reserve()) {
+                Assert.Equal(1, owned.ReferenceCountChangeCount);
+                Assert.Equal(1, owned.ReferenceCount);
+            }
+            Assert.Equal(2, owned.ReferenceCountChangeCount);
+            Assert.Equal(0, owned.ReferenceCount);
+        }
+    }
+
+    class CustomMemory : OwnedMemory<byte>
+    {
+        byte[] _memory = new byte[256];
+        int _referenceCountChangeCount;
+
+        public int ReferenceCountChangeCount => _referenceCountChangeCount;
+
+        protected override void DisposeCore()
+        { }
+
+        protected override Span<byte> GetSpanCore()
+        {
+            return _memory;
+        }
+
+        protected override bool TryGetArrayCore(out ArraySegment<byte> buffer)
+        {
+            buffer = default(ArraySegment<byte>);
+            return false;
+        }
+
+        protected override unsafe bool TryGetPointerCore(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
+
+        protected override void OnReferenceCountChanged()
+        {
+            _referenceCountChangeCount++;
+        }
     }
 }
