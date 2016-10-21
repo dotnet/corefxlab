@@ -125,7 +125,7 @@ namespace System.Slices.Tests
         protected override void DisposeCore()
         { }
 
-        protected override void OnReferenceCountChanged()
+        protected override void OnReferenceCountChanged(int count)
         {
             _referenceCountChangeCount++;
         }

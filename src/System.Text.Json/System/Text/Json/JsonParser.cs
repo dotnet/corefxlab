@@ -114,7 +114,7 @@ namespace System.Text.Json
         private ReadOnlySpan<byte> _values; // TODO: this should be ReadOnlyMemory<byte>
         private Memory<byte> _scratchMemory;
         private OwnedMemory<byte> _scratchManager;
-        BufferPool _pool;
+        IBufferPool<byte> _pool;
         TwoStacks _stack;
 
         private int _valuesIndex;
@@ -140,10 +140,10 @@ namespace System.Text.Json
         private static ReadOnlySpan<byte> s_true = new Utf8String("true").Bytes;
         private static ReadOnlySpan<byte> s_null = new Utf8String("null").Bytes;
 
-        public JsonObject Parse(ReadOnlySpan<byte> utf8Json, BufferPool pool = null)
+        public JsonObject Parse(ReadOnlySpan<byte> utf8Json, IBufferPool<byte> pool = null)
         {
             _pool = pool;
-            if (_pool == null) _pool = ManagedBufferPool.Shared;
+            if (_pool == null) _pool = ManagedBufferPool<byte>.Shared;
             _scratchManager = _pool.Rent(utf8Json.Length * 4);
             _scratchMemory = _scratchManager.Memory;
 
