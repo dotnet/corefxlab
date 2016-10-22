@@ -9,7 +9,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void BasicsWork() {
             var pool = System.Buffers.NativeBufferPool.Shared;
-            var buffer = pool.Rent(10);
+            var buffer = pool.Allocate(10);
             var mem = buffer.Memory;
             buffer.Dispose();
 
@@ -17,7 +17,7 @@ namespace System.Buffers.Tests
                 mem = buffer.Memory;
             });
 
-            buffer = pool.Rent(10);
+            buffer = pool.Allocate(10);
             mem = buffer.Memory;
             var span0 = buffer.Span;
             buffer.Dispose();

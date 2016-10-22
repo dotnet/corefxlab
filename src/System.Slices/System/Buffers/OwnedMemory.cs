@@ -11,23 +11,39 @@ namespace System.Buffers
         void AddReference(long secretId);
         void ReleaseReference(long secretId);
     }
+    public enum MemoryType
+    {
+        Managed,
+        Pinned,
+        Native
+    }
+
+    public enum MemoryAllocatorType
+    {
+        SingleUse,
+        SingleUseCleaned,
+        Pooled,
+        PooledCleaned
+    }
 
     // Exposed for equality test on pool return; rather than as cast test
     // also enforces return is to correct pool
     public interface IMemoryOwner
     {
+        MemoryAllocatorType AllocatorType { get; }
+        MemoryType MemoryType { get; }
     }
 
     // Internal reference held in OwnedMemory<T>, passed out as IMemoryOwner
-    public interface IMemoryDisposer<T> : IMemoryOwner
+    public interface IMemoryCollector<T> : IMemoryOwner
     {
-        void Return(OwnedMemory<T> buffer);
+        void Deallocate(OwnedMemory<T> buffer);
     }
 
     // Implemented by pool, return implemented explicit as `IMemoryDisposer.Return`
-    public interface IBufferPool<T> : IMemoryDisposer<T>, IDisposable
+    public interface IMemoryAllocator<T> : IMemoryCollector<T>, IDisposable
     {
-        OwnedMemory<T> Rent(int minimumBufferSize);
+        OwnedMemory<T> Allocate(int minimumBufferSize);
     }
 
     public abstract class OwnedMemory<T> : IDisposable, IKnown
@@ -43,30 +59,30 @@ namespace System.Buffers
         private int _length;
         private int _offset;
 
-        private readonly IMemoryDisposer<T> _owner;
+        private readonly IMemoryCollector<T> _owner;
         public IMemoryOwner Owner => _owner;
 
-        protected OwnedMemory(IMemoryDisposer<T> owner = null)
+        protected OwnedMemory(IMemoryCollector<T> owner = null)
         {
             _owner = owner;
             _id = InitializedId;
         }
 
-        protected OwnedMemory(T[] array, IMemoryDisposer <T> owner = null)
+        protected OwnedMemory(T[] array, IMemoryCollector <T> owner = null)
             : this(array, 0, IntPtr.Zero, array.Length, owner)
         {}
 
-        protected OwnedMemory(T[] array, int arrayOffset, IntPtr pointer, int length, IMemoryDisposer<T> owner = null)
+        protected OwnedMemory(T[] array, int arrayOffset, IntPtr pointer, int length, IMemoryCollector<T> owner = null)
             : this(owner)
         {
             ReInitialize(array, arrayOffset, pointer, length);
         }
 
-        protected OwnedMemory(ArraySegment<T> segment, IMemoryDisposer<T> owner = null)
+        protected OwnedMemory(ArraySegment<T> segment, IMemoryCollector<T> owner = null)
             : this(segment, IntPtr.Zero, owner)
         {}
 
-        protected OwnedMemory(ArraySegment<T> segment, IntPtr pointer, IMemoryDisposer<T> owner = null)
+        protected OwnedMemory(ArraySegment<T> segment, IntPtr pointer, IMemoryCollector<T> owner = null)
             : this(owner)
         {
             ReInitialize(segment.Array, segment.Offset, pointer, segment.Count);
@@ -150,7 +166,7 @@ namespace System.Buffers
                 OnReferenceCountChanged(count);
                 if (count == 0)
                 {
-                    _owner?.Return(this);
+                    _owner?.Deallocate(this);
 
                     DisposeCore();
 

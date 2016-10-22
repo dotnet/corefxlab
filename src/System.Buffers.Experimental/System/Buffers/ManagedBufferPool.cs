@@ -3,7 +3,7 @@
 
 namespace System.Buffers
 {
-    public class ManagedBufferPool<T> : IBufferPool<T>
+    public class ManagedBufferPool<T> : IMemoryAllocator<T>
     {
         static ManagedBufferPool<T> s_shared = new ManagedBufferPool<T>();
 
@@ -15,13 +15,17 @@ namespace System.Buffers
             }
         }
 
-        public OwnedMemory<T> Rent(int minimumBufferSize)
+        public MemoryAllocatorType AllocatorType => MemoryAllocatorType.Pooled;
+
+        public MemoryType MemoryType => MemoryType.Managed;
+
+        public OwnedMemory<T> Allocate(int minimumBufferSize)
         {
             var array = ArrayPool<T>.Shared.Rent(minimumBufferSize);
             return new OwnedArray<T>(array, this);
         }
 
-        unsafe void IMemoryDisposer<T>.Return(OwnedMemory<T> buffer)
+        unsafe void IMemoryCollector<T>.Deallocate(OwnedMemory<T> buffer)
         {
             if (buffer?.Owner != this) throw new InvalidOperationException("buffer not rented from this pool");
 

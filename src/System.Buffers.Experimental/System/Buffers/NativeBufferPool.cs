@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
-    public unsafe class NativeBufferPool : IBufferPool<byte>
+    public unsafe class NativeBufferPool : IMemoryAllocator<byte>
     {
         static NativeBufferPool s_shared = new NativeBufferPool(4096);
         object _lock = new object();
@@ -17,6 +17,10 @@ namespace System.Buffers
         bool[] _rented;
 
         public static NativeBufferPool Shared => s_shared;
+
+        public MemoryAllocatorType AllocatorType => MemoryAllocatorType.Pooled;
+
+        public MemoryType MemoryType => MemoryType.Native;
 
         public NativeBufferPool(int bufferSize, int bufferCount = 10)
         {
@@ -55,7 +59,7 @@ namespace System.Buffers
             Marshal.FreeHGlobal(_memory);
         }
 
-        public OwnedMemory<byte> Rent(int numberOfBytes)
+        public OwnedMemory<byte> Allocate(int numberOfBytes)
         {
             if (numberOfBytes < 1) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
@@ -71,13 +75,13 @@ namespace System.Buffers
             }
 
             if (i >= _rented.Length) {
-                    throw new NotImplementedException("no more buffers to rent");
+                    throw new OutOfMemoryException("no more buffers to rent");
             }
 
             return new BufferManager(new IntPtr((byte*)(_memory + i * _bufferSize)), _bufferSize, this);
         }
 
-        void IMemoryDisposer<byte>.Return(OwnedMemory<byte> buffer)
+        void IMemoryCollector<byte>.Deallocate(OwnedMemory<byte> buffer)
         {
             if (buffer?.Owner != this) throw new InvalidOperationException("buffer not rented from this pool");
 
@@ -97,7 +101,7 @@ namespace System.Buffers
 
         sealed class BufferManager : OwnedMemory<byte>
         {
-            public BufferManager(IntPtr memory, int length, IMemoryDisposer<byte> owner) : base(null, 0, memory, length, owner)
+            public BufferManager(IntPtr memory, int length, IMemoryCollector<byte> owner) : base(null, 0, memory, length, owner)
             {}
 
             protected override void DisposeCore()

@@ -5,9 +5,9 @@ namespace System.Buffers
 {
     public sealed class OwnedArray<T> : OwnedMemory<T>
     {
-        public OwnedArray(int length, IMemoryDisposer<T> owner = null) : this(new T[length], owner) { }
+        public OwnedArray(int length, IMemoryCollector<T> owner = null) : this(new T[length], owner) { }
 
-        public OwnedArray(T[] array, IMemoryDisposer<T> owner = null) : base(array, 0, IntPtr.Zero, array.Length, owner) { }
+        public OwnedArray(T[] array, IMemoryCollector<T> owner = null) : base(array, 0, IntPtr.Zero, array.Length, owner) { }
 
         public unsafe T[] Array
         {
@@ -31,10 +31,10 @@ namespace System.Buffers
 
     public class OwnedNativeMemory : OwnedMemory<byte>
     {
-        public OwnedNativeMemory(int length, IMemoryDisposer<byte> owner = null) : this(length, Marshal.AllocHGlobal(length), owner)
+        public OwnedNativeMemory(int length, IMemoryCollector<byte> owner = null) : this(length, Marshal.AllocHGlobal(length), owner)
         { }
 
-        protected OwnedNativeMemory(int length, IntPtr address, IMemoryDisposer<byte> owner = null) : base(null, 0, address, length, owner) { }
+        protected OwnedNativeMemory(int length, IntPtr address, IMemoryCollector<byte> owner = null) : base(null, 0, address, length, owner) { }
 
         public static unsafe implicit operator IntPtr(OwnedNativeMemory owner)
         {
@@ -67,7 +67,7 @@ namespace System.Buffers
     {
         private GCHandle _handle;
 
-        public unsafe OwnedPinnedArray(T[] array, void* pointer, GCHandle handle = default(GCHandle), IMemoryDisposer<T> owner = null) :
+        public unsafe OwnedPinnedArray(T[] array, void* pointer, GCHandle handle = default(GCHandle), IMemoryCollector<T> owner = null) :
             base(array, 0, new IntPtr(pointer), array.Length, owner)
         {
             Contract.RequiresSameReference(pointer, Unsafe.AsPointer(ref array[0]));
@@ -75,7 +75,7 @@ namespace System.Buffers
             _handle = handle;
         }
 
-        public OwnedPinnedArray(T[] array, IMemoryDisposer<T> owner = null) : base(owner)
+        public OwnedPinnedArray(T[] array, IMemoryCollector<T> owner = null) : base(owner)
         {
             _handle = GCHandle.Alloc(array, GCHandleType.Pinned);
 
