@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace System.Buffers
 {
@@ -10,18 +11,135 @@ namespace System.Buffers
         void AddReference(long secretId);
         void ReleaseReference(long secretId);
     }
+    public enum MemoryType
+    {
+        Managed,
+        Pinned,
+        Native
+    }
+
+    public enum MemoryAllocatorType
+    {
+        SingleUse,
+        SingleUseCleaned,
+        Pooled,
+        PooledCleaned
+    }
+
+    // Exposed for equality test on pool return; rather than as cast test
+    // also enforces return is to correct pool
+    public interface IMemoryOwner
+    {
+        MemoryAllocatorType AllocatorType { get; }
+        MemoryType MemoryType { get; }
+    }
+
+    // Internal reference held in OwnedMemory<T>, passed out as IMemoryOwner
+    public interface IMemoryCollector<T> : IMemoryOwner
+    {
+        void Deallocate(OwnedMemory<T> buffer);
+    }
+
+    // Implemented by pool, return implemented explicit as `IMemoryDisposer.Return`
+    public interface IMemoryAllocator<T> : IMemoryCollector<T>, IDisposable
+    {
+        OwnedMemory<T> Allocate(int minimumBufferSize);
+    }
 
     public abstract class OwnedMemory<T> : IDisposable, IKnown
     {
-        long _id;
-        int _references;
-
+        const long InitializedId = long.MinValue;
         static long _nextId = InitializedId + 1;
 
-        const long InitializedId = long.MinValue;
-        
-        public Memory<T> Memory => new Memory<T>(this, _id);
-        public Span<T> Span => GetSpanCore();
+        private long _id;
+        private int _references;
+
+        private T[] _array;
+        private IntPtr _pointer;
+        private int _length;
+        private int _offset;
+
+        private readonly IMemoryCollector<T> _owner;
+        public IMemoryOwner Owner => _owner;
+
+        protected OwnedMemory(IMemoryCollector<T> owner = null)
+        {
+            _owner = owner;
+            _id = InitializedId;
+        }
+
+        protected OwnedMemory(T[] array, IMemoryCollector <T> owner = null)
+            : this(array, 0, IntPtr.Zero, array.Length, owner)
+        {}
+
+        protected OwnedMemory(T[] array, int arrayOffset, IntPtr pointer, int length, IMemoryCollector<T> owner = null)
+            : this(owner)
+        {
+            ReInitialize(array, arrayOffset, pointer, length);
+        }
+
+        protected OwnedMemory(ArraySegment<T> segment, IMemoryCollector<T> owner = null)
+            : this(segment, IntPtr.Zero, owner)
+        {}
+
+        protected OwnedMemory(ArraySegment<T> segment, IntPtr pointer, IMemoryCollector<T> owner = null)
+            : this(owner)
+        {
+            ReInitialize(segment.Array, segment.Offset, pointer, segment.Count);
+        }
+
+        protected void ReInitialize(ArraySegment<T> segment, IntPtr pointer)
+            => ReInitialize(segment.Array, segment.Offset, pointer, segment.Count);
+
+        protected void ReInitialize(ArraySegment<T> segment)
+            => ReInitialize(segment, IntPtr.Zero);
+
+        protected void ReInitialize(T[] array, int arrayOffset, IntPtr pointer, int length)
+        {
+            if (!IsDisposed)
+            {
+                throw new InvalidOperationException("this instance has to be disposed to initialize");
+            }
+
+            Contract.Requires(array != null || pointer != IntPtr.Zero);
+
+            _id = Interlocked.Increment(ref _nextId);
+            _references = 1;
+
+
+            _length = length;
+            _array = array;
+            _pointer = pointer;
+            _offset = arrayOffset;
+        }
+
+        public Memory<T> Memory
+        {
+            get
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+
+                return new Memory<T>(this, _id);
+            }
+        }
+
+        public Span<T> Span {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+
+                if (_pointer != IntPtr.Zero) {
+                    unsafe {
+                        return new Span<T>(_pointer.ToPointer(), _length);
+                    }
+                }
+                else
+                {
+                    return new Span<T>(_array, _offset, _length);
+                }
+            }
+        }
 
         public static implicit operator OwnedMemory<T>(T[] array)
         {
@@ -30,74 +148,145 @@ namespace System.Buffers
 
         public void Dispose()
         {
-            if (_references != 0) throw new InvalidOperationException("outstanding references detected.");
-            _id = InitializedId;
-            DisposeCore();
+            Dispose(true);
+        }
+
+        ~OwnedMemory()
+        {
+            Dispose(false);
+        }
+
+        internal virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ThrowIfDisposed();
+
+                var count = Interlocked.Decrement(ref _references);
+                OnReferenceCountChanged(count);
+                if (count == 0)
+                {
+                    _owner?.Deallocate(this);
+
+                    DisposeCore();
+
+                    Clear();
+
+                    _id = InitializedId;
+
+                    GC.SuppressFinalize(this);
+                }
+                else if (count < 0)
+                {
+                    throw new InvalidOperationException("Owned Memory over disposed");
+                }
+            }
+            else
+            {
+                Clear();
+
+                throw new InvalidOperationException("Owned Memory not fully disposed");
+            }
+        }
+
+        private void Clear()
+        {
+            _array = null;
+
+            _length = 0;
+            _offset = 0;
+
+            _pointer = IntPtr.Zero;
         }
 
         public bool IsDisposed => _id == InitializedId;
 
         public int ReferenceCount => _references;
 
+        public long BufferId => _id;
+
         public void AddReference(long id)
         {
-            if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
-            Interlocked.Increment(ref _references);
-            OnReferenceCountChanged();
+            if (_id != id || IsDisposed) ThrowObjectDisposed();
+
+            var count = Interlocked.Increment(ref _references);
+            OnReferenceCountChanged(count);
         }
         public void ReleaseReference(long id)
         {
-            if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
-            Interlocked.Decrement(ref _references);
-            OnReferenceCountChanged();
+            if (_id != id || IsDisposed) ThrowObjectDisposed();
+
+            Dispose();
         }
 
-        protected virtual void OnReferenceCountChanged()
+        protected virtual void OnReferenceCountChanged(int count)
         { }
 
-        public virtual void Initialize()
-        {
-            if(!IsDisposed) {
-                throw new InvalidOperationException("this instance has to be disposed to initialize");
-            }
-            _id = Interlocked.Increment(ref _nextId);
-            _references = 0;
-        }
-
-        public virtual int Length => Memory.Length;
+        public int Length => _length;
 
         // abstract members
-        protected abstract Span<T> GetSpanCore();
         protected abstract void DisposeCore();
 
-        protected abstract bool TryGetArrayCore(out ArraySegment<T> buffer);
+        protected bool TryGetArrayCore(out ArraySegment<T> buffer)
+        {
+            ThrowIfDisposed();
 
-        protected abstract unsafe bool TryGetPointerCore(out void* pointer);
+            if (_array == null) {
+                buffer = default(ArraySegment<T>);
+                return false;
+            }
+            buffer = new ArraySegment<T>(_array, _offset, _length);
+            return true;
+        }
+
+        protected unsafe bool TryGetPointerCore(out void* pointer)
+        {
+            ThrowIfDisposed();
+
+            if (_pointer == IntPtr.Zero) {
+                pointer = null;
+                return false;
+            }
+            pointer = _pointer.ToPointer();
+            return true;
+        }
 
         // used by Memory<T>
         internal unsafe bool TryGetPointer(long id, out void* pointer)
         {
-            if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
+            if (_id != id) ThrowObjectDisposed();
+
             return TryGetPointerCore(out pointer);
         }
 
         internal bool TryGetArray(long id, out ArraySegment<T> buffer)
         {
-            if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
+            if (_id != id) ThrowObjectDisposed();
+
             return TryGetArrayCore(out buffer);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Span<T> GetSpan(long id)
         {
-            if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
-            return GetSpanCore();
+            if (_id != id) {
+                ThrowObjectDisposed();
+            }
+            return Span;
         }
 
-        // protected
-        protected OwnedMemory()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ThrowIfDisposed()
         {
-            _id = InitializedId;
-            Initialize();
+            if (IsDisposed)
+            {
+                ThrowObjectDisposed();
+            }
+        }
+
+        private static void ThrowObjectDisposed()
+        {
+            throw new ObjectDisposedException(nameof(Memory<T>));
         }
     }
 }

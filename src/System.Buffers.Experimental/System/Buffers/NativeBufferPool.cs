@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
-    public unsafe sealed class NativeBufferPool : BufferPool
+    public unsafe class NativeBufferPool : IMemoryAllocator<byte>
     {
         static NativeBufferPool s_shared = new NativeBufferPool(4096);
         object _lock = new object();
@@ -18,6 +18,10 @@ namespace System.Buffers
 
         public static NativeBufferPool Shared => s_shared;
 
+        public MemoryAllocatorType AllocatorType => MemoryAllocatorType.Pooled;
+
+        public MemoryType MemoryType => MemoryType.Native;
+
         public NativeBufferPool(int bufferSize, int bufferCount = 10)
         {
             if (bufferSize < 1) throw new ArgumentOutOfRangeException(nameof(bufferSize));
@@ -28,17 +32,34 @@ namespace System.Buffers
             _bufferCount = bufferCount;
             _memory = Marshal.AllocHGlobal(_bufferSize * _bufferCount);
         }
- 
-        protected override void Dispose(bool disposing)
+
+        public void Dispose()
         {
-            lock (_lock) {
+            Dispose(true);
+        }
+
+        ~NativeBufferPool()
+        {
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            lock (_lock)
+            {
                 if (_disposed) return;
                 _disposed = true;
             }
+
+            if (disposing)
+            {
+                GC.SuppressFinalize(this);
+            }
+
             Marshal.FreeHGlobal(_memory);
         }
 
-        public override OwnedMemory<byte> Rent(int numberOfBytes)
+        public OwnedMemory<byte> Allocate(int numberOfBytes)
         {
             if (numberOfBytes < 1) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
@@ -54,27 +75,25 @@ namespace System.Buffers
             }
 
             if (i >= _rented.Length) {
-                    throw new NotImplementedException("no more buffers to rent");
+                    throw new OutOfMemoryException("no more buffers to rent");
             }
 
-            return new BufferManager(new IntPtr((byte*)(_memory + i * _bufferSize)), _bufferSize);
+            return new BufferManager(new IntPtr((byte*)(_memory + i * _bufferSize)), _bufferSize, this);
         }
 
-        public override void Return(OwnedMemory<byte> buffer)
+        void IMemoryCollector<byte>.Deallocate(OwnedMemory<byte> buffer)
         {
-            var pooledBuffer = buffer as BufferManager;
-            if (pooledBuffer == null) throw new Exception();
+            if (buffer?.Owner != this) throw new InvalidOperationException("buffer not rented from this pool");
 
-            var memory = pooledBuffer.Pointer.ToInt64();
-            if(memory < _memory.ToInt64() || memory > _memory.ToInt64() + _bufferSize * _bufferCount) {
-                throw new Exception("not rented from this pool");
-            }
+            void* pointer;
+            buffer.Memory.TryGetPointer(out pointer);
 
+            var memory = (long)pointer;
             var offset = memory - _memory.ToInt64();
             var index = offset / _bufferSize;
 
-            lock (_lock) {
-                buffer.Dispose();
+            lock (_lock)
+            {
                 if (_rented[index] == false) throw new Exception("this buffer is not rented");
                 _rented[index] = false;
             }
@@ -82,40 +101,11 @@ namespace System.Buffers
 
         sealed class BufferManager : OwnedMemory<byte>
         {
-            IntPtr _memory;
-            int _length;
-
-            public BufferManager(IntPtr memory, int length)
-            {
-                _length = length;
-                _memory = memory;
-            }
-
-            public IntPtr Pointer => _memory;
+            public BufferManager(IntPtr memory, int length, IMemoryCollector<byte> owner) : base(null, 0, memory, length, owner)
+            {}
 
             protected override void DisposeCore()
             {
-                _memory = IntPtr.Zero;
-            }
-
-            protected override Span<byte> GetSpanCore()
-            {
-                unsafe
-                {
-                    return new Span<byte>(_memory.ToPointer(), _length);
-                }
-            }
-
-            protected override unsafe bool TryGetPointerCore(out void* pointer)
-            {
-                pointer = _memory.ToPointer();
-                return true;
-            }
-
-            protected override bool TryGetArrayCore(out ArraySegment<byte> buffer)
-            {
-                buffer = default(ArraySegment<byte>);
-                return false;
             }
         }
     }

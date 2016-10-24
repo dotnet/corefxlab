@@ -3,11 +3,11 @@
 
 namespace System.Buffers
 {
-    public sealed class ManagedBufferPool : BufferPool
+    public class ManagedBufferPool<T> : IMemoryAllocator<T>
     {
-        static ManagedBufferPool s_shared = new ManagedBufferPool();
+        static ManagedBufferPool<T> s_shared = new ManagedBufferPool<T>();
 
-        public static ManagedBufferPool Shared
+        public static ManagedBufferPool<T> Shared
         {
             get
             {
@@ -15,23 +15,28 @@ namespace System.Buffers
             }
         }
 
-        public override OwnedMemory<byte> Rent(int minimumBufferSize)
+        public MemoryAllocatorType AllocatorType => MemoryAllocatorType.Pooled;
+
+        public MemoryType MemoryType => MemoryType.Managed;
+
+        public OwnedMemory<T> Allocate(int minimumBufferSize)
         {
-            var array = ArrayPool<byte>.Shared.Rent(minimumBufferSize);
-            return new OwnedArray<byte>(array);
+            var array = ArrayPool<T>.Shared.Rent(minimumBufferSize);
+            return new OwnedArray<T>(array, this);
         }
 
-        public override void Return(OwnedMemory<byte> buffer)
+        unsafe void IMemoryCollector<T>.Deallocate(OwnedMemory<T> buffer)
         {
-            var ownedArray = buffer as OwnedArray<byte>;
-            if (ownedArray == null) throw new InvalidOperationException("buffer not rented from this pool");
-            ArrayPool<byte>.Shared.Return(ownedArray.Array);
-            buffer.Dispose();
+            if (buffer?.Owner != this) throw new InvalidOperationException("buffer not rented from this pool");
+
+            ArraySegment<T> ownedArray;
+            buffer.Memory.TryGetArray(out ownedArray, null);
+            ArrayPool<T>.Shared.Return(ownedArray.Array);
         }
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            throw new NotImplementedException();
+
         }
     }
 }

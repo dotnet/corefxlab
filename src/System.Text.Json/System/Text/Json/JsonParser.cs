@@ -114,7 +114,7 @@ namespace System.Text.Json
         private ReadOnlySpan<byte> _values; // TODO: this should be ReadOnlyMemory<byte>
         private Memory<byte> _scratchMemory;
         private OwnedMemory<byte> _scratchManager;
-        BufferPool _pool;
+        IMemoryAllocator<byte> _pool;
         TwoStacks _stack;
 
         private int _valuesIndex;
@@ -140,11 +140,11 @@ namespace System.Text.Json
         private static ReadOnlySpan<byte> s_true = new Utf8String("true").Bytes;
         private static ReadOnlySpan<byte> s_null = new Utf8String("null").Bytes;
 
-        public JsonObject Parse(ReadOnlySpan<byte> utf8Json, BufferPool pool = null)
+        public JsonObject Parse(ReadOnlySpan<byte> utf8Json, IMemoryAllocator<byte> pool = null)
         {
             _pool = pool;
-            if (_pool == null) _pool = ManagedBufferPool.Shared;
-            _scratchManager = _pool.Rent(utf8Json.Length * 4);
+            if (_pool == null) _pool = ManagedBufferPool<byte>.Shared;
+            _scratchManager = _pool.Allocate(utf8Json.Length * 4);
             _scratchMemory = _scratchManager.Memory;
 
             int dbLength = _scratchMemory.Length / 2;
@@ -215,7 +215,7 @@ namespace System.Text.Json
         private void ResizeDb()
         {
             var oldData = _scratchMemory.Span;
-            var newScratch = _pool.Rent(_scratchMemory.Length * 2);
+            var newScratch = _pool.Allocate(_scratchMemory.Length * 2);
             int dbLength = newScratch.Length / 2;
 
             var newDb = newScratch.Memory.Slice(0, dbLength);
@@ -224,7 +224,7 @@ namespace System.Text.Json
 
             var newStackMemory = newScratch.Memory.Slice(dbLength);
             _stack.Resize(newStackMemory);
-            _pool.Return(_scratchManager);
+            _pool.Deallocate(_scratchManager);
             _scratchManager = newScratch;
         }
 

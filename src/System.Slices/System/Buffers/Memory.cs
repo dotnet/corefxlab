@@ -48,6 +48,11 @@ namespace System
             return new Memory<T>(_owner, _id, _index + index, length);
         }
 
+        public OwnedMemory<T> Clone(IMemoryCollector<T> newOwner = null)
+        {
+            return new OwnedArray<T>(Span.ToArray(), newOwner);
+        }
+
         public Span<T> Span => _owner.GetSpan(_id).Slice(_index, _length);
 
         public DisposableReservation Reserve() => new DisposableReservation(_owner, _id);
@@ -70,37 +75,21 @@ namespace System
             return true;
         }
 
-        internal class OwnerEmptyMemory : OwnedMemory<T>
-        {
-            public readonly static OwnedMemory<T> Shared = new OwnerEmptyMemory();
-            readonly static ArraySegment<T> s_empty = new ArraySegment<T>(new T[0], 0, 0);
-              
-            protected override bool TryGetArrayCore(out ArraySegment<T> buffer)
-            {
-                buffer = s_empty;
-                return true;
-            }
-
-            protected override unsafe bool TryGetPointerCore(out void* pointer)
-            {
-                pointer = null;
-                return false;
-            }
-
-            protected override void DisposeCore()
-            { }
-
-            protected override Span<T> GetSpanCore()
-            {
-                return Span<T>.Empty;
-            }
-
-            public override int Length => 0;
-        }
-
         internal static unsafe void* Add(void* pointer, int offset)
         {
             return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
+        }
+
+        internal sealed class OwnerEmptyMemory : OwnedMemory<T>
+        {
+            public readonly static OwnedMemory<T> Shared = new OwnerEmptyMemory();
+            readonly static T[] s_empty = new T[0];
+
+            public OwnerEmptyMemory() : base(s_empty)
+            {}
+
+            protected override void DisposeCore()
+            {}
         }
     }
 

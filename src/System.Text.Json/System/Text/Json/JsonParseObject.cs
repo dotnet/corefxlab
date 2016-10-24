@@ -9,7 +9,7 @@ namespace System.Text.Json
 {
     public struct JsonObject : IDisposable
     {
-        private BufferPool _pool;
+        private IMemoryAllocator<byte> _pool;
         private OwnedMemory<byte> _dbMemory;
         private ReadOnlySpan<byte> _db; 
         private ReadOnlySpan<byte> _values;
@@ -21,14 +21,14 @@ namespace System.Text.Json
             return result;
         }
 
-        public static JsonObject Parse(ReadOnlySpan<byte> utf8Json, BufferPool pool = null)
+        public static JsonObject Parse(ReadOnlySpan<byte> utf8Json, IMemoryAllocator<byte> pool = null)
         {
             var parser = new JsonParser();
             var result = parser.Parse(utf8Json, pool);
             return result;
         }
 
-        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, BufferPool pool = null, OwnedMemory<byte> dbMemory = null)
+        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, IMemoryAllocator<byte> pool = null, OwnedMemory<byte> dbMemory = null)
         {
             _db = db;
             _values = values;
@@ -345,7 +345,7 @@ namespace System.Text.Json
             if (_pool == null) throw new InvalidOperationException("only root object can (and should) be disposed.");
             _db = ReadOnlySpan<byte>.Empty;
             _values = ReadOnlySpan<byte>.Empty;
-            _pool.Return(_dbMemory);
+            _pool.Deallocate(_dbMemory);
             _dbMemory = null;
         }
     }
