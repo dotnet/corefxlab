@@ -3,11 +3,11 @@
 
 namespace System.Buffers
 {
-    public sealed class ManagedBufferPool : BufferPool
+    public sealed class ManagedBufferPool<T> : IBufferPool<T>
     {
-        static ManagedBufferPool s_shared = new ManagedBufferPool();
+        static ManagedBufferPool<T> s_shared = new ManagedBufferPool<T>();
 
-        public static ManagedBufferPool Shared
+        public static ManagedBufferPool<T> Shared
         {
             get
             {
@@ -15,21 +15,21 @@ namespace System.Buffers
             }
         }
 
-        public override OwnedMemory<byte> Rent(int minimumBufferSize)
+        public OwnedMemory<T> Rent(int minimumBufferSize)
         {
-            var array = ArrayPool<byte>.Shared.Rent(minimumBufferSize);
-            return new OwnedArray<byte>(array);
+            var array = ArrayPool<T>.Shared.Rent(minimumBufferSize);
+            return new OwnedArray<T>(array);
         }
 
-        public override void Return(OwnedMemory<byte> buffer)
+        public void Return(OwnedMemory<T> buffer)
         {
-            var ownedArray = buffer as OwnedArray<byte>;
+            var ownedArray = buffer as OwnedArray<T>;
             if (ownedArray == null) throw new InvalidOperationException("buffer not rented from this pool");
-            ArrayPool<byte>.Shared.Return(ownedArray.Array);
+            ArrayPool<T>.Shared.Return(ownedArray.Array);
             buffer.Dispose();
         }
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
             throw new NotImplementedException();
         }
