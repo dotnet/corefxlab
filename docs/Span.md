@@ -20,7 +20,7 @@ Marshal.FreeHGlobal(nativeMemory);
 
 // stack memory
 Span<byte> stackSpan;
-Unsafe {
+unsafe {
     byte* stackMemory = stackalloc byte[100];
     stackSpan = new Span<byte>(stackMemory, 100);
 }
@@ -180,7 +180,7 @@ public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWri
 ###Buffer Pooling
 Span\<T\> can be used to pool memory from a large single buffer allocated on the native heap. This decreases [pointless] work the GC needs to perform to manage pooled buffers, which never get collected anyway, but often need to be permanently pinned, which is bad for the system. Also, the fact that native memory does not move lowers the cost of interop and the cost of pool related error checking (e.g. checking if a buffer is already returned to the pool).
 
-Separatelly, the stack-only nature of Span\<T\> makes lifetime management of pooled memry more relaible; it helps in avoiding use-after-free errors with pooled memory. Without Span\<T\>, it’s often not clear when a pooled buffer that was passed to a separate module can be returned to the pool, as the module could be holding to the buffer for later use. With Span\<T\>, the server pipeline can be sure that there are no more references to the buffer after the stack pops to the frame that first allocated the span and passed it down to other modules.
+Separatelly, the stack-only nature of Span\<T\> makes lifetime management of pooled memory more relaible; it helps in avoiding use-after-free errors with pooled memory. Without Span\<T\>, it’s often not clear when a pooled buffer that was passed to a separate module can be returned to the pool, as the module could be holding to the buffer for later use. With Span\<T\>, the server pipeline can be sure that there are no more references to the buffer after the stack pops to the frame that first allocated the span and passed it down to other modules.
 
 ###Native code interop
 Today, unmanaged buffers passed over unmanaged to managed boundary are frequently copied to byte[] to allow safe access from managed code. Span\<T\> can eliminate the need to copy in many such scenarios.
@@ -294,7 +294,7 @@ Separately from this document, we are exploring language features to better supp
 
 1. Enforcement of Stack-Only Type Restrictions 
 
-    Span\<T\> and ReadOnlySpan\<T> will be included in the set of built-in stack-only types. Any other struct containing one of these will be transitively considered a stack-only type. The compiler will error if a stack-only type is used in a disallowed context, e.g. used as a type argument, placed on the heap (boxed, passed to asynchronous call, used as a field of a class, etc.) 
+    Span\<T\> and ReadOnlySpan\<T> will be included in the set of built-in stack-only types. Any other struct containing one of these will be transitively considered a stack-only type. The compiler will error if a stack-only type is used in a disallowed context, e.g. used as a type argument, placed on the heap (boxed, passed to asynchronous call, used as a field of a class, etc.).
 
 2. Language Support for pinning
 
