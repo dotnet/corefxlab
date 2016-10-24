@@ -141,7 +141,7 @@ namespace System.Slices.Tests
             return false;
         }
 
-        protected override void OnReferenceCountChanged()
+        protected override void OnReferenceCountChanged(int newReferenceCount)
         {
             _referenceCountChangeCount++;
         }

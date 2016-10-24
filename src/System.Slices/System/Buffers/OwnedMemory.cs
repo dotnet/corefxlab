@@ -42,17 +42,15 @@ namespace System.Buffers
         public void AddReference(long id)
         {
             if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
-            Interlocked.Increment(ref _references);
-            OnReferenceCountChanged();
+            OnReferenceCountChanged(Interlocked.Increment(ref _references));
         }
         public void ReleaseReference(long id)
         {
             if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
-            Interlocked.Decrement(ref _references);
-            OnReferenceCountChanged();
+            OnReferenceCountChanged(Interlocked.Decrement(ref _references));
         }
 
-        protected virtual void OnReferenceCountChanged()
+        protected virtual void OnReferenceCountChanged(int newReferenceCount)
         { }
 
         public virtual void Initialize()
@@ -65,6 +63,8 @@ namespace System.Buffers
         }
 
         public virtual int Length => Memory.Length;
+
+        protected long Id => _id;
 
         // abstract members
         protected abstract Span<T> GetSpanCore();
