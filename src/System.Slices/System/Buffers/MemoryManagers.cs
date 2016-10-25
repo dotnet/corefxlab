@@ -184,4 +184,32 @@ namespace System.Buffers
 
         public override int Length => _array.Length;
     }
+
+    internal class OwnedEmptyMemory<T> : OwnedMemory<T>
+    {
+        public readonly static OwnedMemory<T> Shared = new OwnedEmptyMemory<T>();
+        readonly static ArraySegment<T> s_empty = new ArraySegment<T>(new T[0], 0, 0);
+
+        protected override bool TryGetArrayCore(out ArraySegment<T> buffer)
+        {
+            buffer = s_empty;
+            return true;
+        }
+
+        protected override unsafe bool TryGetPointerCore(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
+
+        protected override void DisposeCore()
+        { }
+
+        protected override Span<T> GetSpanCore()
+        {
+            return Span<T>.Empty;
+        }
+
+        public override int Length => 0;
+    }
 }
