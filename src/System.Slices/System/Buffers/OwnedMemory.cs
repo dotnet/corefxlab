@@ -2,15 +2,6 @@
 
 namespace System.Buffers
 {
-    /// <summary>
-    /// Known only to some by its secret name
-    /// </summary>
-    internal interface IKnown
-    {
-        void AddReference(long secretId);
-        void ReleaseReference(long secretId);
-    }
-
     public abstract class OwnedMemory<T> : IDisposable, IKnown
     {
         long _id;
@@ -44,6 +35,7 @@ namespace System.Buffers
             if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
             OnReferenceCountChanged(Interlocked.Increment(ref _references));
         }
+
         public void ReleaseReference(long id)
         {
             if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
@@ -52,6 +44,11 @@ namespace System.Buffers
 
         protected virtual void OnReferenceCountChanged(int newReferenceCount)
         { }
+
+        protected internal virtual DisposableReservation Reserve(ref ReadOnlyMemory<T> memory)
+        {
+            return new DisposableReservation(this, Id);
+        }
 
         public virtual void Initialize()
         {
@@ -64,7 +61,7 @@ namespace System.Buffers
 
         public virtual int Length => Memory.Length;
 
-        protected long Id => _id;
+        public long Id => _id;
 
         // abstract members
         protected abstract Span<T> GetSpanCore();
@@ -98,6 +95,34 @@ namespace System.Buffers
         {
             _id = InitializedId;
             Initialize();
+        }
+    }
+
+    /// <summary>
+    /// Known only to some by its secret name
+    /// </summary>
+    internal interface IKnown
+    {
+        void AddReference(long secretId);
+        void ReleaseReference(long secretId);
+    }
+
+    public struct DisposableReservation : IDisposable
+    {
+        IKnown _owner;
+        long _id;
+
+        internal DisposableReservation(IKnown owner, long id)
+        {
+            _id = id;
+            _owner = owner;
+            _owner.AddReference(_id);
+        }
+
+        public void Dispose()
+        {
+            _owner.ReleaseReference(_id);
+            _owner = null;
         }
     }
 }

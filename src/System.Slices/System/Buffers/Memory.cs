@@ -103,23 +103,4 @@ namespace System
             return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }
     }
-
-    public struct DisposableReservation : IDisposable
-    {
-        IKnown _owner;
-        long _id;
-
-        internal DisposableReservation(IKnown owner, long id)
-        {
-            _id = id;
-            _owner = owner;
-            _owner.AddReference(_id);
-        }
-
-        public void Dispose()
-        {
-            _owner.ReleaseReference(_id);
-            _owner = null;
-        }
-    }
 }

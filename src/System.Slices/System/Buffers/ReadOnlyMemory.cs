@@ -44,8 +44,11 @@ namespace System
 
         public ReadOnlySpan<T> Span => _owner.GetSpan(_id).Slice(_index, _length);
 
-        public DisposableReservation Reserve() => new DisposableReservation(_owner, _id);
-
+        public DisposableReservation Reserve()
+        {
+            return _owner.Reserve(ref this);
+        }
+   
         public unsafe bool TryGetPointer(out void* pointer)
         {
             if (!_owner.TryGetPointer(_id, out pointer)) {

@@ -112,6 +112,22 @@ namespace System.Slices.Tests
             Assert.Equal(2, owned.ReferenceCountChangeCount);
             Assert.Equal(0, owned.ReferenceCount);
         }
+
+        [Fact]
+        public unsafe void CopyOnReserve()
+        {
+            var owned = new CustomMemory();
+            ReadOnlyMemory<byte> memory = owned.Memory;
+            var slice = memory.Slice(0, 1);
+
+            // this copies on reserve
+            using (slice.Reserve()) {
+                Assert.Equal(0, owned.ReferenceCountChangeCount);
+                Assert.Equal(0, owned.ReferenceCount);
+            }
+            Assert.Equal(0, owned.ReferenceCountChangeCount);
+            Assert.Equal(0, owned.ReferenceCount);
+        }
     }
 
     class CustomMemory : OwnedMemory<byte>
@@ -129,6 +145,18 @@ namespace System.Slices.Tests
             return _memory;
         }
 
+        protected override DisposableReservation Reserve(ref ReadOnlyMemory<byte> memory)
+        {
+            if (memory.Length < Length) {
+                var copy = memory.Span.ToArray();
+                OwnedArray<byte> newOwned = copy;
+                memory = newOwned.Memory;
+                return memory.Reserve();
+            }
+            else {
+                return base.Reserve(ref memory);
+            }
+        }
         protected override bool TryGetArrayCore(out ArraySegment<byte> buffer)
         {
             buffer = default(ArraySegment<byte>);
