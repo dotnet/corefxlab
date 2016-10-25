@@ -128,6 +128,20 @@ namespace System.Slices.Tests
             Assert.Equal(0, owned.ReferenceCountChangeCount);
             Assert.Equal(0, owned.ReferenceCount);
         }
+
+        [Fact]
+        public void AutoDispose()
+        {
+            var owned = new AutoDisposeMemory(1000);
+            var memory = owned.Memory;
+            Assert.Equal(false, owned.IsDisposed);
+            var reservation = memory.Reserve();
+            Assert.Equal(false, owned.IsDisposed);
+            owned.Release();
+            Assert.Equal(false, owned.IsDisposed);
+            reservation.Dispose();
+            Assert.Equal(true, owned.IsDisposed);
+        }
     }
 
     class CustomMemory : OwnedMemory<byte>
@@ -157,6 +171,36 @@ namespace System.Slices.Tests
         protected override void OnReferenceCountChanged(int newReferenceCount)
         {
             _referenceCountChangeCount++;
+        }
+    }
+
+    class AutoDisposeMemory : OwnedMemory<byte>
+    {
+        public AutoDisposeMemory(int length) : this(ArrayPool<byte>.Shared.Rent(length)) { }
+
+        AutoDisposeMemory(byte[] array) : base(array, 0, array.Length) { }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            AddReference(Id);
+        }
+        protected override void DisposeCore()
+        {
+            ArrayPool<byte>.Shared.Return(_array);
+            base.DisposeCore();
+        }
+
+        protected override void OnReferenceCountChanged(int newReferenceCount)
+        {
+            if (newReferenceCount == 0) {
+                Dispose();
+            }
+        }
+
+        public void Release()
+        {
+            ReleaseReference(Id);
         }
     }
 }
