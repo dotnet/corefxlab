@@ -132,18 +132,14 @@ namespace System.Slices.Tests
 
     class CustomMemory : OwnedMemory<byte>
     {
-        byte[] _memory = new byte[256];
         int _referenceCountChangeCount;
+
+        public CustomMemory() : base(new byte[256], 0, 256) { }
 
         public int ReferenceCountChangeCount => _referenceCountChangeCount;
 
         protected override void DisposeCore()
         { }
-
-        protected override Span<byte> GetSpanCore()
-        {
-            return _memory;
-        }
 
         protected override DisposableReservation Reserve(ref ReadOnlyMemory<byte> memory)
         {
@@ -156,17 +152,6 @@ namespace System.Slices.Tests
             else {
                 return base.Reserve(ref memory);
             }
-        }
-        protected override bool TryGetArrayCore(out ArraySegment<byte> buffer)
-        {
-            buffer = default(ArraySegment<byte>);
-            return false;
-        }
-
-        protected override unsafe bool TryGetPointerCore(out void* pointer)
-        {
-            pointer = null;
-            return false;
         }
 
         protected override void OnReferenceCountChanged(int newReferenceCount)
