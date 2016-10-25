@@ -7,18 +7,51 @@ namespace System.Buffers
         long _id;
         int _references;
 
-        static long _nextId = InitializedId + 1;
+        protected T[] _array;
+        protected IntPtr _pointer;
+        protected int _length;
+        protected int _offset;
 
+        static long _nextId = InitializedId + 1;
         const long InitializedId = long.MinValue;
         
+        private OwnedMemory() { }
+
+        protected OwnedMemory(T[] array, int arrayOffset, int length, IntPtr pointer = default(IntPtr))
+        {
+            Contract.Requires(array != null || pointer != null);
+            Contract.Requires(array == null || arrayOffset + length <= array.Length);
+
+            _array = array;
+            _offset = arrayOffset;
+            _length = length;
+            _pointer = pointer;
+            _id = InitializedId;
+            Initialize();
+        }
+
         public Memory<T> Memory => new Memory<T>(this, _id);
-        public Span<T> Span => GetSpanCore();
+        public Span<T> Span
+        {
+            get {
+                if (_array != null)
+                    return _array.Slice(_offset, _length);
+                else unsafe
+                    {
+                        return new Span<T>(_pointer.ToPointer(), _length);
+                    }
+            }
+        }
+
+        public int Length => _length;
+        public long Id => _id;
 
         public static implicit operator OwnedMemory<T>(T[] array)
         {
             return new OwnedArray<T>(array);
         }
 
+        #region Lifetime Management
         public void Dispose()
         {
             if (_references != 0) throw new InvalidOperationException("outstanding references detected.");
@@ -59,17 +92,37 @@ namespace System.Buffers
             _references = 0;
         }
 
-        public virtual int Length => Memory.Length;
-
-        public long Id => _id;
-
         // abstract members
-        protected abstract Span<T> GetSpanCore();
-        protected abstract void DisposeCore();
+        protected virtual void DisposeCore()
+        {
+            _array = null;
+            _pointer = IntPtr.Zero;
+            _length = 0;
+            _offset = 0;
+        }
+        #endregion
 
-        protected abstract bool TryGetArrayCore(out ArraySegment<T> buffer);
+        protected bool TryGetArrayCore(out ArraySegment<T> buffer)
+        {
+            if(_array == null) {
+                buffer = default(ArraySegment<T>);
+                return false;
+            }
 
-        protected abstract unsafe bool TryGetPointerCore(out void* pointer);
+            buffer = new ArraySegment<T>(_array, _offset, _length);
+            return true;
+        }
+
+        protected unsafe bool TryGetPointerCore(out void* pointer)
+        {
+            if(_pointer == IntPtr.Zero) {
+                pointer = null;
+                return false;
+            }
+
+            pointer = _pointer.ToPointer();
+            return true;
+        }
 
         // used by Memory<T>
         internal unsafe bool TryGetPointer(long id, out void* pointer)
@@ -87,14 +140,7 @@ namespace System.Buffers
         internal Span<T> GetSpan(long id)
         {
             if (_id != id) throw new ObjectDisposedException(nameof(Memory<T>));
-            return GetSpanCore();
-        }
-
-        // protected
-        protected OwnedMemory()
-        {
-            _id = InitializedId;
-            Initialize();
+            return Span;
         }
     }
 
