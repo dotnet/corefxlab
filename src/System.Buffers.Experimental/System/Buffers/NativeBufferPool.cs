@@ -85,12 +85,7 @@ namespace System.Buffers
             public BufferManager(IntPtr memory, int length) : base(null, 0, length, memory)
             {}
 
-            public IntPtr Pointer => _pointer;
-
-            protected override void DisposeCore()
-            {
-                _pointer = IntPtr.Zero;
-            }
+            public new IntPtr Pointer => base.Pointer;
         }
     }
 }

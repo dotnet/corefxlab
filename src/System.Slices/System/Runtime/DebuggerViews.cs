@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace System
+namespace System.Runtime
 {
     internal class SpanDebuggerView<T>
     {

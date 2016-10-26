@@ -3,7 +3,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System
+namespace System.Runtime
 {
     internal static class Contract
     {

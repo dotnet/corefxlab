@@ -132,7 +132,7 @@ namespace System.Slices.Tests
         [Fact]
         public void AutoDispose()
         {
-            var owned = new AutoDisposeMemory(1000);
+            OwnedMemory<byte> owned = new AutoDisposeMemory(1000);
             var memory = owned.Memory;
             Assert.Equal(false, owned.IsDisposed);
             var reservation = memory.Reserve();
@@ -151,9 +151,6 @@ namespace System.Slices.Tests
         public CustomMemory() : base(new byte[256], 0, 256) { }
 
         public int ReferenceCountChangeCount => _referenceCountChangeCount;
-
-        protected override void DisposeCore()
-        { }
 
         protected override DisposableReservation Reserve(ref ReadOnlyMemory<byte> memory)
         {
@@ -176,19 +173,17 @@ namespace System.Slices.Tests
 
     class AutoDisposeMemory : OwnedMemory<byte>
     {
-        public AutoDisposeMemory(int length) : this(ArrayPool<byte>.Shared.Rent(length)) { }
-
-        AutoDisposeMemory(byte[] array) : base(array, 0, array.Length) { }
-
-        public override void Initialize()
-        {
-            base.Initialize();
-            AddReference(Id);
+        public AutoDisposeMemory(int length) : this(ArrayPool<byte>.Shared.Rent(length)) {
         }
-        protected override void DisposeCore()
+
+        AutoDisposeMemory(byte[] array) : base(array, 0, array.Length) {
+            AddReference();
+        }
+
+        protected override void Dispose(bool disposing)
         {
-            ArrayPool<byte>.Shared.Return(_array);
-            base.DisposeCore();
+            ArrayPool<byte>.Shared.Return(Array);
+            base.Dispose(disposing);
         }
 
         protected override void OnReferenceCountChanged(int newReferenceCount)
@@ -196,11 +191,6 @@ namespace System.Slices.Tests
             if (newReferenceCount == 0) {
                 Dispose();
             }
-        }
-
-        public void Release()
-        {
-            ReleaseReference(Id);
         }
     }
 }

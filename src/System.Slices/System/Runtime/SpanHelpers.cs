@@ -3,7 +3,7 @@
 
 using System.Runtime;
 
-namespace System
+namespace System.Runtime
 {
     /// <summary>
     /// Internal helper methods used for implementing Span.

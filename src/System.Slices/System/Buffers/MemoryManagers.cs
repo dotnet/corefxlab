@@ -5,10 +5,10 @@ namespace System.Buffers
 {
     public sealed class OwnedArray<T> : OwnedMemory<T>
     {
-        public T[] Array => _array;
+        public new T[] Array => base.Array;
 
         public static implicit operator T[](OwnedArray<T> owner) {
-            return owner._array;
+            return owner.Array;
         }
 
         public static implicit operator OwnedArray<T>(T[] array) {
@@ -20,8 +20,6 @@ namespace System.Buffers
 
         public OwnedArray(T[] array) : base(array, 0, array.Length)
         {}
-
-        protected override void DisposeCore() => _array = null;
     }
 
     public class OwnedNativeMemory : OwnedMemory<byte>
@@ -33,28 +31,26 @@ namespace System.Buffers
 
         public static implicit operator IntPtr(OwnedNativeMemory owner)
         {
-            return owner._pointer;
+            unsafe
+            {
+                return new IntPtr(owner.Pointer);
+            }
         }
 
         ~OwnedNativeMemory()
         {
-            DisposeCore();
+            Dispose();
         }
 
-        protected override void DisposeCore()
+        protected override void Dispose(bool disposing)
         {
-            if (_pointer != IntPtr.Zero) {
-                Free();
-                _pointer = IntPtr.Zero;
+            if (base.Pointer != IntPtr.Zero) {
+                Marshal.FreeHGlobal(base.Pointer);
             }
+            base.Dispose(disposing);
         }
 
-        protected virtual void Free()
-        {
-            Marshal.FreeHGlobal(_pointer);
-        }
-
-        public unsafe byte* Pointer => (byte*)_pointer.ToPointer();
+        public new unsafe byte* Pointer => (byte*)base.Pointer.ToPointer();
     }
 
     // This is to support secnarios today covered by Memory<T> in corefxlab
@@ -65,7 +61,7 @@ namespace System.Buffers
         public unsafe OwnedPinnedArray(T[] array, void* pointer, GCHandle handle = default(GCHandle)) :
             base(array, 0, array.Length, new IntPtr(pointer))
         {
-            var computedPointer = new IntPtr(Unsafe.AsPointer(ref _array[0]));
+            var computedPointer = new IntPtr(Unsafe.AsPointer(ref Array[0]));
             if (computedPointer != new IntPtr(pointer)) {
                 throw new InvalidOperationException();
             }
@@ -75,7 +71,7 @@ namespace System.Buffers
         public unsafe OwnedPinnedArray(T[] array) : base(array, 0, array.Length, IntPtr.Zero)
         {
             _handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            _pointer = _handle.AddrOfPinnedObject();
+            base.Pointer = _handle.AddrOfPinnedObject();
         }
 
         public static implicit operator OwnedPinnedArray<T>(T[] array)
@@ -83,29 +79,25 @@ namespace System.Buffers
             return new OwnedPinnedArray<T>(array);
         }
 
-        public unsafe byte* Pointer => (byte*)_pointer;
-        public T[] Array => _array;
+        public new unsafe byte* Pointer => (byte*)base.Pointer.ToPointer();
+        public new T[] Array => base.Array;
 
         public unsafe static implicit operator IntPtr(OwnedPinnedArray<T> owner)
         {
-            return owner._pointer;
+            return new IntPtr(owner.Pointer);
         }
 
         public static implicit operator T[] (OwnedPinnedArray<T> owner)
         {
-            return owner._array;
+            return owner.Array;
         }
 
-        protected override void DisposeCore()
+        protected override void Dispose(bool disposing)
         {
             if (_handle.IsAllocated) {
                 _handle.Free();
             }
-            _array = null;
-            unsafe
-            {
-                _pointer = IntPtr.Zero;
-            }
+            base.Dispose(disposing);
         }
     }
 
@@ -116,7 +108,7 @@ namespace System.Buffers
 
         public OwnerEmptyMemory() : base(s_empty, 0, 0) { }
 
-        protected override void DisposeCore()
-        { }
+        protected override void Dispose(bool disposing)
+        {}
     }
 }
