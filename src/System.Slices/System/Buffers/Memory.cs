@@ -1,8 +1,11 @@
 ﻿using System.Buffers;
+using System.Diagnostics;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 
 namespace System
 {
+    [DebuggerTypeProxy(typeof(MemoryDebuggerView<>))]
     public struct Memory<T> 
     {
         OwnedMemory<T> _owner;
