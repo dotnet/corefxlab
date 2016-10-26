@@ -19,7 +19,7 @@ namespace System.Runtime
     /// A collection of unsafe helper methods that we cannot implement in C#.
     /// NOTE: these can be used for VeryBadThings(tm), so tread with care...
     /// </summary>
-    public sealed class UnsafeUtilities
+    public static class UnsafeUtilities
     {
         /// <summary>
         /// Reverses a primitive value - performs an endianness swap

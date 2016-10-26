@@ -5,7 +5,7 @@ using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace System
+namespace System.Runtime
 {
     internal static class MemoryUtils
     {
