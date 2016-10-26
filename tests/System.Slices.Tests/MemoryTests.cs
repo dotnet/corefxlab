@@ -11,24 +11,51 @@ namespace System.Slices.Tests
         public void SimpleTestS()
         {
             {
-                OwnedArray<byte> memory = new byte[1024];
-                var span = memory.Span;
+                OwnedArray<byte> owned = new byte[1024];
+                var span = owned.Span;
                 span[10] = 10;
-                Assert.Equal(10, memory.Array[10]);
+                Assert.Equal(10, owned.Array[10]);
+
+                var memory = owned.Memory;
+                var array = memory.ToArray();
+                Assert.Equal(owned.Length, array.Length);
+                Assert.Equal(10, array[10]);
+
+                var copy = new byte[20];
+                memory.Slice(10, 20).CopyTo(copy);
+                Assert.Equal(10, copy[0]);
             }
 
-            using(var memory = new OwnedNativeMemory(1024)) {
-                var span = memory.Span;
+            using(var owned = new OwnedNativeMemory(1024)) {
+                var span = owned.Span;
                 span[10] = 10;
-                unsafe { Assert.Equal(10, memory.Pointer[10]); }
+                unsafe { Assert.Equal(10, owned.Pointer[10]); }
+
+                var memory = owned.Memory;
+                var array = memory.ToArray();
+                Assert.Equal(owned.Length, array.Length);
+                Assert.Equal(10, array[10]);
+
+                var copy = new byte[20];
+                memory.Slice(10, 20).CopyTo(copy);
+                Assert.Equal(10, copy[0]);
             }
 
-            using (OwnedPinnedArray<byte> memory = new byte[1024]) {
-                var span = memory.Span;
+            using (OwnedPinnedArray<byte> owned = new byte[1024]) {
+                var span = owned.Span;
                 span[10] = 10;
-                Assert.Equal(10, memory.Array[10]);
+                Assert.Equal(10, owned.Array[10]);
 
-                unsafe { Assert.Equal(10, memory.Pointer[10]); }
+                unsafe { Assert.Equal(10, owned.Pointer[10]); }
+
+                var memory = owned.Memory;
+                var array = memory.ToArray();
+                Assert.Equal(owned.Length, array.Length);
+                Assert.Equal(10, array[10]);
+
+                var copy = new byte[20];
+                memory.Slice(10, 20).CopyTo(copy);
+                Assert.Equal(10, copy[0]);
             }
         }
 
