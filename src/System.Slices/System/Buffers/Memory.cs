@@ -77,5 +77,15 @@ namespace System
         {
             return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }
+
+        public T[] ToArray()
+        {
+            return Span.ToArray();
+        }
+
+        public void CopyTo(Span<T> span)
+        {
+            Span.CopyTo(span);
+        }
     }
 }

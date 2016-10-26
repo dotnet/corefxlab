@@ -69,5 +69,15 @@ namespace System
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
             return true;
         }
+
+        public T[] ToArray()
+        {
+            return Span.ToArray();
+        }
+
+        public void CopyTo(Span<T> span)
+        {
+            Span.CopyTo(span);
+        }
     }
 }
