@@ -1,7 +1,10 @@
 ﻿using System.Buffers;
+using System.Diagnostics;
+using System.Runtime;
 
 namespace System
 {
+    [DebuggerTypeProxy(typeof(ReadOnlyMemoryDebuggerView<>))]
     public struct ReadOnlyMemory<T>
     {
         OwnedMemory<T> _owner;

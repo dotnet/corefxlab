@@ -10,7 +10,7 @@ namespace System
     /// <summary>
     /// ReadOnlySpan is a read-only view over Span<typeparam name="T"></typeparam>
     /// </summary>
-    [DebuggerTypeProxy(typeof(SpanDebuggerView<>))]
+    [DebuggerTypeProxy(typeof(ReadOnlySpanDebuggerView<>))]
     [DebuggerDisplay("Length = {Length}")]
     public partial struct ReadOnlySpan<T> : IEquatable<T[]>
     {
