@@ -68,10 +68,12 @@ namespace System.Buffers
             _handle = handle;
         }
 
-        public unsafe OwnedPinnedArray(T[] array) : base(array, 0, array.Length, IntPtr.Zero)
+        public unsafe OwnedPinnedArray(T[] array) : this(array, GCHandle.Alloc(array, GCHandleType.Pinned))
+        { }
+
+        private OwnedPinnedArray(T[] array, GCHandle handle) : base(array, 0, array.Length, handle.AddrOfPinnedObject())
         {
-            _handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            base.Pointer = _handle.AddrOfPinnedObject();
+            _handle = handle;
         }
 
         public static implicit operator OwnedPinnedArray<T>(T[] array)

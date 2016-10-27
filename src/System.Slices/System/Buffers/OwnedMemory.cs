@@ -10,11 +10,11 @@ namespace System.Buffers
         const long InitializedId = long.MinValue;
         int _references;
 
-        public int Length { get; protected set; }
-        protected long Id { get; set; }
-        protected T[] Array { get; set; }
-        protected IntPtr Pointer { get; set; }
-        protected int Offset { get; set; }
+        public int Length { get; private set; }
+        protected long Id { get; private set; }
+        protected T[] Array { get; private set; }
+        protected IntPtr Pointer { get; private set; }
+        protected int Offset { get; private set; }
         public int ReferenceCount { get { return _references; } }
 
         private OwnedMemory() { }
@@ -85,17 +85,16 @@ namespace System.Buffers
         public void Dispose()
         {
             if (ReferenceCount != 0) throw new InvalidOperationException("outstanding references detected.");
-            Id = InitializedId;
             Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
+            Id = InitializedId;
             Array = null;
             Pointer = IntPtr.Zero;
             Length = 0;
             Offset = 0;
         }
+
+        protected virtual void Dispose(bool disposing)
+        { }
 
         public bool IsDisposed => Id == InitializedId;
 
