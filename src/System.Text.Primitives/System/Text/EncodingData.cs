@@ -16,7 +16,7 @@ namespace System.Text
         private TrieNode[] _parsingTrie;
         private Encoding _encoding;
 
-        public enum Encoding
+        public enum Encoding : byte
         {
             Utf16 = 0,
             Utf8 = 1,
