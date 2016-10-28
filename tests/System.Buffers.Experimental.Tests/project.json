@@ -1,5 +1,8 @@
 ﻿{
   "name": "System.Buffers.Experimental.Tests",
+  "buildOptions": {
+    "allowUnsafe": true
+  },
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
