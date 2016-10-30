@@ -207,8 +207,8 @@ namespace System
             if (default(T) != null && MemoryUtils.IsPrimitiveValueType<T>())
             {
                 // review: (#848) - overflow and alignment
-                UnsafeUtilities.CopyBlock(src.Object, src.Offset, dest.Object, dest.Offset,
-                                   src.Length * Unsafe.SizeOf<T>());
+                //UnsafeUtilities.CopyBlock(src.Object, src.Offset, dest.Object, dest.Offset,
+                //                   src.Length * Unsafe.SizeOf<T>());
             }
             else
             {
