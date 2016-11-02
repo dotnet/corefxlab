@@ -16,12 +16,12 @@ namespace System.Text
                 var span = new ReadOnlySpan<byte>(text, length * 2);
                 return PrimitiveParser.TryParseBoolean(span, out value, out consumed, EncodingData.InvariantUtf16);
             }
-            public unsafe static bool TryParseBoolean(char* text, int length, out bool value, out int consumed)
+            public unsafe static bool TryParseBoolean(char* text, int length, out bool value, out int charactersConsumed)
             {
                 var span = new ReadOnlySpan<byte>(text, length * 2);
                 int bytesConsumed;
                 bool result = PrimitiveParser.TryParseBoolean(span, out value, out bytesConsumed, EncodingData.InvariantUtf16);
-                consumed = bytesConsumed / 2;
+                charactersConsumed = bytesConsumed / 2;
                 return result;
             }
             public static bool TryParseBoolean(ReadOnlySpan<char> text, out bool value)
@@ -30,12 +30,12 @@ namespace System.Text
                 var byteSpan = text.Cast<char, byte>();
                 return PrimitiveParser.TryParseBoolean(byteSpan, out value, out consumed, EncodingData.InvariantUtf16);
             }
-            public static bool TryParseBoolean(ReadOnlySpan<char> text, out bool value, out int consumed)
+            public static bool TryParseBoolean(ReadOnlySpan<char> text, out bool value, out int charactersConsumed)
             {
                 var byteSpan = text.Cast<char, byte>();
                 int bytesConsumed;
                 bool result = PrimitiveParser.TryParseBoolean(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16);
-                consumed = bytesConsumed / 2;
+                charactersConsumed = bytesConsumed / 2;
                 return result;
             }
         }

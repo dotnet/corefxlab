@@ -16,12 +16,12 @@ namespace System.Text
                 var span = new ReadOnlySpan<byte>(text, length * 2);
                 return PrimitiveParser.TryParseUInt32(span, out value, out consumed, EncodingData.InvariantUtf16);
             }
-            public unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int consumed)
+            public unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int charactersConsumed)
             {
                 var span = new ReadOnlySpan<byte>(text, length * 2);
                 int bytesConsumed;
                 bool result = PrimitiveParser.TryParseUInt32(span, out value, out bytesConsumed, EncodingData.InvariantUtf16);
-                consumed = bytesConsumed / 2;
+                charactersConsumed = bytesConsumed / 2;
                 return result;
             }
             public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value)
@@ -30,12 +30,12 @@ namespace System.Text
                 var byteSpan = text.Cast<char, byte>();
                 return PrimitiveParser.TryParseUInt32(byteSpan, out value, out consumed, EncodingData.InvariantUtf16);
             }
-            public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int consumed)
+            public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int charactersConsumed)
             {
                 var byteSpan = text.Cast<char, byte>();
                 int bytesConsumed;
                 bool result = PrimitiveParser.TryParseUInt32(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16);
-                consumed = bytesConsumed / 2;
+                charactersConsumed = bytesConsumed / 2;
                 return result;
             }
 
@@ -47,12 +47,12 @@ namespace System.Text
                     var span = new ReadOnlySpan<byte>(text, length * 2);
                     return PrimitiveParser.TryParseUInt32(span, out value, out consumed, EncodingData.InvariantUtf16, 'X');
                 }
-                public unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int consumed)
+                public unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int charactersConsumed)
                 {
                     var span = new ReadOnlySpan<byte>(text, length * 2);
                     int bytesConsumed;
                     bool result = PrimitiveParser.TryParseUInt32(span, out value, out bytesConsumed, EncodingData.InvariantUtf16, 'X');
-                    consumed = bytesConsumed / 2;
+                    charactersConsumed = bytesConsumed / 2;
                     return result;
                 }
                 public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value)
@@ -61,12 +61,12 @@ namespace System.Text
                     var byteSpan = text.Cast<char, byte>();
                     return PrimitiveParser.TryParseUInt32(byteSpan, out value, out consumed, EncodingData.InvariantUtf16, 'X');
                 }
-                public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int consumed)
+                public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int charactersConsumed)
                 {
                     var byteSpan = text.Cast<char, byte>();
                     int bytesConsumed;
                     bool result = PrimitiveParser.TryParseUInt32(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16, 'X');
-                    consumed = bytesConsumed / 2;
+                    charactersConsumed = bytesConsumed / 2;
                     return result;
                 }
             }

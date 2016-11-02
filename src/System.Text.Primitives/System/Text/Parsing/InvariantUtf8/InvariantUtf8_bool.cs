@@ -16,19 +16,19 @@ namespace System.Text
                 var span = new ReadOnlySpan<byte>(text, length);
                 return PrimitiveParser.TryParseBoolean(span, out value, out consumed, EncodingData.InvariantUtf8);
             }
-            public unsafe static bool TryParseBoolean(byte* text, int length, out bool value, out int consumed)
+            public unsafe static bool TryParseBoolean(byte* text, int length, out bool value, out int bytesConsumed)
             {
                 var span = new ReadOnlySpan<byte>(text, length);
-                return PrimitiveParser.TryParseBoolean(span, out value, out consumed, EncodingData.InvariantUtf8);
+                return PrimitiveParser.TryParseBoolean(span, out value, out bytesConsumed, EncodingData.InvariantUtf8);
             }
             public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value)
             {
                 int consumed;
                 return PrimitiveParser.TryParseBoolean(text, out value, out consumed, EncodingData.InvariantUtf8);
             }
-            public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int consumed)
+            public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int bytesConsumed)
             {
-                return PrimitiveParser.TryParseBoolean(text, out value, out consumed, EncodingData.InvariantUtf8);
+                return PrimitiveParser.TryParseBoolean(text, out value, out bytesConsumed, EncodingData.InvariantUtf8);
             }
         }
     }
