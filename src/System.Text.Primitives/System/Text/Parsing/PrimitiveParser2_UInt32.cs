@@ -6,14 +6,11 @@ using System.Text.Utf8;
 
 namespace System.Text
 {
-    public static partial class PrimitiveParser2
+    public static partial class PrimitiveParser
     {
-        #region helpers
-        #endregion
-
         public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int consumedBytes, EncodingData encoding = default(EncodingData), Format.Parsed format = default(Format.Parsed))
         {
-            return PrimitiveParser.TryParseUInt32(text, encoding, format, out value, out consumedBytes);
+            return TryParseUInt32(text, encoding, format, out value, out consumedBytes);
         }
     }
 }

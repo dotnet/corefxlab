@@ -6,29 +6,29 @@ using System.Text.Utf8;
 
 namespace System.Text
 {
-    public static partial class PrimitiveParser2
+    public static partial class PrimitiveParser
     {
         public static partial class InvariantUtf8
         {
             public unsafe static bool TryParseBoolean(byte* text, int length, out bool value)
             {
-                int consumedBytes;
+                int consumed;
                 var span = new ReadOnlySpan<byte>(text, length);
-                return PrimitiveParser2.TryParseBoolean(span, out value, out consumedBytes, EncodingData.InvariantUtf8);
+                return PrimitiveParser.TryParseBoolean(span, out value, out consumed, EncodingData.InvariantUtf8);
             }
-            public unsafe static bool TryParseBoolean(byte* text, int length, out bool value, out int consumedBytes)
+            public unsafe static bool TryParseBoolean(byte* text, int length, out bool value, out int consumed)
             {
                 var span = new ReadOnlySpan<byte>(text, length);
-                return PrimitiveParser2.TryParseBoolean(span, out value, out consumedBytes, EncodingData.InvariantUtf8);
+                return PrimitiveParser.TryParseBoolean(span, out value, out consumed, EncodingData.InvariantUtf8);
             }
             public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value)
             {
-                int consumedBytes;
-                return PrimitiveParser2.TryParseBoolean(text, out value, out consumedBytes, EncodingData.InvariantUtf8);
+                int consumed;
+                return PrimitiveParser.TryParseBoolean(text, out value, out consumed, EncodingData.InvariantUtf8);
             }
-            public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int consumedBytes)
+            public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int consumed)
             {
-                return PrimitiveParser2.TryParseBoolean(text, out value, out consumedBytes, EncodingData.InvariantUtf8);
+                return PrimitiveParser.TryParseBoolean(text, out value, out consumed, EncodingData.InvariantUtf8);
             }
         }
     }

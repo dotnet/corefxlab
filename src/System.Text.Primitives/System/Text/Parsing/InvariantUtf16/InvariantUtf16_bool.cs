@@ -6,29 +6,37 @@ using System.Text.Utf8;
 
 namespace System.Text
 {
-    public static partial class PrimitiveParser2
+    public static partial class PrimitiveParser
     {
         public static partial class InvariantUtf16
         {
             public unsafe static bool TryParseBoolean(char* text, int length, out bool value)
             {
-                int consumedBytes;
-                var span = new ReadOnlySpan<byte>(text, length);
-                return PrimitiveParser2.TryParseBoolean(span, out value, out consumedBytes, EncodingData.InvariantUtf16);
+                int consumed;
+                var span = new ReadOnlySpan<byte>(text, length * 2);
+                return PrimitiveParser.TryParseBoolean(span, out value, out consumed, EncodingData.InvariantUtf16);
             }
-            public unsafe static bool TryParseBoolean(char* text, int length, out bool value, out int consumedBytes)
+            public unsafe static bool TryParseBoolean(char* text, int length, out bool value, out int consumed)
             {
-                var span = new ReadOnlySpan<byte>(text, length);
-                return PrimitiveParser2.TryParseBoolean(span, out value, out consumedBytes, EncodingData.InvariantUtf16);
+                var span = new ReadOnlySpan<byte>(text, length * 2);
+                int bytesConsumed;
+                bool result = PrimitiveParser.TryParseBoolean(span, out value, out bytesConsumed, EncodingData.InvariantUtf16);
+                consumed = bytesConsumed / 2;
+                return result;
             }
-            public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value)
+            public static bool TryParseBoolean(ReadOnlySpan<char> text, out bool value)
             {
-                int consumedBytes;
-                return PrimitiveParser2.TryParseBoolean(text, out value, out consumedBytes, EncodingData.InvariantUtf16);
+                int consumed;
+                var byteSpan = text.Cast<char, byte>();
+                return PrimitiveParser.TryParseBoolean(byteSpan, out value, out consumed, EncodingData.InvariantUtf16);
             }
-            public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int consumedBytes)
+            public static bool TryParseBoolean(ReadOnlySpan<char> text, out bool value, out int consumed)
             {
-                return PrimitiveParser2.TryParseBoolean(text, out value, out consumedBytes, EncodingData.InvariantUtf16);
+                var byteSpan = text.Cast<char, byte>();
+                int bytesConsumed;
+                bool result = PrimitiveParser.TryParseBoolean(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16);
+                consumed = bytesConsumed / 2;
+                return result;
             }
         }
     }
