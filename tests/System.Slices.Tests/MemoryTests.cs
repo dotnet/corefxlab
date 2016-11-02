@@ -102,7 +102,7 @@ namespace System.Slices.Tests
 
         public int ReferenceCountChangeCount => _referenceCountChangeCount;
 
-        protected override DisposableReservation Reserve(ref ReadOnlyMemory<byte> memory)
+        protected override DisposableReservation ReserveCore(ref ReadOnlyMemory<byte> memory)
         {
             if (memory.Length < Length) {
                 var copy = memory.Span.ToArray();
@@ -111,7 +111,7 @@ namespace System.Slices.Tests
                 return memory.Reserve();
             }
             else {
-                return base.Reserve(ref memory);
+                return base.ReserveCore(ref memory);
             }
         }
 

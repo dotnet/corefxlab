@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace System.Text.Utf8.Tests
 {
-    public class Utf8StringTests
+    public partial class Utf8StringTests
     {
         #region Helpers - useful only when debugging or generating test cases
         ITestOutputHelper output;

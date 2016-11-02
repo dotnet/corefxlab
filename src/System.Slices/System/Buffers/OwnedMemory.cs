@@ -111,21 +111,25 @@ namespace System.Buffers
         protected virtual void OnReferenceCountChanged(int newReferenceCount)
         { }
 
-        protected internal virtual DisposableReservation Reserve(ref ReadOnlyMemory<T> memory)
+        DisposableReservation IReadOnlyMemory<T>.Reserve(ref ReadOnlyMemory<T> memory)
+        {
+            return ReserveCore(ref memory);
+        }
+
+        protected virtual DisposableReservation ReserveCore(ref ReadOnlyMemory<T> memory)
         {
             return new DisposableReservation(this, Id);
         }
-
         #endregion
 
         #region Used by Memory<T>
-        void IKnown.AddReference(long id)
+        void IReferenceCounted.AddReference(long id)
         {
             VerifyId(id);
             AddReference();
         }
 
-        void IKnown.Release(long id)
+        void IReferenceCounted.Release(long id)
         {
             VerifyId(id);
             Release();
@@ -137,7 +141,7 @@ namespace System.Buffers
             return TryGetPointerCore(out pointer);
         }
 
-        unsafe bool IMemory<T>.TryGetPointer(long id, out void* pointer)
+        unsafe bool IReadOnlyMemory<T>.TryGetPointer(long id, out void* pointer)
         {
             return TryGetPointerInternal(id, out pointer);
         }
@@ -165,6 +169,10 @@ namespace System.Buffers
         {
             return GetSpanInternal(id);
         }
+        ReadOnlySpan<T> IReadOnlyMemory<T>.GetSpan(long id)
+        {
+            return GetSpanInternal(id);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void VerifyId(long id) {
@@ -177,26 +185,32 @@ namespace System.Buffers
         #endregion
     }
 
-    interface IKnown
+    public interface IReferenceCounted
     {
         void AddReference(long id);
         void Release(long id);
     }
-
-    internal interface IMemory<T> : IKnown
+    public interface IReadOnlyMemory<T> : IReferenceCounted
     {
-        Span<T> GetSpan(long id);
+        ReadOnlySpan<T> GetSpan(long id);
+
+        unsafe bool TryGetPointer(long id, out void* pointer);
+
+        DisposableReservation Reserve(ref ReadOnlyMemory<T> memory);
+    }
+    public interface IMemory<T> : IReadOnlyMemory<T>
+    {
+        new Span<T> GetSpan(long id);
 
         bool TryGetArray(long id, out ArraySegment<T> buffer);
-        unsafe bool TryGetPointer(long id, out void* pointer);
     }
 
     public struct DisposableReservation : IDisposable
     {
-        IKnown _owner;
+        IReferenceCounted _owner;
         long _id;
 
-        internal DisposableReservation(IKnown owner, long id)
+        public DisposableReservation(IReferenceCounted owner, long id)
         {
             _id = id;
             _owner = owner;

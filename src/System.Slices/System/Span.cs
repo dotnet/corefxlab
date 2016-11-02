@@ -126,10 +126,7 @@ namespace System
             Length = length;
         }
 
-        /// <summary>
-        /// An internal helper for creating spans. Not for public use.
-        /// </summary>
-        internal Span(object obj, UIntPtr offset, int length)
+        public Span(object obj, UIntPtr offset, int length)
         {
             Object = obj;
             Offset = offset;
