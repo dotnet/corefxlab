@@ -4,18 +4,18 @@ using System.Threading;
 
 namespace System.Buffers
 {
-    public abstract class OwnedMemory<T> : IDisposable, IKnown
+    public abstract class OwnedMemory<T> : IDisposable, IMemory<T>
     {
         static long _nextId = InitializedId + 1;
         const long InitializedId = long.MinValue;
-        int _references;
+        int _referenceCount;
 
         public int Length { get; private set; }
         protected long Id { get; private set; }
         protected T[] Array { get; private set; }
         protected IntPtr Pointer { get; private set; }
         protected int Offset { get; private set; }
-        public int ReferenceCount { get { return _references; } }
+        public int ReferenceCount { get { return _referenceCount; } }
 
         private OwnedMemory() { }
 
@@ -33,7 +33,7 @@ namespace System.Buffers
                 if (Array != null)
                     return Array.Slice(Offset, Length);
                 else unsafe {
-                        return new Span<T>(Pointer.ToPointer(), Length);
+                    return new Span<T>(Pointer.ToPointer(), Length);
                 }
             }
         }
@@ -79,7 +79,7 @@ namespace System.Buffers
             Offset = arrayOffset;
             Length = length;
             Pointer = pointer;
-            _references = 0;
+            _referenceCount = 0;
         }
 
         public void Dispose()
@@ -100,12 +100,12 @@ namespace System.Buffers
 
         public void AddReference()
         {
-            OnReferenceCountChanged(Interlocked.Increment(ref _references));
+            OnReferenceCountChanged(Interlocked.Increment(ref _referenceCount));
         }
 
         public void Release()
         {
-            OnReferenceCountChanged(Interlocked.Decrement(ref _references));
+            OnReferenceCountChanged(Interlocked.Decrement(ref _referenceCount));
         }
 
         protected virtual void OnReferenceCountChanged(int newReferenceCount)
@@ -131,23 +131,39 @@ namespace System.Buffers
             Release();
         }
 
-        internal unsafe bool TryGetPointer(long id, out void* pointer)
+        internal unsafe bool TryGetPointerInternal(long id, out void* pointer)
         {
             VerifyId(id);
             return TryGetPointerCore(out pointer);
         }
 
-        internal bool TryGetArray(long id, out ArraySegment<T> buffer)
+        unsafe bool IMemory<T>.TryGetPointer(long id, out void* pointer)
+        {
+            return TryGetPointerInternal(id, out pointer);
+        }
+
+        internal bool TryGetArrayInternal(long id, out ArraySegment<T> buffer)
         {
             VerifyId(id);
             return TryGetArrayCore(out buffer);
         }
 
+        bool IMemory<T>.TryGetArray(long id, out ArraySegment<T> buffer)
+        {
+            return TryGetArrayInternal(id, out buffer);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Span<T> GetSpan(long id)
+        internal Span<T> GetSpanInternal(long id)
         {
             VerifyId(id);
             return Span;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        Span<T> IMemory<T>.GetSpan(long id)
+        {
+            return GetSpanInternal(id);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -161,13 +177,18 @@ namespace System.Buffers
         #endregion
     }
 
-    /// <summary>
-    /// Known only to some by its secret name
-    /// </summary>
-    internal interface IKnown
+    interface IKnown
     {
-        void AddReference(long secretId);
-        void Release(long secretId);
+        void AddReference(long id);
+        void Release(long id);
+    }
+
+    internal interface IMemory<T> : IKnown
+    {
+        Span<T> GetSpan(long id);
+
+        bool TryGetArray(long id, out ArraySegment<T> buffer);
+        unsafe bool TryGetPointer(long id, out void* pointer);
     }
 
     public struct DisposableReservation : IDisposable
