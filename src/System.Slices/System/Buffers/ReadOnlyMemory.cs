@@ -13,7 +13,7 @@ namespace System
         int _length;
 
         internal ReadOnlyMemory(OwnedMemory<T> owner, long id)
-            : this(owner, id, 0, owner.GetSpan(id).Length)
+            : this(owner, id, 0, owner.GetSpanInternal(id).Length)
         { }
 
         internal ReadOnlyMemory(OwnedMemory<T> owner, long id, int index, int length)
@@ -45,7 +45,7 @@ namespace System
             return new ReadOnlyMemory<T>(_owner, _id, _index + index, length);
         }
 
-        public ReadOnlySpan<T> Span => _owner.GetSpan(_id).Slice(_index, _length);
+        public ReadOnlySpan<T> Span => _owner.GetSpanInternal(_id).Slice(_index, _length);
 
         public DisposableReservation Reserve()
         {
@@ -54,7 +54,7 @@ namespace System
    
         public unsafe bool TryGetPointer(out void* pointer)
         {
-            if (!_owner.TryGetPointer(_id, out pointer)) {
+            if (!_owner.TryGetPointerInternal(_id, out pointer)) {
                 return false;
             }
             pointer = Memory<T>.Add(pointer, _index);
@@ -63,7 +63,7 @@ namespace System
 
         public unsafe bool TryGetArray(out ArraySegment<T> buffer)
         {
-            if (!_owner.TryGetArray(_id, out buffer)) {
+            if (!_owner.TryGetArrayInternal(_id, out buffer)) {
                 return false;
             }
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
