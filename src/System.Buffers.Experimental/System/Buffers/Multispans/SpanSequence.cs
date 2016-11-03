@@ -5,12 +5,14 @@ using System.Runtime.CompilerServices;
 
 namespace System.Collections.Sequences
 {
+    [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
     public interface ISpanSequence<T> : IReadOnlySpanSequence<T>
     {
         new SpanSequenceEnumerator<T> GetEnumerator();
         bool TryGet(ref Position position, out Span<T> item, bool advance = false);
     }
 
+    [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
     public struct SpanSequenceEnumerator<T>
     {
         Position _position;
