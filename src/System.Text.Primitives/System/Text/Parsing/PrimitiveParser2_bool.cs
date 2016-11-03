@@ -10,6 +10,30 @@ namespace System.Text
     {
         #region helpers
 
+        private static bool IsTrue(ReadOnlySpan<byte> utf8Bytes)
+        {
+            if (utf8Bytes.Length < 4)
+                return false;
+
+            byte firstChar = utf8Bytes[0];
+            if (firstChar != 't' && firstChar != 'T')
+                return false;
+
+            byte secondChar = utf8Bytes[1];
+            if (secondChar != 'r' && secondChar != 'R')
+                return false;
+
+            byte thirdChar = utf8Bytes[2];
+            if (thirdChar != 'u' && thirdChar != 'U')
+                return false;
+
+            byte fourthChar = utf8Bytes[3];
+            if (fourthChar != 'e' && fourthChar != 'E')
+                return false;
+
+            return true;
+        }
+
         private static bool IsTrue(ReadOnlySpan<char> utf16Chars)
         {
             if (utf16Chars.Length < 4)
@@ -29,6 +53,34 @@ namespace System.Text
 
             char fourthChar = utf16Chars[3];
             if (fourthChar != 'e' && fourthChar != 'E')
+                return false;
+
+            return true;
+        }
+
+        private static bool IsFalse(ReadOnlySpan<byte> utf8Bytes)
+        {
+            if (utf8Bytes.Length < 5)
+                return false;
+
+            byte firstChar = utf8Bytes[0];
+            if (firstChar != 'f' && firstChar != 'F')
+                return false;
+
+            byte secondChar = utf8Bytes[1];
+            if (secondChar != 'a' && secondChar != 'A')
+                return false;
+
+            byte thirdChar = utf8Bytes[2];
+            if (thirdChar != 'l' && thirdChar != 'L')
+                return false;
+
+            byte fourthChar = utf8Bytes[3];
+            if (fourthChar != 's' && fourthChar != 'S')
+                return false;
+
+            byte fifthChar = utf8Bytes[4];
+            if (fifthChar != 'e' && fifthChar != 'E')
                 return false;
 
             return true;
@@ -68,78 +120,19 @@ namespace System.Text
         {
             consumedBytes = 0;
             value = default(bool);
-            if (text.Length < 1)
-            {
-                return false;
-            }
 
             if (encoding.IsInvariantUtf8)
             {
-                byte firstCodeUnit = text[0];
-
-                if (firstCodeUnit == '1')
-                {
-                    consumedBytes = 1;
-                    value = true;
-                    return true;
-                }
-                else if (firstCodeUnit == '0')
-                {
-                    consumedBytes = 1;
-                    value = false;
-                    return true;
-                }
-                else if (IsTrue(text))
-                {
-                    consumedBytes = 4;
-                    value = true;
-                    return true;
-                }
-                else if (IsFalse(text))
-                {
-                    consumedBytes = 5;
-                    value = false;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return InvariantUtf8.TryParseBoolean(text, out value, out consumedBytes);
             }
 
             if (encoding.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> textChars = text.Cast<byte, char>();
-                char firstCodeUnit = textChars[0];
-
-                if (firstCodeUnit == '1')
-                {
-                    consumedBytes = 2;
-                    value = true;
-                    return true;
-                }
-                else if (firstCodeUnit == '0')
-                {
-                    consumedBytes = 2;
-                    value = false;
-                    return true;
-                }
-                else if (IsTrue(textChars))
-                {
-                    consumedBytes = 8;
-                    value = true;
-                    return true;
-                }
-                else if (IsFalse(textChars))
-                {
-                    consumedBytes = 10;
-                    value = false;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                int consumedChars;
+                bool result = InvariantUtf16.TryParseBoolean(textChars, out value, out consumedChars);
+                consumedBytes = consumedChars * 2;
+                return result;
             }
 
             return false;
