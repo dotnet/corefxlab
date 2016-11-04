@@ -162,11 +162,11 @@ namespace System.Text.Utf8.Tests
         }
 
         public static object[][] StartsWithCodeUnitTestCases = new object[][] {
-            new object[] { false, new Utf8String(""), (Utf8CodeUnit)'a' },
-            new object[] { false, new Utf8String("a"), (Utf8CodeUnit)'a' },
-            new object[] { false, new Utf8String("abc"), (Utf8CodeUnit)'a' },
-            new object[] { false, new Utf8String("b"), (Utf8CodeUnit)'a' },
-            new object[] { false, new Utf8String("ba"), (Utf8CodeUnit)'a' }
+            new object[] { false, new Utf8String(""), (byte)'a' },
+            new object[] { false, new Utf8String("a"), (byte)'a' },
+            new object[] { false, new Utf8String("abc"), (byte)'a' },
+            new object[] { false, new Utf8String("b"), (byte)'a' },
+            new object[] { false, new Utf8String("ba"), (byte)'a' }
         };
 
         [Theory]
@@ -178,7 +178,7 @@ namespace System.Text.Utf8.Tests
         public void StartsWithCodeUnit(string s, char c)
         {
             Utf8String u8s = new Utf8String(s);
-            Utf8CodeUnit codeUnit = (Utf8CodeUnit)(byte)c;
+            byte codeUnit = (byte)c;
             Assert.Equal(s.StartsWith(c.ToString()), u8s.StartsWith(codeUnit));
         }
 
@@ -191,7 +191,7 @@ namespace System.Text.Utf8.Tests
         public void EndsWithCodeUnit(string s, char c)
         {
             Utf8String u8s = new Utf8String(s);
-            Utf8CodeUnit codeUnit = (Utf8CodeUnit)(byte)c;
+            byte codeUnit = (byte)c;
             Assert.Equal(s.EndsWith(c.ToString()), u8s.EndsWith(codeUnit));
         }
 
@@ -238,7 +238,7 @@ namespace System.Text.Utf8.Tests
         public void SubstringFromCodeUnit(string s, char c)
         {
             Utf8String u8s = new Utf8String(s);
-            Utf8CodeUnit codeUnit = (Utf8CodeUnit)(byte)(c);
+            byte codeUnit = (byte)(c);
             Utf8String u8result;
 
             int idx = s.IndexOf(c);
@@ -262,7 +262,7 @@ namespace System.Text.Utf8.Tests
         public void SubstringToCodeUnit(string s, char c)
         {
             Utf8String u8s = new Utf8String(s);
-            Utf8CodeUnit codeUnit = (Utf8CodeUnit)(byte)(c);
+            byte codeUnit = (byte)(c);
             Utf8String u8result;
 
             int idx = s.IndexOf(c);
@@ -658,7 +658,7 @@ namespace System.Text.Utf8.Tests
             int expected = s.IndexOf(character);
 
             Utf8String u8s = new Utf8String(s);
-            Utf8CodeUnit u8codeUnit = (Utf8CodeUnit)(byte)(character);
+            byte u8codeUnit = (byte)(character);
 
             Assert.Equal(expected, u8s.IndexOf(u8codeUnit));
         }

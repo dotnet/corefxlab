@@ -336,8 +336,8 @@ namespace System.Text.Json
 
             foreach (var cp in str)
             {
-                var b = cp.Value;
-                buffer[written++] = cp.Value;
+                var b = cp;
+                buffer[written++] = cp;
             }
 
             return true;

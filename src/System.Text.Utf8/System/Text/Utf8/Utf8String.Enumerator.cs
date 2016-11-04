@@ -17,11 +17,11 @@ namespace System.Text.Utf8
                 _enumerator = buffer.GetEnumerator();
             }
 
-            public Utf8CodeUnit Current
+            public byte Current
             {
                 get
                 {
-                    return (Utf8CodeUnit)_enumerator.Current;
+                    return _enumerator.Current;
                 }
             }
 

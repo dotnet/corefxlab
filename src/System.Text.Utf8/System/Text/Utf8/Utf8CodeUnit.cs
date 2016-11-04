@@ -2,102 +2,36 @@
 
 namespace System.Text.Utf8
 {
-    // TODO: Check if name is understandable for users
-    //       I personally think it is better to keep the spec name than calling it with some random new name or byte
-    //       In the end it is less confusing than trying to figure out what spec means and what .NET means
-    [Obsolete("we will use byte for this.")]
-    public partial struct Utf8CodeUnit : IEquatable<Utf8CodeUnit>
+    public static class Utf8CodeUnit
     {
-        private byte _value;
-
-        public Utf8CodeUnit(byte value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFirstCodeUnitInEncodedCodePoint(byte codeUnit)
         {
-            _value = value;
+            return (codeUnit & UnicodeConstants.Utf8NonFirstByteInCodePointMask) != UnicodeConstants.Utf8NonFirstByteInCodePointValue;
         }
 
-        public byte Value { get { return _value; } }
-
-        public bool Equals(Utf8CodeUnit other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsAscii(byte codeUnit)
         {
-            return Value == other.Value;
+            return codeUnit <= UnicodeConstants.AsciiMaxValue;
         }
 
-        // TODO: Validate if it should work with char. Added for consistency with Utf8String for now.
-        public override bool Equals(object obj)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsAscii(char value)
         {
-            if (obj is Utf8CodeUnit)
-            {
-                return Equals((Utf8CodeUnit)obj);
+            return value <= UnicodeConstants.AsciiMaxValue;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryCreateFrom(char value, out byte codeUnit)
+        {
+            if (IsAscii(value)) {
+                codeUnit = (byte)value;
+                return true;
             }
 
-            if (obj is char)
-            {
-                return Equals((char)obj);
-            }
-
+            codeUnit = default(byte);
             return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public static explicit operator Utf8CodeUnit(byte value)
-        {
-            return new Utf8CodeUnit(value);
-        }
-
-        public static explicit operator byte(Utf8CodeUnit codeUnit)
-        {
-            return codeUnit.Value;
-        }
-
-        public static bool operator ==(Utf8CodeUnit left, Utf8CodeUnit right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(Utf8CodeUnit left, Utf8CodeUnit right)
-        {
-            return !left.Equals(right);
-        }
-
-        public static bool operator ==(Utf8CodeUnit left, char right)
-        {
-            char leftChar = (char)left.Value;
-            return leftChar == right;
-        }
-
-        public static bool operator !=(Utf8CodeUnit left, char right)
-        {
-            char leftChar = (char)left.Value;
-            return leftChar != right;
-        }
-
-        public static bool operator ==(char left, Utf8CodeUnit right)
-        {
-            char rightChar = (char)right.Value;
-            return left == rightChar;
-        }
-
-        public static bool operator !=(char left, Utf8CodeUnit right)
-        {
-            char rightChar = (char)right.Value;
-            return left != rightChar;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFirstCodeUnitInEncodedCodePoint(Utf8CodeUnit codeUnit)
-        {
-            return (codeUnit.Value & UnicodeConstants.Utf8NonFirstByteInCodePointMask) != UnicodeConstants.Utf8NonFirstByteInCodePointValue;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsAscii(Utf8CodeUnit codeUnit)
-        {
-            // TODO: Is there any faster way to check if first bit is 0?
-            return codeUnit.Value <= UnicodeConstants.AsciiMaxValue;
         }
     }
 }

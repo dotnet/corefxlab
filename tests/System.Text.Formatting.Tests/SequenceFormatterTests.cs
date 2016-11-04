@@ -1,10 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
-using System.Globalization;
-using System.IO;
-using System.Text.Formatting;
+using System.Collections.Sequences;
 using Xunit;
 
 namespace System.Text.Formatting.Tests
@@ -12,15 +9,15 @@ namespace System.Text.Formatting.Tests
     public partial class SystemTextFormattingTests
     {
         [Fact]
-        public void MultispanFormatterBasics()
+        public void SequenceFormatterBasics()
         {
-            var data = new Multispan<byte>();
-            data.AppendNewSegment(10);
-            data.AppendNewSegment(10);
-            data.AppendNewSegment(10);
-            data.AppendNewSegment(10);
+            var list = new ArrayList<Memory<byte>>();
+            list.Add(new byte[10]);
+            list.Add(new byte[10]);
+            list.Add(new byte[10]);
+            list.Add(new byte[10]);
 
-            var formatter = new SequenceFormatter(data, EncodingData.InvariantUtf8);
+            var formatter = list.CreateFormatter(EncodingData.InvariantUtf8);
             formatter.Append(new string('x', 10));
             formatter.Append(new string('x', 8));
             formatter.Append(new string('x', 8));
@@ -30,10 +27,10 @@ namespace System.Text.Formatting.Tests
             var bytesWritten = formatter.TotalWritten;
             Assert.Equal(36, bytesWritten);
 
-            foreach(var slice in data) {
+            foreach(var slice in list) {
                 for(int i=0; i<slice.Length; i++) {
                     if (bytesWritten == 0) return; 
-                    Assert.Equal((byte)'x', slice[i]);
+                    Assert.Equal((byte)'x', slice.Span[i]);
                     bytesWritten--;
                 }
             }

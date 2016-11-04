@@ -77,23 +77,23 @@ namespace System.Text.Http
             Utf8String headerValue;
 
             //TODO: this will be simplified once we have TrySubstringTo/From accepting strings            
-            if (!headerString.TrySubstringTo((Utf8CodeUnit) (byte) ':', out headerName))
+            if (!headerString.TrySubstringTo((byte) ':', out headerName))
             {
                 throw new ArgumentException("headerString");
             }
 
-            headerString.TrySubstringFrom((Utf8CodeUnit) (byte) ':', out headerString);
+            headerString.TrySubstringFrom((byte) ':', out headerString);
             if (headerString.Length > 0)
             {
                 headerString = headerString.Substring(1);
             }
             
-            if (!headerString.TrySubstringTo((Utf8CodeUnit)(byte)'\r', out headerValue))
+            if (!headerString.TrySubstringTo((byte)'\r', out headerValue))
             {
                 throw new ArgumentException("headerString");
             }
 
-            headerString.TrySubstringFrom((Utf8CodeUnit)(byte)'\n', out headerString);
+            headerString.TrySubstringFrom((byte)'\n', out headerString);
             if (headerString.Length > 0)
             {
                 headerString = headerString.Substring(1);
