@@ -22,8 +22,8 @@ namespace System.Text.Formatting
 
         public void Dispose()
         {
-            _pool.Return(_buffer._array);
-            _buffer._count = 0;
+            _pool.Return(_buffer.Items);
+            _buffer.Count = 0;
         }
 
         public void Append(char character) {
@@ -56,7 +56,7 @@ namespace System.Text.Formatting
 
         public override string ToString()
         {
-            var text = Text.Encoding.Unicode.GetString(_buffer._array, 0, _buffer._count);
+            var text = Text.Encoding.Unicode.GetString(_buffer.Items, 0, _buffer.Count);
             return text;
         }
 
@@ -74,7 +74,7 @@ namespace System.Text.Formatting
 
         void IOutput.Advance(int bytes)
         {
-            _buffer._count += bytes;
+            _buffer.Count += bytes;
         }
     }
 }
