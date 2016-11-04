@@ -1,10 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System.Buffers;
 
 namespace System.Collections.Sequences
 {
     public static class SpanSequenceExtensions
     {
+        [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
         public static Span<T> Flatten<T>(this ISpanSequence<T> sequence)
         {
             var position = Position.First;
@@ -54,6 +56,7 @@ namespace System.Collections.Sequences
             }
         }
 
+        [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
         public static Span<T> First<T>(this ISpanSequence<T> sequence)
         {
             Span<T> result;
@@ -74,6 +77,7 @@ namespace System.Collections.Sequences
         /// <param name="skip">number of items from the begining of sequence to skip, i.e. not copy.</param>
         /// <returns>True if all items did fit in the destination, false otherwise.</returns>
         /// <remarks>If the destination is too short, up to destination.Length items are copied in, even if the function returns false.</remarks>
+        [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
         public static bool TryCopyTo<T>(this ISpanSequence<T> sequence, ref Span<T> destination, int skip = 0)
         {
             var position = Position.First;
@@ -102,12 +106,6 @@ namespace System.Collections.Sequences
 
             destination = destination.Slice(0, copied);
             return true;
-        }
-
-        static void CopyTo<T>(this Span<T> span, ref ResizableArray<T> array)
-        {
-            span.CopyTo(array._array.Slice(array._count));
-            array._count += span.Length;
         }
     }
 }

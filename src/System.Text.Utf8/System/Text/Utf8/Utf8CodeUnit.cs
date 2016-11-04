@@ -5,6 +5,7 @@ namespace System.Text.Utf8
     // TODO: Check if name is understandable for users
     //       I personally think it is better to keep the spec name than calling it with some random new name or byte
     //       In the end it is less confusing than trying to figure out what spec means and what .NET means
+    [Obsolete("we will use byte for this.")]
     public partial struct Utf8CodeUnit : IEquatable<Utf8CodeUnit>
     {
         private byte _value;

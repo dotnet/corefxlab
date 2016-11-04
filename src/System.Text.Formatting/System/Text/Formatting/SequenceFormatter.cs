@@ -14,6 +14,7 @@ namespace System.Text.Formatting
         int _previousWrittenBytes;
         int _totalWritten;
 
+        [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
         public SequenceFormatter(ISpanSequence<byte> buffers, EncodingData encoding)
         {
             _encoding = encoding;

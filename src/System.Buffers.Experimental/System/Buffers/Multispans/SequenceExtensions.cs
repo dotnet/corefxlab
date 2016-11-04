@@ -11,6 +11,7 @@ namespace System.Buffers
         public delegate TResult FuncOfSpan<T, TResult>(Span<T> span);
         public delegate void ActionOfSpan<T>(Span<T> span);
 
+        [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
         public static TResult Do<T, TResult>(this ISpanSequence<T> buffer, FuncOfSpan<T, TResult> function)
         {
             Span<T> flat;
@@ -30,6 +31,7 @@ namespace System.Buffers
             return function(flat);
         }
 
+        [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
         public static void Do<T>(this ISpanSequence<T> buffer, ActionOfSpan<T> action)
         {
             Span<T> flat;
@@ -49,6 +51,7 @@ namespace System.Buffers
             action(flat);
         }
 
+        [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
         public static bool TryParseUInt32<TSequence>(this TSequence bytes, EncodingData encoding, out uint value, out int consumed) where TSequence : ISpanSequence<byte>
         {
             Position position = Position.First;

@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Collections.Sequences
 {
+    [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
     public interface IReadOnlySpanSequence<T>
     {
         ReadOnlySpanSequenceEnumerator<T> GetEnumerator();
@@ -21,6 +22,7 @@ namespace System.Collections.Sequences
         int? Count { get; }
     }
 
+    [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
     public struct ReadOnlySpanSequenceEnumerator<T>
     {
         Position _position;

@@ -18,6 +18,7 @@ namespace System.Buffers
     /// Also, be extra careful when disposing this type. If you dispose the original instance and its copy, 
     /// the pool used by this type will be corrupted.
     /// </remarks>
+    [Obsolete("we will use multiple Memory<T> instances to represent sequences of buffers")]
     public struct Multispan<T> : ISpanSequence<T>
     {
         ArraySegment<T> _head;
@@ -336,16 +337,8 @@ namespace System.Buffers
             return new ReadOnlySpanSequenceEnumerator<T>(this);
         }
     }
-
-    static class Extensions
-    {
-        public static ArraySegment<T> Slice<T>(this ArraySegment<T> source, int count)
-        {
-            var result = new ArraySegment<T>(source.Array, source.Offset + count, source.Count - count);
-            return result;
-        }
-    }
 }
+
 
 
 
