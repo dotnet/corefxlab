@@ -107,7 +107,7 @@ namespace System.Text.Utf8.Tests
                 _timer.Restart();
                 while (iterations-- != 0)
                 {
-                    foreach (Utf8CodeUnit codeUnit in utf8s)
+                    foreach (byte codeUnit in utf8s)
                     {
                     }
                 }
@@ -135,7 +135,7 @@ namespace System.Text.Utf8.Tests
                     _timer.Restart();
                     while (iterations-- != 0)
                     {
-                        foreach (Utf8CodeUnit codeUnit in utf8s)
+                        foreach (byte codeUnit in utf8s)
                         {
                         }
                     }
@@ -327,7 +327,7 @@ namespace System.Text.Utf8.Tests
                 _timer.Restart();
                 while (iterations-- != 0)
                 {
-                    int p = utf8s.IndexOf((Utf8CodeUnit)31);
+                    int p = utf8s.IndexOf((byte)31);
                 }
                 PrintTime(testData);
             }
@@ -353,7 +353,7 @@ namespace System.Text.Utf8.Tests
                     _timer.Restart();
                     while (iterations-- != 0)
                     {
-                        int p = utf8s.IndexOf((Utf8CodeUnit)31);
+                        int p = utf8s.IndexOf((byte)31);
                     }
                     PrintTime(testData);
                 }
