@@ -116,22 +116,22 @@ namespace System.Text
 
         #endregion
 
-        public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int consumedBytes, EncodingData encoding = default(EncodingData))
+        public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int bytesConsumed, EncodingData encoding = default(EncodingData))
         {
-            consumedBytes = 0;
+            bytesConsumed = 0;
             value = default(bool);
 
             if (encoding.IsInvariantUtf8)
             {
-                return InvariantUtf8.TryParseBoolean(text, out value, out consumedBytes);
+                return InvariantUtf8.TryParseBoolean(text, out value, out bytesConsumed);
             }
 
             if (encoding.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> textChars = text.Cast<byte, char>();
-                int consumedChars;
-                bool result = InvariantUtf16.TryParseBoolean(textChars, out value, out consumedChars);
-                consumedBytes = consumedChars * 2;
+                int charactersConsumed;
+                bool result = InvariantUtf16.TryParseBoolean(textChars, out value, out charactersConsumed);
+                bytesConsumed = charactersConsumed * 2;
                 return result;
             }
 
