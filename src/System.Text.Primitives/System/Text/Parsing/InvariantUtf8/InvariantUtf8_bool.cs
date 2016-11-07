@@ -27,19 +27,6 @@ namespace System.Text
                 {
                     return false;
                 }
-
-                byte firstCodeUnit = text[0];
-
-                if (firstCodeUnit == '1')
-                {
-                    value = true;
-                    return true;
-                }
-                else if (firstCodeUnit == '0')
-                {
-                    value = false;
-                    return true;
-                }
                 else if (IsTrue(text))
                 {
                     value = true;
@@ -62,21 +49,6 @@ namespace System.Text
                 if (text.Length < 1)
                 {
                     return false;
-                }
-
-                byte firstCodeUnit = text[0];
-
-                if (firstCodeUnit == '1')
-                {
-                    bytesConsumed = 1;
-                    value = true;
-                    return true;
-                }
-                else if (firstCodeUnit == '0')
-                {
-                    bytesConsumed = 1;
-                    value = false;
-                    return true;
                 }
                 else if (IsTrue(text))
                 {
