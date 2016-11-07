@@ -1,12 +1,14 @@
 ﻿using System.Buffers;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace System
 {
     [DebuggerTypeProxy(typeof(MemoryDebuggerView<>))]
-    public struct Memory<T> 
+    public struct Memory<T> : IEquatable<Memory<T>>, IEquatable<ReadOnlyMemory<T>>
     {
         OwnedMemory<T> _owner;
         long _id;
@@ -86,6 +88,73 @@ namespace System
         public void CopyTo(Span<T> span)
         {
             Span.CopyTo(span);
+        }
+
+        public void CopyTo(Memory<T> memory)
+        {
+            Span.CopyTo(memory.Span);
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj)
+        {
+            if(!(obj is Memory<T>)) {
+                return false;
+            }
+
+            var other = (Memory<T>)obj;
+            return Equals(other);
+        }
+        public bool Equals(Memory<T> other)
+        {
+            return
+                _owner == other._owner &&
+                _id == other._id &&
+                _index == other._index &&
+                _length == other._length;
+        }
+        public bool Equals(ReadOnlyMemory<T> other)
+        {
+            return other.Equals(this);
+        }
+        public static bool operator==(Memory<T> left, Memory<T> right)
+        {
+            return left.Equals(right);
+        }
+        public static bool operator!=(Memory<T> left, Memory<T> right)
+        {
+            return left.Equals(right);
+        }
+        public static bool operator ==(Memory<T> left, ReadOnlyMemory<T> right)
+        {
+            return left.Equals(right);
+        }
+        public static bool operator !=(Memory<T> left, ReadOnlyMemory<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        [EditorBrowsable( EditorBrowsableState.Never)]
+        public override int GetHashCode()
+        {
+            return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _id.GetHashCode(), _length.GetHashCode());
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            var data = Span;
+            sb.Append("[");
+
+            bool first = true;
+            for(int i=0; i<Length; i++) {
+                if (i > 7) break;
+                if (first) first = false;
+                else sb.Append(", ");
+                sb.Append(data[0].ToString());
+            }
+            sb.Append("]");
+            return sb.ToString();
         }
     }
 }

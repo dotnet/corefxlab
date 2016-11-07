@@ -61,7 +61,6 @@ namespace LibuvWithNonAllocatingFormatters
             var loop = new UVLoop();
 
             var listener = new TcpListener(s_ipAddress, s_port, loop);
-            var formatter = new ArrayFormatter(512, EncodingData.InvariantUtf8);
 
             listener.ConnectionAccepted += (Tcp connection) =>
             {
@@ -76,11 +75,12 @@ namespace LibuvWithNonAllocatingFormatters
                     {
                         unsafe
                         {
-                            var requestString = new Utf8String(data);
+                            var requestString = new Utf8String(data.Span);
                             Console.WriteLine("*REQUEST:\n {0}", requestString.ToString());
                         }
                     }
 
+                    var formatter = new ArrayFormatter(512, EncodingData.InvariantUtf8);
                     formatter.Clear();
                     formatter.Append("HTTP/1.1 200 OK");
                     formatter.Append("\r\n\r\n");
@@ -91,14 +91,10 @@ namespace LibuvWithNonAllocatingFormatters
                     }
 
                     var segment = formatter.Formatted;
-                    unsafe {
-                        fixed (byte* p = segment.Array) {
-                            var response = new UnsafeMemory<byte>(segment.Array, segment.Offset, segment.Count, pointer: p);
-                            connection.TryWrite(response);
-                        }
+                    using (var memory = new OwnedPinnedArray<byte>(segment.Array)) {
+                        connection.TryWrite(memory.Memory.Slice(segment.Offset, segment.Count));
+                        connection.Dispose();
                     }
-  
-                    connection.Dispose();
                 };
 
                 connection.ReadStart();

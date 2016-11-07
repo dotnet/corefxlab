@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.CompilerServices;
@@ -119,6 +120,12 @@ namespace System
             Object = null;
             Offset = new UIntPtr(ptr);
             Length = length;
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ReadOnlySpan<T> DangerousCreate(object obj, UIntPtr offset, int length)
+        {
+            return new ReadOnlySpan<T>(obj, offset, length);
         }
 
         /// <summary>
@@ -299,6 +306,7 @@ namespace System
                 Offset == other.Offset && Length == other.Length;
         }
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
             unchecked
@@ -313,6 +321,7 @@ namespace System
             }
         }
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) { ThrowHelper.ThrowInvalidOperationException_ForBoxingSpans(); return false; }
 
         /// <summary>

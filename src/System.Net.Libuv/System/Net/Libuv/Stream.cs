@@ -27,7 +27,7 @@ namespace System.Net.Libuv
             }
         }
 
-        public event Action<UnsafeMemory<byte>> ReadCompleted;
+        public event Action<Memory<byte>> ReadCompleted;
         public event Action EndOfStream;
 
         public unsafe void TryWrite(byte[] data)
@@ -77,7 +77,7 @@ namespace System.Net.Libuv
             }
         }
 
-        public unsafe void TryWrite(UnsafeMemory<byte> data)
+        public unsafe void TryWrite(Memory<byte> data)
         {
             // This can work with Span<byte> because it's synchronous but we need pinning support
             EnsureNotDisposed();
@@ -144,9 +144,10 @@ namespace System.Net.Libuv
             }
             else
             {
-                var readSlice = new UnsafeMemory<byte>((byte*)buffer.Buffer, (int)bytesRead);
-                OnReadCompleted(readSlice);
-                buffer.Dispose();
+                using (var owned = new OwnedNativeMemory((int)bytesRead, buffer.Buffer)) {
+                    OnReadCompleted(owned.Memory);
+                    //buffer.Dispose(); // TODO: owned memory frees the memory. this is bad; need to fix
+                }
             }
         }
 
@@ -173,15 +174,14 @@ namespace System.Net.Libuv
             }
             else
             {
-                // This can be a Span<byte> but the samples pass it directly to TryWrite which
-                // needs to unpack the data and turn it back into either an array or native memory
-                var readSlice = new UnsafeMemory<byte>((byte*)buffer.Buffer, (int)bytesRead);
-                OnReadCompleted(readSlice);
-                buffer.Dispose();
+                using (var owned = new OwnedNativeMemory((int)bytesRead, buffer.Buffer)) {
+                    OnReadCompleted(owned.Memory);
+                    //buffer.Dispose(); // TODO: owned memory frees the memory. this is bad; need to fix
+                }
             }
         }
 
-        void OnReadCompleted(UnsafeMemory<byte> bytesRead)
+        void OnReadCompleted(Memory<byte> bytesRead)
         {
             if (ReadCompleted != null)
             {
