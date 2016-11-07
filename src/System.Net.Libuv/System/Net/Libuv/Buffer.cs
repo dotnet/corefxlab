@@ -1,10 +1,9 @@
-﻿using System;
-using System.Buffers;
+﻿using System.Buffers;
 using System.Runtime.InteropServices;
 
 namespace System.Net.Libuv
 {
-    internal class UVBuffer
+    internal class UVBuffer 
     {
         public readonly static UVBuffer Default = new UVBuffer();
 
