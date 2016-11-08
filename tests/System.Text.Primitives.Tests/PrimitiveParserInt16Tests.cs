@@ -9,21 +9,21 @@ namespace System.Text.Primitives.Tests
         [Theory]
         [InlineData("123", 3, 123, 3)]
         [InlineData("12a", 3, 12, 2)]
-        [InlineData("0", 1, uint.MinValue, 1)]
-        [InlineData("4294967295", 10, uint.MaxValue, 10)]
-        public unsafe void UInt32PositiveTests(string text, int length, uint expectedValue, int expectedConsumed)
+        [InlineData("-32768", 6, short.MinValue, 6)]
+        [InlineData("32767", 5, short.MaxValue, 5)]
+        public unsafe void Int16PositiveTests(string text, int length, short expectedValue, int expectedConsumed)
         {
             byte[] byteBuffer = new Utf8String(text).CopyBytes();
             ReadOnlySpan<byte> byteSpan = new ReadOnlySpan<byte>(byteBuffer);
-            
+
             char[] charBuffer = text.ToCharArray();
             ReadOnlySpan<char> charSpan = new ReadOnlySpan<char>(charBuffer);
 
             bool result;
-            uint actualValue;
+            short actualValue;
             int actualConsumed;
 
-            result = PrimitiveParser.TryParseUInt32(byteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf8);
+            result = PrimitiveParser.TryParseInt16(byteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf8);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
@@ -31,63 +31,63 @@ namespace System.Text.Primitives.Tests
 
             fixed (byte* bytePointer = byteBuffer)
             {
-                result = PrimitiveParser.InvariantUtf8.TryParseUInt32(bytePointer, length, out actualValue);
+                result = PrimitiveParser.InvariantUtf8.TryParseInt16(bytePointer, length, out actualValue);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
 
-                result = PrimitiveParser.InvariantUtf8.TryParseUInt32(bytePointer, length, out actualValue, out actualConsumed);
+                result = PrimitiveParser.InvariantUtf8.TryParseInt16(bytePointer, length, out actualValue, out actualConsumed);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
                 Assert.Equal(expectedConsumed, actualConsumed);
             }
 
-            result = PrimitiveParser.InvariantUtf8.TryParseUInt32(byteSpan, out actualValue);
+            result = PrimitiveParser.InvariantUtf8.TryParseInt16(byteSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = PrimitiveParser.InvariantUtf8.TryParseUInt32(byteSpan, out actualValue, out actualConsumed);
+            result = PrimitiveParser.InvariantUtf8.TryParseInt16(byteSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
 
             ReadOnlySpan<byte> utf16ByteSpan = charSpan.Cast<char, byte>();
-            result = PrimitiveParser.TryParseUInt32(utf16ByteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf16);
+            result = PrimitiveParser.TryParseInt16(utf16ByteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf16);
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed / 2);
 
             fixed (char* charPointer = charBuffer)
             {
-                result = PrimitiveParser.InvariantUtf16.TryParseUInt32(charPointer, length, out actualValue);
+                result = PrimitiveParser.InvariantUtf16.TryParseInt16(charPointer, length, out actualValue);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
 
-                result = PrimitiveParser.InvariantUtf16.TryParseUInt32(charPointer, length, out actualValue, out actualConsumed);
+                result = PrimitiveParser.InvariantUtf16.TryParseInt16(charPointer, length, out actualValue, out actualConsumed);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
                 Assert.Equal(expectedConsumed, actualConsumed);
             }
 
-            result = PrimitiveParser.InvariantUtf16.TryParseUInt32(charSpan, out actualValue);
+            result = PrimitiveParser.InvariantUtf16.TryParseInt16(charSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = PrimitiveParser.InvariantUtf16.TryParseUInt32(charSpan, out actualValue, out actualConsumed);
+            result = PrimitiveParser.InvariantUtf16.TryParseInt16(charSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
         }
-        
-        [Theory (Skip = "UInt32 hex parsing not implemented yet")]
-        public unsafe void UInt32PositiveHexTests(string text, int length, uint expectedValue, int expectedConsumed)
+
+        [Theory(Skip = "Int16 hex parsing not implemented yet")]
+        public unsafe void Int16PositiveHexTests(string text, int length, short expectedValue, int expectedConsumed)
         {
             byte[] byteBuffer = new Utf8String(text).CopyBytes();
             ReadOnlySpan<byte> byteSpan = new ReadOnlySpan<byte>(byteBuffer);
@@ -96,10 +96,10 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<char> charSpan = new ReadOnlySpan<char>(charBuffer);
 
             bool result;
-            uint actualValue;
+            short actualValue;
             int actualConsumed;
 
-            result = PrimitiveParser.TryParseUInt32(byteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf8, 'X');
+            result = PrimitiveParser.TryParseInt16(byteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf8, 'X');
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
@@ -107,55 +107,55 @@ namespace System.Text.Primitives.Tests
 
             fixed (byte* bytePointer = byteBuffer)
             {
-                result = PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(bytePointer, length, out actualValue);
+                result = PrimitiveParser.InvariantUtf8.Hex.TryParseInt16(bytePointer, length, out actualValue);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
 
-                result = PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(bytePointer, length, out actualValue, out actualConsumed);
+                result = PrimitiveParser.InvariantUtf8.Hex.TryParseInt16(bytePointer, length, out actualValue, out actualConsumed);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
                 Assert.Equal(expectedConsumed, actualConsumed);
             }
 
-            result = PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(byteSpan, out actualValue);
+            result = PrimitiveParser.InvariantUtf8.Hex.TryParseInt16(byteSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(byteSpan, out actualValue, out actualConsumed);
+            result = PrimitiveParser.InvariantUtf8.Hex.TryParseInt16(byteSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
 
             ReadOnlySpan<byte> utf16ByteSpan = charSpan.Cast<char, byte>();
-            result = PrimitiveParser.TryParseUInt32(utf16ByteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf16, 'X');
+            result = PrimitiveParser.TryParseInt16(utf16ByteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf16, 'X');
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed / 2);
 
             fixed (char* charPointer = charBuffer)
             {
-                result = PrimitiveParser.InvariantUtf16.Hex.TryParseUInt32(charPointer, length, out actualValue);
+                result = PrimitiveParser.InvariantUtf16.Hex.TryParseInt16(charPointer, length, out actualValue);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
 
-                result = PrimitiveParser.InvariantUtf16.Hex.TryParseUInt32(charPointer, length, out actualValue, out actualConsumed);
+                result = PrimitiveParser.InvariantUtf16.Hex.TryParseInt16(charPointer, length, out actualValue, out actualConsumed);
 
                 Assert.True(result);
                 Assert.Equal(expectedValue, actualValue);
                 Assert.Equal(expectedConsumed, actualConsumed);
             }
 
-            result = PrimitiveParser.InvariantUtf16.Hex.TryParseUInt32(charSpan, out actualValue);
+            result = PrimitiveParser.InvariantUtf16.Hex.TryParseInt16(charSpan, out actualValue);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
 
-            result = PrimitiveParser.InvariantUtf16.Hex.TryParseUInt32(charSpan, out actualValue, out actualConsumed);
+            result = PrimitiveParser.InvariantUtf16.Hex.TryParseInt16(charSpan, out actualValue, out actualConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
