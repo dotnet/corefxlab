@@ -12,13 +12,50 @@ namespace System.Text
         {
             public unsafe static bool TryParseBoolean(byte* text, int length, out bool value)
             {
-                var span = new ReadOnlySpan<byte>(text, length);
-                return TryParseBoolean(span, out value);
+                value = default(bool);
+                if (length < 1)
+                {
+                    return false;
+                }
+                else if (IsTrue(text, length))
+                {
+                    value = true;
+                    return true;
+                }
+                else if (IsFalse(text, length))
+                {
+                    value = false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             public unsafe static bool TryParseBoolean(byte* text, int length, out bool value, out int bytesConsumed)
             {
-                var span = new ReadOnlySpan<byte>(text, length);
-                return TryParseBoolean(span, out value, out bytesConsumed);
+                value = default(bool);
+                bytesConsumed = 0;
+                if (length < 1)
+                {
+                    return false;
+                }
+                else if (IsTrue(text, length))
+                {
+                    bytesConsumed = 4;
+                    value = true;
+                    return true;
+                }
+                else if (IsFalse(text, length))
+                {
+                    bytesConsumed = 5;
+                    value = false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value)
             {

@@ -10,6 +10,54 @@ namespace System.Text
     {
         #region helpers
 
+        private unsafe static bool IsTrue(byte* utf8Bytes, int length)
+        {
+            if (length < 4)
+                return false;
+
+            byte firstChar = utf8Bytes[0];
+            if (firstChar != 't' && firstChar != 'T')
+                return false;
+
+            byte secondChar = utf8Bytes[1];
+            if (secondChar != 'r' && secondChar != 'R')
+                return false;
+
+            byte thirdChar = utf8Bytes[2];
+            if (thirdChar != 'u' && thirdChar != 'U')
+                return false;
+
+            byte fourthChar = utf8Bytes[3];
+            if (fourthChar != 'e' && fourthChar != 'E')
+                return false;
+
+            return true;
+        }
+
+        private unsafe static bool IsTrue(char* utf16Chars, int length)
+        {
+            if (length < 4)
+                return false;
+
+            char firstChar = utf16Chars[0];
+            if (firstChar != 't' && firstChar != 'T')
+                return false;
+
+            char secondChar = utf16Chars[1];
+            if (secondChar != 'r' && secondChar != 'R')
+                return false;
+
+            char thirdChar = utf16Chars[2];
+            if (thirdChar != 'u' && thirdChar != 'U')
+                return false;
+
+            char fourthChar = utf16Chars[3];
+            if (fourthChar != 'e' && fourthChar != 'E')
+                return false;
+
+            return true;
+        }
+
         private static bool IsTrue(ReadOnlySpan<byte> utf8Bytes)
         {
             if (utf8Bytes.Length < 4)
@@ -53,6 +101,62 @@ namespace System.Text
 
             char fourthChar = utf16Chars[3];
             if (fourthChar != 'e' && fourthChar != 'E')
+                return false;
+
+            return true;
+        }
+
+        private unsafe static bool IsFalse(byte* utf8Bytes, int length)
+        {
+            if (length < 5)
+                return false;
+
+            byte firstChar = utf8Bytes[0];
+            if (firstChar != 'f' && firstChar != 'F')
+                return false;
+
+            byte secondChar = utf8Bytes[1];
+            if (secondChar != 'a' && secondChar != 'A')
+                return false;
+
+            byte thirdChar = utf8Bytes[2];
+            if (thirdChar != 'l' && thirdChar != 'L')
+                return false;
+
+            byte fourthChar = utf8Bytes[3];
+            if (fourthChar != 's' && fourthChar != 'S')
+                return false;
+
+            byte fifthChar = utf8Bytes[4];
+            if (fifthChar != 'e' && fifthChar != 'E')
+                return false;
+
+            return true;
+        }
+
+        private unsafe static bool IsFalse(char* utf16Chars, int length)
+        {
+            if (length < 5)
+                return false;
+
+            char firstChar = utf16Chars[0];
+            if (firstChar != 'f' && firstChar != 'F')
+                return false;
+
+            char secondChar = utf16Chars[1];
+            if (secondChar != 'a' && secondChar != 'A')
+                return false;
+
+            char thirdChar = utf16Chars[2];
+            if (thirdChar != 'l' && thirdChar != 'L')
+                return false;
+
+            char fourthChar = utf16Chars[3];
+            if (fourthChar != 's' && fourthChar != 'S')
+                return false;
+
+            char fifthChar = utf16Chars[4];
+            if (fifthChar != 'e' && fifthChar != 'E')
                 return false;
 
             return true;
@@ -125,7 +229,6 @@ namespace System.Text
             {
                 return InvariantUtf8.TryParseBoolean(text, out value, out bytesConsumed);
             }
-
             if (encoding.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> textChars = text.Cast<byte, char>();
