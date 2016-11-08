@@ -13,11 +13,7 @@ namespace System.Text
             public unsafe static bool TryParseBoolean(byte* text, int length, out bool value)
             {
                 value = default(bool);
-                if (length < 1)
-                {
-                    return false;
-                }
-                else if (IsTrue(text, length))
+                if (IsTrue(text, length))
                 {
                     value = true;
                     return true;
@@ -36,11 +32,7 @@ namespace System.Text
             {
                 value = default(bool);
                 bytesConsumed = 0;
-                if (length < 1)
-                {
-                    return false;
-                }
-                else if (IsTrue(text, length))
+                if (IsTrue(text, length))
                 {
                     bytesConsumed = 4;
                     value = true;
@@ -60,11 +52,7 @@ namespace System.Text
             public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value)
             {
                 value = default(bool);
-                if (text.Length < 1)
-                {
-                    return false;
-                }
-                else if (IsTrue(text))
+                if (IsTrue(text))
                 {
                     value = true;
                     return true;
@@ -83,11 +71,7 @@ namespace System.Text
             {
                 value = default(bool);
                 bytesConsumed = 0;
-                if (text.Length < 1)
-                {
-                    return false;
-                }
-                else if (IsTrue(text))
+                if (IsTrue(text))
                 {
                     bytesConsumed = 4;
                     value = true;
