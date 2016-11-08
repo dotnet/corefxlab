@@ -9,16 +9,10 @@ namespace System.Text.Primitives.Tests
         [Theory]
         [InlineData("True", 4, true, 4)]
         [InlineData("False", 5, false, 5)]
-        [InlineData("1", 1, true, 1)]
-        [InlineData("0", 1, false, 1)]
         [InlineData("True1234", 4, true, 4)]
         [InlineData("False1234", 5, false, 5)]
-        [InlineData("11234", 1, true, 1)]
-        [InlineData("01234", 1, false, 1)]
         [InlineData("True1234", 6, true, 4)]
         [InlineData("False1234", 7, false, 5)]
-        [InlineData("11234", 3, true, 1)]
-        [InlineData("01234", 3, false, 1)]
         public unsafe void BooleanPositiveTests(string text, int length, bool expectedValue, int expectedConsumed)
         {
             byte[] byteBuffer = new Utf8String(text).CopyBytes();
