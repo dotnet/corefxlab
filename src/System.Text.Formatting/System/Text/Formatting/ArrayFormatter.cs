@@ -19,11 +19,11 @@ namespace System.Text.Formatting
         public int CommitedByteCount => _buffer.Count;
 
         public void Clear() {
-            _buffer._count = 0;
+            _buffer.Count = 0;
         }
 
         public ArraySegment<byte> Free => _buffer.Free;
-        public ArraySegment<byte> Formatted => _buffer.Items;
+        public ArraySegment<byte> Formatted => _buffer.Full;
 
         public EncodingData Encoding => _encoding;
 
@@ -41,8 +41,8 @@ namespace System.Text.Formatting
 
         void IOutput.Advance(int bytes)
         {
-            _buffer._count += bytes;
-            if(_buffer._count > _buffer.Count)
+            _buffer.Count += bytes;
+            if(_buffer.Count > _buffer.Count)
             {
                 throw new InvalidOperationException("More bytes commited than returned from FreeBuffer");
             }

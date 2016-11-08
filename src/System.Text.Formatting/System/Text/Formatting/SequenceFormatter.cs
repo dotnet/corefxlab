@@ -3,9 +3,17 @@ using System.Collections.Sequences;
 
 namespace System.Text.Formatting
 {
-    public class SequenceFormatter : ITextOutput
+    public static class SequenceFormatterExtensions
     {
-        ISpanSequence<byte> _buffers;
+        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, EncodingData encoding = default(EncodingData)) where TSequence : ISequence<Memory<byte>>
+        {
+            return new SequenceFormatter<TSequence>(sequence, encoding);
+        }
+    }
+
+    public class SequenceFormatter<TSequence> : ITextOutput where TSequence : ISequence<Memory<byte>>
+    {
+        ISequence<Memory<byte>> _buffers;
         EncodingData _encoding;
 
         Position _currentPosition = Position.First;
@@ -14,7 +22,7 @@ namespace System.Text.Formatting
         int _previousWrittenBytes;
         int _totalWritten;
 
-        public SequenceFormatter(ISpanSequence<byte> buffers, EncodingData encoding)
+        public SequenceFormatter(TSequence buffers, EncodingData encoding)
         {
             _encoding = encoding;
             _buffers = buffers;
@@ -24,21 +32,21 @@ namespace System.Text.Formatting
         Span<byte> IOutput.Buffer
         {
             get {
-                return Current.Slice(_currentWrittenBytes);
+                return Current.Span.Slice(_currentWrittenBytes);
             }
         }
 
-        private Span<byte> Current { 
+        private Memory<byte> Current { 
             get {
-                Span<byte> result;
+                Memory<byte> result;
                 if (!_buffers.TryGet(ref _currentPosition, out result)) { throw new InvalidOperationException(); }
                 return result;
             }
         }
-        private Span<byte> Previous
+        private Memory<byte> Previous
         {
             get {
-                Span<byte> result;
+                Memory<byte> result;
                 if (!_buffers.TryGet(ref _previousPosition, out result)) { throw new InvalidOperationException(); }
                 return result;
             }
@@ -56,7 +64,7 @@ namespace System.Text.Formatting
             _previousPosition = _currentPosition;
             _previousWrittenBytes = _currentWrittenBytes;
 
-            Span<byte> span;
+            Memory<byte> span;
             if (!_buffers.TryGet(ref _currentPosition, out span, advance: true)) {
                 throw new InvalidOperationException();
             }
@@ -70,13 +78,13 @@ namespace System.Text.Formatting
                 var previous = Previous;
                 var spaceInPrevious = previous.Length - _previousWrittenBytes;
                 if(spaceInPrevious < bytes) {
-                    current.Slice(0, spaceInPrevious).CopyTo(previous.Slice(_previousWrittenBytes));
-                    current.Slice(spaceInPrevious, bytes - spaceInPrevious).CopyTo(current);
+                    current.Slice(0, spaceInPrevious).CopyTo(previous.Span.Slice(_previousWrittenBytes));
+                    current.Slice(spaceInPrevious, bytes - spaceInPrevious).CopyTo(current.Span);
                     _previousWrittenBytes = -1;
                     _currentWrittenBytes = bytes - spaceInPrevious;
                 }
                 else {
-                    current.Slice(0, bytes).CopyTo(previous.Slice(_previousWrittenBytes));
+                    current.Slice(0, bytes).CopyTo(previous.Span.Slice(_previousWrittenBytes));
                     _currentPosition = _previousPosition;
                     _currentWrittenBytes = _previousWrittenBytes + bytes;
                 }

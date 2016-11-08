@@ -115,13 +115,13 @@ namespace System.Text.Utf8
             }
         }
 
-        public Utf8CodeUnit this[int i]
+        public byte this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 // there is no need to check the boundaries -> Span is going to do this on it's own
-                return (Utf8CodeUnit)_buffer[i];
+                return (byte)_buffer[i];
             }
         }
 
@@ -354,7 +354,7 @@ namespace System.Text.Utf8
         }
 
         // TODO: Should this be public?
-        public int IndexOf(Utf8CodeUnit codeUnit)
+        public int IndexOf(byte codeUnit)
         {
             // TODO: _buffer.IndexOf(codeUnit.Value); when Span has it
 
@@ -399,7 +399,7 @@ namespace System.Text.Utf8
             return true;
         }
 
-        public bool TrySubstringFrom(Utf8CodeUnit codeUnit, out Utf8String result)
+        public bool TrySubstringFrom(byte codeUnit, out Utf8String result)
         {
             int idx = IndexOf(codeUnit);
 
@@ -441,7 +441,7 @@ namespace System.Text.Utf8
             return true;
         }
 
-        public bool TrySubstringTo(Utf8CodeUnit codeUnit, out Utf8String result)
+        public bool TrySubstringTo(byte codeUnit, out Utf8String result)
         {
             int idx = IndexOf(codeUnit);
 
@@ -550,7 +550,7 @@ namespace System.Text.Utf8
             return e.Current == codePoint;
         }
 
-        public bool StartsWith(Utf8CodeUnit codeUnit)
+        public bool StartsWith(byte codeUnit)
         {
             if (Length == 0)
             {
@@ -570,7 +570,7 @@ namespace System.Text.Utf8
             return this.Substring(0, value.Length).Equals(value);
         }
 
-        public bool EndsWith(Utf8CodeUnit codeUnit)
+        public bool EndsWith(byte codeUnit)
         {
             if (Length == 0)
             {
@@ -682,7 +682,7 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
-        public Utf8String TrimStart(Utf8CodeUnit[] trimCodeUnits)
+        public Utf8String TrimStart(byte[] trimCodeUnits)
         {
             throw new NotImplementedException();
         }
@@ -702,7 +702,7 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
-        public Utf8String TrimEnd(Utf8CodeUnit[] trimCodeUnits)
+        public Utf8String TrimEnd(byte[] trimCodeUnits)
         {
             throw new NotImplementedException();
         }
@@ -717,7 +717,7 @@ namespace System.Text.Utf8
             throw new NotImplementedException();
         }
 
-        public Utf8String Trim(Utf8CodeUnit[] trimCodeUnits)
+        public Utf8String Trim(byte[] trimCodeUnits)
         {
             throw new NotImplementedException();
         }
@@ -728,7 +728,7 @@ namespace System.Text.Utf8
             return _buffer.ToArray();
         }
 
-        public Utf8CodeUnit[] CopyCodeUnits()
+        public byte[] CopyCodeUnits()
         {
             throw new NotImplementedException();
         }

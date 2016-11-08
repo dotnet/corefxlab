@@ -81,11 +81,9 @@ namespace System.Collections.Sequences
             throw new NotImplementedException();
         }
 
-        public int Length {
-            get {
-                return _count;
-            }
-        }
+        public int Length => _count;
+
+        int? ISequence<KeyValuePair<K, V>>.Length => Length;
 
         public bool TryGet(ref Position position, out KeyValuePair<K, V> item, bool advance = false)
         {

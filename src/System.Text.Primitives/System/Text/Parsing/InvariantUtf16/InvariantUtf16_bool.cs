@@ -12,31 +12,81 @@ namespace System.Text
         {
             public unsafe static bool TryParseBoolean(char* text, int length, out bool value)
             {
-                int consumed;
-                var span = new ReadOnlySpan<byte>(text, length * 2);
-                return PrimitiveParser.TryParseBoolean(span, out value, out consumed, EncodingData.InvariantUtf16);
+                value = default(bool);
+                if (IsTrue(text, length))
+                {
+                    value = true;
+                    return true;
+                }
+                else if (IsFalse(text, length))
+                {
+                    value = false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             public unsafe static bool TryParseBoolean(char* text, int length, out bool value, out int charactersConsumed)
             {
-                var span = new ReadOnlySpan<byte>(text, length * 2);
-                int bytesConsumed;
-                bool result = PrimitiveParser.TryParseBoolean(span, out value, out bytesConsumed, EncodingData.InvariantUtf16);
-                charactersConsumed = bytesConsumed / 2;
-                return result;
+                value = default(bool);
+                charactersConsumed = 0;
+                if (IsTrue(text, length))
+                {
+                    charactersConsumed = 4;
+                    value = true;
+                    return true;
+                }
+                else if (IsFalse(text, length))
+                {
+                    charactersConsumed = 5;
+                    value = false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             public static bool TryParseBoolean(ReadOnlySpan<char> text, out bool value)
             {
-                int consumed;
-                var byteSpan = text.Cast<char, byte>();
-                return PrimitiveParser.TryParseBoolean(byteSpan, out value, out consumed, EncodingData.InvariantUtf16);
+                value = default(bool);
+                if (IsTrue(text))
+                {
+                    value = true;
+                    return true;
+                }
+                else if (IsFalse(text))
+                {
+                    value = false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             public static bool TryParseBoolean(ReadOnlySpan<char> text, out bool value, out int charactersConsumed)
             {
-                var byteSpan = text.Cast<char, byte>();
-                int bytesConsumed;
-                bool result = PrimitiveParser.TryParseBoolean(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16);
-                charactersConsumed = bytesConsumed / 2;
-                return result;
+                value = default(bool);
+                charactersConsumed = 0;
+                if (IsTrue(text))
+                {
+                    charactersConsumed = 4;
+                    value = true;
+                    return true;
+                }
+                else if (IsFalse(text))
+                {
+                    charactersConsumed = 5;
+                    value = false;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
     }

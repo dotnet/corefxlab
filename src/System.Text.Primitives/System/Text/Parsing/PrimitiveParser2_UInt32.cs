@@ -8,9 +8,9 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {
-        public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int consumedBytes, EncodingData encoding = default(EncodingData), Format.Parsed format = default(Format.Parsed))
+        public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed, EncodingData encoding = default(EncodingData), Format.Parsed format = default(Format.Parsed))
         {
-            return TryParseUInt32(text, encoding, format, out value, out consumedBytes);
+            return TryParseUInt32(text, encoding, format, out value, out bytesConsumed);
         }
     }
 }

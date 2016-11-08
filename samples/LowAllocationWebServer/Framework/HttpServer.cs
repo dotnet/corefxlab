@@ -77,7 +77,7 @@ namespace Microsoft.Net.Http
             var request = HttpRequest.Parse(requestBytes);
             Log.LogRequest(request);
 
-            using (var responseData = new SharedData()) {
+            using (var responseData = new ResponseBuffer()) {
                 var response = new HttpResponse(responseData);
                 WriteResponse(request, response);
                 s_pool.Return(requestBuffer);

@@ -22,11 +22,9 @@ namespace System.Collections.Sequences
             _count++;
         }
 
-        public int Length {
-            get {
-                return _count;
-            }
-        }
+        public int Length => _count;
+
+        int? ISequence<T>.Length => Length;
 
         public bool TryGet(ref Position position, out T item, bool advance = false)
         {
@@ -78,7 +76,5 @@ namespace System.Collections.Sequences
         {
             return new SequenceEnumerator<T>(this);
         }
-
-
     }
 }

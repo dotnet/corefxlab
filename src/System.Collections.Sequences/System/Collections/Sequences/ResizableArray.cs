@@ -8,8 +8,8 @@ namespace System.Collections.Sequences
     // a List<T> like type designed to be embeded in other types
     public struct ResizableArray<T>
     {
-        public T[] _array;
-        public int _count;
+        private T[] _array;
+        private int _count;
 
         public ResizableArray(int capacity)
         {
@@ -23,6 +23,31 @@ namespace System.Collections.Sequences
             _count = count;
         }
 
+        public T[] Items
+        {
+            get { return _array; }
+            set { _array = value; }
+        }
+        public int Count
+        {
+            get { return _count; }
+            set { _count = value; }
+        }
+
+        public int Capacity => _array.Length;
+
+        public T this[int index]
+        {
+            get {
+                if (index > _count - 1) throw new IndexOutOfRangeException();
+                return _array[index];
+            }
+            set {
+                if (index > _count - 1) throw new IndexOutOfRangeException();
+                _array[index] = value;
+            }
+        }
+
         public void Add(T item)
         {
             if (_array.Length == _count) {
@@ -34,9 +59,18 @@ namespace System.Collections.Sequences
         public void AddAll(T[] items)
         {
             if (items.Length > _array.Length - _count) {
-                throw new ArgumentOutOfRangeException(nameof(items));
+                Resize(items.Length + _count);
             }
             items.CopyTo(_array, _count);
+            _count += items.Length;
+        }
+
+        public void AddAll(ReadOnlySpan<T> items)
+        {
+            if (items.Length > _array.Length - _count) {
+                Resize(items.Length + _count);
+            }
+            items.CopyTo(_array.Slice(_count));
             _count += items.Length;
         }
 
@@ -72,21 +106,6 @@ namespace System.Collections.Sequences
             return oldArray;
         }
 
-        public int Count => _count;
-
-        public int Capacity => _array.Length;
-
-        public T this[int index] {
-            get {
-                if (index > _count - 1) throw new IndexOutOfRangeException();
-                return _array[index];
-            }
-            set {
-                if (index > _count - 1) throw new IndexOutOfRangeException();
-                _array[index] = value;
-            }
-        }
-
         public bool TryGet(ref Position position, out T item, bool advance = false)
         {
             item = default(T);
@@ -116,7 +135,7 @@ namespace System.Collections.Sequences
             return false;
         }
 
-        public ArraySegment<T> Items => new ArraySegment<T>(_array, 0, _count);
+        public ArraySegment<T> Full => new ArraySegment<T>(_array, 0, _count);
         public ArraySegment<T> Free => new ArraySegment<T>(_array, _count, _array.Length - _count);
     }
 }

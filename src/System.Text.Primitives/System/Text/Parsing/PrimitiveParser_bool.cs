@@ -62,43 +62,19 @@ namespace System.Text
             if (text.Length < 4)
                 return false;
 
-            Utf8CodeUnit firstChar = text[0];
+            byte firstChar = text[0];
             if (firstChar != 't' && firstChar != 'T')
                 return false;
 
-            Utf8CodeUnit secondChar = text[1];
+            byte secondChar = text[1];
             if (secondChar != 'r' && secondChar != 'R')
                 return false;
 
-            Utf8CodeUnit thirdChar = text[2];
+            byte thirdChar = text[2];
             if (thirdChar != 'u' && thirdChar != 'U')
                 return false;
 
-            Utf8CodeUnit fourthChar = text[3];
-            if (fourthChar != 'e' && fourthChar != 'E')
-                return false;
-
-            return true;
-        }
-
-        private static bool IsTrue(ReadOnlySpan<byte> utf8Bytes)
-        {
-            if (utf8Bytes.Length < 4)
-                return false;
-
-            byte firstChar = utf8Bytes[0];
-            if (firstChar != 't' && firstChar != 'T')
-                return false;
-
-            byte secondChar = utf8Bytes[1];
-            if (secondChar != 'r' && secondChar != 'R')
-                return false;
-
-            byte thirdChar = utf8Bytes[2];
-            if (thirdChar != 'u' && thirdChar != 'U')
-                return false;
-
-            byte fourthChar = utf8Bytes[3];
+            byte fourthChar = text[3];
             if (fourthChar != 'e' && fourthChar != 'E')
                 return false;
 
@@ -190,51 +166,23 @@ namespace System.Text
             if (text.Length < 5)
                 return false;
 
-            Utf8CodeUnit firstChar = text[0];
+            byte firstChar = text[0];
             if (firstChar != 'f' && firstChar != 'F')
                 return false;
 
-            Utf8CodeUnit secondChar = text[1];
+            byte secondChar = text[1];
             if (secondChar != 'a' && secondChar != 'A')
                 return false;
 
-            Utf8CodeUnit thirdChar = text[2];
+            byte thirdChar = text[2];
             if (thirdChar != 'l' && thirdChar != 'L')
                 return false;
 
-            Utf8CodeUnit fourthChar = text[3];
+            byte fourthChar = text[3];
             if (fourthChar != 's' && fourthChar != 'S')
                 return false;
 
-            Utf8CodeUnit fifthChar = text[4];
-            if (fifthChar != 'e' && fifthChar != 'E')
-                return false;
-
-            return true;
-        }
-
-        private static bool IsFalse(ReadOnlySpan<byte> utf8Bytes)
-        {
-            if (utf8Bytes.Length < 5)
-                return false;
-
-            byte firstChar = utf8Bytes[0];
-            if (firstChar != 'f' && firstChar != 'F')
-                return false;
-
-            byte secondChar = utf8Bytes[1];
-            if (secondChar != 'a' && secondChar != 'A')
-                return false;
-
-            byte thirdChar = utf8Bytes[2];
-            if (thirdChar != 'l' && thirdChar != 'L')
-                return false;
-
-            byte fourthChar = utf8Bytes[3];
-            if (fourthChar != 's' && fourthChar != 'S')
-                return false;
-
-            byte fifthChar = utf8Bytes[4];
+            byte fifthChar = text[4];
             if (fifthChar != 'e' && fifthChar != 'E')
                 return false;
 
@@ -453,7 +401,7 @@ namespace System.Text
                 return false;
             }
 
-            Utf8CodeUnit firstCodeUnit = text[0];
+            byte firstCodeUnit = text[0];
 
             if (firstCodeUnit == '1') {
                 bytesConsumed = 1;
