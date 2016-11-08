@@ -13,7 +13,7 @@ namespace System.Collections.Sequences
 
         public SequenceEnumerator(ISequence<T> sequence) {
             _sequence = sequence;
-            _position = Position.BeforeFirst;
+            _position = Position.First;
             _current = default(T);
         }
 
