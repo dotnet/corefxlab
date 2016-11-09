@@ -13,12 +13,12 @@ namespace System.Text
             public unsafe static bool TryParseByte(char* text, int length, out byte value)
             {
                 int consumed;
-                var span = new ReadOnlySpan<byte>(text, length * 2);
+                var span = new ReadOnlySpan<byte>(text, length * sizeof(char));
                 return PrimitiveParser.TryParseByte(span, out value, out consumed, EncodingData.InvariantUtf16);
             }
             public unsafe static bool TryParseByte(char* text, int length, out byte value, out int charactersConsumed)
             {
-                var span = new ReadOnlySpan<byte>(text, length * 2);
+                var span = new ReadOnlySpan<byte>(text, length * sizeof(char));
                 int bytesConsumed;
                 bool result = PrimitiveParser.TryParseByte(span, out value, out bytesConsumed, EncodingData.InvariantUtf16);
                 charactersConsumed = bytesConsumed / 2;
@@ -44,12 +44,12 @@ namespace System.Text
                 public unsafe static bool TryParseByte(char* text, int length, out byte value)
                 {
                     int consumed;
-                    var span = new ReadOnlySpan<byte>(text, length * 2);
+                    var span = new ReadOnlySpan<byte>(text, length * sizeof(char));
                     return PrimitiveParser.TryParseByte(span, out value, out consumed, EncodingData.InvariantUtf16, 'X');
                 }
                 public unsafe static bool TryParseByte(char* text, int length, out byte value, out int charactersConsumed)
                 {
-                    var span = new ReadOnlySpan<byte>(text, length * 2);
+                    var span = new ReadOnlySpan<byte>(text, length * sizeof(char));
                     int bytesConsumed;
                     bool result = PrimitiveParser.TryParseByte(span, out value, out bytesConsumed, EncodingData.InvariantUtf16, 'X');
                     charactersConsumed = bytesConsumed / 2;
