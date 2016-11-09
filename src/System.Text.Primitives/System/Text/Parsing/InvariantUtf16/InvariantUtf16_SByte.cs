@@ -10,62 +10,62 @@ namespace System.Text
     {
         public static partial class InvariantUtf16
         {
-            public unsafe static bool TryParseUInt32(char* text, int length, out uint value)
+            public unsafe static bool TryParseSByte(char* text, int length, out sbyte value)
             {
                 int consumed;
                 var span = new ReadOnlySpan<byte>(text, length * sizeof(char));
-                return PrimitiveParser.TryParseUInt32(span, out value, out consumed, EncodingData.InvariantUtf16);
+                return PrimitiveParser.TryParseSByte(span, out value, out consumed, EncodingData.InvariantUtf16);
             }
-            public unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int charactersConsumed)
+            public unsafe static bool TryParseSByte(char* text, int length, out sbyte value, out int charactersConsumed)
             {
                 var span = new ReadOnlySpan<byte>(text, length * sizeof(char));
                 int bytesConsumed;
-                bool result = PrimitiveParser.TryParseUInt32(span, out value, out bytesConsumed, EncodingData.InvariantUtf16);
+                bool result = PrimitiveParser.TryParseSByte(span, out value, out bytesConsumed, EncodingData.InvariantUtf16);
                 charactersConsumed = bytesConsumed / sizeof(char);
                 return result;
             }
-            public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value)
+            public static bool TryParseSByte(ReadOnlySpan<char> text, out sbyte value)
             {
                 int consumed;
                 var byteSpan = text.Cast<char, byte>();
-                return PrimitiveParser.TryParseUInt32(byteSpan, out value, out consumed, EncodingData.InvariantUtf16);
+                return PrimitiveParser.TryParseSByte(byteSpan, out value, out consumed, EncodingData.InvariantUtf16);
             }
-            public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int charactersConsumed)
+            public static bool TryParseSByte(ReadOnlySpan<char> text, out sbyte value, out int charactersConsumed)
             {
                 var byteSpan = text.Cast<char, byte>();
                 int bytesConsumed;
-                bool result = PrimitiveParser.TryParseUInt32(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16);
+                bool result = PrimitiveParser.TryParseSByte(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16);
                 charactersConsumed = bytesConsumed / sizeof(char);
                 return result;
             }
 
             public static partial class Hex
             {
-                public unsafe static bool TryParseUInt32(char* text, int length, out uint value)
+                public unsafe static bool TryParseSByte(char* text, int length, out sbyte value)
                 {
                     int consumed;
                     var span = new ReadOnlySpan<byte>(text, length * sizeof(char));
-                    return PrimitiveParser.TryParseUInt32(span, out value, out consumed, EncodingData.InvariantUtf16, 'X');
+                    return PrimitiveParser.TryParseSByte(span, out value, out consumed, EncodingData.InvariantUtf16, 'X');
                 }
-                public unsafe static bool TryParseUInt32(char* text, int length, out uint value, out int charactersConsumed)
+                public unsafe static bool TryParseSByte(char* text, int length, out sbyte value, out int charactersConsumed)
                 {
                     var span = new ReadOnlySpan<byte>(text, length * sizeof(char));
                     int bytesConsumed;
-                    bool result = PrimitiveParser.TryParseUInt32(span, out value, out bytesConsumed, EncodingData.InvariantUtf16, 'X');
+                    bool result = PrimitiveParser.TryParseSByte(span, out value, out bytesConsumed, EncodingData.InvariantUtf16, 'X');
                     charactersConsumed = bytesConsumed / sizeof(char);
                     return result;
                 }
-                public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value)
+                public static bool TryParseSByte(ReadOnlySpan<char> text, out sbyte value)
                 {
                     int consumed;
                     var byteSpan = text.Cast<char, byte>();
-                    return PrimitiveParser.TryParseUInt32(byteSpan, out value, out consumed, EncodingData.InvariantUtf16, 'X');
+                    return PrimitiveParser.TryParseSByte(byteSpan, out value, out consumed, EncodingData.InvariantUtf16, 'X');
                 }
-                public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int charactersConsumed)
+                public static bool TryParseSByte(ReadOnlySpan<char> text, out sbyte value, out int charactersConsumed)
                 {
                     var byteSpan = text.Cast<char, byte>();
                     int bytesConsumed;
-                    bool result = PrimitiveParser.TryParseUInt32(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16, 'X');
+                    bool result = PrimitiveParser.TryParseSByte(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16, 'X');
                     charactersConsumed = bytesConsumed / sizeof(char);
                     return result;
                 }
