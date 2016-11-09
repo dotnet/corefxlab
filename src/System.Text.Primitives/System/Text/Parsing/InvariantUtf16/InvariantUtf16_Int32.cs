@@ -21,7 +21,7 @@ namespace System.Text
                 var span = new ReadOnlySpan<byte>(text, length * sizeof(char));
                 int bytesConsumed;
                 bool result = PrimitiveParser.TryParseInt32(span, out value, out bytesConsumed, EncodingData.InvariantUtf16);
-                charactersConsumed = bytesConsumed / 2;
+                charactersConsumed = bytesConsumed / sizeof(char);
                 return result;
             }
             public static bool TryParseInt32(ReadOnlySpan<char> text, out int value)
@@ -35,7 +35,7 @@ namespace System.Text
                 var byteSpan = text.Cast<char, byte>();
                 int bytesConsumed;
                 bool result = PrimitiveParser.TryParseInt32(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16);
-                charactersConsumed = bytesConsumed / 2;
+                charactersConsumed = bytesConsumed / sizeof(char);
                 return result;
             }
 
@@ -52,7 +52,7 @@ namespace System.Text
                     var span = new ReadOnlySpan<byte>(text, length * sizeof(char));
                     int bytesConsumed;
                     bool result = PrimitiveParser.TryParseInt32(span, out value, out bytesConsumed, EncodingData.InvariantUtf16, 'X');
-                    charactersConsumed = bytesConsumed / 2;
+                    charactersConsumed = bytesConsumed / sizeof(char);
                     return result;
                 }
                 public static bool TryParseInt32(ReadOnlySpan<char> text, out int value)
@@ -66,7 +66,7 @@ namespace System.Text
                     var byteSpan = text.Cast<char, byte>();
                     int bytesConsumed;
                     bool result = PrimitiveParser.TryParseInt32(byteSpan, out value, out bytesConsumed, EncodingData.InvariantUtf16, 'X');
-                    charactersConsumed = bytesConsumed / 2;
+                    charactersConsumed = bytesConsumed / sizeof(char);
                     return result;
                 }
             }
