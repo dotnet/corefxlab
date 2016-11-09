@@ -1,200 +1,155 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections.Sequences;
 using System.Text;
 using System.Text.Formatting;
 
 namespace Microsoft.Net.Http
 {
-    public struct HttpResponse
+    public struct HttpResponse : IDisposable
     {
-        ResponseBuffer _buffer;
+        LinkedBuffer _headers;
+        LinkedBuffer _body;
 
-        public HttpResponse(ResponseBuffer responseBuffer)
+        public HttpResponse(int size)
         {
-            _buffer = responseBuffer;
+            _headers = new LinkedBuffer();
+            _headers.Allocate(size / 2);
+            _body = new LinkedBuffer();
+            _body.Allocate(size / 2);
         }
 
-        public ResponseFormatter Body { get { return new ResponseFormatter(_buffer, segmentId: 1); } }
-        public ResponseFormatter Headers { get { return new ResponseFormatter(_buffer, segmentId: 2); } }
+        public int? Length => _body.CommitedBytes + _headers.CommitedBytes;
+
+        public LinkedBuffer Headers => _headers;
+
+
+        public LinkedBuffer Body => _body;
+
+        public void Dispose()
+        {
+            _headers.Dispose();
+            _body.Dispose();
+        }
     }
 
     public struct ResponseFormatter : ITextOutput
     {
-        int _segmentId;
-        ResponseBuffer _buffer;
+        LinkedBuffer _buffer;
 
-        public ResponseFormatter(ResponseBuffer buffer, int segmentId)
+        public ResponseFormatter(LinkedBuffer buffer)
         {
             _buffer = buffer;
-            this._segmentId = segmentId;
         }
 
-        public int WrittenBytes => _buffer.GetCommitedBytes(_segmentId);
+        public int WrittenBytes => _buffer.CommitedBytes;
 
         public EncodingData Encoding => EncodingData.InvariantUtf8;
 
-        public Span<byte> Buffer => _buffer.GetFree(_segmentId).Span;
+        public Span<byte> Buffer => _buffer.Free.Span;
 
-        public void Advance(int bytes) => _buffer.Commit(_segmentId, bytes);
+        public void Advance(int bytes) => _buffer.Commit(bytes);
 
         public void Enlarge(int desiredBufferLength = 0)
         {
-            _buffer.Allocate(desiredBufferLength == 0 ? 1024 : desiredBufferLength, _segmentId);
+            _buffer.Allocate(desiredBufferLength == 0 ? 1024 : desiredBufferLength);
         }
     }
 
-    // this is a set of buffers used to format the response.
-    // it's optimized for cases where the headers and body fit into a single buffer (each)
-    // TODO: I am not thrilled by the desing of the type. We should look into this more.
-    public class ResponseBuffer : IDisposable
+    public class LinkedBuffer : ISequence<Memory<byte>>
     {
-        readonly static ArrayPool<byte> s_pool = ArrayPool<byte>.Shared;
+        Segment _head;
+        Segment _last;
+        int _commited;
 
-        Segment _first;  // usually used for response line and headers
-        Segment _second; // usually used for body
-        Segment[] _rest; // usually used when the body is very long
-        int _count;
+        public int CommitedBytes => _commited;
 
-        public int Count { get { return _count; } }
+        public Memory<byte> Free => _last.Free;
 
-        public Segment this[int index]
+        public int? Length => _commited;
+
+        internal void Allocate(int bytes)
         {
-            get {
-                if (index == 0) return _first;
-                if (index == 1) return _second;
-                return _rest[index - 2];
+            var newSegment = new Segment(new byte[1024], _last);
+            if (_head == null) _head = newSegment;
+            _last = newSegment;
+        }
+
+        internal void Commit(int bytes)
+        {
+            _commited += bytes;
+            _last.Commit(bytes);
+        }
+
+        internal void Dispose()
+        {
+            _head.Dispose();
+        }
+
+        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = false)
+        {
+            if(position == Position.BeforeFirst) {
+                item = Memory<byte>.Empty;
+                if(advance) position = Position.First;
+                return false;
             }
-        }
 
-        public void Dispose()
-        {
-            _first.FreeMemory(s_pool);
-            _second.FreeMemory(s_pool);
-            if (_rest != null) {
-                for (int i = 0; i < _count - 2; i++) {
-                    _rest[i].FreeMemory(s_pool);
-                }
-                ArrayPool<Segment>.Shared.Return(_rest);
-            }
-        }
-
-        public Memory<byte> GetFree(int segmentId)
-        {
-            var last = GetLast(segmentId);
-            if (last == null) return Memory<byte>.Empty;
-            return last.Value.Free;
-        }
-
-        private Segment? GetLast(int segmentId)
-        {
-            if (_rest != null) {
-                for (int index = _count - 1; index >= 0; index--) {
-                    if (_rest[index].Id == segmentId) {
-                        return _rest[index];
+            if (position == Position.First) {
+                item = _head.Commited;
+                if (advance) {
+                    if(_head._next == null) {
+                        position = Position.AfterLast;
+                    }
+                    else {
+                        position.ObjectPosition = _head._next;
                     }
                 }
+                return true;
             }
-            if (_second.Id == segmentId) return _second;
-            if (_first.Id == segmentId) return _first;
-            return null;
-        }
 
-        private int GetLastIndex(int segmentId)
-        {
-            if (_rest != null) {
-                for (int index = _count - 1; index >= 0; index--) {
-                    if (_rest[index].Id == segmentId) {
-                        return index;
-                    }
+            if (position == Position.AfterLast) {
+                item = Memory<byte>.Empty;
+                return false;
+            }
+
+            var segment = position.ObjectPosition as Segment;
+            item = segment.Memory;
+            if (advance) {
+                if(segment._next == null) {
+                    position = Position.AfterLast;
+                }
+                else {
+                    position.ObjectPosition = segment._next;
                 }
             }
-            if (_second.Id == segmentId) return -1;
-            if (_first.Id == segmentId) return -2;
-            return -3;
+            return true;
         }
 
-        public void Allocate(int size, int segmentId)
+        public SequenceEnumerator<Memory<byte>> GetEnumerator()
         {
-            var newArray = s_pool.Rent(size);
-            var newSegment = new Segment(newArray, segmentId);
-            if (_count == 0) _first = newSegment;
-            else if (_count == 1) _second = newSegment;
-            else {
-                if (_count == 2 || _rest.Length == _count - 2) {
-                    var newSize = _count == 2 ? 4 : _rest.Length << 1;
-                    var largerRest = ArrayPool<Segment>.Shared.Rent(newSize);
-                    if (_rest != null) {
-                        _rest.CopyTo(largerRest, 0);
-                        ArrayPool<Segment>.Shared.Return(_rest);
-                    }
-                    _rest = largerRest;
-                }
-                _rest[_count - 2] = newSegment;
-            }
-            _count++;
+            return new SequenceEnumerator<Memory<byte>>(this);
         }
+    }
 
-        public void Commit(int segmentId, int bytes)
+    public class Segment : OwnedPinnedArray<byte>
+    {
+        int _commited;
+        internal Segment _next;
+
+        public Segment(byte[] array, Segment previous = null) : base(array)
         {
-            var freeIndex = GetLastIndex(segmentId);
-            if (freeIndex < -2) {
-                throw new AggregateException("invalid id");
-            }
-
-            if (freeIndex == -2) {
-                _first.Commit(bytes);
-            }
-            else if (freeIndex == -1) {
-                _second.Commit(bytes);
-            }
-            else {
-                _rest[freeIndex].Commit(bytes);
+            if (previous != null) {
+                previous._next = this;
             }
         }
 
-        internal int GetCommitedBytes(int segmentId)
+        public void Commit(int bytes)
         {
-            int total = 0;
-            if (_rest != null) {
-                for (int i = 0; i < _count - 2; i++) {
-                    if (_rest[i].Id == segmentId) {
-                        total += _rest[i].CommitedBytes;
-                    }
-                }
-            }
-            if (_first.Id == segmentId) total += _first.CommitedBytes;
-            if (_second.Id == segmentId) total += _second.CommitedBytes;
-            return total;
+            _commited += bytes;
         }
 
-        public struct Segment
-        {
-            internal OwnedMemory<byte> _owned;
-            int _commited;
-            public int Id;
+        public Memory<byte> Commited => Memory.Slice(0, _commited);
 
-            public Segment(OwnedMemory<byte> memory, int id)
-            {
-                _owned = memory;
-                _commited = 0;
-                Id = id;
-            }
-
-            public void Commit(int bytes)
-            {
-                _commited += bytes;
-            }
-
-            public Memory<byte> Commited =>_owned.Memory.Slice(0, _commited); 
-
-            public Memory<byte> Free => _owned.Memory.Slice(_commited);
-
-            public int CommitedBytes => _commited;
-
-            public void FreeMemory(ArrayPool<byte> pool)
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public Memory<byte> Free => Memory.Slice(_commited);
     }
 }

@@ -151,7 +151,7 @@ namespace System
                 if (i > 7) break;
                 if (first) first = false;
                 else sb.Append(", ");
-                sb.Append(data[0].ToString());
+                sb.Append(data[i].ToString());
             }
             sb.Append("]");
             return sb.ToString();
