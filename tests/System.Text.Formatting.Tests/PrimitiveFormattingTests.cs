@@ -371,6 +371,21 @@ namespace System.Text.Formatting.Tests
             }
         }
 
+        [Fact]
+        public void FormatLongStringToUtf8()
+        {
+            int length = 260;
+            {
+                var formatter = new ArrayFormatter(length, EncodingData.InvariantUtf8);
+                string data = new string('#', length);
+                formatter.Append(data);
+                Assert.Equal(length, formatter.CommitedByteCount);
+                for(int i=0; i<formatter.CommitedByteCount; i++) {
+                    Assert.Equal((byte)'#', formatter.Formatted.Array[i]);
+                }
+            }
+        }
+
         internal static void AssertUtf8Equal(Span<byte> formatted, string expected)
         {
             var expectedBytes = Encoding.UTF8.GetBytes(expected);
