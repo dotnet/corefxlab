@@ -53,7 +53,7 @@ namespace System.Text
         }
         #endregion
 
-        public static bool TryFormat(this char value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this char value, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
         {
             if (formattingData.IsUtf16)
             {
@@ -107,7 +107,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormat(this string value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this string value, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
         {
 
             if (formattingData.IsUtf16)
@@ -191,7 +191,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormat(this Utf8String value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this Utf8String value, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
         {
             if (formattingData.IsUtf16) {
                 bytesWritten = 0;
@@ -216,7 +216,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormat(ReadOnlySpan<char> value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(ReadOnlySpan<char> value, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
         {
             if (formattingData.IsUtf16) {
                 var valueBytes = value.Cast<char, byte>();
