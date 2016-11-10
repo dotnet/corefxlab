@@ -152,7 +152,7 @@ namespace System.Text
         static bool TryWriteChar(char c, Span<byte> buffer, EncodingData formattingData, ref int bytesWritten)
         {
             int written;
-            if (!c.TryFormat(buffer.Slice(bytesWritten), default(Format.Parsed), formattingData, out written))
+            if (!c.TryFormat(buffer.Slice(bytesWritten), formattingData, out written))
             {
                 bytesWritten = 0;
                 return false;
@@ -165,7 +165,7 @@ namespace System.Text
         static bool TryWriteString(string s, Span<byte> buffer, EncodingData formattingData, ref int bytesWritten)
         {
             int written;
-            if (!s.TryFormat(buffer.Slice(bytesWritten), default(Format.Parsed), formattingData, out written))
+            if (!s.TryFormat(buffer.Slice(bytesWritten), formattingData, out written))
             {
                 bytesWritten = 0;
                 return false;
