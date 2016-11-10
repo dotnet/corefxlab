@@ -289,6 +289,27 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
+        public void FormatXUtf8()
+        {
+            var x = Format.Parse("x");
+            var X = Format.Parse("X");
+
+            var sb = new ArrayFormatter(256, EncodingData.InvariantUtf8);
+            sb.Append((ulong)255, x);
+            sb.Append((uint)255, X);
+
+            Assert.Equal("ffFF", new Utf8String(sb.Formatted.Slice()).ToString());
+
+            sb.Clear();
+            sb.Append((int)-1, X);
+            Assert.Equal("FFFFFFFF", new Utf8String(sb.Formatted.Slice()).ToString());
+
+            sb.Clear();
+            sb.Append((int)-2, X);
+            Assert.Equal("FFFFFFFE", new Utf8String(sb.Formatted.Slice()).ToString());
+        }
+
+        [Fact]
         public void FormatXPrecision()
         {
             var x = Format.Parse("x10");
