@@ -215,5 +215,72 @@ namespace System.Text
             bytesWritten = value.Length;
             return true;
         }
+
+        public static bool TryFormat(ReadOnlySpan<char> value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        {
+            if (formattingData.IsUtf16) {
+                var valueBytes = value.Cast<char, byte>();
+                if (buffer.Length < valueBytes.Length) {
+                    bytesWritten = 0;
+                    return false;
+                }
+                valueBytes.CopyTo(buffer);
+                bytesWritten = valueBytes.Length;
+                return true;
+            }
+
+            if (formattingData.IsUtf8) {
+                var avaliableBytes = buffer.Length;
+                bytesWritten = 0;
+                for (int i = 0; i < value.Length; i++) {
+                    var c = value[i];
+
+                    var codepoint = (ushort)c;
+                    if (codepoint <= 0x7f) // this if block just optimizes for ascii
+                    {
+                        if (bytesWritten + 1 > avaliableBytes) {
+                            bytesWritten = 0;
+                            return false;
+                        }
+                        buffer[bytesWritten++] = (byte)codepoint;
+                    }
+                    else {
+                        Utf8EncodedCodePoint encoded;
+                        if (!char.IsSurrogate(c))
+                            encoded = new Utf8EncodedCodePoint(c);
+                        else {
+                            if (++i >= value.Length)
+                                throw new ArgumentException("Invalid surrogate pair.", nameof(value));
+                            char lowSurrogate = value[i];
+                            encoded = new Utf8EncodedCodePoint(c, lowSurrogate);
+                        }
+
+
+                        if (bytesWritten + encoded.Length > avaliableBytes) {
+                            bytesWritten = 0;
+                            return false;
+                        }
+
+                        buffer[bytesWritten] = encoded.Byte0;
+                        if (encoded.Length > 1) {
+                            buffer[bytesWritten + 1] = encoded.Byte1;
+
+                            if (encoded.Length > 2) {
+                                buffer[bytesWritten + 2] = encoded.Byte2;
+
+                                if (encoded.Length > 3) {
+                                    buffer[bytesWritten + 3] = encoded.Byte3;
+                                }
+                            }
+                        }
+
+                        bytesWritten += encoded.Length;
+                    }
+                }
+                return true;
+            }
+
+            throw new NotSupportedException();
+        }
     }
 }

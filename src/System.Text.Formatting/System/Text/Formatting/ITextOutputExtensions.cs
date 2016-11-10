@@ -177,10 +177,42 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, string value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
+        public static void Append<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
         {
             while (!formatter.TryAppend(value, format)) {
                 formatter.Enlarge();
+            }
+        }
+
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
+        {
+            int bytesWritten;
+            if (!PrimitiveFormatter.TryFormat(value, formatter.Buffer, format, formatter.Encoding, out bytesWritten)) {
+                return false;
+            }
+            formatter.Advance(bytesWritten);
+            return true;
+        }
+
+        public static void Append<TFormatter>(this TFormatter formatter, string value, Format.Parsed format = default(Format.Parsed)) where TFormatter : ITextOutput
+        {
+            if (value.Length < 256) {
+                while (!formatter.TryAppend(value, format)) {
+                    formatter.Enlarge();
+                }
+            }
+            else { // slice the string and write piece by piece, otherwise enlarge might fail
+                var leftToWrite = value.Slice();
+                while(leftToWrite.Length > 0) {
+                    var nextChunkLength = leftToWrite.Length < 256 ? leftToWrite.Length : 256;
+                    if (char.IsHighSurrogate(leftToWrite[nextChunkLength - 1])){
+                        nextChunkLength--;
+                        if (nextChunkLength == 0) throw new Exception("value ends in high surrogate");
+                    }
+                    var chunk = leftToWrite.Slice(0, nextChunkLength);
+                    formatter.Append(chunk, format);
+                    leftToWrite = leftToWrite.Slice(nextChunkLength);
+                }
             }
         }
 
