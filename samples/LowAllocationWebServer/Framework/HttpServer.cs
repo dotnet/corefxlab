@@ -77,23 +77,15 @@ namespace Microsoft.Net.Http
             var request = HttpRequest.Parse(requestBytes);
             Log.LogRequest(request);
 
-            using (var responseData = new ResponseBuffer()) {
-                var response = new HttpResponse(responseData);
+            using (var response = new HttpResponse(1024)) {
                 WriteResponse(request, response);
                 s_pool.Return(requestBuffer);
 
-                // TODO: this whole thing about segment order is very bad. It needs to be designed.
-                for (int index = 0; index < responseData.Count; index++) {
-                    var segment = responseData[index];
-                    if (segment.Id == 2) {
-                        socket.Send(segment.Commited);
-                    }
+                foreach(var segment in response.Headers) {
+                    socket.Send(segment);
                 }
-                for (int index = 0; index < responseData.Count; index++) {
-                    var segment = responseData[index];
-                    if (segment.Id == 1) {
-                        socket.Send(segment.Commited);
-                    }
+                foreach (var segment in response.Body) {
+                    socket.Send(segment);
                 }
 
                 socket.Close();
@@ -109,36 +101,37 @@ namespace Microsoft.Net.Http
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", requestBytes.Length);
             WriteCommonHeaders(response, HttpVersion.V1_1, 400, "Bad Request", false);
-            response.Headers.Append(HttpNewline);
+            new ResponseFormatter(response.Headers).Append(HttpNewline);
         }
 
         protected virtual void WriteResponseFor404(HttpRequest request, HttpResponse response) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.RequestLine);
             WriteCommonHeaders(response, HttpVersion.V1_1, 404, "Not Found", false);
-            response.Headers.Append(HttpNewline);
+            new ResponseFormatter(response.Headers).Append(HttpNewline);
         }
 
         // TODO: this is not a very general purpose routine. Maybe should not be in this base class?
         protected static void WriteCommonHeaders(
-            HttpResponse formatter,
+            HttpResponse response,
             HttpVersion version,
             int statuCode,
             string reasonCode,
             bool keepAlive)
         {
             var currentTime = DateTime.UtcNow;
-            formatter.Headers.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
-            formatter.Headers.Append(new Utf8String("Date : ")); formatter.Headers.Append(currentTime, 'R');
-            formatter.Headers.AppendHttpNewLine();
-            formatter.Headers.Append("Server : .NET Core Sample Server");
-            formatter.Headers.AppendHttpNewLine();
-            formatter.Headers.Append("Content-Type : text/html; charset=UTF-8");
-            formatter.Headers.AppendHttpNewLine();
+            var formatter = new ResponseFormatter(response.Headers);
+            formatter.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
+            formatter.Append(new Utf8String("Date : ")); formatter.Append(currentTime, 'R');
+            formatter.AppendHttpNewLine();
+            formatter.Append("Server : .NET Core Sample Server");
+            formatter.AppendHttpNewLine();
+            formatter.Append("Content-Type : text/html; charset=UTF-8");
+            formatter.AppendHttpNewLine();
 
             if (!keepAlive)
             {
-                formatter.Headers.Append("Connection : close");
+                formatter.Append("Connection : close");
             }
         }
 

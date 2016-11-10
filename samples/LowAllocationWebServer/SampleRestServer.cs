@@ -46,7 +46,7 @@ namespace LowAllocationWebServer
             }
 
             // write response JSON
-            var jsonWriter = new JsonWriter<ResponseFormatter>(response.Body, prettyPrint: false);
+            var jsonWriter = new JsonWriter<ResponseFormatter>(new ResponseFormatter(response.Body), prettyPrint: false);
             jsonWriter.WriteObjectStart();
             jsonWriter.WriteArrayStart();
             for (int i = 0; i < requestedCount; i++)
@@ -57,10 +57,10 @@ namespace LowAllocationWebServer
             jsonWriter.WriteObjectEnd();
 
             // write headers
-            var headers = response.Headers;
+            var headers = new ResponseFormatter(response.Headers);
             headers.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
             headers.Append("Content-Length : ");
-            headers.Append(response.Body.WrittenBytes);
+            headers.Append(response.Body.CommitedBytes);
             headers.AppendHttpNewLine();
             headers.Append("Content-Type : text/plain; charset=UTF-8");
             headers.AppendHttpNewLine();
@@ -74,31 +74,35 @@ namespace LowAllocationWebServer
 
         static void WriteResponseForHelloWorld(HttpRequest request, HttpResponse response)
         {
-            response.Body.Append("Hello, World");
+            var body = new ResponseFormatter(response.Body);
+            body.Append("Hello, World");
 
-            response.Headers.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
-            response.Headers.Append("Content-Length : ");
-            response.Headers.Append(response.Body.WrittenBytes);
-            response.Headers.AppendHttpNewLine();
-            response.Headers.Append("Content-Type : text/plain; charset=UTF-8");
-            response.Headers.AppendHttpNewLine();
-            response.Headers.Append("Server : .NET Core Sample Server");
-            response.Headers.AppendHttpNewLine();
-            response.Headers.Append("Date : ");
-            response.Headers.Append(DateTime.UtcNow, 'R');
-            response.Headers.AppendHttpNewLine();
-            response.Headers.AppendHttpNewLine();
+            var headers = new ResponseFormatter(response.Headers);
+            headers.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
+            headers.Append("Content-Length : ");
+            headers.Append(response.Body.CommitedBytes);
+            headers.AppendHttpNewLine();
+            headers.Append("Content-Type : text/plain; charset=UTF-8");
+            headers.AppendHttpNewLine();
+            headers.Append("Server : .NET Core Sample Server");
+            headers.AppendHttpNewLine();
+            headers.Append("Date : ");
+            headers.Append(DateTime.UtcNow, 'R');
+            headers.AppendHttpNewLine();
+            headers.AppendHttpNewLine();
         }
 
         static void WriteResponseForGetTime(HttpRequest request, HttpResponse response)
         {
-            response.Body.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
+            var body = new ResponseFormatter(response.Body);
+            body.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
 
             WriteCommonHeaders(response, HttpVersion.V1_1, 200, "OK", keepAlive: false);
-            response.Headers.Append("Content-Length : ");
-            response.Headers.Append(response.Body.WrittenBytes);
-            response.Headers.AppendHttpNewLine();
-            response.Headers.AppendHttpNewLine();
+            var headers = new ResponseFormatter(response.Headers);
+            headers.Append("Content-Length : ");
+            headers.Append(response.Body.CommitedBytes);
+            headers.AppendHttpNewLine();
+            headers.AppendHttpNewLine();
         }
     }
 }

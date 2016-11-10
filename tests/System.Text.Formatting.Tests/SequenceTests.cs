@@ -16,12 +16,31 @@ namespace System.Text.Parsing.Tests
         [InlineData(1, 1, new string[] { "1", "_2", "3" })]
         [InlineData(12, 2, new string[] { "1", "2_", "3" })]
         [InlineData(123, 3, new string[] { "1", "2", "3_" })]
-        public void SimpleTests(uint expectedValue, int expectedConsumed, string[] segments) {
+        public void ParseUInt32(uint expectedValue, int expectedConsumed, string[] segments) {
             var buffers = ToUtf8Buffers(segments);
 
             uint value;
             int consumed;
             Assert.True(buffers.TryParseUInt32(out value, out consumed));
+            Assert.Equal(expectedValue, value);
+            Assert.Equal(expectedConsumed, consumed);
+        }
+
+        [Theory]
+        [InlineData(123, 3, new string[] { "123" })]
+        [InlineData(123, 3, new string[] { "1", "23" })]
+        [InlineData(123, 3, new string[] { "1", "2", "3" })]
+        [InlineData(1, 1, new string[] { "1_", "2", "3" })]
+        [InlineData(1, 1, new string[] { "1", "_2", "3" })]
+        [InlineData(12, 2, new string[] { "1", "2_", "3" })]
+        [InlineData(123, 3, new string[] { "1", "2", "3_" })]
+        public void ParseUInt64(ulong expectedValue, int expectedConsumed, string[] segments)
+        {
+            var buffers = ToUtf8Buffers(segments);
+
+            ulong value;
+            int consumed;
+            Assert.True(buffers.TryParseUInt64(out value, out consumed));
             Assert.Equal(expectedValue, value);
             Assert.Equal(expectedConsumed, consumed);
         }

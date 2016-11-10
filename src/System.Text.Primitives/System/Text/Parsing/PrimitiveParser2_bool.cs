@@ -234,7 +234,7 @@ namespace System.Text
                 ReadOnlySpan<char> textChars = text.Cast<byte, char>();
                 int charactersConsumed;
                 bool result = InvariantUtf16.TryParseBoolean(textChars, out value, out charactersConsumed);
-                bytesConsumed = charactersConsumed * 2;
+                bytesConsumed = charactersConsumed * sizeof(char);
                 return result;
             }
 
