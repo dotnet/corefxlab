@@ -246,10 +246,10 @@ namespace System.Text
 
         private static bool TryFormatHexadecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
         {
-            Precondition.Require(format.Symbol == 'X' || format.Symbol == 'X');
+            Precondition.Require(format.Symbol == 'X' || format.Symbol == 'x');
 
             byte firstDigitOffset = (byte)'0';
-            byte firstHexCharOffset = format.Symbol == 'X' ? (byte)'a' : (byte)'A';
+            byte firstHexCharOffset = format.Symbol == 'X' ? (byte)'A' : (byte)'a';
             firstHexCharOffset -= 10;
 
             // Count amount of hex digits
