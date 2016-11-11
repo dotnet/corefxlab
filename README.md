@@ -91,3 +91,12 @@ To build the projects in this repo, you have a few options:
 * (On Windows) Invoke build.cmd. This will download an acceptable version of the .NET CLI automatically and use it to build the entire repository. NOTE: Don't invoke `scripts/build.ps1` directly. It requires that some environment be set in order for it to work correctly. `build.cmd` does this.
 * (On Windows) Open the solution file in Visual Studio 2015. NOTE: This requires unreleased plugins to work at this point in time.
 Using VS Code, see https://aka.ms/vscclrdogfood.
+
+## Running Performance Tests
+
+To run performance tests, you also have a few options:
+
+* Using the CLI: `dotnet restore scripts/PerfHarness` followed by `dotnet run -c Release -p scripts/PerfHarness`. For the CLI, you can use either:
+  - a CLI installed on the machine
+  - the CLI automatically installed in `./dotnet` after invoking build.cmd.
+* (On Windows) Invoke perf.cmd. You must have already invoked build.cmd beforehand.

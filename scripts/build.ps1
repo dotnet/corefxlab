@@ -20,7 +20,7 @@ $dotnetExePath="$PSScriptRoot\..\dotnet\dotnet.exe"
 
 if ($Restore -eq "true") {
     Write-Host "Restoring all packages"
-    Invoke-Expression "$dotnetExePath restore src tests"
+    Invoke-Expression "$dotnetExePath restore scripts src tests"
     if ($lastexitcode -ne 0) {
         Write-Error "Failed to restore packages."
         exit -1
