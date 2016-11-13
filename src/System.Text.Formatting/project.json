@@ -38,10 +38,10 @@
     "System.Text.Utf8": { "target": "project" },
     "System.Slices": { "target": "project" },
     "System.Text.Primitives": { "target": "project" },
-    "System.Buffers.Experimental": { "target": "project" }
+    "System.Buffers.Experimental": { "target": "project" },
+    "System.Runtime.CompilerServices.Unsafe": "4.3.0"
   },
   "frameworks": {
-    "netstandard1.1": {
-    }
+    "netstandard1.1": { }
   }
 }
