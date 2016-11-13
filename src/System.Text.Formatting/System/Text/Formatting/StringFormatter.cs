@@ -4,6 +4,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.Sequences;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -14,7 +15,7 @@ namespace System.Text.Formatting
         ResizableArray<byte> _buffer;
         ArrayPool<byte> _pool;
         public EncodingData Encoding { get; set; } = EncodingData.InvariantUtf16;
-        ResizableArray<KeyValuePair<ReadOnlySpan<char>, int>> _copyQueue;
+        ResizableArray<KeyValuePair<string, int>> _copyQueue;
 
 
         public StringFormatter(int characterCapacity = 32, ArrayPool<byte> pool = null)
@@ -57,12 +58,7 @@ namespace System.Text.Formatting
             _buffer.Clear();
         }
 
-        public void QueueForCopy(string text)
-        {
-            QueueForCopy(text.Slice());
-        }
-
-        public void QueueForCopy(ReadOnlySpan<char> substring)
+        private void QueueForCopy(string text)
         {
             // Instead of copying buffers to our buffer, and then re-copying our buffer again
             // during ToString, we can do something different. When QueueForCopy is called,
@@ -71,7 +67,7 @@ namespace System.Text.Formatting
             // copy from the queued buffer, advance to that index in the destination,
             // & continue copying from our buffer until the next queued buffer.
 
-            _copyQueue.Add(new KeyValuePair<ReadOnlySpan<char>, int>(substring, _buffer.Count));
+            _copyQueue.Add(new KeyValuePair<string, int>(text, _buffer.Count));
         }
 
         public unsafe override string ToString()
@@ -84,6 +80,7 @@ namespace System.Text.Formatting
             fixed (char* pResult = result)
             {
                 int thisIndex = 0; // Index in our buffer we're copying from.
+                int destIndex = 0; // Index in pResult we're copying to.
 
                 for (int i = 0; i < _copyQueue.Count; i++)
                 {
@@ -94,19 +91,30 @@ namespace System.Text.Formatting
 
                     fixed (byte* pSource = &_buffer.Items[thisIndex])
                     {
-                        Unsafe.CopyBlock(pResult, pSource, (uint)(queuedIndex - thisIndex));
+                        Unsafe.CopyBlock(pResult + destIndex, pSource, (uint)(queuedIndex - thisIndex));
                     }
 
                     thisIndex = queuedIndex;
+                    destIndex += queuedIndex - thisIndex;
                     
                     // Copy the queued buffer.
-                    // Note: This does not compile yet...
                     fixed (char* pBuffer = pair.Key)
                     {
                         Unsafe.CopyBlock(pResult, pBuffer, (uint)pair.Key.Length);
                     }
+
+                    destIndex += pair.Key.Length;
+                }
+
+                // Copy after the last index in the queue.
+
+                fixed (byte* pSource = &_buffer.Items[thisIndex])
+                {
+                    Unsafe.CopyBlock(pResult + destIndex, pSource, (uint)(_buffer.Count - thisIndex));
                 }
             }
+
+            return result;
         }
 
         private int GetCount()
