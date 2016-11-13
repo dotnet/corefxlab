@@ -15,7 +15,7 @@ namespace System.Text.Formatting
         ResizableArray<byte> _buffer;
         ArrayPool<byte> _pool;
         public EncodingData Encoding { get; set; } = EncodingData.InvariantUtf16;
-        ResizableArray<KeyValuePair<string, int>> _copyQueue;
+        List<KeyValuePair<string, int>> _copyQueue = new List<KeyValuePair<string, int>>();
 
 
         public StringFormatter(int characterCapacity = 32, ArrayPool<byte> pool = null)
@@ -93,14 +93,14 @@ namespace System.Text.Formatting
                     {
                         Unsafe.CopyBlock(pResult + destIndex, pSource, (uint)(queuedIndex - thisIndex));
                     }
-
-                    thisIndex = queuedIndex;
-                    destIndex += (queuedIndex - thisIndex) / 2;
                     
+                    destIndex += (queuedIndex - thisIndex) / 2;
+                    thisIndex = queuedIndex;
+
                     // Copy the queued buffer.
                     fixed (char* pBuffer = pair.Key)
                     {
-                        Unsafe.CopyBlock(pResult, pBuffer, (uint)pair.Key.Length * 2);
+                        Unsafe.CopyBlock(pResult + destIndex, pBuffer, (uint)pair.Key.Length * 2);
                     }
 
                     destIndex += pair.Key.Length;

@@ -27,6 +27,20 @@ namespace System.Text.Formatting.Tests
             CultureInfo.CurrentUICulture = culture;
         }
 
+        [Fact]
+        public void AppendString()
+        {
+            var formatter = new StringFormatter();
+
+            formatter.Append('H');
+            formatter.Append("ello");
+            formatter.Append(' ');
+            formatter.Append("world");
+            formatter.Append('!');
+
+            Assert.Equal("Hello world!", formatter.ToString());
+        }
+
         private void CheckByte(byte value, string format, string expected)
         {
             var formatter = new StringFormatter();
