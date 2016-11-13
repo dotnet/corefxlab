@@ -79,8 +79,8 @@ namespace System.Text.Formatting
 
             fixed (char* pResult = result)
             {
-                int thisIndex = 0; // Index in our buffer we're copying from.
-                int destIndex = 0; // Index in pResult we're copying to.
+                int thisIndex = 0; // Index in our buffer we're copying from. (in bytes)
+                int destIndex = 0; // Index in pResult we're copying to. (in chars)
 
                 for (int i = 0; i < _copyQueue.Count; i++)
                 {
@@ -95,12 +95,12 @@ namespace System.Text.Formatting
                     }
 
                     thisIndex = queuedIndex;
-                    destIndex += queuedIndex - thisIndex;
+                    destIndex += (queuedIndex - thisIndex) / 2;
                     
                     // Copy the queued buffer.
                     fixed (char* pBuffer = pair.Key)
                     {
-                        Unsafe.CopyBlock(pResult, pBuffer, (uint)pair.Key.Length);
+                        Unsafe.CopyBlock(pResult, pBuffer, (uint)pair.Key.Length * 2);
                     }
 
                     destIndex += pair.Key.Length;
@@ -121,7 +121,7 @@ namespace System.Text.Formatting
         {
             // Sum up the count in our buffer + the count of queued buffers.
 
-            int result = _buffer.Count;
+            int result = _buffer.Count / 2; // _buffer is in bytes.
 
             for (int i = 0; i < _copyQueue.Count; i++)
             {
