@@ -25,7 +25,7 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, string value, EncodingData.Encoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, string value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
         {
             if (value.Length < 256) {
                 while (!formatter.TryAppend(value, encoding)) {
@@ -47,61 +47,61 @@ namespace System.Text.Formatting
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, EncodingData.Encoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, encoding == EncodingData.Encoding.Utf8 ? EncodingData.InvariantUtf8 : EncodingData.InvariantUtf16, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, encoding, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, EncodingData.Encoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoding)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, EncodingData.Encoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, encoding==EncodingData.Encoding.Utf8?EncodingData.InvariantUtf8:EncodingData.InvariantUtf16, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, encoding, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, char value, EncodingData.Encoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, char value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoding)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, char value, EncodingData.Encoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, char value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, encoding == EncodingData.Encoding.Utf8 ? EncodingData.InvariantUtf8 : EncodingData.InvariantUtf16, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, encoding, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value, EncodingData.Encoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoding)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value, EncodingData.Encoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, encoding == EncodingData.Encoding.Utf8 ? EncodingData.InvariantUtf8 : EncodingData.InvariantUtf16, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, encoding, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);

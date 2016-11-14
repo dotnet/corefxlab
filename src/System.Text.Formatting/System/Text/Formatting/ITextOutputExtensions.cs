@@ -171,7 +171,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, char value) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, formatter.Encoding.Encoding, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -188,7 +188,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, formatter.Encoding.Encoding, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -220,7 +220,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, string value) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, formatter.Encoding.Encoding, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -237,7 +237,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, formatter.Encoding, out bytesWritten)) {
+            if (!value.TryFormat(formatter.Buffer, formatter.Encoding.Encoding, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);

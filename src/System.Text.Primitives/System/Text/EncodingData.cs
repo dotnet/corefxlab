@@ -13,14 +13,16 @@ namespace System.Text
     {
         private static EncodingData s_invariantUtf16;
         private static EncodingData s_invariantUtf8;
-        private byte[][] _digitsAndSymbols; // this could be flattened into a single array
-        private TrieNode[] _parsingTrie;
-        private Encoding _encoding;
 
-        public enum Encoding : byte
+        private byte[][] _digitsAndSymbols; // this could be flattened into a single array
+        private ParsingTrieNode[] _parsingTrie;
+        private TextEncoding _encoding;
+
+        public enum TextEncoding : byte
         {
             Utf16 = 0,
             Utf8 = 1,
+            Ascii,
         }
 
         // The parsing trie is structured as an array, which means that there are two types of
@@ -40,21 +42,21 @@ namespace System.Text
         // The index is formatted as such: 0xAABBCCDD, where AA = the min value,
         // BB = the index of the min value relative to the current node (1-indexed),
         // CC = the max value, and DD = the max value's index in the same coord-system as BB.
-        public struct TrieNode
+        public struct ParsingTrieNode
         {
             public byte valueOrNumChildren;
             public int index;
         }
 
         // TODO: make these private once bin file generator is used
-        public EncodingData(byte[][] digitsAndSymbols, TrieNode[] parsingTrie, Encoding encoding)
+        public EncodingData(byte[][] digitsAndSymbols, TextEncoding encoding, ParsingTrieNode[] parsingTrie)
         {
             _digitsAndSymbols = digitsAndSymbols;
             _encoding = encoding;
             _parsingTrie = parsingTrie;
         }
 
-        public EncodingData(byte[][] digitsAndSymbols, Encoding encoding)
+        public EncodingData(byte[][] digitsAndSymbols, TextEncoding encoding)
         {
             _digitsAndSymbols = digitsAndSymbols;
             _encoding = encoding;
@@ -128,7 +130,7 @@ namespace System.Text
                 new byte[] { 101, 0, }, // e
             };
 
-            s_invariantUtf16 = new EncodingData(utf16digitsAndSymbols, Encoding.Utf16);
+            s_invariantUtf16 = new EncodingData(utf16digitsAndSymbols, TextEncoding.Utf16);
 
             var utf8digitsAndSymbols = new byte[][] {
                 new byte[] { 48, },
@@ -151,7 +153,7 @@ namespace System.Text
                 new byte[] { 101, }, // e
             };
 
-            s_invariantUtf8 = new EncodingData(utf8digitsAndSymbols, Encoding.Utf8);
+            s_invariantUtf8 = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8);
         }
 
         public static EncodingData InvariantUtf16
@@ -348,14 +350,7 @@ namespace System.Text
             get { return _digitsAndSymbols == s_invariantUtf8._digitsAndSymbols; }
         }
 
-        public bool IsUtf16
-        {
-            get { return _encoding == Encoding.Utf16; }
-        }
-        public bool IsUtf8
-        {
-            get { return _encoding == Encoding.Utf8; }
-        }
+        public TextEncoding Encoding => _encoding;
 
         public static bool operator==(EncodingData left, EncodingData right)
         {

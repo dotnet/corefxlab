@@ -64,11 +64,11 @@ namespace System.Text
                 format.Symbol = 'G';
             }
 
-            if (format.IsHexadecimal && formattingData.IsUtf16) {
+            if (format.IsHexadecimal && formattingData.IsInvariantUtf16) {
                 return TryFormatHexadecimalInvariantCultureUtf16(value, buffer, format, out bytesWritten);
             }
 
-            if (format.IsHexadecimal && formattingData.IsUtf8) {
+            if (format.IsHexadecimal && formattingData.IsInvariantUtf8) {
                 return TryFormatHexadecimalInvariantCultureUtf8(value, buffer, format, out bytesWritten);
             }
 
