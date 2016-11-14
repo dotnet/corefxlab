@@ -3,12 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
-    public struct EncodingData
+    public struct EncodingData : IEquatable<EncodingData>
     {
         private static EncodingData s_invariantUtf16;
         private static EncodingData s_invariantUtf8;
@@ -354,6 +355,33 @@ namespace System.Text
         public bool IsUtf8
         {
             get { return _encoding == Encoding.Utf8; }
+        }
+
+        public static bool operator==(EncodingData left, EncodingData right)
+        {
+            return left._digitsAndSymbols == right._digitsAndSymbols;
+        }
+        public static bool operator!=(EncodingData left, EncodingData right)
+        {
+            return left._digitsAndSymbols == right._digitsAndSymbols;
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj)
+        {
+            if (obj is EncodingData) return Equals((EncodingData)obj);
+            return false;
+        }
+
+        public bool Equals(EncodingData other)
+        {
+            return this == other;
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode()
+        {
+            return _digitsAndSymbols.GetHashCode();
         }
     }
 }

@@ -216,7 +216,7 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryFormat(ReadOnlySpan<char> value, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this ReadOnlySpan<char> value, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
         {
             if (formattingData.IsUtf16) {
                 var valueBytes = value.Cast<char, byte>();
