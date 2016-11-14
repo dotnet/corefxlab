@@ -42,18 +42,24 @@ namespace System.Text
         // The index is formatted as such: 0xAABBCCDD, where AA = the min value,
         // BB = the index of the min value relative to the current node (1-indexed),
         // CC = the max value, and DD = the max value's index in the same coord-system as BB.
-        public struct ParsingTrieNode
+        internal struct ParsingTrieNode
         {
             public byte valueOrNumChildren;
             public int index;
         }
 
-        // TODO: make these private once bin file generator is used
-        public EncodingData(byte[][] digitsAndSymbols, TextEncoding encoding, ParsingTrieNode[] parsingTrie)
+        // this should be removed after CreateParsingTire is implemented
+        public EncodingData(byte[][] digitsAndSymbols, TextEncoding encoding, Tuple<byte, int>[] parsingTrie)
         {
             _digitsAndSymbols = digitsAndSymbols;
             _encoding = encoding;
-            _parsingTrie = parsingTrie;
+
+            var tire = new ParsingTrieNode[parsingTrie.Length];
+            for(int i=0; i<parsingTrie.Length; i++) {
+                tire[i] = new ParsingTrieNode() { valueOrNumChildren = parsingTrie[i].Item1, index = parsingTrie[i].Item2 };
+            }
+
+            _parsingTrie = tire;
         }
 
         public EncodingData(byte[][] digitsAndSymbols, TextEncoding encoding)
@@ -61,6 +67,13 @@ namespace System.Text
             _digitsAndSymbols = digitsAndSymbols;
             _encoding = encoding;
             _parsingTrie = null;
+            _parsingTrie = CreateParsingTire(_digitsAndSymbols);
+        }
+
+        private ParsingTrieNode[] CreateParsingTire(byte[][] _digitsAndSymbols)
+        {
+            // TODO: this needs to be implemented;
+            return null;
         }
 
         // This binary search implementation returns an int representing either:
