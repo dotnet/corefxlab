@@ -1,4 +1,7 @@
-﻿namespace System.IO.Pipelines.Networking.Sockets.Internal
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace System.IO.Pipelines.Networking.Sockets.Internal
 {
     /// <summary>
     /// Used by Signal to control how callbacks are invoked
