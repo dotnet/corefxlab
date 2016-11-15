@@ -5,6 +5,8 @@ using System.Net;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Text.Primitives;
+using System.Text;
+using System.Text.Formatting;
 
 namespace System.IO.Pipelines.Samples
 {
@@ -23,8 +25,8 @@ namespace System.IO.Pipelines.Samples
             {
                 var buffer = connection.Output.Alloc();
 
-                buffer.WriteAsciiString("GET / HTTP/1.1");
-                buffer.WriteAsciiString("\r\n\r\n");
+                buffer.Append("GET / HTTP/1.1", EncodingData.TextEncoding.Utf8);
+                buffer.Append("\r\n\r\n", EncodingData.TextEncoding.Utf8);
 
                 await buffer.FlushAsync();
 

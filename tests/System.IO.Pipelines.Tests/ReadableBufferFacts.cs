@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
 using Xunit;
+using System.Text.Formatting;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -299,7 +300,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = factory.Create();
                 var output = readerWriter.Alloc();
-                output.WriteUtf8String(input);
+                output.Append(input, EncodingData.TextEncoding.Utf8);
 
                 var readable = output.AsReadableBuffer();
 
@@ -404,7 +405,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = factory.Create();
                 var output = readerWriter.Alloc();
-                output.WriteAsciiString("Hello World");
+                output.Append("Hello World", EncodingData.TextEncoding.Utf8);
                 await output.FlushAsync();
                 var ms = new MemoryStream();
                 var result = await readerWriter.ReadAsync();
@@ -426,7 +427,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = factory.Create();
                 var output = readerWriter.Alloc();
-                output.WriteAsciiString("Hello World");
+                output.Append("Hello World", EncodingData.TextEncoding.Utf8);
                 await output.FlushAsync();
                 var ms = new MemoryStream();
                 var result = await readerWriter.ReadAsync();

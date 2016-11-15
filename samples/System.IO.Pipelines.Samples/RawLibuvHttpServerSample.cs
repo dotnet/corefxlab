@@ -4,6 +4,8 @@ using System.Net;
 using System.Threading;
 using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Text.Primitives;
+using System.Text;
+using System.Text.Formatting;
 
 namespace System.IO.Pipelines.Samples
 {
@@ -56,11 +58,12 @@ namespace System.IO.Pipelines.Samples
 
                         // Writing directly to pooled buffers
                         var output = connection.Output.Alloc();
-                        output.WriteUtf8String("HTTP/1.1 200 OK");
-                        output.WriteUtf8String("\r\nContent-Length: 13");
-                        output.WriteUtf8String("\r\nContent-Type: text/plain");
-                        output.WriteUtf8String("\r\n\r\n");
-                        output.WriteUtf8String("Hello, World!");
+                        var formatter = new OutputFormatter<WritableBuffer>(output, EncodingData.InvariantUtf8);
+                        formatter.Append("HTTP/1.1 200 OK");
+                        formatter.Append("\r\nContent-Length: 13");
+                        formatter.Append("\r\nContent-Type: text/plain");
+                        formatter.Append("\r\n\r\n");
+                        formatter.Append("Hello, World!");
                         await output.FlushAsync();
 
                         httpParser.Reset();
