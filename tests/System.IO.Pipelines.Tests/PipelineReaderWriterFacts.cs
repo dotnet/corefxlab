@@ -11,17 +11,17 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class ChannelFacts
+    public class PipelineReaderWriterFacts
     {
         [Fact]
         public async Task ReaderShouldNotGetUnflushedBytesWhenOverflowingSegments()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var c = cf.Create();
+                var readerWriter = factory.Create();
 
                 // Fill the block with stuff leaving 5 bytes at the end
-                var buffer = c.Alloc(1);
+                var buffer = readerWriter.Alloc(1);
 
                 var len = buffer.Memory.Length;
                 // Fill the buffer with garbage
@@ -32,7 +32,7 @@ namespace System.IO.Pipelines.Tests
                 await buffer.FlushAsync();
 
                 // Write 10 and flush
-                buffer = c.Alloc();
+                buffer = readerWriter.Alloc();
                 buffer.WriteLittleEndian(10);
 
                 // Write 9
@@ -42,18 +42,18 @@ namespace System.IO.Pipelines.Tests
                 buffer.WriteLittleEndian(8);
 
                 // Make sure we don't see it yet
-                var result = await c.ReadAsync();
+                var result = await readerWriter.ReadAsync();
                 var reader = result.Buffer;
 
                 Assert.Equal(len - 5, reader.Length);
 
                 // Don't move
-                c.Advance(reader.End);
+                readerWriter.Advance(reader.End);
 
                 // Now flush
                 await buffer.FlushAsync();
 
-                reader = (await c.ReadAsync()).Buffer;
+                reader = (await readerWriter.ReadAsync()).Buffer;
 
                 Assert.Equal(12, reader.Length);
                 Assert.Equal(10, reader.ReadLittleEndian<int>());
@@ -65,36 +65,36 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task ReaderShouldNotGetUnflushedBytes()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var c = cf.Create();
+                var readerWriter = factory.Create();
 
                 // Write 10 and flush
-                var buffer = c.Alloc();
+                var buffer = readerWriter.Alloc();
                 buffer.WriteLittleEndian(10);
                 await buffer.FlushAsync();
 
                 // Write 9
-                buffer = c.Alloc();
+                buffer = readerWriter.Alloc();
                 buffer.WriteLittleEndian(9);
 
                 // Write 8
                 buffer.WriteLittleEndian(8);
 
                 // Make sure we don't see it yet
-                var result = await c.ReadAsync();
+                var result = await readerWriter.ReadAsync();
                 var reader = result.Buffer;
 
                 Assert.Equal(4, reader.Length);
                 Assert.Equal(10, reader.ReadLittleEndian<int>());
 
                 // Don't move
-                c.Advance(reader.Start);
+                readerWriter.Advance(reader.Start);
 
                 // Now flush
                 await buffer.FlushAsync();
 
-                reader = (await c.ReadAsync()).Buffer;
+                reader = (await readerWriter.ReadAsync()).Buffer;
 
                 Assert.Equal(12, reader.Length);
                 Assert.Equal(10, reader.ReadLittleEndian<int>());
@@ -106,19 +106,19 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task ReaderShouldNotGetUnflushedBytesWithAppend()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var c = cf.Create();
+                var readerWriter = factory.Create();
 
                 // Write 10 and flush
-                var buffer = c.Alloc();
+                var buffer = readerWriter.Alloc();
                 buffer.WriteLittleEndian(10);
                 await buffer.FlushAsync();
 
-                // Write Hello to another channel and get the buffer
+                // Write Hello to another pipeline and get the buffer
                 var bytes = Encoding.ASCII.GetBytes("Hello");
 
-                var c2 = cf.Create();
+                var c2 = factory.Create();
                 await c2.WriteAsync(bytes);
                 var result = await c2.ReadAsync();
                 var c2Buffer = result.Buffer;
@@ -126,29 +126,29 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(bytes.Length, c2Buffer.Length);
 
                 // Write 9 to the buffer
-                buffer = c.Alloc();
+                buffer = readerWriter.Alloc();
                 buffer.WriteLittleEndian(9);
 
-                // Append the data from the other channel
+                // Append the data from the other pipeline
                 buffer.Append(c2Buffer);
 
                 // Mark it as consumed
                 c2.Advance(c2Buffer.End);
 
                 // Now read and make sure we only see the comitted data
-                result = await c.ReadAsync();
+                result = await readerWriter.ReadAsync();
                 var reader = result.Buffer;
 
                 Assert.Equal(4, reader.Length);
                 Assert.Equal(10, reader.ReadLittleEndian<int>());
 
                 // Consume nothing
-                c.Advance(reader.Start);
+                readerWriter.Advance(reader.Start);
 
                 // Flush the second set of writes
                 await buffer.FlushAsync();
 
-                reader = (await c.ReadAsync()).Buffer;
+                reader = (await readerWriter.ReadAsync()).Buffer;
 
                 // int, int, "Hello"
                 Assert.Equal(13, reader.Length);
@@ -159,15 +159,15 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task WritingDataMakesDataReadableViaChannel()
+        public async Task WritingDataMakesDataReadableViaPipeline()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
+                var readerWriter = factory.Create();
                 var bytes = Encoding.ASCII.GetBytes("Hello World");
 
-                await channel.WriteAsync(bytes);
-                var result = await channel.ReadAsync();
+                await readerWriter.WriteAsync(bytes);
+                var result = await readerWriter.ReadAsync();
                 var buffer = result.Buffer;
 
                 Assert.Equal(11, buffer.Length);
@@ -181,13 +181,13 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task ReadingCanBeCancelled()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
+                var readerWriter = factory.Create();
                 var cts = new CancellationTokenSource();
                 cts.Token.Register(() =>
                 {
-                    channel.CompleteWriter(new OperationCanceledException(cts.Token));
+                    readerWriter.CompleteWriter(new OperationCanceledException(cts.Token));
                 });
 
                 var ignore = Task.Run(async () =>
@@ -198,7 +198,7 @@ namespace System.IO.Pipelines.Tests
 
                 await Assert.ThrowsAsync<OperationCanceledException>(async () =>
                 {
-                    var result = await channel.ReadAsync();
+                    var result = await readerWriter.ReadAsync();
                     var buffer = result.Buffer;
                 });
             }
@@ -208,19 +208,19 @@ namespace System.IO.Pipelines.Tests
         public async Task HelloWorldAcrossTwoBlocks()
         {
             const int blockSize = 4032;
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
+                var readerWriter = factory.Create();
                 //     block 1       ->    block2
                 // [padding..hello]  ->  [  world   ]
                 var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
                 var bytes = Encoding.ASCII.GetBytes("Hello World");
-                var writeBuffer = channel.Alloc();
+                var writeBuffer = readerWriter.Alloc();
                 writeBuffer.Write(paddingBytes);
                 writeBuffer.Write(bytes);
                 await writeBuffer.FlushAsync();
 
-                var result = await channel.ReadAsync();
+                var result = await readerWriter.ReadAsync();
                 var buffer = result.Buffer;
                 Assert.False(buffer.IsSingleSpan);
                 var helloBuffer = buffer.Slice(blockSize - 5);
@@ -244,13 +244,13 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task IndexOfNotFoundReturnsEnd()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
+                var readerWriter = factory.Create();
                 var bytes = Encoding.ASCII.GetBytes("Hello World");
 
-                await channel.WriteAsync(bytes);
-                var result = await channel.ReadAsync();
+                await readerWriter.WriteAsync(bytes);
+                var result = await readerWriter.ReadAsync();
                 var buffer = result.Buffer;
                 ReadableBuffer slice;
                 ReadCursor cursor;
@@ -265,19 +265,19 @@ namespace System.IO.Pipelines.Tests
             var vecUpperR = new Vector<byte>((byte)'R');
 
             const int blockSize = 4032;
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
+                var readerWriter = factory.Create();
                 //     block 1       ->    block2
                 // [padding..hello]  ->  [  world   ]
                 var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
                 var bytes = Encoding.ASCII.GetBytes("Hello World");
-                var writeBuffer = channel.Alloc();
+                var writeBuffer = readerWriter.Alloc();
                 writeBuffer.Write(paddingBytes);
                 writeBuffer.Write(bytes);
                 await writeBuffer.FlushAsync();
 
-                var result = await channel.ReadAsync();
+                var result = await readerWriter.ReadAsync();
                 var buffer = result.Buffer;
                 ReadableBuffer slice;
                 ReadCursor cursor;
@@ -289,19 +289,19 @@ namespace System.IO.Pipelines.Tests
         public async Task SlowPathIndexOfAcrossBlocks()
         {
             const int blockSize = 4032;
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
+                var readerWriter = factory.Create();
                 //     block 1       ->    block2
                 // [padding..hello]  ->  [  world   ]
                 var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
                 var bytes = Encoding.ASCII.GetBytes("Hello World");
-                var writeBuffer = channel.Alloc();
+                var writeBuffer = readerWriter.Alloc();
                 writeBuffer.Write(paddingBytes);
                 writeBuffer.Write(bytes);
                 await writeBuffer.FlushAsync();
 
-                var result = await channel.ReadAsync();
+                var result = await readerWriter.ReadAsync();
                 var buffer = result.Buffer;
                 ReadableBuffer slice;
                 ReadCursor cursor;
@@ -318,36 +318,36 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void AllocMoreThanPoolBlockSizeThrows()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
-                Assert.Throws<ArgumentOutOfRangeException>(() => channel.Alloc(8192));
+                var readerWriter = factory.Create();
+                Assert.Throws<ArgumentOutOfRangeException>(() => readerWriter.Alloc(8192));
             }
         }
 
         [Fact]
         public void ReadingStartedCompletesOnCompleteReader()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
+                var readerWriter = factory.Create();
 
-                channel.CompleteReader();
+                readerWriter.CompleteReader();
 
-                Assert.True(channel.ReadingStarted.IsCompleted);
+                Assert.True(readerWriter.ReadingStarted.IsCompleted);
             }
         }
 
         [Fact]
         public void ReadingStartedCompletesOnCallToReadAsync()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
+                var readerWriter = factory.Create();
 
-                channel.ReadAsync();
+                readerWriter.ReadAsync();
 
-                Assert.True(channel.ReadingStarted.IsCompleted);
+                Assert.True(readerWriter.ReadingStarted.IsCompleted);
             }
         }
     }

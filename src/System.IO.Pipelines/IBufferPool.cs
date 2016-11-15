@@ -4,7 +4,7 @@ using System.Buffers;
 namespace System.IO.Pipelines
 {
     /// <summary>
-    /// An interface that represents a <see cref="IBufferPool"/> that channels will use to allocate memory.
+    /// An interface that represents a <see cref="IBufferPool"/> that will be used to allocate memory.
     /// </summary>
     public interface IBufferPool : IDisposable
     {

@@ -91,7 +91,7 @@ namespace System.IO.Pipelines.Samples.Http
             _listenSocket.Bind(new IPEndPoint(ip, port));
             _listenSocket.Listen(10);
 
-            using (var channelFactory = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
                 while (true)
                 {
@@ -99,7 +99,7 @@ namespace System.IO.Pipelines.Samples.Http
                     {
                         var clientSocket = await _listenSocket.AcceptAsync();
                         clientSocket.NoDelay = true;
-                        var task = ProcessConnection(application, channelFactory, clientSocket);
+                        var task = ProcessConnection(application, factory, clientSocket);
                     }
                     catch (ObjectDisposedException)
                     {

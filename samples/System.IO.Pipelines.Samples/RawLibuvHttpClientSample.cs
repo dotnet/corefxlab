@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Samples
             var thread = new UvThread();
             var client = new UvTcpClient(thread, new IPEndPoint(IPAddress.Loopback, 5000));
 
-            var consoleOutput = thread.ChannelFactory.CreateWriter(Console.OpenStandardOutput());
+            var consoleOutput = thread.PipelineFactory.CreateWriter(Console.OpenStandardOutput());
 
             var connection = await client.ConnectAsync();
 
@@ -34,7 +34,7 @@ namespace System.IO.Pipelines.Samples
                 await Task.Delay(1000);
             }
         }
-        private static async Task CopyCompletedAsync(IPipelineReader input, IPipelineWriter channel)
+        private static async Task CopyCompletedAsync(IPipelineReader input, IPipelineWriter output)
         {
             var result = await input.ReadAsync();
             var inputBuffer = result.Buffer;
@@ -48,7 +48,7 @@ namespace System.IO.Pipelines.Samples
                         return;
                     }
 
-                    var buffer = channel.Alloc();
+                    var buffer = output.Alloc();
 
                     buffer.Append(inputBuffer);
 

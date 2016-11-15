@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace System.IO.Pipelines
 {
     /// <summary>
-    /// Channel which works in buffers which it does not own, as opposed to using a <see cref="IBufferPool"/>. Designed
+    /// Works in buffers which it does not own, as opposed to using a <see cref="IBufferPool"/>. Designed
     /// to allow Streams to be easily adapted to <see cref="IPipelineReader"/> via <see cref="System.IO.Stream.CopyToAsync(System.IO.Stream)"/>
     /// </summary>
     public class UnownedBufferReader : IPipelineReader, IReadableBufferAwaiter
@@ -46,13 +46,13 @@ namespace System.IO.Pipelines
         public Task ReadingStarted => _startingReadingTcs.Task;
 
         /// <summary>
-        /// Gets a task that completes when no more data will be added to the channel.
+        /// Gets a task that completes when no more data will be added to the pipeline.
         /// </summary>
         /// <remarks>This task indicates the producer has completed and will not write anymore data.</remarks>
         public Task Reading => _readingTcs.Task;
 
         /// <summary>
-        /// Gets a task that completes when no more data will be read from the channel.
+        /// Gets a task that completes when no more data will be read from the pipeline.
         /// </summary>
         /// <remarks>
         /// This task indicates the consumer has completed and will not read anymore data.
@@ -65,7 +65,7 @@ namespace System.IO.Pipelines
         private bool IsCompleted => ReferenceEquals(_awaitableState, _awaitableIsCompleted);
 
         /// <summary>
-        /// Writes a new buffer into the channel. The task returned by this operation only completes when the next
+        /// Writes a new buffer into the pipeline. The task returned by this operation only completes when the next
         /// Read has been queued, or the Reader has completed, since the buffer provided here needs to be kept alive
         /// until the matching Read finishes (because we don't have ownership tracking when working with unowned buffers)
         /// </summary>
@@ -81,7 +81,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Writes a new buffer into the channel. The task returned by this operation only completes when the next
+        /// Writes a new buffer into the pipeline. The task returned by this operation only completes when the next
         /// Read has been queued, or the Reader has completed, since the buffer provided here needs to be kept alive
         /// until the matching Read finishes (because we don't have ownership tracking when working with unowned buffers)
         /// </summary>
@@ -94,13 +94,13 @@ namespace System.IO.Pipelines
             // If Writing has stopped, why is the caller writing??
             if (Writing.Status != TaskStatus.WaitingForActivation)
             {
-                throw new OperationCanceledException("Writing has ceased on this Channel");
+                throw new OperationCanceledException("Writing has ceased on this pipeline");
             }
 
-            // If Reading has stopped, we cancel. We don't write unless there's a reader ready in this channel.
+            // If Reading has stopped, we cancel. We don't write unless there's a reader ready in this pipeline.
             if (Reading.Status != TaskStatus.WaitingForActivation)
             {
-                throw new OperationCanceledException("Reading has ceased on this Channel");
+                throw new OperationCanceledException("Reading has ceased on this pipeline");
             }
 
             // Register for cancellation on this token for the duration of the write
@@ -216,7 +216,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
-        /// <param name="exception">Optional Exception indicating a failure that's causing the channel to complete.</param>
+        /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         // Called by the READER
         void IPipelineReader.Complete(Exception exception)
         {
@@ -236,9 +236,9 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Marks the channel as being complete, meaning no more items will be written to it.
+        /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>
-        /// <param name="exception">Optional Exception indicating a failure that's causing the channel to complete.</param>
+        /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         // Called by the WRITER
         public void CompleteWriter(Exception exception = null)
         {

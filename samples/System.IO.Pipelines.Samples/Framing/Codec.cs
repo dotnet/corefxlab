@@ -19,20 +19,20 @@ namespace System.IO.Pipelines.Samples.Framing
             var listener = new UvTcpListener(thread, new IPEndPoint(ip, port));
             listener.OnConnection(async connection =>
             {
-                var channel = MakePipeline(connection);
+                var pipelineConnection = MakePipeline(connection);
 
                 var decoder = new LineDecoder();
                 var handler = new LineHandler();
 
-                // Initialize the handler with the channel
-                handler.Initialize(channel);
+                // Initialize the handler with the connection
+                handler.Initialize(pipelineConnection);
 
                 try
                 {
                     while (true)
                     {
                         // Wait for data
-                        var result = await channel.Input.ReadAsync();
+                        var result = await pipelineConnection.Input.ReadAsync();
                         var input = result.Buffer;
 
                         try
@@ -58,17 +58,17 @@ namespace System.IO.Pipelines.Samples.Framing
                         finally
                         {
                             // Consume the input
-                            channel.Input.Advance(input.Start, input.End);
+                            pipelineConnection.Input.Advance(input.Start, input.End);
                         }
                     }
                 }
                 finally
                 {
-                    // Close the input channel, which will tell the producer to stop producing
-                    channel.Input.Complete();
+                    // Close the input, which will tell the producer to stop producing
+                    pipelineConnection.Input.Complete();
 
-                    // Close the output channel, which will close the connection
-                    channel.Output.Complete();
+                    // Close the output, which will close the connection
+                    pipelineConnection.Output.Complete();
                 }
             });
 
@@ -81,10 +81,10 @@ namespace System.IO.Pipelines.Samples.Framing
             thread.Dispose();
         }
 
-        public static IPipelineConnection MakePipeline(IPipelineConnection channel)
+        public static IPipelineConnection MakePipeline(IPipelineConnection connection)
         {
-            // Do something fancy here to wrap the channel, SSL etc
-            return channel;
+            // Do something fancy here to wrap the connection, SSL etc
+            return connection;
         }
     }
 
@@ -95,18 +95,18 @@ namespace System.IO.Pipelines.Samples.Framing
 
     public class LineHandler : IFrameHandler<Line>
     {
-        private WritableChannelFormatter _formatter;
+        private PipelineTextOutput _textOutput;
 
-        public void Initialize(IPipelineConnection channel)
+        public void Initialize(IPipelineConnection connection)
         {
-            _formatter = new WritableChannelFormatter(channel.Output, EncodingData.InvariantUtf8);
+            _textOutput = new PipelineTextOutput(connection.Output, EncodingData.InvariantUtf8);
         }
 
         public Task HandleAsync(Line message)
         {
             // Echo back to the caller
-            _formatter.Append(message.Data);
-            return _formatter.FlushAsync();
+            _textOutput.Append(message.Data);
+            return _textOutput.FlushAsync();
         }
     }
 
@@ -135,7 +135,7 @@ namespace System.IO.Pipelines.Samples.Framing
 
     public interface IFrameHandler<TInput>
     {
-        void Initialize(IPipelineConnection channel);
+        void Initialize(IPipelineConnection connection);
 
         Task HandleAsync(TInput message);
     }

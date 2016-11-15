@@ -7,7 +7,7 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class UnownedBufferChannelFacts
+    public class UnownedBufferReaderFacts
     {
         [Fact]
         public async Task CanConsumeData()
@@ -21,13 +21,13 @@ namespace System.IO.Pipelines.Tests
                 await sw.FlushAsync();
             });
 
-            var channel = stream.AsPipelineReader();
+            var reader = stream.AsPipelineReader();
 
             int calls = 0;
 
             while (true)
             {
-                var result = await channel.ReadAsync();
+                var result = await reader.ReadAsync();
                 var buffer = result.Buffer;
                 calls++;
                 if (buffer.IsEmpty && result.IsCompleted)
@@ -48,7 +48,7 @@ namespace System.IO.Pipelines.Tests
                     Assert.Equal("World", data);
                 }
 
-                channel.Advance(buffer.End);
+                reader.Advance(buffer.End);
             }
         }
 
@@ -65,7 +65,7 @@ namespace System.IO.Pipelines.Tests
                 await s.WriteAsync(world, 0, world.Length, token);
             });
 
-            var channel = stream.AsPipelineReader(cts.Token);
+            var reader = stream.AsPipelineReader(cts.Token);
 
             int calls = 0;
 
@@ -75,7 +75,7 @@ namespace System.IO.Pipelines.Tests
                 ReadableBuffer buffer;
                 try
                 {
-                    result = await channel.ReadAsync();
+                    result = await reader.ReadAsync();
                     buffer = result.Buffer;
                 }
                 catch (OperationCanceledException)
@@ -97,7 +97,7 @@ namespace System.IO.Pipelines.Tests
                 var data = Encoding.UTF8.GetString(segment);
                 Assert.Equal("Hello", data);
 
-                channel.Advance(buffer.End);
+                reader.Advance(buffer.End);
             }
 
             Assert.Equal(2, calls);
@@ -115,14 +115,14 @@ namespace System.IO.Pipelines.Tests
                 await sw.FlushAsync();
             });
 
-            var channel = stream.AsPipelineReader();
+            var reader = stream.AsPipelineReader();
 
             int index = 0;
             var message = "Hello World";
 
             while (true)
             {
-                var result = await channel.ReadAsync();
+                var result = await reader.ReadAsync();
                 var buffer = result.Buffer;
 
                 if (buffer.IsEmpty && result.IsCompleted)
@@ -133,7 +133,7 @@ namespace System.IO.Pipelines.Tests
 
                 var ch = (char)buffer.First.Span[0];
                 Assert.Equal(message[index++], ch);
-                channel.Advance(buffer.Start.Seek(1));
+                reader.Advance(buffer.Start.Seek(1));
             }
 
             Assert.Equal(message.Length, index);
@@ -149,13 +149,13 @@ namespace System.IO.Pipelines.Tests
                 await sw.FlushAsync();
             });
 
-            var channel = stream.AsPipelineReader();
+            var reader = stream.AsPipelineReader();
 
             var data = Memory<byte>.Empty;
 
             while (true)
             {
-                var result = await channel.ReadAsync();
+                var result = await reader.ReadAsync();
                 var buffer = result.Buffer;
 
                 if (buffer.IsEmpty && result.IsCompleted)
@@ -164,7 +164,7 @@ namespace System.IO.Pipelines.Tests
                     break;
                 }
                 data = buffer.First;
-                channel.Advance(buffer.End);
+                reader.Advance(buffer.End);
             }
 
             Assert.Throws<ObjectDisposedException>(() => data.Span);
@@ -180,13 +180,13 @@ namespace System.IO.Pipelines.Tests
                 await sw.FlushAsync();
             });
 
-            var channel = stream.AsPipelineReader();
+            var reader = stream.AsPipelineReader();
 
             var preserved = default(PreservedBuffer);
 
             while (true)
             {
-                var result = await channel.ReadAsync();
+                var result = await reader.ReadAsync();
                 var buffer = result.Buffer;
 
                 if (buffer.IsEmpty && result.IsCompleted)
@@ -200,7 +200,7 @@ namespace System.IO.Pipelines.Tests
                 // Make sure we can acccess the span
                 var span = buffer.First.Span;
 
-                channel.Advance(buffer.End);
+                reader.Advance(buffer.End);
             }
 
             using (preserved)
@@ -223,14 +223,14 @@ namespace System.IO.Pipelines.Tests
                 await sw.FlushAsync();
             });
 
-            var channel = stream.AsPipelineReader();
+            var reader = stream.AsPipelineReader();
 
             int index = 0;
             var message = "Hello World";
 
             while (true)
             {
-                var result = await channel.ReadAsync();
+                var result = await reader.ReadAsync();
                 var buffer = result.Buffer;
 
                 if (buffer.IsEmpty && result.IsCompleted)
@@ -243,7 +243,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     var ch = (char)buffer.First.Span[0];
                     Assert.Equal(message[index++], ch);
-                    channel.Advance(buffer.Start.Seek(1), buffer.End);
+                    reader.Advance(buffer.Start.Seek(1), buffer.End);
                 }
             }
 
@@ -262,14 +262,14 @@ namespace System.IO.Pipelines.Tests
                 await sw.FlushAsync();
             });
 
-            var channel = stream.AsPipelineReader();
+            var reader = stream.AsPipelineReader();
 
             int index = 0;
             var message = "Hello World";
 
             while (true)
             {
-                var result = await channel.ReadAsync();
+                var result = await reader.ReadAsync();
                 var buffer = result.Buffer;
 
                 if (buffer.IsEmpty && result.IsCompleted)
@@ -282,7 +282,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     var ch = (char)buffer.First.Span[0];
                     Assert.Equal(message[index++], ch);
-                    channel.Advance(buffer.Start.Seek(1));
+                    reader.Advance(buffer.Start.Seek(1));
                 }
             }
 
@@ -301,24 +301,24 @@ namespace System.IO.Pipelines.Tests
                 await s.WriteAsync(data, 0, 5);
             });
 
-            var channel = stream.AsPipelineReader();
+            var reader = stream.AsPipelineReader();
 
             int index = 0;
             var message = "Hello World";
 
             while (index <= message.Length)
             {
-                var result = await channel.ReadAsync();
+                var result = await reader.ReadAsync();
                 var buffer = result.Buffer;
 
                 var ch = Encoding.UTF8.GetString(buffer.Slice(0, index).ToArray());
                 Assert.Equal(message.Substring(0, index), ch);
 
                 // Never consume, to force buffers to be copied
-                channel.Advance(buffer.Start, buffer.Start.Seek(index));
+                reader.Advance(buffer.Start, buffer.Start.Seek(index));
 
                 // Yield the task. This will ensure that we don't have any Tasks idling
-                // around in UnownedBufferChannel.OnCompleted
+                // around in UnownedBufferReader.OnCompleted
                 await Task.Yield();
 
                 index++;
@@ -339,7 +339,7 @@ namespace System.IO.Pipelines.Tests
                 await sw.FlushAsync();
             });
 
-            var channel = stream.AsPipelineReader();
+            var reader = stream.AsPipelineReader();
 
             int calls = 0;
 
@@ -350,7 +350,7 @@ namespace System.IO.Pipelines.Tests
                 ReadableBuffer buffer;
                 try
                 {
-                    result = await channel.ReadAsync();
+                    result = await reader.ReadAsync();
                     buffer = result.Buffer;
                 }
                 catch (InvalidOperationException ex)
@@ -384,19 +384,19 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task StreamAsReadableChannelUsesUnderlyingChannelIfAvailable()
+        public async Task StreamAsPipelineReaderUsesUnderlyingPipelineReaderIfAvailable()
         {
-            var stream = new StreamAndChannel();
+            var stream = new StreamAndPipelineReader();
             var sw = new StreamWriter(stream);
             sw.Write("Hello");
             sw.Flush();
             stream.FinishWriting();
 
-            var channel = stream.AsPipelineReader();
+            var reader = stream.AsPipelineReader();
 
             while (true)
             {
-                var result = await channel.ReadAsync();
+                var result = await reader.ReadAsync();
                 var buffer = result.Buffer;
                 if (buffer.IsEmpty && result.IsCompleted)
                 {
@@ -408,26 +408,26 @@ namespace System.IO.Pipelines.Tests
 
                 var data = Encoding.UTF8.GetString(segment);
                 Assert.Equal("Hello", data);
-                channel.Advance(buffer.End);
+                reader.Advance(buffer.End);
             }
 
         }
 
         [Fact]
-        public async Task StreamAsReadableChannelReadStream()
+        public async Task StreamAsPipelineReaderReadStream()
         {
-            var stream = new StreamAndChannel();
+            var stream = new StreamAndPipelineReader();
             var sw = new StreamWriter(stream);
             sw.Write("Hello");
             sw.Flush();
 
-            var channel = stream.AsPipelineReader();
-            var result = await channel.ReadAsync();
+            var reader = stream.AsPipelineReader();
+            var result = await reader.ReadAsync();
             var buffer = result.Buffer;
             var segment = buffer.ToArray();
             var data = Encoding.UTF8.GetString(segment);
             Assert.Equal("Hello", data);
-            channel.Advance(buffer.End);
+            reader.Advance(buffer.End);
 
             sw.Write("World");
             sw.Flush();
@@ -438,9 +438,9 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal("World", Encoding.UTF8.GetString(readBuf, 0, read));
         }
 
-        private class StreamAndChannel : Stream, IPipelineReader
+        private class StreamAndPipelineReader : Stream, IPipelineReader
         {
-            private readonly PipelineReaderWriter _channel = new PipelineReaderWriter(ArrayBufferPool.Instance);
+            private readonly PipelineReaderWriter _readerWriter = new PipelineReaderWriter(ArrayBufferPool.Instance);
 
             public override bool CanRead => true;
 
@@ -471,12 +471,12 @@ namespace System.IO.Pipelines.Tests
 
             public void Advance(ReadCursor consumed, ReadCursor examined)
             {
-                _channel.AdvanceReader(consumed, examined);
+                _readerWriter.AdvanceReader(consumed, examined);
             }
 
             public void Complete(Exception exception = null)
             {
-                _channel.CompleteReader(exception);
+                _readerWriter.CompleteReader(exception);
             }
 
             public override void Flush()
@@ -486,17 +486,17 @@ namespace System.IO.Pipelines.Tests
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                return _channel.ReadAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                return _readerWriter.ReadAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
-                return await _channel.ReadAsync(new Span<byte>(buffer, offset, count));
+                return await _readerWriter.ReadAsync(new Span<byte>(buffer, offset, count));
             }
 
             public ReadableBufferAwaitable ReadAsync()
             {
-                return _channel.ReadAsync();
+                return _readerWriter.ReadAsync();
             }
 
             public override long Seek(long offset, SeekOrigin origin)
@@ -511,22 +511,22 @@ namespace System.IO.Pipelines.Tests
 
             public override void Write(byte[] buffer, int offset, int count)
             {
-                _channel.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                _readerWriter.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
-                return _channel.WriteAsync(new Span<byte>(buffer, offset, count));
+                return _readerWriter.WriteAsync(new Span<byte>(buffer, offset, count));
             }
 
-            public void FinishWriting() => _channel.CompleteWriter();
+            public void FinishWriting() => _readerWriter.CompleteWriter();
 
             protected override void Dispose(bool disposing)
             {
                 base.Dispose(disposing);
 
-                _channel.CompleteReader();
-                _channel.CompleteWriter();
+                _readerWriter.CompleteReader();
+                _readerWriter.CompleteWriter();
             }
         }
 

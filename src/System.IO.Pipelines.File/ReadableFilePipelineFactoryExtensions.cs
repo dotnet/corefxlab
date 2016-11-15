@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.File
 {
-    public static class ReadableFileChannelFactoryExtensions
+    public static class ReadableFilePipelineFactoryExtensions
     {
         public static IPipelineReader ReadFile(this PipelineFactory factory, string path)
         {
-            var channel = factory.Create();
+            var reader = factory.Create();
 
-            var file = new ReadableFileChannel(channel);
+            var file = new FileReader(reader);
             file.OpenReadFile(path);
             return file;
         }

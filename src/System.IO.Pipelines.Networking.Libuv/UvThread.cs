@@ -29,7 +29,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         public UvLoopHandle Loop { get; private set; }
 
-        public PipelineFactory ChannelFactory { get; } = new PipelineFactory();
+        public PipelineFactory PipelineFactory { get; } = new PipelineFactory();
 
         public WriteReqPool WriteReqPool { get; }
 
@@ -143,7 +143,7 @@ namespace System.IO.Pipelines.Networking.Libuv
         {
             Stop();
 
-            ChannelFactory.Dispose();
+            PipelineFactory.Dispose();
         }
 
         private struct Work

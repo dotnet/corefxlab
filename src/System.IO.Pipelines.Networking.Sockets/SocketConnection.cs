@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace System.IO.Pipelines.Networking.Sockets
 {
     /// <summary>
-    /// Represents a channel implementation using the async Socket API
+    /// Represents an <see cref="IPipelineConnection"/> implementation using the async Socket API
     /// </summary>
     public class SocketConnection : IPipelineConnection
     {
@@ -32,8 +32,8 @@ namespace System.IO.Pipelines.Networking.Sockets
         private static readonly byte[] _zeroLengthBuffer = new byte[0];
 
 
-        private readonly bool _ownsChannelFactory;
-        private PipelineFactory _channelFactory;
+        private readonly bool _ownsFactory;
+        private PipelineFactory _factory;
         private PipelineReaderWriter _input, _output;
         private Socket _socket;
 
@@ -65,23 +65,23 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
         }
 
-        internal SocketConnection(Socket socket, PipelineFactory channelFactory)
+        internal SocketConnection(Socket socket, PipelineFactory factory)
         {
             socket.NoDelay = true;
             _socket = socket;
-            if (channelFactory == null)
+            if (factory == null)
             {
-                _ownsChannelFactory = true;
-                channelFactory = new PipelineFactory();
+                _ownsFactory = true;
+                factory = new PipelineFactory();
             }
-            _channelFactory = channelFactory;
+            _factory = factory;
 
-            _input = ChannelFactory.Create();
-            _output = ChannelFactory.Create();
+            _input = PipelineFactory.Create();
+            _output = PipelineFactory.Create();
 
             ShutdownSocketWhenWritingCompletedAsync();
-            ReceiveFromSocketAndPushToChannelAsync();
-            ReadFromChannelAndWriteToSocketAsync();
+            ReceiveFromSocketAndPushToWriterAsync();
+            ReadFromReaderAndWriteToSocketAsync();
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// </summary>
         public IPipelineWriter Output => _output;
 
-        private PipelineFactory ChannelFactory => _channelFactory;
+        private PipelineFactory PipelineFactory => _factory;
 
         private Socket Socket => _socket;
 
@@ -102,13 +102,13 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// Begins an asynchronous connect operation to the designated endpoint
         /// </summary>
         /// <param name="endPoint">The endpoint to which to connect</param>
-        /// <param name="channelFactory">Optionally allows the underlying channel factory (and hence memory pool) to be specified; if one is not provided, a channel factory will be instantiated and owned by the connection</param>
-        public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, PipelineFactory channelFactory = null)
+        /// <param name="factory">Optionally allows the underlying <see cref="PipelineFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipelineFactory"/> will be instantiated and owned by the connection</param>
+        public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, PipelineFactory factory = null)
         {
             var args = new SocketAsyncEventArgs();
             args.RemoteEndPoint = endPoint;
             args.Completed += _asyncCompleted;
-            var tcs = new TaskCompletionSource<SocketConnection>(channelFactory);
+            var tcs = new TaskCompletionSource<SocketConnection>(factory);
             args.UserToken = tcs;
             if (!Socket.ConnectAsync(SocketType.Stream, ProtocolType.Tcp, args))
             {
@@ -177,8 +177,8 @@ namespace System.IO.Pipelines.Networking.Sockets
                 GC.SuppressFinalize(this);
                 _socket?.Dispose();
                 _socket = null;
-                if (_ownsChannelFactory) { _channelFactory?.Dispose(); }
-                _channelFactory = null;
+                if (_ownsFactory) { _factory?.Dispose(); }
+                _factory = null;
             }
         }
 
@@ -251,7 +251,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
             catch { }
         }
-        private async void ReceiveFromSocketAndPushToChannelAsync()
+        private async void ReceiveFromSocketAndPushToWriterAsync()
         {
             SocketAsyncEventArgs args = null;
             try
@@ -530,7 +530,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
         }
 
-        private async void ReadFromChannelAndWriteToSocketAsync()
+        private async void ReadFromReaderAndWriteToSocketAsync()
         {
             SocketAsyncEventArgs args = null;
             try

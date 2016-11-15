@@ -7,16 +7,16 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class WritableChannelFacts
+    public class PipelineWriterFacts
     {
         [Fact]
-        public async Task StreamAsWritableChannel()
+        public async Task StreamAsPipelineWriter()
         {
             var stream = new MemoryStream();
 
-            var channel = stream.AsPipelineWriter();
+            var writer = stream.AsPipelineWriter();
 
-            var buffer = channel.Alloc();
+            var buffer = writer.Alloc();
             buffer.WriteUtf8String("Hello World");
             await buffer.FlushAsync();
 
@@ -24,45 +24,45 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task StreamAsWritableChannelTwiceWritesToSameUnderlyingStream()
+        public async Task StreamAsPipelineWriterTwiceWritesToSameUnderlyingStream()
         {
             var stream = new MemoryStream();
 
-            var channel = stream.AsPipelineWriter();
+            var writer = stream.AsPipelineWriter();
 
-            var buffer = channel.Alloc();
+            var buffer = writer.Alloc();
             buffer.WriteUtf8String("Hello World");
             await buffer.FlushAsync();
 
             Assert.Equal("Hello World", Encoding.UTF8.GetString(stream.ToArray()));
 
-            channel.Complete();
+            writer.Complete();
 
-            channel = stream.AsPipelineWriter();
+            writer = stream.AsPipelineWriter();
 
-            buffer = channel.Alloc();
+            buffer = writer.Alloc();
             buffer.WriteUtf8String("Hello World");
             await buffer.FlushAsync();
 
             Assert.Equal("Hello WorldHello World", Encoding.UTF8.GetString(stream.ToArray()));
 
-            channel.Complete();
+            writer.Complete();
         }
 
         [Fact]
-        public async Task StreamAsWritableChannelWriteToChannelThenWriteToStream()
+        public async Task StreamAsPipelineWriterWriteToWriterThenWriteToStream()
         {
             var stream = new MemoryStream();
 
-            var channel = stream.AsPipelineWriter();
+            var writer = stream.AsPipelineWriter();
 
-            var buffer = channel.Alloc();
+            var buffer = writer.Alloc();
             buffer.WriteUtf8String("Hello World");
             await buffer.FlushAsync();
 
             Assert.Equal("Hello World", Encoding.UTF8.GetString(stream.ToArray()));
 
-            channel.Complete();
+            writer.Complete();
 
             var sw = new StreamWriter(stream);
             sw.Write("Hello World");
@@ -72,31 +72,31 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void StreamAsWritableChannelNothingWrittenIfNotFlushed()
+        public void StreamAsPipelineWriterNothingWrittenIfNotFlushed()
         {
             var stream = new MemoryStream();
 
-            var channel = stream.AsPipelineWriter();
+            var writer = stream.AsPipelineWriter();
 
-            var buffer = channel.Alloc();
+            var buffer = writer.Alloc();
             buffer.WriteUtf8String("Hello World");
 
             Assert.Equal(0, stream.Length);
 
-            channel.Complete();
+            writer.Complete();
         }
 
         [Fact]
-        public async Task StreamAsWritableChannelUsesUnderlyingChannel()
+        public async Task StreamAsPipelineWriterUsesUnderlyingWriter()
         {
             using (var stream = new MyCustomStream())
             {
-                var outputChannel = stream.AsPipelineWriter();
+                var writer = stream.AsPipelineWriter();
 
-                var output = outputChannel.Alloc();
+                var output = writer.Alloc();
                 output.WriteUtf8String("Hello World");
                 await output.FlushAsync();
-                outputChannel.Complete();
+                writer.Complete();
 
                 var sw = new StreamReader(stream);
 
@@ -106,7 +106,7 @@ namespace System.IO.Pipelines.Tests
 
         private class MyCustomStream : Stream, IPipelineWriter
         {
-            private readonly PipelineReaderWriter _channel = new PipelineReaderWriter(ArrayBufferPool.Instance);
+            private readonly PipelineReaderWriter _readerWriter = new PipelineReaderWriter(ArrayBufferPool.Instance);
 
             public override bool CanRead => true;
 
@@ -135,16 +135,16 @@ namespace System.IO.Pipelines.Tests
                 }
             }
 
-            public Task Writing => _channel.Writing;
+            public Task Writing => _readerWriter.Writing;
 
             public WritableBuffer Alloc(int minimumSize = 0)
             {
-                return _channel.Alloc(minimumSize);
+                return _readerWriter.Alloc(minimumSize);
             }
 
             public void Complete(Exception exception = null)
             {
-                _channel.CompleteWriter(exception);
+                _readerWriter.CompleteWriter(exception);
             }
 
             public override void Flush()
@@ -154,7 +154,7 @@ namespace System.IO.Pipelines.Tests
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                return _channel.ReadAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                return _readerWriter.ReadAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             public override long Seek(long offset, SeekOrigin origin)
@@ -169,15 +169,15 @@ namespace System.IO.Pipelines.Tests
 
             public override void Write(byte[] buffer, int offset, int count)
             {
-                _channel.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                _readerWriter.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             protected override void Dispose(bool disposing)
             {
                 base.Dispose(disposing);
 
-                _channel.CompleteReader();
-                _channel.CompleteWriter();
+                _readerWriter.CompleteReader();
+                _readerWriter.CompleteWriter();
             }
         }
     }

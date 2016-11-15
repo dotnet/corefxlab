@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace System.IO.Pipelines
 {
     /// <summary>
-    /// Factory used to creaet instances of various channels.
+    /// Factory used to creaet instances of various pipelines.
     /// </summary>
     public class PipelineFactory : IDisposable
     {
@@ -73,29 +73,29 @@ namespace System.IO.Pipelines
             return input;
         }
 
-        public IPipelineWriter CreateWriter(IPipelineWriter channel, Func<IPipelineReader, IPipelineWriter, Task> consume)
+        public IPipelineWriter CreateWriter(IPipelineWriter writer, Func<IPipelineReader, IPipelineWriter, Task> consume)
         {
-            var newChannel = new PipelineReaderWriter(_pool);
+            var newWriter = new PipelineReaderWriter(_pool);
 
-            consume(newChannel, channel).ContinueWith(t =>
+            consume(newWriter, writer).ContinueWith(t =>
             {
             });
 
-            return newChannel;
+            return newWriter;
         }
 
-        public IPipelineReader CreateReader(IPipelineReader channel, Func<IPipelineReader, IPipelineWriter, Task> produce)
+        public IPipelineReader CreateReader(IPipelineReader reader, Func<IPipelineReader, IPipelineWriter, Task> produce)
         {
-            var newChannel = new PipelineReaderWriter(_pool);
-            Execute(channel, newChannel, produce);
-            return newChannel;
+            var newReader = new PipelineReaderWriter(_pool);
+            Execute(reader, newReader, produce);
+            return newReader;
         }
 
-        private async void Execute(IPipelineReader channel, PipelineReaderWriter newChannel, Func<IPipelineReader, IPipelineWriter, Task> produce)
+        private async void Execute(IPipelineReader reader, PipelineReaderWriter writer, Func<IPipelineReader, IPipelineWriter, Task> produce)
         {
-            await newChannel.ReadingStarted;
+            await writer.ReadingStarted;
 
-            await produce(channel, newChannel);
+            await produce(reader, writer);
         }
 
         public void Dispose() => _pool.Dispose();

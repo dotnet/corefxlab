@@ -30,8 +30,8 @@ namespace System.IO.Pipelines.Networking.Libuv
             _thread = thread;
             _handle = handle;
 
-            _input = _thread.ChannelFactory.Create();
-            _output = _thread.ChannelFactory.Create();
+            _input = _thread.PipelineFactory.Create();
+            _output = _thread.PipelineFactory.Create();
 
             StartReading();
             _sendingTask = ProcessWrites();

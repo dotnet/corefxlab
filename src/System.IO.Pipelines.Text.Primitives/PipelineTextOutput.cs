@@ -7,15 +7,15 @@ using System.Text;
 
 namespace System.IO.Pipelines.Text.Primitives
 {
-    public class WritableChannelFormatter : ITextOutput
+    public class PipelineTextOutput : ITextOutput
     {
-        private readonly IPipelineWriter _channel;
+        private readonly IPipelineWriter _writer;
         private WritableBuffer _writableBuffer;
         private bool _needAlloc = true;
 
-        public WritableChannelFormatter(IPipelineWriter channel, EncodingData encoding)
+        public PipelineTextOutput(IPipelineWriter writer, EncodingData encoding)
         {
-            _channel = channel;
+            _writer = writer;
             Encoding = encoding;
         }
 
@@ -57,7 +57,7 @@ namespace System.IO.Pipelines.Text.Primitives
         {
             if (_needAlloc)
             {
-                _writableBuffer = _channel.Alloc();
+                _writableBuffer = _writer.Alloc();
                 _needAlloc = false;
             }
         }

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Samples
 {
-    public class ChannelHttpContent : HttpContent
+    public class PipelineHttpContent : HttpContent
     {
         private readonly IPipelineReader _output;
 
-        public ChannelHttpContent(IPipelineReader output)
+        public PipelineHttpContent(IPipelineReader output)
         {
             _output = output;
         }

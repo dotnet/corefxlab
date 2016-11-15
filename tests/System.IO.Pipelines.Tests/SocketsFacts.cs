@@ -21,7 +21,7 @@ namespace System.IO.Pipelines.Tests
         static readonly Span<byte> _ping = new Span<byte>(Encoding.ASCII.GetBytes("PING")), _pong = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
 
         [Fact]
-        public async Task CanCreateWorkingEchoServer_ChannelLibuvServer_NonChannelClient()
+        public async Task CanCreateWorkingEchoServer_PipelineLibuvServer_NonPipelineClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
             const string MessageToSend = "Hello world!";
@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task CanCreateWorkingEchoServer_ChannelSocketServer_ChannelSocketClient()
+        public async Task CanCreateWorkingEchoServer_PipelineSocketServer_PipelineSocketClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
             const string MessageToSend = "Hello world!";
@@ -81,7 +81,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void CanCreateWorkingEchoServer_ChannelSocketServer_NonChannelClient()
+        public void CanCreateWorkingEchoServer_PipelineSocketServer_NonPipelineClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
             const string MessageToSend = "Hello world!";
@@ -147,30 +147,30 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        static async Task<Tuple<int, int, int>> PingClient(IPipelineConnection channel, int messagesToSend)
+        static async Task<Tuple<int, int, int>> PingClient(IPipelineConnection connection, int messagesToSend)
         {
             int count = 0;
             var watch = Stopwatch.StartNew();
             int sendCount = 0, replyCount = 0;
             for (int i = 0; i < messagesToSend; i++)
             {
-                await channel.Output.WriteAsync(_ping);
+                await connection.Output.WriteAsync(_ping);
                 sendCount++;
 
                 bool havePong = false;
                 while (true)
                 {
-                    var result = await channel.Input.ReadAsync();
+                    var result = await connection.Input.ReadAsync();
                     var inputBuffer = result.Buffer;
 
                     if (inputBuffer.IsEmpty && result.IsCompleted)
                     {
-                        channel.Input.Advance(inputBuffer.End);
+                        connection.Input.Advance(inputBuffer.End);
                         break;
                     }
                     if (inputBuffer.Length < 4)
                     {
-                        channel.Input.Advance(inputBuffer.Start, inputBuffer.End);
+                        connection.Input.Advance(inputBuffer.Start, inputBuffer.End);
                     }
                     else
                     {
@@ -179,7 +179,7 @@ namespace System.IO.Pipelines.Tests
                         {
                             count++;
                         }
-                        channel.Input.Advance(inputBuffer.End);
+                        connection.Input.Advance(inputBuffer.End);
                         break;
                     }
                 }
@@ -193,44 +193,44 @@ namespace System.IO.Pipelines.Tests
                     break;
                 }
             }
-            channel.Input.Complete();
-            channel.Output.Complete();
+            connection.Input.Complete();
+            connection.Output.Complete();
             watch.Stop();
 
             return Tuple.Create(sendCount, replyCount, (int)watch.ElapsedMilliseconds);
 
         }
 
-        private static async Task PongServer(IPipelineConnection channel)
+        private static async Task PongServer(IPipelineConnection connection)
         {
             while (true)
             {
-                var result = await channel.Input.ReadAsync();
+                var result = await connection.Input.ReadAsync();
                 var inputBuffer = result.Buffer;
 
                 if (inputBuffer.IsEmpty && result.IsCompleted)
                 {
-                    channel.Input.Advance(inputBuffer.End);
+                    connection.Input.Advance(inputBuffer.End);
                     break;
                 }
 
                 if (inputBuffer.Length < 4)
                 {
-                    channel.Input.Advance(inputBuffer.Start, inputBuffer.End);
+                    connection.Input.Advance(inputBuffer.Start, inputBuffer.End);
                 }
                 else
                 {
                     bool isPing = inputBuffer.Equals(_ping);
                     if (isPing)
                     {
-                        await channel.Output.WriteAsync(_pong);
+                        await connection.Output.WriteAsync(_pong);
                     }
                     else
                     {
                         break;
                     }
 
-                    channel.Input.Advance(inputBuffer.End);
+                    connection.Input.Advance(inputBuffer.End);
                 }
             }
         }
@@ -257,24 +257,24 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private async Task Echo(IPipelineConnection channel)
+        private async Task Echo(IPipelineConnection connection)
         {
             while (true)
             {
-                var result = await channel.Input.ReadAsync();
+                var result = await connection.Input.ReadAsync();
                 var request = result.Buffer;
 
                 if (request.IsEmpty && result.IsCompleted)
                 {
-                    channel.Input.Advance(request.End);
+                    connection.Input.Advance(request.End);
                     break;
                 }
 
                 int len = request.Length;
-                var response = channel.Output.Alloc();
+                var response = connection.Output.Alloc();
                 response.Append(request);
                 await response.FlushAsync();
-                channel.Input.Advance(request.End);
+                connection.Input.Advance(request.End);
             }
         }
     }

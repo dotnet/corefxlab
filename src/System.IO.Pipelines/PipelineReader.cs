@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace System.IO.Pipelines
 {
     /// <summary>
-    /// Represents a channel from which data can be read.
+    /// Represents a pipeline from which data can be read.
     /// </summary>
     public abstract class PipelineReader : IPipelineReader
     {
@@ -25,27 +25,27 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Creates a base <see cref="PipelineReader"/>.
         /// </summary>
-        /// <param name="input">The <see cref="PipelineReaderWriter"/> the ReadableChannel communicates over.</param>
+        /// <param name="input">The <see cref="PipelineReaderWriter"/> the <see cref="PipelineReader"/> communicates over.</param>
         protected PipelineReader(PipelineReaderWriter input)
         {
             _input = input;
         }
 
         /// <summary>
-        /// Moves forward the channels read cursor to after the consumed data.
+        /// Moves forward the pipelines read cursor to after the consumed data.
         /// </summary>
         /// <param name="consumed">Marks the extent of the data that has been succesfully proceesed.</param>
         /// <param name="examined">Marks the extent of the data that has been read and examined.</param>
         /// <remarks>
         /// The memory for the consumed data will be released and no longer available.
-        /// The examined data communicates to the channel when it should signal more data is available.
+        /// The examined data communicates to the pipeline when it should signal more data is available.
         /// </remarks>
         public void Advance(ReadCursor consumed, ReadCursor examined) => _input.AdvanceReader(consumed, examined);
 
         /// <summary>
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
-        /// <param name="exception">Optional Exception indicating a failure that's causing the channel to complete.</param>
+        /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         public void Complete(Exception exception = null) => _input.CompleteReader(exception);
 
         /// <summary>

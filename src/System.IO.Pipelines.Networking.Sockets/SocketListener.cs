@@ -10,22 +10,22 @@ namespace System.IO.Pipelines.Networking.Sockets
     /// </summary>
     public class SocketListener : IDisposable
     {
-        private readonly bool _ownsChannelFactory;
+        private readonly bool _ownsFactory;
         private Socket _socket;
         private Socket Socket => _socket;
-        private PipelineFactory _channelFactory;
-        private PipelineFactory ChannelFactory => _channelFactory;
+        private PipelineFactory _factory;
+        private PipelineFactory PipelineFactory => _factory;
         private Func<SocketConnection, Task> Callback { get; set; }
         static readonly EventHandler<SocketAsyncEventArgs> _asyncCompleted = OnAsyncCompleted;
 
         /// <summary>
         /// Creates a new SocketListener instance
         /// </summary>
-        /// <param name="channelFactory">Optionally allows the underlying channel factory (and hence memory pool) to be specified; if one is not provided, a channel factory will be instantiated and owned by the listener</param>
-        public SocketListener(PipelineFactory channelFactory = null)
+        /// <param name="factory">Optionally allows the underlying <see cref="PipelineFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipelineFactory"/> will be instantiated and owned by the listener</param>
+        public SocketListener(PipelineFactory factory = null)
         {
-            _ownsChannelFactory = channelFactory == null;
-            _channelFactory = channelFactory ?? new PipelineFactory();
+            _ownsFactory = factory == null;
+            _factory = factory ?? new PipelineFactory();
         }
 
         /// <summary>
@@ -42,8 +42,8 @@ namespace System.IO.Pipelines.Networking.Sockets
                 GC.SuppressFinalize(this);
                 _socket?.Dispose();
                 _socket = null;
-                if (_ownsChannelFactory) { _channelFactory?.Dispose(); }
-                _channelFactory = null;
+                if (_ownsFactory) { _factory?.Dispose(); }
+                _factory = null;
             }
         }
 
@@ -123,7 +123,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         {
             if (e.SocketError == SocketError.Success)
             {
-                var conn = new SocketConnection(e.AcceptSocket, ChannelFactory);
+                var conn = new SocketConnection(e.AcceptSocket, PipelineFactory);
                 e.AcceptSocket = null;
                 ExecuteConnection(conn);
             }

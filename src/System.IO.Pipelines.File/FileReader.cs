@@ -6,17 +6,17 @@ using Microsoft.Win32.SafeHandles;
 
 namespace System.IO.Pipelines.File
 {
-    public class ReadableFileChannel : PipelineReader
+    public class FileReader : PipelineReader
     {
-        public ReadableFileChannel(MemoryPool pool) : base(pool)
+        public FileReader(MemoryPool pool) : base(pool)
         {
         }
 
-        public ReadableFileChannel(PipelineReaderWriter input) : base(input)
+        public FileReader(PipelineReaderWriter input) : base(input)
         {
         }
 
-        // Win32 file channel impl
+        // Win32 file impl
         // TODO: Other platforms
         public unsafe void OpenReadFile(string path)
         {

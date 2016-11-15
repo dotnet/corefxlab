@@ -37,16 +37,16 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task TakeTraversesSegments()
         {
-            using (var channelFactory = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = channelFactory.Create();
-                var w = channel.Alloc();
+                var readerWriter = factory.Create();
+                var w = readerWriter.Alloc();
                 w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
                 w.Append(ReadableBuffer.Create(new byte[] { 2 }, 0, 1));
                 w.Append(ReadableBuffer.Create(new byte[] { 3 }, 0, 1));
                 await w.FlushAsync();
 
-                var result = await channel.ReadAsync();
+                var result = await readerWriter.ReadAsync();
                 var buffer = result.Buffer;
                 var reader = new ReadableBufferReader(buffer);
 
@@ -60,15 +60,15 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task PeekTraversesSegments()
         {
-            using (var channelFactory = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = channelFactory.Create();
-                var w = channel.Alloc();
+                var readerWriter = factory.Create();
+                var w = readerWriter.Alloc();
                 w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
                 w.Append(ReadableBuffer.Create(new byte[] { 2 }, 0, 1));
                 await w.FlushAsync();
 
-                var result = await channel.ReadAsync();
+                var result = await readerWriter.ReadAsync();
                 var buffer = result.Buffer;
                 var reader = new ReadableBufferReader(buffer);
 
@@ -83,15 +83,15 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task PeekWorkesWithEmptySegments()
         {
-            using (var channelFactory = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = channelFactory.Create();
-                var w = channel.Alloc();
+                var readerWriter = factory.Create();
+                var w = readerWriter.Alloc();
                 w.Append(ReadableBuffer.Create(new byte[] { 0 }, 0, 0));
                 w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
                 await w.FlushAsync();
 
-                var result = await channel.ReadAsync();
+                var result = await readerWriter.ReadAsync();
                 var buffer = result.Buffer;
                 var reader = new ReadableBufferReader(buffer);
 

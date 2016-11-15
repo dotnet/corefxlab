@@ -23,14 +23,14 @@ namespace System.IO.Pipelines
 
         private Action _awaitableState;
 
-        // The read head which is the extent of the IReadableChannel's consumed bytes
+        // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
 
-        // The commit head which is the extent of the bytes available to the IReadableChannel to consume
+        // The commit head which is the extent of the bytes available to the IPipelineReader to consume
         private BufferSegment _commitHead;
         private int _commitHeadIndex;
 
-        // The write head which is the extent of the IWritableChannel's written bytes
+        // The write head which is the extent of the IPipelineWriter's written bytes
         private BufferSegment _writingHead;
 
         private int _consumingState;
@@ -60,13 +60,13 @@ namespace System.IO.Pipelines
         public Task ReadingStarted => _startingReadingTcs.Task;
 
         /// <summary>
-        /// Gets a task that completes when no more data will be added to the channel.
+        /// Gets a task that completes when no more data will be added to the pipeline.
         /// </summary>
         /// <remarks>This task indicates the producer has completed and will not write anymore data.</remarks>
         private Task Reading => _readingTcs.Task;
 
         /// <summary>
-        /// Gets a task that completes when no more data will be read from the channel.
+        /// Gets a task that completes when no more data will be read from the pipeline.
         /// </summary>
         /// <remarks>
         /// This task indicates the consumer has completed and will not read anymore data.
@@ -81,7 +81,7 @@ namespace System.IO.Pipelines
         internal Memory<byte> Memory => _writingHead == null ? Memory<byte>.Empty : _writingHead.Memory.Slice(_writingHead.End, _writingHead.WritableBytes);
 
         /// <summary>
-        /// Allocates memory from the channel to write into.
+        /// Allocates memory from the pipeline to write into.
         /// </summary>
         /// <param name="minimumSize">The minimum size buffer to allocate</param>
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
@@ -398,9 +398,9 @@ namespace System.IO.Pipelines
         void IPipelineWriter.Complete(Exception exception) => CompleteWriter(exception);
 
         /// <summary>
-        /// Marks the channel as being complete, meaning no more items will be written to it.
+        /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>
-        /// <param name="exception">Optional Exception indicating a failure that's causing the channel to complete.</param>
+        /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         public void CompleteWriter(Exception exception = null)
         {
             // TODO: Review this lock?
@@ -434,7 +434,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
-        /// <param name="exception">Optional Exception indicating a failure that's causing the channel to complete.</param>
+        /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         public void CompleteReader(Exception exception = null)
         {
             // TODO: Review this lock?

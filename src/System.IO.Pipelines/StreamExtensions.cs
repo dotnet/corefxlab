@@ -25,20 +25,20 @@ namespace System.IO.Pipelines
         /// <returns></returns>
         public static IPipelineWriter AsPipelineWriter(this Stream stream, IBufferPool pool)
         {
-            var channel = new PipelineReaderWriter(pool);
-            channel.CopyToAsync(stream).ContinueWith((task) =>
+            var writer = new PipelineReaderWriter(pool);
+            writer.CopyToAsync(stream).ContinueWith((task) =>
             {
                 if (task.IsFaulted)
                 {
-                    channel.CompleteReader(task.Exception);
+                    writer.CompleteReader(task.Exception);
                 }
                 else
                 {
-                    channel.CompleteReader();
+                    writer.CompleteReader();
                 }
             });
 
-            return channel;
+            return writer;
         }
 
         /// <summary>
@@ -63,26 +63,26 @@ namespace System.IO.Pipelines
 
             var streamAdaptor = new UnownedBufferStream(stream);
             streamAdaptor.Produce(cancellationToken);
-            return streamAdaptor.Channel;
+            return streamAdaptor.Reader;
         }
 
         /// <summary>
         /// Copies the content of a <see cref="Stream"/> into a <see cref="IPipelineWriter"/>.
         /// </summary>
         /// <param name="stream"></param>
-        /// <param name="channel"></param>
+        /// <param name="writer"></param>
         /// <returns></returns>
-        public static Task CopyToAsync(this Stream stream, IPipelineWriter channel)
+        public static Task CopyToAsync(this Stream stream, IPipelineWriter writer)
         {
-            return stream.CopyToAsync(new StreamChannel(channel));
+            return stream.CopyToAsync(new PipelineWriterStream(writer));
         }
 
         private class UnownedBufferStream : Stream
         {
             private readonly Stream _stream;
-            private readonly UnownedBufferReader _channel;
+            private readonly UnownedBufferReader _reader;
 
-            public IPipelineReader Channel => _channel;
+            public IPipelineReader Reader => _reader;
 
             public override bool CanRead => false;
             public override bool CanSeek => false;
@@ -114,7 +114,7 @@ namespace System.IO.Pipelines
             public UnownedBufferStream(Stream stream)
             {
                 _stream = stream;
-                _channel = new UnownedBufferReader();
+                _reader = new UnownedBufferReader();
             }
 
             public override void Write(byte[] buffer, int offset, int count)
@@ -124,25 +124,25 @@ namespace System.IO.Pipelines
 
             public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
-                await _channel.WriteAsync(new ArraySegment<byte>(buffer, offset, count), cancellationToken);
+                await _reader.WriteAsync(new ArraySegment<byte>(buffer, offset, count), cancellationToken);
             }
 
-            // *gasp* Async Void!? It works here because we still have _channel.Writing to track completion.
+            // *gasp* Async Void!? It works here because we still have _reader.Writing to track completion.
             internal async void Produce(CancellationToken cancellationToken)
             {
                 // Wait for a reader
-                await _channel.ReadingStarted;
+                await _reader.ReadingStarted;
 
                 try
                 {
                     // We have to provide a buffer size in order to provide a cancellation token. Weird but meh.
                     // 4096 is the "default" value.
                     await _stream.CopyToAsync(this, 4096, cancellationToken);
-                    _channel.CompleteWriter();
+                    _reader.CompleteWriter();
                 }
                 catch (Exception ex)
                 {
-                    _channel.CompleteWriter(ex);
+                    _reader.CompleteWriter(ex);
                 }
             }
 
@@ -168,13 +168,13 @@ namespace System.IO.Pipelines
             }
         }
 
-        private class StreamChannel : Stream
+        private class PipelineWriterStream : Stream
         {
-            private IPipelineWriter _channel;
+            private IPipelineWriter _writer;
 
-            public StreamChannel(IPipelineWriter channel)
+            public PipelineWriterStream(IPipelineWriter writer)
             {
-                _channel = channel;
+                _writer = writer;
             }
 
             public override bool CanRead => false;
@@ -235,9 +235,9 @@ namespace System.IO.Pipelines
 
             public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
-                var channelBuffer = _channel.Alloc();
-                channelBuffer.Write(new Span<byte>(buffer, offset, count));
-                await channelBuffer.FlushAsync();
+                var output = _writer.Alloc();
+                output.Write(new Span<byte>(buffer, offset, count));
+                await output.FlushAsync();
             }
         }
     }

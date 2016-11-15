@@ -47,8 +47,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _rio = rio;
             _rioThread = rioThread;
 
-            _input = rioThread.ChannelFactory.Create();
-            _output = rioThread.ChannelFactory.Create();
+            _input = rioThread.PipelineFactory.Create();
+            _output = rioThread.PipelineFactory.Create();
 
             _requestQueue = requestQueue;
 

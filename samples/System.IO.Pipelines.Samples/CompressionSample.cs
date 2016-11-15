@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.Samples
     {
         public static void Run()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
                 var filePath = Path.GetFullPath("Program.cs");
 
@@ -21,16 +21,15 @@ namespace System.IO.Pipelines.Samples
                 //fs.CopyTo(compressStream);
                 //compressStream.Flush();
                 //compressed.Seek(0, SeekOrigin.Begin);
-                // var input = channelFactory.MakeReadableChannel(compressed);
 
-                var input = cf.ReadFile(filePath)
-                              .DeflateCompress(cf, CompressionLevel.Optimal)
-                              .DeflateDecompress(cf);
+                var input = factory.ReadFile(filePath)
+                              .DeflateCompress(factory, CompressionLevel.Optimal)
+                              .DeflateDecompress(factory);
 
-                // Wrap the console in a writable channel
-                var output = cf.CreateWriter(Console.OpenStandardOutput());
+                // Wrap the console in a pipeline writer
+                var output = factory.CreateWriter(Console.OpenStandardOutput());
 
-                // Copy from the file channel to the console channel
+                // Copy from the file reader to the console writer
                 input.CopyToAsync(output).GetAwaiter().GetResult();
 
                 input.Complete();

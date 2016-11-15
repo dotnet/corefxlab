@@ -14,7 +14,7 @@ namespace System.IO.Pipelines.Samples.Http
     public class ResponseHeaderDictionary : IHeaderDictionary
     {
         private static readonly DateHeaderValueManager _dateHeaderValueManager = new DateHeaderValueManager();
-        private static readonly byte[] _serverHeaderBytes = Encoding.UTF8.GetBytes("\r\nServer: Channels");
+        private static readonly byte[] _serverHeaderBytes = Encoding.UTF8.GetBytes("\r\nServer: Pipelines");
         private static readonly byte[] _chunkedHeaderBytes = Encoding.UTF8.GetBytes("\r\nTransfer-Encoding: chunked");
 
         private static readonly byte[] _headersStartBytes = Encoding.UTF8.GetBytes("\r\n");

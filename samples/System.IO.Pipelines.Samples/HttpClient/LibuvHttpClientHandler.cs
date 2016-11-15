@@ -45,7 +45,7 @@ namespace System.IO.Pipelines.Samples
 
                 await requestBuffer.FlushAsync();
 
-                // Copy the body to the input channel
+                // Copy the body to the input
                 var body = await request.Content.ReadAsStreamAsync();
 
                 await body.CopyToAsync(connection.Output);
@@ -56,7 +56,7 @@ namespace System.IO.Pipelines.Samples
             }
 
             var response = new HttpResponseMessage();
-            response.Content = new ChannelHttpContent(connection.Input);
+            response.Content = new PipelineHttpContent(connection.Input);
 
             await ProduceResponse(state, connection, response);
 
@@ -240,7 +240,7 @@ namespace System.IO.Pipelines.Samples
                 {
                     // BAD but it's a proof of concept ok?
                     state.PreviousContentLength = (int)length.Value;
-                    ((ChannelHttpContent)response.Content).ContentLength = (int)length;
+                    ((PipelineHttpContent)response.Content).ContentLength = (int)length;
                     state.Consumed = consumed;
                 }
 

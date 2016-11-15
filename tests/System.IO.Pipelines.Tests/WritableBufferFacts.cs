@@ -15,8 +15,8 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var channel = new PipelineReaderWriter(memoryPool);
-                var buffer = channel.Alloc();
+                var readerWriter = new PipelineReaderWriter(memoryPool);
+                var buffer = readerWriter.Alloc();
                 buffer.Advance(0); // doing nothing, the hard way
                 await buffer.FlushAsync();
             }
@@ -33,12 +33,12 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var channel = new PipelineReaderWriter(memoryPool);
-                var buffer = channel.Alloc();
+                var readerWriter = new PipelineReaderWriter(memoryPool);
+                var buffer = readerWriter.Alloc();
                 buffer.WriteUInt64(value);
                 await buffer.FlushAsync();
 
-                var result = await channel.ReadAsync();
+                var result = await readerWriter.ReadAsync();
                 var inputBuffer = result.Buffer;
 
                 Assert.Equal(valueAsString, inputBuffer.GetUtf8String());
@@ -57,24 +57,24 @@ namespace System.IO.Pipelines.Tests
             new Random(length).NextBytes(data);
             using (var memoryPool = new MemoryPool())
             {
-                var channel = new PipelineReaderWriter(memoryPool);
+                var readerWriter = new PipelineReaderWriter(memoryPool);
 
-                var output = channel.Alloc();
+                var output = readerWriter.Alloc();
                 output.Write(data);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
-                channel.CompleteWriter();
+                readerWriter.CompleteWriter();
 
                 int offset = 0;
                 while (true)
                 {
-                    var result = await channel.ReadAsync();
+                    var result = await readerWriter.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
                     Assert.True(input.Equals(new Span<byte>(data, offset, input.Length)));
                     offset += input.Length;
-                    channel.Advance(input.End);
+                    readerWriter.Advance(input.End);
                 }
                 Assert.Equal(data.Length, offset);
             }
@@ -92,25 +92,25 @@ namespace System.IO.Pipelines.Tests
             FillRandomStringData(data, length);
             using (var memoryPool = new MemoryPool())
             {
-                var channel = new PipelineReaderWriter(memoryPool);
+                var readerWriter = new PipelineReaderWriter(memoryPool);
 
-                var output = channel.Alloc();
+                var output = readerWriter.Alloc();
                 output.WriteUtf8String(data);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
-                channel.CompleteWriter();
+                readerWriter.CompleteWriter();
 
                 int offset = 0;
                 while (true)
                 {
-                    var result = await channel.ReadAsync();
+                    var result = await readerWriter.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
                     string s = ReadableBufferExtensions.GetUtf8String(input);
                     Assert.Equal(data.Substring(offset, input.Length), s);
                     offset += input.Length;
-                    channel.Advance(input.End);
+                    readerWriter.Advance(input.End);
                 }
                 Assert.Equal(data.Length, offset);
             }
@@ -127,25 +127,25 @@ namespace System.IO.Pipelines.Tests
             FillRandomStringData(data, length);
             using (var memoryPool = new MemoryPool())
             {
-                var channel = new PipelineReaderWriter(memoryPool);
+                var readerWriter = new PipelineReaderWriter(memoryPool);
 
-                var output = channel.Alloc();
+                var output = readerWriter.Alloc();
                 output.WriteAsciiString(data);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
-                channel.CompleteWriter();
+                readerWriter.CompleteWriter();
 
                 int offset = 0;
                 while (true)
                 {
-                    var result = await channel.ReadAsync();
+                    var result = await readerWriter.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
                     string s = ReadableBufferExtensions.GetAsciiString(input);
                     Assert.Equal(data.Substring(offset, input.Length), s);
                     offset += input.Length;
-                    channel.Advance(input.End);
+                    readerWriter.Advance(input.End);
                 }
                 Assert.Equal(data.Length, offset);
             }
@@ -169,8 +169,8 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var channel = new PipelineReaderWriter(memoryPool);
-                var output = channel.Alloc();
+                var readerWriter = new PipelineReaderWriter(memoryPool);
+                var output = readerWriter.Alloc();
 
                 Assert.True(output.AsReadableBuffer().IsEmpty);
                 Assert.Equal(0, output.AsReadableBuffer().Length);
@@ -207,9 +207,9 @@ namespace System.IO.Pipelines.Tests
         {
             using (var memoryPool = new MemoryPool())
             {
-                var channel = new PipelineReaderWriter(memoryPool);
+                var readerWriter = new PipelineReaderWriter(memoryPool);
 
-                var output = channel.Alloc();
+                var output = readerWriter.Alloc();
 
                 byte[] predictablyGibberish = new byte[512];
                 const int SEED = 1235412;
@@ -248,9 +248,9 @@ namespace System.IO.Pipelines.Tests
         { // not really an expectation; just an accepted caveat
             using (var memoryPool = new MemoryPool())
             {
-                var channel = new PipelineReaderWriter(memoryPool);
+                var readerWriter = new PipelineReaderWriter(memoryPool);
 
-                var output = channel.Alloc();
+                var output = readerWriter.Alloc();
                 var readable = output.AsReadableBuffer();
                 output.Append(readable);
                 Assert.Equal(0, output.AsReadableBuffer().Length);
@@ -266,9 +266,9 @@ namespace System.IO.Pipelines.Tests
             new Random().NextBytes(chunk);
             using (var memoryPool = new MemoryPool())
             {
-                var channel = new PipelineReaderWriter(memoryPool);
+                var readerWriter = new PipelineReaderWriter(memoryPool);
 
-                var output = channel.Alloc();
+                var output = readerWriter.Alloc();
 
                 for (int i = 0; i < 20; i++)
                 {
@@ -290,10 +290,10 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void EnsureMoreThanPoolBlockSizeThrows()
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
-                var buffer = channel.Alloc();
+                var readerWriter = factory.Create();
+                var buffer = readerWriter.Alloc();
                 Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Ensure(8192));
             }
         }
@@ -314,10 +314,10 @@ namespace System.IO.Pipelines.Tests
         [MemberData(nameof(HexNumbers))]
         public void WriteHex(int value, string hex)
         {
-            using (var cf = new PipelineFactory())
+            using (var factory = new PipelineFactory())
             {
-                var channel = cf.Create();
-                var buffer = channel.Alloc();
+                var readerWriter = factory.Create();
+                var buffer = readerWriter.Alloc();
                 buffer.WriteHex(value);
 
                 Assert.Equal(hex, buffer.AsReadableBuffer().GetAsciiString());

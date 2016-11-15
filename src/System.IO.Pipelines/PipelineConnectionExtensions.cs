@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines
 {
-    public static class DuplexPipelineExtensions
+    public static class PipelineConnectionExtensions
     {
-        public static Stream GetStream(this IPipelineConnection channel)
+        public static Stream GetStream(this IPipelineConnection connection)
         {
-            return new PipelineConnectionStream(channel);
+            return new PipelineConnectionStream(connection);
         }
     }
 
