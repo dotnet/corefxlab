@@ -19,14 +19,14 @@ namespace System.Text.Formatting.Tests
             _inMonths = inMonths;
         }
 
-        public bool TryFormat(Span<byte> buffer, Format.Parsed format, EncodingData encoding, out int bytesWritten)
+        public bool TryFormat(Span<byte> buffer, out int bytesWritten, Format.Parsed format, EncodingData encoding)
         {
-            if (!PrimitiveFormatter.TryFormat(_age, buffer, format, encoding, out bytesWritten)) return false;
+            if (!PrimitiveFormatter.TryFormat(_age, buffer, out bytesWritten, format, encoding)) return false;
 
 
             char symbol = _inMonths ? 'm' : 'y';
             int symbolBytes;
-            if (!PrimitiveFormatter.TryFormat(symbol, buffer.Slice(bytesWritten), encoding.Encoding, out symbolBytes)) return false;
+            if (!PrimitiveFormatter.TryEncode(symbol, buffer.Slice(bytesWritten), out symbolBytes, encoding.Encoding)) return false;
 
             bytesWritten += symbolBytes;
             return true;

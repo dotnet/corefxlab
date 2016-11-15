@@ -165,11 +165,11 @@ namespace System.Text.Json
             return false;
         }
 
-        public bool TryFormat(Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int written)
+        public bool TryFormat(Span<byte> buffer, out int written, Format.Parsed format, EncodingData formattingData)
         {
             written = 0;
             int justWritten;
-            if(!'{'.TryFormat(buffer, formattingData.Encoding, out justWritten)){
+            if(!'{'.TryEncode(buffer, out justWritten, formattingData.Encoding)) {
                 return false;
             }
             written += justWritten;
@@ -182,31 +182,31 @@ namespace System.Text.Json
                 if(firstProperty) { firstProperty = false; }
                 else
                 {
-                    if (!','.TryFormat(buffer.Slice(written), formattingData.Encoding, out justWritten))
+                    if (!','.TryEncode(buffer.Slice(written), out justWritten, formattingData.Encoding))
                     {
                         return false;
                     }
                     written += justWritten;
                 }
 
-                if(!property.Key.TryFormat(buffer.Slice(written), format, formattingData, out justWritten))
+                if(!property.Key.TryFormat(buffer.Slice(written), out justWritten, format, formattingData))
                 {
                     written = 0; return false;
                 }
                 written += justWritten;
-                if (!':'.TryFormat(buffer.Slice(written), formattingData.Encoding, out justWritten))
+                if (!':'.TryEncode(buffer.Slice(written), out justWritten, formattingData.Encoding))
                 {
                     return false;
                 }
                 written += justWritten;
-                if (!property.Value.TryFormat(buffer.Slice(written), format, formattingData, out justWritten))
+                if (!property.Value.TryFormat(buffer.Slice(written), out justWritten, format, formattingData))
                 {
                     written = 0; return false;
                 }
                 written += justWritten;
             }
 
-            if (!'}'.TryFormat(buffer.Slice(written), formattingData.Encoding, out justWritten)){
+            if (!'}'.TryEncode(buffer.Slice(written), out justWritten, formattingData.Encoding)) {
                 written = 0; return false;
             }
             written += justWritten;
@@ -257,7 +257,7 @@ namespace System.Text.Json
                 else throw new NotImplementedException();
             }
 
-            public bool TryFormat(Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int written)
+            public bool TryFormat(Span<byte> buffer, out int written, Format.Parsed format, EncodingData formattingData)
             {
                 switch (_type)
                 {
@@ -266,13 +266,13 @@ namespace System.Text.Json
                     case JsonReader.JsonValueType.Number:
                         return _value.TryFormat(buffer, format, formattingData, out written);
                     case JsonReader.JsonValueType.Object:
-                        return _object.TryFormat(buffer, format, formattingData, out written);
+                        return _object.TryFormat(buffer, out written, format, formattingData);
                     case JsonReader.JsonValueType.Null:
-                        return "null".TryFormat(buffer, formattingData.Encoding, out written);
+                        return "null".TryEncode(buffer, out written, formattingData.Encoding);
                     case JsonReader.JsonValueType.True:
-                        return "true".TryFormat(buffer, formattingData.Encoding, out written);
+                        return "true".TryEncode(buffer, out written, formattingData.Encoding);
                     case JsonReader.JsonValueType.False:
-                        return "false".TryFormat(buffer, formattingData.Encoding, out written);
+                        return "false".TryEncode(buffer, out written, formattingData.Encoding);
                     default:
                         throw new NotImplementedException();
                 }
@@ -315,7 +315,7 @@ namespace System.Text.Json
                 return result;
             }
 
-            public bool TryFormat(Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int written)
+            public bool TryFormat(Span<byte> buffer, out int written, Format.Parsed format, EncodingData formattingData)
             {
                 return _name.TryFormatQuotedString(buffer, format, formattingData, out written);
             }
@@ -348,7 +348,7 @@ namespace System.Text.Json
             written = 0;
             int justWritten;
 
-            if (!'"'.TryFormat(buffer, formattingData.Encoding, out justWritten))
+            if (!'"'.TryEncode(buffer, out justWritten, formattingData.Encoding))
             {
                 return false;
             }
@@ -360,7 +360,7 @@ namespace System.Text.Json
             }
             written += justWritten;
 
-            if (!'"'.TryFormat(buffer.Slice(written), formattingData.Encoding, out justWritten))
+            if (!'"'.TryEncode(buffer.Slice(written), out justWritten, formattingData.Encoding))
             {
                 return false;
             }

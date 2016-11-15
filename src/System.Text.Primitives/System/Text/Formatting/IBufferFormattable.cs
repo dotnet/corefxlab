@@ -15,10 +15,10 @@ namespace System.Text.Formatting
             /// This interface should be implemented by types that want to support allocation-free formatting.
             /// </summary>
             /// <param name="buffer">The buffer to format the value into</param>
+            /// <param name="written">This parameter is used to return the number of bytes that were written to the buffer</param>
             /// <param name="format">This is a pre-parsed representation of the formatting string. It's preparsed for efficiency.</param>
             /// <param name="encoding">This object provides bytes representing digits and symbols used during number formatting.</param>
-            /// <param name="written">This parameter is used to return the number of bytes that were written to the buffer</param>
             /// <returns>False if the buffer was to small, otherwise true.</returns>
-        bool TryFormat(Span<byte> buffer, Format.Parsed format, EncodingData encoding, out int written);
+        bool TryFormat(Span<byte> buffer, out int written, Format.Parsed format, EncodingData encoding);
     }
 }
