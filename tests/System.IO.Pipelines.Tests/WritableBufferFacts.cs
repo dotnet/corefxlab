@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
 using Xunit;
+using System.Text.Formatting;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -35,7 +36,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = new PipelineReaderWriter(memoryPool);
                 var buffer = readerWriter.Alloc();
-                buffer.WriteUInt64(value);
+                buffer.Append(value, EncodingData.InvariantUtf8);
                 await buffer.FlushAsync();
 
                 var result = await readerWriter.ReadAsync();
@@ -95,7 +96,7 @@ namespace System.IO.Pipelines.Tests
                 var readerWriter = new PipelineReaderWriter(memoryPool);
 
                 var output = readerWriter.Alloc();
-                output.WriteUtf8String(data);
+                output.Append(data, EncodingData.TextEncoding.Utf8);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 readerWriter.CompleteWriter();
@@ -130,7 +131,7 @@ namespace System.IO.Pipelines.Tests
                 var readerWriter = new PipelineReaderWriter(memoryPool);
 
                 var output = readerWriter.Alloc();
-                output.WriteAsciiString(data);
+                output.Append(data, EncodingData.TextEncoding.Utf8);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 readerWriter.CompleteWriter();
@@ -176,7 +177,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(0, output.AsReadableBuffer().Length);
 
 
-                output.WriteUtf8String("hello world");
+                output.Append("hello world", EncodingData.TextEncoding.Utf8);
                 var readable = output.AsReadableBuffer();
 
                 // check that looks about right
@@ -186,7 +187,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.True(readable.Slice(1, 3).Equals(Encoding.UTF8.GetBytes("ell")));
 
                 // check it all works after we write more
-                output.WriteUtf8String("more data");
+                output.Append("more data", EncodingData.TextEncoding.Utf8);
 
                 // note that the snapshotted readable should not have changed by this
                 Assert.False(readable.IsEmpty);
@@ -318,7 +319,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = factory.Create();
                 var buffer = readerWriter.Alloc();
-                buffer.WriteHex(value);
+                buffer.Append(value, EncodingData.InvariantUtf8, 'x');
 
                 Assert.Equal(hex, buffer.AsReadableBuffer().GetAsciiString());
             }
