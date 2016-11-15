@@ -1,0 +1,27 @@
+﻿{
+  "version": "0.2.0-beta-*",
+  "description": "Networking implementation of pipelines based on System.Net.Socket using the SocketAsyncEventArgs API",
+  "packOptions": {
+    "projectUrl": "https://github.com/davidfowl/Channels"
+  },
+  "buildOptions": {
+    "allowUnsafe": true,
+    "keyFile": "../../tools/Key.snk"
+  },
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "System.IO.Pipelines": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "net451": { },
+    "netstandard1.3": {
+      "dependencies": {
+        "System.Threading.ThreadPool":  "4.0.10"
+      }
+    }
+  }
+}

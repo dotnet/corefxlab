@@ -1,0 +1,43 @@
+{
+  "buildOptions": {
+    "warningsAsErrors": true,
+    "keyFile": "../../tools/Key.snk",
+    "allowUnsafe": true
+  },
+  "dependencies": {
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "System.IO.Pipelines": {
+      "target": "project"
+    },
+    "System.IO.Pipelines.Text.Primitives": {
+      "target": "project"
+    },
+    "System.IO.Pipelines.Networking.Sockets": {
+      "target": "project"
+    },
+    "System.IO.Pipelines.Networking.Libuv": {
+      "target": "project"
+    },
+    "System.IO.Pipelines.Networking.Windows.RIO": {
+      "target": "project"
+    },
+    "xunit": "2.2.0-beta2-build3300",
+    "System.Collections.Sequences": "0.1.0-*"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        },
+        "Microsoft.CodeCoverage": {
+          "type": "build",
+          "version": "1.0.1"
+        }
+      },
+      "imports": "dnxcore50"
+    }
+  },
+  "testRunner": "xunit"
+}

@@ -1,0 +1,44 @@
+﻿{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "allowUnsafe": true,
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "System.IO.Pipelines": {
+      "target": "project"
+    },
+    "System.IO.Pipelines.Text.Primitives": {
+      "target": "project"
+    },
+    "System.IO.Pipelines.Networking.Libuv": {
+      "target": "project"
+    },
+    "System.IO.Pipelines.Networking.Windows.RIO": {
+      "target": "project"
+    },
+    "System.IO.Pipelines.File": {
+      "target": "project"
+    },
+    "System.IO.Pipelines.Compression": {
+      "target": "project"
+    },
+    "Newtonsoft.Json": "9.0.1",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": { }
+  },
+
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  }
+}
