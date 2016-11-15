@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
@@ -74,15 +75,6 @@ namespace System.IO.Pipelines.File
             }
         }
 
-        private class Box<T>
-        {
-            public Box(T value)
-            {
-                Value = value;
-            }
-            public T Value { get; set; }
-        }
-
         private class ReadOperation
         {
             public IOCompletionCallback IOCallback { get; set; }
@@ -96,7 +88,7 @@ namespace System.IO.Pipelines.File
 
             public IPipelineWriter Writer { get; set; }
 
-            public Box<WritableBuffer> BoxedBuffer { get; set; }
+            public StrongBox<WritableBuffer> BoxedBuffer { get; set; }
 
             public int Offset { get; set; }
 
@@ -116,7 +108,7 @@ namespace System.IO.Pipelines.File
 
                 Overlapped = overlapped;
 
-                BoxedBuffer = new Box<WritableBuffer>(buffer);
+                BoxedBuffer = new StrongBox<WritableBuffer>(buffer);
 
                 int r = ReadFile(FileHandle, data, count, IntPtr.Zero, overlapped);
 

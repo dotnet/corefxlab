@@ -93,10 +93,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <returns>The block that is reserved for the called. It must be passed to Return when it is no longer being used.</returns>
 #if DEBUG
-        private MemoryPoolBlock Lease(
-            [CallerMemberName] string memberName = "",
-            [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0)
+        private MemoryPoolBlock Lease()
         {
             Debug.Assert(!_disposedValue, "Block being leased from disposed pool!");
 #else

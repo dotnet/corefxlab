@@ -12,7 +12,7 @@ namespace System.IO.Pipelines.Networking.Sockets.Internal
     /// a custom awaiter is provided. Works like a <see cref="ManualResetEvent "/> - the <see cref="Reset"/> method must
     /// be called between operations.
     /// </summary>
-    internal class Signal : INotifyCompletion
+    internal class Signal : ICriticalNotifyCompletion
     {
         private readonly ContinuationMode _continuationMode;
 
@@ -31,6 +31,8 @@ namespace System.IO.Pipelines.Networking.Sockets.Internal
         public Signal GetAwaiter() => this;
 
         public void GetResult() { }
+
+        public void UnsafeOnCompleted(Action continuation) => OnCompleted(continuation);
 
         public void OnCompleted(Action continuation)
         {

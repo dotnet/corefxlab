@@ -45,7 +45,6 @@ namespace System.IO.Pipelines
                     break;
                 }
 
-
                 var result = awaiter.GetResult();
                 var inputBuffer = result.Buffer;
 

@@ -1,5 +1,5 @@
 ﻿{
-  "version": "0.2.0-beta-*",
+  "version": "0.1.0-*",
   "description": "Networking implementation of pipelines based on System.Net.Socket using the SocketAsyncEventArgs API",
   "copyright": "Microsoft Corporation, All rights reserved",
   "packOptions": {

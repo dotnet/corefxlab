@@ -113,16 +113,12 @@ namespace System.IO.Pipelines
         public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
             var task = ReadAsync(buffer, offset, count, default(CancellationToken), state);
-            if (callback != null)
-            {
-                task.ContinueWith(t => callback.Invoke(t));
-            }
-            return task;
+            return TaskToApm.Begin(task, callback, state);
         }
 
         public override int EndRead(IAsyncResult asyncResult)
         {
-            return ((Task<int>)asyncResult).GetAwaiter().GetResult();
+            return TaskToApm.End<int>(asyncResult);
         }
 
         private Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken, object state)
@@ -151,16 +147,12 @@ namespace System.IO.Pipelines
         public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
             var task = WriteAsync(buffer, offset, count, default(CancellationToken), state);
-            if (callback != null)
-            {
-                task.ContinueWith(t => callback.Invoke(t));
-            }
-            return task;
+            return TaskToApm.Begin(task, callback, state);
         }
 
         public override void EndWrite(IAsyncResult asyncResult)
         {
-            ((Task<object>)asyncResult).GetAwaiter().GetResult();
+            TaskToApm.End(asyncResult);
         }
 
         private Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken, object state)

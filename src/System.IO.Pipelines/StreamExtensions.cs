@@ -26,17 +26,20 @@ namespace System.IO.Pipelines
         public static IPipelineWriter AsPipelineWriter(this Stream stream, IBufferPool pool)
         {
             var writer = new PipelineReaderWriter(pool);
-            writer.CopyToAsync(stream).ContinueWith((task) =>
+            writer.CopyToAsync(stream).ContinueWith((task, state) =>
             {
+                var innerWriter = (PipelineReaderWriter)state;
+
                 if (task.IsFaulted)
                 {
-                    writer.CompleteReader(task.Exception);
+                    innerWriter.CompleteReader(task.Exception.InnerException);
                 }
                 else
                 {
-                    writer.CompleteReader();
+                    innerWriter.CompleteReader();
                 }
-            });
+            }, 
+            writer, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
             return writer;
         }

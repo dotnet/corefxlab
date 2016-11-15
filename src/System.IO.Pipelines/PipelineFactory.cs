@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines
@@ -58,17 +59,19 @@ namespace System.IO.Pipelines
 
             var input = new PipelineReaderWriter(_pool);
 
-            input.CopyToAsync(stream).ContinueWith((task) =>
+            input.CopyToAsync(stream).ContinueWith((task, state) =>
             {
+                var innerInput = (PipelineReaderWriter)state;
                 if (task.IsFaulted)
                 {
-                    input.CompleteReader(task.Exception);
+                    innerInput.CompleteReader(task.Exception.InnerException);
                 }
                 else
                 {
-                    input.CompleteReader();
+                    innerInput.CompleteReader();
                 }
-            });
+            },
+            input, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
             return input;
         }
