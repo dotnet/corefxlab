@@ -15,7 +15,7 @@ namespace System.Text
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this Guid value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this Guid value, Span<byte> buffer, Format.Parsed format, EncodingData encoding, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -37,12 +37,12 @@ namespace System.Text
                     break;
 
                 case 'B':
-                    if (!TryWriteChar('{', buffer, formattingData, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('{', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
                     tail = '}';
                     break;
 
                 case 'P':
-                    if (!TryWriteChar('(', buffer, formattingData, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('(', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
                     tail = ')';
                     break;
 
@@ -57,51 +57,51 @@ namespace System.Text
             {
                 byte* bytes = (byte*)&value;
 
-                if (!TryWriteByte(bytes[3], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[2], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[1], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[0], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[3], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[2], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[1], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[0], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('-', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
                 }
 
-                if (!TryWriteByte(bytes[5], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[4], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[5], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[4], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('-', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
                 }
 
-                if (!TryWriteByte(bytes[7], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[6], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[7], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[6], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('-', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
                 }
 
-                if (!TryWriteByte(bytes[8], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[9], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[8], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[9], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('-', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
                 }
 
-                if (!TryWriteByte(bytes[10], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[11], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[12], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[13], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[14], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
-                if (!TryWriteByte(bytes[15], buffer, byteFormat, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[10], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[11], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[12], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[13], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[14], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteByte(bytes[15], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
             }
 
             if (tail != '\0')
             {
-                if (!TryWriteChar(tail, buffer, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteChar(tail, buffer, encoding.Encoding, ref bytesWritten)) { return false; }
             }
 
             return true;
@@ -149,10 +149,10 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteChar(char c, Span<byte> buffer, EncodingData formattingData, ref int bytesWritten)
+        static bool TryWriteChar(char c, Span<byte> buffer, EncodingData.TextEncoding encoding, ref int bytesWritten)
         {
             int written;
-            if (!c.TryFormat(buffer.Slice(bytesWritten), default(Format.Parsed), formattingData, out written))
+            if (!c.TryFormat(buffer.Slice(bytesWritten), encoding, out written))
             {
                 bytesWritten = 0;
                 return false;
@@ -162,10 +162,10 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteString(string s, Span<byte> buffer, EncodingData formattingData, ref int bytesWritten)
+        static bool TryWriteString(string s, Span<byte> buffer, EncodingData.TextEncoding encoding, ref int bytesWritten)
         {
             int written;
-            if (!s.TryFormat(buffer.Slice(bytesWritten), default(Format.Parsed), formattingData, out written))
+            if (!s.TryFormat(buffer.Slice(bytesWritten), encoding, out written))
             {
                 bytesWritten = 0;
                 return false;

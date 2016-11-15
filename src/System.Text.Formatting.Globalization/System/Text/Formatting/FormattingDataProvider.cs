@@ -45,7 +45,7 @@ namespace System.Text.Formatting
 
             byte[] idBytes = new byte[maxIdLength];
             int idByteCount;
-            if (!localeId.TryFormat(new Span<byte>(idBytes), default(Format.Parsed), EncodingData.InvariantUtf8, out idByteCount))
+            if (!localeId.TryFormat(new Span<byte>(idBytes), EncodingData.TextEncoding.Utf8, out idByteCount))
             {
                 throw new Exception("bad locale id");
             }
@@ -92,7 +92,7 @@ namespace System.Text.Formatting
                 Array.Copy(data, stringStart, utf16digitsAndSymbols[stringIndex], 0, stringLength);
             }
 
-            return new EncodingData(utf16digitsAndSymbols, EncodingData.Encoding.Utf16);
+            return new EncodingData(utf16digitsAndSymbols, EncodingData.TextEncoding.Utf16);
         }
 
         static ushort ReadUInt16At(byte[] data, int ushortIndex)

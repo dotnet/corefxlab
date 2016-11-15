@@ -53,9 +53,9 @@ namespace System.Text
         }
         #endregion
 
-        public static bool TryFormat(this char value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this char value, Span<byte> buffer, EncodingData.TextEncoding encoding, out int bytesWritten)
         {
-            if (formattingData.IsUtf16)
+            if (encoding == EncodingData.TextEncoding.Utf16)
             {
                 if (buffer.Length < 2)
                 {
@@ -68,49 +68,47 @@ namespace System.Text
                 return true;
             }
 
-            if (buffer.Length < 1)
-            {
-                bytesWritten = 0;
-                return false;
-            }
+            if (encoding == EncodingData.TextEncoding.Utf8) {
+                if (buffer.Length < 1) {
+                    bytesWritten = 0;
+                    return false;
+                }
 
-            // fast path for ASCII
-            if (value <= 127)
-            {
-                buffer[0] = (byte)value;
-                bytesWritten = 1;
+                // fast path for ASCII
+                if (value <= 127) {
+                    buffer[0] = (byte)value;
+                    bytesWritten = 1;
+                    return true;
+                }
+
+                // TODO: This can be directly encoded to SpanByte. There is no conversion between spans yet
+                var encoded = new Utf8EncodedCodePoint(value);
+                bytesWritten = encoded.Length;
+                if (buffer.Length < bytesWritten) {
+                    bytesWritten = 0;
+                    return false;
+                }
+
+                buffer[0] = encoded.Byte0;
+                if (bytesWritten > 1) {
+                    buffer[1] = encoded.Byte1;
+                }
+                if (bytesWritten > 2) {
+                    buffer[2] = encoded.Byte2;
+                }
+                if (bytesWritten > 3) {
+                    buffer[3] = encoded.Byte3;
+                }
                 return true;
             }
 
-            // TODO: This can be directly encoded to SpanByte. There is no conversion between spans yet
-            var encoded = new Utf8EncodedCodePoint(value);
-            bytesWritten = encoded.Length;
-            if (buffer.Length < bytesWritten)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-
-            buffer[0] = encoded.Byte0;
-            if(bytesWritten > 1)
-            {
-                buffer[1] = encoded.Byte1;
-            }
-            if(bytesWritten > 2)
-            {
-                buffer[2] = encoded.Byte2;
-            }
-            if(bytesWritten > 3)
-            {
-                buffer[3] = encoded.Byte3;
-            }
-            return true;
+            throw new NotImplementedException();
         }
 
-        public static bool TryFormat(this string value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this string value, Span<byte> buffer, EncodingData.TextEncoding encoding, out int bytesWritten)
         {
 
-            if (formattingData.IsUtf16)
+            if (encoding == EncodingData.TextEncoding.Utf16)
             {
                 var valueBytes = value.Length << 1;
                 if (valueBytes > buffer.Length)
@@ -132,68 +130,64 @@ namespace System.Text
                 return true;
             }
 
-                
-            var avaliableBytes = buffer.Length;
-            bytesWritten = 0;
-            for (int i = 0; i < value.Length; i++)
-            {
-                var c = value[i];
+            if (encoding == EncodingData.TextEncoding.Utf8) {
 
-                var codepoint = (ushort)c;
-                if (codepoint <= 0x7f) // this if block just optimizes for ascii
-                {
-                    if (bytesWritten + 1 > avaliableBytes)
+                var avaliableBytes = buffer.Length;
+                bytesWritten = 0;
+                for (int i = 0; i < value.Length; i++) {
+                    var c = value[i];
+
+                    var codepoint = (ushort)c;
+                    if (codepoint <= 0x7f) // this if block just optimizes for ascii
                     {
-                        bytesWritten = 0;
-                        return false;
+                        if (bytesWritten + 1 > avaliableBytes) {
+                            bytesWritten = 0;
+                            return false;
+                        }
+                        buffer[bytesWritten++] = (byte)codepoint;
                     }
-                    buffer[bytesWritten++] = (byte)codepoint;
-                }
-                else
-                {
-                    Utf8EncodedCodePoint encoded;
-                    if (!char.IsSurrogate(c))
-                        encoded = new Utf8EncodedCodePoint(c);
-                    else
-                    {
-                        if (++i >= value.Length)
-                            throw new ArgumentException("Invalid surrogate pair.", nameof(value));
-                        char lowSurrogate = value[i];
-                        encoded = new Utf8EncodedCodePoint(c, lowSurrogate);
-                    }
-                            
+                    else {
+                        Utf8EncodedCodePoint encoded;
+                        if (!char.IsSurrogate(c))
+                            encoded = new Utf8EncodedCodePoint(c);
+                        else {
+                            if (++i >= value.Length)
+                                throw new ArgumentException("Invalid surrogate pair.", nameof(value));
+                            char lowSurrogate = value[i];
+                            encoded = new Utf8EncodedCodePoint(c, lowSurrogate);
+                        }
 
-                    if (bytesWritten + encoded.Length > avaliableBytes)
-                    {
-                        bytesWritten = 0;
-                        return false;
-                    }
 
-                    buffer[bytesWritten] = encoded.Byte0;
-                    if (encoded.Length > 1)
-                    {
-                        buffer[bytesWritten + 1] = encoded.Byte1;
+                        if (bytesWritten + encoded.Length > avaliableBytes) {
+                            bytesWritten = 0;
+                            return false;
+                        }
 
-                        if (encoded.Length > 2)
-                        {
-                            buffer[bytesWritten + 2] = encoded.Byte2;
+                        buffer[bytesWritten] = encoded.Byte0;
+                        if (encoded.Length > 1) {
+                            buffer[bytesWritten + 1] = encoded.Byte1;
 
-                            if (encoded.Length > 3)
-                            {
-                                buffer[bytesWritten + 3] = encoded.Byte3;
+                            if (encoded.Length > 2) {
+                                buffer[bytesWritten + 2] = encoded.Byte2;
+
+                                if (encoded.Length > 3) {
+                                    buffer[bytesWritten + 3] = encoded.Byte3;
+                                }
                             }
                         }
-                    }
 
-                    bytesWritten += encoded.Length;
+                        bytesWritten += encoded.Length;
+                    }
                 }
+                return true;
             }
-            return true;
+
+            throw new NotImplementedException();
         }
 
-        public static bool TryFormat(this Utf8String value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this Utf8String value, Span<byte> buffer, EncodingData.TextEncoding encoding, out int bytesWritten)
         {
-            if (formattingData.IsUtf16) {
+            if (encoding == EncodingData.TextEncoding.Utf16) {
                 bytesWritten = 0;
                 int justWritten;
                 foreach(var cp in value.CodePoints) {
@@ -206,14 +200,85 @@ namespace System.Text
                 return true;
             }
 
-            if(buffer.Length < value.Length) {
-                bytesWritten = 0;
-                return false;
+            if (encoding == EncodingData.TextEncoding.Utf8) {
+                if (buffer.Length < value.Length) {
+                    bytesWritten = 0;
+                    return false;
+                }
+
+                buffer.Set(value.Bytes);
+                bytesWritten = value.Length;
+                return true;
             }
 
-            buffer.Set(value.Bytes);
-            bytesWritten = value.Length;
-            return true;
+            throw new NotImplementedException();
+        }
+
+        public static bool TryFormat(this ReadOnlySpan<char> value, Span<byte> buffer, EncodingData.TextEncoding encoding, out int bytesWritten)
+        {
+            if (encoding == EncodingData.TextEncoding.Utf16) {
+                var valueBytes = value.Cast<char, byte>();
+                if (buffer.Length < valueBytes.Length) {
+                    bytesWritten = 0;
+                    return false;
+                }
+                valueBytes.CopyTo(buffer);
+                bytesWritten = valueBytes.Length;
+                return true;
+            }
+
+            if (encoding == EncodingData.TextEncoding.Utf8) {
+                var avaliableBytes = buffer.Length;
+                bytesWritten = 0;
+                for (int i = 0; i < value.Length; i++) {
+                    var c = value[i];
+
+                    var codepoint = (ushort)c;
+                    if (codepoint <= 0x7f) // this if block just optimizes for ascii
+                    {
+                        if (bytesWritten + 1 > avaliableBytes) {
+                            bytesWritten = 0;
+                            return false;
+                        }
+                        buffer[bytesWritten++] = (byte)codepoint;
+                    }
+                    else {
+                        Utf8EncodedCodePoint encoded;
+                        if (!char.IsSurrogate(c))
+                            encoded = new Utf8EncodedCodePoint(c);
+                        else {
+                            if (++i >= value.Length)
+                                throw new ArgumentException("Invalid surrogate pair.", nameof(value));
+                            char lowSurrogate = value[i];
+                            encoded = new Utf8EncodedCodePoint(c, lowSurrogate);
+                        }
+
+
+                        if (bytesWritten + encoded.Length > avaliableBytes) {
+                            bytesWritten = 0;
+                            return false;
+                        }
+
+                        buffer[bytesWritten] = encoded.Byte0;
+                        if (encoded.Length > 1) {
+                            buffer[bytesWritten + 1] = encoded.Byte1;
+
+                            if (encoded.Length > 2) {
+                                buffer[bytesWritten + 2] = encoded.Byte2;
+
+                                if (encoded.Length > 3) {
+                                    buffer[bytesWritten + 3] = encoded.Byte3;
+                                }
+                            }
+                        }
+
+                        bytesWritten += encoded.Length;
+                    }
+                }
+                return true;
+            }
+
+            throw new NotSupportedException();
         }
     }
 }

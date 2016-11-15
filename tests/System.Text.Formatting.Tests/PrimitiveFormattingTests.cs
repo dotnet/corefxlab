@@ -41,6 +41,17 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
+        public void BasicStringFormatter()
+        {
+            var sb = new StringFormatter();
+            sb.Append("hi");
+            sb.Append(1);
+            sb.Append("hello");
+            sb.Append((sbyte)-20);
+            Assert.Equal("hi1hello-20", sb.ToString());
+        }
+
+        [Fact]
         public void ByteBasicTests()
         {
             CheckByte(0, null, "0");
@@ -289,6 +300,27 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
+        public void FormatXUtf8()
+        {
+            var x = Format.Parse("x");
+            var X = Format.Parse("X");
+
+            var sb = new ArrayFormatter(256, EncodingData.InvariantUtf8);
+            sb.Append((ulong)255, x);
+            sb.Append((uint)255, X);
+
+            Assert.Equal("ffFF", new Utf8String(sb.Formatted.Slice()).ToString());
+
+            sb.Clear();
+            sb.Append((int)-1, X);
+            Assert.Equal("FFFFFFFF", new Utf8String(sb.Formatted.Slice()).ToString());
+
+            sb.Clear();
+            sb.Append((int)-2, X);
+            Assert.Equal("FFFFFFFE", new Utf8String(sb.Formatted.Slice()).ToString());
+        }
+
+        [Fact]
         public void FormatXPrecision()
         {
             var x = Format.Parse("x10");
@@ -347,6 +379,21 @@ namespace System.Text.Formatting.Tests
                 utf16Writer.Append("\u0391");
                 utf16Writer.Append("\uD950\uDF21"); 
                 AssertUtf16Equal(buffer.Slice(0, (int)stream.Position), "Hello World!\u0391\uD950\uDF21");
+            }
+        }
+
+        [Fact]
+        public void FormatLongStringToUtf8()
+        {
+            int length = 260;
+            {
+                var formatter = new ArrayFormatter(length, EncodingData.InvariantUtf8);
+                string data = new string('#', length);
+                formatter.Append(data);
+                Assert.Equal(length, formatter.CommitedByteCount);
+                for(int i=0; i<formatter.CommitedByteCount; i++) {
+                    Assert.Equal((byte)'#', formatter.Formatted.Array[i]);
+                }
             }
         }
 

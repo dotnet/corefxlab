@@ -141,7 +141,7 @@ namespace System.Text.Formatting {
             for (int i = 0; i < count; i++)
             {
                 int bytesWritten;
-                while (!whole[i+index].TryFormat(buffer, default(Format.Parsed), formatter.Encoding, out bytesWritten))
+                while (!whole[i+index].TryFormat(buffer, formatter.Encoding.Encoding, out bytesWritten))
                 {
                     Debug.Assert(false, "this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
                 }
@@ -182,7 +182,7 @@ namespace System.Text.Formatting {
             var c = value as char?;
             if (c != null)
             {
-                formatter.Append(c.Value, format);
+                formatter.Append(c.Value);
                 return;
             }
             var u32 = value as uint?;
@@ -212,12 +212,12 @@ namespace System.Text.Formatting {
             var str = value as string;
             if (str != null)
             {
-                formatter.Append(str, format);
+                formatter.Append(str);
                 return;
             }
             var utf8 = value as Utf8String?;
             if (utf8 != null) {
-                formatter.Append(utf8.Value, format);
+                formatter.Append(utf8.Value);
                 return;
             }
             var dt = value as DateTime?;
