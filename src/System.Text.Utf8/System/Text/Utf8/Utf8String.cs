@@ -607,64 +607,19 @@ namespace System.Text.Utf8
         }
 
         // TODO: This should return Utf16CodeUnits which should wrap byte[]/Span<byte>, same for other encoders
-        private static byte[] GetUtf8BytesFromString(string s)
+        private static byte[] GetUtf8BytesFromString(string str)
         {
-            int len = 0;
-            for (int i = 0; i < s.Length; /* intentionally no increment */)
-            {
-                UnicodeCodePoint codePoint;
-                int encodedChars;
-                if (!Utf16LittleEndianEncoder.TryDecodeCodePointFromString(s, i, out codePoint, out encodedChars))
-                {
-                    throw new ArgumentException("s", "Invalid surrogate pair in the string.");
-                }
+            ReadOnlySpan<char> characters = str.Slice();
+            int utf8Length = Utf8Encoder.ComputeEncodedBytes(characters);
 
-                if (encodedChars <= 0)
-                {
-                    // TODO: Fix exception type
-                    throw new Exception("internal error");
-                }
+            byte[] utf8Buffer = new byte[utf8Length];
 
-                int encodedBytes = Utf8Encoder.GetNumberOfEncodedBytes(codePoint);
-                if (encodedBytes == 0)
-                {
-                    // TODO: Fix exception type
-                    throw new Exception("Internal error: Utf16Decoder somehow got CodePoint out of range");
-                }
-                len += encodedBytes;
-
-                i += encodedChars;
+            int encodedBytes;
+            if(!Utf8Encoder.TryEncode(characters, utf8Buffer, out encodedBytes)) {
+                throw new Exception(); // this should not happen
             }
-
-            byte[] bytes = new byte[len];
-           
-            var p = new Span<byte>(bytes);
-            for (int i = 0; i < s.Length; /* intentionally no increment */)
-            {
-                UnicodeCodePoint codePoint;
-                int encodedChars;
-                if (Utf16LittleEndianEncoder.TryDecodeCodePointFromString(s, i, out codePoint, out encodedChars))
-                {
-                    i += encodedChars;
-                    int encodedBytes;
-                    if (Utf8Encoder.TryEncodeCodePoint(codePoint, p, out encodedBytes))
-                    {
-                        p = p.Slice(encodedBytes);
-                    }
-                    else
-                    {
-                        // TODO: Fix exception type
-                        throw new Exception("Internal error: Utf16Decoder somehow got CodePoint out of range or the buffer is too small");
-                    }
-                }
-                else
-                {
-                    // TODO: Fix exception type
-                    throw new Exception("Internal error: we did pre-validation of the string, nothing should go wrong");
-                }
-            }
-        
-            return bytes;
+                    
+            return utf8Buffer;
         }
 
         public Utf8String TrimStart()
