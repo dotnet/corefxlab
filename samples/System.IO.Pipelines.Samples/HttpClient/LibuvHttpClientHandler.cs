@@ -10,6 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Text.Primitives;
+using System.Text;
+using System.Text.Formatting;
 
 namespace System.IO.Pipelines.Samples
 {
@@ -33,11 +35,11 @@ namespace System.IO.Pipelines.Samples
             var connection = await state.ConnectionTask;
 
             var requestBuffer = connection.Output.Alloc();
-            requestBuffer.WriteAsciiString($"{request.Method} {path} HTTP/1.1");
+            requestBuffer.Append($"{request.Method} {path} HTTP/1.1", EncodingData.TextEncoding.Utf8);
             WriteHeaders(request.Headers, ref requestBuffer);
 
             // End of the headers
-            requestBuffer.WriteAsciiString("\r\n\r\n");
+            requestBuffer.Append("\r\n\r\n", EncodingData.TextEncoding.Utf8);
 
             if (request.Method != HttpMethod.Get && request.Method != HttpMethod.Head)
             {
@@ -252,7 +254,7 @@ namespace System.IO.Pipelines.Samples
         {
             foreach (var header in headers)
             {
-                buffer.WriteAsciiString($"{header.Key}:{string.Join(",", header.Value)}\r\n");
+                buffer.Append($"{header.Key}:{string.Join(",", header.Value)}\r\n", EncodingData.TextEncoding.Utf8);
             }
         }
 

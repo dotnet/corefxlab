@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
 using Microsoft.AspNetCore.Hosting.Server;
+using System.Text.Formatting;
 
 namespace System.IO.Pipelines.Samples.Http
 {
@@ -175,7 +176,7 @@ namespace System.IO.Pipelines.Samples.Http
 
             if (_autoChunk)
             {
-                buffer.WriteHex(data.Length);
+                buffer.Append(data.Length, EncodingData.InvariantUtf8, 'x');
                 buffer.Write(_endChunkBytes);
                 buffer.Write(data);
                 buffer.Write(_endChunkBytes);

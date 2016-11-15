@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using System.Text.Formatting;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -54,7 +55,7 @@ namespace System.IO.Pipelines.Tests
                 using (var client = await SocketConnection.ConnectAsync(endpoint))
                 {
                     var output = client.Output.Alloc();
-                    output.WriteUtf8String(MessageToSend);
+                    output.Append(MessageToSend, EncodingData.TextEncoding.Utf8);
                     await output.FlushAsync();
                     client.Output.Complete();
 

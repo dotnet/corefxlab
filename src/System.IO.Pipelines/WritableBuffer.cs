@@ -31,7 +31,17 @@ namespace System.IO.Pipelines
 
         Span<byte> IOutput.Buffer => Memory.Span;
 
-        void IOutput.Enlarge(int desiredBufferLength) => Ensure(desiredBufferLength);
+        void IOutput.Enlarge(int desiredBufferLength) => Ensure(NewSize(desiredBufferLength));
+
+        private int NewSize(int desiredBufferLength)
+        {
+            var currentSize = Memory.Length;
+            if(desiredBufferLength == 0) {
+                if (currentSize <= 0) return 256;
+                else return currentSize * 2;
+            }
+            return desiredBufferLength < currentSize ? currentSize : desiredBufferLength;
+        }
 
         /// <summary>
         /// Obtain a readable buffer over the data written but uncommitted to this buffer.
