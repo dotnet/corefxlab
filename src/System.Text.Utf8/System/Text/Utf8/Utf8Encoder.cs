@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
+using System.Text.Utf16;
 
 namespace System.Text.Utf8
 {
@@ -242,6 +243,61 @@ namespace System.Text.Utf8
                 default:
                     return false;
             }
+        }
+
+        // TODO: this routime needs to be optimized.
+        public static bool TryEncode(ReadOnlySpan<char> utf16source, Span<byte> utf8Destination, out int encodedBytes)
+        {
+            var utf16Bytes = utf16source.Cast<char, byte>();
+            encodedBytes = 0;
+            for (int i = 0; i < utf16Bytes.Length; /* intentionally no increment */) {
+                UnicodeCodePoint codePoint;
+                int consumedBytes;
+                if (Utf16LittleEndianEncoder.TryDecodeCodePoint(utf16Bytes.Slice(i), out codePoint, out consumedBytes)) {
+                    i += consumedBytes;
+                    int justEncodedBytes;
+                    if (TryEncodeCodePoint(codePoint, utf8Destination, out justEncodedBytes)) {
+                        utf8Destination = utf8Destination.Slice(justEncodedBytes);
+                        encodedBytes += justEncodedBytes;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                    throw new ArgumentOutOfRangeException(nameof(utf16source));
+                }
+            }
+            return true;
+        }
+
+        public static int ComputeEncodedBytes(ReadOnlySpan<char> utf16source)
+        {
+            Span<byte> utf8Destination;
+            unsafe {
+                byte* buffer = stackalloc byte[32];
+                utf8Destination = new Span<byte>(buffer, 32);
+            }
+            var utf16Bytes = utf16source.Cast<char, byte>();
+            int encodedBytes = 0;
+            for (int i = 0; i < utf16Bytes.Length; /* intentionally no increment */) {
+                UnicodeCodePoint codePoint;
+                int consumedBytes;
+                if (Utf16LittleEndianEncoder.TryDecodeCodePoint(utf16Bytes.Slice(i), out codePoint, out consumedBytes)) {
+                    i += consumedBytes;
+                    int justEncodedBytes;
+                    if (TryEncodeCodePoint(codePoint, utf8Destination, out justEncodedBytes)) {
+                        encodedBytes += justEncodedBytes;
+                    }
+                    else {
+                        throw new NotImplementedException("this should resize the buffer");
+                    }
+                }
+                else {
+                    throw new ArgumentOutOfRangeException(nameof(utf16source));
+                }
+            }
+            return encodedBytes;
         }
         #endregion
     }
