@@ -20,7 +20,7 @@ namespace System.Text
                     char* pSubstring = pText + index;
                     var span = new Span<byte>((byte*)pSubstring, count << 1);
                     int bytesConsumed;
-                    var result = TryParseUInt32(span, EncodingData.Encoding.Utf16, out value, out bytesConsumed);
+                    var result = TryParseUInt32(span, EncodingData.TextEncoding.Utf16, out value, out bytesConsumed);
                     charactersConsumed = bytesConsumed >> 1;
                     return result;
                 }
@@ -33,7 +33,7 @@ namespace System.Text
 
             ReadOnlySpan<byte> span = text.Cast<char, byte>();
             int bytesConsumed;
-            var result = TryParseUInt32(span, EncodingData.Encoding.Utf16, out value, out bytesConsumed);
+            var result = TryParseUInt32(span, EncodingData.TextEncoding.Utf16, out value, out bytesConsumed);
             charactersConsumed = bytesConsumed >> 1;
             return result;
         }
@@ -86,17 +86,17 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseUInt32(ReadOnlySpan<byte> text, EncodingData.Encoding encoding, out uint value, out int bytesConsumed)
+        public static bool TryParseUInt32(ReadOnlySpan<byte> text, EncodingData.TextEncoding encoding, out uint value, out int bytesConsumed)
         {
             Precondition.Require(text.Length > 0);
-            Precondition.Require(encoding == EncodingData.Encoding.Utf8 || text.Length > 1);
+            Precondition.Require(encoding == EncodingData.TextEncoding.Utf8 || text.Length > 1);
 
             value = 0;
             bytesConsumed = 0;
 
             if (text[0] == '0')
             {
-                if (encoding == EncodingData.Encoding.Utf16)
+                if (encoding == EncodingData.TextEncoding.Utf16)
                 {
                     bytesConsumed = 2;
                     return text[1] == 0;
@@ -131,7 +131,7 @@ namespace System.Text
                     return true;
                 }
                 bytesConsumed++;
-                if (encoding == EncodingData.Encoding.Utf16)
+                if (encoding == EncodingData.TextEncoding.Utf16)
                 {
                     byteIndex++;
                     if (byteIndex >= text.Length || text[byteIndex] != 0)

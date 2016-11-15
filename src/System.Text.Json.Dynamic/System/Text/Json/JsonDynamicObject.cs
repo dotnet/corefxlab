@@ -169,7 +169,7 @@ namespace System.Text.Json
         {
             written = 0;
             int justWritten;
-            if(!'{'.TryFormat(buffer, formattingData, out justWritten)){
+            if(!'{'.TryFormat(buffer, formattingData.Encoding, out justWritten)){
                 return false;
             }
             written += justWritten;
@@ -182,7 +182,7 @@ namespace System.Text.Json
                 if(firstProperty) { firstProperty = false; }
                 else
                 {
-                    if (!','.TryFormat(buffer.Slice(written), formattingData, out justWritten))
+                    if (!','.TryFormat(buffer.Slice(written), formattingData.Encoding, out justWritten))
                     {
                         return false;
                     }
@@ -194,7 +194,7 @@ namespace System.Text.Json
                     written = 0; return false;
                 }
                 written += justWritten;
-                if (!':'.TryFormat(buffer.Slice(written), formattingData, out justWritten))
+                if (!':'.TryFormat(buffer.Slice(written), formattingData.Encoding, out justWritten))
                 {
                     return false;
                 }
@@ -206,7 +206,7 @@ namespace System.Text.Json
                 written += justWritten;
             }
 
-            if (!'}'.TryFormat(buffer.Slice(written), formattingData, out justWritten)){
+            if (!'}'.TryFormat(buffer.Slice(written), formattingData.Encoding, out justWritten)){
                 written = 0; return false;
             }
             written += justWritten;
@@ -268,11 +268,11 @@ namespace System.Text.Json
                     case JsonReader.JsonValueType.Object:
                         return _object.TryFormat(buffer, format, formattingData, out written);
                     case JsonReader.JsonValueType.Null:
-                        return "null".TryFormat(buffer, formattingData, out written);
+                        return "null".TryFormat(buffer, formattingData.Encoding, out written);
                     case JsonReader.JsonValueType.True:
-                        return "true".TryFormat(buffer, formattingData, out written);
+                        return "true".TryFormat(buffer, formattingData.Encoding, out written);
                     case JsonReader.JsonValueType.False:
-                        return "false".TryFormat(buffer, formattingData, out written);
+                        return "false".TryFormat(buffer, formattingData.Encoding, out written);
                     default:
                         throw new NotImplementedException();
                 }
@@ -348,7 +348,7 @@ namespace System.Text.Json
             written = 0;
             int justWritten;
 
-            if (!'"'.TryFormat(buffer, formattingData, out justWritten))
+            if (!'"'.TryFormat(buffer, formattingData.Encoding, out justWritten))
             {
                 return false;
             }
@@ -360,7 +360,7 @@ namespace System.Text.Json
             }
             written += justWritten;
 
-            if (!'"'.TryFormat(buffer.Slice(written), formattingData, out justWritten))
+            if (!'"'.TryFormat(buffer.Slice(written), formattingData.Encoding, out justWritten))
             {
                 return false;
             }

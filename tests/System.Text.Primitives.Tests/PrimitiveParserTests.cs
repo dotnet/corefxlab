@@ -80,7 +80,7 @@ namespace System.Text.Primitives.Tests
 
             uint parsedValue;
             int bytesConsumed;
-            bool result = PrimitiveParser.TryParseUInt32(span, EncodingData.Encoding.Utf8, out parsedValue, out bytesConsumed);
+            bool result = PrimitiveParser.TryParseUInt32(span, EncodingData.TextEncoding.Utf8, out parsedValue, out bytesConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, parsedValue);

@@ -41,6 +41,17 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
+        public void BasicStringFormatter()
+        {
+            var sb = new StringFormatter();
+            sb.Append("hi");
+            sb.Append(1);
+            sb.Append("hello");
+            sb.Append((sbyte)-20);
+            Assert.Equal("hi1hello-20", sb.ToString());
+        }
+
+        [Fact]
         public void ByteBasicTests()
         {
             CheckByte(0, null, "0");
