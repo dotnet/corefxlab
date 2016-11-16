@@ -21,30 +21,30 @@ namespace System.Text
         private static EncodingData s_invariantUtf16;
         private static EncodingData s_invariantUtf8;
 
-        private byte[][] _digitsAndSymbols; // this could be flattened into a single array
-        private ParsingTrieNode[] _parsingTrie;
+        private byte[][] _symbols; // this could be flattened into a single array
+        private ParsingTrieNode[] _parsingTrie; // prefix tree used for parsing
         private TextEncoding _encoding;
 
         // this should be removed after CreateParsingTire is implemented
-        public EncodingData(byte[][] digitsAndSymbols, TextEncoding encoding, Tuple<byte, int>[] parsingTrie)
+        public EncodingData(byte[][] symbols, TextEncoding encoding, Tuple<byte, int>[] parsingTrie)
         {
-            _digitsAndSymbols = digitsAndSymbols;
+            _symbols = symbols;
             _encoding = encoding;
 
             var tire = new ParsingTrieNode[parsingTrie.Length];
             for(int i=0; i<parsingTrie.Length; i++) {
-                tire[i] = new ParsingTrieNode() { valueOrNumChildren = parsingTrie[i].Item1, index = parsingTrie[i].Item2 };
+                tire[i] = new ParsingTrieNode() { valueOrNumChildren = parsingTrie[i].Item1, IndexOrSymbol = parsingTrie[i].Item2 };
             }
 
             _parsingTrie = tire;
         }
 
-        public EncodingData(byte[][] digitsAndSymbols, TextEncoding encoding)
+        public EncodingData(byte[][] symbols, TextEncoding encoding)
         {
-            _digitsAndSymbols = digitsAndSymbols;
+            _symbols = symbols;
             _encoding = encoding;
             _parsingTrie = null;
-            _parsingTrie = CreateParsingTire(_digitsAndSymbols);
+            _parsingTrie = CreateParsingTire(_symbols);
         }
 
         private ParsingTrieNode[] CreateParsingTire(byte[][] _digitsAndSymbols)
@@ -70,64 +70,52 @@ namespace System.Text
             }
         }
 
-        public bool TryParseSymbol(ReadOnlySpan<byte> buffer, out Symbol symbol, out int consumed)
+        public bool TryParseSymbol(ReadOnlySpan<byte> buffer, out Symbol symbol, out int bytesConsumed)
         {
             int trieIndex = 0;
-            int codeUnitIndex = 0;
-            consumed = 0;
+            int bufferIndex = 0;
+            bytesConsumed = 0;
             while (true)
             {
-                if (_parsingTrie[trieIndex].valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
+                var node = _parsingTrie[trieIndex];
+                if (node.valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value
                 {
-                    if (VerifyCodeUnit(buffer, codeUnitIndex, (Symbol)_parsingTrie[trieIndex].index))
+                    symbol = (Symbol)node.IndexOrSymbol;
+                    if (VerifySuffix(buffer, bufferIndex, symbol))
                     {
-                        consumed = _digitsAndSymbols[_parsingTrie[trieIndex].index].Length - codeUnitIndex;
-                        symbol = (Symbol)_parsingTrie[trieIndex].index;  // return the parsed value
+                        bytesConsumed = _symbols[node.IndexOrSymbol].Length - bufferIndex;
                         return true;
                     }
                     else
                     {
                         symbol = 0;
-                        consumed = 0;
+                        bytesConsumed = 0;
                         return false;
                     }
                 }
                 else
                 {
-                    int search = BinarySearch(trieIndex, codeUnitIndex, buffer[0]);    // we search the _parsingTrie for the nextByte
+                    int search = BinarySearch(trieIndex, bufferIndex, buffer[0]);    // we search the _parsingTrie for the nextByte
 
                     if (search > 0)   // if we found a node
                     {
-                        trieIndex = _parsingTrie[search].index;
-                        consumed++;
-                        codeUnitIndex++;
+                        trieIndex = _parsingTrie[search].IndexOrSymbol;
+                        bytesConsumed++;
+                        bufferIndex++;
                     }
                     else
                     {
                         symbol = 0;
-                        consumed = 0;
+                        bytesConsumed = 0;
                         return false;
                     }
                 }
             }
         }
 
-        public bool TryWriteDigit(ulong digit, Span<byte> buffer, out int bytesWritten)
+        public bool TryEncode(Symbol symbol, Span<byte> buffer, out int bytesWritten)
         {
-            Precondition.Require(digit < 10);
-            return TryWriteDigitOrSymbol(digit, buffer, out bytesWritten);
-        }
-
-        public bool TryWriteSymbol(Symbol symbol, Span<byte> buffer, out int bytesWritten)
-        {
-            var symbolIndex = (ushort)symbol;
-            return TryWriteDigitOrSymbol(symbolIndex, buffer, out bytesWritten);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryWriteDigitOrSymbol(ulong digitOrSymbolIndex, Span<byte> buffer, out int bytesWritten)
-        {
-            byte[] bytes = _digitsAndSymbols[digitOrSymbolIndex];
+            byte[] bytes = _symbols[(int)symbol];
             bytesWritten = bytes.Length;
             if (bytesWritten > buffer.Length)
             {
@@ -154,14 +142,14 @@ namespace System.Text
 
         public bool IsInvariantUtf16
         {
-            get { return _digitsAndSymbols == s_invariantUtf16._digitsAndSymbols; }
+            get { return _symbols == s_invariantUtf16._symbols; }
         }
         public bool IsInvariantUtf8
         {
-            get { return _digitsAndSymbols == s_invariantUtf8._digitsAndSymbols; }
+            get { return _symbols == s_invariantUtf8._symbols; }
         }
 
-        public TextEncoding Encoding => _encoding;
+        public TextEncoding TextEncoding => _encoding;
 
         public enum Symbol : ushort
         {
@@ -186,11 +174,11 @@ namespace System.Text
 
         public static bool operator==(EncodingData left, EncodingData right)
         {
-            return left._digitsAndSymbols == right._digitsAndSymbols;
+            return left._symbols == right._symbols;
         }
         public static bool operator!=(EncodingData left, EncodingData right)
         {
-            return left._digitsAndSymbols == right._digitsAndSymbols;
+            return left._symbols == right._symbols;
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -208,7 +196,7 @@ namespace System.Text
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            return _digitsAndSymbols.GetHashCode();
+            return _symbols.GetHashCode();
         }
 
         // it might be worth compacting the data into a single byte array.
@@ -277,10 +265,10 @@ namespace System.Text
             {
                 if (_parsingTrie[trieIndex].valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
                 {
-                    symbol = (uint)_parsingTrie[trieIndex].index;  // return the parsed value
-                    if (VerifyCodeUnit(buffer, codeUnitIndex, (Symbol)symbol))
+                    symbol = (uint)_parsingTrie[trieIndex].IndexOrSymbol;  // return the parsed value
+                    if (VerifySuffix(buffer, codeUnitIndex, (Symbol)symbol))
                     {                        
-                        consumed = _digitsAndSymbols[(int)symbol].Length;
+                        consumed = _symbols[(int)symbol].Length;
                         return true;
                     }
                     else
@@ -296,7 +284,7 @@ namespace System.Text
 
                     if (search > 0)   // if we found a node
                     {
-                        trieIndex = _parsingTrie[search].index;
+                        trieIndex = _parsingTrie[search].IndexOrSymbol;
                         consumed++;
                         codeUnitIndex++;
                     }
@@ -315,7 +303,7 @@ namespace System.Text
         //      - the index of the location where the item should be placed to maintain a sorted list (if the value is negative)
         private int BinarySearch(int nodeIndex, int level, byte value)
         {
-            int maxMinLimits = _parsingTrie[nodeIndex].index;
+            int maxMinLimits = _parsingTrie[nodeIndex].IndexOrSymbol;
             if (maxMinLimits > 0 && value > maxMinLimits >> 24 && value < (maxMinLimits << 16) >> 24)
             {
                 // See the comments on the struct above for more information about this format
@@ -352,30 +340,15 @@ namespace System.Text
             }
         }
 
-        private bool VerifyCodeUnit(ref byte[] buffer, int index, int codeUnitIndex, int digitOrSymbol)
+        private bool VerifySuffix(ReadOnlySpan<byte> buffer, int codeUnitIndex, Symbol symbol)
         {
-            int codeUnitLength = _digitsAndSymbols[digitOrSymbol].Length;
+            int codeUnitLength = _symbols[(int)symbol].Length;
             if (codeUnitIndex == codeUnitLength - 1)
                 return true;
 
             for (int i = 0; i < codeUnitLength - codeUnitIndex; i++)
             {
-                if (buffer[i + index] != _digitsAndSymbols[digitOrSymbol][i + codeUnitIndex])
-                    return false;
-            }
-
-            return true;
-        }
-
-        private bool VerifyCodeUnit(ReadOnlySpan<byte> buffer, int codeUnitIndex, Symbol symbol)
-        {
-            int codeUnitLength = _digitsAndSymbols[(int)symbol].Length;
-            if (codeUnitIndex == codeUnitLength - 1)
-                return true;
-
-            for (int i = 0; i < codeUnitLength - codeUnitIndex; i++)
-            {
-                if (buffer[i + codeUnitIndex] != _digitsAndSymbols[(int)symbol][i + codeUnitIndex])
+                if (buffer[i + codeUnitIndex] != _symbols[(int)symbol][i + codeUnitIndex])
                     return false;
             }
 
@@ -402,7 +375,7 @@ namespace System.Text
         struct ParsingTrieNode
         {
             public byte valueOrNumChildren;
-            public int index;
+            public int IndexOrSymbol;
         }
     }
 }

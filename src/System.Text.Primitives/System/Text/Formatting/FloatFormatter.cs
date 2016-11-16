@@ -18,21 +18,21 @@ namespace System.Text
 
             if (Double.IsNaN(value))
             {
-                return formattingData.TryWriteSymbol(EncodingData.Symbol.NaN, buffer, out bytesWritten);
+                return formattingData.TryEncode(EncodingData.Symbol.NaN, buffer, out bytesWritten);
             }
 
             if (Double.IsInfinity(value))
             {
                 if (Double.IsNegativeInfinity(value))
                 {
-                    if (!formattingData.TryWriteSymbol(EncodingData.Symbol.MinusSign, buffer, out written))
+                    if (!formattingData.TryEncode(EncodingData.Symbol.MinusSign, buffer, out written))
                     {
                         bytesWritten = 0;
                         return false;
                     }
                     bytesWritten += written;
                 }
-                if (!formattingData.TryWriteSymbol(EncodingData.Symbol.InfinitySign, buffer.Slice(bytesWritten), out written))
+                if (!formattingData.TryEncode(EncodingData.Symbol.InfinitySign, buffer.Slice(bytesWritten), out written))
                 {
                     bytesWritten = 0;
                     return false;
@@ -44,7 +44,7 @@ namespace System.Text
             // TODO: the lines below need to be replaced with properly implemented algorithm
             // the problem is the algorithm is complex, so I am commiting a stub for now
             var hack = value.ToString(format.Symbol.ToString());
-            return hack.TryEncode(buffer, out bytesWritten, formattingData.Encoding);
+            return hack.TryEncode(buffer, out bytesWritten, formattingData.TextEncoding);
         }
     }
 }
