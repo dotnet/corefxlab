@@ -37,12 +37,12 @@ namespace System.Text
                     break;
 
                 case 'B':
-                    if (!TryWriteChar('{', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('{', buffer, encoding.TextEncoding, ref bytesWritten)) { return false; }
                     tail = '}';
                     break;
 
                 case 'P':
-                    if (!TryWriteChar('(', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('(', buffer, encoding.TextEncoding, ref bytesWritten)) { return false; }
                     tail = ')';
                     break;
 
@@ -64,7 +64,7 @@ namespace System.Text
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('-', buffer, encoding.TextEncoding, ref bytesWritten)) { return false; }
                 }
 
                 if (!TryWriteByte(bytes[5], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
@@ -72,7 +72,7 @@ namespace System.Text
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('-', buffer, encoding.TextEncoding, ref bytesWritten)) { return false; }
                 }
 
                 if (!TryWriteByte(bytes[7], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
@@ -80,7 +80,7 @@ namespace System.Text
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('-', buffer, encoding.TextEncoding, ref bytesWritten)) { return false; }
                 }
 
                 if (!TryWriteByte(bytes[8], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
@@ -88,7 +88,7 @@ namespace System.Text
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, encoding.Encoding, ref bytesWritten)) { return false; }
+                    if (!TryWriteChar('-', buffer, encoding.TextEncoding, ref bytesWritten)) { return false; }
                 }
 
                 if (!TryWriteByte(bytes[10], buffer, byteFormat, encoding, ref bytesWritten)) { return false; }
@@ -101,7 +101,7 @@ namespace System.Text
 
             if (tail != '\0')
             {
-                if (!TryWriteChar(tail, buffer, encoding.Encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteChar(tail, buffer, encoding.TextEncoding, ref bytesWritten)) { return false; }
             }
 
             return true;

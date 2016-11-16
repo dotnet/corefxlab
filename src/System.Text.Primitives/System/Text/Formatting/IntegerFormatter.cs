@@ -34,7 +34,7 @@ namespace System.Text
             else
             {
                 int minusSignBytes = 0;
-                if(!formattingData.TryWriteSymbol(EncodingData.Symbol.MinusSign, buffer, out minusSignBytes))
+                if(!formattingData.TryEncode(EncodingData.Symbol.MinusSign, buffer, out minusSignBytes))
                 {
                     bytesWritten = 0;
                     return false;
@@ -351,7 +351,7 @@ namespace System.Text
                 var leadingZerosCount = format.Precision - digitsCount - trailingZerosCount;
                 while (leadingZerosCount-- > 0)
                 {
-                    if (!formattingData.TryWriteDigitOrSymbol(0, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!formattingData.TryEncode(EncodingData.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -361,7 +361,7 @@ namespace System.Text
             }
 
             // Append first digit
-            if (!formattingData.TryWriteDigit(value, buffer.Slice(bytesWritten), out digitBytes))
+            if (!formattingData.TryEncode((EncodingData.Symbol)value, buffer.Slice(bytesWritten), out digitBytes))
             {
                 bytesWritten = 0;
                 return false;
@@ -380,7 +380,7 @@ namespace System.Text
                     if (digitsCount + trailingZerosCount > 0)
                     {
                         // There is a new group immediately after the first digit
-                        if (!formattingData.TryWriteSymbol(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!formattingData.TryEncode(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
@@ -395,7 +395,7 @@ namespace System.Text
                 {
                     if (digitsLeftInGroup == 0)
                     {
-                        if (!formattingData.TryWriteSymbol(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!formattingData.TryEncode(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
@@ -407,7 +407,7 @@ namespace System.Text
                     var nextDigit = reversedValueExceptFirst % 10UL;
                     reversedValueExceptFirst = reversedValueExceptFirst / 10UL;
 
-                    if (!formattingData.TryWriteDigit(nextDigit, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!formattingData.TryEncode((EncodingData.Symbol)nextDigit, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -421,7 +421,7 @@ namespace System.Text
                 {
                     if (digitsLeftInGroup == 0)
                     {
-                        if (!formattingData.TryWriteSymbol(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!formattingData.TryEncode(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
@@ -430,7 +430,7 @@ namespace System.Text
                         digitsLeftInGroup = GroupSize;
                     }
 
-                    if (!formattingData.TryWriteDigitOrSymbol(0, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!formattingData.TryEncode(EncodingData.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -446,7 +446,7 @@ namespace System.Text
                     var bufferSlice = buffer.Slice(bytesWritten);
                     var nextDigit = reversedValueExceptFirst % 10UL;
                     reversedValueExceptFirst = reversedValueExceptFirst / 10UL;
-                    if (!formattingData.TryWriteDigit(nextDigit, bufferSlice, out digitBytes))
+                    if (!formattingData.TryEncode((EncodingData.Symbol)nextDigit, bufferSlice, out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -457,7 +457,7 @@ namespace System.Text
                 // Append trailing zeros if any
                 while (trailingZerosCount-- > 0)
                 {
-                    if (!formattingData.TryWriteDigitOrSymbol(0, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!formattingData.TryEncode(EncodingData.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -473,7 +473,7 @@ namespace System.Text
 
                 if (trailingZerosAfterDecimalCount > 0)
                 {
-                    if (!formattingData.TryWriteSymbol(EncodingData.Symbol.DecimalSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!formattingData.TryEncode(EncodingData.Symbol.DecimalSeparator, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -482,7 +482,7 @@ namespace System.Text
 
                     while (trailingZerosAfterDecimalCount-- > 0)
                     {
-                        if (!formattingData.TryWriteDigitOrSymbol(0, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!formattingData.TryEncode(EncodingData.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
