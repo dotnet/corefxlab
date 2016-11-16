@@ -96,7 +96,7 @@ namespace System.IO.Pipelines.Tests
                 var readerWriter = new PipelineReaderWriter(memoryPool);
 
                 var output = readerWriter.Alloc();
-                output.Append(data, EncodingData.TextEncoding.Utf8);
+                output.Append(data, TextEncoding.Utf8);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 readerWriter.CompleteWriter();
@@ -131,7 +131,7 @@ namespace System.IO.Pipelines.Tests
                 var readerWriter = new PipelineReaderWriter(memoryPool);
 
                 var output = readerWriter.Alloc();
-                output.Append(data, EncodingData.TextEncoding.Utf8);
+                output.Append(data, TextEncoding.Utf8);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 readerWriter.CompleteWriter();
@@ -177,7 +177,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(0, output.AsReadableBuffer().Length);
 
 
-                output.Append("hello world", EncodingData.TextEncoding.Utf8);
+                output.Append("hello world", TextEncoding.Utf8);
                 var readable = output.AsReadableBuffer();
 
                 // check that looks about right
@@ -187,7 +187,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.True(readable.Slice(1, 3).Equals(Encoding.UTF8.GetBytes("ell")));
 
                 // check it all works after we write more
-                output.Append("more data", EncodingData.TextEncoding.Utf8);
+                output.Append("more data", TextEncoding.Utf8);
 
                 // note that the snapshotted readable should not have changed by this
                 Assert.False(readable.IsEmpty);

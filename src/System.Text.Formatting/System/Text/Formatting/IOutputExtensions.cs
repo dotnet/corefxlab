@@ -25,7 +25,7 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, string value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, string value, TextEncoding encoding) where TFormatter : IOutput
         {
             if (value.Length < 256) {
                 while (!formatter.TryAppend(value, encoding)) {
@@ -47,7 +47,7 @@ namespace System.Text.Formatting
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, TextEncoding encoding) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryEncode(formatter.Buffer, out bytesWritten, encoding)) {
@@ -57,14 +57,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, TextEncoding encoding) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoding)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, TextEncoding encoding) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryEncode(formatter.Buffer, out bytesWritten, encoding)) {
@@ -74,14 +74,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, char value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, char value, TextEncoding encoding) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoding)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, char value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, char value, TextEncoding encoding) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryEncode(formatter.Buffer, out bytesWritten, encoding)) {
@@ -91,14 +91,14 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value, TextEncoding encoding) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoding)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value, EncodingData.TextEncoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value, TextEncoding encoding) where TFormatter : IOutput
         {
             int bytesWritten;
             if (!value.TryEncode(formatter.Buffer, out bytesWritten, encoding)) {

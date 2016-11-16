@@ -135,7 +135,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69, }, // E
             };
             
-            EncodingData fd = new EncodingData(utf8digitsAndSymbols, EncodingData.TextEncoding.Utf8, s_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseByte(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -325,7 +325,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69, }, // E
             };
             
-            EncodingData fd = new EncodingData(utf8digitsAndSymbols, EncodingData.TextEncoding.Utf8, s_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseUInt16(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -515,7 +515,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69, }, // E
             };
             
-            EncodingData fd = new EncodingData(utf8digitsAndSymbols, EncodingData.TextEncoding.Utf8, s_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseUInt32(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -705,7 +705,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69, }, // E
             };
             
-            EncodingData fd = new EncodingData(utf8digitsAndSymbols, EncodingData.TextEncoding.Utf8, s_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseUInt64(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -899,7 +899,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69, }, // E
             };
             
-            EncodingData fd = new EncodingData(utf8digitsAndSymbols, EncodingData.TextEncoding.Utf8, s_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseSByte(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -937,7 +937,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69 }, new byte[] { 101 },
             };
             
-            EncodingData fd = new EncodingData(thaiUtf8DigitsAndSymbols, EncodingData.TextEncoding.Utf8, s_thais_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(thaiUtf8DigitsAndSymbols, TextEncoding.Utf8, s_thais_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseSByte(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -1157,7 +1157,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69, }, // E
             };
             
-            EncodingData fd = new EncodingData(utf8digitsAndSymbols, EncodingData.TextEncoding.Utf8, s_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseInt16(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -1195,7 +1195,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69 }, new byte[] { 101 },
             };
             
-            EncodingData fd = new EncodingData(thaiUtf8DigitsAndSymbols, EncodingData.TextEncoding.Utf8, s_thais_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(thaiUtf8DigitsAndSymbols, TextEncoding.Utf8, s_thais_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseInt16(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -1415,7 +1415,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69, }, // E
             };
             
-            EncodingData fd = new EncodingData(utf8digitsAndSymbols, EncodingData.TextEncoding.Utf8, s_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseInt32(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -1453,7 +1453,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69 }, new byte[] { 101 },
             };
             
-            EncodingData fd = new EncodingData(thaiUtf8DigitsAndSymbols, EncodingData.TextEncoding.Utf8, s_thais_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(thaiUtf8DigitsAndSymbols, TextEncoding.Utf8, s_thais_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseInt32(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -1673,7 +1673,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69, }, // E
             };
             
-            EncodingData fd = new EncodingData(utf8digitsAndSymbols, EncodingData.TextEncoding.Utf8, s_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseInt64(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 
@@ -1711,7 +1711,7 @@ namespace System.Text.Primitives.Tests
                 new byte[] { 69 }, new byte[] { 101 },
             };
             
-            EncodingData fd = new EncodingData(thaiUtf8DigitsAndSymbols, EncodingData.TextEncoding.Utf8, s_thais_utf8ParsingTrie);
+            EncodingData fd = new EncodingData(thaiUtf8DigitsAndSymbols, TextEncoding.Utf8, s_thais_utf8ParsingTrie);
             TextFormat nf = new TextFormat('R');
             bool result = PrimitiveParser.TryParseInt64(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
 

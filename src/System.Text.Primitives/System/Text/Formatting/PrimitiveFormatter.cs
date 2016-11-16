@@ -53,9 +53,9 @@ namespace System.Text
         }
         #endregion
 
-        public static bool TryEncode(this char value, Span<byte> buffer, out int bytesWritten, EncodingData.TextEncoding encoding = EncodingData.TextEncoding.Utf8)
+        public static bool TryEncode(this char value, Span<byte> buffer, out int bytesWritten, TextEncoding encoding = TextEncoding.Utf8)
         {
-            if (encoding == EncodingData.TextEncoding.Utf16)
+            if (encoding == TextEncoding.Utf16)
             {
                 if (buffer.Length < 2)
                 {
@@ -68,7 +68,7 @@ namespace System.Text
                 return true;
             }
 
-            if (encoding == EncodingData.TextEncoding.Utf8) {
+            if (encoding == TextEncoding.Utf8) {
                 if (buffer.Length < 1) {
                     bytesWritten = 0;
                     return false;
@@ -105,10 +105,10 @@ namespace System.Text
             throw new NotImplementedException();
         }
 
-        public static bool TryEncode(this string value, Span<byte> buffer, out int bytesWritten, EncodingData.TextEncoding encoding = EncodingData.TextEncoding.Utf8)
+        public static bool TryEncode(this string value, Span<byte> buffer, out int bytesWritten, TextEncoding encoding = TextEncoding.Utf8)
         {
 
-            if (encoding == EncodingData.TextEncoding.Utf16)
+            if (encoding == TextEncoding.Utf16)
             {
                 var valueBytes = value.Length << 1;
                 if (valueBytes > buffer.Length)
@@ -130,7 +130,7 @@ namespace System.Text
                 return true;
             }
 
-            if (encoding == EncodingData.TextEncoding.Utf8) {
+            if (encoding == TextEncoding.Utf8) {
 
                 var avaliableBytes = buffer.Length;
                 bytesWritten = 0;
@@ -185,9 +185,9 @@ namespace System.Text
             throw new NotImplementedException();
         }
 
-        public static bool TryEncode(this Utf8String value, Span<byte> buffer, out int bytesWritten, EncodingData.TextEncoding encoding = EncodingData.TextEncoding.Utf8)
+        public static bool TryEncode(this Utf8String value, Span<byte> buffer, out int bytesWritten, TextEncoding encoding = TextEncoding.Utf8)
         {
-            if (encoding == EncodingData.TextEncoding.Utf16) {
+            if (encoding == TextEncoding.Utf16) {
                 bytesWritten = 0;
                 int justWritten;
                 foreach(var cp in value.CodePoints) {
@@ -200,7 +200,7 @@ namespace System.Text
                 return true;
             }
 
-            if (encoding == EncodingData.TextEncoding.Utf8) {
+            if (encoding == TextEncoding.Utf8) {
                 if (buffer.Length < value.Length) {
                     bytesWritten = 0;
                     return false;
@@ -214,9 +214,9 @@ namespace System.Text
             throw new NotImplementedException();
         }
 
-        public static bool TryEncode(this ReadOnlySpan<char> value, Span<byte> buffer, out int bytesWritten, EncodingData.TextEncoding encoding = EncodingData.TextEncoding.Utf8)
+        public static bool TryEncode(this ReadOnlySpan<char> value, Span<byte> buffer, out int bytesWritten, TextEncoding encoding = TextEncoding.Utf8)
         {
-            if (encoding == EncodingData.TextEncoding.Utf16) {
+            if (encoding == TextEncoding.Utf16) {
                 var valueBytes = value.Cast<char, byte>();
                 if (buffer.Length < valueBytes.Length) {
                     bytesWritten = 0;
@@ -227,7 +227,7 @@ namespace System.Text
                 return true;
             }
 
-            if (encoding == EncodingData.TextEncoding.Utf8) {
+            if (encoding == TextEncoding.Utf8) {
                 var avaliableBytes = buffer.Length;
                 bytesWritten = 0;
                 for (int i = 0; i < value.Length; i++) {

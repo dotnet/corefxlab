@@ -272,7 +272,7 @@ namespace System.Text.Formatting.Tests
             utf16digitsAndSymbols[(ushort)EncodingData.Symbol.DecimalSeparator] = GetBytesUtf16(".");
             utf16digitsAndSymbols[(ushort)EncodingData.Symbol.GroupSeparator] = GetBytesUtf16(",");
             utf16digitsAndSymbols[(ushort)EncodingData.Symbol.MinusSign] = GetBytesUtf16("_?");
-            return new EncodingData(utf16digitsAndSymbols, EncodingData.TextEncoding.Utf16);
+            return new EncodingData(utf16digitsAndSymbols, TextEncoding.Utf16);
         }
         static byte[] GetBytesUtf16(string text)
         {

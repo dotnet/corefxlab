@@ -184,11 +184,11 @@ namespace System.Text
 			else
 			{
 				int codeUnitsConsumed = 0;
-                while (bytesConsumed < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
 					int consumed;
-                    bool success = encoding.TryParseNextCodingUnit(text.Slice(bytesConsumed), out result, out consumed);
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -435,13 +435,12 @@ namespace System.Text
             }
 			else
 			{
-				int byteIndex = index;
 				int codeUnitsConsumed = 0;
-                while (byteIndex < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
-					int oldIndex = byteIndex;
-                    bool success = encoding.TryParseNextCodingUnit(ref text, ref byteIndex, out result);
+					int consumed;
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -449,14 +448,14 @@ namespace System.Text
 						{
 							negative = true;
 							signed = true;
-                            bytesConsumed += byteIndex - oldIndex;
+                            bytesConsumed += consumed;
 							codeUnitsConsumed++;
 						}
 						else if (bytesConsumed == 0 && result == (int)EncodingData.Symbol.PlusSign)
 						{
 							negative = true;
 							signed = true;
-                            bytesConsumed += byteIndex - oldIndex;
+                            bytesConsumed += consumed;
 						}
 						else if (codeUnitsConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
                         {
@@ -499,7 +498,7 @@ namespace System.Text
 					else
 					{
 						value = (sbyte)(value * 10 + result); // left shift the value and add the nextByte
-						bytesConsumed += byteIndex - oldIndex;
+						bytesConsumed += consumed;
 						codeUnitsConsumed++;
 					}
                 }
@@ -856,11 +855,11 @@ namespace System.Text
 			else
 			{
 				int codeUnitsConsumed = 0;
-                while (bytesConsumed < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
 					int consumed;
-                    bool success = encoding.TryParseNextCodingUnit(text.Slice(bytesConsumed), out result, out consumed);
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -1107,13 +1106,12 @@ namespace System.Text
             }
 			else
 			{
-				int byteIndex = index;
 				int codeUnitsConsumed = 0;
-                while (byteIndex < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
-					int oldIndex = byteIndex;
-                    bool success = encoding.TryParseNextCodingUnit(ref text, ref byteIndex, out result);
+					int consumed;
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -1121,14 +1119,14 @@ namespace System.Text
 						{
 							negative = true;
 							signed = true;
-                            bytesConsumed += byteIndex - oldIndex;
+                            bytesConsumed += consumed;
 							codeUnitsConsumed++;
 						}
 						else if (bytesConsumed == 0 && result == (int)EncodingData.Symbol.PlusSign)
 						{
 							negative = true;
 							signed = true;
-                            bytesConsumed += byteIndex - oldIndex;
+                            bytesConsumed += consumed;
 						}
 						else if (codeUnitsConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
                         {
@@ -1171,7 +1169,7 @@ namespace System.Text
 					else
 					{
 						value = (short)(value * 10 + result); // left shift the value and add the nextByte
-						bytesConsumed += byteIndex - oldIndex;
+						bytesConsumed += consumed;
 						codeUnitsConsumed++;
 					}
                 }
@@ -1528,11 +1526,11 @@ namespace System.Text
 			else
 			{
 				int codeUnitsConsumed = 0;
-                while (bytesConsumed < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
 					int consumed;
-                    bool success = encoding.TryParseNextCodingUnit(text.Slice(bytesConsumed), out result, out consumed);
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -1779,13 +1777,12 @@ namespace System.Text
             }
 			else
 			{
-				int byteIndex = index;
 				int codeUnitsConsumed = 0;
-                while (byteIndex < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
-					int oldIndex = byteIndex;
-                    bool success = encoding.TryParseNextCodingUnit(ref text, ref byteIndex, out result);
+					int consumed;
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -1793,14 +1790,14 @@ namespace System.Text
 						{
 							negative = true;
 							signed = true;
-                            bytesConsumed += byteIndex - oldIndex;
+                            bytesConsumed += consumed;
 							codeUnitsConsumed++;
 						}
 						else if (bytesConsumed == 0 && result == (int)EncodingData.Symbol.PlusSign)
 						{
 							negative = true;
 							signed = true;
-                            bytesConsumed += byteIndex - oldIndex;
+                            bytesConsumed += consumed;
 						}
 						else if (codeUnitsConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
                         {
@@ -1843,7 +1840,7 @@ namespace System.Text
 					else
 					{
 						value = (int)(value * 10 + result); // left shift the value and add the nextByte
-						bytesConsumed += byteIndex - oldIndex;
+						bytesConsumed += consumed;
 						codeUnitsConsumed++;
 					}
                 }
@@ -2200,11 +2197,11 @@ namespace System.Text
 			else
 			{
 				int codeUnitsConsumed = 0;
-                while (bytesConsumed < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
 					int consumed;
-                    bool success = encoding.TryParseNextCodingUnit(text.Slice(bytesConsumed), out result, out consumed);
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -2451,13 +2448,12 @@ namespace System.Text
             }
 			else
 			{
-				int byteIndex = index;
 				int codeUnitsConsumed = 0;
-                while (byteIndex < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
-					int oldIndex = byteIndex;
-                    bool success = encoding.TryParseNextCodingUnit(ref text, ref byteIndex, out result);
+					int consumed;
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -2465,14 +2461,14 @@ namespace System.Text
 						{
 							negative = true;
 							signed = true;
-                            bytesConsumed += byteIndex - oldIndex;
+                            bytesConsumed += consumed;
 							codeUnitsConsumed++;
 						}
 						else if (bytesConsumed == 0 && result == (int)EncodingData.Symbol.PlusSign)
 						{
 							negative = true;
 							signed = true;
-                            bytesConsumed += byteIndex - oldIndex;
+                            bytesConsumed += consumed;
 						}
 						else if (codeUnitsConsumed == 1 && signed) // if the first character happened to be a '-' or a '+', we reset the byte counter so logic proceeds as normal.
                         {
@@ -2515,7 +2511,7 @@ namespace System.Text
 					else
 					{
 						value = (long)(value * 10 + result); // left shift the value and add the nextByte
-						bytesConsumed += byteIndex - oldIndex;
+						bytesConsumed += consumed;
 						codeUnitsConsumed++;
 					}
                 }

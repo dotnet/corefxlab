@@ -9,6 +9,13 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
+    public enum TextEncoding : byte
+    {
+        Utf16 = 0,
+        Utf8 = 1,
+        Ascii,
+    }
+
     public struct EncodingData : IEquatable<EncodingData>
     {
         private static EncodingData s_invariantUtf16;
@@ -17,36 +24,6 @@ namespace System.Text
         private byte[][] _digitsAndSymbols; // this could be flattened into a single array
         private ParsingTrieNode[] _parsingTrie;
         private TextEncoding _encoding;
-
-        public enum TextEncoding : byte
-        {
-            Utf16 = 0,
-            Utf8 = 1,
-            Ascii,
-        }
-
-        // The parsing trie is structured as an array, which means that there are two types of
-        // "nodes" for representational purposes
-        //
-        // The first node type (the parent node) uses the valueOrNumChildren to represent the number of children
-        // underneath it. The index is unused for this type of node, except when it's used for
-        // sequential node mapping (see below). If valueOrNumChildren is zero for this type of node, the index
-        // is used and represents an index into _digitsAndSymbols.
-        //
-        // The second node types immediately follow the first (the childe nodes). They are composed of a value
-        // (valueOrNumChildren), which is walked via binary search, and an index, which points to another
-        // node contained in the array.
-        //
-        // We use the int index here to encode max-min info for sequential leaves
-        // It's very common for digits to be encoded sequentially, so we save time by mapping here
-        // The index is formatted as such: 0xAABBCCDD, where AA = the min value,
-        // BB = the index of the min value relative to the current node (1-indexed),
-        // CC = the max value, and DD = the max value's index in the same coord-system as BB.
-        internal struct ParsingTrieNode
-        {
-            public byte valueOrNumChildren;
-            public int index;
-        }
 
         // this should be removed after CreateParsingTire is implemented
         public EncodingData(byte[][] digitsAndSymbols, TextEncoding encoding, Tuple<byte, int>[] parsingTrie)
@@ -76,46 +53,162 @@ namespace System.Text
             return null;
         }
 
-        // This binary search implementation returns an int representing either:
-        //      - the index of the item searched for (if the value is positive)
-        //      - the index of the location where the item should be placed to maintain a sorted list (if the value is negative)
-        private int BinarySearch(int nodeIndex, int level, byte value)
+        public static EncodingData InvariantUtf16
         {
-            int maxMinLimits = _parsingTrie[nodeIndex].index;
-            if (maxMinLimits > 0 && value > maxMinLimits >> 24 && value < (maxMinLimits << 16) >> 24)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
             {
-                // See the comments on the struct above for more information about this format
-                return nodeIndex + ((maxMinLimits << 8) >> 24) + value - (maxMinLimits >> 24);
+                return s_invariantUtf16;
             }
+        }
+        public static EncodingData InvariantUtf8
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return s_invariantUtf8;
+            }
+        }
 
-            int leftBound = nodeIndex + 1, rightBound = nodeIndex + _parsingTrie[nodeIndex].valueOrNumChildren;
-            int midIndex = 0;
+        public bool TryParseSymbol(ReadOnlySpan<byte> buffer, out Symbol symbol, out int consumed)
+        {
+            int trieIndex = 0;
+            int codeUnitIndex = 0;
+            consumed = 0;
             while (true)
             {
-                if (leftBound > rightBound)  // if the search failed
+                if (_parsingTrie[trieIndex].valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
                 {
-                    // this loop is necessary because binary search takes the floor
-                    // of the middle, which means it can give incorrect indices for insertion.
-                    // we should never iterate up more than two indices.
-                    while (midIndex < nodeIndex + _parsingTrie[nodeIndex].valueOrNumChildren
-                        && _parsingTrie[midIndex].valueOrNumChildren < value)
+                    if (VerifyCodeUnit(buffer, codeUnitIndex, (Symbol)_parsingTrie[trieIndex].index))
                     {
-                        midIndex++;
+                        consumed = _digitsAndSymbols[_parsingTrie[trieIndex].index].Length - codeUnitIndex;
+                        symbol = (Symbol)_parsingTrie[trieIndex].index;  // return the parsed value
+                        return true;
                     }
-                    return -midIndex;
+                    else
+                    {
+                        symbol = 0;
+                        consumed = 0;
+                        return false;
+                    }
                 }
-
-                midIndex = (leftBound + rightBound) / 2; // find the middle value
-
-                byte mValue = _parsingTrie[midIndex].valueOrNumChildren;
-
-                if (mValue < value)
-                    leftBound = midIndex + 1;
-                else if (mValue > value)
-                    rightBound = midIndex - 1;
                 else
-                    return midIndex;
+                {
+                    int search = BinarySearch(trieIndex, codeUnitIndex, buffer[0]);    // we search the _parsingTrie for the nextByte
+
+                    if (search > 0)   // if we found a node
+                    {
+                        trieIndex = _parsingTrie[search].index;
+                        consumed++;
+                        codeUnitIndex++;
+                    }
+                    else
+                    {
+                        symbol = 0;
+                        consumed = 0;
+                        return false;
+                    }
+                }
             }
+        }
+
+        public bool TryWriteDigit(ulong digit, Span<byte> buffer, out int bytesWritten)
+        {
+            Precondition.Require(digit < 10);
+            return TryWriteDigitOrSymbol(digit, buffer, out bytesWritten);
+        }
+
+        public bool TryWriteSymbol(Symbol symbol, Span<byte> buffer, out int bytesWritten)
+        {
+            var symbolIndex = (ushort)symbol;
+            return TryWriteDigitOrSymbol(symbolIndex, buffer, out bytesWritten);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryWriteDigitOrSymbol(ulong digitOrSymbolIndex, Span<byte> buffer, out int bytesWritten)
+        {
+            byte[] bytes = _digitsAndSymbols[digitOrSymbolIndex];
+            bytesWritten = bytes.Length;
+            if (bytesWritten > buffer.Length)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+
+            if (bytesWritten == 2)
+            {
+                buffer[0] = bytes[0];
+                buffer[1] = bytes[1];
+                return true;
+            }
+
+            if (bytesWritten == 1)
+            {
+                buffer[0] = bytes[0];
+                return true;
+            }
+
+            buffer.Set(bytes);
+            return true;
+        }
+
+        public bool IsInvariantUtf16
+        {
+            get { return _digitsAndSymbols == s_invariantUtf16._digitsAndSymbols; }
+        }
+        public bool IsInvariantUtf8
+        {
+            get { return _digitsAndSymbols == s_invariantUtf8._digitsAndSymbols; }
+        }
+
+        public TextEncoding Encoding => _encoding;
+
+        public enum Symbol : ushort
+        {
+            D0                  = 0,
+            D1                  = 1,
+            D2                  = 2, 
+            D3                  = 3,
+            D4                  = 4,
+            D5                  = 5, 
+            D6                  = 6, 
+            D7                  = 7,
+            D8                  = 8,
+            D9                  = 9,
+            DecimalSeparator    = 10,
+            GroupSeparator      = 11,
+            InfinitySign        = 12,
+            MinusSign           = 13,
+            PlusSign            = 14,
+            NaN                 = 15,
+            Exponent            = 16,
+        }
+
+        public static bool operator==(EncodingData left, EncodingData right)
+        {
+            return left._digitsAndSymbols == right._digitsAndSymbols;
+        }
+        public static bool operator!=(EncodingData left, EncodingData right)
+        {
+            return left._digitsAndSymbols == right._digitsAndSymbols;
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj)
+        {
+            if (obj is EncodingData) return Equals((EncodingData)obj);
+            return false;
+        }
+
+        public bool Equals(EncodingData other)
+        {
+            return this == other;
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode()
+        {
+            return _digitsAndSymbols.GetHashCode();
         }
 
         // it might be worth compacting the data into a single byte array.
@@ -169,50 +262,37 @@ namespace System.Text
             s_invariantUtf8 = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8);
         }
 
-        public static EncodingData InvariantUtf16
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return s_invariantUtf16;
-            }
-        }
-        public static EncodingData InvariantUtf8
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return s_invariantUtf8;
-            }
-        }
-
         /// <summary>
         /// Parse the next byte in a byte array. Will return either a DigitOrSymbol value, an InvalidCharacter, or a Continue
         /// </summary>
         /// <param name="nextByte">The next byte to be parsed</param>
         /// <param name="bytesParsed">The total number of bytes parsed (will be zero until a code unit is deciphered)</param>
         /// <returns></returns>
-        internal bool TryParseNextCodingUnit(ReadOnlySpan<byte> buffer, out uint value, out int consumed)
+        internal bool TryParseSymbol(ReadOnlySpan<byte> buffer, out uint symbol, out int consumed)
         {
             int trieIndex = 0;
             int codeUnitIndex = 0;
             consumed = 0;
-            while (true) {
+            while (true)
+            {
                 if (_parsingTrie[trieIndex].valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
                 {
-                    if (VerifyCodeUnit(buffer, codeUnitIndex, _parsingTrie[trieIndex].index)) {
-                        consumed = _digitsAndSymbols[_parsingTrie[trieIndex].index].Length - codeUnitIndex;
-                        value = (uint)_parsingTrie[trieIndex].index;  // return the parsed value
+                    symbol = (uint)_parsingTrie[trieIndex].index;  // return the parsed value
+                    if (VerifyCodeUnit(buffer, codeUnitIndex, (Symbol)symbol))
+                    {                        
+                        consumed = _digitsAndSymbols[(int)symbol].Length;
                         return true;
                     }
-                    else {
-                        value = 0;
+                    else
+                    {
+                        symbol = 0;
                         consumed = 0;
                         return false;
                     }
                 }
-                else {
-                    int search = BinarySearch(trieIndex, codeUnitIndex, buffer[0]);    // we search the _parsingTrie for the nextByte
+                else
+                {
+                    int search = BinarySearch(trieIndex, codeUnitIndex, buffer[codeUnitIndex]);    // we search the _parsingTrie for the nextByte
 
                     if (search > 0)   // if we found a node
                     {
@@ -220,8 +300,9 @@ namespace System.Text
                         consumed++;
                         codeUnitIndex++;
                     }
-                    else {
-                        value = 0;
+                    else
+                    {
+                        symbol = 0;
                         consumed = 0;
                         return false;
                     }
@@ -229,57 +310,54 @@ namespace System.Text
             }
         }
 
-        /// <summary>
-        /// Parse the next byte in a byte array. Will return either a DigitOrSymbol value, an InvalidCharacter, or a Continue
-        /// </summary>
-        /// <param name="nextByte">The next byte to be parsed</param>
-        /// <param name="bytesParsed">The total number of bytes parsed (will be zero until a code unit is deciphered)</param>
-        /// <returns></returns>
-        internal bool TryParseNextCodingUnit(ref byte[] buffer, ref int bufferIndex, out uint value)
+        // This binary search implementation returns an int representing either:
+        //      - the index of the item searched for (if the value is positive)
+        //      - the index of the location where the item should be placed to maintain a sorted list (if the value is negative)
+        private int BinarySearch(int nodeIndex, int level, byte value)
         {
-            int trieIndex = 0;
-            int codeUnitIndex = 0;
+            int maxMinLimits = _parsingTrie[nodeIndex].index;
+            if (maxMinLimits > 0 && value > maxMinLimits >> 24 && value < (maxMinLimits << 16) >> 24)
+            {
+                // See the comments on the struct above for more information about this format
+                return nodeIndex + ((maxMinLimits << 8) >> 24) + value - (maxMinLimits >> 24);
+            }
 
+            int leftBound = nodeIndex + 1, rightBound = nodeIndex + _parsingTrie[nodeIndex].valueOrNumChildren;
+            int midIndex = 0;
             while (true)
             {
-                if (_parsingTrie[trieIndex].valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
+                if (leftBound > rightBound)  // if the search failed
                 {
-                    if (VerifyCodeUnit(ref buffer, bufferIndex, codeUnitIndex, _parsingTrie[trieIndex].index))
+                    // this loop is necessary because binary search takes the floor
+                    // of the middle, which means it can give incorrect indices for insertion.
+                    // we should never iterate up more than two indices.
+                    while (midIndex < nodeIndex + _parsingTrie[nodeIndex].valueOrNumChildren
+                        && _parsingTrie[midIndex].valueOrNumChildren < value)
                     {
-                        bufferIndex += _digitsAndSymbols[_parsingTrie[trieIndex].index].Length - codeUnitIndex;
-                        value = (uint)_parsingTrie[trieIndex].index;  // return the parsed value
-                        return true;
+                        midIndex++;
                     }
-                    else
-                    {
-                        value = 0;
-                        return false;
-                    }
+                    return -midIndex;
                 }
-                else
-                {
-                    int search = BinarySearch(trieIndex, codeUnitIndex, buffer[bufferIndex]);    // we search the _parsingTrie for the nextByte
 
-                    if (search > 0)   // if we found a node
-                    {
-                        trieIndex = _parsingTrie[search].index;
-                        bufferIndex++;
-                        codeUnitIndex++;
-                    }
-                    else
-                    {
-                        value = 0;
-                        return false;
-                    }
-                }
+                midIndex = (leftBound + rightBound) / 2; // find the middle value
+
+                byte mValue = _parsingTrie[midIndex].valueOrNumChildren;
+
+                if (mValue < value)
+                    leftBound = midIndex + 1;
+                else if (mValue > value)
+                    rightBound = midIndex - 1;
+                else
+                    return midIndex;
             }
         }
+
         private bool VerifyCodeUnit(ref byte[] buffer, int index, int codeUnitIndex, int digitOrSymbol)
         {
             int codeUnitLength = _digitsAndSymbols[digitOrSymbol].Length;
             if (codeUnitIndex == codeUnitLength - 1)
                 return true;
-            
+
             for (int i = 0; i < codeUnitLength - codeUnitIndex; i++)
             {
                 if (buffer[i + index] != _digitsAndSymbols[digitOrSymbol][i + codeUnitIndex])
@@ -289,107 +367,42 @@ namespace System.Text
             return true;
         }
 
-        private bool VerifyCodeUnit(ReadOnlySpan<byte> buffer, int codeUnitIndex, int digitOrSymbol)
+        private bool VerifyCodeUnit(ReadOnlySpan<byte> buffer, int codeUnitIndex, Symbol symbol)
         {
-            int codeUnitLength = _digitsAndSymbols[digitOrSymbol].Length;
+            int codeUnitLength = _digitsAndSymbols[(int)symbol].Length;
             if (codeUnitIndex == codeUnitLength - 1)
                 return true;
 
-            for (int i = 0; i < codeUnitLength - codeUnitIndex; i++) {
-                if (buffer[i] != _digitsAndSymbols[digitOrSymbol][i + codeUnitIndex])
+            for (int i = 0; i < codeUnitLength - codeUnitIndex; i++)
+            {
+                if (buffer[i + codeUnitIndex] != _digitsAndSymbols[(int)symbol][i + codeUnitIndex])
                     return false;
             }
 
             return true;
         }
 
-        public bool TryWriteDigit(ulong digit, Span<byte> buffer, out int bytesWritten)
+        // The parsing trie is structured as an array, which means that there are two types of
+        // "nodes" for representational purposes
+        //
+        // The first node type (the parent node) uses the valueOrNumChildren to represent the number of children
+        // underneath it. The index is unused for this type of node, except when it's used for
+        // sequential node mapping (see below). If valueOrNumChildren is zero for this type of node, the index
+        // is used and represents an index into _digitsAndSymbols.
+        //
+        // The second node types immediately follow the first (the childe nodes). They are composed of a value
+        // (valueOrNumChildren), which is walked via binary search, and an index, which points to another
+        // node contained in the array.
+        //
+        // We use the int index here to encode max-min info for sequential leaves
+        // It's very common for digits to be encoded sequentially, so we save time by mapping here
+        // The index is formatted as such: 0xAABBCCDD, where AA = the min value,
+        // BB = the index of the min value relative to the current node (1-indexed),
+        // CC = the max value, and DD = the max value's index in the same coord-system as BB.
+        struct ParsingTrieNode
         {
-            Precondition.Require(digit < 10);
-            return TryWriteDigitOrSymbol(digit, buffer, out bytesWritten);
-        }
-
-        public bool TryWriteSymbol(Symbol symbol, Span<byte> buffer, out int bytesWritten)
-        {
-            var symbolIndex = (ushort)symbol;
-            return TryWriteDigitOrSymbol(symbolIndex, buffer, out bytesWritten);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryWriteDigitOrSymbol(ulong digitOrSymbolIndex, Span<byte> buffer, out int bytesWritten)
-        {
-            byte[] bytes = _digitsAndSymbols[digitOrSymbolIndex];
-            bytesWritten = bytes.Length;
-            if (bytesWritten > buffer.Length)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-
-            if (bytesWritten == 2)
-            {
-                buffer[0] = bytes[0];
-                buffer[1] = bytes[1];
-                return true;
-            }
-
-            if (bytesWritten == 1)
-            {
-                buffer[0] = bytes[0];
-                return true;
-            }
-
-            buffer.Set(bytes);
-            return true;
-        }
-
-        public enum Symbol : ushort
-        {
-            DecimalSeparator = 10,
-            GroupSeparator = 11,
-            InfinitySign = 12,
-            MinusSign = 13,
-            PlusSign = 14,          
-            NaN = 15,
-            Exponent = 16,
-        }
-
-        public bool IsInvariantUtf16
-        {
-            get { return _digitsAndSymbols == s_invariantUtf16._digitsAndSymbols; }
-        }
-        public bool IsInvariantUtf8
-        {
-            get { return _digitsAndSymbols == s_invariantUtf8._digitsAndSymbols; }
-        }
-
-        public TextEncoding Encoding => _encoding;
-
-        public static bool operator==(EncodingData left, EncodingData right)
-        {
-            return left._digitsAndSymbols == right._digitsAndSymbols;
-        }
-        public static bool operator!=(EncodingData left, EncodingData right)
-        {
-            return left._digitsAndSymbols == right._digitsAndSymbols;
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj)
-        {
-            if (obj is EncodingData) return Equals((EncodingData)obj);
-            return false;
-        }
-
-        public bool Equals(EncodingData other)
-        {
-            return this == other;
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode()
-        {
-            return _digitsAndSymbols.GetHashCode();
+            public byte valueOrNumChildren;
+            public int index;
         }
     }
 }
