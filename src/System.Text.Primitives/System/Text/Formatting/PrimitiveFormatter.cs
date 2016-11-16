@@ -15,45 +15,45 @@ namespace System.Text
     public static partial class PrimitiveFormatter
     {
         #region Integers
-        public static bool TryFormat(this byte value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this byte value, Span<byte> buffer, out int bytesWritten, Format.Parsed format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatUInt64(value, 1, buffer, format, formattingData, out bytesWritten);
+            return IntegerFormatter.TryFormatUInt64(value, 1, buffer, format, encoding, out bytesWritten);
         }
 
-        public static bool TryFormat(this sbyte value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this sbyte value, Span<byte> buffer, out int bytesWritten, Format.Parsed format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatInt64(value, 1, buffer, format, formattingData, out bytesWritten);
+            return IntegerFormatter.TryFormatInt64(value, 1, buffer, format, encoding, out bytesWritten);
         }
 
-        public static bool TryFormat(this ushort value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this ushort value, Span<byte> buffer, out int bytesWritten, Format.Parsed format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatUInt64(value, 2, buffer, format, formattingData, out bytesWritten);
+            return IntegerFormatter.TryFormatUInt64(value, 2, buffer, format, encoding, out bytesWritten);
         }
-        public static bool TryFormat(this short value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this short value, Span<byte> buffer, out int bytesWritten, Format.Parsed format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatInt64(value, 2, buffer, format, formattingData, out bytesWritten);
-        }
-
-        public static bool TryFormat(this uint value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
-        {
-            return IntegerFormatter.TryFormatUInt64(value, 4, buffer, format, formattingData, out bytesWritten);
-        }
-        public static bool TryFormat(this int value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
-        {
-            return IntegerFormatter.TryFormatInt64(value, 4, buffer, format, formattingData, out bytesWritten);
+            return IntegerFormatter.TryFormatInt64(value, 2, buffer, format, encoding, out bytesWritten);
         }
 
-        public static bool TryFormat(this ulong value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this uint value, Span<byte> buffer, out int bytesWritten, Format.Parsed format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatUInt64(value, 8, buffer, format, formattingData, out bytesWritten);
+            return IntegerFormatter.TryFormatUInt64(value, 4, buffer, format, encoding, out bytesWritten);
         }
-        public static bool TryFormat(this long value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWritten, Format.Parsed format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatInt64(value, 8, buffer, format, formattingData, out bytesWritten);
+            return IntegerFormatter.TryFormatInt64(value, 4, buffer, format, encoding, out bytesWritten);
+        }
+
+        public static bool TryFormat(this ulong value, Span<byte> buffer, out int bytesWritten, Format.Parsed format, EncodingData encoding)
+        {
+            return IntegerFormatter.TryFormatUInt64(value, 8, buffer, format, encoding, out bytesWritten);
+        }
+        public static bool TryFormat(this long value, Span<byte> buffer, out int bytesWritten, Format.Parsed format, EncodingData encoding)
+        {
+            return IntegerFormatter.TryFormatInt64(value, 8, buffer, format, encoding, out bytesWritten);
         }
         #endregion
 
-        public static bool TryFormat(this char value, Span<byte> buffer, EncodingData.TextEncoding encoding, out int bytesWritten)
+        public static bool TryEncode(this char value, Span<byte> buffer, out int bytesWritten, EncodingData.TextEncoding encoding = EncodingData.TextEncoding.Utf8)
         {
             if (encoding == EncodingData.TextEncoding.Utf16)
             {
@@ -105,7 +105,7 @@ namespace System.Text
             throw new NotImplementedException();
         }
 
-        public static bool TryFormat(this string value, Span<byte> buffer, EncodingData.TextEncoding encoding, out int bytesWritten)
+        public static bool TryEncode(this string value, Span<byte> buffer, out int bytesWritten, EncodingData.TextEncoding encoding = EncodingData.TextEncoding.Utf8)
         {
 
             if (encoding == EncodingData.TextEncoding.Utf16)
@@ -185,7 +185,7 @@ namespace System.Text
             throw new NotImplementedException();
         }
 
-        public static bool TryFormat(this Utf8String value, Span<byte> buffer, EncodingData.TextEncoding encoding, out int bytesWritten)
+        public static bool TryEncode(this Utf8String value, Span<byte> buffer, out int bytesWritten, EncodingData.TextEncoding encoding = EncodingData.TextEncoding.Utf8)
         {
             if (encoding == EncodingData.TextEncoding.Utf16) {
                 bytesWritten = 0;
@@ -214,7 +214,7 @@ namespace System.Text
             throw new NotImplementedException();
         }
 
-        public static bool TryFormat(this ReadOnlySpan<char> value, Span<byte> buffer, EncodingData.TextEncoding encoding, out int bytesWritten)
+        public static bool TryEncode(this ReadOnlySpan<char> value, Span<byte> buffer, out int bytesWritten, EncodingData.TextEncoding encoding = EncodingData.TextEncoding.Utf8)
         {
             if (encoding == EncodingData.TextEncoding.Utf16) {
                 var valueBytes = value.Cast<char, byte>();

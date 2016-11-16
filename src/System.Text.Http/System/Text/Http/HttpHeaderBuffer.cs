@@ -22,7 +22,7 @@ namespace System.Text.Http
             }
 
             int bytesWritten;
-            newValue.TryFormat(_bytes, _encoding.Encoding, out bytesWritten);            
+            newValue.TryEncode(_bytes, out bytesWritten, _encoding.Encoding);            
 
             _bytes.SetFromRestOfSpanToEmpty(newValue.Length);
         }        

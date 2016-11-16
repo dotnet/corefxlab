@@ -113,7 +113,7 @@ namespace System.Text
         static bool TryWriteByte(byte b, Span<byte> buffer, Format.Parsed byteFormat, EncodingData formattingData, ref int bytesWritten)
         {
             int written;
-            if (!b.TryFormat(buffer.Slice(bytesWritten), byteFormat, formattingData, out written))
+            if (!b.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, formattingData))
             {
                 bytesWritten = 0;
                 return false;
@@ -126,7 +126,7 @@ namespace System.Text
         static bool TryWriteInt32(int i, Span<byte> buffer, Format.Parsed byteFormat, EncodingData formattingData, ref int bytesWritten)
         {
             int written;
-            if (!i.TryFormat(buffer.Slice(bytesWritten), byteFormat, formattingData, out written))
+            if (!i.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, formattingData))
             {
                 bytesWritten = 0;
                 return false;
@@ -139,7 +139,7 @@ namespace System.Text
         static bool TryWriteInt64(long i, Span<byte> buffer, Format.Parsed byteFormat, EncodingData formattingData, ref int bytesWritten)
         {
             int written;
-            if (!i.TryFormat(buffer.Slice(bytesWritten), byteFormat, formattingData, out written))
+            if (!i.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, formattingData))
             {
                 bytesWritten = 0;
                 return false;
@@ -152,7 +152,7 @@ namespace System.Text
         static bool TryWriteChar(char c, Span<byte> buffer, EncodingData.TextEncoding encoding, ref int bytesWritten)
         {
             int written;
-            if (!c.TryFormat(buffer.Slice(bytesWritten), encoding, out written))
+            if (!c.TryEncode(buffer.Slice(bytesWritten), out written, encoding))
             {
                 bytesWritten = 0;
                 return false;
@@ -165,7 +165,7 @@ namespace System.Text
         static bool TryWriteString(string s, Span<byte> buffer, EncodingData.TextEncoding encoding, ref int bytesWritten)
         {
             int written;
-            if (!s.TryFormat(buffer.Slice(bytesWritten), encoding, out written))
+            if (!s.TryEncode(buffer.Slice(bytesWritten), out written, encoding))
             {
                 bytesWritten = 0;
                 return false;
