@@ -26,7 +26,7 @@ namespace System.Text.Formatting.Tests
             utf16digitsAndSymbols[(ushort)EncodingData.Symbol.DecimalSeparator] = GetBytesUtf16(".");
             utf16digitsAndSymbols[(ushort)EncodingData.Symbol.GroupSeparator] = GetBytesUtf16(",");
             utf16digitsAndSymbols[(ushort)EncodingData.Symbol.MinusSign] = GetBytesUtf16("_?");
-            Culture5 = new EncodingData(utf16digitsAndSymbols, EncodingData.TextEncoding.Utf16);
+            Culture5 = new EncodingData(utf16digitsAndSymbols, TextEncoding.Utf16);
 
             utf16digitsAndSymbols = new byte[17][];
             for (ushort digit = 0; digit < 10; digit++)
@@ -38,7 +38,7 @@ namespace System.Text.Formatting.Tests
             utf16digitsAndSymbols[(ushort)EncodingData.Symbol.DecimalSeparator] = GetBytesUtf16(".");
             utf16digitsAndSymbols[(ushort)EncodingData.Symbol.GroupSeparator] = GetBytesUtf16(",");
             utf16digitsAndSymbols[(ushort)EncodingData.Symbol.MinusSign] = GetBytesUtf16("_?");
-            Culture1 = new EncodingData(utf16digitsAndSymbols, EncodingData.TextEncoding.Utf16);
+            Culture1 = new EncodingData(utf16digitsAndSymbols, TextEncoding.Utf16);
         }
 
         private static byte[] GetBytesUtf16(string text)

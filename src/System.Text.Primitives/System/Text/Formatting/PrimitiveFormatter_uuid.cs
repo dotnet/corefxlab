@@ -149,7 +149,7 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteChar(char c, Span<byte> buffer, EncodingData.TextEncoding encoding, ref int bytesWritten)
+        static bool TryWriteChar(char c, Span<byte> buffer, TextEncoding encoding, ref int bytesWritten)
         {
             int written;
             if (!c.TryEncode(buffer.Slice(bytesWritten), out written, encoding))
@@ -162,7 +162,7 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteString(string s, Span<byte> buffer, EncodingData.TextEncoding encoding, ref int bytesWritten)
+        static bool TryWriteString(string s, Span<byte> buffer, TextEncoding encoding, ref int bytesWritten)
         {
             int written;
             if (!s.TryEncode(buffer.Slice(bytesWritten), out written, encoding))

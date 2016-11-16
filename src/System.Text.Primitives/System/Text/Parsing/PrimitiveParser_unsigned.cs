@@ -107,7 +107,7 @@ namespace System.Text
                 {
                     uint result;
 					int consumed;
-                    bool success = encoding.TryParseNextCodingUnit(text.Slice(byteIndex), out result, out consumed);
+                    bool success = encoding.TryParseSymbol(text.Slice(byteIndex), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -232,12 +232,11 @@ namespace System.Text
             }
 			else
             {
-                int byteIndex = index;
-                while (byteIndex < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
-					int oldIndex = byteIndex;
-                    bool success = encoding.TryParseNextCodingUnit(ref text, ref byteIndex, out result);
+					int consumed;
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -265,7 +264,7 @@ namespace System.Text
                     }
 
                     value = (byte)(value * 10 + result); // left shift the value and add the nextByte
-                    bytesConsumed += byteIndex - oldIndex;
+                    bytesConsumed += consumed;
                 }
 
                 return true;
@@ -460,7 +459,7 @@ namespace System.Text
                 {
                     uint result;
 					int consumed;
-                    bool success = encoding.TryParseNextCodingUnit(text.Slice(byteIndex), out result, out consumed);
+                    bool success = encoding.TryParseSymbol(text.Slice(byteIndex), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -585,12 +584,11 @@ namespace System.Text
             }
 			else
             {
-                int byteIndex = index;
-                while (byteIndex < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
-					int oldIndex = byteIndex;
-                    bool success = encoding.TryParseNextCodingUnit(ref text, ref byteIndex, out result);
+					int consumed;
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -618,7 +616,7 @@ namespace System.Text
                     }
 
                     value = (ushort)(value * 10 + result); // left shift the value and add the nextByte
-                    bytesConsumed += byteIndex - oldIndex;
+                    bytesConsumed += consumed;
                 }
 
                 return true;
@@ -813,7 +811,7 @@ namespace System.Text
                 {
                     uint result;
 					int consumed;
-                    bool success = encoding.TryParseNextCodingUnit(text.Slice(byteIndex), out result, out consumed);
+                    bool success = encoding.TryParseSymbol(text.Slice(byteIndex), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -938,12 +936,11 @@ namespace System.Text
             }
 			else
             {
-                int byteIndex = index;
-                while (byteIndex < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
-					int oldIndex = byteIndex;
-                    bool success = encoding.TryParseNextCodingUnit(ref text, ref byteIndex, out result);
+					int consumed;
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -971,7 +968,7 @@ namespace System.Text
                     }
 
                     value = (uint)(value * 10 + result); // left shift the value and add the nextByte
-                    bytesConsumed += byteIndex - oldIndex;
+                    bytesConsumed += consumed;
                 }
 
                 return true;
@@ -1166,7 +1163,7 @@ namespace System.Text
                 {
                     uint result;
 					int consumed;
-                    bool success = encoding.TryParseNextCodingUnit(text.Slice(byteIndex), out result, out consumed);
+                    bool success = encoding.TryParseSymbol(text.Slice(byteIndex), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -1291,12 +1288,11 @@ namespace System.Text
             }
 			else
             {
-                int byteIndex = index;
-                while (byteIndex < text.Length)
+                while (bytesConsumed + index < text.Length)
                 {
                     uint result;
-					int oldIndex = byteIndex;
-                    bool success = encoding.TryParseNextCodingUnit(ref text, ref byteIndex, out result);
+					int consumed;
+                    bool success = encoding.TryParseSymbol(text.Slice(bytesConsumed + index), out result, out consumed);
 
                     if (!success || result > 9)
                     {
@@ -1324,7 +1320,7 @@ namespace System.Text
                     }
 
                     value = (ulong)(value * 10 + result); // left shift the value and add the nextByte
-                    bytesConsumed += byteIndex - oldIndex;
+                    bytesConsumed += consumed;
                 }
 
                 return true;
