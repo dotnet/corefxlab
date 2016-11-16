@@ -11,11 +11,11 @@ namespace System.Text
     {
         public static bool TryFormat(this double value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
         {
-            Format.Parsed parsedFormat = Format.Parse(format);
+            TextFormat parsedFormat = TextFormat.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this double value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this double value, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -27,11 +27,11 @@ namespace System.Text
 
         public static bool TryFormat(this float value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
         {
-            Format.Parsed parsedFormat = Format.Parse(format);
+            TextFormat parsedFormat = TextFormat.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this float value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this float value, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
         {
             if (format.IsDefault)
             {

@@ -165,7 +165,7 @@ namespace System.Text.Json
             return false;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int written, Format.Parsed format, EncodingData formattingData)
+        public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, EncodingData formattingData)
         {
             written = 0;
             int justWritten;
@@ -257,7 +257,7 @@ namespace System.Text.Json
                 else throw new NotImplementedException();
             }
 
-            public bool TryFormat(Span<byte> buffer, out int written, Format.Parsed format, EncodingData formattingData)
+            public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, EncodingData formattingData)
             {
                 switch (_type)
                 {
@@ -315,7 +315,7 @@ namespace System.Text.Json
                 return result;
             }
 
-            public bool TryFormat(Span<byte> buffer, out int written, Format.Parsed format, EncodingData formattingData)
+            public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, EncodingData formattingData)
             {
                 return _name.TryFormatQuotedString(buffer, format, formattingData, out written);
             }
@@ -326,7 +326,7 @@ namespace System.Text.Json
     {
         // TODO: this should be properly implemented 
         // currently it handles formatting to UTF8 only.
-        public static bool TryFormat(this Utf8String str, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int written)
+        public static bool TryFormat(this Utf8String str, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int written)
         {
             written = 0;
             if (buffer.Length < str.Length)
@@ -343,7 +343,7 @@ namespace System.Text.Json
             return true;
         }
 
-        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int written)
+        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int written)
         {
             written = 0;
             int justWritten;

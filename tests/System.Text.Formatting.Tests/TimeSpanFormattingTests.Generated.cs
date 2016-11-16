@@ -13,7 +13,7 @@ namespace System.Text.Formatting.Tests
     {
         public void CheckTimeSpan(TimeSpan value, string format)
         {
-            var parsed = Format.Parse(format);
+            var parsed = TextFormat.Parse(format);
             var formatter = new StringFormatter();
             formatter.Append(value, parsed);
             var result = formatter.ToString();

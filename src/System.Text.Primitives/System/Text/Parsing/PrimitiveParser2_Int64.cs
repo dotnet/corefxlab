@@ -8,7 +8,7 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {
-        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, EncodingData encoding = default(EncodingData), Format.Parsed format = default(Format.Parsed))
+        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
         {
             return TryParseInt64(text, encoding, format, out value, out bytesConsumed);
         }

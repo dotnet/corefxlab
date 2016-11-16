@@ -212,7 +212,7 @@ namespace System.Text.Json
 
             bool result;
             int consumed;
-            if(!PrimitiveParser.TryParseBoolean(slice, EncodingData.InvariantUtf8, default(Format.Parsed), out result, out consumed)){
+            if(!PrimitiveParser.TryParseBoolean(slice, EncodingData.InvariantUtf8, default(TextFormat), out result, out consumed)){
                 throw new InvalidCastException();
             }
             return result;
@@ -229,7 +229,7 @@ namespace System.Text.Json
 
             int result;
             int consumed;
-            if (!PrimitiveParser.TryParseInt32(slice, EncodingData.InvariantUtf8, default(Format.Parsed), out result, out consumed)) {
+            if (!PrimitiveParser.TryParseInt32(slice, EncodingData.InvariantUtf8, default(TextFormat), out result, out consumed)) {
                 throw new InvalidCastException();
             }
             return result;

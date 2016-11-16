@@ -12,20 +12,20 @@ namespace System.Text
     {
         static readonly string[] s_dayNames = { "Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, " };
         static readonly string[] s_monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-        static readonly Format.Parsed D2 = new Format.Parsed('D', 2);
-        static readonly Format.Parsed D4 = new Format.Parsed('D', 4);
-        static readonly Format.Parsed D7 = new Format.Parsed('D', 7);
-        static readonly Format.Parsed G = new Format.Parsed('G'); 
-        static readonly Format.Parsed t = new Format.Parsed('t'); 
+        static readonly TextFormat D2 = new TextFormat('D', 2);
+        static readonly TextFormat D4 = new TextFormat('D', 4);
+        static readonly TextFormat D7 = new TextFormat('D', 7);
+        static readonly TextFormat G = new TextFormat('G'); 
+        static readonly TextFormat t = new TextFormat('t'); 
         const int FractionalTimeScale = 10000000;
 
         public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
         {
-            Format.Parsed parsedFormat = Format.Parse(format);
+            TextFormat parsedFormat = TextFormat.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -62,11 +62,11 @@ namespace System.Text
 
         public static bool TryFormat(this DateTime value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
         {
-            Format.Parsed parsedFormat = Format.Parse(format);
+            TextFormat parsedFormat = TextFormat.Parse(format);
             return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        public static bool TryFormat(this DateTime value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this DateTime value, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -218,11 +218,11 @@ namespace System.Text
 
         public static bool TryFormat(this TimeSpan value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData encoding, out int bytesWritten)
         {
-            Format.Parsed parsedFormat = Format.Parse(format);
+            TextFormat parsedFormat = TextFormat.Parse(format);
             return TryFormat(value, buffer, parsedFormat, encoding, out bytesWritten);
         }
 
-        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, Format.Parsed format, EncodingData encoding, out int bytesWritten)
+        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, TextFormat format, EncodingData encoding, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -239,7 +239,7 @@ namespace System.Text
             return TryFormatTimeSpanT(value, buffer, encoding, out bytesWritten);
         }
 
-        private static bool TryFormatTimeSpanG(TimeSpan value, Span<byte> buffer, Format.Parsed format, EncodingData encoding, out int bytesWritten)
+        private static bool TryFormatTimeSpanG(TimeSpan value, Span<byte> buffer, TextFormat format, EncodingData encoding, out int bytesWritten)
         {
             bytesWritten = 0;
 
@@ -251,7 +251,7 @@ namespace System.Text
             bool daysWritten = false;
             if (value.Days != 0 || format.Symbol == 'G')
             {
-                if (!TryWriteInt32(Abs(value.Days), buffer, default(Format.Parsed), encoding, ref bytesWritten)) { return false; }
+                if (!TryWriteInt32(Abs(value.Days), buffer, default(TextFormat), encoding, ref bytesWritten)) { return false; }
                 daysWritten = true;
                 if (format.Symbol == 'c')
                 {
@@ -263,7 +263,7 @@ namespace System.Text
                 }
             }
 
-            var hourFormat = default(Format.Parsed);
+            var hourFormat = default(TextFormat);
             if ((daysWritten || format.Symbol == 'c') && format.Symbol != 'g')
             {
                 hourFormat = D2;
