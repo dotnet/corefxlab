@@ -1,0 +1,31 @@
+﻿{
+  "version": "0.1.0-*",
+  "description": "Secure Pipelines implementation using TLS that beats the pants off System.Net.Security.SslStream",
+  "packOptions": {
+    "releaseNotes": "Pre-release package, for testing only",
+    "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+    "projectUrl": "https://github.com/dotnet/corefxlab",
+    "requireLicenseAcceptance": true
+  },
+  "buildOptions": {
+    "allowUnsafe": true,
+    "keyFile": "../../tools/Key.snk"
+  },
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "System.IO.Pipelines": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "net451": {},
+    "netstandard1.3": {
+      "dependencies": {
+        "System.Threading.ThreadPool": "4.0.10"
+      }
+    }
+  }
+}
