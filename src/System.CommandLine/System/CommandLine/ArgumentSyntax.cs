@@ -26,6 +26,7 @@ namespace System.CommandLine
             HandleErrors = true;
             HandleHelp = true;
             HandleResponseFiles = true;
+            ErrorOnUnexpectedArguments = true;
         }
 
         public static ArgumentSyntax Parse(IEnumerable<string> arguments, Action<ArgumentSyntax> defineAction)
@@ -64,18 +65,21 @@ namespace System.CommandLine
                 ReportError(message);
             }
 
-            // Check for invalid options and extra parameters
-
-            foreach (var option in Parser.GetUnreadOptionNames())
+            if (ErrorOnUnexpectedArguments)
             {
-                var message = string.Format(Strings.InvalidOptionFmt, option);
-                ReportError(message);
-            }
+                // Check for invalid options and extra parameters
 
-            foreach (var parameter in Parser.GetUnreadParameters())
-            {
-                var message = string.Format(Strings.ExtraParameterFmt, parameter);
-                ReportError(message);
+                foreach (var option in Parser.GetUnreadOptionNames())
+                {
+                    var message = string.Format(Strings.InvalidOptionFmt, option);
+                    ReportError(message);
+                }
+
+                foreach (var parameter in Parser.GetUnreadParameters())
+                {
+                    var message = string.Format(Strings.ExtraParameterFmt, parameter);
+                    ReportError(message);
+                }
             }
         }
 
@@ -332,6 +336,11 @@ namespace System.CommandLine
         public bool HandleHelp { get; set; }
 
         public bool HandleResponseFiles { get; set; }
+
+        public bool ErrorOnUnexpectedArguments { get; set; }
+
+        public IEnumerable<string> RemainingArguments
+            => Parser.GetUnreadArguments();
 
         private ArgumentParser Parser
         {

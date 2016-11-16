@@ -173,13 +173,16 @@ namespace System.CommandLine.Tests
             Assert.Equal("missing command", ex.Message);
         }
 
-        [Fact]
-        public void Command_Usage_Error_Invalid()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Command_Usage_Error_Invalid(bool errorOnUnexpectedArguments)
         {
             var ex = Assert.Throws<ArgumentSyntaxException>(() =>
             {
                 Parse("d", syntax =>
                 {
+                    syntax.ErrorOnUnexpectedArguments = errorOnUnexpectedArguments;
                     syntax.DefineCommand("c", string.Empty);
                 });
             });
@@ -361,6 +364,21 @@ namespace System.CommandLine.Tests
             });
 
             Assert.Equal("invalid option -d", ex.Message);
+        }
+
+        [Fact]
+        public void Option_Usage_Extra()
+        {
+            var e = false;
+
+            var result = Parse("-e -d", syntax =>
+            {
+                syntax.ErrorOnUnexpectedArguments = false;
+                syntax.DefineOption("e", ref e, "Some qualifier");
+            });
+
+            Assert.True(e);
+            Assert.Equal(new[] { "-d" }, result.RemainingArguments);
         }
 
         [Fact]
@@ -751,6 +769,24 @@ namespace System.CommandLine.Tests
             });
 
             Assert.Equal("extra parameter 'c'", ex.Message);
+        }
+
+        [Fact]
+        public void Parameter_Usage_Extra()
+        {
+            var a = string.Empty;
+            var b = string.Empty;
+
+            var result = Parse("-a a -b b c", syntax =>
+            {
+                syntax.ErrorOnUnexpectedArguments = false;
+                syntax.DefineOption("a", ref a, string.Empty);
+                syntax.DefineOption("b", ref b, string.Empty);
+            });
+
+            Assert.Equal("a", a);
+            Assert.Equal("b", b);
+            Assert.Equal(new[] { "c" }, result.RemainingArguments);
         }
 
         [Fact]
