@@ -152,7 +152,7 @@ namespace System.Text.Formatting {
             formatter.Advance(totalWritten);
         }
 
-        static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, Format.Parsed format) where TFormatter : ITextOutput
+        static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, TextFormat format) where TFormatter : ITextOutput
         {
             #region Built in types
             var i32 = value as int?;
@@ -383,7 +383,7 @@ namespace System.Text.Formatting {
                 }
 
                 _currentIndex++;
-                var parsedFormat = formatSpecifier.HasValue ? System.Text.Format.Parse(formatSpecifier.Value): default(System.Text.Format.Parsed);
+                var parsedFormat = formatSpecifier.HasValue ? TextFormat.Parse(formatSpecifier.Value): default(TextFormat);
                 return CompositeSegment.InsertionPoint(arg, parsedFormat);
             }
 
@@ -396,11 +396,11 @@ namespace System.Text.Formatting {
 
             public struct CompositeSegment
             {
-                public Format.Parsed Format { get; private set; }
+                public TextFormat Format { get; private set; }
                 public int Index { get; private set; }
                 public int Count { get; private set; }
 
-                public static CompositeSegment InsertionPoint(uint argIndex, Format.Parsed format)
+                public static CompositeSegment InsertionPoint(uint argIndex, TextFormat format)
                 {
                     return new CompositeSegment() { Index = (int)argIndex, Format = format };
                 }

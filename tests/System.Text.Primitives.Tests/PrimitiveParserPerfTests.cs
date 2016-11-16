@@ -96,7 +96,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
@@ -128,7 +128,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
@@ -164,7 +164,7 @@ namespace System.Text.Primitives.Tests
             byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
@@ -252,7 +252,7 @@ namespace System.Text.Primitives.Tests
                 byte value;
                 int bytesConsumed;
                 EncodingData fd = EncodingData.InvariantUtf8;
-                Format.Parsed nf = new Format.Parsed('N');
+                TextFormat nf = new TextFormat('N');
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
@@ -277,7 +277,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 byte value;
@@ -309,7 +309,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -365,7 +365,7 @@ namespace System.Text.Primitives.Tests
             byte[] utf8ByteArray = UtfEncode(text);
             int start = text.IndexOf('2');
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -446,7 +446,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 ushort value;
@@ -475,7 +475,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 ushort value;
@@ -507,7 +507,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -565,7 +565,7 @@ namespace System.Text.Primitives.Tests
             byte[] utf8ByteArray = UtfEncode(text);
             int start = text.IndexOf('2');
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -646,7 +646,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 uint value;
@@ -675,7 +675,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 uint value;
@@ -707,7 +707,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -767,7 +767,7 @@ namespace System.Text.Primitives.Tests
             byte[] utf8ByteArray = UtfEncode(text);
             int start = text.IndexOf('2');
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -848,7 +848,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             ulong value;
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -877,7 +877,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 ulong value;
@@ -909,7 +909,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -970,7 +970,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             int start = text.IndexOf('2');
 
             foreach (var iteration in Benchmark.Iterations)
@@ -1061,7 +1061,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 sbyte value;
@@ -1093,7 +1093,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 sbyte value;
@@ -1128,7 +1128,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -1190,7 +1190,7 @@ namespace System.Text.Primitives.Tests
             if (text[start - 1] == '-')
                 start -= 1;
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -1280,7 +1280,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 short value;
@@ -1312,7 +1312,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 short value;
@@ -1347,7 +1347,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -1413,7 +1413,7 @@ namespace System.Text.Primitives.Tests
             if (text[start - 1] == '-')
                 start -= 1;
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -1503,7 +1503,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
@@ -1535,7 +1535,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 int value;
@@ -1571,7 +1571,7 @@ namespace System.Text.Primitives.Tests
             byte[] utf8ByteArray = UtfEncode(text);
             byte* unmanagedBytePtr;
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
             foreach (var iteration in Benchmark.Iterations)
@@ -1638,7 +1638,7 @@ namespace System.Text.Primitives.Tests
             if (text[start - 1] == '-')
                 start -= 1;
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -1728,7 +1728,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 long value;
@@ -1760,7 +1760,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 long value;
@@ -1795,7 +1795,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -1865,7 +1865,7 @@ namespace System.Text.Primitives.Tests
             if (text[start - 1] == '-')
                 start -= 1;
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -1949,7 +1949,7 @@ namespace System.Text.Primitives.Tests
         {
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 bool value;
@@ -1979,7 +1979,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             foreach (var iteration in Benchmark.Iterations)
             {
                 bool value;
@@ -2012,7 +2012,7 @@ namespace System.Text.Primitives.Tests
             int length = text.Length;
             byte[] utf8ByteArray = UtfEncode(text);
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
             byte* unmanagedBytePtr;
             unmanagedBytePtr = (byte*)Marshal.AllocHGlobal(utf8ByteArray.Length);
             Marshal.Copy(utf8ByteArray, 0, (IntPtr)unmanagedBytePtr, utf8ByteArray.Length);
@@ -2078,7 +2078,7 @@ namespace System.Text.Primitives.Tests
             byte[] utf8ByteArray = UtfEncode(text);
             int start = text.IndexOf('=') + 1;
             EncodingData fd = EncodingData.InvariantUtf8;
-            Format.Parsed nf = new Format.Parsed('N');
+            TextFormat nf = new TextFormat('N');
 
             foreach (var iteration in Benchmark.Iterations)
             {

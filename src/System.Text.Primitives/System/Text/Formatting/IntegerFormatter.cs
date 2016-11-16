@@ -14,11 +14,11 @@ namespace System.Text
         {
             Precondition.Require(numberOfBytes <= sizeof(long));
 
-            Format.Parsed parsedFormat = Format.Parse(format);
+            TextFormat parsedFormat = TextFormat.Parse(format);
             return TryFormatInt64(value, numberOfBytes, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
         {
             Precondition.Require(numberOfBytes <= sizeof(long));
 
@@ -53,11 +53,11 @@ namespace System.Text
 
         internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
         {
-            Format.Parsed parsedFormat = Format.Parse(format);
+            TextFormat parsedFormat = TextFormat.Parse(format);
             return TryFormatUInt64(value, numberOfBytes, buffer, parsedFormat, formattingData, out bytesWritten);
         }
 
-        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
         {
             if(format.Symbol == 'g')
             {
@@ -83,7 +83,7 @@ namespace System.Text
             return TryFormatDecimal(value, buffer, format, formattingData, out bytesWritten);     
         }
 
-        private static bool TryFormatDecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
+        private static bool TryFormatDecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, TextFormat format, out int bytesWritten)
         {
             Precondition.Require(format.Symbol == 'D' || format.Symbol == 'G');
 
@@ -132,7 +132,7 @@ namespace System.Text
             return true;
         }
 
-        private static bool TryFormatDecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
+        private static bool TryFormatDecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, TextFormat format, out int bytesWritten)
         {
             Precondition.Require(format.Symbol == 'D' || format.Symbol == 'G');
 
@@ -186,7 +186,7 @@ namespace System.Text
             return true;
         }
 
-        private static bool TryFormatHexadecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
+        private static bool TryFormatHexadecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, TextFormat format, out int bytesWritten)
         {
             Precondition.Require(format.Symbol == 'X' || format.Symbol == 'x');
 
@@ -244,7 +244,7 @@ namespace System.Text
             return true;
         }
 
-        private static bool TryFormatHexadecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, Format.Parsed format, out int bytesWritten)
+        private static bool TryFormatHexadecimalInvariantCultureUtf8(ulong value, Span<byte> buffer, TextFormat format, out int bytesWritten)
         {
             Precondition.Require(format.Symbol == 'X' || format.Symbol == 'x');
 
@@ -310,7 +310,7 @@ namespace System.Text
         // It does it twice to avoid reversing the formatted buffer, which can be tricky given it should handle arbitrary cultures.
         // One optimization I thought we could do is to do div/mod once and store digits in a temp buffer (but that would allocate). Modification to the idea would be to store the digits in a local struct
         // Another idea possibly worth tying would be to special case cultures that have constant digit size, and go back to the format + reverse buffer approach.
-        private static bool TryFormatDecimal(ulong value, Span<byte> buffer, Format.Parsed format, EncodingData formattingData, out int bytesWritten)
+        private static bool TryFormatDecimal(ulong value, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
         {
             if(format.IsDefault)
             {

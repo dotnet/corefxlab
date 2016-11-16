@@ -3,16 +3,20 @@
 
 namespace System.Text
 {
-    public static partial class Format
+    public struct TextFormat
     {
-        public const byte NoPrecision = Byte.MaxValue;
+        public const byte NoPrecision = byte.MaxValue;
+        internal const byte MaxPrecision = 99;
+
+        public char Symbol;
+        public byte Precision;
 
         // once we have a non allocating conversion from string to ReadOnlySpan<char>, we can remove this overload
-        public static Format.Parsed Parse(string format)
+        public static TextFormat Parse(string format)
         {
             if (format == null || format.Length == 0)
             {
-                return default(Format.Parsed);
+                return default(TextFormat);
             }
 
             uint precision = NoPrecision;
@@ -23,7 +27,7 @@ namespace System.Text
                     throw new NotImplementedException("Unable to parse precision specification");
                 }
 
-                if (precision > Parsed.MaxPrecision)
+                if (precision > TextFormat.MaxPrecision)
                 {
                     // TODO: this is a contract violation
                     throw new Exception("PrecisionValueOutOfRange");
@@ -31,15 +35,15 @@ namespace System.Text
             }
 
             var specifier = format[0];
-            return new Parsed(specifier, (byte)precision);
+            return new TextFormat(specifier, (byte)precision);
         }
 
         // TODO: format should be ReadOnlySpan<T>
-        public static Format.Parsed Parse(ReadOnlySpan<char> format)
+        public static TextFormat Parse(ReadOnlySpan<char> format)
         {
             if (format.Length == 0)
             {
-                return default(Format.Parsed);
+                return default(TextFormat);
             }
 
             uint precision = NoPrecision;
@@ -52,7 +56,7 @@ namespace System.Text
                     throw new NotImplementedException("UnableToParsePrecision");
                 }
 
-                if (precision > Parsed.MaxPrecision)
+                if (precision > TextFormat.MaxPrecision)
                 {
                     // TODO: this is a contract violation
                     throw new Exception("PrecisionValueOutOfRange");
@@ -61,46 +65,38 @@ namespace System.Text
 
             // TODO: this is duplicated from above. It needs to be refactored
             var specifier = format[0];
-            return new Parsed(specifier, (byte)precision);
+            return new TextFormat(specifier, (byte)precision);
         }
 
-        public static Format.Parsed Parse(char format)
+        public static TextFormat Parse(char format)
         {
-            return new Parsed(format, NoPrecision);
+            return new TextFormat(format, NoPrecision);
         }
  
-        public struct Parsed
+        public TextFormat(char symbol, byte precision = NoPrecision)
         {
-            internal const byte MaxPrecision = 99;
-
-            public char Symbol;
-            public byte Precision;
-
-            public Parsed(char symbol, byte precision = NoPrecision)
-            {
-                Symbol = symbol;
-                Precision = precision;
-            }
-            public bool IsHexadecimal
-            {
-                get { return Symbol == 'X' || Symbol == 'x'; }
-            }
-            public bool HasPrecision
-            {
-                get { return Precision != NoPrecision; }
-            }
-
-            public bool IsDefault {
-                get { return Symbol == (char)0; }
-            }
-
-            public static Format.Parsed HexUppercase = new Format.Parsed('X', Format.NoPrecision);
-            public static Format.Parsed HexLowercase = new Format.Parsed('x', Format.NoPrecision);
-
-            public static implicit operator Parsed(char symbol)
-            {
-                return new Parsed() { Symbol = symbol };
-            }
+            Symbol = symbol;
+            Precision = precision;
         }
+        public bool IsHexadecimal
+        {
+            get { return Symbol == 'X' || Symbol == 'x'; }
+        }
+        public bool HasPrecision
+        {
+            get { return Precision != NoPrecision; }
+        }
+
+        public bool IsDefault {
+            get { return Symbol == (char)0; }
+        }
+
+        public static TextFormat HexUppercase = new TextFormat('X', TextFormat.NoPrecision);
+        public static TextFormat HexLowercase = new TextFormat('x', TextFormat.NoPrecision);
+
+        public static implicit operator TextFormat(char symbol)
+        {
+            return new TextFormat(symbol);
+        }      
     }
 }

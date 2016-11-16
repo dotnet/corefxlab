@@ -12,7 +12,7 @@ namespace System.Text
     public static partial class PrimitiveParser
     {
 		#region sbyte
-		public static bool TryParseSByte(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed numericFormat,
+		public static bool TryParseSByte(ReadOnlySpan<byte> text, EncodingData encoding, TextFormat numericFormat,
             out sbyte value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -265,7 +265,7 @@ namespace System.Text
 			}
         }
 
-		public static bool TryParseSByte(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
+		public static bool TryParseSByte(byte[] text, int index, EncodingData encoding, TextFormat numericFormat,
             out sbyte value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -518,7 +518,7 @@ namespace System.Text
 			}
         }
 
-		public static unsafe bool TryParseSByte(byte* text, int index, int length, EncodingData encoding, Format.Parsed numericFormat, 
+		public static unsafe bool TryParseSByte(byte* text, int index, int length, EncodingData encoding, TextFormat numericFormat, 
             out sbyte value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -684,7 +684,7 @@ namespace System.Text
 		#endregion
 
 		#region short
-		public static bool TryParseInt16(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed numericFormat,
+		public static bool TryParseInt16(ReadOnlySpan<byte> text, EncodingData encoding, TextFormat numericFormat,
             out short value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -937,7 +937,7 @@ namespace System.Text
 			}
         }
 
-		public static bool TryParseInt16(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
+		public static bool TryParseInt16(byte[] text, int index, EncodingData encoding, TextFormat numericFormat,
             out short value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -1190,7 +1190,7 @@ namespace System.Text
 			}
         }
 
-		public static unsafe bool TryParseInt16(byte* text, int index, int length, EncodingData encoding, Format.Parsed numericFormat, 
+		public static unsafe bool TryParseInt16(byte* text, int index, int length, EncodingData encoding, TextFormat numericFormat, 
             out short value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -1356,7 +1356,7 @@ namespace System.Text
 		#endregion
 
 		#region int
-		public static bool TryParseInt32(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed numericFormat,
+		public static bool TryParseInt32(ReadOnlySpan<byte> text, EncodingData encoding, TextFormat numericFormat,
             out int value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -1609,7 +1609,7 @@ namespace System.Text
 			}
         }
 
-		public static bool TryParseInt32(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
+		public static bool TryParseInt32(byte[] text, int index, EncodingData encoding, TextFormat numericFormat,
             out int value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -1862,7 +1862,7 @@ namespace System.Text
 			}
         }
 
-		public static unsafe bool TryParseInt32(byte* text, int index, int length, EncodingData encoding, Format.Parsed numericFormat, 
+		public static unsafe bool TryParseInt32(byte* text, int index, int length, EncodingData encoding, TextFormat numericFormat, 
             out int value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -2028,7 +2028,7 @@ namespace System.Text
 		#endregion
 
 		#region long
-		public static bool TryParseInt64(ReadOnlySpan<byte> text, EncodingData encoding, Format.Parsed numericFormat,
+		public static bool TryParseInt64(ReadOnlySpan<byte> text, EncodingData encoding, TextFormat numericFormat,
             out long value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -2281,7 +2281,7 @@ namespace System.Text
 			}
         }
 
-		public static bool TryParseInt64(byte[] text, int index, EncodingData encoding, Format.Parsed numericFormat,
+		public static bool TryParseInt64(byte[] text, int index, EncodingData encoding, TextFormat numericFormat,
             out long value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -2534,7 +2534,7 @@ namespace System.Text
 			}
         }
 
-		public static unsafe bool TryParseInt64(byte* text, int index, int length, EncodingData encoding, Format.Parsed numericFormat, 
+		public static unsafe bool TryParseInt64(byte* text, int index, int length, EncodingData encoding, TextFormat numericFormat, 
             out long value, out int bytesConsumed)
         {
             // Precondition replacement
