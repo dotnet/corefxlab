@@ -511,7 +511,7 @@ namespace System.IO.Pipelines
             return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
         }
 
-        bool ISequence<ReadOnlyMemory<byte>>.TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = false)
+        bool ISequence<ReadOnlyMemory<byte>>.TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance)
         {
             if (position == Position.First)
             {
