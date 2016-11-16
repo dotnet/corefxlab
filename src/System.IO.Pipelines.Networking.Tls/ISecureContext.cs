@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace System.IO.Pipelines.Networking.Tls
+{
+    public interface ISecureContext : IDisposable
+    {
+        int TrailerSize { get; set; }
+        int HeaderSize { get; set; }
+        bool ReadyToSend { get; }
+        ApplicationProtocols.ProtocolIds NegotiatedProtocol { get; }
+        Task ProcessContextMessageAsync(ReadableBuffer readBuffer, IPipelineWriter writeChannel);
+        Task ProcessContextMessageAsync(IPipelineWriter writeChannel);
+        Task DecryptAsync(ReadableBuffer encryptedData, IPipelineWriter decryptedData);
+        Task EncryptAsync(ReadableBuffer unencrypted, IPipelineWriter encryptedData);
+        bool IsServer { get; }
+        CipherInfo CipherInfo { get; }
+    }
+}
