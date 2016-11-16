@@ -17,13 +17,14 @@
   "dependencies": {
     "System.IO.Pipelines": {
       "target": "project"
-    },
-    "System.Diagnostics.Contracts": "4.0.1"
+    }
   },
-
-
   "frameworks": {
     "net451": {},
-    "netstandard1.3": {}
+    "netstandard1.3": {
+      "dependencies": {
+        "System.Diagnostics.Contracts": "4.0.1"
+      }
+    }
   }
 }
