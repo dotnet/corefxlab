@@ -4,12 +4,12 @@
 using System.Diagnostics;
 using System.Text.Utf8;
 
-namespace System.Text
+namespace System.Text.Internal
 {
-    public static partial class PrimitiveParser
+    public static partial class InternalParser
     {
-        public static bool TryParseSingle(byte[] text, int index, EncodingData encoding, TextFormat format,
-            out float value, out int bytesConsumed)
+        public static bool TryParseDouble(byte[] text, int index, EncodingData encoding, TextFormat format,
+            out double value, out int bytesConsumed)
         {
             // Precondition replacement
             if (text.Length < 1 || index < 0 || index >= text.Length)
@@ -19,24 +19,24 @@ namespace System.Text
                 return false;
             }
 
-            value = 0f;
+            value = 0.0;
             bytesConsumed = 0;
 
             if (encoding.IsInvariantUtf8)
             {
-                string floatString = "";
+                string doubleString = "";
                 bool decimalPlace = false, e = false, signed = false, digitLast = false, eLast = false;
 
                 if ((text.Length - index) >= 3 && text[index] == 'N' && text[index + 1] == 'a' && text[index + 2] == 'N')
                 {
-                    value = float.NaN;
+                    value = double.NaN;
                     bytesConsumed = 3;
                     return true;
                 }
                 if (text[index] == '-' || text[index] == '+')
                 {
                     signed = true;
-                    floatString += (char)text[index];
+                    doubleString += (char)text[index];
                     index++;
                     bytesConsumed++;
                 }
@@ -46,11 +46,11 @@ namespace System.Text
                 {
                     if (signed && text[index - 1] == '-')
                     {
-                        value = float.NegativeInfinity;
+                        value = double.NegativeInfinity;
                     }
                     else
                     {
-                        value = float.PositiveInfinity;
+                        value = double.PositiveInfinity;
                     }
                     bytesConsumed += 8;
                     return true;
@@ -75,20 +75,20 @@ namespace System.Text
                             }
                             bytesConsumed++;
                             decimalPlace = true;
-                            floatString += (char)nextByte;
+                            doubleString += (char)nextByte;
                         }
                         else if (!e && nextByte == 'e' || nextByte == 'E')
                         {
                             e = true;
                             eLast = true;
                             bytesConsumed++;
-                            floatString += (char)nextByte;
+                            doubleString += (char)nextByte;
                         }
                         else if (eLast && nextByte == '+' || nextByte == '-')
                         {
                             eLast = false;
                             bytesConsumed++;
-                            floatString += (char)nextByte;
+                            doubleString += (char)nextByte;
                         }
                         else if ((decimalPlace && signed && bytesConsumed == 2) || ((signed || decimalPlace) && bytesConsumed == 1))
                         {
@@ -98,7 +98,7 @@ namespace System.Text
                         }
                         else
                         {
-                            if (float.TryParse(floatString, out value))
+                            if (double.TryParse(doubleString, out value))
                             {
                                 return true;
                             }
@@ -116,7 +116,7 @@ namespace System.Text
                         if (!digitLast)
                             digitLast = true;
                         bytesConsumed++;
-                        floatString += (char)nextByte;
+                        doubleString += (char)nextByte;
                     }
                 }
 
@@ -128,7 +128,7 @@ namespace System.Text
                 }
                 else
                 {
-                    if (float.TryParse(floatString, out value))
+                    if (double.TryParse(doubleString, out value))
                     {
                         return true;
                     }
@@ -143,8 +143,8 @@ namespace System.Text
             return false;
         }
 
-        public unsafe static bool TryParseSingle(byte* text, int index, int length, EncodingData encoding,
-            TextFormat format, out float value, out int bytesConsumed)
+        public unsafe static bool TryParseDouble(byte* text, int index, int length, EncodingData encoding,
+            TextFormat format, out double value, out int bytesConsumed)
         {
             // Precondition replacement
             if (length < 1 || index < 0)
@@ -154,24 +154,24 @@ namespace System.Text
                 return false;
             }
 
-            value = 0f;
+            value = 0.0;
             bytesConsumed = 0;
 
             if (encoding.IsInvariantUtf8)
             {
-                string floatString = "";
+                string doubleString = "";
                 bool decimalPlace = false, e = false, signed = false, digitLast = false, eLast = false;
 
                 if ((length) >= 3 && text[index] == 'N' && text[index + 1] == 'a' && text[index + 2] == 'N')
                 {
-                    value = float.NaN;
+                    value = double.NaN;
                     bytesConsumed = 3;
                     return true;
                 }
                 if (text[index] == '-' || text[index] == '+')
                 {
                     signed = true;
-                    floatString += (char)text[index];
+                    doubleString += (char)text[index];
                     index++;
                     bytesConsumed++;
                 }
@@ -181,11 +181,11 @@ namespace System.Text
                 {
                     if (signed && text[index - 1] == '-')
                     {
-                        value = float.NegativeInfinity;
+                        value = double.NegativeInfinity;
                     }
                     else
                     {
-                        value = float.PositiveInfinity;
+                        value = double.PositiveInfinity;
                     }
                     bytesConsumed += 8;
                     return true;
@@ -210,20 +210,20 @@ namespace System.Text
                             }
                             bytesConsumed++;
                             decimalPlace = true;
-                            floatString += (char)nextByte;
+                            doubleString += (char)nextByte;
                         }
                         else if (!e && nextByte == 'e' || nextByte == 'E')
                         {
                             e = true;
                             eLast = true;
                             bytesConsumed++;
-                            floatString += (char)nextByte;
+                            doubleString += (char)nextByte;
                         }
                         else if (eLast && nextByte == '+' || nextByte == '-')
                         {
                             eLast = false;
                             bytesConsumed++;
-                            floatString += (char)nextByte;
+                            doubleString += (char)nextByte;
                         }
                         else if ((decimalPlace && signed && bytesConsumed == 2) || ((signed || decimalPlace) && bytesConsumed == 1))
                         {
@@ -233,7 +233,7 @@ namespace System.Text
                         }
                         else
                         {
-                            if (float.TryParse(floatString, out value))
+                            if (double.TryParse(doubleString, out value))
                             {
                                 return true;
                             }
@@ -251,7 +251,7 @@ namespace System.Text
                         if (!digitLast)
                             digitLast = true;
                         bytesConsumed++;
-                        floatString += (char)nextByte;
+                        doubleString += (char)nextByte;
                     }
                 }
 
@@ -263,7 +263,7 @@ namespace System.Text
                 }
                 else
                 {
-                    if (float.TryParse(floatString, out value))
+                    if (double.TryParse(doubleString, out value))
                     {
                         return true;
                     }
@@ -274,6 +274,7 @@ namespace System.Text
                     }
                 }
             }
+
             return false;
         }
     }

@@ -4,9 +4,9 @@
 using System.Diagnostics;
 using System.Text.Utf8;
 
-namespace System.Text
+namespace System.Text.Internal
 {
-    public static partial class PrimitiveParser
+    public static partial class InternalParser
     {
         #region Helper Methods
         private static bool IsTrue(byte[] utf8Text, int index)
@@ -240,12 +240,12 @@ namespace System.Text
                     value = false;
                     return true;
                 }
-                else if (IsTrue(text)) {
+                else if (PrimitiveParser.IsTrue(text)) {
                     bytesConsumed = 4;
                     value = true;
                     return true;
                 }
-                else if (IsFalse(text)) {
+                else if (PrimitiveParser.IsFalse(text)) {
                     bytesConsumed = 5;
                     value = false;
                     return true;

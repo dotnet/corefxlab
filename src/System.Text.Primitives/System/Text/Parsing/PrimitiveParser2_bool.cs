@@ -10,7 +10,7 @@ namespace System.Text
     {
         #region helpers
 
-        private unsafe static bool IsTrue(byte* utf8Bytes, int length)
+        internal unsafe static bool IsTrue(byte* utf8Bytes, int length)
         {
             if (length < 4)
                 return false;
@@ -34,7 +34,7 @@ namespace System.Text
             return true;
         }
 
-        private unsafe static bool IsTrue(char* utf16Chars, int length)
+        internal unsafe static bool IsTrue(char* utf16Chars, int length)
         {
             if (length < 4)
                 return false;
@@ -58,7 +58,7 @@ namespace System.Text
             return true;
         }
 
-        private static bool IsTrue(ReadOnlySpan<byte> utf8Bytes)
+        internal static bool IsTrue(ReadOnlySpan<byte> utf8Bytes)
         {
             if (utf8Bytes.Length < 4)
                 return false;
@@ -82,7 +82,7 @@ namespace System.Text
             return true;
         }
 
-        private static bool IsTrue(ReadOnlySpan<char> utf16Chars)
+        internal static bool IsTrue(ReadOnlySpan<char> utf16Chars)
         {
             if (utf16Chars.Length < 4)
                 return false;
@@ -106,7 +106,7 @@ namespace System.Text
             return true;
         }
 
-        private unsafe static bool IsFalse(byte* utf8Bytes, int length)
+        internal unsafe static bool IsFalse(byte* utf8Bytes, int length)
         {
             if (length < 5)
                 return false;
@@ -134,7 +134,7 @@ namespace System.Text
             return true;
         }
 
-        private unsafe static bool IsFalse(char* utf16Chars, int length)
+        internal unsafe static bool IsFalse(char* utf16Chars, int length)
         {
             if (length < 5)
                 return false;
@@ -162,7 +162,7 @@ namespace System.Text
             return true;
         }
 
-        private static bool IsFalse(ReadOnlySpan<byte> utf8Bytes)
+        internal static bool IsFalse(ReadOnlySpan<byte> utf8Bytes)
         {
             if (utf8Bytes.Length < 5)
                 return false;
@@ -190,7 +190,7 @@ namespace System.Text
             return true;
         }
 
-        private static bool IsFalse(ReadOnlySpan<char> utf16Chars)
+        internal static bool IsFalse(ReadOnlySpan<char> utf16Chars)
         {
             if (utf16Chars.Length < 5)
                 return false;

@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using Xunit;
 using Microsoft.Xunit.Performance;
+using System.Text.Internal;
 
 namespace System.Text.Primitives.Tests
 {
@@ -105,7 +106,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt32(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt32(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -139,7 +140,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            PrimitiveParser.TryParseInt32(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseInt32(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -175,7 +176,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt32(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt32(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -257,7 +258,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseByte(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseByte(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -288,7 +289,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            PrimitiveParser.TryParseByte(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseByte(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -321,7 +322,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseByte(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseByte(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -375,7 +376,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseByte(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseByte(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -455,7 +456,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseUInt16(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseUInt16(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -486,7 +487,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            PrimitiveParser.TryParseUInt16(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseUInt16(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -519,7 +520,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseUInt16(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseUInt16(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -575,7 +576,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseUInt16(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseUInt16(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -655,7 +656,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseUInt32(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseUInt32(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -686,7 +687,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            PrimitiveParser.TryParseUInt32(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseUInt32(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -719,7 +720,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseUInt32(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseUInt32(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -777,7 +778,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseUInt32(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseUInt32(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -857,7 +858,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseUInt64(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseUInt64(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -888,7 +889,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            PrimitiveParser.TryParseUInt64(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseUInt64(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -921,7 +922,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseUInt64(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseUInt64(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -981,7 +982,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseUInt64(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseUInt64(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1070,7 +1071,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseSByte(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseSByte(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1104,7 +1105,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            PrimitiveParser.TryParseSByte(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseSByte(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -1140,7 +1141,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseSByte(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseSByte(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1200,7 +1201,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseSByte(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseSByte(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1289,7 +1290,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt16(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt16(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1323,7 +1324,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            PrimitiveParser.TryParseInt16(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseInt16(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -1359,7 +1360,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt16(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt16(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1423,7 +1424,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt16(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt16(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1512,7 +1513,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt32(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt32(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1546,7 +1547,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            PrimitiveParser.TryParseInt32(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseInt32(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -1582,7 +1583,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt32(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt32(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1648,7 +1649,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt32(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt32(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1737,7 +1738,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt64(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt64(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1771,7 +1772,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            PrimitiveParser.TryParseInt64(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseInt64(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -1807,7 +1808,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt64(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt64(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1875,7 +1876,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseInt64(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseInt64(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1958,7 +1959,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseBoolean(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
+                        Internal.InternalParser.TryParseBoolean(utf8ByteArray, 0, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -1990,7 +1991,7 @@ namespace System.Text.Primitives.Tests
                     {
                         for (int i = 0; i < LOAD_ITERATIONS; i++)
                         {
-                            PrimitiveParser.TryParseBoolean(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            Internal.InternalParser.TryParseBoolean(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
                         }
                     }
                 }
@@ -2024,7 +2025,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseBoolean(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
+                        Internal.InternalParser.TryParseBoolean(unmanagedBytePtr, 0, length, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }
@@ -2088,7 +2089,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LOAD_ITERATIONS; i++)
                     {
-                        PrimitiveParser.TryParseBoolean(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseBoolean(utf8ByteArray, start, fd, nf, out value, out bytesConsumed);
                     }
                 }
             }

@@ -7,9 +7,9 @@
 using System.Diagnostics;
 using System.Text.Utf8;
 
-namespace System.Text
+namespace System.Text.Internal
 {
-    public static partial class PrimitiveParser
+    public static partial class InternalParser
     {
 		#region byte
 		public static bool TryParseByte(ReadOnlySpan<byte> text, EncodingData encoding, TextFormat numericFormat,
