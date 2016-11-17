@@ -4,9 +4,9 @@
 using System.Diagnostics;
 using System.Text.Utf8;
 
-namespace System.Text
+namespace System.Text.Internal
 {
-    public static partial class PrimitiveParser
+    public static partial class InternalParser
     {
         public static bool TryParseUri(ReadOnlySpan<byte> utf8Text, out Uri value, out int bytesConsumed)
         {

@@ -4,9 +4,9 @@
 using System.Diagnostics;
 using System.Text.Utf8;
 
-namespace System.Text
+namespace System.Text.Internal
 {
-    public static partial class PrimitiveParser
+    public static partial class InternalParser
     {
         public static bool TryParseDecimal(byte[] utf8Text, int index, out decimal value, out int bytesConsumed)
         {

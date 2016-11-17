@@ -4,9 +4,9 @@
 using System.Diagnostics;
 using System.Text.Utf8;
 
-namespace System.Text
+namespace System.Text.Internal
 {
-    public static partial class PrimitiveParser
+    public static partial class InternalParser
     {
         public static bool TryParseUInt32(string text, int index, int count, out uint value, out int charactersConsumed)
         {

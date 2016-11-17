@@ -22,7 +22,7 @@ namespace System.Text
             uint precision = NoPrecision;
             if (format.Length > 1)
             {
-                if (!PrimitiveParser.TryParseUInt32(format, 1, format.Length - 1, out precision))
+                if (!Internal.InternalParser.TryParseUInt32(format, 1, format.Length - 1, out precision))
                 {
                     throw new NotImplementedException("Unable to parse precision specification");
                 }
@@ -51,7 +51,7 @@ namespace System.Text
             {
                 var span = format.Slice(1, format.Length - 1);
 
-                if (!PrimitiveParser.TryParseUInt32(span, out precision))
+                if (!Internal.InternalParser.TryParseUInt32(span, out precision))
                 {
                     throw new NotImplementedException("UnableToParsePrecision");
                 }

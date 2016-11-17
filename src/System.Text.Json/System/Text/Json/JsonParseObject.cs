@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Collections.Generic;
+using System.Text.Internal;
 using System.Text.Utf8;
 
 namespace System.Text.Json
@@ -212,7 +213,7 @@ namespace System.Text.Json
 
             bool result;
             int consumed;
-            if(!PrimitiveParser.TryParseBoolean(slice, EncodingData.InvariantUtf8, default(TextFormat), out result, out consumed)){
+            if(!Internal.InternalParser.TryParseBoolean(slice, EncodingData.InvariantUtf8, default(TextFormat), out result, out consumed)){
                 throw new InvalidCastException();
             }
             return result;
@@ -229,7 +230,7 @@ namespace System.Text.Json
 
             int result;
             int consumed;
-            if (!PrimitiveParser.TryParseInt32(slice, EncodingData.InvariantUtf8, default(TextFormat), out result, out consumed)) {
+            if (!InternalParser.TryParseInt32(slice, EncodingData.InvariantUtf8, default(TextFormat), out result, out consumed)) {
                 throw new InvalidCastException();
             }
             return result;

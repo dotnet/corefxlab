@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.Internal;
 using System.Text.Utf8;
 using Xunit;
 
@@ -20,7 +21,7 @@ namespace System.Text.Primitives.Tests
         {
             uint parsedValue;
             int charsConsumed;
-            bool result = PrimitiveParser.TryParseUInt32(text, index, count, out parsedValue, out charsConsumed);
+            bool result = InternalParser.TryParseUInt32(text, index, count, out parsedValue, out charsConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, parsedValue);
@@ -39,7 +40,7 @@ namespace System.Text.Primitives.Tests
             var span = new ReadOnlySpan<char>(text.ToCharArray());
             uint parsedValue;
             int charsConsumed;
-            bool result = PrimitiveParser.TryParseUInt32(span, out parsedValue, out charsConsumed);
+            bool result = InternalParser.TryParseUInt32(span, out parsedValue, out charsConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, parsedValue);
@@ -59,7 +60,7 @@ namespace System.Text.Primitives.Tests
 
             uint parsedValue;
             int bytesConsumed;
-            bool result = PrimitiveParser.TryParseUInt32(utf8, out parsedValue, out bytesConsumed);
+            bool result = InternalParser.TryParseUInt32(utf8, out parsedValue, out bytesConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, parsedValue);
@@ -80,7 +81,7 @@ namespace System.Text.Primitives.Tests
 
             uint parsedValue;
             int bytesConsumed;
-            bool result = PrimitiveParser.TryParseUInt32(span, TextEncoding.Utf8, out parsedValue, out bytesConsumed);
+            bool result = InternalParser.TryParseUInt32(span, TextEncoding.Utf8, out parsedValue, out bytesConsumed);
 
             Assert.True(result);
             Assert.Equal(expectedValue, parsedValue);

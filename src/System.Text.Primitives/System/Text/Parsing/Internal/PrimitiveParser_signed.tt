@@ -9,9 +9,9 @@
 using System.Diagnostics;
 using System.Text.Utf8;
 
-namespace System.Text
+namespace System.Text.Remove
 {
-    public static partial class PrimitiveParser
+    public static partial class InternalParser
     {
 <#
 
