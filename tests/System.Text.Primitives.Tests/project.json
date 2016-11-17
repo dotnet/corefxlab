@@ -12,7 +12,7 @@
     "System.Text.Primitives": { "target": "project" },
     "xunit": "2.2.0-beta2-build3300",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
-    "Microsoft.DotNet.xunit.performance": "1.0.0-alpha-build0041",
+    "Microsoft.DotNet.xunit.performance": "1.0.0-alpha-build0040",
     "System.Reflection": "4.1.0"
   },
   "frameworks": {
