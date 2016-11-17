@@ -102,7 +102,7 @@ namespace System.IO.Pipelines.Text.Primitives
         {
             byte* addr;
             ulong value;
-            int consumed, len = buffer.Length;
+            int len = buffer.Length;
             if (buffer.IsSingleSpan)
             {
                 // It fits!
@@ -110,14 +110,14 @@ namespace System.IO.Pipelines.Text.Primitives
                 ArraySegment<byte> data;
                 if (buffer.First.TryGetPointer(out pointer))
                 {
-                    if (!InternalParser.TryParseUInt64((byte*)pointer, 0, len, EncodingData.InvariantUtf8, TextFormat.HexUppercase, out value, out consumed))
+                    if (!PrimitiveParser.InvariantUtf8.Hex.TryParseUInt64((byte*)pointer, len, out value)) 
                     {
                         throw new InvalidOperationException();
                     }
                 }
                 else if (buffer.First.TryGetArray(out data))
                 {
-                    if (!InternalParser.TryParseUInt64(data.Array, 0, EncodingData.InvariantUtf8, TextFormat.HexUppercase, out value, out consumed))
+                    if (!PrimitiveParser.InvariantUtf8.Hex.TryParseUInt64(data.Array, out value)) 
                     {
                         throw new InvalidOperationException();
                     }
@@ -132,9 +132,7 @@ namespace System.IO.Pipelines.Text.Primitives
                 var data = stackalloc byte[len];
                 buffer.CopyTo(new Span<byte>(data, len));
                 addr = data;
-
-                if (!InternalParser.TryParseUInt64(addr, 0, len, EncodingData.InvariantUtf8, TextFormat.HexUppercase, out value, out consumed))
-                {
+                if (!PrimitiveParser.InvariantUtf8.Hex.TryParseUInt64(addr, len, out value)) {
                     throw new InvalidOperationException();
                 }
             }
@@ -142,8 +140,7 @@ namespace System.IO.Pipelines.Text.Primitives
             {
                 // Heap allocated copy to parse into array (should be rare)
                 var arr = buffer.ToArray();
-                if (!InternalParser.TryParseUInt64(arr, 0, EncodingData.InvariantUtf8, TextFormat.HexUppercase, out value, out consumed))
-                {
+                if (!PrimitiveParser.InvariantUtf8.Hex.TryParseUInt64(arr, out value)) {
                     throw new InvalidOperationException();
                 }
 

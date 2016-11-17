@@ -212,8 +212,7 @@ namespace System.Text.Json
             var slice = json._values.Slice(record.Location);
 
             bool result;
-            int consumed;
-            if(!Internal.InternalParser.TryParseBoolean(slice, EncodingData.InvariantUtf8, default(TextFormat), out result, out consumed)){
+            if(!PrimitiveParser.InvariantUtf8.TryParseBoolean(slice, out result)){
                 throw new InvalidCastException();
             }
             return result;
@@ -229,8 +228,7 @@ namespace System.Text.Json
             var slice = json._values.Slice(record.Location);
 
             int result;
-            int consumed;
-            if (!InternalParser.TryParseInt32(slice, EncodingData.InvariantUtf8, default(TextFormat), out result, out consumed)) {
+            if (!PrimitiveParser.InvariantUtf8.TryParseInt32(slice, out result)) {
                 throw new InvalidCastException();
             }
             return result;
