@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text.Formatting;
+using System.Text.Internal;
 using System.Text.Utf8;
 
 namespace System.Text.Json
@@ -98,7 +99,7 @@ namespace System.Text.Json
                 throw new InvalidOperationException();
             }
             int consumed;
-            return PrimitiveParser.TryParseUInt32(jsonValue.Value, out value, out consumed);
+            return InternalParser.TryParseUInt32(jsonValue.Value, out value, out consumed);
         }
 
         public bool TryGetString(Utf8String property, out Utf8String value)
