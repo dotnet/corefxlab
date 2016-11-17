@@ -25,7 +25,7 @@ namespace System.Text.Parsing
             }
 
             // Attempt to parse the first segment. If it works (and it should in most cases), then return success.
-            bool parsed = InternalParser.TryParseUInt64(first.Span, EncodingData.InvariantUtf8, default(TextFormat), out value, out consumed);
+            bool parsed = PrimitiveParser.InvariantUtf8.TryParseUInt64(first.Span, out value, out consumed);
             if (parsed && consumed < first.Length) {
                 return true;
             }
@@ -68,7 +68,7 @@ namespace System.Text.Parsing
                     combinedSpan = destination.Slice(0, StackBufferSize - free.Length);
 
                     // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
-                    if (InternalParser.TryParseUInt64(combinedSpan, EncodingData.InvariantUtf8, default(TextFormat), out value, out consumed)) {
+                    if (PrimitiveParser.InvariantUtf8.TryParseUInt64(combinedSpan, out value, out consumed)) {
                         if(consumed < combinedSpan.Length || combinedSpan.Length < StackBufferSize) {
                             return true;
                         }
@@ -79,7 +79,7 @@ namespace System.Text.Parsing
             // for invariant culture, we should never reach this point, as invariant uint text is never longer than 127 bytes. 
             // I left this code here, as we will need it for custom cultures and possibly when we shrink the stack allocated buffer.
             combinedSpan = memorySequence.ToSingleSpan();
-            if (!InternalParser.TryParseUInt64(first.Span, EncodingData.InvariantUtf8, default(TextFormat), out value, out consumed)) {
+            if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(first.Span, out value, out consumed)) {
                 return false;
             }
             return true;
@@ -98,7 +98,7 @@ namespace System.Text.Parsing
             }
 
             // Attempt to parse the first segment. If it works (and it should in most cases), then return success.
-            bool parsed = InternalParser.TryParseUInt32(new Utf8String(first.Span), out value, out consumed);
+            bool parsed = PrimitiveParser.InvariantUtf8.TryParseUInt32(first.Span, out value, out consumed);
             if (parsed && consumed < first.Length) {
                 return true;
             }
@@ -141,7 +141,7 @@ namespace System.Text.Parsing
                     combinedSpan = destination.Slice(0, StackBufferSize - free.Length);
 
                     // if the stack allocated buffer parsed succesfully (and for uint it should always do), then return success. 
-                    if (InternalParser.TryParseUInt32(new Utf8String(combinedSpan), out value, out consumed)) {
+                    if (PrimitiveParser.InvariantUtf8.TryParseUInt32(combinedSpan, out value, out consumed)) {
                         if(consumed < combinedSpan.Length || combinedSpan.Length < StackBufferSize) {
                             return true;
                         }
@@ -152,7 +152,7 @@ namespace System.Text.Parsing
             // for invariant culture, we should never reach this point, as invariant uint text is never longer than 127 bytes. 
             // I left this code here, as we will need it for custom cultures and possibly when we shrink the stack allocated buffer.
             combinedSpan = memorySequence.ToSingleSpan();
-            if (!InternalParser.TryParseUInt32(new Utf8String(combinedSpan), out value, out consumed)) {
+            if (!PrimitiveParser.InvariantUtf8.TryParseUInt32(combinedSpan, out value, out consumed)) {
                 return false;
             }
             return true;

@@ -98,8 +98,7 @@ namespace System.Text.Json
             {
                 throw new InvalidOperationException();
             }
-            int consumed;
-            return InternalParser.TryParseUInt32(jsonValue.Value, out value, out consumed);
+            return PrimitiveParser.InvariantUtf8.TryParseUInt32(jsonValue.Value.Bytes, out value);
         }
 
         public bool TryGetString(Utf8String property, out Utf8String value)
