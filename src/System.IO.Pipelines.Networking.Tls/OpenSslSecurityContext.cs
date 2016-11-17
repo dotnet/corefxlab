@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Pipelines.Networking.Tls.Internal.OpenSsl;
-using System.Linq;
+﻿using System.IO.Pipelines.Networking.Tls.Internal.OpenSsl;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Tls
 {
@@ -11,15 +7,14 @@ namespace System.IO.Pipelines.Networking.Tls
     {
         internal const int BlockSize = 1024 * 4 - 64; //Current fixed block size
 
-        private bool _initOkay = false;
         private readonly string _hostName;
         private readonly PipelineFactory _channelFactory;
         private readonly bool _isServer;
         private InteropKeys.PK12Certifcate _certifcateInformation;
         private byte[] _alpnSupportedProtocolsBuffer;
         private GCHandle _alpnHandle;
-        internal IntPtr _sslContext;
-        internal Interop.alpn_cb _alpnCallback;
+        internal IntPtr SslContext;
+        internal Interop.alpn_cb AlpnCallback;
         private ApplicationProtocols.ProtocolIds _alpnSupportedProtocols;
 
         public OpenSslSecurityContext(PipelineFactory channelFactory, string hostName, bool isServer, string pathToPfxFile, string password)
@@ -27,7 +22,7 @@ namespace System.IO.Pipelines.Networking.Tls
         {
         }
 
-        public unsafe OpenSslSecurityContext(PipelineFactory channelFactory, string hostName, bool isServer, string pathToPfxFile, string password, ApplicationProtocols.ProtocolIds alpnSupportedProtocols)
+        public OpenSslSecurityContext(PipelineFactory channelFactory, string hostName, bool isServer, string pathToPfxFile, string password, ApplicationProtocols.ProtocolIds alpnSupportedProtocols)
         {
             if (isServer && string.IsNullOrEmpty(pathToPfxFile))
             {
@@ -35,7 +30,7 @@ namespace System.IO.Pipelines.Networking.Tls
             }
 
             InteropCrypto.Init();
-
+            _hostName = hostName;
             _channelFactory = channelFactory;
             _isServer = isServer;
             _alpnSupportedProtocols = alpnSupportedProtocols;
@@ -70,10 +65,10 @@ namespace System.IO.Pipelines.Networking.Tls
                 //We need to get a buffer for the ALPN negotiation and pin it for sending to the lower API
                 _alpnSupportedProtocolsBuffer = ApplicationProtocols.GetBufferForProtocolId(_alpnSupportedProtocols, false);
                 _alpnHandle = GCHandle.Alloc(_alpnSupportedProtocolsBuffer, GCHandleType.Pinned);
-                Interop.SSL_CTX_set_alpn_protos(_sslContext, AplnBuffer, (uint)AplnBufferLength);
+                Interop.SSL_CTX_set_alpn_protos(SslContext, AplnBuffer, (uint)AplnBufferLength);
                 if (_isServer)
                 {
-                    _alpnCallback = alpn_cb;
+                    AlpnCallback = alpn_cb;
                     Interop.SSL_CTX_set_alpn_select_cb(this);
                 }
             }
@@ -109,22 +104,22 @@ namespace System.IO.Pipelines.Networking.Tls
         {
             if (_isServer)
             {
-                _sslContext = Interop.NewServerContext(Interop.VerifyMode.SSL_VERIFY_NONE);
+                SslContext = Interop.NewServerContext(Interop.VerifyMode.SSL_VERIFY_NONE);
             }
             else
             {
-                _sslContext = Interop.NewClientContext(Interop.VerifyMode.SSL_VERIFY_NONE);
+                SslContext = Interop.NewClientContext(Interop.VerifyMode.SSL_VERIFY_NONE);
             }
 
             if (_certifcateInformation.Handle != IntPtr.Zero)
             {
-                Interop.SetKeys(_sslContext, _certifcateInformation.CertificateHandle, _certifcateInformation.PrivateKeyHandle);
+                Interop.SetKeys(SslContext, _certifcateInformation.CertificateHandle, _certifcateInformation.PrivateKeyHandle);
             }
         }
 
         public ISecurePipeline CreateSecureChannel(IPipelineConnection channel)
         {
-            var ssl = Interop.SSL_new(_sslContext);
+            var ssl = Interop.SSL_new(SslContext);
             var chan = new SecureChannel<OpenSslConnectionContext>(channel, _channelFactory, new OpenSslConnectionContext(this, ssl));
             return chan;
         }
@@ -136,9 +131,9 @@ namespace System.IO.Pipelines.Networking.Tls
                 _alpnHandle.Free();
             }
             _certifcateInformation.Free();
-            if (_sslContext != IntPtr.Zero)
+            if (SslContext != IntPtr.Zero)
             {
-                Interop.SSL_CTX_free(_sslContext);
+                Interop.SSL_CTX_free(SslContext);
             }
         }
     }

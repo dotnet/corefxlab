@@ -396,15 +396,15 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
         {
             if (IsWindows)
             {
-                WindowsLib.SSL_CTX_set_alpn_select_cb(context._sslContext, context._alpnCallback, IntPtr.Zero);
+                WindowsLib.SSL_CTX_set_alpn_select_cb(context.SslContext, context.AlpnCallback, IntPtr.Zero);
             }
             else if (IsOsx)
             {
-                OsxLib.SSL_CTX_set_alpn_select_cb(context._sslContext, context._alpnCallback, IntPtr.Zero);
+                OsxLib.SSL_CTX_set_alpn_select_cb(context.SslContext, context.AlpnCallback, IntPtr.Zero);
             }
             else
             {
-                UnixLib.SSL_CTX_set_alpn_select_cb(context._sslContext, context._alpnCallback, IntPtr.Zero);
+                UnixLib.SSL_CTX_set_alpn_select_cb(context.SslContext, context.AlpnCallback, IntPtr.Zero);
             }
         }
         public static int SSL_CTX_set_alpn_protos(IntPtr ctx, IntPtr protocolList, uint protocolListLength) => IsWindows ? WindowsLib.SSL_CTX_set_alpn_protos(ctx, protocolList, protocolListLength) : IsOsx ? OsxLib.SSL_CTX_set_alpn_protos(ctx, protocolList, protocolListLength) : UnixLib.SSL_CTX_set_alpn_protos(ctx, protocolList, protocolListLength);

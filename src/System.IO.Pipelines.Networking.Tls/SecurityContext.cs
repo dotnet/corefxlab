@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Pipelines.Networking.Tls.Internal.Sspi;
-using System.Linq;
+﻿using System.IO.Pipelines.Networking.Tls.Internal.Sspi;
 using System.Runtime.InteropServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Tls
 {
     public class SecurityContext : IDisposable
     {
-        internal const ContextFlags RequiredFlags = ContextFlags.ReplayDetect | ContextFlags.SequenceDetect | ContextFlags.Confidentiality | ContextFlags.AllocateMemory;
+        internal const ContextFlags RequiredFlags =
+            ContextFlags.ReplayDetect | ContextFlags.SequenceDetect | ContextFlags.Confidentiality |
+            ContextFlags.AllocateMemory;
+
         internal const ContextFlags ServerRequiredFlags = RequiredFlags | ContextFlags.AcceptStream;
         internal const int BlockSize = 1024 * 4 - 64; //Current fixed block size
-        internal const SslProtocols _supportedProtocols = SslProtocols.Tls;
+        internal const SslProtocols SupportedProtocols = SslProtocols.Tls;
         private const string SecurityPackage = "Microsoft Unified Security Protocol Provider";
         public const int MaxStackAllocSize = 16 * 1024;
 
-        private int _maxTokenSize;
-        private X509Certificate _serverCertificate;
+        private readonly X509Certificate _serverCertificate;
         private SSPIHandle _credsHandle;
         private readonly bool _isServer;
         private readonly string _hostName;
         private readonly byte[] _alpnSupportedProtocols;
-        private readonly GCHandle _alpnHandle;
+        private GCHandle _alpnHandle;
         private readonly SecurityBuffer _alpnBuffer;
         private readonly PipelineFactory _channelFactory;
 
@@ -48,7 +46,8 @@ namespace System.IO.Pipelines.Networking.Tls
         /// <param name="isServer">Used to denote if you are going to be negotiating incoming or outgoing Tls connections</param>
         /// <param name="serverCert">This is the in memory representation of the certificate used for the PKI exchange and authentication</param>
         /// <param name="alpnSupportedProtocols">This is the protocols that are supported and that will be negotiated with on the otherside, if a protocol can't be negotiated then the handshake will fail</param>
-        public unsafe SecurityContext(PipelineFactory factory, string hostName, bool isServer, X509Certificate serverCert, ApplicationProtocols.ProtocolIds alpnSupportedProtocols)
+        public unsafe SecurityContext(PipelineFactory factory, string hostName, bool isServer,
+            X509Certificate serverCert, ApplicationProtocols.ProtocolIds alpnSupportedProtocols)
         {
             if (hostName == null)
             {
@@ -64,7 +63,8 @@ namespace System.IO.Pipelines.Networking.Tls
                 //We need to get a buffer for the ALPN negotiation and pin it for sending to the lower API
                 _alpnSupportedProtocols = ApplicationProtocols.GetBufferForProtocolId(alpnSupportedProtocols, true);
                 _alpnHandle = GCHandle.Alloc(_alpnSupportedProtocols, GCHandleType.Pinned);
-                _alpnBuffer = new SecurityBuffer((void*)_alpnHandle.AddrOfPinnedObject(), _alpnSupportedProtocols.Length, SecurityBufferType.ApplicationProtocols);
+                _alpnBuffer = new SecurityBuffer((void*) _alpnHandle.AddrOfPinnedObject(),
+                    _alpnSupportedProtocols.Length, SecurityBufferType.ApplicationProtocols);
             }
         }
 
@@ -85,19 +85,17 @@ namespace System.IO.Pipelines.Networking.Tls
                 {
                     throw new InvalidOperationException("Unable to enumerate security packages");
                 }
-                var size = sizeof(SecPkgInfo);
-                for (int i = 0; i < numberOfPackages; i++)
+                for (var i = 0; i < numberOfPackages; i++)
                 {
                     var package = secPointer[i];
                     var name = Marshal.PtrToStringUni(package.Name);
-                    if (name == SecurityPackage)
+                    if (name != SecurityPackage)
                     {
-                        _maxTokenSize = package.cbMaxToken;
-
-                        //The correct security package is available
-                        GetCredentials();
-                        return;
+                        continue;
                     }
+                    //The correct security package is available
+                    GetCredentials();
+                    return;
                 }
                 throw new InvalidOperationException($"Unable to find the security package named {SecurityPackage}");
             }
@@ -105,7 +103,7 @@ namespace System.IO.Pipelines.Networking.Tls
             {
                 if (secPointer != null)
                 {
-                    Interop.FreeContextBuffer((IntPtr)secPointer);
+                    Interop.FreeContextBuffer((IntPtr) secPointer);
                 }
             }
         }
@@ -122,7 +120,8 @@ namespace System.IO.Pipelines.Networking.Tls
             else
             {
                 direction = CredentialUse.Outbound;
-                flags = CredentialFlags.ValidateManual | CredentialFlags.NoDefaultCred | CredentialFlags.SendAuxRecord | CredentialFlags.UseStrongCrypto;
+                flags = CredentialFlags.ValidateManual | CredentialFlags.NoDefaultCred | CredentialFlags.SendAuxRecord |
+                        CredentialFlags.UseStrongCrypto;
             }
 
             var creds = new SecureCredential()
@@ -158,7 +157,7 @@ namespace System.IO.Pipelines.Networking.Tls
             }
 
             long timestamp = 0;
-            SecurityStatus code = Interop.AcquireCredentialsHandleW(null, SecurityPackage, (int)direction
+            SecurityStatus code = Interop.AcquireCredentialsHandleW(null, SecurityPackage, (int) direction
                 , null, ref creds, null, null, ref _credsHandle, out timestamp);
 
             if (code != SecurityStatus.OK)
@@ -169,7 +168,8 @@ namespace System.IO.Pipelines.Networking.Tls
 
         public ISecurePipeline CreateSecureChannel(IPipelineConnection channel)
         {
-            var chan = new SecurePipeline<SecureConnectionContext>(channel, _channelFactory, new SecureConnectionContext(this));
+            var chan = new SecurePipeline<SecureConnectionContext>(channel, _channelFactory,
+                new SecureConnectionContext(this));
             return chan;
         }
 
