@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Tls
 {
     public class SecurePipeline<T> : ISecurePipeline where T : ISecureContext
     {
-        private IPipelineConnection _lowerChannel;
-        private PipelineReaderWriter _outputChannel;
-        private PipelineReaderWriter _inputChannel;
+        private readonly IPipelineConnection _lowerChannel;
+        private readonly PipelineReaderWriter _outputChannel;
+        private readonly PipelineReaderWriter _inputChannel;
         private readonly T _contextToDispose;
         private TaskCompletionSource<ApplicationProtocols.ProtocolIds> _handShakeCompleted;
 
@@ -57,7 +54,8 @@ namespace System.IO.Pipelines.Networking.Tls
                         {
                             if (frameType != TlsFrameType.Handshake && frameType != TlsFrameType.ChangeCipherSpec)
                             {
-                                throw new InvalidOperationException("Received a token that was invalid during the handshake");
+                                throw new InvalidOperationException(
+                                    "Received a token that was invalid during the handshake");
                             }
 
                             await _contextToDispose.ProcessContextMessageAsync(messageBuffer, _lowerChannel.Output);
@@ -86,7 +84,6 @@ namespace System.IO.Pipelines.Networking.Tls
             {
                 StartReading();
             }
-
         }
 
         private async void StartReading()
@@ -138,7 +135,10 @@ namespace System.IO.Pipelines.Networking.Tls
                     _inputChannel.CompleteReader();
                     _inputChannel.CompleteWriter();
                 }
-                catch {  /*nom nom */ }
+                catch
+                {
+                    /*nom nom */
+                }
             }
         }
 
@@ -194,7 +194,10 @@ namespace System.IO.Pipelines.Networking.Tls
                     _inputChannel.CompleteReader();
                     _inputChannel.CompleteWriter();
                 }
-                catch {  /*nom nom */ }
+                catch
+                {
+                    /*nom nom */
+                }
             }
         }
 
@@ -203,8 +206,10 @@ namespace System.IO.Pipelines.Networking.Tls
         /// </summary>
         /// <param name="buffer">The input buffer, it will be returned with the frame sliced out if there is a complete frame found</param>
         /// <param name="messageBuffer">If a frame is found this contains that frame</param>
+        /// <param name="frameType">The type of frame that was detected</param>
         /// <returns>The status of the check for frame</returns>
-        internal static bool TryGetFrameType(ref ReadableBuffer buffer, out ReadableBuffer messageBuffer, out TlsFrameType frameType)
+        internal static bool TryGetFrameType(ref ReadableBuffer buffer, out ReadableBuffer messageBuffer,
+            out TlsFrameType frameType)
         {
             frameType = TlsFrameType.Incomplete;
             //Need at least 5 bytes to be useful
@@ -213,7 +218,7 @@ namespace System.IO.Pipelines.Networking.Tls
                 messageBuffer = default(ReadableBuffer);
                 return false;
             }
-            frameType = (TlsFrameType)buffer.ReadBigEndian<byte>();
+            frameType = (TlsFrameType) buffer.ReadBigEndian<byte>();
 
             //Check it's a valid frametype for what we are expecting
             if (frameType != TlsFrameType.AppData && frameType != TlsFrameType.Alert

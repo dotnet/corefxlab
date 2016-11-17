@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Pipelines.Networking.Tls.Internal.OpenSsl;
-using System.Linq;
+﻿using System.IO.Pipelines.Networking.Tls.Internal.OpenSsl;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -9,17 +6,15 @@ namespace System.IO.Pipelines.Networking.Tls
 {
     public class OpenSslConnectionContext : ISecureContext
     {
-        private const Interop.ContextOptions _contextOptions = Interop.ContextOptions.SSL_OP_NO_SSLv2 | Interop.ContextOptions.SSL_OP_NO_SSLv3;
-        private static readonly Task _cachedTask = Task.FromResult(0);
+        private static readonly Task CachedTask = Task.FromResult(0);
 
         private readonly OpenSslSecurityContext _securityContext;
         private int _headerSize = 5; //5 is the minimum (1 for frame type, 2 for version, 2 for frame size)
         private int _trailerSize = 16;
-        private int _maxDataSize = 16354;
         private bool _readyToSend;
         private IntPtr _ssl;
-        private InteropBio.BioHandle _readBio;
-        private InteropBio.BioHandle _writeBio;
+        private readonly InteropBio.BioHandle _readBio;
+        private readonly InteropBio.BioHandle _writeBio;
         private ApplicationProtocols.ProtocolIds _negotiatedProtocol;
 
         public OpenSslConnectionContext(OpenSslSecurityContext securityContext, IntPtr ssl)
@@ -41,8 +36,19 @@ namespace System.IO.Pipelines.Networking.Tls
         }
 
         public bool IsServer => _securityContext.IsServer;
-        public int HeaderSize { get { return _headerSize; } set { _headerSize = value; } }
-        public int TrailerSize { get { return _trailerSize; } set { _trailerSize = value; } }
+
+        public int HeaderSize
+        {
+            get { return _headerSize; }
+            set { _headerSize = value; }
+        }
+
+        public int TrailerSize
+        {
+            get { return _trailerSize; }
+            set { _trailerSize = value; }
+        }
+
         public ApplicationProtocols.ProtocolIds NegotiatedProtocol => _negotiatedProtocol;
         public bool ReadyToSend => _readyToSend;
         public CipherInfo CipherInfo => _ssl != IntPtr.Zero ? Interop.GetCipherInfo(_ssl) : default(CipherInfo);
@@ -113,7 +119,7 @@ namespace System.IO.Pipelines.Networking.Tls
                         byte* protoPointer;
                         int len;
                         Interop.SSL_get0_alpn_selected(_ssl, out protoPointer, out len);
-                        _negotiatedProtocol = ApplicationProtocols.GetNegotiatedProtocol(protoPointer, (byte)len);
+                        _negotiatedProtocol = ApplicationProtocols.GetNegotiatedProtocol(protoPointer, (byte) len);
                     }
                     _readyToSend = true;
                     if (CustomBio.NumberOfWrittenBytes(_writeBio) > 0)
@@ -122,12 +128,13 @@ namespace System.IO.Pipelines.Networking.Tls
                     }
                     else
                     {
-                        return _cachedTask;
+                        return CachedTask;
                     }
                 }
                 //We didn't get an "okay" message so lets check to see what the actual error was
                 var errorCode = Interop.SSL_get_error(_ssl, result);
-                if (errorCode == Interop.SslErrorCodes.SSL_NOTHING || errorCode == Interop.SslErrorCodes.SSL_WRITING || errorCode == Interop.SslErrorCodes.SSL_READING)
+                if (errorCode == Interop.SslErrorCodes.SSL_NOTHING || errorCode == Interop.SslErrorCodes.SSL_WRITING ||
+                    errorCode == Interop.SslErrorCodes.SSL_READING)
                 {
                     if (CustomBio.NumberOfWrittenBytes(_writeBio) > 0)
                     {
@@ -135,10 +142,11 @@ namespace System.IO.Pipelines.Networking.Tls
                     }
                     else
                     {
-                        return _cachedTask;
+                        return CachedTask;
                     }
                 }
-                throw new InvalidOperationException($"There was an error during the handshake, error code was {errorCode}");
+                throw new InvalidOperationException(
+                    $"There was an error during the handshake, error code was {errorCode}");
             }
             catch
             {
@@ -150,7 +158,9 @@ namespace System.IO.Pipelines.Networking.Tls
                 writeHandle.Free();
             }
         }
+
         object l = new object();
+
         public void Dispose()
         {
             lock (l)
