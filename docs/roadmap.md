@@ -10,7 +10,7 @@ tap into.
 
 ## Roadmap
 
-For the next six to twelve monts our primary area of focus for CoreFxLab will be
+For the next six to twelve months our primary area of focus for CoreFxLab will be
 to improve performance for data pipeline oriented apps. This is pretty much any
 cloud app as the request-response pattern is fundamentally a data pipeline.
 
