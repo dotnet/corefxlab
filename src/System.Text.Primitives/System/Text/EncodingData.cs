@@ -1,10 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Text
@@ -250,6 +247,7 @@ namespace System.Text
             s_invariantUtf8 = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8);
         }
 
+        // TODO: this should be removed
         /// <summary>
         /// Parse the next byte in a byte array. Will return either a DigitOrSymbol value, an InvalidCharacter, or a Continue
         /// </summary>
