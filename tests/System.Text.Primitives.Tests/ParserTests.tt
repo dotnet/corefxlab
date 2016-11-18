@@ -111,6 +111,43 @@ namespace System.Text.Primitives.Tests
             Tuple.Create((byte)0, 9),
         };
 
+		static byte[][] s_utf8digitsAndSymbols = new byte[][] {
+            new byte[] { 48, },
+            new byte[] { 49, },
+            new byte[] { 50, },
+            new byte[] { 51, },
+            new byte[] { 52, },
+            new byte[] { 53, },
+            new byte[] { 54, },
+            new byte[] { 55, },
+            new byte[] { 56, },
+            new byte[] { 57, }, // digit 9
+            new byte[] { 46, }, // decimal separator
+            null, // so that it is != to uft8DigitsAndSymbols
+            new byte[] { 73, 110, 102, 105, 110, 105, 116, 121, },
+            new byte[] { 45, }, // minus sign
+            new byte[] { 43, }, // plus sign
+            new byte[] { 78, 97, 78, }, // NaN
+            new byte[] { 69, }, // E
+        };
+
+		static byte[][] s_thaiUtf8DigitsAndSymbols = new byte[][]
+        {
+            new byte[] { 0xe0, 0xb9, 0x90 }, new byte[] { 0xe0, 0xb9, 0x91 }, new byte[] { 0xe0, 0xb9, 0x92 },
+            new byte[] { 0xe0, 0xb9, 0x93 }, new byte[] { 0xe0, 0xb9, 0x94 }, new byte[] { 0xe0, 0xb9, 0x95 }, new byte[] { 0xe0, 0xb9, 0x96 },
+            new byte[] { 0xe0, 0xb9, 0x97 }, new byte[] { 0xe0, 0xb9, 0x98 }, new byte[] { 0xe0, 0xb9, 0x99 }, new byte[] { 0xE0, 0xB8, 0x88, 0xE0, 0xB8, 0x94 }, null,
+            new byte[] { 0xE0, 0xB8, 0xAA, 0xE0, 0xB8, 0xB4, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x87, 0xE0, 0xB8, 0x97, 0xE0, 0xB8, 0xB5, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x83,
+                0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0x8D, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x82, 0xE0, 0xB8, 0x95, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0xA5, 0xE0,
+                0xB8, 0xB7, 0xE0, 0xB8, 0xAD, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0x81, 0xE0, 0xB8, 0xB4, 0xE0, 0xB8, 0x99 },
+            new byte[] { 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x9A }, new byte[] { 43 }, new byte[] { 0xE0, 0xB9, 0x84, 0xE0, 0xB8, 0xA1, 0xE0, 0xB9, 0x88, 0xE0, 0xB9,
+                0x83, 0xE0, 0xB8, 0x8A, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x95, 0xE0, 0xB8, 0xB1, 0xE0, 0xB8, 0xA7, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x82 },
+            new byte[] { 69 }, new byte[] { 101 },
+        };
+            
+        static EncodingData s_thaiEncoding = new EncodingData(s_thaiUtf8DigitsAndSymbols, TextEncoding.Utf8, s_thais_utf8ParsingTrie);
+
+		static EncodingData s_utf8Encoding = new EncodingData(s_utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
+
         private byte[] UtfEncode(string s, bool utf16)
         {
             if (utf16)
@@ -167,30 +204,8 @@ namespace System.Text.Primitives.Tests
         public unsafe void ParseCustomCultureByteArrayTo<#= capitalizedPrimitive #>(string text, bool expectSuccess, int index, <#= unsignedPrimitives[i] #> expectedValue, int expectedBytesConsumed)
         {
             <#= unsignedPrimitives[i] #> parsedValue;
-            int bytesConsumed;
-            var utf8digitsAndSymbols = new byte[][] {
-                new byte[] { 48, },
-                new byte[] { 49, },
-                new byte[] { 50, },
-                new byte[] { 51, },
-                new byte[] { 52, },
-                new byte[] { 53, },
-                new byte[] { 54, },
-                new byte[] { 55, },
-                new byte[] { 56, },
-                new byte[] { 57, }, // digit 9
-                new byte[] { 46, }, // decimal separator
-                null, // so that it is != to uft8DigitsAndSymbols
-                new byte[] { 73, 110, 102, 105, 110, 105, 116, 121, },
-                new byte[] { 45, }, // minus sign
-                new byte[] { 43, }, // plus sign
-                new byte[] { 78, 97, 78, }, // NaN
-                new byte[] { 69, }, // E
-            };
-            
-            EncodingData fd = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
-            TextFormat nf = new TextFormat('R');
-            bool result = Remove.InternalParser.TryParse<#=unsignedClasses[i]#>(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+            int bytesConsumed;            
+            bool result = Internal.InternalParser.TryParse<#=unsignedClasses[i]#>(UtfEncode(text, false), index, s_utf8Encoding, 'R', out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -217,8 +232,7 @@ namespace System.Text.Primitives.Tests
             <#= unsignedPrimitives[i] #> parsedValue;
             int bytesConsumed;
             EncodingData fd = EncodingData.InvariantUtf<#= utfEncoding #>;
-            TextFormat nf = new TextFormat('R');
-            bool result = Remove.InternalParser.TryParse<#=unsignedClasses[i]#>(UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>), index, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = Internal.InternalParser.TryParse<#=unsignedClasses[i]#>(UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>), index, fd, 'R', out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -239,9 +253,8 @@ namespace System.Text.Primitives.Tests
             <#= unsignedPrimitives[i] #> parsedValue;
             int bytesConsumed;
             EncodingData fd = EncodingData.InvariantUtf<#= utfEncoding #>;
-            TextFormat nf = new TextFormat('R');
 			var span = UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>).Slice(index);
-            bool result = Remove.InternalParser.TryParse<#=unsignedClasses[i]#>(span, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = Internal.InternalParser.TryParse<#=unsignedClasses[i]#>(span, fd, 'R', out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -264,10 +277,9 @@ namespace System.Text.Primitives.Tests
 
             byte[] textBytes = UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>);
             EncodingData fd = EncodingData.InvariantUtf<#= utfEncoding #>;
-            TextFormat nf = new TextFormat('R');
             fixed (byte* arrayPointer = textBytes)
             {
-                bool result = Remove.InternalParser.TryParse<#=unsignedClasses[i]#>(arrayPointer, index, textBytes.Length, fd, nf, out parsedValue, out bytesConsumed);
+                bool result = Internal.InternalParser.TryParse<#=unsignedClasses[i]#>(arrayPointer, index, textBytes.Length, fd, 'R', out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
                 Assert.Equal(expectedValue, parsedValue);
@@ -340,30 +352,8 @@ namespace System.Text.Primitives.Tests
         public unsafe void ParseCustomCultureByteArrayTo<#= capitalizedPrimitive #>(string text, bool expectSuccess, int index, <#= signedPrimitives[i] #> expectedValue, int expectedBytesConsumed)
         {
             <#= signedPrimitives[i] #> parsedValue;
-            int bytesConsumed;
-            var utf8digitsAndSymbols = new byte[][] {
-                new byte[] { 48, },
-                new byte[] { 49, },
-                new byte[] { 50, },
-                new byte[] { 51, },
-                new byte[] { 52, },
-                new byte[] { 53, },
-                new byte[] { 54, },
-                new byte[] { 55, },
-                new byte[] { 56, },
-                new byte[] { 57, }, // digit 9
-                new byte[] { 46, }, // decimal separator
-                null, // so that it is != to uft8DigitsAndSymbols
-                new byte[] { 73, 110, 102, 105, 110, 105, 116, 121, },
-                new byte[] { 45, }, // minus sign
-                new byte[] { 43, }, // plus sign
-                new byte[] { 78, 97, 78, }, // NaN
-                new byte[] { 69, }, // E
-            };
-            
-            EncodingData fd = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
-            TextFormat nf = new TextFormat('R');
-            bool result = Remove.InternalParser.TryParse<#=signedClasses[i]#>(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+            int bytesConsumed;            
+            bool result = Internal.InternalParser.TryParse<#=signedClasses[i]#>(UtfEncode(text, false), index, s_utf8Encoding, 'R', out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -386,22 +376,7 @@ namespace System.Text.Primitives.Tests
         {
             <#= signedPrimitives[i] #> parsedValue;
             int bytesConsumed;
-            var thaiUtf8DigitsAndSymbols = new byte[][]
-            {
-                new byte[] { 0xe0, 0xb9, 0x90 }, new byte[] { 0xe0, 0xb9, 0x91 }, new byte[] { 0xe0, 0xb9, 0x92 },
-                new byte[] { 0xe0, 0xb9, 0x93 }, new byte[] { 0xe0, 0xb9, 0x94 }, new byte[] { 0xe0, 0xb9, 0x95 }, new byte[] { 0xe0, 0xb9, 0x96 },
-                new byte[] { 0xe0, 0xb9, 0x97 }, new byte[] { 0xe0, 0xb9, 0x98 }, new byte[] { 0xe0, 0xb9, 0x99 }, new byte[] { 0xE0, 0xB8, 0x88, 0xE0, 0xB8, 0x94 }, null,
-                new byte[] { 0xE0, 0xB8, 0xAA, 0xE0, 0xB8, 0xB4, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x87, 0xE0, 0xB8, 0x97, 0xE0, 0xB8, 0xB5, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x83,
-                    0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0x8D, 0xE0, 0xB9, 0x88, 0xE0, 0xB9, 0x82, 0xE0, 0xB8, 0x95, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xAB, 0xE0, 0xB8, 0xA5, 0xE0,
-                    0xB8, 0xB7, 0xE0, 0xB8, 0xAD, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0x81, 0xE0, 0xB8, 0xB4, 0xE0, 0xB8, 0x99 },
-                new byte[] { 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x9A }, new byte[] { 43 }, new byte[] { 0xE0, 0xB9, 0x84, 0xE0, 0xB8, 0xA1, 0xE0, 0xB9, 0x88, 0xE0, 0xB9,
-                    0x83, 0xE0, 0xB8, 0x8A, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x95, 0xE0, 0xB8, 0xB1, 0xE0, 0xB8, 0xA7, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x82 },
-                new byte[] { 69 }, new byte[] { 101 },
-            };
-            
-            EncodingData fd = new EncodingData(thaiUtf8DigitsAndSymbols, TextEncoding.Utf8, s_thais_utf8ParsingTrie);
-            TextFormat nf = new TextFormat('R');
-            bool result = Remove.InternalParser.TryParse<#=signedClasses[i]#>(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = Internal.InternalParser.TryParse<#=signedClasses[i]#>(UtfEncode(text, false), index, s_thaiEncoding, 'R', out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -431,8 +406,7 @@ namespace System.Text.Primitives.Tests
             <#= signedPrimitives[i] #> parsedValue;
             int bytesConsumed;
             EncodingData fd = EncodingData.InvariantUtf<#= utfEncoding #>;
-            TextFormat nf = new TextFormat('N');
-            bool result = Remove.InternalParser.TryParse<#=signedClasses[i]#>(UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>), index, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = Internal.InternalParser.TryParse<#=signedClasses[i]#>(UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>), index, fd, 'N', out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -457,9 +431,8 @@ namespace System.Text.Primitives.Tests
             <#= signedPrimitives[i] #> parsedValue;
             int bytesConsumed;
             EncodingData fd = EncodingData.InvariantUtf<#= utfEncoding #>;
-            TextFormat nf = new TextFormat('N');
 			var span = UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>).Slice(index);
-            bool result = Remove.InternalParser.TryParse<#=signedClasses[i]#>(span, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = Internal.InternalParser.TryParse<#=signedClasses[i]#>(span, fd, 'N', out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -484,12 +457,11 @@ namespace System.Text.Primitives.Tests
             <#= signedPrimitives[i] #> parsedValue;
             int bytesConsumed;
             EncodingData fd = EncodingData.InvariantUtf<#= utfEncoding #>;
-            TextFormat nf = new TextFormat('N');
 
             byte[] textBytes = UtfEncode(text, <#= utfEncoding != "8" ? "true" : "false" #>);
             fixed (byte* arrayPointer = textBytes)
             {
-                bool result = Remove.InternalParser.TryParse<#=signedClasses[i]#>(arrayPointer, index, textBytes.Length, fd, nf,
+                bool result = Internal.InternalParser.TryParse<#=signedClasses[i]#>(arrayPointer, index, textBytes.Length, fd, 'N',
                     out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
@@ -553,8 +525,7 @@ namespace System.Text.Primitives.Tests
             <#= floatingPointPrimitives[i] #> parsedValue;
             int bytesConsumed;
             EncodingData fd = EncodingData.InvariantUtf8;
-            TextFormat nf = new TextFormat('N');
-            bool result = Remove.InternalParser.TryParse<#=floatingPointClasses[i]#>(UtfEncode(text, false), index, fd, nf, out parsedValue, out bytesConsumed);
+            bool result = Internal.InternalParser.TryParse<#=floatingPointClasses[i]#>(UtfEncode(text, false), index, fd, 'N', out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -580,12 +551,11 @@ namespace System.Text.Primitives.Tests
             <#= floatingPointPrimitives[i] #> parsedValue;
             int bytesConsumed;
             EncodingData fd = EncodingData.InvariantUtf8;
-            TextFormat nf = new TextFormat('N');
 
             byte[] textBytes = UtfEncode(text, false);
             fixed (byte* arrayPointer = textBytes)
             {
-                bool result = Remove.InternalParser.TryParse<#=floatingPointClasses[i]#>(arrayPointer, index, textBytes.Length, fd, nf,
+                bool result = Internal.InternalParser.TryParse<#=floatingPointClasses[i]#>(arrayPointer, index, textBytes.Length, fd, 'N',
                     out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
@@ -622,25 +592,25 @@ namespace System.Text.Primitives.Tests
 			ReadOnlySpan<byte> utf8BytesSlice = new ReadOnlySpan<byte>(utf8Bytes);
 
 			// System.String
-			result = Remove.InternalParser.TryParseBoolean(text, index, 'N', out parsedValue, out bytesConsumed);
+			result = Internal.InternalParser.TryParseBoolean(text, index, 'N', out parsedValue, out bytesConsumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
 
 			// Utf8String
-			result = Remove.InternalParser.TryParseBoolean(utf8String.Substring(index), 'N', out parsedValue, out bytesConsumed);
+			result = Internal.InternalParser.TryParseBoolean(utf8String.Substring(index), 'N', out parsedValue, out bytesConsumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
 
 			// byte[]
-			result = Remove.InternalParser.TryParseBoolean(utf8Bytes, index, EncodingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
+			result = Internal.InternalParser.TryParseBoolean(utf8Bytes, index, EncodingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
 
 			// ReadOnlySpan<byte>
-			result = Remove.InternalParser.TryParseBoolean(utf8Bytes.Slice(index), EncodingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
+			result = Internal.InternalParser.TryParseBoolean(utf8Bytes.Slice(index), EncodingData.InvariantUtf8, 'N', out parsedValue, out bytesConsumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
@@ -648,7 +618,7 @@ namespace System.Text.Primitives.Tests
 			// byte*
             fixed (byte* arrayPointer = utf8Bytes)
             {
-                result = Remove.InternalParser.TryParseBoolean(arrayPointer, index, utf8Bytes.Length, EncodingData.InvariantUtf8, 'N',
+                result = Internal.InternalParser.TryParseBoolean(arrayPointer, index, utf8Bytes.Length, EncodingData.InvariantUtf8, 'N',
                     out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
@@ -672,7 +642,7 @@ namespace System.Text.Primitives.Tests
         {
             decimal parsedValue;
             int bytesConsumed;
-            bool result = Remove.InternalParser.TryParseDecimal(UtfEncode(text, false), index, out parsedValue, out bytesConsumed);
+            bool result = Internal.InternalParser.TryParseDecimal(UtfEncode(text, false), index, out parsedValue, out bytesConsumed);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -694,7 +664,7 @@ namespace System.Text.Primitives.Tests
             int bytesConsumed;
             fixed (byte* arrayPointer = utf8Array)
             {
-                bool result = Remove.InternalParser.TryParseDecimal(arrayPointer, index, utf8Array.Length, out parsedValue, out bytesConsumed);
+                bool result = Internal.InternalParser.TryParseDecimal(arrayPointer, index, utf8Array.Length, out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
                 Assert.Equal(expectedValue, parsedValue);
@@ -723,7 +693,7 @@ namespace System.Text.Primitives.Tests
         {
             Uri parsedValue;
             int bytesConsumed;
-            bool result = Remove.InternalParser.TryParseUri(UtfEncode(text, false), index, out parsedValue, out bytesConsumed);
+            bool result = Internal.InternalParser.TryParseUri(UtfEncode(text, false), index, out parsedValue, out bytesConsumed);
 
 
             Assert.Equal(expectSuccess, result);
@@ -756,7 +726,7 @@ namespace System.Text.Primitives.Tests
             byte[] textBytes = UtfEncode(text, false);
             fixed (byte* arrayPointer = textBytes)
             {
-                bool result = Remove.InternalParser.TryParseUri(arrayPointer, index, textBytes.Length, out parsedValue, out bytesConsumed);
+                bool result = Internal.InternalParser.TryParseUri(arrayPointer, index, textBytes.Length, out parsedValue, out bytesConsumed);
 
                 Assert.Equal(expectSuccess, result);
                 if (expectedValue != "")
