@@ -1,6 +1,6 @@
 # High-Performance Data Pipelines
 
-Our goal is to optimzie .NET much more for scenarios in which inefficiences are
+Our goal is to optimize .NET much more for scenarios in which inefficiences are
 directly tied to your monthly billing. With ASP.NET Core, we've already
 [improved significantly][TechEmpower13] and are now in the top 10 for the plain
 text benchmark. But we believe there is still a lot more potential that we could
