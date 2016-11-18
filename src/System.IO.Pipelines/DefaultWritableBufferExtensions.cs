@@ -17,7 +17,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="buffer">The <see cref="WritableBuffer"/></param>
         /// <param name="source">The <see cref="Span{Byte}"/> to write</param>
-        public static void Write(this WritableBuffer buffer, Span<byte> source)
+        public static void Write(this WritableBuffer buffer, ReadOnlySpan<byte> source)
         {
             if (buffer.Memory.IsEmpty)
             {
