@@ -5,7 +5,7 @@ This repo is for experimentation and exploring new ideas that may or may not mak
 Currently, this repo contains the following experimental components:
 
 * **System.Slices**
-A set of features for representing and manipulating managed, native, and stack memory. The package includes types Span\<T\>, ReadOnlySpan\<T\>, and Memory\<T\>. See more information about the features at [Span\<T\>.md](https://github.com/dotnet/corefxlab/blob/master/docs/Span.md)
+A set of features for representing and manipulating managed, native, and stack memory. The package includes types Span\<T\>, ReadOnlySpan\<T\>, and Memory\<T\>. See more information about the features at [span.md](docs/specs/span.md).
 
 * **System.Text.Formatting**. 
 System.Text.Formatting APIs are similar to the existing StringBuilder and TextWriter APIs. 
@@ -30,7 +30,7 @@ The System.Threading.Tasks.Channels library provides a set of synchronization da
 Whereas the existing System.Threading.Tasks.Dataflow library is focused on pipelining and connecting together dataflow "blocks" which encapsulate 
 both storage and processing, System.Threading.Tasks.Channels is focused purely on the storage aspect, with data structures used to provide the 
 hand-offs between participants explicitly coded to use the storage. The library is designed to be used with async/await in C#.  See the
-[README.md](https://github.com/dotnet/corefxlab/blob/master/src/System.Threading.Tasks.Channels/README.md) for more information.
+[README.md](src/System.Threading.Tasks.Channels/README.md) for more information.
 
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `TimeOfDay`.
@@ -43,7 +43,7 @@ setting of the internal collections so that uniqueness of values can be chosen b
 design decisions as well as introductions to usage can be found in the old blog posts introducing it [here](http://blogs.msdn.com/b/dotnet/archive/2014/06/20/would-you-like-a-multidictionary.aspx) and [here](http://blogs.msdn.com/b/dotnet/archive/2014/08/05/multidictionary-becomes-multivaluedictionary.aspx).
 
 * **System.CommandLine**.
-The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](https://github.com/dotnet/corefxlab/blob/master/src/System.CommandLine/README.md) for more information.
+The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](src/System.CommandLine/README.md) for more information.
 
 More libraries are coming soon. Stay tuned!
 
