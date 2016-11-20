@@ -4,7 +4,7 @@ namespace System.IO.Pipelines.Networking.Tls
 {
     public interface ISecurePipeline : IPipelineConnection
     {
-        Task<ApplicationProtocols.ProtocolIds> HandShakeAsync();
+        Task<ApplicationProtocols.ProtocolIds> ShakeHandsAsync();
         CipherInfo CipherInfo { get; }
     }
 }

@@ -113,9 +113,9 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
         private static int WriteBio(ref bio_st bio, void* buff, int numberOfBytes)
         {
             var bufferHandle = GCHandle.FromIntPtr((IntPtr)bio.ptr);
-            var bufferChannel = (IPipelineWriter)bufferHandle.Target;
+            var bufferPipeline = (IPipelineWriter)bufferHandle.Target;
             int numberOfBytesRemaing = numberOfBytes;
-            var buffer = bufferChannel.Alloc();
+            var buffer = bufferPipeline.Alloc();
             while (numberOfBytesRemaing > 0)
             {
                 int sizeToWrite = Math.Min(MaxBlockSize, numberOfBytesRemaing);

@@ -25,16 +25,16 @@ namespace System.IO.Pipelines.Tests
         {
             using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
             using (var factory = new PipelineFactory())
-            using (var serverContext = new SecurityContext(factory, "CARoot", true, cert, ApplicationProtocols.ProtocolIds.Http11 | ApplicationProtocols.ProtocolIds.Http2overTLS))
-            using (var clientContext = new SecurityContext(factory, "CARoot", false, null, ApplicationProtocols.ProtocolIds.Http2overTLS))
+            using (var serverContext = new SecurityContext(factory, "CARoot", true, cert, ApplicationProtocols.ProtocolIds.Http11 | ApplicationProtocols.ProtocolIds.Http2OverTls))
+            using (var clientContext = new SecurityContext(factory, "CARoot", false, null, ApplicationProtocols.ProtocolIds.Http2OverTls))
             {
                 var loopback = new LoopbackPipeline(factory);
                 using (var server = serverContext.CreateSecureChannel(loopback.ServerChannel))
                 using (var client = clientContext.CreateSecureChannel(loopback.ClientChannel))
                 {
                     Echo(server);
-                    var proto = await client.HandShakeAsync();
-                    Assert.Equal(ApplicationProtocols.ProtocolIds.Http2overTLS, proto);
+                    var proto = await client.ShakeHandsAsync();
+                    Assert.Equal(ApplicationProtocols.ProtocolIds.Http2OverTls, proto);
                 }
             }
         }
@@ -44,16 +44,16 @@ namespace System.IO.Pipelines.Tests
         {
             using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
             using (var factory = new PipelineFactory())
-            using (var serverContext = new OpenSslSecurityContext(factory, "test", true, _certificatePath, _certificatePassword, ApplicationProtocols.ProtocolIds.Http11 | ApplicationProtocols.ProtocolIds.Http2overTLS))
-            using (var clientContext = new SecurityContext(factory, "CARoot", false, cert, ApplicationProtocols.ProtocolIds.Http2overTLS))
+            using (var serverContext = new OpenSslSecurityContext(factory, "test", true, _certificatePath, _certificatePassword, ApplicationProtocols.ProtocolIds.Http11 | ApplicationProtocols.ProtocolIds.Http2OverTls))
+            using (var clientContext = new SecurityContext(factory, "CARoot", false, cert, ApplicationProtocols.ProtocolIds.Http2OverTls))
             {
                 var loopback = new LoopbackPipeline(factory);
                 using (var server = serverContext.CreateSecureChannel(loopback.ServerChannel))
                 using (var client = clientContext.CreateSecureChannel(loopback.ClientChannel))
                 {
                     Echo(server);
-                    var proto = await client.HandShakeAsync();
-                    Assert.Equal(ApplicationProtocols.ProtocolIds.Http2overTLS, proto);
+                    var proto = await client.ShakeHandsAsync();
+                    Assert.Equal(ApplicationProtocols.ProtocolIds.Http2OverTls, proto);
                 }
             }
         }
@@ -63,14 +63,14 @@ namespace System.IO.Pipelines.Tests
         {
             using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
             using (var factory = new PipelineFactory())
-            using (var clientContext = new OpenSslSecurityContext(factory, "test", false, _certificatePath, _certificatePassword, ApplicationProtocols.ProtocolIds.Http11 | ApplicationProtocols.ProtocolIds.Http2overTLS))
-            using (var serverContext = new SecurityContext(factory, "CARoot", true, cert, ApplicationProtocols.ProtocolIds.Http2overTLS))
+            using (var clientContext = new OpenSslSecurityContext(factory, "test", false, _certificatePath, _certificatePassword, ApplicationProtocols.ProtocolIds.Http11 | ApplicationProtocols.ProtocolIds.Http2OverTls))
+            using (var serverContext = new SecurityContext(factory, "CARoot", true, cert, ApplicationProtocols.ProtocolIds.Http2OverTls))
             {
                 var loopback = new LoopbackPipeline(factory);
                 Echo(serverContext.CreateSecureChannel(loopback.ServerChannel));
                 var client = clientContext.CreateSecureChannel(loopback.ClientChannel);
-                var proto = await client.HandShakeAsync();
-                Assert.Equal(ApplicationProtocols.ProtocolIds.Http2overTLS, proto);
+                var proto = await client.ShakeHandsAsync();
+                Assert.Equal(ApplicationProtocols.ProtocolIds.Http2OverTls, proto);
             }
         }
 
@@ -118,7 +118,7 @@ namespace System.IO.Pipelines.Tests
                 using (var client = clientContext.CreateSecureChannel(loopback.ClientChannel))
                 {
                     Echo(server);
-                    await client.HandShakeAsync();
+                    await client.ShakeHandsAsync();
                     var outputBuffer = client.Output.Alloc();
                     outputBuffer.Write(Encoding.UTF8.GetBytes(_shortTestString));
                     await outputBuffer.FlushAsync();
@@ -155,7 +155,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     Echo(server);
 
-                    await client.HandShakeAsync();
+                    await client.ShakeHandsAsync();
                     var outputBuffer = client.Output.Alloc();
                     outputBuffer.Write(Encoding.UTF8.GetBytes(_shortTestString));
                     await outputBuffer.FlushAsync();
@@ -216,7 +216,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     secureServer.AuthenticateAsServerAsync(cert, false, System.Security.Authentication.SslProtocols.Tls, false);
 
-                    await client.HandShakeAsync();
+                    await client.ShakeHandsAsync();
 
                     var buff = client.Output.Alloc();
                     buff.Write(Encoding.UTF8.GetBytes(_shortTestString));
@@ -279,7 +279,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     secureServer.AuthenticateAsServerAsync(cert, false, System.Security.Authentication.SslProtocols.Tls, false);
 
-                    await client.HandShakeAsync();
+                    await client.ShakeHandsAsync();
                     var buff = client.Output.Alloc();
                     buff.Write(Encoding.UTF8.GetBytes(_shortTestString));
                     await buff.FlushAsync();
@@ -337,7 +337,7 @@ namespace System.IO.Pipelines.Tests
 
         private async Task Echo(ISecurePipeline channel)
         {
-            await channel.HandShakeAsync();
+            await channel.ShakeHandsAsync();
             try
             {
                 while (true)
