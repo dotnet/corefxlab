@@ -90,7 +90,7 @@ as parsing and encoding, having a more efficient buffer management that can
 handle managed and native memory uniformly, and providing a programming model
 that makes the result easy to use while not losing efficiency.
 
-Other components of the .NET stack (such as MVC and Serializtion) will rewire
+Other components of the .NET stack (such as MVC and Serialization) will rewire
 their implementation in order to take advantage of the efficiency gains provided
 by these new APIs.
 
