@@ -23,7 +23,7 @@ namespace System.IO.Pipelines.Networking.Tls
         public IPipelineWriter Output => _inputChannel;
         public CipherInfo CipherInfo => _contextToDispose.CipherInfo;
 
-        public Task<ApplicationProtocols.ProtocolIds> HandShakeAsync()
+        public Task<ApplicationProtocols.ProtocolIds> ShakeHandsAsync()
         {
             return _handShakeCompleted?.Task ?? DoHandShake();
         }
@@ -144,7 +144,7 @@ namespace System.IO.Pipelines.Networking.Tls
 
         private async void StartWriting()
         {
-            await HandShakeAsync();
+            await ShakeHandsAsync();
             var maxBlockSize = (SecurityContext.BlockSize - _contextToDispose.HeaderSize - _contextToDispose.TrailerSize);
             try
             {
