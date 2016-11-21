@@ -86,7 +86,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
         }
 
-        public Socket ListeningSocket { get { return _socket;} }
+        public Socket ListeningSocket => _socket;
 
         private Socket GetReusableSocket() => null; // TODO: socket pooling / re-use
 
