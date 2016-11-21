@@ -1,6 +1,6 @@
-#Memory\<T\>
+# Memory\<T\>
 
-##Introduction
+## Introduction
 
 Memory\<T\> is a type complementing
 [Span\<T\>](https://github.com/dotnet/corefxlab/blob/master/docs/Span.md). As
@@ -38,7 +38,8 @@ property returns Span\<byte\>, but the returned value does not get stored on the
 heap during asynchronous calls, but rather new values are produced from the
 Memory\<T\> value. In a sense, Memory\<T\> is a factory of Span\<T\>.
 
-##Design
+## Design
+
 A naive design of Memory\<T\> could look like the following:
 
 ```c#
@@ -80,7 +81,7 @@ _pool.Return(array); // if we return it here, we risk use-after-free bugs.
 We need a different mechanism (than stack-only restrictions) to be able to
 manage the lifetime of buffers pointed to by Memory\<T\>.
 
-###Lifetime
+### Lifetime
 
 We will use indirection, to regain control over the lifetime of buffers
 represented by Memory\<T\>:
@@ -122,7 +123,7 @@ owned.Dispose(); // but a call Dispose makes such stored Memory<T> useless
 _pool.Return(array); // // we can return it safely; calls to owned.Span will fail
 ```
 
-##Basic API Surface
+## Basic API Surface
 ```c#
 public struct Memory<T> : IEquatable<Memory<T>>, IEquatable<ReadOnlyMemory<T>> {
     public Span<T> Span { get; }
@@ -171,7 +172,7 @@ public class OwnedMemory<T> : IDisposable {
 }
 ```
 
-##Bonus Features
+## Bonus Features
 
 The design based on OwnedMemory<T> has several limitations that we might want to
 address:
@@ -188,13 +189,13 @@ address:
 The following sections describe variants of the basic design addressing these
 limitations.
 
-###Pooling OwnedMemory\<T\>
+### Pooling Owned Memory\<T\>
 TBD
 
-###Safe Dispose
+### Safe Dispose
 TBD
 
-##Issues/To-Design
+## Issues/To-Design
 
 1. Should OwnedMemory\<T\>.Reserve be virtual and allow mutating ReadOnlyMemory?
    See
