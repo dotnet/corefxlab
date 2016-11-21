@@ -2,7 +2,7 @@
 
 ##Introduction
 
-Memory\<T\> is a type complementing [Span\<T\>](https://github.com/dotnet/corefxlab/blob/master/docs/Span.md). As discussed in its design document, Span\<T\> is a stack-only type. The stack-only nature of Span\<T\> makes it unsuitable for many scenarios that require storing references to buffers (represented with Span\<T\>) on the heap, e.g. for routines doing asynchronous calls. 
+Memory\<T\> is a type complementing [Span\<T\>](https://github.com/dotnet/corefxlab/blob/master/docs/Span.md). As discussed in its design document, Span\<T\> is a stack-only type. The stack-only nature of Span\<T\> makes it unsuitable for many scenarios that require storing references to buffers (represented with Span\<T\>) on the heap, e.g. for routines doing asynchronous calls.
 
 ```c#
 async Task DoSomethingAsync(Span<byte> buffer) {
@@ -29,7 +29,7 @@ public struct Memory<T> {
     T[]   _array;
     int   _offset;
     int   _length;
-    
+
     public Span<T> Span => _ptr==null?new Span<T>(_array, _offset, _length):new Span<T>(_ptr, _length);
 }
 ```
@@ -54,7 +54,7 @@ We will use indirection, to regain control over the lifetime of buffers represen
 ```c#
 public struct Memory<T> {
     OwnedMemory<T> _owned;
-    
+
     public Memory(OwnedMemory<T> owned) { ... }
     public Span<T> Span => _owned.Span;
 }
@@ -64,9 +64,9 @@ public class OwnedMemory<T> {
     T[]   _array;
     int   _offset;
     int   _length;
-    
+
     public Span<T> Span => _ptr==null?new Span<T>(_array, _offset, _length):new Span<T>(_ptr, _length);
-    
+
     public void Dispose() {
         _ptr = null;
         _array = null;
@@ -93,14 +93,14 @@ public struct Memory<T> : IEquatable<Memory<T>>, IEquatable<ReadOnlyMemory<T>> {
     public Memory<T> Slice(int index);
     public Memory<T> Slice(int index, int length);
     public static implicit operator ReadOnlyMemory<T> (Memory<T> memory);
-            
+
     public void CopyTo(Memory<T> memory);
     public void CopyTo(Span<T> span);
 
     public T[] ToArray();
-        
+
     public static Memory<T> Empty { get; }
-    public bool IsEmpty { get; }        
+    public bool IsEmpty { get; }
 }
 public struct ReadOnlyMemory<T> : IEquatable<Memory<T>>, IEquatable<ReadOnlyMemory<T>> {
     public ReadOnlySpan<T> Span { get; }
@@ -108,25 +108,25 @@ public struct ReadOnlyMemory<T> : IEquatable<Memory<T>>, IEquatable<ReadOnlyMemo
 
     public ReadOnlyMemory<T> Slice(int index);
     public ReadOnlyMemory<T> Slice(int index, int length);
-        
+
     public void CopyTo(Memory<T> memory);
     public void CopyTo(Span<T> span);
 
     public T[] ToArray();
-        
+
     public static ReadOnlyMemory<T> Empty { get; }
-    public bool IsEmpty { get; }        
+    public bool IsEmpty { get; }
 }
 public class OwnedMemory<T> : IDisposable {
     protected OwnedMemory(T[] array, int arrayOffset, int length, IntPtr pointer=null);
-     
+
     public Memory<T> Memory { get; }
     public Span<T> Span { get; }
-    
+
     public void Dispose();
     public bool IsDisposed { get; }
-    
-    public int Length { get; }        
+
+    public int Length { get; }
     protected T[] Array { get; }
     protected int Offset { get; }
     protected IntPtr Pointer { get; }
