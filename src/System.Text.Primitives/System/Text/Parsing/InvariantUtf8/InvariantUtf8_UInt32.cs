@@ -12,8 +12,7 @@ namespace System.Text
         public static partial class InvariantUtf8
         {
             static int UINT_OVERFLOW_LENGTH = 10;
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            
             public unsafe static bool TryParseUInt32(byte* text, int length, out uint value)
             {
                 value = default(uint);
@@ -22,10 +21,18 @@ namespace System.Text
                     return false;
                 }
 
+                // Parse the first digit separately. If invalid here, we need to return false.
+                uint firstDigit = text[0] - 48u; // '0'
+                if (firstDigit > 9)
+                {
+                    return false;
+                }
+                value = firstDigit;
+
                 if (length < UINT_OVERFLOW_LENGTH)
                 {
                     // Length is less than OVERFLOW_LENGTH; overflow is not possible
-                    for (int index = 0; index < length; index++)
+                    for (int index = 1; index < length; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -39,7 +46,7 @@ namespace System.Text
                 {
                     // Length is greater than OVERFLOW_LENGTH; overflow is only possible after OVERFLOW_LENGTH
                     // digits. There may be no overflow after OVERFLOW_LENGTH if there are leading zeroes.
-                    for (int index = 0; index < UINT_OVERFLOW_LENGTH - 1; index++)
+                    for (int index = 1; index < UINT_OVERFLOW_LENGTH - 1; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -71,7 +78,6 @@ namespace System.Text
                 return true;
             }
             
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public unsafe static bool TryParseUInt32(byte* text, int length, out uint value, out int bytesConsumed)
             {
                 value = default(uint);
@@ -81,10 +87,19 @@ namespace System.Text
                     return false;
                 }
 
+                // Parse the first digit separately. If invalid here, we need to return false.
+                uint firstDigit = text[0] - 48u; // '0'
+                if (firstDigit > 9)
+                {
+                    bytesConsumed = 0;
+                    return false;
+                }
+                value = firstDigit;
+
                 if (length < UINT_OVERFLOW_LENGTH)
                 {
                     // Length is less than OVERFLOW_LENGTH; overflow is not possible
-                    for (int index = 0; index < length; index++)
+                    for (int index = 1; index < length; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -99,7 +114,7 @@ namespace System.Text
                 {
                     // Length is greater than OVERFLOW_LENGTH; overflow is only possible after OVERFLOW_LENGTH
                     // digits. There may be no overflow after OVERFLOW_LENGTH if there are leading zeroes.
-                    for (int index = 0; index < UINT_OVERFLOW_LENGTH - 1; index++)
+                    for (int index = 1; index < UINT_OVERFLOW_LENGTH - 1; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
