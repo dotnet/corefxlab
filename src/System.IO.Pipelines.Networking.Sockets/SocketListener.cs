@@ -86,6 +86,8 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
         }
 
+        public EndPoint LocalEndPoint => _socket == null ? new IPEndPoint(IPAddress.None, 0) : _socket.LocalEndPoint;
+
         private Socket GetReusableSocket() => null; // TODO: socket pooling / re-use
 
         private void BeginAccept(SocketAsyncEventArgs args)
