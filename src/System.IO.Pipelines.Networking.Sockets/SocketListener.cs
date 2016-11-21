@@ -14,7 +14,7 @@ namespace System.IO.Pipelines.Networking.Sockets
     public class SocketListener : IDisposable
     {
         private readonly bool _ownsFactory;
-        public Socket _socket;
+        private Socket _socket;
         private Socket Socket => _socket;
         private PipelineFactory _factory;
         private PipelineFactory PipelineFactory => _factory;
@@ -85,6 +85,8 @@ namespace System.IO.Pipelines.Networking.Sockets
                 _socket = null;
             }
         }
+
+        public Socket ListeningSocket { get { return _socket;} }
 
         private Socket GetReusableSocket() => null; // TODO: socket pooling / re-use
 
