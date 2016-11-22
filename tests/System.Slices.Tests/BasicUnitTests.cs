@@ -121,13 +121,13 @@ namespace System.Slices.Tests
         [Fact]
         public void ByteSpanCtorWithRangeThrowsArgumentExceptionOnNull()
         {
-            Assert.Throws<ArgumentException>(() => { Span<byte> span = new Span<byte>(null, 0, 0); });
+            Assert.Throws<ArgumentNullException>(() => { Span<byte> span = new Span<byte>(null, 0, 0); });
         }
 
         [Fact]
         public void ByteReadOnlySpanCtorWithRangeThrowsArgumentExceptionOnNull()
         {
-            Assert.Throws<ArgumentException>(() => { ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(null, 0, 0); });
+            Assert.Throws<ArgumentNullException>(() => { ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(null, 0, 0); });
         }
 
         [Theory]
@@ -274,21 +274,21 @@ namespace System.Slices.Tests
         public void CovariantSlicesNotSupported1()
         {
             object[] array = new string[10];
-            Assert.Throws<ArgumentException>(() => { var slice = new Span<object>(array); });
+            Assert.Throws<ArrayTypeMismatchException>(() => { var slice = new Span<object>(array); });
         }
 
         [Fact]
         public void CovariantSlicesNotSupported2()
         {
             object[] array = new string[10];
-            Assert.Throws<ArgumentException>(() => { var slice = array.Slice(0); });
+            Assert.Throws<ArrayTypeMismatchException>(() => { var slice = array.Slice(0); });
         }
 
         [Fact]
         public void CovariantSlicesNotSupported3()
         {
             object[] array = new string[10];
-            Assert.Throws<ArgumentException>(() => { var slice = new Span<object>(array, 0, 10); });
+            Assert.Throws<ArrayTypeMismatchException>(() => { var slice = new Span<object>(array, 0, 10); });
         }
     }
 }

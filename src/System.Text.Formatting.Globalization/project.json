@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "NETStandard.Library": "1.6.0",
+    "System.Memory": "4.4.0-beta-24721-02",
     "System.Slices": { "target": "project" },
     "System.Text.Formatting": { "target": "project" },
     "System.Text.Utf8": { "target": "project" }

@@ -32,18 +32,9 @@ public class Tests
                 slice = ints.Slice();
             }
             Assert.Equal(ints.Length, slice.Length);
-            // Now try out two ways of walking the slice's contents:
             for (int j = 0; j < ints.Length; j++)
             {
                 Assert.Equal(ints[j], slice[j]);
-            }
-            {
-                int j = 0;
-                foreach (var x in slice)
-                {
-                    Assert.Equal(ints[j], x);
-                    j++;
-                }
             }
         }
     }
@@ -66,18 +57,9 @@ public class Tests
                 slice = ints.Slice();
             }
             Assert.Equal(ints.Length, slice.Length);
-            // Now try out two ways of walking the slice's contents:
             for (int j = 0; j < ints.Length; j++)
             {
                 Assert.Equal(ints[j], slice[j]);
-            }
-            {
-                int j = 0;
-                foreach (var x in slice)
-                {
-                    Assert.Equal(ints[j], x);
-                    j++;
-                }
             }
         }
     }
@@ -100,18 +82,9 @@ public class Tests
         ReadOnlySpan<char> slice = str.Slice();
         Assert.Equal(str.Length, slice.Length);
 
-        // Now try out two ways of walking the slice's contents:
         for (int j = 0; j < str.Length; j++)
         {
             Assert.Equal(str[j], slice[j]);
-        }
-        {
-            int j = 0;
-            foreach (var x in slice)
-            {
-                Assert.Equal(str[j], x);
-                j++;
-            }
         }
     }
 
@@ -125,18 +98,9 @@ public class Tests
             Span<byte> slice = new Span<byte>(buffer, 256);
             Assert.Equal(256, slice.Length);
 
-            // Now try out two ways of walking the slice's contents:
             for (int j = 0; j < slice.Length; j++)
             {
                 Assert.Equal(buffer[j], slice[j]);
-            }
-            {
-                int j = 0;
-                foreach (var x in slice)
-                {
-                    Assert.Equal(buffer[j], x);
-                    j++;
-                }
             }
         }
     }
@@ -151,18 +115,9 @@ public class Tests
             ReadOnlySpan<byte> slice = new ReadOnlySpan<byte>(buffer, 256);
             Assert.Equal(256, slice.Length);
 
-            // Now try out two ways of walking the slice's contents:
             for (int j = 0; j < slice.Length; j++)
             {
                 Assert.Equal(buffer[j], slice[j]);
-            }
-            {
-                int j = 0;
-                foreach (var x in slice)
-                {
-                    Assert.Equal(buffer[j], x);
-                    j++;
-                }
             }
         }
     }

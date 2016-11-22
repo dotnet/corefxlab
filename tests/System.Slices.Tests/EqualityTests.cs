@@ -22,7 +22,7 @@ namespace System.Slices.Tests
                 // we are not using Assert.Throw in order to not catch span in lambda/clojure
                 Assert.True(false, "Expected exception was not thrown");
             }
-            catch (InvalidOperationException) { }
+            catch (NotSupportedException) { }
 
             var readOnlySpan = ReadOnlySpan<byte>.Empty;
 
@@ -31,7 +31,7 @@ namespace System.Slices.Tests
                 readOnlySpan.Equals((object)readOnlySpan);
                 Assert.True(false, "Expected exception was not thrown");
             }
-            catch (InvalidOperationException) { }
+            catch (NotSupportedException) { }
         }
 
         [Theory]
@@ -133,11 +133,6 @@ namespace System.Slices.Tests
             Assert.False(impSpanArray != impReadOnlySpanArray);
             Assert.True(bytes == impReadOnlySpanArray);
             Assert.False(bytes != impReadOnlySpanArray);
-
-            Assert.True(span.Equals(bytes));
-            Assert.True(span.Equals(readOnlySpan));
-            Assert.True(readOnlySpan.Equals(bytes));
-            Assert.True(readOnlySpan.Equals(span));
         }
 
         [Theory]
@@ -162,13 +157,6 @@ namespace System.Slices.Tests
             Assert.False(span != impReadOnlySpan);
             Assert.True(readOnlySpan == impReadOnlySpan);
             Assert.False(readOnlySpan != impReadOnlySpan);
-
-            Assert.True(span.Equals(readOnlySpan));
-            Assert.True(readOnlySpan.Equals(span));
-            Assert.True(span.Equals(impReadOnlySpan));
-            Assert.True(readOnlySpan.Equals(impReadOnlySpan));
-            Assert.True(impReadOnlySpan.Equals(readOnlySpan));
-            Assert.True(impReadOnlySpan.Equals(span));
         }
 
         // ref is used just for the structCopy scenario, otherwise it would always be copy
@@ -180,8 +168,6 @@ namespace System.Slices.Tests
             Assert.True(pointingToSameMemory == span);
             Assert.False(span != pointingToSameMemory);
             Assert.False(pointingToSameMemory != span);
-            Assert.True(span.Equals(pointingToSameMemory));
-            Assert.Equal(span.GetHashCode(), pointingToSameMemory.GetHashCode());
 
             Assert.True(span.SequenceEqual(pointingToSameMemory));
             Assert.True(pointingToSameMemory.SequenceEqual(span));
@@ -196,8 +182,6 @@ namespace System.Slices.Tests
             Assert.True(pointingToSameMemory == span);
             Assert.False(span != pointingToSameMemory);
             Assert.False(pointingToSameMemory != span);
-            Assert.True(span.Equals(pointingToSameMemory));
-            Assert.Equal(span.GetHashCode(), pointingToSameMemory.GetHashCode());
 
             Assert.True(span.SequenceEqual(pointingToSameMemory));
             Assert.True(pointingToSameMemory.SequenceEqual(span));
@@ -245,8 +229,6 @@ namespace System.Slices.Tests
             Assert.True(ofSameValues != span);
 
             Assert.False(span.ReferenceEquals(ofSameValues));
-            Assert.False(span.Equals(ofSameValues));
-            Assert.NotEqual(span.GetHashCode(), ofSameValues.GetHashCode());
         }
 
         [Theory]
@@ -269,8 +251,6 @@ namespace System.Slices.Tests
             Assert.True(ofSameValues != span);
 
             Assert.False(span.ReferenceEquals(ofSameValues));
-            Assert.False(span.Equals(ofSameValues));
-            Assert.NotEqual(span.GetHashCode(), ofSameValues.GetHashCode());
         }
 
         [Theory]
@@ -293,8 +273,6 @@ namespace System.Slices.Tests
             Assert.True(ofDifferentValues != span);
 
             Assert.False(span.ReferenceEquals(ofDifferentValues));
-            Assert.False(span.Equals(ofDifferentValues));
-            Assert.False(span.GetHashCode() == ofDifferentValues.GetHashCode());
         }
 
         [Theory]
@@ -317,8 +295,6 @@ namespace System.Slices.Tests
             Assert.True(ofDifferentValues != span);
 
             Assert.False(span.ReferenceEquals(ofDifferentValues));
-            Assert.False(span.Equals(ofDifferentValues));
-            Assert.False(span.GetHashCode() == ofDifferentValues.GetHashCode());
         }
 
         [Theory]
@@ -332,8 +308,6 @@ namespace System.Slices.Tests
 
             Assert.True(span.BlockEquals(ofSameValuesOfDifferentType));
             Assert.True(ofSameValuesOfDifferentType.BlockEquals(span));
-
-            Assert.NotEqual(span.GetHashCode(), ofSameValuesOfDifferentType.GetHashCode());
         }
 
         [Theory]
@@ -347,8 +321,6 @@ namespace System.Slices.Tests
 
             Assert.True(span.BlockEquals(ofSameValuesOfDifferentType));
             Assert.True(ofSameValuesOfDifferentType.BlockEquals(span));
-
-            Assert.NotEqual(span.GetHashCode(), ofSameValuesOfDifferentType.GetHashCode());
         }
 
         [Fact]
