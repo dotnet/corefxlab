@@ -10,11 +10,10 @@ namespace System.Text
     {
         public static partial class InvariantUtf8
         {
-            #region static
-            const int s_uint32OverflowLength = 10;
-            const int s_uint32OverflowLengthHex = 8;
+            const int s_UInt32OverflowLength = 10;
+            const int s_UInt32OverflowLengthHex = 8;
 
-            static readonly byte[] s_hexLookup =
+            static readonly byte[] s_HexLookup =
             {
                 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 15
                 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 31
@@ -33,7 +32,6 @@ namespace System.Text
                 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 239
                 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF              // 255
             };
-            #endregion
             
             public unsafe static bool TryParseUInt32(byte* text, int length, out uint value)
             {
@@ -52,7 +50,7 @@ namespace System.Text
                 }
                 value = firstDigit;
 
-                if (length < s_uint32OverflowLength)
+                if (length < s_UInt32OverflowLength)
                 {
                     // Length is less than OVERFLOW_LENGTH; overflow is not possible
                     for (int index = 1; index < length; index++)
@@ -69,7 +67,7 @@ namespace System.Text
                 {
                     // Length is greater than OVERFLOW_LENGTH; overflow is only possible after OVERFLOW_LENGTH
                     // digits. There may be no overflow after OVERFLOW_LENGTH if there are leading zeroes.
-                    for (int index = 1; index < s_uint32OverflowLength - 1; index++)
+                    for (int index = 1; index < s_UInt32OverflowLength - 1; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -78,7 +76,7 @@ namespace System.Text
                         }
                         value = value * 10 + nextDigit;
                     }
-                    for (int index = s_uint32OverflowLength - 1; index < length; index++)
+                    for (int index = s_UInt32OverflowLength - 1; index < length; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -120,7 +118,7 @@ namespace System.Text
                 }
                 value = firstDigit;
 
-                if (length < s_uint32OverflowLength)
+                if (length < s_UInt32OverflowLength)
                 {
                     // Length is less than OVERFLOW_LENGTH; overflow is not possible
                     for (int index = 1; index < length; index++)
@@ -138,7 +136,7 @@ namespace System.Text
                 {
                     // Length is greater than OVERFLOW_LENGTH; overflow is only possible after OVERFLOW_LENGTH
                     // digits. There may be no overflow after OVERFLOW_LENGTH if there are leading zeroes.
-                    for (int index = 1; index < s_uint32OverflowLength - 1; index++)
+                    for (int index = 1; index < s_UInt32OverflowLength - 1; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -148,7 +146,7 @@ namespace System.Text
                         }
                         value = value * 10 + nextDigit;
                     }
-                    for (int index = s_uint32OverflowLength - 1; index < length; index++)
+                    for (int index = s_UInt32OverflowLength - 1; index < length; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -190,7 +188,7 @@ namespace System.Text
                 }
                 value = firstDigit;
 
-                if (text.Length < s_uint32OverflowLength)
+                if (text.Length < s_UInt32OverflowLength)
                 {
                     // Length is less than OVERFLOW_LENGTH; overflow is not possible
                     for (int index = 1; index < text.Length; index++)
@@ -207,7 +205,7 @@ namespace System.Text
                 {
                     // Length is greater than OVERFLOW_LENGTH; overflow is only possible after OVERFLOW_LENGTH
                     // digits. There may be no overflow after OVERFLOW_LENGTH if there are leading zeroes.
-                    for (int index = 1; index < s_uint32OverflowLength - 1; index++)
+                    for (int index = 1; index < s_UInt32OverflowLength - 1; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -216,7 +214,7 @@ namespace System.Text
                         }
                         value = value * 10 + nextDigit;
                     }
-                    for (int index = s_uint32OverflowLength - 1; index < text.Length; index++)
+                    for (int index = s_UInt32OverflowLength - 1; index < text.Length; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -257,7 +255,7 @@ namespace System.Text
                 }
                 value = firstDigit;
 
-                if (text.Length < s_uint32OverflowLength)
+                if (text.Length < s_UInt32OverflowLength)
                 {
                     // Length is less than OVERFLOW_LENGTH; overflow is not possible
                     for (int index = 1; index < text.Length; index++)
@@ -275,7 +273,7 @@ namespace System.Text
                 {
                     // Length is greater than OVERFLOW_LENGTH; overflow is only possible after OVERFLOW_LENGTH
                     // digits. There may be no overflow after OVERFLOW_LENGTH if there are leading zeroes.
-                    for (int index = 1; index < s_uint32OverflowLength - 1; index++)
+                    for (int index = 1; index < s_UInt32OverflowLength - 1; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -285,7 +283,7 @@ namespace System.Text
                         }
                         value = value * 10 + nextDigit;
                     }
-                    for (int index = s_uint32OverflowLength - 1; index < text.Length; index++)
+                    for (int index = s_UInt32OverflowLength - 1; index < text.Length; index++)
                     {
                         uint nextDigit = text[index] - 48u; // '0'
                         if (nextDigit > 9)
@@ -327,7 +325,7 @@ namespace System.Text
                     }
 
                     // Cache s_hexLookup in order to avoid static constructor checks
-                    byte[] hexLookup = s_hexLookup;
+                    byte[] hexLookup = s_HexLookup;
 
                     // Parse the first digit separately. If invalid here, we need to return false.
                     byte firstByte = text[0];
@@ -339,7 +337,7 @@ namespace System.Text
                     }
                     value = (uint)firstDigit;
 
-                    if (length <= s_uint32OverflowLengthHex)
+                    if (length <= s_UInt32OverflowLengthHex)
                     {
                         // Length is less than or equal to OVERFLOW_LENGTH; overflow is not possible
                         for (int index = 1; index < length; index++)
@@ -357,7 +355,7 @@ namespace System.Text
                     {
                         // Length is greater than OVERFLOW_LENGTH; overflow is only possible after OVERFLOW_LENGTH
                         // digits. There may be no overflow after OVERFLOW_LENGTH if there are leading zeroes.
-                        for (int index = 1; index < s_uint32OverflowLengthHex; index++)
+                        for (int index = 1; index < s_UInt32OverflowLengthHex; index++)
                         {
                             byte nextByte = text[index];
                             int nextDigit = hexLookup[nextByte];
@@ -367,7 +365,7 @@ namespace System.Text
                             }
                             value = value * 0x10 + (uint)nextDigit;
                         }
-                        for (int index = s_uint32OverflowLengthHex; index < length; index++)
+                        for (int index = s_UInt32OverflowLengthHex; index < length; index++)
                         {
                             byte nextByte = text[index];
                             int nextDigit = hexLookup[nextByte];
@@ -398,7 +396,7 @@ namespace System.Text
                     }
 
                     // Cache s_hexLookup in order to avoid static constructor checks
-                    byte[] hexLookup = s_hexLookup;
+                    byte[] hexLookup = s_HexLookup;
 
                     // Parse the first digit separately. If invalid here, we need to return false.
                     byte firstByte = text[0];
@@ -411,7 +409,7 @@ namespace System.Text
                     }
                     value = (uint)firstDigit;
 
-                    if (length <= s_uint32OverflowLengthHex)
+                    if (length <= s_UInt32OverflowLengthHex)
                     {
                         // Length is less than or equal to OVERFLOW_LENGTH; overflow is not possible
                         for (int index = 1; index < length; index++)
@@ -430,7 +428,7 @@ namespace System.Text
                     {
                         // Length is greater than OVERFLOW_LENGTH; overflow is only possible after OVERFLOW_LENGTH
                         // digits. There may be no overflow after OVERFLOW_LENGTH if there are leading zeroes.
-                        for (int index = 1; index < s_uint32OverflowLengthHex; index++)
+                        for (int index = 1; index < s_UInt32OverflowLengthHex; index++)
                         {
                             byte nextByte = text[index];
                             int nextDigit = hexLookup[nextByte];
@@ -441,7 +439,7 @@ namespace System.Text
                             }
                             value = value * 0x10 + (uint)nextDigit;
                         }
-                        for (int index = s_uint32OverflowLengthHex; index < length; index++)
+                        for (int index = s_UInt32OverflowLengthHex; index < length; index++)
                         {
                             byte nextByte = text[index];
                             int nextDigit = hexLookup[nextByte];
@@ -474,7 +472,7 @@ namespace System.Text
                     }
 
                     // Cache s_hexLookup in order to avoid static constructor checks
-                    byte[] hexLookup = s_hexLookup;
+                    byte[] hexLookup = s_HexLookup;
 
                     // Parse the first digit separately. If invalid here, we need to return false.
                     byte firstByte = text[0];
@@ -486,7 +484,7 @@ namespace System.Text
                     }
                     value = (uint)firstDigit;
 
-                    if (text.Length <= s_uint32OverflowLengthHex)
+                    if (text.Length <= s_UInt32OverflowLengthHex)
                     {
                         // Length is less than or equal to OVERFLOW_LENGTH; overflow is not possible
                         for (int index = 1; index < text.Length; index++)
@@ -504,7 +502,7 @@ namespace System.Text
                     {
                         // Length is greater than OVERFLOW_LENGTH; overflow is only possible after OVERFLOW_LENGTH
                         // digits. There may be no overflow after OVERFLOW_LENGTH if there are leading zeroes.
-                        for (int index = 1; index < s_uint32OverflowLengthHex; index++)
+                        for (int index = 1; index < s_UInt32OverflowLengthHex; index++)
                         {
                             byte nextByte = text[index];
                             int nextDigit = hexLookup[nextByte];
@@ -514,7 +512,7 @@ namespace System.Text
                             }
                             value = value * 0x10 + (uint)nextDigit;
                         }
-                        for (int index = s_uint32OverflowLengthHex; index < text.Length; index++)
+                        for (int index = s_UInt32OverflowLengthHex; index < text.Length; index++)
                         {
                             byte nextByte = text[index];
                             int nextDigit = hexLookup[nextByte];
@@ -545,7 +543,7 @@ namespace System.Text
                     }
 
                     // Cache s_hexLookup in order to avoid static constructor checks
-                    byte[] hexLookup = s_hexLookup;
+                    byte[] hexLookup = s_HexLookup;
 
                     // Parse the first digit separately. If invalid here, we need to return false.
                     byte firstByte = text[0];
@@ -558,7 +556,7 @@ namespace System.Text
                     }
                     value = (uint)firstDigit;
 
-                    if (text.Length <= s_uint32OverflowLengthHex)
+                    if (text.Length <= s_UInt32OverflowLengthHex)
                     {
                         // Length is less than or equal to OVERFLOW_LENGTH; overflow is not possible
                         for (int index = 1; index < text.Length; index++)
@@ -577,7 +575,7 @@ namespace System.Text
                     {
                         // Length is greater than OVERFLOW_LENGTH; overflow is only possible after OVERFLOW_LENGTH
                         // digits. There may be no overflow after OVERFLOW_LENGTH if there are leading zeroes.
-                        for (int index = 1; index < s_uint32OverflowLengthHex; index++)
+                        for (int index = 1; index < s_UInt32OverflowLengthHex; index++)
                         {
                             byte nextByte = text[index];
                             int nextDigit = hexLookup[nextByte];
@@ -588,7 +586,7 @@ namespace System.Text
                             }
                             value = value * 0x10 + (uint)nextDigit;
                         }
-                        for (int index = s_uint32OverflowLengthHex; index < text.Length; index++)
+                        for (int index = s_UInt32OverflowLengthHex; index < text.Length; index++)
                         {
                             byte nextByte = text[index];
                             int nextDigit = hexLookup[nextByte];
