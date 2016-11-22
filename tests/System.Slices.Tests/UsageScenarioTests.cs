@@ -40,40 +40,24 @@ namespace System.Slices.Tests
             Assert.Equal(array.Length, span.Length);
 
             Assert.NotSame(array, span.ToArray());
-            Assert.True(span.Equals(array));
 
-            ReadOnlySpan<byte>.Enumerator it = span.GetEnumerator();
             for (int i = 0; i < span.Length; i++)
             {
-                Assert.True(it.MoveNext());
-                Assert.Equal(array[i], it.Current);
                 Assert.Equal(array[i], span.Slice(i).Read<byte>());
                 Assert.Equal(array[i], span.Slice(i).Read<MyByte>().Value);
 
                 array[i] = unchecked((byte)(array[i] + 1));
-                Assert.Equal(array[i], it.Current);
                 Assert.Equal(array[i], span.Slice(i).Read<byte>());
                 Assert.Equal(array[i], span.Slice(i).Read<MyByte>().Value);
 
                 span.Slice(i).Write<byte>(unchecked((byte)(array[i] + 1)));
-                Assert.Equal(array[i], it.Current);
                 Assert.Equal(array[i], span.Slice(i).Read<byte>());
                 Assert.Equal(array[i], span.Slice(i).Read<MyByte>().Value);
 
                 span.Slice(i).Write<MyByte>(unchecked(new MyByte((byte)(array[i] + 1))));
-                Assert.Equal(array[i], it.Current);
                 Assert.Equal(array[i], span.Slice(i).Read<byte>());
                 Assert.Equal(array[i], span.Slice(i).Read<MyByte>().Value);
             }
-            Assert.False(it.MoveNext());
-
-            it.Reset();
-            for (int i = 0; i < span.Length; i++)
-            {
-                Assert.True(it.MoveNext());
-                Assert.Equal(array[i], it.Current);
-            }
-            Assert.False(it.MoveNext());
         }
 
         [Theory]
@@ -89,30 +73,16 @@ namespace System.Slices.Tests
             Assert.Equal(array.Length, span.Length);
 
             Assert.NotSame(array, span.ToArray());
-            Assert.True(span.Equals(array));
 
-            ReadOnlySpan<byte>.Enumerator it = span.GetEnumerator();
             for (int i = 0; i < span.Length; i++)
             {
-                Assert.True(it.MoveNext());
-                Assert.Equal(array[i], it.Current);
                 Assert.Equal(array[i], span.Slice(i).Read<byte>());
                 Assert.Equal(array[i], span.Slice(i).Read<MyByte>().Value);
 
                 array[i] = unchecked((byte)(array[i] + 1));
-                Assert.Equal(array[i], it.Current);
                 Assert.Equal(array[i], span.Slice(i).Read<byte>());
                 Assert.Equal(array[i], span.Slice(i).Read<MyByte>().Value);
             }
-            Assert.False(it.MoveNext());
-
-            it.Reset();
-            for (int i = 0; i < span.Length; i++)
-            {
-                Assert.True(it.MoveNext());
-                Assert.Equal(array[i], it.Current);
-            }
-            Assert.False(it.MoveNext());
         }
 
         [Theory]

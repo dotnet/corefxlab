@@ -16,67 +16,19 @@ namespace System.Runtime
         internal static bool MemCmp<[Primitive]T>(Span<T> first, Span<T> second)
             where T : struct
         {
-            if (first.Length != second.Length)
+            int length = first.Length;
+            if (length != second.Length)
             {
                 return false;
             }
 
-            unsafe
+            // @todo: Needs pinning support to be added to Span to restore the original compare strategy.
+            for (int i = 0; i < length; i++)
             {
-                // prevent GC from moving memory
-                var firstPinnedHandle = GCHandle.Alloc(first.Object, GCHandleType.Pinned);
-                var secondPinnedHandle = GCHandle.Alloc(second.Object, GCHandleType.Pinned);
-
-                try
-                {
-                    byte* firstPointer = (byte*)UnsafeUtilities.ComputeAddress(first.Object, first.Offset).ToPointer();
-                    byte* secondPointer = (byte*)UnsafeUtilities.ComputeAddress(second.Object, second.Offset).ToPointer();
-
-                    int step = sizeof(void*) * 5;
-                    ulong totalBytesCount = (ulong)first.Length * (ulong)Unsafe.SizeOf<T>();
-                    byte* firstPointerLimit = firstPointer + (totalBytesCount - (ulong)step);
-
-                    if (totalBytesCount > (ulong)step)
-                    {
-                        while (firstPointer < firstPointerLimit)
-                        {   // IMPORTANT: in order to get HUGE benefits of loop unrolling on x86 we use break instead of return
-                            if (*((void**)firstPointer + 0) != *((void**)secondPointer + 0)) break;
-                            if (*((void**)firstPointer + 1) != *((void**)secondPointer + 1)) break;
-                            if (*((void**)firstPointer + 2) != *((void**)secondPointer + 2)) break;
-                            if (*((void**)firstPointer + 3) != *((void**)secondPointer + 3)) break;
-                            if (*((void**)firstPointer + 4) != *((void**)secondPointer + 4)) break;
-
-                            firstPointer += step;
-                            secondPointer += step;
-                        }
-                        if (firstPointer < firstPointerLimit) // the upper loop ended with break;
-                        {
-                            return false;
-                        }
-                    }
-                    firstPointerLimit += step; // lets check the remaining bytes
-                    while (firstPointer < firstPointerLimit)
-                    {
-                        if (*firstPointer != *secondPointer) break;
-
-                        ++firstPointer;
-                        ++secondPointer;
-                    }
-
-                    return firstPointer == firstPointerLimit;
-                }
-                finally
-                {
-                    if (firstPinnedHandle.IsAllocated)
-                    {
-                        firstPinnedHandle.Free();
-                    }
-                    if (secondPinnedHandle.IsAllocated)
-                    {
-                        secondPinnedHandle.Free();
-                    }
-                }
+                if (!(first[i].Equals(second[i])))
+                    return false;
             }
+            return true;
         }
 
         /// <summary>
@@ -86,67 +38,19 @@ namespace System.Runtime
         internal static bool MemCmp<[Primitive]T>(ReadOnlySpan<T> first, ReadOnlySpan<T> second)
             where T : struct
         {
-            if (first.Length != second.Length)
+            int length = first.Length;
+            if (length != second.Length)
             {
                 return false;
             }
 
-            unsafe
+            // @todo: Needs pinning support to be added to Span to restore the original compare strategy.
+            for (int i = 0; i < length; i++)
             {
-                // prevent GC from moving memory
-                var firstPinnedHandle = GCHandle.Alloc(first.Object, GCHandleType.Pinned);
-                var secondPinnedHandle = GCHandle.Alloc(second.Object, GCHandleType.Pinned);
-
-                try
-                {
-                    byte* firstPointer = (byte*)UnsafeUtilities.ComputeAddress(first.Object, first.Offset).ToPointer();
-                    byte* secondPointer = (byte*)UnsafeUtilities.ComputeAddress(second.Object, second.Offset).ToPointer();
-
-                    int step = sizeof(void*) * 5;
-                    ulong totalBytesCount = (ulong)first.Length * (ulong)Unsafe.SizeOf<T>();
-                    byte* firstPointerLimit = firstPointer + (totalBytesCount - (ulong)step);
-
-                    if (totalBytesCount > (ulong)step)
-                    {
-                        while (firstPointer < firstPointerLimit)
-                        {   // IMPORTANT: in order to get HUGE benefits of loop unrolling on x86 we use break instead of return
-                            if (*((void**)firstPointer + 0) != *((void**)secondPointer + 0)) break;
-                            if (*((void**)firstPointer + 1) != *((void**)secondPointer + 1)) break;
-                            if (*((void**)firstPointer + 2) != *((void**)secondPointer + 2)) break;
-                            if (*((void**)firstPointer + 3) != *((void**)secondPointer + 3)) break;
-                            if (*((void**)firstPointer + 4) != *((void**)secondPointer + 4)) break;
-
-                            firstPointer += step;
-                            secondPointer += step;
-                        }
-                        if (firstPointer < firstPointerLimit) // the upper loop ended with break;
-                        {
-                            return false;
-                        }
-                    }
-                    firstPointerLimit += step; // lets check the remaining bytes
-                    while (firstPointer < firstPointerLimit)
-                    {
-                        if (*firstPointer != *secondPointer) break;
-
-                        ++firstPointer;
-                        ++secondPointer;
-                    }
-
-                    return firstPointer == firstPointerLimit;
-                }
-                finally
-                {
-                    if (firstPinnedHandle.IsAllocated)
-                    {
-                        firstPinnedHandle.Free();
-                    }
-                    if (secondPinnedHandle.IsAllocated)
-                    {
-                        secondPinnedHandle.Free();
-                    }
-                }
+                if (!(first[i].Equals(second[i])))
+                    return false;
             }
+            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

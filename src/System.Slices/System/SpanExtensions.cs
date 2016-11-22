@@ -71,74 +71,6 @@ namespace System
             return new Span<T>(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
         }
 
-        /// <summary>
-        /// Creates a new slice over the portion of the target string.
-        /// </summary>
-        /// <param name="str">The target string.</param>
-        /// <exception cref="System.ArgumentException">
-        /// Thrown if the 'str' parameter is null.
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<char> Slice(this string str)
-        {
-            Contract.Requires(str != null);
-            return new ReadOnlySpan<char>(
-                str,
-                new UIntPtr((uint)SpanHelpers.OffsetToStringData),
-                str.Length
-            );
-        }
-
-        /// <summary>
-        /// Creates a new slice over the portion of the target string beginning
-        /// at 'start' index.
-        /// </summary>
-        /// <param name="str">The target string.</param>
-        /// <param name="start">The index at which to begin the slice.</param>
-        /// <exception cref="System.ArgumentException">
-        /// Thrown if the 'str' parameter is null.
-        /// </exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<char> Slice(this string str, int start)
-        {
-            Contract.Requires(str != null);
-            Contract.RequiresInInclusiveRange(start, (uint)str.Length);
-
-            return new ReadOnlySpan<char>(
-                str,
-                new UIntPtr((uint)(SpanHelpers.OffsetToStringData + (start * sizeof(char)))),
-                str.Length - start
-            );
-        }
-
-        /// <summary>
-        /// Creates a new slice over the portion of the target string beginning
-        /// at 'start' index and ending at 'end' index (exclusive).
-        /// </summary>
-        /// <param name="str">The target string.</param>
-        /// <param name="start">The index at which to begin the slice.</param>
-        /// <param name="end">The index at which to end the slice (exclusive).</param>
-        /// <exception cref="System.ArgumentException">
-        /// Thrown if the 'start' parameter is null.
-        /// </exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
-        /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<char> Slice(this string str, int start, int length)
-        {
-            Contract.Requires(str != null);
-            Contract.RequiresInInclusiveRange(start, length, (uint)str.Length);
-            return new ReadOnlySpan<char>(
-                str,
-                new UIntPtr((uint)(SpanHelpers.OffsetToStringData + (start * sizeof(char)))),
-                length
-            );
-        }
-
         // Some handy byte manipulation helpers:
 
         /// <summary>
@@ -152,35 +84,7 @@ namespace System
             where T : struct
             where U : struct
         {
-            int countOfU;
-
-            // This comparison is a jittime constant
-            if (Unsafe.SizeOf<T>() > Unsafe.SizeOf<U>())
-            {
-                IntPtr count = UnsafeUtilities.CountOfU<T, U>((uint)slice.Length);
-                unsafe
-                {
-                    // We can't compare IntPtrs, so have to resort to pointer comparison
-                    bool fits = (byte*)count <= (byte*)int.MaxValue;
-                    Contract.Requires(fits);
-                    countOfU = (int)count.ToPointer();
-                }
-            }
-            else
-            {
-                countOfU = (int)(((ulong)slice.Length * (ulong)Unsafe.SizeOf<T>()) / (ulong)Unsafe.SizeOf<U>());
-            }
-            
-            object obj = slice.Object;
-            UIntPtr offset = slice.Offset; 
-
-            if (countOfU == 0)
-            {
-                obj = null;
-                offset = (UIntPtr)0;
-            }
-
-            return new Span<U>(obj, offset, countOfU);
+            return slice.NonPortableCast<T, U>();
         }
 
         /// <summary>
@@ -194,35 +98,7 @@ namespace System
             where T : struct
             where U : struct
         {
-            int countOfU;
-
-            // This comparison is a jittime constant
-            if (Unsafe.SizeOf<T>() > Unsafe.SizeOf<U>())
-            {
-                IntPtr count = UnsafeUtilities.CountOfU<T, U>((uint)slice.Length);
-                unsafe
-                {
-                    // We can't compare IntPtrs, so have to resort to pointer comparison
-                    bool fits = (byte*)count <= (byte*)int.MaxValue;
-                    Contract.Requires(fits);
-                    countOfU = (int)count.ToPointer();
-                }
-            }
-            else
-            {
-                countOfU = (int)(((ulong)slice.Length * (ulong)Unsafe.SizeOf<T>()) / (ulong)Unsafe.SizeOf<U>());
-            }
-
-            object obj = slice.Object;
-            UIntPtr offset = slice.Offset;
-
-            if (countOfU == 0)
-            {
-                obj = null;
-                offset = (UIntPtr)0;
-            }
-
-            return new ReadOnlySpan<U>(obj, offset, countOfU);
+            return slice.NonPortableCast<T, U>();
         }
 
         /// <summary>
@@ -233,7 +109,7 @@ namespace System
             where T : struct
         {
             Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
-            return UnsafeUtilities.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
+            return slice.Cast<byte, T>()[0];
         }
 
         /// <summary>
@@ -244,7 +120,7 @@ namespace System
             where T : struct
         {
             Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
-            return UnsafeUtilities.Get<T>(slice.Object, slice.Offset, (UIntPtr)0);
+            return slice.Cast<byte, T>()[0];
         }
 
         /// <summary>
@@ -255,88 +131,30 @@ namespace System
             where T : struct
         {
             Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
-            UnsafeUtilities.Set(slice.Object, slice.Offset, (UIntPtr)0, value);
+            Span<T> castedSlice = slice.Cast<byte, T>();
+            castedSlice[0] = value;
         }
+
 
         /// <summary>
         /// Determines whether two spans are equal by comparing the elements by using generic Equals method
         /// </summary>
         /// <param name="first">A span of type T to compare to second.</param>
         /// <param name="second">A span of type T to compare to first.</param>
-        [ILSub(@"
-            .maxstack 4
-            .locals([0] uint8 & baseAddr1,
-                    [1] uint8 & baseAddr2,
-                    [2] native uint i,
-                    [3] native uint length)
-            ldarg.0
-            ldfld      int32 valuetype System.Span`1<!!T>::Length
-            dup
-            stloc.3
-            ldarg.1
-            ldfld      int32 valuetype System.Span`1<!!T>::Length
-            ceq
-            brfalse.s  NOT_EQUAL
-
-            ldloc.3
-            brzero.s  EQUAL
- 
-            ldarg.0
-            ldfld      object valuetype System.Span`1<!!T>::Object
-            stloc.0     
-            ldloc.0     
-            ldarg.0
-            ldfld      native uint valuetype System.Span`1<!!T>::Offset
-            add         
-            stloc.0 
-
-            ldarg.1
-            ldfld      object valuetype System.Span`1<!!T>::Object
-            stloc.1     
-            ldloc.1    
-            ldarg.1
-            ldfld      native uint valuetype System.Span`1<!!T>::Offset
-            add         
-            stloc.1 
-
-            ldc.i4.0    
-            stloc.2
-
-        LOOP_START:
-            ldloc.0
-            ldloc.2     
-            sizeof !!T  
-            mul         
-            add  
-
-            ldloc.1
-            ldloc.2     
-            sizeof !!T  
-            mul         
-            add 
-            ldobj  !!T  
-      
-            constrained. !!T
-            callvirt   instance bool class [System.Runtime]System.IEquatable`1<!!T>::Equals(!0)
-            brfalse.s  NOT_EQUAL
-            ldloc.2     
-            ldc.i4.1    
-            add         
-            stloc.2    
-            ldloc.2     
-            ldloc.3     
-            blt.s      LOOP_START
-
-        EQUAL:
-            ldc.i4.1 
-            ret
-        NOT_EQUAL:
-            ldc.i4.0   
-            ret ")]
         public static bool SequenceEqual<T>(this Span<T> first, Span<T> second)
             where T : struct, IEquatable<T>
-        { 
-            return false;
+        {
+            int length = first.Length;
+            if (length != second.Length)
+                return false;
+
+            // @todo: Can capture and iterate ref with DangerousGetPinnedReference() like the IL used to, but need C#7 for that.
+            for (int i = 0; i < length; i++)
+            {
+                if (!first[i].Equals(second[i]))
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -344,80 +162,20 @@ namespace System
         /// </summary>
         /// <param name="first">A span of type T to compare to second.</param>
         /// <param name="second">A span of type T to compare to first.</param>
-        [ILSub(@"
-            .maxstack 4
-            .locals([0] uint8 & baseAddr1,
-                    [1] uint8 & baseAddr2,
-                    [2] native uint i,
-                    [3] native uint length)
-            ldarg.0
-            ldfld      int32 valuetype System.ReadOnlySpan`1<!!T>::Length
-            dup
-            stloc.3
-            ldarg.1
-            ldfld      int32 valuetype System.ReadOnlySpan`1<!!T>::Length
-            ceq
-            brfalse.s  NOT_EQUAL
-
-            ldloc.3
-            brzero.s  EQUAL
- 
-            ldarg.0
-            ldfld      object valuetype System.ReadOnlySpan`1<!!T>::Object
-            stloc.0     
-            ldloc.0     
-            ldarg.0
-            ldfld      native uint valuetype System.ReadOnlySpan`1<!!T>::Offset
-            add         
-            stloc.0 
-
-            ldarg.1
-            ldfld      object valuetype System.ReadOnlySpan`1<!!T>::Object
-            stloc.1     
-            ldloc.1    
-            ldarg.1
-            ldfld      native uint valuetype System.ReadOnlySpan`1<!!T>::Offset
-            add         
-            stloc.1 
-
-            ldc.i4.0    
-            stloc.2
-
-        LOOP_START:
-            ldloc.0
-            ldloc.2     
-            sizeof !!T  
-            mul         
-            add  
-
-            ldloc.1
-            ldloc.2     
-            sizeof !!T  
-            mul         
-            add 
-            ldobj  !!T  
-      
-            constrained. !!T
-            callvirt   instance bool class [System.Runtime]System.IEquatable`1<!!T>::Equals(!0)
-            brfalse.s  NOT_EQUAL
-            ldloc.2     
-            ldc.i4.1    
-            add         
-            stloc.2    
-            ldloc.2     
-            ldloc.3     
-            blt.s      LOOP_START
-
-        EQUAL:
-            ldc.i4.1 
-            ret
-        NOT_EQUAL:
-            ldc.i4.0   
-            ret ")]
         public static bool SequenceEqual<T>(this ReadOnlySpan<T> first, ReadOnlySpan<T> second)
             where T : struct, IEquatable<T>
         {
-            return false;
+            int length = first.Length;
+            if (length != second.Length)
+                return false;
+
+            // @todo: Can capture and iterate ref with DangerousGetPinnedReference() like the IL used to, but need C#7 for that.
+            for (int i = 0; i < length; i++)
+            {
+                if (!first[i].Equals(second[i]))
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -507,59 +265,17 @@ namespace System
         /// <param name="slice">The <see cref="T:System.Span" /> to search.</param>
         /// <param name="value">The value to locate in <paramref name="slice" />.</param>
         /// <typeparam name="T">The type of the elements of the slice.</typeparam>
-        [ILSub(@"   
-            .maxstack 3
-            .locals([0] uint8 & addr,
-                    [1] native uint i,
-                    [2] native uint length)
-            ldarg.0
-            ldfld      int32 valuetype System.ReadOnlySpan`1<!!T>::Length
-            dup
-            stloc.2
-            brfalse.s  EMPTY_SPAN
- 
-            ldarg.0
-            ldfld      object valuetype System.ReadOnlySpan`1<!!T>::Object
-            stloc.0     
-            ldloc.0     
-            ldarg.0
-            ldfld      native uint valuetype System.ReadOnlySpan`1<!!T>::Offset
-
-            add         
-            stloc.0 
-
-            ldc.i4.0    
-            stloc.1
-            
-        LOOP_START:
-            ldloc.0
-            ldloc.1     
-            sizeof !!T  
-            conv.u  
-            mul         
-            add         
-            ldarg.1
-            constrained. !!T
-            callvirt   instance bool class [System.Runtime]System.IEquatable`1<!!T>::Equals(!0)
-            brfalse.s   NOT_EQUAL
-            ldloc.1     
-            ret 
-     
-        NOT_EQUAL:  
-            ldloc.1     
-            ldc.i4.1    
-            add         
-            stloc.1    
-            ldloc.1     
-            ldloc.2     
-            blt.s       LOOP_START
-        EMPTY_SPAN:
-            ldc.i4.m1 
-            ret")]
         public static int IndexOf<T>(this ReadOnlySpan<T> slice, T value)
            where T : struct, IEquatable<T>
         {
-            return 0;
+            // @todo: Can capture and iterate ref with DangerousGetPinnedReference() like the IL used to, but need C#7 for that.
+            int length = slice.Length;
+            for (int i = 0; i < length; i++)
+            {
+                if (value.Equals(slice[i]))
+                    return i;
+            }
+            return -1;
         }
 
         // Helper methods similar to System.ArrayExtension:
@@ -579,21 +295,22 @@ namespace System
 
         public static bool EndsWith(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
         {
-            if (value.Length > str.Length)
+            int valueLength = value.Length;
+            if (valueLength > str.Length)
             {
                 return false;
             }
 
-            int j = str.Length - value.Length;
-            foreach (var c in value)
+            int j = str.Length - valueLength;
+            for (int i = 0; i < valueLength; i++)
             {
+                char c = value[i];
                 if (str[j] != c)
                 {
                     return false;
                 }
                 j++;
             }
-
             return true;
         }
 

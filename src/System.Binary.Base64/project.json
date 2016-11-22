@@ -23,6 +23,7 @@
     "System.Runtime": "4.1.0",
     "System.Diagnostics.Debug": "4.0.11",
     "System.Slices": { "target": "project" },
+    "System.Memory": "4.4.0-beta-24721-02",
     "System.Text.Utf8": { "target": "project" }
   },
   "frameworks": {

@@ -85,7 +85,7 @@ namespace System.Slices.Tests
                 int sourceLength = 620000000;
                 var sourceSlice = new Span<SevenBytesStruct>(&dummy, sourceLength);
 
-                Assert.Throws<ArgumentException>(() =>
+                Assert.Throws<OverflowException>(() =>
                 {
                     var targetSlice = sourceSlice.Cast<SevenBytesStruct, short>();
                 });

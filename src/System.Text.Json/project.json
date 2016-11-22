@@ -29,6 +29,7 @@
     "System.Runtime.Extensions": "4.1.0",
     "System.Text.Utf8": { "target": "project" },
     "System.Text.Formatting": { "target": "project" },
+    "System.Memory": "4.4.0-beta-24721-02",
     "System.Slices": { "target": "project" },
     "System.Buffers.Experimental": { "target": "project" }
   },

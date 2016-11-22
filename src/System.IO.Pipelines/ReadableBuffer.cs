@@ -346,8 +346,10 @@ namespace System.IO.Pipelines
             var sb = new StringBuilder();
             foreach (var memory in this)
             {
-                foreach (var b in memory.Span)
+                int length = memory.Span.Length;
+                for (int i = 0; i < length; i++)
                 {
+                    byte b = memory.Span[i];
                     sb.Append((char)b);
                 }
             }

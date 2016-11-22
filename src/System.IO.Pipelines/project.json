@@ -19,7 +19,8 @@
 
   "dependencies": {
     "NETStandard.Library": "1.6.0",
-    "System.Slices": {
+    "System.Memory": "4.4.0-beta-24721-02",
+   "System.Slices": {
       "target": "project"
     },
     "System.Binary": {

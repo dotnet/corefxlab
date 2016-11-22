@@ -30,6 +30,7 @@
     "System.Text.Primitives": { "target": "project" },
     "System.Runtime.InteropServices.RuntimeInformation": "4.0.0",
     "System.Buffers.Experimental": { "target": "project" },
+    "System.Memory": "4.4.0-beta-24721-02",
     "System.Slices": { "target": "project" }
   },
   "frameworks": {
