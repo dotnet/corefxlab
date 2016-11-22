@@ -23,7 +23,7 @@ namespace System.Buffers
 
         ~OwnedNativeMemory()
         {
-            Dispose();
+            Dispose(false);
         }
 
         protected override void Dispose(bool disposing)
@@ -32,6 +32,8 @@ namespace System.Buffers
                 Marshal.FreeHGlobal(base.Pointer);
             }
             base.Dispose(disposing);
+
+            GC.SuppressFinalize(this);
         }
 
         public new unsafe byte* Pointer => (byte*)base.Pointer.ToPointer();
@@ -84,6 +86,13 @@ namespace System.Buffers
                 _handle.Free();
             }
             base.Dispose(disposing);
+
+            GC.SuppressFinalize(this);
+        }
+
+        ~OwnedPinnedArray()
+        {
+            Dispose(false);
         }
     }
 }

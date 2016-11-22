@@ -9,21 +9,32 @@ namespace System
     [DebuggerTypeProxy(typeof(ReadOnlyMemoryDebuggerView<>))]
     public struct ReadOnlyMemory<T> : IEquatable<ReadOnlyMemory<T>>, IEquatable<Memory<T>>
     {
-        OwnedMemory<T> _owner;
-        long _id;
+        IReadOnlyMemory<T> _owner;
+        long _versionId;
+        int _reservationId;
         int _index;
         int _length;
 
-        internal ReadOnlyMemory(OwnedMemory<T> owner, long id)
-            : this(owner, id, 0, owner.GetSpanInternal(id).Length)
+        internal ReadOnlyMemory(IReadOnlyMemory<T> owner, long versionId, int reservationId)
+            : this(owner, versionId, reservationId, 0, owner.GetSpan(versionId, reservationId).Length)
         { }
 
-        internal ReadOnlyMemory(OwnedMemory<T> owner, long id, int index, int length)
+        internal ReadOnlyMemory(IReadOnlyMemory<T> owner, long versionId, int reservationId, int index, int length)
         {
             _owner = owner;
-            _id = id;
+            _versionId = versionId;
+            _reservationId = reservationId;
             _index = index;
             _length = length;
+        }
+
+        internal ReadOnlyMemory(ref ReadOnlyMemory<T> memory, int reservationId)
+        {
+            _owner = memory._owner;
+            _versionId = memory._versionId;
+            _reservationId = reservationId;
+            _index = memory._index;
+            _length = memory._length;
         }
 
         public static implicit operator ReadOnlyMemory<T>(T[] array)
@@ -31,6 +42,8 @@ namespace System
             var owner = new OwnedArray<T>(array);
             return owner.Memory;
         }
+
+        public bool IsDisposed => _owner.IsDependancyDisposed(_versionId, _reservationId);
 
         public static ReadOnlyMemory<T> Empty => Memory<T>.Empty;
 
@@ -40,37 +53,18 @@ namespace System
 
         public ReadOnlyMemory<T> Slice(int index)
         {
-            return new ReadOnlyMemory<T>(_owner, _id, _index + index, _length - index);
+            _owner.ThrowIfDisposed(_versionId, _reservationId);
+            return new ReadOnlyMemory<T>(_owner, _versionId, _reservationId, _index + index, _length - index);
         }
         public ReadOnlyMemory<T> Slice(int index, int length)
         {
-            return new ReadOnlyMemory<T>(_owner, _id, _index + index, length);
+            _owner.ThrowIfDisposed(_versionId, _reservationId);
+            return new ReadOnlyMemory<T>(_owner, _versionId, _reservationId, _index + index, length);
         }
 
-        public ReadOnlySpan<T> Span => _owner.GetSpanInternal(_id).Slice(_index, _length);
+        public ReadOnlySpan<T> Span => _owner.GetSpan(_versionId, _reservationId).Slice(_index, _length);
 
-        public DisposableReservation Reserve()
-        {
-            return _owner.Reserve(ref this);
-        }
-   
-        public unsafe bool TryGetPointer(out void* pointer)
-        {
-            if (!_owner.TryGetPointerInternal(_id, out pointer)) {
-                return false;
-            }
-            pointer = Memory<T>.Add(pointer, _index);
-            return true;
-        }
-
-        public unsafe bool TryGetArray(out ArraySegment<T> buffer)
-        {
-            if (!_owner.TryGetArrayInternal(_id, out buffer)) {
-                return false;
-            }
-            buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
-            return true;
-        }
+        public ReservedReadOnlyMemory<T> Reserve() => _owner.Reserve(ref this, _versionId, _reservationId);
 
         public T[] ToArray()
         {
@@ -106,7 +100,7 @@ namespace System
         {
             return
                 _owner == other._owner &&
-                _id == other._id &&
+                _reservationId == other._reservationId &&
                 _index == other._index &&
                 _length == other._length;
         }
@@ -132,7 +126,7 @@ namespace System
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _id.GetHashCode(), _length.GetHashCode());
+            return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _reservationId.GetHashCode(), _length.GetHashCode());
         }
 
         public override string ToString()
