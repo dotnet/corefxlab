@@ -2,6 +2,20 @@
 
 This repo is for experimentation and exploring new ideas that may or may not make it into the main corefx repo.
 
+## Roadmap
+
+While this repo is meant for experimentation, we still want to focus our efforts
+in a particular direction, specifically to work on areas aligned with our
+[roadmap](docs/roadmap.md). While we're not unwilling explore areas not on our
+raodmap, you should expect less engagement from us in these cases.
+
+The general idea is that we mature our thinking in this repo and either decide
+not to pursue it or that we want to productize in which case we'll eventually
+migrate the code to the appropriate location, usually the
+[dotnet/corefx](https://github.com/dotnet/corefx) repository.
+
+## Components
+
 Currently, this repo contains the following experimental components:
 
 * **System.Slices**
