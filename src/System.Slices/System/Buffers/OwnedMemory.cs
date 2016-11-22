@@ -19,6 +19,8 @@ namespace System.Buffers
 
         private OwnedMemory() { }
 
+        protected OwnedMemory(T[] array) : this(array, 0, array.Length) { }
+
         protected OwnedMemory(T[] array, int arrayOffset, int length, IntPtr pointer = default(IntPtr))
         {
             Id = InitializedId;
@@ -38,10 +40,7 @@ namespace System.Buffers
             }
         }
 
-        public static implicit operator OwnedMemory<T>(T[] array)
-        {
-            return new OwnedArray<T>(array);
-        }
+        public static implicit operator OwnedMemory<T>(T[] array) => new OwnedArray<T>(array);
 
         protected bool TryGetArrayCore(out ArraySegment<T> buffer)
         {
