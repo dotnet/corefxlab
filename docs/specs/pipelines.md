@@ -1,6 +1,6 @@
 # System.IO.Pipelines
 
-* Leverages the primitives ([Span<T>](span.md) and [Memory<T>](memory.md)) and
+* Leverages the primitives ([Span\<T>](span.md) and [Memory\<T>](memory.md)) and
   low-allocation APIs.
 * Provides an efficient programming model while freeing the developers from
   having to manage buffers.
