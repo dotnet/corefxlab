@@ -2,12 +2,11 @@
 
 ## Introduction
 
-`Memory<T>` is a type complementing
-[`Span<T>`](https://github.com/dotnet/corefxlab/blob/master/docs/Span.md). As
-discussed in its design document, `Span<T>` is a stack-only type. The stack-only
-nature of `Span<T>` makes it unsuitable for many scenarios that require storing
-references to buffers (represented with `Span<T>`) on the heap, e.g. for
-routines doing asynchronous calls.
+`Memory<T>` is a type complementing [Span\<T>](Span.md). As discussed in its
+design document, `Span<T>` is a stack-only type. The stack-only nature of
+`Span<T>` makes it unsuitable for many scenarios that require storing references
+to buffers (represented with `Span<T>`) on the heap, e.g. for routines doing
+asynchronous calls.
 
 ```c#
 async Task DoSomethingAsync(Span<byte> buffer) {
@@ -199,6 +198,5 @@ TBD
 ## Issues/To-Design
 
 1. Should Owned`Memory<T>`.Reserve be virtual and allow mutating ReadOnlyMemory?
-   See
-   [here](https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/OwnedMemory.cs#L114).
+   See [here](../../src/System.Slices/System/Buffers/OwnedMemory.cs#L114).
 2. Should we add an indexer to `Memory<T>`?
