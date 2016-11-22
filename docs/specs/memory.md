@@ -1,12 +1,12 @@
-# Memory\<T\>
+# `Memory<T>`
 
 ## Introduction
 
-Memory\<T\> is a type complementing
-[Span\<T\>](https://github.com/dotnet/corefxlab/blob/master/docs/Span.md). As
-discussed in its design document, Span\<T\> is a stack-only type. The stack-only
-nature of Span\<T\> makes it unsuitable for many scenarios that require storing
-references to buffers (represented with Span\<T\>) on the heap, e.g. for
+`Memory<T>` is a type complementing
+[`Span<T>`](https://github.com/dotnet/corefxlab/blob/master/docs/Span.md). As
+discussed in its design document, `Span<T>` is a stack-only type. The stack-only
+nature of `Span<T>` makes it unsuitable for many scenarios that require storing
+references to buffers (represented with `Span<T>`) on the heap, e.g. for
 routines doing asynchronous calls.
 
 ```c#
@@ -36,11 +36,11 @@ In the sample above, the Memory\<byte\> is used to represent the buffer. It is a
 regular type and can be used in methods doing asynchronous calls. Its Span
 property returns Span\<byte\>, but the returned value does not get stored on the
 heap during asynchronous calls, but rather new values are produced from the
-Memory\<T\> value. In a sense, Memory\<T\> is a factory of Span\<T\>.
+`Memory<T>` value. In a sense, `Memory<T>` is a factory of `Span<T>`.
 
 ## Design
 
-A naive design of Memory\<T\> could look like the following:
+A naive design of `Memory<T>` could look like the following:
 
 ```c#
 public struct Memory<T> {
@@ -55,7 +55,7 @@ public struct Memory<T> {
 }
 ```
 
-As you might remember from the Span\<T\> design document, we need to be able to
+As you might remember from the `Span<T>` design document, we need to be able to
 use it to represent buffers rented from a pool, yet be sure that the buffers are
 not used after they are returned to the pool.
 
@@ -67,9 +67,9 @@ _pool.Return(array); // we can return it safely; DoSomething could not store
                      // the buffer for later.
 ```
 
-Span\<T\> makes it very easy to meet the requirement: once the stack unwinds
-above where the Span\<T\> value was constructed, there cannot be any references
-to the Span\<T\>. Memory\<T\> does not provide such guarantee.
+`Span<T>` makes it very easy to meet the requirement: once the stack unwinds
+above where the `Span<T>` value was constructed, there cannot be any references
+to the `Span<T>`. `Memory<T>` does not provide such guarantee.
 
 ```c#
 byte[] array = _pool.Rent(size);
@@ -79,12 +79,12 @@ _pool.Return(array); // if we return it here, we risk use-after-free bugs.
 ```
 
 We need a different mechanism (than stack-only restrictions) to be able to
-manage the lifetime of buffers pointed to by Memory\<T\>.
+manage the lifetime of buffers pointed to by `Memory<T>`.
 
 ### Lifetime
 
 We will use indirection, to regain control over the lifetime of buffers
-represented by Memory\<T\>:
+represented by `Memory<T>`:
 
 ```c#
 public struct Memory<T> {
@@ -112,7 +112,7 @@ public class OwnedMemory<T> {
 ```
 
 The design above improves the control we have over rented buffers. We at least
-can revoke Memory\<T\>'s ability to get Span\<T> values.
+can revoke `Memory<T>`'s ability to get Span\<T> values.
 
 ```c#
 byte[] array = _pool.Rent(size);
@@ -124,6 +124,7 @@ _pool.Return(array); // // we can return it safely; calls to owned.Span will fai
 ```
 
 ## Basic API Surface
+
 ```c#
 public struct Memory<T> : IEquatable<Memory<T>>, IEquatable<ReadOnlyMemory<T>> {
     public Span<T> Span { get; }
@@ -184,12 +185,12 @@ address:
    to be invalidated would point to the new reused OwnedMemory.
 
 2. It's unsafe to call OwnedMemory.Dispose while a separate thread operates on a
-   Span\<T\> retrieved from the Memory\<T> value.
+   `Span<T>` retrieved from the Memory\<T> value.
 
 The following sections describe variants of the basic design addressing these
 limitations.
 
-### Pooling Owned Memory\<T\>
+### Pooling Owned `Memory<T>`
 TBD
 
 ### Safe Dispose
@@ -197,7 +198,7 @@ TBD
 
 ## Issues/To-Design
 
-1. Should OwnedMemory\<T\>.Reserve be virtual and allow mutating ReadOnlyMemory?
+1. Should Owned`Memory<T>`.Reserve be virtual and allow mutating ReadOnlyMemory?
    See
    [here](https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/OwnedMemory.cs#L114).
-2. Should we add an indexer to Memory\<T\>?
+2. Should we add an indexer to `Memory<T>`?
