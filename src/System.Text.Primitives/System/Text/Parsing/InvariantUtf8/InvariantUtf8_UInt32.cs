@@ -343,7 +343,7 @@ namespace System.Text
                         for (int index = 1; index < length; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 return true;
@@ -358,7 +358,7 @@ namespace System.Text
                         for (int index = 1; index < UInt32OverflowLengthHex; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 return true;
@@ -368,7 +368,7 @@ namespace System.Text
                         for (int index = UInt32OverflowLengthHex; index < length; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 return true;
@@ -415,7 +415,7 @@ namespace System.Text
                         for (int index = 1; index < length; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 bytesConsumed = index;
@@ -431,7 +431,7 @@ namespace System.Text
                         for (int index = 1; index < UInt32OverflowLengthHex; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 bytesConsumed = index;
@@ -442,7 +442,7 @@ namespace System.Text
                         for (int index = UInt32OverflowLengthHex; index < length; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 bytesConsumed = index;
@@ -490,7 +490,7 @@ namespace System.Text
                         for (int index = 1; index < text.Length; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 return true;
@@ -505,7 +505,7 @@ namespace System.Text
                         for (int index = 1; index < UInt32OverflowLengthHex; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 return true;
@@ -515,7 +515,7 @@ namespace System.Text
                         for (int index = UInt32OverflowLengthHex; index < text.Length; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 return true;
@@ -562,7 +562,7 @@ namespace System.Text
                         for (int index = 1; index < text.Length; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 bytesConsumed = index;
@@ -578,7 +578,7 @@ namespace System.Text
                         for (int index = 1; index < UInt32OverflowLengthHex; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 bytesConsumed = index;
@@ -589,7 +589,7 @@ namespace System.Text
                         for (int index = UInt32OverflowLengthHex; index < text.Length; index++)
                         {
                             byte nextByte = text[index];
-                            int nextDigit = hexLookup[nextByte];
+                            byte nextDigit = hexLookup[nextByte];
                             if (nextDigit == 0xFF)
                             {
                                 bytesConsumed = index;
