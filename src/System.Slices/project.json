@@ -34,7 +34,5 @@
   },
   "frameworks": {
     "netstandard1.1": {}
-  },
-  "scripts": {
   }
 }
