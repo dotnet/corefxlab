@@ -7,34 +7,34 @@ namespace System.IO.Pipelines.Tests.Internal
 {
     public class LoopbackPipeline
     {
-        IPipelineConnection _clientChannel;
-        IPipelineConnection _serverChannel;
+        IPipelineConnection _clientPipeline;
+        IPipelineConnection _serverPipeline;
 
         public LoopbackPipeline(PipelineFactory factory)
         {
-            var backChannel1 = factory.Create();
-            var backChannel2 = factory.Create();
+            var backPipeline1 = factory.Create();
+            var backPipeline2 = factory.Create();
 
-            _clientChannel = new TestChannel(backChannel1, backChannel2);
-            _serverChannel = new TestChannel(backChannel2, backChannel1);
+            _clientPipeline = new TestPipeline(backPipeline1, backPipeline2);
+            _serverPipeline = new TestPipeline(backPipeline2, backPipeline1);
         }
 
-        public IPipelineConnection ServerChannel => _serverChannel;
-        public IPipelineConnection ClientChannel => _clientChannel;
+        public IPipelineConnection ServerPipeline => _serverPipeline;
+        public IPipelineConnection ClientPipeline => _clientPipeline;
 
-        class TestChannel : IPipelineConnection
+        class TestPipeline : IPipelineConnection
         {
-            PipelineReaderWriter _inChannel;
-            PipelineReaderWriter _outChannel;
+            PipelineReaderWriter _inPipeline;
+            PipelineReaderWriter _outPipeline;
 
-            public TestChannel(PipelineReaderWriter inChannel, PipelineReaderWriter outChannel)
+            public TestPipeline(PipelineReaderWriter inPipeline, PipelineReaderWriter outPipeline)
             {
-                _inChannel = inChannel;
-                _outChannel = outChannel;
+                _inPipeline = inPipeline;
+                _outPipeline = outPipeline;
             }
 
-            public IPipelineReader Input => _inChannel;
-            public IPipelineWriter Output => _outChannel;
+            public IPipelineReader Input => _inPipeline;
+            public IPipelineWriter Output => _outPipeline;
             public void Dispose()
             {
             }
