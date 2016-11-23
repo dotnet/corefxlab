@@ -3,16 +3,6 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System
-{
-    // This class will be removed in post build step, every instance of it will inject IL passed to the constructor as string
-    [AttributeUsage(AttributeTargets.Method)]
-    class ILSub : Attribute
-    {
-        public ILSub(string il) { }
-    }
-}
-
 namespace System.Runtime
 {
     /// <summary>
