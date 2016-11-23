@@ -251,7 +251,7 @@ namespace System.Slices.Tests
         {
             var destination = new Span<byte>(new byte[100]);
             var source = new Span<byte>(new byte[] { 1, 2, 3 });
-            destination.Set(source);
+            source.CopyTo(destination);
             for (int i = 0; i < source.Length; i++)
             {
                 Assert.Equal(source[i], destination[i]);
@@ -263,7 +263,7 @@ namespace System.Slices.Tests
         {
             var destination = new Span<byte>(new byte[100]);
             var source = new byte[] { 1, 2, 3 };
-            destination.Set(source);
+            source.CopyTo(destination);
             for (int i = 0; i < source.Length; i++)
             {
                 Assert.Equal(source[i], destination[i]);

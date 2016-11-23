@@ -163,7 +163,6 @@ namespace System.Slices.Tests
 
         private static void SpansReferencingSameMemoryAreEqualInEveryAspect(ref Span<byte> span, ref Span<byte> pointingToSameMemory)
         {
-            Assert.True(span.ReferenceEquals(pointingToSameMemory));
             Assert.True(span == pointingToSameMemory);
             Assert.True(pointingToSameMemory == span);
             Assert.False(span != pointingToSameMemory);
@@ -177,7 +176,6 @@ namespace System.Slices.Tests
 
         private static void SpansReferencingSameMemoryAreEqualInEveryAspect(ref ReadOnlySpan<byte> span, ref ReadOnlySpan<byte> pointingToSameMemory)
         {
-            Assert.True(span.ReferenceEquals(pointingToSameMemory));
             Assert.True(span == pointingToSameMemory);
             Assert.True(pointingToSameMemory == span);
             Assert.False(span != pointingToSameMemory);
@@ -227,8 +225,6 @@ namespace System.Slices.Tests
             Assert.True(span != ofSameValues);
             Assert.False(ofSameValues == span);
             Assert.True(ofSameValues != span);
-
-            Assert.False(span.ReferenceEquals(ofSameValues));
         }
 
         [Theory]
@@ -250,7 +246,7 @@ namespace System.Slices.Tests
             Assert.False(ofSameValues == span);
             Assert.True(ofSameValues != span);
 
-            Assert.False(span.ReferenceEquals(ofSameValues));
+            Assert.False(span == ofSameValues);
         }
 
         [Theory]
@@ -272,7 +268,7 @@ namespace System.Slices.Tests
             Assert.False(ofDifferentValues == span);
             Assert.True(ofDifferentValues != span);
 
-            Assert.False(span.ReferenceEquals(ofDifferentValues));
+            Assert.False(span == ofDifferentValues);
         }
 
         [Theory]
@@ -294,7 +290,7 @@ namespace System.Slices.Tests
             Assert.False(ofDifferentValues == span);
             Assert.True(ofDifferentValues != span);
 
-            Assert.False(span.ReferenceEquals(ofDifferentValues));
+            Assert.False(span == ofDifferentValues);
         }
 
         [Theory]
@@ -380,9 +376,9 @@ namespace System.Slices.Tests
                 var unmanagedHeapSlice = new Span<int>(arrayAllocatedOnUnmanagedHeap, arraySize);
                 var managedHeapSlice = new Span<int>(arrayAllocatedOnManagedHeap, 0, arraySize);
 
-                Assert.False(stackSlice.ReferenceEquals(unmanagedHeapSlice));
-                Assert.False(stackSlice.ReferenceEquals(managedHeapSlice));
-                Assert.False(unmanagedHeapSlice.ReferenceEquals(managedHeapSlice));
+                Assert.False(stackSlice == unmanagedHeapSlice);
+                Assert.False(stackSlice == managedHeapSlice);
+                Assert.False(unmanagedHeapSlice ==managedHeapSlice);
 
                 Assert.False(stackSlice == unmanagedHeapSlice);
                 Assert.False(stackSlice == managedHeapSlice);
@@ -439,9 +435,9 @@ namespace System.Slices.Tests
                 var unmanagedHeapSlice = new ReadOnlySpan<int>(arrayAllocatedOnUnmanagedHeap, arraySize);
                 var managedHeapSlice = new ReadOnlySpan<int>(arrayAllocatedOnManagedHeap, 0, arraySize);
 
-                Assert.False(stackSlice.ReferenceEquals(unmanagedHeapSlice));
-                Assert.False(stackSlice.ReferenceEquals(managedHeapSlice));
-                Assert.False(unmanagedHeapSlice.ReferenceEquals(managedHeapSlice));
+                Assert.False(stackSlice ==unmanagedHeapSlice);
+                Assert.False(stackSlice == managedHeapSlice);
+                Assert.False(unmanagedHeapSlice == managedHeapSlice);
 
                 Assert.False(stackSlice == unmanagedHeapSlice);
                 Assert.False(stackSlice == managedHeapSlice);

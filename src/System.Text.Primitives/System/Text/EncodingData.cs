@@ -133,7 +133,7 @@ namespace System.Text
                 return true;
             }
 
-            buffer.Set(bytes);
+            bytes.CopyTo(buffer);
             return true;
         }
 

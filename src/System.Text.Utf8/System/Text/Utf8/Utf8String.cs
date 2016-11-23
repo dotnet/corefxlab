@@ -199,7 +199,7 @@ namespace System.Text.Utf8
 
         public bool ReferenceEquals(Utf8String other)
         {
-            return _buffer.ReferenceEquals(other._buffer);
+            return _buffer == other._buffer;
         }
 
         public bool Equals(Utf8String other)
