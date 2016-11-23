@@ -231,6 +231,7 @@ The main negatives of this approach are additional complexity and larger size of
 The current prototype in the corfxlab repo implements this feature: https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/Memory.cs#L14
 
 ### IOwnedMemory\<T\>
+
 OwnedMemory\<T\> is a wrapper over actual memory buffers. 
 When wrapping T[], System.String, and other reference type buffers, 
 we end up with two managed objects for each instance of OwnedMemory\<T\>.
@@ -254,11 +255,68 @@ This feature has the following tradeoffs:
 3. (ugly) The feature makes some of the hot path method calls (in particular IOwnedMemory\<T\>.GetSpan) virtual/interface dispatch. We have some anecdotal evidence this is unacceptable in some performance critical scenarios.
 
 ### Safe Dispose
+
 It's unsafe to call OwnedMemory.Dispose while a separate thread operates on a
-`Span<T>` retrieved from the Memory\<T> value.
+`Span<T>` retrieved from the Memory\<T\> value.
+```c#
+var owned = new OwnedNativeMemory(1024);
+var memory = owned.Memory;
+var span1 = memory.Span; // of course works as it should
+Task.Run(()=>{   
+    var span2 = memory.Span; 
+    // the following line is unsafe, if the Dispose call (below) executes at this point.
+    span2[0] = 0; 
+});
+owned.Dispose();
+var span3 = memory.Span; // fails as it should because the memory instance is now pointing to Disposed OwnedMemory\<T\>.
+```
+In other words, the design is subject to a race condition when one thread uses a Span\<T\> created before its OwnedMemory\<\T> is disposed, but accessed after it is disposed.
+
+We could address this issue with reference counting Span\<T\> when it is created from Memory\<T\>. 
+When OwnedMemory\<T\>.Dispose is called, we would check the reference count, and fail the call if the count was positive.
+
+But reference counting comes with all its drawbacks:
+
+1. It significantly impacts performance. In our case, every Memory\<T\>.Span call would result in reference counting.
+2. Unless we implement automatic reference counting, we would be risking leaks resulting from hand written code not releasing the counts.
+
+To illustrate, let's consider the following method that formats an int into a memory buffer:
+```c#
+public static bool Append(this Formatter formatter, int value) {
+    Memory<T> memory = formatter.Buffer;
+    int bytesWritten;
+    while(!PrimitiveFormatter.TryFormat(memory.Span, value, out bytesWritten) {
+        formatter.Resize();
+    }
+    formatter.Advance(bytesWritten);
+}
+```
+A real example of such routine can be found at:
+https://github.com/dotnet/corefxlab/blob/master/src/System.Text.Formatting/System/Text/Formatting/IOutputExtensions.cs#L152
+
+If we reference counted all calls to retrieve Span\<T\> from Memory\<T\>, the routine would look like the following:
+```c#
+public static bool Append(this Formatter formatter, int value) {
+    Memory<T> memory = formatter.Buffer;
+    int bytesWritten;
+    using(var reservation = memory.AddReference()) {
+        while(!PrimitiveFormatter.TryFormat(reservation.Span, value, out bytesWritten) {
+            formatter.Resize();
+        }
+    } // releases reference
+    formatter.Advance(bytesWritten);
+}
+```
+This would result in expensive reference count manipulation for every integer being written.
+
+Alternatively, formatters (and other types that need to access Span\<T\>) could increment the reference when they are instantiated, 
+but then users of such formatters would have to ensure that the formatters be disposed properly or risk memory leaks, 
+or we would need C# to support ARC at least for some special types (e.g. ref-like/stack-only types).
 
 ## Issues/To-Design
-
-1. Should Owned`Memory<T>`.Reserve be virtual and allow mutating ReadOnlyMemory?
+1. Do we want the "pooling ID"? (see section above)
+2. Reference Counting (see section above)
+3. IOwnedMemory\<T\>? (see section above)
+4. Should Owned`Memory<T>`.Reserve be virtual and allow mutating ReadOnlyMemory?
    See [here](../../src/System.Slices/System/Buffers/OwnedMemory.cs#L114).
-2. Should we add an indexer to `Memory<T>`?
+5. Should we add an indexer to `Memory<T>`?
