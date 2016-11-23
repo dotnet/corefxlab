@@ -179,6 +179,136 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public async Task AdvanceShouldResetStateIfReadCancelled()
+        {
+            using (var factory = new PipelineFactory())
+            {
+                var readerWriter = factory.Create();
+                readerWriter.CancelPendingRead();
+
+                var result = await readerWriter.ReadAsync();
+                var buffer = result.Buffer;
+                readerWriter.Advance(buffer.End);
+
+                Assert.False(result.IsCompleted);
+                Assert.True(result.IsCancelled);
+                Assert.True(buffer.IsEmpty);
+
+                var awaitable = readerWriter.ReadAsync();
+                Assert.False(awaitable.IsCompleted);
+            }
+        }
+
+        [Fact]
+        public async Task CancellingPendingReadBeforeReadAsync()
+        {
+            using (var factory = new PipelineFactory())
+            {
+                var readerWriter = factory.Create();
+                readerWriter.CancelPendingRead();
+
+                var result = await readerWriter.ReadAsync();
+                var buffer = result.Buffer;
+                readerWriter.Advance(buffer.End);
+
+                Assert.False(result.IsCompleted);
+                Assert.True(result.IsCancelled);
+                Assert.True(buffer.IsEmpty);
+
+                var bytes = Encoding.ASCII.GetBytes("Hello World");
+                var output = readerWriter.Alloc();
+                output.Write(bytes);
+                await output.FlushAsync();
+
+                result = await readerWriter.ReadAsync();
+                buffer = result.Buffer;
+
+                Assert.Equal(11, buffer.Length);
+                Assert.False(result.IsCancelled);
+                Assert.True(buffer.IsSingleSpan);
+                var array = new byte[11];
+                buffer.First.Span.CopyTo(array);
+                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+            }
+        }
+
+        [Fact]
+        public async Task CancellingPendingAfterReadAsync()
+        {
+            using (var factory = new PipelineFactory())
+            {
+                var readerWriter = factory.Create();
+                var bytes = Encoding.ASCII.GetBytes("Hello World");
+                var output = readerWriter.Alloc();
+                output.Write(bytes);
+
+                var task = Task.Run(async () =>
+                {
+                    var result = await readerWriter.ReadAsync();
+                    var buffer = result.Buffer;
+                    readerWriter.Advance(buffer.End);
+
+                    Assert.False(result.IsCompleted);
+                    Assert.True(result.IsCancelled);
+                    Assert.True(buffer.IsEmpty);
+
+                    await output.FlushAsync();
+
+                    result = await readerWriter.ReadAsync();
+                    buffer = result.Buffer;
+
+                    Assert.Equal(11, buffer.Length);
+                    Assert.True(buffer.IsSingleSpan);
+                    Assert.False(result.IsCancelled);
+                    var array = new byte[11];
+                    buffer.First.Span.CopyTo(array);
+                    Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+
+                    readerWriter.CompleteReader();
+                });
+
+                // Wait until reading starts to cancel the pending read
+                await readerWriter.ReadingStarted;
+
+                readerWriter.CancelPendingRead();
+
+                await task;
+
+                readerWriter.CompleteWriter();
+            }
+        }
+
+        [Fact]
+        public async Task WriteAndCancellingPendingReadBeforeReadAsync()
+        {
+            using (var factory = new PipelineFactory())
+            {
+                var readerWriter = factory.Create();
+                var bytes = Encoding.ASCII.GetBytes("Hello World");
+                var output = readerWriter.Alloc();
+                output.Write(bytes);
+                await output.FlushAsync();
+
+                readerWriter.CancelPendingRead();
+
+                var result = await readerWriter.ReadAsync();
+                var buffer = result.Buffer;
+
+                Assert.False(result.IsCompleted);
+                Assert.True(result.IsCancelled);
+                Assert.False(buffer.IsEmpty);
+                Assert.Equal(11, buffer.Length);
+                Assert.True(buffer.IsSingleSpan);
+                var array = new byte[11];
+                buffer.First.Span.CopyTo(array);
+                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+
+                readerWriter.CompleteWriter();
+                readerWriter.CompleteReader();
+            }
+        }
+
+        [Fact]
         public async Task ReadingCanBeCancelled()
         {
             using (var factory = new PipelineFactory())

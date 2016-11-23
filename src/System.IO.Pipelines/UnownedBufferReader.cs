@@ -27,6 +27,7 @@ namespace System.IO.Pipelines
         private BufferSegment _tail;
 
         private bool _consuming;
+        private bool _readingIsCancelled;
 
         // REVIEW: This object might be getting a little big :)
         private readonly TaskCompletionSource<object> _readingTcs = new TaskCompletionSource<object>();
@@ -194,12 +195,13 @@ namespace System.IO.Pipelines
             }
 
             // Again, we don't need an interlock here because Read and Write proceed serially.
-            if (!examined.IsDefault &&
+            if ((!examined.IsDefault &&
                 examined.IsEnd &&
                 Reading.Status == TaskStatus.WaitingForActivation &&
-                _awaitableState == _awaitableIsCompleted)
+                _awaitableState == _awaitableIsCompleted) || _readingIsCancelled)
             {
                 _awaitableState = _awaitableIsNotCompleted;
+                _readingIsCancelled = false;
             }
 
             while (returnStart != returnEnd)
@@ -264,6 +266,16 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
+        /// Cancel to currently pending call to <see cref="ReadAsync"/> without completing the <see cref="IPipelineReader"/>.
+        /// </summary>
+        public void CancelPendingRead()
+        {
+            _readingIsCancelled = true;
+
+            Complete();
+        }
+
+        /// <summary>
         /// Asynchronously reads a sequence of bytes from the current <see cref="IPipelineReader"/>.
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
@@ -319,6 +331,7 @@ namespace System.IO.Pipelines
                 throw new InvalidOperationException("can't GetResult unless completed");
             }
 
+            var readingIsCancelled = _readingIsCancelled;
             var readingIsCompleted = Reading.IsCompleted;
             if (readingIsCompleted)
             {
@@ -326,7 +339,7 @@ namespace System.IO.Pipelines
                 Reading.GetAwaiter().GetResult();
             }
 
-            return new ReadResult(Read(), readingIsCompleted);
+            return new ReadResult(Read(), readingIsCancelled, readingIsCompleted);
         }
 
         private void Dispose()
