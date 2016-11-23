@@ -2,12 +2,13 @@
 
 ## Span
 
-* (pri 0) Remove spans from corefxlab
+* [done] Remove Span<T> and ReadOnlySpan<T> from corefxlab
 * (pri 0) Find APIs that we added in `Span<T>` in CoreFxLab we haven't reviewed and/or
   scrutinized.
 * (pri 0) Create adaptive package for System.Memory (i.e. fast and slow span)
 * (pri 0) support bulk copy
 * (pri 1) copyto should work for overlapping ranges
+* (pri 1) review SpanExtensions and move some to System.Memory
 
 ## Parsing
 
@@ -39,7 +40,7 @@
 
 * (pri 0) design proper encoding APIs
 * (pri 0) performance tests and improvement
-* (pri 1) move encoding APIs from System.Text.Utf8 to System.Text.Primitives
+* [done] (pri 1) move encoding APIs from System.Text.Utf8 to System.Text.Primitives
 * (pri 2) full test coverage
 
 ## Binary Reader/Writer
@@ -68,9 +69,9 @@
 
 ## Infrastructure
 
-* (pri 0) Enable performance test runs
+* [done] (pri 0) Enable performance test runs
 * (pri 0) Remove IL rewriting from corefxlab
-* (pri 1)Enable allocation tests and gates
+* (pri 1) Enable allocation tests and gates
 * (pri 1) Enable C#7
 
 ## Architecture/Design/Other
@@ -78,8 +79,7 @@
 * Remove `System.IO.Pipeline.Text.Primitives`
 * Prototype `TextReader`-like APIs
 * Refactor `System.IO.Pipeline.File` into low level and pipleline-specific APIs
-* Refactor `System.IO.Pipeline.Compression` into low level and pipeline-specific
-  APIs
+* Refactor `System.IO.Pipeline.Compression` into low level and pipeline-specific APIs
 * Design proper Web.Encoding APIs
 * Drive language integration for spans
 * Write programming guides/docs
