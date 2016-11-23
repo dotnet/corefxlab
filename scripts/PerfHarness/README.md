@@ -20,7 +20,8 @@ When adding a new xunit-performance compatible test project, simply make the
 following changes to enable it to run using this harness:
 
 * Add a project dependency in this project's `project.json` referencing the new
-  test project
+  test project.
 
-* Add the new project to the array returned by `EnumeratePerfTests()` inside
-  `PerfHarness.cs`
+* Add the new element to the array returned by `GetTestAssemblies()` inside
+  `PerfHarness.cs`. The element should be the name of the perf test project
+  assembly, excluding the file extension.

@@ -8,7 +8,7 @@ public class PerfHarness
     {
         using (XunitPerformanceHarness harness = new XunitPerformanceHarness(args))
         {
-            foreach(var testName in EnumeratePerfTests())
+            foreach(var testName in GetTestAssemblies())
             {
                 harness.RunBenchmarks(GetTestAssembly(testName));
             }
@@ -24,7 +24,7 @@ public class PerfHarness
         );
     }
 
-    private static string[] EnumeratePerfTests()
+    private static string[] GetTestAssemblies()
     {
         return new [] {
             "System.Binary.Base64.Tests",
