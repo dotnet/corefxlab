@@ -36,6 +36,7 @@ namespace System.IO.Pipelines
         private int _consumingState;
         private int _producingState;
         private object _sync = new object();
+        private bool _readingIsCancelled;
 
         // REVIEW: This object might be getting a little big :)
         private readonly TaskCompletionSource<object> _readingTcs = new TaskCompletionSource<object>();
@@ -366,19 +367,21 @@ namespace System.IO.Pipelines
             // Reading commit head shared with writer
             lock (_sync)
             {
-                if (!examined.IsDefault &&
+                if ((!examined.IsDefault &&
                     examined.Segment == _commitHead &&
                     examined.Index == _commitHeadIndex &&
-                    Reading.Status == TaskStatus.WaitingForActivation)
+                    Reading.Status == TaskStatus.WaitingForActivation) || _readingIsCancelled)
                 {
                     Interlocked.CompareExchange(
                         ref _awaitableState,
                         _awaitableIsNotCompleted,
                         _awaitableIsCompleted);
                 }
+
+                _readingIsCancelled = false;
             }
 
-            while (returnStart != returnEnd)
+            while (returnStart != null && returnStart != returnEnd)
             {
                 var returnSegment = returnStart;
                 returnStart = returnStart.Next;
@@ -465,6 +468,21 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
+        /// Cancel to currently pending call to <see cref="ReadAsync"/> without completing the <see cref="IPipelineReader"/>.
+        /// </summary>
+        public void CancelPendingRead()
+        {
+            // TODO: Can factor out this lock
+            lock (_sync)
+            {
+                // Mark reading is cancellable
+                _readingIsCancelled = true;
+
+                Complete();
+            }
+        }
+
+        /// <summary>
         /// Asynchronously reads a sequence of bytes from the current <see cref="IPipelineReader"/>.
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
@@ -512,6 +530,7 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
             }
 
+            var readingIsCancelled = _readingIsCancelled;
             var readingIsCompleted = Reading.IsCompleted;
             if (readingIsCompleted)
             {
@@ -519,7 +538,7 @@ namespace System.IO.Pipelines
                 Reading.GetAwaiter().GetResult();
             }
 
-            return new ReadResult(Read(), readingIsCompleted);
+            return new ReadResult(Read(), readingIsCancelled, readingIsCompleted);
         }
 
         private void Dispose()

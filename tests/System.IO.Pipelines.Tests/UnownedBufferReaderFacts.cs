@@ -104,6 +104,85 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public async Task CancellingPendingReadBeforeReadAsync()
+        {
+            var tcs = new TaskCompletionSource<object>();
+            var stream = new CallbackStream(async (s, token) =>
+            {
+                await tcs.Task;
+                var bytes = Encoding.ASCII.GetBytes("Hello World");
+                await s.WriteAsync(bytes, 0, bytes.Length);
+            });
+
+            var reader = stream.AsPipelineReader();
+
+            reader.CancelPendingRead();
+
+            var result = await reader.ReadAsync();
+            var buffer = result.Buffer;
+            reader.Advance(buffer.End);
+
+            Assert.False(result.IsCompleted);
+            Assert.True(result.IsCancelled);
+            Assert.True(buffer.IsEmpty);
+
+            tcs.TrySetResult(null);
+
+            result = await reader.ReadAsync();
+            buffer = result.Buffer;
+
+            Assert.Equal(11, buffer.Length);
+            Assert.False(result.IsCancelled);
+            Assert.True(buffer.IsSingleSpan);
+            var array = new byte[11];
+            buffer.First.Span.CopyTo(array);
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+        }
+
+        [Fact]
+        public async Task CancellingPendingAfterReadAsync()
+        {
+            var tcs = new TaskCompletionSource<object>();
+            var stream = new CallbackStream(async (s, token) =>
+            {
+                await tcs.Task;
+                var bytes = Encoding.ASCII.GetBytes("Hello World");
+                await s.WriteAsync(bytes, 0, bytes.Length);
+            });
+
+            var reader = stream.AsPipelineReader();
+
+            var task = Task.Run(async () =>
+            {
+                var result = await reader.ReadAsync();
+                var buffer = result.Buffer;
+                reader.Advance(buffer.End);
+
+                Assert.False(result.IsCompleted);
+                Assert.True(result.IsCancelled);
+                Assert.True(buffer.IsEmpty);
+
+                tcs.TrySetResult(null);
+
+                result = await reader.ReadAsync();
+                buffer = result.Buffer;
+
+                Assert.Equal(11, buffer.Length);
+                Assert.False(result.IsCancelled);
+                Assert.True(buffer.IsSingleSpan);
+                var array = new byte[11];
+                buffer.First.Span.CopyTo(array);
+                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+            });
+
+            await ((UnownedBufferReader)reader).ReadingStarted;
+
+            reader.CancelPendingRead();
+
+            await task;
+        }
+
+        [Fact]
         public async Task CanConsumeLessDataThanProduced()
         {
             var stream = new CallbackStream(async (s, token) =>
@@ -468,6 +547,8 @@ namespace System.IO.Pipelines.Tests
                     throw new NotSupportedException();
                 }
             }
+
+            public void CancelPendingRead() => _readerWriter.CancelPendingRead();
 
             public void Advance(ReadCursor consumed, ReadCursor examined)
             {

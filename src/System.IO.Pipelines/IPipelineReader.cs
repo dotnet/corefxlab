@@ -28,6 +28,11 @@ namespace System.IO.Pipelines
         void Advance(ReadCursor consumed, ReadCursor examined);
 
         /// <summary>
+        /// Cancel to currently pending call to <see cref="ReadAsync"/> without completing the <see cref="IPipelineReader"/>.
+        /// </summary>
+        void CancelPendingRead();
+
+        /// <summary>
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
