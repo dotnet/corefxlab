@@ -120,7 +120,8 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
             {
                 int sizeToWrite = Math.Min(MaxBlockSize, numberOfBytesRemaing);
                 buffer.Ensure(sizeToWrite);
-                buffer.Memory.Span.Set(new Span<byte>(buff, sizeToWrite));
+                var writeSpan = new Span<byte>(buff, sizeToWrite);
+                writeSpan.CopyTo(buffer.Memory.Span);
                 buffer.Advance(sizeToWrite);
                 numberOfBytesRemaing -= sizeToWrite;
             }

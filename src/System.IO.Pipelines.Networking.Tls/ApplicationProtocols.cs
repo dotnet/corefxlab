@@ -131,7 +131,8 @@ namespace System.IO.Pipelines.Networking.Tls
                     var value = _allProtocols[i];
                     spa.Write((byte) value.Length);
                     spa = spa.Slice(1);
-                    spa.Set(value);
+                    var valueSpan = new Span<byte>(value);
+                    valueSpan.CopyTo(spa);
                     spa = spa.Slice(value.Length);
                 }
             }
