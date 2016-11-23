@@ -4,23 +4,23 @@ namespace System.IO.Pipelines.Networking.Tls
 {
     public class SecurePipeline<T> : ISecurePipeline where T : ISecureContext
     {
-        private readonly IPipelineConnection _lowerChannel;
-        private readonly PipelineReaderWriter _outputChannel;
-        private readonly PipelineReaderWriter _inputChannel;
+        private readonly IPipelineConnection _lowerConnection;
+        private readonly PipelineReaderWriter _outputPipeline;
+        private readonly PipelineReaderWriter _inputPipeline;
         private readonly T _contextToDispose;
         private TaskCompletionSource<ApplicationProtocols.ProtocolIds> _handShakeCompleted;
 
-        internal SecurePipeline(IPipelineConnection inChannel, PipelineFactory channelFactory, T secureContext)
+        internal SecurePipeline(IPipelineConnection inConnection, PipelineFactory pipelineFactory, T secureContext)
         {
             _contextToDispose = secureContext;
-            _lowerChannel = inChannel;
-            _inputChannel = channelFactory.Create();
-            _outputChannel = channelFactory.Create();
+            _lowerConnection = inConnection;
+            _inputPipeline = pipelineFactory.Create();
+            _outputPipeline = pipelineFactory.Create();
             StartWriting();
         }
 
-        public IPipelineReader Input => _outputChannel;
-        public IPipelineWriter Output => _inputChannel;
+        public IPipelineReader Input => _outputPipeline;
+        public IPipelineWriter Output => _inputPipeline;
         public CipherInfo CipherInfo => _contextToDispose.CipherInfo;
 
         public Task<ApplicationProtocols.ProtocolIds> ShakeHandsAsync()
@@ -34,13 +34,13 @@ namespace System.IO.Pipelines.Networking.Tls
             if (!_contextToDispose.IsServer)
             {
                 //If it is a client we need to start by sending a client hello straight away
-                await _contextToDispose.ProcessContextMessageAsync(_lowerChannel.Output);
+                await _contextToDispose.ProcessContextMessageAsync(_lowerConnection.Output);
             }
             try
             {
                 while (true)
                 {
-                    var result = await _lowerChannel.Input.ReadAsync();
+                    var result = await _lowerConnection.Input.ReadAsync();
                     var buffer = result.Buffer;
                     try
                     {
@@ -58,7 +58,7 @@ namespace System.IO.Pipelines.Networking.Tls
                                     "Received a token that was invalid during the handshake");
                             }
 
-                            await _contextToDispose.ProcessContextMessageAsync(messageBuffer, _lowerChannel.Output);
+                            await _contextToDispose.ProcessContextMessageAsync(messageBuffer, _lowerConnection.Output);
 
                             if (_contextToDispose.ReadyToSend)
                             {
@@ -69,7 +69,7 @@ namespace System.IO.Pipelines.Networking.Tls
                     }
                     finally
                     {
-                        _lowerChannel.Input.Advance(buffer.Start, buffer.End);
+                        _lowerConnection.Input.Advance(buffer.Start, buffer.End);
                     }
                 }
             }
@@ -92,7 +92,7 @@ namespace System.IO.Pipelines.Networking.Tls
             {
                 while (true)
                 {
-                    var result = await _lowerChannel.Input.ReadAsync();
+                    var result = await _lowerConnection.Input.ReadAsync();
                     var buffer = result.Buffer;
                     try
                     {
@@ -108,7 +108,7 @@ namespace System.IO.Pipelines.Networking.Tls
                             //If we have app data, we will slice it out and process it
                             if (frameType == TlsFrameType.AppData)
                             {
-                                await _contextToDispose.DecryptAsync(messageBuffer, _outputChannel);
+                                await _contextToDispose.DecryptAsync(messageBuffer, _outputPipeline);
                             }
                             else
                             {
@@ -118,7 +118,7 @@ namespace System.IO.Pipelines.Networking.Tls
                     }
                     finally
                     {
-                        _lowerChannel.Input.Advance(buffer.Start, buffer.End);
+                        _lowerConnection.Input.Advance(buffer.Start, buffer.End);
                     }
                 }
             }
@@ -126,14 +126,14 @@ namespace System.IO.Pipelines.Networking.Tls
             {
                 try
                 {
-                    //Close down the lower channel
-                    _lowerChannel.Input.Complete();
-                    _lowerChannel.Output.Complete();
+                    //Close down the lower pipeline
+                    _lowerConnection.Input.Complete();
+                    _lowerConnection.Output.Complete();
                     //Tell the upper consumer that we aren't sending any more data
-                    _outputChannel.CompleteReader();
-                    _outputChannel.CompleteWriter();
-                    _inputChannel.CompleteReader();
-                    _inputChannel.CompleteWriter();
+                    _outputPipeline.CompleteReader();
+                    _outputPipeline.CompleteWriter();
+                    _inputPipeline.CompleteReader();
+                    _inputPipeline.CompleteWriter();
                 }
                 catch
                 {
@@ -150,7 +150,7 @@ namespace System.IO.Pipelines.Networking.Tls
             {
                 while (true)
                 {
-                    var result = await _inputChannel.ReadAsync();
+                    var result = await _inputPipeline.ReadAsync();
 
                     var buffer = result.Buffer;
                     if (buffer.IsEmpty && result.IsCompleted)
@@ -172,12 +172,12 @@ namespace System.IO.Pipelines.Networking.Tls
                                 messageBuffer = buffer.Slice(0, maxBlockSize);
                                 buffer = buffer.Slice(maxBlockSize);
                             }
-                            await _contextToDispose.EncryptAsync(messageBuffer, _lowerChannel.Output);
+                            await _contextToDispose.EncryptAsync(messageBuffer, _lowerConnection.Output);
                         }
                     }
                     finally
                     {
-                        _inputChannel.Advance(buffer.End);
+                        _inputPipeline.Advance(buffer.End);
                     }
                 }
             }
@@ -185,14 +185,14 @@ namespace System.IO.Pipelines.Networking.Tls
             {
                 try
                 {
-                    //Close down the lower channel
-                    _lowerChannel.Input.Complete();
-                    _lowerChannel.Output.Complete();
+                    //Close down the lower pipeline
+                    _lowerConnection.Input.Complete();
+                    _lowerConnection.Output.Complete();
                     //Tell the upper consumer that we aren't sending any more data
-                    _outputChannel.CompleteReader();
-                    _outputChannel.CompleteWriter();
-                    _inputChannel.CompleteReader();
-                    _inputChannel.CompleteWriter();
+                    _outputPipeline.CompleteReader();
+                    _outputPipeline.CompleteWriter();
+                    _inputPipeline.CompleteReader();
+                    _inputPipeline.CompleteWriter();
                 }
                 catch
                 {
@@ -248,7 +248,7 @@ namespace System.IO.Pipelines.Networking.Tls
 
         public void Dispose()
         {
-            _lowerChannel.Dispose();
+            _lowerConnection.Dispose();
             _contextToDispose?.Dispose();
         }
     }

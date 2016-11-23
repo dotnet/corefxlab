@@ -24,12 +24,12 @@ namespace System.IO.Pipelines.Networking.Tls
         private readonly byte[] _alpnSupportedProtocols;
         private GCHandle _alpnHandle;
         private readonly SecurityBuffer _alpnBuffer;
-        private readonly PipelineFactory _channelFactory;
+        private readonly PipelineFactory _pipelineFactory;
 
         /// <summary>
         /// Loads up SSPI and sets up the credentials handle in memory ready to authenticate TLS connections
         /// </summary>
-        /// <param name="factory">The channel factory that will be used to allocate input and output channels for the secure channels</param>
+        /// <param name="factory">The pipeline factory that will be used to allocate input and output pipelines for the secure pipelines</param>
         /// <param name="hostName">The name of the host that will be sent to the other parties, for a server this should be the name on the certificate. For clients this can be left blank or the name on a client cert</param>
         /// <param name="isServer">Used to denote if you are going to be negotiating incoming or outgoing Tls connections</param>
         /// <param name="serverCert">This is the in memory representation of the certificate used for the PKI exchange and authentication</param>
@@ -41,7 +41,7 @@ namespace System.IO.Pipelines.Networking.Tls
         /// <summary>
         /// Loads up SSPI and sets up the credentials handle in memory ready to authenticate TLS connections
         /// </summary>
-        /// <param name="factory">The channel factory that will be used to allocate input and output channels for the secure channels</param>
+        /// <param name="factory">The pipeline factory that will be used to allocate input and output pipelines for the secure channels</param>
         /// <param name="hostName">The name of the host that will be sent to the other parties, for a server this should be the name on the certificate. For clients this can be left blank or the name on a client cert</param>
         /// <param name="isServer">Used to denote if you are going to be negotiating incoming or outgoing Tls connections</param>
         /// <param name="serverCert">This is the in memory representation of the certificate used for the PKI exchange and authentication</param>
@@ -54,7 +54,7 @@ namespace System.IO.Pipelines.Networking.Tls
                 throw new ArgumentNullException(nameof(hostName));
             }
             _hostName = hostName;
-            _channelFactory = factory;
+            _pipelineFactory = factory;
             _serverCertificate = serverCert;
             _isServer = isServer;
             CreateAuthentication();
@@ -166,9 +166,9 @@ namespace System.IO.Pipelines.Networking.Tls
             }
         }
 
-        public ISecurePipeline CreateSecureChannel(IPipelineConnection channel)
+        public ISecurePipeline CreateSecurePipeline(IPipelineConnection pipeline)
         {
-            var chan = new SecurePipeline<SecureConnectionContext>(channel, _channelFactory,
+            var chan = new SecurePipeline<SecureConnectionContext>(pipeline, _pipelineFactory,
                 new SecureConnectionContext(this));
             return chan;
         }
