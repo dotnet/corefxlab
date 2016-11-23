@@ -110,7 +110,7 @@ namespace System.IO.Pipelines.Networking.Tls
                 spa = spa.Slice(4);
                 spa.Write(listLength);
                 spa = spa.Slice(2);
-                spa.Write(ProtocolList(supportedProtocols, spa));
+                ProtocolList(supportedProtocols, spa);
             }
             else
             {
@@ -142,12 +142,12 @@ namespace System.IO.Pipelines.Networking.Tls
         internal static unsafe ProtocolIds GetNegotiatedProtocol(byte* protocolId, byte protocolIdSize)
         {
             var matchedValue = new Span<byte>(protocolId, protocolIdSize);
-            for (int i = 0; i < _allProtocols.Length; i++)
+            for (int i = 1; i < _allProtocols.Length; i++)
             {
                 var proto = _allProtocols[i];
                 if (matchedValue.SequenceEqual(proto))
                 {
-                    return (ProtocolIds) (1 << i);
+                    return (ProtocolIds) (1 << (i - 1));
                 }
             }
             throw new ArgumentOutOfRangeException($"Could not match the negotiated protocol to a valid protocol");
