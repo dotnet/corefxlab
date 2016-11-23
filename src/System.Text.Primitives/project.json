@@ -26,10 +26,10 @@
   },
   "dependencies": {
     "System.Memory": "4.4.0-beta-24721-02",
+    "System.Slices": { "target": "project" },
     "System.Buffers": "4.0.0",
     "System.Collections": "4.0.11",
-    "System.Runtime.InteropServices": "4.1.0",
-    "System.Text.Utf8": { "target": "project" }
+    "System.Runtime.InteropServices": "4.1.0"
   },
   "frameworks": {
     "netstandard1.1": {
