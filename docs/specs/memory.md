@@ -174,26 +174,67 @@ public class OwnedMemory<T> : IDisposable {
 
 ## Bonus Features
 
-The design based on OwnedMemory<T> has several limitations that we might want to
-address:
+The design based on OwnedMemory\<T\> has several limitations that we might want to
+address. The limitations and potential solutions are described in this section.
 
-1. A new OwnedMemory instance must be allocated for every revocation, i.e.
-   although buffers can be pooled, the instances of OwnedMemory cannot. The
-   instances cannot be pooled because they cannot be reused (resurrected). If
-   OwnedMemory was resurrected, all previous Memory<T> values that were supposed
-   to be invalidated would point to the new reused OwnedMemory.
+### Pooling OwnedMemory\<T\>
 
-2. It's unsafe to call OwnedMemory.Dispose while a separate thread operates on a
-   `Span<T>` retrieved from the Memory\<T> value.
+A new OwnedMemory\<T\> instance must be allocated for every revocation, i.e.
+although buffers can be pooled, the instances of OwnedMemory\<T\> cannot. The
+instances cannot be pooled because they cannot be reused (resurrected). If
+OwnedMemory\<T\> was resurrected, all previous Memory\<T\> values that were 
+supposed to be invalidated when the memory was returned to the pool, 
+would point to the new reused OwnedMemory\<T\>.
+```c#
+// pseudocode
+OwnedMemory<byte> owned1 = s_stack.Pop(); // rent from pool
+Memory<byte> memory = owned.Memory;
+owned.Dispose();
+s_stack.Push(owned); // return to pool
+OwnedMemory<byte> owned2 = s_stack.Pop().Ressurect(); // rent again
+memory.Span[0] = 0; // this should fail; owned1 was returned to the pool
+```
+We could address this limitation by storing a unique ID in OwnedMemory\<T\> when 
+it's rented from a pool, and giving this ID to all Memory\<T\> instances created
+from this OwnedMemory\<T\>. All Memory\<T\> instances would have to pass this ID
+to OwnedMeory\<T\> when requesting operations that access the memory. 
+The IDs would have to match for the operation to succeed. 
+The ID in OwnedMemory\<T\> would be changed when OwnedMemory\<T\> is disposed 
+and returned to the pool, at which point all existing Memory\<T\> instances 
+could not access it anymore.
+```C#
+public struct Memory<T> {
+    OwnedMemory<T> _owner;
+    long _id;
+    int _index;
+    int _length;
+    
+    public Span<T> Span => _owner.GetSpanInternal(_id).Slice(_index, _length);
+}
+public class OwnedMemory<T> {
+    int _id = GenerateNewId();
+       
+    public Memory<T> Memory => new Memory<T>(this, Id);
+    
+    internal Span<T> GetSpanInternal(long id) {
+        if (_id != id) ThrowIdHelper();
+            return Span;
+        }
+    }
+    
+    public void Dispose() => _id = int.MinValue;
+    
+    public void Ressurect() => _id = GenerateNewId();
+}
+```
+The main negatives of this approach are additional complexity and larger size of Memory<T> instances.
+The current prototype in the corfxlab repo implements this feature: https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/Memory.cs#L14
 
-The following sections describe variants of the basic design addressing these
-limitations.
-
-### Pooling Owned `Memory<T>`
-TBD
+### IOwnedMemory<T>
 
 ### Safe Dispose
-TBD
+It's unsafe to call OwnedMemory.Dispose while a separate thread operates on a
+`Span<T>` retrieved from the Memory\<T> value.
 
 ## Issues/To-Design
 
