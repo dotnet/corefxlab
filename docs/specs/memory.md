@@ -230,7 +230,28 @@ public class OwnedMemory<T> {
 The main negatives of this approach are additional complexity and larger size of Memory<T> instances.
 The current prototype in the corfxlab repo implements this feature: https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/Buffers/Memory.cs#L14
 
-### IOwnedMemory<T>
+### IOwnedMemory\<T\>
+OwnedMemory\<T\> is a wrapper over actual memory buffers. 
+When wrapping T[], System.String, and other reference type buffers, 
+we end up with two managed objects for each instance of OwnedMemory\<T\>.
+If OwnedMemory\<T\> were an interface, the interface could be implemented directly by types representing memory buffers, 
+and such types could directly interoperate with Memory\<T\> (and so Span\<T\>).
+```c#
+// pseudocode
+public class String : IOwnedMemory<char> {
+   Span<T> IOwnedMemory<char>.GetSpan() { ... } // this is called by Memory\<T\>
+}
+...
+string str = "Hello World";
+ReadOnlySpan<char> substring = str.Memory.Slice(5, 10);
+```
+A proof of concept of such feature is implemented in https://github.com/KrzysztofCwalina/corefxlab/blob/Utf8String2/src/System.Text.Utf8/System/Text/Utf8/Utf8String2.cs
+
+This feature has the following tradeoffs:
+
+1. (good) It allows reference types that cannot inherit from OwnedMemory\<T\> to directly interoperate with Memory\<T\> without the need to allocate wrappers.
+2. (bad) This feature does not work with types that need object pooling support, as there is no indirection between Memory\<T\> and IOwnedMemory\<T\> instances.
+3. (ugly) The feature makes some of the hot path method calls (in particular IOwnedMemory\<T\>.GetSpan) virtual/interface dispatch. We have some anecdotal evidence this is unacceptable in some performance critical scenarios.
 
 ### Safe Dispose
 It's unsafe to call OwnedMemory.Dispose while a separate thread operates on a
