@@ -16,7 +16,7 @@ namespace System.Text.Encodings.Web.Utf8.Tests
             Assert.True(len <= input.Length);
 
             var unescaped = destination.Slice(0, len);
-            Assert.False(unescaped.ReferenceEquals(input.Slice(0, len)));
+            Assert.False(unescaped == input.Slice(0, len));
 
             var outputDecoded = Encoding.UTF8.GetString(unescaped.ToArray());
             Assert.Equal(expected, outputDecoded);

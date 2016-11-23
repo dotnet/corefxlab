@@ -122,7 +122,7 @@ namespace System.Text
                     fixed (char* pCharacters = value)
                     {
                         byte* pBytes = (byte*)pCharacters;
-                        buffer.Set(pBytes, valueBytes);
+                        new Span<byte>(pBytes, valueBytes).CopyTo(buffer);
                     }
                 }
 
@@ -206,7 +206,7 @@ namespace System.Text
                     return false;
                 }
 
-                buffer.Set(value.Bytes);
+                value.Bytes.CopyTo(buffer);
                 bytesWritten = value.Length;
                 return true;
             }
