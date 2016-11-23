@@ -242,8 +242,6 @@ Temporary Items
 #dotnet.exe output
 tools/
 
-
-
 *.ncrunchproject
 *.ncrunchsolution
 
@@ -256,3 +254,6 @@ nuget.exe
 # VS Code Files
 .vscode
 *.props
+
+#xunit perf reports
+scripts/PerfHarness/*.csv

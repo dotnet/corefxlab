@@ -21,7 +21,6 @@
     "System.Text.Json.Dynamic": { "target": "project" },
     "System.Runtime": "4.1.0",
     "System.Runtime.Extensions": "4.1.0",
-    "System.Text.Utf8": { "target": "project" },
     "System.Text.Formatting": { "target": "project" },
     "System.Text.Primitives": { "target": "project" },
     "System.Slices": { "target": "project" },

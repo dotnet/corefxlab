@@ -54,7 +54,7 @@ namespace System
 
         /// <summary>
         /// Creates a new slice over the portion of the target array beginning
-        /// at 'start' index and ending at 'end' index (exclusive).
+        /// at 'start' index and with 'length' items.
         /// </summary>
         /// <param name="array">The target array.</param>
         /// <param name="start">The index at which to begin the slice.</param>

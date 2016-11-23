@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text.Utf8.Tests
 {
+    //TODO: these should be proted to xunit perf.
     [Trait("category", "performance")]
     [Trait("category", "outerloop")]
     public class Utf8StringPerformanceTests

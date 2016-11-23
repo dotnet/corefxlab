@@ -6,13 +6,6 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
-    public enum TextEncoding : byte
-    {
-        Utf16 = 0,
-        Utf8 = 1,
-        Ascii,
-    }
-
     public struct EncodingData : IEquatable<EncodingData>
     {
         private static EncodingData s_invariantUtf16;
