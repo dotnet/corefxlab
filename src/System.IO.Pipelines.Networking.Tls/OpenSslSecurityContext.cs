@@ -8,7 +8,7 @@ namespace System.IO.Pipelines.Networking.Tls
         internal const int BlockSize = 1024 * 4 - 64; //Current fixed block size
 
         private readonly string _hostName;
-        private readonly PipelineFactory _channelFactory;
+        private readonly PipelineFactory _pipelineFactory;
         private readonly bool _isServer;
         private InteropKeys.PK12Certifcate _certifcateInformation;
         private byte[] _alpnSupportedProtocolsBuffer;
@@ -17,12 +17,12 @@ namespace System.IO.Pipelines.Networking.Tls
         internal Interop.alpn_cb AlpnCallback;
         private ApplicationProtocols.ProtocolIds _alpnSupportedProtocols;
 
-        public OpenSslSecurityContext(PipelineFactory channelFactory, string hostName, bool isServer, string pathToPfxFile, string password)
-            : this(channelFactory, hostName, isServer, pathToPfxFile, password, 0)
+        public OpenSslSecurityContext(PipelineFactory pipelineFactory, string hostName, bool isServer, string pathToPfxFile, string password)
+            : this(pipelineFactory, hostName, isServer, pathToPfxFile, password, 0)
         {
         }
 
-        public OpenSslSecurityContext(PipelineFactory channelFactory, string hostName, bool isServer, string pathToPfxFile, string password, ApplicationProtocols.ProtocolIds alpnSupportedProtocols)
+        public OpenSslSecurityContext(PipelineFactory pipelineFactory, string hostName, bool isServer, string pathToPfxFile, string password, ApplicationProtocols.ProtocolIds alpnSupportedProtocols)
         {
             if (isServer && string.IsNullOrEmpty(pathToPfxFile))
             {
@@ -31,7 +31,7 @@ namespace System.IO.Pipelines.Networking.Tls
 
             InteropCrypto.Init();
             _hostName = hostName;
-            _channelFactory = channelFactory;
+            _pipelineFactory = pipelineFactory;
             _isServer = isServer;
             _alpnSupportedProtocols = alpnSupportedProtocols;
 
@@ -117,10 +117,10 @@ namespace System.IO.Pipelines.Networking.Tls
             }
         }
 
-        public ISecurePipeline CreateSecureChannel(IPipelineConnection channel)
+        public ISecurePipeline CreateSecurePipeline(IPipelineConnection pipeline)
         {
             var ssl = Interop.SSL_new(SslContext);
-            var chan = new SecureChannel<OpenSslConnectionContext>(channel, _channelFactory, new OpenSslConnectionContext(this, ssl));
+            var chan = new SecurePipeline<OpenSslConnectionContext>(pipeline, _pipelineFactory, new OpenSslConnectionContext(this, ssl));
             return chan;
         }
 

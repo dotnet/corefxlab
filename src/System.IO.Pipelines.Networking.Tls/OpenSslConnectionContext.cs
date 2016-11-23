@@ -53,11 +53,11 @@ namespace System.IO.Pipelines.Networking.Tls
         public bool ReadyToSend => _readyToSend;
         public CipherInfo CipherInfo => _ssl != IntPtr.Zero ? Interop.GetCipherInfo(_ssl) : default(CipherInfo);
 
-        public unsafe Task DecryptAsync(ReadableBuffer encryptedData, IPipelineWriter decryptedChannel)
+        public unsafe Task DecryptAsync(ReadableBuffer encryptedData, IPipelineWriter decryptedPipeline)
         {
             CustomBio.SetReadBufferPointer(_readBio, ref encryptedData);
 
-            var decryptedData = decryptedChannel.Alloc();
+            var decryptedData = decryptedPipeline.Alloc();
             var result = 1;
             while (result > 0)
             {
@@ -74,9 +74,9 @@ namespace System.IO.Pipelines.Networking.Tls
             return decryptedData.FlushAsync();
         }
 
-        public unsafe Task EncryptAsync(ReadableBuffer unencrypted, IPipelineWriter encryptedChannel)
+        public unsafe Task EncryptAsync(ReadableBuffer unencrypted, IPipelineWriter encryptedPipeline)
         {
-            var handle = GCHandle.Alloc(encryptedChannel);
+            var handle = GCHandle.Alloc(encryptedPipeline);
             try
             {
                 CustomBio.SetWriteBufferPointer(_writeBio, handle);
@@ -87,7 +87,7 @@ namespace System.IO.Pipelines.Networking.Tls
                     var bytesRead = Interop.SSL_write(_ssl, ptr, unencrypted.First.Length);
                     unencrypted = unencrypted.Slice(bytesRead);
                 }
-                return encryptedChannel.Alloc().FlushAsync();
+                return encryptedPipeline.Alloc().FlushAsync();
             }
             finally
             {
@@ -113,7 +113,7 @@ namespace System.IO.Pipelines.Networking.Tls
                 if (result == 1)
                 {
                     //handshake is complete, do a final write out of data and mark as done
-                    //WriteToChannel(ref writeBuffer, _writeBio);
+                    //WriteToPipeline(ref writeBuffer, _writeBio);
                     if (_securityContext.AplnBufferLength > 0)
                     {
                         byte* protoPointer;

@@ -29,8 +29,8 @@ namespace System.IO.Pipelines.Tests
             using (var clientContext = new SecurityContext(factory, "CARoot", false, null, ApplicationProtocols.ProtocolIds.Http2OverTls))
             {
                 var loopback = new LoopbackPipeline(factory);
-                using (var server = serverContext.CreateSecureChannel(loopback.ServerChannel))
-                using (var client = clientContext.CreateSecureChannel(loopback.ClientChannel))
+                using (var server = serverContext.CreateSecurePipeline(loopback.ServerChannel))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
                 {
                     Echo(server);
                     var proto = await client.ShakeHandsAsync();
@@ -48,8 +48,8 @@ namespace System.IO.Pipelines.Tests
             using (var clientContext = new SecurityContext(factory, "CARoot", false, cert, ApplicationProtocols.ProtocolIds.Http2OverTls))
             {
                 var loopback = new LoopbackPipeline(factory);
-                using (var server = serverContext.CreateSecureChannel(loopback.ServerChannel))
-                using (var client = clientContext.CreateSecureChannel(loopback.ClientChannel))
+                using (var server = serverContext.CreateSecurePipeline(loopback.ServerChannel))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
                 {
                     Echo(server);
                     var proto = await client.ShakeHandsAsync();
@@ -67,8 +67,8 @@ namespace System.IO.Pipelines.Tests
             using (var serverContext = new SecurityContext(factory, "CARoot", true, cert, ApplicationProtocols.ProtocolIds.Http2OverTls))
             {
                 var loopback = new LoopbackPipeline(factory);
-                Echo(serverContext.CreateSecureChannel(loopback.ServerChannel));
-                var client = clientContext.CreateSecureChannel(loopback.ClientChannel);
+                Echo(serverContext.CreateSecurePipeline(loopback.ServerChannel));
+                var client = clientContext.CreateSecurePipeline(loopback.ClientChannel);
                 var proto = await client.ShakeHandsAsync();
                 Assert.Equal(ApplicationProtocols.ProtocolIds.Http2OverTls, proto);
             }
@@ -83,8 +83,8 @@ namespace System.IO.Pipelines.Tests
             using (var serverContext = new SecurityContext(factory, "CARoot", true, cert))
             {
                 var loopback = new LoopbackPipeline(factory);
-                Echo(serverContext.CreateSecureChannel(loopback.ServerChannel));
-                var client = clientContext.CreateSecureChannel(loopback.ClientChannel);
+                Echo(serverContext.CreateSecurePipeline(loopback.ServerChannel));
+                var client = clientContext.CreateSecurePipeline(loopback.ClientChannel);
                 var outputBuffer = client.Output.Alloc();
                 outputBuffer.Write(Encoding.UTF8.GetBytes(_shortTestString));
                 await outputBuffer.FlushAsync();
@@ -114,8 +114,8 @@ namespace System.IO.Pipelines.Tests
             using (var clientContext = new OpenSslSecurityContext(factory, "test", false, null, null))
             {
                 var loopback = new LoopbackPipeline(factory);
-                using (var server = serverContext.CreateSecureChannel(loopback.ServerChannel))
-                using (var client = clientContext.CreateSecureChannel(loopback.ClientChannel))
+                using (var server = serverContext.CreateSecurePipeline(loopback.ServerChannel))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
                 {
                     Echo(server);
                     await client.ShakeHandsAsync();
@@ -150,8 +150,8 @@ namespace System.IO.Pipelines.Tests
             using (var clientContext = new SecurityContext(factory, "CARoot", false, null))
             {
                 var loopback = new LoopbackPipeline(factory);
-                using (var server = serverContext.CreateSecureChannel(loopback.ServerChannel))
-                using (var client = clientContext.CreateSecureChannel(loopback.ClientChannel))
+                using (var server = serverContext.CreateSecurePipeline(loopback.ServerChannel))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
                 {
                     Echo(server);
 
@@ -186,7 +186,7 @@ namespace System.IO.Pipelines.Tests
             using (var secContext = new SecurityContext(channelFactory, "CARoot", true, cert))
             {
                 var loopback = new LoopbackPipeline(channelFactory);
-                using (var server = secContext.CreateSecureChannel(loopback.ServerChannel))
+                using (var server = secContext.CreateSecurePipeline(loopback.ServerChannel))
                 using (var sslStream = new SslStream(loopback.ClientChannel.GetStream(), false, ValidateServerCertificate, null, EncryptionPolicy.RequireEncryption))
                 {
                     Echo(server);
@@ -211,7 +211,7 @@ namespace System.IO.Pipelines.Tests
             using (var clientContext = new SecurityContext(factory, "CARoot", false, null))
             {
                 var loopback = new LoopbackPipeline(factory);
-                using (var client = clientContext.CreateSecureChannel(loopback.ClientChannel))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
                 using (var secureServer = new SslStream(loopback.ServerChannel.GetStream(), false))
                 {
                     secureServer.AuthenticateAsServerAsync(cert, false, System.Security.Authentication.SslProtocols.Tls, false);
@@ -251,7 +251,7 @@ namespace System.IO.Pipelines.Tests
             using (var secContext = new OpenSslSecurityContext(channelFactory, "CARoot", true, _certificatePath, _certificatePassword))
             {
                 var loopback = new LoopbackPipeline(channelFactory);
-                using (var server = secContext.CreateSecureChannel(loopback.ServerChannel))
+                using (var server = secContext.CreateSecurePipeline(loopback.ServerChannel))
                 using (var sslStream = new SslStream(loopback.ClientChannel.GetStream(), false, ValidateServerCertificate, null, EncryptionPolicy.RequireEncryption))
                 {
                     Echo(server);
@@ -275,7 +275,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var loopback = new LoopbackPipeline(channelFactory);
                 using (var secureServer = new SslStream(loopback.ServerChannel.GetStream(), false))
-                using (var client = clientContext.CreateSecureChannel(loopback.ClientChannel))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
                 {
                     secureServer.AuthenticateAsServerAsync(cert, false, System.Security.Authentication.SslProtocols.Tls, false);
 
