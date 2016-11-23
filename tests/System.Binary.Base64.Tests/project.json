@@ -19,7 +19,7 @@
     },
     "xunit": "2.2.0-beta2-build3300",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
-    "Microsoft.DotNet.xunit.performance": "1.0.0-alpha-build0041"
+    "xunit.performance.core": "1.0.0-alpha-build0043"
   },
   "frameworks": {
     "netcoreapp1.0": {
