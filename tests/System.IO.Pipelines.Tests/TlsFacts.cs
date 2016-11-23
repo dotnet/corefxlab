@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Tests
         private static readonly string _certificatePassword = "Test123t";
         private static readonly string _shortTestString = "The quick brown fox jumped over the lazy dog.";
 
-        [WindowsOnlyFact()]
+        [WindowsOnlyFact]
         public async Task SspiAplnMatchingProtocol()
         {
             using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
@@ -29,8 +29,8 @@ namespace System.IO.Pipelines.Tests
             using (var clientContext = new SecurityContext(factory, "CARoot", false, null, ApplicationProtocols.ProtocolIds.Http2OverTls))
             {
                 var loopback = new LoopbackPipeline(factory);
-                using (var server = serverContext.CreateSecurePipeline(loopback.ServerChannel))
-                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
+                using (var server = serverContext.CreateSecurePipeline(loopback.ServerPipeline))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientPipeline))
                 {
                     Echo(server);
                     var proto = await client.ShakeHandsAsync();
@@ -38,84 +38,17 @@ namespace System.IO.Pipelines.Tests
                 }
             }
         }
-
-        [WindowsOnlyFact]
-        public async Task OpenSslAsServerSspiAsClientAplnMatchingProtocol()
-        {
-            using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
-            using (var factory = new PipelineFactory())
-            using (var serverContext = new OpenSslSecurityContext(factory, "test", true, _certificatePath, _certificatePassword, ApplicationProtocols.ProtocolIds.Http11 | ApplicationProtocols.ProtocolIds.Http2OverTls))
-            using (var clientContext = new SecurityContext(factory, "CARoot", false, cert, ApplicationProtocols.ProtocolIds.Http2OverTls))
-            {
-                var loopback = new LoopbackPipeline(factory);
-                using (var server = serverContext.CreateSecurePipeline(loopback.ServerChannel))
-                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
-                {
-                    Echo(server);
-                    var proto = await client.ShakeHandsAsync();
-                    Assert.Equal(ApplicationProtocols.ProtocolIds.Http2OverTls, proto);
-                }
-            }
-        }
-
-        [WindowsOnlyFact]
-        public async Task SspiAsServerOpenSslAsClientAplnMatchingProtocol()
-        {
-            using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
-            using (var factory = new PipelineFactory())
-            using (var clientContext = new OpenSslSecurityContext(factory, "test", false, _certificatePath, _certificatePassword, ApplicationProtocols.ProtocolIds.Http11 | ApplicationProtocols.ProtocolIds.Http2OverTls))
-            using (var serverContext = new SecurityContext(factory, "CARoot", true, cert, ApplicationProtocols.ProtocolIds.Http2OverTls))
-            {
-                var loopback = new LoopbackPipeline(factory);
-                Echo(serverContext.CreateSecurePipeline(loopback.ServerChannel));
-                var client = clientContext.CreateSecurePipeline(loopback.ClientChannel);
-                var proto = await client.ShakeHandsAsync();
-                Assert.Equal(ApplicationProtocols.ProtocolIds.Http2OverTls, proto);
-            }
-        }
-
-        [WindowsOnlyFact]
-        public async Task OpenSslAndSspiChannelAllTheThings()
-        {
-            using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
-            using (var factory = new PipelineFactory())
-            using (var clientContext = new OpenSslSecurityContext(factory, "test", false, _certificatePath, _certificatePassword))
-            using (var serverContext = new SecurityContext(factory, "CARoot", true, cert))
-            {
-                var loopback = new LoopbackPipeline(factory);
-                Echo(serverContext.CreateSecurePipeline(loopback.ServerChannel));
-                var client = clientContext.CreateSecurePipeline(loopback.ClientChannel);
-                var outputBuffer = client.Output.Alloc();
-                outputBuffer.Write(Encoding.UTF8.GetBytes(_shortTestString));
-                await outputBuffer.FlushAsync();
-
-                //Now check we get the same thing back
-                string resultString;
-                while (true)
-                {
-                    var result = await client.Input.ReadAsync();
-                    if (result.Buffer.Length >= _shortTestString.Length)
-                    {
-                        resultString = result.Buffer.GetUtf8String();
-                        client.Input.Advance(result.Buffer.End);
-                        break;
-                    }
-                    client.Input.Advance(result.Buffer.Start, result.Buffer.End);
-                }
-                Assert.Equal(_shortTestString, resultString);
-            }
-        }
-
-        [Fact]
-        public async Task OpenSslChannelAllTheThings()
+                
+        [NotWindowsFact]
+        public async Task OpenSslPipelineAllTheThings()
         {
             using (var factory = new PipelineFactory())
             using (var serverContext = new OpenSslSecurityContext(factory, "test", true, _certificatePath, _certificatePassword))
             using (var clientContext = new OpenSslSecurityContext(factory, "test", false, null, null))
             {
                 var loopback = new LoopbackPipeline(factory);
-                using (var server = serverContext.CreateSecurePipeline(loopback.ServerChannel))
-                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
+                using (var server = serverContext.CreateSecurePipeline(loopback.ServerPipeline))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientPipeline))
                 {
                     Echo(server);
                     await client.ShakeHandsAsync();
@@ -142,7 +75,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [WindowsOnlyFact]
-        public async Task SspiChannelAllThings()
+        public async Task SspiPipelineAllThings()
         {
             using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
             using (var factory = new PipelineFactory())
@@ -150,8 +83,8 @@ namespace System.IO.Pipelines.Tests
             using (var clientContext = new SecurityContext(factory, "CARoot", false, null))
             {
                 var loopback = new LoopbackPipeline(factory);
-                using (var server = serverContext.CreateSecurePipeline(loopback.ServerChannel))
-                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
+                using (var server = serverContext.CreateSecurePipeline(loopback.ServerPipeline))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientPipeline))
                 {
                     Echo(server);
 
@@ -179,15 +112,15 @@ namespace System.IO.Pipelines.Tests
         }
 
         [WindowsOnlyFact()]
-        public async Task SspiChannelServerStreamClient()
+        public async Task SspiPipelineServerStreamClient()
         {
-            using (var channelFactory = new PipelineFactory())
+            using (var pipelineFactory = new PipelineFactory())
             using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
-            using (var secContext = new SecurityContext(channelFactory, "CARoot", true, cert))
+            using (var secContext = new SecurityContext(pipelineFactory, "CARoot", true, cert))
             {
-                var loopback = new LoopbackPipeline(channelFactory);
-                using (var server = secContext.CreateSecurePipeline(loopback.ServerChannel))
-                using (var sslStream = new SslStream(loopback.ClientChannel.GetStream(), false, ValidateServerCertificate, null, EncryptionPolicy.RequireEncryption))
+                var loopback = new LoopbackPipeline(pipelineFactory);
+                using (var server = secContext.CreateSecurePipeline(loopback.ServerPipeline))
+                using (var sslStream = new SslStream(loopback.ClientPipeline.GetStream(), false, ValidateServerCertificate, null, EncryptionPolicy.RequireEncryption))
                 {
                     Echo(server);
 
@@ -204,15 +137,15 @@ namespace System.IO.Pipelines.Tests
         }
 
         [WindowsOnlyFact()]
-        public async Task SspiStreamServerChannelClient()
+        public async Task SspiStreamServerPipelineClient()
         {
             using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
             using (var factory = new PipelineFactory())
             using (var clientContext = new SecurityContext(factory, "CARoot", false, null))
             {
                 var loopback = new LoopbackPipeline(factory);
-                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
-                using (var secureServer = new SslStream(loopback.ServerChannel.GetStream(), false))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientPipeline))
+                using (var secureServer = new SslStream(loopback.ServerPipeline.GetStream(), false))
                 {
                     secureServer.AuthenticateAsServerAsync(cert, false, System.Security.Authentication.SslProtocols.Tls, false);
 
@@ -243,16 +176,16 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [WindowsOnlyFact]
-        public async Task OpenSslChannelServerStreamClient()
+        [NotWindowsFact]
+        public async Task OpenSslPipelineServerStreamClient()
         {
-            using (var channelFactory = new PipelineFactory())
+            using (var pipelineFactory = new PipelineFactory())
             using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
-            using (var secContext = new OpenSslSecurityContext(channelFactory, "CARoot", true, _certificatePath, _certificatePassword))
+            using (var secContext = new OpenSslSecurityContext(pipelineFactory, "CARoot", true, _certificatePath, _certificatePassword))
             {
-                var loopback = new LoopbackPipeline(channelFactory);
-                using (var server = secContext.CreateSecurePipeline(loopback.ServerChannel))
-                using (var sslStream = new SslStream(loopback.ClientChannel.GetStream(), false, ValidateServerCertificate, null, EncryptionPolicy.RequireEncryption))
+                var loopback = new LoopbackPipeline(pipelineFactory);
+                using (var server = secContext.CreateSecurePipeline(loopback.ServerPipeline))
+                using (var sslStream = new SslStream(loopback.ClientPipeline.GetStream(), false, ValidateServerCertificate, null, EncryptionPolicy.RequireEncryption))
                 {
                     Echo(server);
                     await sslStream.AuthenticateAsClientAsync("CARoot");
@@ -266,16 +199,16 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [WindowsOnlyFact]
-        public async Task OpenSslStreamServerChannelClient()
+        [NotWindowsFact]
+        public async Task OpenSslStreamServerPipelineClient()
         {
             using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
-            using (var channelFactory = new PipelineFactory())
-            using (var clientContext = new OpenSslSecurityContext(channelFactory, "CARoot", false, _certificatePath, _certificatePassword))
+            using (var pipelineFactory = new PipelineFactory())
+            using (var clientContext = new OpenSslSecurityContext(pipelineFactory, "CARoot", false, _certificatePath, _certificatePassword))
             {
-                var loopback = new LoopbackPipeline(channelFactory);
-                using (var secureServer = new SslStream(loopback.ServerChannel.GetStream(), false))
-                using (var client = clientContext.CreateSecurePipeline(loopback.ClientChannel))
+                var loopback = new LoopbackPipeline(pipelineFactory);
+                using (var secureServer = new SslStream(loopback.ServerPipeline.GetStream(), false))
+                using (var client = clientContext.CreateSecurePipeline(loopback.ClientPipeline))
                 {
                     secureServer.AuthenticateAsServerAsync(cert, false, System.Security.Authentication.SslProtocols.Tls, false);
 
@@ -335,34 +268,34 @@ namespace System.IO.Pipelines.Tests
             return false;
         }
 
-        private async Task Echo(ISecurePipeline channel)
+        private async Task Echo(ISecurePipeline pipeline)
         {
-            await channel.ShakeHandsAsync();
+            await pipeline.ShakeHandsAsync();
             try
             {
                 while (true)
                 {
-                    var result = await channel.Input.ReadAsync();
+                    var result = await pipeline.Input.ReadAsync();
                     var request = result.Buffer;
 
                     if (request.IsEmpty && result.IsCompleted)
                     {
-                        channel.Input.Advance(request.End);
+                        pipeline.Input.Advance(request.End);
                         break;
                     }
                     int len = request.Length;
-                    var response = channel.Output.Alloc();
+                    var response = pipeline.Output.Alloc();
                     response.Append(request);
                     await response.FlushAsync();
-                    channel.Input.Advance(request.End);
+                    pipeline.Input.Advance(request.End);
                 }
-                channel.Input.Complete();
-                channel.Output.Complete();
+                pipeline.Input.Complete();
+                pipeline.Output.Complete();
             }
             catch (Exception ex)
             {
-                channel.Input.Complete(ex);
-                channel.Output.Complete(ex);
+                pipeline.Input.Complete(ex);
+                pipeline.Output.Complete(ex);
             }
         }
     }
