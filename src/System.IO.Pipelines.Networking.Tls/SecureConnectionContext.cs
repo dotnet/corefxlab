@@ -225,8 +225,8 @@ namespace System.IO.Pipelines.Networking.Tls
             //By a misbehaving underlying pipeline we will allocate here simply because it is a rare occurance and not
             //worth risking a stack overflow over
             var memoryToClear = new Span<byte>(outBufferPointer, _headerSize + _trailerSize + unencrypted.Length);
-            var empty = new byte[_headerSize + _trailerSize + unencrypted.Length];
-            memoryToClear.Set(empty);
+            var empty = new Span<byte>(new byte[_headerSize + _trailerSize + unencrypted.Length]);
+            empty.CopyTo(memoryToClear);
             encryptedData.Commit();
             throw new InvalidOperationException($"There was an issue encrypting the data {result}");
         }
