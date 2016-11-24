@@ -281,7 +281,7 @@ namespace System.IO.Pipelines.Networking.Tls
                     //The data was multispan so we had to copy it out into either a stack pointer or an allocated and pinned array
                     //so now we need to copy it out to the output
                     var decryptedData = decryptedDataPipeline.Alloc();
-                    decryptedData.Write(new Span<byte>(pointer, encryptedData.Length));
+                    decryptedData.Write(new Span<byte>(((byte*)pointer + offset), count));
                     return decryptedData.FlushAsync();
                 }
             }
