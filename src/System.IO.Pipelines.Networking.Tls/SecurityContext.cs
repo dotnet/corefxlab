@@ -12,9 +12,11 @@ namespace System.IO.Pipelines.Networking.Tls
             ContextFlags.AllocateMemory;
 
         internal const ContextFlags ServerRequiredFlags = RequiredFlags | ContextFlags.AcceptStream;
-        internal const int BlockSize = 1024 * 4 - 64; //Current fixed block size
+        //Current fixed block size (4k - 1 64 byte cacheline, should be from the pipeline factory in the future
+        internal const int BlockSize = 1024 * 4 - 64;
         internal const SslProtocols SupportedProtocols = SslProtocols.Tls;
         private const string SecurityPackage = "Microsoft Unified Security Protocol Provider";
+        //Maximum sized as defined by the IETF for TLS frames
         public const int MaxStackAllocSize = 16 * 1024;
 
         private readonly X509Certificate _serverCertificate;
@@ -140,7 +142,6 @@ namespace System.IO.Pipelines.Networking.Tls
                 certContextArray = IntPtr.Zero,
                 cCreds = 0
             };
-
             IntPtr certPointer;
             if (_isServer)
             {
