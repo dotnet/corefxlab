@@ -21,8 +21,6 @@
     "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
-    "System.Diagnostics.Debug": "4.0.11",
-    "System.Memory": "4.4.0-beta-24721-02",
     "System.Slices": { "target": "project" }
   },
   "frameworks": {

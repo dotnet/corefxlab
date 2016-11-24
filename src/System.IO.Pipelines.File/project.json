@@ -18,7 +18,7 @@
     "System.IO.Pipelines": {
       "target": "project"
     },
-    "System.Threading.Overlapped": "4.0.1"
+    "System.Threading.Overlapped": "4.4.0-*"
   },
 
 

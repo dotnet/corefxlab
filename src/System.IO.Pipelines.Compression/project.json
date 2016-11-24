@@ -23,7 +23,7 @@
     "net451": {},
     "netstandard1.3": {
       "dependencies": {
-        "System.Diagnostics.Contracts": "4.0.1"
+        "System.Diagnostics.Contracts": "4.4.0-*"
       }
     }
   }
