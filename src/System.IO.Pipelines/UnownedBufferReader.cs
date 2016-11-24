@@ -27,7 +27,7 @@ namespace System.IO.Pipelines
         private BufferSegment _tail;
 
         private bool _consuming;
-        private bool _readingIsCancelled;
+        private int _cancelledState;
 
         // REVIEW: This object might be getting a little big :)
         private readonly TaskCompletionSource<object> _readingTcs = new TaskCompletionSource<object>();
@@ -195,13 +195,16 @@ namespace System.IO.Pipelines
             }
 
             // Again, we don't need an interlock here because Read and Write proceed serially.
-            if ((!examined.IsDefault &&
-                examined.IsEnd &&
-                Reading.Status == TaskStatus.WaitingForActivation &&
-                _awaitableState == _awaitableIsCompleted) || _readingIsCancelled)
+            // REVIEW: examined.IsEnd (PipelineReaderWriter has changed this logic)
+            var consumedEverything = examined.IsEnd &&
+                                     Reading.Status == TaskStatus.WaitingForActivation &&
+                                     _awaitableState == _awaitableIsCompleted;
+
+            CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
+
+            if (consumedEverything && _cancelledState != CancelledState.CancellationRequested)
             {
                 _awaitableState = _awaitableIsNotCompleted;
-                _readingIsCancelled = false;
             }
 
             while (returnStart != returnEnd)
@@ -270,7 +273,7 @@ namespace System.IO.Pipelines
         /// </summary>
         public void CancelPendingRead()
         {
-            _readingIsCancelled = true;
+            _cancelledState = CancelledState.CancellationRequested;
 
             Complete();
         }
@@ -331,7 +334,7 @@ namespace System.IO.Pipelines
                 throw new InvalidOperationException("can't GetResult unless completed");
             }
 
-            var readingIsCancelled = _readingIsCancelled;
+            var readingIsCancelled = CompareExchange(ref _cancelledState, CancelledState.CancellationObserved, CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
             var readingIsCompleted = Reading.IsCompleted;
             if (readingIsCompleted)
             {
@@ -377,6 +380,25 @@ namespace System.IO.Pipelines
             {
                 Dispose();
             }
+        }
+
+        // A helper to keep the logic between this and PipelineReaderWriter as similar as possible
+        private static int CompareExchange(ref int location, int value, int comparand)
+        {
+            var previous = location;
+            if (location == comparand)
+            {
+                location = value;
+            }
+
+            return previous;
+        }
+
+        private static class CancelledState
+        {
+            public static int NotCancelled = 0;
+            public static int CancellationRequested = 1;
+            public static int CancellationObserved = 2;
         }
     }
 }

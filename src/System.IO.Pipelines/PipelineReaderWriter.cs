@@ -36,7 +36,7 @@ namespace System.IO.Pipelines
         private int _consumingState;
         private int _producingState;
         private object _sync = new object();
-        private bool _readingIsCancelled;
+        private int _cancelledState;
 
         // REVIEW: This object might be getting a little big :)
         private readonly TaskCompletionSource<object> _readingTcs = new TaskCompletionSource<object>();
@@ -367,18 +367,23 @@ namespace System.IO.Pipelines
             // Reading commit head shared with writer
             lock (_sync)
             {
-                if ((!examined.IsDefault &&
-                    examined.Segment == _commitHead &&
-                    examined.Index == _commitHeadIndex &&
-                    Reading.Status == TaskStatus.WaitingForActivation) || _readingIsCancelled)
+                // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
+                Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
+
+                var consumedEverything = examined.Segment == _commitHead &&
+                                         examined.Index == _commitHeadIndex &&
+                                         Reading.Status == TaskStatus.WaitingForActivation;
+
+                // We reset the awaitable to not completed if
+                // 1. We've consumed everything the producer produced so far
+                // 2. Cancellation wasn't requested
+                if (consumedEverything && _cancelledState != CancelledState.CancellationRequested)
                 {
                     Interlocked.CompareExchange(
                         ref _awaitableState,
                         _awaitableIsNotCompleted,
                         _awaitableIsCompleted);
                 }
-
-                _readingIsCancelled = false;
             }
 
             while (returnStart != null && returnStart != returnEnd)
@@ -476,7 +481,7 @@ namespace System.IO.Pipelines
             lock (_sync)
             {
                 // Mark reading is cancellable
-                _readingIsCancelled = true;
+                _cancelledState = CancelledState.CancellationRequested;
 
                 Complete();
             }
@@ -530,7 +535,8 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
             }
 
-            var readingIsCancelled = _readingIsCancelled;
+            // Change the state from to be cancelled -> observed
+            var readingIsCancelled = Interlocked.CompareExchange(ref _cancelledState, CancelledState.CancellationObserved, CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
             var readingIsCompleted = Reading.IsCompleted;
             if (readingIsCompleted)
             {
@@ -570,6 +576,13 @@ namespace System.IO.Pipelines
         {
             public static int NotActive = 0;
             public static int Active = 1;
+        }
+
+        private static class CancelledState
+        {
+            public static int NotCancelled = 0;
+            public static int CancellationRequested = 1;
+            public static int CancellationObserved = 2;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace System.IO.Pipelines
         void Advance(ReadCursor consumed, ReadCursor examined);
 
         /// <summary>
-        /// Cancel to currently pending call to <see cref="ReadAsync"/> without completing the <see cref="IPipelineReader"/>.
+        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipelineReader"/>.
         /// </summary>
         void CancelPendingRead();
 
