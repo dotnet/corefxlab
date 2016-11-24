@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.Networking.Tls
 
         private readonly OpenSslSecurityContext _securityContext;
         private int _headerSize = 5; //5 is the minimum (1 for frame type, 2 for version, 2 for frame size)
-        private int _trailerSize = 16;
+        private int _trailerSize = 16; //Used for MAC storage
         private bool _readyToSend;
         private IntPtr _ssl;
         private readonly InteropBio.BioHandle _readBio;
@@ -74,18 +74,18 @@ namespace System.IO.Pipelines.Networking.Tls
             return decryptedData.FlushAsync();
         }
 
-        public unsafe Task EncryptAsync(ReadableBuffer unencrypted, IPipelineWriter encryptedPipeline)
+        public unsafe Task EncryptAsync(ReadableBuffer unencryptedData, IPipelineWriter encryptedPipeline)
         {
             var handle = GCHandle.Alloc(encryptedPipeline);
             try
             {
                 CustomBio.SetWriteBufferPointer(_writeBio, handle);
-                while (unencrypted.Length > 0)
+                while (unencryptedData.Length > 0)
                 {
                     void* ptr;
-                    unencrypted.First.TryGetPointer(out ptr);
-                    var bytesRead = Interop.SSL_write(_ssl, ptr, unencrypted.First.Length);
-                    unencrypted = unencrypted.Slice(bytesRead);
+                    unencryptedData.First.TryGetPointer(out ptr);
+                    var bytesRead = Interop.SSL_write(_ssl, ptr, unencryptedData.First.Length);
+                    unencryptedData = unencryptedData.Slice(bytesRead);
                 }
                 return encryptedPipeline.Alloc().FlushAsync();
             }
@@ -96,14 +96,14 @@ namespace System.IO.Pipelines.Networking.Tls
             }
         }
 
-        public Task ProcessContextMessageAsync(IPipelineWriter writeBuffer)
+        public Task ProcessContextMessageAsync(IPipelineWriter writer)
         {
-            return ProcessContextMessageAsync(default(ReadableBuffer), writeBuffer);
+            return ProcessContextMessageAsync(default(ReadableBuffer), writer);
         }
 
-        public unsafe Task ProcessContextMessageAsync(ReadableBuffer readBuffer, IPipelineWriter writeBuffer)
+        public unsafe Task ProcessContextMessageAsync(ReadableBuffer readBuffer, IPipelineWriter writer)
         {
-            var writeHandle = GCHandle.Alloc(writeBuffer);
+            var writeHandle = GCHandle.Alloc(writer);
             try
             {
                 CustomBio.SetReadBufferPointer(_readBio, ref readBuffer);
@@ -119,12 +119,12 @@ namespace System.IO.Pipelines.Networking.Tls
                         byte* protoPointer;
                         int len;
                         Interop.SSL_get0_alpn_selected(_ssl, out protoPointer, out len);
-                        _negotiatedProtocol = ApplicationProtocols.GetNegotiatedProtocol(protoPointer, (byte) len);
+                        _negotiatedProtocol = ApplicationProtocols.GetNegotiatedProtocol(protoPointer, (byte)len);
                     }
                     _readyToSend = true;
                     if (CustomBio.NumberOfWrittenBytes(_writeBio) > 0)
                     {
-                        return writeBuffer.Alloc().FlushAsync();
+                        return writer.Alloc().FlushAsync();
                     }
                     else
                     {
@@ -138,7 +138,7 @@ namespace System.IO.Pipelines.Networking.Tls
                 {
                     if (CustomBio.NumberOfWrittenBytes(_writeBio) > 0)
                     {
-                        return writeBuffer.Alloc().FlushAsync();
+                        return writer.Alloc().FlushAsync();
                     }
                     else
                     {
@@ -159,17 +159,12 @@ namespace System.IO.Pipelines.Networking.Tls
             }
         }
 
-        object l = new object();
-
         public void Dispose()
         {
-            lock (l)
+            if (_ssl != IntPtr.Zero)
             {
-                if (_ssl != IntPtr.Zero)
-                {
-                    Interop.SSL_free(_ssl);
-                    _ssl = IntPtr.Zero;
-                }
+                Interop.SSL_free(_ssl);
+                _ssl = IntPtr.Zero;
             }
         }
     }

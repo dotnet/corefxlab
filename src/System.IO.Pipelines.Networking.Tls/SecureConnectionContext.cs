@@ -41,18 +41,18 @@ namespace System.IO.Pipelines.Networking.Tls
         /// <summary>
         /// Without a payload from the client the server will just return straight away.
         /// </summary>
-        /// <param name="writeBuffer"></param>
-        public Task ProcessContextMessageAsync(IPipelineWriter writeBuffer)
+        /// <param name="writer"></param>
+        public Task ProcessContextMessageAsync(IPipelineWriter writer)
         {
-            return ProcessContextMessageAsync(default(ReadableBuffer), writeBuffer);
+            return ProcessContextMessageAsync(default(ReadableBuffer), writer);
         }
 
         /// <summary>
         /// Processes the tokens or cipher change messages from a client and can then return server messages for the client
         /// </summary>
         /// <param name="readBuffer"></param>
-        /// <param name="writePipeline"></param>
-        public Task ProcessContextMessageAsync(ReadableBuffer readBuffer, IPipelineWriter writePipeline)
+        /// <param name="writer"></param>
+        public Task ProcessContextMessageAsync(ReadableBuffer readBuffer, IPipelineWriter writer)
         {
             var handleForAllocation = default(GCHandle);
             try
@@ -170,7 +170,7 @@ namespace System.IO.Pipelines.Networking.Tls
                     }
                     if (outputBuff[0].size > 0)
                     {
-                        var writeBuffer = writePipeline.Alloc();
+                        var writeBuffer = writer.Alloc();
                         writeBuffer.Write(new Span<byte>(outputBuff[0].tokenPointer, outputBuff[0].size));
                         Interop.FreeContextBuffer((IntPtr)outputBuff[0].tokenPointer);
                         return writeBuffer.FlushAsync();
@@ -191,24 +191,24 @@ namespace System.IO.Pipelines.Networking.Tls
         /// <summary>
         /// Encrypts by allocating a single block on the out buffer to contain the message, plus the trailer and header. Then uses SSPI to write directly onto the output
         /// </summary>
-        /// <param name="unencrypted">The secure context that holds the information about the current connection</param>
-        /// <param name="encryptedDataPipeline">The buffer to write the encryption results to</param>
-        public Task EncryptAsync(ReadableBuffer unencrypted, IPipelineWriter encryptedDataPipeline)
+        /// <param name="unencryptedData">The secure context that holds the information about the current connection</param>
+        /// <param name="encryptedPipeline">The buffer to write the encryption results to</param>
+        public Task EncryptAsync(ReadableBuffer unencryptedData, IPipelineWriter encryptedPipeline)
         {
-            var encryptedData = encryptedDataPipeline.Alloc();
-            encryptedData.Ensure(_trailerSize + _headerSize + unencrypted.Length);
+            var encryptedData = encryptedPipeline.Alloc();
+            encryptedData.Ensure(_trailerSize + _headerSize + unencryptedData.Length);
             void* outBufferPointer;
             encryptedData.Memory.TryGetPointer(out outBufferPointer);
 
             //Copy the unencrypted across to the encrypted pipeline, it will be updated in place and destroyed
-            unencrypted.CopyTo(encryptedData.Memory.Slice(_headerSize, unencrypted.Length).Span);
+            unencryptedData.CopyTo(encryptedData.Memory.Slice(_headerSize, unencryptedData.Length).Span);
 
             var securityBuff = stackalloc SecurityBuffer[4];
             SecurityBufferDescriptor sdcInOut = new SecurityBufferDescriptor(4);
             securityBuff[0] = new SecurityBuffer(outBufferPointer, _headerSize, SecurityBufferType.Header);
-            securityBuff[1] = new SecurityBuffer((byte*)outBufferPointer + _headerSize, unencrypted.Length,
+            securityBuff[1] = new SecurityBuffer((byte*)outBufferPointer + _headerSize, unencryptedData.Length,
                 SecurityBufferType.Data);
-            securityBuff[2] = new SecurityBuffer((byte*)securityBuff[1].tokenPointer + unencrypted.Length, _trailerSize,
+            securityBuff[2] = new SecurityBuffer((byte*)securityBuff[1].tokenPointer + unencryptedData.Length, _trailerSize,
                 SecurityBufferType.Trailer);
 
             sdcInOut.UnmanagedPointer = securityBuff;
@@ -224,8 +224,8 @@ namespace System.IO.Pipelines.Networking.Tls
             //Zero out the output buffer before throwing the exception to stop any data being sent in the clear
             //By a misbehaving underlying pipeline we will allocate here simply because it is a rare occurance and not
             //worth risking a stack overflow over
-            var memoryToClear = new Span<byte>(outBufferPointer, _headerSize + _trailerSize + unencrypted.Length);
-            var empty = new Span<byte>(new byte[_headerSize + _trailerSize + unencrypted.Length]);
+            var memoryToClear = new Span<byte>(outBufferPointer, _headerSize + _trailerSize + unencryptedData.Length);
+            var empty = new Span<byte>(new byte[_headerSize + _trailerSize + unencryptedData.Length]);
             empty.CopyTo(memoryToClear);
             encryptedData.Commit();
             throw new InvalidOperationException($"There was an issue encrypting the data {result}");
@@ -236,9 +236,9 @@ namespace System.IO.Pipelines.Networking.Tls
         /// too big for that we will allocate.
         /// </summary>
         /// <param name="encryptedData">The buffer that will provide the bytes to be encrypted</param>
-        /// <param name="decryptedDataPipeline">The buffer to write the encryption results to</param>
+        /// <param name="decryptedPipeline">The buffer to write the encryption results to</param>
         /// <returns></returns>
-        public unsafe Task DecryptAsync(ReadableBuffer encryptedData, IPipelineWriter decryptedDataPipeline)
+        public unsafe Task DecryptAsync(ReadableBuffer encryptedData, IPipelineWriter decryptedPipeline)
         {
             GCHandle handle = default(GCHandle);
             try
@@ -271,7 +271,7 @@ namespace System.IO.Pipelines.Networking.Tls
                 if (encryptedData.IsSingleSpan)
                 {
                     //The data was always in a single continous buffer so we can just append the decrypted data to the output
-                    var decryptedData = decryptedDataPipeline.Alloc();
+                    var decryptedData = decryptedPipeline.Alloc();
                     encryptedData = encryptedData.Slice(offset, count);
                     decryptedData.Append(encryptedData);
                     return decryptedData.FlushAsync();
@@ -280,7 +280,7 @@ namespace System.IO.Pipelines.Networking.Tls
                 {
                     //The data was multispan so we had to copy it out into either a stack pointer or an allocated and pinned array
                     //so now we need to copy it out to the output
-                    var decryptedData = decryptedDataPipeline.Alloc();
+                    var decryptedData = decryptedPipeline.Alloc();
                     decryptedData.Write(new Span<byte>(pointer, encryptedData.Length));
                     return decryptedData.FlushAsync();
                 }
@@ -300,7 +300,6 @@ namespace System.IO.Pipelines.Networking.Tls
             SecurityBufferDescriptor sdcInOut = new SecurityBufferDescriptor(4);
             securityBuff[0] = new SecurityBuffer(buffer, count, SecurityBufferType.Data);
             sdcInOut.UnmanagedPointer = securityBuff;
-
             var errorCode = Interop.DecryptMessage(ref _contextPointer, sdcInOut, 0, null);
 
             if (errorCode != 0)

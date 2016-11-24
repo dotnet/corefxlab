@@ -33,7 +33,7 @@ namespace System.IO.Pipelines.Tests
                 using (var client = clientContext.CreateSecurePipeline(loopback.ClientPipeline))
                 {
                     Echo(server);
-                    var proto = await client.ShakeHandsAsync();
+                    var proto = await client.PerformHandshakeAsync();
                     Assert.Equal(ApplicationProtocols.ProtocolIds.Http2OverTls, proto);
                 }
             }
@@ -51,7 +51,7 @@ namespace System.IO.Pipelines.Tests
                 using (var client = clientContext.CreateSecurePipeline(loopback.ClientPipeline))
                 {
                     Echo(server);
-                    await client.ShakeHandsAsync();
+                    await client.PerformHandshakeAsync();
                     var outputBuffer = client.Output.Alloc();
                     outputBuffer.Write(Encoding.UTF8.GetBytes(_shortTestString));
                     await outputBuffer.FlushAsync();
@@ -88,7 +88,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     Echo(server);
 
-                    await client.ShakeHandsAsync();
+                    await client.PerformHandshakeAsync();
                     var outputBuffer = client.Output.Alloc();
                     outputBuffer.Write(Encoding.UTF8.GetBytes(_shortTestString));
                     await outputBuffer.FlushAsync();
@@ -149,7 +149,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     secureServer.AuthenticateAsServerAsync(cert, false, System.Security.Authentication.SslProtocols.Tls, false);
 
-                    await client.ShakeHandsAsync();
+                    await client.PerformHandshakeAsync();
 
                     var buff = client.Output.Alloc();
                     buff.Write(Encoding.UTF8.GetBytes(_shortTestString));
@@ -212,7 +212,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     secureServer.AuthenticateAsServerAsync(cert, false, System.Security.Authentication.SslProtocols.Tls, false);
 
-                    await client.ShakeHandsAsync();
+                    await client.PerformHandshakeAsync();
                     var buff = client.Output.Alloc();
                     buff.Write(Encoding.UTF8.GetBytes(_shortTestString));
                     await buff.FlushAsync();
@@ -270,7 +270,7 @@ namespace System.IO.Pipelines.Tests
 
         private async Task Echo(ISecurePipeline pipeline)
         {
-            await pipeline.ShakeHandsAsync();
+            await pipeline.PerformHandshakeAsync();
             try
             {
                 while (true)

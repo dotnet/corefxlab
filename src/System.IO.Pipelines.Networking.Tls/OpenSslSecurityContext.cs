@@ -5,7 +5,8 @@ namespace System.IO.Pipelines.Networking.Tls
 {
     public class OpenSslSecurityContext : IDisposable
     {
-        internal const int BlockSize = 1024 * 4 - 64; //Current fixed block size
+        //Current fixed block size (4k - 1 64 byte cacheline, should be from the pipeline factory in the future
+        internal const int BlockSize = 1024 * 4 - 64; 
 
         private readonly string _hostName;
         private readonly PipelineFactory _pipelineFactory;
