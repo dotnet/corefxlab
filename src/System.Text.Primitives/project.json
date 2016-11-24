@@ -25,7 +25,6 @@
     }
   },
   "dependencies": {
-    "System.Memory": "4.4.0-beta-24721-02",
     "System.Slices": { "target": "project" },
     "System.Buffers": "4.4.0-*"
   },
