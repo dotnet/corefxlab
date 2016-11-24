@@ -140,6 +140,40 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public async Task CancellingBeforeAdvance()
+        {
+            var stream = new CallbackStream(async (s, token) =>
+            {
+                var bytes = Encoding.ASCII.GetBytes("Hello World");
+                await s.WriteAsync(bytes, 0, bytes.Length);
+            });
+
+            var reader = stream.AsPipelineReader();
+
+            var result = await reader.ReadAsync();
+            var buffer = result.Buffer;
+
+            Assert.Equal(11, buffer.Length);
+            Assert.False(result.IsCancelled);
+            Assert.True(buffer.IsSingleSpan);
+            var array = new byte[11];
+            buffer.First.Span.CopyTo(array);
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+
+            reader.CancelPendingRead();
+
+            reader.Advance(buffer.End);
+
+            var awaitable = reader.ReadAsync();
+
+            Assert.True(awaitable.IsCompleted);
+
+            result = await awaitable;
+
+            Assert.True(result.IsCancelled);
+        }
+
+        [Fact]
         public async Task CancellingPendingAfterReadAsync()
         {
             var tcs = new TaskCompletionSource<object>();

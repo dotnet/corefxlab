@@ -179,6 +179,36 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public async Task AdvanceEmptyBufferAfterWritingResetsAwaitable()
+        {
+            using (var factory = new PipelineFactory())
+            {
+                var readerWriter = factory.Create();
+                var bytes = Encoding.ASCII.GetBytes("Hello World");
+
+                await readerWriter.WriteAsync(bytes);
+                var result = await readerWriter.ReadAsync();
+                var buffer = result.Buffer;
+
+                Assert.Equal(11, buffer.Length);
+                Assert.True(buffer.IsSingleSpan);
+                var array = new byte[11];
+                buffer.First.Span.CopyTo(array);
+                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+
+                readerWriter.Advance(buffer.End);
+
+                // Now write 0 and advance 0
+                await readerWriter.WriteAsync(Span<byte>.Empty);
+                result = await readerWriter.ReadAsync();
+                readerWriter.Advance(result.Buffer.End);
+
+                var awaitable = readerWriter.ReadAsync();
+                Assert.False(awaitable.IsCompleted);
+            }
+        }
+
+        [Fact]
         public async Task AdvanceShouldResetStateIfReadCancelled()
         {
             using (var factory = new PipelineFactory())
@@ -229,6 +259,42 @@ namespace System.IO.Pipelines.Tests
                 var array = new byte[11];
                 buffer.First.Span.CopyTo(array);
                 Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+            }
+        }
+
+        [Fact]
+        public async Task CancellingBeforeAdvance()
+        {
+            using (var factory = new PipelineFactory())
+            {
+                var readerWriter = factory.Create();
+
+                var bytes = Encoding.ASCII.GetBytes("Hello World");
+                var output = readerWriter.Alloc();
+                output.Write(bytes);
+                await output.FlushAsync();
+
+                var result = await readerWriter.ReadAsync();
+                var buffer = result.Buffer;
+
+                Assert.Equal(11, buffer.Length);
+                Assert.False(result.IsCancelled);
+                Assert.True(buffer.IsSingleSpan);
+                var array = new byte[11];
+                buffer.First.Span.CopyTo(array);
+                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+
+                readerWriter.CancelPendingRead();
+
+                readerWriter.Advance(buffer.End);
+
+                var awaitable = readerWriter.ReadAsync();
+
+                Assert.True(awaitable.IsCompleted);
+
+                result = await awaitable;
+
+                Assert.True(result.IsCancelled);
             }
         }
 
