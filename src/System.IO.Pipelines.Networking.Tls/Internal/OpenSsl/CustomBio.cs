@@ -9,6 +9,8 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
 {
     internal static unsafe class CustomBio
     {
+        //Max Pipeline block size at the moment (4k - 1 cache line for tracking info) 
+        //this should come from the library directly when available in the future
         const int MaxBlockSize = 1024 * 4 - 64;
         const int BIO_TYPE_MEM = 1 | 0x0400 | 2;
         const int BIO_TYPE_SOURCE_SINK = 0x0400;
