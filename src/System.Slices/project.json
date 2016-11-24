@@ -25,12 +25,9 @@
     }
   },
   "dependencies": {
-    "System.Runtime": "4.1.0",
-    "System.Runtime.InteropServices": "4.1.0",
-    "System.Threading": "4.0.11",
-    "System.Diagnostics.Debug": "4.0.11",
+    "NETStandard.Library": "1.6.2-*",
     "System.Memory": "4.4.0-beta-24721-02",
-    "System.Runtime.CompilerServices.Unsafe": "4.0.0"
+    "System.Runtime.CompilerServices.Unsafe": "4.4.0-*"
   },
   "frameworks": {
     "netstandard1.1": {}

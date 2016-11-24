@@ -15,7 +15,6 @@
   },
 
   "dependencies": {
-    "NETStandard.Library": "1.6.0",
     "System.IO.Pipelines": {
       "target": "project"
     },
@@ -26,7 +25,7 @@
     "net451": {},
     "netstandard1.3": {
       "dependencies": {
-        "System.Threading.Thread": "4.0.0"
+        "System.Threading.Thread": "4.4.0-*"
       }
     }
   }

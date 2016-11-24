@@ -18,18 +18,17 @@
   },
 
   "dependencies": {
-    "NETStandard.Library": "1.6.0",
-    "System.Memory": "4.4.0-beta-24721-02",
-   "System.Slices": {
+    "NETStandard.Library": "1.6.2-*",
+    "System.Slices": {
       "target": "project"
     },
     "System.Binary": {
       "target": "project"
     },
-    "System.Buffers": "4.0.0",
-    "System.Runtime.CompilerServices.Unsafe": "4.0.0",
-    "System.Numerics.Vectors": "4.1.1",
-    "System.Threading.Tasks.Extensions": "4.0.0",
+    "System.Buffers": "4.4.0-*",
+    "System.Runtime.CompilerServices.Unsafe": "4.4.0-*",
+    "System.Numerics.Vectors": "4.4.0-*",
+    "System.Threading.Tasks.Extensions": "4.4.0-*",
     "System.Collections.Sequences": { "target": "project" }
   },
 
