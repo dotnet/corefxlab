@@ -10,7 +10,7 @@ using System.Text.Internal;
 
 namespace System.Text.Primitives.Tests
 {
-    public partial class PrimitiveParserPerfTests
+    public class InternalParserPerfTests
     {
         private static byte[] UtfEncode(string s)
         {

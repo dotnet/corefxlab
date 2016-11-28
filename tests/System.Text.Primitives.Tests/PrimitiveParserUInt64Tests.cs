@@ -86,7 +86,15 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedConsumed, actualConsumed);
         }
         
-        [Theory (Skip = "UInt64 hex parsing not implemented yet")]
+        [Theory]
+        [InlineData("1234567890", 10, 0x1234567890, 10)]
+        [InlineData("123456789a", 10, 0x123456789a, 10)]
+        [InlineData("abc", 3, 0xabc, 3)]
+        [InlineData("ABC", 3, 0xABC, 3)]
+        [InlineData("AbC4", 4, 0xAbC4, 4)]
+        [InlineData("abcdefghi", 9, 0xabcdef, 6)]
+        [InlineData("0", 1, ulong.MinValue, 1)]
+        [InlineData("FFFFFFFFFFFFFFFF", 16, ulong.MaxValue, 16)]
         public unsafe void UInt64PositiveHexTests(string text, int length, ulong expectedValue, int expectedConsumed)
         {
             byte[] byteBuffer = new Utf8String(text).CopyBytes();
@@ -99,11 +107,11 @@ namespace System.Text.Primitives.Tests
             ulong actualValue;
             int actualConsumed;
 
-            result = PrimitiveParser.TryParseUInt64(byteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf8, 'X');
+            /*result = PrimitiveParser.TryParseUInt64(byteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf8, 'X');
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
-            Assert.Equal(expectedConsumed, actualConsumed);
+            Assert.Equal(expectedConsumed, actualConsumed);*/
 
             fixed (byte* bytePointer = byteBuffer)
             {
@@ -130,7 +138,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
 
-            ReadOnlySpan<byte> utf16ByteSpan = charSpan.Cast<char, byte>();
+            /*ReadOnlySpan<byte> utf16ByteSpan = charSpan.Cast<char, byte>();
             result = PrimitiveParser.TryParseUInt64(utf16ByteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf16, 'X');
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
@@ -159,7 +167,7 @@ namespace System.Text.Primitives.Tests
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
-            Assert.Equal(expectedConsumed, actualConsumed);
+            Assert.Equal(expectedConsumed, actualConsumed);*/
         }
     }
 }

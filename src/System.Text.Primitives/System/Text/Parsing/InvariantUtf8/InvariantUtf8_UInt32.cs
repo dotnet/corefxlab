@@ -10,29 +10,6 @@ namespace System.Text
     {
         public static partial class InvariantUtf8
         {
-            const int UInt32OverflowLength = 10;
-            const int UInt32OverflowLengthHex = 8;
-
-            static readonly byte[] s_HexLookup =
-            {
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 15
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 31
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 47
-                0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,                       // 63
-                0xFF, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,                   // 79
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 95
-                0xFF, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,                   // 111
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 127
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 143
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 159
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 175
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 191
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 207
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 223
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,             // 239
-                0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF              // 255
-            };
-            
             public unsafe static bool TryParseUInt32(byte* text, int length, out uint value)
             {
                 if (length < 1)
@@ -335,7 +312,7 @@ namespace System.Text
                         value = default(uint);
                         return false;
                     }
-                    value = (uint)firstDigit;
+                    value = firstDigit;
 
                     if (length <= UInt32OverflowLengthHex)
                     {
@@ -348,7 +325,7 @@ namespace System.Text
                             {
                                 return true;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                     }
                     else
@@ -363,7 +340,7 @@ namespace System.Text
                             {
                                 return true;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                         for (int index = UInt32OverflowLengthHex; index < length; index++)
                         {
@@ -380,7 +357,7 @@ namespace System.Text
                                 value = default(uint);
                                 return false;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                     }
 
@@ -407,7 +384,7 @@ namespace System.Text
                         value = default(uint);
                         return false;
                     }
-                    value = (uint)firstDigit;
+                    value = firstDigit;
 
                     if (length <= UInt32OverflowLengthHex)
                     {
@@ -421,7 +398,7 @@ namespace System.Text
                                 bytesConsumed = index;
                                 return true;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                     }
                     else
@@ -437,7 +414,7 @@ namespace System.Text
                                 bytesConsumed = index;
                                 return true;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                         for (int index = UInt32OverflowLengthHex; index < length; index++)
                         {
@@ -456,7 +433,7 @@ namespace System.Text
                                 value = default(uint);
                                 return false;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                     }
 
@@ -482,7 +459,7 @@ namespace System.Text
                         value = default(uint);
                         return false;
                     }
-                    value = (uint)firstDigit;
+                    value = firstDigit;
 
                     if (text.Length <= UInt32OverflowLengthHex)
                     {
@@ -495,7 +472,7 @@ namespace System.Text
                             {
                                 return true;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                     }
                     else
@@ -510,7 +487,7 @@ namespace System.Text
                             {
                                 return true;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                         for (int index = UInt32OverflowLengthHex; index < text.Length; index++)
                         {
@@ -527,7 +504,7 @@ namespace System.Text
                                 value = default(uint);
                                 return false;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                     }
 
@@ -554,7 +531,7 @@ namespace System.Text
                         value = default(uint);
                         return false;
                     }
-                    value = (uint)firstDigit;
+                    value = firstDigit;
 
                     if (text.Length <= UInt32OverflowLengthHex)
                     {
@@ -568,7 +545,7 @@ namespace System.Text
                                 bytesConsumed = index;
                                 return true;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                     }
                     else
@@ -584,7 +561,7 @@ namespace System.Text
                                 bytesConsumed = index;
                                 return true;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                         for (int index = UInt32OverflowLengthHex; index < text.Length; index++)
                         {
@@ -603,7 +580,7 @@ namespace System.Text
                                 value = default(uint);
                                 return false;
                             }
-                            value = value * 0x10 + (uint)nextDigit;
+                            value = value * 0x10 + nextDigit;
                         }
                     }
 
