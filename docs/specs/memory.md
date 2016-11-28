@@ -11,7 +11,7 @@ asynchronous calls.
 ```c#
 async Task DoSomethingAsync(Span<byte> buffer) {
     buffer[0] = 0;
-    await Something(); // Oops! The stack unwinds here, but the buffer bellow
+    await Something(); // Oops! The stack unwinds here, but the buffer below
                        // cannot survive the continuation.
     buffer[0] = 1;
 }
