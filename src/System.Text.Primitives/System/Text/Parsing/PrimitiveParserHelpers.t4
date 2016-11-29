@@ -1,0 +1,197 @@
+﻿<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#+
+enum BufferType
+{
+	ArrayPointer,
+	ReadOnlySpan
+}
+
+enum Encoding
+{
+	Utf8,
+	Utf16
+}
+
+struct TypeToParse
+{
+	internal string PrimitiveName;
+	internal string ClassName;
+	internal string ValueCalculationTypeName;
+}
+
+struct TryParseSignature
+{
+	internal BufferType BufferType;
+	internal bool ConsumedParameterExists;
+}
+
+class TryParseOverload
+{
+	// Given in the constructor
+	internal TypeToParse TypeToParseInfo { get; }
+	internal TryParseSignature SignatureInfo { get; }
+	internal Encoding UtfEncoding { get; }
+	internal bool Signed { get; }
+
+	// Information depending on the type to parse
+	internal string OverflowLengthName { get; }
+	
+	// Information depending on the overload signature
+	internal string BufferParamsText { get; }
+	internal string ConsumedParamText { get; }
+	internal string LengthName { get; }
+
+	// Information depending on the encoding
+	internal string CharacterPrimitive { get; }
+
+	internal TryParseOverload(TypeToParse typeToParse, TryParseSignature tryParseSignature, Encoding utfEncoding, bool signed)
+	{
+		TypeToParseInfo = typeToParse;
+		SignatureInfo = tryParseSignature;
+		UtfEncoding = utfEncoding;
+		Signed = signed;
+
+		OverflowLengthName = "";
+		CharacterPrimitive = "";
+		ConsumedParamText = "";
+		BufferParamsText = "";
+		LengthName = "";
+
+		OverflowLengthName = String.Format("{0}OverflowLength", TypeToParseInfo.ClassName);
+
+		switch (UtfEncoding)
+		{
+			case Encoding.Utf8:
+				CharacterPrimitive = "byte";
+				break;
+			case Encoding.Utf16:
+				CharacterPrimitive = "char";
+				break;
+		}
+
+		if (SignatureInfo.ConsumedParameterExists)
+		{
+			ConsumedParamText = string.Format(", out int {0}sConsumed", CharacterPrimitive);
+		}
+
+		switch (SignatureInfo.BufferType)
+		{
+			case BufferType.ArrayPointer:
+				BufferParamsText = string.Format("{0}* text, int length", CharacterPrimitive);
+				LengthName = "length";
+				break;
+			case BufferType.ReadOnlySpan:
+				BufferParamsText = String.Format("ReadOnlySpan<{0}> text", CharacterPrimitive);
+				LengthName = "text.Length";
+				break;
+		}
+	}
+
+	internal string SetOutParamsAndReturnFalse(int indents)
+	{
+		StringBuilder generatedText = new StringBuilder();
+
+		// Each indent is four spaces
+		string indentString = new String(' ', indents * 4);
+
+		if (SignatureInfo.ConsumedParameterExists)
+		{
+			generatedText.AppendFormat("{0}{1}sConsumed = 0;", indentString, CharacterPrimitive);
+			generatedText.AppendLine();
+		}
+
+		generatedText.AppendFormat("{0}value = default({1});", indentString, TypeToParseInfo.PrimitiveName);
+		generatedText.AppendLine();
+		generatedText.AppendFormat("{0}return false;", indentString);
+
+		return generatedText.ToString();
+	}
+
+	internal string SetOutParamsAndReturnTrue(bool usedFullLength, int indents)
+	{
+		StringBuilder generatedText = new StringBuilder();
+
+		// Each indent is four spaces
+		string indentString = new String(' ', indents * 4);
+		string consumedSource;
+
+		if (usedFullLength)
+		{
+			consumedSource = LengthName;
+		}
+		else
+		{
+			consumedSource = "index";
+		}
+
+		if (SignatureInfo.ConsumedParameterExists)
+		{
+			generatedText.AppendFormat("{0}{1}sConsumed = {2};", indentString, CharacterPrimitive, consumedSource);
+			generatedText.AppendLine();
+		}
+
+		generatedText.Append(AssignValue(indents));
+		generatedText.AppendLine();
+
+		generatedText.AppendFormat("{0}return true;", indentString);
+
+		return generatedText.ToString();
+	}
+
+	internal string AssignValue(int indents)
+	{
+		StringBuilder generatedText = new StringBuilder();
+
+		// Each indent is four spaces
+		string indentString = new String(' ', indents * 4);
+		
+		string parsedValueFormula;
+		if (Signed)
+		{
+			parsedValueFormula = "parsedValue * sign";
+		}
+		else
+		{
+			parsedValueFormula = "parsedValue";
+		}
+
+		if (TypeToParseInfo.PrimitiveName == TypeToParseInfo.ValueCalculationTypeName)
+		{
+			generatedText.AppendFormat("{0}value = {1};", indentString, parsedValueFormula);
+		}
+		else
+		{
+			generatedText.AppendFormat("{0}value = ({1})({2});", indentString, TypeToParseInfo.PrimitiveName, parsedValueFormula);
+		}
+
+		return generatedText.ToString();
+	}
+
+	internal string ParseOneHexCharacter(string index, int indents)
+	{
+		StringBuilder generatedText = new StringBuilder();
+
+		// Each indent is four spaces
+		string indentString = new String(' ', indents * 4);
+
+		generatedText.AppendFormat("{0}nextCharacter = text[{1}];", indentString, index);
+		generatedText.AppendLine();
+
+		if (CharacterPrimitive == "byte")
+		{
+			generatedText.AppendFormat("{0}nextDigit = hexLookup[nextCharacter];", indentString);
+			generatedText.AppendLine();
+			generatedText.AppendFormat("{0}if (nextDigit == 0xFF)", indentString);
+		}
+		else if (CharacterPrimitive == "char")
+		{
+			generatedText.AppendFormat("{0}nextDigit = hexLookup[(byte)nextCharacter];", indentString);
+			generatedText.AppendLine();
+			generatedText.AppendFormat("{0}if (nextDigit == 0xFF || (nextCharacter >> 8) != 0)", indentString);
+		}
+
+		return generatedText.ToString();
+	}
+}
+#>
