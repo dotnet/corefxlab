@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
+using System.Buffers;
+using System.Numerics;
+using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    using System.Text;
-    using Buffers;
-    using Numerics;
-    using Xunit;
-
     public class SeekTests
     {
         [Theory]
@@ -83,6 +80,7 @@ namespace System.IO.Pipelines.Tests
             // Assert
             Assert.Equal(expectedBytesScanned, bytesScanned);
             Assert.Equal(expectedReturnValue, returnValue);
+
             if (expectedReturnValue != -1)
             {
                 var seekCharIndex = input.IndexOf(seek);
@@ -94,6 +92,29 @@ namespace System.IO.Pipelines.Tests
 
                 var expectedEndIndex = (expectedEndBlock == block1.Segment ? input1.IndexOf(seek) : input2.IndexOf(seek));
                 Assert.Equal(expectedEndIndex, result.Index);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(SeekByteLimitData))]
+        public void TestSeekByteLimitWithinSameBlock(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
+        {
+            // Arrange
+            var cursors = CreateBlocks(input);
+
+            // Act
+            int bytesScanned;
+            ReadCursor result;
+            var returnValue = SeekExtensions.Seek(cursors.Item1, cursors.Item2, out result, (byte)seek, out bytesScanned, limit);
+
+            // Assert
+            Assert.Equal(expectedBytesScanned, bytesScanned);
+            Assert.Equal(expectedReturnValue, returnValue);
+
+            if (expectedReturnValue != -1)
+            {
+                Assert.Same(cursors.Item1.Segment, result.Segment);
+                Assert.Equal(input.IndexOf(seek), result.Index);
             }
         }
 
