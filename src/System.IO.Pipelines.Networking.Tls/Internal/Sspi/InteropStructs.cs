@@ -110,16 +110,9 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.Sspi
     [StructLayout(LayoutKind.Sequential)]
     internal unsafe struct ContextApplicationProtocol
     {
-        public ApplicationProtocols.ApplicationProtocolNegotiationStatus ProtoNegoStatus;
-        public ApplicationProtocols.ApplicaitonProtocolNegotiationExtension ProtoNegoExt;
+        public ApplicationLayerProtocolExtension.ApplicationProtocolNegotiationStatus ProtoNegoStatus;
+        public ApplicationLayerProtocolExtension.ApplicaitonProtocolNegotiationExtension ProtoNegoExt;
         public byte ProtocolIdSize;
         public fixed byte ProtocolId[255];
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal unsafe struct SessionKey
-    {
-        uint SessionKeyLength;
-        public fixed byte Key[2048];
     }
 }

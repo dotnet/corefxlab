@@ -3,6 +3,6 @@
     public struct CipherInfo
     {
         public string Name;
-        public int Bits;
+        public int KeySizeInBits;
     }
 }

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Tls
 {
-    public class OpenSslConnectionContext : ISecureContext
+    internal class OpenSslConnectionContext : ISecureContext
     {
         private static readonly Task CachedTask = Task.FromResult(0);
 
@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Networking.Tls
         private IntPtr _ssl;
         private readonly InteropBio.BioHandle _readBio;
         private readonly InteropBio.BioHandle _writeBio;
-        private ApplicationProtocols.ProtocolIds _negotiatedProtocol;
+        private ApplicationLayerProtocolIds _negotiatedProtocol;
 
         public OpenSslConnectionContext(OpenSslSecurityContext securityContext, IntPtr ssl)
         {
@@ -49,7 +49,7 @@ namespace System.IO.Pipelines.Networking.Tls
             set { _trailerSize = value; }
         }
 
-        public ApplicationProtocols.ProtocolIds NegotiatedProtocol => _negotiatedProtocol;
+        public ApplicationLayerProtocolIds NegotiatedProtocol => _negotiatedProtocol;
         public bool ReadyToSend => _readyToSend;
         public CipherInfo CipherInfo => _ssl != IntPtr.Zero ? Interop.GetCipherInfo(_ssl) : default(CipherInfo);
 
@@ -119,7 +119,7 @@ namespace System.IO.Pipelines.Networking.Tls
                         byte* protoPointer;
                         int len;
                         Interop.SSL_get0_alpn_selected(_ssl, out protoPointer, out len);
-                        _negotiatedProtocol = ApplicationProtocols.GetNegotiatedProtocol(protoPointer, (byte)len);
+                        _negotiatedProtocol = ApplicationLayerProtocolExtension.GetNegotiatedProtocol(new Span<byte>(protoPointer, len));
                     }
                     _readyToSend = true;
                     if (CustomBio.NumberOfWrittenBytes(_writeBio) > 0)
@@ -150,6 +150,9 @@ namespace System.IO.Pipelines.Networking.Tls
             }
             catch
             {
+                //If you don't clear out the number of bytes written
+                //Openssl being "nice" will try to deallocate the pointer
+                //to the buffer, causing a process halt DON'T REMOVE!
                 CustomBio.NumberOfWrittenBytes(_writeBio);
                 throw;
             }
@@ -161,11 +164,22 @@ namespace System.IO.Pipelines.Networking.Tls
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
             if (_ssl != IntPtr.Zero)
             {
                 Interop.SSL_free(_ssl);
                 _ssl = IntPtr.Zero;
             }
+        }
+
+        ~OpenSslConnectionContext()
+        {
+            Dispose(false);
         }
     }
 }

@@ -101,7 +101,7 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.Sspi
         TargetHost = 0x10,
         ApplicationProtocols = 18,
         ReadOnlyFlag = unchecked((int)0x80000000),
-        ReadOnlyWithChecksum = 0x10000000
+        ReadOnlyWithChecksum = 0x10000000,
     }
 
     internal enum Endianness

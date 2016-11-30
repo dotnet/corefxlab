@@ -59,14 +59,14 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
             }
         }
 
-        public struct PK12Certifcate
+        public struct PK12Certificate
         {
             public IntPtr Handle;
             public IntPtr CertificateHandle;
             public IntPtr AuthorityChainHandle;
             public IntPtr PrivateKeyHandle;
 
-            public PK12Certifcate(InteropBio.BioHandle inputBio, string password)
+            public PK12Certificate(InteropBio.BioHandle inputBio, string password)
             {
                 Handle = d2i_PKCS12_bio(inputBio, IntPtr.Zero);
                 PKCS12_parse(Handle, password, out PrivateKeyHandle, out CertificateHandle, out AuthorityChainHandle);

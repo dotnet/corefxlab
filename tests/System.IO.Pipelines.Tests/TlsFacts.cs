@@ -25,8 +25,8 @@ namespace System.IO.Pipelines.Tests
         {
             using (var cert = new X509Certificate(_certificatePath, _certificatePassword))
             using (var factory = new PipelineFactory())
-            using (var serverContext = new SecurityContext(factory, "CARoot", true, cert, ApplicationProtocols.ProtocolIds.Http11 | ApplicationProtocols.ProtocolIds.Http2OverTls))
-            using (var clientContext = new SecurityContext(factory, "CARoot", false, null, ApplicationProtocols.ProtocolIds.Http2OverTls))
+            using (var serverContext = new SecurityContext(factory, "CARoot", true, cert, ApplicationLayerProtocolIds.Http11 | ApplicationLayerProtocolIds.Http2OverTls))
+            using (var clientContext = new SecurityContext(factory, "CARoot", false, null, ApplicationLayerProtocolIds.Http2OverTls))
             {
                 var loopback = new LoopbackPipeline(factory);
                 using (var server = serverContext.CreateSecurePipeline(loopback.ServerPipeline))
@@ -34,7 +34,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     Echo(server);
                     var proto = await client.PerformHandshakeAsync();
-                    Assert.Equal(ApplicationProtocols.ProtocolIds.Http2OverTls, proto);
+                    Assert.Equal(ApplicationLayerProtocolIds.Http2OverTls, proto);
                 }
             }
         }

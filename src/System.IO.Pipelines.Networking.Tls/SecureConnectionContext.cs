@@ -12,7 +12,7 @@ namespace System.IO.Pipelines.Networking.Tls
         private int _headerSize = 5; //5 is the minimum (1 for frame type, 2 for version, 2 for frame size)
         private int _trailerSize = 16;
         private bool _readyToSend;
-        private ApplicationProtocols.ProtocolIds _negotiatedProtocol;
+        private ApplicationLayerProtocolIds _negotiatedProtocol;
 
         public SecureConnectionContext(SecurityContext securityContext)
         {
@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Networking.Tls
         }
 
         public bool ReadyToSend => _readyToSend;
-        public ApplicationProtocols.ProtocolIds NegotiatedProtocol => _negotiatedProtocol;
+        public ApplicationLayerProtocolIds NegotiatedProtocol => _negotiatedProtocol;
 
         public int HeaderSize
         {
@@ -164,7 +164,7 @@ namespace System.IO.Pipelines.Networking.Tls
                         //If we needed APLN this should now be set
                         if (_securityContext.AplnRequired)
                         {
-                            _negotiatedProtocol = ApplicationProtocols.FindNegotiatedProtocol(_contextPointer);
+                            _negotiatedProtocol = ApplicationLayerProtocolExtension.FindNegotiatedProtocolSspi(_contextPointer);
                         }
                         _readyToSend = true;
                     }

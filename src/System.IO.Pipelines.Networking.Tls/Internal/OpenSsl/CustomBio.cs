@@ -11,41 +11,41 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
     {
         //Max Pipeline block size at the moment (4k - 1 cache line for tracking info) 
         //this should come from the library directly when available in the future
-        const int MaxBlockSize = 1024 * 4 - 64;
-        const int BIO_TYPE_MEM = 1 | 0x0400 | 2;
-        const int BIO_TYPE_SOURCE_SINK = 0x0400;
-        static readonly bio_method_st _methodStruct;
-        static readonly IntPtr _methodPtr;
-        static readonly Create _create;
-        static readonly Write _write;
-        static readonly Read _read;
-        static readonly Control _control;
-        static readonly Free _free;
+        private const int MaxBlockSize = 1024 * 4 - 64;
+        private const int BIO_TYPE_MEM = 1 | 0x0400 | 2;
+        private const int BIO_TYPE_SOURCE_SINK = 0x0400;
+        private static readonly bio_method_st s_methodStruct;
+        private static readonly IntPtr s_methodPtr;
+        private static readonly Create s_create;
+        private static readonly Write s_write;
+        private static readonly Read s_read;
+        private static readonly Control s_control;
+        private static readonly Free s_free;
 
         static CustomBio()
         {
-            _create = CreateBio;
-            _write = WriteBio;
-            _read = ReadBio;
-            _control = ControlBio;
-            _free = FreeBio;
+            s_create = CreateBio;
+            s_write = WriteBio;
+            s_read = ReadBio;
+            s_control = ControlBio;
+            s_free = FreeBio;
 
-            _methodStruct = new bio_method_st()
+            s_methodStruct = new bio_method_st()
             {
-                create = _create,
-                breadDelegate = _read,
-                bwriteDelegate = _write,
-                ctrlDelegate = _control,
+                create = s_create,
+                breadDelegate = s_read,
+                bwriteDelegate = s_write,
+                ctrlDelegate = s_control,
                 type = BIO_TYPE_MEM,
-                destroy = _free,
+                destroy = s_free,
                 name = null
             };
-            var sizeToAlloc = Marshal.SizeOf(_methodStruct);
-            _methodPtr = Marshal.AllocHGlobal(sizeToAlloc);
-            Marshal.StructureToPtr(_methodStruct, _methodPtr, false);
+            var sizeToAlloc = Marshal.SizeOf(s_methodStruct);
+            s_methodPtr = Marshal.AllocHGlobal(sizeToAlloc);
+            Marshal.StructureToPtr(s_methodStruct, s_methodPtr, false);
         }
 
-        public static IntPtr Custom() => _methodPtr;
+        public static IntPtr Custom() => s_methodPtr;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int Create(ref bio_st bio);
