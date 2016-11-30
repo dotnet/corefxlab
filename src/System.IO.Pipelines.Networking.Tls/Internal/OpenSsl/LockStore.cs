@@ -22,7 +22,6 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
             Callback = HandleLock;
         }
 
-        [Diagnostics.DebuggerHidden]
         private static unsafe void HandleLock(InteropCrypto.LockState lockState, int lockId, byte* file, int lineNumber)
         {
             if ((lockState & InteropCrypto.LockState.CRYPTO_UNLOCK) > 0)

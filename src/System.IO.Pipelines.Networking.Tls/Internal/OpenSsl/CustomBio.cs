@@ -14,6 +14,7 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
         private const int MaxBlockSize = 1024 * 4 - 64;
         private const int BIO_TYPE_MEM = 1 | 0x0400 | 2;
         private const int BIO_TYPE_SOURCE_SINK = 0x0400;
+
         private static readonly bio_method_st s_methodStruct;
         private static readonly IntPtr s_methodPtr;
         private static readonly Create s_create;
@@ -71,6 +72,7 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
             [DllImport(CryptoDll, CallingConvention = CallingConvention.Cdecl)]
             public extern static void BIO_set_flags(ref bio_st bio, BioFlags flags);
         }
+
         private static class OsxLib
         {
             public const string CryptoDll = "libcrypto.1.0.0.dylib";
@@ -203,6 +205,7 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
             public Free destroy; //int (*destroy) (BIO*);
             public void* callback_ctrl; //long (*callback_ctrl) (BIO*, int, bio_info_cb*);
         }
+
         [StructLayout(LayoutKind.Sequential)]
         struct bio_st
         {
