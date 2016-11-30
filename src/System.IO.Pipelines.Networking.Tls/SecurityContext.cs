@@ -49,7 +49,7 @@ namespace System.IO.Pipelines.Networking.Tls
         /// <param name="serverCert">This is the in memory representation of the certificate used for the PKI exchange and authentication</param>
         /// <param name="alpnSupportedProtocols">This is the protocols that are supported and that will be negotiated with on the otherside, if a protocol can't be negotiated then the handshake will fail</param>
         public unsafe SecurityContext(PipelineFactory factory, string hostName, bool isServer,
-            X509Certificate serverCert, ApplicationProtocols.ProtocolIds alpnSupportedProtocols)
+            X509Certificate serverCert, ApplicationLayerProtocolIds alpnSupportedProtocols)
         {
             if (hostName == null)
             {
@@ -63,7 +63,7 @@ namespace System.IO.Pipelines.Networking.Tls
             if (alpnSupportedProtocols > 0)
             {
                 //We need to get a buffer for the ALPN negotiation and pin it for sending to the lower API
-                _alpnSupportedProtocols = ApplicationProtocols.GetBufferForProtocolId(alpnSupportedProtocols, true);
+                _alpnSupportedProtocols = ApplicationLayerProtocolExtension.GetBufferForProtocolId(alpnSupportedProtocols, true);
                 _alpnHandle = GCHandle.Alloc(_alpnSupportedProtocols, GCHandleType.Pinned);
                 _alpnBuffer = new SecurityBuffer((void*) _alpnHandle.AddrOfPinnedObject(),
                     _alpnSupportedProtocols.Length, SecurityBufferType.ApplicationProtocols);

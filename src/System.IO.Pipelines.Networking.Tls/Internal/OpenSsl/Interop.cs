@@ -242,7 +242,7 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
                 var returnValue = new CipherInfo();
                 var cPtr = SSL_get_current_cipher(ssl);
                 returnValue.Name = Marshal.PtrToStringAnsi(SSL_CIPHER_get_name(cPtr));
-                SSL_CIPHER_get_bits(ssl, out returnValue.Bits);
+                SSL_CIPHER_get_bits(ssl, out returnValue.KeySizeInBits);
                 return returnValue;
             }
 

@@ -9,7 +9,7 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.OpenSsl
     internal unsafe static class LockStore
     {
         private static SemaphoreSlim[] _locks;
-        public static readonly InteropCrypto.locking_function Callback;
+        internal static readonly InteropCrypto.locking_function Callback;
 
         static LockStore()
         {

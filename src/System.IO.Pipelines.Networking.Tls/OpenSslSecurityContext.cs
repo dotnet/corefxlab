@@ -11,19 +11,19 @@ namespace System.IO.Pipelines.Networking.Tls
         private readonly string _hostName;
         private readonly PipelineFactory _pipelineFactory;
         private readonly bool _isServer;
-        private InteropKeys.PK12Certifcate _certifcateInformation;
+        private InteropKeys.PK12Certificate _certificateInformation;
         private byte[] _alpnSupportedProtocolsBuffer;
         private GCHandle _alpnHandle;
         internal IntPtr SslContext;
         internal Interop.alpn_cb AlpnCallback;
-        private ApplicationProtocols.ProtocolIds _alpnSupportedProtocols;
+        private ApplicationLayerProtocolIds _alpnSupportedProtocols;
 
         public OpenSslSecurityContext(PipelineFactory pipelineFactory, string hostName, bool isServer, string pathToPfxFile, string password)
             : this(pipelineFactory, hostName, isServer, pathToPfxFile, password, 0)
         {
         }
 
-        public OpenSslSecurityContext(PipelineFactory pipelineFactory, string hostName, bool isServer, string pathToPfxFile, string password, ApplicationProtocols.ProtocolIds alpnSupportedProtocols)
+        public OpenSslSecurityContext(PipelineFactory pipelineFactory, string hostName, bool isServer, string pathToPfxFile, string password, ApplicationLayerProtocolIds alpnSupportedProtocols)
         {
             if (isServer && string.IsNullOrEmpty(pathToPfxFile))
             {
@@ -43,7 +43,7 @@ namespace System.IO.Pipelines.Networking.Tls
                 {
                     fileBio = InteropBio.BIO_new_file_read(pathToPfxFile);
                     //Now we pull out the private key, certificate and Authority if they are all there
-                    _certifcateInformation = new InteropKeys.PK12Certifcate(fileBio, password);
+                    _certificateInformation = new InteropKeys.PK12Certificate(fileBio, password);
                 }
                 finally
                 {
@@ -55,7 +55,7 @@ namespace System.IO.Pipelines.Networking.Tls
         }
 
         public bool IsServer => _isServer;
-        internal InteropKeys.PK12Certifcate CertificateInformation => _certifcateInformation;
+        internal InteropKeys.PK12Certificate CertificateInformation => _certificateInformation;
         internal IntPtr AplnBuffer => _alpnHandle.AddrOfPinnedObject();
         internal int AplnBufferLength => _alpnSupportedProtocolsBuffer?.Length ?? 0;
 
@@ -64,7 +64,7 @@ namespace System.IO.Pipelines.Networking.Tls
             if (_alpnSupportedProtocols > 0)
             {
                 //We need to get a buffer for the ALPN negotiation and pin it for sending to the lower API
-                _alpnSupportedProtocolsBuffer = ApplicationProtocols.GetBufferForProtocolId(_alpnSupportedProtocols, false);
+                _alpnSupportedProtocolsBuffer = ApplicationLayerProtocolExtension.GetBufferForProtocolId(_alpnSupportedProtocols, false);
                 _alpnHandle = GCHandle.Alloc(_alpnSupportedProtocolsBuffer, GCHandleType.Pinned);
                 Interop.SSL_CTX_set_alpn_protos(SslContext, AplnBuffer, (uint)AplnBufferLength);
                 if (_isServer)
@@ -112,9 +112,9 @@ namespace System.IO.Pipelines.Networking.Tls
                 SslContext = Interop.NewClientContext(Interop.VerifyMode.SSL_VERIFY_NONE);
             }
 
-            if (_certifcateInformation.Handle != IntPtr.Zero)
+            if (_certificateInformation.Handle != IntPtr.Zero)
             {
-                Interop.SetKeys(SslContext, _certifcateInformation.CertificateHandle, _certifcateInformation.PrivateKeyHandle);
+                Interop.SetKeys(SslContext, _certificateInformation.CertificateHandle, _certificateInformation.PrivateKeyHandle);
             }
         }
 
@@ -131,7 +131,7 @@ namespace System.IO.Pipelines.Networking.Tls
             {
                 _alpnHandle.Free();
             }
-            _certifcateInformation.Free();
+            _certificateInformation.Free();
             if (SslContext != IntPtr.Zero)
             {
                 Interop.SSL_CTX_free(SslContext);

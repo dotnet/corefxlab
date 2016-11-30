@@ -35,7 +35,7 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.Sspi
             QueryContextAttributesW(ref _contextPointer, ContextAttribute.ConnectionInfo, out connInfo);
             var returnValue = new CipherInfo()
             {
-                Bits = connInfo.dwCipherStrength,
+                KeySizeInBits = connInfo.dwCipherStrength,
                 Name = $"{connInfo.aiCipher}-{connInfo.dwHashStrength}"
             };
             FreeContextBuffer((IntPtr)Unsafe.AsPointer(ref connInfo));
@@ -56,10 +56,7 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.Sspi
 
         [DllImport(Dll, ExactSpelling = true, SetLastError = true, CharSet = CharSet.Unicode)]
         internal static extern int QueryContextAttributesW(ref SSPIHandle phContext, [In] ContextAttribute contextFlag, [Out] out ContextApplicationProtocol protocolInfo);
-
-        [DllImport(Dll, ExactSpelling = true, SetLastError = true, CharSet = CharSet.Unicode)]
-        internal static extern int QueryContextAttributesW(ref SSPIHandle phContext, [In] ContextAttribute contextFlag, [Out] out SessionKey sessionKey);
-
+                
         [DllImport(Dll, ExactSpelling = true, SetLastError = true, CharSet = CharSet.Unicode)]
         internal static extern int QueryContextAttributesW(ref SSPIHandle phContext, [In] ContextAttribute contextFlag, [Out] out _SecPkgContext_ConnectionInfo connectionInfo);
 

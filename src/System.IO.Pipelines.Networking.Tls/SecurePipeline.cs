@@ -2,13 +2,13 @@
 
 namespace System.IO.Pipelines.Networking.Tls
 {
-    public class SecurePipeline<T> : ISecurePipeline where T : ISecureContext
+    internal class SecurePipeline<T> : ISecurePipeline where T : ISecureContext
     {
         private readonly IPipelineConnection _lowerConnection;
         private readonly PipelineReaderWriter _outputPipeline;
         private readonly PipelineReaderWriter _inputPipeline;
         private readonly T _contextToDispose;
-        private TaskCompletionSource<ApplicationProtocols.ProtocolIds> _handShakeCompleted;
+        private TaskCompletionSource<ApplicationLayerProtocolIds> _handShakeCompleted;
 
         internal SecurePipeline(IPipelineConnection inConnection, PipelineFactory pipelineFactory, T secureContext)
         {
@@ -23,14 +23,14 @@ namespace System.IO.Pipelines.Networking.Tls
         public IPipelineWriter Output => _inputPipeline;
         public CipherInfo CipherInfo => _contextToDispose.CipherInfo;
 
-        public Task<ApplicationProtocols.ProtocolIds> PerformHandshakeAsync()
+        public Task<ApplicationLayerProtocolIds> PerformHandshakeAsync()
         {
-            return _handShakeCompleted?.Task ?? DoHandShake();
+            return _handShakeCompleted?.Task ?? DoHandshake();
         }
 
-        private async Task<ApplicationProtocols.ProtocolIds> DoHandShake()
+        private async Task<ApplicationLayerProtocolIds> DoHandshake()
         {
-            _handShakeCompleted = new TaskCompletionSource<ApplicationProtocols.ProtocolIds>();
+            _handShakeCompleted = new TaskCompletionSource<ApplicationLayerProtocolIds>();
             if (!_contextToDispose.IsServer)
             {
                 //If it is a client we need to start by sending a client hello straight away
@@ -76,7 +76,7 @@ namespace System.IO.Pipelines.Networking.Tls
             catch (Exception ex)
             {
                 Dispose();
-                _handShakeCompleted = new TaskCompletionSource<ApplicationProtocols.ProtocolIds>();
+                _handShakeCompleted = new TaskCompletionSource<ApplicationLayerProtocolIds>();
                 _handShakeCompleted.SetException(ex);
                 return await _handShakeCompleted.Task;
             }
