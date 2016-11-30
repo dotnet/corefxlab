@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    using Diagnostics;
-    using Numerics;
-    using Runtime.CompilerServices;
-
     public static class SeekExtensions
     {
         private const ulong _xorPowerOfTwoToHighByte = (0x07ul |
