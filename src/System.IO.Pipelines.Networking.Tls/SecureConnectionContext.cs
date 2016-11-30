@@ -203,6 +203,8 @@ namespace System.IO.Pipelines.Networking.Tls
             //Copy the unencrypted across to the encrypted pipeline, it will be updated in place and destroyed
             unencrypted.CopyTo(encryptedData.Memory.Slice(_headerSize, unencrypted.Length).Span);
 
+            //Sspi requires you to send in 4 buffers, 1 with the header
+            //1 with the data and one with the trailer, the final is empty
             var securityBuff = stackalloc SecurityBuffer[4];
             SecurityBufferDescriptor sdcInOut = new SecurityBufferDescriptor(4);
             securityBuff[0] = new SecurityBuffer(outBufferPointer, _headerSize, SecurityBufferType.Header);
