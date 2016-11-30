@@ -27,4 +27,4 @@
 ## Discussion
 
 * We could only support UTF8 and have a hand-optimized version of that and
-  support other encodings by converting that represenation to UTF8
+  support other encodings by converting that representation to UTF8
