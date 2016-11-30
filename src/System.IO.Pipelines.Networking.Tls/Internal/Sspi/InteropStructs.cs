@@ -30,6 +30,7 @@ namespace System.IO.Pipelines.Networking.Tls.Internal.Sspi
     internal struct SecureCredential
     {
         public const int CurrentVersion = 0x4;
+
         public int version;
         public int cCreds;
         public IntPtr certContextArray;
