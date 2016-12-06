@@ -5,6 +5,8 @@ namespace System.Slices.Tests
 {
     public unsafe class OverflowTests
     {
+        private static unsafe bool Is64Bit => sizeof(void*) == 8;
+
         const long
             ThreeGiB = 3L * 1024L * 1024L * 1024L,
             TwoGiB = 2L * 1024L * 1024L * 1024L,
@@ -126,8 +128,7 @@ namespace System.Slices.Tests
             Assert.Equal(guid, arr[3]);
         }
 
-
-        [Fact]
+        [ConditionalFact(nameof(Is64Bit))]
         public void CastOverflow()
         {
             var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
@@ -150,7 +151,7 @@ namespace System.Slices.Tests
             }
         }
 
-        [Fact]
+        [ConditionalFact(nameof(Is64Bit))]
         public void ReadOnlySliceStartInt32Overflow()
         {
             var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
@@ -171,7 +172,8 @@ namespace System.Slices.Tests
                 Marshal.FreeHGlobal(huge);
             }
         }
-        [Fact]
+
+        [ConditionalFact(nameof(Is64Bit))]
         public void ReadOnlySliceStartUInt32Overflow()
         {
             var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
@@ -192,7 +194,8 @@ namespace System.Slices.Tests
                 Marshal.FreeHGlobal(huge);
             }
         }
-        [Fact]
+
+        [ConditionalFact(nameof(Is64Bit))]
         public void ReadOnlySliceStartLengthInt32Overflow()
         {
             var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
@@ -213,7 +216,8 @@ namespace System.Slices.Tests
                 Marshal.FreeHGlobal(huge);
             }
         }
-        [Fact]
+
+        [ConditionalFact(nameof(Is64Bit))]
         public void ReadOnlySliceStartLengthUInt32Overflow()
         {
             var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
@@ -267,7 +271,7 @@ namespace System.Slices.Tests
         }
 
 
-        [Fact]
+        [ConditionalFact(nameof(Is64Bit))]
         public void ReadOnlyCastOverflow()
         {
             var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
