@@ -27,7 +27,7 @@
     },
     "System.Buffers": "4.3.0",
     "System.Numerics.Vectors": "4.3.0",
-    "System.Threading.Tasks.Extensions": "4.3.0*",
+    "System.Threading.Tasks.Extensions": "4.3.0",
     "System.Collections.Sequences": { "target": "project" }
   },
 
