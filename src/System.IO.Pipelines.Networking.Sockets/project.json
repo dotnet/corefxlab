@@ -24,7 +24,7 @@
     "net451": {},
     "netstandard1.3": {
       "dependencies": {
-        "System.Threading.ThreadPool": "4.4.0-*"
+        "System.Threading.ThreadPool": "4.3.0"
       }
     }
   }

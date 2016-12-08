@@ -28,7 +28,7 @@
     "System.Text.Primitives": { "target": "project" },
     "System.Slices": { "target": "project" },
     "System.Text.Json": { "target": "project" },
-    "System.Dynamic.Runtime": "4.4.0-*"
+    "System.Dynamic.Runtime": "4.3.0"
   },
   "frameworks": {
     "netstandard1.1": {

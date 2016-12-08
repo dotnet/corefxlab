@@ -21,7 +21,7 @@
     "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
-    "System.Buffers": "4.4.0-*",
+    "System.Buffers": "4.3.0",
     "System.Collections.Sequences": { "target": "project" },
     "System.Slices": { "target": "project" },
     "System.Text.Primitives": { "target": "project" }
