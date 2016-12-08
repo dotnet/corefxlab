@@ -24,11 +24,10 @@
     "net451": {},
     "netstandard1.3": {
       "dependencies": {
-        "System.Threading.Thread": "4.4.0-*",
-        "System.Threading.Overlapped": "4.4.0-*",
-        "System.Threading.ThreadPool": "4.4.0-*",
-        "System.Diagnostics.Process": "4.4.0-*",
-        "System.Runtime.CompilerServices.Unsafe": "4.4.0-*"
+        "System.Threading.Thread": "4.3.0",
+        "System.Threading.Overlapped": "4.3.0",
+        "System.Threading.ThreadPool": "4.3.0",
+        "System.Diagnostics.Process": "4.3.0"
       }
     }
   }

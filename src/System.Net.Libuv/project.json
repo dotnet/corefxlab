@@ -23,7 +23,7 @@
   "dependencies": {
     "Libuv": "1.9.0",
     "System.Text.Primitives": { "target": "project" },
-    "System.Runtime.InteropServices.RuntimeInformation": "4.4.0-*",
+    "System.Runtime.InteropServices.RuntimeInformation": "4.3.0",
     "System.Buffers.Experimental": { "target": "project" },
     "System.Slices": { "target": "project" }
   },
