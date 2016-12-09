@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace System.Runtime
 {
@@ -41,26 +42,25 @@ namespace System.Runtime
         }
 
         // TODO: can we detect if the object was only refcounted on one thread and its the current thread? If yes, we don't need to synchronize?
-        public uint GetGlobalCount(object obj)
+        public bool HasReference(object obj)
         {
             var allTables = s_allTables;
             lock (allTables)
             {
-                uint globalCount = 0;
                 for (int index = 0; index < s_allTablesCount; index++)
                 {
-                    globalCount += allTables[index].GetCount(obj);
+                    if(allTables[index].HasReference(obj)) return true;
                 }
-                return globalCount;
+                return false;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint GetThreadLocalCount(object obj)
+        public bool HasThreadLocalReference(object obj)
         {
             var localCounts = t_threadLocalCounts;
-            if (localCounts == null) return 0;
-            return localCounts.GetCount(obj);
+            if (localCounts == null) return false;
+            return localCounts.HasReference(obj);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -85,46 +85,68 @@ namespace System.Runtime
         }
     }
 
-    // This datastructure holds a collection of object to reference count mappings
+    // This datastructure holds a collection of objects to reference count mappings
+    // Uses repetition of entries to represent the count.
     sealed class ObjectTable
     {
         // if you change this constant, update ResizingObjectTableWorks test.
         const int DefaultTableCapacity = 16;
 
-        ObjectReferences[] _items;
-        int _count;
-
-        struct ObjectReferences
-        {
-            public object Obj;
-            public uint ReferenceCount;
-
-            public override string ToString()
-            {
-                return ReferenceCount.ToString();
-            }
-        }
+        object[] _items;
+        int _first;
         
+        public ObjectTable()
+        {
+            _items = new object[DefaultTableCapacity];
+            _first = _items.Length;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Increment(object obj)
         {
-            if (_items == null)
+            if(_first == 0)
             {
-                _items = new ObjectReferences[DefaultTableCapacity];
+                // No space left, we must grow the table.
+                var oldLength = _items.Length;
+                var larger = new object[oldLength << 1];
+                _items.CopyTo(larger, oldLength);
+                // The copy must occur before the table is published.
+                Volatile.Write(ref _items, larger);
+                // _items must be updated before the value of _first is changed
+                // If this is not the case, then we could effectively make the
+                // table empty temporarily.
+                _items[oldLength - 1] = obj;
+                Volatile.Write(ref _first, oldLength - 1);
+                return;
             }
-            var index = FindExistingOrNewIndex(obj);
-            _items[index].ReferenceCount++;
+
+            _items[_first - 1] = obj;
+            // _items entry must update before we update the value of _first
+            // If this is not the case, then a stake reference could
+            // be observed.
+            Volatile.Write(ref _first, _first - 1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Decrement(object obj)
         {
-            var index = FindExistingIndex(obj);
-            if(index == -1) {
-                ThrowCountNotPositive();
+            for (int index = _first; index < _items.Length; index++)
+            {
+                if (ReferenceEquals(_items[index], obj))
+                {
+                    if(index != _first) {
+                        //Condense the table
+                        _items[index] = _items[_first];
+                    }
+                    // The condense must be visible before we update _first.
+                    // If this is not the case, then we could lose a reference
+                    // temporarily.
+                    Volatile.Write(ref _first, _first + 1);
+                    return;
+                }
             }
-            _items[index].ReferenceCount--;
-            if (_items[index].ReferenceCount == 0) _count--;
+
+            ThrowCountNotPositive();
         }
 
         private void ThrowCountNotPositive()
@@ -133,81 +155,16 @@ namespace System.Runtime
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int FindExistingOrNewIndex(object obj)
+        internal bool HasReference(object obj)
         {
-            if(_count == 0)
+            for (int index = _first; index < _items.Length; index++)
             {
-                _items[0].Obj = obj;
-                _count = 1;
-                return 0;
-            }
-
-            int freeIndex = -1;
-            int foundObjectCount = 0;
-            int index;
-            for (index = 0; index < _items.Length; index++)
-            {
-                // if found the object, just return the index 
-                if (ReferenceEquals(_items[index].Obj, obj))
+                if (ReferenceEquals(_items[index], obj))
                 {
-                    return index;
-                }
-
-                // the slot is free, remember it; we want to use the first free slot we found, if the object is not found later 
-                if (_items[index].ReferenceCount == 0)
-                {
-                    if (freeIndex == -1) freeIndex = index;
-                }
-                // count number of objects found but not matching; if it's equal to number of objects in the array, we can exit the loop
-                else
-                {
-                    foundObjectCount++;
-                    if (foundObjectCount == _count) {
-                        index++;
-                        break;
-                    }
+                    return true;
                 }
             }
-
-            if (freeIndex != -1)
-            {
-                _items[freeIndex].Obj = obj;
-                _count++;
-                return freeIndex;
-            }
-
-            // resize
-            if (index == _items.Length)
-            {
-                var larger = new ObjectReferences[_items.Length << 1];
-                _items.CopyTo(larger, 0);
-                _items = larger;
-            }
-
-            _items[index].Obj = obj;
-            _count++;
-            return index;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int FindExistingIndex(object obj)
-        {
-            for (int index = 0; index < _items.Length; index++)
-            {
-                if (ReferenceEquals(_items[index].Obj, obj))
-                {
-                    return index;
-                }
-            }
-            return -1;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal uint GetCount(object obj)
-        {
-            var index = FindExistingIndex(obj);
-            if (index == -1) return 0;
-            return _items[index].ReferenceCount;
+            return false;
         }
     }
 }
