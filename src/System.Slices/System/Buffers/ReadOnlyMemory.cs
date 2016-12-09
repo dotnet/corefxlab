@@ -142,11 +142,17 @@ namespace System
             sb.Append("[");
 
             bool first = true;
-            for (int i = 0; i < Length; i++) {
+            int i;
+            for (i = 0; i < Length; i++)
+            {
                 if (i > 7) break;
                 if (first) first = false;
                 else sb.Append(", ");
                 sb.Append(data[i].ToString());
+            }
+            if (i < Span.Length)
+            {
+                sb.Append(",...");
             }
             sb.Append("]");
             return sb.ToString();
