@@ -19,7 +19,6 @@ namespace System.Net.Libuv
             _gcHandle = GCHandle.Alloc(this);
             Data = GCHandle.ToIntPtr(_gcHandle);
         }
-
         public UVLoop Loop
         {
             get
@@ -27,7 +26,7 @@ namespace System.Net.Libuv
                 return _loop;
             }
         }
-
+    
         public IntPtr Handle
         {
             get
@@ -39,6 +38,19 @@ namespace System.Net.Libuv
         public HandleType Type
         {
             get { return HandlePointer->type; }
+        }
+
+        public Version Version
+        {
+            get
+            {
+                uint version = UVInterop.uv_version();
+                return new Version(
+                    (int)(version & 0xFF0000) >> 16,
+                    (int)(version & 0xFF00) >> 8,
+                    (int)(version & 0xFF)
+                );
+            }
         }
 
         #region Lifetime management
@@ -113,7 +125,7 @@ namespace System.Net.Libuv
         {
             return UVInterop.uv_handle_size(type);
         }
-
+        
         internal static T As<T>(IntPtr handle)
         {
             var data = ((uv_handle_t*)handle)->data;
@@ -128,7 +140,6 @@ namespace System.Net.Libuv
                 return (uv_handle_t*)_handle;
             }
         }
-
         IntPtr Data
         {
             get
@@ -140,6 +151,7 @@ namespace System.Net.Libuv
                 HandlePointer->data = value;
             }
         }
+
 
         public enum HandleType : int
         {

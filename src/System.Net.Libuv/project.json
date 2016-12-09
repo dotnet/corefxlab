@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "System.Net.Libuv",
   "version": "0.1.0-*",
   "description": "libuv .NET Core wrapper",

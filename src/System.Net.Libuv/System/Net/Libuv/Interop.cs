@@ -3,7 +3,7 @@
 namespace System.Net.Libuv
 {
     // This is roughly based on LibuvSharp
-    static class UVInterop
+    static partial class UVInterop
     {
         [DllImport("libuv", CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr uv_default_loop();
@@ -151,7 +151,13 @@ namespace System.Net.Libuv
     [StructLayout(LayoutKind.Sequential)]
     struct uv_stream_t
     {
+
+        /// <summary>
+        /// contains the amount of queued bytes waiting to be sent. 
+        /// Readonly.
+        /// </summary>
         public IntPtr write_queue_size;
+
         public IntPtr alloc_cb;
         public IntPtr read_cb;
         public IntPtr read2_cb;

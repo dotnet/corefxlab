@@ -11,7 +11,8 @@ namespace System.Buffers
         public OwnedNativeMemory(int length) : this(length, Marshal.AllocHGlobal(length))
         { }
 
-        public OwnedNativeMemory(int length, IntPtr address) : base(null, 0, length, address) { }
+        public OwnedNativeMemory(int length, IntPtr address) : base(null, 0, length, address)
+        { }
 
         public static implicit operator IntPtr(OwnedNativeMemory owner)
         {

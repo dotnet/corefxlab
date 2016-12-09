@@ -2,7 +2,7 @@
     [string]$Configuration="Debug",
     [string]$Restore="true",
     [string]$Channel="preview",
-    [string]$Version="1.0.0-preview2-003121"
+    [string]$Version="1.0.0-preview2-003131"
 )
 
 Write-Host "Commencing full build for Configuration=$Configuration."

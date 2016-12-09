@@ -144,16 +144,51 @@ namespace System
         {
             var sb = new StringBuilder();
             var data = Span;
-            sb.Append("[");
 
-            bool first = true;
-            for(int i=0; i<Length; i++) {
-                if (i > 7) break;
-                if (first) first = false;
-                else sb.Append(", ");
-                sb.Append(data[i].ToString());
+            var lineCount = (int)data.Length / 8;
+            var remainderCount = data.Length % 8;
+
+            for (var lineNumber = 0; lineNumber < lineCount; lineNumber ++)
+            {
+                sb.Append("[");
+
+                bool first = true;
+                for (int byteNumber = 0; byteNumber < 7 ; byteNumber++)
+                {
+                    if (first)
+                        first = false;
+                    else
+                        sb.Append(", ");
+
+                    sb.Append(
+                        data[(lineNumber * 8) + byteNumber]
+                            .ToString()
+                    );
+                }
+                sb.Append("]");
             }
-            sb.Append("]");
+
+            if(remainderCount!=0)
+            {
+                sb.Append("[");
+
+                bool first = true;
+                for (int byteNumber = 0; byteNumber < remainderCount ; byteNumber++)
+                {
+                    if (first)
+                        first = false;
+                    else
+                        sb.Append(", ");
+
+                    sb.Append(
+                        data[(lineCount * 8) + byteNumber]
+                            .ToString()
+                    );
+                }
+                sb.Append("]");
+            }
+
+
             return sb.ToString();
         }
     }
