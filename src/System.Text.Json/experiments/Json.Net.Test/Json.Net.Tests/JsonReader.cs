@@ -73,11 +73,11 @@ namespace Json.Net.Tests
             return str;
         }
 
-        public JsonValueType GetJsonValueType()
+        public JsonDb.JsonValueType GetJsonDb.JsonValueType()
         {
             var nextByte = (byte)_str[_index];
 
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];
@@ -85,37 +85,37 @@ namespace Json.Net.Tests
 
             if (nextByte == '"')
             {
-                return JsonValueType.String;
+                return JsonDb.JsonValueType.String;
             }
 
             if (nextByte == '{')
             {
-                return JsonValueType.Object;
+                return JsonDb.JsonValueType.Object;
             }
 
             if (nextByte == '[')
             {
-                return JsonValueType.Array;
+                return JsonDb.JsonValueType.Array;
             }
 
             if (nextByte == 't')
             {
-                return JsonValueType.True;
+                return JsonDb.JsonValueType.True;
             }
 
             if (nextByte == 'f')
             {
-                return JsonValueType.False;
+                return JsonDb.JsonValueType.False;
             }
 
             if (nextByte == 'n')
             {
-                return JsonValueType.Null;
+                return JsonDb.JsonValueType.Null;
             }
 
             if (nextByte == '-' || (nextByte >= '0' && nextByte <= '9'))
             {
-                return JsonValueType.Number;
+                return JsonDb.JsonValueType.Number;
             }
 
             throw new FormatException("Invalid json, tried to read char '" + nextByte + "'.");
@@ -123,22 +123,22 @@ namespace Json.Net.Tests
 
         public Utf8String GetValue()
         {
-            var type = GetJsonValueType();
+            var type = GetJsonDb.JsonValueType();
             SkipEmpty();
             switch (type)
             {
-                case JsonValueType.String:
+                case JsonDb.JsonValueType.String:
                     return ReadStringValue();
-                case JsonValueType.Number:
+                case JsonDb.JsonValueType.Number:
                     return ReadNumberValue();
-                case JsonValueType.True:
+                case JsonDb.JsonValueType.True:
                     return ReadTrueValue();
-                case JsonValueType.False:
+                case JsonDb.JsonValueType.False:
                     return ReadFalseValue();
-                case JsonValueType.Null:
+                case JsonDb.JsonValueType.Null:
                     return ReadNullValue();
-                case JsonValueType.Object:
-                case JsonValueType.Array:
+                case JsonDb.JsonValueType.Object:
+                case JsonDb.JsonValueType.Array:
                     return Utf8String.Empty;
                 default:
                     throw new ArgumentException("Invalid json value type '" + type + "'.");
@@ -280,22 +280,17 @@ namespace Json.Net.Tests
         {
             var nextByte = (byte)_str[_index];
 
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];
             }
         }
 
-        private static bool isWhiteSpace(byte nextByte)
-        {
-            return nextByte == ' ' || nextByte == '\n' || nextByte == '\r' || nextByte == '\t';
-        }
-
         private void MoveToNextTokenType()
         {
             var nextByte = (byte)_str[_index];
-            while (isWhiteSpace(nextByte))
+            while (Utf8String.IsWhiteSpace(nextByte))
             {
                 _index++;
                 nextByte = (byte)_str[_index];

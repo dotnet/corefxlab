@@ -55,16 +55,16 @@ class Program
     {
         GenerateCheck(writer, typeName);
 
-        //GenerateTest(writer, type, 'C', maxPrecision);
+        //GenerateTest(writer, typeName, 'C', maxPrecision);
         GenerateTest(writer, typeName, 'D', maxPrecision);
         GenerateTest(writer, typeName, 'd', maxPrecision);
-        //GenerateTest(writer, type, 'E', maxPrecision);
-        //GenerateTest(writer, type, 'F', maxPrecision);
+        //GenerateTest(writer, typeName, 'E', maxPrecision);
+        //GenerateTest(writer, typeName, 'F', maxPrecision);
         GenerateTest(writer, typeName, 'G');
-        //GenerateTest(writer, type, 'g', maxPrecision);
-        //GenerateTest(writer, type, 'N', maxPrecision); // TODO: this is implemented, but has bugs
-        //GenerateTest(writer, type, 'P', maxPrecision);
-        //GenerateTest(writer, type, 'R', maxPrecision);
+        //GenerateTest(writer, typeName, 'g', maxPrecision);
+        GenerateTest(writer, typeName, 'N', maxPrecision);
+        //GenerateTest(writer, typeName, 'P', maxPrecision);
+        //GenerateTest(writer, typeName, 'R', maxPrecision);
         GenerateTest(writer, typeName, 'X', maxPrecision);
         GenerateTest(writer, typeName, 'x', maxPrecision);
     }
@@ -74,8 +74,8 @@ class Program
         var helperName = "Check" + typeName;
         writer.WriteLine("public void {0}({1} value, string format)", helperName, typeName);
         writer.WriteLine("{");
-        writer.WriteLine("    var parsed = Format.Parse(format);");
-        writer.WriteLine("    formatter.Clear();");
+        writer.WriteLine("    var parsed = TextFormat.Parse(format);");
+        writer.WriteLine("    var formatter = new StringFormatter();");
         writer.WriteLine("    formatter.Append(value, parsed);");
         writer.WriteLine("    var result = formatter.ToString();");
         writer.WriteLine("    var clrResult = value.ToString(format, CultureInfo.InvariantCulture);");
@@ -93,12 +93,12 @@ class Program
         writer.WriteLine("{");
         writer.Indent++;
         var helperName = "Check" + typeName;
-        GenerateSpecificFormatTersts(writer, typeName, format.ToString(), helperName);
+        GenerateSpecificFormatTests(writer, typeName, format.ToString(), helperName);
         if (maxPrecision > -1)
         {
             for (int precision = 0; precision <= maxPrecision; precision++)
             {
-                GenerateSpecificFormatTersts(writer, typeName, format.ToString() + precision.ToString(), helperName);
+                GenerateSpecificFormatTests(writer, typeName, format.ToString() + precision.ToString(), helperName);
             }
         }
 
@@ -107,7 +107,7 @@ class Program
         writer.WriteLine("");
     }
 
-    private static void GenerateSpecificFormatTersts(CodeWriter writer, string typeName, string format, string checkMethodName)
+    private static void GenerateSpecificFormatTests(CodeWriter writer, string typeName, string format, string checkMethodName)
     {
         writer.WriteLine("");
         writer.WriteLine("// format {0}", format);

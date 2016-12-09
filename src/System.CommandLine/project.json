@@ -1,0 +1,39 @@
+{
+  "name": "System.CommandLine",
+  "version": "0.1.0-*",
+  "description": "CLI commandline command parsing",
+  "authors": [
+    "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "packOptions": {
+    "tags": [
+      "Command line parsing support corefxlab"
+    ],
+    "releaseNotes": "Pre-release package, for testing only",
+    "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+    "projectUrl": "https://github.com/dotnet/corefxlab",
+    "requireLicenseAcceptance": true
+  },
+  "buildOptions": {
+    "keyFile": "../../tools/Key.snk",
+    "embed": {
+      "include": "System/Strings.resx",
+      "mappings": {
+        "System.Strings": "System/Strings.resx"
+      }
+    }
+  },
+  "dependencies": {
+    "NETStandard.Library": "1.6.0"
+  },
+  "frameworks": {
+    "netstandard1.5": {
+      "dependencies": {
+        "System.Runtime.Extensions": "4.1.0"
+      }
+    },
+    "net45": {}
+  }
+}

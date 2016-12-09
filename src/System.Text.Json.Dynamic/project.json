@@ -1,0 +1,37 @@
+{
+  "name": "System.Text.Json.Dynamic",
+  "version": "0.1.0-*",
+  "description": "JSON dynamic object",
+  "authors": [
+    "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "packOptions": {
+    "tags": [
+      ".NET json non-allocating corefxlab"
+    ],
+    "releaseNotes": "Pre-release package, for testing only",
+    "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+    "projectUrl": "https://github.com/dotnet/corefxlab",
+    "requireLicenseAcceptance": true
+  },
+  "buildOptions": {
+    "keyFile": "../../tools/Key.snk",
+    "compile": {
+      "include": [ "System/**/*.cs" ],
+      "exclude": [ "experiments/**/*.cs" ]
+    }
+  },
+  "dependencies": {
+    "System.Text.Formatting": { "target": "project" },
+    "System.Text.Primitives": { "target": "project" },
+    "System.Slices": { "target": "project" },
+    "System.Text.Json": { "target": "project" },
+    "System.Dynamic.Runtime": "4.3.0"
+  },
+  "frameworks": {
+    "netstandard1.1": {
+    }
+  }
+}

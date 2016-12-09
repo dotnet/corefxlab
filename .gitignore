@@ -7,6 +7,8 @@ syntax: glob
 *.user
 *.userosscache
 *.sln.docstates
+*.dll
+project.lock.json
 
 # Build results
 [Dd]ebug/
@@ -240,7 +242,18 @@ Temporary Items
 #dotnet.exe output
 tools/
 
-
-
 *.ncrunchproject
 *.ncrunchsolution
+
+#dotnet cli
+[Dd]otnet/
+
+# Nuget.exe
+nuget.exe
+
+# VS Code Files
+.vscode
+*.props
+
+#xunit perf reports
+scripts/PerfHarness/*.csv

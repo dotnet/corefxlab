@@ -1,0 +1,33 @@
+{
+  "name": "System.Buffers.Experimental",
+  "version": "0.1.0-*",
+  "description": "Pool of unmanaged Span<byte> values",
+  "authors": [
+      "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "packOptions": {
+    "tags": [
+        "Span Spans Pool corefxlab"
+    ],
+    "releaseNotes": "Pre-release package, for testing only",
+    "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "iconUrl": "http://go.microsoft.com/fwlink/?LinkID=288859",
+    "projectUrl": "https://github.com/dotnet/corefxlab",
+    "requireLicenseAcceptance": true
+  },
+  "buildOptions": {
+    "allowUnsafe": true,
+    "keyFile": "../../tools/Key.snk"
+  },
+  "dependencies": {
+    "System.Buffers": "4.3.0",
+    "System.Collections.Sequences": { "target": "project" },
+    "System.Slices": { "target": "project" },
+    "System.Text.Primitives": { "target": "project" }
+  },
+  "frameworks": {
+    "netstandard1.1": {
+    }
+  }
+}

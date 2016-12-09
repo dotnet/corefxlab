@@ -1,0 +1,35 @@
+{
+  "name": "System.Slices",
+  "version": "0.1.0-*",
+  "description": "Slices of arrays and buffers",
+  "authors": [
+    "Microsoft Corporation"
+  ],
+  "copyright": "Microsoft Corporation, All rights reserved",
+  "packOptions": {
+    "tags": [
+      "Slice Span Slices Spans"
+    ],
+    "releaseNotes": "Pre-release package, for testing only",
+    "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "iconUrl": "http://go.microsoft.com/fwlink/?linkid=833199",
+    "projectUrl": "https://github.com/dotnet/corefxlab",
+    "requireLicenseAcceptance": true
+  },
+  "buildOptions": {
+    "allowUnsafe": true,
+    "keyFile": "../../tools/Key.snk",
+    "compile": {
+      "include": [ "System/*.cs" ],
+      "exclude": [ "tools/**/*.cs" ]
+    }
+  },
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "System.Memory": "4.4.0-*",
+    "System.Runtime.CompilerServices.Unsafe": "4.4.0-*"
+  },
+  "frameworks": {
+    "netstandard1.1": {}
+  }
+}

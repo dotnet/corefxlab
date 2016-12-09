@@ -1,8 +1,29 @@
-# .NET Core Lab
+# .NET Core Lab 
 
 This repo is for experimentation and exploring new ideas that may or may not make it into the main corefx repo.
 
-Curently, this repo contains the following experimental components:
+## Roadmap
+
+While this repo is meant for experimentation, we still want to focus our efforts
+in a particular direction, specifically to work on areas aligned with our
+[roadmap](docs/roadmap.md).
+
+The general idea is that we mature our thinking in this repo and either decide
+not to pursue it or that we want to productize in which case we'll eventually
+migrate the code to the appropriate location, usually the
+[dotnet/corefx](https://github.com/dotnet/corefx) repository.
+
+Of course, this doesn't mean we're not willing to explore areas that aren't part
+of our roadmap, but we'd prefer if these would start with a document, and not
+with code. This allows us to collaborate on how we want to approach specific
+holes or issues with our platform without being drowned in large PRs.
+
+## Components
+
+Currently, this repo contains the following experimental components:
+
+* **System.Slices**
+A set of features for representing and manipulating managed, native, and stack memory. The package includes types Span\<T\>, ReadOnlySpan\<T\>, and Memory\<T\>. See more information about the features at [span.md](docs/specs/span.md).
 
 * **System.Text.Formatting**. 
 System.Text.Formatting APIs are similar to the existing StringBuilder and TextWriter APIs. 
@@ -10,7 +31,12 @@ They are designed to format values into text streams and to build complex string
 But these APIs are optimized for creating text for the Web. 
 They do formatting with minimum GC heap allocations (1/6 of allocations in some scenarios) and can format directly to UTF8 streams. 
 This can result in significant performance wins for software that does a lot of text formatting for the Web, e.g. generating HTML, JSON, XML. 
-See more information on this component and code samples at the [Wiki]: https://github.com/dotnet/corefxlab/wiki 
+See more information on this component and code samples at the [Wiki]( https://github.com/dotnet/corefxlab/wiki). 
+
+* **System.Text.Primitives**
+The System.Text.Primitives library contains fast, non-allocating integral parsing APIs. They are designed for scenarios in which a byte buffer
+and an index are accepted as input and a parsed value is desired as output (e.g. in a web server). These APIs present significant performance gains
+over converting the buffer to a string, indexing into the string, and then parsing.
 
 * **System.IO.FileSystem.Watcher.Polling**. 
 .NET's FileSystemWatcher has low overhead, but it can miss some changes. This is acceptable in many scenarios, but in some, it might be not. 
@@ -22,17 +48,20 @@ The System.Threading.Tasks.Channels library provides a set of synchronization da
 Whereas the existing System.Threading.Tasks.Dataflow library is focused on pipelining and connecting together dataflow "blocks" which encapsulate 
 both storage and processing, System.Threading.Tasks.Channels is focused purely on the storage aspect, with data structures used to provide the 
 hand-offs between participants explicitly coded to use the storage. The library is designed to be used with async/await in C#.  See the
-[README.md](https://github.com/dotnet/corefxlab/blob/master/src/System.Threading.Tasks.Channels/README.md) for more information.
+[README.md](src/System.Threading.Tasks.Channels/README.md) for more information.
 
 * **System.Time**.
 This project augments the date and time APIs in .NET.  It adds two new core types: `Date` and `TimeOfDay`.
 It also provides extension methods to enhance the functionality of the existing `DateTime`, `DateTimeOffset` and `TimeZoneInfo` types.
 
 * **System.Collections.Generic.MultiValueDictionary**.
-The MultiValueDictionary is a generic collection that functions similarly to a Dictionary<TKey, ICollection<TValue>> with some added validation
-and ease of use functions. It can also be compared to a Lookup with the exception that the MultiValueDictionary is mutable. It allows custom 
-setting of the internal collections so that uniqueness of values can be chosen by specifying either a HashSet<TValue> or List<TValue>. Some of the
+The `MultiValueDictionary` is a generic collection that functions similarly to a `Dictionary<TKey, ICollection<TValue>>` with some added validation
+and ease of use functions. It can also be compared to a Lookup with the exception that the `MultiValueDictionary` is mutable. It allows custom 
+setting of the internal collections so that uniqueness of values can be chosen by specifying either a `HashSet<TValue>` or `List<TValue>`. Some of the
 design decisions as well as introductions to usage can be found in the old blog posts introducing it [here](http://blogs.msdn.com/b/dotnet/archive/2014/06/20/would-you-like-a-multidictionary.aspx) and [here](http://blogs.msdn.com/b/dotnet/archive/2014/08/05/multidictionary-becomes-multivaluedictionary.aspx).
+
+* **System.CommandLine**.
+The purpose of this library is to make command line tools first class by providing a command line parser. Here are the goals: designed for cross-platform usage, lightweight with minimal configuration, optional but built-in support for help, validation, and response files, support for multiple commands, like version control tools. See the [README.md](src/System.CommandLine/README.md) for more information.
 
 More libraries are coming soon. Stay tuned!
 
@@ -47,7 +76,16 @@ For an overview of all the .NET related projects, have a look at the
 You can get the .NET Core Lab packages from **dotnet-corefxlab** MyGet feed: 
 
 ```
-https://www.myget.org/F/dotnet-corefxlab/api/v2
+https://dotnet.myget.org/F/dotnet-corefxlab/
+
+or
+
+https://dotnet.myget.org/F/dotnet-corefxlab/api/v3/index.json (preview support)
+```
+
+Symbols:
+```
+https://dotnet.myget.org/F/dotnet-corefxlab/symbols/
 ```
 
 You can add this feed among your NuGet sources and install the packages (keep in mind that packages are pre-release packages).
@@ -65,6 +103,13 @@ This project is a part of the [.NET Foundation].
 
 ## Building and Testing
 
-To find out how you can build and test .NET Core, see the [Developer Guide].
+To build the projects in this repo, you have a few options:
 
-[Developer Guide]: https://github.com/dotnet/corefx/blob/master/Documentation/project-docs/developer-guide.md
+* Download or install a new version of the .NET CLI from here for your operating system. Then, simply invoke the tool to build individual projects (dotnet restore and then dotnet build).
+* (On Windows) Invoke build.cmd. This will download an acceptable version of the .NET CLI automatically and use it to build the entire repository. NOTE: Don't invoke `scripts/build.ps1` directly. It requires that some environment be set in order for it to work correctly. `build.cmd` does this.
+* (On Windows) Open the solution file in Visual Studio 2015. NOTE: This requires unreleased plugins to work at this point in time.
+Using VS Code, see https://aka.ms/vscclrdogfood.
+
+## Measuring Performance
+
+For details, please refer to the [PerfHarness documentation](scripts/PerfHarness/README.md).

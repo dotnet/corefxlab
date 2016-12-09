@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0"
+    },
+    "System.Drawing.Graphics": {
+      "target": "project"
+    },
+    "FluentAssertions": "4.14.0",
+    "System.IO.FileSystem": "4.0.1",
+    "xunit": "2.2.0-beta2-build3300",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+    }
+  },
+  "publishOptions": {
+    "include": [
+      "*.png",
+      "*.jpg",
+      "TestPictures/*.png",
+      "TestPictures/*.jpg",
+      "libgd.dll"
+    ]
+  },
+  "testRunner": "xunit"
+}

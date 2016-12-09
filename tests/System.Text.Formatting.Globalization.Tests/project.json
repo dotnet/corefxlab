@@ -1,0 +1,17 @@
+{
+  "name": "System.Text.Formatting.Globalization.Tests",
+  "dependencies": {
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0"
+    },
+    "System.Text.Formatting.Globalization": { "target": "project" },
+    "xunit": "2.2.0-beta2-build3300",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029"
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+    }
+  },
+  "testRunner": "xunit"
+}
