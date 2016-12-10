@@ -7,49 +7,49 @@
 List<TypeToParse> typesToParse = new List<TypeToParse>();
 
 typesToParse.Add(new TypeToParse {
-	PrimitiveName = "byte",
-	ClassName = "Byte",
-	ValueCalculationTypeName = "uint"
+    PrimitiveName = "byte",
+    ClassName = "Byte",
+    ValueCalculationTypeName = "uint"
 });
 
 typesToParse.Add(new TypeToParse {
-	PrimitiveName = "ushort",
-	ClassName = "UInt16",
-	ValueCalculationTypeName = "uint"
+    PrimitiveName = "ushort",
+    ClassName = "UInt16",
+    ValueCalculationTypeName = "uint"
 });
 
 typesToParse.Add(new TypeToParse {
-	PrimitiveName = "uint",
-	ClassName = "UInt32",
-	ValueCalculationTypeName = "uint"
+    PrimitiveName = "uint",
+    ClassName = "UInt32",
+    ValueCalculationTypeName = "uint"
 });
 
 typesToParse.Add(new TypeToParse {
-	PrimitiveName = "ulong",
-	ClassName = "UInt64",
-	ValueCalculationTypeName = "ulong"
+    PrimitiveName = "ulong",
+    ClassName = "UInt64",
+    ValueCalculationTypeName = "ulong"
 });
 
 List<TryParseSignature> TryParseSignatures = new List<TryParseSignature>();
 
 TryParseSignatures.Add(new TryParseSignature {
-	BufferType = BufferType.ArrayPointer,
-	ConsumedParameterExists = false
+    BufferType = BufferType.ArrayPointer,
+    ConsumedParameterExists = false
 });
 
 TryParseSignatures.Add(new TryParseSignature {
-	BufferType = BufferType.ArrayPointer,
-	ConsumedParameterExists = true
+    BufferType = BufferType.ArrayPointer,
+    ConsumedParameterExists = true
 });
 
 TryParseSignatures.Add(new TryParseSignature {
-	BufferType = BufferType.ReadOnlySpan,
-	ConsumedParameterExists = false
+    BufferType = BufferType.ReadOnlySpan,
+    ConsumedParameterExists = false
 });
 
 TryParseSignatures.Add(new TryParseSignature {
-	BufferType = BufferType.ReadOnlySpan,
-	ConsumedParameterExists = true
+    BufferType = BufferType.ReadOnlySpan,
+    ConsumedParameterExists = true
 });
 
 List<Encoding> utfEncodings = new List<Encoding> { Encoding.Utf8, Encoding.Utf16 };
@@ -72,14 +72,14 @@ foreach (Encoding utfEncoding in utfEncodings)
         public static partial class Invariant<#=utfEncoding#>
         {
 <#
-	foreach (TypeToParse typeToParse in typesToParse)
-	{
+    foreach (TypeToParse typeToParse in typesToParse)
+    {
 #>
-			#region <#=typeToParse.ClassName#>
+            #region <#=typeToParse.ClassName#>
 <#
-		foreach (TryParseSignature tryParseSignature in TryParseSignatures)
-		{
-			TryParseOverload tryParseOverload = new TryParseOverload(typeToParse, tryParseSignature, utfEncoding, false);
+        foreach (TryParseSignature tryParseSignature in TryParseSignatures)
+        {
+            TryParseOverload tryParseOverload = new TryParseOverload(typeToParse, tryParseSignature, utfEncoding, false);
 #>
             public unsafe static bool TryParse<#=typeToParse.ClassName#>(<#=tryParseOverload.BufferParamsText#>, out <#=typeToParse.PrimitiveName#> value<#=tryParseOverload.ConsumedParamText#>)
             {
@@ -143,12 +143,12 @@ foreach (Encoding utfEncoding in utfEncodings)
             }
 
 <#
-		}
+        }
 #>
-			#endregion
+            #endregion
 
 <#
-	}
+    }
 #>
         }
 <#

@@ -11,7 +11,7 @@ namespace System.Text
     {
         public static partial class InvariantUtf8
         {
-			#region Byte
+            #region Byte
             public unsafe static bool TryParseByte(byte* text, int length, out byte value)
             {
                 if (length < 1)
@@ -298,9 +298,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region UInt16
+            #region UInt16
             public unsafe static bool TryParseUInt16(byte* text, int length, out ushort value)
             {
                 if (length < 1)
@@ -587,9 +587,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region UInt32
+            #region UInt32
             public unsafe static bool TryParseUInt32(byte* text, int length, out uint value)
             {
                 if (length < 1)
@@ -876,9 +876,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region UInt64
+            #region UInt64
             public unsafe static bool TryParseUInt64(byte* text, int length, out ulong value)
             {
                 if (length < 1)
@@ -1165,12 +1165,12 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
         }
         public static partial class InvariantUtf16
         {
-			#region Byte
+            #region Byte
             public unsafe static bool TryParseByte(char* text, int length, out byte value)
             {
                 if (length < 1)
@@ -1457,9 +1457,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region UInt16
+            #region UInt16
             public unsafe static bool TryParseUInt16(char* text, int length, out ushort value)
             {
                 if (length < 1)
@@ -1746,9 +1746,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region UInt32
+            #region UInt32
             public unsafe static bool TryParseUInt32(char* text, int length, out uint value)
             {
                 if (length < 1)
@@ -2035,9 +2035,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region UInt64
+            #region UInt64
             public unsafe static bool TryParseUInt64(char* text, int length, out ulong value)
             {
                 if (length < 1)
@@ -2324,7 +2324,7 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
         }
     }

@@ -11,7 +11,7 @@ namespace System.Text
     {
         public static partial class InvariantUtf8
         {
-			#region SByte
+            #region SByte
             public unsafe static bool TryParseSByte(byte* text, int length, out sbyte value)
             {
                 if (length < 1)
@@ -20,19 +20,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = SByteOverflowLength + indexOfFirstDigit;
+                int overflowLength = SByteOverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -81,8 +81,8 @@ namespace System.Text
                         }
                         // If parsedValue > (sbyte.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (sbyte.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(sbyte);
@@ -105,19 +105,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = SByteOverflowLength + indexOfFirstDigit;
+                int overflowLength = SByteOverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -170,8 +170,8 @@ namespace System.Text
                         }
                         // If parsedValue > (sbyte.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (sbyte.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
@@ -195,19 +195,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = SByteOverflowLength + indexOfFirstDigit;
+                int overflowLength = SByteOverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -256,8 +256,8 @@ namespace System.Text
                         }
                         // If parsedValue > (sbyte.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (sbyte.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(sbyte);
@@ -280,19 +280,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = SByteOverflowLength + indexOfFirstDigit;
+                int overflowLength = SByteOverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -345,8 +345,8 @@ namespace System.Text
                         }
                         // If parsedValue > (sbyte.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (sbyte.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
@@ -362,9 +362,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region Int16
+            #region Int16
             public unsafe static bool TryParseInt16(byte* text, int length, out short value)
             {
                 if (length < 1)
@@ -373,19 +373,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int16OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int16OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -434,8 +434,8 @@ namespace System.Text
                         }
                         // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (short.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(short);
@@ -458,19 +458,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int16OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int16OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -523,8 +523,8 @@ namespace System.Text
                         }
                         // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (short.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
@@ -548,19 +548,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int16OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int16OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -609,8 +609,8 @@ namespace System.Text
                         }
                         // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (short.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(short);
@@ -633,19 +633,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int16OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int16OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -698,8 +698,8 @@ namespace System.Text
                         }
                         // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (short.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
@@ -715,9 +715,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region Int32
+            #region Int32
             public unsafe static bool TryParseInt32(byte* text, int length, out int value)
             {
                 if (length < 1)
@@ -726,19 +726,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int32OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -787,8 +787,8 @@ namespace System.Text
                         }
                         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(int);
@@ -811,19 +811,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int32OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -876,8 +876,8 @@ namespace System.Text
                         }
                         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
@@ -901,19 +901,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int32OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -962,8 +962,8 @@ namespace System.Text
                         }
                         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(int);
@@ -986,19 +986,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int32OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1051,8 +1051,8 @@ namespace System.Text
                         }
                         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
@@ -1068,9 +1068,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region Int64
+            #region Int64
             public unsafe static bool TryParseInt64(byte* text, int length, out long value)
             {
                 if (length < 1)
@@ -1079,19 +1079,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int64OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int64OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1140,8 +1140,8 @@ namespace System.Text
                         }
                         // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (long.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(long);
@@ -1164,19 +1164,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int64OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int64OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1229,8 +1229,8 @@ namespace System.Text
                         }
                         // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (long.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
@@ -1254,19 +1254,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int64OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int64OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1315,8 +1315,8 @@ namespace System.Text
                         }
                         // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (long.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(long);
@@ -1339,19 +1339,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int64OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int64OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1404,8 +1404,8 @@ namespace System.Text
                         }
                         // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (long.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             bytesConsumed = 0;
@@ -1421,12 +1421,12 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
         }
         public static partial class InvariantUtf16
         {
-			#region SByte
+            #region SByte
             public unsafe static bool TryParseSByte(char* text, int length, out sbyte value)
             {
                 if (length < 1)
@@ -1435,19 +1435,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = SByteOverflowLength + indexOfFirstDigit;
+                int overflowLength = SByteOverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1496,8 +1496,8 @@ namespace System.Text
                         }
                         // If parsedValue > (sbyte.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (sbyte.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(sbyte);
@@ -1520,19 +1520,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = SByteOverflowLength + indexOfFirstDigit;
+                int overflowLength = SByteOverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1585,8 +1585,8 @@ namespace System.Text
                         }
                         // If parsedValue > (sbyte.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (sbyte.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
@@ -1610,19 +1610,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = SByteOverflowLength + indexOfFirstDigit;
+                int overflowLength = SByteOverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1671,8 +1671,8 @@ namespace System.Text
                         }
                         // If parsedValue > (sbyte.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (sbyte.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(sbyte);
@@ -1695,19 +1695,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = SByteOverflowLength + indexOfFirstDigit;
+                int overflowLength = SByteOverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1760,8 +1760,8 @@ namespace System.Text
                         }
                         // If parsedValue > (sbyte.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (sbyte.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > sbyte.MaxValue / 10 || parsedValue == sbyte.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
@@ -1777,9 +1777,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region Int16
+            #region Int16
             public unsafe static bool TryParseInt16(char* text, int length, out short value)
             {
                 if (length < 1)
@@ -1788,19 +1788,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int16OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int16OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1849,8 +1849,8 @@ namespace System.Text
                         }
                         // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (short.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(short);
@@ -1873,19 +1873,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int16OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int16OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -1938,8 +1938,8 @@ namespace System.Text
                         }
                         // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (short.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
@@ -1963,19 +1963,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int16OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int16OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -2024,8 +2024,8 @@ namespace System.Text
                         }
                         // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (short.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(short);
@@ -2048,19 +2048,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int16OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int16OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -2113,8 +2113,8 @@ namespace System.Text
                         }
                         // If parsedValue > (short.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (short.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > short.MaxValue / 10 || parsedValue == short.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
@@ -2130,9 +2130,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region Int32
+            #region Int32
             public unsafe static bool TryParseInt32(char* text, int length, out int value)
             {
                 if (length < 1)
@@ -2141,19 +2141,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int32OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -2202,8 +2202,8 @@ namespace System.Text
                         }
                         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(int);
@@ -2226,19 +2226,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int32OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -2291,8 +2291,8 @@ namespace System.Text
                         }
                         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
@@ -2316,19 +2316,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int32OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -2377,8 +2377,8 @@ namespace System.Text
                         }
                         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(int);
@@ -2401,19 +2401,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int32OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int32OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 int firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -2466,8 +2466,8 @@ namespace System.Text
                         }
                         // If parsedValue > (int.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (int.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > int.MaxValue / 10 || parsedValue == int.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
@@ -2483,9 +2483,9 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
-			#region Int64
+            #region Int64
             public unsafe static bool TryParseInt64(char* text, int length, out long value)
             {
                 if (length < 1)
@@ -2494,19 +2494,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int64OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int64OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -2555,8 +2555,8 @@ namespace System.Text
                         }
                         // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (long.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(long);
@@ -2579,19 +2579,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int64OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int64OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -2644,8 +2644,8 @@ namespace System.Text
                         }
                         // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (long.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
@@ -2669,19 +2669,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int64OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int64OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -2730,8 +2730,8 @@ namespace System.Text
                         }
                         // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (long.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             value = default(long);
@@ -2754,19 +2754,19 @@ namespace System.Text
                     return false;
                 }
 
-				int indexOfFirstDigit = 0;
-				int sign = 1;
-				if (text[0] == '-')
-				{
-					indexOfFirstDigit = 1;
-					sign = -1;
-				}
-				else if (text[0] == '+')
-				{
-					indexOfFirstDigit = 1;
-				}
+                int indexOfFirstDigit = 0;
+                int sign = 1;
+                if (text[0] == '-')
+                {
+                    indexOfFirstDigit = 1;
+                    sign = -1;
+                }
+                else if (text[0] == '+')
+                {
+                    indexOfFirstDigit = 1;
+                }
 
-				int overflowLength = Int64OverflowLength + indexOfFirstDigit;
+                int overflowLength = Int64OverflowLength + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 long firstDigit = text[indexOfFirstDigit] - 48; // '0'
@@ -2819,8 +2819,8 @@ namespace System.Text
                         }
                         // If parsedValue > (long.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (long.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
-						bool positive = sign > 0;
-						bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
+                        bool positive = sign > 0;
+                        bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > long.MaxValue / 10 || parsedValue == long.MaxValue / 10 && nextDigitTooLarge)
                         {
                             charsConsumed = 0;
@@ -2836,7 +2836,7 @@ namespace System.Text
                 return true;
             }
 
-			#endregion
+            #endregion
 
         }
     }
