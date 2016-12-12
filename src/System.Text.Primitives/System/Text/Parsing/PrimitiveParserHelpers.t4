@@ -7,7 +7,7 @@ enum BufferType
 	ReadOnlySpan
 }
 
-enum Encoding
+enum UtfEncoding
 {
 	Utf8,
 	Utf16
@@ -31,7 +31,7 @@ class TryParseOverload
 	// Given in the constructor
 	internal TypeToParse TypeToParseInfo { get; }
 	internal TryParseSignature SignatureInfo { get; }
-	internal Encoding UtfEncoding { get; }
+	internal UtfEncoding Encoding { get; }
 	internal bool Signed { get; }
 
 	// Information depending on the type to parse
@@ -45,11 +45,11 @@ class TryParseOverload
 	// Information depending on the encoding
 	internal string CharacterPrimitive { get; }
 
-	internal TryParseOverload(TypeToParse typeToParse, TryParseSignature tryParseSignature, Encoding utfEncoding, bool signed)
+	internal TryParseOverload(TypeToParse typeToParse, TryParseSignature tryParseSignature, UtfEncoding encoding, bool signed)
 	{
 		TypeToParseInfo = typeToParse;
 		SignatureInfo = tryParseSignature;
-		UtfEncoding = utfEncoding;
+		Encoding = encoding;
 		Signed = signed;
 
 		OverflowLengthName = "";
@@ -60,12 +60,12 @@ class TryParseOverload
 
 		OverflowLengthName = String.Format("{0}OverflowLength", TypeToParseInfo.ClassName);
 
-		switch (UtfEncoding)
+		switch (Encoding)
 		{
-			case Encoding.Utf8:
+			case UtfEncoding.Utf8:
 				CharacterPrimitive = "byte";
 				break;
-			case Encoding.Utf16:
+			case UtfEncoding.Utf16:
 				CharacterPrimitive = "char";
 				break;
 		}

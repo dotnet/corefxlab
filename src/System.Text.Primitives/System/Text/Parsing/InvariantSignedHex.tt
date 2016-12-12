@@ -52,7 +52,7 @@ TryParseSignatures.Add(new TryParseSignature {
     ConsumedParameterExists = true
 });
 
-List<Encoding> utfEncodings = new List<Encoding> { Encoding.Utf8, Encoding.Utf16 };
+List<UtfEncoding> utfEncodings = new List<UtfEncoding> { UtfEncoding.Utf8, UtfEncoding.Utf16 };
 
 #>
 // Copyright (c) Microsoft. All rights reserved.
@@ -66,7 +66,7 @@ namespace System.Text
     public static partial class PrimitiveParser
     {
 <#
-foreach (Encoding utfEncoding in utfEncodings)
+foreach (UtfEncoding utfEncoding in utfEncodings)
 {
 #>
         public static partial class Invariant<#=utfEncoding#>
