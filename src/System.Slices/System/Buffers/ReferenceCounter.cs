@@ -49,7 +49,7 @@ namespace System.Runtime
             {
                 for (int index = 0; index < s_allTablesCount; index++)
                 {
-                    if(allTables[index].HasReference(obj)) return true;
+                    if (allTables[index].HasReference(obj)) return true;
                 }
                 return false;
             }
@@ -104,7 +104,7 @@ namespace System.Runtime
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void Increment(object obj)
         {
-            if(_first == 0)
+            if (_first == 0)
             {
                 // No space left, we must grow the table.
                 var oldLength = _items.Length;
@@ -122,7 +122,7 @@ namespace System.Runtime
 
             _items[_first - 1] = obj;
             // _items entry must update before we update the value of _first
-            // If this is not the case, then a stake reference could
+            // If this is not the case, then a stale reference could
             // be observed.
             Volatile.Write(ref _first, _first - 1);
         }
@@ -134,7 +134,7 @@ namespace System.Runtime
             {
                 if (ReferenceEquals(_items[index], obj))
                 {
-                    if(index != _first) {
+                    if (index != _first) {
                         //Condense the table
                         _items[index] = _items[_first];
                     }
