@@ -8,22 +8,22 @@ namespace System.IO.Pipelines
 {
     public abstract class PipelineWriter : IPipelineWriter
     {
-        private readonly PipelineReaderWriter _output;
+        private readonly Pipe _pipe;
 
         public PipelineWriter(IBufferPool pool)
         {
-            _output = new PipelineReaderWriter(pool);
+            _pipe = new Pipe(pool);
 
-            Consume(_output);
+            Consume(_pipe);
         }
 
         protected abstract Task WriteAsync(ReadableBuffer buffer);
 
-        public Task Writing => _output.Writing;
+        public Task Writing => _pipe.Writing;
 
-        public WritableBuffer Alloc(int minimumSize = 0) => _output.Alloc(minimumSize);
+        public WritableBuffer Alloc(int minimumSize = 0) => _pipe.Alloc(minimumSize);
 
-        public void Complete(Exception exception = null) => _output.CompleteWriter(exception);
+        public void Complete(Exception exception = null) => _pipe.CompleteWriter(exception);
 
         private async void Consume(IPipelineReader input)
         {

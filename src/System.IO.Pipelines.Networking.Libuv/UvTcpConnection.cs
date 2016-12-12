@@ -17,8 +17,8 @@ namespace System.IO.Pipelines.Networking.Libuv
         private static readonly Func<UvStreamHandle, int, object, Uv.uv_buf_t> _allocCallback = AllocCallback;
         private static readonly Action<UvWriteReq, int, object> _writeCallback = WriteCallback;
 
-        protected readonly PipelineReaderWriter _input;
-        protected readonly PipelineReaderWriter _output;
+        protected readonly Pipe _input;
+        protected readonly Pipe _output;
         private readonly UvThread _thread;
         private readonly UvTcpHandle _handle;
 

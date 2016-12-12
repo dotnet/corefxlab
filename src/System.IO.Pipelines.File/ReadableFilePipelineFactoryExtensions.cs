@@ -12,9 +12,9 @@ namespace System.IO.Pipelines.File
     {
         public static IPipelineReader ReadFile(this PipelineFactory factory, string path)
         {
-            var reader = factory.Create();
+            var pipe = factory.Create();
 
-            var file = new FileReader(reader);
+            var file = new FileReader(pipe);
             file.OpenReadFile(path);
             return file;
         }

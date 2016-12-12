@@ -37,7 +37,7 @@ namespace System.IO.Pipelines.Networking.Sockets
 
         private readonly bool _ownsFactory;
         private PipelineFactory _factory;
-        private PipelineReaderWriter _input, _output;
+        private Pipe _input, _output;
         private Socket _socket;
 
         static SocketConnection()
