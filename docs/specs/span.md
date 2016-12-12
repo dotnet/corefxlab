@@ -196,8 +196,8 @@ To support the scenarios described above, Span\<T\> must meet the following requ
 
 #Design/Representation
 We will provide two different implementations of Span\<T\>: 
-- Fast Span\<T\> (availiable on runtimes with special support for spans)
-- Slow Span\<T\> (availiable on all current .NET runtimes, even existing ones, e.g. .NET 4.5) 
+- Fast Span\<T\> (available on runtimes with special support for spans)
+- Slow Span\<T\> (available on all current .NET runtimes, even existing ones, e.g. .NET 4.5) 
 
 The fast implementation, will rely on "ref field" support and will look as follows:
 
