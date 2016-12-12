@@ -107,7 +107,7 @@ namespace System.IO.Pipelines.Tests
 
         private class MyCustomStream : Stream, IPipelineWriter
         {
-            private readonly PipelineReaderWriter _readerWriter = new PipelineReaderWriter(ArrayBufferPool.Instance);
+            private readonly Pipe _pipe = new Pipe(ArrayBufferPool.Instance);
 
             public override bool CanRead => true;
 
@@ -136,16 +136,16 @@ namespace System.IO.Pipelines.Tests
                 }
             }
 
-            public Task Writing => _readerWriter.Writing;
+            public Task Writing => _pipe.Writing;
 
             public WritableBuffer Alloc(int minimumSize = 0)
             {
-                return _readerWriter.Alloc(minimumSize);
+                return _pipe.Alloc(minimumSize);
             }
 
             public void Complete(Exception exception = null)
             {
-                _readerWriter.CompleteWriter(exception);
+                _pipe.CompleteWriter(exception);
             }
 
             public override void Flush()
@@ -155,7 +155,7 @@ namespace System.IO.Pipelines.Tests
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                return _readerWriter.ReadAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                return _pipe.ReadAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             public override long Seek(long offset, SeekOrigin origin)
@@ -170,15 +170,15 @@ namespace System.IO.Pipelines.Tests
 
             public override void Write(byte[] buffer, int offset, int count)
             {
-                _readerWriter.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                _pipe.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             protected override void Dispose(bool disposing)
             {
                 base.Dispose(disposing);
 
-                _readerWriter.CompleteReader();
-                _readerWriter.CompleteWriter();
+                _pipe.CompleteReader();
+                _pipe.CompleteWriter();
             }
         }
     }

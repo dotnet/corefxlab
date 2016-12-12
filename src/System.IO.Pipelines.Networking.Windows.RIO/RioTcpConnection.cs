@@ -29,8 +29,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         private long _previousSendCorrelation = RestartSendCorrelations;
 
-        private readonly PipelineReaderWriter _input;
-        private readonly PipelineReaderWriter _output;
+        private readonly Pipe _input;
+        private readonly Pipe _output;
 
         private readonly SemaphoreSlim _outgoingSends = new SemaphoreSlim(RioTcpServer.MaxWritesPerSocket);
         private readonly SemaphoreSlim _previousSendsComplete = new SemaphoreSlim(1);
