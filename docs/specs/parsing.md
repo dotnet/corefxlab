@@ -58,7 +58,7 @@ public static bool TryParseXyz(ReadOnlySpan<byte> text,
 
 This allows the parsing to happen from a wide variety of data sources:
 
-* **Native memory**, by creating a span from the pointer + lengh.
+* **Native memory**, by creating a span from the pointer + length
 * **`byte[]`**, via an implicit conversion
 * **`Span<byte>`**, via an implicit conversion
 
@@ -72,7 +72,7 @@ throw exceptions when parsing cannot succeed.
 ## High-Level API Shape
 
 The problem with the low-level API shape is that it doesn't deal with situations
-where the data spans multiple buffers. Thus, we need a way to for the parsing
+where the data spans multiple buffers. Thus, we need a way for the parsing
 methods to "pull" the next buffer. We currently have something like
 `ISequence<T>`, which is basically a more efficient `IEnumerable<T>`:
 
@@ -89,9 +89,9 @@ could
 * only support UTF8 and have a hand-optimized version of that and support other
   encodings by converting that representation to UTF8
 * change the shape of the low-level API to allow the method to indicate whether
-  more data could be consumed.
+  more data could be consumed
 * don't offer these methods and leave it for a higher-layer, such as
-  [pipelines](pipelines.md), to deal with that.
+  [pipelines](pipelines.md), to deal with that
 
 ## Work Items
 
