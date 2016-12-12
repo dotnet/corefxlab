@@ -286,19 +286,26 @@ namespace System.Text.Http
 
         internal static bool TryParseHeaders(ReadOnlySpan<byte> bytes, out HttpHeaders headers, out int parsed)
         {
-            for(int i=0; i<bytes.Length - 3; i++)
+            while (true)
             {
-                if(bytes[i] == '\r' && bytes[i+1] == '\n' && bytes[i+2] == '\r' && bytes[i+3] == '\n')
+                var candidate = bytes.IndexOf((byte)'\r');
+                if(candidate == -1 || candidate > bytes.Length - 4)
                 {
-                    parsed = i + 4;
-                    headers = new HttpHeaders(bytes.Slice(0, i + 2));
+                    parsed = 0;
+                    headers = default(HttpHeaders);
+                    return false;
+                }
+                if (bytes[candidate + 1] == '\n' && bytes[candidate + 2] == '\r' && bytes[candidate + 3] == '\n')
+                {
+                    parsed = candidate + 4;
+                    headers = new HttpHeaders(bytes.Slice(0, candidate + 2));
                     return true;
                 }
-             }
-
-            headers = default(HttpHeaders);
-            parsed = 0;
-            return false;
+                else
+                {
+                    bytes = bytes.Slice(candidate + 1);
+                }
+            }
         }
     }
 }
