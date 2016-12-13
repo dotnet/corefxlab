@@ -1,7 +1,7 @@
 ## Efficient IO
 
 As part of the high performance work, we need new abstractions for doing efficient reading and writing to and from the network. The pattern we have settled on
-so far in pipelines is a model where buffers are pushed by a producer (`IPipelineWriter`) to a consumer (`IPipelineWriter`).
+so far in pipelines is a model where buffers are pushed by a producer (`IPipelineWriter`) to a consumer (`IPipelineReader`).
 
 ```C#
 public interface IPipelineReader
