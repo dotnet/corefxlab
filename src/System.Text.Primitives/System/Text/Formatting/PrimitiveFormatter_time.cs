@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Text.Utf8;
 
 namespace System.Text 
 {
@@ -12,6 +13,32 @@ namespace System.Text
     {
         static readonly string[] s_dayNames = { "Sun, ", "Mon, ", "Tue, ", "Wed, ", "Thu, ", "Fri, ", "Sat, " };
         static readonly string[] s_monthNames = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+        static readonly byte[][] s_dayNamesUtf8 = {
+            new Utf8String("Sun, ").Bytes.ToArray(),
+            new Utf8String("Mon, ").Bytes.ToArray(),
+            new Utf8String("Tue, ").Bytes.ToArray(),
+            new Utf8String("Wed, ").Bytes.ToArray(),
+            new Utf8String("Thu, ").Bytes.ToArray(),
+            new Utf8String("Fri, ").Bytes.ToArray(),
+            new Utf8String("Sat, ").Bytes.ToArray(),
+        };
+        static readonly byte[][] s_monthNamesUtf8 = {
+            new Utf8String("Jan").Bytes.ToArray(),
+            new Utf8String("Feb").Bytes.ToArray(),
+            new Utf8String("Mar").Bytes.ToArray(),
+            new Utf8String("Apr").Bytes.ToArray(),
+            new Utf8String("May").Bytes.ToArray(),
+            new Utf8String("Jun").Bytes.ToArray(),
+            new Utf8String("Jul").Bytes.ToArray(),
+            new Utf8String("Aug").Bytes.ToArray(),
+            new Utf8String("Sep").Bytes.ToArray(),
+            new Utf8String("Oct").Bytes.ToArray(),
+            new Utf8String("Nov").Bytes.ToArray(),
+            new Utf8String("Dec").Bytes.ToArray(),
+        };
+        static readonly byte[] s_gmtUtf8Bytes = new Utf8String(" GMT").Bytes.ToArray();
+
         static readonly TextFormat D2 = new TextFormat('D', 2);
         static readonly TextFormat D4 = new TextFormat('D', 4);
         static readonly TextFormat D7 = new TextFormat('D', 7);
@@ -199,6 +226,31 @@ namespace System.Text
 
         static bool TryFormatDateTimeRfc1123(DateTime value, Span<byte> buffer, EncodingData encoding, out int bytesWritten)
         {
+            if (encoding.IsInvariantUtf8)
+            {
+                bytesWritten = 0;
+                if (buffer.Length < 29) {
+                    return false;
+                }
+
+                s_dayNamesUtf8[(int)value.DayOfWeek].CopyTo(buffer);
+                TryFormat(value.Day, buffer.Slice(5), out bytesWritten, D2, encoding);
+                buffer[7] = (byte)' ';
+                var monthBytes = s_monthNamesUtf8[value.Month - 1];
+                monthBytes.CopyTo(buffer.Slice(8));
+                buffer[11] = (byte)' ';
+                TryFormat(value.Year, buffer.Slice(12), out bytesWritten, D4, encoding);
+                buffer[16] = (byte)' ';
+                TryFormat(value.Hour, buffer.Slice(17), out bytesWritten, D2, encoding);
+                buffer[19] = (byte)':';
+                TryFormat(value.Minute, buffer.Slice(20), out bytesWritten, D2, encoding);
+                buffer[22] = (byte)':';
+                TryFormat(value.Second, buffer.Slice(23), out bytesWritten, D2, encoding);
+                s_gmtUtf8Bytes.CopyTo(buffer.Slice(25));
+                bytesWritten = 29;
+                return true;
+            }
+
             bytesWritten = 0;
             if (!TryWriteString(s_dayNames[(int)value.DayOfWeek], buffer, encoding.TextEncoding, ref bytesWritten)) { return false; }
             if (!TryWriteInt32(value.Day, buffer, D2, encoding, ref bytesWritten)) { return false; }
@@ -213,7 +265,7 @@ namespace System.Text
             if (!TryWriteChar(':', buffer, encoding.TextEncoding, ref bytesWritten)) { return false; }
             if (!TryWriteInt32(value.Second, buffer, D2, encoding, ref bytesWritten)) { return false; }
             if (!TryWriteString(" GMT", buffer, encoding.TextEncoding, ref bytesWritten)) { return false; }
-            return true;
+            return true;      
         }
 
         public static bool TryFormat(this TimeSpan value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData encoding, out int bytesWritten)

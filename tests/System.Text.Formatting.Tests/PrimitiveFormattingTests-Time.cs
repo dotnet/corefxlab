@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Globalization;
+using System.Text.Utf8;
 using Xunit;
 
 namespace System.Text.Formatting.Tests
@@ -60,6 +61,23 @@ namespace System.Text.Formatting.Tests
 
             sb.Append(time, 'R');
             Assert.Equal(time.ToString("R"), sb.ToString());
+            sb.Clear();
+        }
+
+        [Fact]
+        public void FormatDateTimeRUtf8()
+        {
+            var time = DateTime.UtcNow;
+
+            var expected = time.ToString("R");
+
+            var sb = new ArrayFormatter(100, EncodingData.InvariantUtf8);
+            sb.Append(time, 'R');
+            var result = sb.Formatted.Slice().ToArray();
+            var resultString = Encoding.UTF8.GetString(result);
+
+            Assert.Equal(expected, resultString);
+
             sb.Clear();
         }
 
