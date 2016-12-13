@@ -7,6 +7,7 @@ using System.IO.Pipelines.Samples;
 using System.Text.Http;
 using System.IO.Pipelines;
 using System.Text.Formatting;
+using System.Text.Json;
 
 public partial class E2EPipelineTests
 {
@@ -23,26 +24,57 @@ Accept-Language: en-US,en;q=0.8,it;q=0.6,ms;q=0.4
 ");
 
     [Benchmark]
-    [InlineData(1000, 250)]
+    [InlineData(1000, 256)]
+    [InlineData(1000, 1024)]
+    [InlineData(1000, 4096)]
     private static void TechEmpowerHelloWorldNoIO(int numberOfRequests, int concurrentConnections)
     {
         foreach (var iteration in Benchmark.Iterations)
         {
             using (iteration.StartMeasurement())
             {
-                RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, WriteResponse);
+                RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response)=> {
+                    var formatter = new OutputFormatter<WritableBuffer>(response, EncodingData.InvariantUtf8);
+                    formatter.Append("HTTP/1.1 200 OK");
+                    formatter.Append("\r\nContent-Length: 13");
+                    formatter.Append("\r\nContent-Type: text/plain");
+                    formatter.Format("\r\nDate: {0:R}", DateTime.UtcNow);
+                    formatter.Append("Server: System.IO.Pipelines");
+                    formatter.Append("\r\n\r\n");
+
+                    // write body
+                    formatter.Append("Hello, World!");
+                });
             }
         }
     }
 
-    static void WriteResponse(HttpRequest request, WritableBuffer output)
+    [Benchmark]
+    [InlineData(1000, 256)]
+    [InlineData(1000, 1024)]
+    [InlineData(1000, 4096)]
+    private static void TechEmpowerJsonNoIO(int numberOfRequests, int concurrentConnections)
     {
-        var formatter = new OutputFormatter<WritableBuffer>(output, EncodingData.InvariantUtf8);
-        formatter.Append("HTTP/1.1 200 OK");
-        formatter.Append("\r\nContent-Length: 13");
-        formatter.Append("\r\nContent-Type: text/plain");
-        formatter.Append("\r\n\r\n");
-        formatter.Append("Hello, World!");
+        foreach (var iteration in Benchmark.Iterations)
+        {
+            using (iteration.StartMeasurement())
+            {
+                RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response) => {
+                    var formatter = new OutputFormatter<WritableBuffer>(response, EncodingData.InvariantUtf8);
+                    formatter.Append("HTTP/1.1 200 OK");
+                    formatter.Append("\r\nContent-Length: 25");
+                    formatter.Append("\r\nContent-Type: application/json");
+                    formatter.Format("\r\nDate: {0:R}", DateTime.UtcNow);
+                    formatter.Append("Server: System.IO.Pipelines");
+                    formatter.Append("\r\n\r\n");
+
+                    // write body
+                    var writer = new JsonWriter<OutputFormatter<WritableBuffer>>(formatter);
+                    writer.WriteObjectStart();
+                    writer.WriteAttribute("message", "Hello, World!");
+                    writer.WriteObjectEnd();                  
+                });
+            }
+        }
     }
 }
-
