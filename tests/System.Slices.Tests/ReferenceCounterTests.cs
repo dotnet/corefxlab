@@ -15,15 +15,15 @@ namespace System.Slices.Tests
         {
             var obj = new object();
             var counter = new ReferenceCounter();
-            Assert.Equal(0, (int)counter.GetGlobalCount(obj));
+            Assert.False(counter.HasReference(obj));
             counter.AddReference(obj);
-            Assert.Equal(1, (int)counter.GetGlobalCount(obj));
+            Assert.True(counter.HasReference(obj));
             counter.AddReference(obj);
-            Assert.Equal(2, (int)counter.GetGlobalCount(obj));
+            Assert.True(counter.HasReference(obj));
             counter.Release(obj);
-            Assert.Equal(1, (int)counter.GetGlobalCount(obj));
+            Assert.True(counter.HasReference(obj));
             counter.Release(obj);
-            Assert.Equal(0, (int)counter.GetGlobalCount(obj));
+            Assert.False(counter.HasReference(obj));
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace System.Slices.Tests
             });
 
             Task.WaitAll(t1, t2);
-            Assert.Equal(0, (int)counter.GetGlobalCount(obj));
+            Assert.False(counter.HasReference(obj));
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace System.Slices.Tests
                 thread.Start();
             }
             WaitHandle.WaitAll(threads.ToArray());
-            Assert.Equal(0, (int)counter.GetGlobalCount(0));
+            Assert.False(counter.HasReference(obj));
         }
 
         [Fact]
@@ -101,7 +101,7 @@ namespace System.Slices.Tests
             }
             foreach (var obj in objects)
             {
-                Assert.Equal(0, (int)counter.GetGlobalCount(obj));
+                Assert.False(counter.HasReference(obj));
             }
         }
     }
