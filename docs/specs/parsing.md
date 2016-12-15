@@ -1,6 +1,6 @@
 # Parsing
 
-The current .NET Framework parsing APIs (e.g. int.TryParse) can parse System.String (UTF16) text.
+The current .NET Framework parsing APIs (e.g. int.TryParse) can parse text represented by System.String (UTF16).
 ```c#
 string text = ...
 int value;
@@ -8,7 +8,7 @@ if(int.TryParse(text, out value)){
    ...
 }
 ```
-These APIs work great in many scenarios, e.g. parsing text contained in GUI application text boxes. But they are completely not suitable for processing modern network protocols, which are often text (e.g. JSON, HTTP headers), but contained in byte buffers, not strings, and encoded with UTF8/ASCII, not UTF16. Because of this, all modern web servers written for the .NET platform either don't use the current BCL parsing APIs or take performance hit of transcoding from UTF8 to UTF16, and copying from buffers to strings.
+These APIs work great in many scenarios, e.g. parsing text contained in GUI application's text boxes. They are not suitable for processing modern network protocols, which are often text (e.g. JSON, HTTP headers), but encoded with UTF8/ASCII, not UTF16, and contained in byte buffers, not strings. Because of this, all modern web servers written for the .NET platform either don't use the current BCL parsing APIs or take a performance hit to transcode from UTF8 to UTF16, and to copy from buffers to strings.
 ```c#
 byte[] json = ...
 string text = Encoding.UTF8.GetString(json); // this is very expensive: copy, transformation, object allocations
@@ -18,6 +18,7 @@ if(int.TryParse(text, out value)){
 }
 ```
 To address modern networking scenarios beter, we will provide parsing APIs that:
+
 a) Can parse byte buffers, with out the need to have a string to parse
 b) Can parse text encoded as UTF8 (and possibly other encodings)
 c) Can parse without any GC heap allocations
@@ -57,13 +58,14 @@ public static class PrimitiveParser {
         }
     }
     
+    // UTF16-invariant overloads
     public static class InvariantUtf16 {
         // same as InvariantUtf8, but using char* and ReadOnlySpan<char>
         ...
     }
 }
 ```
-The most general (and the slowest) overload allows callers to specify format of the text (`TextFormat`), and its encoding and culture (`EncodingData`).
+The most general (and the slowest) overload allows callers to specify [format](https://msdn.microsoft.com/en-us/library/dwhawy9k(v=vs.110).aspx) of the text (`TextFormat`), and its encoding and culture (`EncodingData`).
 
 `TextFormat` is an efficient (non allocating, preparsed) representation of format strings. It's used in both parsing and formatting APIs.
 ```c#
@@ -77,7 +79,7 @@ The most general (and the slowest) overload allows callers to specify format of 
         
         public TextFormat(char symbol, byte precision=(byte)255);
         
-        public byte Precision { get; } // this is for formatting
+        public byte Precision { get; } 
         public char Symbol { get; set; }
         
         // less interesting members follow:    
@@ -148,7 +150,7 @@ The most general (and the slowest) overload allows callers to specify format of 
         Utf8 = (byte)1,
     }
 ```
-These APIs can be used as follows:
+These APIs can be used as follows.
 ```c#
 ReadOnlySpan<byte> utf8Text = ...
 if(PrimitiveParser.TryParseInt32(utf8Text, out var value, out var consumedBytes, EncodingData.InvariantUtf8, 'G'){
@@ -189,11 +191,23 @@ public class TestParsing
     }
 }
 ```
-Corfxlab: 27.64
 
-DotNet461: 48.38
+``` ini
 
-TODO: create md file with BenchmarkDotNet summary
+BenchmarkDotNet=v0.10.1, OS=Microsoft Windows NT 6.2.9200.0
+Processor=Intel(R) Core(TM) i7-6700 CPU 3.40GHz, ProcessorCount=8
+Frequency=3328121 Hz, Resolution=300.4698 ns, Timer=TSC
+  [Host]     : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.6.1586.0
+  DefaultJob : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.6.1586.0
+
+Allocated=0 B  
+
+```
+     Method |       Mean |    StdErr |    StdDev | Scaled | Scaled-StdDev |
+----------- |----------- |---------- |---------- |------- |-------------- |
+  DotNet461 | 54.4263 ns | 0.2040 ns | 0.7899 ns |   1.00 |          0.00 |
+ Corefxlabs |  7.5390 ns | 0.0772 ns | 0.2889 ns |   0.14 |          0.01 |
+
 
 ### Higher Level APIs
 The low level APIs can parse text residing in a single contiguous memory buffer. We will need higher level APIs to make it easier to parse text out of "streams" of data. The details of these APIs are not yet clear, but the following method illustrates early thinking: https://github.com/dotnet/corefxlab/blob/master/src/System.Text.Formatting/System/Text/Parsing/SequenceParser.cs#L15
@@ -204,14 +218,14 @@ NOTE: we should explore changing the API from a stateless static method to a Tex
 ### Priority 1
 - Parse text contained in byte buffers
 - Support types commonly used in network protocols: integers, DateTimeOffset/DateTime (HTTP Format), URI, GUID, Boolean, BigInteger
-- No allocations
+- No GC heap allocations
 - UTF8 and ISO-8859-1 (required by networking protocols)
 - Invariant culture
 - Decimal and hexadecimal
 - Round trip text output by [formatting](formatting.md) APIs
 - Support 'G', 'D', 'R', and 'X' formats
 - Compatible with .NET Framework APIs, where possible
-- Parse without knowing up-front how many bytes encode the value
+- Parse without knowing up-front how many bytes encode the value (i.e. see bytesConsumed parameters)
 - Performance comparable to pinvoking to hand written C++ parsers, and 2x faster than the existing .NET APIs (e.g. int.TryParse)
 
 ### Priority 2
