@@ -32,17 +32,31 @@ namespace System.Slices.Tests
         public void ArrayMemoryLifetime()
         {
             Memory<byte> copyStoredForLater;
-            using (var owner = new OwnedArray<byte>(1024)) {
+            var owner = new OwnedArray<byte>(1024);
+            try {
                 Memory<byte> memory = owner.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
-                using (memorySlice.Reserve()) { // increments the "outstanding span" refcount
+                var r = memorySlice.Reserve();
+                try { // increments the "outstanding span" refcount
                     Assert.Throws<InvalidOperationException>(() => { // memory is reserved; cannot dispose
                         owner.Dispose();
                     });
-                    Span<byte> span = memorySlice.Span;
-                    span[0] = 255;
-                } // releases the refcount
+                    Assert.Throws<ObjectDisposedException>(() => {
+                        Span<byte> span = memorySlice.Span;
+                        span[0] = 255;
+                    });
+                }
+                finally {
+                    Assert.Throws<ObjectDisposedException>(() => {
+                       r.Dispose(); // releases the refcount
+                    });
+                }
+            }
+            finally {
+                Assert.Throws<InvalidOperationException>(() => {
+                    owner.Dispose();
+                });
             }
             Assert.Throws<ObjectDisposedException>(() => { // manager is disposed
                 var span = copyStoredForLater.Span;
@@ -80,7 +94,7 @@ namespace System.Slices.Tests
                         try {
                             reserves[i] = memories[i].Reserve();
                             reserveSuccesses[i] = true;
-                        } catch (InvalidOperationException e) {
+                        } catch (ObjectDisposedException e) {
                             reserveSuccesses[i] = false;
                         }
                     }

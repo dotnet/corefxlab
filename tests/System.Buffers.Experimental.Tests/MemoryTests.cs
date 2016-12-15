@@ -47,17 +47,34 @@ namespace System.Slices.Tests
         public void NativeMemoryLifetime()
         {
             Memory<byte> copyStoredForLater;
-            using (var owner = new OwnedNativeMemory(1024)) {
+            var owner = new OwnedNativeMemory(1024);
+            try {
                 Memory<byte> memory = owner.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
-                using (memorySlice.Reserve()) {
+                var r = memorySlice.Reserve();
+                try {
                     Assert.Throws<InvalidOperationException>(() => { // memory is reserved; cannot dispose
                         owner.Dispose();
                     }); 
-                    Span<byte> span = memorySlice.Span;
-                    span[0] = 255;
+                    Assert.Throws<ObjectDisposedException>(() => {
+                        // memory is disposed
+                        Span<byte> span = memorySlice.Span;
+                        span[0] = 255;
+                    });
                 }
+                finally {
+                    Assert.Throws<ObjectDisposedException>(() => {
+                        // memory is disposed
+                        r.Dispose();
+                    });
+                }
+            }
+            finally {
+                Assert.Throws<InvalidOperationException>(() => {
+                    // memory is still reserved as Release failed.
+                    owner.Dispose();
+                });
             }
             Assert.Throws<ObjectDisposedException>(() => { // manager is disposed
                 var span = copyStoredForLater.Span;
@@ -70,22 +87,38 @@ namespace System.Slices.Tests
             Memory<byte> copyStoredForLater;
             var bytes = new byte[1024];
             fixed (byte* pBytes = bytes) {
-                using (var owner = new OwnedPinnedArray<byte>(bytes, pBytes)) {
+                var owner = new OwnedPinnedArray<byte>(bytes, pBytes);
+                try {
                     Memory<byte> memory = owner.Memory;
                     Memory<byte> memorySlice = memory.Slice(10);
                     copyStoredForLater = memorySlice;
-                    using (memorySlice.Reserve()) {
+                    var r = memorySlice.Reserve();
+                    try {
                         Assert.Throws<InvalidOperationException>(() => { // memory is reserved; cannot dispose
                             owner.Dispose();
-                        }); 
-                        Span<byte> span = memorySlice.Span;
-                        span[0] = 255;
+                        });
+                        Assert.Throws<ObjectDisposedException>(() => {
+                            Span<byte> span = memorySlice.Span;
+                            span[0] = 255;
+                        });
                     }
-                }   
+                    finally {
+                        Assert.Throws<ObjectDisposedException>(() => {
+                            // memory has been Disposed, so cannot free reservation
+                            r.Dispose();
+                        });
+                    }
+                }
+                finally {
+                    Assert.Throws<InvalidOperationException>(() => {
+                        // memory is still reserved as Release failed.
+                        owner.Dispose();
+                    });
+                }
             }
             Assert.Throws<ObjectDisposedException>(() => { // manager is disposed
                 var span = copyStoredForLater.Span;
             });
-        }   
+        }
     }
 }
