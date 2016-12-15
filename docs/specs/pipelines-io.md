@@ -1,6 +1,6 @@
-## Efficient IO
+## Efficient I/O
 
-As part of the high performance work, we need new abstractions for doing efficient reading and writing to and from the network. The pattern we have settled on
+As part of the high performance work, we need new abstractions for doing efficient reading and writing to and from the network, pipes, files etc. The pattern we have settled on
 so far in pipelines is a model where buffers are pushed by a producer (`IPipelineWriter`) to a consumer (`IPipelineReader`).
 
 ```C#
@@ -27,7 +27,7 @@ The producer gets a handle on a `WritableBuffer` and the consumer gets a handle 
 Memory in pipelines is managed as a linked list of `OwnedMemory<T>`:
 
 ```C#
-public class BufferSegment
+internal class BufferSegment
 {
     // The backing memory, usually leased from a pool
     OwnedMemory<byte> Data { get; set; }
@@ -50,7 +50,7 @@ A `BufferSegment` represents a link in a contiguous chain of buffers. New segmen
 ### Writing
 
 ```C#
-private Task Produce(IPipelineWriter writer)
+private async Task Produce(IPipelineWriter writer)
 {
    while (true)
    {
@@ -129,7 +129,7 @@ public static void Write(this WritableBuffer buffer, ReadOnlySpan<byte> source)
 The consumer calls `IPipelineReader.ReadAsync()` which returns with a `ReadableBuffer` when the producer says that data is ready. 
 
 ```C#
-private Task Consume(IPipelineReader reader)
+private async Task Consume(IPipelineReader reader)
 {
     while (true)
     {
