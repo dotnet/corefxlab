@@ -41,6 +41,9 @@ public static class PrimitiveParser {
     public static class InvariantUtf8 {
        
         // We did some preliminary measurements, and the shorter overload is non-trivially faster. We should double check though.
+        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value);
+        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed);
+            
         public unsafe static bool TryParseInt32(byte* text, int length, out int value);
         public unsafe static bool TryParseInt32(byte* text, int length, out int value, out int bytesConsumed);
         
@@ -48,18 +51,15 @@ public static class PrimitiveParser {
         public static class Hex {
             public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value);
             public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed);
+            
+            public unsafe static bool TryParseInt32(byte* text, int length, out int value);
+            public unsafe static bool TryParseInt32(byte* text, int length, out int value, out int bytesConsumed);
         }
     }
     
     public static class InvariantUtf16 {
-    
-        public unsafe static bool TryParseInt32(char* text, int length, out int value);
-        public unsafe static bool TryParseInt32(char* text, int length, out int value, out int charsConsumed);
-        
-        public static class Hex {
-            public static bool TryParseInt32(ReadOnlySpan<char> text, out int value);
-            public static bool TryParseInt32(ReadOnlySpan<char> text, out int value, out int charsConsumed);
-        }
+        // same as InvariantUtf8, but using char* and ReadOnlySpan<char>
+        ...
     }
 }
 ```
