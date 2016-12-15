@@ -58,8 +58,11 @@ private async Task Produce(IPipelineWriter writer)
        WritableBuffer buffer = writer.Alloc();
        
        var bytes = Encoding.UTF8.GetBytes(DateTime.Now.ToString());
-       buffer.Write(bytes);
-
+       
+       new Span<byte>(bytes).CopyTo(buffer.Memory.Span);
+       
+       buffer.Advance(bytes.Length);
+       
        // Tell the producer we have data
        await buffer.FlushAsync();
        
