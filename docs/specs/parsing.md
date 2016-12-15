@@ -1,109 +1,242 @@
 # Parsing
 
-The purpose of this document is to put some stakes in the ground for a set of
-low-allocation parsing APIs.
+The current .NET Framework parsing APIs (e.g. int.TryParse) can parse System.String (UTF16) text.
+```c#
+string text = ...
+int value;
+if(int.TryParse(text, out value)){
+   ...
+}
+```
+These APIs work great in many scenarios, e.g. parsing text contained in GUI application text boxes. But they are completely not suitable for processing modern network protocols, which are often text (e.g. JSON, HTTP headers), but contained in byte buffers, not strings, and encoded with UTF8/ASCII, not UTF16. Because of this, all modern web servers written for the .NET platform either don't use the current BCL parsing APIs or take performance hit of transcoding from UTF8 to UTF16, and copying from buffers to strings.
+```c#
+byte[] json = ...
+string text = Encoding.UTF8.GetString(json); // this is very expensive: copy, transformation, object allocations
+int value;
+if(int.TryParse(text, out value)){
+   ...
+}
+```
+To address modern networking scenarios beter, we will provide parsing APIs that:
+a) Can parse byte buffers, with out the need to have a string to parse
+b) Can parse text encoded as UTF8 (and possibly other encodings)
+c) Can parse without any GC heap allocations
 
-The current prototype is [here](https://github.com/dotnet/corefxlab/tree/master/src/System.Text.Primitives/System/Text/Parsing).
+This document spells out the details of the project.
 
-## Goals
+## API Design
+We will provide low level APIs that can parse byte\* and ReadOnlySpan\<byte\> buffers (moral equivalent of int.TryParse), and higher level APIs to parse sequences of such buffers (similar to BinaryReader for encoded text streams). 
 
-* Parses the following types with minimal allocations, ideally none:
-    - `Boolean`
-    - `Byte`, `SByte`
-    - `Int16`, `UInt16`
-    - `Int32`, `UInt32`
-    - `Int64`, `UInt64`
-    - `Single`, `Double`
-    - `Decimal`
-    - `DateTime`, `DateTimeOffset`
-    - `TimeSpan`
-    - `Guid`
-    - `Uri`
-* Parses different cultures
-    - e.g. English and German dates
-    - Needs to handle all cultures .NET Core can handle
-* Parse any outputs produced by [formatting](formatting.md)
-    - This ensures parsing & formatting behave symmetric
-* Parse from these encodings
-    - UTF8
-    - ASCII (required for other standard, such as ISO-8859-1)
-    - UTF16-BE
-    - UTF16-LE
-* Parses from existing buffers without knowing up-front how many bytes the
-  parsing needs to consume
+To familiarize yourself with ReadOnlySpan\<T\> refer to: https://github.com/dotnet/corefxlab/blob/master/docs/specs/span.md
 
-## Focus on UTF8
+### Low Level APIs
 
-While we generally need to handle parsing for more than just UTF8 we belive it's
-beneficial to have an implementation that is hand-optimized for UTF8 instead of
-having an implementation that is going through some abstraction.
+The low level APIs are policy free (not specific to scenarios, higher level frameworks, etc.) and optimized for speed, and will look like the following (per data type being parsed; the sample shows Int32 APIs):
+```c#
+public static class PrimitiveParser {
+    // most general "overload"
+    public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, EncodingData encoding=null, TextFormat format=null);
+    
+    // UTF8-invariant overloads
+    public static class InvariantUtf8 {
+       
+        // We did some preliminary measurements, and the shorter overload is non-trivially faster. We should double check though.
+        public unsafe static bool TryParseInt32(byte* text, int length, out int value);
+        public unsafe static bool TryParseInt32(byte* text, int length, out int value, out int bytesConsumed);
+        
+        // overloads optimized for hexadecimal numbers
+        public static class Hex {
+            public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value);
+            public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed);
+        }
+    }
+    
+    public static class InvariantUtf16 {
+    
+        public unsafe static bool TryParseInt32(char* text, int length, out int value);
+        public unsafe static bool TryParseInt32(char* text, int length, out int value, out int charsConsumed);
+        
+        public static class Hex {
+            public static bool TryParseInt32(ReadOnlySpan<char> text, out int value);
+            public static bool TryParseInt32(ReadOnlySpan<char> text, out int value, out int charsConsumed);
+        }
+    }
+}
+```
+The most general (and the slowest) overload allows callers to specify format of the text (`TextFormat`), and its encoding and culture (`EncodingData`).
+
+`TextFormat` is an efficient (non allocating, preparsed) representation of format strings. It's used in both parsing and formatting APIs.
+```c#
+    public struct TextFormat : IEquatable<TextFormat> {
+        
+        public static TextFormat Parse(char format);
+        public static TextFormat Parse(ReadOnlySpan<char> format);
+        public static TextFormat Parse(string format);
+        
+        public static implicit operator TextFormat (char symbol);
+        
+        public TextFormat(char symbol, byte precision=(byte)255);
+        
+        public byte Precision { get; } // this is for formatting
+        public char Symbol { get; set; }
+        
+        // less interesting members follow:    
+        public bool HasPrecision { get; }
+        public bool IsDefault { get; }
+        public bool IsHexadecimal { get; }
+        
+        public const byte NoPrecision = (byte)255;
+        public static TextFormat HexLowercase;
+        public static TextFormat HexUppercase;
+        
+        public static bool operator ==(TextFormat left, TextFormat right);      
+        public static bool operator !=(TextFormat left, TextFormat right);
+        public override bool Equals(object obj);
+        public bool Equals(TextFormat other);
+        public override int GetHashCode();
+        public override string ToString();
+    }
+```
+`EncodingData` providing encoding and culture data used by parsing and formatting routines:
+```c#
+    public struct EncodingData : IEquatable<EncodingData> {
+    
+        public EncodingData(byte[][] symbols, TextEncoding encoding);
+        
+        public static EncodingData InvariantUtf16 { get; }
+        public static EncodingData InvariantUtf8 { get; }
+                
+        // parsers call this
+        public bool TryParseSymbol(ReadOnlySpan<byte> buffer, out Symbol symbol, out int bytesConsumed);
+        
+        // formatters call this
+        public bool TryEncode(Symbol symbol, Span<byte> buffer, out int bytesWritten);
+                
+        // less interesting members follow:  
+        public bool IsInvariantUtf16 { get; }
+        public bool IsInvariantUtf8 { get; }
+        public TextEncoding TextEncoding { get; }
+        public override bool Equals(object obj);
+        public bool Equals(EncodingData other);
+        public override int GetHashCode();
+        public static bool operator ==(EncodingData left, EncodingData right);
+        public static bool operator !=(EncodingData left, EncodingData right);
+
+        public enum Symbol : ushort {
+            D0 = (ushort)0,
+            D1 = (ushort)1,
+            D2 = (ushort)2,
+            D3 = (ushort)3,
+            D4 = (ushort)4,
+            D5 = (ushort)5,
+            D6 = (ushort)6,
+            D7 = (ushort)7,
+            D8 = (ushort)8,
+            D9 = (ushort)9,
+            DecimalSeparator = (ushort)10,
+            Exponent = (ushort)16,
+            GroupSeparator = (ushort)11,
+            InfinitySign = (ushort)12,
+            MinusSign = (ushort)13,
+            NaN = (ushort)15,
+            PlusSign = (ushort)14,
+        }
+    }
+    public enum TextEncoding : byte {
+        Ascii = (byte)2,
+        Utf16 = (byte)0,
+        Utf8 = (byte)1,
+    }
+```
+These APIs can be used as follows:
+```c#
+ReadOnlySpan<byte> utf8Text = ...
+if(PrimitiveParser.TryParseInt32(utf8Text, out var value, out var consumedBytes, EncodingData.InvariantUtf8, 'G'){
+    Console.WriteLine(value);
+    utf8Text = utf8Text.Slice(consumedBytes);
+}
+
+// or optimized version:
+if(PrimitiveParser.InvariantUtf8.TryParseInt32(utf8Text, out var value, out var consumedBytes){
+    Console.WriteLine(value);
+    utf8Text = utf8Text.Slice(consumedBytes);
+}
+```
+
+The current prototype implementation is [here](https://github.com/dotnet/corefxlab/tree/master/src/System.Text.Primitives/System/Text/Parsing).
+
+Preliminary performance results (using the slow span) are very encouraging:
+```c#
+public class TestParsing
+{
+    public static byte[] utf8 = Encoding.UTF8.GetBytes("123");
+    public static Span<byte> s_utf8 = utf8;
+ 
+    [Benchmark(Baseline = true)]
+    public static uint DotNet461()
+    {
+        uint result;
+        uint.TryParse("123", NumberStyles.None, CultureInfo.InvariantCulture, out result);
+        return result;
+    }
+ 
+    [Benchmark]
+    public static uint Corefxlabs()
+    {
+        uint result;
+        PrimitiveParser.InvariantUtf8.TryParseUInt32(s_utf8, out result);
+        return result;
+    }
+}
+```
+Corfxlab: 27.64
+
+DotNet461: 48.38
+
+TODO: create md file with BenchmarkDotNet summary
+
+### Higher Level APIs
+The low level APIs can parse text residing in a single contiguous memory buffer. We will need higher level APIs to make it easier to parse text out of "streams" of data. The details of these APIs are not yet clear, but the following method illustrates early thinking: https://github.com/dotnet/corefxlab/blob/master/src/System.Text.Formatting/System/Text/Parsing/SequenceParser.cs#L15
+
+NOTE: we should explore changing the API from a stateless static method to a TextReader like API that can traverse sequences of buffers while remembering its current position.
+
+## Requirements
+### Priority 1
+- Parse text contained in byte buffers
+- Support types commonly used in network protocols: integers, DateTimeOffset/DateTime (HTTP Format), URI, GUID, Boolean, BigInteger
+- No allocations
+- UTF8 and ISO-8859-1 (required by networking protocols)
+- Invariant culture
+- Decimal and hexadecimal
+- Round trip text output by [formatting](formatting.md) APIs
+- Support 'G', 'D', 'R', and 'X' formats
+- Compatible with .NET Framework APIs, where possible
+- Parse without knowing up-front how many bytes encode the value
+- Performance comparable to pinvoking to hand written C++ parsers, and 2x faster than the existing .NET APIs (e.g. int.TryParse)
+
+### Priority 2
+* Parse the following types with minimal allocations: `Single`, `Double`, `Decimal`, `TimeSpan`
+* Parses different cultures, e.g. English and German
+* Parse from these additional encodings: ASCII, UTF16-BE, UTF16-LE
+
+### Note on Encodings
+
+While we generally need to handle parsing for more than just UTF8 we believe it's
+beneficial to optimize for UTF8 (both in speed and in project schedule).
 
 That's because UTF8 is the dominant encoding for cloud-based apps. We'd support
 other encodings by either converting them to the UTF8 before or by having an
 implementation that can parse different encodings through an abstraction.
 
-## Low-Level API Shape
+Having said that, when we design the APIs, we need to ensure that they will scale to 
+arbitrary encodings. And the best way to validate that is to implement (possibly not ship)
+other encodings.
 
-We generally want the APIs to be static methods and being able to operate on
-raw data, which could either be native memory or a managed (byte) array.
+## ISSUES/QUESTIONS:
+1. How are we going to support ISO-8859? Is it just validation? Or we need specific EncodingData?
+2. We need to measure if it's worth having overloads that don't take bytesConsumed
+3. We need detailed design of the higher level APIs (parsing multi-spans)
+4. How do people add support for buffer parsing to their types? Is there an abstraction "IParsable" so that high level reader can read 3rd party types?
 
-Using the [Span\<T>.md] feature we can express this quite easily using
-`ReadOnlySpan<T>` (`Xyz` indicates the name of the type being parsed):
-
-```C#
-public static bool TryParseXyz(ReadOnlySpan<byte> text,
-                               out Xyz value,
-                               out int bytesConsumed)
-```
-
-This allows the parsing to happen from a wide variety of data sources:
-
-* **Native memory**, by creating a span from the pointer + length
-* **`byte[]`**, via an implicit conversion
-* **`Span<byte>`**, via an implicit conversion
-
-Depending on how we express encodings and cultures, it's likely what we need to
-create additional arguments, defaulted to being UTF8 and invariant.
-
-The result of the method indicates whether parsing was successful. Since the
-entire point of these APIs is performance, we don't plan on adding APIs that
-throw exceptions when parsing cannot succeed.
-
-## High-Level API Shape
-
-The problem with the low-level API shape is that it doesn't deal with situations
-where the data spans multiple buffers. Thus, we need a way for the parsing
-methods to "pull" the next buffer. We currently have something like
-`ISequence<T>`, which is basically a more efficient `IEnumerable<T>`:
-
-```C#
-public static bool TryParseXyz<T>(this T memorySequence,
-                                  out Xyz value,
-                                  out int bytesConsumed)
-    where T : ISequence<ReadOnlyMemory<byte>>;
-```
-
-We'll need to decide if that's the right approach or not. Alternatively, we
-could
-
-* only support UTF8 and have a hand-optimized version of that and support other
-  encodings by converting that representation to UTF8
-* change the shape of the low-level API to allow the method to indicate whether
-  more data could be consumed
-* don't offer these methods and leave it for a higher-layer, such as
-  [pipelines](pipelines.md), to deal with that
-
-## Work Items
-
-* (pri 0) performance tests and improvement
-* (pri 0) support fast lower case and upper case hexadecimal parsing
-* (pri 1) remove old APIs
-* (pri 1) remove `EncodingData(byte[][] symbols, TextEncoding encoding, Tuple<byte, int>[] parsingTrie)`
-* (pri 1) add all primitive parser to PrimitiveParser (e.g. GUID, URI, date time, etc.)
-* (pri 1) add support for multi-span parsing
-* (pri 2) support ASCII
-* (pri 2) clean up code
-* (pri 2) full test coverage
-* (pri 2) support all formats
-* (pri 2) provide EncodingData.InvariantUtf16BE
-* (pri 2) write custom EncodingData generation tool
+## Workitems
+Workitems related to this design document are traced in issue https://github.com/dotnet/corefxlab/issues/1070
