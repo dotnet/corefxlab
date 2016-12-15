@@ -167,21 +167,31 @@ if(PrimitiveParser.InvariantUtf8.TryParseInt32(utf8Text, out var value, out var 
 
 The current prototype implementation is [here](https://github.com/dotnet/corefxlab/tree/master/src/System.Text.Primitives/System/Text/Parsing).
 
+## Performance Results
+
 Preliminary performance results (using the slow span) are very encouraging:
 ```c#
 public class TestParsing
 {
     public static byte[] utf8 = Encoding.UTF8.GetBytes("123");
     public static Span<byte> s_utf8 = utf8;
- 
-    [Benchmark(Baseline = true)]
+
+    [Benchmark]
     public static uint DotNet461()
     {
         uint result;
         uint.TryParse("123", NumberStyles.None, CultureInfo.InvariantCulture, out result);
         return result;
     }
- 
+
+    [Benchmark(Baseline = true)]
+    public static uint DotNet461_Utf8()
+    {
+        uint result;
+        uint.TryParse(Encoding.UTF8.GetString(utf8), NumberStyles.None, CultureInfo.InvariantCulture, out result);
+        return result;
+    }
+
     [Benchmark]
     public static uint Corefxlabs()
     {
@@ -192,6 +202,7 @@ public class TestParsing
 }
 ```
 
+32-bit
 ``` ini
 
 BenchmarkDotNet=v0.10.1, OS=Microsoft Windows NT 6.2.9200.0
@@ -200,14 +211,32 @@ Frequency=3328121 Hz, Resolution=300.4698 ns, Timer=TSC
   [Host]     : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.6.1586.0
   DefaultJob : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.6.1586.0
 
-Allocated=0 B  
 
 ```
-     Method |       Mean |    StdErr |    StdDev | Scaled | Scaled-StdDev |
------------ |----------- |---------- |---------- |------- |-------------- |
-  DotNet461 | 54.4263 ns | 0.2040 ns | 0.7899 ns |   1.00 |          0.00 |
- Corefxlabs |  7.5390 ns | 0.0772 ns | 0.2889 ns |   0.14 |          0.01 |
+         Method |       Mean |    StdDev | Scaled | Scaled-StdDev |  Gen 0 | Allocated |
+--------------- |----------- |---------- |------- |-------------- |------- |---------- |
+      DotNet461 | 53.0820 ns | 0.1801 ns |   0.65 |          0.00 |      - |       0 B |
+ DotNet461_Utf8 | 81.3866 ns | 0.2131 ns |   1.00 |          0.00 | 0.0015 |      20 B |
+     Corefxlabs |  7.2585 ns | 0.1338 ns |   0.09 |          0.00 |      - |       0 B |
 
+64-bit
+``` ini
+
+BenchmarkDotNet=v0.10.1, OS=Microsoft Windows NT 6.2.9200.0
+Processor=Intel(R) Core(TM) i7-6700 CPU 3.40GHz, ProcessorCount=8
+Frequency=3328121 Hz, Resolution=300.4698 ns, Timer=TSC
+  [Host]     : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1586.0
+  DefaultJob : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1586.0
+
+
+```
+         Method |       Mean |    StdDev | Scaled | Scaled-StdDev |  Gen 0 | Allocated |
+--------------- |----------- |---------- |------- |-------------- |------- |---------- |
+      DotNet461 | 48.3371 ns | 0.2238 ns |   0.60 |          0.00 |      - |       0 B |
+ DotNet461_Utf8 | 81.1080 ns | 0.4500 ns |   1.00 |          0.00 | 0.0043 |      32 B |
+     Corefxlabs | 17.9962 ns | 0.0451 ns |   0.22 |          0.00 |      - |       0 B |
+
+And these should get much better once we start using the [fast span](span.md#designrepresentation).
 
 ### Higher Level APIs
 The low level APIs can parse text residing in a single contiguous memory buffer. We will need higher level APIs to make it easier to parse text out of "streams" of data. The details of these APIs are not yet clear, but the following method illustrates early thinking: https://github.com/dotnet/corefxlab/blob/master/src/System.Text.Formatting/System/Text/Parsing/SequenceParser.cs#L15
