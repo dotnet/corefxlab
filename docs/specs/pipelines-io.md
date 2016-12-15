@@ -24,7 +24,7 @@ public interface IPipelineWriter
 
 The producer gets a handle on a `WritableBuffer` and the consumer gets a handle on a `ReadableBuffer` to do writes and reads respectively. 
 
-Memory in pipelines is managed as a linked list of `OwnedMemory<T>`:
+Memory in pipelines is managed as a linked list of [OwnedMemory\<T\>](https://github.com/dotnet/corefxlab/blob/master/docs/specs/memory.md):
 
 ```C#
 internal class BufferSegment
