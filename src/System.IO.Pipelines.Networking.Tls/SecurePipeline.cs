@@ -5,8 +5,8 @@ namespace System.IO.Pipelines.Networking.Tls
     internal class SecurePipeline<T> : ISecurePipeline where T : ISecureContext
     {
         private readonly IPipelineConnection _lowerConnection;
-        private readonly PipelineReaderWriter _outputPipeline;
-        private readonly PipelineReaderWriter _inputPipeline;
+        private readonly Pipe _outputPipeline;
+        private readonly Pipe _inputPipeline;
         private readonly T _contextToDispose;
         private TaskCompletionSource<ApplicationLayerProtocolIds> _handShakeCompleted;
 

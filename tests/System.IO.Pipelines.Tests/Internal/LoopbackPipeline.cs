@@ -24,10 +24,10 @@ namespace System.IO.Pipelines.Tests.Internal
 
         class TestPipeline : IPipelineConnection
         {
-            PipelineReaderWriter _inPipeline;
-            PipelineReaderWriter _outPipeline;
+            Pipe _inPipeline;
+            Pipe _outPipeline;
 
-            public TestPipeline(PipelineReaderWriter inPipeline, PipelineReaderWriter outPipeline)
+            public TestPipeline(Pipe inPipeline, Pipe outPipeline)
             {
                 _inPipeline = inPipeline;
                 _outPipeline = outPipeline;
