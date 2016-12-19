@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System.Buffers;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace System.Slices.Tests
@@ -31,21 +32,80 @@ namespace System.Slices.Tests
         public void ArrayMemoryLifetime()
         {
             Memory<byte> copyStoredForLater;
-            using (var owner = new OwnedArray<byte>(1024)) {
+            var owner = new OwnedArray<byte>(1024);
+            try {
                 Memory<byte> memory = owner.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
-                using (memorySlice.Reserve()) { // increments the "outstanding span" refcount
+                var r = memorySlice.Reserve();
+                try { // increments the "outstanding span" refcount
                     Assert.Throws<InvalidOperationException>(() => { // memory is reserved; cannot dispose
                         owner.Dispose();
                     });
-                    Span<byte> span = memorySlice.Span;
-                    span[0] = 255;
-                } // releases the refcount
+                    Assert.Throws<ObjectDisposedException>(() => {
+                        Span<byte> span = memorySlice.Span;
+                        span[0] = 255;
+                    });
+                }
+                finally {
+                    Assert.Throws<ObjectDisposedException>(() => {
+                       r.Dispose(); // releases the refcount
+                    });
+                }
+            }
+            finally {
+                Assert.Throws<InvalidOperationException>(() => {
+                    owner.Dispose();
+                });
             }
             Assert.Throws<ObjectDisposedException>(() => { // manager is disposed
                 var span = copyStoredForLater.Span;
             }); 
+        }
+
+        [Fact]
+        public void RacyAccess()
+        {
+            for(int k = 0; k < 1000; k++) {
+                var owners   = new OwnedArray<byte>[128];
+                var memories = new Memory<byte>[owners.Length];
+                var reserves = new DisposableReservation[owners.Length];
+                var disposeSuccesses = new bool[owners.Length];
+                var reserveSuccesses = new bool[owners.Length];
+
+                for (int i = 0; i < owners.Length; i++) {
+                    owners[i] = new OwnedArray<byte>(1024);
+                    memories[i] = owners[i].Memory;
+                }
+
+                var dispose_task = Task.Run(() => {
+                    for (int i = 0; i < owners.Length; i++) {
+                        try {
+                            owners[i].Dispose();
+                            disposeSuccesses[i] = true;
+                        } catch (InvalidOperationException e) {
+                            disposeSuccesses[i] = false;
+                        }
+                    }
+                });
+
+                var reserve_task = Task.Run(() => {
+                    for (int i = owners.Length - 1; i >= 0; i--) {
+                        try {
+                            reserves[i] = memories[i].Reserve();
+                            reserveSuccesses[i] = true;
+                        } catch (ObjectDisposedException e) {
+                            reserveSuccesses[i] = false;
+                        }
+                    }
+                });
+
+                Task.WaitAll(reserve_task, dispose_task);
+
+                for(int i = 0; i < owners.Length; i++) {
+                    Assert.False(disposeSuccesses[i] && reserveSuccesses[i]);
+                }
+            }
         }
 
         [Fact]

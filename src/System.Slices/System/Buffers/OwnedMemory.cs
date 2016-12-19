@@ -8,10 +8,13 @@ namespace System.Buffers
     {
         static long _nextId = InitializedId + 1;
         const long InitializedId = long.MinValue;
+        const long FreedId = long.MinValue + 1;
         int _referenceCount;
 
+        private long _id;
+
         public int Length { get; private set; }
-        protected long Id { get; private set; }
+        protected long Id { get { return _id; } }
         protected T[] Array { get; private set; }
         protected IntPtr Pointer { get; private set; }
         protected int Offset { get; private set; }
@@ -23,7 +26,7 @@ namespace System.Buffers
 
         protected OwnedMemory(T[] array, int arrayOffset, int length, IntPtr pointer = default(IntPtr))
         {
-            Id = InitializedId;
+            _id = InitializedId;
             Initialize(array, arrayOffset, length, pointer);
         }
 
@@ -69,11 +72,11 @@ namespace System.Buffers
         {
             Contract.Requires(array != null || pointer != null);
             Contract.Requires(array == null || arrayOffset + length <= array.Length);
-            if (!IsDisposed) {
+            if (!IsDisposed && Id!=InitializedId) {
                 throw new InvalidOperationException("this instance has to be disposed to initialize");
             }
 
-            Id = Interlocked.Increment(ref _nextId);
+            _id = Interlocked.Increment(ref _nextId);
             Array = array;
             Offset = arrayOffset;
             Length = length;
@@ -83,9 +86,9 @@ namespace System.Buffers
 
         public void Dispose()
         {
+            Interlocked.Exchange(ref _id,  FreedId);
             if (ReferenceCount != 0) throw new InvalidOperationException("outstanding references detected.");
             Dispose(true);
-            Id = InitializedId;
             Array = null;
             Pointer = IntPtr.Zero;
             Length = 0;
@@ -95,7 +98,7 @@ namespace System.Buffers
         protected virtual void Dispose(bool disposing)
         { }
 
-        public bool IsDisposed => Id == InitializedId;
+        public bool IsDisposed => Id == FreedId;
 
         public void AddReference()
         {
@@ -120,8 +123,13 @@ namespace System.Buffers
         #region Used by Memory<T>
         void IKnown.AddReference(long id)
         {
-            VerifyId(id);
             AddReference();
+            try {
+                VerifyId(id);
+            } catch (ObjectDisposedException e) {
+                Release();
+                throw e;
+            }
         }
 
         void IKnown.Release(long id)
