@@ -13,54 +13,40 @@ enum UtfEncoding
 	Utf16
 }
 
-struct TypeToParse
+struct IntegerTypeToParse
 {
 	internal string PrimitiveName;
 	internal string ClassName;
 	internal string ValueCalculationTypeName;
 }
 
-struct TryParseSignature
-{
-	internal BufferType BufferType;
-	internal bool ConsumedParameterExists;
-}
-
-class TryParseOverload
+class TryParseSignature
 {
 	// Given in the constructor
-	internal TypeToParse TypeToParseInfo { get; }
-	internal TryParseSignature SignatureInfo { get; }
-	internal UtfEncoding Encoding { get; }
-	internal bool Signed { get; }
+	internal BufferType BufferType { get; }
+	internal bool ConsumedParameterExists { get; }
+	internal UtfEncoding UtfEncoding { get; }
 
-	// Information depending on the type to parse
-	internal string OverflowLengthName { get; }
-	
-	// Information depending on the overload signature
+	// Depend on constructor parameters
+	internal string CharacterPrimitive { get; }
 	internal string BufferParamsText { get; }
 	internal string ConsumedParamText { get; }
 	internal string LengthName { get; }
+	internal string UnsafeModifier { get; }
 
-	// Information depending on the encoding
-	internal string CharacterPrimitive { get; }
-
-	internal TryParseOverload(TypeToParse typeToParse, TryParseSignature tryParseSignature, UtfEncoding encoding, bool signed)
+	internal TryParseSignature(BufferType bufferType, bool consumedParameterExists, UtfEncoding utfEncoding)
 	{
-		TypeToParseInfo = typeToParse;
-		SignatureInfo = tryParseSignature;
-		Encoding = encoding;
-		Signed = signed;
+		this.BufferType = bufferType;
+		this.ConsumedParameterExists = consumedParameterExists;
+		this.UtfEncoding = utfEncoding;
 
-		OverflowLengthName = "";
 		CharacterPrimitive = "";
-		ConsumedParamText = "";
 		BufferParamsText = "";
+		ConsumedParamText = "";
 		LengthName = "";
+		UnsafeModifier = "";
 
-		OverflowLengthName = String.Format("{0}OverflowLength", TypeToParseInfo.ClassName);
-
-		switch (Encoding)
+		switch (this.UtfEncoding)
 		{
 			case UtfEncoding.Utf8:
 				CharacterPrimitive = "byte";
@@ -69,23 +55,45 @@ class TryParseOverload
 				CharacterPrimitive = "char";
 				break;
 		}
-
-		if (SignatureInfo.ConsumedParameterExists)
+		
+		if (this.ConsumedParameterExists)
 		{
 			ConsumedParamText = string.Format(", out int {0}sConsumed", CharacterPrimitive);
 		}
 
-		switch (SignatureInfo.BufferType)
+		switch (this.BufferType)
 		{
 			case BufferType.ArrayPointer:
 				BufferParamsText = string.Format("{0}* text, int length", CharacterPrimitive);
 				LengthName = "length";
+				UnsafeModifier = "unsafe ";
 				break;
 			case BufferType.ReadOnlySpan:
 				BufferParamsText = String.Format("ReadOnlySpan<{0}> text", CharacterPrimitive);
 				LengthName = "text.Length";
+				UnsafeModifier = "";
 				break;
 		}
+	}
+}
+
+class TryParseIntegerOverload
+{
+	// Given in the constructor
+	internal IntegerTypeToParse TypeToParseInfo { get; }
+	internal TryParseSignature SignatureInfo { get; }
+	internal bool Signed { get; }
+
+	// Information depending on the type to parse
+	internal string OverflowLengthName { get; }
+
+	internal TryParseIntegerOverload(IntegerTypeToParse typeToParse, TryParseSignature tryParseSignature, bool signed)
+	{
+		TypeToParseInfo = typeToParse;
+		SignatureInfo = tryParseSignature;
+		Signed = signed;
+
+		OverflowLengthName = String.Format("{0}OverflowLength", TypeToParseInfo.ClassName);
 	}
 
 	internal string SetOutParamsAndReturnFalse(int indents)
@@ -97,7 +105,7 @@ class TryParseOverload
 
 		if (SignatureInfo.ConsumedParameterExists)
 		{
-			generatedText.AppendFormat("{0}{1}sConsumed = 0;", indentString, CharacterPrimitive);
+			generatedText.AppendFormat("{0}{1}sConsumed = 0;", indentString, SignatureInfo.CharacterPrimitive);
 			generatedText.AppendLine();
 		}
 
@@ -118,7 +126,7 @@ class TryParseOverload
 
 		if (usedFullLength)
 		{
-			consumedSource = LengthName;
+			consumedSource = SignatureInfo.LengthName;
 		}
 		else
 		{
@@ -127,7 +135,7 @@ class TryParseOverload
 
 		if (SignatureInfo.ConsumedParameterExists)
 		{
-			generatedText.AppendFormat("{0}{1}sConsumed = {2};", indentString, CharacterPrimitive, consumedSource);
+			generatedText.AppendFormat("{0}{1}sConsumed = {2};", indentString, SignatureInfo.CharacterPrimitive, consumedSource);
 			generatedText.AppendLine();
 		}
 
@@ -178,13 +186,13 @@ class TryParseOverload
 		generatedText.AppendFormat("{0}nextCharacter = text[{1}];", indentString, index);
 		generatedText.AppendLine();
 
-		if (CharacterPrimitive == "byte")
+		if (SignatureInfo.CharacterPrimitive == "byte")
 		{
 			generatedText.AppendFormat("{0}nextDigit = hexLookup[nextCharacter];", indentString);
 			generatedText.AppendLine();
 			generatedText.AppendFormat("{0}if (nextDigit == 0xFF)", indentString);
 		}
-		else if (CharacterPrimitive == "char")
+		else if (SignatureInfo.CharacterPrimitive == "char")
 		{
 			generatedText.AppendFormat("{0}nextDigit = hexLookup[(byte)nextCharacter];", indentString);
 			generatedText.AppendLine();

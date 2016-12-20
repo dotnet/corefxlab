@@ -4,55 +4,16 @@
 <#@ include file="PrimitiveParserHelpers.t4" #>
 <#
 
-List<TypeToParse> typesToParse = new List<TypeToParse>();
+List<IntegerTypeToParse> typesToParse = new List<IntegerTypeToParse>();
 
-typesToParse.Add(new TypeToParse {
-    PrimitiveName = "sbyte",
-    ClassName = "SByte",
-    ValueCalculationTypeName = "int"
-});
-
-typesToParse.Add(new TypeToParse {
-    PrimitiveName = "short",
-    ClassName = "Int16",
-    ValueCalculationTypeName = "int"
-});
-
-typesToParse.Add(new TypeToParse {
-    PrimitiveName = "int",
-    ClassName = "Int32",
-    ValueCalculationTypeName = "int"
-});
-
-typesToParse.Add(new TypeToParse {
-    PrimitiveName = "long",
-    ClassName = "Int64",
-    ValueCalculationTypeName = "long"
-});
-
-List<TryParseSignature> TryParseSignatures = new List<TryParseSignature>();
-
-TryParseSignatures.Add(new TryParseSignature {
-    BufferType = BufferType.ArrayPointer,
-    ConsumedParameterExists = false
-});
-
-TryParseSignatures.Add(new TryParseSignature {
-    BufferType = BufferType.ArrayPointer,
-    ConsumedParameterExists = true
-});
-
-TryParseSignatures.Add(new TryParseSignature {
-    BufferType = BufferType.ReadOnlySpan,
-    ConsumedParameterExists = false
-});
-
-TryParseSignatures.Add(new TryParseSignature {
-    BufferType = BufferType.ReadOnlySpan,
-    ConsumedParameterExists = true
-});
+typesToParse.Add(new IntegerTypeToParse { PrimitiveName = "sbyte", ClassName = "SByte", ValueCalculationTypeName = "int" });
+typesToParse.Add(new IntegerTypeToParse { PrimitiveName = "short", ClassName = "Int16", ValueCalculationTypeName = "int" });
+typesToParse.Add(new IntegerTypeToParse { PrimitiveName = "int", ClassName = "Int32", ValueCalculationTypeName = "int" });
+typesToParse.Add(new IntegerTypeToParse { PrimitiveName = "long", ClassName = "Int64", ValueCalculationTypeName = "long" });
 
 List<UtfEncoding> utfEncodings = new List<UtfEncoding> { UtfEncoding.Utf8, UtfEncoding.Utf16 };
+List<bool> consumedParamTypes = new List<bool> { false, true };
+List<BufferType> bufferTypes = new List<BufferType> { BufferType.ArrayPointer, BufferType.ReadOnlySpan };
 
 #>
 // Copyright (c) Microsoft. All rights reserved.
@@ -72,20 +33,23 @@ foreach (UtfEncoding utfEncoding in utfEncodings)
         public static partial class Invariant<#=utfEncoding#>
         {
 <#
-    foreach (TypeToParse typeToParse in typesToParse)
+    foreach (IntegerTypeToParse typeToParse in typesToParse)
     {
 #>
             #region <#=typeToParse.ClassName#>
 <#
-        foreach (TryParseSignature tryParseSignature in TryParseSignatures)
+        foreach (BufferType bufferType in bufferTypes)
         {
-            TryParseOverload tryParseOverload = new TryParseOverload(typeToParse, tryParseSignature, utfEncoding, true);
-#>
-            public unsafe static bool TryParse<#=typeToParse.ClassName#>(<#=tryParseOverload.BufferParamsText#>, out <#=typeToParse.PrimitiveName#> value<#=tryParseOverload.ConsumedParamText#>)
+            foreach (bool consumedParamType in consumedParamTypes)
             {
-                if (<#=tryParseOverload.LengthName#> < 1)
+                TryParseSignature tryParseSignature = new TryParseSignature(bufferType, consumedParamType, utfEncoding);
+                TryParseIntegerOverload tryParseIntegerOverload = new TryParseIntegerOverload(typeToParse, tryParseSignature, true);
+#>
+            public <#=tryParseSignature.UnsafeModifier#>static bool TryParse<#=typeToParse.ClassName#>(<#=tryParseSignature.BufferParamsText#>, out <#=typeToParse.PrimitiveName#> value<#=tryParseSignature.ConsumedParamText#>)
+            {
+                if (<#=tryParseSignature.LengthName#> < 1)
                 {
-<#=tryParseOverload.SetOutParamsAndReturnFalse(5)#>
+<#=tryParseIntegerOverload.SetOutParamsAndReturnFalse(5)#>
                 }
 
                 int indexOfFirstDigit = 0;
@@ -100,48 +64,48 @@ foreach (UtfEncoding utfEncoding in utfEncodings)
                     indexOfFirstDigit = 1;
                 }
 
-                int overflowLength = <#=tryParseOverload.OverflowLengthName#> + indexOfFirstDigit;
+                int overflowLength = <#=tryParseIntegerOverload.OverflowLengthName#> + indexOfFirstDigit;
 
                 // Parse the first digit separately. If invalid here, we need to return false.
                 <#=typeToParse.ValueCalculationTypeName#> firstDigit = text[indexOfFirstDigit] - 48; // '0'
                 if (firstDigit < 0 || firstDigit > 9)
                 {
-<#=tryParseOverload.SetOutParamsAndReturnFalse(5)#>
+<#=tryParseIntegerOverload.SetOutParamsAndReturnFalse(5)#>
                 }
                 <#=typeToParse.ValueCalculationTypeName#> parsedValue = firstDigit;
 
-                if (<#=tryParseOverload.LengthName#> < overflowLength)
+                if (<#=tryParseSignature.LengthName#> < overflowLength)
                 {
-                    // Length is less than <#=tryParseOverload.OverflowLengthName#>; overflow is not possible
-                    for (int index = indexOfFirstDigit + 1; index < <#=tryParseOverload.LengthName#>; index++)
+                    // Length is less than <#=tryParseIntegerOverload.OverflowLengthName#>; overflow is not possible
+                    for (int index = indexOfFirstDigit + 1; index < <#=tryParseSignature.LengthName#>; index++)
                     {
                         <#=typeToParse.ValueCalculationTypeName#> nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-<#=tryParseOverload.SetOutParamsAndReturnTrue(false, 7)#>
+<#=tryParseIntegerOverload.SetOutParamsAndReturnTrue(false, 7)#>
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
                     }
                 }
                 else
                 {
-                    // Length is greater than <#=tryParseOverload.OverflowLengthName#>; overflow is only possible after <#=tryParseOverload.OverflowLengthName#>
-                    // digits. There may be no overflow after <#=tryParseOverload.OverflowLengthName#> if there are leading zeroes.
+                    // Length is greater than <#=tryParseIntegerOverload.OverflowLengthName#>; overflow is only possible after <#=tryParseIntegerOverload.OverflowLengthName#>
+                    // digits. There may be no overflow after <#=tryParseIntegerOverload.OverflowLengthName#> if there are leading zeroes.
                     for (int index = indexOfFirstDigit + 1; index < overflowLength - 1; index++)
                     {
                         <#=typeToParse.ValueCalculationTypeName#> nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-<#=tryParseOverload.SetOutParamsAndReturnTrue(false, 7)#>
+<#=tryParseIntegerOverload.SetOutParamsAndReturnTrue(false, 7)#>
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
                     }
-                    for (int index = overflowLength - 1; index < <#=tryParseOverload.LengthName#>; index++)
+                    for (int index = overflowLength - 1; index < <#=tryParseSignature.LengthName#>; index++)
                     {
                         <#=typeToParse.ValueCalculationTypeName#> nextDigit = text[index] - 48; // '0'
                         if (nextDigit < 0 || nextDigit > 9)
                         {
-<#=tryParseOverload.SetOutParamsAndReturnTrue(false, 7)#>
+<#=tryParseIntegerOverload.SetOutParamsAndReturnTrue(false, 7)#>
                         }
                         // If parsedValue > (<#=typeToParse.PrimitiveName#>.MaxValue / 10), any more appended digits will cause overflow.
                         // if parsedValue == (<#=typeToParse.PrimitiveName#>.MaxValue / 10), any nextDigit greater than 7 or 8 (depending on sign) implies overflow.
@@ -149,16 +113,17 @@ foreach (UtfEncoding utfEncoding in utfEncodings)
                         bool nextDigitTooLarge = nextDigit > 8 || (positive && nextDigit > 7);
                         if (parsedValue > <#=typeToParse.PrimitiveName#>.MaxValue / 10 || parsedValue == <#=typeToParse.PrimitiveName#>.MaxValue / 10 && nextDigitTooLarge)
                         {
-<#=tryParseOverload.SetOutParamsAndReturnFalse(7)#>
+<#=tryParseIntegerOverload.SetOutParamsAndReturnFalse(7)#>
                         }
                         parsedValue = parsedValue * 10 + nextDigit;
                     }
                 }
 
-<#=tryParseOverload.SetOutParamsAndReturnTrue(true, 4)#>
+<#=tryParseIntegerOverload.SetOutParamsAndReturnTrue(true, 4)#>
             }
 
 <#
+            }
         }
 #>
             #endregion

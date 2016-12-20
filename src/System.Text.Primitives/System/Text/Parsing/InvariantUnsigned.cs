@@ -155,7 +155,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseByte(ReadOnlySpan<byte> text, out byte value)
+            public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value)
             {
                 if (text.Length < 1)
                 {
@@ -223,7 +223,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed)
+            public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed)
             {
                 if (text.Length < 1)
                 {
@@ -444,7 +444,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value)
+            public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value)
             {
                 if (text.Length < 1)
                 {
@@ -512,7 +512,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed)
+            public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed)
             {
                 if (text.Length < 1)
                 {
@@ -733,7 +733,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value)
+            public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value)
             {
                 if (text.Length < 1)
                 {
@@ -801,7 +801,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed)
+            public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed)
             {
                 if (text.Length < 1)
                 {
@@ -1022,7 +1022,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value)
+            public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value)
             {
                 if (text.Length < 1)
                 {
@@ -1090,7 +1090,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed)
+            public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed)
             {
                 if (text.Length < 1)
                 {
@@ -1314,7 +1314,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseByte(ReadOnlySpan<char> text, out byte value)
+            public static bool TryParseByte(ReadOnlySpan<char> text, out byte value)
             {
                 if (text.Length < 1)
                 {
@@ -1382,7 +1382,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseByte(ReadOnlySpan<char> text, out byte value, out int charsConsumed)
+            public static bool TryParseByte(ReadOnlySpan<char> text, out byte value, out int charsConsumed)
             {
                 if (text.Length < 1)
                 {
@@ -1603,7 +1603,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt16(ReadOnlySpan<char> text, out ushort value)
+            public static bool TryParseUInt16(ReadOnlySpan<char> text, out ushort value)
             {
                 if (text.Length < 1)
                 {
@@ -1671,7 +1671,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt16(ReadOnlySpan<char> text, out ushort value, out int charsConsumed)
+            public static bool TryParseUInt16(ReadOnlySpan<char> text, out ushort value, out int charsConsumed)
             {
                 if (text.Length < 1)
                 {
@@ -1892,7 +1892,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value)
+            public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value)
             {
                 if (text.Length < 1)
                 {
@@ -1960,7 +1960,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int charsConsumed)
+            public static bool TryParseUInt32(ReadOnlySpan<char> text, out uint value, out int charsConsumed)
             {
                 if (text.Length < 1)
                 {
@@ -2181,7 +2181,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt64(ReadOnlySpan<char> text, out ulong value)
+            public static bool TryParseUInt64(ReadOnlySpan<char> text, out ulong value)
             {
                 if (text.Length < 1)
                 {
@@ -2249,7 +2249,7 @@ namespace System.Text
                 return true;
             }
 
-            public unsafe static bool TryParseUInt64(ReadOnlySpan<char> text, out ulong value, out int charsConsumed)
+            public static bool TryParseUInt64(ReadOnlySpan<char> text, out ulong value, out int charsConsumed)
             {
                 if (text.Length < 1)
                 {
