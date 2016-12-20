@@ -188,7 +188,7 @@ namespace System.IO.Pipelines
                     {
                         var pCurrent = pCurrentFixed + array.Offset + index;
 
-                        var pEnd = block == end.Segment ? pCurrentFixed + end.Index + 1 : pCurrent + following;
+                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + end.Index + 1 : pCurrent + following;
                         do
                         {
                             if (*pCurrent == byte0)
@@ -288,7 +288,7 @@ namespace System.IO.Pipelines
                     {
                         var pCurrent = pCurrentFixed + array.Offset + index;
 
-                        var pEnd = block == end.Segment ? pCurrentFixed + end.Index + 1 : pCurrent + following;
+                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + end.Index + 1 : pCurrent + following;
                         do
                         {
                             if (*pCurrent == byte0)
@@ -395,7 +395,7 @@ namespace System.IO.Pipelines
                     {
                         var pCurrent = pCurrentFixed + array.Offset + index;
 
-                        var pEnd = block == end.Segment ? pCurrentFixed + end.Index + 1 : pCurrent + following;
+                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + end.Index + 1 : pCurrent + following;
                         do
                         {
                             if (*pCurrent == byte0)

@@ -90,7 +90,7 @@ namespace System.IO.Pipelines.Tests
 
                 Assert.Same(expectedEndBlock, result.Segment);
 
-                var expectedEndIndex = (expectedEndBlock == block1.Segment ? input1.IndexOf(seek) : input2.IndexOf(seek));
+                var expectedEndIndex = expectedEndBlock.Start + (expectedEndBlock == block1.Segment ? input1.IndexOf(seek) : input2.IndexOf(seek));
                 Assert.Equal(expectedEndIndex, result.Index);
             }
         }
@@ -114,7 +114,7 @@ namespace System.IO.Pipelines.Tests
             if (expectedReturnValue != -1)
             {
                 Assert.Same(cursors.Item1.Segment, result.Segment);
-                Assert.Equal(input.IndexOf(seek), result.Index);
+                Assert.Equal(result.Segment.Start + input.IndexOf(seek), result.Index);
             }
         }
 
@@ -190,8 +190,19 @@ namespace System.IO.Pipelines.Tests
 
             do
             {
-                var chars = inputs[i].ToCharArray().Select(c => (byte)c).ToArray();
-                var current = new BufferSegment(new OwnedArray<byte>(chars), 0, chars.Length);
+                var s = inputs[i];
+                var length = s.Length;
+                var memoryOffset = length;
+                var segmentOffset = length * 2;
+                var chars = new byte[length * 4];
+
+                for (int j = 0; j < length; j++)
+                {
+                    chars[segmentOffset + j] = (byte) s[j];
+                }
+
+                // Create a segment that has offset relative to the OwnedMemory and OwnedMemory itself has offset relative to array
+                var current = new BufferSegment(new OwnedArray<byte>(new ArraySegment<byte>(chars, memoryOffset, length)), length, segmentOffset);
                 if (first == null)
                 {
                     first = current;
@@ -205,7 +216,7 @@ namespace System.IO.Pipelines.Tests
                 i++;
             } while (i < inputs.Length);
 
-            return Tuple.Create(new ReadCursor(first), new ReadCursor(last, last.Memory.Length));
+            return Tuple.Create(new ReadCursor(first), new ReadCursor(last, last.Start + last.ReadableBytes));
         }
 
         [Theory]
@@ -272,8 +283,6 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(expectedEndIndex, scan3_3.Index);
             }
         }
-
-
 
         public static IEnumerable<object[]> SeekByteLimitData
         {
