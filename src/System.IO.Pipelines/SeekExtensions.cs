@@ -47,7 +47,9 @@ namespace System.IO.Pipelines
                     following = block.End - index;
                 }
                 ArraySegment<byte> array;
-                Debug.Assert(block.Memory.TryGetArray(out array));
+                var getArrayResult = block.Memory.TryGetArray(out array);
+                Debug.Assert(getArrayResult);
+
                 while (following > 0)
                 {
                     // Need unit tests to test Vector path
@@ -144,7 +146,9 @@ namespace System.IO.Pipelines
                     following = block.End - index;
                 }
                 ArraySegment<byte> array;
-                Debug.Assert(block.Memory.TryGetArray(out array));
+                var getArrayResult = block.Memory.TryGetArray(out array);
+                Debug.Assert(getArrayResult);
+
                 while (following > 0)
                 {
                     // Need unit tests to test Vector path
@@ -235,7 +239,8 @@ namespace System.IO.Pipelines
                     following = block.End - index;
                 }
                 ArraySegment<byte> array;
-                Debug.Assert(block.Memory.TryGetArray(out array));
+                var getArrayResult = block.Memory.TryGetArray(out array);
+                Debug.Assert(getArrayResult);
 
                 while (following > 0)
                 {
@@ -341,7 +346,8 @@ namespace System.IO.Pipelines
                     following = block.End - index;
                 }
                 ArraySegment<byte> array;
-                Debug.Assert(block.Memory.TryGetArray(out array));
+                var getArrayResult = block.Memory.TryGetArray(out array);
+                Debug.Assert(getArrayResult);
 
                 while (following > 0)
                 {
