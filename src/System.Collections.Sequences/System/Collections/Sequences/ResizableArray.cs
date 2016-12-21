@@ -108,29 +108,13 @@ namespace System.Collections.Sequences
 
         public bool TryGet(ref Position position, out T item, bool advance = false)
         {
-            item = default(T);
-
-            if ( _count == 0) {
-                position = Position.AfterLast;
-                return false;
-            }
-
-            if (position.Equals(Position.BeforeFirst)) {
-                if (advance) {
-                    position = Position.First;
-                }
-                return false;
-            }
-
             if (position.IntegerPosition < _count) {
                 item = _array[position.IntegerPosition];
-                if (advance) {
-                    position.IntegerPosition++;
-                    if (position.IntegerPosition == _count) position = Position.AfterLast;
-                }
+                if (advance) { position.IntegerPosition++; }
                 return true;
             }
 
+            item = default(T);
             position = Position.AfterLast;
             return false;
         }

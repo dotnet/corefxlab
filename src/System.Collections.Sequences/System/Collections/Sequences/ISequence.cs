@@ -16,7 +16,5 @@ namespace System.Collections.Sequences
         bool TryGet(ref Position position, out T item, bool advance = false);
 
         int? Length { get; }
-
-        SequenceEnumerator<T> GetEnumerator();
     }
 }

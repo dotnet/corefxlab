@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
+
 namespace System.Collections.Sequences
 {
     public struct Position : IEquatable<Position>
@@ -8,20 +10,22 @@ namespace System.Collections.Sequences
         public int IntegerPosition;
         public object ObjectPosition;
 
-        public static Position BeforeFirst = new Position() { IntegerPosition = -1 };
-        public static Position First = new Position();
-        public static Position AfterLast = new Position() { IntegerPosition = int.MaxValue - 1 };
+        public static readonly Position First = new Position();
+        public static readonly Position AfterLast = new Position() { IntegerPosition = int.MaxValue - 1 };
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator==(Position left, Position right)
         {
             return left.Equals(right);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator!=(Position left, Position right)
         {
             return left.Equals(right);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(Position other)
         {
             return IntegerPosition == other.IntegerPosition && ObjectPosition == other.ObjectPosition;

@@ -83,7 +83,7 @@ namespace System.Slices.Tests
                         try {
                             owners[i].Dispose();
                             disposeSuccesses[i] = true;
-                        } catch (InvalidOperationException e) {
+                        } catch (InvalidOperationException) {
                             disposeSuccesses[i] = false;
                         }
                     }
@@ -94,7 +94,7 @@ namespace System.Slices.Tests
                         try {
                             reserves[i] = memories[i].Reserve();
                             reserveSuccesses[i] = true;
-                        } catch (ObjectDisposedException e) {
+                        } catch (ObjectDisposedException) {
                             reserveSuccesses[i] = false;
                         }
                     }

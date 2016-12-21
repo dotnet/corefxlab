@@ -88,12 +88,6 @@ namespace Microsoft.Net.Http
 
         public bool TryGet(ref Position position, out Memory<byte> item, bool advance = false)
         {
-            if(position == Position.BeforeFirst) {
-                item = Memory<byte>.Empty;
-                if(advance) position = Position.First;
-                return false;
-            }
-
             if (position == Position.First) {
                 item = _head.Commited;
                 if (advance) {
