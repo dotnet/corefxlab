@@ -196,8 +196,8 @@ To support the scenarios described above, Span\<T\> must meet the following requ
 
 #Design/Representation
 We will provide two different implementations of Span\<T\>: 
-- Fast Span\<T\> (availiable on runtimes with special support for spans)
-- Slow Span\<T\> (availiable on all current .NET runtimes, even existing ones, e.g. .NET 4.5) 
+- Fast Span\<T\> (available on runtimes with special support for spans)
+- Slow Span\<T\> (available on all current .NET runtimes, even existing ones, e.g. .NET 4.5) 
 
 The fast implementation, will rely on "ref field" support and will look as follows:
 
@@ -273,7 +273,7 @@ We need to enable the existing array bounds check optimizations for Span\<T\> â€
 ##Conversions
 Span\<T\> will support reinterpret cast conversions to Span\<byte\>. It will also support unsafe casts between arbitrary primitive types. The reason for this limitation is that some processors donâ€™t support efficient unaligned memory access.
 
-A prototype of such API can be found [here](https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/SpanExtensions.cs#L151), and the API can be used as follows:
+A prototype of such API can be found [here](https://github.com/dotnet/corefxlab/blob/7f7a0a4fa491c94fdc7cf0ebd01e9af44991c487/src/System.Slices/System/SpanExtensions.cs#L151), and the API can be used as follows:
 ```c#
 var bytes = new Span<byte>(buffer);
 var characters = bytes.Cast<byte, char>();
@@ -323,7 +323,7 @@ Separately from this document, we are exploring language features to better supp
 
 5. Primitive constraint
 
-    Some Span\<T\> operations are valid only for so called primitive type arguments. For example, the [reinterpret cast operation](https://github.com/dotnet/corefxlab/blob/master/src/System.Slices/System/SpanExtensions.cs#L151). 
+    Some Span\<T\> operations are valid only for so called primitive type arguments. For example, the [reinterpret cast operation](https://github.com/dotnet/corefxlab/blob/7f7a0a4fa491c94fdc7cf0ebd01e9af44991c487/src/System.Slices/System/SpanExtensions.cs#L151). 
 
     We are exploring adding the ability to constrain type parameters to primitive types, i.e. types that are bit blittable. The cast operation would constrain its type parameters as follows:
     ```c#

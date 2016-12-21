@@ -16,7 +16,7 @@ namespace System.IO.Pipelines.File
         {
         }
 
-        public FileReader(PipelineReaderWriter input) : base(input)
+        public FileReader(Pipe pipe) : base(pipe)
         {
         }
 
@@ -30,7 +30,7 @@ namespace System.IO.Pipelines.File
 
             var readOperation = new ReadOperation
             {
-                Writer = _input,
+                Writer = _pipe,
                 FileHandle = fileHandle,
                 ThreadPoolBoundHandle = handle,
                 IOCallback = IOCallback
@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.File
             var overlapped = new PreAllocatedOverlapped(IOCallback, readOperation, null);
             readOperation.PreAllocatedOverlapped = overlapped;
 
-            _input.ReadingStarted.ContinueWith((t, state) =>
+            _pipe.ReadingStarted.ContinueWith((t, state) =>
             {
                 ((ReadOperation)state).Read();
             },

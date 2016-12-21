@@ -12,7 +12,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Default <see cref="IPipelineWriter"/> and <see cref="IPipelineReader"/> implementation.
     /// </summary>
-    public class PipelineReaderWriter : IPipelineReader, IPipelineWriter, IReadableBufferAwaiter
+    public class Pipe : IPipelineReader, IPipelineWriter, IReadableBufferAwaiter
     {
         private static readonly Action _awaitableIsCompleted = () => { };
         private static readonly Action _awaitableIsNotCompleted = () => { };
@@ -46,10 +46,10 @@ namespace System.IO.Pipelines
         private string _consumingLocation;
 #endif
         /// <summary>
-        /// Initializes the <see cref="PipelineReaderWriter"/> with the specifed <see cref="IBufferPool"/>.
+        /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
         /// </summary>
         /// <param name="pool"></param>
-        public PipelineReaderWriter(IBufferPool pool)
+        public Pipe(IBufferPool pool)
         {
             _pool = pool;
             _awaitableState = _awaitableIsNotCompleted;

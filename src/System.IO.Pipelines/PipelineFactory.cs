@@ -27,7 +27,7 @@ namespace System.IO.Pipelines
             _pool = pool;
         }
 
-        public PipelineReaderWriter Create() => new PipelineReaderWriter(_pool);
+        public Pipe Create() => new Pipe(_pool);
 
         public IPipelineReader CreateReader(Stream stream)
         {
@@ -36,16 +36,16 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowNotSupportedException();
             }
 
-            var output = new PipelineReaderWriter(_pool);
-            ExecuteCopyToAsync(output, stream);
-            return output;
+            var pipe = new Pipe(_pool);
+            ExecuteCopyToAsync(pipe, stream);
+            return pipe;
         }
 
-        private async void ExecuteCopyToAsync(PipelineReaderWriter output, Stream stream)
+        private async void ExecuteCopyToAsync(Pipe pipe, Stream stream)
         {
-            await output.ReadingStarted;
+            await pipe.ReadingStarted;
 
-            await stream.CopyToAsync(output);
+            await stream.CopyToAsync(pipe);
         }
 
         public IPipelineConnection CreateConnection(NetworkStream stream)
@@ -60,48 +60,48 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowNotSupportedException();
             }
 
-            var input = new PipelineReaderWriter(_pool);
+            var pipe = new Pipe(_pool);
 
-            input.CopyToAsync(stream).ContinueWith((task, state) =>
+            pipe.CopyToAsync(stream).ContinueWith((task, state) =>
             {
-                var innerInput = (PipelineReaderWriter)state;
+                var innerPipe = (Pipe)state;
                 if (task.IsFaulted)
                 {
-                    innerInput.CompleteReader(task.Exception.InnerException);
+                    innerPipe.CompleteReader(task.Exception.InnerException);
                 }
                 else
                 {
-                    innerInput.CompleteReader();
+                    innerPipe.CompleteReader();
                 }
             },
-            input, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            pipe, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
-            return input;
+            return pipe;
         }
 
         public IPipelineWriter CreateWriter(IPipelineWriter writer, Func<IPipelineReader, IPipelineWriter, Task> consume)
         {
-            var newWriter = new PipelineReaderWriter(_pool);
+            var pipe = new Pipe(_pool);
 
-            consume(newWriter, writer).ContinueWith(t =>
+            consume(pipe, writer).ContinueWith(t =>
             {
             });
 
-            return newWriter;
+            return pipe;
         }
 
         public IPipelineReader CreateReader(IPipelineReader reader, Func<IPipelineReader, IPipelineWriter, Task> produce)
         {
-            var newReader = new PipelineReaderWriter(_pool);
-            Execute(reader, newReader, produce);
-            return newReader;
+            var pipe = new Pipe(_pool);
+            Execute(reader, pipe, produce);
+            return pipe;
         }
 
-        private async void Execute(IPipelineReader reader, PipelineReaderWriter writer, Func<IPipelineReader, IPipelineWriter, Task> produce)
+        private async void Execute(IPipelineReader reader, Pipe pipe, Func<IPipelineReader, IPipelineWriter, Task> produce)
         {
-            await writer.ReadingStarted;
+            await pipe.ReadingStarted;
 
-            await produce(reader, writer);
+            await produce(reader, pipe);
         }
 
         public void Dispose() => _pool.Dispose();

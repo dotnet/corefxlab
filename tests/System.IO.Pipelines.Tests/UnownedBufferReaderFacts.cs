@@ -553,7 +553,7 @@ namespace System.IO.Pipelines.Tests
 
         private class StreamAndPipelineReader : Stream, IPipelineReader
         {
-            private readonly PipelineReaderWriter _readerWriter = new PipelineReaderWriter(ArrayBufferPool.Instance);
+            private readonly Pipe _pipe = new Pipe(ArrayBufferPool.Instance);
 
             public override bool CanRead => true;
 
@@ -582,16 +582,16 @@ namespace System.IO.Pipelines.Tests
                 }
             }
 
-            public void CancelPendingRead() => _readerWriter.CancelPendingRead();
+            public void CancelPendingRead() => _pipe.CancelPendingRead();
 
             public void Advance(ReadCursor consumed, ReadCursor examined)
             {
-                _readerWriter.AdvanceReader(consumed, examined);
+                _pipe.AdvanceReader(consumed, examined);
             }
 
             public void Complete(Exception exception = null)
             {
-                _readerWriter.CompleteReader(exception);
+                _pipe.CompleteReader(exception);
             }
 
             public override void Flush()
@@ -601,17 +601,17 @@ namespace System.IO.Pipelines.Tests
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                return _readerWriter.ReadAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                return _pipe.ReadAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
-                return await _readerWriter.ReadAsync(new Span<byte>(buffer, offset, count));
+                return await _pipe.ReadAsync(new Span<byte>(buffer, offset, count));
             }
 
             public ReadableBufferAwaitable ReadAsync()
             {
-                return _readerWriter.ReadAsync();
+                return _pipe.ReadAsync();
             }
 
             public override long Seek(long offset, SeekOrigin origin)
@@ -626,22 +626,22 @@ namespace System.IO.Pipelines.Tests
 
             public override void Write(byte[] buffer, int offset, int count)
             {
-                _readerWriter.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                _pipe.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
-                return _readerWriter.WriteAsync(new Span<byte>(buffer, offset, count));
+                return _pipe.WriteAsync(new Span<byte>(buffer, offset, count));
             }
 
-            public void FinishWriting() => _readerWriter.CompleteWriter();
+            public void FinishWriting() => _pipe.CompleteWriter();
 
             protected override void Dispose(bool disposing)
             {
                 base.Dispose(disposing);
 
-                _readerWriter.CompleteReader();
-                _readerWriter.CompleteWriter();
+                _pipe.CompleteReader();
+                _pipe.CompleteWriter();
             }
         }
 

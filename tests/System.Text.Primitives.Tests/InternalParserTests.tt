@@ -27,7 +27,7 @@ using Xunit;
 
 namespace System.Text.Primitives.Tests
 {
-	public partial class PrimitiveParserTests
+	public partial class InternalParserTests
     {
 	    static Tuple<byte, int>[] s_utf8ParsingTrie = new Tuple<byte, int>[] {
             Tuple.Create((byte)17, 0x3004390D),
@@ -192,7 +192,7 @@ namespace System.Text.Primitives.Tests
 #>
 		#region <#= unsignedPrimitives[i] #>
 
-		[Theory]
+		// [Theory]
         [InlineData("<#= midValue #>", true, 0, <#= midValue #>, <#= midValue.Length #>)]
         [InlineData("blahblahh<#= randValue #>", true, 9, <#= randValue #>, <#= randValue.Length #>)]
         [InlineData("<#= randValue #>abhced", true, 0, <#= randValue #>, <#= randValue.Length #>)]
@@ -218,7 +218,7 @@ namespace System.Text.Primitives.Tests
 			
 				int utfByteFactor = (utfEncoding == "8" ? 1 : 2);
 #>
-		[Theory]
+		// [Theory]
         [InlineData("<#= midValue #>", true, 0, <#= midValue #>, <#= midValue.Length * utfByteFactor #>)]
         [InlineData("blahblahh<#= randValue #>", true, <#= 9 * utfByteFactor #>, <#= randValue #>, <#= randValue.Length * utfByteFactor #>)]
         [InlineData("<#= randValue #>abhced", true, 0, <#= randValue #>, <#= randValue.Length * utfByteFactor #>)]
@@ -239,7 +239,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
-		[Theory]
+		// [Theory]
         [InlineData("<#= midValue #>", true, 0, <#= midValue #>, <#= midValue.Length * utfByteFactor #>)]
         [InlineData("blahblahh<#= randValue #>", true, <#= 9 * utfByteFactor #>, <#= randValue #>, <#= randValue.Length * utfByteFactor #>)]
         [InlineData("<#= randValue #>abhced", true, 0, <#= randValue #>, <#= randValue.Length * utfByteFactor #>)]
@@ -261,7 +261,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
-		[Theory]
+		// [Theory]
         [InlineData("<#= midValue #>", true, 0, <#= midValue #>, <#= midValue.Length * utfByteFactor #>)]
         [InlineData("blahblahh<#= randValue #>", true, <#= 9 * utfByteFactor #>, <#= randValue #>, <#= randValue.Length * utfByteFactor #>)]
         [InlineData("<#= randValue #>abhced", true, 0, <#= randValue #>, <#= randValue.Length * utfByteFactor #>)]
@@ -336,7 +336,7 @@ namespace System.Text.Primitives.Tests
 #>
 		#region <#= signedPrimitives[i] #>
 
-		[Theory]
+		// [Theory]
         [InlineData("111", true, 0, 111, 3)]
         [InlineData("blahblahh<#= midValue #>", true, 9, <#= midValue #>, <#= midValue.Length #>)]
         [InlineData("<#= randValue #>abcdefg", true, 0, <#= randValue #>, <#= randValue.Length #>)]
@@ -360,7 +360,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
-		[Theory]
+		// [Theory]
         [InlineData("๑๑๑", true, 0, 111, 9)]
         [InlineData("เรื่องเหลวไหล๒๗", true, 39, 27, 6)]
         [InlineData("๕๖กขฃคฅฆง", true, 0, 56, 6)]
@@ -388,7 +388,7 @@ namespace System.Text.Primitives.Tests
 			{
 				int utfByteFactor = (utfEncoding == "8" ? 1 : 2);
 #>
-		[Theory]
+		// [Theory]
         [InlineData("111", true, 0, 111, <#= 3 * utfByteFactor #>)]
         [InlineData("blahblahh<#= midValue #>", true, <#= 9 * utfByteFactor #>, <#= midValue #>, <#= midValue.Length * utfByteFactor #>)]
         [InlineData("<#= randValue #>abcdefg", true, 0, <#= randValue #>, <#= randValue.Length * utfByteFactor #>)]
@@ -413,7 +413,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
-		[Theory]
+		// [Theory]
         [InlineData("111", true, 0, 111, <#= 3 * utfByteFactor #>)]
         [InlineData("blahblahh<#= midValue #>", true, <#= 9 * utfByteFactor #>, <#= midValue #>, <#= midValue.Length * utfByteFactor #>)]
         [InlineData("<#= randValue #>abcdefg", true, 0, <#= randValue #>, <#= randValue.Length * utfByteFactor #>)]
@@ -439,7 +439,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
-		[Theory]
+		// [Theory]
         [InlineData("111", true, 0, 111, <#= 3 * utfByteFactor #>)]
         [InlineData("blahblahh<#= midValue #>", true, <#= 9 * utfByteFactor #>, <#= midValue #>, <#= midValue.Length * utfByteFactor #>)]
         [InlineData("<#= randValue #>abcdefg", true, 0, <#= randValue #>, <#= randValue.Length * utfByteFactor #>)]
@@ -506,7 +506,7 @@ namespace System.Text.Primitives.Tests
 #>
 		#region <#= floatingPointPrimitives[i] #>
 
-		[Theory]
+		// [Theory]
         [InlineData(".1728", true, 0, 0.1728<#= floatString #>, 5)]
         [InlineData("blahblahh175.1110", true, 9, 175.1110<#= floatString #>, 8)]
         [InlineData("+98.7abcdefg", true, 0, 98.7<#= floatString #>, 5)]
@@ -532,7 +532,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
-		[Theory]
+		// [Theory]
         [InlineData(".1728", true, 0, 0.1728<#= floatString #>, 5)]
         [InlineData("blahblahh175.1110", true, 9, 175.1110<#= floatString #>, 8)]
         [InlineData("+98.7abcdefg", true, 0, 98.7<#= floatString #>, 5)]
@@ -571,7 +571,7 @@ namespace System.Text.Primitives.Tests
 #>
 		#region bool
 		
-        [Theory]
+        // [Theory]
         [InlineData("blahblahhTrue", true, 9, true, 4)]
         [InlineData("trueacndasjfh", true, 0, true, 4)]
         [InlineData("LetthemFALSEeatcake", true, 7, false, 5)]
@@ -631,7 +631,7 @@ namespace System.Text.Primitives.Tests
 
 		#region decimal
 
-        [Theory]
+        // [Theory]
         [InlineData(".1728", true, 0, 0.1728, 5)]
         [InlineData("blahblahh175.1110", true, 9, 175.1110, 8)]
         [InlineData("+98.25abcdefg", true, 0, 98.25, 6)]
@@ -649,7 +649,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
-        [Theory]
+        // [Theory]
         [InlineData(".1728", true, 0, 0.1728, 5)]
         [InlineData("blahblahh175.1110", true, 9, 175.1110, 8)]
         [InlineData("+98.25abcdefg", true, 0, 98.25, 6)]
@@ -675,7 +675,7 @@ namespace System.Text.Primitives.Tests
         #endregion
 
         #region uri
-        [Theory]
+        // [Theory]
         [InlineData("http://www.example.com/", true, 0, "http://www.example.com/", 23)]
         [InlineData("https://www.example.org/important.php?true=true", true, 0, "https://www.example.org/important.php?true=true", 47)]
         [InlineData("http://msw", true, 0, "http://msw", 10)]
@@ -704,7 +704,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedBytesConsumed, bytesConsumed);
         }
 
-        [Theory]
+        // [Theory]
         [InlineData("http://www.example.com/", true, 0, "http://www.example.com/", 23)]
         [InlineData("https://www.example.org/important.php?true=true", true, 0, "https://www.example.org/important.php?true=true", 47)]
         [InlineData("http://msw", true, 0, "http://msw", 10)]

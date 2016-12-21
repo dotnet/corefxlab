@@ -12,9 +12,9 @@ namespace System.IO.Pipelines
     public abstract class PipelineReader : IPipelineReader
     {
         /// <summary>
-        /// The underlying <see cref="PipelineReaderWriter"/> the <see cref="PipelineReader"/> communicates over.
+        /// The underlying <see cref="Pipe"/> the <see cref="PipelineReader"/> communicates over.
         /// </summary>
-        protected readonly PipelineReaderWriter _input;
+        protected readonly Pipe _pipe;
 
         /// <summary>
         /// Creates a base <see cref="PipelineReader"/>.
@@ -22,16 +22,16 @@ namespace System.IO.Pipelines
         /// <param name="pool">The <see cref="IBufferPool"/> that buffers will be allocated from.</param>
         protected PipelineReader(IBufferPool pool)
         {
-            _input = new PipelineReaderWriter(pool);
+            _pipe = new Pipe(pool);
         }
 
         /// <summary>
         /// Creates a base <see cref="PipelineReader"/>.
         /// </summary>
-        /// <param name="input">The <see cref="PipelineReaderWriter"/> the <see cref="PipelineReader"/> communicates over.</param>
-        protected PipelineReader(PipelineReaderWriter input)
+        /// <param name="pipe">The <see cref="Pipe"/> the <see cref="PipelineReader"/> communicates over.</param>
+        protected PipelineReader(Pipe pipe)
         {
-            _input = input;
+            _pipe = pipe;
         }
 
         /// <summary>
@@ -43,23 +43,23 @@ namespace System.IO.Pipelines
         /// The memory for the consumed data will be released and no longer available.
         /// The examined data communicates to the pipeline when it should signal more data is available.
         /// </remarks>
-        public void Advance(ReadCursor consumed, ReadCursor examined) => _input.AdvanceReader(consumed, examined);
+        public void Advance(ReadCursor consumed, ReadCursor examined) => _pipe.AdvanceReader(consumed, examined);
 
         /// <summary>
         /// Cancel to currently pending call to <see cref="ReadAsync"/>
         /// </summary>
-        public void CancelPendingRead() => _input.CancelPendingRead();
+        public void CancelPendingRead() => _pipe.CancelPendingRead();
 
         /// <summary>
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-        public void Complete(Exception exception = null) => _input.CompleteReader(exception);
+        public void Complete(Exception exception = null) => _pipe.CompleteReader(exception);
 
         /// <summary>
         /// Asynchronously reads a sequence of bytes from the current <see cref="PipelineReader"/>.
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
-        public ReadableBufferAwaitable ReadAsync() => _input.ReadAsync();
+        public ReadableBufferAwaitable ReadAsync() => _pipe.ReadAsync();
     }
 }

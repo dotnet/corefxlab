@@ -28,23 +28,23 @@ namespace System.IO.Pipelines
         /// <returns></returns>
         public static IPipelineWriter AsPipelineWriter(this Stream stream, IBufferPool pool)
         {
-            var writer = new PipelineReaderWriter(pool);
-            writer.CopyToAsync(stream).ContinueWith((task, state) =>
+            var pipe = new Pipe(pool);
+            pipe.CopyToAsync(stream).ContinueWith((task, state) =>
             {
-                var innerWriter = (PipelineReaderWriter)state;
+                var innerPipe = (Pipe)state;
 
                 if (task.IsFaulted)
                 {
-                    innerWriter.CompleteReader(task.Exception.InnerException);
+                    innerPipe.CompleteReader(task.Exception.InnerException);
                 }
                 else
                 {
-                    innerWriter.CompleteReader();
+                    innerPipe.CompleteReader();
                 }
             }, 
-            writer, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            pipe, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
-            return writer;
+            return pipe;
         }
 
         /// <summary>
