@@ -125,9 +125,9 @@ namespace System.Text.Primitives.Tests
             new byte[] { 69 }, new byte[] { 101 },
         };
             
-        static EncodingData s_thaiEncoding = new EncodingData(s_thaiUtf8DigitsAndSymbols, TextEncoding.Utf8, s_thais_utf8ParsingTrie);
+        static EncodingData s_thaiEncoding = new EncodingData(s_thaiUtf8DigitsAndSymbols, TextEncoder.Utf8, s_thais_utf8ParsingTrie);
 
-		static EncodingData s_utf8Encoding = new EncodingData(s_utf8digitsAndSymbols, TextEncoding.Utf8, s_utf8ParsingTrie);
+		static EncodingData s_utf8Encoding = new EncodingData(s_utf8digitsAndSymbols, TextEncoder.Utf8, s_utf8ParsingTrie);
 
         private byte[] UtfEncode(string s, bool utf16)
         {

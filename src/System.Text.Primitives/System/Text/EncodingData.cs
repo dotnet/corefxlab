@@ -13,13 +13,13 @@ namespace System.Text
 
         private byte[][] _symbols; // this could be flattened into a single array
         private ParsingTrieNode[] _parsingTrie; // prefix tree used for parsing
-        private TextEncoding _encoding;
+        private TextEncoder _encoder;
 
         // this should be removed after CreateParsingTire is implemented
-        public EncodingData(byte[][] symbols, TextEncoding encoding, Tuple<byte, int>[] parsingTrie)
+        public EncodingData(byte[][] symbols, TextEncoder encoder, Tuple<byte, int>[] parsingTrie)
         {
             _symbols = symbols;
-            _encoding = encoding;
+            _encoder = encoder;
 
             var tire = new ParsingTrieNode[parsingTrie.Length];
             for(int i=0; i<parsingTrie.Length; i++) {
@@ -29,10 +29,10 @@ namespace System.Text
             _parsingTrie = tire;
         }
 
-        public EncodingData(byte[][] symbols, TextEncoding encoding)
+        public EncodingData(byte[][] symbols, TextEncoder encoder)
         {
             _symbols = symbols;
-            _encoding = encoding;
+            _encoder = encoder;
             _parsingTrie = null;
             _parsingTrie = CreateParsingTire(_symbols);
         }
@@ -139,7 +139,7 @@ namespace System.Text
             get { return _symbols == s_invariantUtf8._symbols; }
         }
 
-        public TextEncoding TextEncoding => _encoding;
+        public TextEncoder TextEncoder => _encoder;
 
         public enum Symbol : ushort
         {
@@ -214,7 +214,7 @@ namespace System.Text
                 new byte[] { 101, 0, }, // e
             };
 
-            s_invariantUtf16 = new EncodingData(utf16digitsAndSymbols, TextEncoding.Utf16);
+            s_invariantUtf16 = new EncodingData(utf16digitsAndSymbols, TextEncoder.Utf16);
 
             var utf8digitsAndSymbols = new byte[][] {
                 new byte[] { 48, },
@@ -237,7 +237,7 @@ namespace System.Text
                 new byte[] { 101, }, // e
             };
 
-            s_invariantUtf8 = new EncodingData(utf8digitsAndSymbols, TextEncoding.Utf8);
+            s_invariantUtf8 = new EncodingData(utf8digitsAndSymbols, TextEncoder.Utf8);
         }
 
         // TODO: this should be removed
