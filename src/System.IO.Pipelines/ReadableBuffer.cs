@@ -531,12 +531,6 @@ namespace System.IO.Pipelines
                 }
                 return true;
             }
-            else if (position == Position.BeforeFirst)
-            {
-                if (advance) position = Position.First;
-                item = default(ReadOnlyMemory<byte>);
-                return false;
-            }
             else if (position == Position.AfterLast)
             {
                 item = default(ReadOnlyMemory<byte>);
@@ -561,11 +555,6 @@ namespace System.IO.Pipelines
                 item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End);
             }
             return true;
-        }
-
-        SequenceEnumerator<ReadOnlyMemory<byte>> ISequence<ReadOnlyMemory<byte>>.GetEnumerator()
-        {
-            return new SequenceEnumerator<ReadOnlyMemory<byte>>(this);
         }
     }
 }

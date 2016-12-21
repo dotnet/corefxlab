@@ -35,11 +35,6 @@ namespace System.Collections.Sequences
                 return false;
             }
 
-            if (position.Equals(Position.BeforeFirst)) {
-                if (advance) position = Position.First;
-                return false;
-            }
-
             if (position.Equals(Position.AfterLast)) {
                 return false;
             }
