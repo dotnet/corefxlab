@@ -17,7 +17,7 @@
     "requireLicenseAcceptance": true
   },
   "buildOptions": {
-    "keyFile": "../../tools/Key.snk",
+    "keyFile": "../../signing/Key.snk",
     "embed": {
       "include": "locales.bin",
       "mappings": {
@@ -27,7 +27,8 @@
   },
   "dependencies": {
     "System.Slices": { "target": "project" },
-    "System.Text.Formatting": { "target": "project" }
+    "System.Text.Formatting": { "target": "project" },
+    "System.Text.Primitives": { "target": "project" }
   },
   "frameworks": {
     "netstandard1.1": {

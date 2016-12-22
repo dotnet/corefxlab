@@ -3,7 +3,7 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "System.Slices": { "target": "project" },
     "System.Text.Encodings.Web.Utf8": { "target": "project" },

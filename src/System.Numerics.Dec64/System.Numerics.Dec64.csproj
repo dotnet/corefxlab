@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <AssemblyOriginatorKeyFile>../../signing/Key.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <Description>64 bit decimal floating point value</Description>
+    <Copyright>Microsoft Corporation, All rights reserved</Copyright>
+    <PackageTags>.NET 64 bit decimal floating point value</PackageTags>
+    <PackageReleaseNotes>Pre-release package, for testing only</PackageReleaseNotes>
+    <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/dotnet/corefxlab</PackageProjectUrl>
+    <PackageLicenseUrl>http://go.microsoft.com/fwlink/?LinkId=329770</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <GenerateNeutralResourcesLanguageAttribute>False</GenerateNeutralResourcesLanguageAttribute>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="**\*.cs" />
+    <EmbeddedResource Include="**\*.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Runtime" Version="4.1.0" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="4.0.11" />
+  </ItemGroup>
+  <!-- Project references -->
+  <ItemGroup>
+
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+</Project>

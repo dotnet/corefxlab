@@ -19,7 +19,7 @@
   },
 
   "buildOptions": {
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../signing/Key.snk"
   },
 
   "dependencies": {

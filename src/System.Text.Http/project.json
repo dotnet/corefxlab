@@ -17,10 +17,11 @@
     "requireLicenseAcceptance": true
   },
   "buildOptions": {
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../signing/Key.snk"
   },
   "dependencies": {
     "System.Text.Formatting": { "target": "project" },
+    "System.Text.Primitives": { "target": "project" },
     "System.Slices": { "target": "project" }
   },
   "frameworks": {

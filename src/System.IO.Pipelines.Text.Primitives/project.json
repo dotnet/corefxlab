@@ -11,7 +11,7 @@
   },
   "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../signing/Key.snk"
   },
 
   "dependencies": {
@@ -23,11 +23,18 @@
     },
     "System.IO.Pipelines": {
       "target": "project"
+    },
+    "System.Slices": {
+      "target": "project"
+    },
+    "System.Collections.Sequences": {
+      "target": "project"
     }
   },
 
   "frameworks": {
     "net451": {},
-    "netstandard1.3": {}
+    "netstandard1.3": {},
+    "netcoreapp1.0": {}
   }
 }

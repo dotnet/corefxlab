@@ -3,7 +3,7 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     "System.Threading.Tasks.Channels": { "target": "project" },
     "System.IO.Pipes": "4.0.0",

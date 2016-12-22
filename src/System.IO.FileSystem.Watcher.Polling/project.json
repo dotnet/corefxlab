@@ -18,7 +18,7 @@
   },
   "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../tools/Key.snk",
+    "keyFile": "../../signing/Key.snk",
     "embed": {
       "System.IO.FileSystem.Watcher.Polling.Properties.Strings": "Properties/Strings.resx"
     }
