@@ -19,12 +19,6 @@ namespace System.Collections.Sequences.Tests
             while (collection.TryGet(ref position, out item, advance: true)) {
                 Assert.Equal(array[arrayIndex++], item);
             }
-
-            arrayIndex = 0;
-            var sequence = (ISequence<int>)collection;
-            foreach (var sequenceItem in sequence) {
-                Assert.Equal(array[arrayIndex++], sequenceItem);
-            }
         }
 
         private static ArrayList<int> CreateArrayList(int[] array)
@@ -48,12 +42,6 @@ namespace System.Collections.Sequences.Tests
             while (collection.TryGet(ref position, out item, advance: true)) {
                 Assert.Equal(array[--arrayIndex], item);
             }
-
-            arrayIndex = array.Length;
-            var sequence = (ISequence<int>)collection;
-            foreach (var sequenceItem in sequence) {
-                Assert.Equal(array[--arrayIndex], sequenceItem);
-            }
         }
 
         private static LinkedContainer<int> CreateLinkedContainer(int[] array)
@@ -76,12 +64,6 @@ namespace System.Collections.Sequences.Tests
             KeyValuePair<int, string> item;
             while (collection.TryGet(ref position, out item, advance: true)) {
                 Assert.Equal(array[arrayIndex++], item.Key);
-            }
-
-            arrayIndex = 0;
-            var sequence = (ISequence<KeyValuePair<int, string>>)collection;
-            foreach (var sequenceItem in sequence) {
-                Assert.Equal(array[arrayIndex++], sequenceItem.Key);
             }
         }
 

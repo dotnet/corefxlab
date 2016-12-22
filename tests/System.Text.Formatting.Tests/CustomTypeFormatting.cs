@@ -26,7 +26,7 @@ namespace System.Text.Formatting.Tests
 
             char symbol = _inMonths ? 'm' : 'y';
             int symbolBytes;
-            if (!PrimitiveFormatter.TryEncode(symbol, buffer.Slice(bytesWritten), out symbolBytes, encoding.TextEncoding)) return false;
+            if (!encoding.TextEncoder.TryEncodeChar(symbol, buffer.Slice(bytesWritten), out symbolBytes)) return false;
 
             bytesWritten += symbolBytes;
             return true;

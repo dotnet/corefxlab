@@ -276,7 +276,7 @@ arbitrary encodings. And the best way to validate that is to implement (possibly
 other encodings.
 
 ## ISSUES/QUESTIONS:
-1. How are we going to support ISO-8859? Is it just validation? Or we need specific EncodingData?
+1. How are we going to support ISO-8859-1? Is it just validation? Or we need specific EncodingData?
 2. We need to measure if it's worth having overloads that don't take bytesConsumed
 3. We need detailed design of the higher level APIs (parsing multi-spans)
 4. How do people add support for buffer parsing to their types? Is there an abstraction "IParsable" so that high level reader can read 3rd party types?

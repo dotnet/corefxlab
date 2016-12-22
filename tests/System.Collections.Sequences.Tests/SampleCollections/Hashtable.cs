@@ -94,13 +94,6 @@ namespace System.Collections.Sequences
                 return false;
             }
 
-            if (position.Equals(Position.BeforeFirst)) {
-                if (advance) {
-                    position.IntegerPosition = FindFirstStartingAt(0);
-                }
-                return false;
-            }
-
             if (position.Equals(Position.First)) {
                 var firstOccupiedSlot = FindFirstStartingAt(0);
                 if (firstOccupiedSlot == -1) {

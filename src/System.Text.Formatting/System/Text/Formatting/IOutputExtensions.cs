@@ -25,7 +25,7 @@ namespace System.Text.Formatting
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, string value, TextEncoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, string value, EncodingData encoding) where TFormatter : IOutput
         {
             if (value.Length < 256) {
                 while (!formatter.TryAppend(value, encoding)) {
@@ -47,61 +47,61 @@ namespace System.Text.Formatting
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, TextEncoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, EncodingData encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryEncode(formatter.Buffer, out bytesWritten, encoding)) {
+            if (!encoding.TextEncoder.TryEncodeString(value, formatter.Buffer, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, TextEncoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, EncodingData encoding) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoding)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, TextEncoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, EncodingData encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryEncode(formatter.Buffer, out bytesWritten, encoding)) {
+            if (!encoding.TextEncoder.TryEncodeFromUtf16(value, formatter.Buffer, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, char value, TextEncoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, char value, EncodingData encoding) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoding)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, char value, TextEncoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, char value, EncodingData encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryEncode(formatter.Buffer, out bytesWritten, encoding)) {
+            if (!encoding.TextEncoder.TryEncodeChar(value, formatter.Buffer, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
             return true;
         }
 
-        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value, TextEncoding encoding) where TFormatter : IOutput
+        public static void Append<TFormatter>(this TFormatter formatter, Utf8String value, EncodingData encoding) where TFormatter : IOutput
         {
             while (!formatter.TryAppend(value, encoding)) {
                 formatter.Enlarge();
             }
         }
 
-        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value, TextEncoding encoding) where TFormatter : IOutput
+        public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value, EncodingData encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryEncode(formatter.Buffer, out bytesWritten, encoding)) {
+            if (!encoding.TextEncoder.TryEncodeFromUtf8(value, formatter.Buffer, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
