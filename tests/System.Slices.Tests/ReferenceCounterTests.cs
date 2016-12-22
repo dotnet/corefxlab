@@ -65,10 +65,10 @@ namespace System.Slices.Tests
             var obj = new object();
             for (int threadNumber = 0; threadNumber < defaultThreadTableSize * 2; threadNumber++)
             {
+                var handle = new AutoResetEvent(false);
+                threads.Add(handle);
                 var thread = new Thread(new ThreadStart(() =>
                 {
-                    var handle = new AutoResetEvent(false);
-                    threads.Add(handle);
                     for (int itteration = 0; itteration < 100; itteration++)
                     {
                         counter.AddReference(obj);
