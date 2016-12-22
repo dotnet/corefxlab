@@ -20,7 +20,7 @@ namespace System.Text.Internal
                     char* pSubstring = pText + index;
                     var span = new Span<byte>((byte*)pSubstring, count << 1);
                     int bytesConsumed;
-                    var result = TryParseUInt32(span, TextEncoding.Utf16, out value, out bytesConsumed);
+                    var result = TryParseUInt32(span, TextEncoder.Id.Utf16, out value, out bytesConsumed);
                     charactersConsumed = bytesConsumed >> 1;
                     return result;
                 }
@@ -33,7 +33,7 @@ namespace System.Text.Internal
 
             ReadOnlySpan<byte> span = text.Cast<char, byte>();
             int bytesConsumed;
-            var result = TryParseUInt32(span, TextEncoding.Utf16, out value, out bytesConsumed);
+            var result = TryParseUInt32(span, TextEncoder.Id.Utf16, out value, out bytesConsumed);
             charactersConsumed = bytesConsumed >> 1;
             return result;
         }
@@ -86,17 +86,17 @@ namespace System.Text.Internal
             return true;
         }
 
-        public static bool TryParseUInt32(ReadOnlySpan<byte> text, TextEncoding encoding, out uint value, out int bytesConsumed)
+        public static bool TryParseUInt32(ReadOnlySpan<byte> text, TextEncoder.Id encoding, out uint value, out int bytesConsumed)
         {
             Precondition.Require(text.Length > 0);
-            Precondition.Require(encoding == TextEncoding.Utf8 || text.Length > 1);
+            Precondition.Require(encoding == TextEncoder.Id.Utf8 || text.Length > 1);
 
             value = 0;
             bytesConsumed = 0;
 
             if (text[0] == '0')
             {
-                if (encoding == TextEncoding.Utf16)
+                if (encoding == TextEncoder.Id.Utf16)
                 {
                     bytesConsumed = 2;
                     return text[1] == 0;
@@ -131,7 +131,7 @@ namespace System.Text.Internal
                     return true;
                 }
                 bytesConsumed++;
-                if (encoding == TextEncoding.Utf16)
+                if (encoding == TextEncoder.Id.Utf16)
                 {
                     byteIndex++;
                     if (byteIndex >= text.Length || text[byteIndex] != 0)

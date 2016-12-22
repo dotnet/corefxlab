@@ -6,7 +6,6 @@ namespace System.IO.Pipelines.Samples
     public class FakeListener
     {
         private readonly List<PipelineConnection> _connections = new List<PipelineConnection>();
-        private readonly PipelineFactory _factory;
         private Task[] _connectionTasks;
 
         public FakeListener(PipelineFactory factory, int concurrentConnections)

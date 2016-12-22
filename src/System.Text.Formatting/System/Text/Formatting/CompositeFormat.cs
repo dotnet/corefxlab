@@ -141,7 +141,7 @@ namespace System.Text.Formatting {
             for (int i = 0; i < count; i++)
             {
                 int bytesWritten;
-                while (!whole[i+index].TryEncode(buffer, out bytesWritten, formatter.Encoding.TextEncoding))
+                while (!formatter.Encoding.TextEncoder.TryEncodeChar(whole[i + index], buffer, out bytesWritten))
                 {
                     Debug.Assert(false, "this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
                 }

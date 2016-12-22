@@ -55,7 +55,7 @@ namespace System.IO.Pipelines.Tests
                 using (var client = await SocketConnection.ConnectAsync(endpoint))
                 {
                     var output = client.Output.Alloc();
-                    output.Append(MessageToSend, TextEncoding.Utf8);
+                    output.Append(MessageToSend, EncodingData.InvariantUtf8);
                     await output.FlushAsync();
                     client.Output.Complete();
 
