@@ -241,7 +241,7 @@ namespace System.IO.Pipelines
             Span<byte> span = Segment.Memory.Span.Slice(Index, Segment.End - Index);
             for (int i = 0; i < span.Length; i++)
             {
-                sb.Append((char)span[i]);
+                ReadableBuffer.AppendCharLiteral((char)span[i], sb);
             }
             return sb.ToString();
         }
