@@ -5,7 +5,7 @@ using System.Text;
 
 namespace System.IO.Pipelines
 {
-    public class SpanExtensions
+    internal class SpanExtensions
     {
         internal static void AppendAsLiteral(Span<byte> span, StringBuilder sb)
         {
