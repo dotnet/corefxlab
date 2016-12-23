@@ -35,9 +35,7 @@ namespace System.Text {
         {
             unsafe
             {
-                char* stackBuffer = stackalloc char[1];
-                stackBuffer[0] = value;
-                var stackSpan = new ReadOnlySpan<char>(stackBuffer, 1);
+                var stackSpan = new ReadOnlySpan<char>(&value, 1);
                 return TryEncodeFromUtf16(stackSpan, buffer, out bytesWritten);
             }
         }
