@@ -46,13 +46,7 @@ namespace System.Text
         static readonly TextFormat t = new TextFormat('t'); 
         const int FractionalTimeScale = 10000000;
 
-        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
-        {
-            TextFormat parsedFormat = TextFormat.Parse(format);
-            return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
-        }
-
-        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, TextFormat format, EncodingData encoding, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -63,7 +57,7 @@ namespace System.Text
             {
                 case 'R':
 
-                    if (formattingData.IsInvariantUtf16) // TODO: there are many checks like this one in the code. They need to also verify that the UTF8 branch is invariant.
+                    if (encoding.IsInvariantUtf16) // TODO: there are many checks like this one in the code. They need to also verify that the UTF8 branch is invariant.
                     {
                         return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, EncodingData.InvariantUtf16, out bytesWritten);
                     }
@@ -72,7 +66,7 @@ namespace System.Text
                         return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, EncodingData.InvariantUtf8, out bytesWritten);
                     }
                 case 'O':
-                    if (formattingData.IsInvariantUtf16)
+                    if (encoding.IsInvariantUtf16)
                     {
                         return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, EncodingData.InvariantUtf16, out bytesWritten);
                     }
@@ -81,19 +75,13 @@ namespace System.Text
                         return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, EncodingData.InvariantUtf8, out bytesWritten);
                     }
                 case 'G':
-                    return TryFormatDateTimeFormagG(value.DateTime, buffer, formattingData, out bytesWritten);
+                    return TryFormatDateTimeFormatG(value.DateTime, buffer, encoding, out bytesWritten);
                 default:
                     throw new NotImplementedException();
             }
         }
 
-        public static bool TryFormat(this DateTime value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
-        {
-            TextFormat parsedFormat = TextFormat.Parse(format);
-            return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
-        }
-
-        public static bool TryFormat(this DateTime value, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this DateTime value, Span<byte> buffer, TextFormat format, EncodingData encoding, out int bytesWritten)
         {
             if (format.IsDefault)
             {
@@ -105,7 +93,7 @@ namespace System.Text
             {
                 case 'R':
                     var utc = value.ToUniversalTime();
-                    if (formattingData.IsInvariantUtf16)
+                    if (encoding.IsInvariantUtf16)
                     {
                         return TryFormatDateTimeRfc1123(utc, buffer, EncodingData.InvariantUtf16, out bytesWritten);
                     }
@@ -114,7 +102,7 @@ namespace System.Text
                         return TryFormatDateTimeRfc1123(utc, buffer, EncodingData.InvariantUtf8, out bytesWritten);
                     }
                 case 'O':
-                    if (formattingData.IsInvariantUtf16)
+                    if (encoding.IsInvariantUtf16)
                     {
                         return TryFormatDateTimeFormatO(value, true, buffer, EncodingData.InvariantUtf16, out bytesWritten);
                     }
@@ -123,29 +111,29 @@ namespace System.Text
                         return TryFormatDateTimeFormatO(value, true, buffer, EncodingData.InvariantUtf8, out bytesWritten);
                     }
                 case 'G':
-                    return TryFormatDateTimeFormagG(value, buffer, formattingData, out bytesWritten);
+                    return TryFormatDateTimeFormatG(value, buffer, encoding, out bytesWritten);
                 default:
                     throw new NotImplementedException();
             }      
         }
 
-        static bool TryFormatDateTimeFormagG(DateTime value, Span<byte> buffer, EncodingData encodingData, out int bytesWritten)
+        static bool TryFormatDateTimeFormatG(DateTime value, Span<byte> buffer, EncodingData encoding, out int bytesWritten)
         {
             // for now it only works for invariant culture
-            if(!encodingData.IsInvariantUtf16 && !encodingData.IsInvariantUtf8)
+            if(!encoding.IsInvariantUtf16 && !encoding.IsInvariantUtf8)
             {
                 throw new NotImplementedException();
             }
 
             bytesWritten = 0;
-            if (!TryWriteInt32(value.Month, buffer, G, encodingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar('/', buffer, encodingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Month, buffer, G, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar('/', buffer, encoding, ref bytesWritten)) { return false; }
 
-            if (!TryWriteInt32(value.Day, buffer, G, encodingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar('/', buffer, encodingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Day, buffer, G, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar('/', buffer, encoding, ref bytesWritten)) { return false; }
 
-            if (!TryWriteInt32(value.Year, buffer, G, encodingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar(' ', buffer, encodingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Year, buffer, G, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(' ', buffer, encoding, ref bytesWritten)) { return false; }
 
             var hour = value.Hour;
             if(hour == 0)
@@ -157,46 +145,46 @@ namespace System.Text
                 hour = hour - 12;
             }
 
-            if (!TryWriteInt32(hour, buffer, G, encodingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar(':', buffer, encodingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(hour, buffer, G, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(':', buffer, encoding, ref bytesWritten)) { return false; }
 
-            if (!TryWriteInt32(value.Minute, buffer, D2, encodingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar(':', buffer, encodingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Minute, buffer, D2, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(':', buffer, encoding, ref bytesWritten)) { return false; }
 
-            if (!TryWriteInt32(value.Second, buffer, D2, encodingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar(' ', buffer, encodingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Second, buffer, D2, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(' ', buffer, encoding, ref bytesWritten)) { return false; }
 
             if(value.Hour > 11)
             {
-                TryWriteString("PM", buffer, encodingData, ref bytesWritten);
+                TryWriteString("PM", buffer, encoding, ref bytesWritten);
             }
             else
             {
-                TryWriteString("AM", buffer, encodingData, ref bytesWritten);
+                TryWriteString("AM", buffer, encoding, ref bytesWritten);
             }
 
             return true;
         }
 
-        static bool TryFormatDateTimeFormatO(DateTimeOffset value, bool isDateTime, Span<byte> buffer, EncodingData formattingData, out int bytesWritten)
+        static bool TryFormatDateTimeFormatO(DateTimeOffset value, bool isDateTime, Span<byte> buffer, EncodingData encoding, out int bytesWritten)
         {
             bytesWritten = 0;
-            if (!TryWriteInt32(value.Year, buffer, D4, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Year, buffer, D4, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar('-', buffer, encoding, ref bytesWritten)) { return false; }
 
-            if (!TryWriteInt32(value.Month, buffer, D2, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar('-', buffer, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Month, buffer, D2, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar('-', buffer, encoding, ref bytesWritten)) { return false; }
 
-            if (!TryWriteInt32(value.Day, buffer, D2, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar('T', buffer, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Day, buffer, D2, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar('T', buffer, encoding, ref bytesWritten)) { return false; }
 
-            if (!TryWriteInt32(value.Hour, buffer, D2, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar(':', buffer, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Hour, buffer, D2, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(':', buffer, encoding, ref bytesWritten)) { return false; }
 
-            if (!TryWriteInt32(value.Minute, buffer, D2, formattingData, ref bytesWritten)) { return false; }
-            if (!TryWriteChar(':', buffer, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Minute, buffer, D2, encoding, ref bytesWritten)) { return false; }
+            if (!TryWriteChar(':', buffer, encoding, ref bytesWritten)) { return false; }
 
-            if (!TryWriteInt32(value.Second, buffer, D2, formattingData, ref bytesWritten)) { return false; }
+            if (!TryWriteInt32(value.Second, buffer, D2, encoding, ref bytesWritten)) { return false; }
 
             // add optional fractional second only if needed...
             var rounded = new DateTimeOffset(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, TimeSpan.Zero);
@@ -204,20 +192,20 @@ namespace System.Text
 
             if (delta.Ticks != 0)
             {
-                if (!TryWriteChar('.', buffer, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteChar('.', buffer, encoding, ref bytesWritten)) { return false; }
                 var timeFrac = delta.Ticks * FractionalTimeScale / System.TimeSpan.TicksPerSecond;
-                if (!TryWriteInt64(timeFrac, buffer, D7, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteInt64(timeFrac, buffer, D7, encoding, ref bytesWritten)) { return false; }
             }
 
             if (isDateTime)
             {
-                if (!TryWriteChar('Z', buffer, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteChar('Z', buffer, encoding, ref bytesWritten)) { return false; }
             }
             else
             {
-                if (!TryWriteChar('+', buffer, formattingData, ref bytesWritten)) { return false; }
+                if (!TryWriteChar('+', buffer, encoding, ref bytesWritten)) { return false; }
                 int bytes;
-                if (!value.Offset.TryFormat(buffer.Slice(bytesWritten), t, formattingData, out bytes)) { return false; }
+                if (!value.Offset.TryFormat(buffer.Slice(bytesWritten), t, encoding, out bytes)) { return false; }
                 bytesWritten += bytes;
             }
 
@@ -266,12 +254,6 @@ namespace System.Text
             if (!TryWriteInt32(value.Second, buffer, D2, encoding, ref bytesWritten)) { return false; }
             if (!TryWriteString(" GMT", buffer, encoding, ref bytesWritten)) { return false; }
             return true;      
-        }
-
-        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData encoding, out int bytesWritten)
-        {
-            TextFormat parsedFormat = TextFormat.Parse(format);
-            return TryFormat(value, buffer, parsedFormat, encoding, out bytesWritten);
         }
 
         public static bool TryFormat(this TimeSpan value, Span<byte> buffer, TextFormat format, EncodingData encoding, out int bytesWritten)

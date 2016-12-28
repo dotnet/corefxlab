@@ -168,7 +168,7 @@ namespace System.Text.Primitives.Tests
                         for (int i = 0; i < LoadIterations; i++)
                         {
                             uint value;
-                            InternalParser.TryParseUInt32(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseUInt32(utf8ByteStar, 0, length, nf, fd, out value, out bytesConsumed);
                             DoNotIgnore(value, bytesConsumed);
                         }
                     }
@@ -198,7 +198,7 @@ namespace System.Text.Primitives.Tests
                         fixed (byte* utf8ByteStar = utf8ByteArray)
                         {
                             uint value;
-                            InternalParser.TryParseUInt32(utf8ByteStar, 0, utf8ByteArray.Length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseUInt32(utf8ByteStar, 0, utf8ByteArray.Length, nf, fd, out value, out bytesConsumed);
                             DoNotIgnore(value, bytesConsumed);
                         }
                     }
@@ -226,7 +226,7 @@ namespace System.Text.Primitives.Tests
                         for (int i = 0; i < LoadIterations; i++)
                         {
                             uint value;
-                            InternalParser.TryParseUInt32(utf8ByteSpan, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseUInt32(utf8ByteSpan, nf, fd, out value, out bytesConsumed);
                             DoNotIgnore(value, bytesConsumed);
                         }
                     }
@@ -255,7 +255,7 @@ namespace System.Text.Primitives.Tests
                     {
                         ReadOnlySpan<byte> utf8ByteSpan = byteSpanList[i % 10];
                         uint value;
-                        InternalParser.TryParseUInt32(utf8ByteSpan, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseUInt32(utf8ByteSpan, nf, fd, out value, out bytesConsumed);
                         DoNotIgnore(value, bytesConsumed);
                     }
                 }
