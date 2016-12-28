@@ -270,7 +270,7 @@ namespace System.Text.Internal
         }
         #endregion
 
-        public static bool TryParseBoolean(ReadOnlySpan<byte> text, EncodingData encoding, TextFormat format, out bool value, out int bytesConsumed)
+        public static bool TryParseBoolean(ReadOnlySpan<byte> text, TextFormat format, EncodingData encoding, out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;
             value = default(bool);
@@ -310,7 +310,7 @@ namespace System.Text.Internal
             return false;
         }
 
-        public static bool TryParseBoolean(byte[] text, int index, EncodingData encoding, TextFormat format,
+        public static bool TryParseBoolean(byte[] text, int index, TextFormat format, EncodingData encoding, 
             out bool value, out int bytesConsumed)
         {
             bytesConsumed = 0;

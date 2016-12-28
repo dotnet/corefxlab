@@ -8,7 +8,7 @@ namespace System.Text.Internal
 {
     public static partial class InternalParser
     {
-        public static bool TryParseDouble(byte[] text, int index, EncodingData encoding, TextFormat format,
+        public static bool TryParseDouble(byte[] text, int index, TextFormat format, EncodingData encoding, 
             out double value, out int bytesConsumed)
         {
             // Precondition replacement

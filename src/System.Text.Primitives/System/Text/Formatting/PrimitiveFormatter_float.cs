@@ -9,36 +9,24 @@ namespace System.Text
 {
     public static partial class PrimitiveFormatter
     {
-        public static bool TryFormat(this double value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
-        {
-            TextFormat parsedFormat = TextFormat.Parse(format);
-            return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
-        }
-
-        public static bool TryFormat(this double value, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this double value, Span<byte> buffer, TextFormat format, EncodingData encoding, out int bytesWritten)
         {
             if (format.IsDefault)
             {
                 format.Symbol = 'G';
             }
             Precondition.Require(format.Symbol == 'G');
-            return FloatFormatter.TryFormatNumber(value, false, buffer, format, formattingData, out bytesWritten);
+            return FloatFormatter.TryFormatNumber(value, false, buffer, format, encoding, out bytesWritten);
         }
 
-        public static bool TryFormat(this float value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
-        {
-            TextFormat parsedFormat = TextFormat.Parse(format);
-            return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
-        }
-
-        public static bool TryFormat(this float value, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int bytesWritten)
+        public static bool TryFormat(this float value, Span<byte> buffer, TextFormat format, EncodingData encoding, out int bytesWritten)
         {
             if (format.IsDefault)
             {
                 format.Symbol = 'G';
             }
             Precondition.Require(format.Symbol == 'G');
-            return FloatFormatter.TryFormatNumber(value, true, buffer, format, formattingData, out bytesWritten);
+            return FloatFormatter.TryFormatNumber(value, true, buffer, format, encoding, out bytesWritten);
         }
     }
 }
