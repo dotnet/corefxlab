@@ -77,7 +77,6 @@ namespace System.IO.Pipelines
                                 return -1;
                             }
 
-
                             following -= _vectorSpan;
                             index += _vectorSpan;
                             continue;
@@ -111,20 +110,8 @@ namespace System.IO.Pipelines
                     fixed (byte* pCurrentFixed = array.Array)
                     {
                         var pCurrent = pCurrentFixed + array.Offset + index;
-
-                        //var pEnd = pCurrent + Math.Min(following,  limit - bytesScanned);
-
                         var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + Math.Min(end.Index, index + Math.Min(following, limit - bytesScanned)) : pCurrent + Math.Min(following, limit - bytesScanned);
-
-                        //if (block == end.Segment)
-                        //{
-                        //    pEnd = pCurrentFixed + array.Offset + Math.Min(end.Index, index + limit - bytesScanned);
-                        //}
-                        //else {
-                        //    pEnd = pCurrent + Math.Min(following, limit - bytesScanned);
-                        //}
-
-
+                        
                         do
                         {
                             bytesScanned++;
