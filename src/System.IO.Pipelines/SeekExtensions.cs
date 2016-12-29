@@ -69,12 +69,15 @@ namespace System.IO.Pipelines
                                 bytesScanned = limit;
                                 return -1;
                             }
-                            else if (block == end.Segment && index + _vectorSpan >= end.Index)
+
+                            bytesScanned += _vectorSpan;
+
+                            if (block == end.Segment && index + _vectorSpan >= end.Index)
                             {
                                 return -1;
                             }
 
-                            bytesScanned += _vectorSpan;
+
                             following -= _vectorSpan;
                             index += _vectorSpan;
                             continue;
@@ -88,14 +91,16 @@ namespace System.IO.Pipelines
                             bytesScanned = limit;
                             return -1;
                         }
-                        else if (block == end.Segment && index + vectorBytesScanned > end.Index)
+
+                        if (block == end.Segment && index + firstEqualByteIndex >= end.Index)
                         {
                             // Ensure iterator is left at limit position
+                            bytesScanned += firstEqualByteIndex;
                             return -1;
                         }
-                        
-                        bytesScanned += vectorBytesScanned;
 
+
+                        bytesScanned += vectorBytesScanned;
                         result = new ReadCursor(block, index + firstEqualByteIndex);
                         return byte0;
                     }
@@ -107,7 +112,19 @@ namespace System.IO.Pipelines
                     {
                         var pCurrent = pCurrentFixed + array.Offset + index;
 
-                        var pEnd = pCurrent + Math.Min(following, limit - bytesScanned);
+                        //var pEnd = pCurrent + Math.Min(following,  limit - bytesScanned);
+
+                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + Math.Min(end.Index, index + Math.Min(following, limit - bytesScanned)) : pCurrent + Math.Min(following, limit - bytesScanned);
+
+                        //if (block == end.Segment)
+                        //{
+                        //    pEnd = pCurrentFixed + array.Offset + Math.Min(end.Index, index + limit - bytesScanned);
+                        //}
+                        //else {
+                        //    pEnd = pCurrent + Math.Min(following, limit - bytesScanned);
+                        //}
+
+
                         do
                         {
                             bytesScanned++;

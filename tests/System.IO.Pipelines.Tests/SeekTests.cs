@@ -129,7 +129,7 @@ namespace System.IO.Pipelines.Tests
             int bytesScanned;
             ReadCursor result;
             var end = new ReadCursor(cursors.Item2.Segment, input.Length + limit);
-            var returnValue = SeekExtensions.Seek(cursors.Item1, end, out result, (byte)seek, out bytesScanned,limit);
+            var returnValue = SeekExtensions.Seek(cursors.Item1, end, out result, (byte)seek, out bytesScanned);
 
             // Assert
             Assert.Equal(expectedBytesScanned, bytesScanned);
