@@ -119,6 +119,31 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Theory]
+        [MemberData(nameof(SeekByteLimitData))]
+        public void TestSeekByteLimitWithEndCursor(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
+        {
+            // Arrange
+            var cursors = CreateBlocks(input);
+
+            // Act
+            int bytesScanned;
+            ReadCursor result;
+            var end = new ReadCursor(cursors.Item2.Segment, input.Length + limit);
+            var returnValue = SeekExtensions.Seek(cursors.Item1, end, out result, (byte)seek, out bytesScanned,limit);
+
+            // Assert
+            Assert.Equal(expectedBytesScanned, bytesScanned);
+            Assert.Equal(expectedReturnValue, returnValue);
+
+            if (expectedReturnValue != -1)
+            {
+                Assert.Same(cursors.Item1.Segment, result.Segment);
+                Assert.Equal(result.Segment.Start + input.IndexOf(seek), result.Index);
+            }
+        }
+
+
+        [Theory]
         [MemberData(nameof(SeekIteratorLimitData))]
         public void TestSeekIteratorLimitWithinSameBlock(string input, char seek, char limitAt, int expectedReturnValue)
         {
@@ -198,7 +223,7 @@ namespace System.IO.Pipelines.Tests
 
                 for (int j = 0; j < length; j++)
                 {
-                    chars[segmentOffset + j] = (byte) s[j];
+                    chars[segmentOffset + j] = (byte)s[j];
                 }
 
                 // Create a segment that has offset relative to the OwnedMemory and OwnedMemory itself has offset relative to array

@@ -36,7 +36,7 @@ namespace System.IO.Pipelines
             {
                 while (following == 0)
                 {
-                    if (bytesScanned >= limit || wasLastBlock)
+                    if (bytesScanned >= limit || (block == end.Segment && index >= end.Index) || wasLastBlock)
                     {
                         return -1;
                     }
@@ -69,6 +69,10 @@ namespace System.IO.Pipelines
                                 bytesScanned = limit;
                                 return -1;
                             }
+                            else if (block == end.Segment && index + _vectorSpan >= end.Index)
+                            {
+                                return -1;
+                            }
 
                             bytesScanned += _vectorSpan;
                             following -= _vectorSpan;
@@ -84,7 +88,12 @@ namespace System.IO.Pipelines
                             bytesScanned = limit;
                             return -1;
                         }
-
+                        else if (block == end.Segment && index + vectorBytesScanned > end.Index)
+                        {
+                            // Ensure iterator is left at limit position
+                            return -1;
+                        }
+                        
                         bytesScanned += vectorBytesScanned;
 
                         result = new ReadCursor(block, index + firstEqualByteIndex);
