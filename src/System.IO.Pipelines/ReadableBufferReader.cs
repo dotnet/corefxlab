@@ -41,6 +41,15 @@ namespace System.IO.Pipelines
 
         public int Index => _overallIndex;
 
+        public ReadCursor Cursor
+        {
+            get
+            {
+                var currentSegment = _enumerator.CurrentSegment;
+                return new ReadCursor(currentSegment, currentSegment.Start + _index);
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
         {

@@ -44,7 +44,6 @@ namespace System.IO.Pipelines
         private readonly TaskCompletionSource<object> _startingReadingTcs = new TaskCompletionSource<object>();
 #if DEBUG
         private string _consumingLocation;
-        private object _producingLoc;
 #endif
         /// <summary>
         /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
@@ -229,7 +228,6 @@ namespace System.IO.Pipelines
             {
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotProducingToComplete);
             }
-            _producingLoc = null;
 
             if (_writingHead == null)
             {
@@ -551,7 +549,7 @@ namespace System.IO.Pipelines
                 // Observe any exceptions if the reading task is completed
                 Reading.GetAwaiter().GetResult();
             }
-
+;
             return new ReadResult(Read(), readingIsCancelled, readingIsCompleted);
         }
 
