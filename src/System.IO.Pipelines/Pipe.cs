@@ -356,12 +356,6 @@ namespace System.IO.Pipelines
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
 
-            //var c = new ReadableBuffer(new ReadCursor(_readHead), consumed);
-            //if (c.Length != 0)
-            //{
-            //    Console.WriteLine("Consumed "+c);
-            //}
-
             if (!consumed.IsDefault)
             {
                 returnStart = _readHead;
@@ -549,7 +543,7 @@ namespace System.IO.Pipelines
                 // Observe any exceptions if the reading task is completed
                 Reading.GetAwaiter().GetResult();
             }
-;
+
             return new ReadResult(Read(), readingIsCancelled, readingIsCompleted);
         }
 
