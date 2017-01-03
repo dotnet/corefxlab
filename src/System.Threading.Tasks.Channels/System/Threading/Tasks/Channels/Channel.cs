@@ -48,58 +48,6 @@ namespace System.Threading.Tasks.Channels
         /// <returns>The new channel.</returns>
         public static IChannel<T> CreateUnbuffered<T>() => new UnbufferedChannel<T>();
 
-        /// <summary>Creates a channel for reading <typeparamref name="T"/> instances from the source stream.</summary>
-        /// <typeparam name="T">Specifies the type of data to be read.  This must be an unmanaged/primitive type.</typeparam>
-        /// <param name="source">The source stream from which to read data.</param>
-        /// <returns>A channel that reads elements from the source stream.</returns>
-        public static IReadableChannel<T> ReadFromStream<T>(Stream source)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-            if (!source.CanRead)
-                throw new ArgumentException(Properties.Resources.ArgumentException_SourceStreamNotReadable, nameof(source));
-
-            return new DeserializationChannel<T>(source);
-        }
-
-        /// <summary>Creates a channel for writing <typeparamref name="T"/> instances to the destination stream.</summary>
-        /// <typeparam name="T">Specifies the type of data to be written.  This must be an unmanaged/primitive type.</typeparam>
-        /// <param name="destination">The destination stream to which to write data.</param>
-        /// <returns>A channel that write elements to the destination stream.</returns>
-        public static IWritableChannel<T> WriteToStream<T>(Stream destination)
-        {
-            if (destination == null)
-                throw new ArgumentNullException(nameof(destination));
-            if (!destination.CanWrite)
-                throw new ArgumentException(Properties.Resources.ArgumentException_DestinationStreamNotWritable, nameof(destination));
-        
-            return new SerializationChannel<T>(destination);
-        }
-
-        /// <summary>Creates a channel for the value in a task.</summary>
-        /// <typeparam name="T">Specifies the type of the task's result.</typeparam>
-        /// <param name="source">The task.</param>
-        /// <returns>A channel that will contain the result from the task.</returns>
-        public static IReadableChannel<T> CreateFromTask<T>(Task<T> source)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            return new TaskChannel<T>(source);
-        }
-
-        /// <summary>Create a channel that consumes data from the source enumerable.</summary>
-        /// <typeparam name="T">Specifies the type of data in the enumerable.</typeparam>
-        /// <param name="source">The source enumerable from which to read data.</param>
-        /// <returns>A channel that reads data from the source enumerable.</returns>
-        public static IReadableChannel<T> CreateFromEnumerable<T>(IEnumerable<T> source)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            return new EnumerableChannel<T>(source);
-        }
-
         /// <summary>Creates an observable for a channel.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <param name="source">The channel to be treated as an observable.</param>
