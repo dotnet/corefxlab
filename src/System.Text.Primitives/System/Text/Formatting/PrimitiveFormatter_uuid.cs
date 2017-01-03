@@ -9,12 +9,6 @@ namespace System.Text
 {
     public static partial class PrimitiveFormatter
     {
-        public static bool TryFormat(this Guid value, Span<byte> buffer, ReadOnlySpan<char> format, EncodingData formattingData, out int bytesWritten)
-        {
-            TextFormat parsedFormat = TextFormat.Parse(format);
-            return TryFormat(value, buffer, parsedFormat, formattingData, out bytesWritten);
-        }
-
         public static bool TryFormat(this Guid value, Span<byte> buffer, TextFormat format, EncodingData encoding, out int bytesWritten)
         {
             if (format.IsDefault)
@@ -110,10 +104,10 @@ namespace System.Text
         // the following two helpers are more compact APIs for formatting.
         // the public APis cannot be like this because we cannot trust them to always do the right thing with bytesWritten
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteByte(byte b, Span<byte> buffer, TextFormat byteFormat, EncodingData formattingData, ref int bytesWritten)
+        static bool TryWriteByte(byte b, Span<byte> buffer, TextFormat byteFormat, EncodingData encoding, ref int bytesWritten)
         {
             int written;
-            if (!b.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, formattingData))
+            if (!b.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, encoding))
             {
                 bytesWritten = 0;
                 return false;
@@ -123,10 +117,10 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteInt32(int i, Span<byte> buffer, TextFormat byteFormat, EncodingData formattingData, ref int bytesWritten)
+        static bool TryWriteInt32(int i, Span<byte> buffer, TextFormat byteFormat, EncodingData encoding, ref int bytesWritten)
         {
             int written;
-            if (!i.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, formattingData))
+            if (!i.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, encoding))
             {
                 bytesWritten = 0;
                 return false;
@@ -136,10 +130,10 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteInt64(long i, Span<byte> buffer, TextFormat byteFormat, EncodingData formattingData, ref int bytesWritten)
+        static bool TryWriteInt64(long i, Span<byte> buffer, TextFormat byteFormat, EncodingData encoding, ref int bytesWritten)
         {
             int written;
-            if (!i.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, formattingData))
+            if (!i.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, encoding))
             {
                 bytesWritten = 0;
                 return false;

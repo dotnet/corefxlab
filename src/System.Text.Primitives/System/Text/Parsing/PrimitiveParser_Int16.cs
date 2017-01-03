@@ -10,7 +10,7 @@ namespace System.Text
     {
         public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
         {
-            return Internal.InternalParser.TryParseInt16(text, encoding, format, out value, out bytesConsumed);
+            return Internal.InternalParser.TryParseInt16(text, format, encoding, out value, out bytesConsumed);
         }
     }
 }
