@@ -252,12 +252,6 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>
         private static Exception CreateInvalidCompletionException() => new ClosedChannelException().InitializeStackTrace();
 
-        /// <summary>Exception thrown when a channel is used incorrectly after it's been closed.</summary>
-        private sealed class ClosedChannelException : InvalidOperationException
-        {
-            public ClosedChannelException() : base(Properties.Resources.ClosedChannelException_DefaultMessage) { }
-        }
-
         /// <summary>Initializes the stack trace of an Exception by throwing and catching it.</summary>
         /// <param name="exc">The exception to initialize.</param>
         /// <returns>The same exception.</returns>
