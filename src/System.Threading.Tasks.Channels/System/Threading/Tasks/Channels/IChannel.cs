@@ -36,7 +36,7 @@ namespace System.Threading.Tasks.Channels
         /// A task representing the asynchronous wait.  The task will complete with a result of true
         /// when the channel can be read from (however, concurrent access could change that status).
         /// The task will complete with a result of false when the channel is closed and emptied and won't
-       ///  be producing any more readable data.
+        ///  be producing any more readable data.
         /// </returns>
         Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken));
 
