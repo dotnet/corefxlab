@@ -23,6 +23,9 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Tasks waiting for data to be available to write.</summary>
         private readonly Dequeue<ReaderInteractor<bool>> _waitingWriters = new Dequeue<ReaderInteractor<bool>>();
 
+        /// <summary>Initialize the channel.</summary>
+        internal UnbufferedChannel() { }
+
         /// <summary>Gets an object used to synchronize all state on the instance.</summary>
         private object SyncObj => _completion;
 

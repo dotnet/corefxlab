@@ -5,14 +5,17 @@
 namespace System.Threading.Tasks.Channels
 {
     /// <summary>Provides static methods for creating channels.</summary>
-    public static partial class Channel
+    public static class Channel
     {
         /// <summary>Creates an unbounded channel usable by any number of readers and writers concurrently.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <returns>The created channel.</returns>
-        public static IChannel<T> Create<T>(bool singleReaderWriter = false) => singleReaderWriter ?
-            (IChannel<T>)new SpscUnboundedChannel<T>() :
-            new UnboundedChannel<T>();
+        public static IChannel<T> Create<T>() => new UnboundedChannel<T>();
+
+        /// <summary>Creates an unbounded channel usable by a single producer and a single consumer at a time.</summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static IChannel<T> CreateSpsc<T>() => new SingleProducerSingleConsumerUnboundedChannel<T>();
 
         /// <summary>Creates a channel that doesn't buffer any items.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>

@@ -9,12 +9,9 @@ namespace System.Threading.Tasks.Channels.Tests
 {
     public class SingleReaderWriterUnboundedChannelTests : UnboundedChannelTests
     {
-        protected override IChannel<int> CreateChannel()
-        {
-            return Channel.Create<int>(singleReaderWriter: true);
-        }
+        protected override IChannel<int> CreateChannel() => Channel.CreateSpsc<int>();
 
-        protected override bool RequiresSingleReaderWriter { get { return true; } }
+        protected override bool RequiresSingleReaderWriter => true;
 
         [Fact]
         public void ValidateInternalDebuggerAttributes()
@@ -79,10 +76,7 @@ namespace System.Threading.Tasks.Channels.Tests
 
     public class MultiReaderWriterUnboundedChannelTests : UnboundedChannelTests
     {
-        protected override IChannel<int> CreateChannel()
-        {
-            return Channel.Create<int>(singleReaderWriter: false);
-        }
+        protected override IChannel<int> CreateChannel() => Channel.Create<int>();
     }
 
     public abstract class UnboundedChannelTests : ChannelTestBase

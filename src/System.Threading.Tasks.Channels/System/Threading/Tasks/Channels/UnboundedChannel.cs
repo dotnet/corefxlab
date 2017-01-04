@@ -23,6 +23,9 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Set to non-null once Complete has been called.</summary>
         private Exception _doneWriting;
 
+        /// <summary>Initialize the channel.</summary>
+        internal UnboundedChannel() { }
+
         /// <summary>Gets the object used to synchronize access to all state on this instance.</summary>
         private object SyncObj => _items;
 

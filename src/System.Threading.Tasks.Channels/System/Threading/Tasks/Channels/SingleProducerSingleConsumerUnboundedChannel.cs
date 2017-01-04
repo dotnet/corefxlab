@@ -8,10 +8,13 @@ using System.Diagnostics;
 
 namespace System.Threading.Tasks.Channels
 {
-    /// <summary>Provides a buffered channel of unbounded capacity.</summary>
+    /// <summary>
+    /// Provides a buffered channel of unbounded capacity for use by only
+    /// a single producer and a single consumer at a time.
+    /// </summary>
     [DebuggerDisplay("Items={ItemsCountForDebugger}")]
     [DebuggerTypeProxy(typeof(DebugEnumeratorDebugView<>))]
-    internal sealed class SpscUnboundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
+    internal sealed class SingleProducerSingleConsumerUnboundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
     {
         /// <summary>Task that indicates the channel has completed.</summary>
         private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -20,6 +23,9 @@ namespace System.Threading.Tasks.Channels
         private volatile Exception _doneWriting;
         private ReaderInteractor<T> _blockedReader;
         private ReaderInteractor<bool> _waitingReader;
+
+        /// <summary>Initialize the channel.</summary>
+        internal SingleProducerSingleConsumerUnboundedChannel() { }
 
         private object SyncObj => _items;
 
