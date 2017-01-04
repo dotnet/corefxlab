@@ -29,11 +29,17 @@ namespace System.Threading.Tasks.Channels
         {
             OperationCanceledException oce = error as OperationCanceledException;
             if (oce != null)
+            {
                 tcs.TrySetCanceled(oce.CancellationToken);
+            }
             else if (error != null && error != DoneWritingSentinel)
+            {
                 tcs.TrySetException(error);
+            }
             else
+            {
                 tcs.TrySetResult(default(VoidResult));
+            }
         }
 
         /// <summary>
@@ -50,14 +56,16 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Removes all waiters from the queue, completing each.</summary>
         /// <param name="waiters">The queue of waiters to complete.</param>
         /// <param name="result">The value with which to complete each waiter.</param>
-        internal static void WakeUpWaiters(Dequeue<Channel.Reader<bool>> waiters, bool result)
+        internal static void WakeUpWaiters(Dequeue<ReaderInteractor<bool>> waiters, bool result)
         {
             if (waiters.Count > 0)
-                ChannelUtilities.WakeUpWaitersCore(waiters, result); // separated out to streamline inlining
+            {
+                WakeUpWaitersCore(waiters, result); // separated out to streamline inlining
+            }
         }
 
         /// <summary>Core of ChannelUtilities.WakeUpWaiters, separated out for performance due to inlining.</summary>
-        internal static void WakeUpWaitersCore(Dequeue<Channel.Reader<bool>> waiters, bool result)
+        internal static void WakeUpWaitersCore(Dequeue<ReaderInteractor<bool>> waiters, bool result)
         {
             while (waiters.Count > 0)
             {

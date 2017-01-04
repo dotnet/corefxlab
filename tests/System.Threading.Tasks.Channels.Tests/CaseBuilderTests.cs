@@ -10,7 +10,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void CaseRead_Sync_InvalidArguments_ThrowsArgumentException()
         {
-            Channel.CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, (Action<int>)null));
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, i => { }));
             Assert.Throws<ArgumentNullException>("action", () => cb.CaseRead<int>(Channel.Create<int>(), (Action<int>)null));
@@ -19,7 +19,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void CaseRead_Async_InvalidArguments_ThrowsArgumentException()
         {
-            Channel.CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, (Func<int, Task>)null));
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, i => Task.CompletedTask));
             Assert.Throws<ArgumentNullException>("func", () => cb.CaseRead<int>(Channel.Create<int>(), (Func<int, Task>)null));
@@ -28,7 +28,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void CaseWrite_Sync_InvalidArguments_ThrowsArgumentException()
         {
-            Channel.CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, (Action)null));
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, (Action)delegate { }));
             Assert.Throws<ArgumentNullException>("action", () => cb.CaseWrite<int>(Channel.Create<int>(), 0, (Action)null));
@@ -37,7 +37,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void CaseWrite_Async_InvalidArguments_ThrowsArgumentException()
         {
-            Channel.CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, (Func<Task>)null));
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, delegate { return Task.CompletedTask; }));
             Assert.Throws<ArgumentNullException>("func", () => cb.CaseWrite<int>(Channel.Create<int>(), 0, (Func<Task>)null));
@@ -46,25 +46,25 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void CaseDefault_Sync_InvalidAction_ThrowsException()
         {
-            Channel.CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => { });
             Assert.Throws<ArgumentNullException>(() => builder1.CaseDefault((Action)null));
         }
         [Fact]
         public void CaseDefault_Async_InvalidAction_ThrowsException()
         {
-            Channel.CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => Task.CompletedTask);
+            CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => Task.CompletedTask);
             Assert.Throws<ArgumentNullException>(() => builder1.CaseDefault((Func<Task>)null));
         }
 
         [Fact]
         public void CaseReadWrite_Sync_CallMultipleTimes_IdempotentResult()
         {
-            Channel.CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => { });
             Assert.Same(builder1, builder1.CaseRead(Channel.Create<int>(), i => { }));
             Assert.Same(builder1, builder1.CaseWrite(Channel.Create<string>(), "", () => { }));
             Assert.Same(builder1, builder1.CaseDefault(() => { }));
 
-            Channel.CaseBuilder builder2 = Channel.CaseWrite(Channel.Create<int>(), 0, () => { });
+            CaseBuilder builder2 = Channel.CaseWrite(Channel.Create<int>(), 0, () => { });
             Assert.Same(builder2, builder2.CaseRead(Channel.Create<int>(), i => { }));
             Assert.Same(builder2, builder2.CaseWrite(Channel.Create<string>(), "", () => { }));
             Assert.Same(builder2, builder2.CaseDefault(() => { }));
@@ -73,12 +73,12 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void CaseReadWrite_Async_CallMultipleTimes_IdempotentResult()
         {
-            Channel.CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => Task.CompletedTask);
+            CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => Task.CompletedTask);
             Assert.Same(builder1, builder1.CaseRead(Channel.Create<int>(), i => Task.CompletedTask));
             Assert.Same(builder1, builder1.CaseWrite(Channel.Create<string>(), "", () => Task.CompletedTask));
             Assert.Same(builder1, builder1.CaseDefault(() => Task.CompletedTask));
 
-            Channel.CaseBuilder builder2 = Channel.CaseWrite(Channel.Create<int>(), 0, () => Task.CompletedTask);
+            CaseBuilder builder2 = Channel.CaseWrite(Channel.Create<int>(), 0, () => Task.CompletedTask);
             Assert.Same(builder2, builder2.CaseRead(Channel.Create<int>(), i => Task.CompletedTask));
             Assert.Same(builder2, builder2.CaseWrite(Channel.Create<string>(), "", () => Task.CompletedTask));
             Assert.Same(builder2, builder2.CaseDefault(() => Task.CompletedTask));
@@ -87,7 +87,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void CaseDefault_AlreadyExists_ThrowsException()
         {
-            Channel.CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { }).CaseDefault(() => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { }).CaseDefault(() => { });
             Assert.Throws<InvalidOperationException>(() => cb.CaseDefault(() => { }));
             Assert.Throws<InvalidOperationException>(() => cb.CaseDefault(() => Task.CompletedTask));
         }
@@ -548,7 +548,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void SelectUntilAsync_InvalidArguments_ThrowsExceptions()
         {
-            Channel.CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
             Assert.Throws<ArgumentNullException>(() => { cb.SelectUntilAsync(null); });
         }
 
