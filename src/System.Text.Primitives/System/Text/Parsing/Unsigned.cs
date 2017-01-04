@@ -16,41 +16,42 @@ namespace System.Text
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (format.IsHexadecimal)
+            if (encoding.IsInvariantUtf8)
             {
-                if (encoding.IsInvariantUtf8)
+                if (format.IsHexadecimal)
                 {
                     return InvariantUtf8.Hex.TryParseByte(text, out value, out bytesConsumed);
                 }
-                else if (encoding.IsInvariantUtf16)
-                {
-                    ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
-                    int charsConsumed;
-                    bool result = InvariantUtf16.Hex.TryParseByte(utf16Text, out value, out charsConsumed);
-                    bytesConsumed = charsConsumed * sizeof(char);
-                    return result;
-                }
                 else
                 {
-                    throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
+                    return InvariantUtf8.TryParseByte(text, out value, out bytesConsumed);
                 }
-            }
-            else if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
-            {
-                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
-            }
-
-            if (encoding.IsInvariantUtf8)
-            {
-                return InvariantUtf8.TryParseByte(text, out value, out bytesConsumed);
             }
             else if (encoding.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
                 int charsConsumed;
-                bool result = InvariantUtf16.TryParseByte(utf16Text, out value, out charsConsumed);
+                bool result;
+                if (format.IsHexadecimal)
+                {
+                    result = InvariantUtf16.Hex.TryParseByte(utf16Text, out value, out charsConsumed);
+                }
+                else
+                {
+                    result = InvariantUtf16.TryParseByte(utf16Text, out value, out charsConsumed);
+                }
                 bytesConsumed = charsConsumed * sizeof(char);
                 return result;
+            }
+
+            if (format.IsHexadecimal)
+            {
+                throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
+            }
+
+            if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
+            {
+                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
             uint nextSymbol;
@@ -106,41 +107,42 @@ namespace System.Text
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (format.IsHexadecimal)
+            if (encoding.IsInvariantUtf8)
             {
-                if (encoding.IsInvariantUtf8)
+                if (format.IsHexadecimal)
                 {
                     return InvariantUtf8.Hex.TryParseUInt16(text, out value, out bytesConsumed);
                 }
-                else if (encoding.IsInvariantUtf16)
-                {
-                    ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
-                    int charsConsumed;
-                    bool result = InvariantUtf16.Hex.TryParseUInt16(utf16Text, out value, out charsConsumed);
-                    bytesConsumed = charsConsumed * sizeof(char);
-                    return result;
-                }
                 else
                 {
-                    throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
+                    return InvariantUtf8.TryParseUInt16(text, out value, out bytesConsumed);
                 }
-            }
-            else if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
-            {
-                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
-            }
-
-            if (encoding.IsInvariantUtf8)
-            {
-                return InvariantUtf8.TryParseUInt16(text, out value, out bytesConsumed);
             }
             else if (encoding.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
                 int charsConsumed;
-                bool result = InvariantUtf16.TryParseUInt16(utf16Text, out value, out charsConsumed);
+                bool result;
+                if (format.IsHexadecimal)
+                {
+                    result = InvariantUtf16.Hex.TryParseUInt16(utf16Text, out value, out charsConsumed);
+                }
+                else
+                {
+                    result = InvariantUtf16.TryParseUInt16(utf16Text, out value, out charsConsumed);
+                }
                 bytesConsumed = charsConsumed * sizeof(char);
                 return result;
+            }
+
+            if (format.IsHexadecimal)
+            {
+                throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
+            }
+
+            if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
+            {
+                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
             uint nextSymbol;
@@ -196,41 +198,42 @@ namespace System.Text
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (format.IsHexadecimal)
+            if (encoding.IsInvariantUtf8)
             {
-                if (encoding.IsInvariantUtf8)
+                if (format.IsHexadecimal)
                 {
                     return InvariantUtf8.Hex.TryParseUInt32(text, out value, out bytesConsumed);
                 }
-                else if (encoding.IsInvariantUtf16)
-                {
-                    ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
-                    int charsConsumed;
-                    bool result = InvariantUtf16.Hex.TryParseUInt32(utf16Text, out value, out charsConsumed);
-                    bytesConsumed = charsConsumed * sizeof(char);
-                    return result;
-                }
                 else
                 {
-                    throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
+                    return InvariantUtf8.TryParseUInt32(text, out value, out bytesConsumed);
                 }
-            }
-            else if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
-            {
-                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
-            }
-
-            if (encoding.IsInvariantUtf8)
-            {
-                return InvariantUtf8.TryParseUInt32(text, out value, out bytesConsumed);
             }
             else if (encoding.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
                 int charsConsumed;
-                bool result = InvariantUtf16.TryParseUInt32(utf16Text, out value, out charsConsumed);
+                bool result;
+                if (format.IsHexadecimal)
+                {
+                    result = InvariantUtf16.Hex.TryParseUInt32(utf16Text, out value, out charsConsumed);
+                }
+                else
+                {
+                    result = InvariantUtf16.TryParseUInt32(utf16Text, out value, out charsConsumed);
+                }
                 bytesConsumed = charsConsumed * sizeof(char);
                 return result;
+            }
+
+            if (format.IsHexadecimal)
+            {
+                throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
+            }
+
+            if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
+            {
+                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
             uint nextSymbol;
@@ -286,41 +289,42 @@ namespace System.Text
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (format.IsHexadecimal)
+            if (encoding.IsInvariantUtf8)
             {
-                if (encoding.IsInvariantUtf8)
+                if (format.IsHexadecimal)
                 {
                     return InvariantUtf8.Hex.TryParseUInt64(text, out value, out bytesConsumed);
                 }
-                else if (encoding.IsInvariantUtf16)
-                {
-                    ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
-                    int charsConsumed;
-                    bool result = InvariantUtf16.Hex.TryParseUInt64(utf16Text, out value, out charsConsumed);
-                    bytesConsumed = charsConsumed * sizeof(char);
-                    return result;
-                }
                 else
                 {
-                    throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
+                    return InvariantUtf8.TryParseUInt64(text, out value, out bytesConsumed);
                 }
-            }
-            else if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
-            {
-                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
-            }
-
-            if (encoding.IsInvariantUtf8)
-            {
-                return InvariantUtf8.TryParseUInt64(text, out value, out bytesConsumed);
             }
             else if (encoding.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
                 int charsConsumed;
-                bool result = InvariantUtf16.TryParseUInt64(utf16Text, out value, out charsConsumed);
+                bool result;
+                if (format.IsHexadecimal)
+                {
+                    result = InvariantUtf16.Hex.TryParseUInt64(utf16Text, out value, out charsConsumed);
+                }
+                else
+                {
+                    result = InvariantUtf16.TryParseUInt64(utf16Text, out value, out charsConsumed);
+                }
                 bytesConsumed = charsConsumed * sizeof(char);
                 return result;
+            }
+
+            if (format.IsHexadecimal)
+            {
+                throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
+            }
+
+            if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
+            {
+                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
             }
 
             uint nextSymbol;
