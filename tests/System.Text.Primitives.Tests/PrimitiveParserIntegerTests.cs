@@ -156,11 +156,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            // result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'D');
-            
-            result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'D');            
+            result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -187,13 +183,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseByte(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'D');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseByte(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.TryParseByte(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -236,11 +229,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
-           
-            result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'X');
+            result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -267,13 +256,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseByte(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseByte(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.Hex.TryParseByte(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -320,11 +306,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            // result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'D');
-            
-            result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'D');            
+            result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -351,13 +333,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseUInt16(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'D');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseUInt16(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.TryParseUInt16(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -400,11 +379,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
-           
-            result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'X');
+            result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -431,13 +406,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseUInt16(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseUInt16(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.Hex.TryParseUInt16(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -484,11 +456,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            // result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'D');
-            
-            result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'D');            
+            result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -515,13 +483,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseUInt32(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'D');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseUInt32(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.TryParseUInt32(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -564,11 +529,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
-           
-            result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'X');
+            result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -595,13 +556,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseUInt32(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseUInt32(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.Hex.TryParseUInt32(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -648,11 +606,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            // result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'D');
-            
-            result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'D');            
+            result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -679,13 +633,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseUInt64(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'D');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseUInt64(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.TryParseUInt64(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -728,11 +679,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
-           
-            result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'X');
+            result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -759,13 +706,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseUInt64(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseUInt64(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.Hex.TryParseUInt64(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -814,11 +758,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'D');
-            
-            result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'D');
+            result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -845,13 +785,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseSByte(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseSByte(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.TryParseSByte(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -894,7 +831,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseSByte(utf8Span.Slice(index), out parsedValue, out consumed, s_thaiEncoding, 'D');
+            result = PrimitiveParser.TryParseSByte(utf8Span.Slice(index), out parsedValue, out consumed, s_thaiEncoding, 'G');
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -921,11 +858,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
-            
-            result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'X');
+            result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -952,13 +885,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseSByte(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseSByte(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.Hex.TryParseSByte(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -1007,11 +937,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'D');
-            
-            result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'D');
+            result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1038,13 +964,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseInt16(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseInt16(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.TryParseInt16(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -1087,7 +1010,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt16(utf8Span.Slice(index), out parsedValue, out consumed, s_thaiEncoding, 'D');
+            result = PrimitiveParser.TryParseInt16(utf8Span.Slice(index), out parsedValue, out consumed, s_thaiEncoding, 'G');
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1114,11 +1037,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
-            
-            result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'X');
+            result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1145,13 +1064,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseInt16(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseInt16(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.Hex.TryParseInt16(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -1200,11 +1116,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'D');
-            
-            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'D');
+            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1231,13 +1143,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseInt32(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseInt32(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.TryParseInt32(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -1280,7 +1189,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt32(utf8Span.Slice(index), out parsedValue, out consumed, s_thaiEncoding, 'D');
+            result = PrimitiveParser.TryParseInt32(utf8Span.Slice(index), out parsedValue, out consumed, s_thaiEncoding, 'G');
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1307,11 +1216,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
-            
-            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'X');
+            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1338,13 +1243,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseInt32(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseInt32(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.Hex.TryParseInt32(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -1393,11 +1295,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'D');
-            
-            result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'D');
+            result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1424,13 +1322,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseInt64(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseInt64(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.TryParseInt64(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);
@@ -1473,7 +1368,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt64(utf8Span.Slice(index), out parsedValue, out consumed, s_thaiEncoding, 'D');
+            result = PrimitiveParser.TryParseInt64(utf8Span.Slice(index), out parsedValue, out consumed, s_thaiEncoding, 'G');
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1500,11 +1395,7 @@ namespace System.Text.Primitives.Tests
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf8.
-            // When this is implemented, switch to using this line
-            //result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
-            
-            result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, s_utf8Encoding, 'X');
+            result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'X');
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1531,13 +1422,10 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedConsumed, consumed);
             }
 
-            // TODO: EncodingData static constructor does not currently generate the _parsingTrie for EncodingData.InvariantUtf16.
-            // When this is implemented, uncomment this test
-
-            //result = PrimitiveParser.TryParseInt64(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
-            //Assert.Equal(expectSuccess, result);
-            //Assert.Equal(expectedValue, parsedValue);
-            //Assert.Equal(expectedConsumed * sizeof(char), consumed);
+            result = PrimitiveParser.TryParseInt64(utf16ByteSpan, out parsedValue, out consumed, EncodingData.InvariantUtf16, 'X');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed * sizeof(char), consumed);
 
             result = PrimitiveParser.InvariantUtf16.Hex.TryParseInt64(utf16CharSpan, out parsedValue);
             Assert.Equal(expectSuccess, result);

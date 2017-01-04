@@ -11,6 +11,11 @@ namespace System.Text
     {
         public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
         {
+            if (format.HasPrecision)
+            {
+                throw new NotImplementedException("Format with precision not supported.");
+            }
+
             if (format.IsHexadecimal)
             {
                 if (encoding.IsInvariantUtf8)
@@ -27,12 +32,25 @@ namespace System.Text
                 }
                 else
                 {
-                    // TODO: EncodingData.InvariantUtf8 and EncodingData.InvariantUtf16 don't work for parsing right now
-                    // because their parsing trees are undefined. A custom EncodingData with a manually-created parsing
-                    // tree must be used instead. Default to InvariantUtf8 parsing for now, but after autogeneration of
-                    // parsing trees is implemented, this should return false.
-                    return InvariantUtf8.Hex.TryParseByte(text, out value, out bytesConsumed);
+                    throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
                 }
+            }
+            else if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
+            {
+                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
+            }
+
+            if (encoding.IsInvariantUtf8)
+            {
+                return InvariantUtf8.TryParseByte(text, out value, out bytesConsumed);
+            }
+            else if (encoding.IsInvariantUtf16)
+            {
+                ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
+                int charsConsumed;
+                bool result = InvariantUtf16.TryParseByte(utf16Text, out value, out charsConsumed);
+                bytesConsumed = charsConsumed * sizeof(char);
+                return result;
             }
 
             uint nextSymbol;
@@ -83,6 +101,11 @@ namespace System.Text
         }
         public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
         {
+            if (format.HasPrecision)
+            {
+                throw new NotImplementedException("Format with precision not supported.");
+            }
+
             if (format.IsHexadecimal)
             {
                 if (encoding.IsInvariantUtf8)
@@ -99,12 +122,25 @@ namespace System.Text
                 }
                 else
                 {
-                    // TODO: EncodingData.InvariantUtf8 and EncodingData.InvariantUtf16 don't work for parsing right now
-                    // because their parsing trees are undefined. A custom EncodingData with a manually-created parsing
-                    // tree must be used instead. Default to InvariantUtf8 parsing for now, but after autogeneration of
-                    // parsing trees is implemented, this should return false.
-                    return InvariantUtf8.Hex.TryParseUInt16(text, out value, out bytesConsumed);
+                    throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
                 }
+            }
+            else if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
+            {
+                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
+            }
+
+            if (encoding.IsInvariantUtf8)
+            {
+                return InvariantUtf8.TryParseUInt16(text, out value, out bytesConsumed);
+            }
+            else if (encoding.IsInvariantUtf16)
+            {
+                ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
+                int charsConsumed;
+                bool result = InvariantUtf16.TryParseUInt16(utf16Text, out value, out charsConsumed);
+                bytesConsumed = charsConsumed * sizeof(char);
+                return result;
             }
 
             uint nextSymbol;
@@ -155,6 +191,11 @@ namespace System.Text
         }
         public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
         {
+            if (format.HasPrecision)
+            {
+                throw new NotImplementedException("Format with precision not supported.");
+            }
+
             if (format.IsHexadecimal)
             {
                 if (encoding.IsInvariantUtf8)
@@ -171,12 +212,25 @@ namespace System.Text
                 }
                 else
                 {
-                    // TODO: EncodingData.InvariantUtf8 and EncodingData.InvariantUtf16 don't work for parsing right now
-                    // because their parsing trees are undefined. A custom EncodingData with a manually-created parsing
-                    // tree must be used instead. Default to InvariantUtf8 parsing for now, but after autogeneration of
-                    // parsing trees is implemented, this should return false.
-                    return InvariantUtf8.Hex.TryParseUInt32(text, out value, out bytesConsumed);
+                    throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
                 }
+            }
+            else if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
+            {
+                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
+            }
+
+            if (encoding.IsInvariantUtf8)
+            {
+                return InvariantUtf8.TryParseUInt32(text, out value, out bytesConsumed);
+            }
+            else if (encoding.IsInvariantUtf16)
+            {
+                ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
+                int charsConsumed;
+                bool result = InvariantUtf16.TryParseUInt32(utf16Text, out value, out charsConsumed);
+                bytesConsumed = charsConsumed * sizeof(char);
+                return result;
             }
 
             uint nextSymbol;
@@ -227,6 +281,11 @@ namespace System.Text
         }
         public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
         {
+            if (format.HasPrecision)
+            {
+                throw new NotImplementedException("Format with precision not supported.");
+            }
+
             if (format.IsHexadecimal)
             {
                 if (encoding.IsInvariantUtf8)
@@ -243,12 +302,25 @@ namespace System.Text
                 }
                 else
                 {
-                    // TODO: EncodingData.InvariantUtf8 and EncodingData.InvariantUtf16 don't work for parsing right now
-                    // because their parsing trees are undefined. A custom EncodingData with a manually-created parsing
-                    // tree must be used instead. Default to InvariantUtf8 parsing for now, but after autogeneration of
-                    // parsing trees is implemented, this should return false.
-                    return InvariantUtf8.Hex.TryParseUInt64(text, out value, out bytesConsumed);
+                    throw new NotImplementedException("The only supported encodings for hexadecimal parsing are InvariantUtf8 and InvariantUtf16.");
                 }
+            }
+            else if (!(format.IsDefault || format.Symbol == 'G' || format.Symbol == 'g'))
+            {
+                throw new NotImplementedException(String.Format("Format '{0}' not supported.", format.Symbol));
+            }
+
+            if (encoding.IsInvariantUtf8)
+            {
+                return InvariantUtf8.TryParseUInt64(text, out value, out bytesConsumed);
+            }
+            else if (encoding.IsInvariantUtf16)
+            {
+                ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
+                int charsConsumed;
+                bool result = InvariantUtf16.TryParseUInt64(utf16Text, out value, out charsConsumed);
+                bytesConsumed = charsConsumed * sizeof(char);
+                return result;
             }
 
             uint nextSymbol;
