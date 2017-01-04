@@ -50,18 +50,18 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Removes all waiters from the queue, completing each.</summary>
         /// <param name="waiters">The queue of waiters to complete.</param>
         /// <param name="result">The value with which to complete each waiter.</param>
-        internal static void WakeUpWaiters(SimpleQueue<Channel.Reader<bool>> waiters, bool result)
+        internal static void WakeUpWaiters(Dequeue<Channel.Reader<bool>> waiters, bool result)
         {
             if (waiters.Count > 0)
                 ChannelUtilities.WakeUpWaitersCore(waiters, result); // separated out to streamline inlining
         }
 
         /// <summary>Core of ChannelUtilities.WakeUpWaiters, separated out for performance due to inlining.</summary>
-        internal static void WakeUpWaitersCore(SimpleQueue<Channel.Reader<bool>> waiters, bool result)
+        internal static void WakeUpWaitersCore(Dequeue<Channel.Reader<bool>> waiters, bool result)
         {
             while (waiters.Count > 0)
             {
-                waiters.Dequeue().Success(result);
+                waiters.DequeueHead().Success(result);
             }
         }
 

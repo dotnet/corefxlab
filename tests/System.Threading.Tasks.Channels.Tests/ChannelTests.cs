@@ -9,37 +9,19 @@ namespace System.Threading.Tasks.Channels.Tests
 {
     public class ChannelTests
     {
-        [Fact]
-        public void Unbounded_CorrectValue()
-        {
-            Assert.Equal(-1, Channel.Unbounded);
-        }
-
         [Theory]
         [InlineData(0)]
         [InlineData(-2)]
         public void Create_InvalidBufferSizes_ThrowArgumentExceptions(int bufferedCapacity)
         {
             Assert.Throws<ArgumentOutOfRangeException>("bufferedCapacity", () => Channel.Create<int>(bufferedCapacity));
-            Assert.Throws<ArgumentOutOfRangeException>("bufferedCapacity", () => Channel.Create<int>(bufferedCapacity, false));
-            Assert.Throws<ArgumentOutOfRangeException>("bufferedCapacity", () => Channel.Create<int>(bufferedCapacity, true));
         }
 
         [Theory]
-        [InlineData(-1)]
         [InlineData(1)]
         public void Create_ValidBufferSizes_Success(int bufferedCapacity)
         {
             Assert.NotNull(Channel.Create<int>(bufferedCapacity));
-            Assert.NotNull(Channel.Create<int>(bufferedCapacity, false));
-            Assert.NotNull(Channel.Create<int>(bufferedCapacity, true));
-        }
-
-        [Fact]
-        public void CreateUnbuffered_Success()
-        {
-            Assert.NotNull(Channel.CreateUnbuffered<int>());
-            Assert.NotNull(Channel.CreateUnbuffered<string>());
         }
 
         [Fact]

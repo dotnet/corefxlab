@@ -17,13 +17,13 @@ namespace System.Threading.Tasks.Channels
             /// <summary>Task that represents the completion of the channel.</summary>
             private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
             /// <summary>A queue of readers blocked waiting to be matched with a writer.</summary>
-            private readonly SimpleQueue<Reader<T>> _blockedReaders = new SimpleQueue<Reader<T>>();
+            private readonly Dequeue<Reader<T>> _blockedReaders = new Dequeue<Reader<T>>();
             /// <summary>A queue of writers blocked waiting to be matched with a reader.</summary>
-            private readonly SimpleQueue<Writer<T>> _blockedWriters = new SimpleQueue<Writer<T>>();
+            private readonly Dequeue<Writer<T>> _blockedWriters = new Dequeue<Writer<T>>();
             /// <summary>Tasks waiting for data to be available to read.</summary>
-            private readonly SimpleQueue<Reader<bool>> _waitingReaders = new SimpleQueue<Reader<bool>>();
+            private readonly Dequeue<Reader<bool>> _waitingReaders = new Dequeue<Reader<bool>>();
             /// <summary>Tasks waiting for data to be available to write.</summary>
-            private readonly SimpleQueue<Reader<bool>> _waitingWriters = new SimpleQueue<Reader<bool>>();
+            private readonly Dequeue<Reader<bool>> _waitingWriters = new Dequeue<Reader<bool>>();
 
             /// <summary>Gets an object used to synchronize all state on the instance.</summary>
             private object SyncObj => _completion;
@@ -67,14 +67,14 @@ namespace System.Threading.Tasks.Channels
                     // Fail any blocked readers, as there will be no writers to pair them with.
                     while (_blockedReaders.Count > 0)
                     {
-                        var reader = _blockedReaders.Dequeue();
+                        var reader = _blockedReaders.DequeueHead();
                         reader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
                     }
 
                     // Fail any blocked writers, as there will be no readers to pair them with.
                     while (_blockedWriters.Count > 0)
                     {
-                        var writer = _blockedWriters.Dequeue();
+                        var writer = _blockedWriters.DequeueHead();
                         writer.Fail(ChannelUtilities.CreateInvalidCompletionException());
                     }
 
@@ -114,7 +114,7 @@ namespace System.Threading.Tasks.Channels
                     // so we need to loop to skip past them.
                     while (_blockedWriters.Count > 0)
                     {
-                        Writer<T> w = _blockedWriters.Dequeue();
+                        Writer<T> w = _blockedWriters.DequeueHead();
                         if (w.Success(default(VoidResult)))
                         {
                             return new ValueTask<T>(w.Item);
@@ -123,7 +123,7 @@ namespace System.Threading.Tasks.Channels
 
                     // No writer found to pair with.  Queue the reader.
                     var r = Reader<T>.Create(cancellationToken);
-                    _blockedReaders.Enqueue(r);
+                    _blockedReaders.EnqueueTail(r);
 
                     // And let any waiting writers know it's their lucky day.
                     ChannelUtilities.WakeUpWaiters(_waitingWriters, true);
@@ -141,7 +141,7 @@ namespace System.Threading.Tasks.Channels
                     // Try to find a writer to pair with
                     while (_blockedWriters.Count > 0)
                     {
-                        Writer<T> w = _blockedWriters.Dequeue();
+                        Writer<T> w = _blockedWriters.DequeueHead();
                         if (w.Success(default(VoidResult)))
                         {
                             item = w.Item;
@@ -164,7 +164,7 @@ namespace System.Threading.Tasks.Channels
                     // Try to find a reader to pair with
                     while (_blockedReaders.Count > 0)
                     {
-                        Reader<T> r = _blockedReaders.Dequeue();
+                        Reader<T> r = _blockedReaders.DequeueHead();
                         if (r.Success(item))
                         {
                             return true;
@@ -193,7 +193,7 @@ namespace System.Threading.Tasks.Channels
                     // so we need to loop until we find one.
                     while (_blockedReaders.Count > 0)
                     {
-                        Reader<T> r = _blockedReaders.Dequeue();
+                        Reader<T> r = _blockedReaders.DequeueHead();
                         if (r.Success(item))
                         {
                             return Task.CompletedTask;
@@ -202,7 +202,7 @@ namespace System.Threading.Tasks.Channels
 
                     // No reader was available.  Queue the writer.
                     var w = Writer<T>.Create(cancellationToken, item);
-                    _blockedWriters.Enqueue(w);
+                    _blockedWriters.EnqueueTail(w);
 
                     // And let any waiting readers know it's their lucky day.
                     ChannelUtilities.WakeUpWaiters(_waitingReaders, true);
@@ -229,7 +229,7 @@ namespace System.Threading.Tasks.Channels
 
                     // Otherwise, queue the waiter.
                     var r = Reader<bool>.Create(cancellationToken);
-                    _waitingReaders.Enqueue(r);
+                    _waitingReaders.EnqueueTail(r);
                     return r.Task;
                 }
             }
@@ -252,7 +252,7 @@ namespace System.Threading.Tasks.Channels
 
                     // Otherwise, queue the writer
                     var w = Reader<bool>.Create(cancellationToken);
-                    _waitingWriters.Enqueue(w);
+                    _waitingWriters.EnqueueTail(w);
                     return w.Task;
                 }
             }

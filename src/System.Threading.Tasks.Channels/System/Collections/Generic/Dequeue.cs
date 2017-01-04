@@ -6,19 +6,19 @@ using System.Diagnostics;
 
 namespace System.Collections.Generic
 {
-    /// <summary>Simple FIFO queue without some of the overheads of <see cref="Queue{T}"/> </summary>
-    /// <typeparam name="T">Type of the data stored in the queue.</typeparam>
+    /// <summary>Provides a double-ended queue data structure.</summary>
+    /// <typeparam name="T">Type of the data stored in the dequeue.</typeparam>
     [DebuggerDisplay("Count = {_size}")]
-    internal sealed class SimpleQueue<T>
+    internal sealed class Dequeue<T>
     {
         private T[] _array = Array.Empty<T>();
         private int _head; // First valid element in the queue
-        private int _tail; // Last valid element in the queue
+        private int _tail; // First open slot in the dequeue, unless the dequeue is full
         private int _size; // Number of elements.
 
         public int Count => _size;
 
-        public void Enqueue(T item)
+        public void EnqueueTail(T item)
         {
             if (_size == _array.Length)
             {
@@ -33,8 +33,22 @@ namespace System.Collections.Generic
             _size++;
         }
 
-        public T Dequeue()
+        public void EnqueueHead(T item)
         {
+            if (_size == _array.Length)
+            {
+                Grow();
+            }
+
+            _head = (_head == 0 ? _array.Length : _head) - 1;
+            _array[_head] = item;
+            _size++;
+        }
+
+        public T DequeueHead()
+        {
+            Debug.Assert(_size > 0); // caller's responsibility to make sure there are elements remaining
+
             T item = _array[_head];
             _array[_head] = default(T);
 
@@ -44,6 +58,22 @@ namespace System.Collections.Generic
             }
             _size--;
 
+            return item;
+        }
+
+        public T DequeueTail()
+        {
+            Debug.Assert(_size > 0); // caller's responsibility to make sure there are elements remaining
+
+            if (--_tail == -1)
+            {
+                _tail = _array.Length - 1;
+            }
+
+            T item = _array[_tail];
+            _array[_tail] = default(T);
+
+            _size--;
             return item;
         }
 

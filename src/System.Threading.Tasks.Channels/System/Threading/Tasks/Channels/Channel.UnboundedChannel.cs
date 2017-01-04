@@ -17,11 +17,11 @@ namespace System.Threading.Tasks.Channels
             /// <summary>Task that indicates the channel has completed.</summary>
             private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
             /// <summary>The items in the channel.</summary>
-            private readonly SimpleQueue<T> _items = new SimpleQueue<T>();
+            private readonly Dequeue<T> _items = new Dequeue<T>();
             /// <summary>Readers blocked reading from the channel.</summary>
-            private readonly SimpleQueue<Reader<T>> _blockedReaders = new SimpleQueue<Reader<T>>();
+            private readonly Dequeue<Reader<T>> _blockedReaders = new Dequeue<Reader<T>>();
             /// <summary>Readers waiting for a notification that data is available.</summary>
-            private readonly SimpleQueue<Reader<bool>> _waitingReaders = new SimpleQueue<Reader<bool>>();
+            private readonly Dequeue<Reader<bool>> _waitingReaders = new Dequeue<Reader<bool>>();
             /// <summary>Set to non-null once Complete has been called.</summary>
             private Exception _doneWriting;
 
@@ -76,7 +76,7 @@ namespace System.Threading.Tasks.Channels
                     // be blocked), fail them all.
                     while (_blockedReaders.Count > 0)
                     {
-                        var reader = _blockedReaders.Dequeue();
+                        var reader = _blockedReaders.DequeueHead();
                         reader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
                     }
 
@@ -109,7 +109,7 @@ namespace System.Threading.Tasks.Channels
                     if (_items.Count > 0)
                     {
                         // Dequeue an item
-                        T item = _items.Dequeue();
+                        T item = _items.DequeueHead();
                         if (_doneWriting != null && _items.Count == 0)
                         {
                             // If we've now emptied the items queue and we're not getting any more, complete.
@@ -125,7 +125,7 @@ namespace System.Threading.Tasks.Channels
 
                     // Otherwise, queue the reader.
                     var reader = Reader<T>.Create(cancellationToken);
-                    _blockedReaders.Enqueue(reader);
+                    _blockedReaders.EnqueueTail(reader);
                     return new ValueTask<T>(reader.Task);
                 }
             }
@@ -146,7 +146,7 @@ namespace System.Threading.Tasks.Channels
 
                     // Queue the waiter
                     var r = Reader<bool>.Create(cancellationToken);
-                    _waitingReaders.Enqueue(r);
+                    _waitingReaders.EnqueueTail(r);
                     return r.Task;
                 }
             }
@@ -163,7 +163,7 @@ namespace System.Threading.Tasks.Channels
                         // Dequeue an item if we can
                         if (_items.Count > 0)
                         {
-                            item = _items.Dequeue();
+                            item = _items.DequeueHead();
                             if (_doneWriting != null && _items.Count == 0)
                             {
                                 // If we've now emptied the items queue and we're not getting any more, complete.
@@ -195,7 +195,7 @@ namespace System.Threading.Tasks.Channels
                     // queue, so we need to loop.
                     while (_blockedReaders.Count > 0)
                     {
-                        Reader<T> r = _blockedReaders.Dequeue();
+                        Reader<T> r = _blockedReaders.DequeueHead();
                         if (r.Success(item))
                         {
                             return true;
@@ -203,7 +203,7 @@ namespace System.Threading.Tasks.Channels
                     }
 
                     // There were no blocked readers, so just add the data to the queue
-                    _items.Enqueue(item);
+                    _items.EnqueueTail(item);
 
                     // Then let any waiting readers know that they should try to read it.
                     ChannelUtilities.WakeUpWaiters(_waitingReaders, true);

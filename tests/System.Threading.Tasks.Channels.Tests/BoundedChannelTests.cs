@@ -79,12 +79,12 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(10, false)]
-        [InlineData(10000, false)]
-        public void SingleProducerConsumer_ConcurrentReadWrite_Success(int bufferedCapacity, bool singleProducerConsumer)
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(10000)]
+        public void SingleProducerConsumer_ConcurrentReadWrite_Success(int bufferedCapacity)
         {
-            IChannel<int> c = Channel.Create<int>(bufferedCapacity, singleProducerConsumer);
+            IChannel<int> c = Channel.Create<int>(bufferedCapacity);
 
             const int NumItems = 10000;
             Task.WaitAll(
@@ -105,15 +105,12 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(10, false)]
-        [InlineData(10000, false)]
-        [InlineData(1, true)]
-        [InlineData(10, true)]
-        [InlineData(10000, true)]
-        public void ManyProducerConsumer_ConcurrentReadWrite_Success(int bufferedCapacity, bool singleProducerConsumer)
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(10000)]
+        public void ManyProducerConsumer_ConcurrentReadWrite_Success(int bufferedCapacity)
         {
-            IChannel<int> c = Channel.Create<int>(bufferedCapacity, singleProducerConsumer);
+            IChannel<int> c = Channel.Create<int>(bufferedCapacity);
 
             const int NumWriters = 10;
             const int NumReaders = 10;

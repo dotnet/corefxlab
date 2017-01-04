@@ -7,35 +7,38 @@ namespace System.Threading.Tasks.Channels
     /// <summary>Provides static methods for creating channels.</summary>
     public static partial class Channel
     {
-        /// <summary>Sentinel value to indicate an infinite bound.</summary>
-        public const int Unbounded = -1;
+        /// <summary>Creates an unbounded channel usable by any number of readers and writers concurrently.</summary>
+        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
+        /// <returns>The created channel.</returns>
+        public static IChannel<T> Create<T>(bool singleReaderWriter = false) => singleReaderWriter ?
+            (IChannel<T>)new SpscUnboundedChannel<T>() :
+            new UnboundedChannel<T>();
 
-        /// <summary>
-        /// Creates a buffered channel.  If the specified <paramref name="bufferedCapacity"/> is not <see cref="Unbounded"/>,
-        /// the channel may only store up to that number of items; attempts to store more than that will result in writes
-        /// being delayed.
-        /// </summary>
-        /// <typeparam name="T">Specifies the type of data stored in the channel.</typeparam>
-        /// <returns>The new channel.</returns>
-        public static IChannel<T> Create<T>(int bufferedCapacity = Unbounded, bool singleReaderWriter = false)
-        {
-            if (bufferedCapacity <= 0 && bufferedCapacity != Unbounded)
-                throw new ArgumentOutOfRangeException(nameof(bufferedCapacity));
-
-            return bufferedCapacity == Unbounded ?
-                singleReaderWriter ? 
-                    (IChannel<T>)new SpscUnboundedChannel<T>() : 
-                    new UnboundedChannel<T>() :
-                new BoundedChannel<T>(bufferedCapacity);
-        }
-
-        /// <summary>
-        /// Creates an unbuffered channel.  As the resulting channel is unbuffered, readers and writers will not complete
-        /// until a corresponding reader or writer is available.
-        /// </summary>
-        /// <typeparam name="T">Specifies the type of data stored in the channel.</typeparam>
-        /// <returns>The new channel.</returns>
+        /// <summary>Creates a channel that doesn't buffer any items.</summary>
+        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
+        /// <returns>The created channel.</returns>
         public static IChannel<T> CreateUnbuffered<T>() => new UnbufferedChannel<T>();
+
+        /// <summary>Creates a channel with the specified bounded size.</summary>
+        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
+        /// <param name="bufferedCapacity">The maximum number of elements the channel can store.</param>
+        /// <param name="mode">The behavior to use when writing to a full channel.</param>
+        /// <returns>The created channel.</returns>
+        public static IChannel<T> Create<T>(int bufferedCapacity, BoundedChannelFullMode mode = BoundedChannelFullMode.Wait)
+        {
+            if (bufferedCapacity < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bufferedCapacity));
+            }
+            if (mode != BoundedChannelFullMode.DropNewest &&
+                mode != BoundedChannelFullMode.DropOldest &&
+                mode != BoundedChannelFullMode.Wait)
+            {
+                throw new ArgumentOutOfRangeException(nameof(mode));
+            }
+
+            return new BoundedChannel<T>(bufferedCapacity, mode);
+        }
 
         /// <summary>Creates a case-select builder and adds a case for channel reading.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
