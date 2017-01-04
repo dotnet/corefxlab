@@ -162,7 +162,7 @@ namespace System.CommandLine
             sb.Append(option.GetDisplayName());
 
             if (!option.IsFlag)
-                sb.Append(@" <arg>");
+                sb.Append(option.IsRequired ? @" <arg>" : @" [arg]");
 
             if (option.IsList)
                 sb.Append(@"...");
@@ -210,7 +210,7 @@ namespace System.CommandLine
             }
 
             if (argument.IsOption && !argument.IsFlag)
-                sb.Append(@" <arg>");
+                sb.Append(argument.IsRequired ? @" <arg>" : @" [arg]");
 
             if (argument.IsList)
                 sb.Append(@"...");

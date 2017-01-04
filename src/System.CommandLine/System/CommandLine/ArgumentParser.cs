@@ -37,10 +37,10 @@ namespace System.CommandLine
             return true;
         }
 
-        public bool TryParseOption<T>(string diagnosticName, IReadOnlyCollection<string> names, Func<string, T> valueConverter, out T value)
+        public bool TryParseOption<T>(string diagnosticName, IReadOnlyCollection<string> names, Func<string, T> valueConverter, bool isRequired, out T value, out bool specified)
         {
             IReadOnlyList<T> values;
-            if (!TryParseOptionList(diagnosticName, names, valueConverter, out values))
+            if (!TryParseOptionList(diagnosticName, names, valueConverter, isRequired, out values, out specified))
             {
                 value = default(T);
                 return false;
@@ -55,16 +55,18 @@ namespace System.CommandLine
             return true;
         }
 
-        public bool TryParseOptionList<T>(string diagnosticName, IReadOnlyCollection<string> names, Func<string, T> valueConverter, out IReadOnlyList<T> values)
+        public bool TryParseOptionList<T>(string diagnosticName, IReadOnlyCollection<string> names, Func<string, T> valueConverter, bool isRequired, out IReadOnlyList<T> values, out bool specified)
         {
             var result = new List<T>();
             var tokenIndex = 0;
             var isFlag = typeof(T) == typeof(bool);
+            specified = false;
 
             while (tokenIndex < _tokens.Count)
             {
                 if (TryParseOption(ref tokenIndex, names))
                 {
+                    specified = true;
                     string valueText;
                     if (TryParseOptionArgument(ref tokenIndex, isFlag, out valueText))
                     {
@@ -76,7 +78,7 @@ namespace System.CommandLine
                         var value = (T)(object)true;
                         result.Add(value);
                     }
-                    else
+                    else if (isRequired)
                     {
                         var message = string.Format(Strings.OptionRequiresValueFmt, diagnosticName);
                         throw new ArgumentSyntaxException(message);

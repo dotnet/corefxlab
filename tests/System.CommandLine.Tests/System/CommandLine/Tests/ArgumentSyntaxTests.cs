@@ -352,6 +352,19 @@ namespace System.CommandLine.Tests
         }
 
         [Fact]
+        public void Option_Definition_HasDefault_IfNoValue()
+        {
+            var o = "standard";
+
+            Parse("-o", syntax =>
+            {
+                syntax.DefineOption("o", ref o, false, string.Empty);
+            });
+
+            Assert.Equal("standard", o);
+        }
+
+        [Fact]
         public void Option_Usage_Error_Invalid()
         {
             var ex = Assert.Throws<ArgumentSyntaxException>(() =>
@@ -450,6 +463,46 @@ namespace System.CommandLine.Tests
             Assert.Equal("option -a requires a value", ex.Message);
         }
 
+        [Theory]
+        [InlineData("-a")]
+        [InlineData("-a:")]
+        [InlineData("-a : ")]
+        [InlineData("-a : -b")]
+        public void Option_Usage_DoesNotRequireValue(string commandLine)
+        {
+            var a = "defaulta";
+            var b = "defaultb";
+            Parse(commandLine, syntax =>
+            {
+                syntax.DefineOption("a", ref a, false, string.Empty);
+                syntax.DefineOption("b", ref b, false, string.Empty);
+            });
+            
+            Assert.Equal("defaulta", a);
+            Assert.Equal("defaultb", b);
+        }
+
+        [Theory]
+        [InlineData("-a", false)]
+        [InlineData("-a:", false)]
+        [InlineData("-a : ", false)]
+        [InlineData("-a : -b", true)]
+        public void Option_Usage_DoesNotRequireValue_SetsSpecified(string commandLine, bool expectedBSpecified)
+        {
+            var a = "defaulta";
+            var b = "defaultb";
+            bool aSpecified = false;
+            bool bSpecified = false;
+            Parse(commandLine, syntax =>
+            {
+                aSpecified = syntax.DefineOption("a", ref a, false, string.Empty).IsSpecified;
+                bSpecified = syntax.DefineOption("b", ref b, false, string.Empty).IsSpecified;
+            });
+            
+            Assert.True(aSpecified);
+            Assert.Equal(expectedBSpecified, bSpecified);
+        }
+
         [Fact]
         public void Option_Usage_Error_Flag_Bundle_ViaDashDash()
         {
@@ -546,6 +599,25 @@ namespace System.CommandLine.Tests
             Assert.True(f1);
             Assert.True(f2);
             Assert.False(f3);
+        }
+
+        [Fact]
+        public void Option_Usage_DoesNotRequireValue_AcceptsValue()
+        {
+            var a1 = "default1";
+            var a2 = "default2";
+            var a3 = "default3";
+
+            Parse("--a1 --a2:value2 --a3 = value3", syntax =>
+            {
+                syntax.DefineOption("a1", ref a1, false, string.Empty);
+                syntax.DefineOption("a2", ref a2, false, string.Empty);
+                syntax.DefineOption("a3", ref a3, false, string.Empty);
+            });
+
+            Assert.Equal("default1", a1);
+            Assert.Equal("value2", a2);
+            Assert.Equal("value3", a3);
         }
 
         [Fact]
