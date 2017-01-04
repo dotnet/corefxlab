@@ -43,7 +43,7 @@ namespace System.Text
             {
                 var span = format.Slice(1, format.Length - 1);
 
-                if (!Internal.InternalParser.TryParseUInt32(span, out precision))
+                if (!PrimitiveParser.InvariantUtf16.TryParseUInt32(span, out precision))
                 {
                     throw new NotImplementedException("UnableToParsePrecision");
                 }
