@@ -39,7 +39,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(1)]
         [InlineData(10)]
         [InlineData(10000)]
-        public void TryWrite_TryRead_Many(int bufferedCapacity)
+        public void TryWrite_TryRead_Many_Wait(int bufferedCapacity)
         {
             IChannel<int> c = Channel.Create<int>(bufferedCapacity);
 
@@ -55,6 +55,56 @@ namespace System.Threading.Tasks.Channels.Tests
                 Assert.True(c.TryRead(out result));
                 Assert.Equal(i, result);
             }
+
+            Assert.False(c.TryRead(out result));
+            Assert.Equal(0, result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(10000)]
+        public void TryWrite_TryRead_Many_DropOldest(int bufferedCapacity)
+        {
+            IChannel<int> c = Channel.Create<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
+
+            for (int i = 0; i < bufferedCapacity * 2; i++)
+            {
+                Assert.True(c.TryWrite(i));
+            }
+
+            int result;
+            for (int i = bufferedCapacity; i < bufferedCapacity * 2; i++)
+            {
+                Assert.True(c.TryRead(out result));
+                Assert.Equal(i, result);
+            }
+
+            Assert.False(c.TryRead(out result));
+            Assert.Equal(0, result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(10000)]
+        public void TryWrite_TryRead_Many_DropNewest(int bufferedCapacity)
+        {
+            IChannel<int> c = Channel.Create<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
+
+            for (int i = 0; i < bufferedCapacity * 2; i++)
+            {
+                Assert.True(c.TryWrite(i));
+            }
+
+            int result;
+            for (int i = 0; i < bufferedCapacity - 1; i++)
+            {
+                Assert.True(c.TryRead(out result));
+                Assert.Equal(i, result);
+            }
+            Assert.True(c.TryRead(out result));
+            Assert.Equal(bufferedCapacity * 2 - 1, result);
 
             Assert.False(c.TryRead(out result));
             Assert.Equal(0, result);
