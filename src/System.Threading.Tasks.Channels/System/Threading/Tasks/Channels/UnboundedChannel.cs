@@ -154,28 +154,22 @@ namespace System.Threading.Tasks.Channels
 
         public bool TryRead(out T item)
         {
-            SpinWait spinner = default(SpinWait);
-            do
+            lock (SyncObj)
             {
-                lock (SyncObj)
-                {
-                    AssertInvariants();
+                AssertInvariants();
 
-                    // Dequeue an item if we can
-                    if (_items.Count > 0)
+                // Dequeue an item if we can
+                if (_items.Count > 0)
+                {
+                    item = _items.DequeueHead();
+                    if (_doneWriting != null && _items.Count == 0)
                     {
-                        item = _items.DequeueHead();
-                        if (_doneWriting != null && _items.Count == 0)
-                        {
-                            // If we've now emptied the items queue and we're not getting any more, complete.
-                            ChannelUtilities.CompleteWithOptionalError(_completion, _doneWriting);
-                        }
-                        return true;
+                        // If we've now emptied the items queue and we're not getting any more, complete.
+                        ChannelUtilities.CompleteWithOptionalError(_completion, _doneWriting);
                     }
+                    return true;
                 }
-                spinner.SpinOnce();
             }
-            while (!spinner.NextSpinWillYield);
 
             item = default(T);
             return false;

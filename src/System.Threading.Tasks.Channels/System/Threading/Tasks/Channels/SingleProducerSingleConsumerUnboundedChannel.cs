@@ -5,6 +5,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -74,7 +75,7 @@ namespace System.Threading.Tasks.Channels
             {
                 T item;
 
-                if (TryReadCore(out item))
+                if (TryRead(out item))
                     return new ValueTask<T>(item);
 
                 if (_doneWriting != null)
@@ -90,21 +91,6 @@ namespace System.Threading.Tasks.Channels
         }
 
         public bool TryRead(out T item)
-        {
-            SpinWait spinner = default(SpinWait);
-            do
-            {
-                if (TryReadCore(out item))
-                {
-                    return true;
-                }
-                spinner.SpinOnce();
-            }
-            while (!spinner.NextSpinWillYield && _doneWriting == null);
-            return false;
-        }
-
-        private bool TryReadCore(out T item)
         {
             if (_items.TryDequeue(out item))
             {
@@ -149,16 +135,10 @@ namespace System.Threading.Tasks.Channels
 
         public Task<bool> WaitToReadAsync(CancellationToken cancellationToken)
         {
-            var spinner = default(SpinWait);
-            do
+            if (!_items.IsEmpty)
             {
-                if (!_items.IsEmpty)
-                {
-                    return ChannelUtilities.TrueTask;
-                }
-                spinner.SpinOnce();
+                return ChannelUtilities.TrueTask;
             }
-            while (!spinner.NextSpinWillYield);
 
             lock (SyncObj)
             {
