@@ -17,39 +17,39 @@ namespace System.Text
         #region Integers
         public static bool TryFormat(this byte value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatUInt64(value, 1, buffer, format, encoding, out bytesWritten);
+            return IntegerFormatter.TryFormatUInt64(value, 1, buffer, out bytesWritten, format, encoding);
         }
 
         public static bool TryFormat(this sbyte value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatInt64(value, 1, buffer, format, encoding, out bytesWritten);
+            return IntegerFormatter.TryFormatInt64(value, 1, buffer, out bytesWritten, format, encoding);
         }
 
         public static bool TryFormat(this ushort value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatUInt64(value, 2, buffer, format, encoding, out bytesWritten);
+            return IntegerFormatter.TryFormatUInt64(value, 2, buffer, out bytesWritten, format, encoding);
         }
         public static bool TryFormat(this short value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatInt64(value, 2, buffer, format, encoding, out bytesWritten);
+            return IntegerFormatter.TryFormatInt64(value, 2, buffer, out bytesWritten, format, encoding);
         }
 
         public static bool TryFormat(this uint value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatUInt64(value, 4, buffer, format, encoding, out bytesWritten);
+            return IntegerFormatter.TryFormatUInt64(value, 4, buffer, out bytesWritten, format, encoding);
         }
         public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatInt64(value, 4, buffer, format, encoding, out bytesWritten);
+            return IntegerFormatter.TryFormatInt64(value, 4, buffer, out bytesWritten, format, encoding);
         }
 
         public static bool TryFormat(this ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatUInt64(value, 8, buffer, format, encoding, out bytesWritten);
+            return IntegerFormatter.TryFormatUInt64(value, 8, buffer, out bytesWritten, format, encoding);
         }
         public static bool TryFormat(this long value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
-            return IntegerFormatter.TryFormatInt64(value, 8, buffer, format, encoding, out bytesWritten);
+            return IntegerFormatter.TryFormatInt64(value, 8, buffer, out bytesWritten, format, encoding);
         }
         #endregion
     }

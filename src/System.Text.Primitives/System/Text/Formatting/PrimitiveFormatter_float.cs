@@ -9,24 +9,24 @@ namespace System.Text
 {
     public static partial class PrimitiveFormatter
     {
-        public static bool TryFormat(this double value, Span<byte> buffer, TextFormat format, EncodingData encoding, out int bytesWritten)
+        public static bool TryFormat(this double value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
             if (format.IsDefault)
             {
                 format.Symbol = 'G';
             }
             Precondition.Require(format.Symbol == 'G');
-            return FloatFormatter.TryFormatNumber(value, false, buffer, format, encoding, out bytesWritten);
+            return FloatFormatter.TryFormatNumber(value, false, buffer, out bytesWritten, format, encoding);
         }
 
-        public static bool TryFormat(this float value, Span<byte> buffer, TextFormat format, EncodingData encoding, out int bytesWritten)
+        public static bool TryFormat(this float value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
             if (format.IsDefault)
             {
                 format.Symbol = 'G';
             }
             Precondition.Require(format.Symbol == 'G');
-            return FloatFormatter.TryFormatNumber(value, true, buffer, format, encoding, out bytesWritten);
+            return FloatFormatter.TryFormatNumber(value, true, buffer, out bytesWritten, format, encoding);
         }
     }
 }
