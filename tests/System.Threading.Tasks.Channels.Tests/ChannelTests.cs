@@ -43,41 +43,15 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
-        public void ReadFromStream_InvalidStream_ThrowsArgumentExceptions()
-        {
-            Assert.Throws<ArgumentNullException>("source", () => Channel.ReadFromStream<int>(null));
-            Assert.Throws<ArgumentException>("source", () => Channel.ReadFromStream<int>(new CanReadFalseStream()));
-        }
-
-        [Fact]
-        public void WriteToStream_InvalidStream_ThrowsArgumentExceptions()
-        {
-            Assert.Throws<ArgumentNullException>("destination", () => Channel.WriteToStream<int>(null));
-            Assert.Throws<ArgumentException>("destination", () => Channel.WriteToStream<int>(new MemoryStream(Array.Empty<byte>(), writable: false)));
-        }
-
-        [Fact]
-        public void CreateFromEnumerable_InvalidSource_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentNullException>("source", () => Channel.CreateFromEnumerable<int>(null));
-        }
-
-        [Fact]
-        public void CreateFromTask_InvalidSource_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentNullException>("source", () => Channel.CreateFromTask<int>(null));
-        }
-
-        [Fact]
         public void AsObservable_InvalidSource_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>("source", () => Channel.AsObservable<int>(null));
+            Assert.Throws<ArgumentNullException>("source", () => ChannelExtensions.AsObservable<int>(null));
         }
 
         [Fact]
         public void AsObserver_InvalidTarget_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>("target", () => Channel.AsObserver<int>(null));
+            Assert.Throws<ArgumentNullException>("target", () => ChannelExtensions.AsObserver<int>(null));
         }
 
         [Fact]
@@ -90,14 +64,14 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void GetAwaiter_InvalidSource_ThrowsArgumentException()
         {
-            Assert.Throws<NullReferenceException>(() => Channel.GetAwaiter<int>(null));
+            Assert.Throws<NullReferenceException>(() => ChannelExtensions.GetAwaiter<int>(null));
         }
 
         [Fact]
         public void GetAsyncEnumerator_InvalidSource_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.GetAsyncEnumerator<int>(null));
-            Assert.Throws<ArgumentNullException>("channel", () => Channel.GetAsyncEnumerator<int>(null, CancellationToken.None));
+            Assert.Throws<ArgumentNullException>("channel", () => ChannelExtensions.GetAsyncEnumerator<int>(null));
+            Assert.Throws<ArgumentNullException>("channel", () => ChannelExtensions.GetAsyncEnumerator<int>(null, CancellationToken.None));
         }
 
         [Fact]
@@ -167,7 +141,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void Complete_InvalidArgument_Throws()
         {
-            Assert.Throws<ArgumentNullException>(() => Channel.Complete<int>(null));
+            Assert.Throws<ArgumentNullException>(() => ChannelExtensions.Complete<int>(null));
         }
 
         private sealed class CanReadFalseStream : MemoryStream

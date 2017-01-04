@@ -10,7 +10,7 @@ namespace System.Threading.Tasks.Channels
     public static partial class Channel
     {
         /// <summary>Provides an observer for a writeable channel.</summary>
-        private sealed class ChannelObserver<T> : IObserver<T>
+        internal sealed class ChannelObserver<T> : IObserver<T>
         {
             private readonly IWritableChannel<T> _channel;
 
@@ -28,7 +28,7 @@ namespace System.Threading.Tasks.Channels
         }
 
         /// <summary>Provides an observable for a readable channel.</summary>
-        private sealed class ChannelObservable<T> : IObservable<T>
+        internal sealed class ChannelObservable<T> : IObservable<T>
         {
             private readonly List<IObserver<T>> _observers = new List<IObserver<T>>();
             private readonly IReadableChannel<T> _channel;

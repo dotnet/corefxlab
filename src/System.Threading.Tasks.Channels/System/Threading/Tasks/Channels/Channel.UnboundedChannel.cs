@@ -12,7 +12,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Provides a buffered channel of unbounded capacity.</summary>
         [DebuggerDisplay("Items={ItemsCountForDebugger}")]
         [DebuggerTypeProxy(typeof(DebugEnumeratorDebugView<>))]
-        private sealed class UnboundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
+        internal sealed class UnboundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
         {
             /// <summary>Task that indicates the channel has completed.</summary>
             private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -63,12 +63,12 @@ namespace System.Threading.Tasks.Channels
                     {
                         return false;
                     }
-                    _doneWriting = error ?? s_doneWritingSentinel;
+                    _doneWriting = error ?? ChannelUtilities.DoneWritingSentinel;
 
                     // If there are no items in the queue, then we're done (there won't be any more coming).
                     if (_items.Count == 0)
                     {
-                        CompleteWithOptionalError(_completion, error);
+                        ChannelUtilities.CompleteWithOptionalError(_completion, error);
                     }
 
                     // If there are any blocked readers, then since we won't be getting any more
@@ -77,12 +77,12 @@ namespace System.Threading.Tasks.Channels
                     while (_blockedReaders.Count > 0)
                     {
                         var reader = _blockedReaders.Dequeue();
-                        reader.Fail(error ?? CreateInvalidCompletionException());
+                        reader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
                     }
 
                     // Similarly, if there are any waiting readers, let them know 
                     // no more data will be coming.
-                    WakeUpWaiters(_waitingReaders, false);
+                    ChannelUtilities.WakeUpWaiters(_waitingReaders, false);
                 }
 
                 return true;
@@ -113,7 +113,7 @@ namespace System.Threading.Tasks.Channels
                         if (_doneWriting != null && _items.Count == 0)
                         {
                             // If we've now emptied the items queue and we're not getting any more, complete.
-                            CompleteWithOptionalError(_completion, _doneWriting);
+                            ChannelUtilities.CompleteWithOptionalError(_completion, _doneWriting);
                         }
 
                         return new ValueTask<T>(item);
@@ -121,7 +121,7 @@ namespace System.Threading.Tasks.Channels
 
                     // There are no items, so if we're done writing, fail.
                     if (_doneWriting != null)
-                        return new ValueTask<T>(Task.FromException<T>(_doneWriting != s_doneWritingSentinel ? _doneWriting : CreateInvalidCompletionException()));
+                        return new ValueTask<T>(Task.FromException<T>(_doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException()));
 
                     // Otherwise, queue the reader.
                     var reader = Reader<T>.Create(cancellationToken);
@@ -138,11 +138,11 @@ namespace System.Threading.Tasks.Channels
 
                     // If there are any items, readers can try to get them.
                     if (_items.Count > 0)
-                        return s_trueTask;
+                        return ChannelUtilities.TrueTask;
                     
                     // There are no items, so if we're done writing, there's never going to be data available.
                     if (_doneWriting != null)
-                        return s_falseTask;
+                        return ChannelUtilities.FalseTask;
 
                     // Queue the waiter
                     var r = Reader<bool>.Create(cancellationToken);
@@ -167,7 +167,7 @@ namespace System.Threading.Tasks.Channels
                             if (_doneWriting != null && _items.Count == 0)
                             {
                                 // If we've now emptied the items queue and we're not getting any more, complete.
-                                CompleteWithOptionalError(_completion, _doneWriting);
+                                ChannelUtilities.CompleteWithOptionalError(_completion, _doneWriting);
                             }
                             return true;
                         }
@@ -206,7 +206,7 @@ namespace System.Threading.Tasks.Channels
                     _items.Enqueue(item);
 
                     // Then let any waiting readers know that they should try to read it.
-                    WakeUpWaiters(_waitingReaders, true);
+                    ChannelUtilities.WakeUpWaiters(_waitingReaders, true);
 
                     return true;
                 }
@@ -222,7 +222,7 @@ namespace System.Threading.Tasks.Channels
                 // Other than for cancellation, writing can always be done if we haven't completed, as we're unbounded.
                 lock (SyncObj)
                 {
-                    return _doneWriting == null ? s_trueTask : s_falseTask;
+                    return _doneWriting == null ? ChannelUtilities.TrueTask : ChannelUtilities.FalseTask;
                 }
             }
 
@@ -233,7 +233,7 @@ namespace System.Threading.Tasks.Channels
                 return
                     cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
                     TryWrite(item) ? Task.CompletedTask :
-                    Task.FromException(CreateInvalidCompletionException());
+                    Task.FromException(ChannelUtilities.CreateInvalidCompletionException());
             }
 
             /// <summary>Gets the number of items in the channel.  This should only be used by the debugger.</summary>

@@ -12,7 +12,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Provides an unbuffered channel, such that a reader and a writer must rendezvous to succeed.</summary>
         [DebuggerDisplay("Waiting Writers = {WaitingWritersCountForDebugger}, Waiting Readers = {WaitingReadersCountForDebugger}")]
         [DebuggerTypeProxy(typeof(UnbufferedChannel<>.DebugView))]
-        private sealed class UnbufferedChannel<T> : IChannel<T>
+        internal sealed class UnbufferedChannel<T> : IChannel<T>
         {
             /// <summary>Task that represents the completion of the channel.</summary>
             private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -62,25 +62,25 @@ namespace System.Threading.Tasks.Channels
                     {
                         return false;
                     }
-                    CompleteWithOptionalError(_completion, error);
+                    ChannelUtilities.CompleteWithOptionalError(_completion, error);
 
                     // Fail any blocked readers, as there will be no writers to pair them with.
                     while (_blockedReaders.Count > 0)
                     {
                         var reader = _blockedReaders.Dequeue();
-                        reader.Fail(error ?? CreateInvalidCompletionException());
+                        reader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
                     }
 
                     // Fail any blocked writers, as there will be no readers to pair them with.
                     while (_blockedWriters.Count > 0)
                     {
                         var writer = _blockedWriters.Dequeue();
-                        writer.Fail(CreateInvalidCompletionException());
+                        writer.Fail(ChannelUtilities.CreateInvalidCompletionException());
                     }
 
                     // Let any waiting readers and writers know there won't be any more data
-                    WakeUpWaiters(_waitingReaders, false);
-                    WakeUpWaiters(_waitingWriters, false);
+                    ChannelUtilities.WakeUpWaiters(_waitingReaders, false);
+                    ChannelUtilities.WakeUpWaiters(_waitingWriters, false);
                 }
 
                 return true;
@@ -106,7 +106,7 @@ namespace System.Threading.Tasks.Channels
                     // If we're already completed, nothing to read.
                     if (_completion.Task.IsCompleted)
                     {
-                        return new ValueTask<T>(Task.FromException<T>(_completion.Task.IsFaulted ? _completion.Task.Exception.InnerException : CreateInvalidCompletionException()));
+                        return new ValueTask<T>(Task.FromException<T>(_completion.Task.IsFaulted ? _completion.Task.Exception.InnerException : ChannelUtilities.CreateInvalidCompletionException()));
                     }
 
                     // If there are any blocked writers, find one to pair up with
@@ -126,7 +126,7 @@ namespace System.Threading.Tasks.Channels
                     _blockedReaders.Enqueue(r);
 
                     // And let any waiting writers know it's their lucky day.
-                    WakeUpWaiters(_waitingWriters, true);
+                    ChannelUtilities.WakeUpWaiters(_waitingWriters, true);
 
                     return new ValueTask<T>(r.Task);
                 }
@@ -186,7 +186,7 @@ namespace System.Threading.Tasks.Channels
                     // Fail if we've already completed
                     if (_completion.Task.IsCompleted)
                     {
-                        return Task.FromException(CreateInvalidCompletionException());
+                        return Task.FromException(ChannelUtilities.CreateInvalidCompletionException());
                     }
 
                     // Try to find a reader to pair with.  Canceled readers remain in the queue,
@@ -205,7 +205,7 @@ namespace System.Threading.Tasks.Channels
                     _blockedWriters.Enqueue(w);
 
                     // And let any waiting readers know it's their lucky day.
-                    WakeUpWaiters(_waitingReaders, true);
+                    ChannelUtilities.WakeUpWaiters(_waitingReaders, true);
 
                     return w.Task;
                 }
@@ -218,13 +218,13 @@ namespace System.Threading.Tasks.Channels
                     // If we're done writing, fail.
                     if (_completion.Task.IsCompleted)
                     {
-                        return s_falseTask;
+                        return ChannelUtilities.FalseTask;
                     }
 
                     // If there's a blocked writer, we can read.
                     if (_blockedWriters.Count > 0)
                     {
-                        return s_trueTask;
+                        return ChannelUtilities.TrueTask;
                     }
 
                     // Otherwise, queue the waiter.
@@ -241,13 +241,13 @@ namespace System.Threading.Tasks.Channels
                     // If we're done writing, fail.
                     if (_completion.Task.IsCompleted)
                     {
-                        return s_falseTask;
+                        return ChannelUtilities.FalseTask;
                     }
 
                     // If there's a blocked reader, we can write
                     if (_blockedReaders.Count > 0)
                     {
-                        return s_trueTask;
+                        return ChannelUtilities.TrueTask;
                     }
 
                     // Otherwise, queue the writer

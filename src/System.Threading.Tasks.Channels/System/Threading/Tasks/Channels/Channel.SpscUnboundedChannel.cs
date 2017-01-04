@@ -13,7 +13,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Provides a buffered channel of unbounded capacity.</summary>
         [DebuggerDisplay("Items={ItemsCountForDebugger}")]
         [DebuggerTypeProxy(typeof(DebugEnumeratorDebugView<>))]
-        private sealed class SpscUnboundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
+        internal sealed class SpscUnboundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
         {
             /// <summary>Task that indicates the channel has completed.</summary>
             private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -35,14 +35,14 @@ namespace System.Threading.Tasks.Channels
                     {
                         return false;
                     }
-                    _doneWriting = error ?? s_doneWritingSentinel;
+                    _doneWriting = error ?? ChannelUtilities.DoneWritingSentinel;
 
                     if (_items.IsEmpty)
                     {
-                        CompleteWithOptionalError(_completion, error);
+                        ChannelUtilities.CompleteWithOptionalError(_completion, error);
                         if (_blockedReader != null)
                         {
-                            _blockedReader.Fail(error ?? CreateInvalidCompletionException());
+                            _blockedReader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
                             _blockedReader = null;
                         }
                         if (_waitingReader != null)
@@ -74,10 +74,10 @@ namespace System.Threading.Tasks.Channels
                         return new ValueTask<T>(item);
 
                     if (_doneWriting != null)
-                        return new ValueTask<T>(Task.FromException<T>(_doneWriting != s_doneWritingSentinel ? _doneWriting : CreateInvalidCompletionException()));
+                        return new ValueTask<T>(Task.FromException<T>(_doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException()));
 
                     if (_blockedReader != null)
-                        return new ValueTask<T>(Task.FromException<T>(CreateSingleReaderWriterMisuseException()));
+                        return new ValueTask<T>(Task.FromException<T>(ChannelUtilities.CreateSingleReaderWriterMisuseException()));
 
                     Reader<T> reader = Reader<T>.Create(cancellationToken);
                     _blockedReader = reader;
@@ -106,7 +106,7 @@ namespace System.Threading.Tasks.Channels
                 {
                     if (_doneWriting != null && _items.IsEmpty)
                     {
-                        CompleteWithOptionalError(_completion, _doneWriting);
+                        ChannelUtilities.CompleteWithOptionalError(_completion, _doneWriting);
                     }
                     return true;
                 }
@@ -150,7 +150,7 @@ namespace System.Threading.Tasks.Channels
                 {
                     if (!_items.IsEmpty)
                     {
-                        return s_trueTask;
+                        return ChannelUtilities.TrueTask;
                     }
                     spinner.SpinOnce();
                 }
@@ -159,17 +159,17 @@ namespace System.Threading.Tasks.Channels
                 lock (SyncObj)
                 {
                     if (!_items.IsEmpty)
-                        return s_trueTask;
+                        return ChannelUtilities.TrueTask;
 
                     if (_waitingReader != null)
                     {
-                        _waitingReader.Fail(CreateSingleReaderWriterMisuseException());
+                        _waitingReader.Fail(ChannelUtilities.CreateSingleReaderWriterMisuseException());
                         _waitingReader = null;
-                        return Task.FromException<bool>(CreateSingleReaderWriterMisuseException());
+                        return Task.FromException<bool>(ChannelUtilities.CreateSingleReaderWriterMisuseException());
                     }
 
                     if (_doneWriting != null)
-                        return s_falseTask;
+                        return ChannelUtilities.FalseTask;
 
                     Reader<bool> reader = Reader<bool>.Create(cancellationToken);
                     _waitingReader = reader;
@@ -181,8 +181,8 @@ namespace System.Threading.Tasks.Channels
             {
                 return
                     cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
-                    _doneWriting == null ? s_trueTask :
-                    s_falseTask;
+                    _doneWriting == null ? ChannelUtilities.TrueTask :
+                    ChannelUtilities.FalseTask;
             }
 
             public Task WriteAsync(T item, CancellationToken cancellationToken)
@@ -192,7 +192,7 @@ namespace System.Threading.Tasks.Channels
                 return
                     cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
                     TryWrite(item) ? Task.CompletedTask :
-                    Task.FromException(CreateInvalidCompletionException());
+                    Task.FromException(ChannelUtilities.CreateInvalidCompletionException());
             }
 
             /// <summary>Gets the number of items in the channel.  This should only be used by the debugger.</summary>

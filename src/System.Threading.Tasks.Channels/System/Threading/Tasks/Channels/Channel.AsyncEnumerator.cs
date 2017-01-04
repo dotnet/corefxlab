@@ -7,7 +7,7 @@ namespace System.Threading.Tasks.Channels
     public static partial class Channel
     {
         /// <summary>Provides an async enumerator for the data in a channel.</summary>
-        private sealed class AsyncEnumerator<T> : IAsyncEnumerator<T>
+        internal sealed class AsyncEnumerator<T> : IAsyncEnumerator<T>
         {
             /// <summary>The channel being enumerated.</summary>
             private readonly IReadableChannel<T> _channel;
@@ -31,7 +31,7 @@ namespace System.Threading.Tasks.Channels
                 if (result.IsCompletedSuccessfully)
                 {
                     _current = result.Result;
-                    return s_trueTask;
+                    return ChannelUtilities.TrueTask;
                 }
 
                 return result.AsTask().ContinueWith((t, s) =>

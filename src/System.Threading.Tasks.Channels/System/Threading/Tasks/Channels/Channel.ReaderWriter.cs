@@ -6,7 +6,7 @@ namespace System.Threading.Tasks.Channels
 {
     public static partial class Channel
     {
-        private abstract class Interactor<T> : TaskCompletionSource<T>
+        internal abstract class Interactor<T> : TaskCompletionSource<T>
         {
             protected Interactor() : base(TaskCreationOptions.RunContinuationsAsynchronously) { }
 
@@ -33,7 +33,7 @@ namespace System.Threading.Tasks.Channels
             protected virtual void Dispose() { }
         }
 
-        private class Reader<T> : Interactor<T>
+        internal class Reader<T> : Interactor<T>
         {
             internal static Reader<T> Create(CancellationToken cancellationToken) =>
                 cancellationToken.CanBeCanceled ?
@@ -41,7 +41,7 @@ namespace System.Threading.Tasks.Channels
                     new Reader<T>();
         }
 
-        private class Writer<T> : Interactor<VoidResult>
+        internal class Writer<T> : Interactor<VoidResult>
         {
             internal T Item { get; private set; }
 
@@ -55,7 +55,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private sealed class CancelableReader<T> : Reader<T>
+        internal sealed class CancelableReader<T> : Reader<T>
         {
             private CancellationToken _token;
             private CancellationTokenRegistration _registration;
@@ -72,7 +72,7 @@ namespace System.Threading.Tasks.Channels
             protected override void Dispose() => _registration.Dispose();
         }
 
-        private sealed class CancelableWriter<T> : Writer<T>
+        internal sealed class CancelableWriter<T> : Writer<T>
         {
             private CancellationToken _token;
             private CancellationTokenRegistration _registration;

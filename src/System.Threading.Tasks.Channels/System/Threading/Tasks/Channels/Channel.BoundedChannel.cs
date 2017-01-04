@@ -12,7 +12,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Provides a channel with a bounded capacity.</summary>
         [DebuggerDisplay("Items={ItemsCountForDebugger}, Capacity={_bufferedCapacity}")]
         [DebuggerTypeProxy(typeof(DebugEnumeratorDebugView<>))]
-        private sealed class BoundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
+        internal sealed class BoundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
         {
             /// <summary>Task signaled when the channel has completed.</summary>
             private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -93,20 +93,20 @@ namespace System.Threading.Tasks.Channels
                     {
                         return false;
                     }
-                    _doneWriting = error ?? s_doneWritingSentinel;
+                    _doneWriting = error ?? ChannelUtilities.DoneWritingSentinel;
 
                     // If there are no items in the channel, then there's no more work to be done,
                     // so we complete the completion task.
                     if (_items.Count == 0)
                     {
-                        CompleteWithOptionalError(_completion, error);
+                        ChannelUtilities.CompleteWithOptionalError(_completion, error);
                     }
 
                     // If there are any waiting readers, fail them all, as they'll now never be satisfied.
                     while (_blockedReaders.Count > 0)
                     {
                         var reader = _blockedReaders.Dequeue();
-                        reader.Fail(error ?? CreateInvalidCompletionException());
+                        reader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
                     }
 
                     // If there are any waiting writers, fail them all, as they shouldn't be writing
@@ -114,12 +114,12 @@ namespace System.Threading.Tasks.Channels
                     while (_blockedWriters.Count > 0)
                     {
                         var writer = _blockedWriters.Dequeue();
-                        writer.Fail(CreateInvalidCompletionException());
+                        writer.Fail(ChannelUtilities.CreateInvalidCompletionException());
                     }
 
                     // If there are any pending WaitToRead/WriteAsync calls, wake them up.
-                    WakeUpWaiters(_waitingReaders, false);
-                    WakeUpWaiters(_waitingWriters, false);
+                    ChannelUtilities.WakeUpWaiters(_waitingReaders, false);
+                    ChannelUtilities.WakeUpWaiters(_waitingWriters, false);
                 }
 
                 return true;
@@ -145,7 +145,7 @@ namespace System.Threading.Tasks.Channels
                     // will never be more items, fail.
                     if (_doneWriting != null)
                     {
-                        return new ValueTask<T>(Task.FromException<T>(_doneWriting != s_doneWritingSentinel ? _doneWriting : CreateInvalidCompletionException()));
+                        return new ValueTask<T>(Task.FromException<T>(_doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException()));
                     }
 
                     // Otherwise, queue the reader.
@@ -167,13 +167,13 @@ namespace System.Threading.Tasks.Channels
                     // If there are any items available, a read is possible.
                     if (_items.Count > 0)
                     {
-                        return s_trueTask;
+                        return ChannelUtilities.TrueTask;
                     }
 
                     // There were no items available, so if we're done writing, a read will never be possible.
                     if (_doneWriting != null)
                     {
-                        return s_falseTask;
+                        return ChannelUtilities.FalseTask;
                     }
 
                     // There were no items available, but there could be in the future, so ensure
@@ -213,7 +213,7 @@ namespace System.Threading.Tasks.Channels
                 // If we're now empty and we're done writing, complete the channel.
                 if (_doneWriting != null && _items.Count == 0)
                 {
-                    CompleteWithOptionalError(_completion, _doneWriting);
+                    ChannelUtilities.CompleteWithOptionalError(_completion, _doneWriting);
                 }
 
                 // If there are any writers blocked, there's now room for at least one
@@ -233,7 +233,7 @@ namespace System.Threading.Tasks.Channels
 
                 // There was no blocked writer, so see if there's a WaitToWriteAsync
                 // we should wake up.
-                WakeUpWaiters(_waitingWriters, true);
+                ChannelUtilities.WakeUpWaiters(_waitingWriters, true);
 
                 // Return the item
                 return item;
@@ -272,7 +272,7 @@ namespace System.Threading.Tasks.Channels
                     // there's room in the queue.  Queue item, and let any waiting 
                     // readers know they could try to read.
                     _items.Enqueue(item);
-                    WakeUpWaiters(_waitingReaders, true);
+                    ChannelUtilities.WakeUpWaiters(_waitingReaders, true);
                     return true;
                 }
             }
@@ -289,12 +289,12 @@ namespace System.Threading.Tasks.Channels
                     // If we're done writing, no writes will ever succeed.
                     if (_doneWriting != null)
                     {
-                        return s_falseTask;
+                        return ChannelUtilities.FalseTask;
                     }
 
                     // If there's space to write, a write is possible.
                     if (_items.Count < _bufferedCapacity)
-                        return s_trueTask;
+                        return ChannelUtilities.TrueTask;
 
                     // We're still allowed to write, but there's no space,
                     // so ensure a waiter is queued and return it.
@@ -316,7 +316,7 @@ namespace System.Threading.Tasks.Channels
                     // If we're done writing, trying to write is an error.
                     if (_doneWriting != null)
                     {
-                        throw CreateInvalidCompletionException();
+                        throw ChannelUtilities.CreateInvalidCompletionException();
                     }
 
                     // If there are any blocked readers, find a non-canceled
@@ -326,7 +326,7 @@ namespace System.Threading.Tasks.Channels
                         Reader<T> r = _blockedReaders.Dequeue();
                         if (r.Success(item))
                         {
-                            return s_trueTask;
+                            return ChannelUtilities.TrueTask;
                         }
                     }
 
@@ -335,8 +335,8 @@ namespace System.Threading.Tasks.Channels
                     if (_items.Count < _bufferedCapacity)
                     {
                         _items.Enqueue(item);
-                        WakeUpWaiters(_waitingReaders, true);
-                        return s_trueTask;
+                        ChannelUtilities.WakeUpWaiters(_waitingReaders, true);
+                        return ChannelUtilities.TrueTask;
                     }
 
                     // There were no readers and there was no room.

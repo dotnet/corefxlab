@@ -280,7 +280,7 @@ namespace System.Threading.Tasks.Channels
                 /// <summary>Waits for the case to be available.</summary>
                 /// <param name="cancellationToken">The cancellation token to use for the operation.</param>
                 /// <returns>A task representing the asynchronous wait.</returns>
-                public virtual Task<bool> WaitAsync(CancellationToken cancellationToken) { return s_falseTask; }
+                public virtual Task<bool> WaitAsync(CancellationToken cancellationToken) { return ChannelUtilities.FalseTask; }
             }
 
             /// <summary>Provides the concrete case used for channel reads with synchronous processing.</summary>
@@ -308,14 +308,14 @@ namespace System.Threading.Tasks.Channels
                         try
                         {
                             _action(item);
-                            return s_trueTask;
+                            return ChannelUtilities.TrueTask;
                         }
                         catch (Exception exc)
                         {
                             return Task.FromException<bool>(exc);
                         }
                     }
-                    return s_falseTask;
+                    return ChannelUtilities.FalseTask;
                 }
             }
 
@@ -354,7 +354,7 @@ namespace System.Threading.Tasks.Channels
                             return Task.FromException<bool>(exc);
                         }
                     }
-                    return s_falseTask;
+                    return ChannelUtilities.FalseTask;
                 }
             }
 
@@ -384,14 +384,14 @@ namespace System.Threading.Tasks.Channels
                         try
                         {
                             _action();
-                            return s_trueTask;
+                            return ChannelUtilities.TrueTask;
                         }
                         catch (Exception exc)
                         {
                             return Task.FromException<bool>(exc);
                         }
                     }
-                    return s_falseTask;
+                    return ChannelUtilities.FalseTask;
                 }
             }
 
@@ -431,7 +431,7 @@ namespace System.Threading.Tasks.Channels
                             return Task.FromException<bool>(exc);
                         }
                     }
-                    return s_falseTask;
+                    return ChannelUtilities.FalseTask;
                 }
             }
 
@@ -450,7 +450,7 @@ namespace System.Threading.Tasks.Channels
                     try
                     {
                         _action();
-                        return s_trueTask;
+                        return ChannelUtilities.TrueTask;
                     }
                     catch (Exception exc)
                     {
