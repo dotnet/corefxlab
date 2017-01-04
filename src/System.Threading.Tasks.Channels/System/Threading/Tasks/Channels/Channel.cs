@@ -196,18 +196,9 @@ namespace System.Threading.Tasks.Channels
 
         /// <summary>Creates an exception detailing concurrent use of a single reader/writer channel.</summary>
         private static Exception CreateSingleReaderWriterMisuseException() =>
-            new InvalidOperationException(Properties.Resources.InvalidOperationException_SingleReaderWriterUsedConcurrently).InitializeStackTrace();
+            new InvalidOperationException(Properties.Resources.InvalidOperationException_SingleReaderWriterUsedConcurrently);
 
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>
-        private static Exception CreateInvalidCompletionException() => new ClosedChannelException().InitializeStackTrace();
-
-        /// <summary>Initializes the stack trace of an Exception by throwing and catching it.</summary>
-        /// <param name="exc">The exception to initialize.</param>
-        /// <returns>The same exception.</returns>
-        private static Exception InitializeStackTrace(this Exception exc)
-        {
-            try { throw exc; } catch { return exc; }
-        }
-
+        private static Exception CreateInvalidCompletionException() => new ClosedChannelException();
     }
 }
