@@ -7,7 +7,7 @@ namespace System.Text.Http.Tests
 {
     public class GivenAnHttpHeaders
     {
-        private static readonly string HeadersString = "Host: localhost:8080"
+        private const string HeadersString = "Host: localhost:8080"
             + "\r\nConnection: keep-alive"
             + "\r\nCache-Control: max-age=0"
             + "\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
