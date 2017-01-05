@@ -9,17 +9,63 @@ namespace System.Threading.Tasks.Channels.Tests
 {
     public class ChannelTests
     {
+        [Fact]
+        public void ChannelOptimizations_Properties_Roundtrip()
+        {
+            var co = new ChannelOptimizations();
+
+            Assert.False(co.SingleReader);
+            Assert.False(co.SingleWriter);
+            Assert.False(co.SingleReaderWriter);
+
+            co.SingleReader = true;
+            Assert.True(co.SingleReader);
+            Assert.False(co.SingleWriter);
+            Assert.False(co.SingleReaderWriter);
+            co.SingleReader = false;
+            Assert.False(co.SingleReader);
+
+            co.SingleWriter = true;
+            Assert.False(co.SingleReader);
+            Assert.True(co.SingleWriter);
+            Assert.False(co.SingleReaderWriter);
+            co.SingleWriter = false;
+            Assert.False(co.SingleWriter);
+
+            co.SingleReader = true;
+            co.SingleWriter = true;
+            Assert.True(co.SingleReader);
+            Assert.True(co.SingleWriter);
+            Assert.True(co.SingleReaderWriter);
+
+            co.SingleReaderWriter = false;
+            Assert.False(co.SingleReader);
+            Assert.False(co.SingleWriter);
+            Assert.False(co.SingleReaderWriter);
+
+            co.SingleReaderWriter = true;
+            Assert.True(co.SingleReader);
+            Assert.True(co.SingleWriter);
+            Assert.True(co.SingleReaderWriter);
+        }
+
+        [Fact]
+        public void CreateUnbounded_InvalidChannelOptimizations_ThrowArgumentException()
+        {
+            Assert.Throws<ArgumentNullException>("optimizations", () => Channel.CreateUnbounded<int>(null));
+        }
+
         [Theory]
         [InlineData(0)]
         [InlineData(-2)]
-        public void Create_InvalidBufferSizes_ThrowArgumentExceptions(int bufferedCapacity)
+        public void CreateBounded_InvalidBufferSizes_ThrowArgumentExceptions(int bufferedCapacity)
         {
             Assert.Throws<ArgumentOutOfRangeException>("bufferedCapacity", () => Channel.CreateBounded<int>(bufferedCapacity));
         }
 
         [Theory]
         [InlineData(1)]
-        public void Create_ValidBufferSizes_Success(int bufferedCapacity)
+        public void CreateBounded_ValidBufferSizes_Success(int bufferedCapacity)
         {
             Assert.NotNull(Channel.CreateBounded<int>(bufferedCapacity));
         }

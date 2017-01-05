@@ -73,7 +73,6 @@ to the library.  These channels are created via factory methods on the ```Channe
 public static class Channel
 {
     public static IChannel<T> CreateUnbounded<T>();
-    public static IChannel<T> CreateUnboundedSpsc<T>();
     public static IChannel<T> CreateUnbuffered<T>();
     public static IChannel<T> CreateBounded<T>(int bufferedCapacity, BoundedChannelFullMode mode);
 	...
@@ -81,9 +80,6 @@ public static class Channel
 ```
 - ```CreateUnbounded<T>```: Used to create a buffered, unbounded channel.  The channel may be used concurrently
 by any number of readers and writers, and is unbounded in size, limited only by available memory.
-- ```CreateUnboundedSpsc<T>```: Like ```CreateUnbounded<T>```, except it returns a channel that is usable by only a single Writer
-and a single reader at a time.  This constraint enables a more efficient implementation, but it is up to the code using the channel
-to guarantee that the constraint is met.
 - ```CreateUnbuffered<T>```: Used to create an unbuffered channel.  Such a channel has no internal storage for ```T``` items,
 instead pairing up writers and readers to rendezvous and directly hand off their data from one to the other.  TryWrite operations
 will only succeed if there's currently an outstanding ReadAsync operation, and conversely TryRead operations will only succeed if there's
@@ -94,6 +90,10 @@ may be used concurrently by any number of reads and writers.  Attempts to write 
 allowed number of items results in behavior according to the ```mode``` specified when the channel is created, and can include
 waiting for space to be available, dropping the oldest item (the one written longest ago still stored in the channel), or dropping
 the newest item (the one written most recently).
+
+These ```Create``` methods may also have overloads accepting a ```ChannelOptimizations``` type, which provides options
+around optimizations applied to these channels (typically optimizations that come with tradeoffs, e.g. faster throughput
+in exchange for guaranteeing no more than a single writer and a single reader at a time).
 
 ### Integration With Existing Types
 
