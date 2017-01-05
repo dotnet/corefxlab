@@ -7,9 +7,9 @@ using Xunit;
 
 namespace System.Threading.Tasks.Channels.Tests
 {
-    public class SingleReaderWriterUnboundedChannelTests : UnboundedChannelTests
+    public sealed class SingleReaderWriterUnboundedChannelTests : UnboundedChannelTests
     {
-        protected override IChannel<int> CreateChannel() => Channel.CreateUnboundedSpsc<int>();
+        protected override IChannel<int> CreateChannel() => Channel.CreateUnbounded<int>(new ChannelOptimizations { SingleReaderWriter = true });
 
         protected override bool RequiresSingleReaderWriter => true;
 
@@ -74,7 +74,7 @@ namespace System.Threading.Tasks.Channels.Tests
         }
     }
 
-    public class MultiReaderWriterUnboundedChannelTests : UnboundedChannelTests
+    public sealed class MultiReaderWriterUnboundedChannelTests : UnboundedChannelTests
     {
         protected override IChannel<int> CreateChannel() => Channel.CreateUnbounded<int>();
     }
