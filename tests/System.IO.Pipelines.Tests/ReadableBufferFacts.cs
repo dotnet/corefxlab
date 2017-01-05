@@ -523,6 +523,51 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
+        [Theory]
+        [MemberData(nameof(OutOfRangeSliceCases))]
+        public void ReadableBufferDoesNotAllowSlicingOutOfRange(Action<ReadableBuffer> fail, string parameter)
+        {
+            // we want big buffer so cursor.Seek succeeds but is out of range of readable buffer
+            var data = new byte[150];
+            var buffer = ReadableBuffer.Create(data).Slice(0, 50);
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => fail(buffer));
+            Assert.Equal(parameter, ex.ParamName);
+        }
+
+        [Fact]
+        public void ReadableBufferMove_MovesReadCursor()
+        {
+            var data = new byte[10];
+            var buffer = ReadableBuffer.Create(data);
+            var cursor = buffer.Move(buffer.Start, 5);
+            Assert.Equal(buffer.Slice(5).Start, cursor);
+        }
+
+        [Fact]
+        public void ReadableBufferMove_ChecksBounds()
+        {
+            var data = new byte[20];
+            var buffer = ReadableBuffer.Create(data);
+            var subbuffer = buffer.Slice(0, 10);
+            Assert.Throws<ArgumentOutOfRangeException>(()=> subbuffer.Move(buffer.Start, 11));
+        }
+
+        public static TheoryData<Action<ReadableBuffer>, string> OutOfRangeSliceCases
+        {
+            get
+            {
+                return new TheoryData<Action<ReadableBuffer>, string>()
+                {
+                    {b => b.Slice(100), "start"},
+                    {b => b.Slice(0, 100), "length"},
+                    {b => b.Slice(b.Start, 100), "length"},
+                    {b => b.Slice(0, 1).Slice(b.End, b.End), "start"},
+                    {b => b.Slice(0, 1).Slice(b.Start, b.End), "end"},
+                    {b => b.Slice(0, 1).Slice(0, b.End), "end"},
+                };
+            }
+        }
+
         private class NativePool : IBufferPool
         {
             public void Dispose()

@@ -133,6 +133,10 @@ namespace System.IO.Pipelines
                 if (wasLastSegment)
                 {
                     bytesSeeked = following;
+                    if (bytes != following)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(bytes));
+                    }
                     return new ReadCursor(segment, index + following);
                 }
                 else
@@ -270,6 +274,29 @@ namespace System.IO.Pipelines
 
             var shift5 = ((uint)h1 << 5) | ((uint)h1 >> 27);
             return ((int)shift5 + h1) ^ h2;
+        }
+
+        internal bool GreaterOrEqual(ReadCursor other)
+        {
+            if (other._segment == _segment)
+            {
+                return other._index <= _index;
+            }
+            return IsReachable(other);
+        }
+
+        internal bool IsReachable(ReadCursor other)
+        {
+            var current = other.Segment;
+            do
+            {
+                if (current == Segment)
+                {
+                    return true;
+                }
+                current = current.Next;
+            } while (current != null);
+            return false;
         }
     }
 }

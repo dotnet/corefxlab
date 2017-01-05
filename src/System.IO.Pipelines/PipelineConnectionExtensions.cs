@@ -49,7 +49,7 @@ namespace System.IO.Pipelines
                 var inputBuffer = result.Buffer;
 
                 var fin = result.IsCompleted;
-                var sliced = inputBuffer.Slice(0, destination.Length);
+                var sliced = inputBuffer.Slice(0, Math.Min(inputBuffer.Length, destination.Length));
                 sliced.CopyTo(destination);
                 int actual = sliced.Length;
                 input.Advance(sliced.End);

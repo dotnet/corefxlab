@@ -41,15 +41,15 @@ namespace System.IO.Pipelines.Tests
             int found = -1;
             if (searchFor.Length == 1)
             {
-                found = SeekExtensions.Seek(start, end, out result, (byte)searchFor[0]);
+                found = CursorOperations.Seek(start, end, out result, (byte)searchFor[0]);
             }
             else if (searchFor.Length == 2)
             {
-                found = SeekExtensions.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1]);
+                found = CursorOperations.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1]);
             }
             else if (searchFor.Length == 3)
             {
-                found = SeekExtensions.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1], (byte)searchFor[2]);
+                found = CursorOperations.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1], (byte)searchFor[2]);
             }
             else
             {
@@ -75,7 +75,7 @@ namespace System.IO.Pipelines.Tests
             int bytesScanned;
             ReadCursor result;
             var end = cursors.Item2;
-            var returnValue = SeekExtensions.Seek(cursors.Item1, end, out result, (byte)seek, out bytesScanned, limit);
+            var returnValue = CursorOperations.Seek(cursors.Item1, end, out result, (byte)seek, out bytesScanned, limit);
 
             // Assert
             Assert.Equal(expectedBytesScanned, bytesScanned);
@@ -105,7 +105,7 @@ namespace System.IO.Pipelines.Tests
             // Act
             int bytesScanned;
             ReadCursor result;
-            var returnValue = SeekExtensions.Seek(cursors.Item1, cursors.Item2, out result, (byte)seek, out bytesScanned, limit);
+            var returnValue = CursorOperations.Seek(cursors.Item1, cursors.Item2, out result, (byte)seek, out bytesScanned, limit);
 
             // Assert
             Assert.Equal(expectedBytesScanned, bytesScanned);
@@ -139,13 +139,13 @@ namespace System.IO.Pipelines.Tests
             var end = cursors.Item2;
 
             // Act
-            var endReturnValue = SeekExtensions.Seek(start, veryEnd, out end, (byte)limitAt);
-            var returnValue1 = SeekExtensions.Seek(start, end, out scan1, (byte)seek);
-            var returnValue2_1 = SeekExtensions.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
-            var returnValue2_2 = SeekExtensions.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
-            var returnValue3_1 = SeekExtensions.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
-            var returnValue3_2 = SeekExtensions.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
-            var returnValue3_3 = SeekExtensions.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
+            var endReturnValue = CursorOperations.Seek(start, veryEnd, out end, (byte)limitAt);
+            var returnValue1 = CursorOperations.Seek(start, end, out scan1, (byte)seek);
+            var returnValue2_1 = CursorOperations.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
+            var returnValue2_2 = CursorOperations.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
+            var returnValue3_1 = CursorOperations.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
+            var returnValue3_2 = CursorOperations.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
+            var returnValue3_3 = CursorOperations.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
 
 
             // Assert
@@ -241,13 +241,13 @@ namespace System.IO.Pipelines.Tests
             var end = cursors.Item2;
 
             // Act
-            var endReturnValue = SeekExtensions.Seek(start, veryEnd, out end, (byte)limitAt);
-            var returnValue1 = SeekExtensions.Seek(start, end, out scan1, (byte)seek);
-            var returnValue2_1 = SeekExtensions.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
-            var returnValue2_2 = SeekExtensions.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
-            var returnValue3_1 = SeekExtensions.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
-            var returnValue3_2 = SeekExtensions.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
-            var returnValue3_3 = SeekExtensions.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
+            var endReturnValue = CursorOperations.Seek(start, veryEnd, out end, (byte)limitAt);
+            var returnValue1 = CursorOperations.Seek(start, end, out scan1, (byte)seek);
+            var returnValue2_1 = CursorOperations.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
+            var returnValue2_2 = CursorOperations.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
+            var returnValue3_1 = CursorOperations.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
+            var returnValue3_2 = CursorOperations.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
+            var returnValue3_3 = CursorOperations.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
 
             // Assert
             Assert.Equal(input.Contains(limitAt) ? limitAt : -1, endReturnValue);

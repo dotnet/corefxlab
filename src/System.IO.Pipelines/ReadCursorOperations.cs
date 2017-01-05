@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    public static class SeekExtensions
+    public static class ReadCursorOperations
     {
         private const ulong _xorPowerOfTwoToHighByte = (0x07ul |
                                                         0x06ul << 8 |
