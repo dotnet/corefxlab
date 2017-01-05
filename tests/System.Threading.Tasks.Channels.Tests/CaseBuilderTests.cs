@@ -10,84 +10,84 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void CaseRead_Sync_InvalidArguments_ThrowsArgumentException()
         {
-            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.CreateUnbounded<int>(), i => { });
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, (Action<int>)null));
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, i => { }));
-            Assert.Throws<ArgumentNullException>("action", () => cb.CaseRead<int>(Channel.Create<int>(), (Action<int>)null));
+            Assert.Throws<ArgumentNullException>("action", () => cb.CaseRead<int>(Channel.CreateUnbounded<int>(), (Action<int>)null));
         }
 
         [Fact]
         public void CaseRead_Async_InvalidArguments_ThrowsArgumentException()
         {
-            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.CreateUnbounded<int>(), i => { });
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, (Func<int, Task>)null));
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseRead<int>(null, i => Task.CompletedTask));
-            Assert.Throws<ArgumentNullException>("func", () => cb.CaseRead<int>(Channel.Create<int>(), (Func<int, Task>)null));
+            Assert.Throws<ArgumentNullException>("func", () => cb.CaseRead<int>(Channel.CreateUnbounded<int>(), (Func<int, Task>)null));
         }
 
         [Fact]
         public void CaseWrite_Sync_InvalidArguments_ThrowsArgumentException()
         {
-            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.CreateUnbounded<int>(), i => { });
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, (Action)null));
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, (Action)delegate { }));
-            Assert.Throws<ArgumentNullException>("action", () => cb.CaseWrite<int>(Channel.Create<int>(), 0, (Action)null));
+            Assert.Throws<ArgumentNullException>("action", () => cb.CaseWrite<int>(Channel.CreateUnbounded<int>(), 0, (Action)null));
         }
 
         [Fact]
         public void CaseWrite_Async_InvalidArguments_ThrowsArgumentException()
         {
-            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.CreateUnbounded<int>(), i => { });
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, (Func<Task>)null));
             Assert.Throws<ArgumentNullException>("channel", () => cb.CaseWrite<int>(null, 0, delegate { return Task.CompletedTask; }));
-            Assert.Throws<ArgumentNullException>("func", () => cb.CaseWrite<int>(Channel.Create<int>(), 0, (Func<Task>)null));
+            Assert.Throws<ArgumentNullException>("func", () => cb.CaseWrite<int>(Channel.CreateUnbounded<int>(), 0, (Func<Task>)null));
         }
 
         [Fact]
         public void CaseDefault_Sync_InvalidAction_ThrowsException()
         {
-            CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder builder1 = Channel.CaseRead(Channel.CreateUnbounded<int>(), i => { });
             Assert.Throws<ArgumentNullException>(() => builder1.CaseDefault((Action)null));
         }
         [Fact]
         public void CaseDefault_Async_InvalidAction_ThrowsException()
         {
-            CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => Task.CompletedTask);
+            CaseBuilder builder1 = Channel.CaseRead(Channel.CreateUnbounded<int>(), i => Task.CompletedTask);
             Assert.Throws<ArgumentNullException>(() => builder1.CaseDefault((Func<Task>)null));
         }
 
         [Fact]
         public void CaseReadWrite_Sync_CallMultipleTimes_IdempotentResult()
         {
-            CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => { });
-            Assert.Same(builder1, builder1.CaseRead(Channel.Create<int>(), i => { }));
-            Assert.Same(builder1, builder1.CaseWrite(Channel.Create<string>(), "", () => { }));
+            CaseBuilder builder1 = Channel.CaseRead(Channel.CreateUnbounded<int>(), i => { });
+            Assert.Same(builder1, builder1.CaseRead(Channel.CreateUnbounded<int>(), i => { }));
+            Assert.Same(builder1, builder1.CaseWrite(Channel.CreateUnbounded<string>(), "", () => { }));
             Assert.Same(builder1, builder1.CaseDefault(() => { }));
 
-            CaseBuilder builder2 = Channel.CaseWrite(Channel.Create<int>(), 0, () => { });
-            Assert.Same(builder2, builder2.CaseRead(Channel.Create<int>(), i => { }));
-            Assert.Same(builder2, builder2.CaseWrite(Channel.Create<string>(), "", () => { }));
+            CaseBuilder builder2 = Channel.CaseWrite(Channel.CreateUnbounded<int>(), 0, () => { });
+            Assert.Same(builder2, builder2.CaseRead(Channel.CreateUnbounded<int>(), i => { }));
+            Assert.Same(builder2, builder2.CaseWrite(Channel.CreateUnbounded<string>(), "", () => { }));
             Assert.Same(builder2, builder2.CaseDefault(() => { }));
         }
 
         [Fact]
         public void CaseReadWrite_Async_CallMultipleTimes_IdempotentResult()
         {
-            CaseBuilder builder1 = Channel.CaseRead(Channel.Create<int>(), i => Task.CompletedTask);
-            Assert.Same(builder1, builder1.CaseRead(Channel.Create<int>(), i => Task.CompletedTask));
-            Assert.Same(builder1, builder1.CaseWrite(Channel.Create<string>(), "", () => Task.CompletedTask));
+            CaseBuilder builder1 = Channel.CaseRead(Channel.CreateUnbounded<int>(), i => Task.CompletedTask);
+            Assert.Same(builder1, builder1.CaseRead(Channel.CreateUnbounded<int>(), i => Task.CompletedTask));
+            Assert.Same(builder1, builder1.CaseWrite(Channel.CreateUnbounded<string>(), "", () => Task.CompletedTask));
             Assert.Same(builder1, builder1.CaseDefault(() => Task.CompletedTask));
 
-            CaseBuilder builder2 = Channel.CaseWrite(Channel.Create<int>(), 0, () => Task.CompletedTask);
-            Assert.Same(builder2, builder2.CaseRead(Channel.Create<int>(), i => Task.CompletedTask));
-            Assert.Same(builder2, builder2.CaseWrite(Channel.Create<string>(), "", () => Task.CompletedTask));
+            CaseBuilder builder2 = Channel.CaseWrite(Channel.CreateUnbounded<int>(), 0, () => Task.CompletedTask);
+            Assert.Same(builder2, builder2.CaseRead(Channel.CreateUnbounded<int>(), i => Task.CompletedTask));
+            Assert.Same(builder2, builder2.CaseWrite(Channel.CreateUnbounded<string>(), "", () => Task.CompletedTask));
             Assert.Same(builder2, builder2.CaseDefault(() => Task.CompletedTask));
         }
 
         [Fact]
         public void CaseDefault_AlreadyExists_ThrowsException()
         {
-            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { }).CaseDefault(() => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.CreateUnbounded<int>(), i => { }).CaseDefault(() => { });
             Assert.Throws<InvalidOperationException>(() => cb.CaseDefault(() => { }));
             Assert.Throws<InvalidOperationException>(() => cb.CaseDefault(() => Task.CompletedTask));
         }
@@ -95,7 +95,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void SelectAsync_Precanceled_ThrowsCancellationException()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
             Assert.True(c.TryWrite(42));
 
             var cts = new CancellationTokenSource();
@@ -110,7 +110,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_CanceledAfterSelectBeforeData_ThrowsCancellationException()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
             var cts = new CancellationTokenSource();
 
             Task<bool> select = Channel
@@ -125,7 +125,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void SelectAsync_NoChannelsAvailable_SyncDefault_CompletesSynchronously()
         {
-            IChannel<int> c1 = Channel.Create<int>();
+            IChannel<int> c1 = Channel.CreateUnbounded<int>();
             IChannel<int> c2 = Channel.CreateUnbuffered<int>();
 
             var tcs = new TaskCompletionSource<int>();
@@ -144,7 +144,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void SelectAsync_NoChannelsAvailable_AsyncDefault_CompletesSynchronously()
         {
-            IChannel<int> c1 = Channel.Create<int>();
+            IChannel<int> c1 = Channel.CreateUnbounded<int>();
             IChannel<int> c2 = Channel.CreateUnbuffered<int>();
 
             var tcs = new TaskCompletionSource<int>();
@@ -163,7 +163,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_NoChannelsAvailable_AsyncDefault_CompletesAsynchronously()
         {
-            IChannel<int> c1 = Channel.Create<int>();
+            IChannel<int> c1 = Channel.CreateUnbounded<int>();
             IChannel<int> c2 = Channel.CreateUnbuffered<int>();
 
             var tcs = new TaskCompletionSource<int>();
@@ -180,7 +180,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_NoChannelsAvailable_SyncDefault_ThrowsSynchronously()
         {
-            IChannel<int> c1 = Channel.Create<int>();
+            IChannel<int> c1 = Channel.CreateUnbounded<int>();
             IChannel<int> c2 = Channel.CreateUnbuffered<int>();
 
             Task<bool> select = Channel
@@ -196,7 +196,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_NoChannelsAvailable_AsyncDefault_ThrowsSynchronously()
         {
-            IChannel<int> c1 = Channel.Create<int>();
+            IChannel<int> c1 = Channel.CreateUnbounded<int>();
             IChannel<int> c2 = Channel.CreateUnbuffered<int>();
 
             Task<bool> select = Channel
@@ -212,7 +212,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_NoChannelsAvailable_AsyncDefault_ThrowsAsynchronously()
         {
-            IChannel<int> c1 = Channel.Create<int>();
+            IChannel<int> c1 = Channel.CreateUnbounded<int>();
             IChannel<int> c2 = Channel.CreateUnbuffered<int>();
 
             Task<bool> select = Channel
@@ -227,7 +227,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_AllChannelsCompletedBefore_ReturnsFalse()
         {
-            IChannel<int> c1 = Channel.Create<int>();
+            IChannel<int> c1 = Channel.CreateUnbounded<int>();
             IChannel<int> c2 = Channel.CreateUnbuffered<int>();
             c1.Complete();
             c2.Complete();
@@ -242,7 +242,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_AllChannelsCompletedAfter_ReturnsFalse()
         {
-            IChannel<int> c1 = Channel.Create<int>();
+            IChannel<int> c1 = Channel.CreateUnbounded<int>();
             IChannel<int> c2 = Channel.CreateUnbuffered<int>();
 
             Task<bool> select = Channel
@@ -259,7 +259,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_SingleCaseRead_Sync_DataAlreadyAvailable()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
             Assert.True(c.TryWrite(42));
 
             var tcs = new TaskCompletionSource<int>();
@@ -275,7 +275,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_SingleCaseRead_Async_DataAlreadyAvailable_CompletesSynchronously()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
             Assert.True(c.TryWrite(42));
 
             var tcs = new TaskCompletionSource<int>();
@@ -291,7 +291,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_SingleCaseRead_Async_DataAlreadyAvailable_CompletesAsynchronously()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
             Assert.True(c.TryWrite(42));
 
             var tcs = new TaskCompletionSource<int>();
@@ -351,7 +351,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_SingleCaseWrite_Sync_SpaceAlreadyAvailable_CompletesSynchronously()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
 
             var tcs = new TaskCompletionSource<int>();
             Task<bool> select = Channel.CaseWrite(c, 42, () => tcs.SetResult(1)).SelectAsync();
@@ -370,7 +370,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_SingleCaseWrite_Async_SpaceAlreadyAvailable_CompletesSynchronously()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
 
             var tcs = new TaskCompletionSource<int>();
             Task<bool> select = Channel.CaseWrite(c, 42, () => { tcs.SetResult(1); return Task.CompletedTask; }).SelectAsync();
@@ -389,7 +389,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_SingleCaseWrite_Async_SpaceAlreadyAvailable_CompletesAsynchronously()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
 
             var tcs = new TaskCompletionSource<int>();
             Task<bool> select = Channel.CaseWrite(c, 42, async () => { await Task.Yield(); tcs.SetResult(1); }).SelectAsync();
@@ -548,7 +548,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void SelectUntilAsync_InvalidArguments_ThrowsExceptions()
         {
-            CaseBuilder cb = Channel.CaseRead(Channel.Create<int>(), i => { });
+            CaseBuilder cb = Channel.CaseRead(Channel.CreateUnbounded<int>(), i => { });
             Assert.Throws<ArgumentNullException>(() => { cb.SelectUntilAsync(null); });
         }
 
@@ -565,9 +565,9 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(true, 100, 0)]
         public async Task SelectUntilAsync_ProcessUntilAllDataExhausted_Success(bool dataAvailableBefore, int numItems, int maxIterations)
         {
-            IChannel<int> c1 = Channel.Create<int>();
-            IChannel<string> c2 = Channel.Create<string>();
-            IChannel<double> c3 = Channel.Create<double>();
+            IChannel<int> c1 = Channel.CreateUnbounded<int>();
+            IChannel<string> c2 = Channel.CreateUnbounded<string>();
+            IChannel<double> c3 = Channel.CreateUnbounded<double>();
 
             int delegatesInvoked = 0;
             Task<int> select = null;

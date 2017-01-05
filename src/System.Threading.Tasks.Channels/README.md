@@ -19,6 +19,7 @@ public interface IChannel<TInput, TOutput> : IWritableChannel<TInput>, IReadable
 
 public interface IReadableChannel<T>
 {
+    ValueAwaiter<T> GetAwaiter();
     bool TryRead(out T item);
     ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken));
     Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken));
@@ -48,12 +49,21 @@ marked as completed and all existing data in the channel has been consumed.  Cha
 an optional ```Exception``` to Complete; this exception will emerge when awaiting on the Completion Task, as well as when trying
 to ```ReadAsync``` from an empty completed collection.
 
-```ReadAsync``` is defined to return a ```ValueTask<T>```, a new struct type included in this library.  ```ValueTask<T>``` is a discriminated 
+```ReadAsync``` is defined to return a ```ValueTask<T>```, a struct type that's a  discriminated 
 union of a ```T``` and a ```Task<T>```, making it allocation-free for ```ReadAsync<T>``` to synchronously return a ```T``` value it has 
 available (in contrast to using ```Task.FromResult<T>```, which needs to allocate a ```Task<T>``` instance).   ```ValueTask<T>``` is awaitable, 
 so most consumption of instances will be indistinguishable from with a ```Task<T>```.  If a ```Task<T>``` is needed, one can be retrieved using 
 ```ValueTask<T>```'s ```AsTask()``` method, which will either return the ```Task<T>``` it stores internally or will return an instance created
 from the ```T``` it stores.
+
+```IReadableChannel<T>``` also exposes a ```GetAwaiter``` method, making it directly awaiting for consuming an element from a channel, e.g.
+```C#
+var result = await c;
+```
+```GetAwaiter``` returns a ```ValueAwaiter<T>```, a struct type that's a discriminated union of a ```T``` and some other async operation,
+either a ```Task<T>``` or an ```IAwaiter<T>```.  This allows channels to synchronously return data without allocating when data is
+available synchronously.  It also enables channels to provide optimized implementations for asynchronous completion, but using a custom
+```IAwaiter<T>``` as the underlying awaiter implementation.
 
 ## Core Channels
 
@@ -62,57 +72,34 @@ to the library.  These channels are created via factory methods on the ```Channe
 ```C#
 public static class Channel
 {
-    public static IChannel<T> Create<T>(int bufferedCapacity = Unbounded, bool singleReaderWriter = false);
+    public static IChannel<T> CreateUnbounded<T>();
+    public static IChannel<T> CreateUnboundedSpsc<T>();
     public static IChannel<T> CreateUnbuffered<T>();
+    public static IChannel<T> CreateBounded<T>(int bufferedCapacity, BoundedChannelFullMode mode);
 	...
 }
 ```
-- ```Create<T>```: Used to create a buffered channel.  When no arguments are provided, the channel may be used concurrently
-by any number of readers and writers, and is unbounded in size, limited only by available memory.  An optional ```bufferedCapacity```
-may be supplied, which limits the number of items the channel may buffer to that amount; when that limit is reached, attempts to
-TryWrite will return false, and WriteAsync and WaitToWriteAsync operations will not complete until space becomes available. An
-optional ```singleReaderWriter``` argument may also be supplied; this is a performance optimization, whereby the developer guarantees
-that at most one reader and at most one writer will use the channel at a time, in exchange for significantly lower overheads.
+- ```CreateUnbounded<T>```: Used to create a buffered, unbounded channel.  The channel may be used concurrently
+by any number of readers and writers, and is unbounded in size, limited only by available memory.
+- ```CreateUnboundedSpsc<T>```: Like ```CreateUnbounded<T>```, except it returns a channel that is usable by only a single Writer
+and a single reader at a time.  This constraint enables a more efficient implementation, but it is up to the code using the channel
+to guarantee that the constraint is met.
 - ```CreateUnbuffered<T>```: Used to create an unbuffered channel.  Such a channel has no internal storage for ```T``` items,
 instead pairing up writers and readers to rendezvous and directly hand off their data from one to the other.  TryWrite operations
 will only succeed if there's currently an outstanding ReadAsync operation, and conversely TryRead operations will only succeed if there's
 currently an outstanding WriteAsync operation.  ReadAsync and WriteAsync operations will complete once the counterpart operation
 arrives to satisfy the request.
-
-## Specialized Channels
-
-Several additional channel types are provided to highlight the kinds of things that can be done with channels:
-### Distributed Channels
-```C#
-public static class Channel
-{
-    public static IReadableChannel<T> ReadFromStream<T>(Stream source);
-    public static IWritableChannel<T> WriteToStream<T>(Stream destination);
-	...
-}
-```
-The implementation provides an example for how channels can be wrapped around System.IO.Stream, which then allows for using
-the channel interfaces and things implemented in terms of them around arbitrary streams, such as those used to communicate
-cross-process and cross-machine, e.g. ```PipeStream``` and ```NetworkStream```.  In the current implementation, the serialization employed
-is limited and rudimentary, using BinaryReader/Writer and limited to the types they support, but the design could be augmented
-to support arbitrary serialization models.
+- ```CreateBounded<T>```: Used to create a buffered channel that stores at most a specified number of items.  The Channel
+may be used concurrently by any number of reads and writers.  Attempts to write to the channel when it contains the maximum
+allowed number of items results in behavior according to the ```mode``` specified when the channel is created, and can include
+waiting for space to be available, dropping the oldest item (the one written longest ago still stored in the channel), or dropping
+the newest item (the one written most recently).
 
 ### Integration With Existing Types
 
-```Channel``` includes a ```CreateFromEnumerable``` method that creates a channel from an enumerable:
+```ChannelExtensions``` provides helper methods for working with channels, including support for interop between channels and observables / observers:
 ```C#
-public static class Channel
-{
-    public static IReadableChannel<T> CreateFromEnumerable<T>(IEnumerable<T> source);
-	...
-}
-```
-Constructing the channel gets an enumerator from the enumerable, and reading an item from the channel 
-pushes the enumerator forward.
-
-```Channel``` also includes support for going between channels and observables and observers:
-```C#
-public static class Channel
+public static class ChannelExtensions
 {
     public static IObservable<T> AsObservable<T>(this IReadableChannel<T> source);
     public static IObserver<T> AsObserver<T>(this IWritableChannel<T> target);
@@ -123,32 +110,10 @@ This allows for subscribing a writeable channel to an observable as an observer,
 to a readable channel as an observable.  With this support, IObservable-based LINQ queries can be written against
 data in channels.
 
-Channels can also be created from ```Task<T>```, providing a channel that'll eventually have at most one element,
-and allowing ```Task<T>```s to be used anywhere a readable channel can be used.
-```C#
-public static class Channel
-{
-    public static IReadableChannel<T> CreateFromTask<T>(Task<T> source);
-	...
-}
-```
-
 ## Additional Support for Reading
 
-Readable channels can be read from using the ```TryRead```/```ReadAsync```/```WaitForReadAsync``` methods.  However, 
-the library provides higher-level support built on top of these operations, in order to make reading more integrated 
-in other scenarios.
-
-```IReadableChannel<T>``` can be directly awaited.  Rather than doing:
-```C#
-T result = await channel.ReadAsync();
-```
-code can simply do the equivalent:
-```C#
-T result = await channel;
-```
-
-The library also includes a prototype for an ```IAsyncEnumerator<T>```, which can be used to asynchronously
+In addition to reading from a channel via the ```TryRead```/```ReadAsync```/```WaitForReadAsync``` / ```GetAwaiter``` methods,
+the library also includes a prototype for an ```IAsyncEnumerator<T>```, which can be used to asynchronously
 read all of the data out of a channel:
 ```C#
 IAsyncEnumerator<T> e = channel.GetAsyncEnumerator();

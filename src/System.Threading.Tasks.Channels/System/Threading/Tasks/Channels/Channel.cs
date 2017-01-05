@@ -10,12 +10,12 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Creates an unbounded channel usable by any number of readers and writers concurrently.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <returns>The created channel.</returns>
-        public static IChannel<T> Create<T>() => new UnboundedChannel<T>();
+        public static IChannel<T> CreateUnbounded<T>() => new UnboundedChannel<T>();
 
         /// <summary>Creates an unbounded channel usable by a single producer and a single consumer at a time.</summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static IChannel<T> CreateSpsc<T>() => new SingleProducerSingleConsumerUnboundedChannel<T>();
+        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
+        /// <returns>The created channel.</returns>
+        public static IChannel<T> CreateUnboundedSpsc<T>() => new SingleProducerSingleConsumerUnboundedChannel<T>();
 
         /// <summary>Creates a channel that doesn't buffer any items.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
@@ -27,7 +27,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="bufferedCapacity">The maximum number of elements the channel can store.</param>
         /// <param name="mode">The behavior to use when writing to a full channel.</param>
         /// <returns>The created channel.</returns>
-        public static IChannel<T> Create<T>(int bufferedCapacity, BoundedChannelFullMode mode = BoundedChannelFullMode.Wait)
+        public static IChannel<T> CreateBounded<T>(int bufferedCapacity, BoundedChannelFullMode mode = BoundedChannelFullMode.Wait)
         {
             if (bufferedCapacity < 1)
             {
