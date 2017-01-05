@@ -21,8 +21,9 @@ namespace System.Threading.Tasks.Channels
         private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
         private readonly SingleProducerSingleConsumerQueue<T> _items = new SingleProducerSingleConsumerQueue<T>();
 
+        private AutoResetAwaiter<T> _awaiter;
         private volatile Exception _doneWriting;
-        private ReaderInteractor<T> _blockedReader;
+        private object _blockedReader; // ReaderInteractor<T> or AutoResetAwaiter<T>
         private ReaderInteractor<bool> _waitingReader;
 
         /// <summary>Initialize the channel.</summary>
@@ -47,7 +48,19 @@ namespace System.Threading.Tasks.Channels
                     ChannelUtilities.CompleteWithOptionalError(_completion, error);
                     if (_blockedReader != null)
                     {
-                        _blockedReader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
+                        if (error == null)
+                        {
+                            error = ChannelUtilities.CreateInvalidCompletionException();
+                        }
+                        ReaderInteractor<T> interactor = _blockedReader as ReaderInteractor<T>;
+                        if (interactor != null)
+                        {
+                            interactor.Fail(error);
+                        }
+                        else
+                        {
+                            ((AutoResetAwaiter<T>)_blockedReader).SetException(error);
+                        }
                         _blockedReader = null;
                     }
                     if (_waitingReader != null)
@@ -61,7 +74,43 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
+        public ValueAwaiter<T> GetAwaiter()
+        {
+            T item;
+            return TryRead(out item) ?
+                new ValueAwaiter<T>(item) :
+                GetAwaiterCore();
+        }
+
+        private ValueAwaiter<T> GetAwaiterCore()
+        {
+            lock (SyncObj)
+            {
+                T item;
+                if (TryRead(out item))
+                {
+                    return new ValueAwaiter<T>(item);
+                }
+
+                if (_doneWriting != null || _blockedReader != null)
+                {
+                    Exception e = _doneWriting != null ?
+                        _doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException() :
+                        ChannelUtilities.CreateSingleReaderWriterMisuseException();
+                    return new ValueAwaiter<T>(Task.FromException<T>(e));
+                }
+
+                if (_awaiter == null)
+                {
+                    _awaiter = new AutoResetAwaiter<T>();
+                }
+
+                _blockedReader = _awaiter;
+                return new ValueAwaiter<T>(_awaiter);
+            }
+        }
+
+        public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             T item;
             return TryRead(out item) ?
@@ -74,15 +123,18 @@ namespace System.Threading.Tasks.Channels
             lock (SyncObj)
             {
                 T item;
-
                 if (TryRead(out item))
+                {
                     return new ValueTask<T>(item);
+                }
 
-                if (_doneWriting != null)
-                    return new ValueTask<T>(Task.FromException<T>(_doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException()));
-
-                if (_blockedReader != null)
-                    return new ValueTask<T>(Task.FromException<T>(ChannelUtilities.CreateSingleReaderWriterMisuseException()));
+                if (_doneWriting != null || _blockedReader != null)
+                {
+                    Exception e = _doneWriting != null ?
+                        _doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException() :
+                        ChannelUtilities.CreateSingleReaderWriterMisuseException();
+                    return new ValueTask<T>(Task.FromException<T>(e));
+                }
 
                 ReaderInteractor<T> reader = ReaderInteractor<T>.Create(cancellationToken);
                 _blockedReader = reader;
@@ -107,14 +159,22 @@ namespace System.Threading.Tasks.Channels
         {
             lock (SyncObj)
             {
-                var b = _blockedReader;
+                object b = _blockedReader;
                 if (b != null)
                 {
                     _blockedReader = null;
-                    if (b.Success(item))
+
+                    ReaderInteractor<T> interactor = b as ReaderInteractor<T>;
+                    if (interactor != null)
                     {
-                        return true;
+                        bool success = interactor.Success(item);
+                        Debug.Assert(success, "Reader should not have been already completed");
                     }
+                    else
+                    {
+                        ((AutoResetAwaiter<T>)b).SetResult(item);
+                    }
+                    return true;
                 }
 
                 if (_waitingReader != null)
@@ -133,7 +193,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToReadAsync(CancellationToken cancellationToken)
+        public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (!_items.IsEmpty)
             {
@@ -161,7 +221,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)
+        public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return
                 cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
@@ -169,7 +229,7 @@ namespace System.Threading.Tasks.Channels
                 ChannelUtilities.FalseTask;
         }
 
-        public Task WriteAsync(T item, CancellationToken cancellationToken)
+        public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Writing always succeeds (unless we've already completed writing or cancellation has been requested),
             // so just TryWrite and return a completed task.

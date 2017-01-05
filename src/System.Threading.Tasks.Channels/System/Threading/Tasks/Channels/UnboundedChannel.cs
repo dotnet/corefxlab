@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -89,7 +90,9 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        public ValueTask<T> ReadAsync(CancellationToken cancellationToken)
+        public ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
+
+        public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             T item;
             return TryRead(out item) ?
@@ -131,7 +134,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToReadAsync(CancellationToken cancellationToken)
+        public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             lock (SyncObj)
             {
@@ -207,7 +210,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken)
+        public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -221,7 +224,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task WriteAsync(T item, CancellationToken cancellationToken)
+        public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Writing always succeeds (unless we've already completed writing or cancellation has been requested),
             // so just TryWrite and return a completed task.

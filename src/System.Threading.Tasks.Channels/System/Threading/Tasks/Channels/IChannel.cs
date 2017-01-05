@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Runtime.CompilerServices;
+
 namespace System.Threading.Tasks.Channels
 {
     /// <summary>Represents a channel to and from which data can be written and read.</summary>
@@ -21,6 +23,10 @@ namespace System.Threading.Tasks.Channels
     /// <typeparam name="T">Specifies the type of data items readable from the channel.</typeparam>
     public interface IReadableChannel<T>
     {
+        /// <summary>Asynchronously reads a data item from the channel, returning an awaiter usable once to consume that result.</summary>
+        /// <returns>An awaiter that may be used once with await to consume the result of the read operation.</returns>
+        ValueAwaiter<T> GetAwaiter();
+
         /// <summary>Asynchronously reads a data item from the channel.</summary>
         /// <param name="cancellationToken">The cancellation token to use to cancel the operation.</param>
         /// <returns>A task representing the asynchronous read operation.</returns>

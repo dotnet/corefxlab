@@ -44,12 +44,6 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
-        public void GetAwaiter_InvalidSource_ThrowsArgumentException()
-        {
-            Assert.Throws<NullReferenceException>(() => ChannelExtensions.GetAwaiter<int>(null));
-        }
-
-        [Fact]
         public void GetAsyncEnumerator_InvalidSource_ThrowsArgumentException()
         {
             Assert.Throws<ArgumentNullException>("channel", () => ChannelExtensions.GetAsyncEnumerator<int>(null));

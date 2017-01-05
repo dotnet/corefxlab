@@ -40,19 +40,6 @@ namespace System.Threading.Tasks.Channels
             return new ChannelObserver<T>(target);
         }
 
-        /// <summary>Gets an awaiter that enables directly awaiting a channel to read data from it.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel to await and from which to read.</param>
-        /// <returns>An awaiter for reading data from the channel.</returns>
-        /// <remarks>
-        /// Getting the awaiter will initiate a read operation on the channel.
-        /// </remarks>
-        public static ValueTaskAwaiter<T> GetAwaiter<T>(this IReadableChannel<T> channel)
-        {
-            // No explicit null check.  await'ing something that's null can produce a NullReferenceException.
-            return channel.ReadAsync().GetAwaiter();
-        }
-
         /// <summary>Gets an async enumerator of the data in the channel.</summary>
         /// <typeparam name="T">Specifies the type of data being enumerated.</typeparam>
         /// <param name="channel">The channel from which to read data.</param>
