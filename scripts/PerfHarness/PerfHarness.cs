@@ -30,6 +30,7 @@ public class PerfHarness
             "Benchmarks",
             "System.Binary.Base64.Tests",
             "System.Text.Primitives.Tests",
+            "System.Text.Primitives.Encoding.Performance.Tests"
         };
     }
 }
