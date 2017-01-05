@@ -23,8 +23,8 @@ namespace System.Threading.Tasks.Channels
                 throw new ArgumentNullException(nameof(optimizations));
             }
 
-            return optimizations.SingleReaderWriter ?
-                (IChannel<T>)new SingleProducerSingleConsumerUnboundedChannel<T>() :
+            return optimizations.SingleReader ?
+                (IChannel<T>)new SingleConsumerUnboundedChannel<T>() :
                 new UnboundedChannel<T>();
         }
 
