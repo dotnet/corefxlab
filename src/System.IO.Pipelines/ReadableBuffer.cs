@@ -5,6 +5,7 @@ using System;
 using System.Buffers;
 using System.Collections.Sequences;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -584,12 +585,18 @@ namespace System.IO.Pipelines
             return newCursor;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void BoundsCheck(ReadCursor newCursor, string argumentName)
         {
             if (!End.GreaterOrEqual(newCursor))
             {
-                throw new ArgumentOutOfRangeException(argumentName, "Resulting cursor was out of bounds of buffer");
+                ThrowOutOfBoundsException(argumentName);
             }
+        }
+
+        private static void ThrowOutOfBoundsException(string argumentName)
+        {
+            throw new ArgumentOutOfRangeException(argumentName, "Resulting cursor was out of bounds of buffer");
         }
     }
 }

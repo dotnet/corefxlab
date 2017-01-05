@@ -105,34 +105,30 @@ namespace System.IO.Pipelines
 
         internal ReadCursor Seek(int bytes)
         {
-            int count;
-            return Seek(bytes, out count);
-        }
-
-        internal ReadCursor Seek(int bytes, out int bytesSeeked)
-        {
             if (IsEnd)
             {
-                bytesSeeked = 0;
                 return this;
             }
 
-            var wasLastSegment = _segment.Next == null;
             var following = _segment.End - _index;
 
             if (following >= bytes)
             {
-                bytesSeeked = bytes;
                 return new ReadCursor(Segment, _index + bytes);
             }
 
+            return SeekMultiSegment(bytes, following);
+        }
+
+        private ReadCursor SeekMultiSegment(int bytes, int following)
+        {
+            var wasLastSegment = _segment.Next == null;
             var segment = _segment;
             var index = _index;
             while (true)
             {
                 if (wasLastSegment)
                 {
-                    bytesSeeked = following;
                     if (bytes != following)
                     {
                         throw new ArgumentOutOfRangeException(nameof(bytes));
@@ -151,7 +147,6 @@ namespace System.IO.Pipelines
 
                 if (following >= bytes)
                 {
-                    bytesSeeked = bytes;
                     return new ReadCursor(segment, index + bytes);
                 }
             }
