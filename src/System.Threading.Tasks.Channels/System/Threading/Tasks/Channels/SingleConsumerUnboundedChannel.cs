@@ -10,24 +10,33 @@ using System.Runtime.CompilerServices;
 namespace System.Threading.Tasks.Channels
 {
     /// <summary>
-    /// Provides a buffered channel of unbounded capacity for use by only
-    /// a single producer and a single consumer at a time.
+    /// Provides a buffered channel of unbounded capacity for use by any number
+    /// of writers but at most a single reader at a time.
     /// </summary>
     [DebuggerDisplay("Items={ItemsCountForDebugger}")]
     [DebuggerTypeProxy(typeof(DebugEnumeratorDebugView<>))]
-    internal sealed class SingleProducerSingleConsumerUnboundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
+    internal sealed class SingleConsumerUnboundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
     {
         /// <summary>Task that indicates the channel has completed.</summary>
         private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+        /// <summary>
+        /// A concurrent queue to hold the items for this channel.  The queue itself supports at most
+        /// one writer and one reader at a time; as a result, since this channel supports multiple writers,
+        /// all write access to the queue must be synchronized by the channel.
+        /// </summary>
         private readonly SingleProducerSingleConsumerQueue<T> _items = new SingleProducerSingleConsumerQueue<T>();
 
+        /// <summary>A cached awaiter used when awaiting this channel.</summary>
         private AutoResetAwaiter<T> _awaiter;
+        /// <summary>non-null if the channel has been marked as complete for writing.</summary>
         private volatile Exception _doneWriting;
-        private object _blockedReader; // ReaderInteractor<T> or AutoResetAwaiter<T>
+        /// <summary>A <see cref="ReaderInteractor{T}"/> or <see cref="AutoResetAwaiter{TResult}"/> if there's a blocked reader.</summary>
+        private object _blockedReader;
+        /// <summary>A waiting reader (e.g. WaitForReadAsync) if there is one.</summary>
         private ReaderInteractor<bool> _waitingReader;
 
         /// <summary>Initialize the channel.</summary>
-        internal SingleProducerSingleConsumerUnboundedChannel() { }
+        internal SingleConsumerUnboundedChannel() { }
 
         private object SyncObj => _items;
 

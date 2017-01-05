@@ -7,11 +7,11 @@ using Xunit;
 
 namespace System.Threading.Tasks.Channels.Tests
 {
-    public sealed class SingleReaderWriterUnboundedChannelTests : UnboundedChannelTests
+    public sealed class SingleReaderUnboundedChannelTests : UnboundedChannelTests
     {
-        protected override IChannel<int> CreateChannel() => Channel.CreateUnbounded<int>(new ChannelOptimizations { SingleReaderWriter = true });
+        protected override IChannel<int> CreateChannel() => Channel.CreateUnbounded<int>(new ChannelOptimizations { SingleReader = true });
 
-        protected override bool RequiresSingleReaderWriter => true;
+        protected override bool RequiresSingleReader => true;
 
         [Fact]
         public void ValidateInternalDebuggerAttributes()
@@ -74,7 +74,7 @@ namespace System.Threading.Tasks.Channels.Tests
         }
     }
 
-    public sealed class MultiReaderWriterUnboundedChannelTests : UnboundedChannelTests
+    public sealed class MultiReaderUnboundedChannelTests : UnboundedChannelTests
     {
         protected override IChannel<int> CreateChannel() => Channel.CreateUnbounded<int>();
     }
