@@ -167,14 +167,16 @@ namespace System.Threading.Tasks.Channels
                     ReaderInteractor<T> interactor = b as ReaderInteractor<T>;
                     if (interactor != null)
                     {
-                        bool success = interactor.Success(item);
-                        Debug.Assert(success, "Reader should not have been already completed");
+                        if (interactor.Success(item)) // reader could have been canceled, hence needing to check bool result
+                        {
+                            return true;
+                        }
                     }
                     else
                     {
                         ((AutoResetAwaiter<T>)b).SetResult(item);
+                        return true;
                     }
-                    return true;
                 }
 
                 if (_waitingReader != null)
