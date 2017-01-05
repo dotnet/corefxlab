@@ -2,7 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace System.Threading.Tasks
+namespace System.Runtime.CompilerServices
 {
-    internal struct VoidResult { }
+    public interface IAwaiter<T> : ICriticalNotifyCompletion
+    {
+        bool IsCompleted { get; }
+        T GetResult();
+    }
 }

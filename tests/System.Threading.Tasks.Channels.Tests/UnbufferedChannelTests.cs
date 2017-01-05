@@ -1,5 +1,6 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using Xunit;
 
@@ -15,7 +16,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Complete_BeforeEmpty_WaitingWriters_TriggersCompletion()
         {
-            IChannel<int> c = Channel.CreateUnbuffered<int>();
+            IChannel<int> c = CreateChannel();
             Task write1 = c.WriteAsync(42);
             Task write2 = c.WriteAsync(43);
             c.Complete();
@@ -27,7 +28,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void TryReadWrite_NoPartner_Fail()
         {
-            IChannel<int> c = Channel.CreateUnbuffered<int>();
+            IChannel<int> c = CreateChannel();
             Assert.False(c.TryWrite(42));
             int result;
             Assert.False(c.TryRead(out result));
@@ -37,7 +38,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void ReadAsync_TryWrite_Success()
         {
-            IChannel<int> c = Channel.CreateUnbuffered<int>();
+            IChannel<int> c = CreateChannel();
             ValueTask<int> r = c.ReadAsync();
             Assert.False(r.IsCompletedSuccessfully);
             Assert.False(r.AsTask().IsCompleted);
@@ -48,7 +49,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void TryRead_WriteAsync_Success()
         {
-            IChannel<int> c = Channel.CreateUnbuffered<int>();
+            IChannel<int> c = CreateChannel();
             Task w = c.WriteAsync(42);
             Assert.False(w.IsCompleted);
             int result;
@@ -59,7 +60,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Cancel_UnpartneredWrite_ThrowsCancellationException()
         {
-            IChannel<int> c = Channel.CreateUnbuffered<int>();
+            IChannel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
             Task w = c.WriteAsync(42, cts.Token);
@@ -72,7 +73,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Cancel_UnpartneredRead_ThrowsCancellationException()
         {
-            IChannel<int> c = Channel.CreateUnbuffered<int>();
+            IChannel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
             Task r = c.ReadAsync(cts.Token).AsTask();
@@ -85,7 +86,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Cancel_PartneredWrite_Success()
         {
-            IChannel<int> c = Channel.CreateUnbuffered<int>();
+            IChannel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
             Task w = c.WriteAsync(42, cts.Token);
@@ -101,7 +102,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Cancel_PartneredRead_Success()
         {
-            IChannel<int> c = Channel.CreateUnbuffered<int>();
+            IChannel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
             ValueTask<int> r = c.ReadAsync(cts.Token);
