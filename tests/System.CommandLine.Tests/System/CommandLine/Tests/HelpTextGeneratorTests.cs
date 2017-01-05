@@ -74,12 +74,14 @@ namespace System.CommandLine.Tests
         {
             var expectedHelp = @"
                 usage: tool [-s] [--keyword] [-f] [-o <arg>] [--option <arg>]
+                            [--optional [arg]]
 
-                    -s                Single character flag
-                    --keyword         Keyword flag
-                    -f, --flag        A flag with with short and long name
-                    -o <arg>          Single character option with value
-                    --option <arg>    Keyword option with value
+                    -s                  Single character flag
+                    --keyword           Keyword flag
+                    -f, --flag          A flag with with short and long name
+                    -o <arg>            Single character option with value
+                    --option <arg>      Keyword option with value
+                    --optional [arg]    Keyword option with optional value
             ";
 
             var actualHelp = GetHelp(syntax =>
@@ -94,6 +96,7 @@ namespace System.CommandLine.Tests
                 syntax.DefineOption("f|flag", ref flag, "A flag with with short and long name");
                 syntax.DefineOption("o", ref o, "Single character option with value");
                 syntax.DefineOption("option", ref option, "Keyword option with value");
+                syntax.DefineOption("optional", ref option, false, "Keyword option with optional value");
 
                 if (includeHidden)
                 {
@@ -101,7 +104,7 @@ namespace System.CommandLine.Tests
                     h.IsHidden = true;
                 }
             });
-
+            
             AssertMatch(expectedHelp, actualHelp);
         }
 

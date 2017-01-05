@@ -1,5 +1,6 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using Xunit;
 
@@ -10,7 +11,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void AsObservable_InvalidSubscribe_ThrowsException()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
             IObservable<int> o = c.AsObservable();
             Assert.Throws<ArgumentNullException>("observer", () => o.Subscribe(null));
         }
@@ -18,7 +19,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void AsObservable_Subscribe_Dispose_Success()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
             IObservable<int> o = c.AsObservable();
 
             using (o.Subscribe(new DelegateObserver<int>()))
@@ -35,7 +36,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void AsObservable_Subscribe_DisposeMultipleTimes_Success()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = Channel.CreateUnbounded<int>();
             IObservable<int> o = c.AsObservable();
 
             IDisposable d = o.Subscribe(new DelegateObserver<int>());

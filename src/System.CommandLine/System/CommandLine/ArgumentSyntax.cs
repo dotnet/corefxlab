@@ -138,7 +138,7 @@ namespace System.CommandLine
             return definedCommand;
         }
 
-        public Argument<T> DefineOption<T>(string name, T defaultValue, Func<string, T> valueConverter)
+        public Argument<T> DefineOption<T>(string name, T defaultValue, Func<string, T> valueConverter, bool isRequired)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException(Strings.NameMissing, "name");
@@ -147,7 +147,7 @@ namespace System.CommandLine
                 throw new InvalidOperationException(Strings.OptionsMustBeDefinedBeforeParameters);
 
             var names = ParseOptionNameList(name);
-            var option = new Argument<T>(_definedCommand, names, defaultValue);
+            var option = new Argument<T>(_definedCommand, names, defaultValue, isRequired);
             _options.Add(option);
 
             if (_activeCommand != _definedCommand)
@@ -156,8 +156,16 @@ namespace System.CommandLine
             try
             {
                 T value;
-                if (Parser.TryParseOption(option.GetDisplayName(), option.Names, valueConverter, out value))
+                bool specified;
+                if (Parser.TryParseOption(option.GetDisplayName(), option.Names, valueConverter, isRequired, out value, out specified))
+                { 
                     option.SetValue(value);
+                }
+                else if (specified)
+                {
+                    // No value was provided, but the option was specified and a value wasn't required
+                    option.MarkSpecified();
+                }
             }
             catch (ArgumentSyntaxException ex)
             {
@@ -167,7 +175,7 @@ namespace System.CommandLine
             return option;
         }
 
-        public ArgumentList<T> DefineOptionList<T>(string name, IReadOnlyList<T> defaultValue, Func<string, T> valueConverter)
+        public ArgumentList<T> DefineOptionList<T>(string name, IReadOnlyList<T> defaultValue, Func<string, T> valueConverter, bool isRequired)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException(Strings.NameMissing, "name");
@@ -176,7 +184,7 @@ namespace System.CommandLine
                 throw new InvalidOperationException(Strings.OptionsMustBeDefinedBeforeParameters);
 
             var names = ParseOptionNameList(name);
-            var optionList = new ArgumentList<T>(_definedCommand, names, defaultValue);
+            var optionList = new ArgumentList<T>(_definedCommand, names, defaultValue, isRequired);
             _options.Add(optionList);
 
             if (_activeCommand != _definedCommand)
@@ -185,8 +193,16 @@ namespace System.CommandLine
             try
             {
                 IReadOnlyList<T> value;
-                if (Parser.TryParseOptionList(optionList.GetDisplayName(), optionList.Names, valueConverter, out value))
+                bool specified;
+                if (Parser.TryParseOptionList(optionList.GetDisplayName(), optionList.Names, valueConverter, isRequired, out value, out specified))
+                {
                     optionList.SetValue(value);
+                }
+                else if (specified)
+                {
+                    // No value was provided, but the option was specified and a value wasn't required
+                    optionList.MarkSpecified();
+                }
             }
             catch (ArgumentSyntaxException ex)
             {

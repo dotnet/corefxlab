@@ -1,5 +1,8 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -20,6 +23,10 @@ namespace System.Threading.Tasks.Channels
     /// <typeparam name="T">Specifies the type of data items readable from the channel.</typeparam>
     public interface IReadableChannel<T>
     {
+        /// <summary>Asynchronously reads a data item from the channel, returning an awaiter usable once to consume that result.</summary>
+        /// <returns>An awaiter that may be used once with await to consume the result of the read operation.</returns>
+        ValueAwaiter<T> GetAwaiter();
+
         /// <summary>Asynchronously reads a data item from the channel.</summary>
         /// <param name="cancellationToken">The cancellation token to use to cancel the operation.</param>
         /// <returns>A task representing the asynchronous read operation.</returns>
@@ -35,7 +42,7 @@ namespace System.Threading.Tasks.Channels
         /// A task representing the asynchronous wait.  The task will complete with a result of true
         /// when the channel can be read from (however, concurrent access could change that status).
         /// The task will complete with a result of false when the channel is closed and emptied and won't
-       ///  be producing any more readable data.
+        ///  be producing any more readable data.
         /// </returns>
         Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken));
 
