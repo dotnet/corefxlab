@@ -9,7 +9,13 @@ namespace System.Threading.Tasks.Channels.Tests
 {
     public abstract class UnboundedChannelTests : ChannelTestBase
     {
-        protected virtual bool AllowSynchronousContinuations => false;
+        protected abstract bool AllowSynchronousContinuations { get; }
+        protected override IChannel<int> CreateChannel() => Channel.CreateUnbounded<int>(
+            new ChannelOptimizations
+            {
+                SingleReader = this.RequiresSingleReader,
+                AllowSynchronousContinuations = this.AllowSynchronousContinuations
+            });
 
         [Fact]
         public async Task Complete_BeforeEmpty_NoWaiters_TriggersCompletion()
@@ -96,16 +102,14 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
-        public void AllowSynchronousContinuations_False_ContinuationsInvokedAsynchronously()
+        public void AllowSynchronousContinuations_ContinuationsInvokedAccordingToSetting()
         {
-            if (AllowSynchronousContinuations) return;
-
             IChannel<int> c = CreateChannel();
 
             int expectedId = Environment.CurrentManagedThreadId;
             Task r = c.ReadAsync().AsTask().ContinueWith(_ =>
             {
-                Assert.NotEqual(expectedId, Environment.CurrentManagedThreadId);
+                Assert.Equal(AllowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
             }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
             Assert.Equal(TaskStatus.RanToCompletion, c.WriteAsync(42).Status);
@@ -116,9 +120,6 @@ namespace System.Threading.Tasks.Channels.Tests
 
     public abstract class SingleReaderUnboundedChannelTests : UnboundedChannelTests
     {
-        protected override IChannel<int> CreateChannel() => Channel.CreateUnbounded<int>(
-            new ChannelOptimizations { SingleReader = true, AllowSynchronousContinuations = this.AllowSynchronousContinuations });
-
         protected override bool RequiresSingleReader => true;
 
         [Fact]
@@ -184,32 +185,23 @@ namespace System.Threading.Tasks.Channels.Tests
         }
     }
 
-    public sealed class MultiReaderUnboundedChannelTests : UnboundedChannelTests
+    public sealed class SyncMultiReaderUnboundedChannelTests : UnboundedChannelTests
     {
-        protected override IChannel<int> CreateChannel() => Channel.CreateUnbounded<int>();
+        protected override bool AllowSynchronousContinuations => true;
+    }
+
+    public sealed class AsyncMultiReaderUnboundedChannelTests : UnboundedChannelTests
+    {
+        protected override bool AllowSynchronousContinuations => false;
     }
 
     public sealed class SyncSingleReaderUnboundedChannelTests : SingleReaderUnboundedChannelTests
     {
         protected override bool AllowSynchronousContinuations => true;
-
-        [Fact]
-        public void AllowSynchronousContinuations_True_ContinuationsInvokedSynchronously()
-        {
-            IChannel<int> c = CreateChannel();
-
-            int expectedId = Environment.CurrentManagedThreadId;
-            Task r = c.ReadAsync().AsTask().ContinueWith(_ =>
-            {
-                Assert.Equal(expectedId, Environment.CurrentManagedThreadId);
-            }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-
-            Assert.Equal(TaskStatus.RanToCompletion, c.WriteAsync(42).Status);
-            r.Wait();
-        }
     }
 
     public sealed class AsyncSingleReaderUnboundedChannelTests : SingleReaderUnboundedChannelTests
     {
+        protected override bool AllowSynchronousContinuations => false;
     }
 }

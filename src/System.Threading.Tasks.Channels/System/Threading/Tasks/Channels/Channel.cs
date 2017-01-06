@@ -10,7 +10,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Creates an unbounded channel usable by any number of readers and writers concurrently.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <returns>The created channel.</returns>
-        public static IChannel<T> CreateUnbounded<T>() => new UnboundedChannel<T>();
+        public static IChannel<T> CreateUnbounded<T>() => new UnboundedChannel<T>(runContinuationsAsynchronously: true);
 
         /// <summary>Creates an unbounded channel usable by any number of readers and writers concurrently.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
@@ -23,9 +23,10 @@ namespace System.Threading.Tasks.Channels
                 throw new ArgumentNullException(nameof(optimizations));
             }
 
+            bool rca = !optimizations.AllowSynchronousContinuations;
             return optimizations.SingleReader ?
-                (IChannel<T>)new SingleConsumerUnboundedChannel<T>(!optimizations.AllowSynchronousContinuations) :
-                new UnboundedChannel<T>();
+                (IChannel<T>)new SingleConsumerUnboundedChannel<T>(rca) :
+                new UnboundedChannel<T>(rca);
         }
 
         /// <summary>Creates a channel that doesn't buffer any items.</summary>

@@ -90,7 +90,7 @@ namespace System.Threading.Tasks.Channels
             // Complete the channel task if necessary
             if (completeTask)
             {
-                ChannelUtilities.CompleteWithOptionalError(_completion, error);
+                ChannelUtilities.Complete(_completion, error);
             }
 
             Debug.Assert(blockedReader == null || waitingReader == null, "There should only ever be at most one reader.");
@@ -160,11 +160,6 @@ namespace System.Threading.Tasks.Channels
 
         public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
-            }
-
             T item;
             return TryRead(out item) ?
                 new ValueTask<T>(item) :
@@ -173,6 +168,11 @@ namespace System.Threading.Tasks.Channels
 
         private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
+            }
+
             lock (SyncObj)
             {
                 T item;
@@ -227,7 +227,7 @@ namespace System.Threading.Tasks.Channels
             {
                 if (_doneWriting != null && _items.IsEmpty)
                 {
-                    ChannelUtilities.CompleteWithOptionalError(_completion, _doneWriting);
+                    ChannelUtilities.Complete(_completion, _doneWriting);
                 }
                 return true;
             }

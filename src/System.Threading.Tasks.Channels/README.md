@@ -95,20 +95,93 @@ These ```Create``` methods may also have overloads accepting a ```ChannelOptimiz
 around optimizations applied to these channels (typically optimizations that come with tradeoffs, e.g. faster throughput
 in exchange for guaranteeing no more than a single writer and a single reader at a time).
 
-### Integration With Existing Types
+## Typical Producer/Consumer Patterns
 
-```ChannelExtensions``` provides helper methods for working with channels, including support for interop between channels and observables / observers:
+As an example, a producer that wrote N integers to a channel once a second and then marked the channel as being completed
+might look like this:
 ```C#
-public static class ChannelExtensions
+private static async Task ProduceRange(IWritableChannel<int> c, int count)
 {
-    public static IObservable<T> AsObservable<T>(this IReadableChannel<T> source);
-    public static IObserver<T> AsObserver<T>(this IWritableChannel<T> target);
-	...
+    for (int i = 0; i < count; i++)
+	{
+	    await c.WriteAsync(i);
+	}
+	c.Complete();
 }
 ```
-This allows for subscribing a writeable channel to an observable as an observer, and subscribing other observers 
-to a readable channel as an observable.  With this support, IObservable-based LINQ queries can be written against
-data in channels.
+That will wait for each write to complete successfully before moving on to the next write.  Alternatively, TryWrite could
+be used if the developer wants to do something instead of writing if the item can't be immediately transferred to the channel:
+```C#
+private static async Task ProduceRange(IWritableChannel<int> c, int count)
+{
+    for (int i = 0; i < count; i++)
+	{
+	    bool success = c.TryWrite(i);
+		if (!success) { ... }
+	}
+	c.Complete();
+}
+```
+Or if the developer wants to simply wait for the channel to be ready to accept another write, a loop like the following
+could be employed:
+```C#
+private static async Task ProduceRange(IWritableChannel<int> c, int count)
+{
+    for (int i = 0; i < count; i++)
+	{
+	    while (await c.WaitForWriteAsync())
+		{
+			if (c.TryWrite(i)) break;
+		}
+	}
+	c.Complete();
+}
+```
+On the consumer end, there are similarly multiple ways to consume a channel.  The channel can be awaited directly to
+read from it, in which case if the channel ends up being marked as completed, an exception will be thrown when no more
+reads are possible, indicating the closure:
+```C#
+private static async Task Consume(IReadableChannel<int> c)
+{
+    try
+	{
+	     while (true)
+		 {
+		     int item = await c;
+			 ...
+		 }
+	}
+	catch (ChannelClosedException) {}
+}
+```
+Alternatively, ReadAsync may be used instead of awaiting the channel:
+```C#
+private static async Task Consume(IReadableChannel<int> c)
+{
+    try
+	{
+	     while (true)
+		 {
+		     int item = await c.ReadAsync();
+			 ...
+		 }
+	}
+	catch (ChannelClosedException) {}
+}
+```
+WaitForReadAsync and TryRead may also be used, e.g.
+```C#
+private static async Task Consume(IReadableChannel<int> c)
+{
+    while (await c.WaitForReadAsync())
+	{
+		if (c.TryRead(out int item))
+		{
+		    ...
+		}
+    }
+}
+```
 
 ## Additional Support for Reading
 
@@ -130,6 +203,21 @@ foreach (await T item in channel)
     Use(item);
 }
 ```
+
+### Integration With Existing Types
+
+```ChannelExtensions``` provides helper methods for working with channels, including support for interop between channels and observables / observers:
+```C#
+public static class ChannelExtensions
+{
+    public static IObservable<T> AsObservable<T>(this IReadableChannel<T> source);
+    public static IObserver<T> AsObserver<T>(this IWritableChannel<T> target);
+	...
+}
+```
+This allows for subscribing a writeable channel to an observable as an observer, and subscribing other observers 
+to a readable channel as an observable.  With this support, IObservable-based LINQ queries can be written against
+data in channels.
 
 ## Selecting
 
