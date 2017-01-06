@@ -91,7 +91,7 @@ namespace System.Text.Primitives.Tests
                         for (int i = 0; i < LoadIterations; i++)
                         {
                             ulong value;
-                            InternalParser.TryParseUInt64(utf8ByteStar, 0, length, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseUInt64(utf8ByteStar, 0, length, nf, fd, out value, out bytesConsumed);
                             DoNotIgnore(value, bytesConsumed);
                         }
                     }
@@ -119,7 +119,7 @@ namespace System.Text.Primitives.Tests
                         for (int i = 0; i < LoadIterations; i++)
                         {
                             ulong value;
-                            InternalParser.TryParseUInt64(utf8ByteSpan, fd, nf, out value, out bytesConsumed);
+                            InternalParser.TryParseUInt64(utf8ByteSpan, nf, fd, out value, out bytesConsumed);
                             DoNotIgnore(value, bytesConsumed);
                         }
                     }

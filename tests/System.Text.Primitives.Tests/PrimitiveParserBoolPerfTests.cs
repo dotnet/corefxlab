@@ -46,7 +46,7 @@ namespace System.Text.Primitives.Tests
                 {
                     for (int i = 0; i < LoadIterations; i++)
                     {
-                        InternalParser.TryParseBoolean(utf8ByteSpan, fd, nf, out value, out bytesConsumed);
+                        InternalParser.TryParseBoolean(utf8ByteSpan, nf, fd, out value, out bytesConsumed);
                     }
                 }
             }

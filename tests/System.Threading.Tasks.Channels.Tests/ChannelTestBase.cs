@@ -61,7 +61,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Complete_BeforeEmpty_WaitingReaders_TriggersCompletion()
         {
-            IChannel<int> c = Channel.Create<int>(1);
+            IChannel<int> c = CreateChannel();
             Task<int> read = c.ReadAsync().AsTask();
             c.Complete();
             await c.Completion;
@@ -88,7 +88,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void SingleProducerConsumer_ConcurrentReadWrite_Success()
         {
-            IChannel<int> c = Channel.Create<int>();
+            IChannel<int> c = CreateChannel();
 
             const int NumItems = 100000;
             Task.WaitAll(
@@ -104,6 +104,55 @@ namespace System.Threading.Tasks.Channels.Tests
                     for (int i = 0; i < NumItems; i++)
                     {
                         Assert.Equal(i, await c.ReadAsync());
+                    }
+                }));
+        }
+
+        [Fact]
+        public void SingleProducerConsumer_ConcurrentAwaitWrite_Success()
+        {
+            IChannel<int> c = CreateChannel();
+
+            const int NumItems = 100000;
+            Task.WaitAll(
+                Task.Run(async () =>
+                {
+                    for (int i = 0; i < NumItems; i++)
+                    {
+                        await c.WriteAsync(i);
+                    }
+                }),
+                Task.Run(async () =>
+                {
+                    for (int i = 0; i < NumItems; i++)
+                    {
+                        Assert.Equal(i, await c);
+                    }
+                }));
+        }
+
+        [Fact]
+        public void SingleProducerConsumer_PingPong_Success()
+        {
+            IChannel<int> c1 = CreateChannel();
+            IChannel<int> c2 = CreateChannel();
+
+            const int NumItems = 100000;
+            Task.WaitAll(
+                Task.Run(async () =>
+                {
+                    for (int i = 0; i < NumItems; i++)
+                    {
+                        Assert.Equal(i, await c1);
+                        await c2.WriteAsync(i);
+                    }
+                }),
+                Task.Run(async () =>
+                {
+                    for (int i = 0; i < NumItems; i++)
+                    {
+                        await c1.WriteAsync(i);
+                        Assert.Equal(i, await c2);
                     }
                 }));
         }
@@ -135,6 +184,58 @@ namespace System.Threading.Tasks.Channels.Tests
                     {
                         Interlocked.Add(ref readTotal, e.Current);
                     }
+                });
+            }
+
+            for (int i = 0; i < NumWriters; i++)
+            {
+                tasks[NumReaders + i] = Task.Run(async () =>
+                {
+                    while (true)
+                    {
+                        int value = Interlocked.Decrement(ref remainingItems);
+                        if (value < 0)
+                        {
+                            break;
+                        }
+                        await c.WriteAsync(value + 1);
+                    }
+                    if (Interlocked.Decrement(ref remainingWriters) == 0)
+                        c.Complete();
+                });
+            }
+
+            Task.WaitAll(tasks);
+            Assert.Equal((NumItems * (NumItems + 1L)) / 2, readTotal);
+        }
+
+        [Fact]
+        public void ManyProducerConsumer_ConcurrentAwaitWrite_Success()
+        {
+            if (RequiresSingleReaderWriter)
+                return;
+
+            IChannel<int> c = CreateChannel();
+
+            const int NumWriters = 10;
+            const int NumReaders = 10;
+            const int NumItems = 10000;
+
+            long readTotal = 0;
+            int remainingWriters = NumWriters;
+            int remainingItems = NumItems;
+
+            Task[] tasks = new Task[NumWriters + NumReaders];
+
+            for (int i = 0; i < NumReaders; i++)
+            {
+                tasks[i] = Task.Run(async () =>
+                {
+                    try
+                    {
+                        while (true) Interlocked.Add(ref readTotal, await c);
+                    }
+                    catch (ClosedChannelException) { }
                 });
             }
 

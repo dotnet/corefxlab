@@ -9,13 +9,14 @@ namespace System.CommandLine
 {
     public abstract class Argument
     {
-        internal Argument(ArgumentCommand command, IEnumerable<string> names, bool isOption)
+        internal Argument(ArgumentCommand command, IEnumerable<string> names, bool isOption, bool isRequired)
         {
             var nameArray = names.ToArray();
             Command = command;
             Name = nameArray.First();
             Names = new ReadOnlyCollection<string>(nameArray);
             IsOption = isOption;
+            IsRequired = isRequired;
         }
 
         public ArgumentCommand Command { get; private set; }
@@ -37,6 +38,8 @@ namespace System.CommandLine
 
         public bool IsHidden { get; set; }
 
+        public bool IsRequired { get; private set; }
+        
         public virtual bool IsList
         {
             get { return false; }

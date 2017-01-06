@@ -9,13 +9,13 @@ namespace System.Threading.Tasks.Channels.Tests
     {
         protected override IChannel<int> CreateChannel()
         {
-            return Channel.Create<int>(1);
+            return Channel.CreateBounded<int>(1);
         }
 
         [Fact]
         public async Task Complete_BeforeEmpty_NoWaiters_TriggersCompletion()
         {
-            IChannel<int> c = Channel.Create<int>(1);
+            IChannel<int> c = Channel.CreateBounded<int>(1);
             Assert.True(c.TryWrite(42));
             c.Complete();
             Assert.False(c.Completion.IsCompleted);
@@ -26,7 +26,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Complete_BeforeEmpty_WaitingWriters_TriggersCompletion()
         {
-            IChannel<int> c = Channel.Create<int>(1);
+            IChannel<int> c = Channel.CreateBounded<int>(1);
             Assert.True(c.TryWrite(42));
             Task write2 = c.WriteAsync(43);
             c.Complete();
@@ -39,9 +39,9 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(1)]
         [InlineData(10)]
         [InlineData(10000)]
-        public void TryWrite_TryRead_Many(int bufferedCapacity)
+        public void TryWrite_TryRead_Many_Wait(int bufferedCapacity)
         {
-            IChannel<int> c = Channel.Create<int>(bufferedCapacity);
+            IChannel<int> c = Channel.CreateBounded<int>(bufferedCapacity);
 
             for (int i = 0; i < bufferedCapacity; i++)
             {
@@ -64,9 +64,59 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(1)]
         [InlineData(10)]
         [InlineData(10000)]
+        public void TryWrite_TryRead_Many_DropOldest(int bufferedCapacity)
+        {
+            IChannel<int> c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
+
+            for (int i = 0; i < bufferedCapacity * 2; i++)
+            {
+                Assert.True(c.TryWrite(i));
+            }
+
+            int result;
+            for (int i = bufferedCapacity; i < bufferedCapacity * 2; i++)
+            {
+                Assert.True(c.TryRead(out result));
+                Assert.Equal(i, result);
+            }
+
+            Assert.False(c.TryRead(out result));
+            Assert.Equal(0, result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(10000)]
+        public void TryWrite_TryRead_Many_DropNewest(int bufferedCapacity)
+        {
+            IChannel<int> c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
+
+            for (int i = 0; i < bufferedCapacity * 2; i++)
+            {
+                Assert.True(c.TryWrite(i));
+            }
+
+            int result;
+            for (int i = 0; i < bufferedCapacity - 1; i++)
+            {
+                Assert.True(c.TryRead(out result));
+                Assert.Equal(i, result);
+            }
+            Assert.True(c.TryRead(out result));
+            Assert.Equal(bufferedCapacity * 2 - 1, result);
+
+            Assert.False(c.TryRead(out result));
+            Assert.Equal(0, result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(10000)]
         public void TryWrite_TryRead_OneAtATime(int bufferedCapacity)
         {
-            IChannel<int> c = Channel.Create<int>(bufferedCapacity);
+            IChannel<int> c = Channel.CreateBounded<int>(bufferedCapacity);
 
             const int NumItems = 100000;
             for (int i = 0; i < NumItems; i++)
@@ -79,12 +129,12 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(10, false)]
-        [InlineData(10000, false)]
-        public void SingleProducerConsumer_ConcurrentReadWrite_Success(int bufferedCapacity, bool singleProducerConsumer)
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(10000)]
+        public void SingleProducerConsumer_ConcurrentReadWrite_Success(int bufferedCapacity)
         {
-            IChannel<int> c = Channel.Create<int>(bufferedCapacity, singleProducerConsumer);
+            IChannel<int> c = Channel.CreateBounded<int>(bufferedCapacity);
 
             const int NumItems = 10000;
             Task.WaitAll(
@@ -105,15 +155,12 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(10, false)]
-        [InlineData(10000, false)]
-        [InlineData(1, true)]
-        [InlineData(10, true)]
-        [InlineData(10000, true)]
-        public void ManyProducerConsumer_ConcurrentReadWrite_Success(int bufferedCapacity, bool singleProducerConsumer)
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(10000)]
+        public void ManyProducerConsumer_ConcurrentReadWrite_Success(int bufferedCapacity)
         {
-            IChannel<int> c = Channel.Create<int>(bufferedCapacity, singleProducerConsumer);
+            IChannel<int> c = Channel.CreateBounded<int>(bufferedCapacity);
 
             const int NumWriters = 10;
             const int NumReaders = 10;
@@ -162,7 +209,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task WaitToWriteAsync_AfterFullThenRead_ReturnsTrue()
         {
-            IChannel<int> c = Channel.Create<int>(1);
+            IChannel<int> c = Channel.CreateBounded<int>(1);
             Assert.True(c.TryWrite(1));
 
             Task<bool> write1 = c.WaitToWriteAsync();

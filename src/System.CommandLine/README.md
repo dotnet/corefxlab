@@ -241,6 +241,25 @@ specified. However you can still explicitly pass in `true` or `false`. So this
 Is equivalent to
 
     $ tool -x:true
+    
+Normally, options must supply an argument value (or it's considered an error). However, there may be times when you want to allow a particular option whether it supplies a value or not. To do this, use the overloaded `DefineOption()` methods:
+
+```C#
+int port = 1234;
+var option = syntax.DefineOption("s|server", ref port, false,
+    "Start the server, optionally specifying a port");
+```
+
+Then the value in code will be set regardless of whether the command line option specifies one and an error will not be thrown if the option value is omitted. You can check for whether the option was specified at all by checking the `Argument.IsSpecified` flag. For example, given the above option definition:
+
+    $ tool
+    # port = 1234, option.IsSpecified = false
+    
+    $ tool --server
+    # port = 1234, option.IsSpecified = true
+    
+    $ tool --server 9876
+    # port = 9876, option.IsSpecified = true
 
 The syntax used to define the option supports multiple names by separating them
 using a pipe. All names are aliases for the same option. For diagnostic

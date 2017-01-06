@@ -8,7 +8,7 @@ namespace System.Text.Internal
 {
     public static partial class InternalParser
     {
-        public static bool TryParseSingle(byte[] text, int index, EncodingData encoding, TextFormat format,
+        public static bool TryParseSingle(byte[] text, int index, TextFormat format, EncodingData encoding, 
             out float value, out int bytesConsumed)
         {
             // Precondition replacement
@@ -143,8 +143,8 @@ namespace System.Text.Internal
             return false;
         }
 
-        public unsafe static bool TryParseSingle(byte* text, int index, int length, EncodingData encoding,
-            TextFormat format, out float value, out int bytesConsumed)
+        public unsafe static bool TryParseSingle(byte* text, int index, int length, TextFormat format, EncodingData encoding,
+            out float value, out int bytesConsumed)
         {
             // Precondition replacement
             if (length < 1 || index < 0)
