@@ -56,6 +56,14 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Theory]
+        [InlineData((BoundedChannelFullMode)(-1))]
+        [InlineData((BoundedChannelFullMode)(3))]
+        public void CreateBounded_InvalidModes_ThrowArgumentExceptions(BoundedChannelFullMode mode)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>("mode", () => Channel.CreateBounded<int>(1, mode));
+        }
+
+        [Theory]
         [InlineData(1)]
         public void CreateBounded_ValidBufferSizes_Success(int bufferedCapacity)
         {
