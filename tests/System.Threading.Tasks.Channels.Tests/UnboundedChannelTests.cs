@@ -109,7 +109,8 @@ namespace System.Threading.Tasks.Channels.Tests
             }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
             Assert.Equal(TaskStatus.RanToCompletion, c.WriteAsync(42).Status);
-            r.Wait();
+            ((IAsyncResult)r).AsyncWaitHandle.WaitOne(); // avoid inlining the continuation
+            r.GetAwaiter().GetResult();
         }
     }
 
@@ -193,7 +194,7 @@ namespace System.Threading.Tasks.Channels.Tests
         protected override bool AllowSynchronousContinuations => true;
 
         [Fact]
-        public void AllowSynchronousContinuations_False_ContinuationsInvokedAsynchronously()
+        public void AllowSynchronousContinuations_True_ContinuationsInvokedSynchronously()
         {
             IChannel<int> c = CreateChannel();
 

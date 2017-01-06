@@ -43,17 +43,6 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        /// <summary>
-        /// Given an already faulted or canceled Task, returns a new generic task
-        /// with the same failure or cancellation token.
-        /// </summary>
-        internal static async Task<T> PropagateErrorAsync<T>(Task t)
-        {
-            Debug.Assert(t.IsFaulted || t.IsCanceled, $"Expected Faulted or Canceled, got {t.Status}");
-            await t;
-            throw new InvalidOperationException(); // Awaiting should have thrown
-        }
-
         /// <summary>Removes all waiters from the queue, completing each.</summary>
         /// <param name="waiters">The queue of waiters to complete.</param>
         /// <param name="result">The value with which to complete each waiter.</param>
