@@ -54,36 +54,6 @@ namespace System.Threading.Tasks.Channels
             return new AsyncEnumerator<T>(channel, cancellationToken);
         }
 
-        /// <summary>Creates a case-select builder and adds a case for channel reading.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel from which to read.</param>
-        /// <param name="action">The action to invoke with data read from the channel.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Action<T> action) => new CaseBuilder().CaseRead(channel, action);
-
-        /// <summary>Creates a case-select builder and adds a case for channel reading.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel from which to read.</param>
-        /// <param name="func">The asynchronous function to invoke with data read from the channel.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Func<T, Task> func) => new CaseBuilder().CaseRead(channel, func);
-
-        /// <summary>Creates a case-select builder and adds a case for channel writing.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel to which to write.</param>
-        /// <param name="item">The data to write to the channel</param>
-        /// <param name="action">The action to invoke after the data has been written.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action) => new CaseBuilder().CaseWrite(channel, item, action);
-
-        /// <summary>Creates a case-select builder and adds a case for channel writing.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel to which to write.</param>
-        /// <param name="item">The data to write to the channel</param>
-        /// <param name="func">The asynchronous function to invoke after the data has been written.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func) => new CaseBuilder().CaseWrite(channel, item, func);
-
         /// <summary>Mark the channel as being complete, meaning no more items will be written to it.</summary>
         /// <param name="channel">The channel to mark as complete.</param>
         /// <param name="error">Optional Exception indicating a failure that's causing the channel to complete.</param>
