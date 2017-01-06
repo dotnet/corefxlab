@@ -64,7 +64,7 @@ namespace System.Threading.Tasks.Channels
                 {
                     return false;
                 }
-                ChannelUtilities.CompleteWithOptionalError(_completion, error);
+                ChannelUtilities.Complete(_completion, error);
 
                 // Fail any blocked readers, as there will be no writers to pair them with.
                 while (_blockedReaders.Count > 0)

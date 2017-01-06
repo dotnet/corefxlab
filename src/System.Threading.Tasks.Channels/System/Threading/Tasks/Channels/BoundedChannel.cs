@@ -102,7 +102,7 @@ namespace System.Threading.Tasks.Channels
                 // so we complete the completion task.
                 if (_items.Count == 0)
                 {
-                    ChannelUtilities.CompleteWithOptionalError(_completion, error);
+                    ChannelUtilities.Complete(_completion, error);
                 }
 
                 // If there are any waiting readers, fail them all, as they'll now never be satisfied.
@@ -218,7 +218,7 @@ namespace System.Threading.Tasks.Channels
             // If we're now empty and we're done writing, complete the channel.
             if (_doneWriting != null && _items.Count == 0)
             {
-                ChannelUtilities.CompleteWithOptionalError(_completion, _doneWriting);
+                ChannelUtilities.Complete(_completion, _doneWriting);
             }
 
             // If there are any writers blocked, there's now room for at least one
