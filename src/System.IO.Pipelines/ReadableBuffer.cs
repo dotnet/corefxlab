@@ -59,9 +59,9 @@ namespace System.IO.Pipelines
         {
             _start = start;
             _end = end;
-            if (!end.GreaterOrEqual(start))
+            if (!end.IsEnd && !end.GreaterOrEqual(start))
             {
-                throw new ArgumentException("End should be greater or equal then start");
+                throw new ArgumentException("End should be greater or equal to start");
             }
             start.TryGetBuffer(end, out _first, out start);
 

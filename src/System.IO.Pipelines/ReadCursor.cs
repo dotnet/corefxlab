@@ -236,6 +236,11 @@ namespace System.IO.Pipelines
 
         public override string ToString()
         {
+            if (IsEnd)
+            {
+                return "<end>";
+            }
+
             var sb = new StringBuilder();
             Span<byte> span = Segment.Memory.Span.Slice(Index, Segment.End - Index);
             SpanExtensions.AppendAsLiteral(span, sb);
@@ -283,14 +288,14 @@ namespace System.IO.Pipelines
         internal bool IsReachable(ReadCursor other)
         {
             var current = other.Segment;
-            do
+            while (current != null)
             {
                 if (current == Segment)
                 {
                     return true;
                 }
                 current = current.Next;
-            } while (current != null);
+            }
             return false;
         }
     }
