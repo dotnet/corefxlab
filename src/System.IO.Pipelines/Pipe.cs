@@ -285,7 +285,7 @@ namespace System.IO.Pipelines
                 Commit();
             }
 
-            return CompleteWriteAsync();
+            return SignalWriterAsync();
         }
 
         internal ReadableBuffer AsReadableBuffer()
@@ -298,7 +298,7 @@ namespace System.IO.Pipelines
             return new ReadableBuffer(new ReadCursor(_commitHead, _commitHeadIndex), new ReadCursor(_writingHead, _writingHead.End));
         }
 
-        private Task CompleteWriteAsync()
+        internal Task SignalWriterAsync()
         {
             // TODO: Can factor out this lock
             lock (_sync)
