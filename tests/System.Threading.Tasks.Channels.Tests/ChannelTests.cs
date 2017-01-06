@@ -16,19 +16,16 @@ namespace System.Threading.Tasks.Channels.Tests
 
             Assert.False(co.SingleReader);
             Assert.False(co.SingleWriter);
-            Assert.False(co.SingleReaderWriter);
 
             co.SingleReader = true;
             Assert.True(co.SingleReader);
             Assert.False(co.SingleWriter);
-            Assert.False(co.SingleReaderWriter);
             co.SingleReader = false;
             Assert.False(co.SingleReader);
 
             co.SingleWriter = true;
             Assert.False(co.SingleReader);
             Assert.True(co.SingleWriter);
-            Assert.False(co.SingleReaderWriter);
             co.SingleWriter = false;
             Assert.False(co.SingleWriter);
 
@@ -36,17 +33,12 @@ namespace System.Threading.Tasks.Channels.Tests
             co.SingleWriter = true;
             Assert.True(co.SingleReader);
             Assert.True(co.SingleWriter);
-            Assert.True(co.SingleReaderWriter);
 
-            co.SingleReaderWriter = false;
-            Assert.False(co.SingleReader);
-            Assert.False(co.SingleWriter);
-            Assert.False(co.SingleReaderWriter);
-
-            co.SingleReaderWriter = true;
-            Assert.True(co.SingleReader);
-            Assert.True(co.SingleWriter);
-            Assert.True(co.SingleReaderWriter);
+            Assert.False(co.AllowSynchronousContinuations);
+            co.AllowSynchronousContinuations = true;
+            Assert.True(co.AllowSynchronousContinuations);
+            co.AllowSynchronousContinuations = false;
+            Assert.False(co.AllowSynchronousContinuations);
         }
 
         [Fact]
