@@ -367,6 +367,7 @@ namespace System.Threading.Tasks.Channels
                         _items.DequeueHead();
                     Debug.Assert(_items.Count < _bufferedCapacity);
 
+                    _items.EnqueueTail(item);
                     ChannelUtilities.WakeUpWaiters(_waitingReaders, true);
                     return ChannelUtilities.TrueTask;
                 }
