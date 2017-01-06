@@ -181,7 +181,7 @@ namespace System.Threading.Tasks.Channels
                     return new ValueTask<T>(item);
                 }
 
-                if (_doneWriting != null || _blockedReader != null || _waitingReader != null)
+                if (_doneWriting != null || HasBlockedReader || HasWaitingReader)
                 {
                     Exception e = _doneWriting != null ?
                         _doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException() :
@@ -192,6 +192,32 @@ namespace System.Threading.Tasks.Channels
                 ReaderInteractor<T> reader = ReaderInteractor<T>.Create(_runContinuationsAsynchronously, cancellationToken);
                 _blockedReader = reader;
                 return new ValueTask<T>(reader.Task);
+            }
+        }
+
+        private bool HasBlockedReader
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                Debug.Assert(Monitor.IsEntered(SyncObj));
+
+                object br = _blockedReader;
+                if (br == null) return false;
+
+                ReaderInteractor<T> ri = br as ReaderInteractor<T>;
+                return ri != null && !ri.Task.IsCanceled;
+            }
+        }
+
+        private bool HasWaitingReader
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                Debug.Assert(Monitor.IsEntered(SyncObj));
+                ReaderInteractor<bool> wr = _waitingReader;
+                return wr != null && !wr.Task.IsCanceled;
             }
         }
 
@@ -295,7 +321,7 @@ namespace System.Threading.Tasks.Channels
                     return ChannelUtilities.TrueTask;
                 }
 
-                if (_waitingReader != null || _blockedReader != null)
+                if (HasWaitingReader || HasBlockedReader)
                 {
                     return Task.FromException<bool>(ChannelUtilities.CreateSingleReaderWriterMisuseException());
                 }
