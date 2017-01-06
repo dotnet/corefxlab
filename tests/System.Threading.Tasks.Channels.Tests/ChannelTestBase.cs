@@ -533,6 +533,28 @@ namespace System.Threading.Tasks.Channels.Tests
             AssertSynchronouslyCanceled(c.WaitToWriteAsync(cts.Token), cts.Token);
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public async Task CancelPendingRead_Writing_DataTransferredToCorrectReader(int writeMode)
+        {
+            IChannel<int> c = CreateChannel();
+            var cts = new CancellationTokenSource();
+
+            Task<int> read1 = c.ReadAsync(cts.Token).AsTask();
+            cts.Cancel();
+            Task<int> read2 = c.ReadAsync().AsTask();
+
+            switch (writeMode)
+            {
+                case 0: await c.WriteAsync(42); break;
+                case 1: Assert.True(c.TryWrite(42)); break;
+            }
+
+            Assert.Equal(42, await read2);
+            await AssertCanceled(read1, cts.Token);
+        }
+
         [Fact]
         public async Task Await_CompletedChannel_Throws()
         {
