@@ -88,6 +88,30 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(1)]
         [InlineData(10)]
         [InlineData(10000)]
+        public void WriteAsync_TryRead_Many_DropOldest(int bufferedCapacity)
+        {
+            IChannel<int> c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropOldest);
+
+            for (int i = 0; i < bufferedCapacity * 2; i++)
+            {
+                Assert.Equal(TaskStatus.RanToCompletion, c.WriteAsync(i).Status);
+            }
+
+            int result;
+            for (int i = bufferedCapacity; i < bufferedCapacity * 2; i++)
+            {
+                Assert.True(c.TryRead(out result));
+                Assert.Equal(i, result);
+            }
+
+            Assert.False(c.TryRead(out result));
+            Assert.Equal(0, result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(10000)]
         public void TryWrite_TryRead_Many_DropNewest(int bufferedCapacity)
         {
             IChannel<int> c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
@@ -108,6 +132,54 @@ namespace System.Threading.Tasks.Channels.Tests
 
             Assert.False(c.TryRead(out result));
             Assert.Equal(0, result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(10)]
+        [InlineData(10000)]
+        public void WriteAsync_TryRead_Many_DropNewest(int bufferedCapacity)
+        {
+            IChannel<int> c = Channel.CreateBounded<int>(bufferedCapacity, BoundedChannelFullMode.DropNewest);
+
+            for (int i = 0; i < bufferedCapacity * 2; i++)
+            {
+                Assert.Equal(TaskStatus.RanToCompletion, c.WriteAsync(i).Status);
+            }
+
+            int result;
+            for (int i = 0; i < bufferedCapacity - 1; i++)
+            {
+                Assert.True(c.TryRead(out result));
+                Assert.Equal(i, result);
+            }
+            Assert.True(c.TryRead(out result));
+            Assert.Equal(bufferedCapacity * 2 - 1, result);
+
+            Assert.False(c.TryRead(out result));
+            Assert.Equal(0, result);
+        }
+
+        [Fact]
+        public async Task CancelPendingWrite_Reading_DataTransferredFromCorrectWriter()
+        {
+            IChannel<int> c = Channel.CreateBounded<int>(1);
+            Assert.Equal(TaskStatus.RanToCompletion, c.WriteAsync(42).Status);
+
+            var cts = new CancellationTokenSource();
+
+            Task write1 = c.WriteAsync(43, cts.Token);
+            Assert.Equal(TaskStatus.WaitingForActivation, write1.Status);
+
+            cts.Cancel();
+
+            Task write2 = c.WriteAsync(44);
+
+            Assert.Equal(42, await c);
+            Assert.Equal(44, await c);
+
+            await AssertCanceled(write1, cts.Token);
+            await write2;
         }
 
         [Theory]

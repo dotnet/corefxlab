@@ -6,7 +6,8 @@ namespace System.Threading.Tasks.Channels
 {
     internal abstract class Interactor<T> : TaskCompletionSource<T>
     {
-        protected Interactor() : base(TaskCreationOptions.RunContinuationsAsynchronously) { }
+        protected Interactor(bool runContinuationsAsynchronously) :
+            base(runContinuationsAsynchronously ? TaskCreationOptions.RunContinuationsAsynchronously : TaskCreationOptions.None) { }
 
         internal bool Success(T item)
         {
@@ -33,21 +34,25 @@ namespace System.Threading.Tasks.Channels
 
     internal class ReaderInteractor<T> : Interactor<T>
     {
-        internal static ReaderInteractor<T> Create(CancellationToken cancellationToken) =>
+        protected ReaderInteractor(bool runContinuationsAsynchronously) : base(runContinuationsAsynchronously) { }
+
+        public static ReaderInteractor<T> Create(bool runContinuationsAsynchronously, CancellationToken cancellationToken) =>
             cancellationToken.CanBeCanceled ?
-                new CancelableReaderInteractor<T>(cancellationToken) :
-                new ReaderInteractor<T>();
+                new CancelableReaderInteractor<T>(runContinuationsAsynchronously, cancellationToken) :
+                new ReaderInteractor<T>(runContinuationsAsynchronously);
     }
 
     internal class WriterInteractor<T> : Interactor<VoidResult>
     {
+        protected WriterInteractor(bool runContinuationsAsynchronously) : base(runContinuationsAsynchronously) { }
+
         internal T Item { get; private set; }
 
-        internal static WriterInteractor<T> Create(CancellationToken cancellationToken, T item)
+        public static WriterInteractor<T> Create(bool runContinuationsAsynchronously, CancellationToken cancellationToken, T item)
         {
             WriterInteractor<T> w = cancellationToken.CanBeCanceled ?
-                new CancelableWriter<T>(cancellationToken) :
-                new WriterInteractor<T>();
+                new CancelableWriter<T>(runContinuationsAsynchronously, cancellationToken) :
+                new WriterInteractor<T>(runContinuationsAsynchronously);
             w.Item = item;
             return w;
         }
@@ -58,7 +63,7 @@ namespace System.Threading.Tasks.Channels
         private CancellationToken _token;
         private CancellationTokenRegistration _registration;
 
-        internal CancelableReaderInteractor(CancellationToken cancellationToken)
+        internal CancelableReaderInteractor(bool runContinuationsAsynchronously, CancellationToken cancellationToken) : base(runContinuationsAsynchronously)
         {
             _token = cancellationToken;
             _registration = cancellationToken.Register(s =>
@@ -76,7 +81,7 @@ namespace System.Threading.Tasks.Channels
         private CancellationToken _token;
         private CancellationTokenRegistration _registration;
 
-        internal CancelableWriter(CancellationToken cancellationToken)
+        internal CancelableWriter(bool runContinuationsAsynchronously, CancellationToken cancellationToken) : base(runContinuationsAsynchronously)
         {
             _token = cancellationToken;
             _registration = cancellationToken.Register(s =>

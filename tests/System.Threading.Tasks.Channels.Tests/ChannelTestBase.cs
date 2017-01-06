@@ -11,7 +11,8 @@ namespace System.Threading.Tasks.Channels.Tests
     {
         protected abstract IChannel<int> CreateChannel();
 
-        protected virtual bool RequiresSingleReaderWriter { get { return false; } }
+        protected virtual bool RequiresSingleReader => false;
+        protected virtual bool RequiresSingleWriter => false;
 
         [Fact]
         public void ValidateDebuggerAttributes()
@@ -157,25 +158,27 @@ namespace System.Threading.Tasks.Channels.Tests
                 }));
         }
 
-        [Fact]
-        public void ManyProducerConsumer_ConcurrentReadWrite_Success()
+        [Theory]
+        [InlineData(1, 1)]
+        [InlineData(1, 10)]
+        [InlineData(10, 1)]
+        [InlineData(10, 10)]
+        public void ManyProducerConsumer_ConcurrentReadWrite_Success(int numReaders, int numWriters)
         {
-            if (RequiresSingleReaderWriter)
-                return;
+            if (RequiresSingleReader && numReaders > 1) return;
+            if (RequiresSingleWriter && numWriters > 1) return;
 
             IChannel<int> c = CreateChannel();
 
-            const int NumWriters = 10;
-            const int NumReaders = 10;
             const int NumItems = 10000;
 
             long readTotal = 0;
-            int remainingWriters = NumWriters;
+            int remainingWriters = numWriters;
             int remainingItems = NumItems;
 
-            Task[] tasks = new Task[NumWriters + NumReaders];
+            Task[] tasks = new Task[numWriters + numReaders];
 
-            for (int i = 0; i < NumReaders; i++)
+            for (int i = 0; i < numReaders; i++)
             {
                 tasks[i] = Task.Run(async () =>
                 {
@@ -187,9 +190,9 @@ namespace System.Threading.Tasks.Channels.Tests
                 });
             }
 
-            for (int i = 0; i < NumWriters; i++)
+            for (int i = 0; i < numWriters; i++)
             {
-                tasks[NumReaders + i] = Task.Run(async () =>
+                tasks[numReaders + i] = Task.Run(async () =>
                 {
                     while (true)
                     {
@@ -209,25 +212,27 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.Equal((NumItems * (NumItems + 1L)) / 2, readTotal);
         }
 
-        [Fact]
-        public void ManyProducerConsumer_ConcurrentAwaitWrite_Success()
+        [Theory]
+        [InlineData(1, 1)]
+        [InlineData(1, 10)]
+        [InlineData(10, 1)]
+        [InlineData(10, 10)]
+        public void ManyProducerConsumer_ConcurrentAwaitWrite_Success(int numReaders, int numWriters)
         {
-            if (RequiresSingleReaderWriter)
-                return;
+            if (RequiresSingleReader && numReaders > 1) return;
+            if (RequiresSingleWriter && numWriters > 1) return;
 
             IChannel<int> c = CreateChannel();
 
-            const int NumWriters = 10;
-            const int NumReaders = 10;
             const int NumItems = 10000;
 
             long readTotal = 0;
-            int remainingWriters = NumWriters;
+            int remainingWriters = numWriters;
             int remainingItems = NumItems;
 
-            Task[] tasks = new Task[NumWriters + NumReaders];
+            Task[] tasks = new Task[numWriters + numReaders];
 
-            for (int i = 0; i < NumReaders; i++)
+            for (int i = 0; i < numReaders; i++)
             {
                 tasks[i] = Task.Run(async () =>
                 {
@@ -239,9 +244,9 @@ namespace System.Threading.Tasks.Channels.Tests
                 });
             }
 
-            for (int i = 0; i < NumWriters; i++)
+            for (int i = 0; i < numWriters; i++)
             {
-                tasks[NumReaders + i] = Task.Run(async () =>
+                tasks[numReaders + i] = Task.Run(async () =>
                 {
                     while (true)
                     {
@@ -426,10 +431,9 @@ namespace System.Threading.Tasks.Channels.Tests
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
-        public void ManyWriteAsync_ThenManyReadAsync_Success(int mode)
+        public void ManyWriteAsync_ThenManyReadAsync_Success(int readMode)
         {
-            if (RequiresSingleReaderWriter)
-                return;
+            if (RequiresSingleReader || RequiresSingleWriter) return;
 
             IChannel<int> c = CreateChannel();
 
@@ -444,7 +448,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Task<int>[] readers = new Task<int>[NumItems];
             for (int i = 0; i < readers.Length; i++)
             {
-                switch (mode)
+                switch (readMode)
                 {
                     case 0:
                         readers[i] = c.ReadAsync().AsTask();
@@ -469,10 +473,9 @@ namespace System.Threading.Tasks.Channels.Tests
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
-        public void ManyReadAsync_ThenManyWriteAsync_Success(int mode)
+        public void ManyReadAsync_ThenManyWriteAsync_Success(int writeMode)
         {
-            if (RequiresSingleReaderWriter)
-                return;
+            if (RequiresSingleReader || RequiresSingleReader) return;
 
             IChannel<int> c = CreateChannel();
 
@@ -487,7 +490,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Task[] writers = new Task[NumItems];
             for (int i = 0; i < writers.Length; i++)
             {
-                switch (mode)
+                switch (writeMode)
                 {
                     case 0:
                         writers[i] = c.WriteAsync(i);
@@ -530,6 +533,28 @@ namespace System.Threading.Tasks.Channels.Tests
             AssertSynchronouslyCanceled(c.WaitToWriteAsync(cts.Token), cts.Token);
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public async Task CancelPendingRead_Writing_DataTransferredToCorrectReader(int writeMode)
+        {
+            IChannel<int> c = CreateChannel();
+            var cts = new CancellationTokenSource();
+
+            Task<int> read1 = c.ReadAsync(cts.Token).AsTask();
+            cts.Cancel();
+            Task<int> read2 = c.ReadAsync().AsTask();
+
+            switch (writeMode)
+            {
+                case 0: await c.WriteAsync(42); break;
+                case 1: Assert.True(c.TryWrite(42)); break;
+            }
+
+            Assert.Equal(42, await read2);
+            await AssertCanceled(read1, cts.Token);
+        }
+
         [Fact]
         public async Task Await_CompletedChannel_Throws()
         {
@@ -550,8 +575,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task SelectAsync_CaseReadBeforeAvailable_Success()
         {
-            if (RequiresSingleReaderWriter)
-                return;
+            if (RequiresSingleReader || RequiresSingleWriter) return;
 
             IChannel<int> c1 = CreateChannel();
             IChannel<int> c2 = CreateChannel();
@@ -668,8 +692,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(5, true)]
         public async Task AsObserver_AllDataPushed(int numSubscribers, bool completeWithError)
         {
-            if (RequiresSingleReaderWriter)
-                return;
+            if (RequiresSingleWriter) return;
 
             IChannel<int> c = CreateChannel();
 

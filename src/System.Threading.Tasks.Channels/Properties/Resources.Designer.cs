@@ -62,38 +62,11 @@ namespace System.Threading.Tasks.Channels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Destination stream is not writable..
-        /// </summary>
-        internal static string ArgumentException_DestinationStreamNotWritable {
-            get {
-                return ResourceManager.GetString("ArgumentException_DestinationStreamNotWritable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Source stream is not readable.
-        /// </summary>
-        internal static string ArgumentException_SourceStreamNotReadable {
-            get {
-                return ResourceManager.GetString("ArgumentException_SourceStreamNotReadable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The channel has been closed..
         /// </summary>
         internal static string ClosedChannelException_DefaultMessage {
             get {
                 return ResourceManager.GetString("ClosedChannelException_DefaultMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Result not available..
-        /// </summary>
-        internal static string Debugger_TaskResultNotAvailable {
-            get {
-                return ResourceManager.GetString("Debugger_TaskResultNotAvailable", resourceCulture);
             }
         }
         
@@ -112,15 +85,6 @@ namespace System.Threading.Tasks.Channels.Properties {
         internal static string InvalidOperationException_SingleReaderWriterUsedConcurrently {
             get {
                 return ResourceManager.GetString("InvalidOperationException_SingleReaderWriterUsedConcurrently", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified type cannot be serialized or deserialized..
-        /// </summary>
-        internal static string InvalidOperationException_TypeNotSerializable {
-            get {
-                return ResourceManager.GetString("InvalidOperationException_TypeNotSerializable", resourceCulture);
             }
         }
     }

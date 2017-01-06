@@ -54,36 +54,6 @@ namespace System.Threading.Tasks.Channels
             return new AsyncEnumerator<T>(channel, cancellationToken);
         }
 
-        /// <summary>Creates a case-select builder and adds a case for channel reading.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel from which to read.</param>
-        /// <param name="action">The action to invoke with data read from the channel.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Action<T> action) => new CaseBuilder().CaseRead(channel, action);
-
-        /// <summary>Creates a case-select builder and adds a case for channel reading.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel from which to read.</param>
-        /// <param name="func">The asynchronous function to invoke with data read from the channel.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Func<T, Task> func) => new CaseBuilder().CaseRead(channel, func);
-
-        /// <summary>Creates a case-select builder and adds a case for channel writing.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel to which to write.</param>
-        /// <param name="item">The data to write to the channel</param>
-        /// <param name="action">The action to invoke after the data has been written.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action) => new CaseBuilder().CaseWrite(channel, item, action);
-
-        /// <summary>Creates a case-select builder and adds a case for channel writing.</summary>
-        /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
-        /// <param name="channel">The channel to which to write.</param>
-        /// <param name="item">The data to write to the channel</param>
-        /// <param name="func">The asynchronous function to invoke after the data has been written.</param>
-        /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func) => new CaseBuilder().CaseWrite(channel, item, func);
-
         /// <summary>Mark the channel as being complete, meaning no more items will be written to it.</summary>
         /// <param name="channel">The channel to mark as complete.</param>
         /// <param name="error">Optional Exception indicating a failure that's causing the channel to complete.</param>
@@ -119,7 +89,7 @@ namespace System.Threading.Tasks.Channels
         {
             private readonly List<IObserver<T>> _observers = new List<IObserver<T>>();
             private readonly IReadableChannel<T> _channel;
-            private CancellationTokenSource _cancelCurrentOperation;
+            private bool _active;
 
             internal ChannelObservable(IReadableChannel<T> channel)
             {
@@ -130,53 +100,97 @@ namespace System.Threading.Tasks.Channels
             public IDisposable Subscribe(IObserver<T> observer)
             {
                 if (observer == null)
+                {
                     throw new ArgumentNullException(nameof(observer));
+                }
 
                 lock (_observers)
                 {
                     _observers.Add(observer);
-                    if (_cancelCurrentOperation == null)
-                    {
-                        _cancelCurrentOperation = new CancellationTokenSource();
-                        CancellationToken token = _cancelCurrentOperation.Token;
-                        Task.Run(() => ForwardAsync(token));
-                    }
-                    return new Unsubscribe(this, observer);
+                    QueueLoopIfNecessary();
+                }
+                return new Unsubscribe(this, observer);
+            }
+
+            private void QueueLoopIfNecessary()
+            {
+                Debug.Assert(Monitor.IsEntered(_observers));
+                if (!_active && _observers.Count > 0)
+                {
+                    _active = true;
+                    Task.Factory.StartNew(s => ((ChannelObservable<T>)s).ForwardLoopAsync(), this,
+                        CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
                 }
             }
 
-            private async void ForwardAsync(CancellationToken cancellationToken)
+            private async void ForwardLoopAsync()
             {
                 Exception error = null;
                 try
                 {
-                    IAsyncEnumerator<T> e = _channel.GetAsyncEnumerator(cancellationToken);
-                    while (await e.MoveNextAsync().ConfigureAwait(false))
+                    while (await _channel.WaitToReadAsync().ConfigureAwait(false))
                     {
                         lock (_observers)
                         {
-                            for (int i = 0; i < _observers.Count; i++)
+                            if (_observers.Count == 0)
                             {
-                                _observers[i].OnNext(e.Current);
+                                break;
+                            }
+
+                            T item;
+                            if (_channel.TryRead(out item))
+                            {
+                                foreach (IObserver<T> observer in _observers)
+                                {
+                                    observer.OnNext(item);
+                                }
                             }
                         }
                     }
-                    await _channel.Completion.ConfigureAwait(false);
                 }
-                catch (Exception exc)
+                catch (Exception e)
                 {
-                    error = exc;
+                    error = e;
                 }
                 finally
                 {
                     lock (_observers)
                     {
-                        for (int i = 0; i < _observers.Count; i++)
+                        _active = false;
+                        if (_channel.Completion.IsCompleted)
                         {
-                            if (error != null)
-                                _observers[i].OnError(error);
-                            else
-                                _observers[i].OnCompleted();
+                            if (error == null)
+                            {
+                                if (_channel.Completion.IsFaulted)
+                                {
+                                    error = _channel.Completion.Exception.InnerException;
+                                    Debug.Assert(error != null);
+                                }
+                                else if (_channel.Completion.IsCanceled)
+                                {
+                                    try { _channel.Completion.GetAwaiter().GetResult(); }
+                                    catch (Exception e) { error = e; }
+                                    Debug.Assert(error != null);
+                                }
+                            }
+
+                            foreach (IObserver<T> observer in _observers)
+                            {
+                                if (error != null)
+                                {
+                                    observer.OnError(error);
+                                }
+                                else
+                                {
+                                    observer.OnCompleted();
+                                }
+                            }
+
+                            _observers.Clear();
+                        }
+                        else
+                        {
+                            QueueLoopIfNecessary();
                         }
                     }
                 }
@@ -205,12 +219,6 @@ namespace System.Threading.Tasks.Channels
                             bool removed = _observable._observers.Remove(_observer);
                             Debug.Assert(removed);
                             _observer = null;
-
-                            if (_observable._observers.Count == 0)
-                            {
-                                _observable._cancelCurrentOperation.Cancel();
-                                _observable._cancelCurrentOperation = null;
-                            }
                         }
                     }
                 }

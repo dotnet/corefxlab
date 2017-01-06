@@ -128,7 +128,7 @@ namespace System.Threading.Tasks.Channels
                     return new ValueTask<T>(Task.FromException<T>(_doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException()));
 
                 // Otherwise, queue the reader.
-                var reader = ReaderInteractor<T>.Create(cancellationToken);
+                var reader = ReaderInteractor<T>.Create(true, cancellationToken);
                 _blockedReaders.EnqueueTail(reader);
                 return new ValueTask<T>(reader.Task);
             }
@@ -149,7 +149,7 @@ namespace System.Threading.Tasks.Channels
                     return ChannelUtilities.FalseTask;
 
                 // Queue the waiter
-                var r = ReaderInteractor<bool>.Create(cancellationToken);
+                var r = ReaderInteractor<bool>.Create(true, cancellationToken);
                 _waitingReaders.EnqueueTail(r);
                 return r.Task;
             }

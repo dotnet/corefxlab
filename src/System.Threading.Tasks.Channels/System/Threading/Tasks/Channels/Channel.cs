@@ -12,10 +12,21 @@ namespace System.Threading.Tasks.Channels
         /// <returns>The created channel.</returns>
         public static IChannel<T> CreateUnbounded<T>() => new UnboundedChannel<T>();
 
-        /// <summary>Creates an unbounded channel usable by a single producer and a single consumer at a time.</summary>
+        /// <summary>Creates an unbounded channel usable by any number of readers and writers concurrently.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
+        /// <param name="optimizations">Controls optimizations that may be applied to the channel.</param>
         /// <returns>The created channel.</returns>
-        public static IChannel<T> CreateUnboundedSpsc<T>() => new SingleProducerSingleConsumerUnboundedChannel<T>();
+        public static IChannel<T> CreateUnbounded<T>(ChannelOptimizations optimizations)
+        {
+            if (optimizations == null)
+            {
+                throw new ArgumentNullException(nameof(optimizations));
+            }
+
+            return optimizations.SingleReader ?
+                (IChannel<T>)new SingleConsumerUnboundedChannel<T>(!optimizations.AllowSynchronousContinuations) :
+                new UnboundedChannel<T>();
+        }
 
         /// <summary>Creates a channel that doesn't buffer any items.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>

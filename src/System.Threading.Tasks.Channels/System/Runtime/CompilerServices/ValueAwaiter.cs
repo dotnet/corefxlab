@@ -44,8 +44,16 @@ namespace System.Runtime.CompilerServices
         /// <param name="task">The task that represents the actual async operation being awaited.</param>
         public ValueAwaiter(Task<TResult> task)
         {
-            _result = default(TResult);
-            _asyncOp = task;
+            if (task.Status == TaskStatus.RanToCompletion)
+            {
+                _result = task.Result;
+                _asyncOp = null;
+            }
+            else
+            {
+                _result = default(TResult);
+                _asyncOp = task;
+            }
         }
 
         /// <summary>Initializes the awaiter with the specified async operation.</summary>
