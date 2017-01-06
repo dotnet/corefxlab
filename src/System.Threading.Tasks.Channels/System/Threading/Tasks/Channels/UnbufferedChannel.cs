@@ -126,7 +126,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // No writer found to pair with.  Queue the reader.
-                var r = ReaderInteractor<T>.Create(cancellationToken);
+                var r = ReaderInteractor<T>.Create(true, cancellationToken);
                 _blockedReaders.EnqueueTail(r);
 
                 // And let any waiting writers know it's their lucky day.
@@ -205,7 +205,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // No reader was available.  Queue the writer.
-                var w = WriterInteractor<T>.Create(cancellationToken, item);
+                var w = WriterInteractor<T>.Create(true, cancellationToken, item);
                 _blockedWriters.EnqueueTail(w);
 
                 // And let any waiting readers know it's their lucky day.
@@ -232,7 +232,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Otherwise, queue the waiter.
-                var r = ReaderInteractor<bool>.Create(cancellationToken);
+                var r = ReaderInteractor<bool>.Create(true, cancellationToken);
                 _waitingReaders.EnqueueTail(r);
                 return r.Task;
             }
@@ -255,7 +255,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Otherwise, queue the writer
-                var w = ReaderInteractor<bool>.Create(cancellationToken);
+                var w = ReaderInteractor<bool>.Create(true, cancellationToken);
                 _waitingWriters.EnqueueTail(w);
                 return w.Task;
             }

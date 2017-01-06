@@ -14,7 +14,7 @@ namespace System.Threading.Tasks.Channels.Tests
     {
         protected void AssertSynchronouslyCanceled(Task task, CancellationToken token)
         {
-            Assert.True(task.IsCanceled);
+            Assert.Equal(TaskStatus.Canceled, task.Status);
             OperationCanceledException oce = Assert.ThrowsAny<OperationCanceledException>(() => task.GetAwaiter().GetResult());
             Assert.Equal(token, oce.CancellationToken);
         }

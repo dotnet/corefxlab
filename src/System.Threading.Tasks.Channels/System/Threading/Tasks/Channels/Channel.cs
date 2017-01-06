@@ -24,7 +24,7 @@ namespace System.Threading.Tasks.Channels
             }
 
             return optimizations.SingleReader ?
-                (IChannel<T>)new SingleConsumerUnboundedChannel<T>() :
+                (IChannel<T>)new SingleConsumerUnboundedChannel<T>(!optimizations.AllowSynchronousContinuations) :
                 new UnboundedChannel<T>();
         }
 

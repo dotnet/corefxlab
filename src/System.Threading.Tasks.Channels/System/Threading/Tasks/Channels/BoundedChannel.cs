@@ -154,7 +154,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Otherwise, queue the reader.
-                var reader = ReaderInteractor<T>.Create(cancellationToken);
+                var reader = ReaderInteractor<T>.Create(true, cancellationToken);
                 _blockedReaders.EnqueueTail(reader);
                 return new ValueTask<T>(reader.Task);
             }
@@ -183,7 +183,7 @@ namespace System.Threading.Tasks.Channels
 
                 // There were no items available, but there could be in the future, so ensure
                 // there's a blocked reader task and return it.
-                var r = ReaderInteractor<bool>.Create(cancellationToken);
+                var r = ReaderInteractor<bool>.Create(true, cancellationToken);
                 _waitingReaders.EnqueueTail(r);
                 return r.Task;
             }
@@ -317,7 +317,7 @@ namespace System.Threading.Tasks.Channels
 
                 // We're still allowed to write, but there's no space,
                 // so ensure a waiter is queued and return it.
-                var w = ReaderInteractor<bool>.Create(cancellationToken);
+                var w = ReaderInteractor<bool>.Create(true, cancellationToken);
                 _waitingWriters.EnqueueTail(w);
                 return w.Task;
             }
@@ -373,7 +373,7 @@ namespace System.Threading.Tasks.Channels
 
                 // There were no readers and there was no room.
                 // Queue the writer.
-                var writer = WriterInteractor<T>.Create(cancellationToken, item);
+                var writer = WriterInteractor<T>.Create(true, cancellationToken, item);
                 _blockedWriters.EnqueueTail(writer);
                 return writer.Task;
             }
