@@ -22,11 +22,11 @@ namespace System.Threading.Tasks.Channels
         /// <param name="tcs">The source to complete.</param>
         /// <param name="error">
         /// The optional exception with which to complete.  
-        /// If this is null, the source will be completed successfully.
+        /// If this is null or the DoneWritingSentinel, the source will be completed successfully.
         /// If this is an OperationCanceledException, it'll be completed with the exception's token.
         /// Otherwise, it'll be completed as faulted with the exception.
         /// </param>
-        internal static void CompleteWithOptionalError(TaskCompletionSource<VoidResult> tcs, Exception error)
+        internal static void Complete(TaskCompletionSource<VoidResult> tcs, Exception error = null)
         {
             OperationCanceledException oce = error as OperationCanceledException;
             if (oce != null)
@@ -60,6 +60,53 @@ namespace System.Threading.Tasks.Channels
             while (waiters.Count > 0)
             {
                 waiters.DequeueHead().Success(result);
+            }
+        }
+
+        /// <summary>Removes all waiters from the queue, completing each.</summary>
+        /// <param name="syncObj">Lock held while manipulating <see cref="waiters"/> but not while completing each waiter.</param>
+        /// <param name="waiters">The queue of waiters to complete.</param>
+        /// <param name="result">The value with which to complete each waiter.</param>
+        internal static void WakeUpWaiters(object syncObj, Dequeue<ReaderInteractor<bool>> waiters, bool result)
+        {
+            while (true)
+            {
+                ReaderInteractor<bool> r;
+                lock (syncObj)
+                {
+                    if (waiters.Count == 0) return;
+                    r = waiters.DequeueHead();
+                }
+                r.Success(result);
+            }
+        }
+
+        /// <summary>Removes all interactors from the queue, failing each.</summary>
+        /// <param name="interactors">The queue of interactors to complete.</param>
+        /// <param name="error">The error with which to complete each interactor.</param>
+        internal static void FailInteractors<T>(Dequeue<ReaderInteractor<T>> interactors, Exception error)
+        {
+            while (interactors.Count > 0)
+            {
+                interactors.DequeueHead().Fail(error ?? CreateInvalidCompletionException());
+            }
+        }
+
+        /// <summary>Removes all interactors from the queue, failing each.</summary>
+        /// <param name="syncObj">Lock held while manipulating <see cref="interactors"/> but not while completing each interactor.</param>
+        /// <param name="interactors">The queue of interactors to complete.</param>
+        /// <param name="error">The error with which to complete each interactor.</param>
+        internal static void FailInteractors<T>(object syncObj, Dequeue<ReaderInteractor<T>> interactors, Exception error)
+        {
+            while (true)
+            {
+                ReaderInteractor<T> interactor;
+                lock (syncObj)
+                {
+                    if (interactors.Count == 0) return;
+                    interactor = interactors.DequeueHead();
+                }
+                interactor.Fail(error ?? CreateInvalidCompletionException());
             }
         }
 
