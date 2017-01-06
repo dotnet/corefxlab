@@ -160,11 +160,6 @@ namespace System.Threading.Tasks.Channels
 
         public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
-            }
-
             T item;
             return TryRead(out item) ?
                 new ValueTask<T>(item) :
@@ -173,6 +168,11 @@ namespace System.Threading.Tasks.Channels
 
         private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
+            }
+
             lock (SyncObj)
             {
                 T item;
