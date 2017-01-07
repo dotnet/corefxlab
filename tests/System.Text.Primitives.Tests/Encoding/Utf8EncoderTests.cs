@@ -77,6 +77,43 @@ namespace System.Text.Utf8.Tests
             Assert.Equal(0xBF, ecp.Byte2);
         }
 
+        public static object[][] UnicodeToUTF8EncodingTestData = {
+            // empty
+            new object[] { new byte[] { }, new UnicodeCodePoint(0x50), false },
+            // 1 byte
+            new object[] { new byte[] { 0x50 }, new UnicodeCodePoint(0x50), true },
+            // 2 bytes
+            new object[] { new byte[] { 0xCF, 0xA8 }, new UnicodeCodePoint(0x3E8), true },
+            // 3 bytes
+            new object[] { new byte[] { 0xEA, 0xBF, 0x88 }, new UnicodeCodePoint(0xAFC8), true },
+            // 4 bytes
+            new object[] { new byte[] { 0xF0, 0xA4, 0xA7, 0xB0 }, new UnicodeCodePoint(0x249F0), true },
+            // 4 bytes - buffer too small
+            new object[] { new byte[] { 0xF0, 0xA4, 0xA7 }, new UnicodeCodePoint(0x249F0), false },
+
+        };
+
+        [Theory, MemberData("UnicodeToUTF8EncodingTestData")]
+        public void Utf8TryEncodeFromUnicode(byte[] expectedBytes, UnicodeCodePoint codepoint, bool expectedReturnVal)
+        {
+            Span<byte> buffer = new Span<byte>(new byte[expectedBytes.Length]);
+            int bytesWritten;
+
+            bool result = TextEncoder.Utf8.TryEncodeFromUnicode(codepoint, buffer, out bytesWritten);
+            Assert.Equal(expectedReturnVal ? expectedBytes.Length : 0, bytesWritten);
+            Assert.Equal(expectedReturnVal, result);
+            byte[] outputArray = buffer.ToArray();
+            Assert.Equal(expectedBytes.Length, outputArray.Length);
+
+            if (expectedReturnVal)
+            {
+                for (int i = 0; i < expectedBytes.Length; i++)
+                {
+                    Assert.Equal(expectedBytes[i], outputArray[i]);
+                }
+            }
+        }
+
         public static object[][] EnsureCodeUnitsOfStringTestCases = {
             // empty
             new object[] { new byte[0], default(Utf8String) },
