@@ -21,7 +21,9 @@ namespace System.Threading.Tasks.Channels
         public static IObservable<T> AsObservable<T>(this IReadableChannel<T> source)
         {
             if (source == null)
+            {
                 throw new ArgumentNullException(nameof(source));
+            }
 
             return (IObservable<T>)s_channelToObservable.GetValue(
                 source, 
@@ -35,7 +37,9 @@ namespace System.Threading.Tasks.Channels
         public static IObserver<T> AsObserver<T>(this IWritableChannel<T> target)
         {
             if (target == null)
+            {
                 throw new ArgumentNullException(nameof(target));
+            }
 
             return new ChannelObserver<T>(target);
         }
@@ -49,7 +53,9 @@ namespace System.Threading.Tasks.Channels
             this IReadableChannel<T> channel, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (channel == null)
+            {
                 throw new ArgumentNullException(nameof(channel));
+            }
 
             return new AsyncEnumerator<T>(channel, cancellationToken);
         }
@@ -61,9 +67,14 @@ namespace System.Threading.Tasks.Channels
         public static void Complete<T>(this IWritableChannel<T> channel, Exception error = null)
         {
             if (channel == null)
+            {
                 throw new ArgumentNullException(nameof(channel));
+            }
+
             if (!channel.TryComplete(error))
+            {
                 throw ChannelUtilities.CreateInvalidCompletionException();
+            }
         }
 
         /// <summary>Provides an observer for a writeable channel.</summary>

@@ -81,8 +81,8 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Let any waiting readers and writers know there won't be any more data
-                ChannelUtilities.WakeUpWaiters(_waitingReaders, false);
-                ChannelUtilities.WakeUpWaiters(_waitingWriters, false);
+                ChannelUtilities.WakeUpWaiters(_waitingReaders, result: false);
+                ChannelUtilities.WakeUpWaiters(_waitingWriters, result: false);
             }
 
             return true;
@@ -101,7 +101,9 @@ namespace System.Threading.Tasks.Channels
         private ValueTask<T> ReadAsyncCore(CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested)
+            {
                 return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
+            }
 
             lock (SyncObj)
             {
@@ -130,7 +132,7 @@ namespace System.Threading.Tasks.Channels
                 _blockedReaders.EnqueueTail(r);
 
                 // And let any waiting writers know it's their lucky day.
-                ChannelUtilities.WakeUpWaiters(_waitingWriters, true);
+                ChannelUtilities.WakeUpWaiters(_waitingWriters, result: true);
 
                 return new ValueTask<T>(r.Task);
             }
@@ -183,7 +185,9 @@ namespace System.Threading.Tasks.Channels
         public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
+            {
                 return Task.FromCanceled(cancellationToken);
+            }
 
             lock (SyncObj)
             {
@@ -209,7 +213,7 @@ namespace System.Threading.Tasks.Channels
                 _blockedWriters.EnqueueTail(w);
 
                 // And let any waiting readers know it's their lucky day.
-                ChannelUtilities.WakeUpWaiters(_waitingReaders, true);
+                ChannelUtilities.WakeUpWaiters(_waitingReaders, result: true);
 
                 return w.Task;
             }
