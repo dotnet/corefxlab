@@ -7,7 +7,7 @@ namespace System.Text.Utf8
 {
     // TODO: Remove this class, make people use char.IsSurrogate and char.ToUtf32 to convert to code points and use Utf8Encoder to write bytes
     [StructLayout(LayoutKind.Explicit)]
-    public struct Utf8EncodedCodePoint
+    internal struct Utf8EncodedCodePoint
     {
         // TODO: Validate constructors if we decide to keep this class
         public Utf8EncodedCodePoint(char character) : this()

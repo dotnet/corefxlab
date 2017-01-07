@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace System.Text.Utf16
 {
-    public struct Utf16LittleEndianCodePointEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
+    internal struct Utf16LittleEndianCodePointEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
     {
         string _s;
         int _index;

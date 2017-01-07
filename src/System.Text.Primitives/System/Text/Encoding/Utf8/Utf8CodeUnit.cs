@@ -2,7 +2,7 @@
 
 namespace System.Text.Utf8
 {
-    public static class Utf8CodeUnit
+    internal static class Utf8CodeUnit
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsFirstCodeUnitInEncodedCodePoint(byte codeUnit)

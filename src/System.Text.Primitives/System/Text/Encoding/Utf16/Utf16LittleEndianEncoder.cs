@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text.Utf16
 {
-    public static class Utf16LittleEndianEncoder
+    internal static class Utf16LittleEndianEncoder
     {
         const uint MaskLow10Bits = 0x3FF;
 
