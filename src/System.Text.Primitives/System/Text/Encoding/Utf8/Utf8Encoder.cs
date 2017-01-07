@@ -6,7 +6,7 @@ using System.Text.Utf16;
 
 namespace System.Text.Utf8
 {
-    public static class Utf8Encoder
+    internal static class Utf8Encoder
     {
         // To get this to compile with dotnet cli, we need to temporarily un-binary the magic values
         private const byte b0000_0111U = 7;
