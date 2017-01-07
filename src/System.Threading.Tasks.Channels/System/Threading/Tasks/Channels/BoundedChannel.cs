@@ -121,8 +121,8 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // If there are any pending WaitToRead/WriteAsync calls, wake them up.
-                ChannelUtilities.WakeUpWaiters(_waitingReaders, false);
-                ChannelUtilities.WakeUpWaiters(_waitingWriters, false);
+                ChannelUtilities.WakeUpWaiters(_waitingReaders, result: false);
+                ChannelUtilities.WakeUpWaiters(_waitingWriters, result: false);
             }
 
             return true;
@@ -134,7 +134,9 @@ namespace System.Threading.Tasks.Channels
         {
             // Fast-path cancellation check
             if (cancellationToken.IsCancellationRequested)
+            {
                 return new ValueTask<T>(Task.FromCanceled<T>(cancellationToken));
+            }
 
             lock (SyncObj)
             {
@@ -163,7 +165,9 @@ namespace System.Threading.Tasks.Channels
         public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
+            {
                 return Task.FromCanceled<bool>(cancellationToken);
+            }
 
             lock (SyncObj)
             {
@@ -238,7 +242,7 @@ namespace System.Threading.Tasks.Channels
 
             // There was no blocked writer, so see if there's a WaitToWriteAsync
             // we should wake up.
-            ChannelUtilities.WakeUpWaiters(_waitingWriters, true);
+            ChannelUtilities.WakeUpWaiters(_waitingWriters, result: true);
 
             // Return the item
             return item;
@@ -287,7 +291,7 @@ namespace System.Threading.Tasks.Channels
                 // there's room in the queue.  Queue item, and let any waiting 
                 // readers know they could try to read.
                 _items.EnqueueTail(item);
-                ChannelUtilities.WakeUpWaiters(_waitingReaders, true);
+                ChannelUtilities.WakeUpWaiters(_waitingReaders, result: true);
                 return true;
             }
         }
@@ -295,7 +299,9 @@ namespace System.Threading.Tasks.Channels
         public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
+            {
                 return Task.FromCanceled<bool>(cancellationToken);
+            }
 
             lock (SyncObj)
             {
@@ -326,7 +332,9 @@ namespace System.Threading.Tasks.Channels
         public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
+            {
                 return Task.FromCanceled(cancellationToken);
+            }
 
             lock (SyncObj)
             {
@@ -354,7 +362,7 @@ namespace System.Threading.Tasks.Channels
                 if (_items.Count < _bufferedCapacity)
                 {
                     _items.EnqueueTail(item);
-                    ChannelUtilities.WakeUpWaiters(_waitingReaders, true);
+                    ChannelUtilities.WakeUpWaiters(_waitingReaders, result: true);
                     return ChannelUtilities.TrueTask;
                 }
 
@@ -368,7 +376,7 @@ namespace System.Threading.Tasks.Channels
                     Debug.Assert(_items.Count < _bufferedCapacity);
 
                     _items.EnqueueTail(item);
-                    ChannelUtilities.WakeUpWaiters(_waitingReaders, true);
+                    ChannelUtilities.WakeUpWaiters(_waitingReaders, result: true);
                     return ChannelUtilities.TrueTask;
                 }
 
