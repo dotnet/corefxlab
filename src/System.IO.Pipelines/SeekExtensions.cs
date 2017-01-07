@@ -36,7 +36,7 @@ namespace System.IO.Pipelines
             {
                 while (following == 0)
                 {
-                    if (bytesScanned >= limit || wasLastBlock)
+                    if (bytesScanned >= limit || (block == end.Segment && index >= end.Index) || wasLastBlock)
                     {
                         return -1;
                     }
@@ -71,6 +71,12 @@ namespace System.IO.Pipelines
                             }
 
                             bytesScanned += _vectorSpan;
+
+                            if (block == end.Segment && index + _vectorSpan >= end.Index)
+                            {
+                                return -1;
+                            }
+
                             following -= _vectorSpan;
                             index += _vectorSpan;
                             continue;
@@ -85,8 +91,15 @@ namespace System.IO.Pipelines
                             return -1;
                         }
 
-                        bytesScanned += vectorBytesScanned;
+                        if (block == end.Segment && index + firstEqualByteIndex >= end.Index)
+                        {
+                            // Ensure iterator is left at limit position
+                            bytesScanned += firstEqualByteIndex;
+                            return -1;
+                        }
 
+
+                        bytesScanned += vectorBytesScanned;
                         result = new ReadCursor(block, index + firstEqualByteIndex);
                         return byte0;
                     }
@@ -97,8 +110,8 @@ namespace System.IO.Pipelines
                     fixed (byte* pCurrentFixed = array.Array)
                     {
                         var pCurrent = pCurrentFixed + array.Offset + index;
-
-                        var pEnd = pCurrent + Math.Min(following, limit - bytesScanned);
+                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + Math.Min(end.Index, index + Math.Min(following, limit - bytesScanned)) : pCurrent + Math.Min(following, limit - bytesScanned);
+                        
                         do
                         {
                             bytesScanned++;
