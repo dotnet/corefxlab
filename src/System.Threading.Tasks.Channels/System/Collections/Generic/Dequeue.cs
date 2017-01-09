@@ -18,6 +18,8 @@ namespace System.Collections.Generic
 
         public int Count => _size;
 
+        public bool IsEmpty => _size == 0;
+
         public void EnqueueTail(T item)
         {
             if (_size == _array.Length)
@@ -47,7 +49,7 @@ namespace System.Collections.Generic
 
         public T DequeueHead()
         {
-            Debug.Assert(_size > 0); // caller's responsibility to make sure there are elements remaining
+            Debug.Assert(!IsEmpty); // caller's responsibility to make sure there are elements remaining
 
             T item = _array[_head];
             _array[_head] = default(T);
@@ -63,7 +65,7 @@ namespace System.Collections.Generic
 
         public T DequeueTail()
         {
-            Debug.Assert(_size > 0); // caller's responsibility to make sure there are elements remaining
+            Debug.Assert(!IsEmpty); // caller's responsibility to make sure there are elements remaining
 
             if (--_tail == -1)
             {
