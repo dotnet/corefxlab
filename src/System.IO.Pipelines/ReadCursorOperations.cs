@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    public static class SeekExtensions
+    public static class ReadCursorOperations
     {
         private const ulong _xorPowerOfTwoToHighByte = (0x07ul |
                                                         0x06ul << 8 |
@@ -16,110 +16,9 @@ namespace System.IO.Pipelines
 
         private static readonly int _vectorSpan = Vector<byte>.Count;
 
-        public static unsafe int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, out int bytesScanned, int limit = int.MaxValue)
-        {
-            bytesScanned = 0;
-            result = default(ReadCursor);
-
-            var block = begin.Segment;
-            if (block == null || limit <= 0)
-            {
-                return -1;
-            }
-
-            var index = begin.Index;
-            var wasLastBlock = block.Next == null;
-            var following = block.End - index;
-            var byte0Vector = GetVector(byte0);
-
-            while (true)
-            {
-                while (following == 0)
-                {
-                    if (bytesScanned >= limit || wasLastBlock)
-                    {
-                        return -1;
-                    }
-
-                    block = block.Next;
-                    index = block.Start;
-                    wasLastBlock = block.Next == null;
-                    following = block.End - index;
-                }
-                ArraySegment<byte> array;
-                var getArrayResult = block.Memory.TryGetArray(out array);
-                Debug.Assert(getArrayResult);
-
-                while (following > 0)
-                {
-                    // Need unit tests to test Vector path
-#if !DEBUG
-                    // Check will be Jitted away https://github.com/dotnet/coreclr/issues/1079
-                    if (Vector.IsHardwareAccelerated)
-                    {
-#endif
-                    if (following >= _vectorSpan)
-                    {
-                        var byte0Equals = Vector.Equals(new Vector<byte>(array.Array, array.Offset + index), byte0Vector);
-
-                        if (byte0Equals.Equals(Vector<byte>.Zero))
-                        {
-                            if (bytesScanned + _vectorSpan >= limit)
-                            {
-                                bytesScanned = limit;
-                                return -1;
-                            }
-
-                            bytesScanned += _vectorSpan;
-                            following -= _vectorSpan;
-                            index += _vectorSpan;
-                            continue;
-                        }
-                        var firstEqualByteIndex = LocateFirstFoundByte(byte0Equals);
-                        var vectorBytesScanned = firstEqualByteIndex + 1;
-
-                        if (bytesScanned + vectorBytesScanned > limit)
-                        {
-                            // Ensure iterator is left at limit position
-                            bytesScanned = limit;
-                            return -1;
-                        }
-
-                        bytesScanned += vectorBytesScanned;
-
-                        result = new ReadCursor(block, index + firstEqualByteIndex);
-                        return byte0;
-                    }
-                    // Need unit tests to test Vector path
-#if !DEBUG
-                    }
-#endif
-                    fixed (byte* pCurrentFixed = array.Array)
-                    {
-                        var pCurrent = pCurrentFixed + array.Offset + index;
-
-                        var pEnd = pCurrent + Math.Min(following, limit - bytesScanned);
-                        do
-                        {
-                            bytesScanned++;
-                            if (*pCurrent == byte0)
-                            {
-                                result = new ReadCursor(block, index);
-                                return byte0;
-                            }
-                            pCurrent++;
-                            index++;
-                        } while (pCurrent < pEnd);
-                    }
-                    following = 0;
-                    break;
-                }
-            }
-        }
-
         public static unsafe int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0)
         {
-            result = default(ReadCursor);
+            result = end;
             var block = begin.Segment;
             if (block == null)
             {
@@ -134,7 +33,7 @@ namespace System.IO.Pipelines
             {
                 while (following == 0)
                 {
-                    if ((block == end.Segment && index > end.Index) ||
+                    if ((block == end.Segment && index >= end.Index) ||
                         wasLastBlock)
                     {
                         return -1;
@@ -175,7 +74,7 @@ namespace System.IO.Pipelines
 
                         var byteIndex = LocateFirstFoundByte(byte0Equals);
 
-                        if (block == end.Segment && index + byteIndex > end.Index)
+                        if (block == end.Segment && index + byteIndex >= end.Index)
                         {
                             // Ensure iterator is left at limit position
                             return -1;
@@ -192,8 +91,8 @@ namespace System.IO.Pipelines
                     {
                         var pCurrent = pCurrentFixed + array.Offset + index;
 
-                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + end.Index + 1 : pCurrent + following;
-                        do
+                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + end.Index : pCurrent + following;
+                        while (pCurrent < pEnd)
                         {
                             if (*pCurrent == byte0)
                             {
@@ -202,7 +101,7 @@ namespace System.IO.Pipelines
                             }
                             pCurrent++;
                             index++;
-                        } while (pCurrent < pEnd);
+                        }
                     }
                     following = 0;
                     break;
@@ -212,7 +111,7 @@ namespace System.IO.Pipelines
 
         public static unsafe int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1)
         {
-            result = default(ReadCursor);
+            result = end;
             var block = begin.Segment;
             if (block == null)
             {
@@ -228,7 +127,7 @@ namespace System.IO.Pipelines
             {
                 while (following == 0)
                 {
-                    if ((block == end.Segment && index > end.Index) ||
+                    if ((block == end.Segment && index >= end.Index) ||
                         wasLastBlock)
                     {
                         return -1;
@@ -268,7 +167,7 @@ namespace System.IO.Pipelines
                             following -= _vectorSpan;
                             index += _vectorSpan;
 
-                            if (block == end.Segment && index > end.Index)
+                            if (block == end.Segment && index >= end.Index)
                             {
                                 return -1;
                             }
@@ -276,7 +175,7 @@ namespace System.IO.Pipelines
                             continue;
                         }
 
-                        if (block == end.Segment && index + byteIndex > end.Index)
+                        if (block == end.Segment && index + byteIndex >= end.Index)
                         {
                             // Ensure iterator is left at limit position
                             return -1;
@@ -293,8 +192,8 @@ namespace System.IO.Pipelines
                     {
                         var pCurrent = pCurrentFixed + array.Offset + index;
 
-                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + end.Index + 1 : pCurrent + following;
-                        do
+                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + end.Index : pCurrent + following;
+                        while (pCurrent < pEnd)
                         {
                             if (*pCurrent == byte0)
                             {
@@ -308,7 +207,7 @@ namespace System.IO.Pipelines
                             }
                             pCurrent++;
                             index++;
-                        } while (pCurrent != pEnd);
+                        }
                     }
 
                     following = 0;
@@ -319,7 +218,7 @@ namespace System.IO.Pipelines
 
         public static unsafe int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1, byte byte2)
         {
-            result = default(ReadCursor);
+            result = end;
             var block = begin.Segment;
             if (block == null)
             {
@@ -335,7 +234,7 @@ namespace System.IO.Pipelines
             {
                 while (following == 0)
                 {
-                    if ((block == end.Segment && index > end.Index) ||
+                    if ((block == end.Segment && index >= end.Index) ||
                         wasLastBlock)
                     {
                         return -1;
@@ -375,7 +274,7 @@ namespace System.IO.Pipelines
                             following -= _vectorSpan;
                             index += _vectorSpan;
 
-                            if (block == end.Segment && index > end.Index)
+                            if (block == end.Segment && index >= end.Index)
                             {
                                 return -1;
                             }
@@ -383,7 +282,7 @@ namespace System.IO.Pipelines
                             continue;
                         }
 
-                        if (block == end.Segment && index + byteIndex > end.Index)
+                        if (block == end.Segment && index + byteIndex >= end.Index)
                         {
                             // Ensure iterator is left at limit position
                             return -1;
@@ -401,8 +300,8 @@ namespace System.IO.Pipelines
                     {
                         var pCurrent = pCurrentFixed + array.Offset + index;
 
-                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + end.Index + 1 : pCurrent + following;
-                        do
+                        var pEnd = block == end.Segment ? pCurrentFixed + array.Offset + end.Index : pCurrent + following;
+                        while (pCurrent < pEnd)
                         {
                             if (*pCurrent == byte0)
                             {
@@ -421,7 +320,7 @@ namespace System.IO.Pipelines
                             }
                             pCurrent++;
                             index++;
-                        } while (pCurrent != pEnd);
+                        }
                     }
                     following = 0;
                     break;

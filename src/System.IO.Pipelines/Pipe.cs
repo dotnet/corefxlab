@@ -285,7 +285,7 @@ namespace System.IO.Pipelines
                 Commit();
             }
 
-            return CompleteWriteAsync();
+            return SignalWriterAsync();
         }
 
         internal ReadableBuffer AsReadableBuffer()
@@ -298,7 +298,7 @@ namespace System.IO.Pipelines
             return new ReadableBuffer(new ReadCursor(_commitHead, _commitHeadIndex), new ReadCursor(_writingHead, _writingHead.End));
         }
 
-        private Task CompleteWriteAsync()
+        internal Task SignalWriterAsync()
         {
             // TODO: Can factor out this lock
             lock (_sync)
@@ -340,13 +340,22 @@ namespace System.IO.Pipelines
             _consumingLocation = Environment.StackTrace;
 #endif
             ReadCursor readEnd;
-            // Reading commit head shared with writer
-            lock (_sync)
+            // No need to read end if there is no head
+            var head = _readHead;
+            if (head == null)
             {
-                readEnd = new ReadCursor(_commitHead, _commitHeadIndex);
+                readEnd = new ReadCursor(null);
+            }
+            else
+            {
+                // Reading commit head shared with writer
+                lock (_sync)
+                {
+                    readEnd = new ReadCursor(_commitHead, _commitHeadIndex);
+                }
             }
 
-            return new ReadableBuffer(new ReadCursor(_readHead), readEnd);
+            return new ReadableBuffer(new ReadCursor(head), readEnd);
         }
 
         void IPipelineReader.Advance(ReadCursor consumed, ReadCursor examined) => AdvanceReader(consumed, examined);

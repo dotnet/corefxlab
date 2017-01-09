@@ -523,6 +523,59 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
+        [Theory]
+        [MemberData(nameof(OutOfRangeSliceCases))]
+        public void ReadableBufferDoesNotAllowSlicingOutOfRange(Action<ReadableBuffer> fail)
+        {
+            // we want big buffer so cursor.Seek succeeds but is out of range of readable buffer
+            var data = new byte[150];
+            var buffer = ReadableBuffer.Create(data).Slice(0, 50);
+            var ex = Assert.Throws<InvalidOperationException>(() => fail(buffer));
+        }
+
+        [Fact]
+        public void ReadableBufferMove_MovesReadCursor()
+        {
+            var data = new byte[10];
+            var buffer = ReadableBuffer.Create(data);
+            var cursor = buffer.Move(buffer.Start, 5);
+            Assert.Equal(buffer.Slice(5).Start, cursor);
+        }
+
+        [Fact]
+        public void ReadableBufferMove_ChecksBounds()
+        {
+            var data = new byte[20];
+            var buffer = ReadableBuffer.Create(data);
+            var subbuffer = buffer.Slice(0, 10);
+            Assert.Throws<InvalidOperationException>(() => subbuffer.Move(buffer.Start, 11));
+        }
+
+        [Fact]
+        public void ReadableBufferMove_DoesNotAlowNegative()
+        {
+            var data = new byte[20];
+            var buffer = ReadableBuffer.Create(data);;
+            Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Move(buffer.Start, -1));
+        }
+
+        public static TheoryData<Action<ReadableBuffer>> OutOfRangeSliceCases
+        {
+            get
+            {
+                return new TheoryData<Action<ReadableBuffer>>()
+                {
+                    b => b.Slice(100),
+                    b => b.Slice(0, 100),
+                    b => b.Slice(b.Start, 100),
+                    b => b.Slice(0, 1).Slice(b.End, b.End),
+                    b => b.Slice(0, 1).Slice(b.Start, b.End),
+                    b => b.Slice(0, 1).Slice(0, b.End),
+                    b => b.Slice(1, b.Start)
+                };
+            }
+        }
+
         private class NativePool : IBufferPool
         {
             public void Dispose()

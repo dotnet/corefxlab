@@ -103,36 +103,42 @@ namespace System.IO.Pipelines
             }
         }
 
-        internal ReadCursor Seek(int bytes)
-        {
-            int count;
-            return Seek(bytes, out count);
-        }
-
-        internal ReadCursor Seek(int bytes, out int bytesSeeked)
+        internal ReadCursor Seek(int bytes, ReadCursor end)
         {
             if (IsEnd)
             {
-                bytesSeeked = 0;
                 return this;
             }
 
-            var wasLastSegment = _segment.Next == null;
             var following = _segment.End - _index;
 
+            ReadCursor cursor;
             if (following >= bytes)
             {
-                bytesSeeked = bytes;
-                return new ReadCursor(Segment, _index + bytes);
+                cursor = new ReadCursor(Segment, _index + bytes);
+            }
+            else
+            {
+                cursor = SeekMultiSegment(bytes, following);
             }
 
+            end.BoundsCheck(cursor);
+            return cursor;
+        }
+
+        private ReadCursor SeekMultiSegment(int bytes, int following)
+        {
+            var wasLastSegment = _segment.Next == null;
             var segment = _segment;
             var index = _index;
             while (true)
             {
                 if (wasLastSegment)
                 {
-                    bytesSeeked = following;
+                    if (bytes != following)
+                    {
+                        ThrowOutOfBoundsException();
+                    }
                     return new ReadCursor(segment, index + following);
                 }
                 else
@@ -147,10 +153,23 @@ namespace System.IO.Pipelines
 
                 if (following >= bytes)
                 {
-                    bytesSeeked = bytes;
                     return new ReadCursor(segment, index + bytes);
                 }
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void BoundsCheck(ReadCursor newCursor)
+        {
+            if (!this.GreaterOrEqual(newCursor))
+            {
+                ThrowOutOfBoundsException();
+            }
+        }
+
+        private static void ThrowOutOfBoundsException()
+        {
+            throw new InvalidOperationException("Cursor is out of bounds");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -237,6 +256,11 @@ namespace System.IO.Pipelines
 
         public override string ToString()
         {
+            if (IsEnd)
+            {
+                return "<end>";
+            }
+
             var sb = new StringBuilder();
             Span<byte> span = Segment.Memory.Span.Slice(Index, Segment.End - Index);
             SpanExtensions.AppendAsLiteral(span, sb);
@@ -270,6 +294,29 @@ namespace System.IO.Pipelines
 
             var shift5 = ((uint)h1 << 5) | ((uint)h1 >> 27);
             return ((int)shift5 + h1) ^ h2;
+        }
+
+        internal bool GreaterOrEqual(ReadCursor other)
+        {
+            if (other._segment == _segment)
+            {
+                return other._index <= _index;
+            }
+            return IsReachable(other);
+        }
+
+        internal bool IsReachable(ReadCursor other)
+        {
+            var current = other.Segment;
+            while (current != null)
+            {
+                if (current == Segment)
+                {
+                    return true;
+                }
+                current = current.Next;
+            }
+            return false;
         }
     }
 }

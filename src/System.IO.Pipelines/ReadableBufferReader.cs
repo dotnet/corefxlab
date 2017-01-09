@@ -15,12 +15,16 @@ namespace System.IO.Pipelines
         private int _overallIndex;
         private bool _end;
 
-        public ReadableBufferReader(ReadableBuffer buffer)
+        public ReadableBufferReader(ReadableBuffer buffer): this(buffer.Start, buffer.End)
+        {
+        }
+
+        public ReadableBufferReader(ReadCursor start, ReadCursor end) : this()
         {
             _end = false;
             _index = 0;
             _overallIndex = 0;
-            _enumerator = buffer.GetEnumerator();
+            _enumerator = new MemoryEnumerator(start, end);
             _currentMemory = default(Span<byte>);
             while (_enumerator.MoveNext())
             {
@@ -36,6 +40,15 @@ namespace System.IO.Pipelines
         public bool End => _end;
 
         public int Index => _overallIndex;
+
+        public ReadCursor Cursor
+        {
+            get
+            {
+                var currentSegment = _enumerator.CurrentSegment;
+                return new ReadCursor(currentSegment, currentSegment.Start + _index);
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
