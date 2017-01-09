@@ -123,7 +123,4 @@
   <data name="InvalidOperationException_DefaultCaseAlreadyExists" xml:space="preserve">
     <value>A default case already exists.</value>
   </data>
-  <data name="InvalidOperationException_SingleReaderWriterUsedConcurrently" xml:space="preserve">
-    <value>Concurrent operations may not be issued against a single reader/writer channel.</value>
-  </data>
 </root>
