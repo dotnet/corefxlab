@@ -109,5 +109,14 @@ namespace System.IO.Pipelines
         {
             return _pipe.FlushAsync();
         }
+
+        /// <summary>
+        /// Signals the <see cref="IPipelineReader"/> data is available.
+        /// </summary>
+        /// <returns>A task that completes when the data is fully flushed.</returns>
+        public Task SignalAsync()
+        {
+            return _pipe.SignalWriterAsync();
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace System.IO.Pipelines
     public struct MemoryEnumerator
     {
         private BufferSegment _segment;
+        private BufferSegment _segmentSegment;
         private Memory<byte> _current;
         private int _startIndex;
         private readonly int _endIndex;
@@ -23,6 +24,7 @@ namespace System.IO.Pipelines
         {
             _startIndex = start.Index;
             _segment = start.Segment;
+            _segmentSegment = start.Segment;
             _endSegment = end.Segment;
             _endIndex = end.Index;
             _current = Memory<byte>.Empty;
@@ -32,6 +34,8 @@ namespace System.IO.Pipelines
         /// The current <see cref="Memory{Byte}"/>
         /// </summary>
         public Memory<byte> Current => _current;
+
+        internal BufferSegment CurrentSegment => _segmentSegment;
 
         /// <summary>
         /// 
@@ -67,6 +71,7 @@ namespace System.IO.Pipelines
             }
 
             _current = _segment.Memory.Slice(start, end - start);
+            _segmentSegment = _segment;
 
             if (_segment == _endSegment)
             {

@@ -5,6 +5,7 @@ using System;
 using System.Buffers;
 using System.Collections.Sequences;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -58,7 +59,10 @@ namespace System.IO.Pipelines
         {
             _start = start;
             _end = end;
-
+            if (!end.IsEnd && !end.GreaterOrEqual(start))
+            {
+                throw new ArgumentException("End should be greater or equal to start");
+            }
             start.TryGetBuffer(end, out _first, out start);
 
             _length = -1;
@@ -204,7 +208,7 @@ namespace System.IO.Pipelines
 
                 if (found)
                 {
-                    cursor = _start.Seek(seek);
+                    cursor = _start.Seek(seek, _end);
                     slice = Slice(_start, cursor);
                     return true;
                 }
@@ -222,8 +226,9 @@ namespace System.IO.Pipelines
         /// <param name="length">The length of the slice</param>
         public ReadableBuffer Slice(int start, int length)
         {
-            var begin = _start.Seek(start);
-            return Slice(begin, begin.Seek(length));
+            var begin = _start.Seek(start, _end);
+            var end = begin.Seek(length, _end);
+            return Slice(begin, end);
         }
 
         /// <summary>
@@ -233,7 +238,9 @@ namespace System.IO.Pipelines
         /// <param name="end">The end (inclusive) of the slice</param>
         public ReadableBuffer Slice(int start, ReadCursor end)
         {
-            return Slice(_start.Seek(start), end);
+            _end.BoundsCheck(end);
+            var begin = _start.Seek(start, end);
+            return Slice(begin, end);
         }
 
         /// <summary>
@@ -243,6 +250,9 @@ namespace System.IO.Pipelines
         /// <param name="end">The ending (inclusive) <see cref="ReadCursor"/> of the slice</param>
         public ReadableBuffer Slice(ReadCursor start, ReadCursor end)
         {
+            _end.BoundsCheck(end);
+            end.BoundsCheck(start);
+
             return new ReadableBuffer(start, end);
         }
 
@@ -253,7 +263,11 @@ namespace System.IO.Pipelines
         /// <param name="length">The length of the slice</param>
         public ReadableBuffer Slice(ReadCursor start, int length)
         {
-            return Slice(start, start.Seek(length));
+            _end.BoundsCheck(start);
+
+            var end = start.Seek(length, _end);
+
+            return Slice(start, end);
         }
 
         /// <summary>
@@ -262,6 +276,8 @@ namespace System.IO.Pipelines
         /// <param name="start">The starting (inclusive) <see cref="ReadCursor"/> at which to begin this slice.</param>
         public ReadableBuffer Slice(ReadCursor start)
         {
+            _end.BoundsCheck(start);
+
             return new ReadableBuffer(start, _end);
         }
 
@@ -273,7 +289,8 @@ namespace System.IO.Pipelines
         {
             if (start == 0) return this;
 
-            return new ReadableBuffer(_start.Seek(start), _end);
+            var begin = _start.Seek(start, End);
+            return new ReadableBuffer(begin, _end);
         }
 
         /// <summary>
@@ -550,6 +567,16 @@ namespace System.IO.Pipelines
                 item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End);
             }
             return true;
+        }
+
+        public ReadCursor Move(ReadCursor cursor, int count)
+        {
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+            var newCursor = cursor.Seek(count, End);
+            return newCursor;
         }
     }
 }

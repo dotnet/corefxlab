@@ -31,9 +31,9 @@ namespace System.IO.Pipelines.Tests
         [InlineData("/localhost:5000/PATH/PATH2/ HTTP/1.1", " %?", ' ', 27)]
         public void MemorySeek(string raw, string search, char expectResult, int expectIndex)
         {
-            var cursors = CreateBlocks(raw);
-            ReadCursor start = cursors.Item1;
-            ReadCursor end = cursors.Item2;
+            var cursors = CreateBuffer(raw);
+            ReadCursor start = cursors.Start;
+            ReadCursor end = cursors.End;
             ReadCursor result = default(ReadCursor);
 
             var searchFor = search.ToCharArray();
@@ -41,15 +41,15 @@ namespace System.IO.Pipelines.Tests
             int found = -1;
             if (searchFor.Length == 1)
             {
-                found = SeekExtensions.Seek(start, end, out result, (byte)searchFor[0]);
+                found = ReadCursorOperations.Seek(start, end, out result, (byte)searchFor[0]);
             }
             else if (searchFor.Length == 2)
             {
-                found = SeekExtensions.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1]);
+                found = ReadCursorOperations.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1]);
             }
             else if (searchFor.Length == 3)
             {
-                found = SeekExtensions.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1], (byte)searchFor[2]);
+                found = ReadCursorOperations.Seek(start, end, out result, (byte)searchFor[0], (byte)searchFor[1], (byte)searchFor[2]);
             }
             else
             {
@@ -68,18 +68,21 @@ namespace System.IO.Pipelines.Tests
 
             var input1 = input.Substring(0, input.Length / 2);
             var input2 = input.Substring(input.Length / 2);
-            var cursors = CreateBlocks(input1, string.Empty, input2);
-            var block1 = cursors.Item1;
-            var block2 = cursors.Item2;
+            var buffer = CreateBuffer(input1, string.Empty, input2);
+            var block1 = buffer.Start;
+            var block2 = buffer.End;
             // Act
-            int bytesScanned;
             ReadCursor result;
-            var end = cursors.Item2;
-            var returnValue = SeekExtensions.Seek(cursors.Item1, end, out result, (byte)seek, out bytesScanned, limit);
+
+            var end = limit > input.Length ? buffer.End : buffer.Slice(0, limit).End;
+            var returnValue = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek);
+            var returnValue_1 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek);
+            var returnValue_2 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek, (byte)seek);
 
             // Assert
-            Assert.Equal(expectedBytesScanned, bytesScanned);
             Assert.Equal(expectedReturnValue, returnValue);
+            Assert.Equal(expectedReturnValue, returnValue_1);
+            Assert.Equal(expectedReturnValue, returnValue_2);
 
             if (expectedReturnValue != -1)
             {
@@ -100,56 +103,60 @@ namespace System.IO.Pipelines.Tests
         public void TestSeekByteLimitWithinSameBlock(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
         {
             // Arrange
-            var cursors = CreateBlocks(input);
+            var buffer = CreateBuffer(input);
 
             // Act
-            int bytesScanned;
             ReadCursor result;
-            var returnValue = SeekExtensions.Seek(cursors.Item1, cursors.Item2, out result, (byte)seek, out bytesScanned, limit);
+            var end = limit > input.Length ? buffer.End : buffer.Slice(0, limit).End;
+            var returnValue = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek);
+            var returnValue_1 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek);
+            var returnValue_2 = ReadCursorOperations.Seek(buffer.Start, end, out result, (byte)seek, (byte)seek, (byte)seek);
 
             // Assert
-            Assert.Equal(expectedBytesScanned, bytesScanned);
             Assert.Equal(expectedReturnValue, returnValue);
+            Assert.Equal(expectedReturnValue, returnValue_1);
+            Assert.Equal(expectedReturnValue, returnValue_2);
 
             if (expectedReturnValue != -1)
             {
-                Assert.Same(cursors.Item1.Segment, result.Segment);
+                Assert.Same(buffer.Start.Segment, result.Segment);
                 Assert.Equal(result.Segment.Start + input.IndexOf(seek), result.Index);
             }
         }
 
         [Theory]
         [MemberData(nameof(SeekIteratorLimitData))]
-        public void TestSeekIteratorLimitWithinSameBlock(string input, char seek, char limitAt, int expectedReturnValue)
+        public void TestSeekIteratorLimitWithinSameBlock(string input, char seek, char limitAfter, int expectedReturnValue)
         {
 
             // Arrange
             var afterSeek = (byte)'B';
 
-            var cursors = CreateBlocks(input);
+            var buffer = CreateBuffer(input);
 
-            var start = cursors.Item1;
-            var scan1 = cursors.Item1;
-            var veryEnd = cursors.Item2;
+            var start = buffer.Start;
+            var scan1 = buffer.Start;
+            var veryEnd = buffer.End;
             var scan2_1 = scan1;
             var scan2_2 = scan1;
             var scan3_1 = scan1;
             var scan3_2 = scan1;
             var scan3_3 = scan1;
-            var end = cursors.Item2;
+            var end = buffer.End;
 
             // Act
-            var endReturnValue = SeekExtensions.Seek(start, veryEnd, out end, (byte)limitAt);
-            var returnValue1 = SeekExtensions.Seek(start, end, out scan1, (byte)seek);
-            var returnValue2_1 = SeekExtensions.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
-            var returnValue2_2 = SeekExtensions.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
-            var returnValue3_1 = SeekExtensions.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
-            var returnValue3_2 = SeekExtensions.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
-            var returnValue3_3 = SeekExtensions.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
+            var endReturnValue = ReadCursorOperations.Seek(start, veryEnd, out end, (byte)limitAfter);
+            end = buffer.Slice(end, 1).End;
+            var returnValue1 = ReadCursorOperations.Seek(start, end, out scan1, (byte)seek);
+            var returnValue2_1 = ReadCursorOperations.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
+            var returnValue2_2 = ReadCursorOperations.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
+            var returnValue3_1 = ReadCursorOperations.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
+            var returnValue3_2 = ReadCursorOperations.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
+            var returnValue3_3 = ReadCursorOperations.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
 
 
             // Assert
-            Assert.Equal(input.Contains(limitAt) ? limitAt : -1, endReturnValue);
+            Assert.Equal(input.Contains(limitAfter) ? limitAfter : -1, endReturnValue);
             Assert.Equal(expectedReturnValue, returnValue1);
             Assert.Equal(expectedReturnValue, returnValue2_1);
             Assert.Equal(expectedReturnValue, returnValue2_2);
@@ -177,7 +184,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        public Tuple<ReadCursor, ReadCursor> CreateBlocks(params string[] inputs)
+        public ReadableBuffer CreateBuffer(params string[] inputs)
         {
             if (inputs == null || !inputs.Any())
             {
@@ -193,16 +200,17 @@ namespace System.IO.Pipelines.Tests
                 var s = inputs[i];
                 var length = s.Length;
                 var memoryOffset = length;
-                var segmentOffset = length * 2;
-                var chars = new byte[length * 4];
+                var dataOffset = length * 2;
+                var chars = new byte[length * 8];
 
                 for (int j = 0; j < length; j++)
                 {
-                    chars[segmentOffset + j] = (byte) s[j];
+                    chars[dataOffset + j] = (byte) s[j];
                 }
 
                 // Create a segment that has offset relative to the OwnedMemory and OwnedMemory itself has offset relative to array
-                var current = new BufferSegment(new OwnedArray<byte>(new ArraySegment<byte>(chars, memoryOffset, length)), length, segmentOffset);
+                var ownedMemory = new OwnedArray<byte>(new ArraySegment<byte>(chars, memoryOffset, length * 3));
+                var current = new BufferSegment(ownedMemory, length, length * 2);
                 if (first == null)
                 {
                     first = current;
@@ -216,7 +224,7 @@ namespace System.IO.Pipelines.Tests
                 i++;
             } while (i < inputs.Length);
 
-            return Tuple.Create(new ReadCursor(first), new ReadCursor(last, last.Start + last.ReadableBytes));
+            return new ReadableBuffer(new ReadCursor(first, first.Start), new ReadCursor(last, last.Start + last.ReadableBytes));
         }
 
         [Theory]
@@ -228,26 +236,27 @@ namespace System.IO.Pipelines.Tests
 
             var input1 = input.Substring(0, input.Length / 2);
             var input2 = input.Substring(input.Length / 2);
-            var cursors = CreateBlocks(input1, string.Empty, input2);
+            var buffer = CreateBuffer(input1, string.Empty, input2);
 
-            var start = cursors.Item1;
-            var scan1 = cursors.Item1;
-            var veryEnd = cursors.Item2;
+            var start = buffer.Start;
+            var scan1 = buffer.Start;
+            var veryEnd = buffer.End;
             var scan2_1 = scan1;
             var scan2_2 = scan1;
             var scan3_1 = scan1;
             var scan3_2 = scan1;
             var scan3_3 = scan1;
-            var end = cursors.Item2;
+            var end = buffer.End;
 
             // Act
-            var endReturnValue = SeekExtensions.Seek(start, veryEnd, out end, (byte)limitAt);
-            var returnValue1 = SeekExtensions.Seek(start, end, out scan1, (byte)seek);
-            var returnValue2_1 = SeekExtensions.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
-            var returnValue2_2 = SeekExtensions.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
-            var returnValue3_1 = SeekExtensions.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
-            var returnValue3_2 = SeekExtensions.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
-            var returnValue3_3 = SeekExtensions.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
+            var endReturnValue = ReadCursorOperations.Seek(start, veryEnd, out end, (byte)limitAt);
+            end = buffer.Move(end, 1);
+            var returnValue1 = ReadCursorOperations.Seek(start, end, out scan1, (byte)seek);
+            var returnValue2_1 = ReadCursorOperations.Seek(start, end, out scan2_1, (byte)seek, afterSeek);
+            var returnValue2_2 = ReadCursorOperations.Seek(start, end, out scan2_2, afterSeek, (byte)seek);
+            var returnValue3_1 = ReadCursorOperations.Seek(start, end, out scan3_1, (byte)seek, afterSeek, afterSeek);
+            var returnValue3_2 = ReadCursorOperations.Seek(start, end, out scan3_2, afterSeek, (byte)seek, afterSeek);
+            var returnValue3_3 = ReadCursorOperations.Seek(start, end, out scan3_3, afterSeek, afterSeek, (byte)seek);
 
             // Assert
             Assert.Equal(input.Contains(limitAt) ? limitAt : -1, endReturnValue);
