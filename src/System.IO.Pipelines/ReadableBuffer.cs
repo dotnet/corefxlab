@@ -571,6 +571,10 @@ namespace System.IO.Pipelines
 
         public ReadCursor Move(ReadCursor cursor, int count)
         {
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
             var newCursor = cursor.Seek(count, End);
             return newCursor;
         }

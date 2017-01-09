@@ -548,7 +548,15 @@ namespace System.IO.Pipelines.Tests
             var data = new byte[20];
             var buffer = ReadableBuffer.Create(data);
             var subbuffer = buffer.Slice(0, 10);
-            Assert.Throws<InvalidOperationException>(()=> subbuffer.Move(buffer.Start, 11));
+            Assert.Throws<InvalidOperationException>(() => subbuffer.Move(buffer.Start, 11));
+        }
+
+        [Fact]
+        public void ReadableBufferMove_DoesNotAlowNegative()
+        {
+            var data = new byte[20];
+            var buffer = ReadableBuffer.Create(data);;
+            Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Move(buffer.Start, -1));
         }
 
         public static TheoryData<Action<ReadableBuffer>> OutOfRangeSliceCases
