@@ -78,14 +78,5 @@ namespace System.Threading.Tasks.Channels.Properties {
                 return ResourceManager.GetString("InvalidOperationException_DefaultCaseAlreadyExists", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Concurrent operations may not be issued against a single reader/writer channel..
-        /// </summary>
-        internal static string InvalidOperationException_SingleReaderWriterUsedConcurrently {
-            get {
-                return ResourceManager.GetString("InvalidOperationException_SingleReaderWriterUsedConcurrently", resourceCulture);
-            }
-        }
     }
 }

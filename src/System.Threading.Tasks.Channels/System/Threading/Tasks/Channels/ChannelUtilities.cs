@@ -110,10 +110,6 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        /// <summary>Creates an exception detailing concurrent use of a single reader/writer channel.</summary>
-        internal static Exception CreateSingleReaderWriterMisuseException() =>
-            new InvalidOperationException(Properties.Resources.InvalidOperationException_SingleReaderWriterUsedConcurrently);
-
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>
         internal static Exception CreateInvalidCompletionException() => new ClosedChannelException();
     }
