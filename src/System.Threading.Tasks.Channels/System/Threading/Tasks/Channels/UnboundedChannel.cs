@@ -304,29 +304,15 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled<bool>(cancellationToken);
-            }
+        public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken)) =>
+            cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
+            _doneWriting == null ? ChannelUtilities.TrueTask : // unbounded writing can always be done if we haven't completed
+            ChannelUtilities.FalseTask;
 
-            // Other than for cancellation, writing can always be done if we haven't completed, as we're unbounded.
-            lock (SyncObj)
-            {
-                return _doneWriting == null ? ChannelUtilities.TrueTask : ChannelUtilities.FalseTask;
-            }
-        }
-
-        public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            // Writing always succeeds (unless we've already completed writing or cancellation has been requested),
-            // so just TryWrite and return a completed task.
-            return
-                cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
-                TryWrite(item) ? Task.CompletedTask :
-                Task.FromException(ChannelUtilities.CreateInvalidCompletionException());
-        }
+        public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken)) =>
+            cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
+            TryWrite(item) ? Task.CompletedTask :
+            Task.FromException(ChannelUtilities.CreateInvalidCompletionException());
 
         /// <summary>Gets the number of items in the channel.  This should only be used by the debugger.</summary>
         private int ItemsCountForDebugger => _items.Count;
