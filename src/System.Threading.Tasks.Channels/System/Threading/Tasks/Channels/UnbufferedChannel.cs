@@ -38,18 +38,18 @@ namespace System.Threading.Tasks.Channels
             Debug.Assert(SyncObj != null, "The sync obj must not be null.");
             Debug.Assert(Monitor.IsEntered(SyncObj), "Invariants can only be validated while holding the lock.");
 
-            if (_blockedReaders.Count > 0)
+            if (!_blockedReaders.IsEmpty)
             {
-                Debug.Assert(_blockedWriters.Count == 0, "If there are blocked readers, there can't be blocked writers.");
+                Debug.Assert(_blockedWriters.IsEmpty, "If there are blocked readers, there can't be blocked writers.");
             }
-            if (_blockedWriters.Count > 0)
+            if (!_blockedWriters.IsEmpty)
             {
-                Debug.Assert(_blockedReaders.Count == 0, "If there are blocked writers, there can't be blocked readers.");
+                Debug.Assert(_blockedReaders.IsEmpty, "If there are blocked writers, there can't be blocked readers.");
             }
             if (_completion.Task.IsCompleted)
             {
-                Debug.Assert(_blockedReaders.Count == 0, "No readers can be blocked after we've completed.");
-                Debug.Assert(_blockedWriters.Count == 0, "No writers can be blocked after we've completed.");
+                Debug.Assert(_blockedReaders.IsEmpty, "No readers can be blocked after we've completed.");
+                Debug.Assert(_blockedWriters.IsEmpty, "No writers can be blocked after we've completed.");
             }
         }
 
@@ -67,14 +67,14 @@ namespace System.Threading.Tasks.Channels
                 ChannelUtilities.Complete(_completion, error);
 
                 // Fail any blocked readers, as there will be no writers to pair them with.
-                while (_blockedReaders.Count > 0)
+                while (!_blockedReaders.IsEmpty)
                 {
                     var reader = _blockedReaders.DequeueHead();
                     reader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
                 }
 
                 // Fail any blocked writers, as there will be no readers to pair them with.
-                while (_blockedWriters.Count > 0)
+                while (!_blockedWriters.IsEmpty)
                 {
                     var writer = _blockedWriters.DequeueHead();
                     writer.Fail(ChannelUtilities.CreateInvalidCompletionException());
@@ -118,7 +118,7 @@ namespace System.Threading.Tasks.Channels
                 // If there are any blocked writers, find one to pair up with
                 // and get its data.  Writers that got canceled will remain in the queue,
                 // so we need to loop to skip past them.
-                while (_blockedWriters.Count > 0)
+                while (!_blockedWriters.IsEmpty)
                 {
                     WriterInteractor<T> w = _blockedWriters.DequeueHead();
                     if (w.Success(default(VoidResult)))
@@ -145,7 +145,7 @@ namespace System.Threading.Tasks.Channels
                 AssertInvariants();
 
                 // Try to find a writer to pair with
-                while (_blockedWriters.Count > 0)
+                while (!_blockedWriters.IsEmpty)
                 {
                     WriterInteractor<T> w = _blockedWriters.DequeueHead();
                     if (w.Success(default(VoidResult)))
@@ -168,7 +168,7 @@ namespace System.Threading.Tasks.Channels
                 AssertInvariants();
 
                 // Try to find a reader to pair with
-                while (_blockedReaders.Count > 0)
+                while (!_blockedReaders.IsEmpty)
                 {
                     ReaderInteractor<T> r = _blockedReaders.DequeueHead();
                     if (r.Success(item))
@@ -199,7 +199,7 @@ namespace System.Threading.Tasks.Channels
 
                 // Try to find a reader to pair with.  Canceled readers remain in the queue,
                 // so we need to loop until we find one.
-                while (_blockedReaders.Count > 0)
+                while (!_blockedReaders.IsEmpty)
                 {
                     ReaderInteractor<T> r = _blockedReaders.DequeueHead();
                     if (r.Success(item))
@@ -230,7 +230,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // If there's a blocked writer, we can read.
-                if (_blockedWriters.Count > 0)
+                if (!_blockedWriters.IsEmpty)
                 {
                     return ChannelUtilities.TrueTask;
                 }
@@ -253,7 +253,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // If there's a blocked reader, we can write
-                if (_blockedReaders.Count > 0)
+                if (!_blockedReaders.IsEmpty)
                 {
                     return ChannelUtilities.TrueTask;
                 }

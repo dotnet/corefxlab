@@ -52,32 +52,32 @@ namespace System.Threading.Tasks.Channels
             Debug.Assert(SyncObj != null, "The sync obj must not be null.");
             Debug.Assert(Monitor.IsEntered(SyncObj), "Invariants can only be validated while holding the lock.");
 
-            if (_items.Count > 0)
+            if (!_items.IsEmpty)
             {
-                Debug.Assert(_blockedReaders.Count == 0, "There are items available, so there shouldn't be any blocked readers.");
-                Debug.Assert(_waitingReaders.Count == 0, "There are items available, so there shouldn't be any waiting readers.");
+                Debug.Assert(_blockedReaders.IsEmpty, "There are items available, so there shouldn't be any blocked readers.");
+                Debug.Assert(_waitingReaders.IsEmpty, "There are items available, so there shouldn't be any waiting readers.");
             }
             if (_items.Count < _bufferedCapacity)
             {
-                Debug.Assert(_blockedWriters.Count == 0, "There's space available, so there shouldn't be any blocked writers.");
-                Debug.Assert(_waitingWriters.Count == 0, "There's space available, so there shouldn't be any waiting writers.");
+                Debug.Assert(_blockedWriters.IsEmpty, "There's space available, so there shouldn't be any blocked writers.");
+                Debug.Assert(_waitingWriters.IsEmpty, "There's space available, so there shouldn't be any waiting writers.");
             }
-            if (_blockedReaders.Count > 0)
+            if (!_blockedReaders.IsEmpty)
             {
-                Debug.Assert(_items.Count == 0, "There shouldn't be queued items if there's a blocked reader.");
-                Debug.Assert(_blockedWriters.Count == 0, "There shouldn't be any blocked writer if there's a blocked reader.");
+                Debug.Assert(_items.IsEmpty, "There shouldn't be queued items if there's a blocked reader.");
+                Debug.Assert(_blockedWriters.IsEmpty, "There shouldn't be any blocked writer if there's a blocked reader.");
             }
-            if (_blockedWriters.Count > 0)
+            if (!_blockedWriters.IsEmpty)
             {
                 Debug.Assert(_items.Count == _bufferedCapacity, "We should have a full buffer if there's a blocked writer.");
-                Debug.Assert(_blockedReaders.Count == 0, "There shouldn't be any blocked readers if there's a blocked writer.");
+                Debug.Assert(_blockedReaders.IsEmpty, "There shouldn't be any blocked readers if there's a blocked writer.");
             }
             if (_doneWriting != null || _completion.Task.IsCompleted)
             {
-                Debug.Assert(_blockedWriters.Count == 0, "We're done writing, so there shouldn't be any blocked writers.");
-                Debug.Assert(_blockedReaders.Count == 0, "We're done writing, so there shouldn't be any blocked readers.");
-                Debug.Assert(_waitingReaders.Count == 0, "We're done writing, so any reader should have woken up.");
-                Debug.Assert(_waitingWriters.Count == 0, "We're done writing, so any writer should have woken up.");
+                Debug.Assert(_blockedWriters.IsEmpty, "We're done writing, so there shouldn't be any blocked writers.");
+                Debug.Assert(_blockedReaders.IsEmpty, "We're done writing, so there shouldn't be any blocked readers.");
+                Debug.Assert(_waitingReaders.IsEmpty, "We're done writing, so any reader should have woken up.");
+                Debug.Assert(_waitingWriters.IsEmpty, "We're done writing, so any writer should have woken up.");
             }
             if (_completion.Task.IsCompleted)
             {
@@ -100,13 +100,13 @@ namespace System.Threading.Tasks.Channels
 
                 // If there are no items in the channel, then there's no more work to be done,
                 // so we complete the completion task.
-                if (_items.Count == 0)
+                if (_items.IsEmpty)
                 {
                     ChannelUtilities.Complete(_completion, error);
                 }
 
                 // If there are any waiting readers, fail them all, as they'll now never be satisfied.
-                while (_blockedReaders.Count > 0)
+                while (!_blockedReaders.IsEmpty)
                 {
                     var reader = _blockedReaders.DequeueHead();
                     reader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
@@ -114,7 +114,7 @@ namespace System.Threading.Tasks.Channels
 
                 // If there are any waiting writers, fail them all, as they shouldn't be writing
                 // now that we're complete for writing.
-                while (_blockedWriters.Count > 0)
+                while (!_blockedWriters.IsEmpty)
                 {
                     var writer = _blockedWriters.DequeueHead();
                     writer.Fail(ChannelUtilities.CreateInvalidCompletionException());
@@ -143,7 +143,7 @@ namespace System.Threading.Tasks.Channels
                 AssertInvariants();
 
                 // If there are any items, hand one back.
-                if (_items.Count > 0)
+                if (!_items.IsEmpty)
                 {
                     return new ValueTask<T>(DequeueItemAndPostProcess());
                 }
@@ -174,7 +174,7 @@ namespace System.Threading.Tasks.Channels
                 AssertInvariants();
 
                 // If there are any items available, a read is possible.
-                if (_items.Count > 0)
+                if (!_items.IsEmpty)
                 {
                     return ChannelUtilities.TrueTask;
                 }
@@ -200,7 +200,7 @@ namespace System.Threading.Tasks.Channels
                 AssertInvariants();
 
                 // Get an item if there is one.
-                if (_items.Count > 0)
+                if (!_items.IsEmpty)
                 {
                     item = DequeueItemAndPostProcess();
                     return true;
@@ -220,7 +220,7 @@ namespace System.Threading.Tasks.Channels
             T item = _items.DequeueHead();
 
             // If we're now empty and we're done writing, complete the channel.
-            if (_doneWriting != null && _items.Count == 0)
+            if (_doneWriting != null && _items.IsEmpty)
             {
                 ChannelUtilities.Complete(_completion, _doneWriting);
             }
@@ -230,7 +230,7 @@ namespace System.Threading.Tasks.Channels
             // to loop while trying to complete the writer in order to find one that
             // hasn't yet been canceled (canceled writers transition to canceled but
             // remain in the physical queue).
-            while (_blockedWriters.Count > 0)
+            while (!_blockedWriters.IsEmpty)
             {
                 WriterInteractor<T> w = _blockedWriters.DequeueHead();
                 if (w.Success(default(VoidResult)))
@@ -262,7 +262,7 @@ namespace System.Threading.Tasks.Channels
 
                 // If there are any blocked readers, find one that's not canceled
                 // and complete it with the item from this writer.
-                while (_blockedReaders.Count > 0)
+                while (!_blockedReaders.IsEmpty)
                 {
                     ReaderInteractor<T> r = _blockedReaders.DequeueHead();
                     if (r.Success(item))
@@ -348,7 +348,7 @@ namespace System.Threading.Tasks.Channels
 
                 // If there are any blocked readers, find a non-canceled
                 // one to transfer the item to.
-                while (_blockedReaders.Count > 0)
+                while (!_blockedReaders.IsEmpty)
                 {
                     ReaderInteractor<T> r = _blockedReaders.DequeueHead();
                     if (r.Success(item))

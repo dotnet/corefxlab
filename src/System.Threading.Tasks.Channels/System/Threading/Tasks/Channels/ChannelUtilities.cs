@@ -48,7 +48,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="result">The value with which to complete each waiter.</param>
         internal static void WakeUpWaiters(Dequeue<ReaderInteractor<bool>> waiters, bool result)
         {
-            if (waiters.Count > 0)
+            if (!waiters.IsEmpty)
             {
                 WakeUpWaitersCore(waiters, result); // separated out to streamline inlining
             }
@@ -57,7 +57,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Core of ChannelUtilities.WakeUpWaiters, separated out for performance due to inlining.</summary>
         internal static void WakeUpWaitersCore(Dequeue<ReaderInteractor<bool>> waiters, bool result)
         {
-            while (waiters.Count > 0)
+            while (!waiters.IsEmpty)
             {
                 waiters.DequeueHead().Success(result);
             }
@@ -74,7 +74,7 @@ namespace System.Threading.Tasks.Channels
                 ReaderInteractor<bool> r;
                 lock (syncObj)
                 {
-                    if (waiters.Count == 0) return;
+                    if (waiters.IsEmpty) return;
                     r = waiters.DequeueHead();
                 }
                 r.Success(result);
@@ -86,7 +86,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="error">The error with which to complete each interactor.</param>
         internal static void FailInteractors<T>(Dequeue<ReaderInteractor<T>> interactors, Exception error)
         {
-            while (interactors.Count > 0)
+            while (!interactors.IsEmpty)
             {
                 interactors.DequeueHead().Fail(error ?? CreateInvalidCompletionException());
             }
@@ -103,7 +103,7 @@ namespace System.Threading.Tasks.Channels
                 ReaderInteractor<T> interactor;
                 lock (syncObj)
                 {
-                    if (interactors.Count == 0) return;
+                    if (interactors.IsEmpty) return;
                     interactor = interactors.DequeueHead();
                 }
                 interactor.Fail(error ?? CreateInvalidCompletionException());

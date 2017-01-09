@@ -48,12 +48,12 @@ namespace System.Threading.Tasks.Channels
             {
                 if (_runContinuationsAsynchronously)
                 {
-                    Debug.Assert(_blockedReaders.Count == 0, "There's data available, so there shouldn't be any blocked readers.");
-                    Debug.Assert(_waitingReaders.Count == 0, "There's data available, so there shouldn't be any waiting readers.");
+                    Debug.Assert(_blockedReaders.IsEmpty, "There's data available, so there shouldn't be any blocked readers.");
+                    Debug.Assert(_waitingReaders.IsEmpty, "There's data available, so there shouldn't be any waiting readers.");
                 }
                 Debug.Assert(!_completion.Task.IsCompleted, "We still have data available, so shouldn't be completed.");
             }
-            if ((_blockedReaders.Count > 0 || _waitingReaders.Count > 0) && _runContinuationsAsynchronously)
+            if ((!_blockedReaders.IsEmpty || !_waitingReaders.IsEmpty) && _runContinuationsAsynchronously)
             {
                 Debug.Assert(_items.IsEmpty, "There are blocked/waiting readers, so there shouldn't be any data available.");
             }
@@ -91,7 +91,7 @@ namespace System.Threading.Tasks.Channels
                 // be waiting), wake them all.  We can only do that while holding the lock
                 // if they were created as running continuations asynchronously; otherwise,
                 // we need to do it outside of the lock.
-                if (_waitingReaders.Count > 0)
+                if (!_waitingReaders.IsEmpty)
                 {
                     Debug.Assert(_items.IsEmpty);
                     if (_runContinuationsAsynchronously)
@@ -109,7 +109,7 @@ namespace System.Threading.Tasks.Channels
                 // wouldn't be waiting), fail them all.  We can only do that while holding the lock
                 // if they were created as running continuations asynchronously; otherwise,
                 // we need to do it outside of the lock.
-                if (_blockedReaders.Count > 0)
+                if (!_blockedReaders.IsEmpty)
                 {
                     Debug.Assert(_items.IsEmpty);
                     if (_runContinuationsAsynchronously)
@@ -260,10 +260,10 @@ namespace System.Threading.Tasks.Channels
                     // continuations asynchronously (otherwise the synchronous continuations
                     // could be invoked under the lock).  If we don't complete them here, we
                     // need to do so outside of the lock.
-                    if (_blockedReaders.Count == 0)
+                    if (_blockedReaders.IsEmpty)
                     {
                         _items.Enqueue(item);
-                        if (_waitingReaders.Count == 0)
+                        if (_waitingReaders.IsEmpty)
                         {
                             return true;
                         }
