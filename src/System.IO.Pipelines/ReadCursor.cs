@@ -103,7 +103,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        internal ReadCursor Seek(int bytes)
+        internal ReadCursor Seek(int bytes, ReadCursor end)
         {
             if (IsEnd)
             {
@@ -112,12 +112,18 @@ namespace System.IO.Pipelines
 
             var following = _segment.End - _index;
 
+            ReadCursor cursor;
             if (following >= bytes)
             {
-                return new ReadCursor(Segment, _index + bytes);
+                cursor = new ReadCursor(Segment, _index + bytes);
+            }
+            else
+            {
+                cursor = SeekMultiSegment(bytes, following);
             }
 
-            return SeekMultiSegment(bytes, following);
+            end.BoundsCheck(cursor);
+            return cursor;
         }
 
         private ReadCursor SeekMultiSegment(int bytes, int following)
@@ -131,7 +137,7 @@ namespace System.IO.Pipelines
                 {
                     if (bytes != following)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(bytes));
+                        ThrowOutOfBoundsException();
                     }
                     return new ReadCursor(segment, index + following);
                 }
@@ -150,6 +156,20 @@ namespace System.IO.Pipelines
                     return new ReadCursor(segment, index + bytes);
                 }
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void BoundsCheck(ReadCursor newCursor)
+        {
+            if (!this.GreaterOrEqual(newCursor))
+            {
+                ThrowOutOfBoundsException();
+            }
+        }
+
+        private static void ThrowOutOfBoundsException()
+        {
+            throw new InvalidOperationException("Cursor is out of bounds");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
