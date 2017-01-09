@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -16,7 +17,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Task that indicates the channel has completed.</summary>
         private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
         /// <summary>The items in the channel.</summary>
-        private readonly Dequeue<T> _items = new Dequeue<T>();
+        private readonly ConcurrentQueue<T> _items = new ConcurrentQueue<T>();
         /// <summary>Readers blocked reading from the channel.</summary>
         private readonly Dequeue<ReaderInteractor<T>> _blockedReaders = new Dequeue<ReaderInteractor<T>>();
         /// <summary>Readers waiting for a notification that data is available.</summary>
@@ -43,7 +44,7 @@ namespace System.Threading.Tasks.Channels
             Debug.Assert(SyncObj != null, "The sync obj must not be null.");
             Debug.Assert(Monitor.IsEntered(SyncObj), "Invariants can only be validated while holding the lock.");
 
-            if (_items.Count > 0)
+            if (!_items.IsEmpty)
             {
                 if (_runContinuationsAsynchronously)
                 {
@@ -54,7 +55,7 @@ namespace System.Threading.Tasks.Channels
             }
             if ((_blockedReaders.Count > 0 || _waitingReaders.Count > 0) && _runContinuationsAsynchronously)
             {
-                Debug.Assert(_items.Count == 0, "There are blocked/waiting readers, so there shouldn't be any data available.");
+                Debug.Assert(_items.IsEmpty, "There are blocked/waiting readers, so there shouldn't be any data available.");
             }
             if (_completion.Task.IsCompleted)
             {
@@ -80,7 +81,7 @@ namespace System.Threading.Tasks.Channels
 
                 // If there are no items in the queue, complete the channel's task,
                 // as no more data can possibly arrive at this point.
-                if (_items.Count == 0)
+                if (_items.IsEmpty)
                 {
                     ChannelUtilities.Complete(_completion, error);
                 }
@@ -92,6 +93,7 @@ namespace System.Threading.Tasks.Channels
                 // we need to do it outside of the lock.
                 if (_waitingReaders.Count > 0)
                 {
+                    Debug.Assert(_items.IsEmpty);
                     if (_runContinuationsAsynchronously)
                     {
                         ChannelUtilities.WakeUpWaiters(_waitingReaders, result: false);
@@ -109,6 +111,7 @@ namespace System.Threading.Tasks.Channels
                 // we need to do it outside of the lock.
                 if (_blockedReaders.Count > 0)
                 {
+                    Debug.Assert(_items.IsEmpty);
                     if (_runContinuationsAsynchronously)
                     {
                         ChannelUtilities.FailInteractors(_blockedReaders, error);
@@ -163,11 +166,11 @@ namespace System.Threading.Tasks.Channels
                 AssertInvariants();
 
                 // If there are any items, return one.
-                if (_items.Count > 0)
+                T item;
+                if (_items.TryDequeue(out item))
                 {
                     // Dequeue an item
-                    T item = _items.DequeueHead();
-                    if (_doneWriting != null && _items.Count == 0)
+                    if (_doneWriting != null && _items.IsEmpty)
                     {
                         // If we've now emptied the items queue and we're not getting any more, complete.
                         ChannelUtilities.Complete(_completion, _doneWriting);
@@ -191,12 +194,18 @@ namespace System.Threading.Tasks.Channels
 
         public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
+            // If there are any items, readers can try to get them.
+            if (!_items.IsEmpty)
+            {
+                return ChannelUtilities.TrueTask;
+            }
+
             lock (SyncObj)
             {
                 AssertInvariants();
 
-                // If there are any items, readers can try to get them.
-                if (_items.Count > 0)
+                // Try again to read now that we're synchronized with writers.
+                if (!_items.IsEmpty)
                 {
                     return ChannelUtilities.TrueTask;
                 }
@@ -216,21 +225,15 @@ namespace System.Threading.Tasks.Channels
 
         public bool TryRead(out T item)
         {
-            lock (SyncObj)
+            // Dequeue an item if we can
+            if (_items.TryDequeue(out item))
             {
-                AssertInvariants();
-
-                // Dequeue an item if we can
-                if (_items.Count > 0)
+                if (_doneWriting != null && _items.IsEmpty)
                 {
-                    item = _items.DequeueHead();
-                    if (_doneWriting != null && _items.Count == 0)
-                    {
-                        // If we've now emptied the items queue and we're not getting any more, complete.
-                        ChannelUtilities.Complete(_completion, _doneWriting);
-                    }
-                    return true;
+                    // If we've now emptied the items queue and we're not getting any more, complete.
+                    ChannelUtilities.Complete(_completion, _doneWriting);
                 }
+                return true;
             }
 
             item = default(T);
@@ -259,7 +262,7 @@ namespace System.Threading.Tasks.Channels
                     // need to do so outside of the lock.
                     if (_blockedReaders.Count == 0)
                     {
-                        _items.EnqueueTail(item);
+                        _items.Enqueue(item);
                         if (_waitingReaders.Count == 0)
                         {
                             return true;
