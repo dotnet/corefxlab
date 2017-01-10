@@ -64,7 +64,7 @@ namespace System.Threading.Tasks.Channels
         }
 
         /// <summary>Removes all waiters from the queue, completing each.</summary>
-        /// <param name="syncObj">Lock held while manipulating <see cref="waiters"/> but not while completing each waiter.</param>
+        /// <param name="syncObj">Lock held while manipulating <paramref name="waiters"/> but not while completing each waiter.</param>
         /// <param name="waiters">The queue of waiters to complete.</param>
         /// <param name="result">The value with which to complete each waiter.</param>
         internal static void WakeUpWaiters(object syncObj, Dequeue<ReaderInteractor<bool>> waiters, bool result)
@@ -93,7 +93,7 @@ namespace System.Threading.Tasks.Channels
         }
 
         /// <summary>Removes all interactors from the queue, failing each.</summary>
-        /// <param name="syncObj">Lock held while manipulating <see cref="interactors"/> but not while completing each interactor.</param>
+        /// <param name="syncObj">Lock held while manipulating <paramref name="interactors"/> but not while completing each interactor.</param>
         /// <param name="interactors">The queue of interactors to complete.</param>
         /// <param name="error">The error with which to complete each interactor.</param>
         internal static void FailInteractors<T>(object syncObj, Dequeue<ReaderInteractor<T>> interactors, Exception error)

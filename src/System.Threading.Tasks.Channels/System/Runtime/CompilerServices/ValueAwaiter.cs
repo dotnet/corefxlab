@@ -72,6 +72,7 @@ namespace System.Runtime.CompilerServices
             }
         }
 
+        /// <summary>Gets whether the awaited operation has completed.</summary>
         public bool IsCompleted
         {
             get
@@ -92,6 +93,7 @@ namespace System.Runtime.CompilerServices
             }
         }
 
+        /// <summary>Gets the result of the completed awaited operation.</summary>
         public TResult GetResult()
         {
             if (_asyncOp == null)
@@ -109,6 +111,8 @@ namespace System.Runtime.CompilerServices
             return task.GetAwaiter().GetResult();
         }
 
+        /// <summary>Schedules the continuation action that's invoked when the instance completes.</summary>
+        /// <param name="continuation">The action to invoke when the operation completes.</param>
         public void OnCompleted(Action continuation)
         {
             if (_asyncOp == null)
@@ -128,6 +132,8 @@ namespace System.Runtime.CompilerServices
             task.GetAwaiter().OnCompleted(continuation);
         }
 
+        /// <summary>Schedules the continuation action that's invoked when the instance completes.</summary>
+        /// <param name="continuation">The action to invoke when the operation completes.</param>
         public void UnsafeOnCompleted(Action continuation)
         {
             if (_asyncOp == null)
