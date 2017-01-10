@@ -269,15 +269,12 @@ namespace System.Threading.Tasks.Channels
                 return result.AsTask().ContinueWith((t, s) =>
                 {
                     AsyncEnumerator<T> thisRef = (AsyncEnumerator<T>)s;
-                    try
-                    {
-                        thisRef._current = t.GetAwaiter().GetResult();
-                        return true;
-                    }
-                    catch (ClosedChannelException)
+                    if (t.IsFaulted && t.Exception.InnerException is ClosedChannelException)
                     {
                         return false;
                     }
+                    thisRef._current = t.GetAwaiter().GetResult();
+                    return true;
                 }, this, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
             }
         }
