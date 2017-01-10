@@ -27,6 +27,14 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Gets the writable half of this channel.</summary>
         public abstract WritableChannel<TWrite> Out { get; }
 
+        /// <summary>Implicit cast from a channel to its readable half.</summary>
+        /// <param name="channel">The channel being cast.</param>
+        public static implicit operator ReadableChannel<TRead>(Channel<TWrite, TRead> channel) => channel.In;
+
+        /// <summary>Implicit cast from a channel to its writable half.</summary>
+        /// <param name="channel">The channel being cast.</param>
+        public static implicit operator WritableChannel<TWrite>(Channel<TWrite, TRead> channel) => channel.Out;
+
         // The following non-virtuals are all convenience members that wrap the
         // corresponding members on In and Out.
 
@@ -84,6 +92,24 @@ namespace System.Threading.Tasks.Channels
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> used to cancel the write operation.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous write operation.</returns>
         public Task WriteAsync(TWrite item, CancellationToken cancellationToken = default(CancellationToken)) => Out.WriteAsync(item, cancellationToken);
+
+        /// <summary>Creates an observable for this channel.</summary>
+        /// <returns>An observable that pulls data from this channel.</returns>
+        public IObservable<TRead> AsObservable() => In.AsObservable();
+
+        /// <summary>Creates an observer for this channel.</summary>
+        /// <returns>An observer that forwards to this channel.</returns>
+        public IObserver<TWrite> AsObserver() => Out.AsObserver();
+
+        /// <summary>Mark the channel as being complete, meaning no more items will be written to it.</summary>
+        /// <param name="error">Optional Exception indicating a failure that's causing the channel to complete.</param>
+        /// <exception cref="InvalidOperationException">The channel has already been marked as complete.</exception>
+        public void Complete(Exception error = null) => Out.Complete(error);
+
+        /// <summary>Gets an async enumerator of the data in this channel.</summary>
+        /// <param name="cancellationToken">The cancellation token to use to cancel the asynchronous enumeration.</param>
+        /// <returns>The async enumerator.</returns>
+        public IAsyncEnumerator<TRead> GetAsyncEnumerator(CancellationToken cancellationToken = default(CancellationToken)) => In.GetAsyncEnumerator();
     }
 
     /// <summary>

@@ -65,7 +65,7 @@ namespace System.Threading.Tasks.Channels
 
             public override bool TryComplete(Exception error) => _parent.TryComplete(error);
             public override bool TryWrite(T item) => _parent.TryWrite(item);
-            public override Task<bool> WaitToWriteAsync(CancellationToken cancellationToken) => _parent.WaitToReadAsync(cancellationToken);
+            public override Task<bool> WaitToWriteAsync(CancellationToken cancellationToken) => _parent.WaitToWriteAsync(cancellationToken);
             public override Task WriteAsync(T item, CancellationToken cancellationToken) => _parent.WriteAsync(item, cancellationToken);
         }
 

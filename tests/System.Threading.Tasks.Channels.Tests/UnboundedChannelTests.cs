@@ -10,7 +10,7 @@ namespace System.Threading.Tasks.Channels.Tests
     public abstract class UnboundedChannelTests : ChannelTestBase
     {
         protected abstract bool AllowSynchronousContinuations { get; }
-        protected override IChannel<int> CreateChannel() => Channel.CreateUnbounded<int>(
+        protected override Channel<int> CreateChannel() => Channel.CreateUnbounded<int>(
             new ChannelOptimizations
             {
                 SingleReader = this.RequiresSingleReader,
@@ -20,7 +20,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Complete_BeforeEmpty_NoWaiters_TriggersCompletion()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             Assert.True(c.TryWrite(42));
             c.Complete();
             Assert.False(c.Completion.IsCompleted);
@@ -31,7 +31,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void TryWrite_TryRead_Many()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             const int NumItems = 100000;
             for (int i = 0; i < NumItems; i++)
@@ -49,7 +49,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void TryWrite_TryRead_OneAtATime()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             for (int i = 0; i < 10; i++)
             {
@@ -63,7 +63,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void WaitForReadAsync_DataAvailable_CompletesSynchronously()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             Assert.True(c.TryWrite(42));
             AssertSynchronousTrue(c.WaitToReadAsync());
         }
@@ -73,7 +73,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(1)]
         public async Task WriteMany_ThenComplete_SuccessfullyReadAll(int readMode)
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             for (int i = 0; i < 10; i++)
             {
                 Assert.True(c.TryWrite(i));
@@ -104,7 +104,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void AllowSynchronousContinuations_ContinuationsInvokedAccordingToSetting()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             int expectedId = Environment.CurrentManagedThreadId;
             Task r = c.ReadAsync().AsTask().ContinueWith(_ =>
@@ -125,7 +125,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void ValidateInternalDebuggerAttributes()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             Assert.True(c.TryWrite(1));
             Assert.True(c.TryWrite(2));
 
@@ -137,7 +137,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task MultipleWaiters_CancelsPreviousWaiter()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             Task<bool> t1 = c.WaitToReadAsync();
             Task<bool> t2 = c.WaitToReadAsync();
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => t1);
@@ -149,7 +149,7 @@ namespace System.Threading.Tasks.Channels.Tests
         public void Stress_TryWrite_TryRead()
         {
             const int NumItems = 3000000;
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             Task.WaitAll(
                 Task.Run(async () =>

@@ -8,7 +8,7 @@ namespace System.Threading.Tasks.Channels.Tests
 {
     public class UnbufferedChannelTests : ChannelTestBase
     {
-        protected override IChannel<int> CreateChannel()
+        protected override Channel<int> CreateChannel()
         {
             return Channel.CreateUnbuffered<int>();
         }
@@ -16,7 +16,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Complete_BeforeEmpty_WaitingWriters_TriggersCompletion()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             Task write1 = c.WriteAsync(42);
             Task write2 = c.WriteAsync(43);
             c.Complete();
@@ -28,7 +28,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void TryReadWrite_NoPartner_Fail()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             Assert.False(c.TryWrite(42));
             int result;
             Assert.False(c.TryRead(out result));
@@ -38,7 +38,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void ReadAsync_TryWrite_Success()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             ValueTask<int> r = c.ReadAsync();
             Assert.False(r.IsCompletedSuccessfully);
             Assert.False(r.AsTask().IsCompleted);
@@ -49,7 +49,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void TryRead_WriteAsync_Success()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             Task w = c.WriteAsync(42);
             Assert.False(w.IsCompleted);
             int result;
@@ -60,7 +60,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Cancel_UnpartneredWrite_ThrowsCancellationException()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
             Task w = c.WriteAsync(42, cts.Token);
@@ -73,7 +73,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Cancel_UnpartneredRead_ThrowsCancellationException()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
             Task r = c.ReadAsync(cts.Token).AsTask();
@@ -86,7 +86,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Cancel_PartneredWrite_Success()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
             Task w = c.WriteAsync(42, cts.Token);
@@ -102,7 +102,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Cancel_PartneredRead_Success()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
             ValueTask<int> r = c.ReadAsync(cts.Token);
