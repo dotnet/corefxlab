@@ -135,23 +135,14 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
-        public async Task MultipleWaiters_ThrowsInvalid()
+        public async Task MultipleWaiters_CancelsPreviousWaiter()
         {
             IChannel<int> c = CreateChannel();
-            Task t1 = c.WaitToReadAsync();
-            Task t2 = c.WaitToReadAsync();
-            await Assert.ThrowsAsync<InvalidOperationException>(() => t2);
-            Assert.Equal(TaskStatus.WaitingForActivation, t1.Status);
-        }
-
-        [Fact]
-        public async Task MultipleReaders_ThrowsInvalid()
-        {
-            IChannel<int> c = CreateChannel();
-            ValueTask<int> t1 = c.ReadAsync();
-            ValueTask<int> t2 = c.ReadAsync();
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await t2);
-            Assert.Equal(TaskStatus.WaitingForActivation, t1.AsTask().Status);
+            Task<bool> t1 = c.WaitToReadAsync();
+            Task<bool> t2 = c.WaitToReadAsync();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => t1);
+            Assert.True(c.TryWrite(42));
+            Assert.True(await t2);
         }
 
         [Fact]

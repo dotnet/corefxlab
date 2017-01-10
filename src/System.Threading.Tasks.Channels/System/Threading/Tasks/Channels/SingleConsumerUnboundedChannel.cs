@@ -95,7 +95,7 @@ namespace System.Threading.Tasks.Channels
 
             Debug.Assert(blockedReader == null || waitingReader == null, "There should only ever be at most one reader.");
 
-            // Complete a blocked/waiting reader if necessary
+            // Complete a blocked reader if necessary
             if (blockedReader != null)
             {
                 if (error == null)
@@ -113,10 +113,10 @@ namespace System.Threading.Tasks.Channels
                     ((AutoResetAwaiter<T>)blockedReader).SetException(error);
                 }
             }
-            else if (waitingReader != null)
-            {
-                waitingReader.Success(false);
-            }
+
+            // Complete a waiting reader if necessary.  (We really shouldn't have both a blockedReader
+            // and a waitingReader, but it's more expensive to prevent it than to just tolerate it.)
+            waitingReader?.Success(false);
 
             // Successfully completed the channel
             return true;
@@ -134,26 +134,25 @@ namespace System.Threading.Tasks.Channels
         {
             lock (SyncObj)
             {
+                // Now that we hold the lock, try reading again.
                 T item;
                 if (TryRead(out item))
                 {
                     return new ValueAwaiter<T>(item);
                 }
 
-                if (_doneWriting != null || _blockedReader != null)
+                // If no more items will be written, fail the read.
+                if (_doneWriting != null)
                 {
-                    Exception e = _doneWriting != null ?
-                        _doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException() :
-                        ChannelUtilities.CreateSingleReaderWriterMisuseException();
+                    Exception e = _doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException();
                     return new ValueAwaiter<T>(Task.FromException<T>(e));
                 }
 
-                if (_awaiter == null)
-                {
-                    _awaiter = new AutoResetAwaiter<T>(_runContinuationsAsynchronously);
-                }
+                Debug.Assert(_blockedReader == null || ((_blockedReader as ReaderInteractor<T>)?.Task.IsCanceled ?? false),
+                    "Incorrect usage; multiple outstanding reads were issued against this single-consumer channel");
 
-                _blockedReader = _awaiter;
+                // Store the reader to be completed by a writer.
+                _blockedReader = _awaiter ?? (_awaiter = new AutoResetAwaiter<T>(_runContinuationsAsynchronously));
                 return new ValueAwaiter<T>(_awaiter);
             }
         }
@@ -175,49 +174,27 @@ namespace System.Threading.Tasks.Channels
 
             lock (SyncObj)
             {
+                // Now that we hold the lock, try reading again.
                 T item;
                 if (TryRead(out item))
                 {
                     return new ValueTask<T>(item);
                 }
 
-                if (_doneWriting != null || HasBlockedReader || HasWaitingReader)
+                // If no more items will be written, fail the read.
+                if (_doneWriting != null)
                 {
-                    Exception e = _doneWriting != null ?
-                        _doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException() :
-                        ChannelUtilities.CreateSingleReaderWriterMisuseException();
+                    Exception e = _doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException();
                     return new ValueTask<T>(Task.FromException<T>(e));
                 }
 
+                Debug.Assert(_blockedReader == null || ((_blockedReader as ReaderInteractor<T>)?.Task.IsCanceled ?? false),
+                    "Incorrect usage; multiple outstanding reads were issued against this single-consumer channel");
+
+                // Store the reader to be completed by a writer.
                 ReaderInteractor<T> reader = ReaderInteractor<T>.Create(_runContinuationsAsynchronously, cancellationToken);
                 _blockedReader = reader;
                 return new ValueTask<T>(reader.Task);
-            }
-        }
-
-        private bool HasBlockedReader
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                Debug.Assert(Monitor.IsEntered(SyncObj));
-
-                object br = _blockedReader;
-                if (br == null) return false;
-
-                ReaderInteractor<T> ri = br as ReaderInteractor<T>;
-                return ri != null && !ri.Task.IsCanceled;
-            }
-        }
-
-        private bool HasWaitingReader
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                Debug.Assert(Monitor.IsEntered(SyncObj));
-                ReaderInteractor<bool> wr = _waitingReader;
-                return wr != null && !wr.Task.IsCanceled;
             }
         }
 
@@ -304,37 +281,42 @@ namespace System.Threading.Tasks.Channels
 
         public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled<bool>(cancellationToken);
-            }
-
+            // Outside of the lock, check if there are any items waiting to be read.  If there are, we're done.
             if (!_items.IsEmpty)
             {
                 return ChannelUtilities.TrueTask;
             }
 
+            // Now check for cancellation.
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled<bool>(cancellationToken);
+            }
+
+            ReaderInteractor<bool> oldWaiter = null, newWaiter;
             lock (SyncObj)
             {
+                // Again while holding the lock, check to see if there are any items available.
                 if (!_items.IsEmpty)
                 {
                     return ChannelUtilities.TrueTask;
                 }
 
-                if (HasWaitingReader || HasBlockedReader)
-                {
-                    return Task.FromException<bool>(ChannelUtilities.CreateSingleReaderWriterMisuseException());
-                }
-
+                // There aren't any items; if we're done writing, there never will be more items.
                 if (_doneWriting != null)
                 {
                     return ChannelUtilities.FalseTask;
                 }
 
-                ReaderInteractor<bool> reader = ReaderInteractor<bool>.Create(_runContinuationsAsynchronously, cancellationToken);
-                _waitingReader = reader;
-                return reader.Task;
+                // Create the new waiter.  We're a bit more tolerant of a stray waiting reader
+                // than we are of a blocked reader, as with usage patterns it's easier to leave one
+                // behind, so we just cancel any that may have been waiting around.
+                oldWaiter = _waitingReader;
+                _waitingReader = newWaiter = ReaderInteractor<bool>.Create(_runContinuationsAsynchronously, cancellationToken);
             }
+
+            oldWaiter?.TrySetCanceled();
+            return newWaiter.Task;
         }
 
         public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
