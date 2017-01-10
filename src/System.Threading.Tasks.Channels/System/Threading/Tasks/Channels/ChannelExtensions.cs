@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
+// TODO: All of these would become virtuals on Readable/WritableChannel
+
 namespace System.Threading.Tasks.Channels
 {
     /// <summary>Provides extension methods for manipulating channel instances.</summary>
@@ -18,7 +20,7 @@ namespace System.Threading.Tasks.Channels
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <param name="source">The channel to be treated as an observable.</param>
         /// <returns>An observable that pulls data from the source.</returns>
-        public static IObservable<T> AsObservable<T>(this IReadableChannel<T> source)
+        public static IObservable<T> AsObservable<T>(this ReadableChannel<T> source)
         {
             if (source == null)
             {
@@ -27,14 +29,14 @@ namespace System.Threading.Tasks.Channels
 
             return (IObservable<T>)s_channelToObservable.GetValue(
                 source, 
-                s => new ChannelObservable<T>((IReadableChannel<T>)s));
+                s => new ChannelObservable<T>((ReadableChannel<T>)s));
         }
 
-        /// <summary>Creates an observer for a writeable channel.</summary>
+        /// <summary>Creates an observer for a Writable channel.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <param name="target">The channel to be treated as an observer.</param>
         /// <returns>An observer that forwards to the specified channel.</returns>
-        public static IObserver<T> AsObserver<T>(this IWritableChannel<T> target)
+        public static IObserver<T> AsObserver<T>(this WritableChannel<T> target)
         {
             if (target == null)
             {
@@ -50,7 +52,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="cancellationToken">The cancellation token to use to cancel the asynchronous enumeration.</param>
         /// <returns>The async enumerator.</returns>
         public static IAsyncEnumerator<T> GetAsyncEnumerator<T>(
-            this IReadableChannel<T> channel, CancellationToken cancellationToken = default(CancellationToken))
+            this ReadableChannel<T> channel, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (channel == null)
             {
@@ -64,7 +66,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="channel">The channel to mark as complete.</param>
         /// <param name="error">Optional Exception indicating a failure that's causing the channel to complete.</param>
         /// <exception cref="InvalidOperationException">The channel has already been marked as complete.</exception>
-        public static void Complete<T>(this IWritableChannel<T> channel, Exception error = null)
+        public static void Complete<T>(this WritableChannel<T> channel, Exception error = null)
         {
             if (channel == null)
             {
@@ -77,12 +79,12 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        /// <summary>Provides an observer for a writeable channel.</summary>
+        /// <summary>Provides an observer for a Writable channel.</summary>
         internal sealed class ChannelObserver<T> : IObserver<T>
         {
-            private readonly IWritableChannel<T> _channel;
+            private readonly WritableChannel<T> _channel;
 
-            internal ChannelObserver(IWritableChannel<T> channel)
+            internal ChannelObserver(WritableChannel<T> channel)
             {
                 Debug.Assert(channel != null);
                 _channel = channel;
@@ -99,10 +101,10 @@ namespace System.Threading.Tasks.Channels
         internal sealed class ChannelObservable<T> : IObservable<T>
         {
             private readonly List<IObserver<T>> _observers = new List<IObserver<T>>();
-            private readonly IReadableChannel<T> _channel;
+            private readonly ReadableChannel<T> _channel;
             private bool _active;
 
-            internal ChannelObservable(IReadableChannel<T> channel)
+            internal ChannelObservable(ReadableChannel<T> channel)
             {
                 Debug.Assert(channel != null);
                 _channel = channel;
@@ -240,13 +242,13 @@ namespace System.Threading.Tasks.Channels
         internal sealed class AsyncEnumerator<T> : IAsyncEnumerator<T>
         {
             /// <summary>The channel being enumerated.</summary>
-            private readonly IReadableChannel<T> _channel;
+            private readonly ReadableChannel<T> _channel;
             /// <summary>Cancellation token used to cancel the enumeration.</summary>
             private readonly CancellationToken _cancellationToken;
             /// <summary>The current element of the enumeration.</summary>
             private T _current;
 
-            internal AsyncEnumerator(IReadableChannel<T> channel, CancellationToken cancellationToken)
+            internal AsyncEnumerator(ReadableChannel<T> channel, CancellationToken cancellationToken)
             {
                 _channel = channel;
                 _cancellationToken = cancellationToken;

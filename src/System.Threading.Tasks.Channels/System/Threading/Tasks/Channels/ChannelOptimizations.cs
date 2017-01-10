@@ -22,7 +22,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>
         /// true if operations performed on a channel may synchronous invoke continuations subscribed to notifications
         /// of such operations, e.g. if a write on a channel may synchronously invoke a continuation off a task previously
-        /// returned from a <see cref="IReadableChannel{T}.ReadAsync(CancellationToken)"/> call. false if all
+        /// returned from a <see cref="ReadableChannel{T}.ReadAsync(CancellationToken)"/> call. false if all
         /// continuations should be invoked asynchronously.  The default is false.
         /// </summary>
         public bool AllowSynchronousContinuations { get; set; }
