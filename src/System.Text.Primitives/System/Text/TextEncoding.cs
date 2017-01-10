@@ -25,14 +25,13 @@ namespace System.Text {
 
         public abstract bool TryEncodeFromUtf16(ReadOnlySpan<char> utf16, Span<byte> buffer, out int bytesWritten);
 
-        // TODO: I think we also need to add the following to support transcoding
         public abstract bool TryEncodeFromUnicode(ReadOnlySpan<UnicodeCodePoint> codePoints, Span<byte> buffer, out int bytesWritten);
 
         public abstract bool TryEncodeFromUnicode(UnicodeCodePoint codePoint, Span<byte> buffer, out int bytesWritten);
 
-        //public abstract bool TryDecodeToUnicode(Span<byte> encoded, ReadOnlySpan<UnicodeCodePoint> decoded, out int bytesWritten);
+        public abstract bool TryDecodeToUnicode(Span<byte> encoded, Span<UnicodeCodePoint> decoded, out int bytesWritten);
 
-        //public abstract bool TryDecodeToUnicode(Span<byte> encoded, UnicodeCodePoint decoded, out int bytesWritten);
+        public abstract bool TryDecodeToUnicode(Span<byte> encoded, out UnicodeCodePoint decoded, out int bytesWritten);
 
         public virtual bool TryEncodeChar(char value, Span<byte> buffer, out int bytesWritten)
         {
@@ -127,51 +126,19 @@ namespace System.Text {
         public override bool TryEncodeFromUnicode(ReadOnlySpan<UnicodeCodePoint> codePoints, Span<byte> buffer, out int bytesWritten)
         {
             var avaliableBytes = buffer.Length;
+            int bytesWrittenForCodePoint = 0;
             bytesWritten = 0;
+
             for (int i = 0; i < codePoints.Length; i++)
             {
-                var c = codePoints[i];
-
-                var codepoint = (ushort)c;
-                if (codepoint <= 0x7f) // this if block just optimizes for ascii
+                if (!TryEncodeFromUnicode(codePoints[i], buffer.Slice(bytesWritten), out bytesWrittenForCodePoint))
                 {
-                    if (bytesWritten + 1 > avaliableBytes)
-                    {
-                        bytesWritten = 0;
-                        return false;
-                    }
-                    buffer[bytesWritten++] = (byte)codepoint;
+                    bytesWritten = 0;
+                    return false;
                 }
-                else
-                {
-                    Utf8EncodedCodePoint encoded;
-                    encoded = new Utf8EncodedCodePoint(c);
-
-                    if (bytesWritten + encoded.Length > avaliableBytes)
-                    {
-                        bytesWritten = 0;
-                        return false;
-                    }
-
-                    buffer[bytesWritten] = encoded.Byte0;
-                    if (encoded.Length > 1)
-                    {
-                        buffer[bytesWritten + 1] = encoded.Byte1;
-
-                        if (encoded.Length > 2)
-                        {
-                            buffer[bytesWritten + 2] = encoded.Byte2;
-
-                            if (encoded.Length > 3)
-                            {
-                                buffer[bytesWritten + 3] = encoded.Byte3;
-                            }
-                        }
-                    }
-
-                    bytesWritten += encoded.Length;
-                }
+                bytesWritten += bytesWrittenForCodePoint;
             }
+
             return true;
         }
 
@@ -180,7 +147,7 @@ namespace System.Text {
             var avaliableBytes = buffer.Length;
             bytesWritten = 0;
 
-            var codepoint = (ushort)codePoint;
+            var codepoint = (uint)codePoint;
             if (codepoint <= 0x7f) // this if block just optimizes for ascii
             {
                 if (bytesWritten + 1 > avaliableBytes)
@@ -220,6 +187,90 @@ namespace System.Text {
                 bytesWritten += encoded.Length;
             }
             return true;
+        }
+
+        public override bool TryDecodeToUnicode(Span<byte> encoded, Span<UnicodeCodePoint> decoded, out int bytesWritten)
+        {
+            var avaliableBytes = encoded.Length;
+            int bytesWrittenForCodePoint = 0;
+            bytesWritten = 0;
+
+            for (int i = 0; i < decoded.Length; i++)
+            {
+                UnicodeCodePoint decodedCodePoint = decoded[i];
+                if (!TryDecodeToUnicode(encoded.Slice(bytesWritten), out decodedCodePoint, out bytesWrittenForCodePoint))
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+                decoded[i] = decodedCodePoint;
+                bytesWritten += bytesWrittenForCodePoint;
+                if (bytesWritten > avaliableBytes)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override bool TryDecodeToUnicode(Span<byte> encoded, out UnicodeCodePoint decoded, out int bytesWritten)
+        {
+            bytesWritten = 0;
+
+            if (encoded.IsEmpty)
+            {
+                decoded = new UnicodeCodePoint();
+                return false;
+            }
+            
+            byte firstByte = encoded[0];
+
+            bytesWritten = CountConsecutiveStartingOnes(firstByte);
+            if (bytesWritten == 0) bytesWritten++;
+
+            uint answer = firstByte;
+
+            if (bytesWritten == 1)
+            {
+                // Do nothing
+            }
+            else if (bytesWritten == 2)
+            {
+                byte byte0 = (byte)(firstByte & 0x1F);
+                byte byte1 = (byte)(encoded[1] & 0x3F);
+                answer = (uint)(((byte0 >> 2) << 8) | ((byte0 << 6) | byte1));
+            }
+            else if (bytesWritten == 3)
+            {
+                byte byte0 = (byte)(firstByte & 0x0F);
+                byte byte1 = (byte)(encoded[1] & 0x3F);
+                byte byte2 = (byte)(encoded[2] & 0x3F);
+                answer = (uint)((((byte0 << 4) | (byte1 >> 2)) << 8) | ((byte1 << 6) | byte2));
+            }
+            else if (bytesWritten == 4)
+            {
+                byte byte0 = (byte)(firstByte & 0x07);
+                byte byte1 = (byte)(encoded[1] & 0x3F);
+                byte byte2 = (byte)(encoded[2] & 0x3F);
+                byte byte3 = (byte)(encoded[3] & 0x3F);
+                answer = (uint)((((byte0 << 2) | (byte1 >> 4)) << 16) | (((byte1 << 4) | (byte2 >> 2)) << 8) | ((byte2 << 6) | byte3));
+            }
+
+            decoded = new UnicodeCodePoint(answer);
+            return true;
+        }
+
+        private int CountConsecutiveStartingOnes(byte input)
+        {
+            int count = 0;
+            while ((input & (1 << 7)) != 0)
+            {
+                input = (byte)(input << 1);
+                count++;
+            }
+            return count;
         }
 
         public override bool TryEncodeString(string value, Span<byte> buffer, out int bytesWritten)
@@ -357,19 +408,21 @@ namespace System.Text {
 
         public override bool TryEncodeFromUnicode(ReadOnlySpan<UnicodeCodePoint> codePoints, Span<byte> buffer, out int bytesWritten)
         {
+
             var avaliableBytes = buffer.Length;
+            int bytesWrittenForCodePoint = 0;
             bytesWritten = 0;
-            int justWritten;
 
             for (int i = 0; i < codePoints.Length; i++)
             {
-                if (!Text.Utf16.Utf16LittleEndianEncoder.TryEncodeCodePoint(codePoints[i], buffer.Slice(bytesWritten), out justWritten))
+                if (!TryEncodeFromUnicode(codePoints[i], buffer.Slice(bytesWritten), out bytesWrittenForCodePoint))
                 {
                     bytesWritten = 0;
                     return false;
                 }
-                bytesWritten += justWritten;
+                bytesWritten += bytesWrittenForCodePoint;
             }
+
             return true;
         }
 
@@ -385,6 +438,67 @@ namespace System.Text {
                 return false;
             }
             bytesWritten += justWritten;
+            return true;
+        }
+
+        public override bool TryDecodeToUnicode(Span<byte> encoded, Span<UnicodeCodePoint> decoded, out int bytesWritten)
+        {
+            var avaliableBytes = encoded.Length;
+            int bytesWrittenForCodePoint = 0;
+            bytesWritten = 0;
+
+            for (int i = 0; i < decoded.Length; i++)
+            {
+                UnicodeCodePoint decodedCodePoint = decoded[i];
+                if (!TryDecodeToUnicode(encoded.Slice(bytesWritten), out decodedCodePoint, out bytesWrittenForCodePoint))
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+                decoded[i] = decodedCodePoint;
+                bytesWritten += bytesWrittenForCodePoint;
+                if (bytesWritten > avaliableBytes)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override bool TryDecodeToUnicode(Span<byte> encoded, out UnicodeCodePoint decoded, out int bytesWritten)
+        {
+            bytesWritten = 0;
+
+            if (encoded.Length < 2)
+            {
+                decoded = new UnicodeCodePoint();
+                return false;
+            }
+
+            bytesWritten = 2;
+            uint answer = (uint)(encoded[1] << 8 | encoded[0]);
+            decoded = new UnicodeCodePoint(answer);
+
+            if (encoded.Length >= 4)
+            {
+                uint highByte = (uint)(encoded[1] << 8 | encoded[0]);
+                uint lowByte = (uint)(encoded[3] << 8 | encoded[2]);
+
+                if (highByte < UnicodeConstants.Utf16HighSurrogateFirstCodePoint || lowByte < UnicodeConstants.Utf16LowSurrogateFirstCodePoint)
+                {
+                    decoded = new UnicodeCodePoint(answer);
+                    return true;
+                }
+
+                answer = (((highByte - UnicodeConstants.Utf16HighSurrogateFirstCodePoint) << 10) 
+                    | (lowByte - UnicodeConstants.Utf16LowSurrogateFirstCodePoint)) + 0x10000;
+                decoded = new UnicodeCodePoint(answer);
+
+                bytesWritten = 4;
+            }
+
             return true;
         }
 
