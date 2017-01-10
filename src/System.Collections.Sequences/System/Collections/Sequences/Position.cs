@@ -7,8 +7,9 @@ namespace System.Collections.Sequences
 {
     public struct Position : IEquatable<Position>
     {
-        public int IntegerPosition;
         public object ObjectPosition;
+        public int IntegerPosition;
+        public int Tag;
 
         public static readonly Position First = new Position();
         public static readonly Position AfterLast = new Position() { IntegerPosition = int.MaxValue - 1 };
