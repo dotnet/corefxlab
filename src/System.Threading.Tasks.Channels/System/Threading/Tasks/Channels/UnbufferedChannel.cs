@@ -30,7 +30,6 @@ namespace System.Threading.Tasks.Channels
             internal Readable(UnbufferedChannel<T> parent) { _parent = parent; }
 
             public override Task Completion => _parent.Completion;
-            public override ValueAwaiter<T> GetAwaiter() => _parent.GetAwaiter();
             public override ValueTask<T> ReadAsync(CancellationToken cancellationToken) => _parent.ReadAsync(cancellationToken);
             public override bool TryRead(out T item) => _parent.TryRead(out item);
             public override Task<bool> WaitToReadAsync(CancellationToken cancellationToken) => _parent.WaitToReadAsync(cancellationToken);
@@ -117,8 +116,6 @@ namespace System.Threading.Tasks.Channels
 
             return true;
         }
-
-        private ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
 
         private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
