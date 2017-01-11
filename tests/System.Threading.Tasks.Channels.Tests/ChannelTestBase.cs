@@ -87,6 +87,29 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
+        public async Task TryComplete_ErrorsPropage()
+        {
+            Channel<int> c;
+
+            // Success
+            c = CreateChannel();
+            Assert.True(c.Out.TryComplete());
+            await c.In.Completion;
+
+            // Error
+            c = CreateChannel();
+            Assert.True(c.Out.TryComplete(new FormatException()));
+            await Assert.ThrowsAsync<FormatException>(() => c.In.Completion);
+
+            // Canceled
+            c = CreateChannel();
+            var cts = new CancellationTokenSource();
+            cts.Cancel();
+            Assert.True(c.Out.TryComplete(new OperationCanceledException(cts.Token)));
+            await AssertCanceled(c.In.Completion, cts.Token);
+        }
+
+        [Fact]
         public void SingleProducerConsumer_ConcurrentReadWrite_Success()
         {
             Channel<int> c = CreateChannel();
@@ -556,7 +579,23 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
-        public async Task Await_CompletedChannel_Throws()
+        public async Task CancelPendingRead_WrittenDataPendingOrStored()
+        {
+            Channel<int> c = CreateChannel();
+            var cts = new CancellationTokenSource();
+
+            Task<int> read1 = c.In.ReadAsync(cts.Token).AsTask();
+            cts.Cancel();
+            await AssertCanceled(read1, cts.Token);
+
+            Task write = c.Out.WriteAsync(42);
+
+            Assert.Equal(42, await c.In.ReadAsync());
+            await write;
+        }
+
+        [Fact]
+        public async Task AwaitRead_CompletedChannel_Throws()
         {
             Channel<int> c = CreateChannel();
             c.Out.Complete();
@@ -564,12 +603,29 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
-        public async Task Await_ChannelAfterExistingData_ReturnsData()
+        public async Task AwaitRead_ChannelAfterExistingData_ReturnsData()
         {
             Channel<int> c = CreateChannel();
             Task write = c.Out.WriteAsync(42);
             Assert.Equal(42, await c.In);
             Assert.Equal(TaskStatus.RanToCompletion, write.Status);
+        }
+
+        [Fact]
+        public async Task AwaitWriteAvailable_CompletedChannel_ReturnsFalse()
+        {
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            Assert.False(await c.Out);
+        }
+
+        [Fact]
+        public async Task AwaitWriteAvailable_ChannelWhenPendingRead_ReturnsTrue()
+        {
+            Channel<int> c = CreateChannel();
+            ValueTask<int> pendingRead = c.In.ReadAsync();
+            Assert.False(pendingRead.IsCompleted);
+            Assert.True(await c.Out);
         }
 
         [Fact]
@@ -651,9 +707,10 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public async Task AsObservable_DataWritten(bool endWithError)
+        [InlineData(TaskStatus.RanToCompletion)]
+        [InlineData(TaskStatus.Faulted)]
+        [InlineData(TaskStatus.Canceled)]
+        public async Task AsObserver_DataWritten(TaskStatus endingMode)
         {
             Channel<int> c = CreateChannel();
             IObserver<int> o = c.Out.AsObserver();
@@ -673,24 +730,32 @@ namespace System.Threading.Tasks.Channels.Tests
                 o.OnNext(i);
             }
 
-            if (endWithError)
+            switch (endingMode)
             {
-                o.OnError(new FormatException());
-                await Assert.ThrowsAsync<FormatException>(() => reader);
+                case TaskStatus.RanToCompletion:
+                    o.OnCompleted();
+                    await reader;
+                    break;
+                case TaskStatus.Faulted:
+                    o.OnError(new FormatException());
+                    await Assert.ThrowsAsync<FormatException>(() => reader);
+                    break;
+                case TaskStatus.Canceled:
+                    o.OnError(new OperationCanceledException());
+                    await Assert.ThrowsAnyAsync<OperationCanceledException>(() => reader);
+                    break;
             }
-            else
-            {
-                o.OnCompleted();
-                await reader;
-            }
+            Assert.Equal(endingMode, reader.Status);
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(1, true)]
-        [InlineData(5, false)]
-        [InlineData(5, true)]
-        public async Task AsObserver_AllDataPushed(int numSubscribers, bool completeWithError)
+        [InlineData(1, TaskStatus.RanToCompletion)]
+        [InlineData(1, TaskStatus.Faulted)]
+        [InlineData(1, TaskStatus.Canceled)]
+        [InlineData(5, TaskStatus.RanToCompletion)]
+        [InlineData(5, TaskStatus.Faulted)]
+        [InlineData(5, TaskStatus.Canceled)]
+        public async Task AsObserver_AllDataPushed(int numSubscribers, TaskStatus endingMode)
         {
             if (RequiresSingleWriter) return;
 
@@ -717,13 +782,24 @@ namespace System.Threading.Tasks.Channels.Tests
             }
             await Task.WhenAll(writes);
 
-            c.Out.Complete(completeWithError ? new FormatException() : null);
+            c.Out.Complete(
+                endingMode == TaskStatus.RanToCompletion ? null :
+                endingMode == TaskStatus.Faulted ? new FormatException() :
+                (Exception)new OperationCanceledException());
 
             Exception result = await tcs.Task;
-            if (completeWithError)
-                Assert.IsType<FormatException>(result);
-            else
-                Assert.Null(result);
+            switch (endingMode)
+            {
+                case TaskStatus.RanToCompletion:
+                    Assert.Null(result);
+                    break;
+                case TaskStatus.Faulted:
+                    Assert.IsType<FormatException>(result);
+                    break;
+                case TaskStatus.Canceled:
+                    Assert.IsAssignableFrom<OperationCanceledException>(result);
+                    break;
+            }
 
             Assert.Equal(numSubscribers * (writes.Length * (writes.Length + 1)) / 2, received);
         }

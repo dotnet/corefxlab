@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using Xunit;
 
 namespace System.Threading.Tasks.Channels.Tests
@@ -76,6 +77,45 @@ namespace System.Threading.Tasks.Channels.Tests
             await tcs.Task;
 
             Assert.Equal(15, total);
+        }
+
+        [Fact]
+        public async Task ReaderCompetingWithObserver_AllItemsConsumed()
+        {
+            const int Items = 1000;
+            var results = new HashSet<int>();
+            var tcs = new TaskCompletionSource<bool>();
+
+            Channel<int> c = Channel.CreateBounded<int>(1);
+
+            Task writer = Task.Run(async () =>
+            {
+                for (int i = 0; i < Items; i++)
+                {
+                    await c.Out.WriteAsync(i);
+                }
+                c.Out.Complete();
+            });
+
+            c.In.AsObservable().Subscribe(new DelegateObserver<int>
+            {
+                OnNextDelegate = i => { lock (results) results.Add(i); },
+                OnCompletedDelegate = () => tcs.TrySetResult(true)
+            });
+
+            while (await c.In.WaitToReadAsync())
+            {
+                int item;
+                if (c.In.TryRead(out item))
+                {
+                    lock (results) results.Add(item);
+                }
+            }
+
+            await tcs.Task;
+            await writer;
+
+            Assert.Equal(Items, results.Count);
         }
     }
 }

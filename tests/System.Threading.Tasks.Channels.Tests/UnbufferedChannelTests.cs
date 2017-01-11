@@ -68,6 +68,12 @@ namespace System.Threading.Tasks.Channels.Tests
 
             cts.Cancel();
             await AssertCanceled(w, cts.Token);
+
+            ValueTask<int> r = c.In.ReadAsync();
+            Assert.False(r.IsCompleted);
+
+            Assert.True(c.Out.TryWrite(42));
+            Assert.Equal(42, await r);
         }
 
         [Fact]
@@ -81,6 +87,12 @@ namespace System.Threading.Tasks.Channels.Tests
 
             cts.Cancel();
             await AssertCanceled(r, cts.Token);
+
+            Task w = c.Out.WriteAsync(42);
+            Assert.False(w.IsCompleted);
+
+            Assert.Equal(42, await c.In.ReadAsync());
+            await w;
         }
 
         [Fact]

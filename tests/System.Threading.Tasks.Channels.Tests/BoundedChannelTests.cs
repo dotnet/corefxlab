@@ -161,6 +161,29 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
+        public async Task TryWrite_DropNewest_WrappedAroundInternalQueue()
+        {
+            Channel<int> c = Channel.CreateBounded<int>(3, BoundedChannelFullMode.DropNewest);
+
+            // Move head of dequeue beyond the beginning
+            Assert.True(c.Out.TryWrite(1));
+            Assert.Equal(1, await c.In.ReadAsync());
+
+            // Add items to fill the capacity and put the tail at 0
+            Assert.True(c.Out.TryWrite(2));
+            Assert.True(c.Out.TryWrite(3));
+            Assert.True(c.Out.TryWrite(4));
+
+            // Add an item to overwrite the newest
+            Assert.True(c.Out.TryWrite(5));
+
+            // Verify current contents
+            Assert.Equal(2, await c.In.ReadAsync());
+            Assert.Equal(3, await c.In.ReadAsync());
+            Assert.Equal(5, await c.In.ReadAsync());
+        }
+
+        [Fact]
         public async Task CancelPendingWrite_Reading_DataTransferredFromCorrectWriter()
         {
             Channel<int> c = Channel.CreateBounded<int>(1);
@@ -295,6 +318,5 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.True(await write1);
             Assert.True(await write2);
         }
-
     }
 }
