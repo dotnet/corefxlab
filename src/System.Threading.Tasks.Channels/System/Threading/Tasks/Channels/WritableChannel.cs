@@ -2,7 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -38,6 +40,10 @@ namespace System.Threading.Tasks.Channels
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> used to cancel the write operation.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous write operation.</returns>
         public abstract Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>Gets an awaiter used to wait for space to be available in the channel.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual ValueAwaiter<bool> GetAwaiter() => new ValueAwaiter<bool>(WaitToWriteAsync());
 
         /// <summary>Creates an observer for this channel.</summary>
         /// <returns>An observer that forwards to this channel.</returns>
