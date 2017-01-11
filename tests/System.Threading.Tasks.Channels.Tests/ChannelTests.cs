@@ -74,7 +74,7 @@ namespace System.Threading.Tasks.Channels.Tests
         public void AsObservable_SameSource_Idempotent()
         {
             Channel<int> c = Channel.CreateUnbounded<int>();
-            Assert.Same(c.AsObservable(), c.AsObservable());
+            Assert.Same(c.In.AsObservable(), c.In.AsObservable());
         }
 
         [Fact]

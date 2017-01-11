@@ -21,11 +21,11 @@ namespace System.Threading.Tasks.Channels.Tests
         public async Task Complete_BeforeEmpty_NoWaiters_TriggersCompletion()
         {
             Channel<int> c = CreateChannel();
-            Assert.True(c.TryWrite(42));
-            c.Complete();
-            Assert.False(c.Completion.IsCompleted);
-            Assert.Equal(42, await c.ReadAsync());
-            await c.Completion;
+            Assert.True(c.Out.TryWrite(42));
+            c.Out.Complete();
+            Assert.False(c.In.Completion.IsCompleted);
+            Assert.Equal(42, await c.In.ReadAsync());
+            await c.In.Completion;
         }
 
         [Fact]
@@ -36,12 +36,12 @@ namespace System.Threading.Tasks.Channels.Tests
             const int NumItems = 100000;
             for (int i = 0; i < NumItems; i++)
             {
-                Assert.True(c.TryWrite(i));
+                Assert.True(c.Out.TryWrite(i));
             }
             for (int i = 0; i < NumItems; i++)
             {
                 int result;
-                Assert.True(c.TryRead(out result));
+                Assert.True(c.In.TryRead(out result));
                 Assert.Equal(i, result);
             }
         }
@@ -53,9 +53,9 @@ namespace System.Threading.Tasks.Channels.Tests
 
             for (int i = 0; i < 10; i++)
             {
-                Assert.True(c.TryWrite(i));
+                Assert.True(c.Out.TryWrite(i));
                 int result;
-                Assert.True(c.TryRead(out result));
+                Assert.True(c.In.TryRead(out result));
                 Assert.Equal(i, result);
             }
         }
@@ -64,8 +64,8 @@ namespace System.Threading.Tasks.Channels.Tests
         public void WaitForReadAsync_DataAvailable_CompletesSynchronously()
         {
             Channel<int> c = CreateChannel();
-            Assert.True(c.TryWrite(42));
-            AssertSynchronousTrue(c.WaitToReadAsync());
+            Assert.True(c.Out.TryWrite(42));
+            AssertSynchronousTrue(c.In.WaitToReadAsync());
         }
 
         [Theory]
@@ -76,29 +76,29 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = CreateChannel();
             for (int i = 0; i < 10; i++)
             {
-                Assert.True(c.TryWrite(i));
+                Assert.True(c.Out.TryWrite(i));
             }
 
-            c.Complete();
-            Assert.False(c.Completion.IsCompleted);
+            c.Out.Complete();
+            Assert.False(c.In.Completion.IsCompleted);
 
             for (int i = 0; i < 10; i++)
             {
-                Assert.False(c.Completion.IsCompleted);
+                Assert.False(c.In.Completion.IsCompleted);
                 switch (readMode)
                 {
                     case 0:
                         int result;
-                        Assert.True(c.TryRead(out result));
+                        Assert.True(c.In.TryRead(out result));
                         Assert.Equal(i, result);
                         break;
                     case 1:
-                        Assert.Equal(i, await c.ReadAsync());
+                        Assert.Equal(i, await c.In.ReadAsync());
                         break;
                 }
             }
 
-            await c.Completion;
+            await c.In.Completion;
         }
 
         [Fact]
@@ -107,12 +107,12 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = CreateChannel();
 
             int expectedId = Environment.CurrentManagedThreadId;
-            Task r = c.ReadAsync().AsTask().ContinueWith(_ =>
+            Task r = c.In.ReadAsync().AsTask().ContinueWith(_ =>
             {
                 Assert.Equal(AllowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
             }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
-            Assert.Equal(TaskStatus.RanToCompletion, c.WriteAsync(42).Status);
+            Assert.Equal(TaskStatus.RanToCompletion, c.Out.WriteAsync(42).Status);
             ((IAsyncResult)r).AsyncWaitHandle.WaitOne(); // avoid inlining the continuation
             r.GetAwaiter().GetResult();
         }
@@ -126,8 +126,8 @@ namespace System.Threading.Tasks.Channels.Tests
         public void ValidateInternalDebuggerAttributes()
         {
             Channel<int> c = CreateChannel();
-            Assert.True(c.TryWrite(1));
-            Assert.True(c.TryWrite(2));
+            Assert.True(c.Out.TryWrite(1));
+            Assert.True(c.Out.TryWrite(2));
 
             var queue = DebuggerAttributes.GetFieldValue(c, "_items");
             DebuggerAttributes.ValidateDebuggerDisplayReferences(queue);
@@ -138,10 +138,10 @@ namespace System.Threading.Tasks.Channels.Tests
         public async Task MultipleWaiters_CancelsPreviousWaiter()
         {
             Channel<int> c = CreateChannel();
-            Task<bool> t1 = c.WaitToReadAsync();
-            Task<bool> t2 = c.WaitToReadAsync();
+            Task<bool> t1 = c.In.WaitToReadAsync();
+            Task<bool> t2 = c.In.WaitToReadAsync();
             await Assert.ThrowsAnyAsync<OperationCanceledException>(() => t1);
-            Assert.True(c.TryWrite(42));
+            Assert.True(c.Out.TryWrite(42));
             Assert.True(await t2);
         }
 
@@ -155,10 +155,10 @@ namespace System.Threading.Tasks.Channels.Tests
                 Task.Run(async () =>
                 {
                     int received = 0;
-                    while (await c.WaitToReadAsync())
+                    while (await c.In.WaitToReadAsync())
                     {
                         int i;
-                        while (c.TryRead(out i))
+                        while (c.In.TryRead(out i))
                         {
                             Assert.Equal(received, i);
                             received++;
@@ -169,9 +169,9 @@ namespace System.Threading.Tasks.Channels.Tests
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        Assert.True(c.TryWrite(i));
+                        Assert.True(c.Out.TryWrite(i));
                     }
-                    c.Complete();
+                    c.Out.Complete();
                 }));
         }
     }

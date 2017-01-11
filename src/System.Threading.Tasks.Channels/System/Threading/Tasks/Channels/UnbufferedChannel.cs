@@ -60,7 +60,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Gets an object used to synchronize all state on the instance.</summary>
         private object SyncObj => _completion;
 
-        private new Task Completion => _completion.Task;
+        private Task Completion => _completion.Task;
 
         [Conditional("DEBUG")]
         private void AssertInvariants()
@@ -83,7 +83,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private new bool TryComplete(Exception error = null)
+        private bool TryComplete(Exception error = null)
         {
             lock (SyncObj)
             {
@@ -118,9 +118,9 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        private new ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
+        private ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
 
-        private new ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             T item;
             return TryRead(out item) ?
@@ -168,7 +168,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private new bool TryRead(out T item)
+        private bool TryRead(out T item)
         {
             lock (SyncObj)
             {
@@ -191,7 +191,7 @@ namespace System.Threading.Tasks.Channels
             return false;
         }
 
-        private new bool TryWrite(T item)
+        private bool TryWrite(T item)
         {
             lock (SyncObj)
             {
@@ -212,7 +212,7 @@ namespace System.Threading.Tasks.Channels
             return false;
         }
 
-        private new Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -249,7 +249,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private new Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             lock (SyncObj)
             {
@@ -272,7 +272,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private new Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             lock (SyncObj)
             {

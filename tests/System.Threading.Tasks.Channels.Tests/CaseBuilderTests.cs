@@ -96,7 +96,7 @@ namespace System.Threading.Tasks.Channels.Tests
         public void SelectAsync_Precanceled_ThrowsCancellationException()
         {
             Channel<int> c = Channel.CreateUnbounded<int>();
-            Assert.True(c.TryWrite(42));
+            Assert.True(c.Out.TryWrite(42));
 
             var cts = new CancellationTokenSource();
             cts.Cancel();
@@ -229,8 +229,8 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             Channel<int> c1 = Channel.CreateUnbounded<int>();
             Channel<int> c2 = Channel.CreateUnbuffered<int>();
-            c1.Complete();
-            c2.Complete();
+            c1.Out.Complete();
+            c2.Out.Complete();
 
             Task<bool> select = Channel
                 .CaseRead<int>(c1, i => { throw new InvalidOperationException(); })
@@ -250,8 +250,8 @@ namespace System.Threading.Tasks.Channels.Tests
                 .CaseWrite(c2, 42, () => { throw new InvalidOperationException(); })
                 .SelectAsync();
 
-            c1.Complete();
-            c2.Complete();
+            c1.Out.Complete();
+            c2.Out.Complete();
 
             Assert.False(await select);
         }
@@ -260,7 +260,7 @@ namespace System.Threading.Tasks.Channels.Tests
         public async Task SelectAsync_SingleCaseRead_Sync_DataAlreadyAvailable()
         {
             Channel<int> c = Channel.CreateUnbounded<int>();
-            Assert.True(c.TryWrite(42));
+            Assert.True(c.Out.TryWrite(42));
 
             var tcs = new TaskCompletionSource<int>();
             Task<bool> select = Channel.CaseRead<int>(c, i => tcs.SetResult(i)).SelectAsync();
@@ -276,7 +276,7 @@ namespace System.Threading.Tasks.Channels.Tests
         public async Task SelectAsync_SingleCaseRead_Async_DataAlreadyAvailable_CompletesSynchronously()
         {
             Channel<int> c = Channel.CreateUnbounded<int>();
-            Assert.True(c.TryWrite(42));
+            Assert.True(c.Out.TryWrite(42));
 
             var tcs = new TaskCompletionSource<int>();
             Task<bool> select = Channel.CaseRead<int>(c, i => { tcs.SetResult(i); return Task.CompletedTask; }).SelectAsync();
@@ -292,7 +292,7 @@ namespace System.Threading.Tasks.Channels.Tests
         public async Task SelectAsync_SingleCaseRead_Async_DataAlreadyAvailable_CompletesAsynchronously()
         {
             Channel<int> c = Channel.CreateUnbounded<int>();
-            Assert.True(c.TryWrite(42));
+            Assert.True(c.Out.TryWrite(42));
 
             var tcs = new TaskCompletionSource<int>();
             Task<bool> select = Channel.CaseRead<int>(c, async i => { await Task.Yield(); tcs.SetResult(i); }).SelectAsync();
@@ -312,7 +312,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Task<bool> select = Channel.CaseRead<int>(c, i => tcs.SetResult(i)).SelectAsync();
             Assert.False(select.IsCompleted);
 
-            Task write = c.WriteAsync(42);
+            Task write = c.Out.WriteAsync(42);
 
             Assert.True(await select);
             Assert.Equal(42, await tcs.Task);
@@ -327,7 +327,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Task<bool> select = Channel.CaseRead<int>(c, i => { tcs.SetResult(i); return Task.CompletedTask; }).SelectAsync();
             Assert.False(select.IsCompleted);
 
-            Task write = c.WriteAsync(42);
+            Task write = c.Out.WriteAsync(42);
 
             Assert.True(await select);
             Assert.Equal(42, await tcs.Task);
@@ -342,7 +342,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Task<bool> select = Channel.CaseRead<int>(c, async i => { await Task.Yield(); tcs.SetResult(i); }).SelectAsync();
             Assert.False(select.IsCompleted);
 
-            Task write = c.WriteAsync(42);
+            Task write = c.Out.WriteAsync(42);
 
             Assert.True(await select);
             Assert.Equal(42, await tcs.Task);
@@ -363,7 +363,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.Equal(1, await tcs.Task);
 
             int result;
-            Assert.True(c.TryRead(out result));
+            Assert.True(c.In.TryRead(out result));
             Assert.Equal(42, result);
         }
 
@@ -382,7 +382,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.Equal(1, await tcs.Task);
 
             int result;
-            Assert.True(c.TryRead(out result));
+            Assert.True(c.In.TryRead(out result));
             Assert.Equal(42, result);
         }
 
@@ -400,7 +400,7 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.Equal(1, await tcs.Task);
 
             int result;
-            Assert.True(c.TryRead(out result));
+            Assert.True(c.In.TryRead(out result));
             Assert.Equal(42, result);
         }
 
@@ -414,7 +414,7 @@ namespace System.Threading.Tasks.Channels.Tests
 
             Assert.False(select.IsCompleted);
 
-            Task<int> read = c.ReadAsync().AsTask();
+            Task<int> read = c.In.ReadAsync().AsTask();
 
             Assert.True(await select);
             Assert.Equal(42, await read);
@@ -431,7 +431,7 @@ namespace System.Threading.Tasks.Channels.Tests
 
             Assert.False(select.IsCompleted);
 
-            Task<int> read = c.ReadAsync().AsTask();
+            Task<int> read = c.In.ReadAsync().AsTask();
 
             Assert.True(await select);
             Assert.Equal(42, await read);
@@ -448,7 +448,7 @@ namespace System.Threading.Tasks.Channels.Tests
 
             Assert.False(select.IsCompleted);
 
-            Task<int> read = c.ReadAsync().AsTask();
+            Task<int> read = c.In.ReadAsync().AsTask();
 
             Assert.True(await select);
             Assert.Equal(42, await read);
@@ -463,10 +463,10 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = Channel.CreateUnbuffered<int>();
             Task write;
             if (before)
-                write = c.WriteAsync(42);
+                write = c.Out.WriteAsync(42);
             Task t = Channel.CaseRead<int>(c, new Action<int>(i => { throw new FormatException(); })).SelectAsync();
             if (!before)
-                write = c.WriteAsync(42);
+                write = c.Out.WriteAsync(42);
             await Assert.ThrowsAsync<FormatException>(() => t);
         }
 
@@ -478,10 +478,10 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = Channel.CreateUnbuffered<int>();
             Task write;
             if (before)
-                write = c.WriteAsync(42);
+                write = c.Out.WriteAsync(42);
             Task t = Channel.CaseRead<int>(c, new Func<int, Task>(i => { throw new FormatException(); })).SelectAsync();
             if (!before)
-                write = c.WriteAsync(42);
+                write = c.Out.WriteAsync(42);
             await Assert.ThrowsAsync<FormatException>(() => t);
         }
 
@@ -493,10 +493,10 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = Channel.CreateUnbuffered<int>();
             Task write;
             if (before)
-                write = c.WriteAsync(42);
+                write = c.Out.WriteAsync(42);
             Task t = Channel.CaseRead<int>(c, async i => { await Task.Yield(); throw new FormatException(); }).SelectAsync();
             if (!before)
-                write = c.WriteAsync(42);
+                write = c.Out.WriteAsync(42);
             await Assert.ThrowsAsync<FormatException>(() => t);
         }
 
@@ -508,10 +508,10 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = Channel.CreateUnbuffered<int>();
             Task read;
             if (before)
-                read = c.ReadAsync().AsTask();
+                read = c.In.ReadAsync().AsTask();
             Task t = Channel.CaseWrite(c, 42, new Action(() => { throw new FormatException(); })).SelectAsync();
             if (!before)
-                read = c.ReadAsync().AsTask();
+                read = c.In.ReadAsync().AsTask();
             await Assert.ThrowsAsync<FormatException>(() => t);
         }
 
@@ -523,10 +523,10 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = Channel.CreateUnbuffered<int>();
             Task read;
             if (before)
-                read = c.ReadAsync().AsTask();
+                read = c.In.ReadAsync().AsTask();
             Task t = Channel.CaseWrite(c, 42, new Func<Task>(() => { throw new FormatException(); })).SelectAsync();
             if (!before)
-                read = c.ReadAsync().AsTask();
+                read = c.In.ReadAsync().AsTask();
             await Assert.ThrowsAsync<FormatException>(() => t);
         }
 
@@ -538,10 +538,10 @@ namespace System.Threading.Tasks.Channels.Tests
             Channel<int> c = Channel.CreateUnbuffered<int>();
             Task read;
             if (before)
-                read = c.ReadAsync().AsTask();
+                read = c.In.ReadAsync().AsTask();
             Task t = Channel.CaseWrite(c, 42, async () => { await Task.Yield(); throw new FormatException(); }).SelectAsync();
             if (!before)
-                read = c.ReadAsync().AsTask();
+                read = c.In.ReadAsync().AsTask();
             await Assert.ThrowsAsync<FormatException>(() => t);
         }
 
@@ -586,20 +586,20 @@ namespace System.Threading.Tasks.Channels.Tests
                 switch (i % 3)
                 {
                     case 0:
-                        Assert.True(c1.TryWrite(i));
+                        Assert.True(c1.Out.TryWrite(i));
                         break;
                     case 1:
-                        Assert.True(c2.TryWrite(i.ToString()));
+                        Assert.True(c2.Out.TryWrite(i.ToString()));
                         break;
                     case 2:
-                        Assert.True(c3.TryWrite(i));
+                        Assert.True(c3.Out.TryWrite(i));
                         break;
                 }
             }
 
-            c1.Complete();
-            c2.Complete();
-            c3.Complete();
+            c1.Out.Complete();
+            c2.Out.Complete();
+            c3.Out.Complete();
 
             if (dataAvailableBefore)
             {

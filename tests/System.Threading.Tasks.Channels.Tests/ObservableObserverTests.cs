@@ -12,7 +12,7 @@ namespace System.Threading.Tasks.Channels.Tests
         public void AsObservable_InvalidSubscribe_ThrowsException()
         {
             Channel<int> c = Channel.CreateUnbounded<int>();
-            IObservable<int> o = c.AsObservable();
+            IObservable<int> o = c.In.AsObservable();
             Assert.Throws<ArgumentNullException>("observer", () => o.Subscribe(null));
         }
 
@@ -20,7 +20,7 @@ namespace System.Threading.Tasks.Channels.Tests
         public void AsObservable_Subscribe_Dispose_Success()
         {
             Channel<int> c = Channel.CreateUnbounded<int>();
-            IObservable<int> o = c.AsObservable();
+            IObservable<int> o = c.In.AsObservable();
 
             using (o.Subscribe(new DelegateObserver<int>()))
             {
@@ -37,7 +37,7 @@ namespace System.Threading.Tasks.Channels.Tests
         public void AsObservable_Subscribe_DisposeMultipleTimes_Success()
         {
             Channel<int> c = Channel.CreateUnbounded<int>();
-            IObservable<int> o = c.AsObservable();
+            IObservable<int> o = c.In.AsObservable();
 
             IDisposable d = o.Subscribe(new DelegateObserver<int>());
             d.Dispose();
@@ -53,26 +53,26 @@ namespace System.Threading.Tasks.Channels.Tests
             Action<int> addToTotal = i => Interlocked.Add(ref total, i);
             var tcs = new TaskCompletionSource<bool>();
 
-            await c.WriteAsync(1);
+            await c.Out.WriteAsync(1);
 
-            IObservable<int> o = c.AsObservable();
+            IObservable<int> o = c.In.AsObservable();
 
-            await c.WriteAsync(2);
+            await c.Out.WriteAsync(2);
 
             IDisposable d = o.Subscribe(new DelegateObserver<int> { OnNextDelegate = addToTotal });
 
-            await c.WriteAsync(3);
+            await c.Out.WriteAsync(3);
 
             d.Dispose();
 
-            await c.WriteAsync(4);
+            await c.Out.WriteAsync(4);
             await Task.Delay(250);
 
             d = o.Subscribe(new DelegateObserver<int> { OnNextDelegate = addToTotal, OnCompletedDelegate = () => tcs.SetResult(true) });
 
-            await c.WriteAsync(5);
+            await c.Out.WriteAsync(5);
 
-            c.Complete();
+            c.Out.Complete();
             await tcs.Task;
 
             Assert.Equal(15, total);

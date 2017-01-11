@@ -64,7 +64,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Gets the object used to synchronize access to all state on this instance.</summary>
         private object SyncObj => _items;
 
-        private new Task Completion => _completion.Task;
+        private Task Completion => _completion.Task;
 
         [Conditional("DEBUG")]
         private void AssertInvariants()
@@ -91,7 +91,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private new bool TryComplete(Exception error = null)
+        private bool TryComplete(Exception error = null)
         {
             bool anyRemainingBlockedReaders = false;
             bool anyRemainingWaitingReaders = false;
@@ -172,9 +172,9 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        private new ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
+        private ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
 
-        private new ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             T item;
             return TryRead(out item) ?
@@ -220,7 +220,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private new Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             // If there are any items, readers can try to get them.
             if (!_items.IsEmpty)
@@ -251,7 +251,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private new bool TryRead(out T item)
+        private bool TryRead(out T item)
         {
             // Dequeue an item if we can
             if (_items.TryDequeue(out item))
@@ -268,7 +268,7 @@ namespace System.Threading.Tasks.Channels
             return false;
         }
 
-        private new bool TryWrite(T item)
+        private bool TryWrite(T item)
         {
             ReaderInteractor<T> blockedReader = null;
             while (true)
@@ -332,12 +332,12 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        private new Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken)) =>
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken)) =>
             cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
             _doneWriting == null ? ChannelUtilities.TrueTask : // unbounded writing can always be done if we haven't completed
             ChannelUtilities.FalseTask;
 
-        private new Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken)) =>
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken)) =>
             cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
             TryWrite(item) ? Task.CompletedTask :
             Task.FromException(ChannelUtilities.CreateInvalidCompletionException());
