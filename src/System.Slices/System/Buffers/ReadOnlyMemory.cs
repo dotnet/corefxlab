@@ -51,7 +51,7 @@ namespace System
 
         public DisposableReservation Reserve()
         {
-            return _owner.Reserve(ref this);
+            return _owner.Memory.Reserve();
         }
    
         public unsafe bool TryGetPointer(out void* pointer)

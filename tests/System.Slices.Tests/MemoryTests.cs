@@ -124,22 +124,6 @@ namespace System.Slices.Tests
         }
 
         [Fact]
-        public unsafe void CopyOnReserve()
-        {
-            var owned = new CustomMemory();
-            ReadOnlyMemory<byte> memory = owned.Memory;
-            var slice = memory.Slice(0, 1);
-
-            // this copies on reserve
-            using (slice.Reserve()) {
-                Assert.Equal(0, owned.OnZeroRefencesCount);
-                Assert.True(owned.HasZeroReferences);
-            }
-            Assert.Equal(0, owned.OnZeroRefencesCount);
-            Assert.True(owned.HasZeroReferences);
-        }
-
-        [Fact]
         public void AutoDispose()
         {
             OwnedMemory<byte> owned = new AutoDisposeMemory(1000);
@@ -161,19 +145,6 @@ namespace System.Slices.Tests
         public CustomMemory() : base(new byte[256], 0, 256) { }
 
         public int OnZeroRefencesCount => _onZeroRefencesCount;
-
-        protected override DisposableReservation Reserve(ref ReadOnlyMemory<byte> memory)
-        {
-            if (memory.Length < Length) {
-                var copy = memory.Span.ToArray();
-                OwnedArray<byte> newOwned = copy;
-                memory = newOwned.Memory;
-                return memory.Reserve();
-            }
-            else {
-                return base.Reserve(ref memory);
-            }
-        }
 
         protected override void OnZeroReferences()
         {

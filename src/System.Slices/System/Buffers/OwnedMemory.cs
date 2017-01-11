@@ -114,10 +114,6 @@ namespace System.Buffers
         protected virtual void OnZeroReferences()
         { }
 
-        protected internal virtual DisposableReservation Reserve(ref ReadOnlyMemory<T> memory)
-        {
-            return new DisposableReservation(this, Id);
-        }
 
         #endregion
 
