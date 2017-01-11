@@ -113,14 +113,14 @@ namespace System.Slices.Tests
         {
             var owned = new CustomMemory();
             var memory = owned.Memory;
-            Assert.Equal(0, owned.ReferenceCountChangeCount);
-            Assert.Equal(0, owned.ReferenceCount);
+            Assert.Equal(0, owned.OnZeroRefencesCount);
+            Assert.False(owned.HasOutstandingReferences);
             using (memory.Reserve()) {
-                Assert.Equal(1, owned.ReferenceCountChangeCount);
-                Assert.Equal(1, owned.ReferenceCount);
+                Assert.Equal(0, owned.OnZeroRefencesCount);
+                Assert.True(owned.HasOutstandingReferences);
             }
-            Assert.Equal(2, owned.ReferenceCountChangeCount);
-            Assert.Equal(0, owned.ReferenceCount);
+            Assert.Equal(1, owned.OnZeroRefencesCount);
+            Assert.False(owned.HasOutstandingReferences);
         }
 
         [Fact]
@@ -132,11 +132,11 @@ namespace System.Slices.Tests
 
             // this copies on reserve
             using (slice.Reserve()) {
-                Assert.Equal(0, owned.ReferenceCountChangeCount);
-                Assert.Equal(0, owned.ReferenceCount);
+                Assert.Equal(0, owned.OnZeroRefencesCount);
+                Assert.True(owned.HasZeroReferences);
             }
-            Assert.Equal(0, owned.ReferenceCountChangeCount);
-            Assert.Equal(0, owned.ReferenceCount);
+            Assert.Equal(0, owned.OnZeroRefencesCount);
+            Assert.True(owned.HasZeroReferences);
         }
 
         [Fact]
@@ -156,11 +156,11 @@ namespace System.Slices.Tests
 
     class CustomMemory : OwnedMemory<byte>
     {
-        int _referenceCountChangeCount;
+        int _onZeroRefencesCount;
 
         public CustomMemory() : base(new byte[256], 0, 256) { }
 
-        public int ReferenceCountChangeCount => _referenceCountChangeCount;
+        public int OnZeroRefencesCount => _onZeroRefencesCount;
 
         protected override DisposableReservation Reserve(ref ReadOnlyMemory<byte> memory)
         {
@@ -175,9 +175,9 @@ namespace System.Slices.Tests
             }
         }
 
-        protected override void OnReferenceCountChanged(int newReferenceCount)
+        protected override void OnZeroReferences()
         {
-            _referenceCountChangeCount++;
+            _onZeroRefencesCount++;
         }
     }
 
@@ -196,11 +196,9 @@ namespace System.Slices.Tests
             base.Dispose(disposing);
         }
 
-        protected override void OnReferenceCountChanged(int newReferenceCount)
+        protected override void OnZeroReferences()
         {
-            if (newReferenceCount == 0) {
-                Dispose();
-            }
+            Dispose();
         }
     }
 }

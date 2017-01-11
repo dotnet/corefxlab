@@ -18,7 +18,7 @@ namespace System.Buffers
         protected T[] Array { get; private set; }
         protected IntPtr Pointer { get; private set; }
         protected int Offset { get; private set; }
-        public int ReferenceCount { get { return _referenceCount; } }
+        public bool HasOutstandingReferences { get { return _referenceCount != 0; } }
 
         private OwnedMemory() { }
 
@@ -87,7 +87,7 @@ namespace System.Buffers
         public void Dispose()
         {
             Interlocked.Exchange(ref _id,  FreedId);
-            if (ReferenceCount != 0) throw new InvalidOperationException("outstanding references detected.");
+            if (HasOutstandingReferences) throw new InvalidOperationException("outstanding references detected.");
             Dispose(true);
             Array = null;
             Pointer = IntPtr.Zero;
@@ -102,15 +102,16 @@ namespace System.Buffers
 
         public void AddReference()
         {
-            OnReferenceCountChanged(Interlocked.Increment(ref _referenceCount));
+            Interlocked.Increment(ref _referenceCount);
         }
 
         public void Release()
         {
-            OnReferenceCountChanged(Interlocked.Decrement(ref _referenceCount));
+            if(Interlocked.Decrement(ref _referenceCount) == 0)
+                OnZeroReferences();
         }
 
-        protected virtual void OnReferenceCountChanged(int newReferenceCount)
+        protected virtual void OnZeroReferences()
         { }
 
         protected internal virtual DisposableReservation Reserve(ref ReadOnlyMemory<T> memory)
