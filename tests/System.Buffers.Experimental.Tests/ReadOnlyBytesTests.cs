@@ -171,13 +171,21 @@ namespace System.Slices.Tests
 
         private ReadOnlyBytes Create(params byte[][] buffers)
         {
-            var first = new MemoryListNode();
-            var current = first;
+            MemoryListNode first = null;
+            MemoryListNode current = null;
             foreach (var buffer in buffers)
             {
+                if (first == null)
+                {
+                    current = new MemoryListNode();
+                    first = current;
+                }
+                else
+                {
+                    current._rest = new MemoryListNode();
+                    current = current._rest;
+                }
                 current._first = buffer;
-                current._rest = new MemoryListNode();
-                current = current._rest;
             }
             return new ReadOnlyBytes(first);
         }
