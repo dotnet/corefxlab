@@ -195,21 +195,23 @@ namespace System.Buffers
         unsafe bool TryGetPointer(long id, out void* pointer);
     }
 
-    public struct DisposableReservation : IDisposable
+    public struct DisposableReservation<T> : IDisposable
     {
-        IKnown _owner;
+        OwnedMemory<T> _owner;
         long _id;
 
-        internal DisposableReservation(IKnown owner, long id)
+        internal DisposableReservation(OwnedMemory<T> owner, long id)
         {
             _id = id;
             _owner = owner;
-            _owner.AddReference(_id);
+            ((IKnown)_owner).AddReference(_id);
         }
+
+        public Span<T> Span => _owner.Span;
 
         public void Dispose()
         {
-            _owner.Release(_id);
+            ((IKnown)_owner).Release(_id);
             _owner = null;
         }
     }

@@ -69,7 +69,7 @@ namespace System.Slices.Tests
             for(int k = 0; k < 1000; k++) {
                 var owners   = new OwnedArray<byte>[128];
                 var memories = new Memory<byte>[owners.Length];
-                var reserves = new DisposableReservation[owners.Length];
+                var reserves = new DisposableReservation<byte>[owners.Length];
                 var disposeSuccesses = new bool[owners.Length];
                 var reserveSuccesses = new bool[owners.Length];
 

@@ -55,7 +55,7 @@ namespace System
 
         public Span<T> Span => _owner.GetSpanInternal(_id).Slice(_index, _length);
 
-        public DisposableReservation Reserve() => new DisposableReservation(_owner, _id);
+        public DisposableReservation<T> Reserve() => new DisposableReservation<T>(_owner, _id);
 
         public unsafe bool TryGetPointer(out void* pointer)
         {
