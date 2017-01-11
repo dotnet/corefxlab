@@ -77,41 +77,6 @@ namespace System.Text.Utf8.Tests
             Assert.Equal(0xBF, ecp.Byte2);
         }
 
-        public static object[][] TryEncodeFromUnicodeCodePointTestData = {
-            // empty
-            new object[] { TextEncoder.Utf8, new byte[] { }, new UnicodeCodePoint(0x50), false },
-            new object[] { TextEncoder.Utf16, new byte[] { }, new UnicodeCodePoint(0x50), false },
-            // 1 byte
-            new object[] { TextEncoder.Utf8, new byte[] { 0x50 }, new UnicodeCodePoint(0x50), true },
-            new object[] { TextEncoder.Utf16, new byte[] { 0x50, 0x00 }, new UnicodeCodePoint(0x50), true },
-            // 2 bytes
-             new object[] { TextEncoder.Utf8, new byte[] { 0xCF, 0xA8 }, new UnicodeCodePoint(0x3E8), true },
-            new object[] { TextEncoder.Utf16, new byte[] { 0xE8, 0x03 }, new UnicodeCodePoint(0x3E8), true },
-            // 3 bytes
-            new object[] { TextEncoder.Utf8, new byte[] { 0xEA, 0xBF, 0x88 }, new UnicodeCodePoint(0xAFC8), true },
-            new object[] { TextEncoder.Utf16, new byte[] { 0xC8, 0xAF }, new UnicodeCodePoint(0xAFC8), true },
-            // 4 bytes
-            new object[] { TextEncoder.Utf8, new byte[] { 0xF0, 0xA4, 0xA7, 0xB0 }, new UnicodeCodePoint(0x249F0), true },
-            new object[] { TextEncoder.Utf16, new byte[] { 0x52, 0xD8, 0xF0, 0xDD }, new UnicodeCodePoint(0x249F0), true },
-            // 4 bytes - buffer too small
-            new object[] { TextEncoder.Utf8, new byte[] { 0xF0, 0xA4, 0xA7 }, new UnicodeCodePoint(0x249F0), false },
-            new object[] { TextEncoder.Utf16, new byte[] { 0x52, 0xD8, 0xF0 }, new UnicodeCodePoint(0x249F0), false },
-        };
-
-        [Theory, MemberData("TryEncodeFromUnicodeCodePointTestData")]
-        public void TryEncodeFromUnicodeCodePoint(TextEncoder encoder, byte[] expectedBytes, UnicodeCodePoint codepoint, bool expectedReturnVal)
-        {
-            Span<byte> buffer = new Span<byte>(new byte[expectedBytes.Length]);
-            int bytesWritten;
-            
-            Assert.Equal(expectedReturnVal, encoder.TryEncodeFromUnicode(codepoint, buffer, out bytesWritten));
-            Assert.Equal(expectedReturnVal ? expectedBytes.Length : 0, bytesWritten);
-
-            if (expectedReturnVal)
-            {
-                Assert.True(AreByteArraysEqual(expectedBytes, buffer.ToArray()));
-            }
-        }
 
         public static object[][] TryEncodeFromUnicodeMultipleCodePointsTestData = {
             // empty
@@ -160,39 +125,6 @@ namespace System.Text.Utf8.Tests
             }
         }
 
-        public static object[][] TryDecodeToUnicodeCodePointTestData = {
-            //empty
-            new object[] { TextEncoder.Utf8, new UnicodeCodePoint(0x50), new Span<byte> (new byte[] {}),  false },
-            new object[] { TextEncoder.Utf16, new UnicodeCodePoint(0x50), new Span<byte> (new byte[] {}),  false },
-            // 1 byte
-            new object[] { TextEncoder.Utf8, new UnicodeCodePoint(0x50), new Span<byte> (new byte[] { 0x50 }),  true },
-            new object[] { TextEncoder.Utf16, new UnicodeCodePoint(0x50), new Span<byte> (new byte[] { 0x50, 0x00 }),  true },
-            // 2 bytes
-            new object[] { TextEncoder.Utf8, new UnicodeCodePoint(0x3E8), new Span<byte> (new byte[] { 0xCF, 0xA8 }),  true },
-            new object[] { TextEncoder.Utf16, new UnicodeCodePoint(0x3E8), new Span<byte> (new byte[] { 0xE8, 0x03 }),  true },
-            // 3 bytes
-            new object[] { TextEncoder.Utf8, new UnicodeCodePoint(0xAFC8), new Span<byte> (new byte[] { 0xEA, 0xBF, 0x88 }),  true },
-            new object[] { TextEncoder.Utf16, new UnicodeCodePoint(0xAFC8), new Span<byte> (new byte[] { 0xC8, 0xAF }),  true },
-            // 4 bytes
-            new object[] { TextEncoder.Utf8, new UnicodeCodePoint(0x249F0), new Span<byte> (new byte[] { 0xF0, 0xA4, 0xA7, 0xB0 }),  true },
-            new object[] { TextEncoder.Utf16, new UnicodeCodePoint(0x249F0), new Span<byte> (new byte[] { 0x52, 0xD8, 0xF0, 0xDD }),  true },
-        };
-
-        [Theory, MemberData("TryDecodeToUnicodeCodePointTestData")]
-        public void TryDecodeToUnicodeCodePoint(TextEncoder encoder, UnicodeCodePoint expectedCodePoint, Span<byte> inputBytes, bool expectedReturnVal)
-        {
-            UnicodeCodePoint codePoint = new UnicodeCodePoint();
-            int bytesWritten;
-            
-            Assert.Equal(expectedReturnVal, encoder.TryDecodeToUnicode(inputBytes, out codePoint, out bytesWritten));
-            Assert.Equal(expectedReturnVal ? inputBytes.Length : 0, bytesWritten);
-
-            if (expectedReturnVal)
-            {
-                Assert.True(expectedCodePoint.Equals(codePoint));
-            }
-        }
-
         public static object[][] TryDecodeToUnicodeMultipleCodePointsTestData = {
             //empty
             new object[] { TextEncoder.Utf8, new Span<UnicodeCodePoint>(new UnicodeCodePoint[] { new UnicodeCodePoint(0x50) }), new Span<byte> (new byte[] {}),  false },
@@ -233,25 +165,87 @@ namespace System.Text.Utf8.Tests
         [Theory, MemberData("Encoders")]
         public void BruteTestingRoundtripEncodeDecodeAllUnicodeCodePoints(TextEncoder encoder)
         {
-            for (int i = 0; i < 0x10FFFF; i++)
+            const uint maximumValidCodePoint = 0x10FFFF;
+            UnicodeCodePoint[] expectedCodePoints = new UnicodeCodePoint[maximumValidCodePoint + 1];
+            for (int i = 0; i <= maximumValidCodePoint; i++)
             {
-                if (i >= 0xD800 && i <= 0xDFFF) continue; // skip surrogate characters
-
-                Span<byte> buffer = new Span<byte>(new byte[4]);
-                int bytesWritten;
-                UnicodeCodePoint expectedCodePoint = new UnicodeCodePoint((uint)i);
-                UnicodeCodePoint codePoint = new UnicodeCodePoint();
-                Assert.True(encoder.TryEncodeFromUnicode(expectedCodePoint, buffer, out bytesWritten));
-
-                if (encoder == TextEncoder.Utf16 && i <= 0xFFFF)
+                if (i >= 0xD800 && i <= 0xDFFF)
                 {
-                    Assert.True(encoder.TryDecodeToUnicode(buffer.Slice(0,2), out codePoint, out bytesWritten));
+                    expectedCodePoints[i] = new UnicodeCodePoint(0); // skip surrogate characters
                 }
                 else
                 {
-                    Assert.True(encoder.TryDecodeToUnicode(buffer, out codePoint, out bytesWritten));
+                    expectedCodePoints[i] = new UnicodeCodePoint((uint)i);
                 }
-                Assert.True(expectedCodePoint.Equals(codePoint));
+            }
+
+            ReadOnlySpan<UnicodeCodePoint> expectedCodePointsSpan = new ReadOnlySpan<UnicodeCodePoint>(expectedCodePoints);
+            uint maxBytes = 4 * (maximumValidCodePoint + 1);
+            Span<byte> buffer = new Span<byte>(new byte[maxBytes]);
+            int bytesWritten;
+            Assert.True(encoder.TryEncodeFromUnicode(expectedCodePointsSpan, buffer, out bytesWritten));
+
+            Span<UnicodeCodePoint> codePoints = new Span<UnicodeCodePoint>(new UnicodeCodePoint[maximumValidCodePoint + 1]);
+            Assert.True(encoder.TryDecodeToUnicode(buffer, codePoints, out bytesWritten));
+
+            for (int i = 0; i <= maximumValidCodePoint; i++)
+            {
+                Assert.Equal(expectedCodePointsSpan[i].Value, codePoints[i].Value);
+            }
+        }
+
+        public static object[][] UsingBothEncoders = { new object[] { TextEncoder.Utf8, Encoding.UTF8 }, new object[] { TextEncoder.Utf16, Encoding.Unicode } };
+
+        [Theory, MemberData("UsingBothEncoders")]
+        public void BruteTestingEncodeAllUnicodeCodePoints(TextEncoder encoder, Encoding systemTextEncoder)
+        {
+            const uint maximumValidCodePoint = 0x10FFFF;
+            UnicodeCodePoint[] codePoints = new UnicodeCodePoint[maximumValidCodePoint + 1];
+
+            var plainText = new StringBuilder();
+            for (int i = 0; i <= maximumValidCodePoint; i++)
+            {
+                if (i >= 0xD800 && i <= 0xDFFF)
+                {
+                    codePoints[i] = new UnicodeCodePoint(0); // skip surrogate characters
+                    plainText.Append((char)0); // skip surrogate characters
+                }
+                else
+                {
+                    codePoints[i] = new UnicodeCodePoint((uint)i);
+
+                    if (i > 0xFFFF)
+                    {
+                        plainText.Append(char.ConvertFromUtf32(i));
+                    }
+                    else
+                    {
+                        plainText.Append((char)i);
+                    }
+                }
+            }
+
+            ReadOnlySpan<UnicodeCodePoint> codePointsSpan = new ReadOnlySpan<UnicodeCodePoint>(codePoints);
+            uint maxBytes = 4 * (maximumValidCodePoint + 1);
+            Span<byte> buffer = new Span<byte>(new byte[maxBytes]);
+            int bytesWritten;
+            Assert.True(encoder.TryEncodeFromUnicode(codePointsSpan, buffer, out bytesWritten));
+
+            string unicodeString = plainText.ToString();
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+            int byteCount = systemTextEncoder.GetByteCount(unicodeString);
+            byte[] buff = new byte[byteCount];
+            Span<byte> expectedBuffer;
+            char[] charArray = characters.ToArray();
+
+            systemTextEncoder.GetBytes(charArray, 0, characters.Length, buff, 0);
+            expectedBuffer = new Span<byte>(buff);
+
+            int minLength = Math.Min(expectedBuffer.Length, buffer.Length);
+
+            for (int i = 0; i < minLength; i++)
+            {
+                Assert.Equal(expectedBuffer[i], buffer[i]);
             }
         }
 
