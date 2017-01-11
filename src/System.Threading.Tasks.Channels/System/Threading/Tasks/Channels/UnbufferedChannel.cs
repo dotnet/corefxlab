@@ -139,7 +139,10 @@ namespace System.Threading.Tasks.Channels
                 // If we're already completed, nothing to read.
                 if (_completion.Task.IsCompleted)
                 {
-                    return new ValueTask<T>(Task.FromException<T>(_completion.Task.IsFaulted ? _completion.Task.Exception.InnerException : ChannelUtilities.CreateInvalidCompletionException()));
+                    return new ValueTask<T>(
+                        _completion.Task.IsFaulted ? Task.FromException<T>(_completion.Task.Exception.InnerException) :
+                        _completion.Task.IsCanceled ? Task.FromCanceled<T>(new CancellationToken(true)) :
+                        Task.FromException<T>(ChannelUtilities.CreateInvalidCompletionException()));
                 }
 
                 // If there are any blocked writers, find one to pair up with

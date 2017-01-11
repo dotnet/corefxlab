@@ -92,7 +92,6 @@ namespace System.Threading.Tasks.Channels
 
             private async void ForwardLoopAsync()
             {
-                Exception error = null;
                 try
                 {
                     while (await _channel.WaitToReadAsync().ConfigureAwait(false))
@@ -115,10 +114,6 @@ namespace System.Threading.Tasks.Channels
                         }
                     }
                 }
-                catch (Exception e)
-                {
-                    error = e;
-                }
                 finally
                 {
                     lock (_observers)
@@ -126,19 +121,17 @@ namespace System.Threading.Tasks.Channels
                         _active = false;
                         if (_channel.Completion.IsCompleted)
                         {
-                            if (error == null)
+                            Exception error = null;
+                            if (_channel.Completion.IsFaulted)
                             {
-                                if (_channel.Completion.IsFaulted)
-                                {
-                                    error = _channel.Completion.Exception.InnerException;
-                                    Debug.Assert(error != null);
-                                }
-                                else if (_channel.Completion.IsCanceled)
-                                {
-                                    try { _channel.Completion.GetAwaiter().GetResult(); }
-                                    catch (Exception e) { error = e; }
-                                    Debug.Assert(error != null);
-                                }
+                                error = _channel.Completion.Exception.InnerException;
+                                Debug.Assert(error != null);
+                            }
+                            else if (_channel.Completion.IsCanceled)
+                            {
+                                try { _channel.Completion.GetAwaiter().GetResult(); }
+                                catch (Exception e) { error = e; }
+                                Debug.Assert(error != null);
                             }
 
                             foreach (IObserver<T> observer in _observers)
@@ -235,7 +228,7 @@ namespace System.Threading.Tasks.Channels
                     }
                     thisRef._current = t.GetAwaiter().GetResult();
                     return true;
-                }, this, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+                }, this, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.NotOnCanceled, TaskScheduler.Default);
             }
         }
     }

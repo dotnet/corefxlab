@@ -177,7 +177,7 @@ namespace System.Threading.Tasks.Channels
                 // will never be more items, fail.
                 if (_doneWriting != null)
                 {
-                    return new ValueTask<T>(Task.FromException<T>(_doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException()));
+                    return ChannelUtilities.GetErrorValueTask<T>(_doneWriting);
                 }
 
                 // Otherwise, queue the reader.

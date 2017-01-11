@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -39,6 +40,31 @@ namespace System.Threading.Tasks.Channels
             {
                 tcs.TrySetResult(default(VoidResult));
             }
+        }
+
+        /// <summary>Gets a value task representing an error.</summary>
+        /// <typeparam name="T">Specifies the type of the value that would have been returned.</typeparam>
+        /// <param name="error">The error.  This may be <see cref="DoneWritingSentinel"/>.</param>
+        /// <returns>The failed task.</returns>
+        internal static ValueTask<T> GetErrorValueTask<T>(Exception error)
+        {
+            Debug.Assert(error != null);
+
+            Task<T> t;
+
+            if (error == DoneWritingSentinel)
+            {
+                t = Task.FromException<T>(CreateInvalidCompletionException());
+            }
+            else
+            {
+                OperationCanceledException oce = error as OperationCanceledException;
+                t = oce != null ?
+                    Task.FromCanceled<T>(oce.CancellationToken.IsCancellationRequested ? oce.CancellationToken : new CancellationToken(true)) :
+                    Task.FromException<T>(error);
+            }
+
+            return new ValueTask<T>(t);
         }
 
         /// <summary>Removes all waiters from the queue, completing each.</summary>

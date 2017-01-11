@@ -173,8 +173,7 @@ namespace System.Threading.Tasks.Channels
                 // If no more items will be written, fail the read.
                 if (_doneWriting != null)
                 {
-                    Exception e = _doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException();
-                    return new ValueAwaiter<T>(Task.FromException<T>(e));
+                    return new ValueAwaiter<T>(ChannelUtilities.GetErrorValueTask<T>(_doneWriting));
                 }
 
                 Debug.Assert(_blockedReader == null || ((_blockedReader as ReaderInteractor<T>)?.Task.IsCanceled ?? false),
@@ -213,8 +212,7 @@ namespace System.Threading.Tasks.Channels
                 // If no more items will be written, fail the read.
                 if (_doneWriting != null)
                 {
-                    Exception e = _doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException();
-                    return new ValueTask<T>(Task.FromException<T>(e));
+                    return ChannelUtilities.GetErrorValueTask<T>(_doneWriting);
                 }
 
                 Debug.Assert(_blockedReader == null || ((_blockedReader as ReaderInteractor<T>)?.Task.IsCanceled ?? false),
