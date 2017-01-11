@@ -33,6 +33,27 @@ namespace System.Text.Utf8
             }
         }
 
+        public Utf8EncodedCodePoint(UnicodeCodePoint codePoint) : this()
+        {
+            if (UnicodeCodePoint.IsSurrogate(codePoint))
+            {
+                throw new ArgumentOutOfRangeException("character", "Surrogate characters are not allowed");
+            }
+
+            unsafe
+            {
+                fixed (byte* encodedData = &_byte0)
+                {
+                    var buffer = new Span<byte>(encodedData, 4);
+                    if (!Utf8Encoder.TryEncodeCodePoint(codePoint, buffer, out _length))
+                    {
+                        // TODO: Change exception type
+                        throw new Exception("Internal error: this should never happen as codePoint is within acceptable range and is not surrogate");
+                    }
+                }
+            }
+        }
+
         public Utf8EncodedCodePoint(char highSurrogate, char lowSurrogate) : this()
         {
             UnicodeCodePoint codePoint = (UnicodeCodePoint)(uint)char.ConvertToUtf32(highSurrogate, lowSurrogate);
