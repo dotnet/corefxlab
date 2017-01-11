@@ -12,6 +12,24 @@ namespace System
     /// </summary>
     public static partial class SpanExtensions
     {
+        public static bool StartsWith(this ReadOnlySpan<byte> bytes, ReadOnlySpan<byte> slice)
+        {
+            if (slice.Length > bytes.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < slice.Length; i++)
+            {
+                if (bytes[i] != slice[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public static bool StartsWith<T>(this ReadOnlySpan<T> items, ReadOnlySpan<T> slice)
             where T : struct, IEquatable<T>
         {
@@ -37,19 +55,42 @@ namespace System
             return -1;
         }
 
-        public static bool StartsWith(this ReadOnlySpan<byte> bytes, ReadOnlySpan<byte> slice)
+        // TODO (pri 2): this needs to be optimized; Ati is doing the work
+        public static int IndexOf(this ReadOnlySpan<byte> buffer, ReadOnlySpan<byte> values)
         {
-            if (slice.Length > bytes.Length) {
-                return false;
-            }
-
-            for (int i = 0; i < slice.Length; i++) {
-                if (bytes[i] != slice[i]) {
-                    return false;
+            int slicedSoFar = 0;
+            while (true)
+            {
+                ReadOnlySpan<byte> candidate = buffer.Slice(slicedSoFar);
+                var index = candidate.IndexOf(values[0]);
+                if (index != -1)
+                {
+                    candidate = candidate.Slice(index);
+                    if (candidate.Length < values.Length) return -1;
+                    candidate = candidate.Slice(0, values.Length);
+                    if (candidate.SequenceEqual(values))
+                    {
+                        return index + slicedSoFar;
+                    }
+                    slicedSoFar += index + 1;
+                }
+                else
+                {
+                    return -1;
                 }
             }
+        }
 
-            return true;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOf(this Span<byte> buffer, ReadOnlySpan<byte> values)
+        {
+            return IndexOf((ReadOnlySpan<byte>)buffer, values);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOf(this ReadOnlyMemory<byte> memory, ReadOnlySpan<byte> values)
+        {
+            return IndexOf(memory.Span, values);
         }
     }
 }
