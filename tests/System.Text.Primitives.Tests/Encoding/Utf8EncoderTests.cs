@@ -78,6 +78,57 @@ namespace System.Text.Utf8.Tests
         }
 
 
+        [Fact]
+        public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar()
+        {
+            var plainText = new StringBuilder();
+            for (uint i = 0; i <= 0xFFFF; i++)
+            {
+                if (i >= 0xD800 && i <= 0xDFFF)
+                {
+                    plainText.Append((char)0); // skip surrogate characters
+                }
+                else
+                {
+                    if (i > 0xFFFF)
+                    {
+                        plainText.Append(char.ConvertFromUtf32((int)i));
+                    }
+                    else
+                    {
+                        plainText.Append((char)i);
+                    }
+                }
+            }
+            string unicodeString = plainText.ToString();
+
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+
+            Encoding utf8 = Encoding.UTF8;
+
+            int utf8Length = utf8.GetByteCount(unicodeString);
+            byte[] utf8Buffer = new byte[utf8Length];
+            Span<byte> expectedSpan;
+
+            char[] charArray = characters.ToArray();
+
+            utf8.GetBytes(charArray, 0, characters.Length, utf8Buffer, 0);
+            expectedSpan = new Span<byte>(utf8Buffer);
+
+            int encodedBytes;
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            if (!TextEncoder.Utf8.TryEncodeFromUtf16(characters, span, out encodedBytes))
+            {
+                throw new Exception(); // this should not happen
+            }
+
+            Assert.Equal(utf8Length, encodedBytes);
+            for (int i = 0; i < encodedBytes; i++)
+            {
+                Assert.Equal(expectedSpan[i], span[i]);
+            }
+        }
+
         public static object[][] TryEncodeFromUnicodeMultipleCodePointsTestData = {
             // empty
             new object[] { TextEncoder.Utf8, new byte[] { }, new ReadOnlySpan<UnicodeCodePoint>(new UnicodeCodePoint[] { new UnicodeCodePoint(0x50) }), false },
