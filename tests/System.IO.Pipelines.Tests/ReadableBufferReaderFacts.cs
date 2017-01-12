@@ -110,5 +110,26 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(-1, reader.Peek());
             Assert.Equal(-1, reader.Take());
         }
+
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(5, 5)]
+        [InlineData(10, 10)]
+        [InlineData(11, int.MaxValue)]
+        [InlineData(12, int.MaxValue)]
+        [InlineData(15, int.MaxValue)]
+        public void ReturnsCorrectCursor(int takes, int slice)
+        {
+            var readableBuffer = ReadableBuffer.Create(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 0, 10);
+            var reader = new ReadableBufferReader(readableBuffer);
+            for (int i = 0; i < takes; i++)
+            {
+                reader.Take();
+            }
+
+            var expected = slice == int.MaxValue ? readableBuffer.End : readableBuffer.Slice(slice).Start;
+            Assert.Equal(expected, reader.Cursor);
+        }
     }
+
 }

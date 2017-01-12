@@ -307,10 +307,10 @@ namespace System.IO.Pipelines
 
         internal bool IsReachable(ReadCursor other)
         {
-            var current = other.Segment;
+            var current = other._segment;
             while (current != null)
             {
-                if (current == Segment)
+                if (current == _segment)
                 {
                     return true;
                 }
