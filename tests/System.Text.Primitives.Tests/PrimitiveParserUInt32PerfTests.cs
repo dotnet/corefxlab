@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Globalization;
 using Xunit;
 using Microsoft.Xunit.Performance;
-using System.Text.Internal;
 
 namespace System.Text.Primitives.Tests
 {
@@ -143,120 +142,6 @@ namespace System.Text.Primitives.Tests
                         uint value;
                         uint.TryParse(s_UInt32TextArrayHex[i % 8], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out value);
                         DoNotIgnore(value, 0);
-                    }
-                }
-            }
-        }
-
-        [Benchmark]
-        [InlineData("2134567890")] // standard parse
-        [InlineData("4294967295")] // max value
-        [InlineData("0")] // min value
-        private unsafe static void InternalParserByteStarToUInt32(string text)
-        {
-            int length = text.Length;
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
-            EncodingData fd = EncodingData.InvariantUtf8;
-            TextFormat nf = new TextFormat('N');
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                int bytesConsumed;
-                fixed (byte* utf8ByteStar = utf8ByteArray)
-                {
-                    using (iteration.StartMeasurement())
-                    {
-                        for (int i = 0; i < LoadIterations; i++)
-                        {
-                            uint value;
-                            InternalParser.TryParseUInt32(utf8ByteStar, 0, length, nf, fd, out value, out bytesConsumed);
-                            DoNotIgnore(value, bytesConsumed);
-                        }
-                    }
-                }
-            }
-        }
-
-        [Benchmark]
-        private unsafe static void InternalParserByteStarToUInt32_VariableLength()
-        {
-            List<byte[]> byteArrayList = new List<byte[]>();
-            foreach (string text in s_UInt32TextArray)
-            {
-                byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
-                byteArrayList.Add(utf8ByteArray);
-            }
-            EncodingData fd = EncodingData.InvariantUtf8;
-            TextFormat nf = new TextFormat('N');
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                int bytesConsumed;
-                using (iteration.StartMeasurement())
-                {
-                    for (int i = 0; i < LoadIterations; i++)
-                    {
-                        byte[] utf8ByteArray = byteArrayList[i % 10];
-                        fixed (byte* utf8ByteStar = utf8ByteArray)
-                        {
-                            uint value;
-                            InternalParser.TryParseUInt32(utf8ByteStar, 0, utf8ByteArray.Length, nf, fd, out value, out bytesConsumed);
-                            DoNotIgnore(value, bytesConsumed);
-                        }
-                    }
-                }
-            }
-        }
-
-        [Benchmark]
-        [InlineData("2134567890")] // standard parse
-        [InlineData("4294967295")] // max value
-        [InlineData("0")] // min value
-        private unsafe static void InternalParserByteSpanToUInt32(string text)
-        {
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
-            ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
-            EncodingData fd = EncodingData.InvariantUtf8;
-            TextFormat nf = new TextFormat('N');
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                int bytesConsumed;
-                fixed (byte* utf8ByteStar = utf8ByteArray)
-                {
-                    using (iteration.StartMeasurement())
-                    {
-                        for (int i = 0; i < LoadIterations; i++)
-                        {
-                            uint value;
-                            InternalParser.TryParseUInt32(utf8ByteSpan, nf, fd, out value, out bytesConsumed);
-                            DoNotIgnore(value, bytesConsumed);
-                        }
-                    }
-                }
-            }
-        }
-
-        [Benchmark]
-        private unsafe static void InternalParserByteSpanToUInt32_VariableLength()
-        {
-            List<ReadOnlySpan<byte>> byteSpanList = new List<ReadOnlySpan<byte>>();
-            foreach (string text in s_UInt32TextArray)
-            {
-                byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
-                ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
-                byteSpanList.Add(utf8ByteSpan);
-            }
-            EncodingData fd = EncodingData.InvariantUtf8;
-            TextFormat nf = new TextFormat('N');
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                int bytesConsumed;
-                using (iteration.StartMeasurement())
-                {
-                    for (int i = 0; i < LoadIterations; i++)
-                    {
-                        ReadOnlySpan<byte> utf8ByteSpan = byteSpanList[i % 10];
-                        uint value;
-                        InternalParser.TryParseUInt32(utf8ByteSpan, nf, fd, out value, out bytesConsumed);
-                        DoNotIgnore(value, bytesConsumed);
                     }
                 }
             }
