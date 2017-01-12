@@ -1,8 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System.Buffers;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
+using Microsoft.Xunit.Performance;
 
 namespace System.Slices.Tests
 {
@@ -106,6 +108,94 @@ namespace System.Slices.Tests
                     Assert.False(disposeSuccesses[i] && reserveSuccesses[i]);
                 }
             }
+        }
+
+
+        #region helpers
+        private static object[] MakeArray(params object[] args)
+        {
+            return args;
+        }
+
+        /// Generate the ith permutation of the argss array of arrays.
+        private static object[] MakeIthPermutation(int i, object[][] argss) {
+            var res = new object[argss.Length];
+            for (int j = 0; j < argss.Length; j++) {
+                var arg = argss[j];
+                res[j] = arg[i % arg.Length];
+                i /= arg.Length;
+            }
+            return res;
+        }
+        private static IEnumerable<object[]> MakePermutations(params object[][] argss)
+        {
+            if (argss.Length != 0) {
+                var size = 1;
+                // Calculate number of permutations.
+                foreach (var args in argss) {
+                    size *= args.Length;
+                }
+                object[][] ress = new object[size][];
+                for (int i = 0; i < size; i++) {
+                    ress[i] = MakeIthPermutation(i, argss);
+                }
+                return ress;
+            }
+            return null;
+        }
+        #endregion
+
+        public static IEnumerable<object[]> ReservationPerformanceData =>
+            MakePermutations(MakeArray(1,4,10),
+                             MakeArray(100,1000),
+                             MakeArray(1,2,4,8,12),
+                             MakeArray(ReferenceCountingMethod.None, 
+                                       ReferenceCountingMethod.Interlocked,
+                                       ReferenceCountingMethod.ReferenceCounter));
+
+
+        [MemberData(nameof(ReservationPerformanceData))]
+        [Benchmark]
+        public void ReservationPerformance(int number, int size, int threads, ReferenceCountingMethod m)
+        {
+            var iterations = 1000000;
+
+            var o = OwnedMemorySettings.Mode;
+            OwnedMemorySettings.Mode = m;
+
+            Benchmark.Iterate( () => {
+                var owners   = new OwnedMemory<byte>[number];
+                var memories = new Memory<byte>[owners.Length];
+
+                for (int i = 0; i < owners.Length; i++) {
+                    owners[i] = new AutoPooledMemory(size);
+                    memories[i] = owners[i].Memory;
+                }
+
+                var tasks = new List<Task>(threads);
+                for (int t = 0; t < threads; t++) {
+                    tasks.Add(Task.Run(() => {
+                        for (int k = 0; k < iterations / owners.Length; k++) {
+                            for (int i = 0; i < owners.Length; i++) {
+                                using (var reserve = memories[i].Reserve()) {
+                                    var s = reserve.Span;
+                                    for (int j = 0; j < owners.Length; j++) {
+                                        s[j] = (byte)1;
+                                    }
+                                }
+                            }
+                        }
+                    }));
+                }
+
+                Task.WaitAll(tasks.ToArray());
+
+                for (int i = 0; i < owners.Length; i++) {
+                    owners[i].Release();
+                }
+            });
+
+            OwnedMemorySettings.Mode = o;
         }
 
         [Fact]
