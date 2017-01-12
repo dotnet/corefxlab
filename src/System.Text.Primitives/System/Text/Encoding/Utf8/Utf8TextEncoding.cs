@@ -35,55 +35,83 @@ namespace System.Text.Utf8
         {
             var availableBytes = buffer.Length;
             var inputLength = utf16.Length;
+            int bytesWrittenForCodePoint = 0;
             bytesWritten = 0;
+
             for (int i = 0; i < inputLength; i++)
             {
-                var c = utf16[i];
+                var utf16BE = utf16[i];
+                
+                var codePointLE = (char)((utf16BE << 8) | (utf16BE >> 8));
 
-                var codepoint = (ushort)c;
-                if (codepoint <= b0111_1111U) // this if block just optimizes for ascii
+                if (codePointLE <= 0x7F)
                 {
-                    bytesWritten++;
-                    if (bytesWritten > availableBytes)
-                    {
-                        bytesWritten = 0;
-                        return false;
-                    }
-                    byte byte1 = (byte)codepoint;
-                    buffer[bytesWritten] = (byte)codepoint;
+                    bytesWrittenForCodePoint = 1;
+                }
+                else if (codePointLE <= 0x7FF)
+                {
+                    bytesWrittenForCodePoint = 2;
+                }
+                else if (char.IsSurrogate(codePointLE))
+                {
+                    bytesWrittenForCodePoint = 4;
+                }
+                else if (codePointLE <= 0xFFFF)
+                {
+                    bytesWrittenForCodePoint = 3;
                 }
                 else
                 {
-                    uint codePoint = c;
-                    if (codePoint <= 0x7FF)
-                    {
-                        bytesWritten += 2;
-                        if (bytesWritten > availableBytes)
-                        {
-                            bytesWritten = 0;
-                            return false;
-                        }
-                        byte byte1 = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
-                        byte byte2 = (byte)(((codePoint >> 0) & b0011_1111U) | b1000_0000U);
-                        buffer[bytesWritten - 2] = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
-                        buffer[bytesWritten - 1] = (byte)(((codePoint >> 0) & b0011_1111U) | b1000_0000U);
-                    }
-                    else
-                    {
-                        bytesWritten += 3;
-                        if (bytesWritten > availableBytes)
-                        {
-                            bytesWritten = 0;
-                            return false;
-                        }
-                        byte byte1 = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
-                        byte byte2 = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
-                        byte byte3 = (byte)(((codePoint >> 0) & b0011_1111U) | b1000_0000U);
-                        buffer[bytesWritten - 3] = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
-                        buffer[bytesWritten - 2] = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
-                        buffer[bytesWritten - 1] = (byte)(((codePoint >> 0) & b0011_1111U) | b1000_0000U);
-                    }
+                    bytesWritten = 0;
+                    return false;
                 }
+
+                if (bytesWritten + bytesWrittenForCodePoint > availableBytes)
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
+
+                switch (bytesWrittenForCodePoint)
+                {
+                    case 1:
+                        buffer[bytesWritten] = (byte)(b0111_1111U & codePointLE);
+                        break;
+                    case 2:
+                        buffer[bytesWritten] = (byte)(((codePointLE >> 6) & b0001_1111U) | b1100_0000U);
+                        buffer[bytesWritten + 1] = (byte)(((codePointLE >> 0) & b0011_1111U) | b1000_0000U);
+                        break;
+                    case 3:
+                        buffer[bytesWritten] = (byte)(((codePointLE >> 12) & b0000_1111U) | b1110_0000U);
+                        buffer[bytesWritten + 1] = (byte)(((codePointLE >> 6) & b0011_1111U) | b1000_0000U);
+                        buffer[bytesWritten + 2] = (byte)(((codePointLE >> 0) & b0011_1111U) | b1000_0000U);
+                        break;
+                    case 4:
+                        if (++i >= inputLength)
+                            throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
+                        var lowSurrogateBE = utf16[i];
+                        var lowSurrogateLE = (char)((lowSurrogateBE << 8) | (lowSurrogateBE >> 8));
+
+                        if (codePointLE < UnicodeConstants.Utf16HighSurrogateFirstCodePoint
+                                || codePointLE > UnicodeConstants.Utf16HighSurrogateLastCodePoint
+                                || lowSurrogateLE < UnicodeConstants.Utf16LowSurrogateFirstCodePoint
+                                || lowSurrogateLE > UnicodeConstants.Utf16LowSurrogateLastCodePoint)
+                            throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
+
+                        uint answer = (((codePointLE - UnicodeConstants.Utf16HighSurrogateFirstCodePoint) << 10)
+                                | (lowSurrogateLE - UnicodeConstants.Utf16LowSurrogateFirstCodePoint)) + 0x10000;
+
+                        buffer[bytesWritten] = (byte)(((answer >> 18) & b0000_0111U) | b1111_0000U);
+                        buffer[bytesWritten + 1] = (byte)(((answer >> 12) & b0011_1111U) | b1000_0000U);
+                        buffer[bytesWritten + 2] = (byte)(((answer >> 6) & b0011_1111U) | b1000_0000U);
+                        buffer[bytesWritten + 3] = (byte)(((answer >> 0) & b0011_1111U) | b1000_0000U);
+                        break;
+                    default:
+                        bytesWritten = 0;
+                        return false;
+                }
+
+                bytesWritten += bytesWrittenForCodePoint;
             }
             return true;
         }
@@ -154,7 +182,7 @@ namespace System.Text.Utf8
                 return 3;
             }
 
-            if (codePoint.Value <= 0x1FFFFF)
+            if (codePoint.Value <= 0x10FFFF)
             {
                 return 4;
             }

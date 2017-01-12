@@ -77,55 +77,26 @@ namespace System.Text.Utf8.Tests
             Assert.Equal(0xBF, ecp.Byte2);
         }
 
+        public static object[][] TryEncodeFromUTF16ToUTF8TestData = {
+            // empty
+            new object[] { TextEncoder.Utf8, new byte[] { }, new ReadOnlySpan<char>(new char[]{ (char)0x5000 } ), false },
+            // multiple bytes
+            new object[] { TextEncoder.Utf8, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
+                new ReadOnlySpan<char>(new char[]{ (char)0x5000, (char)0xE803, (char)0xC8AF, (char)0x52D8, (char)0xF0DD } ), true },
+        };
 
-        [Fact]
-        public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar()
+        [Theory, MemberData("TryEncodeFromUTF16ToUTF8TestData")]
+        public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar(TextEncoder encoder, byte[] expectedBytes, ReadOnlySpan<char> characters, bool expectedReturnVal)
         {
-            var plainText = new StringBuilder();
-            for (uint i = 0; i <= 0xFFFF; i++)
+            Span<byte> buffer = new Span<byte>(new byte[expectedBytes.Length]);
+            int bytesWritten;
+
+            Assert.Equal(expectedReturnVal, encoder.TryEncodeFromUtf16(characters, buffer, out bytesWritten));
+            Assert.Equal(expectedReturnVal ? expectedBytes.Length : 0, bytesWritten);
+
+            if (expectedReturnVal)
             {
-                if (i >= 0xD800 && i <= 0xDFFF)
-                {
-                    plainText.Append((char)0); // skip surrogate characters
-                }
-                else
-                {
-                    if (i > 0xFFFF)
-                    {
-                        plainText.Append(char.ConvertFromUtf32((int)i));
-                    }
-                    else
-                    {
-                        plainText.Append((char)i);
-                    }
-                }
-            }
-            string unicodeString = plainText.ToString();
-
-            ReadOnlySpan<char> characters = unicodeString.Slice();
-
-            Encoding utf8 = Encoding.UTF8;
-
-            int utf8Length = utf8.GetByteCount(unicodeString);
-            byte[] utf8Buffer = new byte[utf8Length];
-            Span<byte> expectedSpan;
-
-            char[] charArray = characters.ToArray();
-
-            utf8.GetBytes(charArray, 0, characters.Length, utf8Buffer, 0);
-            expectedSpan = new Span<byte>(utf8Buffer);
-
-            int encodedBytes;
-            Span<byte> span = new Span<byte>(utf8Buffer);
-            if (!TextEncoder.Utf8.TryEncodeFromUtf16(characters, span, out encodedBytes))
-            {
-                throw new Exception(); // this should not happen
-            }
-
-            Assert.Equal(utf8Length, encodedBytes);
-            for (int i = 0; i < encodedBytes; i++)
-            {
-                Assert.Equal(expectedSpan[i], span[i]);
+                Assert.True(AreByteArraysEqual(expectedBytes, buffer.ToArray()));
             }
         }
 
