@@ -11,7 +11,7 @@ namespace System.Threading.Tasks.Channels
     /// <summary>Provides an unbuffered channel, such that a reader and a writer must rendezvous to succeed.</summary>
     [DebuggerDisplay("Waiting Writers = {WaitingWritersCountForDebugger}, Waiting Readers = {WaitingReadersCountForDebugger}")]
     [DebuggerTypeProxy(typeof(UnbufferedChannel<>.DebugView))]
-    internal sealed class UnbufferedChannel<T> : IChannel<T>
+    internal sealed class UnbufferedChannel<T> : Channel<T>
     {
         /// <summary>Task that represents the completion of the channel.</summary>
         private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -24,13 +24,42 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Tasks waiting for data to be available to write.</summary>
         private readonly Dequeue<ReaderInteractor<bool>> _waitingWriters = new Dequeue<ReaderInteractor<bool>>();
 
+        private sealed class Readable : ReadableChannel<T>
+        {
+            internal readonly UnbufferedChannel<T> _parent;
+            internal Readable(UnbufferedChannel<T> parent) { _parent = parent; }
+
+            public override Task Completion => _parent.Completion;
+            public override ValueTask<T> ReadAsync(CancellationToken cancellationToken) => _parent.ReadAsync(cancellationToken);
+            public override bool TryRead(out T item) => _parent.TryRead(out item);
+            public override Task<bool> WaitToReadAsync(CancellationToken cancellationToken) => _parent.WaitToReadAsync(cancellationToken);
+        }
+
+        private sealed class Writable : WritableChannel<T>
+        {
+            internal readonly UnbufferedChannel<T> _parent;
+            internal Writable(UnbufferedChannel<T> parent) { _parent = parent; }
+
+            public override bool TryComplete(Exception error) => _parent.TryComplete(error);
+            public override bool TryWrite(T item) => _parent.TryWrite(item);
+            public override Task<bool> WaitToWriteAsync(CancellationToken cancellationToken) => _parent.WaitToWriteAsync(cancellationToken);
+            public override Task WriteAsync(T item, CancellationToken cancellationToken) => _parent.WriteAsync(item, cancellationToken);
+        }
+
         /// <summary>Initialize the channel.</summary>
-        internal UnbufferedChannel() { }
+        internal UnbufferedChannel()
+        {
+            In = new Readable(this);
+            Out = new Writable(this);
+        }
+
+        public override ReadableChannel<T> In { get; }
+        public override WritableChannel<T> Out { get; }
 
         /// <summary>Gets an object used to synchronize all state on the instance.</summary>
         private object SyncObj => _completion;
 
-        public Task Completion => _completion.Task;
+        private Task Completion => _completion.Task;
 
         [Conditional("DEBUG")]
         private void AssertInvariants()
@@ -53,7 +82,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public bool TryComplete(Exception error = null)
+        private bool TryComplete(Exception error = null)
         {
             lock (SyncObj)
             {
@@ -88,9 +117,7 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        public ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
-
-        public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             T item;
             return TryRead(out item) ?
@@ -112,7 +139,10 @@ namespace System.Threading.Tasks.Channels
                 // If we're already completed, nothing to read.
                 if (_completion.Task.IsCompleted)
                 {
-                    return new ValueTask<T>(Task.FromException<T>(_completion.Task.IsFaulted ? _completion.Task.Exception.InnerException : ChannelUtilities.CreateInvalidCompletionException()));
+                    return new ValueTask<T>(
+                        _completion.Task.IsFaulted ? Task.FromException<T>(_completion.Task.Exception.InnerException) :
+                        _completion.Task.IsCanceled ? Task.FromCanceled<T>(new CancellationToken(true)) :
+                        Task.FromException<T>(ChannelUtilities.CreateInvalidCompletionException()));
                 }
 
                 // If there are any blocked writers, find one to pair up with
@@ -138,7 +168,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public bool TryRead(out T item)
+        private bool TryRead(out T item)
         {
             lock (SyncObj)
             {
@@ -161,7 +191,7 @@ namespace System.Threading.Tasks.Channels
             return false;
         }
 
-        public bool TryWrite(T item)
+        private bool TryWrite(T item)
         {
             lock (SyncObj)
             {
@@ -182,7 +212,7 @@ namespace System.Threading.Tasks.Channels
             return false;
         }
 
-        public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -219,7 +249,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             lock (SyncObj)
             {
@@ -242,7 +272,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             lock (SyncObj)
             {

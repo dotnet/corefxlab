@@ -10,13 +10,13 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Creates an unbounded channel usable by any number of readers and writers concurrently.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <returns>The created channel.</returns>
-        public static IChannel<T> CreateUnbounded<T>() => new UnboundedChannel<T>(runContinuationsAsynchronously: true);
+        public static Channel<T> CreateUnbounded<T>() => new UnboundedChannel<T>(runContinuationsAsynchronously: true);
 
         /// <summary>Creates an unbounded channel usable by any number of readers and writers concurrently.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <param name="optimizations">Controls optimizations that may be applied to the channel.</param>
         /// <returns>The created channel.</returns>
-        public static IChannel<T> CreateUnbounded<T>(ChannelOptimizations optimizations)
+        public static Channel<T> CreateUnbounded<T>(ChannelOptimizations optimizations)
         {
             if (optimizations == null)
             {
@@ -25,21 +25,21 @@ namespace System.Threading.Tasks.Channels
 
             bool rca = !optimizations.AllowSynchronousContinuations;
             return optimizations.SingleReader ?
-                (IChannel<T>)new SingleConsumerUnboundedChannel<T>(rca) :
+                (Channel<T>)new SingleConsumerUnboundedChannel<T>(rca) :
                 new UnboundedChannel<T>(rca);
         }
 
         /// <summary>Creates a channel that doesn't buffer any items.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <returns>The created channel.</returns>
-        public static IChannel<T> CreateUnbuffered<T>() => new UnbufferedChannel<T>();
+        public static Channel<T> CreateUnbuffered<T>() => new UnbufferedChannel<T>();
 
         /// <summary>Creates a channel with the specified bounded size.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <param name="bufferedCapacity">The maximum number of elements the channel can store.</param>
         /// <param name="mode">The behavior to use when writing to a full channel.</param>
         /// <returns>The created channel.</returns>
-        public static IChannel<T> CreateBounded<T>(int bufferedCapacity, BoundedChannelFullMode mode = BoundedChannelFullMode.Wait)
+        public static Channel<T> CreateBounded<T>(int bufferedCapacity, BoundedChannelFullMode mode = BoundedChannelFullMode.Wait)
         {
             if (bufferedCapacity < 1)
             {
@@ -60,14 +60,14 @@ namespace System.Threading.Tasks.Channels
         /// <param name="channel">The channel from which to read.</param>
         /// <param name="action">The action to invoke with data read from the channel.</param>
         /// <returns>This builder.</returns>
-        public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Action<T> action) => new CaseBuilder().CaseRead(channel, action);
+        public static CaseBuilder CaseRead<T>(ReadableChannel<T> channel, Action<T> action) => new CaseBuilder().CaseRead(channel, action);
 
         /// <summary>Creates a case-select builder and adds a case for channel reading.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
         /// <param name="channel">The channel from which to read.</param>
         /// <param name="func">The asynchronous function to invoke with data read from the channel.</param>
         /// <returns>This builder.</returns>
-        public static CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Func<T, Task> func) => new CaseBuilder().CaseRead(channel, func);
+        public static CaseBuilder CaseRead<T>(ReadableChannel<T> channel, Func<T, Task> func) => new CaseBuilder().CaseRead(channel, func);
 
         /// <summary>Creates a case-select builder and adds a case for channel writing.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
@@ -75,7 +75,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="item">The data to write to the channel</param>
         /// <param name="action">The action to invoke after the data has been written.</param>
         /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action) => new CaseBuilder().CaseWrite(channel, item, action);
+        public static CaseBuilder CaseWrite<T>(WritableChannel<T> channel, T item, Action action) => new CaseBuilder().CaseWrite(channel, item, action);
 
         /// <summary>Creates a case-select builder and adds a case for channel writing.</summary>
         /// <typeparam name="T">Specifies the type of data in the channel.</typeparam>
@@ -83,6 +83,6 @@ namespace System.Threading.Tasks.Channels
         /// <param name="item">The data to write to the channel</param>
         /// <param name="func">The asynchronous function to invoke after the data has been written.</param>
         /// <returns>This builder.</returns>
-        public static CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func) => new CaseBuilder().CaseWrite(channel, item, func);
+        public static CaseBuilder CaseWrite<T>(WritableChannel<T> channel, T item, Func<Task> func) => new CaseBuilder().CaseWrite(channel, item, func);
     }
 }

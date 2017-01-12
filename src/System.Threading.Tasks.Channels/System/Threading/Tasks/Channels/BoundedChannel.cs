@@ -11,7 +11,7 @@ namespace System.Threading.Tasks.Channels
     /// <summary>Provides a channel with a bounded capacity.</summary>
     [DebuggerDisplay("Items={ItemsCountForDebugger}, Capacity={_bufferedCapacity}")]
     [DebuggerTypeProxy(typeof(DebugEnumeratorDebugView<>))]
-    internal sealed class BoundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
+    internal sealed class BoundedChannel<T> : Channel<T>, IDebugEnumerable<T>
     {
         /// <summary>The mode used when the channel hits its bound.</summary>
         private readonly BoundedChannelFullMode _mode;
@@ -42,9 +42,36 @@ namespace System.Threading.Tasks.Channels
             Debug.Assert(bufferedCapacity > 0);
             _bufferedCapacity = bufferedCapacity;
             _mode = mode;
+            In = new Readable(this);
+            Out = new Writable(this);
         }
 
-        public Task Completion => _completion.Task;
+        private sealed class Readable : ReadableChannel<T>
+        {
+            internal readonly BoundedChannel<T> _parent;
+            internal Readable(BoundedChannel<T> parent) { _parent = parent; }
+
+            public override Task Completion => _parent.Completion;
+            public override ValueTask<T> ReadAsync(CancellationToken cancellationToken) => _parent.ReadAsync(cancellationToken);
+            public override bool TryRead(out T item) => _parent.TryRead(out item);
+            public override Task<bool> WaitToReadAsync(CancellationToken cancellationToken) => _parent.WaitToReadAsync(cancellationToken);
+        }
+
+        private sealed class Writable : WritableChannel<T>
+        {
+            internal readonly BoundedChannel<T> _parent;
+            internal Writable(BoundedChannel<T> parent) { _parent = parent; }
+
+            public override bool TryComplete(Exception error) => _parent.TryComplete(error);
+            public override bool TryWrite(T item) => _parent.TryWrite(item);
+            public override Task<bool> WaitToWriteAsync(CancellationToken cancellationToken) => _parent.WaitToWriteAsync(cancellationToken);
+            public override Task WriteAsync(T item, CancellationToken cancellationToken) => _parent.WriteAsync(item, cancellationToken);
+        }
+
+        public override ReadableChannel<T> In { get; }
+        public override WritableChannel<T> Out { get; }
+
+        private Task Completion => _completion.Task;
 
         [Conditional("DEBUG")]
         private void AssertInvariants()
@@ -85,7 +112,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public bool TryComplete(Exception error = null)
+        private bool TryComplete(Exception error = null)
         {
             lock (SyncObj)
             {
@@ -128,9 +155,7 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        public ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
-
-        public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             // Fast-path cancellation check
             if (cancellationToken.IsCancellationRequested)
@@ -152,7 +177,7 @@ namespace System.Threading.Tasks.Channels
                 // will never be more items, fail.
                 if (_doneWriting != null)
                 {
-                    return new ValueTask<T>(Task.FromException<T>(_doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException()));
+                    return ChannelUtilities.GetErrorValueTask<T>(_doneWriting);
                 }
 
                 // Otherwise, queue the reader.
@@ -162,7 +187,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -193,7 +218,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public bool TryRead(out T item)
+        private bool TryRead(out T item)
         {
             lock (SyncObj)
             {
@@ -248,7 +273,7 @@ namespace System.Threading.Tasks.Channels
             return item;
         }
 
-        public bool TryWrite(T item)
+        private bool TryWrite(T item)
         {
             lock (SyncObj)
             {
@@ -296,7 +321,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -329,7 +354,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {

@@ -38,7 +38,7 @@ namespace System.Runtime.CompilerServices
             _runContinuationsAsynchronously = runContinuationsAsynchronously;
         }
 
-        /// <summary>Whether the operation has already completed.</summary>
+        /// <summary>Gets whether the operation has already completed.</summary>
         public bool IsCompleted
         {
             get
@@ -49,6 +49,8 @@ namespace System.Runtime.CompilerServices
             }
         }
 
+        /// <summary>Gets the result of the completed, awaited operation, reseting the instance for reuse.</summary>
+        /// <returns>The result.</returns>
         public TResult GetResult()
         {
             AssertResultConsistency(expectedCompleted: true);

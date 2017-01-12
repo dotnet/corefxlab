@@ -12,7 +12,7 @@ namespace System.Threading.Tasks.Channels
     /// <summary>Provides a buffered channel of unbounded capacity.</summary>
     [DebuggerDisplay("Items={ItemsCountForDebugger}")]
     [DebuggerTypeProxy(typeof(DebugEnumeratorDebugView<>))]
-    internal sealed class UnboundedChannel<T> : IChannel<T>, IDebugEnumerable<T>
+    internal sealed class UnboundedChannel<T> : Channel<T>, IDebugEnumerable<T>
     {
         /// <summary>Task that indicates the channel has completed.</summary>
         private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -31,12 +31,39 @@ namespace System.Threading.Tasks.Channels
         internal UnboundedChannel(bool runContinuationsAsynchronously)
         {
             _runContinuationsAsynchronously = runContinuationsAsynchronously;
+            In = new Readable(this);
+            Out = new Writable(this);
         }
+
+        private sealed class Readable : ReadableChannel<T>
+        {
+            internal readonly UnboundedChannel<T> _parent;
+            internal Readable(UnboundedChannel<T> parent) { _parent = parent; }
+
+            public override Task Completion => _parent.Completion;
+            public override ValueTask<T> ReadAsync(CancellationToken cancellationToken) => _parent.ReadAsync(cancellationToken);
+            public override bool TryRead(out T item) => _parent.TryRead(out item);
+            public override Task<bool> WaitToReadAsync(CancellationToken cancellationToken) => _parent.WaitToReadAsync(cancellationToken);
+        }
+
+        private sealed class Writable : WritableChannel<T>
+        {
+            internal readonly UnboundedChannel<T> _parent;
+            internal Writable(UnboundedChannel<T> parent) { _parent = parent; }
+
+            public override bool TryComplete(Exception error) => _parent.TryComplete(error);
+            public override bool TryWrite(T item) => _parent.TryWrite(item);
+            public override Task<bool> WaitToWriteAsync(CancellationToken cancellationToken) => _parent.WaitToWriteAsync(cancellationToken);
+            public override Task WriteAsync(T item, CancellationToken cancellationToken) => _parent.WriteAsync(item, cancellationToken);
+        }
+
+        public override ReadableChannel<T> In { get; }
+        public override WritableChannel<T> Out { get; }
 
         /// <summary>Gets the object used to synchronize access to all state on this instance.</summary>
         private object SyncObj => _items;
 
-        public Task Completion => _completion.Task;
+        private Task Completion => _completion.Task;
 
         [Conditional("DEBUG")]
         private void AssertInvariants()
@@ -63,7 +90,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public bool TryComplete(Exception error = null)
+        private bool TryComplete(Exception error = null)
         {
             bool anyRemainingBlockedReaders = false;
             bool anyRemainingWaitingReaders = false;
@@ -144,9 +171,7 @@ namespace System.Threading.Tasks.Channels
             return true;
         }
 
-        public ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
-
-        public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             T item;
             return TryRead(out item) ?
@@ -182,7 +207,7 @@ namespace System.Threading.Tasks.Channels
                 // There are no items, so if we're done writing, fail.
                 if (_doneWriting != null)
                 {
-                    return new ValueTask<T>(Task.FromException<T>(_doneWriting != ChannelUtilities.DoneWritingSentinel ? _doneWriting : ChannelUtilities.CreateInvalidCompletionException()));
+                    return ChannelUtilities.GetErrorValueTask<T>(_doneWriting);
                 }
 
                 // Otherwise, queue the reader.
@@ -192,7 +217,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             // If there are any items, readers can try to get them.
             if (!_items.IsEmpty)
@@ -223,7 +248,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public bool TryRead(out T item)
+        private bool TryRead(out T item)
         {
             // Dequeue an item if we can
             if (_items.TryDequeue(out item))
@@ -240,7 +265,7 @@ namespace System.Threading.Tasks.Channels
             return false;
         }
 
-        public bool TryWrite(T item)
+        private bool TryWrite(T item)
         {
             ReaderInteractor<T> blockedReader = null;
             while (true)
@@ -304,12 +329,12 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken)) =>
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken)) =>
             cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
             _doneWriting == null ? ChannelUtilities.TrueTask : // unbounded writing can always be done if we haven't completed
             ChannelUtilities.FalseTask;
 
-        public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken)) =>
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken)) =>
             cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
             TryWrite(item) ? Task.CompletedTask :
             Task.FromException(ChannelUtilities.CreateInvalidCompletionException());

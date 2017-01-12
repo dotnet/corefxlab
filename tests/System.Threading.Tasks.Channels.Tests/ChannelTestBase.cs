@@ -9,7 +9,7 @@ namespace System.Threading.Tasks.Channels.Tests
 {
     public abstract class ChannelTestBase : TestBase
     {
-        protected abstract IChannel<int> CreateChannel();
+        protected abstract Channel<int> CreateChannel();
 
         protected virtual bool RequiresSingleReader => false;
         protected virtual bool RequiresSingleWriter => false;
@@ -17,10 +17,10 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void ValidateDebuggerAttributes()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             for (int i = 1; i <= 10; i++)
             {
-                c.WriteAsync(i);
+                c.Out.WriteAsync(i);
             }
             DebuggerAttributes.ValidateDebuggerDisplayReferences(c);
             DebuggerAttributes.ValidateDebuggerTypeProxyProperties(c);
@@ -29,14 +29,14 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void Completion_Idempotent()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
-            Task completion = c.Completion;
+            Task completion = c.In.Completion;
             Assert.Equal(TaskStatus.WaitingForActivation, completion.Status);
 
-            Assert.Same(completion, c.Completion);
-            c.Complete();
-            Assert.Same(completion, c.Completion);
+            Assert.Same(completion, c.In.Completion);
+            c.Out.Complete();
+            Assert.Same(completion, c.In.Completion);
 
             Assert.Equal(TaskStatus.RanToCompletion, completion.Status);
         }
@@ -44,52 +44,75 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task Complete_AfterEmpty_NoWaiters_TriggersCompletion()
         {
-            IChannel<int> c = CreateChannel();
-            c.Complete();
-            await c.Completion;
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            await c.In.Completion;
         }
 
         [Fact]
         public async Task Complete_AfterEmpty_WaitingReader_TriggersCompletion()
         {
-            IChannel<int> c = CreateChannel();
-            Task<int> r = c.ReadAsync().AsTask();
-            c.Complete();
-            await c.Completion;
+            Channel<int> c = CreateChannel();
+            Task<int> r = c.In.ReadAsync().AsTask();
+            c.Out.Complete();
+            await c.In.Completion;
             await Assert.ThrowsAnyAsync<InvalidOperationException>(() => r);
         }
 
         [Fact]
         public async Task Complete_BeforeEmpty_WaitingReaders_TriggersCompletion()
         {
-            IChannel<int> c = CreateChannel();
-            Task<int> read = c.ReadAsync().AsTask();
-            c.Complete();
-            await c.Completion;
+            Channel<int> c = CreateChannel();
+            Task<int> read = c.In.ReadAsync().AsTask();
+            c.Out.Complete();
+            await c.In.Completion;
             await Assert.ThrowsAnyAsync<InvalidOperationException>(() => read);
         }
 
         [Fact]
         public void Complete_Twice_ThrowsInvalidOperationException()
         {
-            IChannel<int> c = CreateChannel();
-            c.Complete();
-            Assert.ThrowsAny<InvalidOperationException>(() => c.Complete());
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            Assert.ThrowsAny<InvalidOperationException>(() => c.Out.Complete());
         }
 
         [Fact]
         public void TryComplete_Twice_ReturnsTrueThenFalse()
         {
-            IChannel<int> c = CreateChannel();
-            Assert.True(c.TryComplete());
-            Assert.False(c.TryComplete());
-            Assert.False(c.TryComplete());
+            Channel<int> c = CreateChannel();
+            Assert.True(c.Out.TryComplete());
+            Assert.False(c.Out.TryComplete());
+            Assert.False(c.Out.TryComplete());
+        }
+
+        [Fact]
+        public async Task TryComplete_ErrorsPropage()
+        {
+            Channel<int> c;
+
+            // Success
+            c = CreateChannel();
+            Assert.True(c.Out.TryComplete());
+            await c.In.Completion;
+
+            // Error
+            c = CreateChannel();
+            Assert.True(c.Out.TryComplete(new FormatException()));
+            await Assert.ThrowsAsync<FormatException>(() => c.In.Completion);
+
+            // Canceled
+            c = CreateChannel();
+            var cts = new CancellationTokenSource();
+            cts.Cancel();
+            Assert.True(c.Out.TryComplete(new OperationCanceledException(cts.Token)));
+            await AssertCanceled(c.In.Completion, cts.Token);
         }
 
         [Fact]
         public void SingleProducerConsumer_ConcurrentReadWrite_Success()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             const int NumItems = 100000;
             Task.WaitAll(
@@ -97,14 +120,14 @@ namespace System.Threading.Tasks.Channels.Tests
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        await c.WriteAsync(i);
+                        await c.Out.WriteAsync(i);
                     }
                 }),
                 Task.Run(async () =>
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        Assert.Equal(i, await c.ReadAsync());
+                        Assert.Equal(i, await c.In.ReadAsync());
                     }
                 }));
         }
@@ -112,7 +135,7 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void SingleProducerConsumer_ConcurrentAwaitWrite_Success()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             const int NumItems = 100000;
             Task.WaitAll(
@@ -120,14 +143,14 @@ namespace System.Threading.Tasks.Channels.Tests
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        await c.WriteAsync(i);
+                        await c.Out.WriteAsync(i);
                     }
                 }),
                 Task.Run(async () =>
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        Assert.Equal(i, await c);
+                        Assert.Equal(i, await c.In);
                     }
                 }));
         }
@@ -135,8 +158,8 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void SingleProducerConsumer_PingPong_Success()
         {
-            IChannel<int> c1 = CreateChannel();
-            IChannel<int> c2 = CreateChannel();
+            Channel<int> c1 = CreateChannel();
+            Channel<int> c2 = CreateChannel();
 
             const int NumItems = 100000;
             Task.WaitAll(
@@ -144,16 +167,16 @@ namespace System.Threading.Tasks.Channels.Tests
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        Assert.Equal(i, await c1);
-                        await c2.WriteAsync(i);
+                        Assert.Equal(i, await c1.In);
+                        await c2.Out.WriteAsync(i);
                     }
                 }),
                 Task.Run(async () =>
                 {
                     for (int i = 0; i < NumItems; i++)
                     {
-                        await c1.WriteAsync(i);
-                        Assert.Equal(i, await c2);
+                        await c1.Out.WriteAsync(i);
+                        Assert.Equal(i, await c2.In);
                     }
                 }));
         }
@@ -168,7 +191,7 @@ namespace System.Threading.Tasks.Channels.Tests
             if (RequiresSingleReader && numReaders > 1) return;
             if (RequiresSingleWriter && numWriters > 1) return;
 
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             const int NumItems = 10000;
 
@@ -182,7 +205,7 @@ namespace System.Threading.Tasks.Channels.Tests
             {
                 tasks[i] = Task.Run(async () =>
                 {
-                    IAsyncEnumerator<int> e = c.GetAsyncEnumerator();
+                    IAsyncEnumerator<int> e = c.In.GetAsyncEnumerator();
                     while (await e.MoveNextAsync())
                     {
                         Interlocked.Add(ref readTotal, e.Current);
@@ -201,10 +224,10 @@ namespace System.Threading.Tasks.Channels.Tests
                         {
                             break;
                         }
-                        await c.WriteAsync(value + 1);
+                        await c.Out.WriteAsync(value + 1);
                     }
                     if (Interlocked.Decrement(ref remainingWriters) == 0)
-                        c.Complete();
+                        c.Out.Complete();
                 });
             }
 
@@ -222,7 +245,7 @@ namespace System.Threading.Tasks.Channels.Tests
             if (RequiresSingleReader && numReaders > 1) return;
             if (RequiresSingleWriter && numWriters > 1) return;
 
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             const int NumItems = 10000;
 
@@ -238,7 +261,7 @@ namespace System.Threading.Tasks.Channels.Tests
                 {
                     try
                     {
-                        while (true) Interlocked.Add(ref readTotal, await c);
+                        while (true) Interlocked.Add(ref readTotal, await c.In);
                     }
                     catch (ClosedChannelException) { }
                 });
@@ -255,10 +278,10 @@ namespace System.Threading.Tasks.Channels.Tests
                         {
                             break;
                         }
-                        await c.WriteAsync(value + 1);
+                        await c.Out.WriteAsync(value + 1);
                     }
                     if (Interlocked.Decrement(ref remainingWriters) == 0)
-                        c.Complete();
+                        c.Out.Complete();
                 });
             }
 
@@ -269,28 +292,28 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void WaitToReadAsync_DataAvailableBefore_CompletesSynchronously()
         {
-            IChannel<int> c = CreateChannel();
-            Task write = c.WriteAsync(42);
-            Task<bool> read = c.WaitToReadAsync();
+            Channel<int> c = CreateChannel();
+            Task write = c.Out.WriteAsync(42);
+            Task<bool> read = c.In.WaitToReadAsync();
             Assert.Equal(TaskStatus.RanToCompletion, read.Status);
         }
 
         [Fact]
         public void WaitToReadAsync_DataAvailableAfter_CompletesAsynchronously()
         {
-            IChannel<int> c = CreateChannel();
-            Task<bool> read = c.WaitToReadAsync();
+            Channel<int> c = CreateChannel();
+            Task<bool> read = c.In.WaitToReadAsync();
             Assert.False(read.IsCompleted);
-            Task write = c.WriteAsync(42);
+            Task write = c.Out.WriteAsync(42);
             Assert.True(read.Result);
         }
 
         [Fact]
         public void WaitToReadAsync_AfterComplete_SynchronouslyCompletes()
         {
-            IChannel<int> c = CreateChannel();
-            c.Complete();
-            Task<bool> read = c.WaitToReadAsync();
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            Task<bool> read = c.In.WaitToReadAsync();
             Assert.Equal(TaskStatus.RanToCompletion, read.Status);
             Assert.False(read.Result);
         }
@@ -298,19 +321,19 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void WaitToReadAsync_BeforeComplete_AsynchronouslyCompletes()
         {
-            IChannel<int> c = CreateChannel();
-            Task<bool> read = c.WaitToReadAsync();
+            Channel<int> c = CreateChannel();
+            Task<bool> read = c.In.WaitToReadAsync();
             Assert.False(read.IsCompleted);
-            c.Complete();
+            c.Out.Complete();
             Assert.False(read.Result);
         }
 
         [Fact]
         public void WaitToWriteAsync_AfterComplete_SynchronouslyCompletes()
         {
-            IChannel<int> c = CreateChannel();
-            c.Complete();
-            Task<bool> write = c.WaitToWriteAsync();
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            Task<bool> write = c.Out.WaitToWriteAsync();
             Assert.Equal(TaskStatus.RanToCompletion, write.Status);
             Assert.False(write.Result);
         }
@@ -318,85 +341,85 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void WaitToWriteAsync_SpaceAvailableBefore_CompletesSynchronously()
         {
-            IChannel<int> c = CreateChannel();
-            ValueTask<int> read = c.ReadAsync();
-            Task<bool> write = c.WaitToWriteAsync();
+            Channel<int> c = CreateChannel();
+            ValueTask<int> read = c.In.ReadAsync();
+            Task<bool> write = c.Out.WaitToWriteAsync();
             Assert.Equal(TaskStatus.RanToCompletion, write.Status);
         }
 
         [Fact]
         public void WaitToWriteAsync_SpaceAvailableAfter_CompletesSynchronously()
         {
-            IChannel<int> c = CreateChannel();
-            Task<bool> write = c.WaitToWriteAsync();
-            ValueTask<int> read = c.ReadAsync();
+            Channel<int> c = CreateChannel();
+            Task<bool> write = c.Out.WaitToWriteAsync();
+            ValueTask<int> read = c.In.ReadAsync();
             Assert.True(write.Result);
         }
 
         [Fact]
         public void TryRead_DataAvailable_Success()
         {
-            IChannel<int> c = CreateChannel();
-            Task write = c.WriteAsync(42);
+            Channel<int> c = CreateChannel();
+            Task write = c.Out.WriteAsync(42);
             int result;
-            Assert.True(c.TryRead(out result));
+            Assert.True(c.In.TryRead(out result));
             Assert.Equal(42, result);
         }
 
         [Fact]
         public async Task ReadAsync_DataAvailable_Success()
         {
-            IChannel<int> c = CreateChannel();
-            Task write = c.WriteAsync(42);
-            Assert.Equal(42, await c.ReadAsync());
+            Channel<int> c = CreateChannel();
+            Task write = c.Out.WriteAsync(42);
+            Assert.Equal(42, await c.In.ReadAsync());
         }
 
         [Fact]
         public void TryRead_AfterComplete_ReturnsFalse()
         {
-            IChannel<int> c = CreateChannel();
-            c.Complete();
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
             int result;
-            Assert.False(c.TryRead(out result));
+            Assert.False(c.In.TryRead(out result));
         }
 
         [Fact]
         public void TryWrite_AfterComplete_ReturnsFalse()
         {
-            IChannel<int> c = CreateChannel();
-            c.Complete();
-            Assert.False(c.TryWrite(42));
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            Assert.False(c.Out.TryWrite(42));
         }
 
         [Fact]
         public async Task WriteAsync_AfterComplete_ThrowsException()
         {
-            IChannel<int> c = CreateChannel();
-            c.Complete();
-            await Assert.ThrowsAnyAsync<InvalidOperationException>(() => c.WriteAsync(42));
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            await Assert.ThrowsAnyAsync<InvalidOperationException>(() => c.Out.WriteAsync(42));
         }
 
         [Fact]
         public async Task ReadAsync_AfterComplete_ThrowsException()
         {
-            IChannel<int> c = CreateChannel();
-            c.Complete();
-            await Assert.ThrowsAnyAsync<InvalidOperationException>(() => c.ReadAsync().AsTask());
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            await Assert.ThrowsAnyAsync<InvalidOperationException>(() => c.In.ReadAsync().AsTask());
         }
 
         [Fact]
         public async Task Complete_WithException_PropagatesToCompletion()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             FormatException exc = new FormatException();
-            c.Complete(exc);
-            Assert.Same(exc, await Assert.ThrowsAsync<FormatException>(() => c.Completion));
+            c.Out.Complete(exc);
+            Assert.Same(exc, await Assert.ThrowsAsync<FormatException>(() => c.In.Completion));
         }
 
         [Fact]
         public async Task Complete_WithCancellationException_PropagatesToCompletion()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
             cts.Cancel();
 
@@ -404,27 +427,27 @@ namespace System.Threading.Tasks.Channels.Tests
             try { cts.Token.ThrowIfCancellationRequested(); }
             catch (Exception e) { exc = e; }
 
-            c.Complete(exc);
-            await AssertCanceled(c.Completion, cts.Token);
+            c.Out.Complete(exc);
+            await AssertCanceled(c.In.Completion, cts.Token);
         }
 
         [Fact]
         public async Task Complete_WithException_PropagatesToExistingReader()
         {
-            IChannel<int> c = CreateChannel();
-            Task<int> read = c.ReadAsync().AsTask();
+            Channel<int> c = CreateChannel();
+            Task<int> read = c.In.ReadAsync().AsTask();
             FormatException exc = new FormatException();
-            c.Complete(exc);
+            c.Out.Complete(exc);
             Assert.Same(exc, await Assert.ThrowsAsync<FormatException>(() => read));
         }
 
         [Fact]
         public async Task Complete_WithException_PropagatesToNewReader()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             FormatException exc = new FormatException();
-            c.Complete(exc);
-            Task<int> read = c.ReadAsync().AsTask();
+            c.Out.Complete(exc);
+            Task<int> read = c.In.ReadAsync().AsTask();
             Assert.Same(exc, await Assert.ThrowsAsync<FormatException>(() => read));
         }
 
@@ -435,14 +458,14 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             if (RequiresSingleReader || RequiresSingleWriter) return;
 
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             const int NumItems = 2000;
 
             Task[] writers = new Task[NumItems];
             for (int i = 0; i < writers.Length; i++)
             {
-                writers[i] = c.WriteAsync(i);
+                writers[i] = c.Out.WriteAsync(i);
             }
 
             Task<int>[] readers = new Task<int>[NumItems];
@@ -451,11 +474,11 @@ namespace System.Threading.Tasks.Channels.Tests
                 switch (readMode)
                 {
                     case 0:
-                        readers[i] = c.ReadAsync().AsTask();
+                        readers[i] = c.In.ReadAsync().AsTask();
                         break;
                     case 1:
                         int result;
-                        Assert.True(c.TryRead(out result));
+                        Assert.True(c.In.TryRead(out result));
                         readers[i] = Task.FromResult(result);
                         break;
                 }
@@ -477,14 +500,14 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             if (RequiresSingleReader || RequiresSingleReader) return;
 
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             const int NumItems = 2000;
 
             Task<int>[] readers = new Task<int>[NumItems];
             for (int i = 0; i < readers.Length; i++)
             {
-                readers[i] = c.ReadAsync().AsTask();
+                readers[i] = c.In.ReadAsync().AsTask();
             }
 
             Task[] writers = new Task[NumItems];
@@ -493,10 +516,10 @@ namespace System.Threading.Tasks.Channels.Tests
                 switch (writeMode)
                 {
                     case 0:
-                        writers[i] = c.WriteAsync(i);
+                        writers[i] = c.Out.WriteAsync(i);
                         break;
                     case 1:
-                        Assert.True(c.TryWrite(i));
+                        Assert.True(c.Out.TryWrite(i));
                         writers[i] = Task.CompletedTask;
                         break;
                 }
@@ -514,23 +537,23 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public void Precancellation_Reading_ReturnsCanceledImmediately()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
             cts.Cancel();
 
-            AssertSynchronouslyCanceled(c.ReadAsync(cts.Token).AsTask(), cts.Token);
-            AssertSynchronouslyCanceled(c.WaitToReadAsync(cts.Token), cts.Token);
+            AssertSynchronouslyCanceled(c.In.ReadAsync(cts.Token).AsTask(), cts.Token);
+            AssertSynchronouslyCanceled(c.In.WaitToReadAsync(cts.Token), cts.Token);
         }
 
         [Fact]
         public void Precancellation_Writing_ReturnsCanceledImmediately()
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
             cts.Cancel();
 
-            AssertSynchronouslyCanceled(c.WriteAsync(42, cts.Token), cts.Token);
-            AssertSynchronouslyCanceled(c.WaitToWriteAsync(cts.Token), cts.Token);
+            AssertSynchronouslyCanceled(c.Out.WriteAsync(42, cts.Token), cts.Token);
+            AssertSynchronouslyCanceled(c.Out.WaitToWriteAsync(cts.Token), cts.Token);
         }
 
         [Theory]
@@ -538,17 +561,17 @@ namespace System.Threading.Tasks.Channels.Tests
         [InlineData(1)]
         public async Task CancelPendingRead_Writing_DataTransferredToCorrectReader(int writeMode)
         {
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
             var cts = new CancellationTokenSource();
 
-            Task<int> read1 = c.ReadAsync(cts.Token).AsTask();
+            Task<int> read1 = c.In.ReadAsync(cts.Token).AsTask();
             cts.Cancel();
-            Task<int> read2 = c.ReadAsync().AsTask();
+            Task<int> read2 = c.In.ReadAsync().AsTask();
 
             switch (writeMode)
             {
-                case 0: await c.WriteAsync(42); break;
-                case 1: Assert.True(c.TryWrite(42)); break;
+                case 0: await c.Out.WriteAsync(42); break;
+                case 1: Assert.True(c.Out.TryWrite(42)); break;
             }
 
             Assert.Equal(42, await read2);
@@ -556,20 +579,53 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
-        public async Task Await_CompletedChannel_Throws()
+        public async Task CancelPendingRead_WrittenDataPendingOrStored()
         {
-            IChannel<int> c = CreateChannel();
-            c.Complete();
-            await Assert.ThrowsAnyAsync<InvalidOperationException>(async () => await c);
+            Channel<int> c = CreateChannel();
+            var cts = new CancellationTokenSource();
+
+            Task<int> read1 = c.In.ReadAsync(cts.Token).AsTask();
+            cts.Cancel();
+            await AssertCanceled(read1, cts.Token);
+
+            Task write = c.Out.WriteAsync(42);
+
+            Assert.Equal(42, await c.In.ReadAsync());
+            await write;
         }
 
         [Fact]
-        public async Task Await_ChannelAfterExistingData_ReturnsData()
+        public async Task AwaitRead_CompletedChannel_Throws()
         {
-            IChannel<int> c = CreateChannel();
-            Task write = c.WriteAsync(42);
-            Assert.Equal(42, await c);
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            await Assert.ThrowsAnyAsync<InvalidOperationException>(async () => await c.In);
+        }
+
+        [Fact]
+        public async Task AwaitRead_ChannelAfterExistingData_ReturnsData()
+        {
+            Channel<int> c = CreateChannel();
+            Task write = c.Out.WriteAsync(42);
+            Assert.Equal(42, await c.In);
             Assert.Equal(TaskStatus.RanToCompletion, write.Status);
+        }
+
+        [Fact]
+        public async Task AwaitWriteAvailable_CompletedChannel_ReturnsFalse()
+        {
+            Channel<int> c = CreateChannel();
+            c.Out.Complete();
+            Assert.False(await c.Out);
+        }
+
+        [Fact]
+        public async Task AwaitWriteAvailable_ChannelWhenPendingRead_ReturnsTrue()
+        {
+            Channel<int> c = CreateChannel();
+            ValueTask<int> pendingRead = c.In.ReadAsync();
+            Assert.False(pendingRead.IsCompleted);
+            Assert.True(await c.Out);
         }
 
         [Fact]
@@ -577,9 +633,9 @@ namespace System.Threading.Tasks.Channels.Tests
         {
             if (RequiresSingleReader || RequiresSingleWriter) return;
 
-            IChannel<int> c1 = CreateChannel();
-            IChannel<int> c2 = CreateChannel();
-            IChannel<int> c3 = CreateChannel();
+            Channel<int> c1 = CreateChannel();
+            Channel<int> c2 = CreateChannel();
+            Channel<int> c3 = CreateChannel();
 
             int total1 = 0, total2 = 0, total3 = 0;
             int expectedTotal1 = 0, expectedTotal2 = 0, expectedTotal3 = 0;
@@ -588,9 +644,9 @@ namespace System.Threading.Tasks.Channels.Tests
             for (int i = 0; i < selects.Length; i++)
             {
                 selects[i] = Channel
-                    .CaseRead(c1, item => Interlocked.Add(ref total1, item))
-                    .CaseRead(c2, item => { Interlocked.Add(ref total2, item); return Task.CompletedTask; })
-                    .CaseRead(c3, async item => { await Task.Yield(); Interlocked.Add(ref total3, item); })
+                    .CaseRead<int>(c1, item => Interlocked.Add(ref total1, item))
+                    .CaseRead<int>(c2, item => { Interlocked.Add(ref total2, item); return Task.CompletedTask; })
+                    .CaseRead<int>(c3, async item => { await Task.Yield(); Interlocked.Add(ref total3, item); })
                     .SelectAsync();
             }
 
@@ -600,15 +656,15 @@ namespace System.Threading.Tasks.Channels.Tests
                 switch (i % 3)
                 {
                     case 0:
-                        writes[i] = c1.WriteAsync(i);
+                        writes[i] = c1.Out.WriteAsync(i);
                         expectedTotal1 += i;
                         break;
                     case 1:
-                        writes[i] = c2.WriteAsync(i);
+                        writes[i] = c2.Out.WriteAsync(i);
                         expectedTotal2 += i;
                         break;
                     case 2:
-                        writes[i] = c3.WriteAsync(i);
+                        writes[i] = c3.Out.WriteAsync(i);
                         expectedTotal3 += i;
                         break;
                 }
@@ -627,41 +683,42 @@ namespace System.Threading.Tasks.Channels.Tests
         [Fact]
         public async Task TryWrite_BlockedReader_Success()
         {
-            IChannel<int> c = CreateChannel();
-            Task<int> read = c.ReadAsync().AsTask();
+            Channel<int> c = CreateChannel();
+            Task<int> read = c.In.ReadAsync().AsTask();
             Assert.False(read.IsCompleted);
-            Assert.True(c.TryWrite(42));
+            Assert.True(c.Out.TryWrite(42));
             Assert.Equal(42, await read);
         }
 
         [Fact]
         public void Write_WaitToReadAsync_CompletesSynchronously()
         {
-            IChannel<int> c = CreateChannel();
-            c.WriteAsync(42);
-            AssertSynchronousTrue(c.WaitToReadAsync());
+            Channel<int> c = CreateChannel();
+            c.Out.WriteAsync(42);
+            AssertSynchronousTrue(c.In.WaitToReadAsync());
         }
 
         [Fact]
         public void Read_WaitToWriteAsync_CompletesSynchronously()
         {
-            IChannel<int> c = CreateChannel();
-            c.ReadAsync();
-            AssertSynchronousTrue(c.WaitToWriteAsync());
+            Channel<int> c = CreateChannel();
+            c.In.ReadAsync();
+            AssertSynchronousTrue(c.Out.WaitToWriteAsync());
         }
 
         [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public async Task AsObservable_DataWritten(bool endWithError)
+        [InlineData(TaskStatus.RanToCompletion)]
+        [InlineData(TaskStatus.Faulted)]
+        [InlineData(TaskStatus.Canceled)]
+        public async Task AsObserver_DataWritten(TaskStatus endingMode)
         {
-            IChannel<int> c = CreateChannel();
-            IObserver<int> o = c.AsObserver();
+            Channel<int> c = CreateChannel();
+            IObserver<int> o = c.Out.AsObserver();
 
             Task reader = Task.Run(async () =>
             {
                 int received = 0;
-                IAsyncEnumerator<int> e = c.GetAsyncEnumerator();
+                IAsyncEnumerator<int> e = c.In.GetAsyncEnumerator();
                 while (await e.MoveNextAsync())
                 {
                     Assert.Equal(received++, e.Current);
@@ -673,33 +730,41 @@ namespace System.Threading.Tasks.Channels.Tests
                 o.OnNext(i);
             }
 
-            if (endWithError)
+            switch (endingMode)
             {
-                o.OnError(new FormatException());
-                await Assert.ThrowsAsync<FormatException>(() => reader);
+                case TaskStatus.RanToCompletion:
+                    o.OnCompleted();
+                    await reader;
+                    break;
+                case TaskStatus.Faulted:
+                    o.OnError(new FormatException());
+                    await Assert.ThrowsAsync<FormatException>(() => reader);
+                    break;
+                case TaskStatus.Canceled:
+                    o.OnError(new OperationCanceledException());
+                    await Assert.ThrowsAnyAsync<OperationCanceledException>(() => reader);
+                    break;
             }
-            else
-            {
-                o.OnCompleted();
-                await reader;
-            }
+            Assert.Equal(endingMode, reader.Status);
         }
 
         [Theory]
-        [InlineData(1, false)]
-        [InlineData(1, true)]
-        [InlineData(5, false)]
-        [InlineData(5, true)]
-        public async Task AsObserver_AllDataPushed(int numSubscribers, bool completeWithError)
+        [InlineData(1, TaskStatus.RanToCompletion)]
+        [InlineData(1, TaskStatus.Faulted)]
+        [InlineData(1, TaskStatus.Canceled)]
+        [InlineData(5, TaskStatus.RanToCompletion)]
+        [InlineData(5, TaskStatus.Faulted)]
+        [InlineData(5, TaskStatus.Canceled)]
+        public async Task AsObserver_AllDataPushed(int numSubscribers, TaskStatus endingMode)
         {
             if (RequiresSingleWriter) return;
 
-            IChannel<int> c = CreateChannel();
+            Channel<int> c = CreateChannel();
 
             int received = 0;
             var tcs = new TaskCompletionSource<Exception>();
 
-            IObservable<int> o = c.AsObservable();
+            IObservable<int> o = c.In.AsObservable();
             for (int s = 0; s < numSubscribers; s++)
             {
                 o.Subscribe(new DelegateObserver<int>
@@ -713,17 +778,28 @@ namespace System.Threading.Tasks.Channels.Tests
             Task[] writes = new Task[10];
             for (int i = 0; i < writes.Length; i++)
             {
-                writes[i] = c.WriteAsync(i + 1);
+                writes[i] = c.Out.WriteAsync(i + 1);
             }
             await Task.WhenAll(writes);
 
-            c.Complete(completeWithError ? new FormatException() : null);
+            c.Out.Complete(
+                endingMode == TaskStatus.RanToCompletion ? null :
+                endingMode == TaskStatus.Faulted ? new FormatException() :
+                (Exception)new OperationCanceledException());
 
             Exception result = await tcs.Task;
-            if (completeWithError)
-                Assert.IsType<FormatException>(result);
-            else
-                Assert.Null(result);
+            switch (endingMode)
+            {
+                case TaskStatus.RanToCompletion:
+                    Assert.Null(result);
+                    break;
+                case TaskStatus.Faulted:
+                    Assert.IsType<FormatException>(result);
+                    break;
+                case TaskStatus.Canceled:
+                    Assert.IsAssignableFrom<OperationCanceledException>(result);
+                    break;
+            }
 
             Assert.Equal(numSubscribers * (writes.Length * (writes.Length + 1)) / 2, received);
         }

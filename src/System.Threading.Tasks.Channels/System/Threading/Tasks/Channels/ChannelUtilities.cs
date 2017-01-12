@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks.Channels
 {
@@ -43,6 +42,31 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
+        /// <summary>Gets a value task representing an error.</summary>
+        /// <typeparam name="T">Specifies the type of the value that would have been returned.</typeparam>
+        /// <param name="error">The error.  This may be <see cref="DoneWritingSentinel"/>.</param>
+        /// <returns>The failed task.</returns>
+        internal static ValueTask<T> GetErrorValueTask<T>(Exception error)
+        {
+            Debug.Assert(error != null);
+
+            Task<T> t;
+
+            if (error == DoneWritingSentinel)
+            {
+                t = Task.FromException<T>(CreateInvalidCompletionException());
+            }
+            else
+            {
+                OperationCanceledException oce = error as OperationCanceledException;
+                t = oce != null ?
+                    Task.FromCanceled<T>(oce.CancellationToken.IsCancellationRequested ? oce.CancellationToken : new CancellationToken(true)) :
+                    Task.FromException<T>(error);
+            }
+
+            return new ValueTask<T>(t);
+        }
+
         /// <summary>Removes all waiters from the queue, completing each.</summary>
         /// <param name="waiters">The queue of waiters to complete.</param>
         /// <param name="result">The value with which to complete each waiter.</param>
@@ -64,7 +88,7 @@ namespace System.Threading.Tasks.Channels
         }
 
         /// <summary>Removes all waiters from the queue, completing each.</summary>
-        /// <param name="syncObj">Lock held while manipulating <see cref="waiters"/> but not while completing each waiter.</param>
+        /// <param name="syncObj">Lock held while manipulating <paramref name="waiters"/> but not while completing each waiter.</param>
         /// <param name="waiters">The queue of waiters to complete.</param>
         /// <param name="result">The value with which to complete each waiter.</param>
         internal static void WakeUpWaiters(object syncObj, Dequeue<ReaderInteractor<bool>> waiters, bool result)
@@ -93,7 +117,7 @@ namespace System.Threading.Tasks.Channels
         }
 
         /// <summary>Removes all interactors from the queue, failing each.</summary>
-        /// <param name="syncObj">Lock held while manipulating <see cref="interactors"/> but not while completing each interactor.</param>
+        /// <param name="syncObj">Lock held while manipulating <paramref name="interactors"/> but not while completing each interactor.</param>
         /// <param name="interactors">The queue of interactors to complete.</param>
         /// <param name="error">The error with which to complete each interactor.</param>
         internal static void FailInteractors<T>(object syncObj, Dequeue<ReaderInteractor<T>> interactors, Exception error)

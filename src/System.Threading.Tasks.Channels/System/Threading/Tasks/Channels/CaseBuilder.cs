@@ -27,7 +27,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="channel">The channel from which to read.</param>
         /// <param name="action">The synchronous action to invoke with an element read from the channel.</param>
         /// <returns>This builder.</returns>
-        public CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Action<T> action)
+        public CaseBuilder CaseRead<T>(ReadableChannel<T> channel, Action<T> action)
         {
             if (channel == null)
             {
@@ -51,7 +51,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="channel">The channel from which to read.</param>
         /// <param name="func">The asynchronous function to invoke with an element read from the channel.</param>
         /// <returns>This builder.</returns>
-        public CaseBuilder CaseRead<T>(IReadableChannel<T> channel, Func<T, Task> func)
+        public CaseBuilder CaseRead<T>(ReadableChannel<T> channel, Func<T, Task> func)
         {
             if (channel == null)
             {
@@ -75,7 +75,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="item">The data to write to the channel.</param>
         /// <param name="action">The synchronous action to invoke once the write is successful.</param>
         /// <returns>This builder.</returns>
-        public CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Action action)
+        public CaseBuilder CaseWrite<T>(WritableChannel<T> channel, T item, Action action)
         {
             if (channel == null)
             {
@@ -99,7 +99,7 @@ namespace System.Threading.Tasks.Channels
         /// <param name="item">The data to write to the channel.</param>
         /// <param name="func">The asynchronous function to invoke once the write is successful.</param>
         /// <returns>This builder.</returns>
-        public CaseBuilder CaseWrite<T>(IWritableChannel<T> channel, T item, Func<Task> func)
+        public CaseBuilder CaseWrite<T>(WritableChannel<T> channel, T item, Func<Task> func)
         {
             if (channel == null)
             {
@@ -319,10 +319,10 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Provides the concrete case used for channel reads with synchronous processing.</summary>
         private sealed class SyncReadCase<T> : Case
         {
-            private readonly IReadableChannel<T> _channel;
+            private readonly ReadableChannel<T> _channel;
             private readonly Action<T> _action;
 
-            internal SyncReadCase(IReadableChannel<T> channel, Action<T> action)
+            internal SyncReadCase(ReadableChannel<T> channel, Action<T> action)
             {
                 _channel = channel;
                 _action = action;
@@ -355,10 +355,10 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Provides the concrete case used for channel reads with asynchronous processing.</summary>
         private sealed class AsyncReadCase<T> : Case
         {
-            private readonly IReadableChannel<T> _channel;
+            private readonly ReadableChannel<T> _channel;
             private readonly Func<T, Task> _action;
 
-            internal AsyncReadCase(IReadableChannel<T> channel, Func<T, Task> action)
+            internal AsyncReadCase(ReadableChannel<T> channel, Func<T, Task> action)
             {
                 _channel = channel;
                 _action = action;
@@ -394,11 +394,11 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Provides the concrete case used for channel writes with synchronous processing.</summary>
         private sealed class SyncWriteCase<T> : Case
         {
-            private readonly IWritableChannel<T> _channel;
+            private readonly WritableChannel<T> _channel;
             private readonly T _item;
             private readonly Action _action;
 
-            internal SyncWriteCase(IWritableChannel<T> channel, T item, Action action)
+            internal SyncWriteCase(WritableChannel<T> channel, T item, Action action)
             {
                 _channel = channel;
                 _item = item;
@@ -431,11 +431,11 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Provides the concrete case used for channel writes with asynchronous processing.</summary>
         private sealed class AsyncWriteCase<T> : Case
         {
-            private readonly IWritableChannel<T> _channel;
+            private readonly WritableChannel<T> _channel;
             private readonly T _item;
             private readonly Func<Task> _action;
 
-            internal AsyncWriteCase(IWritableChannel<T> channel, T item, Func<Task> action)
+            internal AsyncWriteCase(WritableChannel<T> channel, T item, Func<Task> action)
             {
                 _channel = channel;
                 _item = item;

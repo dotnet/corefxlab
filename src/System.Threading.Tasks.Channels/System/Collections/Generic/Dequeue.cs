@@ -35,17 +35,18 @@ namespace System.Collections.Generic
             _size++;
         }
 
-        public void EnqueueHead(T item)
-        {
-            if (_size == _array.Length)
-            {
-                Grow();
-            }
-
-            _head = (_head == 0 ? _array.Length : _head) - 1;
-            _array[_head] = item;
-            _size++;
-        }
+        //// Uncomment if/when enqueueing at the head is needed
+        //public void EnqueueHead(T item)
+        //{
+        //    if (_size == _array.Length)
+        //    {
+        //        Grow();
+        //    }
+        //
+        //    _head = (_head == 0 ? _array.Length : _head) - 1;
+        //    _array[_head] = item;
+        //    _size++;
+        //}
 
         public T DequeueHead()
         {
@@ -86,12 +87,15 @@ namespace System.Collections.Generic
             while (count-- > 0)
             {
                 yield return _array[pos];
-                pos = (pos + 1) % _size;
+                pos = (pos + 1) % _array.Length;
             }
         }
 
         private void Grow()
         {
+            Debug.Assert(_size == _array.Length);
+            Debug.Assert(_head == _tail);
+
             const int MinimumGrow = 4;
 
             int capacity = (int)(_array.Length * 2L);
@@ -102,9 +106,9 @@ namespace System.Collections.Generic
 
             T[] newArray = new T[capacity];
 
-            if (_head < _tail)
+            if (_head == 0)
             {
-                Array.Copy(_array, _head, newArray, 0, _size);
+                Array.Copy(_array, 0, newArray, 0, _size);
             }
             else
             {
@@ -114,7 +118,7 @@ namespace System.Collections.Generic
 
             _array = newArray;
             _head = 0;
-            _tail = (_size == capacity) ? 0 : _size;
+            _tail = _size;
         }
     }
 }
