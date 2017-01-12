@@ -161,7 +161,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
-			result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed);
+            result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -316,7 +316,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
-			result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed);
+            result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -471,7 +471,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
-			result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed);
+            result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -626,7 +626,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
-			result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed);
+            result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -783,7 +783,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
-			result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed);
+            result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -967,7 +967,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
-			result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed);
+            result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1151,7 +1151,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
-			result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed);
+            result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -1335,7 +1335,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
-			result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed);
+            result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
