@@ -253,6 +253,11 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
+            result = PrimitiveParser.TryParse<#= unsignedType.ClassName #>(utf8Span, out parsedValue, out consumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
             result = PrimitiveParser.InvariantUtf8.TryParse<#= unsignedType.ClassName #>(utf8Span, out parsedValue);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -417,6 +422,11 @@ namespace System.Text.Primitives.Tests
             bool result;
 
             result = PrimitiveParser.TryParse<#= signedType.ClassName #>(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
+            result = PrimitiveParser.TryParse<#= signedType.ClassName #>(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);

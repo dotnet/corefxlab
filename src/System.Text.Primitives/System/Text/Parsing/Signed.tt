@@ -28,7 +28,12 @@ foreach (IntegerTypeToParse typeToParse in typesToParse)
 #>
         public static bool TryParse<#=typeToParse.ClassName#>(ReadOnlySpan<byte> text, out <#=typeToParse.PrimitiveName#> value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
         {
-            if (format.HasPrecision)
+            if (encoding == default(EncodingData))
+            {
+                encoding = EncodingData.InvariantUtf8;
+            }
+
+            if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
