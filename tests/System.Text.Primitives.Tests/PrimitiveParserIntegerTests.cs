@@ -161,6 +161,11 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
+			result = PrimitiveParser.TryParseByte(utf8Span, out parsedValue, out consumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
             result = PrimitiveParser.InvariantUtf8.TryParseByte(utf8Span, out parsedValue);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -307,6 +312,11 @@ namespace System.Text.Primitives.Tests
             bool result;
 
             result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
+			result = PrimitiveParser.TryParseUInt16(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -461,6 +471,11 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
+			result = PrimitiveParser.TryParseUInt32(utf8Span, out parsedValue, out consumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
             result = PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8Span, out parsedValue);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -607,6 +622,11 @@ namespace System.Text.Primitives.Tests
             bool result;
 
             result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
+			result = PrimitiveParser.TryParseUInt64(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -759,6 +779,11 @@ namespace System.Text.Primitives.Tests
             bool result;
 
             result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
+			result = PrimitiveParser.TryParseSByte(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
@@ -942,6 +967,11 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
+			result = PrimitiveParser.TryParseInt16(utf8Span, out parsedValue, out consumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
             result = PrimitiveParser.InvariantUtf8.TryParseInt16(utf8Span, out parsedValue);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1121,6 +1151,11 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
 
+			result = PrimitiveParser.TryParseInt32(utf8Span, out parsedValue, out consumed);
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
             result = PrimitiveParser.InvariantUtf8.TryParseInt32(utf8Span, out parsedValue);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1296,6 +1331,11 @@ namespace System.Text.Primitives.Tests
             bool result;
 
             result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed, EncodingData.InvariantUtf8, 'G');
+            Assert.Equal(expectSuccess, result);
+            Assert.Equal(expectedValue, parsedValue);
+            Assert.Equal(expectedConsumed, consumed);
+
+			result = PrimitiveParser.TryParseInt64(utf8Span, out parsedValue, out consumed);
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
             Assert.Equal(expectedConsumed, consumed);
