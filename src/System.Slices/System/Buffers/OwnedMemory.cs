@@ -4,6 +4,16 @@ using System.Threading;
 
 namespace System.Buffers
 {
+    public enum ReferenceCountingMethod {
+        Interlocked,
+        ReferenceCounter,
+        None
+    };
+
+    public class OwnedMemorySettings {
+        public static ReferenceCountingMethod Mode = ReferenceCountingMethod.Interlocked;
+    }
+
     public abstract class OwnedMemory<T> : IDisposable, IMemory<T>
     {
         static long _nextId = InitializedId + 1;
@@ -18,7 +28,13 @@ namespace System.Buffers
         protected T[] Array { get; private set; }
         protected IntPtr Pointer { get; private set; }
         protected int Offset { get; private set; }
-        public bool HasOutstandingReferences { get { return _referenceCount != 0; } }
+        public bool HasOutstandingReferences { 
+            get { 
+                return _referenceCount != 0 
+                        || (OwnedMemorySettings.Mode == ReferenceCountingMethod.ReferenceCounter
+                            && ReferenceCounter.HasReference(this)); 
+            } 
+        }
 
         private OwnedMemory() { }
 
@@ -204,14 +220,32 @@ namespace System.Buffers
         {
             _id = id;
             _owner = owner;
-            ((IKnown)_owner).AddReference(_id);
+            switch(OwnedMemorySettings.Mode) {
+                case ReferenceCountingMethod.Interlocked:
+                    ((IKnown)_owner).AddReference(_id);
+                    break;
+                case ReferenceCountingMethod.ReferenceCounter:
+                    ReferenceCounter.AddReference(_owner);
+                    break;
+                case ReferenceCountingMethod.None:
+                    break;
+            }
         }
 
         public Span<T> Span => _owner.Span;
 
         public void Dispose()
         {
-            ((IKnown)_owner).Release(_id);
+            switch (OwnedMemorySettings.Mode) {
+                case ReferenceCountingMethod.Interlocked:
+                    ((IKnown)_owner).Release(_id);
+                    break;
+                case ReferenceCountingMethod.ReferenceCounter:
+                    ReferenceCounter.Release(_owner);
+                    break;
+                case ReferenceCountingMethod.None:
+                    break;
+            }
             _owner = null;
         }
     }
