@@ -4,7 +4,6 @@
 using System.Buffers;
 using System.Collections.Sequences;
 using System.Text.Utf8;
-using System.Text.Internal;
 
 namespace System.Text.Parsing
 {
