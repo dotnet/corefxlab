@@ -106,7 +106,7 @@ namespace System.Collections.Sequences
             return oldArray;
         }
 
-        public bool TryGet(ref Position position, out T item, bool advance = false)
+        public bool TryGet(ref Position position, out T item, bool advance = true)
         {
             if (position.IntegerPosition < _count) {
                 item = _array[position.IntegerPosition];

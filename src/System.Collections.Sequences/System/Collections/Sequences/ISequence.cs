@@ -13,7 +13,7 @@ namespace System.Collections.Sequences
         /// <param name="advance"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        bool TryGet(ref Position position, out T item, bool advance = false);
+        bool TryGet(ref Position position, out T item, bool advance = true);
 
         int? Length { get; }
     }

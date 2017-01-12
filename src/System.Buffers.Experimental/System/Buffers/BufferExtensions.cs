@@ -19,7 +19,7 @@ namespace System.Buffers
             Position position = Position.First;
             ReadOnlyMemory<byte> memory;
             ResizableArray<byte> array = new ResizableArray<byte>(1024); // TODO: could this be rented from a pool?
-            while (memorySequence.TryGet(ref position, out memory, advance: true))
+            while (memorySequence.TryGet(ref position, out memory))
             {
                 array.AddAll(memory.Span);
             }

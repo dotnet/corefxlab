@@ -42,7 +42,7 @@ namespace System.Slices.Tests
             var position = new Position();
             int length = 0;
             ReadOnlyMemory<byte> segment;
-            while (bytes.TryGet(ref position, out segment, true))
+            while (bytes.TryGet(ref position, out segment))
             {
                 length += segment.Length;
             }
@@ -51,7 +51,7 @@ namespace System.Slices.Tests
             var multibytes = Parse("A|CD|EFG");
             position = new Position();
             length = 0;
-            while (multibytes.TryGet(ref position, out segment, true))
+            while (multibytes.TryGet(ref position, out segment))
             {
                 length += segment.Length;
             }
@@ -68,7 +68,7 @@ namespace System.Slices.Tests
                 var position = new Position();
                 var length = 0;
                 ReadOnlyMemory<byte> segment;
-                while (multibytes.TryGet(ref position, out segment, true))
+                while (multibytes.TryGet(ref position, out segment))
                 {
                     length += segment.Length;
                 }
@@ -86,7 +86,7 @@ namespace System.Slices.Tests
                 var position = new Position();
                 var length = 0;
                 ReadOnlyMemory<byte> segment;
-                while (multibytes.TryGet(ref position, out segment, true))
+                while (multibytes.TryGet(ref position, out segment))
                 {
                     length += segment.Length;
                 }
@@ -141,7 +141,7 @@ namespace System.Slices.Tests
                 return copied;
             }
 
-            public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = false)
+            public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
             {
                 if (position == Position.First)
                 {

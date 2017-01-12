@@ -494,7 +494,7 @@ namespace System.IO.Pipelines.Tests
                     var position = Position.First;
                     ReadOnlyMemory<byte> memory;
                     int spanCount = 0;
-                    while (readable.TryGet(ref position, out memory, advance: true))
+                    while (readable.TryGet(ref position, out memory))
                     {
                         spanCount++;
                         Assert.Equal(0, memory.Length);
@@ -513,7 +513,7 @@ namespace System.IO.Pipelines.Tests
                     var position = Position.First;
                     ReadOnlyMemory<byte> memory;
                     int spanCount = 0;
-                    while (readable.TryGet(ref position, out memory, advance: true))
+                    while (readable.TryGet(ref position, out memory))
                     {
                         spanCount++;
                         Assert.Equal(spanCount, memory.Length);
