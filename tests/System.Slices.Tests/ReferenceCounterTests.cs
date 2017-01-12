@@ -14,46 +14,44 @@ namespace System.Slices.Tests
         public void BasicSingleThreadedCounts()
         {
             var obj = new object();
-            var counter = new ReferenceCounter();
-            Assert.False(counter.HasReference(obj));
-            counter.AddReference(obj);
-            Assert.True(counter.HasReference(obj));
-            counter.AddReference(obj);
-            Assert.True(counter.HasReference(obj));
-            counter.Release(obj);
-            Assert.True(counter.HasReference(obj));
-            counter.Release(obj);
-            Assert.False(counter.HasReference(obj));
+            Assert.False(ReferenceCounter.HasReference(obj));
+            ReferenceCounter.AddReference(obj);
+            Assert.True(ReferenceCounter.HasReference(obj));
+            ReferenceCounter.AddReference(obj);
+            Assert.True(ReferenceCounter.HasReference(obj));
+            ReferenceCounter.Release(obj);
+            Assert.True(ReferenceCounter.HasReference(obj));
+            ReferenceCounter.Release(obj);
+            Assert.False(ReferenceCounter.HasReference(obj));
         }
 
         [Fact]
         public void BasicMultiThreadedCounts()
         {
             var obj = new object();
-            var counter = new ReferenceCounter();
 
             var t1 = Task.Run(() => {
                 for (int i = 0; i < 100000; i++)
                 {
-                    counter.AddReference(obj);
-                    counter.AddReference(obj);
-                    counter.Release(obj);
-                    counter.Release(obj);
+                    ReferenceCounter.AddReference(obj);
+                    ReferenceCounter.AddReference(obj);
+                    ReferenceCounter.Release(obj);
+                    ReferenceCounter.Release(obj);
                 }
             });
 
             var t2 = Task.Run(() => {
                 for (int i = 0; i < 100000; i++)
                 {
-                    counter.AddReference(obj);
-                    counter.AddReference(obj);
-                    counter.Release(obj);
-                    counter.Release(obj);
+                    ReferenceCounter.AddReference(obj);
+                    ReferenceCounter.AddReference(obj);
+                    ReferenceCounter.Release(obj);
+                    ReferenceCounter.Release(obj);
                 }
             });
 
             Task.WaitAll(t1, t2);
-            Assert.False(counter.HasReference(obj));
+            Assert.False(ReferenceCounter.HasReference(obj));
         }
 
         [Fact]
@@ -61,7 +59,7 @@ namespace System.Slices.Tests
         {
             var defaultThreadTableSize = Environment.ProcessorCount;
             var threads = new List<WaitHandle>();
-            var counter = new ReferenceCounter();
+
             var obj = new object();
             for (int threadNumber = 0; threadNumber < defaultThreadTableSize * 2; threadNumber++)
             {
@@ -71,16 +69,16 @@ namespace System.Slices.Tests
                 {
                     for (int itteration = 0; itteration < 100; itteration++)
                     {
-                        counter.AddReference(obj);
+                        ReferenceCounter.AddReference(obj);
                         Thread.Sleep(10);
-                        counter.Release(obj);
+                        ReferenceCounter.Release(obj);
                     }
                     handle.Set();
                 }));
                 thread.Start();
             }
             WaitHandle.WaitAll(threads.ToArray());
-            Assert.False(counter.HasReference(obj));
+            Assert.False(ReferenceCounter.HasReference(obj));
         }
 
         [Fact]
@@ -88,20 +86,19 @@ namespace System.Slices.Tests
         {
             var defaultObjectTableSize = 16;
             var objects = new List<object>();
-            var counter = new ReferenceCounter();
             for (int objectNumber = 0; objectNumber < defaultObjectTableSize * 2; objectNumber++)
             {
                 var obj = new object();
-                counter.AddReference(obj);
+                ReferenceCounter.AddReference(obj);
                 objects.Add(obj);
             }
             foreach(var obj in objects)
             {
-                counter.Release(obj);
+                ReferenceCounter.Release(obj);
             }
             foreach (var obj in objects)
             {
-                Assert.False(counter.HasReference(obj));
+                Assert.False(ReferenceCounter.HasReference(obj));
             }
         }
     }

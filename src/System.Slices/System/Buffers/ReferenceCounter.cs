@@ -24,7 +24,7 @@ namespace System.Runtime
         static int s_allTablesCount;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddReference(object obj)
+        static public void AddReference(object obj)
         {
             var localCounts = t_threadLocalCounts;
             if (localCounts == null)
@@ -35,14 +35,14 @@ namespace System.Runtime
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Release(object obj)
+        static public void Release(object obj)
         {
             var localCounts = t_threadLocalCounts;
             localCounts.Decrement(obj);
         }
 
         // TODO: can we detect if the object was only refcounted on one thread and its the current thread? If yes, we don't need to synchronize?
-        public bool HasReference(object obj)
+        static public bool HasReference(object obj)
         {
             var allTables = s_allTables;
             lock (allTables)
@@ -56,7 +56,7 @@ namespace System.Runtime
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool HasThreadLocalReference(object obj)
+        static public bool HasThreadLocalReference(object obj)
         {
             var localCounts = t_threadLocalCounts;
             if (localCounts == null) return false;
