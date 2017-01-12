@@ -2,7 +2,7 @@
   "copyright": "Microsoft Corporation, All rights reserved.",
   "name": "System.Text.Primitives",
   "version": "0.1.0-*",
-  "description": "Efficient parsting, formatting, and encoding APIs",
+  "description": "Efficient parsing, formatting, and encoding APIs",
   "authors": [
     "Microsoft Corporation"
   ],
