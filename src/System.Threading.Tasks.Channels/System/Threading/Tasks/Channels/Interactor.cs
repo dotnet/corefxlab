@@ -11,22 +11,14 @@ namespace System.Threading.Tasks.Channels
 
         internal bool Success(T item)
         {
-            bool transitionedToCompleted = TrySetResult(item);
-            if (transitionedToCompleted)
-            {
-                UnregisterCancellation();
-            }
-            return transitionedToCompleted;
+            UnregisterCancellation();
+            return TrySetResult(item);
         }
 
         internal bool Fail(Exception exception)
         {
-            bool transitionedToCompleted = TrySetException(exception);
-            if (transitionedToCompleted)
-            {
-                UnregisterCancellation();
-            }
-            return transitionedToCompleted;
+            UnregisterCancellation();
+            return TrySetException(exception);
         }
 
         internal virtual void UnregisterCancellation() { }
@@ -73,7 +65,11 @@ namespace System.Threading.Tasks.Channels
             }, this);
         }
 
-        internal override void UnregisterCancellation() => _registration.Dispose();
+        internal override void UnregisterCancellation()
+        {
+            _registration.Dispose();
+            _registration = default(CancellationTokenRegistration);
+        }
     }
 
     internal sealed class CancelableWriter<T> : WriterInteractor<T>
@@ -91,6 +87,10 @@ namespace System.Threading.Tasks.Channels
             }, this);
         }
 
-        internal override void UnregisterCancellation() => _registration.Dispose();
+        internal override void UnregisterCancellation()
+        {
+            _registration.Dispose();
+            _registration = default(CancellationTokenRegistration);
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace System.Threading.Tasks.Channels
     internal sealed class UnboundedChannel<T> : Channel<T>, IDebugEnumerable<T>
     {
         /// <summary>Task that indicates the channel has completed.</summary>
-        private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly TaskCompletionSource<VoidResult> _completion;
         /// <summary>The items in the channel.</summary>
         private readonly ConcurrentQueue<T> _items = new ConcurrentQueue<T>();
         /// <summary>Readers blocked reading from the channel.</summary>
@@ -31,6 +31,7 @@ namespace System.Threading.Tasks.Channels
         internal UnboundedChannel(bool runContinuationsAsynchronously)
         {
             _runContinuationsAsynchronously = runContinuationsAsynchronously;
+            _completion = new TaskCompletionSource<VoidResult>(runContinuationsAsynchronously ? TaskCreationOptions.RunContinuationsAsynchronously : TaskCreationOptions.None);
             In = new Readable(this);
             Out = new Writable(this);
         }
@@ -92,82 +93,41 @@ namespace System.Threading.Tasks.Channels
 
         private bool TryComplete(Exception error = null)
         {
-            bool anyRemainingBlockedReaders = false;
-            bool anyRemainingWaitingReaders = false;
-
+            bool completeTask;
             lock (SyncObj)
             {
                 AssertInvariants();
 
-                // Mark that we're done writing
+                // If we've already marked the channel as completed, bail.
                 if (_doneWriting != null)
                 {
                     return false;
                 }
+
+                // Mark that we're done writing.
                 _doneWriting = error ?? ChannelUtilities.DoneWritingSentinel;
-
-                // If there are no items in the queue, complete the channel's task,
-                // as no more data can possibly arrive at this point.
-                if (_items.IsEmpty)
-                {
-                    ChannelUtilities.Complete(_completion, error);
-                }
-
-                // If there are any waiting readers, then since we won't be getting any more
-                // data and there can't be any currently in the queue (or else they wouldn't
-                // be waiting), wake them all.  We can only do that while holding the lock
-                // if they were created as running continuations asynchronously; otherwise,
-                // we need to do it outside of the lock.
-                if (!_waitingReaders.IsEmpty)
-                {
-                    Debug.Assert(_items.IsEmpty);
-                    if (_runContinuationsAsynchronously)
-                    {
-                        ChannelUtilities.WakeUpWaiters(_waitingReaders, result: false);
-                    }
-                    else
-                    {
-                        anyRemainingWaitingReaders = true;
-                    }
-                }
-
-                // Similarly, if there are any blocked readers, then since we won't be getting
-                // any more data and there can't be any currently in the queue (or else they
-                // wouldn't be waiting), fail them all.  We can only do that while holding the lock
-                // if they were created as running continuations asynchronously; otherwise,
-                // we need to do it outside of the lock.
-                if (!_blockedReaders.IsEmpty)
-                {
-                    Debug.Assert(_items.IsEmpty);
-                    if (_runContinuationsAsynchronously)
-                    {
-                        ChannelUtilities.FailInteractors(_blockedReaders, error);
-                    }
-                    else
-                    {
-                        anyRemainingBlockedReaders = true;
-                    }
-                }
+                completeTask = _items.IsEmpty;
             }
 
-            // Now that we've exited the lock, see if we have any work left to do around waking
-            // up or failing readers.  All of these completions may trigger synchronous continuations.
-
-            if (anyRemainingBlockedReaders)
+            // If there are no items in the queue, complete the channel's task,
+            // as no more data can possibly arrive at this point.  We do this outside
+            // of the lock in case we'll be running synchronous completions, and we
+            // do it before completing blocked/waiting readers, so that when they
+            // wake up they'll see the task as being completed.
+            if (completeTask)
             {
-                // Fail the remaining blocked readers
-                Debug.Assert(!_runContinuationsAsynchronously, "If we're running continuations asynchronously, should have been handled above");
-                ChannelUtilities.FailInteractors(SyncObj, _blockedReaders, error);
+                ChannelUtilities.Complete(_completion, error);
             }
 
-            if (anyRemainingWaitingReaders)
-            {
-                // Wake up the remaining waiting readers
-                Debug.Assert(!_runContinuationsAsynchronously, "If we're running continuations asynchronously, should have been handled above");
-                ChannelUtilities.WakeUpWaiters(SyncObj, _waitingReaders, result: false);
-            }
+            // At this point, _blockedReaders and _waitingReaders will not be mutated:
+            // they're only mutated by readers while holding the lock, and only if _doneWriting is null.
+            // We also know that only one thread (this one) will ever get here, as only that thread
+            // will be the one to transition from _doneWriting false to true.  As such, we can
+            // freely manipulate _blockedReaders and _waitingReaders without any concurrency concerns.
+            ChannelUtilities.FailInteractors<ReaderInteractor<T>,T>(_blockedReaders, error);
+            ChannelUtilities.WakeUpWaiters(_waitingReaders, result: false);
 
-            // Successfully transitioned to completed
+            // Successfully transitioned to completed.
             return true;
         }
 

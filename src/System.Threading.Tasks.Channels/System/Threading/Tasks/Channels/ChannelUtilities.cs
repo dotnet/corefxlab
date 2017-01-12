@@ -108,7 +108,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Removes all interactors from the queue, failing each.</summary>
         /// <param name="interactors">The queue of interactors to complete.</param>
         /// <param name="error">The error with which to complete each interactor.</param>
-        internal static void FailInteractors<T>(Dequeue<ReaderInteractor<T>> interactors, Exception error)
+        internal static void FailInteractors<T, TInner>(Dequeue<T> interactors, Exception error) where T : Interactor<TInner>
         {
             while (!interactors.IsEmpty)
             {
@@ -116,23 +116,23 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        /// <summary>Removes all interactors from the queue, failing each.</summary>
-        /// <param name="syncObj">Lock held while manipulating <paramref name="interactors"/> but not while completing each interactor.</param>
-        /// <param name="interactors">The queue of interactors to complete.</param>
-        /// <param name="error">The error with which to complete each interactor.</param>
-        internal static void FailInteractors<T>(object syncObj, Dequeue<ReaderInteractor<T>> interactors, Exception error)
-        {
-            while (true)
-            {
-                ReaderInteractor<T> interactor;
-                lock (syncObj)
-                {
-                    if (interactors.IsEmpty) return;
-                    interactor = interactors.DequeueHead();
-                }
-                interactor.Fail(error ?? CreateInvalidCompletionException());
-            }
-        }
+        ///// <summary>Removes all interactors from the queue, failing each.</summary>
+        ///// <param name="syncObj">Lock held while manipulating <paramref name="interactors"/> but not while completing each interactor.</param>
+        ///// <param name="interactors">The queue of interactors to complete.</param>
+        ///// <param name="error">The error with which to complete each interactor.</param>
+        //internal static void FailInteractors<T>(object syncObj, Dequeue<ReaderInteractor<T>> interactors, Exception error)
+        //{
+        //    while (true)
+        //    {
+        //        ReaderInteractor<T> interactor;
+        //        lock (syncObj)
+        //        {
+        //            if (interactors.IsEmpty) return;
+        //            interactor = interactors.DequeueHead();
+        //        }
+        //        interactor.Fail(error ?? CreateInvalidCompletionException());
+        //    }
+        //}
 
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>
         internal static Exception CreateInvalidCompletionException() => new ClosedChannelException();

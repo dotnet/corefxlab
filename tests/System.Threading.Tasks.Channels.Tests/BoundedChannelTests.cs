@@ -318,5 +318,41 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.True(await write1);
             Assert.True(await write2);
         }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AllowSynchronousContinuations_ReadAsync_ContinuationsInvokedAccordingToSetting(bool allowSynchronousContinuations)
+        {
+            Channel<int> c = Channel.CreateBounded<int>(1, optimizations: new ChannelOptimizations { AllowSynchronousContinuations = allowSynchronousContinuations });
+
+            int expectedId = Environment.CurrentManagedThreadId;
+            Task r = c.In.ReadAsync().AsTask().ContinueWith(_ =>
+            {
+                Assert.Equal(allowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
+            }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+
+            Assert.Equal(TaskStatus.RanToCompletion, c.Out.WriteAsync(42).Status);
+            ((IAsyncResult)r).AsyncWaitHandle.WaitOne(); // avoid inlining the continuation
+            r.GetAwaiter().GetResult();
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AllowSynchronousContinuations_CompletionTask_ContinuationsInvokedAccordingToSetting(bool allowSynchronousContinuations)
+        {
+            Channel<int> c = Channel.CreateBounded<int>(1, optimizations: new ChannelOptimizations { AllowSynchronousContinuations = allowSynchronousContinuations });
+
+            int expectedId = Environment.CurrentManagedThreadId;
+            Task r = c.In.Completion.ContinueWith(_ =>
+            {
+                Assert.Equal(allowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
+            }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+
+            Assert.True(c.Out.TryComplete());
+            ((IAsyncResult)r).AsyncWaitHandle.WaitOne(); // avoid inlining the continuation
+            r.GetAwaiter().GetResult();
+        }
     }
 }
