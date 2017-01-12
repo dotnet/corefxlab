@@ -21,7 +21,7 @@ namespace System.Threading.Tasks.Channels
         /// <summary>Readers blocked reading from the channel.</summary>
         private readonly Dequeue<ReaderInteractor<T>> _blockedReaders = new Dequeue<ReaderInteractor<T>>();
         /// <summary>Readers waiting for a notification that data is available.</summary>
-        private readonly Dequeue<ReaderInteractor<bool>> _waitingReaders = new Dequeue<ReaderInteractor<bool>>();
+        private ReaderInteractor<bool> _waitingReaders;
         /// <summary>Whether to force continuations to be executed asynchronously from producer writes.</summary>
         private readonly bool _runContinuationsAsynchronously;
         /// <summary>Set to non-null once Complete has been called.</summary>
@@ -77,11 +77,11 @@ namespace System.Threading.Tasks.Channels
                 if (_runContinuationsAsynchronously)
                 {
                     Debug.Assert(_blockedReaders.IsEmpty, "There's data available, so there shouldn't be any blocked readers.");
-                    Debug.Assert(_waitingReaders.IsEmpty, "There's data available, so there shouldn't be any waiting readers.");
+                    Debug.Assert(_waitingReaders == null, "There's data available, so there shouldn't be any waiting readers.");
                 }
                 Debug.Assert(!_completion.Task.IsCompleted, "We still have data available, so shouldn't be completed.");
             }
-            if ((!_blockedReaders.IsEmpty || !_waitingReaders.IsEmpty) && _runContinuationsAsynchronously)
+            if ((!_blockedReaders.IsEmpty || _waitingReaders != null) && _runContinuationsAsynchronously)
             {
                 Debug.Assert(_items.IsEmpty, "There are blocked/waiting readers, so there shouldn't be any data available.");
             }
@@ -125,7 +125,7 @@ namespace System.Threading.Tasks.Channels
             // will be the one to transition from _doneWriting false to true.  As such, we can
             // freely manipulate _blockedReaders and _waitingReaders without any concurrency concerns.
             ChannelUtilities.FailInteractors<ReaderInteractor<T>,T>(_blockedReaders, error);
-            ChannelUtilities.WakeUpWaiters(_waitingReaders, result: false);
+            ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: false);
 
             // Successfully transitioned to completed.
             return true;
@@ -202,9 +202,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Queue the waiter
-                ReaderInteractor<bool> r = ReaderInteractor<bool>.Create(_runContinuationsAsynchronously, cancellationToken);
-                _waitingReaders.EnqueueTail(r);
-                return r.Task;
+                return ChannelUtilities.GetOrCreateWaiter(ref _waitingReaders, _runContinuationsAsynchronously, cancellationToken);
             }
         }
 
@@ -227,9 +225,10 @@ namespace System.Threading.Tasks.Channels
 
         private bool TryWrite(T item)
         {
-            ReaderInteractor<T> blockedReader = null;
             while (true)
             {
+                ReaderInteractor<T> blockedReader = null;
+                ReaderInteractor<bool> waitingReaders = null;
                 lock (SyncObj)
                 {
                     // If writing has already been marked as done, fail the write.
@@ -248,17 +247,12 @@ namespace System.Threading.Tasks.Channels
                     if (_blockedReaders.IsEmpty)
                     {
                         _items.Enqueue(item);
-                        if (_waitingReaders.IsEmpty)
+                        waitingReaders = _waitingReaders;
+                        if (waitingReaders == null)
                         {
                             return true;
                         }
-                        else if (_runContinuationsAsynchronously)
-                        {
-                            ChannelUtilities.WakeUpWaiters(_waitingReaders, result: true);
-                            return true;
-                        }
-                        // else we have readers and are running continuations asynchronously
-                        // so we need to exit the lock before we can wake them all up
+                        _waitingReaders = null;
                     }
                     else
                     {
@@ -282,8 +276,7 @@ namespace System.Threading.Tasks.Channels
                     // we could cause some spurious wake-ups here, if we tell a waiter there's
                     // something available but all data has already been removed.  It's a benign
                     // race condition, though, as consumers already need to account for such things.
-                    Debug.Assert(!_runContinuationsAsynchronously, "Should only be here if we're allowing synchronous continuations");
-                    ChannelUtilities.WakeUpWaiters(SyncObj, _waitingReaders, result: true);
+                    waitingReaders.Success(item: true);
                     return true;
                 }
             }

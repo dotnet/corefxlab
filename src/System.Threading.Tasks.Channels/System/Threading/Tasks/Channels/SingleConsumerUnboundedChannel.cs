@@ -265,12 +265,11 @@ namespace System.Threading.Tasks.Channels
                     {
                         _items.Enqueue(item);
 
-                        if (_waitingReader == null)
+                        waitingReader = _waitingReader;
+                        if (waitingReader == null)
                         {
                             return true;
                         }
-
-                        waitingReader = _waitingReader;
                         _waitingReader = null;
                     }
                 }

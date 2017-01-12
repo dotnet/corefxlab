@@ -28,6 +28,9 @@ namespace System.Threading.Tasks.Channels
     {
         protected ReaderInteractor(bool runContinuationsAsynchronously) : base(runContinuationsAsynchronously) { }
 
+        public static ReaderInteractor<T> Create(bool runContinuationsAsynchronously) =>
+            new ReaderInteractor<T>(runContinuationsAsynchronously);
+
         public static ReaderInteractor<T> Create(bool runContinuationsAsynchronously, CancellationToken cancellationToken) =>
             cancellationToken.CanBeCanceled ?
                 new CancelableReaderInteractor<T>(runContinuationsAsynchronously, cancellationToken) :
