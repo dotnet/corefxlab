@@ -14,7 +14,7 @@ namespace System.Threading.Tasks.Channels
             bool transitionedToCompleted = TrySetResult(item);
             if (transitionedToCompleted)
             {
-                Dispose();
+                UnregisterCancellation();
             }
             return transitionedToCompleted;
         }
@@ -24,12 +24,12 @@ namespace System.Threading.Tasks.Channels
             bool transitionedToCompleted = TrySetException(exception);
             if (transitionedToCompleted)
             {
-                Dispose();
+                UnregisterCancellation();
             }
             return transitionedToCompleted;
         }
 
-        protected virtual void Dispose() { }
+        internal virtual void UnregisterCancellation() { }
     }
 
     internal class ReaderInteractor<T> : Interactor<T>
@@ -73,7 +73,7 @@ namespace System.Threading.Tasks.Channels
             }, this);
         }
 
-        protected override void Dispose() => _registration.Dispose();
+        internal override void UnregisterCancellation() => _registration.Dispose();
     }
 
     internal sealed class CancelableWriter<T> : WriterInteractor<T>
@@ -91,6 +91,6 @@ namespace System.Threading.Tasks.Channels
             }, this);
         }
 
-        protected override void Dispose() => _registration.Dispose();
+        internal override void UnregisterCancellation() => _registration.Dispose();
     }
 }
