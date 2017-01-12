@@ -39,7 +39,7 @@ namespace System.Buffers
             this(segments.First, segments.Rest, Unspecified)
         { }
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = false)
+        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
         {
             if (position == Position.First)
             {
@@ -185,7 +185,7 @@ namespace System.Buffers
             {
                 Position position = new Position();
                 ReadOnlyMemory<byte> segment;
-                while (_rest.TryGet(ref position, out segment, true))
+                while (_rest.TryGet(ref position, out segment))
                 {
                     length += segment.Length;
                 }

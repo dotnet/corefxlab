@@ -31,7 +31,7 @@ namespace System.Collections.Sequences
             return new SequenceEnumerator<T>(this);
         }
 
-        public bool TryGet(ref Position position, out T item, bool advance = false)
+        public bool TryGet(ref Position position, out T item, bool advance = true)
         {
             return _items.TryGet(ref position, out item, advance);
         }
