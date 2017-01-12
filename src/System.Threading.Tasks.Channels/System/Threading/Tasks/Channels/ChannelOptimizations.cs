@@ -20,10 +20,13 @@ namespace System.Threading.Tasks.Channels
         /// </summary>
         public bool SingleReader { get; set; }
         /// <summary>
-        /// true if operations performed on a channel may synchronous invoke continuations subscribed to notifications
-        /// of such operations, e.g. if a write on a channel may synchronously invoke a continuation off a task previously
-        /// returned from a <see cref="ReadableChannel{T}.ReadAsync(CancellationToken)"/> call. false if all
-        /// continuations should be invoked asynchronously.  The default is false.
+        /// true if operations performed on a channel may synchronously invoke continuations subscribed to notifications
+        /// of pending async operations, e.g. if a ```TryWrite``` on a channel may synchronously invoke a continuation off
+        /// a task previously returned from a <see cref="ReadableChannel{T}.ReadAsync(CancellationToken)"/> call. false if all
+        /// continuations should be invoked asynchronously.  This can provide measurable throughput improvements by avoiding
+        /// scheduling additional work items; however, it may come at the cost of reduced parallelism, as for example a producer
+        /// may then be the one to execute work associated with a consumer, and if not done thoughtfully, this can lead
+        /// to unexpected interactions. The default is false.
         /// </summary>
         public bool AllowSynchronousContinuations { get; set; }
     }
