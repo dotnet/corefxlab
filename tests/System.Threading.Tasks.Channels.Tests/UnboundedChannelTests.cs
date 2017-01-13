@@ -102,7 +102,7 @@ namespace System.Threading.Tasks.Channels.Tests
         }
 
         [Fact]
-        public void AllowSynchronousContinuations_ContinuationsInvokedAccordingToSetting()
+        public void AllowSynchronousContinuations_ReadAsync_ContinuationsInvokedAccordingToSetting()
         {
             Channel<int> c = CreateChannel();
 
@@ -113,6 +113,22 @@ namespace System.Threading.Tasks.Channels.Tests
             }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 
             Assert.Equal(TaskStatus.RanToCompletion, c.Out.WriteAsync(42).Status);
+            ((IAsyncResult)r).AsyncWaitHandle.WaitOne(); // avoid inlining the continuation
+            r.GetAwaiter().GetResult();
+        }
+
+        [Fact]
+        public void AllowSynchronousContinuations_CompletionTask_ContinuationsInvokedAccordingToSetting()
+        {
+            Channel<int> c = CreateChannel();
+
+            int expectedId = Environment.CurrentManagedThreadId;
+            Task r = c.In.Completion.ContinueWith(_ =>
+            {
+                Assert.Equal(AllowSynchronousContinuations, expectedId == Environment.CurrentManagedThreadId);
+            }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+
+            Assert.True(c.Out.TryComplete());
             ((IAsyncResult)r).AsyncWaitHandle.WaitOne(); // avoid inlining the continuation
             r.GetAwaiter().GetResult();
         }

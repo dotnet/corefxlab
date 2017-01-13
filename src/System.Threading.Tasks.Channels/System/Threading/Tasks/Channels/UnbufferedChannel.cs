@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 namespace System.Threading.Tasks.Channels
 {
     /// <summary>Provides an unbuffered channel, such that a reader and a writer must rendezvous to succeed.</summary>
-    [DebuggerDisplay("Waiting Writers = {WaitingWritersCountForDebugger}, Waiting Readers = {WaitingReadersCountForDebugger}")]
+    [DebuggerDisplay("Writers Waiting/Blocked: {WaitingWritersCountForDebugger}/{BlockedWritersCountForDebugger}, Readers Waiting/Blocked: {WaitingReadersCountForDebugger}/{BlockedReadersCountForDebugger}")]
     [DebuggerTypeProxy(typeof(UnbufferedChannel<>.DebugView))]
     internal sealed class UnbufferedChannel<T> : Channel<T>
     {
@@ -19,10 +19,10 @@ namespace System.Threading.Tasks.Channels
         private readonly Dequeue<ReaderInteractor<T>> _blockedReaders = new Dequeue<ReaderInteractor<T>>();
         /// <summary>A queue of writers blocked waiting to be matched with a reader.</summary>
         private readonly Dequeue<WriterInteractor<T>> _blockedWriters = new Dequeue<WriterInteractor<T>>();
-        /// <summary>Tasks waiting for data to be available to read.</summary>
-        private readonly Dequeue<ReaderInteractor<bool>> _waitingReaders = new Dequeue<ReaderInteractor<bool>>();
-        /// <summary>Tasks waiting for data to be available to write.</summary>
-        private readonly Dequeue<ReaderInteractor<bool>> _waitingWriters = new Dequeue<ReaderInteractor<bool>>();
+        /// <summary>Task signaled when any WaitToReadAsync waiters should be woken up.</summary>
+        private ReaderInteractor<bool> _waitingReaders;
+        /// <summary>Task signaled when any WaitToReadAsync waiters should be woken up.</summary>
+        private ReaderInteractor<bool> _waitingWriters;
 
         private sealed class Readable : ReadableChannel<T>
         {
@@ -95,23 +95,13 @@ namespace System.Threading.Tasks.Channels
                 }
                 ChannelUtilities.Complete(_completion, error);
 
-                // Fail any blocked readers, as there will be no writers to pair them with.
-                while (!_blockedReaders.IsEmpty)
-                {
-                    var reader = _blockedReaders.DequeueHead();
-                    reader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
-                }
-
-                // Fail any blocked writers, as there will be no readers to pair them with.
-                while (!_blockedWriters.IsEmpty)
-                {
-                    var writer = _blockedWriters.DequeueHead();
-                    writer.Fail(ChannelUtilities.CreateInvalidCompletionException());
-                }
+                // Fail any blocked readers/writers, as there will be no writers/readers to pair them with.
+                ChannelUtilities.FailInteractors<ReaderInteractor<T>,T>(_blockedReaders, error);
+                ChannelUtilities.FailInteractors<WriterInteractor<T>,VoidResult>(_blockedWriters, error);
 
                 // Let any waiting readers and writers know there won't be any more data
-                ChannelUtilities.WakeUpWaiters(_waitingReaders, result: false);
-                ChannelUtilities.WakeUpWaiters(_waitingWriters, result: false);
+                ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: false);
+                ChannelUtilities.WakeUpWaiters(ref _waitingWriters, result: false);
             }
 
             return true;
@@ -162,7 +152,7 @@ namespace System.Threading.Tasks.Channels
                 _blockedReaders.EnqueueTail(r);
 
                 // And let any waiting writers know it's their lucky day.
-                ChannelUtilities.WakeUpWaiters(_waitingWriters, result: true);
+                ChannelUtilities.WakeUpWaiters(ref _waitingWriters, result: true);
 
                 return new ValueTask<T>(r.Task);
             }
@@ -243,7 +233,7 @@ namespace System.Threading.Tasks.Channels
                 _blockedWriters.EnqueueTail(w);
 
                 // And let any waiting readers know it's their lucky day.
-                ChannelUtilities.WakeUpWaiters(_waitingReaders, result: true);
+                ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: true);
 
                 return w.Task;
             }
@@ -266,9 +256,7 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Otherwise, queue the waiter.
-                var r = ReaderInteractor<bool>.Create(true, cancellationToken);
-                _waitingReaders.EnqueueTail(r);
-                return r.Task;
+                return ChannelUtilities.GetOrCreateWaiter(ref _waitingReaders, true, cancellationToken);
             }
         }
 
@@ -289,17 +277,18 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Otherwise, queue the writer
-                var w = ReaderInteractor<bool>.Create(true, cancellationToken);
-                _waitingWriters.EnqueueTail(w);
-                return w.Task;
+                return ChannelUtilities.GetOrCreateWaiter(ref _waitingWriters, true, cancellationToken);
             }
         }
 
-        /// <summary>Gets the number of writers waiting on the channel.  This should only be used by the debugger.</summary>
-        private int WaitingWritersCountForDebugger => _waitingWriters.Count;
-
-        /// <summary>Gets the number of readers waiting on the channel.  This should only be used by the debugger.</summary>
-        private int WaitingReadersCountForDebugger => _waitingReaders.Count;
+        /// <summary>Gets whether there are any waiting writers.  This should only be used by the debugger.</summary>
+        private bool WaitingWritersCountForDebugger => _waitingWriters != null;
+        /// <summary>Gets whether there are any waiting readers.  This should only be used by the debugger.</summary>
+        private bool WaitingReadersCountForDebugger => _waitingReaders != null;
+        /// <summary>Gets the number of blocked writers.  This should only be used by the debugger.</summary>
+        private int BlockedWritersCountForDebugger => _blockedWriters.Count;
+        /// <summary>Gets the number of blocked readers.  This should only be used by the debugger.</summary>
+        private int BlockedReadersCountForDebugger => _blockedReaders.Count;
 
         private sealed class DebugView
         {
@@ -310,8 +299,8 @@ namespace System.Threading.Tasks.Channels
                 _channel = channel;
             }
 
-            public int WaitingReaders => _channel._waitingReaders.Count;
-            public int WaitingWriters => _channel._waitingWriters.Count;
+            public bool WaitingReaders => _channel._waitingReaders != null;
+            public bool WaitingWriters => _channel._waitingWriters != null;
             public int BlockedReaders => _channel._blockedReaders.Count;
             public T[] BlockedWriters
             {

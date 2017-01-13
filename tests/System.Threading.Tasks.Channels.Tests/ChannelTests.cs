@@ -41,12 +41,6 @@ namespace System.Threading.Tasks.Channels.Tests
             Assert.False(co.AllowSynchronousContinuations);
         }
 
-        [Fact]
-        public void CreateUnbounded_InvalidChannelOptimizations_ThrowArgumentException()
-        {
-            Assert.Throws<ArgumentNullException>("optimizations", () => Channel.CreateUnbounded<int>(null));
-        }
-
         [Theory]
         [InlineData(0)]
         [InlineData(-2)]

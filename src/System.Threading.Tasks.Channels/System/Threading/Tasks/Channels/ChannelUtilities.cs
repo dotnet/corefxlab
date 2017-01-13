@@ -67,48 +67,23 @@ namespace System.Threading.Tasks.Channels
             return new ValueTask<T>(t);
         }
 
-        /// <summary>Removes all waiters from the queue, completing each.</summary>
-        /// <param name="waiters">The queue of waiters to complete.</param>
+        /// <summary>Wake up all of the waiters and null out the field.</summary>
+        /// <param name="waiters">The waiters.</param>
         /// <param name="result">The value with which to complete each waiter.</param>
-        internal static void WakeUpWaiters(Dequeue<ReaderInteractor<bool>> waiters, bool result)
+        internal static void WakeUpWaiters(ref ReaderInteractor<bool> waiters, bool result)
         {
-            if (!waiters.IsEmpty)
+            ReaderInteractor<bool> w = waiters;
+            if (w != null)
             {
-                WakeUpWaitersCore(waiters, result); // separated out to streamline inlining
-            }
-        }
-
-        /// <summary>Core of ChannelUtilities.WakeUpWaiters, separated out for performance due to inlining.</summary>
-        internal static void WakeUpWaitersCore(Dequeue<ReaderInteractor<bool>> waiters, bool result)
-        {
-            while (!waiters.IsEmpty)
-            {
-                waiters.DequeueHead().Success(result);
-            }
-        }
-
-        /// <summary>Removes all waiters from the queue, completing each.</summary>
-        /// <param name="syncObj">Lock held while manipulating <paramref name="waiters"/> but not while completing each waiter.</param>
-        /// <param name="waiters">The queue of waiters to complete.</param>
-        /// <param name="result">The value with which to complete each waiter.</param>
-        internal static void WakeUpWaiters(object syncObj, Dequeue<ReaderInteractor<bool>> waiters, bool result)
-        {
-            while (true)
-            {
-                ReaderInteractor<bool> r;
-                lock (syncObj)
-                {
-                    if (waiters.IsEmpty) return;
-                    r = waiters.DequeueHead();
-                }
-                r.Success(result);
+                w.Success(result);
+                waiters = null;
             }
         }
 
         /// <summary>Removes all interactors from the queue, failing each.</summary>
         /// <param name="interactors">The queue of interactors to complete.</param>
         /// <param name="error">The error with which to complete each interactor.</param>
-        internal static void FailInteractors<T>(Dequeue<ReaderInteractor<T>> interactors, Exception error)
+        internal static void FailInteractors<T, TInner>(Dequeue<T> interactors, Exception error) where T : Interactor<TInner>
         {
             while (!interactors.IsEmpty)
             {
@@ -116,22 +91,28 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        /// <summary>Removes all interactors from the queue, failing each.</summary>
-        /// <param name="syncObj">Lock held while manipulating <paramref name="interactors"/> but not while completing each interactor.</param>
-        /// <param name="interactors">The queue of interactors to complete.</param>
-        /// <param name="error">The error with which to complete each interactor.</param>
-        internal static void FailInteractors<T>(object syncObj, Dequeue<ReaderInteractor<T>> interactors, Exception error)
+        /// <summary>Gets or creates a "waiter" (e.g. WaitForRead/WriteAsync) interactor.</summary>
+        /// <param name="waiter">The field storing the waiter interactor.</param>
+        /// <param name="runContinuationsAsynchronously">true to force continuations to run asynchronously; otherwise, false.</param>
+        /// <param name="cancellationToken">The token to use to cancel the wait.</param>
+        internal static Task<bool> GetOrCreateWaiter(ref ReaderInteractor<bool> waiter, bool runContinuationsAsynchronously, CancellationToken cancellationToken)
         {
-            while (true)
+            // Get the existing waiters interactor.
+            ReaderInteractor<bool> w = waiter;
+
+            // If there isn't one, create one.  This explicitly does not include the cancellation token,
+            // as we reuse it for any number of waiters that overlap.
+            if (w == null)
             {
-                ReaderInteractor<T> interactor;
-                lock (syncObj)
-                {
-                    if (interactors.IsEmpty) return;
-                    interactor = interactors.DequeueHead();
-                }
-                interactor.Fail(error ?? CreateInvalidCompletionException());
+                waiter = w = ReaderInteractor<bool>.Create(runContinuationsAsynchronously);
             }
+
+            // If the cancellation token can't be canceled, then just return the waiter task.
+            // If it can, we need to return a task that will complete when the waiter task does but that can also be canceled.
+            // Easiest way to do that is with a cancelable continuation.
+            return cancellationToken.CanBeCanceled ?
+                w.Task.ContinueWith(t => t.Result, cancellationToken, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default) :
+                w.Task;
         }
 
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>

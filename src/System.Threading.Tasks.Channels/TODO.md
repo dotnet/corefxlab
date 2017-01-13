@@ -5,10 +5,11 @@ so as to make reads entirely lock-free (right now they're lock-free when data is
 - *SingleProducerSingleConsumerUnboundedChannel*: We can clone the code for SCUnboundedChannel to an SPSCUnboundedChannel that's used
 when both ChannelOptimizations.SingleReader and ChannelOptimizations.SingleWriter are true in Channel.CreateUnbounded. We should then
 be able to remove most of the locking used in the write operation implementations.
-- *ChannelOptimizations in CreateBounded*: Right now ChannelOptimizations isn't used for CreateBounded.  We need to enable the
-AllowSynchronousContinuations option, and may be able to specialize implementations based on SingleReader/SingleWriter, either
-individually or in combination. If nothing else, GetAwaiter should be optimizable to use a cached awaiter when SingleReader.
-- *ChannelOptimizations in CreateUnbuffered*: Same as above, but for CreateUnbuffered instead of CreateBounded.
+- *ChannelOptimizations in CreateBounded*: Right now ChannelOptimizations is minimially used CreateBounded.  AllowSynchronousContinuations is
+used, but currently only for the completion tasks and read tasks, not for write tasks. We may also be able to specialize implementations
+based on SingleReader/SingleWriter, either individually or in combination. If nothing else, GetAwaiter should be optimizable to use a cached
+awaiter when SingleReader.
+- *ChannelOptimizations in CreateUnbuffered*: CreateUnbuffered currently doesn't use ChannelOptimizations at all.
 - *Add multi item operations*: We should likely add several virtual methods to ReadableChannel and WritableChannel for writing
 multiple items at a time, e.g. ```public virtual Task<int> WriteAsync(ReadOnlyMemory<T> items)```,
 ```public virtual Task<int> WriteAsync(IEnumerable<T> items```, etc.
