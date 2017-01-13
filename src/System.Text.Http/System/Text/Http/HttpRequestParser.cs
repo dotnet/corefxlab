@@ -96,6 +96,9 @@ namespace System.Text.Http
         static readonly Utf8String s_Http1_1 = new Utf8String("HTTP/1.1");
         static readonly Utf8String s_Http2_0 = new Utf8String("HTTP/2.0");
 
+        internal static readonly byte[] Eol = new byte[] { s_CR, s_LF };
+        internal static readonly byte[] Eoh = new byte[] { s_CR, s_LF, s_CR, s_LF }; // End of Headers
+
         internal const byte s_SP = 32; // space
         internal const byte s_CR = 13; // carriage return
         internal const byte s_LF = 10; // line feed
@@ -148,7 +151,7 @@ namespace System.Text.Http
             {
                 return Utf8String.Empty;
             }
-            Buffer = Buffer.Slice(parsedBytes);
+            Buffer = Buffer.Slice(parsedBytes + Eol.Length);
             return httpVersion;
         }
 
@@ -199,12 +202,6 @@ namespace System.Text.Http
         static readonly Utf8String s_Post = new Utf8String("POST ");
         static readonly Utf8String s_Put = new Utf8String("PUT ");
         static readonly Utf8String s_Delete = new Utf8String("DELETE ");
-
-        public static bool TryParseRequestLine(ReadOnlySpan<byte> buffer, out HttpRequestLine requestLine)
-        {
-            int parsedBytes;
-            return TryParseRequestLine(buffer, out requestLine, out parsedBytes);
-        }
 
         internal static bool TryParseRequestLine(ReadOnlySpan<byte> buffer, out HttpRequestLine requestLine, out int totalParsedBytes)
         {
@@ -263,12 +260,14 @@ namespace System.Text.Http
             parsedBytes = 0;
             return false;
         }
+
         internal static bool TryParseRequestUri(ReadOnlySpan<byte> buffer, out Utf8String requestUri, out int parsedBytes)
         {
             var uriSpan = buffer.SliceTo(HttpRequestReader.s_SP, out parsedBytes);
             requestUri = new Utf8String(uriSpan);
             return parsedBytes != 0;
         }
+
         internal static bool TryParseHttpVersion(ReadOnlySpan<byte> buffer, out Utf8String httpVersion, out int parsedBytes)
         {
             var versionSpan = buffer.SliceTo(HttpRequestReader.s_CR, HttpRequestReader.s_LF, out parsedBytes);
@@ -276,37 +275,19 @@ namespace System.Text.Http
             return parsedBytes != 0;
         }
 
-        internal static bool StartsWith(this ReadOnlySpan<byte> left, ReadOnlySpan<byte> right)
-        {
-            if (left.Length < right.Length) return false;
-            for (int index = 0; index < right.Length; index++) {
-                if (left[index] != right[index]) return false;
-            }
-            return true;
-        }
-
         internal static bool TryParseHeaders(ReadOnlySpan<byte> bytes, out HttpHeaders headers, out int parsed)
         {
-            while (true)
+            var index = bytes.IndexOf(HttpRequestReader.Eoh);
+            if(index == -1)
             {
-                var candidate = bytes.IndexOf((byte)'\r');
-                if(candidate == -1 || candidate > bytes.Length - 4)
-                {
-                    parsed = 0;
-                    headers = default(HttpHeaders);
-                    return false;
-                }
-                if (bytes[candidate + 1] == '\n' && bytes[candidate + 2] == '\r' && bytes[candidate + 3] == '\n')
-                {
-                    parsed = candidate + 4;
-                    headers = new HttpHeaders(bytes.Slice(0, candidate + 2));
-                    return true;
-                }
-                else
-                {
-                    bytes = bytes.Slice(candidate + 1);
-                }
+                headers = default(HttpHeaders);
+                parsed = 0;
+                return false;
             }
+
+            headers = new HttpHeaders(bytes.Slice(0, index + HttpRequestReader.Eol.Length));
+            parsed = index + HttpRequestReader.Eoh.Length;
+            return true;
         }
     }
 }
