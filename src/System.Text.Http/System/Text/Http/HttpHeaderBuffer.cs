@@ -57,21 +57,14 @@ namespace System.Text.Http
 
         internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, byte terminator, out int consumedBytes)
         {
-            var index = start;
-            var count = 0;
-            while (index < buffer.Length)
-            {
-                if (buffer[index] == terminator)
-                {
-                    consumedBytes = count + 1;
-                    return buffer.Slice(start, count);
-                }
-                count++;
-                index++;
+            var slice = buffer.Slice(start);
+            var index = ReadOnlySpanExtensions.IndexOf(slice, terminator);
+            if (index == -1) {
+                consumedBytes = 0;
+                return Span<byte>.Empty;
             }
-            consumedBytes = 0;
-
-            return Span<byte>.Empty;
+            consumedBytes = index;
+            return slice.Slice(0, index);
         }
 
         internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, char terminatorFirst, char terminatorSecond, out int consumedBytes)

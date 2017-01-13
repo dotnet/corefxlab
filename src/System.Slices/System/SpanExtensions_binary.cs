@@ -10,7 +10,7 @@ namespace System
     /// <summary>
     /// A collection of convenient span helpers, exposed as extension methods.
     /// </summary>
-    public static partial class SpanExtensions
+    public static partial class SpanExtensionsLabs
     {
         /// <summary>
         /// Casts a Slice of one primitive type (T) to another primitive type (U).

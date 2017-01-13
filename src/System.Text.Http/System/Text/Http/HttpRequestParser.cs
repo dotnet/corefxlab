@@ -219,6 +219,7 @@ namespace System.Text.Http
 
             requestLine.RequestUri = reader.ReadRequestUri();
             if(requestLine.RequestUri.Length == 0) { return false; }
+            reader.Buffer = reader.Buffer.Slice(1);
 
             requestLine.Version = reader.ReadHttpVersion();
             if (requestLine.Version == HttpVersion.Unknown) { return false; }
