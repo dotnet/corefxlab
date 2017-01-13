@@ -10,7 +10,7 @@ namespace System
     /// <summary>
     /// A collection of convenient span helpers, exposed as extension methods.
     /// </summary>
-    public static partial class SpanExtensions
+    public static partial class SpanExtensionsLabs
     {
   
         // Helper methods similar to System.ArrayExtension:
@@ -49,12 +49,7 @@ namespace System
 
         public static int IndexOf(this ReadOnlySpan<char> str, string value)
         {
-            return IndexOf(str, value.Slice());
-        }
-
-        public static int IndexOf(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
-        {
-            throw new NotImplementedException();
+            return ReadOnlySpanExtensions.IndexOf(str, value.Slice());
         }
 
         public static int IndexOfAny(this ReadOnlySpan<char> str, params char[] values)
