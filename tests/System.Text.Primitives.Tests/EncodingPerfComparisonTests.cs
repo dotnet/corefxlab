@@ -40,7 +40,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(1000, 0x0800, 0xFFFF)]
         public void EncodingPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
         {
-            string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint, true);
+            string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
             ReadOnlySpan<char> characters = unicodeString.Slice();
 
             int encodedBytes;
@@ -59,7 +59,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        public string GenerateString(int charLength, int minCodePoint, int maxCodePoint, bool isLE = false)
+        public string GenerateString(int charLength, int minCodePoint, int maxCodePoint)
         {
             Random rand = new Random();
             var plainText = new StringBuilder();
@@ -70,7 +70,7 @@ namespace System.Text.Primitives.Tests
                 {
                     val = rand.Next(minCodePoint, maxCodePoint); // skip surrogate characters
                 }
-                plainText.Append(isLE ? (char)((val << 8) | (val >> 8)) : (char)val);
+                plainText.Append((char)val);
             }
             return plainText.ToString();
         }
