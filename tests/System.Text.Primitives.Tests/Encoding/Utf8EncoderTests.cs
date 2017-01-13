@@ -79,10 +79,10 @@ namespace System.Text.Utf8.Tests
 
         public static object[][] TryEncodeFromUTF16ToUTF8TestData = {
             // empty
-            new object[] { TextEncoder.Utf8, new byte[] { }, new ReadOnlySpan<char>(new char[]{ (char)0x5000 } ), false },
+            new object[] { TextEncoder.Utf8, new byte[] { }, new ReadOnlySpan<char>(new char[]{ (char)0x0050 } ), false },
             // multiple bytes
             new object[] { TextEncoder.Utf8, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
-                new ReadOnlySpan<char>(new char[]{ (char)0x5000, (char)0xE803, (char)0xC8AF, (char)0x52D8, (char)0xF0DD } ), true },
+                new ReadOnlySpan<char>(new char[]{ (char)0x0050, (char)0x03E8, (char)0xAFC8, (char)0xD852, (char)0xDDF0 } ), true },
         };
 
         [Theory, MemberData("TryEncodeFromUTF16ToUTF8TestData")]

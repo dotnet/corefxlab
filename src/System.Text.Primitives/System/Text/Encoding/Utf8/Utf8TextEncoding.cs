@@ -40,23 +40,21 @@ namespace System.Text.Utf8
 
             for (int i = 0; i < inputLength; i++)
             {
-                var utf16BE = utf16[i];
-                
-                var codePointLE = (char)((utf16BE << 8) | (utf16BE >> 8));
+                var codePoint = utf16[i];
 
-                if (codePointLE <= 0x7F)
+                if (codePoint <= 0x7F)
                 {
                     bytesWrittenForCodePoint = 1;
                 }
-                else if (codePointLE <= 0x7FF)
+                else if (codePoint <= 0x7FF)
                 {
                     bytesWrittenForCodePoint = 2;
                 }
-                else if (char.IsSurrogate(codePointLE))
+                else if (char.IsSurrogate(codePoint))
                 {
                     bytesWrittenForCodePoint = 4;
                 }
-                else if (codePointLE <= 0xFFFF)
+                else if (codePoint <= 0xFFFF)
                 {
                     bytesWrittenForCodePoint = 3;
                 }
@@ -75,31 +73,30 @@ namespace System.Text.Utf8
                 switch (bytesWrittenForCodePoint)
                 {
                     case 1:
-                        buffer[bytesWritten] = (byte)(b0111_1111U & codePointLE);
+                        buffer[bytesWritten] = (byte)(b0111_1111U & codePoint);
                         break;
                     case 2:
-                        buffer[bytesWritten] = (byte)(((codePointLE >> 6) & b0001_1111U) | b1100_0000U);
-                        buffer[bytesWritten + 1] = (byte)(((codePointLE >> 0) & b0011_1111U) | b1000_0000U);
+                        buffer[bytesWritten] = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
+                        buffer[bytesWritten + 1] = (byte)(((codePoint >> 0) & b0011_1111U) | b1000_0000U);
                         break;
                     case 3:
-                        buffer[bytesWritten] = (byte)(((codePointLE >> 12) & b0000_1111U) | b1110_0000U);
-                        buffer[bytesWritten + 1] = (byte)(((codePointLE >> 6) & b0011_1111U) | b1000_0000U);
-                        buffer[bytesWritten + 2] = (byte)(((codePointLE >> 0) & b0011_1111U) | b1000_0000U);
+                        buffer[bytesWritten] = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
+                        buffer[bytesWritten + 1] = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
+                        buffer[bytesWritten + 2] = (byte)(((codePoint >> 0) & b0011_1111U) | b1000_0000U);
                         break;
                     case 4:
                         if (++i >= inputLength)
                             throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
-                        var lowSurrogateBE = utf16[i];
-                        var lowSurrogateLE = (char)((lowSurrogateBE << 8) | (lowSurrogateBE >> 8));
+                        var lowSurrogate = utf16[i];
 
-                        if (codePointLE < UnicodeConstants.Utf16HighSurrogateFirstCodePoint
-                                || codePointLE > UnicodeConstants.Utf16HighSurrogateLastCodePoint
-                                || lowSurrogateLE < UnicodeConstants.Utf16LowSurrogateFirstCodePoint
-                                || lowSurrogateLE > UnicodeConstants.Utf16LowSurrogateLastCodePoint)
+                        if (codePoint < UnicodeConstants.Utf16HighSurrogateFirstCodePoint
+                                || codePoint > UnicodeConstants.Utf16HighSurrogateLastCodePoint
+                                || lowSurrogate < UnicodeConstants.Utf16LowSurrogateFirstCodePoint
+                                || lowSurrogate > UnicodeConstants.Utf16LowSurrogateLastCodePoint)
                             throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
 
-                        uint answer = (((codePointLE - UnicodeConstants.Utf16HighSurrogateFirstCodePoint) << 10)
-                                | (lowSurrogateLE - UnicodeConstants.Utf16LowSurrogateFirstCodePoint)) + 0x10000;
+                        uint answer = (((codePoint - UnicodeConstants.Utf16HighSurrogateFirstCodePoint) << 10)
+                                | (lowSurrogate - UnicodeConstants.Utf16LowSurrogateFirstCodePoint)) + 0x10000;
 
                         buffer[bytesWritten] = (byte)(((answer >> 18) & b0000_0111U) | b1111_0000U);
                         buffer[bytesWritten + 1] = (byte)(((answer >> 12) & b0011_1111U) | b1000_0000U);
