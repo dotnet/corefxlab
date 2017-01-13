@@ -96,7 +96,7 @@ public static class Channel
 }
 ```
 - ```CreateUnbounded<T>```: Used to create a buffered, unbounded channel.  The channel may be used concurrently
-by any number of readers and writers, and is unbounded in size, limited only by available memory. As such, as long as The
+by any number of readers and writers, and is unbounded in size, limited only by available memory. As such, as long as the
 channel has not been marked for completion, writes will always complete synchronously and successfully, e.g. ```TryWrite``` will
 return true, ```WaitForWriteAsync``` will synchronously return a ```Task<bool>``` with a result of true, ```WriteAsync``` will
 synchronously return a completed task, etc.
