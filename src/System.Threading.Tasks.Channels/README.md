@@ -32,7 +32,7 @@ public abstract class ReadableChannel<T>
 	...
 }
 
-public interface WritableChannel<in T>
+public abstract class WritableChannel<in T>
 {
     public abstract bool TryWrite(T item);
     public abstract Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken));
@@ -393,7 +393,7 @@ library is more focused on the specific scenario of handing data off between ope
 for that scenario, further expanding on the kinds of such buffers available and with implementations geared towards the relevant
 consumption models.
 
-When these Channel interfaces become part of corefx, System.Threading.Tasks.Dataflow may take a dependency on 
+When these Channel abstract classes become part of corefx, System.Threading.Tasks.Dataflow may take a dependency on 
 System.Threading.Tasks.Channels as a lower-level set of abstractions, replacing internal implementation details with these channels.
 It's also possible that several of the blocks in System.Threading.Tasks.Dataflow could be modified to relate to channels in the public API,
 enabling direct integration between the libraries.  For example, ```BufferBlock<T>```  could derive from ```Channel<T>```,
