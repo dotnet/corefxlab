@@ -39,10 +39,11 @@ namespace System.Text.Utf16
         public override bool TryEncodeFromUnicode(ReadOnlySpan<UnicodeCodePoint> codePoints, Span<byte> buffer, out int bytesWritten)
         {
             var availableBytes = buffer.Length;
+            var inputLength = codePoints.Length;
             int bytesWrittenForCodePoint = 0;
             bytesWritten = 0;
 
-            for (int i = 0; i < codePoints.Length; i++)
+            for (int i = 0; i < inputLength;  i++)
             {
                 if (availableBytes <= bytesWritten || !Utf16LittleEndianEncoder.TryEncodeCodePoint(codePoints[i], buffer.Slice(bytesWritten), out bytesWrittenForCodePoint))
                 {
@@ -58,10 +59,11 @@ namespace System.Text.Utf16
         public override bool TryDecodeToUnicode(Span<byte> encoded, Span<UnicodeCodePoint> decoded, out int bytesWritten)
         {
             var avaliableBytes = encoded.Length;
+            var outputLength = decoded.Length;
             int bytesWrittenForCodePoint = 0;
             bytesWritten = 0;
 
-            for (int i = 0; i < decoded.Length; i++)
+            for (int i = 0; i < outputLength; i++)
             {
                 UnicodeCodePoint decodedCodePoint = decoded[i];
 

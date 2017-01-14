@@ -33,71 +33,95 @@ namespace System.Text.Utf8
 
         public override bool TryEncodeFromUtf16(ReadOnlySpan<char> utf16, Span<byte> buffer, out int bytesWritten)
         {
-            var avaliableBytes = buffer.Length;
+            var availableBytes = buffer.Length;
+            var inputLength = utf16.Length;
+            int tempCounter = 0;
             bytesWritten = 0;
-            for (int i = 0; i < utf16.Length; i++)
+
+            for (int i = 0; i < inputLength; i++)
             {
-                var c = utf16[i];
+                var codePoint = utf16[i];
 
-                var codepoint = (ushort)c;
-                if (codepoint <= 0x7f) // this if block just optimizes for ascii
+                if (codePoint <= 0x7F)
                 {
-                    if (bytesWritten + 1 > avaliableBytes)
+                    if (tempCounter + 1 > availableBytes)
                     {
                         bytesWritten = 0;
                         return false;
                     }
-                    buffer[bytesWritten++] = (byte)codepoint;
+                    buffer[tempCounter] = (byte)(codePoint);
+                    tempCounter++;
+                    continue;
                 }
-                else
+                else if (codePoint <= 0x7FF)
                 {
-                    Utf8EncodedCodePoint encoded;
-                    if (!char.IsSurrogate(c))
-                        encoded = new Utf8EncodedCodePoint(c);
-                    else
+                    if (tempCounter + 2 > availableBytes)
                     {
-                        if (++i >= utf16.Length)
-                            throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
-                        char lowSurrogate = utf16[i];
-                        encoded = new Utf8EncodedCodePoint(c, lowSurrogate);
+                        bytesWritten = 0;
+                        return false;
                     }
-
-
-                    if (bytesWritten + encoded.Length > avaliableBytes)
+                    buffer[tempCounter] = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    continue;
+                }
+                else if (char.IsSurrogate(codePoint))
+                {
+                    if (tempCounter + 4 > availableBytes)
                     {
                         bytesWritten = 0;
                         return false;
                     }
 
-                    buffer[bytesWritten] = encoded.Byte0;
-                    if (encoded.Length > 1)
+                    if (++i >= inputLength)
+                        throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
+                    var lowSurrogate = utf16[i];
+                    if (!char.IsHighSurrogate(codePoint) || !char.IsLowSurrogate(lowSurrogate))
+                        throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
+
+                    uint answer = (((codePoint - UnicodeConstants.Utf16HighSurrogateFirstCodePoint) << 10)
+                            | (lowSurrogate - UnicodeConstants.Utf16LowSurrogateFirstCodePoint)) + 0x10000;
+                    
+                    buffer[tempCounter] = (byte)(((answer >> 18) & b0000_0111U) | b1111_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((answer >> 12) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((answer >> 6) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((answer) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    continue;
+                }
+                else if (codePoint <= 0xFFFF)
+                {
+                    if (tempCounter + 3 > availableBytes)
                     {
-                        buffer[bytesWritten + 1] = encoded.Byte1;
-
-                        if (encoded.Length > 2)
-                        {
-                            buffer[bytesWritten + 2] = encoded.Byte2;
-
-                            if (encoded.Length > 3)
-                            {
-                                buffer[bytesWritten + 3] = encoded.Byte3;
-                            }
-                        }
+                        bytesWritten = 0;
+                        return false;
                     }
-
-                    bytesWritten += encoded.Length;
+                    buffer[tempCounter] = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    continue;
                 }
             }
+
+            bytesWritten = tempCounter;
             return true;
         }
 
         public override bool TryEncodeFromUnicode(ReadOnlySpan<UnicodeCodePoint> codePoints, Span<byte> buffer, out int bytesWritten)
         {
             int availableBytes = buffer.Length;
+            var inputLength = codePoints.Length;
             int bytesWrittenForCodePoint = 0;
             bytesWritten = 0;
 
-            for (int i = 0; i < codePoints.Length; i++)
+            for (int i = 0; i < inputLength; i++)
             {
                 UnicodeCodePoint codePoint = codePoints[i];
                 bytesWrittenForCodePoint = GetNumberOfEncodedBytes(codePoint);
@@ -156,7 +180,7 @@ namespace System.Text.Utf8
                 return 3;
             }
 
-            if (codePoint.Value <= 0x1FFFFF)
+            if (codePoint.Value <= 0x10FFFF)
             {
                 return 4;
             }
@@ -167,10 +191,11 @@ namespace System.Text.Utf8
         public override bool TryDecodeToUnicode(Span<byte> encoded, Span<UnicodeCodePoint> decoded, out int bytesWritten)
         {
             var availableBytes = encoded.Length;
+            var outputLength = decoded.Length;
             int bytesWrittenForCodePoint = 0;
             bytesWritten = 0;
 
-            for (int i = 0; i < decoded.Length; i++)
+            for (int i = 0; i < outputLength; i++)
             {
                 UnicodeCodePoint decodedCodePoint = decoded[i];
 
