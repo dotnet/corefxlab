@@ -35,7 +35,7 @@ namespace System.Text.Utf8
         {
             var availableBytes = buffer.Length;
             var inputLength = utf16.Length;
-            int bytesWrittenForCodePoint = 0;
+            int tempCounter = 0;
             bytesWritten = 0;
 
             for (int i = 0; i < inputLength; i++)
@@ -44,72 +44,73 @@ namespace System.Text.Utf8
 
                 if (codePoint <= 0x7F)
                 {
-                    bytesWrittenForCodePoint = 1;
+                    if (tempCounter + 1 > availableBytes)
+                    {
+                        bytesWritten = 0;
+                        return false;
+                    }
+                    buffer[tempCounter] = (byte)(codePoint);
+                    tempCounter++;
+                    continue;
                 }
                 else if (codePoint <= 0x7FF)
                 {
-                    bytesWrittenForCodePoint = 2;
+                    if (tempCounter + 2 > availableBytes)
+                    {
+                        bytesWritten = 0;
+                        return false;
+                    }
+                    buffer[tempCounter] = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    continue;
                 }
                 else if (char.IsSurrogate(codePoint))
                 {
-                    bytesWrittenForCodePoint = 4;
+                    if (tempCounter + 4 > availableBytes)
+                    {
+                        bytesWritten = 0;
+                        return false;
+                    }
+
+                    if (++i >= inputLength)
+                        throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
+                    var lowSurrogate = utf16[i];
+                    if (!char.IsHighSurrogate(codePoint) || !char.IsLowSurrogate(lowSurrogate))
+                        throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
+
+                    uint answer = (((codePoint - UnicodeConstants.Utf16HighSurrogateFirstCodePoint) << 10)
+                            | (lowSurrogate - UnicodeConstants.Utf16LowSurrogateFirstCodePoint)) + 0x10000;
+                    
+                    buffer[tempCounter] = (byte)(((answer >> 18) & b0000_0111U) | b1111_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((answer >> 12) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((answer >> 6) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((answer) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    continue;
                 }
                 else if (codePoint <= 0xFFFF)
                 {
-                    bytesWrittenForCodePoint = 3;
-                }
-                else
-                {
-                    bytesWritten = 0;
-                    return false;
-                }
-
-                if (bytesWritten + bytesWrittenForCodePoint > availableBytes)
-                {
-                    bytesWritten = 0;
-                    return false;
-                }
-
-                switch (bytesWrittenForCodePoint)
-                {
-                    case 1:
-                        buffer[bytesWritten] = (byte)(b0111_1111U & codePoint);
-                        break;
-                    case 2:
-                        buffer[bytesWritten] = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
-                        buffer[bytesWritten + 1] = (byte)(((codePoint >> 0) & b0011_1111U) | b1000_0000U);
-                        break;
-                    case 3:
-                        buffer[bytesWritten] = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
-                        buffer[bytesWritten + 1] = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
-                        buffer[bytesWritten + 2] = (byte)(((codePoint >> 0) & b0011_1111U) | b1000_0000U);
-                        break;
-                    case 4:
-                        if (++i >= inputLength)
-                            throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
-                        var lowSurrogate = utf16[i];
-
-                        if (codePoint < UnicodeConstants.Utf16HighSurrogateFirstCodePoint
-                                || codePoint > UnicodeConstants.Utf16HighSurrogateLastCodePoint
-                                || lowSurrogate < UnicodeConstants.Utf16LowSurrogateFirstCodePoint
-                                || lowSurrogate > UnicodeConstants.Utf16LowSurrogateLastCodePoint)
-                            throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
-
-                        uint answer = (((codePoint - UnicodeConstants.Utf16HighSurrogateFirstCodePoint) << 10)
-                                | (lowSurrogate - UnicodeConstants.Utf16LowSurrogateFirstCodePoint)) + 0x10000;
-
-                        buffer[bytesWritten] = (byte)(((answer >> 18) & b0000_0111U) | b1111_0000U);
-                        buffer[bytesWritten + 1] = (byte)(((answer >> 12) & b0011_1111U) | b1000_0000U);
-                        buffer[bytesWritten + 2] = (byte)(((answer >> 6) & b0011_1111U) | b1000_0000U);
-                        buffer[bytesWritten + 3] = (byte)(((answer >> 0) & b0011_1111U) | b1000_0000U);
-                        break;
-                    default:
+                    if (tempCounter + 3 > availableBytes)
+                    {
                         bytesWritten = 0;
                         return false;
+                    }
+                    buffer[tempCounter] = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    buffer[tempCounter] = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                    tempCounter++;
+                    continue;
                 }
-
-                bytesWritten += bytesWrittenForCodePoint;
             }
+
+            bytesWritten = tempCounter;
             return true;
         }
 
