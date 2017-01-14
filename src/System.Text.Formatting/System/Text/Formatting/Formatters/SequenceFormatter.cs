@@ -39,7 +39,7 @@ namespace System.Text.Formatting
         private Memory<byte> Current { 
             get {
                 Memory<byte> result;
-                if (!_buffers.TryGet(ref _currentPosition, out result)) { throw new InvalidOperationException(); }
+                if (!_buffers.TryGet(ref _currentPosition, out result, advance: false)) { throw new InvalidOperationException(); }
                 return result;
             }
         }
@@ -47,7 +47,7 @@ namespace System.Text.Formatting
         {
             get {
                 Memory<byte> result;
-                if (!_buffers.TryGet(ref _previousPosition, out result)) { throw new InvalidOperationException(); }
+                if (!_buffers.TryGet(ref _previousPosition, out result, advance: false)) { throw new InvalidOperationException(); }
                 return result;
             }
         }
@@ -65,7 +65,7 @@ namespace System.Text.Formatting
             _previousWrittenBytes = _currentWrittenBytes;
 
             Memory<byte> span;
-            if (!_buffers.TryGet(ref _currentPosition, out span, advance: true)) {
+            if (!_buffers.TryGet(ref _currentPosition, out span)) {
                 throw new InvalidOperationException();
             }
             _currentWrittenBytes = 0;            

@@ -54,7 +54,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed);
 
-            ReadOnlySpan<byte> utf16ByteSpan = charSpan.Cast<char, byte>();
+            ReadOnlySpan<byte> utf16ByteSpan = charSpan.AsBytes();
             result = PrimitiveParser.TryParseDecimal(utf16ByteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf16);
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);

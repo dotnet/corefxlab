@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace System
 {
-    public static partial class SpanExtensions
+    public static partial class SpanExtensionsLabs
     {
         /// <summary>
         /// platform independent fast memory comparison
@@ -80,31 +80,10 @@ namespace System
         /// </summary>
         /// <param name="first">A span of type T to compare to second.</param>
         /// <param name="second">A span of type T to compare to first.</param>
-        public static bool SequenceEqual<T>(this ReadOnlySpan<T> first, ReadOnlySpan<T> second)
-            where T : struct, IEquatable<T>
-        {
-            int length = first.Length;
-            if (length != second.Length)
-                return false;
-
-            // @todo: Can capture and iterate ref with DangerousGetPinnedReference() like the IL used to, but need C#7 for that.
-            for (int i = 0; i < length; i++)
-            {
-                if (!first[i].Equals(second[i]))
-                    return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Determines whether two spans are equal by comparing the elements by using generic Equals method
-        /// </summary>
-        /// <param name="first">A span of type T to compare to second.</param>
-        /// <param name="second">A span of type T to compare to first.</param>
         public static bool SequenceEqual<T>(this Span<T> first, ReadOnlySpan<T> second)
             where T : struct, IEquatable<T>
         {
-            return SequenceEqual((ReadOnlySpan<T>)first, second);
+            return SpanExtensions.SequenceEqual(first, second);
         }
 
         /// <summary>
@@ -120,35 +99,11 @@ namespace System
         }
 
         /// <summary>
-        /// Determines whether two read-only spans are equal (byte-wise) by comparing the elements by using memcmp
-        /// </summary>
-        /// <param name="first">A span of bytes to compare to second.</param>
-        /// <param name="second">A span of bytes T to compare to first.</param>
-        public static bool SequenceEqual(this ReadOnlySpan<byte> first, ReadOnlySpan<byte> second)
-        {
-            return first.Length >= 320
-                ? MemoryEqual(first, second)
-                : SequenceEqual<byte>(first, second);
-        }
-
-        /// <summary>
         /// Determines whether two spans are equal (byte-wise) by comparing the elements by using memcmp
         /// </summary>
         /// <param name="first">A span of characters to compare to second.</param>
         /// <param name="second">A span of characters T to compare to first.</param>
         public static bool SequenceEqual(this Span<char> first, Span<char> second)
-        {
-            return first.Length >= 512
-                ? MemoryEqual(first, second)
-                : SequenceEqual<char>(first, second);
-        }
-
-        /// <summary>
-        /// Determines whether two read-only spans are equal (byte-wise) by comparing the elements by using memcmp
-        /// </summary>
-        /// <param name="first">A span of characters to compare to second.</param>
-        /// <param name="second">A span of characters T to compare to first.</param>
-        public static bool SequenceEqual(this ReadOnlySpan<char> first, ReadOnlySpan<char> second)
         {
             return first.Length >= 512
                 ? MemoryEqual(first, second)
@@ -176,7 +131,7 @@ namespace System
         {
             return first.Length >= 512
                 ? MemoryEqual(first, second)
-                : SequenceEqual<short>(first, second);
+                : ReadOnlySpanExtensions.SequenceEqual<short>(first, second);
         }
 
         /// <summary>
@@ -200,7 +155,7 @@ namespace System
         {
             return first.Length >= 256
                 ? MemoryEqual(first, second)
-                : SequenceEqual<int>(first, second);
+                : ReadOnlySpanExtensions.SequenceEqual(first, second);
         }
 
         /// <summary>
@@ -224,7 +179,7 @@ namespace System
         {
             return first.Length >= 256
                 ? MemoryEqual(first, second)
-                : SequenceEqual<long>(first, second);
+                : ReadOnlySpanExtensions.SequenceEqual(first, second);
         }
 
         /// <summary>
@@ -288,7 +243,7 @@ namespace System
                 return SequenceEqual(Cast<T, short>(first), Cast<U, short>(second));
             }
 
-            return SequenceEqual(Cast<T, byte>(first), Cast<U, byte>(second));
+            return ReadOnlySpanExtensions.SequenceEqual(Cast<T, byte>(first), Cast<U, byte>(second));
         }
     }
 }

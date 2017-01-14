@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Parsing;
 using System.Text.Utf8;
-using System.Text.Internal;
 
 namespace System.IO.Pipelines.Text.Primitives
 {

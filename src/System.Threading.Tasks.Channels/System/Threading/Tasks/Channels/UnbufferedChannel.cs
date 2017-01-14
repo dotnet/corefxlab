@@ -9,9 +9,9 @@ using System.Runtime.CompilerServices;
 namespace System.Threading.Tasks.Channels
 {
     /// <summary>Provides an unbuffered channel, such that a reader and a writer must rendezvous to succeed.</summary>
-    [DebuggerDisplay("Waiting Writers = {WaitingWritersCountForDebugger}, Waiting Readers = {WaitingReadersCountForDebugger}")]
+    [DebuggerDisplay("Writers Waiting/Blocked: {WaitingWritersCountForDebugger}/{BlockedWritersCountForDebugger}, Readers Waiting/Blocked: {WaitingReadersCountForDebugger}/{BlockedReadersCountForDebugger}")]
     [DebuggerTypeProxy(typeof(UnbufferedChannel<>.DebugView))]
-    internal sealed class UnbufferedChannel<T> : IChannel<T>
+    internal sealed class UnbufferedChannel<T> : Channel<T>
     {
         /// <summary>Task that represents the completion of the channel.</summary>
         private readonly TaskCompletionSource<VoidResult> _completion = new TaskCompletionSource<VoidResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -19,18 +19,47 @@ namespace System.Threading.Tasks.Channels
         private readonly Dequeue<ReaderInteractor<T>> _blockedReaders = new Dequeue<ReaderInteractor<T>>();
         /// <summary>A queue of writers blocked waiting to be matched with a reader.</summary>
         private readonly Dequeue<WriterInteractor<T>> _blockedWriters = new Dequeue<WriterInteractor<T>>();
-        /// <summary>Tasks waiting for data to be available to read.</summary>
-        private readonly Dequeue<ReaderInteractor<bool>> _waitingReaders = new Dequeue<ReaderInteractor<bool>>();
-        /// <summary>Tasks waiting for data to be available to write.</summary>
-        private readonly Dequeue<ReaderInteractor<bool>> _waitingWriters = new Dequeue<ReaderInteractor<bool>>();
+        /// <summary>Task signaled when any WaitToReadAsync waiters should be woken up.</summary>
+        private ReaderInteractor<bool> _waitingReaders;
+        /// <summary>Task signaled when any WaitToReadAsync waiters should be woken up.</summary>
+        private ReaderInteractor<bool> _waitingWriters;
+
+        private sealed class Readable : ReadableChannel<T>
+        {
+            internal readonly UnbufferedChannel<T> _parent;
+            internal Readable(UnbufferedChannel<T> parent) { _parent = parent; }
+
+            public override Task Completion => _parent.Completion;
+            public override ValueTask<T> ReadAsync(CancellationToken cancellationToken) => _parent.ReadAsync(cancellationToken);
+            public override bool TryRead(out T item) => _parent.TryRead(out item);
+            public override Task<bool> WaitToReadAsync(CancellationToken cancellationToken) => _parent.WaitToReadAsync(cancellationToken);
+        }
+
+        private sealed class Writable : WritableChannel<T>
+        {
+            internal readonly UnbufferedChannel<T> _parent;
+            internal Writable(UnbufferedChannel<T> parent) { _parent = parent; }
+
+            public override bool TryComplete(Exception error) => _parent.TryComplete(error);
+            public override bool TryWrite(T item) => _parent.TryWrite(item);
+            public override Task<bool> WaitToWriteAsync(CancellationToken cancellationToken) => _parent.WaitToWriteAsync(cancellationToken);
+            public override Task WriteAsync(T item, CancellationToken cancellationToken) => _parent.WriteAsync(item, cancellationToken);
+        }
 
         /// <summary>Initialize the channel.</summary>
-        internal UnbufferedChannel() { }
+        internal UnbufferedChannel()
+        {
+            In = new Readable(this);
+            Out = new Writable(this);
+        }
+
+        public override ReadableChannel<T> In { get; }
+        public override WritableChannel<T> Out { get; }
 
         /// <summary>Gets an object used to synchronize all state on the instance.</summary>
         private object SyncObj => _completion;
 
-        public Task Completion => _completion.Task;
+        private Task Completion => _completion.Task;
 
         [Conditional("DEBUG")]
         private void AssertInvariants()
@@ -53,7 +82,7 @@ namespace System.Threading.Tasks.Channels
             }
         }
 
-        public bool TryComplete(Exception error = null)
+        private bool TryComplete(Exception error = null)
         {
             lock (SyncObj)
             {
@@ -66,31 +95,19 @@ namespace System.Threading.Tasks.Channels
                 }
                 ChannelUtilities.Complete(_completion, error);
 
-                // Fail any blocked readers, as there will be no writers to pair them with.
-                while (!_blockedReaders.IsEmpty)
-                {
-                    var reader = _blockedReaders.DequeueHead();
-                    reader.Fail(error ?? ChannelUtilities.CreateInvalidCompletionException());
-                }
-
-                // Fail any blocked writers, as there will be no readers to pair them with.
-                while (!_blockedWriters.IsEmpty)
-                {
-                    var writer = _blockedWriters.DequeueHead();
-                    writer.Fail(ChannelUtilities.CreateInvalidCompletionException());
-                }
+                // Fail any blocked readers/writers, as there will be no writers/readers to pair them with.
+                ChannelUtilities.FailInteractors<ReaderInteractor<T>,T>(_blockedReaders, error);
+                ChannelUtilities.FailInteractors<WriterInteractor<T>,VoidResult>(_blockedWriters, error);
 
                 // Let any waiting readers and writers know there won't be any more data
-                ChannelUtilities.WakeUpWaiters(_waitingReaders, result: false);
-                ChannelUtilities.WakeUpWaiters(_waitingWriters, result: false);
+                ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: false);
+                ChannelUtilities.WakeUpWaiters(ref _waitingWriters, result: false);
             }
 
             return true;
         }
 
-        public ValueAwaiter<T> GetAwaiter() => new ValueAwaiter<T>(ReadAsync());
-
-        public ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private ValueTask<T> ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             T item;
             return TryRead(out item) ?
@@ -112,7 +129,10 @@ namespace System.Threading.Tasks.Channels
                 // If we're already completed, nothing to read.
                 if (_completion.Task.IsCompleted)
                 {
-                    return new ValueTask<T>(Task.FromException<T>(_completion.Task.IsFaulted ? _completion.Task.Exception.InnerException : ChannelUtilities.CreateInvalidCompletionException()));
+                    return new ValueTask<T>(
+                        _completion.Task.IsFaulted ? Task.FromException<T>(_completion.Task.Exception.InnerException) :
+                        _completion.Task.IsCanceled ? Task.FromCanceled<T>(new CancellationToken(true)) :
+                        Task.FromException<T>(ChannelUtilities.CreateInvalidCompletionException()));
                 }
 
                 // If there are any blocked writers, find one to pair up with
@@ -132,13 +152,13 @@ namespace System.Threading.Tasks.Channels
                 _blockedReaders.EnqueueTail(r);
 
                 // And let any waiting writers know it's their lucky day.
-                ChannelUtilities.WakeUpWaiters(_waitingWriters, result: true);
+                ChannelUtilities.WakeUpWaiters(ref _waitingWriters, result: true);
 
                 return new ValueTask<T>(r.Task);
             }
         }
 
-        public bool TryRead(out T item)
+        private bool TryRead(out T item)
         {
             lock (SyncObj)
             {
@@ -161,7 +181,7 @@ namespace System.Threading.Tasks.Channels
             return false;
         }
 
-        public bool TryWrite(T item)
+        private bool TryWrite(T item)
         {
             lock (SyncObj)
             {
@@ -182,7 +202,7 @@ namespace System.Threading.Tasks.Channels
             return false;
         }
 
-        public Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
+        private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -213,13 +233,13 @@ namespace System.Threading.Tasks.Channels
                 _blockedWriters.EnqueueTail(w);
 
                 // And let any waiting readers know it's their lucky day.
-                ChannelUtilities.WakeUpWaiters(_waitingReaders, result: true);
+                ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: true);
 
                 return w.Task;
             }
         }
 
-        public Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToReadAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             lock (SyncObj)
             {
@@ -236,13 +256,11 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Otherwise, queue the waiter.
-                var r = ReaderInteractor<bool>.Create(true, cancellationToken);
-                _waitingReaders.EnqueueTail(r);
-                return r.Task;
+                return ChannelUtilities.GetOrCreateWaiter(ref _waitingReaders, true, cancellationToken);
             }
         }
 
-        public Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             lock (SyncObj)
             {
@@ -259,17 +277,18 @@ namespace System.Threading.Tasks.Channels
                 }
 
                 // Otherwise, queue the writer
-                var w = ReaderInteractor<bool>.Create(true, cancellationToken);
-                _waitingWriters.EnqueueTail(w);
-                return w.Task;
+                return ChannelUtilities.GetOrCreateWaiter(ref _waitingWriters, true, cancellationToken);
             }
         }
 
-        /// <summary>Gets the number of writers waiting on the channel.  This should only be used by the debugger.</summary>
-        private int WaitingWritersCountForDebugger => _waitingWriters.Count;
-
-        /// <summary>Gets the number of readers waiting on the channel.  This should only be used by the debugger.</summary>
-        private int WaitingReadersCountForDebugger => _waitingReaders.Count;
+        /// <summary>Gets whether there are any waiting writers.  This should only be used by the debugger.</summary>
+        private bool WaitingWritersCountForDebugger => _waitingWriters != null;
+        /// <summary>Gets whether there are any waiting readers.  This should only be used by the debugger.</summary>
+        private bool WaitingReadersCountForDebugger => _waitingReaders != null;
+        /// <summary>Gets the number of blocked writers.  This should only be used by the debugger.</summary>
+        private int BlockedWritersCountForDebugger => _blockedWriters.Count;
+        /// <summary>Gets the number of blocked readers.  This should only be used by the debugger.</summary>
+        private int BlockedReadersCountForDebugger => _blockedReaders.Count;
 
         private sealed class DebugView
         {
@@ -280,8 +299,8 @@ namespace System.Threading.Tasks.Channels
                 _channel = channel;
             }
 
-            public int WaitingReaders => _channel._waitingReaders.Count;
-            public int WaitingWriters => _channel._waitingWriters.Count;
+            public bool WaitingReaders => _channel._waitingReaders != null;
+            public bool WaitingWriters => _channel._waitingWriters != null;
             public int BlockedReaders => _channel._blockedReaders.Count;
             public T[] BlockedWriters
             {

@@ -16,7 +16,7 @@ namespace System.Collections.Sequences.Tests
             var position = Position.First;
             int arrayIndex = 0;
             int item;
-            while (collection.TryGet(ref position, out item, advance: true)) {
+            while (collection.TryGet(ref position, out item)) {
                 Assert.Equal(array[arrayIndex++], item);
             }
         }
@@ -39,7 +39,7 @@ namespace System.Collections.Sequences.Tests
             var position = Position.First;
             int arrayIndex = array.Length;
             int item;
-            while (collection.TryGet(ref position, out item, advance: true)) {
+            while (collection.TryGet(ref position, out item)) {
                 Assert.Equal(array[--arrayIndex], item);
             }
         }
@@ -62,7 +62,7 @@ namespace System.Collections.Sequences.Tests
             int arrayIndex = 0;
             var position = Position.First;
             KeyValuePair<int, string> item;
-            while (collection.TryGet(ref position, out item, advance: true)) {
+            while (collection.TryGet(ref position, out item)) {
                 Assert.Equal(array[arrayIndex++], item.Key);
             }
         }

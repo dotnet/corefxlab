@@ -86,7 +86,7 @@ namespace Microsoft.Net.Http
             _head.Dispose();
         }
 
-        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = false)
+        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
         {
             if (position == Position.First) {
                 item = _head.Commited;

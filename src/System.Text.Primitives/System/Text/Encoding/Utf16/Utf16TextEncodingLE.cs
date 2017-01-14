@@ -63,10 +63,6 @@ namespace System.Text.Utf16
 
             for (int i = 0; i < decoded.Length; i++)
             {
-                if (i == 0xE000)
-                {
-                    bytesWrittenForCodePoint = 0;
-                }
                 UnicodeCodePoint decodedCodePoint = decoded[i];
 
                 if (avaliableBytes - bytesWritten < 2)

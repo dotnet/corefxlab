@@ -26,7 +26,7 @@ namespace System.Collections.Sequences
 
         int? ISequence<T>.Length => Length;
 
-        public bool TryGet(ref Position position, out T item, bool advance = false)
+        public bool TryGet(ref Position position, out T item, bool advance = true)
         {
             item = default(T);
 

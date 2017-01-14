@@ -2,13 +2,13 @@
   "copyright": "Microsoft Corporation, All rights reserved.",
   "name": "System.Text.Primitives",
   "version": "0.1.0-*",
-  "description": "Low-level methods and architecture for .NET text handling",
+  "description": "Efficient parsing, formatting, and encoding APIs",
   "authors": [
     "Microsoft Corporation"
   ],
   "packOptions": {
     "tags": [
-      ".NET formatting corefxlab"
+      ".NET formatting parsing encoding UTF8"
     ],
     "releaseNotes": "Pre-release package, for testing only",
     "licenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
@@ -25,8 +25,9 @@
     }
   },
   "dependencies": {
-    "System.Slices": { "target": "project" },
-    "System.Buffers": "4.3.0"
+    "NETStandard.Library": "1.6.0",
+    "System.Memory": "4.4.0-*",
+    "System.Slices": { "target": "project" }
   },
   "frameworks": {
     "netstandard1.1": {

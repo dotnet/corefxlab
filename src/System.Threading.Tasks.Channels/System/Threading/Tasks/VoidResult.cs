@@ -4,5 +4,6 @@
 
 namespace System.Threading.Tasks
 {
+    /// <summary>An empty struct, used to represent void in generic types.</summary>
     internal struct VoidResult { }
 }

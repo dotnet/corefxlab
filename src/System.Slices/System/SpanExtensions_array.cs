@@ -10,7 +10,7 @@ namespace System
     /// <summary>
     /// A collection of convenient span helpers, exposed as extension methods.
     /// </summary>
-    public static partial class SpanExtensions
+    public static partial class SpanExtensionsLabs
     {
         // span creation helpers:
         /// <summary>

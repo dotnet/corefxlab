@@ -11,30 +11,25 @@ namespace System.Threading.Tasks.Channels
 
         internal bool Success(T item)
         {
-            bool transitionedToCompleted = TrySetResult(item);
-            if (transitionedToCompleted)
-            {
-                Dispose();
-            }
-            return transitionedToCompleted;
+            UnregisterCancellation();
+            return TrySetResult(item);
         }
 
         internal bool Fail(Exception exception)
         {
-            bool transitionedToCompleted = TrySetException(exception);
-            if (transitionedToCompleted)
-            {
-                Dispose();
-            }
-            return transitionedToCompleted;
+            UnregisterCancellation();
+            return TrySetException(exception);
         }
 
-        protected virtual void Dispose() { }
+        internal virtual void UnregisterCancellation() { }
     }
 
     internal class ReaderInteractor<T> : Interactor<T>
     {
         protected ReaderInteractor(bool runContinuationsAsynchronously) : base(runContinuationsAsynchronously) { }
+
+        public static ReaderInteractor<T> Create(bool runContinuationsAsynchronously) =>
+            new ReaderInteractor<T>(runContinuationsAsynchronously);
 
         public static ReaderInteractor<T> Create(bool runContinuationsAsynchronously, CancellationToken cancellationToken) =>
             cancellationToken.CanBeCanceled ?
@@ -73,7 +68,11 @@ namespace System.Threading.Tasks.Channels
             }, this);
         }
 
-        protected override void Dispose() => _registration.Dispose();
+        internal override void UnregisterCancellation()
+        {
+            _registration.Dispose();
+            _registration = default(CancellationTokenRegistration);
+        }
     }
 
     internal sealed class CancelableWriter<T> : WriterInteractor<T>
@@ -91,6 +90,10 @@ namespace System.Threading.Tasks.Channels
             }, this);
         }
 
-        protected override void Dispose() => _registration.Dispose();
+        internal override void UnregisterCancellation()
+        {
+            _registration.Dispose();
+            _registration = default(CancellationTokenRegistration);
+        }
     }
 }

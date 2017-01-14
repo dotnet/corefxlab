@@ -4,7 +4,6 @@
 using System.Buffers;
 using System.Collections.Sequences;
 using System.Text.Utf8;
-using System.Text.Internal;
 
 namespace System.Text.Parsing
 {
@@ -20,7 +19,7 @@ namespace System.Text.Parsing
 
             // Fetch the first segment
             ReadOnlyMemory<byte> first;
-            if (!memorySequence.TryGet(ref position, out first, advance: true)) {
+            if (!memorySequence.TryGet(ref position, out first)) {
                 return false;
             }
 
@@ -32,7 +31,7 @@ namespace System.Text.Parsing
 
             // Apparently the we need data from the second segment to succesfully parse, and so fetch the second segment.
             ReadOnlyMemory<byte> second;
-            if (!memorySequence.TryGet(ref position, out second, advance: true)) {
+            if (!memorySequence.TryGet(ref position, out second)) {
                 // if there is no second segment and the first parsed succesfully, return the result of the parsing.
                 if (parsed) return true;
                 return false;
@@ -55,7 +54,7 @@ namespace System.Text.Parsing
 
                     ReadOnlyMemory<byte> next;
                     while (free.Length > 0) {
-                        if (memorySequence.TryGet(ref position, out next, advance: true)) {
+                        if (memorySequence.TryGet(ref position, out next)) {
                             if (next.Length > free.Length) next = next.Slice(0, free.Length);
                             next.CopyTo(free);
                             free = free.Slice(next.Length);
@@ -93,7 +92,7 @@ namespace System.Text.Parsing
 
             // Fetch the first segment
             ReadOnlyMemory<byte> first;
-            if (!memorySequence.TryGet(ref position, out first, advance: true)) {
+            if (!memorySequence.TryGet(ref position, out first)) {
                 return false;
             }
 
@@ -105,7 +104,7 @@ namespace System.Text.Parsing
 
             // Apparently the we need data from the second segment to succesfully parse, and so fetch the second segment.
             ReadOnlyMemory<byte> second;
-            if (!memorySequence.TryGet(ref position, out second, advance: true)) {
+            if (!memorySequence.TryGet(ref position, out second)) {
                 // if there is no second segment and the first parsed succesfully, return the result of the parsing.
                 if (parsed) return true;
                 return false;
@@ -128,7 +127,7 @@ namespace System.Text.Parsing
 
                     ReadOnlyMemory<byte> next;
                     while (free.Length > 0) {
-                        if (memorySequence.TryGet(ref position, out next, advance: true)) {
+                        if (memorySequence.TryGet(ref position, out next)) {
                             if (next.Length > free.Length) next = next.Slice(0, free.Length);
                             next.CopyTo(free);
                             free = free.Slice(next.Length);

@@ -57,21 +57,14 @@ namespace System.Text.Http
 
         internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, byte terminator, out int consumedBytes)
         {
-            var index = start;
-            var count = 0;
-            while (index < buffer.Length)
-            {
-                if (buffer[index] == terminator)
-                {
-                    consumedBytes = count + 1;
-                    return buffer.Slice(start, count);
-                }
-                count++;
-                index++;
+            var slice = buffer.Slice(start);
+            var index = ReadOnlySpanExtensions.IndexOf(slice, terminator);
+            if (index == -1) {
+                consumedBytes = 0;
+                return Span<byte>.Empty;
             }
-            consumedBytes = 0;
-
-            return Span<byte>.Empty;
+            consumedBytes = index;
+            return slice.Slice(0, index);
         }
 
         internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, char terminatorFirst, char terminatorSecond, out int consumedBytes)
@@ -91,22 +84,26 @@ namespace System.Text.Http
 
         internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, byte terminatorFirst, byte terminatorSecond, out int consumedBytes)
         {
-            var index = start;
-            var count = 0;
-            while (index < buffer.Length)
+            int offset = 0;
+            while (true)
             {
-                if (buffer[index] == terminatorFirst && buffer.Length > index + 1 && buffer[index + 1] == terminatorSecond)
+                var slice = buffer.Slice(start + offset);
+                var index = ReadOnlySpanExtensions.IndexOf(slice, terminatorFirst);
+                if (index == -1 || index == slice.Length - 1)
                 {
-                    consumedBytes = count + 2;
-                    return buffer.Slice(start, count);
+                    consumedBytes = 0;
+                    return Span<byte>.Empty;
                 }
-                count++;
-                index++;
+                if (slice[index + 1] == terminatorSecond)
+                {
+                    consumedBytes = index;
+                    return slice.Slice(0, index + offset);
+                }
+                else
+                {
+                    offset += index;
+                }
             }
-
-            consumedBytes = 0;
-
-            return Span<byte>.Empty;
         }
     }
 }
