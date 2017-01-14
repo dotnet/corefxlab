@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace System.Text
 {
@@ -15,32 +16,166 @@ namespace System.Text
         private ParsingTrieNode[] _parsingTrie; // prefix tree used for parsing
         private TextEncoder _encoder;
 
-        // this should be removed after CreateParsingTire is implemented
-        public EncodingData(byte[][] symbols, TextEncoder encoder, Tuple<byte, int>[] parsingTrie)
-        {
-            _symbols = symbols;
-            _encoder = encoder;
-
-            var tire = new ParsingTrieNode[parsingTrie.Length];
-            for(int i=0; i<parsingTrie.Length; i++) {
-                tire[i] = new ParsingTrieNode() { valueOrNumChildren = parsingTrie[i].Item1, IndexOrSymbol = parsingTrie[i].Item2 };
-            }
-
-            _parsingTrie = tire;
-        }
-
         public EncodingData(byte[][] symbols, TextEncoder encoder)
         {
             _symbols = symbols;
             _encoder = encoder;
-            _parsingTrie = null;
-            _parsingTrie = CreateParsingTire(_symbols);
+            AbstractParsingTrie abstractParsingTrie = new AbstractParsingTrie(symbols);
+            _parsingTrie = abstractParsingTrie.GenerateParsingTrieArray();
         }
 
-        private ParsingTrieNode[] CreateParsingTire(byte[][] _digitsAndSymbols)
+        private class AbstractParsingTrie
         {
-            // TODO: this needs to be implemented;
-            return null;
+            private interface Node
+            {
+            }
+
+            private struct InternalNode : Node
+            {
+                public byte SymbolByte;
+                public List<Node> NextNodes;
+            }
+
+            private struct LeafNode : Node
+            {
+                public int SymbolIndex;
+                public List<byte> Suffix;
+            }
+
+            List<Node> root;
+
+            internal AbstractParsingTrie(byte[][] byteSequences)
+            {
+                // All sequences start out as leaf nodes
+                List<LeafNode> leafNodes = new List<LeafNode>();
+                for (int i = 0; i < byteSequences.Length; i++)
+                {
+                    LeafNode leafNode = new LeafNode();
+                    leafNode.SymbolIndex = i;
+                    leafNode.Suffix = new List<byte>(byteSequences[i]);
+                    leafNodes.Add(leafNode);
+                }
+
+                // Recursively clump together sequences beginning with the same byte into internal nodes
+                root = ClumpNodes(leafNodes);
+            }
+
+            private List<Node> ClumpNodes(List<LeafNode> leafNodes)
+            {
+                Dictionary<byte, List<LeafNode>> duplicateMap = new Dictionary<byte, List<LeafNode>>();
+
+                List<Node> clumpedNodes = new List<Node>();
+
+                foreach (LeafNode leafNode in leafNodes)
+                {
+                    if (leafNode.Suffix.Count > 0)
+                    {
+                        byte firstByte = leafNode.Suffix[0];
+                        if (duplicateMap.ContainsKey(firstByte))
+                        {
+                            duplicateMap[firstByte].Add(leafNode);
+                        }
+                        else
+                        {
+                            List<LeafNode> newLeafNodes = new List<LeafNode>();
+                            newLeafNodes.Add(leafNode);
+                            duplicateMap.Add(firstByte, newLeafNodes);
+                        }
+                    }
+                    else
+                    {
+                        clumpedNodes.Add(leafNode);
+                    }
+                }
+
+                foreach (KeyValuePair<byte, List<LeafNode>> duplicateInitialByteLeafNodeList in duplicateMap)
+                {
+                    byte initialByte = duplicateInitialByteLeafNodeList.Key;
+                    List<LeafNode> leafNodesSharingInitialByte = duplicateInitialByteLeafNodeList.Value;
+
+                    // If there is more than one set of suffixes with the same initial byte
+                    if (leafNodesSharingInitialByte.Count > 1)
+                    {
+                        // Pop the initial byte from the leaf nodes in this list
+                        foreach (LeafNode leafNode in leafNodesSharingInitialByte)
+                        {
+                            leafNode.Suffix.RemoveAt(0);
+                        }
+
+                        // Clump leaf nodes;
+                        List<Node> clumpedLeafNodes = ClumpNodes(leafNodesSharingInitialByte);
+
+                        // Create internal node to be parent of leaf nodes
+                        InternalNode internalNode = new InternalNode();
+                        internalNode.SymbolByte = initialByte;
+                        internalNode.NextNodes = clumpedLeafNodes;
+
+                        // Add internal node to clumped nodes
+                        clumpedNodes.Add(internalNode);
+                    }
+                    else
+                    {
+                        // Add leaf node directly to clumped nodes
+                        clumpedNodes.Add(leafNodesSharingInitialByte[0]);
+                    }
+                }
+
+                return clumpedNodes;
+            }
+
+            // Returns the index of the parent node in the resulting parsingTrieList
+            private int GenerateParsingTrieArrayHelper(ref List<ParsingTrieNode> parsingTrieList, List<Node> abstractChildren)
+            {
+                ParsingTrieNode parentNode = new ParsingTrieNode();
+                parentNode.ValueOrNumChildren = (byte)abstractChildren.Count;
+                parentNode.IndexOrSymbol = 0;
+
+                // Add parent node to list
+                int parentNodePlacedIndex = parsingTrieList.Count;
+                parsingTrieList.Add(parentNode);
+
+                // Leave spots for child nodes in list
+                int childNodeStartIndex = parsingTrieList.Count;
+                for (int i = 0; i < abstractChildren.Count; i++)
+                {
+                    parsingTrieList.Add(default(ParsingTrieNode));
+                }
+
+                // Process child nodes
+                List<ParsingTrieNode> childNodes = new List<ParsingTrieNode>();
+                foreach (Node abstractChild in abstractChildren)
+                {
+                    ParsingTrieNode childNode = new ParsingTrieNode();
+                    if (abstractChild is LeafNode)
+                    {
+                        childNode.ValueOrNumChildren = 0;
+                        childNode.IndexOrSymbol = ((LeafNode)abstractChild).SymbolIndex;
+                    }
+                    else if (abstractChild is InternalNode)
+                    {
+                        childNode.ValueOrNumChildren = ((InternalNode)abstractChild).SymbolByte;
+                        childNode.IndexOrSymbol = GenerateParsingTrieArrayHelper(ref parsingTrieList, ((InternalNode)abstractChild).NextNodes);
+                    }
+                    childNodes.Add(childNode);
+                }
+
+                // Place child nodes in spots allocated for them
+                int childNodeIndex = childNodeStartIndex;
+                foreach (ParsingTrieNode childNode in childNodes)
+                {
+                    parsingTrieList[childNodeIndex] = childNode;
+                    childNodeIndex++;
+                }
+
+                return parentNodePlacedIndex;
+            }
+
+            internal ParsingTrieNode[] GenerateParsingTrieArray()
+            {
+                List<ParsingTrieNode> parsingTrieList = new List<ParsingTrieNode>();
+                GenerateParsingTrieArrayHelper(ref parsingTrieList, root);
+                return parsingTrieList.ToArray();
+            }
         }
 
         public static EncodingData InvariantUtf16
@@ -68,7 +203,7 @@ namespace System.Text
             while (true)
             {
                 var node = _parsingTrie[trieIndex];
-                if (node.valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value
+                if (node.ValueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value
                 {
                     symbol = (Symbol)node.IndexOrSymbol;
                     if (VerifySuffix(buffer, bufferIndex, symbol))
@@ -254,7 +389,7 @@ namespace System.Text
             consumed = 0;
             while (true)
             {
-                if (_parsingTrie[trieIndex].valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
+                if (_parsingTrie[trieIndex].ValueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
                 {
                     symbol = (uint)_parsingTrie[trieIndex].IndexOrSymbol;  // return the parsed value
                     if (VerifySuffix(buffer, codeUnitIndex, (Symbol)symbol))
@@ -301,7 +436,7 @@ namespace System.Text
                 return nodeIndex + ((maxMinLimits << 8) >> 24) + value - (maxMinLimits >> 24);
             }
 
-            int leftBound = nodeIndex + 1, rightBound = nodeIndex + _parsingTrie[nodeIndex].valueOrNumChildren;
+            int leftBound = nodeIndex + 1, rightBound = nodeIndex + _parsingTrie[nodeIndex].ValueOrNumChildren;
             int midIndex = 0;
             while (true)
             {
@@ -310,8 +445,8 @@ namespace System.Text
                     // this loop is necessary because binary search takes the floor
                     // of the middle, which means it can give incorrect indices for insertion.
                     // we should never iterate up more than two indices.
-                    while (midIndex < nodeIndex + _parsingTrie[nodeIndex].valueOrNumChildren
-                        && _parsingTrie[midIndex].valueOrNumChildren < value)
+                    while (midIndex < nodeIndex + _parsingTrie[nodeIndex].ValueOrNumChildren
+                        && _parsingTrie[midIndex].ValueOrNumChildren < value)
                     {
                         midIndex++;
                     }
@@ -320,7 +455,7 @@ namespace System.Text
 
                 midIndex = (leftBound + rightBound) / 2; // find the middle value
 
-                byte mValue = _parsingTrie[midIndex].valueOrNumChildren;
+                byte mValue = _parsingTrie[midIndex].ValueOrNumChildren;
 
                 if (mValue < value)
                     leftBound = midIndex + 1;
@@ -365,7 +500,7 @@ namespace System.Text
         // CC = the max value, and DD = the max value's index in the same coord-system as BB.
         struct ParsingTrieNode
         {
-            public byte valueOrNumChildren;
+            public byte ValueOrNumChildren;
             public int IndexOrSymbol;
         }
     }
