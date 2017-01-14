@@ -8,7 +8,7 @@ using Xunit;
 
 namespace System.Slices.Tests
 {
-    public class ReadOnlyBytesTests
+    public partial class ReadOnlyBytesTests
     {
         [Fact]
         public void ReadOnlyBytesBasics()
@@ -186,6 +186,27 @@ namespace System.Slices.Tests
                     current = current._rest;
                 }
                 current._first = buffer;
+            }
+            return new ReadOnlyBytes(first);
+        }
+
+        private ReadOnlyBytes Create(params string[] buffers)
+        {
+            MemoryListNode first = null;
+            MemoryListNode current = null;
+            foreach (var buffer in buffers)
+            {
+                if (first == null)
+                {
+                    current = new MemoryListNode();
+                    first = current;
+                }
+                else
+                {
+                    current._rest = new MemoryListNode();
+                    current = current._rest;
+                }
+                current._first = Encoding.UTF8.GetBytes(buffer);
             }
             return new ReadOnlyBytes(first);
         }
