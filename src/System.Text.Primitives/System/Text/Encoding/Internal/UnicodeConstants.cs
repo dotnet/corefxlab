@@ -8,7 +8,7 @@ namespace System.Text
         // TODO: Some of these members are needed only in Utf16LittleEndianEncoder.
         //       Should we add the usage of them to UnicodeCodePoint class and merge this class with it?
         public const uint Utf16HighSurrogateFirstCodePoint = 0xD800;
-        public const uint Utf16HighSurrogateLastCodePoint = 0xDFFF;
+        public const uint Utf16HighSurrogateLastCodePoint = 0xDBFF;
         public const uint Utf16LowSurrogateFirstCodePoint = 0xDC00;
         public const uint Utf16LowSurrogateLastCodePoint = 0xDFFF;
 
