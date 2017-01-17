@@ -77,6 +77,28 @@ namespace System.Text.Utf8.Tests
             Assert.Equal(0xBF, ecp.Byte2);
         }
 
+        public static object[][] TryEncodeFromUTF16ToUTF8TestData = {
+            // empty
+            new object[] { TextEncoder.Utf8, new byte[] { }, new ReadOnlySpan<char>(new char[]{ (char)0x0050 } ), false },
+            // multiple bytes
+            new object[] { TextEncoder.Utf8, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
+                new ReadOnlySpan<char>(new char[]{ (char)0x0050, (char)0x03E8, (char)0xAFC8, (char)0xD852, (char)0xDDF0 } ), true },
+        };
+
+        [Theory, MemberData("TryEncodeFromUTF16ToUTF8TestData")]
+        public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar(TextEncoder encoder, byte[] expectedBytes, ReadOnlySpan<char> characters, bool expectedReturnVal)
+        {
+            Span<byte> buffer = new Span<byte>(new byte[expectedBytes.Length]);
+            int bytesWritten;
+
+            Assert.Equal(expectedReturnVal, encoder.TryEncodeFromUtf16(characters, buffer, out bytesWritten));
+            Assert.Equal(expectedReturnVal ? expectedBytes.Length : 0, bytesWritten);
+
+            if (expectedReturnVal)
+            {
+                Assert.True(AreByteArraysEqual(expectedBytes, buffer.ToArray()));
+            }
+        }
 
         public static object[][] TryEncodeFromUnicodeMultipleCodePointsTestData = {
             // empty
