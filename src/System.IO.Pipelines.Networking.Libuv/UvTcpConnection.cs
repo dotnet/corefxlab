@@ -179,11 +179,7 @@ namespace System.IO.Pipelines.Networking.Libuv
                 error = new IOException(uvError.Message, uvError);
 
                 // REVIEW: Should we treat ECONNRESET as an error?
-                // Ignore the error for now 
-                _input.CompleteWriter();
-            }
-            else if (readCount == 0 || _input.Writing.IsCompleted)
-            {
+                // Ignore the error for now
                 _input.CompleteWriter();
             }
             else
@@ -200,6 +196,11 @@ namespace System.IO.Pipelines.Networking.Libuv
                     // Resume reading when task continues
                     task.ContinueWith((t, state) => ((UvTcpConnection)state).StartReading(), this);
                 }
+            }
+
+            if (normalDone || _input.Writing.IsCompleted)
+            {
+                _input.CompleteWriter();
             }
         }
 

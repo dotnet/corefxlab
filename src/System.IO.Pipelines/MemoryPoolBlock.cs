@@ -20,7 +20,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// This object cannot be instantiated outside of the static Create method
         /// </summary>
-        protected unsafe MemoryPoolBlock(MemoryPool pool, MemoryPoolSlab slab, int offset, int length) : base(slab.Array, offset, length, slab.NativePointer + offset)
+        protected MemoryPoolBlock(MemoryPool pool, MemoryPoolSlab slab, int offset, int length) : base(slab.Array, offset, length, slab.NativePointer + offset)
         {
             _offset = offset;
             _length = length;
@@ -39,14 +39,14 @@ namespace System.IO.Pipelines
         /// </summary>
         public MemoryPoolSlab Slab { get; }
 
-#if DEBUG
+#if BLOCK_LEASE_TRACKING
         public bool IsLeased { get; set; }
         public string Leaser { get; set; }
 #endif
 
         ~MemoryPoolBlock()
         {
-#if DEBUG
+#if BLOCK_LEASE_TRACKING
             Debug.Assert(Slab == null || !Slab.IsActive, $"{Environment.NewLine}{Environment.NewLine}*** Block being garbage collected instead of returned to pool: {Leaser} ***{Environment.NewLine}");
 #endif
             if (Slab != null && Slab.IsActive)
@@ -72,7 +72,7 @@ namespace System.IO.Pipelines
         {
             return new MemoryPoolBlock(pool, slab, offset, length)
             {
-#if DEBUG
+#if BLOCK_LEASE_TRACKING
                 Leaser = Environment.StackTrace,
 #endif
             };
@@ -86,20 +86,15 @@ namespace System.IO.Pipelines
         public override string ToString()
         {
             var builder = new StringBuilder();
-            var data = Memory.Span;
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                builder.Append((char)data[i]);
-            }
+            SpanExtensions.AppendAsLiteral(Memory.Span, builder);
             return builder.ToString();
         }
 
         protected override void Dispose(bool disposing)
         {
-            Pool.Return(this);
-
             base.Dispose(disposing);
+
+            Pool.Return(this);
         }
     }
 }

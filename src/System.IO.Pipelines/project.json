@@ -14,7 +14,12 @@
   },
   "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../tools/Key.snk",
+    "define": [
+      "CONSUMING_LOCATION_TRACKING",
+      "PRODUCING_LOCATION_TRACKING",
+      "BLOCK_LEASE_TRACKING"
+    ]
   },
 
   "dependencies": {

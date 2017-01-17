@@ -83,7 +83,7 @@ namespace System.IO.Pipelines.Tests
             buffer.Append("Hello World", EncodingData.InvariantUtf8);
 
             Assert.Equal(0, stream.Length);
-
+            buffer.Commit();
             writer.Complete();
         }
 

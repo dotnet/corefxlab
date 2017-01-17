@@ -32,8 +32,8 @@ namespace System.Buffers
 
     internal class OwnerEmptyMemory<T> : OwnedMemory<T>
     {
-        public readonly static OwnedMemory<T> Shared = new OwnerEmptyMemory<T>();
         readonly static T[] s_empty = new T[0];
+        public readonly static OwnedMemory<T> Shared = new OwnerEmptyMemory<T>();
 
         public OwnerEmptyMemory() : base(s_empty, 0, 0) { }
 

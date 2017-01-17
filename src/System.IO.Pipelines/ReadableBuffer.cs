@@ -1,11 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Buffers;
 using System.Collections.Sequences;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -64,7 +62,6 @@ namespace System.IO.Pipelines
                 throw new ArgumentException("End should be greater or equal to start");
             }
             start.TryGetBuffer(end, out _first, out start);
-
             _length = -1;
         }
 
@@ -575,7 +572,7 @@ namespace System.IO.Pipelines
             {
                 throw new ArgumentOutOfRangeException(nameof(count));
             }
-            var newCursor = cursor.Seek(count, End);
+            var newCursor = cursor.Seek(count, _end);
             return newCursor;
         }
     }

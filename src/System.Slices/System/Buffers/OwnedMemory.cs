@@ -1,4 +1,5 @@
-﻿using System.Runtime;
+﻿using System.Diagnostics;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -70,7 +71,7 @@ namespace System.Buffers
         #region Lifetime Management
         protected void Initialize(T[] array, int arrayOffset, int length, IntPtr pointer = default(IntPtr))
         {
-            Contract.Requires(array != null || pointer != null);
+            Contract.Requires(array != null || pointer != IntPtr.Zero);
             Contract.Requires(array == null || arrayOffset + length <= array.Length);
             if (!IsDisposed && Id!=InitializedId) {
                 throw new InvalidOperationException("this instance has to be disposed to initialize");

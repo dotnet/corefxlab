@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Buffers;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +23,7 @@ namespace System.IO.Pipelines
 
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
+        private ReadableBuffer _lastRead;
 
         // The commit head which is the extent of the bytes available to the IPipelineReader to consume
         private BufferSegment _commitHead;
@@ -42,8 +41,12 @@ namespace System.IO.Pipelines
         private readonly TaskCompletionSource<object> _readingTcs = new TaskCompletionSource<object>();
         private readonly TaskCompletionSource<object> _writingTcs = new TaskCompletionSource<object>();
         private readonly TaskCompletionSource<object> _startingReadingTcs = new TaskCompletionSource<object>();
-#if DEBUG
+        private bool _disposed;
+#if CONSUMING_LOCATION_TRACKING
         private string _consumingLocation;
+#endif
+#if PRODUCING_LOCATION_TRACKING
+        private string _producingLocation;
 #endif
         /// <summary>
         /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
@@ -91,7 +94,20 @@ namespace System.IO.Pipelines
             // CompareExchange not required as its setting to current value if test fails
             if (Interlocked.Exchange(ref _producingState, State.Active) != State.NotActive)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyProducing);
+
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyProducing
+#if PRODUCING_LOCATION_TRACKING
+                    , _producingLocation
+#endif
+                    );
+            }
+
+#if PRODUCING_LOCATION_TRACKING
+            _producingLocation = Environment.StackTrace;
+#endif
+            if (Reading.IsCompleted)
+            {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed);
             }
 
             if (minimumSize < 0)
@@ -240,7 +256,7 @@ namespace System.IO.Pipelines
             {
                 if (_readHead == null)
                 {
-                    // Update the head to point to the head of the buffer. 
+                    // Update the head to point to the head of the buffer.
                     // This happens if we called alloc(0) then write
                     _readHead = _commitHead;
                 }
@@ -252,6 +268,9 @@ namespace System.IO.Pipelines
 
             // Clear the writing state
             _writingHead = null;
+#if PRODUCING_LOCATION_TRACKING
+            _producingLocation = null;
+#endif
         }
 
         public void AdvanceWriter(int bytesWritten)
@@ -328,15 +347,13 @@ namespace System.IO.Pipelines
             // CompareExchange not required as its setting to current value if test fails
             if (Interlocked.Exchange(ref _consumingState, State.Active) != State.NotActive)
             {
-#if DEBUG
-                var message = "Already consuming.";
-                message += " From: " + _consumingLocation;
-                throw new InvalidOperationException(message);
-#else
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyConsuming);
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyConsuming
+#if CONSUMING_LOCATION_TRACKING
+                    , _consumingLocation
 #endif
+                    );
             }
-#if DEBUG
+#if CONSUMING_LOCATION_TRACKING
             _consumingLocation = Environment.StackTrace;
 #endif
             ReadCursor readEnd;
@@ -402,7 +419,7 @@ namespace System.IO.Pipelines
                 returnSegment.Dispose();
             }
 
-#if DEBUG
+#if CONSUMING_LOCATION_TRACKING
             _consumingLocation = null;
 #endif
             // CompareExchange not required as its setting to current value if test fails
@@ -420,6 +437,14 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         public void CompleteWriter(Exception exception = null)
         {
+            if (_producingState != State.NotActive)
+            {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveProducer
+#if PRODUCING_LOCATION_TRACKING
+                    , _producingLocation
+#endif
+                    );
+            }
             // TODO: Review this lock?
             lock (_sync)
             {
@@ -454,6 +479,14 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         public void CompleteReader(Exception exception = null)
         {
+            if (_consumingState != State.NotActive)
+            {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveConsumer
+#if CONSUMING_LOCATION_TRACKING
+                    , _consumingLocation
+#endif
+                    );
+            }
             // TODO: Review this lock?
             lock (_sync)
             {
@@ -502,6 +535,10 @@ namespace System.IO.Pipelines
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
         public ReadableBufferAwaitable ReadAsync()
         {
+            if (Writing.IsCompleted)
+            {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed);
+            }
             _startingReadingTcs.TrySetResult(null);
 
             return new ReadableBufferAwaitable(this);
@@ -552,7 +589,6 @@ namespace System.IO.Pipelines
                 // Observe any exceptions if the reading task is completed
                 Reading.GetAwaiter().GetResult();
             }
-
             return new ReadResult(Read(), readingIsCancelled, readingIsCompleted);
         }
 
@@ -561,10 +597,16 @@ namespace System.IO.Pipelines
             Debug.Assert(Writing.IsCompleted, "Not completed writing");
             Debug.Assert(Reading.IsCompleted, "Not completed reading");
 
-            // TODO: Review throw if not completed?
+            GC.SuppressFinalize(this);
 
             lock (_sync)
             {
+                if (_disposed)
+                {
+                    return;
+                }
+
+                _disposed = true;
                 // Return all segments
                 var segment = _readHead;
                 while (segment != null)
