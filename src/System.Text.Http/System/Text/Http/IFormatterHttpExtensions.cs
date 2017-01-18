@@ -1,5 +1,7 @@
-﻿using System.Text.Formatting;
-using System.Text.Http;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Text.Formatting;
 using System.Text.Utf8;
 
 namespace System.Text.Http

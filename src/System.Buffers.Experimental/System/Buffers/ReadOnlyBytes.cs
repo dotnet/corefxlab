@@ -199,6 +199,93 @@ namespace System.Buffers
 
         // this is used for unspecified _length; ReadOnlyBytes can be created from list of buffers of unknown total size, 
         // and knowing the length is not needed in amy operations, e.g. slicing small section of the front.
-        const int Unspecified = -1; 
+        const int Unspecified = -1;
+
+        class MemoryListNode : IReadOnlyMemoryList<byte>
+        {
+            internal ReadOnlyMemory<byte> _first;
+            internal MemoryListNode _rest;
+            public ReadOnlyMemory<byte> First => _first;
+
+            public int? Length {
+                get {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public IReadOnlyMemoryList<byte> Rest => _rest;
+
+            public int CopyTo(Span<byte> buffer)
+            {
+                int copied = 0;
+                var position = Position.First;
+                ReadOnlyMemory<byte> segment;
+                var free = buffer;
+                while (TryGet(ref position, out segment, true))
+                {
+                    if (segment.Length > free.Length)
+                    {
+                        segment.Span.Slice(0, free.Length).CopyTo(free);
+                        copied += free.Length;
+                    }
+                    else
+                    {
+                        segment.CopyTo(free);
+                        copied += segment.Length;
+                    }
+                    free = buffer.Slice(copied);
+                    if (free.Length == 0) break;
+                }
+                return copied;
+            }
+
+            public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+            {
+                if (position == Position.First)
+                {
+                    item = _first;
+                    if (advance) { position.IntegerPosition++; position.ObjectPosition = _rest; }
+                    return true;
+                }
+                else if (position.ObjectPosition == null) { item = default(ReadOnlyMemory<byte>); return false; }
+
+                var sequence = (MemoryListNode)position.ObjectPosition;
+                item = sequence._first;
+                if (advance)
+                {
+                    if (position == Position.First)
+                    {
+                        position.ObjectPosition = _rest;
+                    }
+                    else
+                    {
+                        position.ObjectPosition = sequence._rest;
+                    }
+                    position.IntegerPosition++;
+                }
+                return true;
+            }
+        }
+
+        public static ReadOnlyBytes Create(params byte[][] buffers)
+        {
+            MemoryListNode first = null;
+            MemoryListNode current = null;
+            foreach (var buffer in buffers)
+            {
+                if (first == null)
+                {
+                    current = new MemoryListNode();
+                    first = current;
+                }
+                else
+                {
+                    current._rest = new MemoryListNode();
+                    current = current._rest;
+                }
+                current._first = buffer;
+            }
+            return new ReadOnlyBytes(first);
+        }
     }
 }

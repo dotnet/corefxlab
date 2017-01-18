@@ -22,7 +22,7 @@ namespace System.Slices.Tests
         [Fact]
         public void ReadOnlyBytesIndexOf()
         {
-            var bytes = Create(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+            var bytes = ReadOnlyBytes.Create(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
 
             var index = bytes.IndexOf(new byte[] { 2, 3 });
             Assert.Equal(2, index);
@@ -102,113 +102,14 @@ namespace System.Slices.Tests
             Assert.Equal((byte)'D', bytes.First.Span[0]);
         }
 
-        class MemoryListNode : IReadOnlyMemoryList<byte>
+        private ReadOnlyBytes Create(params string[] segments)
         {
-            internal ReadOnlyMemory<byte> _first;
-            internal MemoryListNode _rest;
-            public ReadOnlyMemory<byte> First => _first;
-
-            public int? Length
+            var buffers = new List<byte[]>();
+            foreach (var segment in segments)
             {
-                get {
-                    throw new NotImplementedException();
-                }
+                buffers.Add(Encoding.UTF8.GetBytes(segment));
             }
-
-            public IReadOnlyMemoryList<byte> Rest => _rest;
-
-            public int CopyTo(Span<byte> buffer)
-            {
-                int copied = 0;
-                var position = Position.First;
-                ReadOnlyMemory<byte> segment;
-                var free = buffer;
-                while (TryGet(ref position, out segment, true))
-                {
-                    if (segment.Length > free.Length)
-                    {
-                        segment.Span.Slice(0, free.Length).CopyTo(free);
-                        copied += free.Length;
-                    }
-                    else
-                    {
-                        segment.CopyTo(free);
-                        copied += segment.Length;
-                    }
-                    free = buffer.Slice(copied);
-                    if (free.Length == 0) break;
-                }
-                return copied;
-            }
-
-            public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
-            {
-                if (position == Position.First)
-                {
-                    item = _first;
-                    if (advance) { position.IntegerPosition++; position.ObjectPosition = _rest; }
-                    return true;
-                }
-                else if (position.ObjectPosition == null) { item = default(ReadOnlyMemory<byte>); return false; }
-
-                var sequence = (MemoryListNode)position.ObjectPosition;
-                item = sequence._first;
-                if (advance)
-                {
-                    if (position == Position.First)
-                    {
-                        position.ObjectPosition = _rest;
-                    }
-                    else
-                    {
-                        position.ObjectPosition = sequence._rest;
-                    }
-                    position.IntegerPosition++;
-                }
-                return true;
-            }
-        }
-
-        private ReadOnlyBytes Create(params byte[][] buffers)
-        {
-            MemoryListNode first = null;
-            MemoryListNode current = null;
-            foreach (var buffer in buffers)
-            {
-                if (first == null)
-                {
-                    current = new MemoryListNode();
-                    first = current;
-                }
-                else
-                {
-                    current._rest = new MemoryListNode();
-                    current = current._rest;
-                }
-                current._first = buffer;
-            }
-            return new ReadOnlyBytes(first);
-        }
-
-        private ReadOnlyBytes Create(params string[] buffers)
-        {
-            MemoryListNode first = null;
-            MemoryListNode current = null;
-            foreach (var buffer in buffers)
-            {
-                if (first == null)
-                {
-                    current = new MemoryListNode();
-                    first = current;
-                }
-                else
-                {
-                    current._rest = new MemoryListNode();
-                    current = current._rest;
-                }
-                current._first = Encoding.UTF8.GetBytes(buffer);
-            }
-            return new ReadOnlyBytes(first);
+            return ReadOnlyBytes.Create(buffers.ToArray());
         }
 
         private ReadOnlyBytes Parse(string text)
@@ -219,7 +120,7 @@ namespace System.Slices.Tests
             {
                 buffers.Add(Encoding.UTF8.GetBytes(segment));
             }
-            return Create(buffers.ToArray());
+            return ReadOnlyBytes.Create(buffers.ToArray());
         }
     }
 }

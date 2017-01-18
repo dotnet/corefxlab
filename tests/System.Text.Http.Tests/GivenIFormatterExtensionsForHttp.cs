@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Utf8;
 using FluentAssertions;
 using Xunit;
+using System.Text.Http.SingleSegment;
 
 namespace System.Text.Http.Tests
 {
@@ -39,79 +40,6 @@ namespace System.Text.Http.Tests
             result.Slice().SequenceEqual(_statusLineInBytes);
             _formatter.Clear();
         }
-
-        //[Fact]
-        //public void It_has_an_extension_method_to_write_headers()
-        //{
-        //    _formatter.WriteHttpHeader(GetUtf8EncodedString("Connection"), GetUtf8EncodedString("close"));
-
-        //    var result = _formatter.Buffer;
-
-        //    result.Should().ContainInOrder(_headerInBytes);
-
-        //    ArrayPool<byte>.Shared.Return(result);
-        //}
-
-        //[Fact]
-        //public void It_is_possible_to_update_the_value_of_a_header()
-        //{
-        //    var httpHeaderBuffer = 
-        //        _formatter.WriteHttpHeader(GetUtf8EncodedString("Connection"), GetUtf8EncodedString("close"));
-
-        //    httpHeaderBuffer.UpdateValue("open");
-
-        //    var result = _formatter.Buffer;
-
-        //    result.Should().ContainInOrder(_updatedHeaderInBytes);
-
-        //    ArrayPool<byte>.Shared.Return(result);
-        //}
-
-        //[Fact]
-        //public void It_is_possible_to_specify_a_number_of_reserve_bytes_when_writing_the_header_and_it_is_set_to_empty_space()
-        //{
-        //    _formatter.WriteHttpHeader(GetUtf8EncodedString("Connection"), GetUtf8EncodedString("close"), 30);
-
-        //    var result = _formatter.Buffer;
-
-        //    result.Should().ContainInOrder(_headerInBytes);
-
-        //    var filledBytesCount = 30 - _headerInBytes.Length;
-        //    var fillingArray = new byte[filledBytesCount];            
-        //    for (var i = 0; i < filledBytesCount; i++)
-        //    {
-        //        fillingArray[i] = 32;
-        //    }
-
-        //    result.Should().ContainInOrder(_headerInBytes);
-        //    result.Should().ContainInOrder(fillingArray);
-
-        //    ArrayPool<byte>.Shared.Return(result);
-        //}
-
-        //[Fact]
-        //public void It_is_possible_to_use_the_reserve_to_write_a_header_value_with_more_characters_than_originally_set()
-        //{
-        //    var httpHeaderBuffer = 
-        //        _formatter.WriteHttpHeader(GetUtf8EncodedString("Connection"), GetUtf8EncodedString("close"));
-
-        //    httpHeaderBuffer.UpdateValue("18446744073709551615");
-
-        //    var result = _formatter.Buffer;
-
-        //    result.Should().ContainInOrder(Utf8Encoding.GetBytes("Connection : 18446744073709551615\r\n"));
-        //}
-
-        //[Fact]
-        //public void HttpHeaderBuffer_UpdateValue_throws_an_exception_if_the_new_value_is_bigger_than_the_buffer_space()
-        //{
-        //    var httpHeaderBuffer = 
-        //        _formatter.WriteHttpHeader(GetUtf8EncodedString("Connection"), GetUtf8EncodedString("close"));
-
-        //    Action action = () => httpHeaderBuffer.UpdateValue("close18446744073709551615a");
-
-        //    action.ShouldThrow<ArgumentException>().WithMessage("newValue");
-        //}
 
         [Fact]
         public void The_http_extension_methods_can_be_composed_to_generate_the_http_message()

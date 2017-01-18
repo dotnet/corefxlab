@@ -5,9 +5,10 @@ using Microsoft.Net.Http;
 using System;
 using System.Diagnostics;
 using System.Text.Formatting;
-using System.Text.Http;
+using System.Text.Http.SingleSegment;
 using System.Text.Json;
 using System.Text.Utf8;
+using System.Text.Http;
 
 namespace LowAllocationWebServer
 {
@@ -29,7 +30,7 @@ namespace LowAllocationWebServer
             Apis.Add(HttpMethod.Post, "/json", Api.PostJson, WriteResponseForPostJson); // post body along the lines of: "{ "Count" = 3 }" 
         }
 
-        protected override void WriteResponse(HttpRequest request, HttpResponse response)
+        protected override void WriteResponse(HttpRequestSingleSegment request, HttpResponse response)
         {
             if (!Apis.TryHandle(request, response))
             {
@@ -37,7 +38,7 @@ namespace LowAllocationWebServer
             }
         }
 
-        void WriteResponseForPostJson(HttpRequest request, HttpResponse response)
+        void WriteResponseForPostJson(HttpRequestSingleSegment request, HttpResponse response)
         {
             // read request json
             int requestedCount;
@@ -72,7 +73,7 @@ namespace LowAllocationWebServer
             headers.AppendHttpNewLine();
         }
 
-        static void WriteResponseForHelloWorld(HttpRequest request, HttpResponse response)
+        static void WriteResponseForHelloWorld(HttpRequestSingleSegment request, HttpResponse response)
         {
             var body = new ResponseFormatter(response.Body);
             body.Append("Hello, World");
@@ -92,7 +93,7 @@ namespace LowAllocationWebServer
             headers.AppendHttpNewLine();
         }
 
-        static void WriteResponseForGetTime(HttpRequest request, HttpResponse response)
+        static void WriteResponseForGetTime(HttpRequestSingleSegment request, HttpResponse response)
         {
             var body = new ResponseFormatter(response.Body);
             body.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
