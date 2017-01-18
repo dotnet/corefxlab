@@ -33,7 +33,33 @@ Accept-Language: en-US,en;q=0.8,it;q=0.6,ms;q=0.4
         {
             using (iteration.StartMeasurement())
             {
-                RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response)=> {
+                RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response) => {
+                    var formatter = new OutputFormatter<WritableBuffer>(response, EncodingData.InvariantUtf8);
+                    formatter.Append("HTTP/1.1 200 OK");
+                    formatter.Append("\r\nContent-Length: 13");
+                    formatter.Append("\r\nContent-Type: text/plain");
+                    formatter.Format("\r\nDate: {0:R}", DateTime.UtcNow);
+                    formatter.Append("Server: System.IO.Pipelines");
+                    formatter.Append("\r\n\r\n");
+
+                    // write body
+                    formatter.Append("Hello, World!");
+                });
+            }
+        }
+    }
+
+    [Benchmark]
+    [InlineData(1000, 256)]
+    [InlineData(1000, 1024)]
+    [InlineData(1000, 4096)]
+    private static void TechEmpowerHelloWorldNoIOSingleSegmentParser(int numberOfRequests, int concurrentConnections)
+    {
+        foreach (var iteration in Benchmark.Iterations)
+        {
+            using (iteration.StartMeasurement())
+            {
+                RawInMemoryHttpServer.RunSingleSegmentParser(numberOfRequests, concurrentConnections, s_genericRequest, (request, response)=> {
                     var formatter = new OutputFormatter<WritableBuffer>(response, EncodingData.InvariantUtf8);
                     formatter.Append("HTTP/1.1 200 OK");
                     formatter.Append("\r\nContent-Length: 13");

@@ -1,21 +1,24 @@
-﻿using System.Collections;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.Utf8;
 
-namespace System.Text.Http
+namespace System.Text.Http.SingleSegment
 {
-    public struct HttpHeaders : IEnumerable<KeyValuePair<Utf8String, Utf8String>>
+    public struct HttpHeadersSingleSegment : IEnumerable<KeyValuePair<Utf8String, Utf8String>>
     {
         private readonly Utf8String _headerString;
         private int _count;
         
-        public HttpHeaders(ReadOnlySpan<byte> bytes)
+        public HttpHeadersSingleSegment(ReadOnlySpan<byte> bytes)
         {
             _headerString = new Utf8String(bytes);
             _count = -1;
         }
 
-        public HttpHeaders(Utf8String headerString)
+        public HttpHeadersSingleSegment(Utf8String headerString)
         {
             _headerString = headerString;
             _count = -1;

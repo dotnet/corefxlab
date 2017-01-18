@@ -1,7 +1,11 @@
-﻿using System.Collections;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using FluentAssertions;
 using Xunit;
 using System.Text.Utf8;
+using System.Text.Http;
+using System.Text.Http.SingleSegment;
 
 namespace System.Text.Http.Tests
 {
@@ -21,7 +25,7 @@ namespace System.Text.Http.Tests
 
         private const string HeaderWithoutCrlf = "Host: localhost:8080";
 
-        private HttpHeaders _httpHeaders;
+        private HttpHeadersSingleSegment _httpHeaders;
 
         public GivenAnHttpHeaders()
         {
@@ -36,7 +40,7 @@ namespace System.Text.Http.Tests
                 }
             }
 
-            _httpHeaders = new HttpHeaders(headers);
+            _httpHeaders = new HttpHeadersSingleSegment(headers);
         }
 
         [Fact]
@@ -87,7 +91,7 @@ namespace System.Text.Http.Tests
         [Fact]
         public void It_parsers_Utf8String_as_well()
         {
-            var httpHeader = new HttpHeaders(new Utf8String(new UTF8Encoding().GetBytes(HeadersString)));
+            var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeadersString)));
 
             httpHeader.Count.Should().Be(8);
         }
@@ -95,7 +99,7 @@ namespace System.Text.Http.Tests
         [Fact]
         public void String_without_column_throws_ArgumentException()
         {
-            var httpHeader = new HttpHeaders(new Utf8String(new UTF8Encoding().GetBytes(HeaderWithoutColumn)));
+            var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeaderWithoutColumn)));
 
             Action action = () => { var count = httpHeader.Count; }; 
 
@@ -105,7 +109,7 @@ namespace System.Text.Http.Tests
         [Fact]
         public void String_without_carriage_return_and_line_feed_throws_ArgumentException()
         {
-            var httpHeader = new HttpHeaders(new Utf8String(new UTF8Encoding().GetBytes(HeaderWithoutCrlf)));
+            var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeaderWithoutCrlf)));
 
             Action action = () => { var count = httpHeader.Count; };
 
@@ -116,10 +120,10 @@ namespace System.Text.Http.Tests
         public void CanParseBodylessRequest()
         {
             var request = new Utf8String("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").CopyBytes().Slice();
-            var parsed = HttpRequest.Parse(request);
+            var parsed = HttpRequestSingleSegment.Parse(request);
             Assert.Equal(HttpMethod.Get, parsed.RequestLine.Method);
             Assert.Equal(HttpVersion.V1_1, parsed.RequestLine.Version);
-            Assert.Equal(new Utf8String("/"), parsed.RequestLine.RequestUri);
+            Assert.Equal("/", parsed.RequestLine.RequestUri.ToString(TextEncoder.Utf8));
             Assert.Equal(1, parsed.Headers.Count);
             Assert.Equal(0, parsed.Body.Length);
         } 

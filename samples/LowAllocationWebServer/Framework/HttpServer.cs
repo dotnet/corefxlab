@@ -1,11 +1,15 @@
-﻿using Microsoft.Net.Sockets;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.Net.Sockets;
 using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.Text.Formatting;
-using System.Text.Http;
+using System.Text.Http.SingleSegment;
 using System.Text.Utf8;
 using System.Threading;
+using System.Text.Http;
 
 namespace Microsoft.Net.Http
 {
@@ -74,7 +78,7 @@ namespace Microsoft.Net.Http
             }
 
             var requestBytes = requestBuffer.Slice(0, requestByteCount);
-            var request = HttpRequest.Parse(requestBytes);
+            var request = HttpRequestSingleSegment.Parse(requestBytes);
             Log.LogRequest(request);
 
             using (var response = new HttpResponse(1024)) {
@@ -104,7 +108,7 @@ namespace Microsoft.Net.Http
             new ResponseFormatter(response.Headers).Append(HttpNewline);
         }
 
-        protected virtual void WriteResponseFor404(HttpRequest request, HttpResponse response) // Not Found
+        protected virtual void WriteResponseFor404(HttpRequestSingleSegment request, HttpResponse response) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.RequestLine);
             WriteCommonHeaders(response, HttpVersion.V1_1, 404, "Not Found", false);
@@ -135,6 +139,6 @@ namespace Microsoft.Net.Http
             }
         }
 
-        protected abstract void WriteResponse(HttpRequest request, HttpResponse response);
+        protected abstract void WriteResponse(HttpRequestSingleSegment request, HttpResponse response);
     }
 }
