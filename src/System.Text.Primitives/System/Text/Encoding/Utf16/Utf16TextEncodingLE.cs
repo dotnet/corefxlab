@@ -35,28 +35,28 @@ namespace System.Text.Utf16
 
         #region Decoding implementation
 
-        public override bool TryDecode(ReadOnlySpan<byte> data, out string text, out int bytesConsumed)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, out string text, out int bytesConsumed)
         {
-            var utf16 = data.Cast<byte, char>();
+            var utf16 = encodedBytes.Cast<byte, char>();
             var chars = utf16.ToArray();
 
             text = new string(chars);
-            bytesConsumed = data.Length;
+            bytesConsumed = encodedBytes.Length;
             return true;
         }
 
-        public override bool TryDecode(ReadOnlySpan<byte> data, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
         {
-            var utf16 = data.Cast<byte, char>();
+            var utf16 = encodedBytes.Cast<byte, char>();
             return Utf8Encoder.TryEncode(utf16, utf8, out bytesConsumed, out bytesWritten);
         }
 
-        public override bool TryDecode(ReadOnlySpan<byte> data, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
         {
             // TODO: Other methods validate that the input stream contains valid sequences as they are consumed.
             //       Currently, this is a copy operation with no validation. What is the right thing here?
 
-            var charInput = data.Cast<byte, char>();
+            var charInput = encodedBytes.Cast<byte, char>();
 
             if (charInput.Length >= utf16.Length)
             {
@@ -71,10 +71,10 @@ namespace System.Text.Utf16
             return true;
         }
 
-        public override bool TryDecode(ReadOnlySpan<byte> data, Span<uint> utf32, out int bytesConsumed, out int charactersWritten)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<uint> utf32, out int bytesConsumed, out int charactersWritten)
         {
             int consumed;
-            var utf16 = data.Cast<byte, char>();
+            var utf16 = encodedBytes.Cast<byte, char>();
             var result = Utf16LittleEndianEncoder.TryDecode(utf16, utf32, out consumed, out charactersWritten);
 
             bytesConsumed = consumed * sizeof(char);
@@ -85,22 +85,22 @@ namespace System.Text.Utf16
 
         #region Encoding implementation
 
-        public override bool TryEncode(ReadOnlySpan<byte> utf8, Span<byte> data, out int bytesConsumed, out int bytesWritten)
+        public override bool TryEncode(ReadOnlySpan<byte> utf8, Span<byte> encodedBytes, out int bytesConsumed, out int bytesWritten)
         {
             int charactersWritten;
-            var utf16 = data.Cast<byte, char>();
+            var utf16 = encodedBytes.Cast<byte, char>();
             var result = Utf8Encoder.TryDecode(utf8, utf16, out bytesConsumed, out charactersWritten);
 
             bytesWritten = charactersWritten * sizeof(char);
             return result;
         }
 
-        public override bool TryEncode(ReadOnlySpan<char> utf16, Span<byte> data, out int charactersConsumed, out int bytesWritten)
+        public override bool TryEncode(ReadOnlySpan<char> utf16, Span<byte> encodedBytes, out int charactersConsumed, out int bytesWritten)
         {
             // TODO: Other methods validate that the input stream contains valid sequences as they are consumed.
             //       Currently, this is a copy operation with no validation. What is the right thing here?
 
-            var charBuffer = data.Cast<byte, char>();
+            var charBuffer = encodedBytes.Cast<byte, char>();
 
             if (utf16.Length > charBuffer.Length)
             {
@@ -115,20 +115,20 @@ namespace System.Text.Utf16
             return true;
         }
 
-        public override bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> data, out int charactersConsumed, out int bytesWritten)
+        public override bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> encodedBytes, out int charactersConsumed, out int bytesWritten)
         {
             int written;
-            var utf16 = data.Cast<byte, char>();
+            var utf16 = encodedBytes.Cast<byte, char>();
             var result = Utf16LittleEndianEncoder.TryEncode(utf32, utf16, out charactersConsumed, out written);
 
             bytesWritten = written * sizeof(char);
             return result;
         }
 
-        public override bool TryEncode(string text, Span<byte> data, out int bytesWritten)
+        public override bool TryEncode(string text, Span<byte> encodedBytes, out int bytesWritten)
         {
             bytesWritten = text.Length << 1;
-            if (bytesWritten > data.Length)
+            if (bytesWritten > encodedBytes.Length)
             {
                 bytesWritten = 0;
                 return false;
@@ -139,7 +139,7 @@ namespace System.Text.Utf16
                 fixed (char* pChars = text)
                 {
                     byte* pBytes = (byte*)pChars;
-                    new Span<byte>(pBytes, bytesWritten).CopyTo(data);
+                    new Span<byte>(pBytes, bytesWritten).CopyTo(encodedBytes);
                 }
             }
 

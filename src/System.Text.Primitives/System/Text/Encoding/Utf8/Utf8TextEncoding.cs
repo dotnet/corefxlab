@@ -7,10 +7,10 @@ namespace System.Text.Utf8
     {
         #region Decoding implementation
 
-        public override bool TryDecode(ReadOnlySpan<byte> data, out string text, out int bytesConsumed)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, out string text, out int bytesConsumed)
         {
             int len;
-            if (!Utf8Encoder.TryComputeStringLength(data, out len))
+            if (!Utf8Encoder.TryComputeStringLength(encodedBytes, out len))
             {
                 text = string.Empty;
                 bytesConsumed = 0;
@@ -21,34 +21,34 @@ namespace System.Text.Utf8
             var charSpan = new Span<char>(buffer);
 
             int written;
-            var result = Utf8Encoder.TryDecode(data, charSpan, out bytesConsumed, out written);
+            var result = Utf8Encoder.TryDecode(encodedBytes, charSpan, out bytesConsumed, out written);
 
             text = new string(buffer, 0, written);
             return result;
         }
 
-        public override bool TryDecode(ReadOnlySpan<byte> data, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
         {
             // TODO: Other methods validate that the input stream contains valid sequences as they are consumed.
             //       Currently, this is a copy operation with no validation. What is the right thing here?
 
-            if (data.Length > utf8.Length)
-                data = data.Slice(0, utf8.Length);
+            if (encodedBytes.Length > utf8.Length)
+                encodedBytes = encodedBytes.Slice(0, utf8.Length);
 
-            data.CopyTo(utf8);
-            bytesWritten = data.Length;
-            bytesConsumed = data.Length;
+            encodedBytes.CopyTo(utf8);
+            bytesWritten = encodedBytes.Length;
+            bytesConsumed = encodedBytes.Length;
             return true;
         }
 
-        public override bool TryDecode(ReadOnlySpan<byte> data, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
         {
-            return Utf8Encoder.TryDecode(data, utf16, out bytesConsumed, out charactersWritten);
+            return Utf8Encoder.TryDecode(encodedBytes, utf16, out bytesConsumed, out charactersWritten);
         }
 
-        public override bool TryDecode(ReadOnlySpan<byte> data, Span<uint> utf32, out int bytesConsumed, out int charactersWritten)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<uint> utf32, out int bytesConsumed, out int charactersWritten)
         {
-            return Utf8Encoder.TryDecode(data, utf32, out bytesConsumed, out charactersWritten);
+            return Utf8Encoder.TryDecode(encodedBytes, utf32, out bytesConsumed, out charactersWritten);
         }
 
         #endregion Decoding implementation
