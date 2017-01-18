@@ -1,40 +1,15 @@
-﻿using System.Text.Utf8;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.Text.Http
+using System.Text.Utf8;
+
+namespace System.Text.Http.SingleSegment
 {
-    public enum HttpMethod : byte
-    {
-        Unknown = 0,
-        Get,
-        Post,
-        Put,
-        Delete,
-    }
-
-    public enum HttpVersion : byte
-    {
-        Unknown = 0,
-        V1_0,
-        V1_1,
-        V2_0,
-    }
-
-    public struct HttpRequestLine
-    {
-        public HttpMethod Method;
-        public HttpVersion Version;
-        public Utf8String RequestUri;
-
-        public override string ToString()
-        {
-            return RequestUri.ToString();
-        }
-    }
-
-    public struct HttpRequest
+    [Obsolete("Use System.Text.Http.HttpRequest")]
+    public struct HttpRequestSingleSegment
     {
         private HttpRequestLine _requestLine;
-        private HttpHeaders _headers;
+        private HttpHeadersSingleSegment _headers;
         private ReadOnlySpan<byte> _body;
 
         public HttpRequestLine RequestLine
@@ -45,7 +20,7 @@ namespace System.Text.Http
             }
         }
 
-        public HttpHeaders Headers
+        public HttpHeadersSingleSegment Headers
         {
             get
             {
@@ -61,14 +36,14 @@ namespace System.Text.Http
             }
         }
 
-        public HttpRequest(HttpRequestLine requestLine, HttpHeaders headers, ReadOnlySpan<byte> bytes)
+        public HttpRequestSingleSegment(HttpRequestLine requestLine, HttpHeadersSingleSegment headers, ReadOnlySpan<byte> bytes)
         {
             _requestLine = requestLine;
             _headers = headers;
             _body = bytes;
         }
 
-        public static HttpRequest Parse(ReadOnlySpan<byte> bytes)
+        public static HttpRequestSingleSegment Parse(ReadOnlySpan<byte> bytes)
         {
             int parsed;
             HttpRequestLine requestLine;
@@ -77,14 +52,14 @@ namespace System.Text.Http
             }
             bytes = bytes.Slice(parsed);
 
-            HttpHeaders headers;
+            HttpHeadersSingleSegment headers;
             if (!HttpRequestParser.TryParseHeaders(bytes, out headers, out parsed))
             {
                 throw new NotImplementedException("headers parser");
             }
             var body = bytes.Slice(parsed);
 
-            var request = new HttpRequest(requestLine, headers, body);
+            var request = new HttpRequestSingleSegment(requestLine, headers, body);
 
             return request;
         }
@@ -214,7 +189,7 @@ namespace System.Text.Http
             requestLine.Method = reader.ReadMethod();
             if(requestLine.Method == HttpMethod.Unknown) { return false; }
 
-            requestLine.RequestUri = reader.ReadRequestUri();
+            requestLine.RequestUri = reader.ReadRequestUri().Bytes.ToArray();
             if(requestLine.RequestUri.Length == 0) { return false; }
             reader.Buffer = reader.Buffer.Slice(1);
 
@@ -275,17 +250,17 @@ namespace System.Text.Http
             return parsedBytes != 0;
         }
 
-        internal static bool TryParseHeaders(ReadOnlySpan<byte> bytes, out HttpHeaders headers, out int parsed)
+        internal static bool TryParseHeaders(ReadOnlySpan<byte> bytes, out HttpHeadersSingleSegment headers, out int parsed)
         {
             var index = bytes.IndexOf(HttpRequestReader.Eoh);
             if(index == -1)
             {
-                headers = default(HttpHeaders);
+                headers = default(HttpHeadersSingleSegment);
                 parsed = 0;
                 return false;
             }
 
-            headers = new HttpHeaders(bytes.Slice(0, index + HttpRequestReader.Eol.Length));
+            headers = new HttpHeadersSingleSegment(bytes.Slice(0, index + HttpRequestReader.Eol.Length));
             parsed = index + HttpRequestReader.Eoh.Length;
             return true;
         }

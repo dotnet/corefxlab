@@ -35,7 +35,7 @@ namespace System.Slices.Tests
         [Fact]
         public void MultiSegmentBytesReaderNumbers()
         {
-            ReadOnlyBytes bytes = Create(new byte[][] {
+            ReadOnlyBytes bytes = ReadOnlyBytes.Create(new byte[][] {
                 new byte[] { 0          },
                 new byte[] { 1, 2       },
                 new byte[] { 3, 4       },

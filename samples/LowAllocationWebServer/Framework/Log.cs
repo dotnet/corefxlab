@@ -1,6 +1,10 @@
-﻿using System.IO;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.IO;
 using System.Text;
 using System.Text.Http;
+using System.Text.Http.SingleSegment;
 
 namespace System.Diagnostics
 {
@@ -79,7 +83,7 @@ namespace System.Diagnostics
 
     public static class HttpLogExtensions
     {
-        public static void LogRequest(this Log log, HttpRequest request)
+        public static void LogRequest(this Log log, HttpRequestSingleSegment request)
         {
             if (log.IsVerbose)
             {
