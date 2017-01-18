@@ -23,7 +23,6 @@ namespace System.IO.Pipelines
 
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
-        private ReadableBuffer _lastRead;
 
         // The commit head which is the extent of the bytes available to the IPipelineReader to consume
         private BufferSegment _commitHead;
@@ -42,12 +41,18 @@ namespace System.IO.Pipelines
         private readonly TaskCompletionSource<object> _writingTcs = new TaskCompletionSource<object>();
         private readonly TaskCompletionSource<object> _startingReadingTcs = new TaskCompletionSource<object>();
         private bool _disposed;
+
 #if CONSUMING_LOCATION_TRACKING
         private string _consumingLocation;
 #endif
 #if PRODUCING_LOCATION_TRACKING
         private string _producingLocation;
 #endif
+#if COMPLETION_LOCATION_TRACKING
+        private string _completeWriterLocation;
+        private string _completeReaderLocation;
+#endif
+
         /// <summary>
         /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
         /// </summary>
@@ -107,7 +112,11 @@ namespace System.IO.Pipelines
 #endif
             if (Reading.IsCompleted)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed);
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed
+#if COMPLETION_LOCATION_TRACKING
+                    , _completeWriterLocation
+#endif
+                    );
             }
 
             if (minimumSize < 0)
@@ -445,6 +454,9 @@ namespace System.IO.Pipelines
 #endif
                     );
             }
+#if COMPLETION_LOCATION_TRACKING
+            _completeWriterLocation += Environment.StackTrace + Environment.NewLine;
+#endif
             // TODO: Review this lock?
             lock (_sync)
             {
@@ -487,6 +499,9 @@ namespace System.IO.Pipelines
 #endif
                     );
             }
+#if COMPLETION_LOCATION_TRACKING
+            _completeReaderLocation += Environment.StackTrace + Environment.NewLine;
+#endif
             // TODO: Review this lock?
             lock (_sync)
             {
@@ -537,7 +552,11 @@ namespace System.IO.Pipelines
         {
             if (Writing.IsCompleted)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed);
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed
+#if COMPLETION_LOCATION_TRACKING
+                    , _completeReaderLocation
+#endif
+                    );
             }
             _startingReadingTcs.TrySetResult(null);
 
