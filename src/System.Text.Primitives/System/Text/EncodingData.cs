@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace System.Text
 {
-    public partial struct EncodingData : IEquatable<EncodingData>
+    public struct EncodingData : IEquatable<EncodingData>
     {
         private static EncodingData s_invariantUtf16;
         private static EncodingData s_invariantUtf8;
