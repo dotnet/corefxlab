@@ -16,6 +16,8 @@ namespace System.Buffers
         IReadOnlyMemoryList<byte> _rest;
         int _length;
 
+        static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
+
         public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest, int length)
         {
             _rest = rest;
@@ -90,6 +92,8 @@ namespace System.Buffers
                 return _length;
             }
         }
+
+        public static ReadOnlyBytes Empty => s_empty;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBytes Slice(Range range)
