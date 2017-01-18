@@ -143,7 +143,7 @@ namespace System.Text {
         /// It is possible to continue encoding from the stop point by slicing off the processed part of <paramref name="utf32"/>, fixing
         /// errors (reading more data, new output buffer, etc.) and calling this method again.
         /// </returns>
-        public abstract bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> data, out int codePointsConsumed, out int bytesWritten);
+        public abstract bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> data, out int charactersConsumed, out int bytesWritten);
 
         /// <summary>
         /// Encodes a UTF-16 string. The target encoding is relative to the concrete class being executed.
