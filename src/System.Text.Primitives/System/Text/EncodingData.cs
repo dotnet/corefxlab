@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace System.Text
 {
-    public struct EncodingData : IEquatable<EncodingData>
+    public partial struct EncodingData : IEquatable<EncodingData>
     {
         private static EncodingData s_invariantUtf16;
         private static EncodingData s_invariantUtf8;
@@ -20,8 +20,7 @@ namespace System.Text
         {
             _symbols = symbols;
             _encoder = encoder;
-            AbstractParsingTrie abstractParsingTrie = new AbstractParsingTrie(symbols);
-            _parsingTrie = abstractParsingTrie.GenerateParsingTrieArray();
+            _parsingTrie = CreateParsingTrie(symbols);
         }
 
         public static EncodingData InvariantUtf16
@@ -349,193 +348,150 @@ namespace System.Text
             public byte ValueOrNumChildren;
             public int IndexOrSymbol;
         }
-
-        private class AbstractParsingTrie
+        
+        private static int CompareSuffix(Suffix x, Suffix y)
         {
-            private interface Node
+            int index = 0;
+            if (x.Bytes.Length == 0 || y.Bytes.Length == 0)
             {
+                throw new ArgumentException("Symbol cannot be zero bytes long");
             }
-
-            private struct InternalNode : Node
+            while (true)
             {
-                public byte SymbolByte;
-                public List<Node> NextNodes;
+                if (index == x.Bytes.Length)
+                {
+                    if (index == y.Bytes.Length)
+                    {
+                        throw new ArgumentException(String.Format("Symbols cannot be identical"));
+                    }
+                    throw new ArgumentException("Symbols are ambiguous");
+                }
+                if (index == y.Bytes.Length)
+                {
+                    throw new ArgumentException("Symbols are ambiguous");
+                }
+                int compareResult = x.Bytes[index].CompareTo(y.Bytes[index]);
+                if (compareResult != 0)
+                {
+                    return compareResult;
+                }
+                index++;
             }
+        }
 
-            private struct LeafNode : Node
+        private struct Suffix
+        {
+            public int SymbolIndex;
+            public ReadOnlySpan<byte> Bytes;
+
+            public Suffix(int symbolIndex, ReadOnlySpan<byte> bytes)
             {
-                public int SymbolIndex;
-                public List<byte> Suffix;
+                SymbolIndex = symbolIndex;
+                Bytes = bytes;
             }
+        }
 
-            List<Node> root;
+        private struct SuffixClump
+        {
+            public byte BeginningByte;
+            public List<Suffix> Suffixes;
 
-            internal AbstractParsingTrie(byte[][] byteSequences)
+            public SuffixClump(byte beginningByte)
             {
-                // All sequences start out as leaf nodes
-                List<LeafNode> leafNodes = new List<LeafNode>();
-                for (int i = 0; i < byteSequences.Length; i++)
-                {
-                    LeafNode leafNode = new LeafNode();
-                    leafNode.SymbolIndex = i;
-                    if (byteSequences[i] != null)
-                    {
-                        leafNode.Suffix = new List<byte>(byteSequences[i]);
-                        leafNodes.Add(leafNode);
-                    }
-                }
-
-                // Recursively clump together sequences beginning with the same byte into internal nodes
-                root = ClumpNodes(leafNodes);
+                BeginningByte = beginningByte;
+                Suffixes = new List<Suffix>();
             }
+        }
 
-            private List<Node> ClumpNodes(List<LeafNode> leafNodes)
+        // The return value here is the index in parsingTrieList at which the parent node was placed.
+        private static int CreateParsingTrieNodeAndChildren(ref List<ParsingTrieNode> parsingTrieList, List<Suffix> sortedSuffixes)
+        {
+            // If there is only one suffix, create a leaf node
+            if (sortedSuffixes.Count == 1)
             {
-                Dictionary<byte, List<LeafNode>> duplicateMap = new Dictionary<byte, List<LeafNode>>();
-
-                List<Node> clumpedNodes = new List<Node>();
-
-                foreach (LeafNode leafNode in leafNodes)
-                {
-                    if (leafNode.Suffix.Count > 0)
-                    {
-                        byte firstByte = leafNode.Suffix[0];
-                        if (duplicateMap.ContainsKey(firstByte))
-                        {
-                            duplicateMap[firstByte].Add(leafNode);
-                        }
-                        else
-                        {
-                            List<LeafNode> newLeafNodes = new List<LeafNode>();
-                            newLeafNodes.Add(leafNode);
-                            duplicateMap.Add(firstByte, newLeafNodes);
-                        }
-                    }
-                    else
-                    {
-                        clumpedNodes.Add(leafNode);
-                    }
-                }
-
-                foreach (KeyValuePair<byte, List<LeafNode>> duplicateInitialByteLeafNodeList in duplicateMap)
-                {
-                    byte initialByte = duplicateInitialByteLeafNodeList.Key;
-                    List<LeafNode> leafNodesSharingInitialByte = duplicateInitialByteLeafNodeList.Value;
-
-                    // If there is more than one set of suffixes with the same initial byte
-                    if (leafNodesSharingInitialByte.Count > 1)
-                    {
-                        // Pop the initial byte from the leaf nodes in this list
-                        foreach (LeafNode leafNode in leafNodesSharingInitialByte)
-                        {
-                            leafNode.Suffix.RemoveAt(0);
-                        }
-
-                        // Clump leaf nodes;
-                        List<Node> clumpedLeafNodes = ClumpNodes(leafNodesSharingInitialByte);
-
-                        // Create internal node to be parent of leaf nodes
-                        InternalNode internalNode = new InternalNode();
-                        internalNode.SymbolByte = initialByte;
-                        internalNode.NextNodes = clumpedLeafNodes;
-
-                        // Add internal node to clumped nodes
-                        clumpedNodes.Add(internalNode);
-                    }
-                    else
-                    {
-                        // Add leaf node directly to clumped nodes
-                        clumpedNodes.Add(leafNodesSharingInitialByte[0]);
-                    }
-                }
-
-                return clumpedNodes;
-            }
-
-            // Returns the index in parsingTrieList where the parent node was placed
-            private int GenerateParsingTrieArrayInternalNode(ref List<ParsingTrieNode> parsingTrieList, List<Node> abstractChildren)
-            {
-                ParsingTrieNode parentNode = new ParsingTrieNode();
-                parentNode.ValueOrNumChildren = (byte)abstractChildren.Count;
-                parentNode.IndexOrSymbol = 0;
-
-                // Add parent node to list
-                int parentNodePlacedIndex = parsingTrieList.Count;
-                parsingTrieList.Add(parentNode);
-
-                // Leave spots for child nodes in list
-                int childNodeStartIndex = parsingTrieList.Count;
-                for (int i = 0; i < abstractChildren.Count; i++)
-                {
-                    parsingTrieList.Add(default(ParsingTrieNode));
-                }
-
-                // Process child nodes
-                List<ParsingTrieNode> childNodes = new List<ParsingTrieNode>();
-                foreach (Node abstractChild in abstractChildren)
-                {
-                    ParsingTrieNode childNode = new ParsingTrieNode();
-                    if (abstractChild is LeafNode)
-                    {
-                        LeafNode abstractLeafNode = (LeafNode)abstractChild;
-                        childNode.ValueOrNumChildren = abstractLeafNode.Suffix[0];
-                        childNode.IndexOrSymbol = GenerateParsingTrieArrayLeafNode(ref parsingTrieList, abstractLeafNode.SymbolIndex);
-                    }
-                    else if (abstractChild is InternalNode)
-                    {
-                        InternalNode abstractInternalNode = (InternalNode)abstractChild;
-                        childNode.ValueOrNumChildren = abstractInternalNode.SymbolByte;
-                        childNode.IndexOrSymbol = GenerateParsingTrieArrayInternalNode(ref parsingTrieList, abstractInternalNode.NextNodes);
-                    }
-                    childNodes.Add(childNode);
-                }
-
-                // Sort child ParsingTrieNodes (important for binary search)
-                childNodes.Sort(delegate (ParsingTrieNode x, ParsingTrieNode y)
-                {
-                    if (x.ValueOrNumChildren < y.ValueOrNumChildren)
-                    {
-                        return -1;
-                    }
-                    else if (x.ValueOrNumChildren > y.ValueOrNumChildren)
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-                });
-
-                // Place child nodes in spots allocated for them
-                int childNodeIndex = childNodeStartIndex;
-                foreach (ParsingTrieNode childNode in childNodes)
-                {
-                    parsingTrieList[childNodeIndex] = childNode;
-                    childNodeIndex++;
-                }
-
-                return parentNodePlacedIndex;
-            }
-
-            // Returns the index in parsingTrieList where the leaf node was placed
-            private int GenerateParsingTrieArrayLeafNode(ref List<ParsingTrieNode> parsingTrieList, int symbolIndex)
-            {
-                ParsingTrieNode arrayLeafNode = new ParsingTrieNode();
-                arrayLeafNode.ValueOrNumChildren = 0;
-                arrayLeafNode.IndexOrSymbol = symbolIndex;
-
+                ParsingTrieNode leafNode = new ParsingTrieNode();
+                leafNode.ValueOrNumChildren = 0;
+                leafNode.IndexOrSymbol = sortedSuffixes[0].SymbolIndex;
                 int leafNodeIndex = parsingTrieList.Count;
-                parsingTrieList.Add(arrayLeafNode);
+                parsingTrieList.Add(leafNode);
                 return leafNodeIndex;
             }
 
-            internal ParsingTrieNode[] GenerateParsingTrieArray()
+            // Group suffixes into clumps based on first byte
+            List<SuffixClump> clumps = new List<SuffixClump>();
+            byte beginningByte = sortedSuffixes[0].Bytes[0];
+            SuffixClump currentClump = new SuffixClump(beginningByte);
+            clumps.Add(currentClump);
+            foreach (Suffix suffix in sortedSuffixes)
             {
-                List<ParsingTrieNode> parsingTrieList = new List<ParsingTrieNode>();
-                GenerateParsingTrieArrayInternalNode(ref parsingTrieList, root);
-                return parsingTrieList.ToArray();
+                if (suffix.Bytes[0] == beginningByte)
+                {
+                    currentClump.Suffixes.Add(new Suffix(suffix.SymbolIndex, suffix.Bytes.Slice(1)));
+                }
+                else
+                {
+                    beginningByte = suffix.Bytes[0];
+                    currentClump = new SuffixClump(beginningByte);
+                    clumps.Add(currentClump);
+                    currentClump.Suffixes.Add(new Suffix(suffix.SymbolIndex, suffix.Bytes.Slice(1)));
+                }
             }
+
+            // Now that we know how many children there are, create parent node and place in list
+            ParsingTrieNode parentNode = new ParsingTrieNode();
+            parentNode.ValueOrNumChildren = (byte)clumps.Count;
+            parentNode.IndexOrSymbol = 0;
+            int parentNodeIndex = parsingTrieList.Count;
+            parsingTrieList.Add(parentNode);
+
+            // Reserve space in list for child nodes. In this algorithm, all parent nodes are created first, leaving gaps for the child nodes
+            // to be filled in once it is known where they point to.
+            int childNodeStartIndex = parsingTrieList.Count;
+            for (int i = 0; i < clumps.Count; i++)
+            {
+                parsingTrieList.Add(default(ParsingTrieNode));
+            }
+
+            // Process child nodes
+            List<ParsingTrieNode> childNodes = new List<ParsingTrieNode>();
+            foreach (SuffixClump clump in clumps)
+            {
+                ParsingTrieNode childNode = new ParsingTrieNode();
+                childNode.ValueOrNumChildren = clump.BeginningByte;
+                childNode.IndexOrSymbol = CreateParsingTrieNodeAndChildren(ref parsingTrieList, clump.Suffixes);
+                childNodes.Add(childNode);
+            }
+
+            // Place child nodes in spots allocated for them
+            int childNodeIndex = childNodeStartIndex;
+            foreach (ParsingTrieNode childNode in childNodes)
+            {
+                parsingTrieList[childNodeIndex] = childNode;
+                childNodeIndex++;
+            }
+
+            return parentNodeIndex;
+        }
+
+        private static ParsingTrieNode[] CreateParsingTrie(byte[][] symbols)
+        {
+            List<Suffix> symbolList = new List<Suffix>();
+            for (int i = 0; i < symbols.Length; i++)
+            {
+                if (symbols[i] != null)
+                {
+                    symbolList.Add(new Suffix(i, symbols[i]));
+                }
+            }
+
+            // Sort the symbol list. This is important for allowing binary search of the child nodes, as well as
+            // counting the number of children a node has.
+            symbolList.Sort(CompareSuffix);
+
+            List<ParsingTrieNode> parsingTrieList = new List<ParsingTrieNode>();
+            CreateParsingTrieNodeAndChildren(ref parsingTrieList, symbolList);
+
+            return parsingTrieList.ToArray();
         }
     }
 }
