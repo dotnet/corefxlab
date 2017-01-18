@@ -38,18 +38,20 @@ namespace System.Text.Utf8
         // TODO: reevaluate implementation
         public Utf8String(IEnumerable<UnicodeCodePoint> codePoints)
         {
-            int len = GetUtf8LengthInBytes(codePoints);
-            var newSpan = new Span<byte>(new byte[len]);
-            _buffer = newSpan;
+            var len = GetUtf8LengthInBytes(codePoints);
+            var buffer = new Span<byte>(new byte[len]);
+            var index = 0;
+
             foreach (UnicodeCodePoint codePoint in codePoints)
             {
-                int encodedBytes;
-                if (!Utf8Encoder.TryEncodeCodePoint(codePoint, newSpan, out encodedBytes))
-                {
+                int written;
+                if (!Utf8Encoder.TryEncodeCodePoint(codePoint.Value, buffer, index, out written))
                     throw new ArgumentException("Invalid code point", "codePoints");
-                }
-                newSpan = newSpan.Slice(encodedBytes);
+
+                index += written;
             }
+
+            _buffer = buffer;
         }
 
         public Utf8String(string s)
@@ -146,55 +148,13 @@ namespace System.Text.Utf8
         }
         public override string ToString()
         {
-            // get length first
-            // TODO: Optimize for characters of length 1 or 2 in UTF-8 representation (no need to read anything)
-            // TODO: is compiler gonna do the right thing here?
-            // TODO: Should we use Linq's Count()?
-            int len = 0;
-            foreach (var codePoint in CodePoints)
-            {
-                len++;
-                if (!UnicodeCodePoint.IsBmp(codePoint))
-                {
-                    len++;
-                }
-            }
-                       
-            unsafe
-            {
-                Span<byte> buffer;
-                char* stackChars = null;
-                char[] characters = null;
+            int consumed;
+            string value;
+            if (!TextEncoder.Utf8.TryDecode(this.Bytes, out value, out consumed))
+                // TODO: The bytes here do not fully decode correctly. What should we do?
+                return string.Empty;
 
-                if (len <= 256) 
-                {
-                    char* stackallocedChars = stackalloc char[len];
-                    stackChars = stackallocedChars;
-                    buffer = new Span<byte>(stackChars, len * 2);
-                }
-                else
-                {
-                    // HACK: Can System.Buffers be used here?
-                    characters = new char[len];
-                    buffer = characters.Slice().Cast<char, byte>();
-                }
-
-                foreach (var codePoint in CodePoints)
-                {
-                    int bytesEncoded;
-                    if (!Utf16LittleEndianEncoder.TryEncodeCodePoint(codePoint, buffer, out bytesEncoded))
-                    {
-                        // TODO: Change Exception type
-                        throw new Exception("invalid character");
-                    }
-                    buffer = buffer.Slice(bytesEncoded);
-                }
-
-                // TODO: We already have a char[] and this will copy, how to avoid that
-                return stackChars != null 
-                    ? new string(stackChars, 0, len)
-                    : new string(characters);
-            }
+            return value;
         }
 
         public bool ReferenceEquals(Utf8String other)
@@ -600,7 +560,7 @@ namespace System.Text.Utf8
             int len = 0;
             foreach (var codePoint in codePoints)
             {
-                len += Utf8Encoder.GetNumberOfEncodedBytes(codePoint);
+                len += Utf8Encoder.GetNumberOfEncodedBytes(codePoint.Value);
             }
 
             return len;
@@ -609,17 +569,22 @@ namespace System.Text.Utf8
         // TODO: This should return Utf16CodeUnits which should wrap byte[]/Span<byte>, same for other encoders
         private static byte[] GetUtf8BytesFromString(string str)
         {
-            ReadOnlySpan<char> characters = str.Slice();
-            int utf8Length = Utf8Encoder.ComputeEncodedBytes(characters);
+            var utf16 = str.Slice();
 
-            byte[] utf8Buffer = new byte[utf8Length];
+            int needed;
+            if (!Utf8Encoder.TryComputeEncodedBytes(utf16, out needed))
+                return null;
 
-            int encodedBytes;
-            if(!Utf8Encoder.TryEncode(characters, utf8Buffer, out encodedBytes)) {
-                throw new Exception(); // this should not happen
-            }
-                    
-            return utf8Buffer;
+            var data = new byte[needed];
+            var buffer = new Span<byte>(data);
+
+            int written;
+            int consumed;
+            if (!Utf8Encoder.TryEncode(utf16, buffer, out consumed, out written))
+                // This shouldn't happen...
+                return null;
+
+            return data;
         }
 
         public Utf8String TrimStart()

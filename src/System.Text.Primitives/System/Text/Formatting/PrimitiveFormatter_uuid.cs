@@ -146,7 +146,7 @@ namespace System.Text
         static bool TryWriteChar(char character, Span<byte> buffer, ref int bytesWritten, EncodingData encoding)
         {
             int written;
-            if (!encoding.TextEncoder.TryEncodeChar(character, buffer.Slice(bytesWritten), out written))
+            if (!encoding.TextEncoder.TryEncode(character, buffer.Slice(bytesWritten), out written))
             {
                 bytesWritten = 0;
                 return false;
@@ -159,7 +159,7 @@ namespace System.Text
         static bool TryWriteString(string text, Span<byte> buffer, ref int bytesWritten, EncodingData encoding)
         {
             int written;
-            if (!encoding.TextEncoder.TryEncodeString(text, buffer.Slice(bytesWritten), out written))
+            if (!encoding.TextEncoder.TryEncode(text, buffer.Slice(bytesWritten), out written))
             {
                 bytesWritten = 0;
                 return false;

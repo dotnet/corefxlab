@@ -168,7 +168,7 @@ namespace System.Text.Json
         {
             written = 0;
             int justWritten;
-            if(!formattingData.TextEncoder.TryEncodeChar('{', buffer, out justWritten)) {
+            if(!formattingData.TextEncoder.TryEncode('{', buffer, out justWritten)) {
                 return false;
             }
             written += justWritten;
@@ -181,7 +181,7 @@ namespace System.Text.Json
                 if(firstProperty) { firstProperty = false; }
                 else
                 {
-                    if (!formattingData.TextEncoder.TryEncodeChar(',', buffer.Slice(written), out justWritten))
+                    if (!formattingData.TextEncoder.TryEncode(',', buffer.Slice(written), out justWritten))
                     {
                         return false;
                     }
@@ -193,7 +193,7 @@ namespace System.Text.Json
                     written = 0; return false;
                 }
                 written += justWritten;
-                if (!formattingData.TextEncoder.TryEncodeChar(':', buffer.Slice(written), out justWritten))
+                if (!formattingData.TextEncoder.TryEncode(':', buffer.Slice(written), out justWritten))
                 {
                     return false;
                 }
@@ -205,7 +205,7 @@ namespace System.Text.Json
                 written += justWritten;
             }
 
-            if (!formattingData.TextEncoder.TryEncodeChar('}', buffer.Slice(written), out justWritten)) {
+            if (!formattingData.TextEncoder.TryEncode('}', buffer.Slice(written), out justWritten)) {
                 written = 0; return false;
             }
             written += justWritten;
@@ -267,11 +267,11 @@ namespace System.Text.Json
                     case JsonReader.JsonValueType.Object:
                         return _object.TryFormat(buffer, out written, format, formattingData);
                     case JsonReader.JsonValueType.Null:
-                        return formattingData.TextEncoder.TryEncodeString("null", buffer, out written);
+                        return formattingData.TextEncoder.TryEncode("null", buffer, out written);
                     case JsonReader.JsonValueType.True:
-                        return formattingData.TextEncoder.TryEncodeString("true", buffer, out written);
+                        return formattingData.TextEncoder.TryEncode("true", buffer, out written);
                     case JsonReader.JsonValueType.False:
-                        return formattingData.TextEncoder.TryEncodeString("false", buffer, out written);
+                        return formattingData.TextEncoder.TryEncode("false", buffer, out written);
                     default:
                         throw new NotImplementedException();
                 }
@@ -347,7 +347,7 @@ namespace System.Text.Json
             written = 0;
             int justWritten;
 
-            if (!formattingData.TextEncoder.TryEncodeChar('"', buffer, out justWritten))
+            if (!formattingData.TextEncoder.TryEncode('"', buffer, out justWritten))
             {
                 return false;
             }
@@ -359,7 +359,7 @@ namespace System.Text.Json
             }
             written += justWritten;
 
-            if (!formattingData.TextEncoder.TryEncodeChar('"', buffer.Slice(written), out justWritten))
+            if (!formattingData.TextEncoder.TryEncode('"', buffer.Slice(written), out justWritten))
             {
                 return false;
             }

@@ -50,7 +50,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, string value, EncodingData encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!encoding.TextEncoder.TryEncodeString(value, formatter.Buffer, out bytesWritten)) {
+            if (!encoding.TextEncoder.TryEncode(value, formatter.Buffer, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -67,7 +67,8 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, ReadOnlySpan<char> value, EncodingData encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!encoding.TextEncoder.TryEncodeFromUtf16(value, formatter.Buffer, out bytesWritten)) {
+            int consumed;
+            if (!encoding.TextEncoder.TryEncode(value, formatter.Buffer, out consumed, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -84,7 +85,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, char value, EncodingData encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!encoding.TextEncoder.TryEncodeChar(value, formatter.Buffer, out bytesWritten)) {
+            if (!encoding.TextEncoder.TryEncode(value, formatter.Buffer, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -101,7 +102,8 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, Utf8String value, EncodingData encoding) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!encoding.TextEncoder.TryEncodeFromUtf8(value, formatter.Buffer, out bytesWritten)) {
+            int consumed;
+            if (!encoding.TextEncoder.TryEncode(value, formatter.Buffer, out consumed, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);

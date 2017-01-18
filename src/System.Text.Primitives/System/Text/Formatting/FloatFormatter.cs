@@ -44,7 +44,7 @@ namespace System.Text
             // TODO: the lines below need to be replaced with properly implemented algorithm
             // the problem is the algorithm is complex, so I am commiting a stub for now
             var hack = value.ToString(format.Symbol.ToString());
-            return encoding.TextEncoder.TryEncodeString(hack, buffer, out bytesWritten);
+            return encoding.TextEncoder.TryEncode(hack, buffer, out bytesWritten);
         }
     }
 }
