@@ -9,6 +9,8 @@ namespace System.Text
 
         private const uint FirstNotSupportedCodePoint = 0x110000; // 17 * 2^16
 
+        private const uint BasicMultilingualPlaneEndMarker = 0x10000;
+
         // TODO: Make this immutable and let them be strong typed
         // http://unicode.org/cldr/utility/list-unicodeset.jsp?a=\p{whitespace}&g=&i=
         public static readonly uint[] SortedWhitespaceCodePoints = new uint[25]
@@ -36,7 +38,7 @@ namespace System.Text
 
         public static bool IsBmp(uint codePoint)
         {
-            return codePoint < 0x10000;
+            return codePoint < BasicMultilingualPlaneEndMarker;
         }
     }
 }
