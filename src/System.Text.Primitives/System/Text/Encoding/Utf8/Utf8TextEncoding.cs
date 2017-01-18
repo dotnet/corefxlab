@@ -17,14 +17,18 @@ namespace System.Text.Utf8
                 return false;
             }
 
-            var buffer = new char[len];
-            var charSpan = new Span<char>(buffer);
+            text = new string(' ', len);
 
-            int written;
-            var result = Utf8Encoder.TryDecode(encodedBytes, charSpan, out bytesConsumed, out written);
+            unsafe
+            {
+                fixed (char* p = text)
+                {
+                    var charSpan = new Span<char>(p, len);
 
-            text = new string(buffer, 0, written);
-            return result;
+                    int written;
+                    return Utf8Encoder.TryDecode(encodedBytes, charSpan, out bytesConsumed, out written);
+                }
+            }
         }
 
         public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)

@@ -93,10 +93,6 @@ namespace System.Text.Utf8
             bytesConsumed = 0;
             charactersWritten = 0;
 
-            // TODO: Is this really what we want?
-            if (utf8.Length == 0)
-                return false;
-
             while (bytesConsumed < utf8.Length)
             {
                 uint codePoint;

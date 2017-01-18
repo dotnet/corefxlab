@@ -60,10 +60,6 @@ namespace System.Text.Utf16
             charactersConsumed = 0;
             charactersWritten = 0;
 
-            // TODO: Is this really what we want?
-            if (utf16.Length == 0)
-                return false;
-
             for (int i = 0; i < utf16.Length; i++)
             {
                 if (charactersWritten >= utf32.Length)

@@ -80,8 +80,8 @@ namespace System.Text.Utf8.Tests
 
         public static object[][] TryDecodeToUnicodeMultipleCodePointsTestData = {
             //empty
-            new object[] { TextEncoder.Utf8, new Span<uint>(new uint[] { 0x50 }), new Span<byte> (new byte[] {}), false },
-            new object[] { TextEncoder.Utf16, new Span<uint>(new uint[] { 0x50 }), new Span<byte> (new byte[] {}), false },
+            new object[] { TextEncoder.Utf8, new Span<uint>(new uint[] {}), new Span<byte> (new byte[] {}), true },
+            new object[] { TextEncoder.Utf16, new Span<uint>(new uint[] {}), new Span<byte> (new byte[] {}), true },
             // multiple bytes
             new object[] { TextEncoder.Utf8, new Span<uint>(
                 new uint[] {
@@ -297,6 +297,144 @@ namespace System.Text.Utf8.Tests
             {
                 Assert.Equal(expectedBytes[i], (byte)utf8String[i]);
             }
+        }
+
+        public static object[] PartialEncodeDecodeUtf8ToUtf16TestCases = new object[]
+        {
+            //new object[]
+            //{
+            //    /* output buffer size */, /* consumed on first pass */,
+            //    new byte[] { /* UTF-8 encoded input data */ },
+            //    new byte[] { /* expected output first pass */ },
+            //    new byte[] { /* expected output second pass */ },
+            //},
+            new object[]
+            {
+                4, 2,
+                new byte[] { 0x48, 0x65, 0x6C, 0x6C, 0x6F },
+                new byte[] { 0x48, 0x00, 0x65, 0x00 },
+                new byte[] { 0x6C, 0x00, 0x6C, 0x00, 0x6F, 0x00 },
+            },
+            new object[]
+            {
+                5, 6,
+                new byte[] { 0xE6, 0xA8, 0x99, 0xE6, 0xBA, 0x96, 0xE8, 0x90, 0xAC, 0xE5, 0x9C, 0x8B, 0xE7, 0xA2, 0xBC },
+                new byte[] { 0x19, 0x6A, 0x96, 0x6E },
+                new byte[] { 0x2C, 0x84, 0x0B, 0x57, 0xBC, 0x78 },
+            },
+        };
+
+        [Theory, MemberData("PartialEncodeDecodeUtf8ToUtf16TestCases")]
+        public void TryPartialUtf8ToUtf16EncodingTest(int outputSize, int expectedConsumed, byte[] inputBytes, byte[] expected1, byte[] expected2)
+        {
+            int written;
+            int consumed;
+
+            var input = new Span<byte>(inputBytes);
+            var output = new Span<byte>(new byte[outputSize]);
+
+            Assert.False(TextEncoder.Utf16.TryEncode(input, output, out consumed, out written));
+            Assert.Equal(expected1.Length, written);
+            Assert.Equal(expectedConsumed, consumed);
+            Assert.True(AreByteArraysEqual(expected1, output.Slice(0, written).ToArray()));
+
+            input = input.Slice(consumed);
+            output = new Span<byte>(new byte[expected2.Length]);
+            Assert.True(TextEncoder.Utf16.TryEncode(input, output, out consumed, out written));
+            Assert.Equal(expected2.Length, written);
+            Assert.Equal(inputBytes.Length - expectedConsumed, consumed);
+            Assert.True(AreByteArraysEqual(expected2, output.ToArray()));
+        }
+
+        [Theory, MemberData("PartialEncodeDecodeUtf8ToUtf16TestCases")]
+        public void TryPartialUtf8ToUtf16DecodingTest(int outputSize, int expectedConsumed, byte[] inputBytes, byte[] expected1, byte[] expected2)
+        {
+            int written;
+            int consumed;
+
+            var input = new Span<byte>(inputBytes);
+            var output = new Span<byte>(new byte[outputSize]);
+
+            Assert.False(TextEncoder.Utf8.TryDecode(input, output.NonPortableCast<byte, char>(), out consumed, out written));
+            Assert.Equal(expected1.Length, written * sizeof(char));
+            Assert.Equal(expectedConsumed, consumed);
+            Assert.True(AreByteArraysEqual(expected1, output.Slice(0, written * sizeof(char)).ToArray()));
+
+            input = input.Slice(consumed);
+            output = new Span<byte>(new byte[expected2.Length]);
+            Assert.True(TextEncoder.Utf8.TryDecode(input, output.NonPortableCast<byte, char>(), out consumed, out written));
+            Assert.Equal(expected2.Length, written * sizeof(char));
+            Assert.Equal(inputBytes.Length - expectedConsumed, consumed);
+            Assert.True(AreByteArraysEqual(expected2, output.ToArray()));
+        }
+
+        public static object[] PartialEncodeDecodeUtf16ToUtf8TestCases = new object[]
+        {
+            //new object[]
+            //{
+            //    /* output buffer size */, /* consumed on first pass */,
+            //    new char[] { /* UTF-16 encoded input data */ },
+            //    new byte[] { /* expected output first pass */ },
+            //    new byte[] { /* expected output second pass */ },
+            //},
+            new object[]
+            {
+                2, 2,
+                new char[] { '\u0048', '\u0065', '\u006C', '\u006C', '\u006F' },
+                new byte[] { 0x48, 0x65 },
+                new byte[] { 0x6C, 0x6C, 0x6F },
+            },
+            new object[]
+            {
+                7, 2,
+                new char[] { '\u6A19', '\u6E96', '\u842C', '\u570B', '\u78BC' },
+                new byte[] { 0xE6, 0xA8, 0x99, 0xE6, 0xBA, 0x96 },
+                new byte[] { 0xE8, 0x90, 0xAC, 0xE5, 0x9C, 0x8B, 0xE7, 0xA2, 0xBC },
+            },
+        };
+
+        [Theory, MemberData("PartialEncodeDecodeUtf16ToUtf8TestCases")]
+        public void TryPartialUtf16ToUtf8EncodingTest(int outputSize, int expectedConsumed, char[] inputBytes, byte[] expected1, byte[] expected2)
+        {
+            int written;
+            int consumed;
+
+            var input = new Span<char>(inputBytes);
+            var output = new Span<byte>(new byte[outputSize]);
+
+            Assert.False(TextEncoder.Utf8.TryEncode(input, output, out consumed, out written));
+            Assert.Equal(expected1.Length, written);
+            Assert.Equal(expectedConsumed, consumed);
+            Assert.True(AreByteArraysEqual(expected1, output.Slice(0, written).ToArray()));
+
+            input = input.Slice(consumed);
+            output = new Span<byte>(new byte[expected2.Length]);
+            Assert.True(TextEncoder.Utf8.TryEncode(input, output, out consumed, out written));
+            Assert.Equal(expected2.Length, written);
+            Assert.Equal(inputBytes.Length - expectedConsumed, consumed);
+            Assert.True(AreByteArraysEqual(expected2, output.ToArray()));
+        }
+
+        [Theory, MemberData("PartialEncodeDecodeUtf16ToUtf8TestCases")]
+        public void TryPartialUtf16ToUtf8DecodingTest(int outputSize, int expectedConsumed, char[] inputBytes, byte[] expected1, byte[] expected2)
+        {
+            int written;
+            int consumed;
+
+            var input = new Span<char>(inputBytes).AsBytes();
+            var output = new Span<byte>(new byte[outputSize]);
+
+            Assert.False(TextEncoder.Utf16.TryDecode(input, output, out consumed, out written));
+            Assert.Equal(expected1.Length, written);
+            Assert.Equal(expectedConsumed, consumed);
+            Assert.True(AreByteArraysEqual(expected1, output.Slice(0, written).ToArray()));
+
+            input = input.Slice(consumed * sizeof(char));
+            output = new Span<byte>(new byte[expected2.Length]);
+            Assert.True(TextEncoder.Utf16.TryDecode(input, output, out consumed, out written));
+            Assert.Equal(expected2.Length, written);
+            Assert.Equal(inputBytes.Length - expectedConsumed, consumed);
+            Assert.True(AreByteArraysEqual(expected2, output.ToArray()));
         }
     }
 }
