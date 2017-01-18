@@ -154,7 +154,7 @@ namespace System.Text.Http
 
         public static string ToString(this Memory<byte> bytes, TextEncoder encoder)
         {
-            if (encoder.Scheme == TextEncoder.Id.Utf8)
+            if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
                 return new Utf8String(bytes.Span).ToString();
             }
@@ -167,7 +167,7 @@ namespace System.Text.Http
         public static string ToString(this ReadOnlyBytes bytes, TextEncoder encoder)
         {
             var sb = new StringBuilder();
-            if (encoder.Scheme == TextEncoder.Id.Utf8)
+            if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
                 var position = Position.First;
                 ReadOnlyMemory<byte> segment;
@@ -192,7 +192,7 @@ namespace System.Text.Http
         public static Utf8String ToUtf8String(this ReadOnlyBytes bytes, TextEncoder encoder)
         {
             var sb = new ArrayFormatter(bytes.ComputeLength(), EncodingData.InvariantUtf8);
-            if (encoder.Scheme == TextEncoder.Id.Utf8)
+            if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
                 var position = Position.First;
                 ReadOnlyMemory<byte> segment;
