@@ -136,20 +136,18 @@ namespace System.Text.Formatting {
                 buffer = formatter.Buffer;
             }
 
-            // this should ne optimized using fixed pointer to substring, but I will wait with this till we design proper substring
-            int totalWritten = 0;
-            for (int i = 0; i < count; i++)
+            // this should be optimized using fixed pointer to substring, but I will wait with this till we design proper substring
+
+            var characters = whole.Slice(index, count);
+            int bytesWritten;
+            int charactersConsumed;
+
+            if (!formatter.Encoding.TextEncoder.TryEncode(characters, buffer, out charactersConsumed, out bytesWritten))
             {
-                int bytesWritten;
-                while (!formatter.Encoding.TextEncoder.TryEncodeChar(whole[i + index], buffer, out bytesWritten))
-                {
-                    Debug.Assert(false, "this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
-                }
-                totalWritten += bytesWritten;
-                buffer = buffer.Slice(bytesWritten);
+                Debug.Assert(false, "this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
             }
 
-            formatter.Advance(totalWritten);
+            formatter.Advance(bytesWritten);
         }
 
         static void AppendUntyped<TFormatter, T>(this TFormatter formatter, T value, TextFormat format) where TFormatter : ITextOutput

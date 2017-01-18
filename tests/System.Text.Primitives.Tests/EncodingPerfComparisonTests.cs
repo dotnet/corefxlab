@@ -43,16 +43,16 @@ namespace System.Text.Primitives.Tests
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
             ReadOnlySpan<char> characters = unicodeString.Slice();
 
+            int consumed;
             int encodedBytes;
-
-            int utf8Length = charLength * 4;
-            byte[] utf8Buffer = new byte[utf8Length];
+            Assert.True(Utf8Encoder.TryComputeEncodedBytes(characters, out encodedBytes));
+            byte[] utf8Buffer = new byte[encodedBytes];
             Span<byte> span = new Span<byte>(utf8Buffer);
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    if (!TextEncoder.Utf8.TryEncodeFromUtf16(characters, span, out encodedBytes))
+                    if (!Utf8Encoder.TryEncode(characters, span, out consumed, out encodedBytes))
                     {
                         throw new Exception(); // this should not happen
                     }

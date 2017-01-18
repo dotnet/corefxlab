@@ -7,113 +7,111 @@ namespace System.Text.Utf16
 {
     class Utf16TextEncodingLE : TextEncoder
     {
-        public override bool TryEncodeFromUtf8(ReadOnlySpan<byte> utf8, Span<byte> buffer, out int bytesWritten)
+        #region Decoding implementation
+
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, out string text, out int bytesConsumed)
         {
-            bytesWritten = 0;
-            int justWritten;
-            foreach (var cp in new Utf8String(utf8).CodePoints)
-            {
-                if (!Utf16LittleEndianEncoder.TryEncodeCodePoint(cp, buffer.Slice(bytesWritten), out justWritten))
-                {
-                    bytesWritten = 0;
-                    return false;
-                }
-                bytesWritten += justWritten;
-            }
+            var utf16 = encodedBytes.NonPortableCast<byte, char>();
+            var chars = utf16.ToArray();
+
+            text = new string(chars);
+            bytesConsumed = encodedBytes.Length;
             return true;
         }
 
-        public override bool TryEncodeFromUtf16(ReadOnlySpan<char> utf16, Span<byte> buffer, out int bytesWritten)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<byte> utf8, out int bytesConsumed, out int bytesWritten)
         {
-            var valueBytes = utf16.Cast<char, byte>();
-            if (buffer.Length < valueBytes.Length)
+            var utf16 = encodedBytes.NonPortableCast<byte, char>();
+            return Utf8Encoder.TryEncode(utf16, utf8, out bytesConsumed, out bytesWritten);
+        }
+
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
+        {
+            // TODO: Other methods validate that the input stream contains valid sequences as they are consumed.
+            //       Currently, this is a copy operation with no validation. What is the right thing here?
+
+            var charInput = encodedBytes.NonPortableCast<byte, char>();
+
+            if (charInput.Length >= utf16.Length)
+            {
+                bytesConsumed = 0;
+                charactersWritten = 0;
+                return false;
+            }
+
+            charInput.CopyTo(utf16);
+            bytesConsumed = charInput.Length;
+            charactersWritten = charInput.Length;
+            return true;
+        }
+
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<uint> utf32, out int bytesConsumed, out int charactersWritten)
+        {
+            int consumed;
+            var utf16 = encodedBytes.NonPortableCast<byte, char>();
+            var result = Utf16LittleEndianEncoder.TryDecode(utf16, utf32, out consumed, out charactersWritten);
+
+            bytesConsumed = consumed * sizeof(char);
+            return result;
+        }
+
+        #endregion Decoding implementation
+
+        #region Encoding implementation
+
+        public override bool TryEncode(ReadOnlySpan<byte> utf8, Span<byte> encodedBytes, out int bytesConsumed, out int bytesWritten)
+        {
+            int charactersWritten;
+            var utf16 = encodedBytes.NonPortableCast<byte, char>();
+            var result = Utf8Encoder.TryDecode(utf8, utf16, out bytesConsumed, out charactersWritten);
+
+            bytesWritten = charactersWritten * sizeof(char);
+            return result;
+        }
+
+        public override bool TryEncode(ReadOnlySpan<char> utf16, Span<byte> encodedBytes, out int charactersConsumed, out int bytesWritten)
+        {
+            // TODO: Other methods validate that the input stream contains valid sequences as they are consumed.
+            //       Currently, this is a copy operation with no validation. What is the right thing here?
+
+            var charBuffer = encodedBytes.NonPortableCast<byte, char>();
+
+            if (utf16.Length > charBuffer.Length)
+            {
+                charactersConsumed = 0;
+                bytesWritten = 0;
+                return false;
+            }
+
+            utf16.CopyTo(charBuffer);
+            bytesWritten = utf16.Length * sizeof(char);
+            charactersConsumed = utf16.Length;
+            return true;
+        }
+
+        public override bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> encodedBytes, out int charactersConsumed, out int bytesWritten)
+        {
+            int written;
+            var utf16 = encodedBytes.NonPortableCast<byte, char>();
+            var result = Utf16LittleEndianEncoder.TryEncode(utf32, utf16, out charactersConsumed, out written);
+
+            bytesWritten = written * sizeof(char);
+            return result;
+        }
+
+        public override bool TryEncode(string text, Span<byte> encodedBytes, out int bytesWritten)
+        {
+            bytesWritten = text.Length << 1;
+            if (bytesWritten > encodedBytes.Length)
             {
                 bytesWritten = 0;
                 return false;
             }
-            valueBytes.CopyTo(buffer);
-            bytesWritten = valueBytes.Length;
+
+            text.Slice().AsBytes().CopyTo(encodedBytes);
             return true;
         }
 
-        public override bool TryEncodeFromUnicode(ReadOnlySpan<UnicodeCodePoint> codePoints, Span<byte> buffer, out int bytesWritten)
-        {
-            var availableBytes = buffer.Length;
-            var inputLength = codePoints.Length;
-            int bytesWrittenForCodePoint = 0;
-            bytesWritten = 0;
-
-            for (int i = 0; i < inputLength;  i++)
-            {
-                if (availableBytes <= bytesWritten || !Utf16LittleEndianEncoder.TryEncodeCodePoint(codePoints[i], buffer.Slice(bytesWritten), out bytesWrittenForCodePoint))
-                {
-                    bytesWritten = 0;
-                    return false;
-                }
-                bytesWritten += bytesWrittenForCodePoint;
-            }
-
-            return true;
-        }
-
-        public override bool TryDecodeToUnicode(Span<byte> encoded, Span<UnicodeCodePoint> decoded, out int bytesWritten)
-        {
-            var avaliableBytes = encoded.Length;
-            var outputLength = decoded.Length;
-            int bytesWrittenForCodePoint = 0;
-            bytesWritten = 0;
-
-            for (int i = 0; i < outputLength; i++)
-            {
-                UnicodeCodePoint decodedCodePoint = decoded[i];
-
-                if (avaliableBytes - bytesWritten < 2)
-                {
-                    decodedCodePoint = new UnicodeCodePoint();
-                    bytesWritten = 0;
-                    return false;
-                }
-
-                uint answer = (uint)(encoded[1 + bytesWritten] << 8 | encoded[bytesWritten]);
-                decodedCodePoint = new UnicodeCodePoint(answer);
-                bytesWrittenForCodePoint = 2;
-
-                if (avaliableBytes - bytesWritten >= 4)
-                {
-                    uint highBytes = answer;
-                    uint lowBytes = (uint)(encoded[3 + bytesWritten] << 8 | encoded[2 + bytesWritten]);
-
-                    if (highBytes >= UnicodeConstants.Utf16HighSurrogateFirstCodePoint
-                            && highBytes <= UnicodeConstants.Utf16HighSurrogateLastCodePoint
-                            && lowBytes >= UnicodeConstants.Utf16LowSurrogateFirstCodePoint
-                            && lowBytes <= UnicodeConstants.Utf16LowSurrogateLastCodePoint)
-                    {
-                        answer = (((highBytes - UnicodeConstants.Utf16HighSurrogateFirstCodePoint) << 10)
-                            | (lowBytes - UnicodeConstants.Utf16LowSurrogateFirstCodePoint)) + 0x10000;
-
-                        decodedCodePoint = new UnicodeCodePoint(answer);
-                        bytesWrittenForCodePoint = 4;
-                    }
-                }
-
-                decoded[i] = decodedCodePoint;
-                bytesWritten += bytesWrittenForCodePoint;
-            }
-
-            return true;
-        }
-
-        public override bool TryEncodeChar(char value, Span<byte> buffer, out int bytesWritten)
-        {
-            if (buffer.Length < 2)
-            {
-                bytesWritten = 0;
-                return false;
-            }
-            buffer[0] = (byte)value;
-            buffer[1] = (byte)(value >> 8);
-            bytesWritten = 2;
-            return true;
-        }
+        #endregion Encoding implementation
     }
 }

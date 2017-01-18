@@ -52,9 +52,8 @@ namespace System.Text.Utf8
                         throw new InvalidOperationException("Current does not exist");
                     }
 
-                    ReadOnlySpan<byte> buffer = _buffer.Slice(_index);
-                    UnicodeCodePoint ret;
-                    bool succeeded = Utf8Encoder.TryDecodeCodePoint(buffer, out ret, out _currentLenCache);
+                    uint codePoint;
+                    bool succeeded = Utf8Encoder.TryDecodeCodePoint(_buffer, _index, out codePoint, out _currentLenCache);
 
                     if (!succeeded || _currentLenCache == 0)
                     {
@@ -62,7 +61,7 @@ namespace System.Text.Utf8
                         throw new Exception("Invalid code point!");
                     }
 
-                    return ret;
+                    return new UnicodeCodePoint(codePoint);
                 }
             }
 

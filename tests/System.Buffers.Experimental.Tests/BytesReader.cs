@@ -143,7 +143,7 @@ namespace System.Slices.Tests
         public static string ToString(this ReadOnlyBytes bytes, TextEncoder encoder)
         {
             var sb = new StringBuilder();
-            if (encoder.Scheme == TextEncoder.Id.Utf8)
+            if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
                 var position = Position.First;
                 ReadOnlyMemory<byte> segment;
