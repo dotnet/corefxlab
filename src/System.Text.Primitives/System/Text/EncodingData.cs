@@ -348,38 +348,8 @@ namespace System.Text
             public byte ValueOrNumChildren;
             public int IndexOrSymbol;
         }
-        
-        private static int CompareSuffix(Suffix x, Suffix y)
-        {
-            int index = 0;
-            if (x.Bytes.Length == 0 || y.Bytes.Length == 0)
-            {
-                throw new ArgumentException("Symbol cannot be zero bytes long");
-            }
-            while (true)
-            {
-                if (index == x.Bytes.Length)
-                {
-                    if (index == y.Bytes.Length)
-                    {
-                        throw new ArgumentException(String.Format("Symbols cannot be identical"));
-                    }
-                    throw new ArgumentException("Symbols are ambiguous");
-                }
-                if (index == y.Bytes.Length)
-                {
-                    throw new ArgumentException("Symbols are ambiguous");
-                }
-                int compareResult = x.Bytes[index].CompareTo(y.Bytes[index]);
-                if (compareResult != 0)
-                {
-                    return compareResult;
-                }
-                index++;
-            }
-        }
 
-        private struct Suffix
+        private struct Suffix : IComparable<Suffix>
         {
             public int SymbolIndex;
             public ReadOnlySpan<byte> Bytes;
@@ -388,6 +358,36 @@ namespace System.Text
             {
                 SymbolIndex = symbolIndex;
                 Bytes = bytes;
+            }
+
+            public int CompareTo(Suffix other)
+            {
+                int index = 0;
+                if (Bytes.Length == 0 || other.Bytes.Length == 0)
+                {
+                    throw new ArgumentException("Symbol cannot be zero bytes long");
+                }
+                while (true)
+                {
+                    if (index == Bytes.Length)
+                    {
+                        if (index == other.Bytes.Length)
+                        {
+                            throw new ArgumentException(String.Format("Symbols cannot be identical"));
+                        }
+                        throw new ArgumentException("Symbols are ambiguous");
+                    }
+                    if (index == other.Bytes.Length)
+                    {
+                        throw new ArgumentException("Symbols are ambiguous");
+                    }
+                    int compareResult = Bytes[index].CompareTo(other.Bytes[index]);
+                    if (compareResult != 0)
+                    {
+                        return compareResult;
+                    }
+                    index++;
+                }
             }
         }
 
@@ -486,7 +486,7 @@ namespace System.Text
 
             // Sort the symbol list. This is important for allowing binary search of the child nodes, as well as
             // counting the number of children a node has.
-            symbolList.Sort(CompareSuffix);
+            symbolList.Sort();
 
             List<ParsingTrieNode> parsingTrieList = new List<ParsingTrieNode>();
             CreateParsingTrieNodeAndChildren(ref parsingTrieList, symbolList);
