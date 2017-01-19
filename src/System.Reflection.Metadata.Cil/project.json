@@ -17,7 +17,7 @@
     "requireLicenseAcceptance": true
   },
   "buildOptions": {
-    "keyFile": "../../tools/Key.snk"
+    "keyFile": "../../signing/Key.snk"
   },
   "dependencies": {
     "NETStandard.Library": "1.6.0",
