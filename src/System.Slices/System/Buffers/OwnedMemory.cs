@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace System.Buffers
+namespace System.Runtime
 {
     public enum ReferenceCountingMethod {
         Interlocked,
@@ -10,10 +10,13 @@ namespace System.Buffers
         None
     };
 
-    public class OwnedMemorySettings {
-        public static ReferenceCountingMethod Mode = ReferenceCountingMethod.Interlocked;
+    public class ReferenceCountingSettings {
+        public static ReferenceCountingMethod OwnedMemory = ReferenceCountingMethod.Interlocked;
     }
+}
 
+namespace System.Buffers
+{
     public abstract class OwnedMemory<T> : IDisposable, IMemory<T>
     {
         static long _nextId = InitializedId + 1;
@@ -31,7 +34,7 @@ namespace System.Buffers
         public bool HasOutstandingReferences { 
             get { 
                 return _referenceCount != 0 
-                        || (OwnedMemorySettings.Mode == ReferenceCountingMethod.ReferenceCounter
+                        || (ReferenceCountingSettings.OwnedMemory == ReferenceCountingMethod.ReferenceCounter
                             && ReferenceCounter.HasReference(this)); 
             } 
         }
@@ -220,7 +223,7 @@ namespace System.Buffers
         {
             _id = id;
             _owner = owner;
-            switch(OwnedMemorySettings.Mode) {
+            switch(ReferenceCountingSettings.OwnedMemory) {
                 case ReferenceCountingMethod.Interlocked:
                     ((IKnown)_owner).AddReference(_id);
                     break;
@@ -236,7 +239,7 @@ namespace System.Buffers
 
         public void Dispose()
         {
-            switch (OwnedMemorySettings.Mode) {
+            switch (ReferenceCountingSettings.OwnedMemory) {
                 case ReferenceCountingMethod.Interlocked:
                     ((IKnown)_owner).Release(_id);
                     break;

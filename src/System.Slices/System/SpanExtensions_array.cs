@@ -74,6 +74,11 @@ namespace System
         {
             array.Slice().CopyTo(span);
         }
+
+        public static ArraySegment<T> Slice<T>(this ArraySegment<T> source, int count)
+        {
+            return new ArraySegment<T>(source.Array, source.Offset + count, source.Count - count);
+        }
     }
 }
 

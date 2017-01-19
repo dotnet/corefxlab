@@ -3,7 +3,7 @@
 
 using System.Text;
 
-namespace System.Text.Formatting
+namespace System.Text
 {
     public interface IBufferFormattable
     {

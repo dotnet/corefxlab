@@ -4,10 +4,12 @@
 using System;
 using System.Collections.Sequences;
 
-public interface IReadOnlyMemoryList<T> : ISequence<ReadOnlyMemory<T>>
-{
-    int CopyTo(Span<T> buffer);
-    ReadOnlyMemory<T> First { get; }
+namespace System.Buffers {
+    public interface IReadOnlyMemoryList<T> : ISequence<ReadOnlyMemory<T>>
+    {
+        int CopyTo(Span<T> buffer);
+        ReadOnlyMemory<T> First { get; }
 
-    IReadOnlyMemoryList<T> Rest { get; }
+        IReadOnlyMemoryList<T> Rest { get; }
+    }
 }
