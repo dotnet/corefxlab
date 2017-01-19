@@ -134,12 +134,11 @@ namespace System.Text.Utf8
                 codePoint = default(uint);
                 return false;
             }
-
-            // ROBERT: The values in the masks below look wrong. Need to validate.
+            
             switch (bytesConsumed)
             {
                 case 1:
-                    codePoint = (uint)(first & b0111_1111U);
+                    codePoint = first;
                     break;
 
                 case 2:

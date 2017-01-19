@@ -119,7 +119,7 @@ namespace System.Text.Utf8.Tests
         [Theory, MemberData("Encoders")]
         public void BruteTestingRoundtripEncodeDecodeAllUnicodeCodePoints(TextEncoder encoder)
         {
-            const uint maximumValidCodePoint = 5;//0x10FFFF;
+            const uint maximumValidCodePoint = 0x10FFFF;
             uint[] expectedCodePoints = new uint[maximumValidCodePoint + 1];
             for (uint i = 0; i <= maximumValidCodePoint; i++)
             {
