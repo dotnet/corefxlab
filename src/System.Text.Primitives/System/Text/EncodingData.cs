@@ -3,10 +3,11 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace System.Text
 {
-    public struct EncodingData : IEquatable<EncodingData>
+    public partial struct EncodingData : IEquatable<EncodingData>
     {
         private static EncodingData s_invariantUtf16;
         private static EncodingData s_invariantUtf8;
@@ -15,32 +16,11 @@ namespace System.Text
         private ParsingTrieNode[] _parsingTrie; // prefix tree used for parsing
         private TextEncoder _encoder;
 
-        // this should be removed after CreateParsingTire is implemented
-        public EncodingData(byte[][] symbols, TextEncoder encoder, Tuple<byte, int>[] parsingTrie)
-        {
-            _symbols = symbols;
-            _encoder = encoder;
-
-            var tire = new ParsingTrieNode[parsingTrie.Length];
-            for(int i=0; i<parsingTrie.Length; i++) {
-                tire[i] = new ParsingTrieNode() { valueOrNumChildren = parsingTrie[i].Item1, IndexOrSymbol = parsingTrie[i].Item2 };
-            }
-
-            _parsingTrie = tire;
-        }
-
         public EncodingData(byte[][] symbols, TextEncoder encoder)
         {
             _symbols = symbols;
             _encoder = encoder;
-            _parsingTrie = null;
-            _parsingTrie = CreateParsingTire(_symbols);
-        }
-
-        private ParsingTrieNode[] CreateParsingTire(byte[][] _digitsAndSymbols)
-        {
-            // TODO: this needs to be implemented;
-            return null;
+            _parsingTrie = CreateParsingTrie(symbols);
         }
 
         public static EncodingData InvariantUtf16
@@ -68,7 +48,7 @@ namespace System.Text
             while (true)
             {
                 var node = _parsingTrie[trieIndex];
-                if (node.valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value
+                if (node.ValueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value
                 {
                     symbol = (Symbol)node.IndexOrSymbol;
                     if (VerifySuffix(buffer, bufferIndex, symbol))
@@ -254,7 +234,7 @@ namespace System.Text
             consumed = 0;
             while (true)
             {
-                if (_parsingTrie[trieIndex].valueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
+                if (_parsingTrie[trieIndex].ValueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
                 {
                     symbol = (uint)_parsingTrie[trieIndex].IndexOrSymbol;  // return the parsed value
                     if (VerifySuffix(buffer, codeUnitIndex, (Symbol)symbol))
@@ -295,13 +275,13 @@ namespace System.Text
         private int BinarySearch(int nodeIndex, int level, byte value)
         {
             int maxMinLimits = _parsingTrie[nodeIndex].IndexOrSymbol;
-            if (maxMinLimits > 0 && value > maxMinLimits >> 24 && value < (maxMinLimits << 16) >> 24)
+            if (maxMinLimits != 0 && value > (uint)maxMinLimits >> 24 && value < (uint)(maxMinLimits << 16) >> 24)
             {
                 // See the comments on the struct above for more information about this format
-                return nodeIndex + ((maxMinLimits << 8) >> 24) + value - (maxMinLimits >> 24);
+                return (int)(nodeIndex + ((uint)(maxMinLimits << 8) >> 24) + value - ((uint)maxMinLimits >> 24));
             }
 
-            int leftBound = nodeIndex + 1, rightBound = nodeIndex + _parsingTrie[nodeIndex].valueOrNumChildren;
+            int leftBound = nodeIndex + 1, rightBound = nodeIndex + _parsingTrie[nodeIndex].ValueOrNumChildren;
             int midIndex = 0;
             while (true)
             {
@@ -310,8 +290,8 @@ namespace System.Text
                     // this loop is necessary because binary search takes the floor
                     // of the middle, which means it can give incorrect indices for insertion.
                     // we should never iterate up more than two indices.
-                    while (midIndex < nodeIndex + _parsingTrie[nodeIndex].valueOrNumChildren
-                        && _parsingTrie[midIndex].valueOrNumChildren < value)
+                    while (midIndex < nodeIndex + _parsingTrie[nodeIndex].ValueOrNumChildren
+                        && _parsingTrie[midIndex].ValueOrNumChildren < value)
                     {
                         midIndex++;
                     }
@@ -320,7 +300,7 @@ namespace System.Text
 
                 midIndex = (leftBound + rightBound) / 2; // find the middle value
 
-                byte mValue = _parsingTrie[midIndex].valueOrNumChildren;
+                byte mValue = _parsingTrie[midIndex].ValueOrNumChildren;
 
                 if (mValue < value)
                     leftBound = midIndex + 1;
@@ -365,7 +345,7 @@ namespace System.Text
         // CC = the max value, and DD = the max value's index in the same coord-system as BB.
         struct ParsingTrieNode
         {
-            public byte valueOrNumChildren;
+            public byte ValueOrNumChildren;
             public int IndexOrSymbol;
         }
     }
