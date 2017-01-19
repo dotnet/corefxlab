@@ -1,8 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System.Buffers;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
+using Microsoft.Xunit.Performance;
 
 namespace System.Slices.Tests
 {
@@ -69,7 +71,7 @@ namespace System.Slices.Tests
             for(int k = 0; k < 1000; k++) {
                 var owners   = new OwnedArray<byte>[128];
                 var memories = new Memory<byte>[owners.Length];
-                var reserves = new DisposableReservation[owners.Length];
+                var reserves = new DisposableReservation<byte>[owners.Length];
                 var disposeSuccesses = new bool[owners.Length];
                 var reserveSuccesses = new bool[owners.Length];
 
@@ -108,41 +110,113 @@ namespace System.Slices.Tests
             }
         }
 
+
+        #region helpers
+        private static object[] MakeArray(params object[] args)
+        {
+            return args;
+        }
+
+        /// Generate the ith permutation of the argss array of arrays.
+        private static object[] MakeIthPermutation(int i, object[][] argss) {
+            var res = new object[argss.Length];
+            for (int j = 0; j < argss.Length; j++) {
+                var arg = argss[j];
+                res[j] = arg[i % arg.Length];
+                i /= arg.Length;
+            }
+            return res;
+        }
+        private static IEnumerable<object[]> MakePermutations(params object[][] argss)
+        {
+            if (argss.Length != 0) {
+                var size = 1;
+                // Calculate number of permutations.
+                foreach (var args in argss) {
+                    size *= args.Length;
+                }
+                object[][] ress = new object[size][];
+                for (int i = 0; i < size; i++) {
+                    ress[i] = MakeIthPermutation(i, argss);
+                }
+                return ress;
+            }
+            return null;
+        }
+        #endregion
+
+        public static IEnumerable<object[]> ReservationPerformanceData =>
+            MakePermutations(MakeArray(1,4,10),
+                             MakeArray(100,1000),
+                             MakeArray(1,2,4,8,12),
+                             MakeArray(ReferenceCountingMethod.None, 
+                                       ReferenceCountingMethod.Interlocked,
+                                       ReferenceCountingMethod.ReferenceCounter));
+
+
+        [MemberData(nameof(ReservationPerformanceData))]
+        [Benchmark]
+        public void ReservationPerformance(int number, int size, int threads, ReferenceCountingMethod m)
+        {
+            var iterations = 1000000;
+
+            var o = OwnedMemorySettings.Mode;
+            OwnedMemorySettings.Mode = m;
+
+            Benchmark.Iterate( () => {
+                var owners   = new OwnedMemory<byte>[number];
+                var memories = new Memory<byte>[owners.Length];
+
+                for (int i = 0; i < owners.Length; i++) {
+                    owners[i] = new AutoPooledMemory(size);
+                    memories[i] = owners[i].Memory;
+                }
+
+                var tasks = new List<Task>(threads);
+                for (int t = 0; t < threads; t++) {
+                    tasks.Add(Task.Run(() => {
+                        for (int k = 0; k < iterations / owners.Length; k++) {
+                            for (int i = 0; i < owners.Length; i++) {
+                                using (var reserve = memories[i].Reserve()) {
+                                    var s = reserve.Span;
+                                    for (int j = 0; j < owners.Length; j++) {
+                                        s[j] = (byte)1;
+                                    }
+                                }
+                            }
+                        }
+                    }));
+                }
+
+                Task.WaitAll(tasks.ToArray());
+
+                for (int i = 0; i < owners.Length; i++) {
+                    owners[i].Release();
+                }
+            });
+
+            OwnedMemorySettings.Mode = o;
+        }
+
         [Fact]
         public unsafe void ReferenceCounting()
         {
             var owned = new CustomMemory();
             var memory = owned.Memory;
-            Assert.Equal(0, owned.ReferenceCountChangeCount);
-            Assert.Equal(0, owned.ReferenceCount);
+            Assert.Equal(0, owned.OnZeroRefencesCount);
+            Assert.False(owned.HasOutstandingReferences);
             using (memory.Reserve()) {
-                Assert.Equal(1, owned.ReferenceCountChangeCount);
-                Assert.Equal(1, owned.ReferenceCount);
+                Assert.Equal(0, owned.OnZeroRefencesCount);
+                Assert.True(owned.HasOutstandingReferences);
             }
-            Assert.Equal(2, owned.ReferenceCountChangeCount);
-            Assert.Equal(0, owned.ReferenceCount);
-        }
-
-        [Fact]
-        public unsafe void CopyOnReserve()
-        {
-            var owned = new CustomMemory();
-            ReadOnlyMemory<byte> memory = owned.Memory;
-            var slice = memory.Slice(0, 1);
-
-            // this copies on reserve
-            using (slice.Reserve()) {
-                Assert.Equal(0, owned.ReferenceCountChangeCount);
-                Assert.Equal(0, owned.ReferenceCount);
-            }
-            Assert.Equal(0, owned.ReferenceCountChangeCount);
-            Assert.Equal(0, owned.ReferenceCount);
+            Assert.Equal(1, owned.OnZeroRefencesCount);
+            Assert.False(owned.HasOutstandingReferences);
         }
 
         [Fact]
         public void AutoDispose()
         {
-            OwnedMemory<byte> owned = new AutoDisposeMemory(1000);
+            OwnedMemory<byte> owned = new AutoPooledMemory(1000);
             var memory = owned.Memory;
             Assert.Equal(false, owned.IsDisposed);
             var reservation = memory.Reserve();
@@ -156,38 +230,38 @@ namespace System.Slices.Tests
 
     class CustomMemory : OwnedMemory<byte>
     {
-        int _referenceCountChangeCount;
+        int _onZeroRefencesCount;
 
         public CustomMemory() : base(new byte[256], 0, 256) { }
 
-        public int ReferenceCountChangeCount => _referenceCountChangeCount;
+        public int OnZeroRefencesCount => _onZeroRefencesCount;
 
-        protected override DisposableReservation Reserve(ref ReadOnlyMemory<byte> memory)
+        protected override void OnZeroReferences()
         {
-            if (memory.Length < Length) {
-                var copy = memory.Span.ToArray();
-                OwnedArray<byte> newOwned = copy;
-                memory = newOwned.Memory;
-                return memory.Reserve();
-            }
-            else {
-                return base.Reserve(ref memory);
-            }
-        }
-
-        protected override void OnReferenceCountChanged(int newReferenceCount)
-        {
-            _referenceCountChangeCount++;
+            _onZeroRefencesCount++;
         }
     }
 
-    class AutoDisposeMemory : OwnedMemory<byte>
+    class AutoDisposeMemory<T> : OwnedMemory<T>
     {
-        public AutoDisposeMemory(int length) : this(ArrayPool<byte>.Shared.Rent(length)) {
+        public AutoDisposeMemory(T[] array) : base(array, 0, array.Length) {
+            AddReference();
         }
 
-        AutoDisposeMemory(byte[] array) : base(array, 0, array.Length) {
-            AddReference();
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+        }
+
+        protected override void OnZeroReferences()
+        {
+            Dispose();
+        }
+    }
+
+    class AutoPooledMemory : AutoDisposeMemory<byte>
+    {
+        public AutoPooledMemory(int length) : base(ArrayPool<byte>.Shared.Rent(length)) {
         }
 
         protected override void Dispose(bool disposing)
@@ -195,12 +269,6 @@ namespace System.Slices.Tests
             ArrayPool<byte>.Shared.Return(Array);
             base.Dispose(disposing);
         }
-
-        protected override void OnReferenceCountChanged(int newReferenceCount)
-        {
-            if (newReferenceCount == 0) {
-                Dispose();
-            }
-        }
     }
+
 }

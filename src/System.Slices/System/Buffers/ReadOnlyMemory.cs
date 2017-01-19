@@ -49,9 +49,9 @@ namespace System
 
         public ReadOnlySpan<T> Span => _owner.GetSpanInternal(_id).Slice(_index, _length);
 
-        public DisposableReservation Reserve()
+        public DisposableReservation<T> Reserve()
         {
-            return _owner.Reserve(ref this);
+            return _owner.Memory.Reserve();
         }
    
         public unsafe bool TryGetPointer(out void* pointer)

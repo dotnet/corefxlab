@@ -7,6 +7,7 @@
     "dependencies": {
         "Benchmarks": { "target": "project" },
         "System.Binary.Base64.Tests": { "target": "project" },
+        "System.Slices.Tests": { "target": "project" },
         "System.Text.Primitives.Tests": { "target": "project" },
         "xunit.performance.api": "1.0.0-alpha-build0043"
     },

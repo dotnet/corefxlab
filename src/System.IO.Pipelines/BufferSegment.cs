@@ -85,11 +85,11 @@ namespace System.IO.Pipelines
 
         public void Dispose()
         {
-            Debug.Assert(_buffer.ReferenceCount >= 1);
+            Debug.Assert(_buffer.HasOutstandingReferences);
 
             _buffer.Release();
 
-            if (_buffer.ReferenceCount == 0)
+            if (!_buffer.HasOutstandingReferences)
             {
                 _buffer.Dispose();
             }
