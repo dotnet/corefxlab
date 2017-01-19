@@ -13,7 +13,7 @@ namespace System.Buffers.Experimental.System.Buffers
         private IntPtr _memory;
         private int _bufferCount;
         private int _bufferSize;
-        private ConcurrentQueue<SecureMemory> _buffers = new ConcurrentQueue<SecureMemory>();
+        private ConcurrentQueue<EphemeralMemory> _buffers = new ConcurrentQueue<EphemeralMemory>();
         private long _totalAllocated;
         private byte[] _emptyData;
 
@@ -44,14 +44,14 @@ namespace System.Buffers.Experimental.System.Buffers
 
             for (var i = 0; i < _totalAllocated; i += bufferSize)
             {
-                var mem = new SecureMemory(IntPtr.Add(_memory, i), bufferSize);
+                var mem = new EphemeralMemory(IntPtr.Add(_memory, i), bufferSize);
                 _buffers.Enqueue(mem);
             }
         }
 
-        sealed class SecureMemory : OwnedMemory<byte>
+        sealed class EphemeralMemory : OwnedMemory<byte>
         {
-            public SecureMemory(IntPtr memory, int length) : base(null, 0, length, memory)
+            public EphemeralMemory(IntPtr memory, int length) : base(null, 0, length, memory)
             { }
             internal bool Rented;
             public new IntPtr Pointer => base.Pointer;

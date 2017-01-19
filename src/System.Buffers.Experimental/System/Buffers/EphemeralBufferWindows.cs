@@ -13,7 +13,7 @@ namespace System.Buffers.Experimental.System.Buffers
         private IntPtr _memory;
         private int _bufferCount;
         private int _bufferSize;
-        private ConcurrentQueue<SecureMemory> _buffers = new ConcurrentQueue<SecureMemory>();
+        private ConcurrentQueue<EphemeralMemory> _buffers = new ConcurrentQueue<EphemeralMemory>();
         private UIntPtr _totalAllocated;
         private byte[] _emptyData;
 
@@ -35,14 +35,14 @@ namespace System.Buffers.Experimental.System.Buffers
             VirtualLock(_memory, _totalAllocated);
             for (var i = 0; i < totalAllocated; i += bufferSize)
             {
-                var mem = new SecureMemory(IntPtr.Add(_memory, i), bufferSize);
+                var mem = new EphemeralMemory(IntPtr.Add(_memory, i), bufferSize);
                 _buffers.Enqueue(mem);
             }
         }
 
         public OwnedMemory<byte> Rent()
         {
-            SecureMemory returnValue;
+            EphemeralMemory returnValue;
             if (!_buffers.TryDequeue(out returnValue))
             {
                 ThrowHelper.ThrowInvalidOperationException();
@@ -53,7 +53,7 @@ namespace System.Buffers.Experimental.System.Buffers
 
         public void Return(OwnedMemory<byte> buffer)
         {
-            var buffer2 = buffer as SecureMemory;
+            var buffer2 = buffer as EphemeralMemory;
             if (buffer2 == null)
             {
                 Debug.Assert(false,"Buffer was empty");
@@ -69,9 +69,9 @@ namespace System.Buffers.Experimental.System.Buffers
             _buffers.Enqueue(buffer2);
         }
 
-        sealed class SecureMemory : OwnedMemory<byte>
+        sealed class EphemeralMemory : OwnedMemory<byte>
         {
-            public SecureMemory(IntPtr memory, int length) : base(null, 0, length, memory)
+            public EphemeralMemory(IntPtr memory, int length) : base(null, 0, length, memory)
             { }
             internal bool Rented;
             public new IntPtr Pointer => base.Pointer;
