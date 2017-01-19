@@ -3,7 +3,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace System.Buffers
+namespace System.Buffers.Pools
 {
     public unsafe sealed class NativeBufferPool : BufferPool
     {

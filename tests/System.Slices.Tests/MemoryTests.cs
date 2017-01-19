@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using System.Buffers;
 using System.Collections.Generic;
+using System.Runtime;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Xunit.Performance;
@@ -160,8 +161,8 @@ namespace System.Slices.Tests
         {
             var iterations = 1000000;
 
-            var o = OwnedMemorySettings.Mode;
-            OwnedMemorySettings.Mode = m;
+            var o = ReferenceCountingSettings.OwnedMemory;
+            ReferenceCountingSettings.OwnedMemory = m;
 
             Benchmark.Iterate( () => {
                 var owners   = new OwnedMemory<byte>[number];
@@ -195,7 +196,7 @@ namespace System.Slices.Tests
                 }
             });
 
-            OwnedMemorySettings.Mode = o;
+            ReferenceCountingSettings.OwnedMemory = o;
         }
 
         [Fact]

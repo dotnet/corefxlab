@@ -45,17 +45,17 @@ namespace System.Slices.Tests
 
             var reader = new BytesReader(bytes);
 
-            var value = reader.ReadBytesUntil(2).Value.ToSingleSpan();
+            var value = reader.ReadBytesUntil(2).Value.ToSpan();
             Assert.Equal(0, value[0]);
             Assert.Equal(1, value[1]);
             reader.Advance(1);
 
-            value = reader.ReadBytesUntil(5).Value.ToSingleSpan();
+            value = reader.ReadBytesUntil(5).Value.ToSpan();
             Assert.Equal(3, value[0]);
             Assert.Equal(4, value[1]);
             reader.Advance(1);
 
-            value = reader.ReadBytesUntil(new byte[] { 8, 8 }).Value.ToSingleSpan();
+            value = reader.ReadBytesUntil(new byte[] { 8, 8 }).Value.ToSpan();
             Assert.Equal(6, value[0]);
             Assert.Equal(7, value[1]);
             reader.Advance(2);

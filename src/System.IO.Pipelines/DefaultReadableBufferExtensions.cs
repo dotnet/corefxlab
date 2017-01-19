@@ -4,6 +4,7 @@
 using System;
 using System.Binary;
 using System.IO;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 

@@ -3,6 +3,7 @@
 
 using System;
 using System.Binary;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines

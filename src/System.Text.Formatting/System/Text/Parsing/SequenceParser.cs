@@ -77,7 +77,7 @@ namespace System.Text.Parsing
 
             // for invariant culture, we should never reach this point, as invariant uint text is never longer than 127 bytes. 
             // I left this code here, as we will need it for custom cultures and possibly when we shrink the stack allocated buffer.
-            combinedSpan = memorySequence.ToSingleSpan();
+            combinedSpan = memorySequence.ToSpan();
             if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(first.Span, out value, out consumed)) {
                 return false;
             }
@@ -150,7 +150,7 @@ namespace System.Text.Parsing
 
             // for invariant culture, we should never reach this point, as invariant uint text is never longer than 127 bytes. 
             // I left this code here, as we will need it for custom cultures and possibly when we shrink the stack allocated buffer.
-            combinedSpan = memorySequence.ToSingleSpan();
+            combinedSpan = memorySequence.ToSpan();
             if (!PrimitiveParser.InvariantUtf8.TryParseUInt32(combinedSpan, out value, out consumed)) {
                 return false;
             }
