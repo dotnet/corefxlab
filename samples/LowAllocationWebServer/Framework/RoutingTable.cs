@@ -27,8 +27,11 @@ namespace Microsoft.Net.Http
 
         public bool TryHandle(HttpRequestSingleSegment request, HttpResponse response)
         {
-            for (int i = 0; i < _count; i++) {
-                if (request.RequestLine.RequestUri.Equals(_uris[i]) && request.RequestLine.Method == _verbs[i]) {
+            Utf8String requestUtf8 = new Utf8String(request.RequestLine.RequestUri.Span);
+            for (int i = 0; i < _count; i++)
+            {
+                if (requestUtf8.Equals(_uris[i]) && request.RequestLine.Method == _verbs[i])
+                {
                     _handlers[i](request, response);
                     return true;
                 }
