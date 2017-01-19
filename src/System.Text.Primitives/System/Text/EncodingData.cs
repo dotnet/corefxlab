@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace System.Text
 {
-    public struct EncodingData : IEquatable<EncodingData>
+    public partial struct EncodingData : IEquatable<EncodingData>
     {
         private static EncodingData s_invariantUtf16;
         private static EncodingData s_invariantUtf8;
@@ -275,10 +275,10 @@ namespace System.Text
         private int BinarySearch(int nodeIndex, int level, byte value)
         {
             int maxMinLimits = _parsingTrie[nodeIndex].IndexOrSymbol;
-            if (maxMinLimits > 0 && value > maxMinLimits >> 24 && value < (maxMinLimits << 16) >> 24)
+            if (maxMinLimits != 0 && value > (uint)maxMinLimits >> 24 && value < (uint)(maxMinLimits << 16) >> 24)
             {
                 // See the comments on the struct above for more information about this format
-                return nodeIndex + ((maxMinLimits << 8) >> 24) + value - (maxMinLimits >> 24);
+                return (int)(nodeIndex + ((uint)(maxMinLimits << 8) >> 24) + value - ((uint)maxMinLimits >> 24));
             }
 
             int leftBound = nodeIndex + 1, rightBound = nodeIndex + _parsingTrie[nodeIndex].ValueOrNumChildren;
@@ -347,151 +347,6 @@ namespace System.Text
         {
             public byte ValueOrNumChildren;
             public int IndexOrSymbol;
-        }
-
-        private struct Suffix : IComparable<Suffix>
-        {
-            public int SymbolIndex;
-            public ReadOnlySpan<byte> Bytes;
-
-            public Suffix(int symbolIndex, ReadOnlySpan<byte> bytes)
-            {
-                SymbolIndex = symbolIndex;
-                Bytes = bytes;
-            }
-
-            public int CompareTo(Suffix other)
-            {
-                int index = 0;
-                if (Bytes.Length == 0 || other.Bytes.Length == 0)
-                {
-                    throw new ArgumentException("Symbol cannot be zero bytes long");
-                }
-                while (true)
-                {
-                    if (index == Bytes.Length)
-                    {
-                        if (index == other.Bytes.Length)
-                        {
-                            throw new ArgumentException(String.Format("Symbols cannot be identical"));
-                        }
-                        throw new ArgumentException("Symbols are ambiguous");
-                    }
-                    if (index == other.Bytes.Length)
-                    {
-                        throw new ArgumentException("Symbols are ambiguous");
-                    }
-                    int compareResult = Bytes[index].CompareTo(other.Bytes[index]);
-                    if (compareResult != 0)
-                    {
-                        return compareResult;
-                    }
-                    index++;
-                }
-            }
-        }
-
-        private struct SuffixClump
-        {
-            public byte BeginningByte;
-            public List<Suffix> Suffixes;
-
-            public SuffixClump(byte beginningByte)
-            {
-                BeginningByte = beginningByte;
-                Suffixes = new List<Suffix>();
-            }
-        }
-
-        // The return value here is the index in parsingTrieList at which the parent node was placed.
-        private static int CreateParsingTrieNodeAndChildren(ref List<ParsingTrieNode> parsingTrieList, List<Suffix> sortedSuffixes)
-        {
-            // If there is only one suffix, create a leaf node
-            if (sortedSuffixes.Count == 1)
-            {
-                ParsingTrieNode leafNode = new ParsingTrieNode();
-                leafNode.ValueOrNumChildren = 0;
-                leafNode.IndexOrSymbol = sortedSuffixes[0].SymbolIndex;
-                int leafNodeIndex = parsingTrieList.Count;
-                parsingTrieList.Add(leafNode);
-                return leafNodeIndex;
-            }
-
-            // Group suffixes into clumps based on first byte
-            List<SuffixClump> clumps = new List<SuffixClump>();
-            byte beginningByte = sortedSuffixes[0].Bytes[0];
-            SuffixClump currentClump = new SuffixClump(beginningByte);
-            clumps.Add(currentClump);
-            foreach (Suffix suffix in sortedSuffixes)
-            {
-                if (suffix.Bytes[0] == beginningByte)
-                {
-                    currentClump.Suffixes.Add(new Suffix(suffix.SymbolIndex, suffix.Bytes.Slice(1)));
-                }
-                else
-                {
-                    beginningByte = suffix.Bytes[0];
-                    currentClump = new SuffixClump(beginningByte);
-                    clumps.Add(currentClump);
-                    currentClump.Suffixes.Add(new Suffix(suffix.SymbolIndex, suffix.Bytes.Slice(1)));
-                }
-            }
-
-            // Now that we know how many children there are, create parent node and place in list
-            ParsingTrieNode parentNode = new ParsingTrieNode();
-            parentNode.ValueOrNumChildren = (byte)clumps.Count;
-            parentNode.IndexOrSymbol = 0;
-            int parentNodeIndex = parsingTrieList.Count;
-            parsingTrieList.Add(parentNode);
-
-            // Reserve space in list for child nodes. In this algorithm, all parent nodes are created first, leaving gaps for the child nodes
-            // to be filled in once it is known where they point to.
-            int childNodeStartIndex = parsingTrieList.Count;
-            for (int i = 0; i < clumps.Count; i++)
-            {
-                parsingTrieList.Add(default(ParsingTrieNode));
-            }
-
-            // Process child nodes
-            List<ParsingTrieNode> childNodes = new List<ParsingTrieNode>();
-            foreach (SuffixClump clump in clumps)
-            {
-                ParsingTrieNode childNode = new ParsingTrieNode();
-                childNode.ValueOrNumChildren = clump.BeginningByte;
-                childNode.IndexOrSymbol = CreateParsingTrieNodeAndChildren(ref parsingTrieList, clump.Suffixes);
-                childNodes.Add(childNode);
-            }
-
-            // Place child nodes in spots allocated for them
-            int childNodeIndex = childNodeStartIndex;
-            foreach (ParsingTrieNode childNode in childNodes)
-            {
-                parsingTrieList[childNodeIndex] = childNode;
-                childNodeIndex++;
-            }
-
-            return parentNodeIndex;
-        }
-
-        private static ParsingTrieNode[] CreateParsingTrie(byte[][] symbols)
-        {
-            List<Suffix> symbolList = new List<Suffix>();
-            for (int i = 0; i < symbols.Length; i++)
-            {
-                if (symbols[i] != null)
-                {
-                    symbolList.Add(new Suffix(i, symbols[i]));
-                }
-            }
-
-            // Sort the symbol list. This is important for allowing binary search of the child nodes, as well as
-            // counting the number of children a node has.
-            symbolList.Sort();
-
-            List<ParsingTrieNode> parsingTrieList = new List<ParsingTrieNode>();
-            CreateParsingTrieNodeAndChildren(ref parsingTrieList, symbolList);
-
-            return parsingTrieList.ToArray();
         }
     }
 }
