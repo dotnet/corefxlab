@@ -18,7 +18,7 @@
   },
   "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../signing/Key.snk",
+    "keyFile": "../../tools/Key.snk",
     "compile": {
       "include": [ "System/**/*.cs", "Properties/**/*.cs" ],
       "exclude": [ "GenerateCompatibilityTests/**/*.cs" ]
@@ -33,8 +33,7 @@
   "dependencies": {
     "System.Slices": { "target": "project" },
     "System.Text.Primitives": { "target": "project" },
-    "System.Buffers.Experimental": { "target": "project" },
-    "System.Collections.Sequences": { "target": "project" }
+    "System.Buffers.Experimental": { "target": "project" }
   },
   "frameworks": {
     "netstandard1.1": {

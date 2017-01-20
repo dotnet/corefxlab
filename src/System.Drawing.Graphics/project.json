@@ -21,7 +21,7 @@
   },
   "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../signing/Key.snk",
+    "keyFile": "../../tools/Key.snk",
     "compile": {
       "include": [
         "Properties/*.cs",

@@ -18,7 +18,7 @@
   },
   "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../signing/Key.snk"
+    "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
     "System.Slices": { "target": "project" }

@@ -14,7 +14,7 @@
   },
   "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../signing/Key.snk"
+    "keyFile": "../../tools/Key.snk"
   },
 
   "dependencies": {
@@ -33,7 +33,6 @@
 
   "frameworks": {
     "net451": {},
-    "netstandard1.3": {},
-    "netcoreapp1.0": {}
+    "netstandard1.3": {}
   }
 }

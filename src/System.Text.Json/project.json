@@ -18,7 +18,7 @@
   },
   "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../signing/Key.snk",
+    "keyFile": "../../tools/Key.snk",
     "compile": {
       "include": [ "System/**/*.cs" ],
       "exclude": [ "experiments/**/*.cs" ]
@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "System.Text.Formatting": { "target": "project" },
-    "System.Text.Primitives": { "target": "project" },
     "System.Slices": { "target": "project" },
     "System.Buffers.Experimental": { "target": "project" }
   },

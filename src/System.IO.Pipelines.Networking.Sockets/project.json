@@ -11,14 +11,11 @@
   },
   "buildOptions": {
     "allowUnsafe": true,
-    "keyFile": "../../signing/Key.snk"
+    "keyFile": "../../tools/Key.snk"
   },
 
   "dependencies": {
     "System.IO.Pipelines": {
-      "target": "project"
-    },
-    "System.Slices": {
       "target": "project"
     }
   },
@@ -26,11 +23,6 @@
   "frameworks": {
     "net451": {},
     "netstandard1.3": {
-      "dependencies": {
-        "System.Threading.ThreadPool": "4.3.0"
-      }
-    },
-    "netcoreapp1.0": {
       "dependencies": {
         "System.Threading.ThreadPool": "4.3.0"
       }
