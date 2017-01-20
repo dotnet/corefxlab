@@ -502,14 +502,8 @@ namespace System.IO.Pipelines.Tests
                     Assert.Equal(1, spanCount);
                 }
 
-                { // 3 segment buffer
-                    output.Write(new byte[] { 1 });
-                    output.Ensure(4032);
-                    output.Write(new byte[] { 2, 2 });
-                    output.Ensure(4031);
-                    output.Write(new byte[] { 3, 3, 3 });
-
-                    var readable = output.AsReadableBuffer() as ISequence<ReadOnlyMemory<byte>>;
+                { 
+                    var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }) as ISequence<ReadOnlyMemory<byte>>;
                     var position = Position.First;
                     ReadOnlyMemory<byte> memory;
                     int spanCount = 0;
@@ -527,36 +521,63 @@ namespace System.IO.Pipelines.Tests
         [MemberData(nameof(OutOfRangeSliceCases))]
         public void ReadableBufferDoesNotAllowSlicingOutOfRange(Action<ReadableBuffer> fail)
         {
-            // we want big buffer so cursor.Seek succeeds but is out of range of readable buffer
-            var data = new byte[150];
-            var buffer = ReadableBuffer.Create(data).Slice(0, 50);
-            var ex = Assert.Throws<InvalidOperationException>(() => fail(buffer));
+            foreach (var p in Size100ReadableBuffers)
+            {
+                var buffer = (ReadableBuffer) p[0];
+                var ex = Assert.Throws<InvalidOperationException>(() => fail(buffer));
+            }
         }
 
-        [Fact]
-        public void ReadableBufferMove_MovesReadCursor()
+        [Theory]
+        [MemberData(nameof(Size100ReadableBuffers))]
+        public void ReadableBufferMove_MovesReadCursor(ReadableBuffer buffer)
         {
-            var data = new byte[10];
-            var buffer = ReadableBuffer.Create(data);
-            var cursor = buffer.Move(buffer.Start, 5);
-            Assert.Equal(buffer.Slice(5).Start, cursor);
+            var cursor = buffer.Move(buffer.Start, 65);
+            Assert.Equal(buffer.Slice(65).Start, cursor);
         }
 
-        [Fact]
-        public void ReadableBufferMove_ChecksBounds()
+        [Theory]
+        [MemberData(nameof(Size100ReadableBuffers))]
+        public void ReadableBufferMove_ChecksBounds(ReadableBuffer buffer)
         {
-            var data = new byte[20];
-            var buffer = ReadableBuffer.Create(data);
-            var subbuffer = buffer.Slice(0, 10);
-            Assert.Throws<InvalidOperationException>(() => subbuffer.Move(buffer.Start, 11));
+            Assert.Throws<InvalidOperationException>(() => buffer.Move(buffer.Start, 101));
         }
 
         [Fact]
         public void ReadableBufferMove_DoesNotAlowNegative()
         {
             var data = new byte[20];
-            var buffer = ReadableBuffer.Create(data);;
+            var buffer = ReadableBuffer.Create(data);
             Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Move(buffer.Start, -1));
+        }
+
+        [Fact]
+        public void ReadCursorSeekChecksEndIfNotTrustingEnd()
+        {
+            var buffer = BufferUtilities.CreateBuffer(1, 1, 1);
+            var buffer2 = BufferUtilities.CreateBuffer(1, 1, 1);
+            Assert.Throws<InvalidOperationException>(() => buffer.Start.Seek(2, buffer2.End, false));
+        }
+
+        [Fact]
+        public void ReadCursorSeekDoesNotCheckEndIfTrustingEnd()
+        {
+            var buffer = BufferUtilities.CreateBuffer(1, 1, 1);
+            var buffer2 = BufferUtilities.CreateBuffer(1, 1, 1);
+            buffer.Start.Seek(2, buffer2.End, true);
+        }
+
+        public static TheoryData<ReadableBuffer> Size100ReadableBuffers
+        {
+            get
+            {
+                return new TheoryData<ReadableBuffer>()
+                {
+                    BufferUtilities.CreateBuffer(100),
+                    BufferUtilities.CreateBuffer(50, 50),
+                    BufferUtilities.CreateBuffer(33, 33, 34)
+                };
+            }
         }
 
         public static TheoryData<Action<ReadableBuffer>> OutOfRangeSliceCases
@@ -568,10 +589,10 @@ namespace System.IO.Pipelines.Tests
                     b => b.Slice(100),
                     b => b.Slice(0, 100),
                     b => b.Slice(b.Start, 100),
-                    b => b.Slice(0, 1).Slice(b.End, b.End),
-                    b => b.Slice(0, 1).Slice(b.Start, b.End),
-                    b => b.Slice(0, 1).Slice(0, b.End),
-                    b => b.Slice(1, b.Start)
+                    b => b.Slice(0, 25).Slice(b.End, b.End),
+                    b => b.Slice(0, 25).Slice(b.Start, b.End),
+                    b => b.Slice(0, 25).Slice(0, b.End),
+                    b => b.Slice(25, b.Start)
                 };
             }
         }
