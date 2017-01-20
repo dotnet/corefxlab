@@ -25,8 +25,14 @@ namespace System.Text.Formatting.Tests
 
 
             char symbol = _inMonths ? 'm' : 'y';
+            int consumed;
             int symbolBytes;
-            if (!encoding.TextEncoder.TryEncode(symbol, buffer.Slice(bytesWritten), out symbolBytes)) return false;
+
+            unsafe
+            {
+                ReadOnlySpan<char> symbolSpan = new ReadOnlySpan<char>(&symbol, 1);
+                if (!encoding.TextEncoder.TryEncode(symbolSpan, buffer.Slice(bytesWritten), out consumed, out symbolBytes)) return false;
+            }
 
             bytesWritten += symbolBytes;
             return true;

@@ -84,10 +84,19 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, char value, EncodingData encoding) where TFormatter : IOutput
         {
+            int consumed;
             int bytesWritten;
-            if (!encoding.TextEncoder.TryEncode(value, formatter.Buffer, out bytesWritten)) {
-                return false;
+
+            unsafe
+            {
+                ReadOnlySpan<char> charSpan = new ReadOnlySpan<char>(&value, 1);
+
+                if (!encoding.TextEncoder.TryEncode(charSpan, formatter.Buffer, out consumed, out bytesWritten))
+                {
+                    return false;
+                }
             }
+
             formatter.Advance(bytesWritten);
             return true;
         }

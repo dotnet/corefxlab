@@ -145,12 +145,20 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static bool TryWriteChar(char character, Span<byte> buffer, ref int bytesWritten, EncodingData encoding)
         {
+            int consumed;
             int written;
-            if (!encoding.TextEncoder.TryEncode(character, buffer.Slice(bytesWritten), out written))
+
+            unsafe
             {
-                bytesWritten = 0;
-                return false;
+                ReadOnlySpan<char> charSpan = new ReadOnlySpan<char>(&character, 1);
+
+                if (!encoding.TextEncoder.TryEncode(charSpan, buffer.Slice(bytesWritten), out consumed, out written))
+                {
+                    bytesWritten = 0;
+                    return false;
+                }
             }
+
             bytesWritten += written;
             return true;
         }
