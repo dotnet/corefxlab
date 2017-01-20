@@ -335,7 +335,7 @@ namespace System.Text.Json
     static class Utf8StringExtensions
     {
         private static readonly char[] EncodingChars = new char[] { '"' };
-        private static readonly ReadOnlySpan<char> QuoteSpan = new ReadOnlySpan<char>(EncodingChars, 4, 1);
+        private static readonly ReadOnlySpan<char> QuoteSpan = new ReadOnlySpan<char>(EncodingChars, 0, 1);
 
         // TODO: this should be properly implemented 
         // currently it handles formatting to UTF8 only.
