@@ -23,7 +23,7 @@ namespace System.Slices.Tests
             Assert.Equal("/developer/documentation/data-insertion/r-sample-http-get", request.Path.ToString(TextEncoder.Utf8));
             Assert.Equal("HTTP/1.1", request.Version.ToString(TextEncoder.Utf8));
             var headers = request.Headers.ToString();
-            var body = bytes.Slice(request.Body).ToString(TextEncoder.Utf8);
+            var body = bytes.Slice(request.BodyIndex).ToString(TextEncoder.Utf8);
             Assert.Equal("Hello World", body);
 
             HttpHeader header;
@@ -47,7 +47,7 @@ namespace System.Slices.Tests
             Assert.Equal("/developer/documentation/data-insertion/r-sample-http-get", request.Path.ToString(TextEncoder.Utf8));
             Assert.Equal("HTTP/1.1", request.Version.ToString(TextEncoder.Utf8));
             var headers = request.Headers.ToString();
-            var body = bytes.Slice(request.Body).ToString(TextEncoder.Utf8);
+            var body = bytes.Slice(request.BodyIndex).ToString(TextEncoder.Utf8);
             Assert.Equal("Hello World", body);
 
             HttpHeader header;
