@@ -160,34 +160,5 @@ namespace System.Text {
         public abstract bool TryEncode(string text, Span<byte> encodedBytes, out int bytesWritten);
 
         #endregion Encode Methods
-
-        #region Extensions / helpers
-
-        /// <summary>
-        /// Encode a single UTF-16 character into a byte sequence that is relative to the concrete TextEncoder being called.
-        /// 
-        /// NOTE: This code will not work in the case where the character being encoded is a surrogate and another character is
-        ///       needed to complete encoding.
-        /// </summary>
-        /// <param name="value">The character to encode.</param>
-        /// <param name="data">A buffer to write the encoded sequence of bytes.</param>
-        /// <param name="bytesWritten">An output parameter to capture the number of bytes written to <paramref name="data"/>.</param>
-        /// <returns>
-        /// True if successfully able to encode the character and there was enough buffer space to write the sequence of
-        /// bytes, else false.
-        /// </returns>
-        public bool TryEncode(char value, Span<byte> data, out int bytesWritten)
-        {
-            // TODO: This might be better as an extension method.
-            unsafe
-            {
-                var stackSpan = new ReadOnlySpan<char>(&value, 1);
-
-                int consumed;
-                return TryEncode(stackSpan, data, out consumed, out bytesWritten);
-            }
-        }
-
-        #endregion Extensions / helpers
     }
 }
