@@ -21,6 +21,16 @@ namespace System.Text.Utf8
         private const byte b1110_0000U = 0xE0; //224
         private const byte b1111_0000U = 0xF0; //240
         private const byte b1111_1000U = 0xF8; //248
+        
+        private const ushort Utf16HighSurrogateFirstCodePoint = 0xD800;
+        private const ushort Utf16HighSurrogateLastCodePoint = 0xDBFF;
+        private const ushort Utf16LowSurrogateFirstCodePoint = 0xDC00;
+        private const ushort Utf16LowSurrogateLastCodePoint = 0xDFFF;
+
+        private const byte Utf8OneByteLastCodePoint = 0x7F;
+        private const ushort Utf8TwoBytesLastCodePoint = 0x7FF;
+        private const ushort Utf8ThreeBytesLastCodePoint = 0xFFFF;
+        private const uint Utf8FourBytesLastCodePoint = 0x10FFFF;
 
         #endregion Constants
 
@@ -290,53 +300,119 @@ namespace System.Text.Utf8
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
         public static bool TryEncode(ReadOnlySpan<char> utf16, Span<byte> utf8, out int charactersConsumed, out int bytesWritten)
         {
-            var availableCharacters = utf16.Length;
-            var bufferLength = utf8.Length;
+            var outputBytesAvailable = utf8.Length;
+            var inputCharacters = utf16.Length;
 
-            charactersConsumed = 0;
-            bytesWritten = 0;
+            int bytesWrittenTemp = 0;
+            int i = 0;
+            char codePoint = '\0';
 
-            for (int i = 0; i < availableCharacters; i++)
+            unsafe
             {
-                var ch = utf16[i];
+                var utf16Ref = Unsafe.AsPointer(ref utf16.DangerousGetPinnableReference());
+                var utf8Ref = Unsafe.AsPointer(ref utf8.DangerousGetPinnableReference());
 
-                if ((ushort)ch <= 0x7f) // this if block just optimizes for ascii
+                var utf16CharRef = (char*)utf16Ref;
+                var utf8ByteRef = (byte*)utf8Ref;
+
+                i = 0;
+
+                ascii:
+                for (; i < inputCharacters; i++)
                 {
-                    if (bufferLength - bytesWritten < 1)
-                        return false;
+                    codePoint = *(utf16CharRef + i);
 
-                    utf8[bytesWritten++] = (byte)ch;
-                    charactersConsumed++;
-                }
-                else
-                {
-                    uint codePoint;
-                    int consumed;
-
-                    if (!char.IsSurrogate(ch))
+                    if (codePoint > Utf8OneByteLastCodePoint)
                     {
-                        codePoint = (uint)ch;
-                        consumed = 1;
+                        goto non_ascii;
+                    }
+                    if (bytesWrittenTemp + 1 > outputBytesAvailable)
+                    {
+                        goto need_more;
+                    }
+                    *(utf8ByteRef + bytesWrittenTemp) = (byte)codePoint;
+                    bytesWrittenTemp++;
+                }
+
+                non_ascii:
+                for (; i < inputCharacters; i++)
+                {
+                    codePoint = *(utf16CharRef + i);
+                    if (codePoint <= Utf8OneByteLastCodePoint)
+                    {
+                        goto ascii;
+                    }
+                    else if (codePoint <= Utf8TwoBytesLastCodePoint)
+                    {
+                        if (bytesWrittenTemp + 2 > outputBytesAvailable)
+                        {
+                            goto need_more;
+                        }
+                        *(utf8ByteRef + bytesWrittenTemp) = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
+                        bytesWrittenTemp++;
+                        *(utf8ByteRef + bytesWrittenTemp) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                        bytesWrittenTemp++;
+                    }
+                    else if (codePoint >= Utf16HighSurrogateFirstCodePoint && codePoint <= Utf16HighSurrogateLastCodePoint)
+                    {
+                        if (bytesWrittenTemp + 4 > outputBytesAvailable)
+                        {
+                            goto need_more;
+                        }
+
+                        if (++i >= inputCharacters)
+                            throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
+
+                        var lowSurrogate = *(utf16CharRef + i);
+
+                        if (lowSurrogate < Utf16LowSurrogateFirstCodePoint || lowSurrogate > Utf16LowSurrogateLastCodePoint)
+                            throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
+
+
+                        int surrogateCalculation;
+                        unchecked
+                        {
+                            surrogateCalculation = (((codePoint - Utf16HighSurrogateFirstCodePoint) << 10)
+                            | (lowSurrogate - Utf16LowSurrogateFirstCodePoint)) + 0x10000;
+                        }
+
+                        *(utf8ByteRef + bytesWrittenTemp) = (byte)(((surrogateCalculation >> 18) & b0000_0111U) | b1111_0000U);
+                        bytesWrittenTemp++;
+                        *(utf8ByteRef + bytesWrittenTemp) = (byte)(((surrogateCalculation >> 12) & b0011_1111U) | b1000_0000U);
+                        bytesWrittenTemp++;
+                        *(utf8ByteRef + bytesWrittenTemp) = (byte)(((surrogateCalculation >> 6) & b0011_1111U) | b1000_0000U);
+                        bytesWrittenTemp++;
+                        *(utf8ByteRef + bytesWrittenTemp) = (byte)(((surrogateCalculation) & b0011_1111U) | b1000_0000U);
+                        bytesWrittenTemp++;
+                    }
+                    else if (codePoint <= Utf8ThreeBytesLastCodePoint)
+                    {
+                        if (bytesWrittenTemp + 3 > outputBytesAvailable)
+                        {
+                            goto need_more;
+                        }
+                        *(utf8ByteRef + bytesWrittenTemp) = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
+                        bytesWrittenTemp++;
+                        *(utf8ByteRef + bytesWrittenTemp) = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
+                        bytesWrittenTemp++;
+                        *(utf8ByteRef + bytesWrittenTemp) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                        bytesWrittenTemp++;
                     }
                     else
                     {
-                        if (++i >= availableCharacters)
-                            return false;
-
-                        codePoint = (uint)char.ConvertToUtf32(ch, utf16[i]);
-                        consumed = 2;
+                        throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
                     }
-
-                    int written;
-                    if (!TryEncodeCodePoint(codePoint, utf8, bytesWritten, out written))
-                        return false;
-
-                    bytesWritten += written;
-                    charactersConsumed += consumed;
                 }
             }
 
+            bytesWritten = bytesWrittenTemp;
+            charactersConsumed = i;
             return true;
+
+            need_more:
+            bytesWritten = bytesWrittenTemp;
+            charactersConsumed = i;
+            return false;
         }
 
         /// <summary>
@@ -433,16 +509,16 @@ namespace System.Text.Utf8
         /// <returns>A count of bytes needed to store the UTF-8 representation of <paramref name="codePoint"/></returns>
         internal static int GetNumberOfEncodedBytes(uint codePoint)
         {
-            if (codePoint <= 0x7F)
+            if (codePoint <= Utf8OneByteLastCodePoint)
                 return 1;
 
-            if (codePoint <= 0x7FF)
+            if (codePoint <= Utf8TwoBytesLastCodePoint)
                 return 2;
 
-            if (codePoint <= 0xFFFF)
+            if (codePoint <= Utf8ThreeBytesLastCodePoint)
                 return 3;
 
-            if (codePoint <= 0x1FFFFF)
+            if (codePoint <= Utf8FourBytesLastCodePoint)
                 return 4;
 
             return 0;
