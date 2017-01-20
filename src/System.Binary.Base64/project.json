@@ -17,7 +17,7 @@
     "requireLicenseAcceptance": true
   },
   "buildOptions": {
-    "keyFile": "../../signing/Key.snk"
+    "keyFile": "../../tools/Key.snk"
   },
   "dependencies": {
     "System.Slices": { "target": "project" },

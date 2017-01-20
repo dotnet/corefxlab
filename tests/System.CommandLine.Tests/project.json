@@ -3,7 +3,7 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "type": "platform",
-      "version": "1.1.0"
+      "version": "1.0.0"
     },
     "System.CommandLine": { "target": "project" },
     "System.Linq.Expressions": "4.1.0",
@@ -11,7 +11,7 @@
     "dotnet-test-xunit": "2.2.0-preview2-build1029"
   },
   "buildOptions": {
-    "keyFile": "../../signing/test_key.snk"
+    "keyFile": "../../tools/test_key.snk"
   },
   "frameworks": {
     "netcoreapp1.0": {

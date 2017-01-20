@@ -1,7 +1,7 @@
 {
   "buildOptions": {
     "warningsAsErrors": true,
-    "keyFile": "../../signing/test_key.snk",
+    "keyFile": "../../tools/Key.snk",
     "allowUnsafe": true
   },
   "dependencies": {
@@ -21,18 +21,6 @@
     "System.IO.Pipelines.Networking.Windows.RIO": {
       "target": "project"
     },
-    "System.Text.Formatting": {
-      "target": "project"
-    },
-    "System.Text.Primitives": {
-      "target": "project"
-    },
-    "System.Slices": {
-      "target": "project"
-    },
-    "System.Buffers.Experimental": {
-      "target": "project"
-    },
     "xunit": "2.2.0-beta2-build3300",
     "System.Collections.Sequences": "0.1.0-*"
   },
@@ -40,7 +28,7 @@
     "netcoreapp1.0": {
       "dependencies": {
         "Microsoft.NETCore.App": {
-          "version": "1.1.0-*",
+          "version": "1.0.0-*",
           "type": "platform"
         },
         "Microsoft.CodeCoverage": {

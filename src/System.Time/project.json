@@ -17,7 +17,7 @@
     "requireLicenseAcceptance": true
   },
   "buildOptions": {
-    "keyFile": "../../signing/Key.snk",
+    "keyFile": "../../tools/Key.snk",
     "embed": {
       "include": "Properties/Strings.resx",
       "mappings": {
