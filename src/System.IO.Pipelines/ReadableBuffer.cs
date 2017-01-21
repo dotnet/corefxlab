@@ -526,7 +526,8 @@ namespace System.IO.Pipelines
         {
             if (position == Position.First)
             {
-                item = First.Slice(_start.Index);
+                // First is already sliced
+                item = First;
                 if (advance)
                 {
                     if (_start.IsEnd)
@@ -557,11 +558,11 @@ namespace System.IO.Pipelines
             }
             if (currentSegment == _end.Segment)
             {
-                item = currentSegment.Memory.Slice(currentSegment.Start, _end.Index);
+                item = currentSegment.Memory.Slice(currentSegment.Start, _end.Index - currentSegment.Start);
             }
             else
             {
-                item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End);
+                item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
             }
             return true;
         }

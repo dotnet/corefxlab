@@ -502,7 +502,7 @@ namespace System.IO.Pipelines.Tests
                     Assert.Equal(1, spanCount);
                 }
 
-                { 
+                {
                     var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }) as ISequence<ReadOnlyMemory<byte>>;
                     var position = Position.First;
                     ReadOnlyMemory<byte> memory;
@@ -586,13 +586,13 @@ namespace System.IO.Pipelines.Tests
             {
                 return new TheoryData<Action<ReadableBuffer>>()
                 {
-                    b => b.Slice(100),
-                    b => b.Slice(0, 100),
-                    b => b.Slice(b.Start, 100),
-                    b => b.Slice(0, 25).Slice(b.End, b.End),
-                    b => b.Slice(0, 25).Slice(b.Start, b.End),
-                    b => b.Slice(0, 25).Slice(0, b.End),
-                    b => b.Slice(25, b.Start)
+                    b => b.Slice(101),
+                    b => b.Slice(0, 101),
+                    b => b.Slice(b.Start, 101),
+                    b => b.Slice(0, 70).Slice(b.End, b.End),
+                    b => b.Slice(0, 70).Slice(b.Start, b.End),
+                    b => b.Slice(0, 70).Slice(0, b.End),
+                    b => b.Slice(70, b.Start)
                 };
             }
         }

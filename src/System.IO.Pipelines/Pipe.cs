@@ -616,7 +616,7 @@ namespace System.IO.Pipelines
             Debug.Assert(Writing.IsCompleted, "Not completed writing");
             Debug.Assert(Reading.IsCompleted, "Not completed reading");
 
-            GC.SuppressFinalize(this);
+            // TODO: Review throw if not completed?
 
             lock (_sync)
             {
