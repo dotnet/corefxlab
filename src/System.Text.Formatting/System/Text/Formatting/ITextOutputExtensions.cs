@@ -170,10 +170,19 @@ namespace System.Text.Formatting
 
         public static bool TryAppend<TFormatter>(this TFormatter formatter, char value) where TFormatter : ITextOutput
         {
+            int consumed;
             int bytesWritten;
-            if (!formatter.Encoding.TextEncoder.TryEncode(value, formatter.Buffer, out bytesWritten)) {
-                return false;
+
+            unsafe
+            {
+                ReadOnlySpan<char> charSpan = new ReadOnlySpan<char>(&value, 1);
+
+                if (!formatter.Encoding.TextEncoder.TryEncode(charSpan, formatter.Buffer, out consumed, out bytesWritten))
+                {
+                    return false;
+                }
             }
+
             formatter.Advance(bytesWritten);
             return true;
         }

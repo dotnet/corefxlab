@@ -10,7 +10,7 @@ namespace System.Text.Json
 {
     public class JsonDynamicObject : DynamicObject, IBufferFormattable
     {
-        Dictionary<JsonProperty, JsonValue> _properties;
+        private readonly Dictionary<JsonProperty, JsonValue> _properties;
 
         public JsonDynamicObject() : this(new Dictionary<JsonProperty, JsonValue>()) { }
 
@@ -168,7 +168,8 @@ namespace System.Text.Json
         {
             written = 0;
             int justWritten;
-            if(!formattingData.TextEncoder.TryEncode('{', buffer, out justWritten)) {
+            if(!TryEncodeChar(formattingData, '{', buffer, out justWritten))
+            {
                 return false;
             }
             written += justWritten;
@@ -178,10 +179,13 @@ namespace System.Text.Json
             {
                 if (property.Key.Object != this) continue;
 
-                if(firstProperty) { firstProperty = false; }
+                if (firstProperty)
+                {
+                    firstProperty = false;
+                }
                 else
                 {
-                    if (!formattingData.TextEncoder.TryEncode(',', buffer.Slice(written), out justWritten))
+                    if (!TryEncodeChar(formattingData, ',', buffer.Slice(written), out justWritten))
                     {
                         return false;
                     }
@@ -193,7 +197,7 @@ namespace System.Text.Json
                     written = 0; return false;
                 }
                 written += justWritten;
-                if (!formattingData.TextEncoder.TryEncode(':', buffer.Slice(written), out justWritten))
+                if (!TryEncodeChar(formattingData, ':', buffer.Slice(written), out justWritten))
                 {
                     return false;
                 }
@@ -205,11 +209,19 @@ namespace System.Text.Json
                 written += justWritten;
             }
 
-            if (!formattingData.TextEncoder.TryEncode('}', buffer.Slice(written), out justWritten)) {
+            if (!TryEncodeChar(formattingData, '}', buffer.Slice(written), out justWritten)) {
                 written = 0; return false;
             }
             written += justWritten;
             return true;
+        }
+
+        private static unsafe bool TryEncodeChar(EncodingData formattingData, char value, Span<byte> buffer, out int written)
+        {
+            ReadOnlySpan<char> charSpan = new ReadOnlySpan<char>(&value, 1);
+            
+            int consumed;
+            return formattingData.TextEncoder.TryEncode(charSpan, buffer, out consumed, out written);
         }
 
         struct JsonValue : IBufferFormattable
@@ -345,24 +357,32 @@ namespace System.Text.Json
         public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int written)
         {
             written = 0;
+            int consumed;
             int justWritten;
 
-            if (!formattingData.TextEncoder.TryEncode('"', buffer, out justWritten))
+            unsafe
             {
-                return false;
-            }
-            written += justWritten;
+                char quoteChar = '"';
+                ReadOnlySpan<char> quoteSpan = new ReadOnlySpan<char>(&quoteChar, 1);
 
-            if (!str.TryFormat(buffer.Slice(written), format, formattingData, out justWritten))
-            {
-                return false;
-            }
-            written += justWritten;
+                if (!formattingData.TextEncoder.TryEncode(quoteSpan, buffer, out consumed, out justWritten))
+                {
+                    return false;
+                }
+                written += justWritten;
 
-            if (!formattingData.TextEncoder.TryEncode('"', buffer.Slice(written), out justWritten))
-            {
-                return false;
+                if (!str.TryFormat(buffer.Slice(written), format, formattingData, out justWritten))
+                {
+                    return false;
+                }
+                written += justWritten;
+
+                if (!formattingData.TextEncoder.TryEncode(quoteSpan, buffer.Slice(written), out consumed, out justWritten))
+                {
+                    return false;
+                }
             }
+
             written += justWritten;
 
             return true;

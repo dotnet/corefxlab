@@ -21,12 +21,23 @@ namespace System.Text.Formatting.Tests
 
         public bool TryFormat(Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
         {
-            if (!PrimitiveFormatter.TryFormat(_age, buffer, out bytesWritten, format, encoding)) return false;
-
+            if (!PrimitiveFormatter.TryFormat(_age, buffer, out bytesWritten, format, encoding))
+            {
+                return false;
+            }
 
             char symbol = _inMonths ? 'm' : 'y';
+            int consumed;
             int symbolBytes;
-            if (!encoding.TextEncoder.TryEncode(symbol, buffer.Slice(bytesWritten), out symbolBytes)) return false;
+
+            unsafe
+            {
+                ReadOnlySpan<char> symbolSpan = new ReadOnlySpan<char>(&symbol, 1);
+                if (!encoding.TextEncoder.TryEncode(symbolSpan, buffer.Slice(bytesWritten), out consumed, out symbolBytes))
+                {
+                    return false;
+                }
+            }
 
             bytesWritten += symbolBytes;
             return true;
@@ -47,7 +58,8 @@ namespace System.Text.Formatting.Tests
         {
             byte[] buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
-            using(var writer = new StreamFormatter(stream, pool)) {
+            using (var writer = new StreamFormatter(stream, pool))
+            {
                 writer.Append(new Age(56));
                 writer.Append(new Age(14, inMonths: true));
 
@@ -61,7 +73,8 @@ namespace System.Text.Formatting.Tests
         {
             byte[] buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
-            using(var writer = new StreamFormatter(stream, EncodingData.InvariantUtf8, pool)) {
+            using (var writer = new StreamFormatter(stream, EncodingData.InvariantUtf8, pool))
+            {
                 writer.Append(new Age(56));
                 writer.Append(new Age(14, inMonths: true));
                 var writtenText = Encoding.UTF8.GetString(buffer, 0, (int)stream.Position);
