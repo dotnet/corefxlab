@@ -298,120 +298,110 @@ namespace System.Text.Utf8
         /// <param name="charactersConsumed">On exit, contains the number of characters that were consumed from the UTF-16 span.</param>
         /// <param name="bytesWritten">An output parameter to store the number of bytes written to <paramref name="utf8"/></param>
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
-        public static bool TryEncode(ReadOnlySpan<char> utf16, Span<byte> utf8, out int charactersConsumed, out int bytesWritten)
+        public static unsafe bool TryEncode(ReadOnlySpan<char> utf16, Span<byte> utf8, out int charactersConsumed, out int bytesWritten)
         {
-            var outputBytesAvailable = utf8.Length;
-            var inputCharacters = utf16.Length;
-
-            int bytesWrittenTemp = 0;
-            int i = 0;
-            char codePoint = '\0';
-
-            unsafe
+            fixed (char* pUtf16 = &utf16.DangerousGetPinnableReference())
             {
-                fixed (char* pUtf16 = &utf16.DangerousGetPinnableReference())
+                fixed (byte* pUtf8 = &utf8.DangerousGetPinnableReference())
                 {
-                    fixed (byte* pUtf8 = &utf8.DangerousGetPinnableReference())
-                    {
+                    var outputBytesAvailable = utf8.Length;
+                    var inputCharacters = utf16.Length;
+
+                    var bytesWrittenTemp = 0;
+                    var i = 0;
+                    var codePoint = '\0';
 
                     ascii:
-                        for (; i < inputCharacters; i++)
-                        {
-                            codePoint = *(pUtf16 + i);
+                    for (; i < inputCharacters; i++)
+                    {
+                        codePoint = *(pUtf16 + i);
 
-                            if (codePoint > Utf8OneByteLastCodePoint)
-                            {
-                                goto non_ascii;
-                            }
-                            if (bytesWrittenTemp > outputBytesAvailable - 1)
+                        if (codePoint > Utf8OneByteLastCodePoint)
+                        {
+                            goto non_ascii;
+                        }
+                        if (bytesWrittenTemp > outputBytesAvailable - 1)
+                        {
+                            goto need_more;
+                        }
+                        *(bytesWrittenTemp + pUtf8) = (byte)codePoint;
+                        bytesWrittenTemp++;
+                    }
+
+                    non_ascii:
+                    for (; i < inputCharacters; i++)
+                    {
+                        codePoint = *(pUtf16 + i);
+                        if (codePoint <= Utf8OneByteLastCodePoint)
+                        {
+                            goto ascii;
+                        }
+                        else if (codePoint <= Utf8TwoBytesLastCodePoint)
+                        {
+                            if (bytesWrittenTemp > outputBytesAvailable - 2)
                             {
                                 goto need_more;
                             }
-                            *(pUtf8 + bytesWrittenTemp) = (byte)codePoint;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
                             bytesWrittenTemp++;
                         }
-
-                    non_ascii:
-                        for (; i < inputCharacters; i++)
+                        else if (codePoint >= Utf16HighSurrogateFirstCodePoint && codePoint <= Utf16HighSurrogateLastCodePoint)
                         {
-                            codePoint = *(pUtf16 + i);
-                            if (codePoint <= Utf8OneByteLastCodePoint)
+                            if ((bytesWrittenTemp > outputBytesAvailable - 4) || (++i >= inputCharacters))
                             {
-                                goto ascii;
+                                goto need_more;
                             }
-                            else if (codePoint <= Utf8TwoBytesLastCodePoint)
+
+                            char lowSurrogate = *(pUtf16 + i);
+
+                            if (lowSurrogate < Utf16LowSurrogateFirstCodePoint || lowSurrogate > Utf16LowSurrogateLastCodePoint)
                             {
-                                if (bytesWrittenTemp > outputBytesAvailable - 2)
-                                {
-                                    goto need_more;
-                                }
-                                *(pUtf8 + bytesWrittenTemp) = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
-                                bytesWrittenTemp++;
-                                *(pUtf8 + bytesWrittenTemp) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
-                                bytesWrittenTemp++;
+                                goto need_more; // Invalid surrogate pair.
                             }
-                            else if (codePoint >= Utf16HighSurrogateFirstCodePoint && codePoint <= Utf16HighSurrogateLastCodePoint)
+
+                            int surrogateCalculation;
+                            unchecked
                             {
-                                if (bytesWrittenTemp > outputBytesAvailable - 4)
-                                {
-                                    goto need_more;
-                                }
-
-                                if (++i >= inputCharacters)
-                                    throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
-
-                                char lowSurrogate = *(pUtf16 + i);
-
-                                if (lowSurrogate < Utf16LowSurrogateFirstCodePoint || lowSurrogate > Utf16LowSurrogateLastCodePoint)
-                                    throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
-
-
-                                int surrogateCalculation;
-                                unchecked
-                                {
-                                    surrogateCalculation = (((codePoint - Utf16HighSurrogateFirstCodePoint) << 10)
-                                    | (lowSurrogate - Utf16LowSurrogateFirstCodePoint)) + 0x10000;
-                                }
-
-                                *(pUtf8 + bytesWrittenTemp) = (byte)(((surrogateCalculation >> 18) & b0000_0111U) | b1111_0000U);
-                                bytesWrittenTemp++;
-                                *(pUtf8 + bytesWrittenTemp) = (byte)(((surrogateCalculation >> 12) & b0011_1111U) | b1000_0000U);
-                                bytesWrittenTemp++;
-                                *(pUtf8 + bytesWrittenTemp) = (byte)(((surrogateCalculation >> 6) & b0011_1111U) | b1000_0000U);
-                                bytesWrittenTemp++;
-                                *(pUtf8 + bytesWrittenTemp) = (byte)(((surrogateCalculation) & b0011_1111U) | b1000_0000U);
-                                bytesWrittenTemp++;
+                                surrogateCalculation = ((lowSurrogate - Utf16LowSurrogateFirstCodePoint)
+                                    | ((codePoint - Utf16HighSurrogateFirstCodePoint) << 10)) + 0x10000;
                             }
-                            else if (codePoint <= Utf8ThreeBytesLastCodePoint)
+
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation >> 18) & b0000_0111U) | b1111_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation >> 12) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation >> 6) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                        }
+                        else
+                        {
+                            if (bytesWrittenTemp > outputBytesAvailable - 3)
                             {
-                                if (bytesWrittenTemp > outputBytesAvailable - 3)
-                                {
-                                    goto need_more;
-                                }
-                                *(pUtf8 + bytesWrittenTemp) = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
-                                bytesWrittenTemp++;
-                                *(pUtf8 + bytesWrittenTemp) = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
-                                bytesWrittenTemp++;
-                                *(pUtf8 + bytesWrittenTemp) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
-                                bytesWrittenTemp++;
+                                goto need_more;
                             }
-                            else
-                            {
-                                throw new ArgumentException("Invalid surrogate pair.", nameof(utf16));
-                            }
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
                         }
                     }
+
+                    bytesWritten = bytesWrittenTemp;
+                    charactersConsumed = i;
+                    return true;
+
+                    need_more:
+                    bytesWritten = bytesWrittenTemp;
+                    charactersConsumed = i;
+                    return false;
                 }
             }
-
-            bytesWritten = bytesWrittenTemp;
-            charactersConsumed = i;
-            return true;
-
-        need_more:
-            bytesWritten = bytesWrittenTemp;
-            charactersConsumed = i;
-            return false;
         }
 
         /// <summary>
