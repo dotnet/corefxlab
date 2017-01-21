@@ -123,7 +123,7 @@ namespace System
         }
         public static bool operator!=(Memory<T> left, Memory<T> right)
         {
-            return left.Equals(right);
+            return !left.Equals(right);
         }
         public static bool operator ==(Memory<T> left, ReadOnlyMemory<T> right)
         {
@@ -131,7 +131,7 @@ namespace System
         }
         public static bool operator !=(Memory<T> left, ReadOnlyMemory<T> right)
         {
-            return left.Equals(right);
+            return !left.Equals(right);
         }
 
         [EditorBrowsable( EditorBrowsableState.Never)]
