@@ -92,6 +92,7 @@ namespace System.IO.Pipelines
 
         protected override void Dispose(bool disposing)
         {
+            // Dispose before returning to pool to prevent race between Lease and Dispose
             base.Dispose(disposing);
 
             Pool.Return(this);
