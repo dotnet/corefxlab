@@ -142,6 +142,9 @@ namespace System.IO.Pipelines.Networking.Sockets
             try
             {
                 await Callback?.Invoke(conn);
+                // Jump of the stack because we might be in ReceiveFromSocketAndPushToWriterAsync CompleteWriter stack
+                // and it will deadlock with Dispose
+                await Task.Yield();
             }
             catch
             {
