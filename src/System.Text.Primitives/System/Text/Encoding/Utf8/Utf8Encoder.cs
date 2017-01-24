@@ -332,11 +332,11 @@ namespace System.Text.Utf8
                     for (; i < inputCharacters; i++)
                     {
                         codePoint = *(pUtf16 + i);
-                        if (codePoint <= Utf8OneByteLastCodePoint)
+                        if (codePoint <= Utf8OneByteLastCodePoint) // 0x00 - 0x7F
                         {
                             goto ascii;
                         }
-                        else if (codePoint <= Utf8TwoBytesLastCodePoint)
+                        else if (codePoint <= Utf8TwoBytesLastCodePoint) // 0x080 - 0x7FF
                         {
                             if (bytesWrittenTemp > outputBytesAvailable - 2)
                             {
@@ -347,10 +347,16 @@ namespace System.Text.Utf8
                             *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
                             bytesWrittenTemp++;
                         }
-                        else if (codePoint >= Utf16HighSurrogateFirstCodePoint && codePoint <= Utf16HighSurrogateLastCodePoint)
+                        else if (codePoint >= Utf16HighSurrogateFirstCodePoint && codePoint <= Utf16HighSurrogateLastCodePoint) // 0xD800 - 0xDBFF
                         {
-                            if ((bytesWrittenTemp > outputBytesAvailable - 4) || (++i >= inputCharacters))
+                            if (bytesWrittenTemp > outputBytesAvailable - 4)
                             {
+                                goto need_more;
+                            }
+
+                            if (++i >= inputCharacters)
+                            {
+                                i--;
                                 goto need_more;
                             }
 
@@ -358,6 +364,7 @@ namespace System.Text.Utf8
 
                             if (lowSurrogate < Utf16LowSurrogateFirstCodePoint || lowSurrogate > Utf16LowSurrogateLastCodePoint)
                             {
+                                i--;
                                 goto need_more; // Invalid surrogate pair.
                             }
 
@@ -377,7 +384,11 @@ namespace System.Text.Utf8
                             *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation) & b0011_1111U) | b1000_0000U);
                             bytesWrittenTemp++;
                         }
-                        else
+                        else if (codePoint >= Utf16LowSurrogateFirstCodePoint && codePoint <= Utf16LowSurrogateLastCodePoint)   // 0xDC00 - 0xDFFF
+                        {
+                            goto need_more; // Invalid surrogate pair.
+                        }
+                        else // 0x0800 - 0xD7FF and 0xE000-0xFFFF
                         {
                             if (bytesWrittenTemp > outputBytesAvailable - 3)
                             {
