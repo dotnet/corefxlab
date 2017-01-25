@@ -159,7 +159,7 @@ namespace System.Text.Utf8.Tests
             string unicodeString = GenerateStringWithInvalidChars(CharLength);
             ReadOnlySpan<char> characters = unicodeString.Slice();
             int expectedBytesWritten = GetByteCount(characters);
-            byte[] utf8Buffer = new byte[expectedBytesWritten];
+            byte[] utf8Buffer = new byte[expectedBytesWritten + 100];
             Span<byte> span = new Span<byte>(utf8Buffer);
             int charactersConsumed;
             int bytesWritten;
