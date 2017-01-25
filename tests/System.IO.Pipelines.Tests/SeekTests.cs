@@ -31,7 +31,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData("/localhost:5000/PATH/PATH2/ HTTP/1.1", " %?", ' ', 27)]
         public void MemorySeek(string raw, string search, char expectResult, int expectIndex)
         {
-            var cursors = CreateBuffer(raw);
+            var cursors = BufferUtilities.CreateBuffer(raw);
             ReadCursor start = cursors.Start;
             ReadCursor end = cursors.End;
             ReadCursor result = default(ReadCursor);
@@ -68,7 +68,7 @@ namespace System.IO.Pipelines.Tests
 
             var input1 = input.Substring(0, input.Length / 2);
             var input2 = input.Substring(input.Length / 2);
-            var buffer = CreateBuffer(input1, string.Empty, input2);
+            var buffer = BufferUtilities.CreateBuffer(input1, string.Empty, input2);
             var block1 = buffer.Start;
             var block2 = buffer.End;
             // Act
@@ -103,7 +103,7 @@ namespace System.IO.Pipelines.Tests
         public void TestSeekByteLimitWithinSameBlock(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
         {
             // Arrange
-            var buffer = CreateBuffer(input);
+            var buffer = BufferUtilities.CreateBuffer(input);
 
             // Act
             ReadCursor result;
@@ -132,7 +132,7 @@ namespace System.IO.Pipelines.Tests
             // Arrange
             var afterSeek = (byte)'B';
 
-            var buffer = CreateBuffer(input);
+            var buffer = BufferUtilities.CreateBuffer(input);
 
             var start = buffer.Start;
             var scan1 = buffer.Start;
@@ -184,49 +184,6 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        public ReadableBuffer CreateBuffer(params string[] inputs)
-        {
-            if (inputs == null || !inputs.Any())
-            {
-                throw new InvalidOperationException();
-            }
-            var i = 0;
-
-            BufferSegment last = null;
-            BufferSegment first = null;
-
-            do
-            {
-                var s = inputs[i];
-                var length = s.Length;
-                var memoryOffset = length;
-                var dataOffset = length * 2;
-                var chars = new byte[length * 8];
-
-                for (int j = 0; j < length; j++)
-                {
-                    chars[dataOffset + j] = (byte) s[j];
-                }
-
-                // Create a segment that has offset relative to the OwnedMemory and OwnedMemory itself has offset relative to array
-                var ownedMemory = new OwnedArray<byte>(new ArraySegment<byte>(chars, memoryOffset, length * 3));
-                var current = new BufferSegment(ownedMemory, length, length * 2);
-                if (first == null)
-                {
-                    first = current;
-                    last = current;
-                }
-                else
-                {
-                    last.Next = current;
-                    last = current;
-                }
-                i++;
-            } while (i < inputs.Length);
-
-            return new ReadableBuffer(new ReadCursor(first, first.Start), new ReadCursor(last, last.Start + last.ReadableBytes));
-        }
-
         [Theory]
         [MemberData(nameof(SeekIteratorLimitData))]
         public void TestSeekIteratorLimitAcrossBlocks(string input, char seek, char limitAt, int expectedReturnValue)
@@ -236,7 +193,7 @@ namespace System.IO.Pipelines.Tests
 
             var input1 = input.Substring(0, input.Length / 2);
             var input2 = input.Substring(input.Length / 2);
-            var buffer = CreateBuffer(input1, string.Empty, input2);
+            var buffer = BufferUtilities.CreateBuffer(input1, string.Empty, input2);
 
             var start = buffer.Start;
             var scan1 = buffer.Start;

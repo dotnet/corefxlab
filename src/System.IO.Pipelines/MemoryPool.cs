@@ -107,7 +107,8 @@ namespace System.IO.Pipelines
             if (_blocks.TryDequeue(out block))
             {
                 // block successfully taken from the stack - return it
-#if DEBUG
+
+#if BLOCK_LEASE_TRACKING
                 block.Leaser = Environment.StackTrace;
                 block.IsLeased = true;
 #endif
@@ -115,7 +116,8 @@ namespace System.IO.Pipelines
             }
             // no blocks available - grow the pool
             block = AllocateSlab();
-#if DEBUG
+
+#if BLOCK_LEASE_TRACKING
             block.Leaser = Environment.StackTrace;
             block.IsLeased = true;
 #endif
@@ -149,7 +151,7 @@ namespace System.IO.Pipelines
                     _blockLength,
                     this,
                     slab);
-#if DEBUG
+#if BLOCK_LEASE_TRACKING
                 block.IsLeased = true;
 #endif
                 Return(block);
@@ -175,7 +177,7 @@ namespace System.IO.Pipelines
         /// <param name="block">The block to return. It must have been acquired by calling Lease on the same memory pool instance.</param>
         public void Return(MemoryPoolBlock block)
         {
-#if DEBUG
+#if BLOCK_LEASE_TRACKING
             Debug.Assert(block.Pool == this, "Returned block was not leased from this pool");
             Debug.Assert(block.IsLeased, $"Block being returned to pool twice: {block.Leaser}{Environment.NewLine}");
             block.IsLeased = false;

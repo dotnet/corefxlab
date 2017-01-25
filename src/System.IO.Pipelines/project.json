@@ -16,6 +16,16 @@
     "allowUnsafe": true,
     "keyFile": "../../tools/Key.snk"
   },
+  "configurations": {
+    "Debug": {
+      "define": [
+        "CONSUMING_LOCATION_TRACKING",
+        "PRODUCING_LOCATION_TRACKING",
+        "BLOCK_LEASE_TRACKING",
+        "COMPLETION_LOCATION_TRACKING"
+      ]
+    }
+  },
 
   "dependencies": {
     "NETStandard.Library": "1.6.0",

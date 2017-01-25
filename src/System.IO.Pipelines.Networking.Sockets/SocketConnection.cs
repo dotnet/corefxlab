@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Sockets
@@ -39,6 +40,9 @@ namespace System.IO.Pipelines.Networking.Sockets
         private PipelineFactory _factory;
         private Pipe _input, _output;
         private Socket _socket;
+        private Task _receiveTask;
+        private Task _sendTask;
+        private volatile bool _stopping;
 
         static SocketConnection()
         {
@@ -83,8 +87,8 @@ namespace System.IO.Pipelines.Networking.Sockets
             _output = PipelineFactory.Create();
 
             ShutdownSocketWhenWritingCompletedAsync();
-            ReceiveFromSocketAndPushToWriterAsync();
-            ReadFromReaderAndWriteToSocketAsync();
+            _receiveTask = ReceiveFromSocketAndPushToWriterAsync();
+            _sendTask = ReadFromReaderAndWriteToSocketAsync();
         }
 
         /// <summary>
@@ -171,13 +175,16 @@ namespace System.IO.Pipelines.Networking.Sockets
         {
             if (disposing)
             {
-                _output.CompleteWriter();
-                _output.CompleteReader();
+                _stopping = true;
+                _output.CancelPendingRead();
 
-                _input.CompleteWriter();
+                Task.WaitAll(_sendTask, _receiveTask);
+
+                _output.CompleteWriter();
                 _input.CompleteReader();
 
                 GC.SuppressFinalize(this);
+
                 _socket?.Dispose();
                 _socket = null;
                 if (_ownsFactory) { _factory?.Dispose(); }
@@ -254,7 +261,8 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
             catch { }
         }
-        private async void ReceiveFromSocketAndPushToWriterAsync()
+
+        private async Task ReceiveFromSocketAndPushToWriterAsync()
         {
             SocketAsyncEventArgs args = null;
             try
@@ -268,9 +276,8 @@ namespace System.IO.Pipelines.Networking.Sockets
                 // wait for someone to be interested in data before we
                 // start allocating buffers and probing the socket
                 await _input.ReadingStarted;
-
                 args = GetOrCreateSocketAsyncEventArgs();
-                while (!_input.Writing.IsCompleted)
+                while (!_stopping)
                 {
                     bool haveWriteBuffer = false;
                     WritableBuffer buffer = default(WritableBuffer);
@@ -352,7 +359,6 @@ namespace System.IO.Pipelines.Networking.Sockets
                                 }
                             }
                         }
-
 
                         // note that we will try to coalesce things here to reduce the number of flushes; we
                         // certainly want to coalesce the initial buffer (from the speculative receive) with the initial
@@ -454,7 +460,6 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// a non-null result to preocess the data
         private async Task<ArraySegment<byte>> ReceiveInitialDataUnknownStrategyAsync(SocketAsyncEventArgs args)
         {
-
             // to prove that it works OK, we need (after a read):
             // - have seen return 0 and Available > 0
             // - have reen return <= 0 and Available == 0 and is true EOF
@@ -533,14 +538,14 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
         }
 
-        private async void ReadFromReaderAndWriteToSocketAsync()
+        private async Task ReadFromReaderAndWriteToSocketAsync()
         {
             SocketAsyncEventArgs args = null;
             try
             {
                 args = GetOrCreateSocketAsyncEventArgs();
 
-                while (true)
+                while (!_stopping)
                 {
                     var result = await _output.ReadAsync();
                     var buffer = result.Buffer;

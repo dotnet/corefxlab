@@ -62,6 +62,9 @@ namespace System.IO.Pipelines.Tests
                     while (true)
                     {
                         var result = await client.Input.ReadAsync();
+                        // Jump of the stack because we might be in ReceiveFromSocketAndPushToWriterAsync CompleteWriter stack
+                        // and it will deadlock with Dispose
+                        await Task.Yield();
                         var input = result.Buffer;
 
                         // wait for the end of the data before processing anything

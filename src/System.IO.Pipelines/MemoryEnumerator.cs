@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-
 namespace System.IO.Pipelines
 {
     /// <summary>
@@ -10,23 +8,15 @@ namespace System.IO.Pipelines
     /// </summary>
     public struct MemoryEnumerator
     {
-        private BufferSegment _segment;
-        private BufferSegment _segmentSegment;
+        private SegmentEnumerator _segmentEnumerator;
         private Memory<byte> _current;
-        private int _startIndex;
-        private readonly int _endIndex;
-        private readonly BufferSegment _endSegment;
 
         /// <summary>
         /// 
         /// </summary>
         public MemoryEnumerator(ReadCursor start, ReadCursor end)
         {
-            _startIndex = start.Index;
-            _segment = start.Segment;
-            _segmentSegment = start.Segment;
-            _endSegment = end.Segment;
-            _endIndex = end.Index;
+            _segmentEnumerator = new SegmentEnumerator(start, end);
             _current = Memory<byte>.Empty;
         }
 
@@ -35,15 +25,7 @@ namespace System.IO.Pipelines
         /// </summary>
         public Memory<byte> Current => _current;
 
-        internal BufferSegment CurrentSegment => _segmentSegment;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose()
-        {
-
-        }
+        internal BufferSegment CurrentSegment => _segmentEnumerator.Current.Segment;
 
         /// <summary>
         /// Moves to the next <see cref="Memory{Byte}"/> in the <see cref="ReadableBuffer"/>
@@ -51,36 +33,13 @@ namespace System.IO.Pipelines
         /// <returns></returns>
         public bool MoveNext()
         {
-            if (_segment == null)
+            if (!_segmentEnumerator.MoveNext())
             {
+                _current = Memory<byte>.Empty;
                 return false;
             }
-
-            int start = _segment.Start;
-            int end = _segment.End;
-
-            if (_startIndex != 0)
-            {
-                start = _startIndex;
-                _startIndex = 0;
-            }
-
-            if (_segment == _endSegment)
-            {
-                end = _endIndex;
-            }
-
-            _current = _segment.Memory.Slice(start, end - start);
-            _segmentSegment = _segment;
-
-            if (_segment == _endSegment)
-            {
-                _segment = null;
-            }
-            else
-            {
-                _segment = _segment.Next;
-            }
+            var current = _segmentEnumerator.Current;
+            _current = current.Segment.Memory.Slice(current.Start, current.Length);
 
             return true;
         }

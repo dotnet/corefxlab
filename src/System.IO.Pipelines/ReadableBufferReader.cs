@@ -64,8 +64,11 @@ namespace System.IO.Pipelines
         public int Take()
         {
             var value = Peek();
-            _index++;
-            _overallIndex++;
+            if (!_end)
+            {
+                _index++;
+                _overallIndex++;
+            }
 
             if (_index >= _currentMemory.Length)
             {
