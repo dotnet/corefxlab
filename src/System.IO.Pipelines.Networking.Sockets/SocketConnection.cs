@@ -42,7 +42,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         private Socket _socket;
         private Task _receiveTask;
         private Task _sendTask;
-        private CancellationTokenSource _cancelationTokenSource = new CancellationTokenSource();
+        private bool _stopping;
 
         static SocketConnection()
         {
@@ -175,10 +175,10 @@ namespace System.IO.Pipelines.Networking.Sockets
         {
             if (disposing)
             {
-                _cancelationTokenSource.Cancel();
+                _stopping = true;
                 _output.CancelPendingRead();
 
-                Task.WhenAll(_sendTask, _receiveTask);
+                Task.WaitAll(_sendTask, _receiveTask);
 
                 _output.CompleteWriter();
                 _input.CompleteReader();
@@ -277,7 +277,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                 // start allocating buffers and probing the socket
                 await _input.ReadingStarted;
                 args = GetOrCreateSocketAsyncEventArgs();
-                while (!_cancelationTokenSource.IsCancellationRequested)
+                while (!_stopping)
                 {
                     bool haveWriteBuffer = false;
                     WritableBuffer buffer = default(WritableBuffer);
@@ -547,7 +547,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             {
                 args = GetOrCreateSocketAsyncEventArgs();
 
-                while (!_cancelationTokenSource.IsCancellationRequested)
+                while (!_stopping)
                 {
                     var result = await _output.ReadAsync();
                     var buffer = result.Buffer;
