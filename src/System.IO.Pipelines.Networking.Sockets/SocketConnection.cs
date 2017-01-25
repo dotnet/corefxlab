@@ -42,7 +42,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         private Socket _socket;
         private Task _receiveTask;
         private Task _sendTask;
-        private bool _stopping;
+        private volatile bool _stopping;
 
         static SocketConnection()
         {
@@ -460,8 +460,6 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// a non-null result to preocess the data
         private async Task<ArraySegment<byte>> ReceiveInitialDataUnknownStrategyAsync(SocketAsyncEventArgs args)
         {
-
-            Console.WriteLine("ReceiveInitialDataUnknownStrategyAsync");
             // to prove that it works OK, we need (after a read):
             // - have seen return 0 and Available > 0
             // - have reen return <= 0 and Available == 0 and is true EOF
