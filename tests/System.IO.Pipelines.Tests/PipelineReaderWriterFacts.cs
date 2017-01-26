@@ -329,6 +329,7 @@ namespace System.IO.Pipelines.Tests
                     var array = new byte[11];
                     buffer.First.Span.CopyTo(array);
                     Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+                    readerWriter.AdvanceReader(result.Buffer.End, result.Buffer.End);
 
                     readerWriter.CompleteReader();
                 });
@@ -368,9 +369,7 @@ namespace System.IO.Pipelines.Tests
                 var array = new byte[11];
                 buffer.First.Span.CopyTo(array);
                 Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
-
-                readerWriter.CompleteWriter();
-                readerWriter.CompleteReader();
+                readerWriter.AdvanceReader(buffer.End, buffer.End);
             }
         }
 
@@ -544,6 +543,97 @@ namespace System.IO.Pipelines.Tests
                 readerWriter.ReadAsync();
 
                 Assert.True(readerWriter.ReadingStarted.IsCompleted);
+            }
+        }
+
+        [Fact]
+        public void ThrowsOnReadAfterCompleteReader()
+        {
+            using (var factory = new PipelineFactory())
+            {
+                var readerWriter = factory.Create();
+
+                readerWriter.CompleteReader();
+
+                Assert.Throws<InvalidOperationException>(() => readerWriter.ReadAsync());
+            }
+        }
+
+        [Fact]
+        public void ThrowsOnAllocAfterCompleteWriter()
+        {
+            using (var factory = new PipelineFactory())
+            {
+                var readerWriter = factory.Create();
+
+                readerWriter.CompleteWriter();
+
+                Assert.Throws<InvalidOperationException>(() => readerWriter.Alloc());
+            }
+        }
+
+        [Fact]
+        public async Task MultipleCompleteReaderWriterCauseDisposeOnlyOnce()
+        {
+            var pool = new DisposeTrackingOwnedMemory(new byte[1]);
+
+            using (var factory = new PipelineFactory(pool))
+            {
+                var readerWriter = factory.Create();
+                await readerWriter.WriteAsync(new byte[] {1});
+
+                readerWriter.CompleteWriter();
+                readerWriter.CompleteReader();
+                Assert.Equal(1, pool.Disposed);
+
+                readerWriter.CompleteWriter();
+                readerWriter.CompleteReader();
+                Assert.Equal(1, pool.Disposed);
+            }
+        }
+
+        [Fact]
+        public async Task CompleteReaderThrowsIfReadInProgress()
+        {
+            using (var factory = new PipelineFactory())
+            {
+                var readerWriter = factory.Create();
+                await readerWriter.WriteAsync(new byte[1]);
+                await readerWriter.ReadAsync();
+
+                Assert.Throws<InvalidOperationException>(() => readerWriter.CompleteReader());
+            }
+        }
+
+        [Fact]
+        public void CompleteWriterThrowsIfWriteInProgress()
+        {
+            using (var factory = new PipelineFactory())
+            {
+                var readerWriter = factory.Create();
+                readerWriter.Alloc();
+
+                Assert.Throws<InvalidOperationException>(() => readerWriter.CompleteWriter());
+            }
+        }
+
+        private class DisposeTrackingOwnedMemory : OwnedMemory<byte>, IBufferPool
+        {
+            public DisposeTrackingOwnedMemory(byte[] array) : base(array)
+            {
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                Disposed++;
+                base.Dispose(disposing);
+            }
+
+            public int Disposed { get; set; }
+
+            public OwnedMemory<byte> Lease(int size)
+            {
+                return this;
             }
         }
     }

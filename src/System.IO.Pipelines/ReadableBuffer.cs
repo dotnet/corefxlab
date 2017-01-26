@@ -1,11 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Buffers;
 using System.Collections.Sequences;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -33,7 +31,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Determines if the <see cref="ReadableBuffer"/> is empty.
         /// </summary>
-        public bool IsEmpty => Length == 0;
+        public bool IsEmpty => _first.IsEmpty && Length == 0;
 
         /// <summary>
         /// Determins if the <see cref="ReadableBuffer"/> is a single <see cref="Memory{Byte}"/>.
@@ -64,7 +62,6 @@ namespace System.IO.Pipelines
                 throw new ArgumentException("End should be greater or equal to start");
             }
             start.TryGetBuffer(end, out _first, out start);
-
             _length = -1;
         }
 
@@ -529,7 +526,8 @@ namespace System.IO.Pipelines
         {
             if (position == Position.First)
             {
-                item = First.Slice(_start.Index);
+                // First is already sliced
+                item = First;
                 if (advance)
                 {
                     if (_start.IsEnd)
@@ -560,11 +558,11 @@ namespace System.IO.Pipelines
             }
             if (currentSegment == _end.Segment)
             {
-                item = currentSegment.Memory.Slice(currentSegment.Start, _end.Index);
+                item = currentSegment.Memory.Slice(currentSegment.Start, _end.Index - currentSegment.Start);
             }
             else
             {
-                item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End);
+                item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
             }
             return true;
         }
@@ -575,7 +573,7 @@ namespace System.IO.Pipelines
             {
                 throw new ArgumentOutOfRangeException(nameof(count));
             }
-            var newCursor = cursor.Seek(count, End);
+            var newCursor = cursor.Seek(count, _end);
             return newCursor;
         }
     }
