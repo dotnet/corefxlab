@@ -18,7 +18,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter, T>(this TFormatter formatter, T value, EncodingData encoding, TextFormat format = default(TextFormat)) where T : IBufferFormattable where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -129,7 +129,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, uint value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -146,7 +146,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, ulong value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -163,7 +163,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, int value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -180,7 +180,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, long value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -197,7 +197,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, byte value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -231,7 +231,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, ushort value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -248,7 +248,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, short value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -265,7 +265,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, Guid value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -282,7 +282,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTime value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -299,7 +299,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, DateTimeOffset value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -316,7 +316,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, TimeSpan value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -333,7 +333,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, float value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -350,7 +350,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, double value, EncodingData encoding, TextFormat format = default(TextFormat)) where TFormatter : IOutput
         {
             int bytesWritten;
-            if (!value.TryFormat(formatter.Buffer, out bytesWritten, format, encoding)) {
+            if (!value.TryFormat(formatter.Buffer, out bytesWritten, encoding, format)) {
                 return false;
             }
             formatter.Advance(bytesWritten);

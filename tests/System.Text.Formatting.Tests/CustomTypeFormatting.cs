@@ -19,9 +19,9 @@ namespace System.Text.Formatting.Tests
             _inMonths = inMonths;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        public bool TryFormat(Span<byte> buffer, out int bytesWritten, EncodingData encoding, TextFormat format)
         {
-            if (!PrimitiveFormatter.TryFormat(_age, buffer, out bytesWritten, format, encoding))
+            if (!PrimitiveFormatter.TryFormat(_age, buffer, out bytesWritten, encoding, format))
             {
                 return false;
             }

@@ -9,18 +9,18 @@ namespace System.Text
 {
     internal static class IntegerFormatter
     {
-        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, out int bytesWritten, EncodingData encoding, TextFormat format)
         {
             Precondition.Require(numberOfBytes <= sizeof(long));
 
             if (value >= 0)
             {
-                return TryFormatUInt64(unchecked((ulong)value), numberOfBytes, buffer, out bytesWritten, format, encoding);
+                return TryFormatUInt64(unchecked((ulong)value), numberOfBytes, buffer, out bytesWritten, encoding, format);
             }
             else if (format.IsHexadecimal)
             {
                 ulong bitMask = GetBitMask(numberOfBytes);
-                return TryFormatUInt64(unchecked((ulong)value) & bitMask, numberOfBytes, buffer, out bytesWritten, format, encoding);
+                return TryFormatUInt64(unchecked((ulong)value) & bitMask, numberOfBytes, buffer, out bytesWritten, encoding, format);
             }
             else
             {
@@ -32,7 +32,7 @@ namespace System.Text
                 }
 
                 int digitBytes = 0;
-                if(!TryFormatUInt64(unchecked((ulong)-value), numberOfBytes, buffer.Slice(minusSignBytes), out digitBytes, format, encoding))
+                if(!TryFormatUInt64(unchecked((ulong)-value), numberOfBytes, buffer.Slice(minusSignBytes), out digitBytes, encoding, format))
                 {
                     bytesWritten = 0;
                     return false;
@@ -42,7 +42,7 @@ namespace System.Text
             }
         }
 
-        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, out int bytesWritten, EncodingData encoding, TextFormat format)
         {
             if(format.Symbol == 'g')
             {
@@ -65,7 +65,7 @@ namespace System.Text
                 return TryFormatDecimalInvariantCultureUtf8(value, buffer, out bytesWritten, format);
             }
 
-            return TryFormatDecimal(value, buffer, out bytesWritten, format, encoding);     
+            return TryFormatDecimal(value, buffer, out bytesWritten, encoding, format);     
         }
 
         private static bool TryFormatDecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format)
@@ -295,7 +295,7 @@ namespace System.Text
         // It does it twice to avoid reversing the formatted buffer, which can be tricky given it should handle arbitrary cultures.
         // One optimization I thought we could do is to do div/mod once and store digits in a temp buffer (but that would allocate). Modification to the idea would be to store the digits in a local struct
         // Another idea possibly worth tying would be to special case cultures that have constant digit size, and go back to the format + reverse buffer approach.
-        private static bool TryFormatDecimal(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        private static bool TryFormatDecimal(ulong value, Span<byte> buffer, out int bytesWritten, EncodingData encoding, TextFormat format)
         {
             if(format.IsDefault)
             {

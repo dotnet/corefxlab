@@ -164,7 +164,7 @@ namespace System.Text.Json
             return false;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, EncodingData formattingData)
+        public bool TryFormat(Span<byte> buffer, out int written, EncodingData formattingData, TextFormat format)
         {
             written = 0;
             int justWritten;
@@ -192,7 +192,7 @@ namespace System.Text.Json
                     written += justWritten;
                 }
 
-                if(!property.Key.TryFormat(buffer.Slice(written), out justWritten, format, formattingData))
+                if(!property.Key.TryFormat(buffer.Slice(written), out justWritten, formattingData, format))
                 {
                     written = 0; return false;
                 }
@@ -202,7 +202,7 @@ namespace System.Text.Json
                     return false;
                 }
                 written += justWritten;
-                if (!property.Value.TryFormat(buffer.Slice(written), out justWritten, format, formattingData))
+                if (!property.Value.TryFormat(buffer.Slice(written), out justWritten, formattingData, format))
                 {
                     written = 0; return false;
                 }
@@ -268,16 +268,16 @@ namespace System.Text.Json
                 else throw new NotImplementedException();
             }
 
-            public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, EncodingData formattingData)
+            public bool TryFormat(Span<byte> buffer, out int written, EncodingData formattingData, TextFormat format)
             {
                 switch (_type)
                 {
                     case JsonReader.JsonValueType.String:
-                        return _value.TryFormatQuotedString(buffer, format, formattingData, out written);
+                        return _value.TryFormatQuotedString(buffer, out written, formattingData, format);
                     case JsonReader.JsonValueType.Number:
-                        return _value.TryFormat(buffer, format, formattingData, out written);
+                        return _value.TryFormat(buffer, out written, formattingData, format);
                     case JsonReader.JsonValueType.Object:
-                        return _object.TryFormat(buffer, out written, format, formattingData);
+                        return _object.TryFormat(buffer, out written, formattingData, format);
                     case JsonReader.JsonValueType.Null:
                         return formattingData.TextEncoder.TryEncode("null", buffer, out written);
                     case JsonReader.JsonValueType.True:
@@ -326,9 +326,9 @@ namespace System.Text.Json
                 return result;
             }
 
-            public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, EncodingData formattingData)
+            public bool TryFormat(Span<byte> buffer, out int written, EncodingData formattingData, TextFormat format)
             {
-                return _name.TryFormatQuotedString(buffer, format, formattingData, out written);
+                return _name.TryFormatQuotedString(buffer, out written, formattingData, format);
             }
         }
     }
@@ -337,7 +337,7 @@ namespace System.Text.Json
     {
         // TODO: this should be properly implemented 
         // currently it handles formatting to UTF8 only.
-        public static bool TryFormat(this Utf8String str, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int written)
+        public static bool TryFormat(this Utf8String str, Span<byte> buffer, out int written, EncodingData formattingData, TextFormat format)
         {
             written = 0;
             if (buffer.Length < str.Length)
@@ -354,7 +354,7 @@ namespace System.Text.Json
             return true;
         }
 
-        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int written)
+        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, out int written, EncodingData formattingData, TextFormat format)
         {
             written = 0;
             int consumed;
@@ -371,7 +371,7 @@ namespace System.Text.Json
                 }
                 written += justWritten;
 
-                if (!str.TryFormat(buffer.Slice(written), format, formattingData, out justWritten))
+                if (!str.TryFormat(buffer.Slice(written), out justWritten, formattingData, format))
                 {
                     return false;
                 }
