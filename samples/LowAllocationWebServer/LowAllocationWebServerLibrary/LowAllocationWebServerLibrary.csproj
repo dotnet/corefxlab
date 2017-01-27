@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Http" Version="0.1.0-e170120-3" />
+    <PackageReference Include="System.Text.Json" Version="0.1.0-e170120-3" />
+  </ItemGroup>
+</Project>

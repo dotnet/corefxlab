@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Shared\SampleServer.cs" Link="SampleServer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LowAllocationWebServerLibrary\LowAllocationWebServerLibrary.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Http" Version="0.1.0-e170120-3" />
+    <PackageReference Include="System.Text.Json" Version="0.1.0-e170120-3" />
+  </ItemGroup>
+</Project>

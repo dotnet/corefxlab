@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.Net.Http;
@@ -9,6 +9,7 @@ using System.Text.Http.SingleSegment;
 using System.Text.Json;
 using System.Text.Utf8;
 using System.Text.Http;
+using System.Buffers;
 
 namespace LowAllocationWebServer
 {
@@ -30,7 +31,7 @@ namespace LowAllocationWebServer
             Apis.Add(HttpMethod.Post, "/json", Api.PostJson, WriteResponseForPostJson); // post body along the lines of: "{ "Count" = 3 }" 
         }
 
-        protected override void WriteResponse(HttpRequestSingleSegment request, HttpResponse response)
+        protected override void WriteResponse(HttpRequest request, HttpResponse response)
         {
             if (!Apis.TryHandle(request, response))
             {
@@ -38,11 +39,12 @@ namespace LowAllocationWebServer
             }
         }
 
-        void WriteResponseForPostJson(HttpRequestSingleSegment request, HttpResponse response)
+        void WriteResponseForPostJson(HttpRequest request, HttpResponse response)
         {
             // read request json
             int requestedCount;
-            using (var dom = JsonObject.Parse(request.Body)) {
+            // TODO: this should not conver to span
+            using (var dom = JsonObject.Parse(request.Body.ToSpan())) {
                 requestedCount = (int)dom["Count"];
             }
 
@@ -73,7 +75,7 @@ namespace LowAllocationWebServer
             headers.AppendHttpNewLine();
         }
 
-        static void WriteResponseForHelloWorld(HttpRequestSingleSegment request, HttpResponse response)
+        static void WriteResponseForHelloWorld(HttpRequest request, HttpResponse response)
         {
             var body = new ResponseFormatter(response.Body);
             body.Append("Hello, World");
@@ -93,7 +95,7 @@ namespace LowAllocationWebServer
             headers.AppendHttpNewLine();
         }
 
-        static void WriteResponseForGetTime(HttpRequestSingleSegment request, HttpResponse response)
+        static void WriteResponseForGetTime(HttpRequest request, HttpResponse response)
         {
             var body = new ResponseFormatter(response.Body);
             body.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
