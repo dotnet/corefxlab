@@ -573,8 +573,7 @@ namespace System.IO.Pipelines
             {
                 throw new ArgumentOutOfRangeException(nameof(count));
             }
-            var newCursor = cursor.Seek(count, _end);
-            return newCursor;
+            return cursor.Seek(count, _end, false);
         }
     }
 }

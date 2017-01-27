@@ -13,4 +13,13 @@ namespace System.IO.Pipelines
 
         void OnCompleted(Action continuation);
     }
+
+    public interface IFlushAwaiter
+    {
+        bool IsCompleted { get; }
+
+        bool GetResult();
+
+        void OnCompleted(Action continuation);
+    }
 }
