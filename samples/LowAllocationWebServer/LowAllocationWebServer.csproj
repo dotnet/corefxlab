@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>LowAllocationWebServer</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+    <NoWarn>CS0618</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+        <EmbeddedResource Include="compiler\resources\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\System.Text.Json\System.Text.Json.csproj" >
+      <FromP2P>true</FromP2P>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" >
+      <FromP2P>true</FromP2P>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Text.Formatting\System.Text.Formatting.csproj">
+      <FromP2P>true</FromP2P>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj">
+      <FromP2P>true</FromP2P>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Slices\System.Slices.csproj">
+      <FromP2P>true</FromP2P>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj">
+      <FromP2P>true</FromP2P>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Collections.Sequences\System.Collections.Sequences.csproj">
+      <FromP2P>true</FromP2P>
+    </ProjectReference>
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
+  </PropertyGroup>
+</Project>
