@@ -549,6 +549,19 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal("Writer exception", invalidOperationException.Message);
         }
 
+        [Fact]
+        public void FlushAsync_ReturnsCompletedTaskWhenMaxSizeIfZero()
+        {
+            var writableBuffer = _pipe.Alloc(1);
+            writableBuffer.Advance(1);
+            var flushTask = writableBuffer.FlushAsync();
+            Assert.True(flushTask.IsCompleted);
+
+            writableBuffer = _pipe.Alloc(1);
+            writableBuffer.Advance(1);
+            flushTask = writableBuffer.FlushAsync();
+            Assert.True(flushTask.IsCompleted);
+        }
 
         private class DisposeTrackingOwnedMemory : OwnedMemory<byte>, IBufferPool
         {

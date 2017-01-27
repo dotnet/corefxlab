@@ -16,7 +16,7 @@ namespace System.IO.Pipelines
         private static readonly Action _awaitableIsNotCompleted = () => { };
 
         private readonly IBufferPool _pool;
-        private readonly int _maximumSize;
+        private readonly long _maximumSize;
 
         private Action _awaitableState;
         private Action _flushAwaitableState;
@@ -52,17 +52,17 @@ namespace System.IO.Pipelines
         private string _completeWriterLocation;
         private string _completeReaderLocation;
 #endif
-        private int _length;
-        private int _currentWriteLength;
+        private long _length;
+        private long _currentWriteLength;
 
-        public int Length => _length;
+        public long Length => _length;
 
         /// <summary>
         /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
         /// </summary>
         /// <param name="pool"></param>
         /// <param name="maximumSize"></param>
-        public Pipe(IBufferPool pool, int maximumSize = 0)
+        public Pipe(IBufferPool pool, long maximumSize = 0)
         {
             _pool = pool;
             _maximumSize = maximumSize;
@@ -90,7 +90,7 @@ namespace System.IO.Pipelines
         /// </remarks>
         public Task Writing => _writingTcs.Task;
 
-        internal Memory<byte> Memory => _writingHead == null ? Memory<byte>.Empty : _writingHead.Memory.Slice(_writingHead.End, _writingHead.WritableBytes);
+        internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.
@@ -280,7 +280,9 @@ namespace System.IO.Pipelines
 
                 _length += _currentWriteLength;
                 // Do not reset when writing is complete
-                if (_length >= _maximumSize && !Writing.IsCompleted)
+                if (_maximumSize  > 0 &&
+                    _length >= _maximumSize &&
+                    !Writing.IsCompleted)
                 {
                     ResetAwaitable(ref _flushAwaitableState);
                 }
