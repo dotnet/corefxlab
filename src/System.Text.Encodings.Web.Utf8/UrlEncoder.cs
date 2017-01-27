@@ -251,80 +251,29 @@
             {
                 return -1;
             }
+            
+            if (scan + 2 > buffer.Length)
+            {
+                return -1;
+            }
+            
+            byte value;
+            int bytesConsumed;
+            bool result = PrimitiveParser.InvariantUtf8.Hex.TryParseByte(buffer.Slice(scan, 2), out value, out bytesConsumed);
 
-            var probe = scan;
-
-            var value1 = ReadHex(ref probe, buffer);
-            if (value1 == -1)
+            if (result == false || bytesConsumed != 2)
             {
                 return -1;
             }
 
-            var value2 = ReadHex(ref probe, buffer);
-            if (value2 == -1)
-            {
-                return -1;
-            }
-
-            if (SkipUnescape(value1, value2))
-            {
-                return -1;
-            }
-
-            scan = probe;
-            return (value1 << 4) + value2;
-        }
-
-
-        /// <summary>
-        /// Read the next char and convert it into hexadecimal value.
-        /// 
-        /// The <paramref name="scan"/> index will be moved to the next
-        /// byte no matter no matter whether the operation successes.
-        /// </summary>
-        /// <param name="scan">The index of the byte in the buffer to read</param>
-        /// <param name="buffer">The byte span from which the hex to be read</param>
-        /// <returns>The hexadecimal value if successes, otherwise -1.</returns>
-        private static int ReadHex(ref int scan, Span<byte> buffer)
-        {
-            if (scan == buffer.Length)
-            {
-                return -1;
-            }
-
-            var value = buffer[scan++];
-            var isHead = ((value >= '0') && (value <= '9')) ||
-                         ((value >= 'A') && (value <= 'F')) ||
-                         ((value >= 'a') && (value <= 'f'));
-
-            if (!isHead)
-            {
-                return -1;
-            }
-
-            if (value <= '9')
-            {
-                return value - '0';
-            }
-            else if (value <= 'F')
-            {
-                return (value - 'A') + 10;
-            }
-            else // a - f
-            {
-                return (value - 'a') + 10;
-            }
-        }
-
-        private static bool SkipUnescape(int value1, int value2)
-        {
             // skip %2F - '/'
-            if (value1 == 2 && value2 == 15)
+            if (value == 0x2F)
             {
-                return true;
+                return -1;
             }
 
-            return false;
+            scan += bytesConsumed;
+            return value;
         }
     }
 }
