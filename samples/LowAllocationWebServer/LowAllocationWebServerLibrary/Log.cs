@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Sequences;
 using System.IO;
 using System.Text;
 using System.Text.Http;
@@ -83,30 +84,24 @@ namespace System.Diagnostics
 
     public static class HttpLogExtensions
     {
-        public static void LogRequest(this Log log, HttpRequestSingleSegment request)
+        public static void LogRequest(this Log log, HttpRequest request)
         {
             if (log.IsVerbose)
             {
-                log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", request.RequestLine.Method);
-                log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", request.RequestLine.RequestUri.ToString());
-                log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.RequestLine.Version);
+                // TODO: this is much ceremony. We need to do something with this. ReadOnlyBytes.AsUtf8 maybe?
+                log.LogMessage(Log.Level.Verbose, "\tMethod:       {0}", request.Verb.ToUtf8String(TextEncoder.Utf8));
+                log.LogMessage(Log.Level.Verbose, "\tRequest-URI:  {0}", request.Path.ToUtf8String(TextEncoder.Utf8));
+                log.LogMessage(Log.Level.Verbose, "\tHTTP-Version: {0}", request.Version.ToUtf8String(TextEncoder.Utf8));
 
                 log.LogMessage(Log.Level.Verbose, "\tHttp Headers:");
-                foreach (var httpHeader in request.Headers)
+                var position = Position.First;
+                while(request.Headers.TryGet(ref position, out var header, true))
                 {
-                    log.LogMessage(Log.Level.Verbose, "\t\tName: {0}, Value: {1}", httpHeader.Key, httpHeader.Value);
+                    log.LogMessage(Log.Level.Verbose, "\t\t{0}: {1}", header.Name.ToUtf8String(TextEncoder.Utf8), header.Value.ToUtf8String(TextEncoder.Utf8));
                 }
 
-                HttpRequestReader reader = new HttpRequestReader();
-                reader.Buffer = request.Body;
-                while (true)
-                {
-                    var header = reader.ReadHeader();
-                    if (header.Length == 0) break;
-                    log.LogMessage(Log.Level.Verbose, "\tHeader: {0}", header.ToString());
-                }
-                var messageBody = reader.Buffer;
-                log.LogMessage(Log.Level.Verbose, "\tBody bytecount: {0}", messageBody.Length);
+                var body = request.Body.ToString(TextEncoder.Utf8);               
+                log.LogMessage(Log.Level.Verbose, body);
             }
         }
     }

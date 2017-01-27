@@ -10,6 +10,9 @@ using System.Text.Http.SingleSegment;
 using System.Text.Utf8;
 using System.Threading;
 using System.Text.Http;
+using System.Threading.Tasks;
+using System.Text;
+using System.Collections.Sequences;
 
 namespace Microsoft.Net.Http
 {
@@ -31,13 +34,11 @@ namespace Microsoft.Net.Http
             _listener = new TcpServer(port, address1, address2, address3, address4);
         }
 
-        public void StartAsync()
+        public Task StartAsync()
         {
-            Thread thread = new Thread(new ParameterizedThreadStart((parameter) => {
-                var httpServer = parameter as HttpServer;
-                httpServer.Start();
-            }));
-            thread.Start(this);
+            return Task.Run(() => {
+                this.Start();
+            });
         }
 
         public void Stop()
@@ -70,6 +71,8 @@ namespace Microsoft.Net.Http
             Log.LogVerbose("Processing Request");
             
             var requestBuffer = s_pool.Rent(RequestBufferSize);
+            var arrayMemory = new OwnedArray<byte>(requestBuffer);
+
             var requestByteCount = socket.Receive(requestBuffer);
 
             if(requestByteCount == 0) {
@@ -77,19 +80,26 @@ namespace Microsoft.Net.Http
                 return;
             }
 
-            var requestBytes = requestBuffer.Slice(0, requestByteCount);
-            var request = HttpRequestSingleSegment.Parse(requestBytes);
+            var requestMemory = arrayMemory.Memory.Slice(0, requestByteCount);
+            var requestBytes = new ReadOnlyBytes(requestMemory);
+
+            var request = HttpRequest.Parse(requestBytes);
             Log.LogRequest(request);
 
             using (var response = new HttpResponse(1024)) {
                 WriteResponse(request, response);
                 s_pool.Return(requestBuffer);
 
-                foreach(var segment in response.Headers) {
-                    socket.Send(segment);
+                Position position = Position.First;
+                while(response.Headers.TryGet(ref position, out var headersSegment, true))
+                {
+                    socket.Send(headersSegment);
                 }
-                foreach (var segment in response.Body) {
-                    socket.Send(segment);
+
+                position = Position.First;
+                while (response.Body.TryGet(ref position, out var bodySegment))
+                {
+                    socket.Send(bodySegment);
                 }
 
                 socket.Close();
@@ -108,9 +118,10 @@ namespace Microsoft.Net.Http
             new ResponseFormatter(response.Headers).Append(HttpNewline);
         }
 
-        protected virtual void WriteResponseFor404(HttpRequestSingleSegment request, HttpResponse response) // Not Found
+        // TODO: HttpRequest is a large struct. We cannot pass it around like that
+        protected virtual void WriteResponseFor404(HttpRequest request, HttpResponse response) // Not Found
         {
-            Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.RequestLine);
+            Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.Path.ToUtf8String(TextEncoder.Utf8));
             WriteCommonHeaders(response, HttpVersion.V1_1, 404, "Not Found", false);
             new ResponseFormatter(response.Headers).Append(HttpNewline);
         }
@@ -139,6 +150,6 @@ namespace Microsoft.Net.Http
             }
         }
 
-        protected abstract void WriteResponse(HttpRequestSingleSegment request, HttpResponse response);
+        protected abstract void WriteResponse(HttpRequest request, HttpResponse response);
     }
 }
