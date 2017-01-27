@@ -14,11 +14,8 @@ namespace System.IO.Pipelines.Tests
 
         public BackpressureTests()
         {
-            _pipelineFactory = new PipelineFactory()
-            {
-                MaximumPipeSize = 64
-            };
-            _pipe = _pipelineFactory.Create();
+            _pipelineFactory = new PipelineFactory();
+            _pipe = _pipelineFactory.Create(maximumSize: 64);
         }
 
         public void Dispose()

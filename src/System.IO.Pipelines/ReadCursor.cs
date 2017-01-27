@@ -75,17 +75,21 @@ namespace System.IO.Pipelines
             {
                 return 0;
             }
+            return GetLength(_segment, _index, end._segment, end._index);
+        }
 
-            var segment = _segment;
-            var index = _index;
+        internal static int GetLength(BufferSegment start, int startIndex, BufferSegment end, int endIndex)
+        {
+            var segment = start;
+            var index = startIndex;
             var length = 0;
             checked
             {
                 while (true)
                 {
-                    if (segment == end._segment)
+                    if (segment == end)
                     {
-                        return length + end._index - index;
+                        return length + endIndex - index;
                     }
                     else if (segment.Next == null)
                     {

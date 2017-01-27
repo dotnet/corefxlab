@@ -17,7 +17,6 @@ namespace System.IO.Pipelines
     public class PipelineFactory : IDisposable
     {
         private readonly IBufferPool _pool;
-        public int MaximumPipeSize { get; set; }
 
         public PipelineFactory() : this(new MemoryPool())
         {
@@ -28,7 +27,7 @@ namespace System.IO.Pipelines
             _pool = pool;
         }
 
-        public Pipe Create() => new Pipe(_pool, MaximumPipeSize);
+        public Pipe Create(int maximumSize = 0) => new Pipe(_pool, maximumSize);
 
         public IPipelineReader CreateReader(Stream stream)
         {
