@@ -16,7 +16,8 @@ namespace System.IO.Pipelines
         private static readonly Action _awaitableIsNotCompleted = () => { };
 
         private readonly IBufferPool _pool;
-        private readonly long _maximumSize;
+        private readonly long _maximumSizeHight;
+        private readonly long _maximumSizeLow;
 
         private Action _awaitableState;
         private Action _flushAwaitableState;
@@ -55,17 +56,18 @@ namespace System.IO.Pipelines
         private long _length;
         private long _currentWriteLength;
 
-        public long Length => _length;
+        internal long Length => _length;
 
         /// <summary>
         /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
         /// </summary>
         /// <param name="pool"></param>
         /// <param name="maximumSize"></param>
-        public Pipe(IBufferPool pool, long maximumSize = 0)
+        public Pipe(IBufferPool pool, long maximumSizeLow = 0, long maximumSizeHigh = 0)
         {
             _pool = pool;
-            _maximumSize = maximumSize;
+            _maximumSizeHight = maximumSizeHigh;
+            _maximumSizeLow = maximumSizeLow;
             _awaitableState = _awaitableIsNotCompleted;
             _flushAwaitableState = _awaitableIsCompleted;
         }
@@ -280,8 +282,8 @@ namespace System.IO.Pipelines
 
                 _length += _currentWriteLength;
                 // Do not reset when writing is complete
-                if (_maximumSize  > 0 &&
-                    _length >= _maximumSize &&
+                if (_maximumSizeHight  > 0 &&
+                    _length >= _maximumSizeHight &&
                     !Writing.IsCompleted)
                 {
                     ResetAwaitable(ref _flushAwaitableState);
@@ -421,7 +423,8 @@ namespace System.IO.Pipelines
 
             if (!consumed.IsDefault)
             {
-                Interlocked.Add(ref _length, -ReadCursor.GetLength(_readHead, _readHead.Start, consumed.Segment, consumed.Index));
+                var consumedBytes = ReadCursor.GetLength(_readHead, _readHead.Start, consumed.Segment, consumed.Index);
+                Interlocked.Add(ref _length, -consumedBytes);
 
                 returnStart = _readHead;
                 returnEnd = consumed.Segment;
@@ -464,8 +467,7 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotConsumingToComplete);
             }
 
-            // TODO: Races
-            if (_length < _maximumSize)
+            if (_length < _maximumSizeLow)
             {
                 Complete(ref _flushAwaitableState);
             }

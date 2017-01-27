@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Tests
         public BackpressureTests()
         {
             _pipelineFactory = new PipelineFactory();
-            _pipe = _pipelineFactory.Create(maximumSize: 64);
+            _pipe = _pipelineFactory.Create(32, 64);
         }
 
         public void Dispose()
@@ -45,7 +45,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void FlushAsyncAwaitableCompletesWhenReaderAdvances()
+        public void FlushAsyncAwaitableCompletesWhenReaderAdvancesUnderLow()
         {
             var writableBuffer = _pipe.Alloc(64);
             writableBuffer.Advance(64);
@@ -54,11 +54,27 @@ namespace System.IO.Pipelines.Tests
             Assert.False(flushAsync.IsCompleted);
 
             var result = _pipe.ReadAsync().GetAwaiter().GetResult();
-            var consumed = result.Buffer.Move(result.Buffer.Start, 1);
+            var consumed = result.Buffer.Move(result.Buffer.Start, 33);
             _pipe.AdvanceReader(consumed, consumed);
 
             Assert.True(flushAsync.IsCompleted);
             Assert.True(flushAsync.Result);
+        }
+
+        [Fact]
+        public void FlushAsyncAwaitableDoesNotCompletesWhenReaderAdvancesUnderHight()
+        {
+            var writableBuffer = _pipe.Alloc(64);
+            writableBuffer.Advance(64);
+            var flushAsync = writableBuffer.FlushAsync();
+
+            Assert.False(flushAsync.IsCompleted);
+
+            var result = _pipe.ReadAsync().GetAwaiter().GetResult();
+            var consumed = result.Buffer.Move(result.Buffer.Start, 32);
+            _pipe.AdvanceReader(consumed, consumed);
+
+            Assert.False(flushAsync.IsCompleted);
         }
 
         [Fact]
@@ -109,7 +125,7 @@ namespace System.IO.Pipelines.Tests
             Assert.False(flushAsync.IsCompleted);
 
             var result = _pipe.ReadAsync().GetAwaiter().GetResult();
-            var consumed = result.Buffer.Move(result.Buffer.Start, 1);
+            var consumed = result.Buffer.Move(result.Buffer.Start, 33);
             _pipe.AdvanceReader(consumed, consumed);
 
             Assert.True(flushAsync.IsCompleted);
