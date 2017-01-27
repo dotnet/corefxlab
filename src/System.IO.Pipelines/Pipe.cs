@@ -130,7 +130,16 @@ namespace System.IO.Pipelines
             }
             else if (minimumSize > 0)
             {
-                AllocateWriteHead(minimumSize);
+                try
+                {
+                    AllocateWriteHead(minimumSize);
+                }
+                catch (Exception)
+                {
+                    // Reset producing state if allocation failed
+                    Interlocked.Exchange(ref _producingState, State.NotActive);
+                    throw;
+                }
             }
             _currentWriteLength = 0;
             return new WritableBuffer(this);

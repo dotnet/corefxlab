@@ -71,6 +71,8 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(10, reader.ReadLittleEndian<int>());
             Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
             Assert.Equal(8, reader.Slice(8).ReadLittleEndian<int>());
+
+            _pipe.AdvanceReader(reader.Start, reader.Start);
         }
 
         [Fact]
@@ -107,6 +109,8 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(10, reader.ReadLittleEndian<int>());
             Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
             Assert.Equal(8, reader.Slice(8).ReadLittleEndian<int>());
+
+            _pipe.AdvanceReader(reader.Start, reader.Start);
         }
 
         [Fact]
@@ -157,6 +161,8 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(10, reader.ReadLittleEndian<int>());
             Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
             Assert.Equal("Hello", reader.Slice(8).GetUtf8String());
+
+            _pipe.AdvanceReader(reader.Start, reader.Start);
         }
 
         [Fact]
@@ -173,6 +179,8 @@ namespace System.IO.Pipelines.Tests
             var array = new byte[11];
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -245,6 +253,8 @@ namespace System.IO.Pipelines.Tests
             var array = new byte[11];
             buffer.First.Span.CopyTo(array);
             Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -276,6 +286,8 @@ namespace System.IO.Pipelines.Tests
             result = await awaitable;
 
             Assert.True(result.IsCancelled);
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -391,6 +403,8 @@ namespace System.IO.Pipelines.Tests
                 memory.Add(m);
             }
             var spans = memory;
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
+
             Assert.Equal(2, memory.Count);
             var helloBytes = new byte[spans[0].Length];
             spans[0].Span.CopyTo(helloBytes);
@@ -412,6 +426,8 @@ namespace System.IO.Pipelines.Tests
             ReadCursor cursor;
 
             Assert.False(buffer.TrySliceTo(10, out slice, out cursor));
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -434,6 +450,8 @@ namespace System.IO.Pipelines.Tests
             ReadableBuffer slice;
             ReadCursor cursor;
             Assert.False(buffer.TrySliceTo((byte)'R', out slice, out cursor));
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -460,6 +478,8 @@ namespace System.IO.Pipelines.Tests
             var array = slice.ToArray();
 
             Assert.Equal("World", Encoding.ASCII.GetString(array));
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -499,6 +519,7 @@ namespace System.IO.Pipelines.Tests
             _pipe.CompleteWriter();
 
             Assert.Throws<InvalidOperationException>(() => _pipe.Alloc());
+            _pipe.Commit();
         }
 
         [Fact]
@@ -525,9 +546,12 @@ namespace System.IO.Pipelines.Tests
         public async Task CompleteReaderThrowsIfReadInProgress()
         {
             await _pipe.WriteAsync(new byte[1]);
-            await _pipe.ReadAsync();
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
 
             Assert.Throws<InvalidOperationException>(() => _pipe.CompleteReader());
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -536,6 +560,8 @@ namespace System.IO.Pipelines.Tests
             _pipe.Alloc();
 
             Assert.Throws<InvalidOperationException>(() => _pipe.CompleteWriter());
+
+            _pipe.Commit();
         }
 
         [Fact]
