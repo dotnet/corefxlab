@@ -13,7 +13,7 @@ namespace System.Text.Utf8.Tests
         private const ushort Utf8TwoBytesLastCodePoint = 0x7FF;
         private const ushort Utf8ThreeBytesLastCodePoint = 0xFFFF;
 
-        private const int CharLength = 1000;
+        private const int CharLength = 999;
 
         [Fact]
         public void TestEncodingInputBufferEmpty()
@@ -294,7 +294,7 @@ namespace System.Text.Utf8.Tests
 
             Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
             int expectedBytesWritten = GetByteCount(characters);
-            byte[] utf8Buffer = new byte[expectedBytesWritten];
+            byte[] utf8Buffer = new byte[expectedBytesWritten * 3];
             Span<byte> span = new Span<byte>(utf8Buffer);
             int charactersConsumed;
             int bytesWritten;

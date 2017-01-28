@@ -305,31 +305,151 @@ namespace System.Text.Utf8
                 fixed (byte* pUtf8 = &utf8.DangerousGetPinnableReference())
                 {
                     var outputBytesAvailable = utf8.Length;
-                    var inputCharacters = utf16.Length;
+                    var inputCharacters = Math.Min(utf16.Length, outputBytesAvailable / 3);
 
                     var bytesWrittenTemp = 0;
                     var i = 0;
                     var codePoint = '\0';
-
-                    ascii:
-                    for (; i < inputCharacters; i++)
+                    var ch = 0;
+                    var chc = 0;
+                    
+                ascii_no_output_check:
+                    for (; i < inputCharacters - 3; i++)
                     {
-                        codePoint = *(pUtf16 + i);
+                        ch = *(int*)(pUtf16 + i);
+                        chc = *(int*)(pUtf16 + i + 2);
 
-                        if (codePoint > Utf8OneByteLastCodePoint)
+                        if (((ch | chc) & unchecked((int)0xFF80FF80)) != 0)
                         {
-                            goto non_ascii;
+                            goto found_non_ascii_no_check;
                         }
-                        if (bytesWrittenTemp > outputBytesAvailable - 1)
-                        {
-                            goto need_more;
-                        }
-                        *(bytesWrittenTemp + pUtf8) = (byte)codePoint;
-                        bytesWrittenTemp++;
+
+                        *(bytesWrittenTemp + pUtf8) = (byte)ch;
+                        *(bytesWrittenTemp + pUtf8 + 1) = (byte)(ch >> 16);
+                        *(bytesWrittenTemp + pUtf8 + 2) = (byte)chc;
+                        *(bytesWrittenTemp + pUtf8 + 3) = (byte)(chc >> 16);
+                        i += 3;
+                        bytesWrittenTemp += 4;
+                    }
+                    goto ascii;
+
+                found_non_ascii_no_check:
+                    codePoint = (char)ch;
+                    
+                    if (codePoint > Utf8OneByteLastCodePoint)
+                    {
+                        goto non_ascii_no_check;
                     }
 
-                    non_ascii:
-                    for (; i < inputCharacters; i++)
+                    *(bytesWrittenTemp + pUtf8) = (byte)codePoint;
+                    i++;
+                    bytesWrittenTemp++;
+
+                non_ascii_no_check:
+                    for (; i < inputCharacters - 3; i++)
+                    {
+                        codePoint = *(pUtf16 + i);
+                        if (codePoint <= Utf8OneByteLastCodePoint) // 0x00 - 0x7F
+                        {
+                            goto ascii_no_output_check;
+                        }
+                        else if (codePoint <= Utf8TwoBytesLastCodePoint) // 0x080 - 0x7FF
+                        {
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                        }
+                        else if ((uint)(codePoint - Utf16HighSurrogateFirstCodePoint) <= (Utf16HighSurrogateLastCodePoint - Utf16HighSurrogateFirstCodePoint)) // 0xD800 - 0xDBFF
+                        {
+                            if (++i >= inputCharacters)
+                            {
+                                i--;
+                                break;
+                            }
+
+                            char lowSurrogate = *(pUtf16 + i);
+
+                            if (lowSurrogate < Utf16LowSurrogateFirstCodePoint || lowSurrogate > Utf16LowSurrogateLastCodePoint)
+                            {
+                                i--;
+                                goto need_more; // Invalid surrogate pair.
+                            }
+
+                            int surrogateCalculation;
+                            unchecked
+                            {
+                                surrogateCalculation = ((lowSurrogate - Utf16LowSurrogateFirstCodePoint)
+                                    | ((codePoint - Utf16HighSurrogateFirstCodePoint) << 10)) + 0x10000;
+                            }
+
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation >> 18) & b0000_0111U) | b1111_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation >> 12) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation >> 6) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                        }
+                        else if ((uint)(codePoint - Utf16LowSurrogateFirstCodePoint) <= (Utf16LowSurrogateLastCodePoint - Utf16LowSurrogateFirstCodePoint))   // 0xDC00 - 0xDFFF
+                        {
+                            goto need_more; // Invalid surrogate pair.
+                        }
+                        else // 0x0800 - 0xD7FF and 0xE000-0xFFFF
+                        {
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                        }
+                    }
+
+                ascii:
+                    inputCharacters = utf16.Length;
+                    for (; i < inputCharacters - 3; i++)
+                    {
+                        ch = *(int*)(pUtf16 + i);
+                        chc = *(int*)(pUtf16 + i + 2);
+
+                        if (((ch | chc) & unchecked((int)0xFF80FF80)) != 0)
+                        {
+                            goto found_non_ascii;
+                        }
+
+                        if (bytesWrittenTemp > outputBytesAvailable - 4)
+                        {
+                            goto finish_leftovers;
+                        }
+
+                        *(bytesWrittenTemp + pUtf8) = (byte)ch;
+                        *(bytesWrittenTemp + pUtf8 + 1) = (byte)(ch >> 16);
+                        *(bytesWrittenTemp + pUtf8 + 2) = (byte)chc;
+                        *(bytesWrittenTemp + pUtf8 + 3) = (byte)(chc >> 16);
+                        i += 3;
+                        bytesWrittenTemp += 4;
+                    }
+                    goto finish_leftovers;
+
+                found_non_ascii:
+                    codePoint = (char)ch;
+
+                    if (codePoint > Utf8OneByteLastCodePoint)
+                    {
+                        goto non_ascii;
+                    }
+                    if (bytesWrittenTemp > outputBytesAvailable - 1)
+                    {
+                        goto need_more;
+                    }
+                    *(bytesWrittenTemp + pUtf8) = (byte)codePoint;
+                    i++;
+                    bytesWrittenTemp++;
+
+                non_ascii:
+                    for (; i < inputCharacters - 3; i++)
                     {
                         codePoint = *(pUtf16 + i);
                         if (codePoint <= Utf8OneByteLastCodePoint) // 0x00 - 0x7F
@@ -347,7 +467,7 @@ namespace System.Text.Utf8
                             *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
                             bytesWrittenTemp++;
                         }
-                        else if (codePoint >= Utf16HighSurrogateFirstCodePoint && codePoint <= Utf16HighSurrogateLastCodePoint) // 0xD800 - 0xDBFF
+                        else if ((uint)(codePoint - Utf16HighSurrogateFirstCodePoint) <= (Utf16HighSurrogateLastCodePoint - Utf16HighSurrogateFirstCodePoint)) // 0xD800 - 0xDBFF
                         {
                             if (bytesWrittenTemp > outputBytesAvailable - 4)
                             {
@@ -384,7 +504,7 @@ namespace System.Text.Utf8
                             *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation) & b0011_1111U) | b1000_0000U);
                             bytesWrittenTemp++;
                         }
-                        else if (codePoint >= Utf16LowSurrogateFirstCodePoint && codePoint <= Utf16LowSurrogateLastCodePoint)   // 0xDC00 - 0xDFFF
+                        else if ((uint)(codePoint - Utf16LowSurrogateFirstCodePoint) <= (Utf16LowSurrogateLastCodePoint - Utf16LowSurrogateFirstCodePoint))   // 0xDC00 - 0xDFFF
                         {
                             goto need_more; // Invalid surrogate pair.
                         }
@@ -403,11 +523,91 @@ namespace System.Text.Utf8
                         }
                     }
 
+                finish_leftovers:
+                    for (; i < inputCharacters; i++)
+                    {
+                        codePoint = *(pUtf16 + i);
+                        if (codePoint <= Utf8OneByteLastCodePoint) // 0x00 - 0x7F
+                        {
+                            if (bytesWrittenTemp > outputBytesAvailable - 1)
+                            {
+                                goto need_more;
+                            }
+                            *(bytesWrittenTemp + pUtf8) = (byte)codePoint;
+                            bytesWrittenTemp++;
+                        }
+                        else if (codePoint <= Utf8TwoBytesLastCodePoint) // 0x080 - 0x7FF
+                        {
+                            if (bytesWrittenTemp > outputBytesAvailable - 2)
+                            {
+                                goto need_more;
+                            }
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint >> 6) & b0001_1111U) | b1100_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                        }
+                        else if ((uint)(codePoint - Utf16HighSurrogateFirstCodePoint) <= (Utf16HighSurrogateLastCodePoint - Utf16HighSurrogateFirstCodePoint)) // 0xD800 - 0xDBFF
+                        {
+                            if (bytesWrittenTemp > outputBytesAvailable - 4)
+                            {
+                                goto need_more;
+                            }
+
+                            if (++i >= inputCharacters)
+                            {
+                                i--;
+                                goto need_more;
+                            }
+
+                            char lowSurrogate = *(pUtf16 + i);
+
+                            if (lowSurrogate < Utf16LowSurrogateFirstCodePoint || lowSurrogate > Utf16LowSurrogateLastCodePoint)
+                            {
+                                i--;
+                                goto need_more; // Invalid surrogate pair.
+                            }
+
+                            int surrogateCalculation;
+                            unchecked
+                            {
+                                surrogateCalculation = ((lowSurrogate - Utf16LowSurrogateFirstCodePoint)
+                                    | ((codePoint - Utf16HighSurrogateFirstCodePoint) << 10)) + 0x10000;
+                            }
+
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation >> 18) & b0000_0111U) | b1111_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation >> 12) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation >> 6) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((surrogateCalculation) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                        }
+                        else if ((uint)(codePoint - Utf16LowSurrogateFirstCodePoint) <= (Utf16LowSurrogateLastCodePoint - Utf16LowSurrogateFirstCodePoint))   // 0xDC00 - 0xDFFF
+                        {
+                            goto need_more; // Invalid surrogate pair.
+                        }
+                        else // 0x0800 - 0xD7FF and 0xE000-0xFFFF
+                        {
+                            if (bytesWrittenTemp > outputBytesAvailable - 3)
+                            {
+                                goto need_more;
+                            }
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint >> 12) & b0000_1111U) | b1110_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint >> 6) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                            *(bytesWrittenTemp + pUtf8) = (byte)(((codePoint) & b0011_1111U) | b1000_0000U);
+                            bytesWrittenTemp++;
+                        }
+                    }
+                    
                     bytesWritten = bytesWrittenTemp;
                     charactersConsumed = i;
                     return true;
-
-                    need_more:
+                    
+                need_more:
                     bytesWritten = bytesWrittenTemp;
                     charactersConsumed = i;
                     return false;
