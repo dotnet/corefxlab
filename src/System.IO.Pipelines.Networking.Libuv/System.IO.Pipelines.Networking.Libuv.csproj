@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Networking implementation of pipelines based on Libuv</Description>
+    <Copyright>Microsoft Corporation, All rights reserved</Copyright>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <TargetFrameworks>net451;netstandard1.3</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>System.IO.Pipelines.Networking.Libuv</AssemblyName>
+    <AssemblyOriginatorKeyFile>../../tools/Key.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <PackageId>System.IO.Pipelines.Networking.Libuv</PackageId>
+    <PackageReleaseNotes>Pre-release package, for testing only</PackageReleaseNotes>
+    <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/dotnet/corefxlab</PackageProjectUrl>
+    <PackageLicenseUrl>http://go.microsoft.com/fwlink/?LinkId=329770</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Libuv" Version="1.9.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

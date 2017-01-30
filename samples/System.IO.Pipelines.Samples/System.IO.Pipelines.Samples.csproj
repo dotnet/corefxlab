@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\System.IO.Pipelines\System.IO.Pipelines.csproj" />
+    <ProjectReference Include="..\..\src\System.IO.Pipelines.Text.Primitives\System.IO.Pipelines.Text.Primitives.csproj" />
+    <ProjectReference Include="..\..\src\System.IO.Pipelines.Networking.Libuv\System.IO.Pipelines.Networking.Libuv.csproj" />
+    <ProjectReference Include="..\..\src\System.IO.Pipelines.Networking.Windows.RIO\System.IO.Pipelines.Networking.Windows.RIO.csproj" />
+    <ProjectReference Include="..\..\src\System.IO.Pipelines.File\System.IO.Pipelines.File.csproj" />
+    <ProjectReference Include="..\..\src\System.IO.Pipelines.Compression\System.IO.Pipelines.Compression.csproj" />
+    <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
+    <ProjectReference Include="..\..\src\System.Text.Formatting\System.Text.Formatting.csproj" />
+    <ProjectReference Include="..\..\src\System.Slices\System.Slices.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.0" />
+  </ItemGroup>
+</Project>

@@ -90,7 +90,7 @@ namespace System.Text.Http
 
         public int? Length => null;
 
-        public bool TryGet(ref Position position, out HttpHeader value, bool advance = false)
+        public bool TryGet(ref Position position, out HttpHeader value, bool advance = true)
         {
             var bytes = _headers.Slice(position.IntegerPosition);
             if (bytes.Length == 0)
