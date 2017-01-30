@@ -62,9 +62,22 @@ namespace System.IO.Pipelines
         /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
         /// </summary>
         /// <param name="pool"></param>
-        /// <param name="maximumSize"></param>
+        /// <param name="maximumSizeLow"></param>
+        /// <param name="maximumSizeHigh"></param>
         public Pipe(IBufferPool pool, long maximumSizeLow = 0, long maximumSizeHigh = 0)
         {
+            if (maximumSizeLow < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maximumSizeLow));
+            }
+            if (maximumSizeHigh < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maximumSizeHigh));
+            }
+            if (maximumSizeLow > maximumSizeHigh)
+            {
+                throw new ArgumentException(nameof(maximumSizeHigh) + " should be greater or equal to "+ nameof(maximumSizeLow), nameof(maximumSizeHigh));
+            }
             _pool = pool;
             _maximumSizeHight = maximumSizeHigh;
             _maximumSizeLow = maximumSizeLow;
@@ -430,10 +443,10 @@ namespace System.IO.Pipelines
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
 
+            int consumedBytes = 0;
             if (!consumed.IsDefault)
             {
-                var consumedBytes = ReadCursor.GetLength(_readHead, _readHead.Start, consumed.Segment, consumed.Index);
-                Interlocked.Add(ref _length, -consumedBytes);
+                consumedBytes = ReadCursor.GetLength(_readHead, _readHead.Start, consumed.Segment, consumed.Index);
 
                 returnStart = _readHead;
                 returnEnd = consumed.Segment;
@@ -444,6 +457,8 @@ namespace System.IO.Pipelines
             // Reading commit head shared with writer
             lock (_sync)
             {
+                _length -= consumedBytes;
+
                 // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
                 Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
 
