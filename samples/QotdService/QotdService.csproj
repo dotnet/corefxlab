@@ -1,32 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp1.0</TargetFramework>
-    <AssemblyName>QotdService</AssemblyName>
     <OutputType>Exe</OutputType>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\System.Net.Libuv\System.Net.Libuv.csproj">
-	  <FromP2P>true</FromP2P>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj">
-      <FromP2P>true</FromP2P>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj">
-      <FromP2P>true</FromP2P>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\System.Slices\System.Slices.csproj">
-      <FromP2P>true</FromP2P>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\System.Collections.Sequences\System.Collections.Sequences.csproj">
-      <FromP2P>true</FromP2P>
-    </ProjectReference>
+    <ProjectReference Include="..\..\src\System.Net.Libuv\System.Net.Libuv.csproj" />
+    <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
+    <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
+    <ProjectReference Include="..\..\src\System.Slices\System.Slices.csproj" />
+    <ProjectReference Include="..\..\src\System.Collections.Sequences\System.Collections.Sequences.csproj" />
   </ItemGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
-  </PropertyGroup>
 </Project>
