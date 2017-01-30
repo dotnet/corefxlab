@@ -16,9 +16,9 @@ namespace System.Text
             /// </summary>
             /// <param name="buffer">The buffer to format the value into</param>
             /// <param name="written">This parameter is used to return the number of bytes that were written to the buffer</param>
-            /// <param name="encoding">This object provides bytes representing digits and symbols used during number formatting.</param>
             /// <param name="format">This is a pre-parsed representation of the formatting string. It's preparsed for efficiency.</param>
+            /// <param name="encoding">This object provides bytes representing digits and symbols used during number formatting.</param>
             /// <returns>False if the buffer was to small, otherwise true.</returns>
-        bool TryFormat(Span<byte> buffer, out int written, EncodingData encoding, TextFormat format);
+        bool TryFormat(Span<byte> buffer, out int written, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData));
     }
 }

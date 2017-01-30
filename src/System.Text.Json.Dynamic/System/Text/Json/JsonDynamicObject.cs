@@ -164,7 +164,7 @@ namespace System.Text.Json
             return false;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int written, EncodingData formattingData, TextFormat format)
+        public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, EncodingData formattingData)
         {
             written = 0;
             int justWritten;
@@ -277,7 +277,7 @@ namespace System.Text.Json
                     case JsonReader.JsonValueType.Number:
                         return _value.TryFormat(buffer, out written, formattingData, format);
                     case JsonReader.JsonValueType.Object:
-                        return _object.TryFormat(buffer, out written, formattingData, format);
+                        return _object.TryFormat(buffer, out written, format, formattingData);
                     case JsonReader.JsonValueType.Null:
                         return formattingData.TextEncoder.TryEncode("null", buffer, out written);
                     case JsonReader.JsonValueType.True:
