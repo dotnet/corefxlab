@@ -319,7 +319,7 @@ namespace System.Buffers
         {
             int consumed;
             var unread = Unread;
-            if (PrimitiveParser.TryParseUInt64(unread, out value, out consumed, _encoding))
+            if (PrimitiveParser.TryParseUInt64(unread, out value, out consumed, default(TextFormat), _encoding))
             {
                 if (unread.Length > consumed)
                 {
@@ -334,7 +334,7 @@ namespace System.Buffers
                 var tempSpan = new Span<byte>(temp, 32);
                 var copied = CopyTo(tempSpan);
 
-                if (PrimitiveParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, _encoding, 'G'))
+                if (PrimitiveParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _encoding))
                 {
                     Advance(consumed);
                     return true;
