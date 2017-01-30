@@ -1,4 +1,10 @@
 ﻿
+
+
+
+
+
+
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -9,7 +15,8 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {
-        public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
+
+        public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (encoding == default(EncodingData))
             {
@@ -126,7 +133,8 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
+
+        public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (encoding == default(EncodingData))
             {
@@ -243,7 +251,8 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
+
+        public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (encoding == default(EncodingData))
             {
@@ -360,7 +369,8 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
+
+        public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (encoding == default(EncodingData))
             {
@@ -476,6 +486,7 @@ namespace System.Text
             value = (long)(parsedValue * sign);
             return true;
         }
+
 
     }
 }
