@@ -8,12 +8,12 @@ namespace System.Text.Utf8
 {
     partial struct Utf8String
     {
-        public struct CodePointEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
+        public struct CodePointEnumerator : IEnumerator<uint>, IEnumerator
         {
             private ReadOnlySpan<byte> _buffer;
             private int _index;
             private int _currentLenCache;
-            private const int ResetIndex = -UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint - 1;
+            private const int ResetIndex = -Utf8Encoder.Utf8MaxCodeUnitsPerCodePoint - 1;
 
             public unsafe CodePointEnumerator(ReadOnlySpan<byte> buffer) : this()
             {
@@ -38,7 +38,7 @@ namespace System.Text.Utf8
 
             object IEnumerator.Current { get { return Current; } }
 
-            public unsafe UnicodeCodePoint Current
+            public unsafe uint Current
             {
                 get
                 {
@@ -61,7 +61,7 @@ namespace System.Text.Utf8
                         throw new Exception("Invalid code point!");
                     }
 
-                    return new UnicodeCodePoint(codePoint);
+                    return codePoint;
                 }
             }
 
@@ -83,7 +83,7 @@ namespace System.Text.Utf8
 
                 if (_currentLenCache == 0)
                 {
-                    UnicodeCodePoint codePointDummy = Current;
+                    uint codePointDummy = Current;
                     if (_currentLenCache == 0)
                     {
                         throw new Exception("Invalid UTF-8 character (badly encoded)");

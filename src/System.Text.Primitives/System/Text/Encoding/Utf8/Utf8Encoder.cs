@@ -10,6 +10,11 @@ namespace System.Text.Utf8
     {
         #region Constants
 
+        internal const int Utf8MaxCodeUnitsPerCodePoint = 4;
+
+        private const byte Utf8NonFirstByteInCodePointValue = 0x80;
+        private const byte Utf8NonFirstByteInCodePointMask = 0xC0;
+
         // To get this to compile with dotnet cli, we need to temporarily un-binary the magic values
         private const byte b0000_0111U = 0x07; //7
         private const byte b0000_1111U = 0x0F; //15
@@ -455,12 +460,18 @@ namespace System.Text.Utf8
         #region Decoder
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFirstCodeUnitInEncodedCodePoint(byte codeUnit)
+        {
+            return (codeUnit & Utf8NonFirstByteInCodePointMask) != Utf8NonFirstByteInCodePointValue;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFindEncodedCodePointBytesCountGoingBackwards(ReadOnlySpan<byte> buffer, out int encodedBytes)
         {
             encodedBytes = 1;
             ReadOnlySpan<byte> it = buffer;
             // TODO: Should we have something like: Span<byte>.(Slice from the back)
-            for (; encodedBytes <= UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint; encodedBytes++, it = it.Slice(0, it.Length - 1))
+            for (; encodedBytes <= Utf8MaxCodeUnitsPerCodePoint; encodedBytes++, it = it.Slice(0, it.Length - 1))
             {
                 if (it.Length == 0)
                 {
@@ -469,7 +480,7 @@ namespace System.Text.Utf8
                 }
 
                 // TODO: Should we have Span<byte>.Last?
-                if (Utf8CodeUnit.IsFirstCodeUnitInEncodedCodePoint(it[it.Length - 1]))
+                if (IsFirstCodeUnitInEncodedCodePoint(it[it.Length - 1]))
                 {
                     // output: encodedBytes
                     return true;
@@ -484,29 +495,27 @@ namespace System.Text.Utf8
         // TODO: Name TBD
         // TODO: optimize?
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool TryDecodeCodePointBackwards(ReadOnlySpan<byte> buffer, out UnicodeCodePoint codePoint, out int encodedBytes)
+        internal static bool TryDecodeCodePointBackwards(ReadOnlySpan<byte> buffer, out uint codePoint, out int encodedBytes)
         {
             if (TryFindEncodedCodePointBytesCountGoingBackwards(buffer, out encodedBytes))
             {
                 int realEncodedBytes;
-                uint cp;
                 // TODO: Inline decoding, as the invalid surrogate check can be done faster
-                bool ret = TryDecodeCodePoint(buffer, buffer.Length - encodedBytes, out cp, out realEncodedBytes);
+                bool ret = TryDecodeCodePoint(buffer, buffer.Length - encodedBytes, out codePoint, out realEncodedBytes);
                 if (ret && encodedBytes != realEncodedBytes)
                 {
                     // invalid surrogate character
                     // we know the character length by iterating on surrogate characters from the end
                     // but the first byte of the character has also encoded length
                     // seems like the lengths don't match
-                    codePoint = default(UnicodeCodePoint);
+                    codePoint = default(uint);
                     return false;
                 }
 
-                codePoint = new UnicodeCodePoint(cp);
                 return true;
             }
 
-            codePoint = default(UnicodeCodePoint);
+            codePoint = default(uint);
             encodedBytes = default(int);
             return false;
         }

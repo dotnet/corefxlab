@@ -3,23 +3,23 @@ using System.Collections.Generic;
 
 namespace System.Text.Utf16
 {
-    internal struct Utf16LittleEndianCodePointEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
+    internal struct Utf16LittleEndianCodePointEnumerator : IEnumerator<uint>, IEnumerator
     {
         string _s;
         int _index;
 
         int _encodedChars;
-        UnicodeCodePoint _codePoint;
+        uint _codePoint;
 
         public Utf16LittleEndianCodePointEnumerator(string s)
         {
             _s = s;
             _index = -1;
             _encodedChars = 0;
-            _codePoint = default(UnicodeCodePoint);
+            _codePoint = default(uint);
         }
 
-        public UnicodeCodePoint Current
+        public uint Current
         {
             get
             {
@@ -35,7 +35,7 @@ namespace System.Text.Utf16
 
                 if (!Utf16LittleEndianEncoder.TryDecodeCodePointFromString(_s, _index, out _codePoint, out _encodedChars))
                 {
-                    _codePoint = default(UnicodeCodePoint);
+                    _codePoint = default(uint);
                     _encodedChars = 0;
                     // or index outside of string
                     throw new InvalidOperationException("Invalid characters in the string");
@@ -55,7 +55,7 @@ namespace System.Text.Utf16
         {
             _index = -1;
             _encodedChars = 0;
-            _codePoint = default(UnicodeCodePoint);
+            _codePoint = default(uint);
         }
 
         public bool MoveNext()
@@ -67,7 +67,7 @@ namespace System.Text.Utf16
             }
             else
             {
-                UnicodeCodePoint dummy = Current;
+                uint dummy = Current;
                 _index += _encodedChars;
                 _encodedChars = 0;
             }

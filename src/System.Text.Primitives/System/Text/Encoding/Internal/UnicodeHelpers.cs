@@ -13,7 +13,7 @@ namespace System.Text
 
         // TODO: Make this immutable and let them be strong typed
         // http://unicode.org/cldr/utility/list-unicodeset.jsp?a=\p{whitespace}&g=&i=
-        public static readonly uint[] SortedWhitespaceCodePoints = new uint[25]
+        private static readonly uint[] SortedWhitespaceCodePoints = new uint[25]
         {
             0x0009, 0x000A, 0x000B, 0x000C, 0x000D,
             0x0020,
@@ -30,6 +30,12 @@ namespace System.Text
         };
 
         #endregion Constants
+
+        // TODO: Inline it and make it faster
+        public static bool IsWhitespace(uint codePoint)
+        {
+            return Array.BinarySearch<uint>(SortedWhitespaceCodePoints, codePoint) >= 0;
+        }
 
         public static bool IsSupportedCodePoint(uint codePoint)
         {
