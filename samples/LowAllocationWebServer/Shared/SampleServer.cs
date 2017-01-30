@@ -49,7 +49,7 @@ namespace LowAllocationWebServer
             }
 
             // write response JSON
-            var jsonWriter = new JsonWriter<ResponseFormatter>(new ResponseFormatter(response.Body), prettyPrint: false);
+            var jsonWriter = new JsonWriter<ResponseFormatter>(new ResponseFormatter(response, formatBody: true), prettyPrint: false);
             jsonWriter.WriteObjectStart();
             jsonWriter.WriteArrayStart();
             for (int i = 0; i < requestedCount; i++)
@@ -60,10 +60,10 @@ namespace LowAllocationWebServer
             jsonWriter.WriteObjectEnd();
 
             // write headers
-            var headers = new ResponseFormatter(response.Headers);
+            var headers = new ResponseFormatter(response, formatBody: false);
             headers.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
             headers.Append("Content-Length : ");
-            headers.Append(response.Body.CommitedBytes);
+            headers.Append(response.BodyLength);
             headers.AppendHttpNewLine();
             headers.Append("Content-Type : text/plain; charset=UTF-8");
             headers.AppendHttpNewLine();
@@ -77,13 +77,13 @@ namespace LowAllocationWebServer
 
         static void WriteResponseForHelloWorld(HttpRequest request, HttpResponse response)
         {
-            var body = new ResponseFormatter(response.Body);
+            var body = new ResponseFormatter(response, formatBody:true);
             body.Append("Hello, World");
 
-            var headers = new ResponseFormatter(response.Headers);
+            var headers = new ResponseFormatter(response, formatBody: false);
             headers.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
             headers.Append("Content-Length : ");
-            headers.Append(response.Body.CommitedBytes);
+            headers.Append(response.BodyLength);
             headers.AppendHttpNewLine();
             headers.Append("Content-Type : text/plain; charset=UTF-8");
             headers.AppendHttpNewLine();
@@ -97,13 +97,13 @@ namespace LowAllocationWebServer
 
         static void WriteResponseForGetTime(HttpRequest request, HttpResponse response)
         {
-            var body = new ResponseFormatter(response.Body);
+            var body = new ResponseFormatter(response, formatBody: true);
             body.Format(@"<html><head><title>Time</title></head><body>{0:O}</body></html>", DateTime.UtcNow);
 
             WriteCommonHeaders(response, HttpVersion.V1_1, 200, "OK", keepAlive: false);
-            var headers = new ResponseFormatter(response.Headers);
+            var headers = new ResponseFormatter(response, formatBody: false);
             headers.Append("Content-Length : ");
-            headers.Append(response.Body.CommitedBytes);
+            headers.Append(response.BodyLength);
             headers.AppendHttpNewLine();
             headers.AppendHttpNewLine();
         }
