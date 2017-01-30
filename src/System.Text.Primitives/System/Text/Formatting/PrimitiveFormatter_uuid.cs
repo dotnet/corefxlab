@@ -9,7 +9,7 @@ namespace System.Text
 {
     public static partial class PrimitiveFormatter
     {
-        public static bool TryFormat(this Guid value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        public static bool TryFormat(this Guid value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (format.IsDefault)
             {

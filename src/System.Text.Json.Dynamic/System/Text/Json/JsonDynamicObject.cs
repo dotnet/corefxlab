@@ -273,9 +273,9 @@ namespace System.Text.Json
                 switch (_type)
                 {
                     case JsonReader.JsonValueType.String:
-                        return _value.TryFormatQuotedString(buffer, format, formattingData, out written);
+                        return _value.TryFormatQuotedString(buffer, out written, format, formattingData: formattingData);
                     case JsonReader.JsonValueType.Number:
-                        return _value.TryFormat(buffer, format, formattingData, out written);
+                        return _value.TryFormat(buffer, out written, format, formattingData: formattingData);
                     case JsonReader.JsonValueType.Object:
                         return _object.TryFormat(buffer, out written, format, formattingData);
                     case JsonReader.JsonValueType.Null:
@@ -328,7 +328,7 @@ namespace System.Text.Json
 
             public bool TryFormat(Span<byte> buffer, out int written, TextFormat format, EncodingData formattingData)
             {
-                return _name.TryFormatQuotedString(buffer, format, formattingData, out written);
+                return _name.TryFormatQuotedString(buffer, out written, format, formattingData);
             }
         }
     }
@@ -337,7 +337,7 @@ namespace System.Text.Json
     {
         // TODO: this should be properly implemented 
         // currently it handles formatting to UTF8 only.
-        public static bool TryFormat(this Utf8String str, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int written)
+        public static bool TryFormat(this Utf8String str, Span<byte> buffer, out int written, TextFormat format, EncodingData formattingData)
         {
             written = 0;
             if (buffer.Length < str.Length)
@@ -354,7 +354,7 @@ namespace System.Text.Json
             return true;
         }
 
-        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, TextFormat format, EncodingData formattingData, out int written)
+        public static bool TryFormatQuotedString(this Utf8String str, Span<byte> buffer, out int written, TextFormat format, EncodingData formattingData)
         {
             written = 0;
             int consumed;
@@ -371,7 +371,7 @@ namespace System.Text.Json
                 }
                 written += justWritten;
 
-                if (!str.TryFormat(buffer.Slice(written), format, formattingData, out justWritten))
+                if (!str.TryFormat(buffer.Slice(written), out justWritten, format, formattingData))
                 {
                     return false;
                 }

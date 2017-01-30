@@ -46,7 +46,7 @@ namespace System.Text
         static readonly TextFormat t = new TextFormat('t'); 
         const int FractionalTimeScale = 10000000;
 
-        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (format.IsDefault)
             {
@@ -81,7 +81,7 @@ namespace System.Text
             }
         }
 
-        public static bool TryFormat(this DateTime value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        public static bool TryFormat(this DateTime value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (format.IsDefault)
             {
@@ -256,7 +256,7 @@ namespace System.Text
             return true;      
         }
 
-        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (format.IsDefault)
             {
@@ -273,7 +273,7 @@ namespace System.Text
             return TryFormatTimeSpanT(value, buffer, out bytesWritten, encoding);
         }
 
-        private static bool TryFormatTimeSpanG(TimeSpan value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        private static bool TryFormatTimeSpanG(TimeSpan value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             bytesWritten = 0;
 

@@ -1,4 +1,10 @@
 ﻿
+
+
+
+
+
+
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -9,7 +15,8 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {
-        public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
+
+        public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (encoding == default(EncodingData))
             {
@@ -105,7 +112,8 @@ namespace System.Text
             value = (byte) parsedValue;
             return true;
         }
-        public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
+
+        public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (encoding == default(EncodingData))
             {
@@ -201,7 +209,8 @@ namespace System.Text
             value = (ushort) parsedValue;
             return true;
         }
-        public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
+
+        public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (encoding == default(EncodingData))
             {
@@ -297,7 +306,8 @@ namespace System.Text
             value = (uint) parsedValue;
             return true;
         }
-        public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed, EncodingData encoding = default(EncodingData), TextFormat format = default(TextFormat))
+
+        public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
             if (encoding == default(EncodingData))
             {
@@ -393,5 +403,6 @@ namespace System.Text
             value = (ulong) parsedValue;
             return true;
         }
+
     }
 }
