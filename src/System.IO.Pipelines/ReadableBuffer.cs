@@ -223,8 +223,8 @@ namespace System.IO.Pipelines
         /// <param name="length">The length of the slice</param>
         public ReadableBuffer Slice(int start, int length)
         {
-            var begin = _start.Seek(start, _end);
-            var end = begin.Seek(length, _end);
+            var begin = _start.Seek(start, _end, false);
+            var end = begin.Seek(length, _end, false);
             return Slice(begin, end);
         }
 
@@ -262,7 +262,7 @@ namespace System.IO.Pipelines
         {
             _end.BoundsCheck(start);
 
-            var end = start.Seek(length, _end);
+            var end = start.Seek(length, _end, false);
 
             return Slice(start, end);
         }
@@ -286,7 +286,7 @@ namespace System.IO.Pipelines
         {
             if (start == 0) return this;
 
-            var begin = _start.Seek(start, End);
+            var begin = _start.Seek(start, _end, false);
             return new ReadableBuffer(begin, _end);
         }
 
