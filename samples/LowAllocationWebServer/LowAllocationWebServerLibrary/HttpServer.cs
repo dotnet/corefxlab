@@ -6,9 +6,7 @@ using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.Text.Formatting;
-using System.Text.Http.SingleSegment;
 using System.Text.Utf8;
-using System.Threading;
 using System.Text.Http;
 using System.Threading.Tasks;
 using System.Text;
@@ -69,13 +67,14 @@ namespace Microsoft.Net.Http
         protected virtual void ProcessRequest(TcpConnection socket)
         {
             Log.LogVerbose("Processing Request");
-            
+
             var requestBuffer = s_pool.Rent(RequestBufferSize);
             var arrayMemory = new OwnedArray<byte>(requestBuffer);
 
             var requestByteCount = socket.Receive(requestBuffer);
 
-            if(requestByteCount == 0) {
+            if (requestByteCount == 0)
+            {
                 socket.Close();
                 return;
             }
@@ -86,20 +85,21 @@ namespace Microsoft.Net.Http
             var request = HttpRequest.Parse(requestBytes);
             Log.LogRequest(request);
 
-            using (var response = new HttpResponse(1024)) {
+            using (var response = new HttpResponse(1024))
+            {
                 WriteResponse(request, response);
                 s_pool.Return(requestBuffer);
 
                 Position position = Position.First;
-                while(response.Headers.TryGet(ref position, out var headersSegment, true))
+                while (response.Headers.TryGet(ref position, out var headersSegment, true))
                 {
-                    socket.Send(headersSegment);
+                    socket.Send(headersSegment.Slice(0, response.HeadersLength));
                 }
 
                 position = Position.First;
                 while (response.Body.TryGet(ref position, out var bodySegment))
                 {
-                    socket.Send(bodySegment);
+                    socket.Send(bodySegment.Slice(0, response.BodyLength));
                 }
 
                 socket.Close();
@@ -115,7 +115,7 @@ namespace Microsoft.Net.Http
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", requestBytes.Length);
             WriteCommonHeaders(response, HttpVersion.V1_1, 400, "Bad Request", false);
-            new ResponseFormatter(response.Headers).Append(HttpNewline);
+            new ResponseFormatter(response, formatBody: false).Append(HttpNewline);
         }
 
         // TODO: HttpRequest is a large struct. We cannot pass it around like that
@@ -123,7 +123,7 @@ namespace Microsoft.Net.Http
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.Path.ToUtf8String(TextEncoder.Utf8));
             WriteCommonHeaders(response, HttpVersion.V1_1, 404, "Not Found", false);
-            new ResponseFormatter(response.Headers).Append(HttpNewline);
+            new ResponseFormatter(response, formatBody: false).Append(HttpNewline);
         }
 
         // TODO: this is not a very general purpose routine. Maybe should not be in this base class?
@@ -135,7 +135,7 @@ namespace Microsoft.Net.Http
             bool keepAlive)
         {
             var currentTime = DateTime.UtcNow;
-            var formatter = new ResponseFormatter(response.Headers);
+            var formatter = new ResponseFormatter(response, formatBody: false);
             formatter.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
             formatter.Append(new Utf8String("Date : ")); formatter.Append(currentTime, 'R');
             formatter.AppendHttpNewLine();
