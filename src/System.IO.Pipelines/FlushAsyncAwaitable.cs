@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    public struct FlushAsyncAwaitable : ICriticalNotifyCompletion
+    internal struct FlushAsyncAwaitable : ICriticalNotifyCompletion
     {
         private readonly IFlushAwaiter _awaiter;
 

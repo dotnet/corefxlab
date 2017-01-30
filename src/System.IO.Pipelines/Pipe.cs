@@ -454,10 +454,12 @@ namespace System.IO.Pipelines
                 _readHead.Start = consumed.Index;
             }
 
+            bool completeFlush;
             // Reading commit head shared with writer
             lock (_sync)
             {
                 _length -= consumedBytes;
+                completeFlush = _length < _maximumSizeLow;
 
                 // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
                 Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
@@ -491,7 +493,7 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotConsumingToComplete);
             }
 
-            if (_length < _maximumSizeLow)
+            if (completeFlush)
             {
                 Complete(ref _flushAwaitableState);
             }
