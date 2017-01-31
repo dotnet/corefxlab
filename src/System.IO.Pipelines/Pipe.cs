@@ -10,16 +10,17 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Default <see cref="IPipelineWriter"/> and <see cref="IPipelineReader"/> implementation.
     /// </summary>
-    public class Pipe : IPipelineReader, IPipelineWriter, IReadableBufferAwaiter
+    public class Pipe : IPipelineReader, IPipelineWriter, IReadableBufferAwaiter, IFlushAwaiter
     {
         private static readonly Action _awaitableIsCompleted = () => { };
         private static readonly Action _awaitableIsNotCompleted = () => { };
 
-        private static Task _completedTask = Task.FromResult(0);
-
         private readonly IBufferPool _pool;
+        private readonly long _maximumSizeHight;
+        private readonly long _maximumSizeLow;
 
         private Action _awaitableState;
+        private Action _flushAwaitableState;
 
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
@@ -52,15 +53,36 @@ namespace System.IO.Pipelines
         private string _completeWriterLocation;
         private string _completeReaderLocation;
 #endif
+        private long _length;
+        private long _currentWriteLength;
+
+        internal long Length => _length;
 
         /// <summary>
         /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
         /// </summary>
         /// <param name="pool"></param>
-        public Pipe(IBufferPool pool)
+        /// <param name="maximumSizeLow"></param>
+        /// <param name="maximumSizeHigh"></param>
+        public Pipe(IBufferPool pool, long maximumSizeLow = 0, long maximumSizeHigh = 0)
         {
+            if (maximumSizeLow < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maximumSizeLow));
+            }
+            if (maximumSizeHigh < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maximumSizeHigh));
+            }
+            if (maximumSizeLow > maximumSizeHigh)
+            {
+                throw new ArgumentException(nameof(maximumSizeHigh) + " should be greater or equal to "+ nameof(maximumSizeLow), nameof(maximumSizeHigh));
+            }
             _pool = pool;
+            _maximumSizeHight = maximumSizeHigh;
+            _maximumSizeLow = maximumSizeLow;
             _awaitableState = _awaitableIsNotCompleted;
+            _flushAwaitableState = _awaitableIsCompleted;
         }
 
         /// <summary>
@@ -83,11 +105,7 @@ namespace System.IO.Pipelines
         /// </remarks>
         public Task Writing => _writingTcs.Task;
 
-        bool IReadableBufferAwaiter.IsCompleted => IsCompleted;
-
-        private bool IsCompleted => ReferenceEquals(_awaitableState, _awaitableIsCompleted);
-
-        internal Memory<byte> Memory => _writingHead == null ? Memory<byte>.Empty : _writingHead.Memory.Slice(_writingHead.End, _writingHead.WritableBytes);
+        internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.
@@ -125,9 +143,18 @@ namespace System.IO.Pipelines
             }
             else if (minimumSize > 0)
             {
-                AllocateWriteHead(minimumSize);
+                try
+                {
+                    AllocateWriteHead(minimumSize);
+                }
+                catch (Exception)
+                {
+                    // Reset producing state if allocation failed
+                    Interlocked.Exchange(ref _producingState, State.NotActive);
+                    throw;
+                }
             }
-
+            _currentWriteLength = 0;
             return new WritableBuffer(this);
         }
 
@@ -236,6 +263,7 @@ namespace System.IO.Pipelines
 
             // Move write head to end of buffer
             _writingHead = clonedEnd;
+            _currentWriteLength += buffer.Length;
         }
 
         private void EnsureAlloc()
@@ -273,6 +301,15 @@ namespace System.IO.Pipelines
                 // Always move the commit head to the write head
                 _commitHead = _writingHead;
                 _commitHeadIndex = _writingHead.End;
+
+                _length += _currentWriteLength;
+                // Do not reset when writing is complete
+                if (_maximumSizeHight  > 0 &&
+                    _length >= _maximumSizeHight &&
+                    !Writing.IsCompleted)
+                {
+                    ResetAwaitable(ref _flushAwaitableState);
+                }
             }
 
             // Clear the writing state
@@ -298,6 +335,7 @@ namespace System.IO.Pipelines
                 Debug.Assert(bufferIndex <= buffer.Length);
 
                 _writingHead.End = bufferIndex;
+                _currentWriteLength += bytesWritten;
             }
             else if (bytesWritten < 0)
             {
@@ -305,7 +343,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal Task FlushAsync()
+        internal async Task<bool> FlushAsync()
         {
             if (_producingState == State.Active)
             {
@@ -313,7 +351,7 @@ namespace System.IO.Pipelines
                 Commit();
             }
 
-            return SignalWriterAsync();
+            return await SignalWriterAsync();
         }
 
         internal ReadableBuffer AsReadableBuffer()
@@ -326,29 +364,14 @@ namespace System.IO.Pipelines
             return new ReadableBuffer(new ReadCursor(_commitHead, _commitHeadIndex), new ReadCursor(_writingHead, _writingHead.End));
         }
 
-        internal Task SignalWriterAsync()
+        internal FlushAsyncAwaitable SignalWriterAsync()
         {
             // TODO: Can factor out this lock
             lock (_sync)
             {
-                Complete();
-
-                // Apply back pressure here
-                return _completedTask;
+                Complete(ref _awaitableState);
             }
-        }
-
-        private void Complete()
-        {
-            var awaitableState = Interlocked.Exchange(
-                ref _awaitableState,
-                _awaitableIsCompleted);
-
-            if (!ReferenceEquals(awaitableState, _awaitableIsCompleted) &&
-                !ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
-            {
-                awaitableState();
-            }
+            return new FlushAsyncAwaitable(this);
         }
 
         private ReadableBuffer Read()
@@ -384,60 +407,6 @@ namespace System.IO.Pipelines
             return new ReadableBuffer(new ReadCursor(head), readEnd);
         }
 
-        void IPipelineReader.Advance(ReadCursor consumed, ReadCursor examined) => AdvanceReader(consumed, examined);
-
-        public void AdvanceReader(ReadCursor consumed, ReadCursor examined)
-        {
-            BufferSegment returnStart = null;
-            BufferSegment returnEnd = null;
-
-            if (!consumed.IsDefault)
-            {
-                returnStart = _readHead;
-                returnEnd = consumed.Segment;
-                _readHead = consumed.Segment;
-                _readHead.Start = consumed.Index;
-            }
-
-            // Reading commit head shared with writer
-            lock (_sync)
-            {
-                // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
-                Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
-
-                var consumedEverything = examined.Segment == _commitHead &&
-                                         examined.Index == _commitHeadIndex &&
-                                         Reading.Status == TaskStatus.WaitingForActivation;
-
-                // We reset the awaitable to not completed if
-                // 1. We've consumed everything the producer produced so far
-                // 2. Cancellation wasn't requested
-                if (consumedEverything && _cancelledState != CancelledState.CancellationRequested)
-                {
-                    Interlocked.CompareExchange(
-                        ref _awaitableState,
-                        _awaitableIsNotCompleted,
-                        _awaitableIsCompleted);
-                }
-            }
-
-            while (returnStart != null && returnStart != returnEnd)
-            {
-                var returnSegment = returnStart;
-                returnStart = returnStart.Next;
-                returnSegment.Dispose();
-            }
-
-#if CONSUMING_LOCATION_TRACKING
-            _consumingLocation = null;
-#endif
-            // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _consumingState, State.NotActive) != State.Active)
-            {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotConsumingToComplete);
-            }
-        }
-
         void IPipelineWriter.Complete(Exception exception) => CompleteWriter(exception);
 
         /// <summary>
@@ -469,21 +438,85 @@ namespace System.IO.Pipelines
             }
         }
 
-        private void SignalReader(Exception exception)
+        public void AdvanceReader(ReadCursor consumed, ReadCursor examined)
+        {
+            BufferSegment returnStart = null;
+            BufferSegment returnEnd = null;
+
+            int consumedBytes = 0;
+            if (!consumed.IsDefault)
+            {
+                consumedBytes = ReadCursor.GetLength(_readHead, _readHead.Start, consumed.Segment, consumed.Index);
+
+                returnStart = _readHead;
+                returnEnd = consumed.Segment;
+                _readHead = consumed.Segment;
+                _readHead.Start = consumed.Index;
+            }
+
+            bool completeFlush;
+            // Reading commit head shared with writer
+            lock (_sync)
+            {
+                _length -= consumedBytes;
+                completeFlush = _length < _maximumSizeLow;
+
+                // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
+                Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
+
+                var consumedEverything = examined.Segment == _commitHead &&
+                                         examined.Index == _commitHeadIndex &&
+                                         Reading.Status == TaskStatus.WaitingForActivation;
+
+                // We reset the awaitable to not completed if
+                // 1. We've consumed everything the producer produced so far
+                // 2. Cancellation wasn't requested
+                if (consumedEverything && _cancelledState != CancelledState.CancellationRequested)
+                {
+                    ResetAwaitable(ref _awaitableState);
+                }
+            }
+
+            while (returnStart != null && returnStart != returnEnd)
+            {
+                var returnSegment = returnStart;
+                returnStart = returnStart.Next;
+                returnSegment.Dispose();
+            }
+
+#if CONSUMING_LOCATION_TRACKING
+            _consumingLocation = null;
+#endif
+            // CompareExchange not required as its setting to current value if test fails
+            if (Interlocked.Exchange(ref _consumingState, State.NotActive) != State.Active)
+            {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotConsumingToComplete);
+            }
+
+            if (completeFlush)
+            {
+                Complete(ref _flushAwaitableState);
+            }
+
+        }
+
+        private void SignalWriter(Exception exception)
         {
             if (exception != null)
             {
-                _readingTcs.TrySetException(exception);
+                _writingTcs.TrySetException(exception);
             }
             else
             {
-                _readingTcs.TrySetResult(null);
+                _writingTcs.TrySetResult(null);
             }
-
-            FlushAsync();
         }
 
+        // Reading
+
         void IPipelineReader.Complete(Exception exception) => CompleteReader(exception);
+
+        void IPipelineReader.Advance(ReadCursor consumed, ReadCursor examined) => AdvanceReader(consumed, examined);
 
         /// <summary>
         /// Signal to the producer that the consumer is done reading.
@@ -509,23 +542,12 @@ namespace System.IO.Pipelines
                 _startingReadingTcs.TrySetResult(null);
 
                 SignalWriter(exception);
+                Complete(ref _flushAwaitableState);
 
                 if (Reading.IsCompleted)
                 {
                     Dispose();
                 }
-            }
-        }
-
-        private void SignalWriter(Exception exception)
-        {
-            if (exception != null)
-            {
-                _writingTcs.TrySetException(exception);
-            }
-            else
-            {
-                _writingTcs.TrySetResult(null);
             }
         }
 
@@ -540,14 +562,14 @@ namespace System.IO.Pipelines
                 // Mark reading is cancellable
                 _cancelledState = CancelledState.CancellationRequested;
 
-                Complete();
+                Complete(ref _awaitableState);
             }
         }
 
         /// <summary>
         /// Asynchronously reads a sequence of bytes from the current <see cref="IPipelineReader"/>.
         /// </summary>
-        /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
+        /// <returns>A <see cref="PipeAwaitable"/> representing the asynchronous read operation.</returns>
         public ReadableBufferAwaitable ReadAsync()
         {
             if (Writing.IsCompleted)
@@ -563,10 +585,28 @@ namespace System.IO.Pipelines
             return new ReadableBufferAwaitable(this);
         }
 
-        void IReadableBufferAwaiter.OnCompleted(Action continuation)
+        private void SignalReader(Exception exception)
+        {
+            if (exception != null)
+            {
+                _readingTcs.TrySetException(exception);
+            }
+            else
+            {
+                _readingTcs.TrySetResult(null);
+            }
+
+            FlushAsync();
+        }
+
+        // Awaiter support members
+
+        private bool IsCompleted(Action awaitableState) => ReferenceEquals(awaitableState, _awaitableIsCompleted);
+
+        private void OnCompleted(Action continuation, ref Action action, TaskCompletionSource<object> taskCompletionSource)
         {
             var awaitableState = Interlocked.CompareExchange(
-                ref _awaitableState,
+                ref action,
                 continuation,
                 _awaitableIsNotCompleted);
 
@@ -582,10 +622,10 @@ namespace System.IO.Pipelines
             }
             else
             {
-                _readingTcs.SetException(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentReads));
+                taskCompletionSource.SetException(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
 
                 Interlocked.Exchange(
-                    ref _awaitableState,
+                    ref action,
                     _awaitableIsCompleted);
 
                 Task.Run(continuation);
@@ -593,22 +633,50 @@ namespace System.IO.Pipelines
             }
         }
 
-        ReadResult IReadableBufferAwaiter.GetResult()
+        private void GetResult(Action awaitableState,
+            ref int cancelledState,
+            Task task,
+            out bool readingIsCancelled,
+            out bool readingIsCompleted)
         {
-            if (!IsCompleted)
+            if (!IsCompleted(awaitableState))
             {
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
             }
 
             // Change the state from to be cancelled -> observed
-            var readingIsCancelled = Interlocked.CompareExchange(ref _cancelledState, CancelledState.CancellationObserved, CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
-            var readingIsCompleted = Reading.IsCompleted;
+            readingIsCancelled = Interlocked.CompareExchange(
+                ref cancelledState,
+                CancelledState.CancellationObserved,
+                CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
+
+            readingIsCompleted = task.IsCompleted;
             if (readingIsCompleted)
             {
                 // Observe any exceptions if the reading task is completed
-                Reading.GetAwaiter().GetResult();
+                task.GetAwaiter().GetResult();
             }
-            return new ReadResult(Read(), readingIsCancelled, readingIsCompleted);
+        }
+
+        private void Complete(ref Action state)
+        {
+            var awaitableState = Interlocked.Exchange(
+                ref state,
+                _awaitableIsCompleted);
+
+            if (!ReferenceEquals(awaitableState, _awaitableIsCompleted) &&
+                !ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
+            {
+                awaitableState();
+            }
+        }
+
+        private static void ResetAwaitable(ref Action awaitableState)
+        {
+            Interlocked.CompareExchange(
+                ref awaitableState,
+                _awaitableIsNotCompleted,
+                _awaitableIsCompleted);
         }
 
         private void Dispose()
@@ -639,6 +707,38 @@ namespace System.IO.Pipelines
                 _readHead = null;
                 _commitHead = null;
             }
+        }
+
+        // IReadableBufferAwaiter members
+
+        bool IReadableBufferAwaiter.IsCompleted => IsCompleted(_awaitableState);
+
+        void IReadableBufferAwaiter.OnCompleted(Action continuation) => OnCompleted(continuation, ref _awaitableState, _readingTcs);
+
+        ReadResult IReadableBufferAwaiter.GetResult()
+        {
+            bool readingIsCancelled;
+            bool readingIsCompleted;
+            GetResult(_awaitableState, ref _cancelledState, Reading, out readingIsCancelled, out readingIsCompleted);
+            return new ReadResult(Read(), readingIsCancelled, readingIsCompleted);
+        }
+
+        // IFlushAwaiter members
+
+        bool IFlushAwaiter.IsCompleted => IsCompleted(_flushAwaitableState);
+
+        bool IFlushAwaiter.GetResult()
+        {
+            bool readingIsCancelled;
+            bool readingIsCompleted;
+            int cancelledState = CancelledState.NotCancelled;
+            GetResult(_flushAwaitableState, ref cancelledState, _writingTcs.Task, out readingIsCancelled, out readingIsCompleted);
+            return !readingIsCompleted;
+        }
+
+        void IFlushAwaiter.OnCompleted(Action continuation)
+        {
+            OnCompleted(continuation, ref _flushAwaitableState, _writingTcs);
         }
 
         // Can't use enums with Interlocked

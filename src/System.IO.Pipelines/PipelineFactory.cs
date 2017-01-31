@@ -27,7 +27,14 @@ namespace System.IO.Pipelines
             _pool = pool;
         }
 
-        public Pipe Create() => new Pipe(_pool);
+        public Pipe Create() =>
+            Create(0);
+
+        public Pipe Create(long maximumSize) =>
+            Create(maximumSize, maximumSize);
+
+        public Pipe Create(long maximumSizeLow, long maximumSizeHigh) =>
+            new Pipe(_pool, maximumSizeLow: maximumSizeLow, maximumSizeHigh: maximumSizeHigh);
 
         public IPipelineReader CreateReader(Stream stream)
         {
