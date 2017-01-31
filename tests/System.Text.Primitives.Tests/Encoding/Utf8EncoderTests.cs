@@ -4,6 +4,522 @@ namespace System.Text.Utf8.Tests
 {
     public class Utf8EncoderTests
     {
+        private const ushort Utf16HighSurrogateFirstCodePoint = 0xD800;
+        private const ushort Utf16HighSurrogateLastCodePoint = 0xDBFF;
+        private const ushort Utf16LowSurrogateFirstCodePoint = 0xDC00;
+        private const ushort Utf16LowSurrogateLastCodePoint = 0xDFFF;
+
+        private const byte Utf8OneByteLastCodePoint = 0x7F;
+        private const ushort Utf8TwoBytesLastCodePoint = 0x7FF;
+        private const ushort Utf8ThreeBytesLastCodePoint = 0xFFFF;
+
+        private const int CharLength = 999;
+
+        [Fact]
+        public void TestEncodingInputBufferEmpty()
+        {
+            string unicodeString = "";
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+            int expectedBytesWritten = GetByteCount(characters);
+            char[] charArray = characters.ToArray();
+            byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
+
+            Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
+            byte[] utf8Buffer = new byte[expectedBytesWritten + 25];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            Assert.True(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+
+            Assert.Equal(0, charactersConsumed);
+            Assert.Equal(expectedBytesWritten, bytesWritten);
+        }
+
+        [Fact]
+        public void TestEncodingOutputBufferEmpty()
+        {
+            string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+            char[] charArray = characters.ToArray();
+            byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
+
+            Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
+            byte[] utf8Buffer = new byte[0];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+
+            Assert.Equal(0, charactersConsumed);
+            Assert.Equal(0, bytesWritten);
+        }
+
+        [Fact]
+        public void TestEncodingInputBufferMaxSize()
+        {
+            int maxCharArraySize = int.MaxValue / 4; // TODO: want this to be int.MaxValue (need gcAllowVeryLargeObjects = true)
+            char[] charArray = new char[maxCharArraySize];
+
+            ReadOnlySpan<char> characters = new ReadOnlySpan<char>(charArray);
+            int expectedBytesWritten = GetByteCount(characters);
+            byte[] utf8Buffer = new byte[expectedBytesWritten];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            Assert.True(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+
+            Assert.Equal(maxCharArraySize, charactersConsumed);
+            Assert.Equal(expectedBytesWritten, bytesWritten);
+        }
+
+        [Fact]
+        public void TestEncodingOutputBufferMaxSize()
+        {
+            int maxByteArraySize = int.MaxValue / 2; // TODO: want this to be int.MaxValue (need gcAllowVeryLargeObjects = true)
+            string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+            int expectedBytesWritten = GetByteCount(characters);
+            char[] charArray = characters.ToArray();
+            byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
+
+            Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
+            byte[] utf8Buffer = new byte[maxByteArraySize];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            Assert.True(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+
+            byte[] utf8BufferActual = span.ToArray();
+
+            Assert.Equal(unicodeString.Length, charactersConsumed);
+            Assert.Equal(utf8BufferExpected.Length, bytesWritten);
+            Assert.Equal(utf8BufferExpected.Length, expectedBytesWritten);
+
+            for (int i = 0; i < utf8BufferExpected.Length; i++)
+            {
+                Assert.Equal(utf8BufferExpected[i], utf8BufferActual[i]);
+            }
+        }
+
+        [Fact]
+        public void TestEncodingOutputBufferTooSmall()
+        {
+            string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+            int expectedBytesWritten = GetByteCount(characters);
+            char[] charArray = characters.ToArray();
+            byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
+
+            Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
+            byte[] utf8Buffer = new byte[500];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+
+            Assert.Equal(499, bytesWritten);
+
+            byte[] utf8BufferRemaining = new byte[expectedBytesWritten - bytesWritten];
+            Span<byte> span2 = new Span<byte>(utf8BufferRemaining);
+            int charactersConsumed2;
+            int bytesWritten2;
+            Assert.True(TextEncoder.Utf8.TryEncode(characters.Slice(charactersConsumed), span2, out charactersConsumed2, out bytesWritten2));
+
+            byte[] utf8BufferActual = span2.ToArray();
+
+            Assert.Equal(unicodeString.Length, charactersConsumed + charactersConsumed2);
+            Assert.Equal(utf8BufferExpected.Length, bytesWritten2 + bytesWritten);
+            Assert.Equal(utf8BufferExpected.Length, expectedBytesWritten);
+
+            for (int i = bytesWritten; i < utf8BufferExpected.Length; i++)
+            {
+                Assert.Equal(utf8BufferExpected[i], utf8BufferActual[i - bytesWritten]);
+            }
+        }
+
+        [Fact]
+        public void TestEncodingInputBufferContainsOnlyInvalidData()
+        {
+            string unicodeString = GenerateOnlyInvalidString(CharLength);
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+            int expectedBytesWritten = GetByteCount(characters);
+            byte[] utf8Buffer = new byte[expectedBytesWritten];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+
+            Assert.Equal(0, charactersConsumed);
+            Assert.Equal(expectedBytesWritten, bytesWritten);
+        }
+
+        [Fact]
+        public void TestEncodingInputBufferContainsSomeInvalidData()
+        {
+            string unicodeString = GenerateStringWithInvalidChars(CharLength);
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+            int expectedBytesWritten = GetByteCount(characters);
+            byte[] utf8Buffer = new byte[expectedBytesWritten + 100];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+
+            Assert.True(charactersConsumed < unicodeString.Length);
+            Assert.Equal(expectedBytesWritten, bytesWritten);
+        }
+
+        [Fact]
+        public void TestEncodingOutputBufferTooLarge()
+        {
+            string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+            char[] charArray = characters.ToArray();
+            byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
+
+            Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
+
+            string unicodeString2 = GenerateValidString(CharLength, 0x0800, Utf8ThreeBytesLastCodePoint);
+            ReadOnlySpan<char> characters2 = unicodeString2.Slice();
+            char[] charArray2 = characters2.ToArray();
+            byte[] utf8BufferExpected2 = new byte[Encoding.UTF8.GetByteCount(charArray2)];
+
+            Encoding.UTF8.GetBytes(charArray2, 0, characters2.Length, utf8BufferExpected2, 0);
+
+            int expectedBytesWritten = GetByteCount(characters) + GetByteCount(characters2);
+            byte[] utf8Buffer = new byte[expectedBytesWritten];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            int charactersConsumed2;
+            int bytesWritten2;
+            Assert.True(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+            Assert.True(TextEncoder.Utf8.TryEncode(characters2, span.Slice(bytesWritten), out charactersConsumed2, out bytesWritten2));
+
+            byte[] utf8BufferActual = span.ToArray();
+
+            Assert.Equal(unicodeString.Length + unicodeString2.Length, charactersConsumed + charactersConsumed2);
+            Assert.Equal(utf8BufferExpected.Length + utf8BufferExpected2.Length, bytesWritten + bytesWritten2);
+            Assert.Equal(utf8BufferExpected.Length + utf8BufferExpected2.Length, expectedBytesWritten);
+
+            for (int i = 0; i < utf8BufferExpected.Length; i++)
+            {
+                Assert.Equal(utf8BufferExpected[i], utf8BufferActual[i]);
+            }
+            for (int i = 0; i < utf8BufferExpected2.Length; i++)
+            {
+                Assert.Equal(utf8BufferExpected2[i], utf8BufferActual[i + bytesWritten]);
+            }
+        }
+
+        [Fact]
+        public void TestEncodingEndOnHighSurrogateAndRestart()
+        {
+            string unicodeString = GenerateValidStringEndsWithHighStartsWithLow(CharLength, false, 0, Utf8OneByteLastCodePoint);
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+
+            string unicodeString2 = unicodeString + GenerateValidStringEndsWithHighStartsWithLow(CharLength, true, 0, Utf8OneByteLastCodePoint);
+            ReadOnlySpan<char> characters2 = unicodeString2.Slice();
+
+            int expectedBytesWritten = GetByteCount(characters2);
+            byte[] utf8Buffer = new byte[expectedBytesWritten];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            int charactersConsumed2;
+            int bytesWritten2;
+            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+            Assert.True(TextEncoder.Utf8.TryEncode(characters2.Slice(charactersConsumed), span.Slice(bytesWritten), out charactersConsumed2, out bytesWritten2));
+
+            Assert.Equal(unicodeString2.Length, charactersConsumed + charactersConsumed2);
+            Assert.Equal(expectedBytesWritten, bytesWritten + bytesWritten2);
+        }
+
+        [Fact]
+        public void TestEncodingValidStringASCII()
+        {
+            Assert.True(Validate(0, Utf8OneByteLastCodePoint));  // 1 byte
+        }
+
+        [Fact]
+        public void TestEncodingValidStringNon_ASCII()
+        {
+            Assert.True(Validate(0x0080, Utf8TwoBytesLastCodePoint));  // 2 bytes
+            Assert.True(Validate(0x0800, 0xD7FF));  // 3 bytes
+            Assert.True(Validate(0xE000, Utf8ThreeBytesLastCodePoint));  // 3 bytes
+            Assert.True(Validate(0xD800, 0xDFFF));  // 4 bytes (high and low surrogates)
+            Assert.True(Validate(0x0000, Utf8ThreeBytesLastCodePoint));  // mixed
+        }
+
+        [Fact]
+        public void TestEncodingBruteForceAllValidChars()
+        {
+            string unicodeString = GenerateAllCharString();
+            int charLengthOfAllCharacters = ((0xD7FF - 0) + 1) + ((Utf8ThreeBytesLastCodePoint - 0xE000) + 1); // single char
+            charLengthOfAllCharacters += 2 * ((Utf16HighSurrogateLastCodePoint - Utf16HighSurrogateFirstCodePoint) + 1) * ((Utf16LowSurrogateLastCodePoint - Utf16LowSurrogateFirstCodePoint) + 1);  //double char
+            Assert.Equal(unicodeString.Length, charLengthOfAllCharacters);  // should be equal to 2160640
+
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+            char[] charArray = characters.ToArray();
+            byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
+
+            Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
+
+            int expectedBytesWritten = GetByteCount(characters);
+            byte[] utf8Buffer = new byte[expectedBytesWritten];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            Assert.True(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+
+            byte[] utf8BufferActual = span.ToArray();
+
+            Assert.Equal(unicodeString.Length, charactersConsumed);
+            Assert.Equal(utf8BufferExpected.Length, bytesWritten);
+            Assert.Equal(utf8BufferExpected.Length, expectedBytesWritten);
+
+            for (int i = 0; i < utf8BufferExpected.Length; i++)
+            {
+                Assert.Equal(utf8BufferExpected[i], utf8BufferActual[i]);
+            }
+        }
+
+
+        private bool Validate(int minCodePoint, int maxCodePoint)
+        {
+            string unicodeString = GenerateValidString(CharLength, minCodePoint, maxCodePoint);
+            ReadOnlySpan<char> characters = unicodeString.Slice();
+            char[] charArray = characters.ToArray();
+            byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
+
+            Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
+            int expectedBytesWritten = GetByteCount(characters);
+            byte[] utf8Buffer = new byte[expectedBytesWritten * 3];
+            Span<byte> span = new Span<byte>(utf8Buffer);
+            int charactersConsumed;
+            int bytesWritten;
+            if (!TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten))
+            {
+                return false;
+            }
+
+            byte[] utf8BufferActual = span.ToArray();
+
+
+            if (charactersConsumed != unicodeString.Length)
+            {
+                return false;
+            }
+            if (bytesWritten != utf8BufferExpected.Length)
+            {
+                return false;
+            }
+            if (expectedBytesWritten != utf8BufferExpected.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < utf8BufferExpected.Length; i++)
+            {
+                if (utf8BufferExpected[i] != utf8BufferActual[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private string GenerateValidString(int charLength, int minCodePoint, int maxCodePoint)
+        {
+            Random rand = new Random(42);
+            var plainText = new StringBuilder();
+            for (int j = 0; j < charLength; j++)
+            {
+                var val = rand.Next(minCodePoint, maxCodePoint);
+
+                if (j < charLength - 1)
+                {
+                    while (val >= Utf16LowSurrogateFirstCodePoint && val <= Utf16LowSurrogateLastCodePoint)
+                    {
+                        val = rand.Next(minCodePoint, maxCodePoint); // skip surrogate characters if they can't be paired
+                    }
+
+                    if (val >= Utf16HighSurrogateFirstCodePoint && val <= Utf16HighSurrogateLastCodePoint)
+                    {
+                        plainText.Append((char)val);    // high surrogate
+                        j++;
+                        val = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint); // low surrogate
+                    }
+                }
+                else
+                {
+                    while (val >= Utf16HighSurrogateFirstCodePoint && val <= Utf16LowSurrogateLastCodePoint)
+                    {
+                        val = rand.Next(0, Utf8ThreeBytesLastCodePoint); // skip surrogate characters if they can't be paired
+                    }
+                }
+                plainText.Append((char)val);
+            }
+            return plainText.ToString();
+        }
+
+        private string GenerateOnlyInvalidString(int charLength)
+        {
+            Random rand = new Random(42);
+            var plainText = new StringBuilder();
+            for (int j = 0; j < charLength; j++)
+            {
+                var val = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint);
+                plainText.Append((char)val);
+            }
+            return plainText.ToString();
+        }
+
+        private string GenerateStringWithInvalidChars(int charLength)
+        {
+            Random rand = new Random(42);
+            var plainText = new StringBuilder();
+            for (int j = 0; j < charLength; j++)
+            {
+                var val = rand.Next(0, Utf8ThreeBytesLastCodePoint);
+
+                if (j < charLength - 1)
+                {
+                    while (val >= Utf16LowSurrogateFirstCodePoint && val <= Utf16LowSurrogateLastCodePoint)
+                    {
+                        val = rand.Next(0, Utf8ThreeBytesLastCodePoint); // skip surrogate characters if they can't be paired
+                    }
+
+                    if (val >= Utf16HighSurrogateFirstCodePoint && val <= Utf16HighSurrogateLastCodePoint)
+                    {
+                        plainText.Append((char)val);    // high surrogate
+                        j++;
+                        val = rand.Next(0, Utf8ThreeBytesLastCodePoint); // high surrogate may not be paired with a low surrogate (invalid)
+                    }
+                }
+                else
+                {
+                    // last char should be high surrogate (no low surrogate after, invalid)
+                    val = rand.Next(Utf16HighSurrogateFirstCodePoint, Utf16HighSurrogateLastCodePoint);
+                }
+                plainText.Append((char)val);
+            }
+            return plainText.ToString();
+        }
+
+        private string GenerateValidStringEndsWithHighStartsWithLow(int charLength, bool startsWithLow, int minCodePoint, int maxCodePoint)
+        {
+            Random rand = new Random(42);
+            var plainText = new StringBuilder();
+            bool alreadyDone = false;
+            for (int j = 0; j < charLength; j++)
+            {
+                var val = rand.Next(minCodePoint, maxCodePoint);
+
+                if (startsWithLow && !alreadyDone)
+                {
+                    // first character must be low surrogate
+                    val = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint);
+                    alreadyDone = true;
+                }
+                else
+                {
+                    if (j < charLength - 1)
+                    {
+                        while (val >= Utf16LowSurrogateFirstCodePoint && val <= Utf16LowSurrogateLastCodePoint)
+                        {
+                            val = rand.Next(minCodePoint, maxCodePoint); // skip surrogate characters if they can't be paired
+                        }
+
+                        if (val >= Utf16HighSurrogateFirstCodePoint && val <= Utf16HighSurrogateLastCodePoint)
+                        {
+                            plainText.Append((char)val);    // high surrogate
+                            j++;
+                            val = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint);  // low surrogate
+                        }
+                    }
+                    else
+                    {
+                        // if first char is valid, last char should be high surrogate (no low surrogate after, invalid)
+                        val = startsWithLow ? rand.Next(0, Utf8OneByteLastCodePoint) : rand.Next(Utf16HighSurrogateFirstCodePoint, Utf16HighSurrogateLastCodePoint);
+                    }
+                }
+                plainText.Append((char)val);
+            }
+            return plainText.ToString();
+        }
+
+        private string GenerateAllCharString()
+        {
+            var plainText = new StringBuilder();
+            for (int j = 0; j <= Utf8ThreeBytesLastCodePoint; j++)
+            {
+                if (j >= Utf16HighSurrogateFirstCodePoint && j <= Utf16HighSurrogateLastCodePoint)
+                {
+                    // high surrogate, pair it with all low surrogates possible
+                    for (int i = Utf16LowSurrogateFirstCodePoint; i <= Utf16LowSurrogateLastCodePoint; i++)
+                    {
+                        plainText.Append((char)j);
+                        plainText.Append((char)i);
+                    }
+                }
+                else if (j >= 0xDC00 && j <= 0xDFFF)
+                {
+                    continue;   // don't want unpaird low surrogates
+                }
+                else
+                {
+                    // characters not reserved for surrogate pairs
+                    plainText.Append((char)j);
+                }
+            }
+            return plainText.ToString();    // Length should be 0x10FFFF characters (1114112 in decimal)
+        }
+
+        private int GetByteCount(ReadOnlySpan<char> utf16)
+        {
+            var inputLength = utf16.Length;
+
+            int temp = 0;
+            for (int i = 0; i < inputLength; i++)
+            {
+                char codePoint = utf16[i];
+                if (codePoint <= Utf8OneByteLastCodePoint)
+                {
+                    temp += 1;
+                }
+                else if (codePoint <= Utf8TwoBytesLastCodePoint)
+                {
+                    temp += 2;
+                }
+                else if (codePoint >= Utf16HighSurrogateFirstCodePoint && codePoint <= Utf16HighSurrogateLastCodePoint)
+                {
+                    i++;
+                    if (i >= inputLength)
+                    {
+                        return temp;
+                    }
+                    char lowSurrogate = utf16[i];
+
+                    if (lowSurrogate < Utf16LowSurrogateFirstCodePoint || lowSurrogate > Utf16LowSurrogateLastCodePoint)
+                    {
+                        return temp;
+                    }
+                    temp += 4;
+                }
+                else if (codePoint >= Utf16LowSurrogateFirstCodePoint && codePoint <= Utf16LowSurrogateLastCodePoint)
+                {
+                    return temp;
+                }
+                else
+                {
+                    temp += 3;
+                }
+            }
+            return temp;
+        }
+
         public static object[][] TryEncodeFromUTF16ToUTF8TestData = {
             // empty
             new object[] { TextEncoder.Utf8, new byte[] { }, new ReadOnlySpan<char>(new char[]{ (char)0x0050 } ), false },
