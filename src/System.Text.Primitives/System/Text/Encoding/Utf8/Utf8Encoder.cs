@@ -442,7 +442,7 @@ namespace System.Text.Utf8
             if (codePoint <= 0xFFFF)
                 return 3;
 
-            if (codePoint <= 0x1FFFFF)
+            if (codePoint <= 0x10FFFF)
                 return 4;
 
             return 0;
