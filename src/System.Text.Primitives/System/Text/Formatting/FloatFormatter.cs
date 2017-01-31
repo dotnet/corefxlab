@@ -13,6 +13,8 @@ namespace System.Text
         {
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 'E' || format.Symbol == 'F');
 
+            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+
             bytesWritten = 0;
             int written;
 

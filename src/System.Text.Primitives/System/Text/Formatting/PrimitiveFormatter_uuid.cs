@@ -16,6 +16,9 @@ namespace System.Text
                 format.Symbol = 'G';
             }
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 'D' || format.Symbol == 'N' || format.Symbol == 'B' || format.Symbol == 'P');
+
+            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+
             bool dash = true;
             char tail = '\0';
             bytesWritten = 0;

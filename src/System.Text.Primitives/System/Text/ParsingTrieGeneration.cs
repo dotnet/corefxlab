@@ -2,7 +2,7 @@
 
 namespace System.Text
 {
-    public partial struct EncodingData : IEquatable<EncodingData>
+    public partial struct EncodingData
     {
         /// <summary>
         /// A Suffix represents the ending sequence of bytes that correspond to a symbol.
@@ -103,15 +103,15 @@ namespace System.Text
             }
         }
 
-		private struct Sequence : IComparable<Sequence>
+        private struct Sequence : IComparable<Sequence>
         {
             public int BeginningIndex;
             public int EndIndex;
             public byte BeginningValue;
             public byte EndValue;
 
-			// This constructor creates a sequence of length 0.
-			public Sequence(int index, byte value)
+            // This constructor creates a sequence of length 0.
+            public Sequence(int index, byte value)
             {
                 BeginningIndex = index;
                 EndIndex = index;
@@ -119,16 +119,16 @@ namespace System.Text
                 EndValue = value;
             }
 
-			public int CompareTo(Sequence other)
+            public int CompareTo(Sequence other)
             {
                 int thisLength = EndIndex - BeginningIndex;
                 int otherLength = other.EndIndex - other.BeginningIndex;
                 return thisLength.CompareTo(otherLength);
             }
 
-			public int Length
+            public int Length
             {
-				get
+                get
                 {
                     return EndIndex - BeginningIndex;
                 }
@@ -190,26 +190,26 @@ namespace System.Text
                 {
                     beginningByte = suffix.Bytes[0];
 
-					// Determine if the new clump is part of a sequence
-					if (beginningByte == currentSequence.EndValue + 1)
+                    // Determine if the new clump is part of a sequence
+                    if (beginningByte == currentSequence.EndValue + 1)
                     {
                         // This clump is part of the current sequence
                         currentSequence.EndIndex++;
                         currentSequence.EndValue++;
 
-						if (!currentSequence.Equals(longestSequence) && currentSequence.CompareTo(longestSequence) > 0)
+                        if (!currentSequence.Equals(longestSequence) && currentSequence.CompareTo(longestSequence) > 0)
                         {
                             // Replace the longest sequence with this sequence
                             longestSequence = currentSequence;
                         }
                     }
-					else
+                    else
                     {
                         // This clump is part of a new sequence
                         currentSequence = new Sequence(clumps.Count, beginningByte);
                     }
-					
-					// This is a new clump, with at least one suffix inside it. Add to the list of clumps.
+
+                    // This is a new clump, with at least one suffix inside it. Add to the list of clumps.
                     currentClump = new SuffixClump(beginningByte);
                     currentClump.Suffixes.Add(new Suffix(suffix.SymbolIndex, suffix.Bytes.Slice(1)));
                     clumps.Add(currentClump);
@@ -224,7 +224,7 @@ namespace System.Text
             {
                 parentNode.IndexOrSymbol = longestSequence.CreateSequenceMap();
             }
-			else
+            else
             {
                 parentNode.IndexOrSymbol = 0;
             }

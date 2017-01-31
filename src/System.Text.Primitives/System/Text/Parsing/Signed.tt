@@ -28,10 +28,7 @@ foreach (IntegerTypeToParse typeToParse in typesToParse)
 #>
         public static bool TryParse<#=typeToParse.ClassName#>(ReadOnlySpan<byte> text, out <#=typeToParse.PrimitiveName#> value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
         {
-            if (encoding == default(EncodingData))
-            {
-                encoding = EncodingData.InvariantUtf8;
-            }
+            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
 
             if (!format.IsDefault && format.HasPrecision)
             {

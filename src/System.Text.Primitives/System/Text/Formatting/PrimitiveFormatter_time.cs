@@ -53,27 +53,15 @@ namespace System.Text
                 format.Symbol = 'G';
             }
             Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
+
+            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+
             switch (format.Symbol)
             {
                 case 'R':
-
-                    if (encoding.IsInvariantUtf16) // TODO: there are many checks like this one in the code. They need to also verify that the UTF8 branch is invariant.
-                    {
-                        return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, out bytesWritten, EncodingData.InvariantUtf16);
-                    }
-                    else
-                    {
-                        return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, out bytesWritten, EncodingData.InvariantUtf8);
-                    }
+                    return TryFormatDateTimeRfc1123(value.UtcDateTime, buffer, out bytesWritten, encoding);
                 case 'O':
-                    if (encoding.IsInvariantUtf16)
-                    {
-                        return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, out bytesWritten, EncodingData.InvariantUtf16);
-                    }
-                    else
-                    {
-                        return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, out bytesWritten, EncodingData.InvariantUtf8);
-                    }
+                    return TryFormatDateTimeFormatO(value.UtcDateTime, false, buffer, out bytesWritten, encoding);
                 case 'G':
                     return TryFormatDateTimeFormatG(value.DateTime, buffer, out bytesWritten, encoding);
                 default:
@@ -89,27 +77,15 @@ namespace System.Text
             }
             Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
 
+            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+
             switch (format.Symbol)
             {
                 case 'R':
                     var utc = value.ToUniversalTime();
-                    if (encoding.IsInvariantUtf16)
-                    {
-                        return TryFormatDateTimeRfc1123(utc, buffer, out bytesWritten, EncodingData.InvariantUtf16);
-                    }
-                    else
-                    {
-                        return TryFormatDateTimeRfc1123(utc, buffer, out bytesWritten, EncodingData.InvariantUtf8);
-                    }
+                    return TryFormatDateTimeRfc1123(utc, buffer, out bytesWritten, encoding);
                 case 'O':
-                    if (encoding.IsInvariantUtf16)
-                    {
-                        return TryFormatDateTimeFormatO(value, true, buffer, out bytesWritten, EncodingData.InvariantUtf16);
-                    }
-                    else
-                    {
-                        return TryFormatDateTimeFormatO(value, true, buffer, out bytesWritten, EncodingData.InvariantUtf8);
-                    }
+                    return TryFormatDateTimeFormatO(value, true, buffer, out bytesWritten, encoding);
                 case 'G':
                     return TryFormatDateTimeFormatG(value, buffer, out bytesWritten, encoding);
                 default:
@@ -168,6 +144,12 @@ namespace System.Text
 
         static bool TryFormatDateTimeFormatO(DateTimeOffset value, bool isDateTime, Span<byte> buffer, out int bytesWritten, EncodingData encoding)
         {
+            // for now it only works for invariant culture
+            if (!encoding.IsInvariantUtf16 && !encoding.IsInvariantUtf8)
+            {
+                throw new NotImplementedException();
+            }
+
             bytesWritten = 0;
             if (!TryWriteInt32(value.Year, buffer, ref bytesWritten, D4, encoding)) { return false; }
             if (!TryWriteChar('-', buffer, ref bytesWritten, encoding)) { return false; }
@@ -214,6 +196,12 @@ namespace System.Text
 
         static bool TryFormatDateTimeRfc1123(DateTime value, Span<byte> buffer, out int bytesWritten, EncodingData encoding)
         {
+            // for now it only works for invariant culture
+            if (!encoding.IsInvariantUtf16 && !encoding.IsInvariantUtf8)
+            {
+                throw new NotImplementedException();
+            }
+
             if (encoding.IsInvariantUtf8)
             {
                 bytesWritten = 0;
@@ -263,6 +251,8 @@ namespace System.Text
                 format.Symbol = 'c';
             }
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 't' || format.Symbol == 'c' || format.Symbol == 'g');
+
+            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
 
             if (format.Symbol != 't')
             {
