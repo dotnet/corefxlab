@@ -85,22 +85,29 @@ namespace Microsoft.Net.Http
             var request = HttpRequest.Parse(requestBytes);
             Log.LogRequest(request);
 
+            // TODO: this block is a mess. 
             using (var response = new HttpResponse(1024))
             {
                 WriteResponse(request, response);
                 s_pool.Return(requestBuffer);
+                var responseLength = response.WrittenBytes;
 
-                Position position = Position.First;
-                while (response.Headers.TryGet(ref position, out var headersSegment, true))
+                var headers = response.Headers;
+                if (Log.IsVerbose)
                 {
-                    socket.Send(headersSegment.Slice(0, response.HeadersLength));
+                    Log.LogMessage(Log.Level.Verbose, Encoding.UTF8.GetString(headers.ToArray()));
                 }
 
-                position = Position.First;
-                while (response.Body.TryGet(ref position, out var bodySegment))
+                var body = response.Body;
+
+                if (Log.IsVerbose)
                 {
-                    socket.Send(bodySegment.Slice(0, response.BodyLength));
+                    Log.LogMessage(Log.Level.Verbose, "Body:");
+                    Log.LogMessage(Log.Level.Verbose, Encoding.UTF8.GetString(body.ToArray()));
                 }
+
+                socket.Send(headers);
+                socket.Send(body);
 
                 socket.Close();
             }
@@ -115,7 +122,8 @@ namespace Microsoft.Net.Http
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", requestBytes.Length);
             WriteCommonHeaders(response, HttpVersion.V1_1, 400, "Bad Request", false);
-            new ResponseFormatter(response, formatBody: false).Append(HttpNewline);
+            var formatter = new ResponseFormatter(response);
+            formatter.WriteEoh();
         }
 
         // TODO: HttpRequest is a large struct. We cannot pass it around like that
@@ -123,7 +131,8 @@ namespace Microsoft.Net.Http
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.Path.ToUtf8String(TextEncoder.Utf8));
             WriteCommonHeaders(response, HttpVersion.V1_1, 404, "Not Found", false);
-            new ResponseFormatter(response, formatBody: false).Append(HttpNewline);
+            var formatter = new ResponseFormatter(response);
+            formatter.WriteEoh();
         }
 
         // TODO: this is not a very general purpose routine. Maybe should not be in this base class?
@@ -135,19 +144,11 @@ namespace Microsoft.Net.Http
             bool keepAlive)
         {
             var currentTime = DateTime.UtcNow;
-            var formatter = new ResponseFormatter(response, formatBody: false);
+            var formatter = new ResponseFormatter(response);
             formatter.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
-            formatter.Append(new Utf8String("Date : ")); formatter.Append(currentTime, 'R');
-            formatter.AppendHttpNewLine();
-            formatter.Append("Server : .NET Core Sample Server");
-            formatter.AppendHttpNewLine();
-            formatter.Append("Content-Type : text/html; charset=UTF-8");
-            formatter.AppendHttpNewLine();
-
-            if (!keepAlive)
-            {
-                formatter.Append("Connection : close");
-            }
+            formatter.Append("Transfer-Encoding : chunked\r\n");
+            formatter.Append("Server : .NET Core Sample Server\r\n");
+            formatter.Format("Date : {0:R}\r\n", DateTime.UtcNow);
         }
 
         protected abstract void WriteResponse(HttpRequest request, HttpResponse response);
