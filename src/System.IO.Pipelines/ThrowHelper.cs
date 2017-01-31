@@ -98,17 +98,17 @@ namespace System.IO.Pipelines
                 case ExceptionResource.NotConsumingToComplete:
                     resourceString = "No ongoing consuming operation to complete.";
                     break;
-                case ExceptionResource.NoConcurrentReads:
-                    resourceString = "Concurrent reads are not supported.";
+                case ExceptionResource.NoConcurrentOperation:
+                    resourceString = "Concurrent reads or flushes are not supported.";
                     break;
                 case ExceptionResource.GetResultNotCompleted:
                     resourceString = "Can't GetResult unless completed";
                     break;
                 case ExceptionResource.NoWritingAllowed:
-                    resourceString = "Writing is not allowed after writing was completed";
+                    resourceString = "Writing is not allowed after writer was completed";
                     break;
                 case ExceptionResource.NoReadingAllowed:
-                    resourceString = "Writing is not allowed after writing was completed";
+                    resourceString = "Reading is not allowed after reader was completed";
                     break;
                 case ExceptionResource.CompleteWriterActiveProducer:
                     resourceString = "Can't complete writer while producer operation is ongoing.";
@@ -148,7 +148,7 @@ namespace System.IO.Pipelines
         NotProducingToComplete,
         AlreadyConsuming,
         NotConsumingToComplete,
-        NoConcurrentReads,
+        NoConcurrentOperation,
         GetResultNotCompleted,
         NoWritingAllowed,
         NoReadingAllowed,
