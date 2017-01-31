@@ -28,25 +28,25 @@ namespace System.Text.Utf8.Tests
             sb.Append('"');
             foreach (var codePoint in codePoints)
             {
-                if (codePoint.Value >= 32 && codePoint.Value < 127)
+                if (codePoint >= 32 && codePoint < 127)
                 {
-                    sb.Append(char.ConvertFromUtf32(unchecked((int)codePoint.Value)));
+                    sb.Append(char.ConvertFromUtf32(unchecked((int)codePoint)));
                 }
-                else if (codePoint.Value == (uint)'\n')
+                else if (codePoint == (uint)'\n')
                 {
                     sb.Append("\\n");
                 }
-                else if (codePoint.Value == (uint)'\r')
+                else if (codePoint == (uint)'\r')
                 {
                     sb.Append("\\r");
                 }
-                else if (codePoint.Value == (uint)'\t')
+                else if (codePoint == (uint)'\t')
                 {
                     sb.Append("\\t");
                 }
                 else
                 {
-                    sb.Append(string.Format("\\u{0:X04}", codePoint.Value));
+                    sb.Append(string.Format("\\u{0:X04}", codePoint));
                 }
             }
             sb.Append('"');
@@ -313,7 +313,7 @@ namespace System.Text.Utf8.Tests
         // Implementations are intentionally split to avoid boxing
         private void TestCodePointForwardEnumerator(string s, Utf8String u8s)
         {
-            List<UnicodeCodePoint> codePoints = new List<UnicodeCodePoint>();
+            List<uint> codePoints = new List<uint>();
             Utf8String.CodePointEnumerator it = u8s.CodePoints.GetEnumerator();
             while (it.MoveNext())
             {
@@ -330,7 +330,7 @@ namespace System.Text.Utf8.Tests
 
         private void TestCodePointReverseEnumerator(string s, Utf8String u8s)
         {
-            List<UnicodeCodePoint> codePoints = new List<UnicodeCodePoint>();
+            List<uint> codePoints = new List<uint>();
             Utf8String.CodePointReverseEnumerator it = u8s.CodePoints.GetReverseEnumerator();
             while (it.MoveNext())
             {
@@ -709,8 +709,7 @@ namespace System.Text.Utf8.Tests
         public void IndexOfUnicodeCodePoint(int expected, string s, uint codePointValue)
         {
             Utf8String u8s = new Utf8String(s);
-            UnicodeCodePoint codePoint = (UnicodeCodePoint)codePointValue;
-            Assert.Equal(expected, u8s.IndexOf(codePoint));
+            Assert.Equal(expected, u8s.IndexOf(codePointValue));
         }
 
         [Fact]

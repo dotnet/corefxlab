@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace System.Text.Utf16
 {
     // TODO: Should this and Utf8 code point enumerators/enumerable be subclasses of Utf8/16Encoder?
-    internal struct Utf16LittleEndianCodePointEnumerable : IEnumerable<UnicodeCodePoint>, IEnumerable
+    internal struct Utf16LittleEndianCodePointEnumerable : IEnumerable<uint>, IEnumerable
     {
         private string _s;
 
@@ -18,7 +18,7 @@ namespace System.Text.Utf16
             return new Utf16LittleEndianCodePointEnumerator(_s);
         }
 
-        IEnumerator<UnicodeCodePoint> IEnumerable<UnicodeCodePoint>.GetEnumerator()
+        IEnumerator<uint> IEnumerable<uint>.GetEnumerator()
         {
             return GetEnumerator();
         }

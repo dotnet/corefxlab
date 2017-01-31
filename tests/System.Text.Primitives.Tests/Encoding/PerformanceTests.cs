@@ -163,7 +163,7 @@ namespace System.Text.Utf8.Tests
                 _timer.Restart();
                 while (iterations-- != 0)
                 {
-                    foreach (UnicodeCodePoint codePoint in utf8s.CodePoints)
+                    foreach (var codePoint in utf8s.CodePoints)
                     {
                     }
                 }
@@ -191,7 +191,7 @@ namespace System.Text.Utf8.Tests
                     _timer.Restart();
                     while (iterations-- != 0)
                     {
-                        foreach (UnicodeCodePoint codePoint in utf8s.CodePoints)
+                        foreach (var codePoint in utf8s.CodePoints)
                         {
                         }
                     }
@@ -221,7 +221,7 @@ namespace System.Text.Utf8.Tests
                     Utf8String.CodePointReverseEnumerator it = utf8s.CodePoints.GetReverseEnumerator();
                     while (it.MoveNext())
                     {
-                        UnicodeCodePoint codePoint = it.Current;
+                        var codePoint = it.Current;
                     }
                 }
                 PrintTime(testData);
@@ -251,7 +251,7 @@ namespace System.Text.Utf8.Tests
                         Utf8String.CodePointReverseEnumerator it = utf8s.CodePoints.GetReverseEnumerator();
                         while (it.MoveNext())
                         {
-                            UnicodeCodePoint codePoint = it.Current;
+                            var codePoint = it.Current;
                         }
                     }
                     PrintTime(testData);
@@ -379,7 +379,7 @@ namespace System.Text.Utf8.Tests
                 _timer.Restart();
                 while (iterations-- != 0)
                 {
-                    int p = utf8s.IndexOf((UnicodeCodePoint)31);
+                    int p = utf8s.IndexOf(31);
                 }
                 PrintTime(testData);
             }
@@ -405,7 +405,7 @@ namespace System.Text.Utf8.Tests
                     _timer.Restart();
                     while (iterations-- != 0)
                     {
-                        int p = utf8s.IndexOf((UnicodeCodePoint)31);
+                        int p = utf8s.IndexOf(31);
                     }
                     PrintTime(testData);
                 }

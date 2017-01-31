@@ -36,16 +36,16 @@ namespace System.Text.Utf8
         }
 
         // TODO: reevaluate implementation
-        public Utf8String(IEnumerable<UnicodeCodePoint> codePoints)
+        public Utf8String(IEnumerable<uint> codePoints)
         {
             var len = GetUtf8LengthInBytes(codePoints);
             var buffer = new Span<byte>(new byte[len]);
             var index = 0;
 
-            foreach (UnicodeCodePoint codePoint in codePoints)
+            foreach (uint codePoint in codePoints)
             {
                 int written;
-                if (!Utf8Encoder.TryEncodeCodePoint(codePoint.Value, buffer, index, out written))
+                if (!Utf8Encoder.TryEncodeCodePoint(codePoint, buffer, index, out written))
                     throw new ArgumentException("Invalid code point", "codePoints");
 
                 index += written;
@@ -330,7 +330,7 @@ namespace System.Text.Utf8
         }
 
         // TODO: Should this be public?
-        public int IndexOf(UnicodeCodePoint codePoint)
+        public int IndexOf(uint codePoint)
         {
             CodePointEnumerator it = GetCodePointEnumerator();
             while (it.MoveNext())
@@ -373,7 +373,7 @@ namespace System.Text.Utf8
             return true;
         }
 
-        public bool TrySubstringFrom(UnicodeCodePoint codePoint, out Utf8String result)
+        public bool TrySubstringFrom(uint codePoint, out Utf8String result)
         {
             int idx = IndexOf(codePoint);
 
@@ -415,7 +415,7 @@ namespace System.Text.Utf8
             return true;
         }
 
-        public bool TrySubstringTo(UnicodeCodePoint codePoint, out Utf8String result)
+        public bool TrySubstringTo(uint codePoint, out Utf8String result)
         {
             int idx = IndexOf(codePoint);
 
@@ -499,7 +499,7 @@ namespace System.Text.Utf8
             return new CodePointEnumerator(_buffer);
         }
 
-        public bool StartsWith(UnicodeCodePoint codePoint)
+        public bool StartsWith(uint codePoint)
         {
             CodePointEnumerator e = GetCodePointEnumerator();
             if (!e.MoveNext())
@@ -550,17 +550,17 @@ namespace System.Text.Utf8
             return this.Substring(Length - value.Length, value.Length).Equals(value);
         }
 
-        public bool EndsWith(UnicodeCodePoint codePoint)
+        public bool EndsWith(uint codePoint)
         {
             throw new NotImplementedException();
         }
 
-        private static int GetUtf8LengthInBytes(IEnumerable<UnicodeCodePoint> codePoints)
+        private static int GetUtf8LengthInBytes(IEnumerable<uint> codePoints)
         {
             int len = 0;
             foreach (var codePoint in codePoints)
             {
-                len += Utf8Encoder.GetNumberOfEncodedBytes(codePoint.Value);
+                len += Utf8Encoder.GetNumberOfEncodedBytes(codePoint);
             }
 
             return len;
@@ -590,14 +590,14 @@ namespace System.Text.Utf8
         public Utf8String TrimStart()
         {
             CodePointEnumerator it = GetCodePointEnumerator();
-            while (it.MoveNext() && UnicodeCodePoint.IsWhitespace(it.Current))
+            while (it.MoveNext() && UnicodeHelpers.IsWhitespace(it.Current))
             {
             }
 
             return Substring(it.PositionInCodeUnits);
         }
 
-        public Utf8String TrimStart(UnicodeCodePoint[] trimCodePoints)
+        public Utf8String TrimStart(uint[] trimCodePoints)
         {
             throw new NotImplementedException();
         }
@@ -610,14 +610,14 @@ namespace System.Text.Utf8
         public Utf8String TrimEnd()
         {
             CodePointReverseEnumerator it = CodePoints.GetReverseEnumerator();
-            while (it.MoveNext() && UnicodeCodePoint.IsWhitespace(it.Current))
+            while (it.MoveNext() && UnicodeHelpers.IsWhitespace(it.Current))
             {
             }
 
             return Substring(0, it.PositionInCodeUnits);
         }
 
-        public Utf8String TrimEnd(UnicodeCodePoint[] trimCodePoints)
+        public Utf8String TrimEnd(uint[] trimCodePoints)
         {
             throw new NotImplementedException();
         }
@@ -632,7 +632,7 @@ namespace System.Text.Utf8
             return TrimStart().TrimEnd();
         }
 
-        public Utf8String Trim(UnicodeCodePoint[] trimCodePoints)
+        public Utf8String Trim(uint[] trimCodePoints)
         {
             throw new NotImplementedException();
         }
