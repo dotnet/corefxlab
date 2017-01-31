@@ -163,7 +163,7 @@ namespace System.Text.Utf8.Tests
                 _timer.Restart();
                 while (iterations-- != 0)
                 {
-                    foreach (var codePoint in utf8s.CodePoints)
+                    foreach (uint codePoint in utf8s.CodePoints)
                     {
                     }
                 }
@@ -191,7 +191,7 @@ namespace System.Text.Utf8.Tests
                     _timer.Restart();
                     while (iterations-- != 0)
                     {
-                        foreach (var codePoint in utf8s.CodePoints)
+                        foreach (uint codePoint in utf8s.CodePoints)
                         {
                         }
                     }
@@ -221,7 +221,7 @@ namespace System.Text.Utf8.Tests
                     Utf8String.CodePointReverseEnumerator it = utf8s.CodePoints.GetReverseEnumerator();
                     while (it.MoveNext())
                     {
-                        var codePoint = it.Current;
+                        uint codePoint = it.Current;
                     }
                 }
                 PrintTime(testData);
@@ -251,7 +251,7 @@ namespace System.Text.Utf8.Tests
                         Utf8String.CodePointReverseEnumerator it = utf8s.CodePoints.GetReverseEnumerator();
                         while (it.MoveNext())
                         {
-                            var codePoint = it.Current;
+                            uint codePoint = it.Current;
                         }
                     }
                     PrintTime(testData);

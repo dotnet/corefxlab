@@ -26,7 +26,7 @@ namespace System.Text.Utf8.Tests
             Utf16LittleEndianCodePointEnumerable codePoints = new Utf16LittleEndianCodePointEnumerable(s);
             StringBuilder sb = new StringBuilder();
             sb.Append('"');
-            foreach (var codePoint in codePoints)
+            foreach (uint codePoint in codePoints)
             {
                 if (codePoint >= 32 && codePoint < 127)
                 {
