@@ -292,7 +292,7 @@ namespace System.IO.Pipelines.Tests
         [InlineData("a;b;c;d", ';')]
         [InlineData("a;b;c;d", ',')]
         [InlineData("", ',')]
-        public Task Split(string input, char delimiter)
+        public async Task Split(string input, char delimiter)
         {
             // note: different expectation to string.Split; empty has 0 outputs
             var expected = input == "" ? new string[0] : input.Split(delimiter);
@@ -325,7 +325,7 @@ namespace System.IO.Pipelines.Tests
                 }
                 Assert.Equal(expected.Length, i);
 
-                return output.FlushAsync();
+                await output.FlushAsync();
             }
         }
 
@@ -557,7 +557,7 @@ namespace System.IO.Pipelines.Tests
         {
             var buffer = BufferUtilities.CreateBuffer(1, 1, 1);
             var buffer2 = BufferUtilities.CreateBuffer(1, 1, 1);
-            Assert.Throws<InvalidOperationException>(() => buffer.Start.Seek(2, buffer2.End, false));
+            Assert.Throws<InvalidOperationException>(() => buffer.Start.Seek(2, buffer2.End, true));
         }
 
         [Fact]
@@ -565,7 +565,7 @@ namespace System.IO.Pipelines.Tests
         {
             var buffer = BufferUtilities.CreateBuffer(1, 1, 1);
             var buffer2 = BufferUtilities.CreateBuffer(1, 1, 1);
-            buffer.Start.Seek(2, buffer2.End, true);
+            buffer.Start.Seek(2, buffer2.End, false);
         }
 
         public static TheoryData<ReadableBuffer> Size100ReadableBuffers

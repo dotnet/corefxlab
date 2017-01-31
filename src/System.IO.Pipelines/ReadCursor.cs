@@ -75,17 +75,21 @@ namespace System.IO.Pipelines
             {
                 return 0;
             }
+            return GetLength(_segment, _index, end._segment, end._index);
+        }
 
-            var segment = _segment;
-            var index = _index;
+        internal static int GetLength(BufferSegment start, int startIndex, BufferSegment end, int endIndex)
+        {
+            var segment = start;
+            var index = startIndex;
             var length = 0;
             checked
             {
                 while (true)
                 {
-                    if (segment == end._segment)
+                    if (segment == end)
                     {
-                        return length + end._index - index;
+                        return length + endIndex - index;
                     }
                     else if (segment.Next == null)
                     {
@@ -101,7 +105,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        internal ReadCursor Seek(int bytes, ReadCursor end, bool trustingEnd = false)
+        internal ReadCursor Seek(int bytes, ReadCursor end, bool checkEndReachable = true)
         {
             if (IsEnd)
             {
@@ -115,14 +119,14 @@ namespace System.IO.Pipelines
             }
             else
             {
-                cursor = SeekMultiSegment(bytes, end, trustingEnd);
+                cursor = SeekMultiSegment(bytes, end, checkEndReachable);
             }
 
             return cursor;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private ReadCursor SeekMultiSegment(int bytes, ReadCursor end, bool trustingEnd)
+        private ReadCursor SeekMultiSegment(int bytes, ReadCursor end, bool checkEndReachable)
         {
             ReadCursor result = default(ReadCursor);
             bool foundResult = false;
@@ -137,7 +141,7 @@ namespace System.IO.Pipelines
                     {
                         result = new ReadCursor(segmentPart.Segment, segmentPart.Start + bytes);
                         foundResult = true;
-                        if (trustingEnd)
+                        if (!checkEndReachable)
                         {
                             break;
                         }

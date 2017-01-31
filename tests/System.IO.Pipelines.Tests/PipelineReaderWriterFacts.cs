@@ -11,447 +11,423 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class PipelineReaderWriterFacts
+    public class PipelineReaderWriterFacts : IDisposable
     {
+        private Pipe _pipe;
+        private PipelineFactory _pipelineFactory;
+
+        public PipelineReaderWriterFacts()
+        {
+            _pipelineFactory = new PipelineFactory();
+            _pipe = _pipelineFactory.Create();
+        }
+
+        public void Dispose()
+        {
+            _pipe.CompleteWriter();
+            _pipe.CompleteReader();
+            _pipelineFactory?.Dispose();
+        }
+
         [Fact]
         public async Task ReaderShouldNotGetUnflushedBytesWhenOverflowingSegments()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
+            // Fill the block with stuff leaving 5 bytes at the end
+            var buffer = _pipe.Alloc(1);
 
-                // Fill the block with stuff leaving 5 bytes at the end
-                var buffer = readerWriter.Alloc(1);
+            var len = buffer.Memory.Length;
+            // Fill the buffer with garbage
+            //     block 1       ->    block2
+            // [padding..hello]  ->  [  world   ]
+            var paddingBytes = Enumerable.Repeat((byte)'a', len - 5).ToArray();
+            buffer.Write(paddingBytes);
+            await buffer.FlushAsync();
 
-                var len = buffer.Memory.Length;
-                // Fill the buffer with garbage
-                //     block 1       ->    block2
-                // [padding..hello]  ->  [  world   ]
-                var paddingBytes = Enumerable.Repeat((byte)'a', len - 5).ToArray();
-                buffer.Write(paddingBytes);
-                await buffer.FlushAsync();
+            // Write 10 and flush
+            buffer = _pipe.Alloc();
+            buffer.WriteLittleEndian(10);
 
-                // Write 10 and flush
-                buffer = readerWriter.Alloc();
-                buffer.WriteLittleEndian(10);
+            // Write 9
+            buffer.WriteLittleEndian(9);
 
-                // Write 9
-                buffer.WriteLittleEndian(9);
+            // Write 8
+            buffer.WriteLittleEndian(8);
 
-                // Write 8
-                buffer.WriteLittleEndian(8);
+            // Make sure we don't see it yet
+            var result = await _pipe.ReadAsync();
+            var reader = result.Buffer;
 
-                // Make sure we don't see it yet
-                var result = await readerWriter.ReadAsync();
-                var reader = result.Buffer;
+            Assert.Equal(len - 5, reader.Length);
 
-                Assert.Equal(len - 5, reader.Length);
+            // Don't move
+            _pipe.Advance(reader.End);
 
-                // Don't move
-                readerWriter.Advance(reader.End);
+            // Now flush
+            await buffer.FlushAsync();
 
-                // Now flush
-                await buffer.FlushAsync();
+            reader = (await _pipe.ReadAsync()).Buffer;
 
-                reader = (await readerWriter.ReadAsync()).Buffer;
+            Assert.Equal(12, reader.Length);
+            Assert.Equal(10, reader.ReadLittleEndian<int>());
+            Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
+            Assert.Equal(8, reader.Slice(8).ReadLittleEndian<int>());
 
-                Assert.Equal(12, reader.Length);
-                Assert.Equal(10, reader.ReadLittleEndian<int>());
-                Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
-                Assert.Equal(8, reader.Slice(8).ReadLittleEndian<int>());
-            }
+            _pipe.AdvanceReader(reader.Start, reader.Start);
         }
 
         [Fact]
         public async Task ReaderShouldNotGetUnflushedBytes()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
+            // Write 10 and flush
+            var buffer = _pipe.Alloc();
+            buffer.WriteLittleEndian(10);
+            await buffer.FlushAsync();
 
-                // Write 10 and flush
-                var buffer = readerWriter.Alloc();
-                buffer.WriteLittleEndian(10);
-                await buffer.FlushAsync();
+            // Write 9
+            buffer = _pipe.Alloc();
+            buffer.WriteLittleEndian(9);
 
-                // Write 9
-                buffer = readerWriter.Alloc();
-                buffer.WriteLittleEndian(9);
+            // Write 8
+            buffer.WriteLittleEndian(8);
 
-                // Write 8
-                buffer.WriteLittleEndian(8);
+            // Make sure we don't see it yet
+            var result = await _pipe.ReadAsync();
+            var reader = result.Buffer;
 
-                // Make sure we don't see it yet
-                var result = await readerWriter.ReadAsync();
-                var reader = result.Buffer;
+            Assert.Equal(4, reader.Length);
+            Assert.Equal(10, reader.ReadLittleEndian<int>());
 
-                Assert.Equal(4, reader.Length);
-                Assert.Equal(10, reader.ReadLittleEndian<int>());
+            // Don't move
+            _pipe.Advance(reader.Start);
 
-                // Don't move
-                readerWriter.Advance(reader.Start);
+            // Now flush
+            await buffer.FlushAsync();
 
-                // Now flush
-                await buffer.FlushAsync();
+            reader = (await _pipe.ReadAsync()).Buffer;
 
-                reader = (await readerWriter.ReadAsync()).Buffer;
+            Assert.Equal(12, reader.Length);
+            Assert.Equal(10, reader.ReadLittleEndian<int>());
+            Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
+            Assert.Equal(8, reader.Slice(8).ReadLittleEndian<int>());
 
-                Assert.Equal(12, reader.Length);
-                Assert.Equal(10, reader.ReadLittleEndian<int>());
-                Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
-                Assert.Equal(8, reader.Slice(8).ReadLittleEndian<int>());
-            }
+            _pipe.AdvanceReader(reader.Start, reader.Start);
         }
 
         [Fact]
         public async Task ReaderShouldNotGetUnflushedBytesWithAppend()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
+            // Write 10 and flush
+            var buffer = _pipe.Alloc();
+            buffer.WriteLittleEndian(10);
+            await buffer.FlushAsync();
 
-                // Write 10 and flush
-                var buffer = readerWriter.Alloc();
-                buffer.WriteLittleEndian(10);
-                await buffer.FlushAsync();
+            // Write Hello to another pipeline and get the buffer
+            var bytes = Encoding.ASCII.GetBytes("Hello");
 
-                // Write Hello to another pipeline and get the buffer
-                var bytes = Encoding.ASCII.GetBytes("Hello");
+            var c2 = _pipelineFactory.Create();
+            await c2.WriteAsync(bytes);
+            var result = await c2.ReadAsync();
+            var c2Buffer = result.Buffer;
 
-                var c2 = factory.Create();
-                await c2.WriteAsync(bytes);
-                var result = await c2.ReadAsync();
-                var c2Buffer = result.Buffer;
+            Assert.Equal(bytes.Length, c2Buffer.Length);
 
-                Assert.Equal(bytes.Length, c2Buffer.Length);
+            // Write 9 to the buffer
+            buffer = _pipe.Alloc();
+            buffer.WriteLittleEndian(9);
 
-                // Write 9 to the buffer
-                buffer = readerWriter.Alloc();
-                buffer.WriteLittleEndian(9);
+            // Append the data from the other pipeline
+            buffer.Append(c2Buffer);
 
-                // Append the data from the other pipeline
-                buffer.Append(c2Buffer);
+            // Mark it as consumed
+            c2.Advance(c2Buffer.End);
 
-                // Mark it as consumed
-                c2.Advance(c2Buffer.End);
+            // Now read and make sure we only see the comitted data
+            result = await _pipe.ReadAsync();
+            var reader = result.Buffer;
 
-                // Now read and make sure we only see the comitted data
-                result = await readerWriter.ReadAsync();
-                var reader = result.Buffer;
+            Assert.Equal(4, reader.Length);
+            Assert.Equal(10, reader.ReadLittleEndian<int>());
 
-                Assert.Equal(4, reader.Length);
-                Assert.Equal(10, reader.ReadLittleEndian<int>());
+            // Consume nothing
+            _pipe.Advance(reader.Start);
 
-                // Consume nothing
-                readerWriter.Advance(reader.Start);
+            // Flush the second set of writes
+            await buffer.FlushAsync();
 
-                // Flush the second set of writes
-                await buffer.FlushAsync();
+            reader = (await _pipe.ReadAsync()).Buffer;
 
-                reader = (await readerWriter.ReadAsync()).Buffer;
+            // int, int, "Hello"
+            Assert.Equal(13, reader.Length);
+            Assert.Equal(10, reader.ReadLittleEndian<int>());
+            Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
+            Assert.Equal("Hello", reader.Slice(8).GetUtf8String());
 
-                // int, int, "Hello"
-                Assert.Equal(13, reader.Length);
-                Assert.Equal(10, reader.ReadLittleEndian<int>());
-                Assert.Equal(9, reader.Slice(4).ReadLittleEndian<int>());
-                Assert.Equal("Hello", reader.Slice(8).GetUtf8String());
-            }
+            _pipe.AdvanceReader(reader.Start, reader.Start);
         }
 
         [Fact]
         public async Task WritingDataMakesDataReadableViaPipeline()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                var bytes = Encoding.ASCII.GetBytes("Hello World");
+            var bytes = Encoding.ASCII.GetBytes("Hello World");
 
-                await readerWriter.WriteAsync(bytes);
-                var result = await readerWriter.ReadAsync();
-                var buffer = result.Buffer;
+            await _pipe.WriteAsync(bytes);
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
 
-                Assert.Equal(11, buffer.Length);
-                Assert.True(buffer.IsSingleSpan);
-                var array = new byte[11];
-                buffer.First.Span.CopyTo(array);
-                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
-            }
+            Assert.Equal(11, buffer.Length);
+            Assert.True(buffer.IsSingleSpan);
+            var array = new byte[11];
+            buffer.First.Span.CopyTo(array);
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
         public async Task AdvanceEmptyBufferAfterWritingResetsAwaitable()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                var bytes = Encoding.ASCII.GetBytes("Hello World");
+            var bytes = Encoding.ASCII.GetBytes("Hello World");
 
-                await readerWriter.WriteAsync(bytes);
-                var result = await readerWriter.ReadAsync();
-                var buffer = result.Buffer;
+            await _pipe.WriteAsync(bytes);
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
 
-                Assert.Equal(11, buffer.Length);
-                Assert.True(buffer.IsSingleSpan);
-                var array = new byte[11];
-                buffer.First.Span.CopyTo(array);
-                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+            Assert.Equal(11, buffer.Length);
+            Assert.True(buffer.IsSingleSpan);
+            var array = new byte[11];
+            buffer.First.Span.CopyTo(array);
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
 
-                readerWriter.Advance(buffer.End);
+            _pipe.Advance(buffer.End);
 
-                // Now write 0 and advance 0
-                await readerWriter.WriteAsync(Span<byte>.Empty);
-                result = await readerWriter.ReadAsync();
-                readerWriter.Advance(result.Buffer.End);
+            // Now write 0 and advance 0
+            await _pipe.WriteAsync(Span<byte>.Empty);
+            result = await _pipe.ReadAsync();
+            _pipe.Advance(result.Buffer.End);
 
-                var awaitable = readerWriter.ReadAsync();
-                Assert.False(awaitable.IsCompleted);
-            }
+            var awaitable = _pipe.ReadAsync();
+            Assert.False(awaitable.IsCompleted);
         }
 
         [Fact]
         public async Task AdvanceShouldResetStateIfReadCancelled()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                readerWriter.CancelPendingRead();
+            _pipe.CancelPendingRead();
 
-                var result = await readerWriter.ReadAsync();
-                var buffer = result.Buffer;
-                readerWriter.Advance(buffer.End);
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
+            _pipe.Advance(buffer.End);
 
-                Assert.False(result.IsCompleted);
-                Assert.True(result.IsCancelled);
-                Assert.True(buffer.IsEmpty);
+            Assert.False(result.IsCompleted);
+            Assert.True(result.IsCancelled);
+            Assert.True(buffer.IsEmpty);
 
-                var awaitable = readerWriter.ReadAsync();
-                Assert.False(awaitable.IsCompleted);
-            }
+            var awaitable = _pipe.ReadAsync();
+            Assert.False(awaitable.IsCompleted);
         }
 
         [Fact]
         public async Task CancellingPendingReadBeforeReadAsync()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                readerWriter.CancelPendingRead();
+            _pipe.CancelPendingRead();
 
-                var result = await readerWriter.ReadAsync();
-                var buffer = result.Buffer;
-                readerWriter.Advance(buffer.End);
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
+            _pipe.Advance(buffer.End);
 
-                Assert.False(result.IsCompleted);
-                Assert.True(result.IsCancelled);
-                Assert.True(buffer.IsEmpty);
+            Assert.False(result.IsCompleted);
+            Assert.True(result.IsCancelled);
+            Assert.True(buffer.IsEmpty);
 
-                var bytes = Encoding.ASCII.GetBytes("Hello World");
-                var output = readerWriter.Alloc();
-                output.Write(bytes);
-                await output.FlushAsync();
+            var bytes = Encoding.ASCII.GetBytes("Hello World");
+            var output = _pipe.Alloc();
+            output.Write(bytes);
+            await output.FlushAsync();
 
-                result = await readerWriter.ReadAsync();
-                buffer = result.Buffer;
+            result = await _pipe.ReadAsync();
+            buffer = result.Buffer;
 
-                Assert.Equal(11, buffer.Length);
-                Assert.False(result.IsCancelled);
-                Assert.True(buffer.IsSingleSpan);
-                var array = new byte[11];
-                buffer.First.Span.CopyTo(array);
-                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
-            }
+            Assert.Equal(11, buffer.Length);
+            Assert.False(result.IsCancelled);
+            Assert.True(buffer.IsSingleSpan);
+            var array = new byte[11];
+            buffer.First.Span.CopyTo(array);
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
         public async Task CancellingBeforeAdvance()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
+            var bytes = Encoding.ASCII.GetBytes("Hello World");
+            var output = _pipe.Alloc();
+            output.Write(bytes);
+            await output.FlushAsync();
 
-                var bytes = Encoding.ASCII.GetBytes("Hello World");
-                var output = readerWriter.Alloc();
-                output.Write(bytes);
-                await output.FlushAsync();
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
 
-                var result = await readerWriter.ReadAsync();
-                var buffer = result.Buffer;
+            Assert.Equal(11, buffer.Length);
+            Assert.False(result.IsCancelled);
+            Assert.True(buffer.IsSingleSpan);
+            var array = new byte[11];
+            buffer.First.Span.CopyTo(array);
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
 
-                Assert.Equal(11, buffer.Length);
-                Assert.False(result.IsCancelled);
-                Assert.True(buffer.IsSingleSpan);
-                var array = new byte[11];
-                buffer.First.Span.CopyTo(array);
-                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+            _pipe.CancelPendingRead();
 
-                readerWriter.CancelPendingRead();
+            _pipe.Advance(buffer.End);
 
-                readerWriter.Advance(buffer.End);
+            var awaitable = _pipe.ReadAsync();
 
-                var awaitable = readerWriter.ReadAsync();
+            Assert.True(awaitable.IsCompleted);
 
-                Assert.True(awaitable.IsCompleted);
+            result = await awaitable;
 
-                result = await awaitable;
+            Assert.True(result.IsCancelled);
 
-                Assert.True(result.IsCancelled);
-            }
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
         public async Task CancellingPendingAfterReadAsync()
         {
-            using (var factory = new PipelineFactory())
+            var bytes = Encoding.ASCII.GetBytes("Hello World");
+            var output = _pipe.Alloc();
+            output.Write(bytes);
+
+            var task = Task.Run(async () =>
             {
-                var readerWriter = factory.Create();
-                var bytes = Encoding.ASCII.GetBytes("Hello World");
-                var output = readerWriter.Alloc();
-                output.Write(bytes);
+                var result = await _pipe.ReadAsync();
+                var buffer = result.Buffer;
+                _pipe.Advance(buffer.End);
 
-                var task = Task.Run(async () =>
-                {
-                    var result = await readerWriter.ReadAsync();
-                    var buffer = result.Buffer;
-                    readerWriter.Advance(buffer.End);
+                Assert.False(result.IsCompleted);
+                Assert.True(result.IsCancelled);
+                Assert.True(buffer.IsEmpty);
 
-                    Assert.False(result.IsCompleted);
-                    Assert.True(result.IsCancelled);
-                    Assert.True(buffer.IsEmpty);
+                await output.FlushAsync();
 
-                    await output.FlushAsync();
+                result = await _pipe.ReadAsync();
+                buffer = result.Buffer;
 
-                    result = await readerWriter.ReadAsync();
-                    buffer = result.Buffer;
+                Assert.Equal(11, buffer.Length);
+                Assert.True(buffer.IsSingleSpan);
+                Assert.False(result.IsCancelled);
+                var array = new byte[11];
+                buffer.First.Span.CopyTo(array);
+                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+                _pipe.AdvanceReader(result.Buffer.End, result.Buffer.End);
 
-                    Assert.Equal(11, buffer.Length);
-                    Assert.True(buffer.IsSingleSpan);
-                    Assert.False(result.IsCancelled);
-                    var array = new byte[11];
-                    buffer.First.Span.CopyTo(array);
-                    Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
-                    readerWriter.AdvanceReader(result.Buffer.End, result.Buffer.End);
+                _pipe.CompleteReader();
+            });
 
-                    readerWriter.CompleteReader();
-                });
+            // Wait until reading starts to cancel the pending read
+            await _pipe.ReadingStarted;
 
-                // Wait until reading starts to cancel the pending read
-                await readerWriter.ReadingStarted;
+            _pipe.CancelPendingRead();
 
-                readerWriter.CancelPendingRead();
+            await task;
 
-                await task;
-
-                readerWriter.CompleteWriter();
-            }
+            _pipe.CompleteWriter();
         }
 
         [Fact]
         public async Task WriteAndCancellingPendingReadBeforeReadAsync()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                var bytes = Encoding.ASCII.GetBytes("Hello World");
-                var output = readerWriter.Alloc();
-                output.Write(bytes);
-                await output.FlushAsync();
+            var bytes = Encoding.ASCII.GetBytes("Hello World");
+            var output = _pipe.Alloc();
+            output.Write(bytes);
+            await output.FlushAsync();
 
-                readerWriter.CancelPendingRead();
+            _pipe.CancelPendingRead();
 
-                var result = await readerWriter.ReadAsync();
-                var buffer = result.Buffer;
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
 
-                Assert.False(result.IsCompleted);
-                Assert.True(result.IsCancelled);
-                Assert.False(buffer.IsEmpty);
-                Assert.Equal(11, buffer.Length);
-                Assert.True(buffer.IsSingleSpan);
-                var array = new byte[11];
-                buffer.First.Span.CopyTo(array);
-                Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
-                readerWriter.AdvanceReader(buffer.End, buffer.End);
-            }
+            Assert.False(result.IsCompleted);
+            Assert.True(result.IsCancelled);
+            Assert.False(buffer.IsEmpty);
+            Assert.Equal(11, buffer.Length);
+            Assert.True(buffer.IsSingleSpan);
+            var array = new byte[11];
+            buffer.First.Span.CopyTo(array);
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
+            _pipe.AdvanceReader(buffer.End, buffer.End);
         }
 
         [Fact]
         public async Task ReadingCanBeCancelled()
         {
-            using (var factory = new PipelineFactory())
+            var cts = new CancellationTokenSource();
+            cts.Token.Register(() =>
             {
-                var readerWriter = factory.Create();
-                var cts = new CancellationTokenSource();
-                cts.Token.Register(() =>
-                {
-                    readerWriter.CompleteWriter(new OperationCanceledException(cts.Token));
-                });
+                _pipe.CompleteWriter(new OperationCanceledException(cts.Token));
+            });
 
-                var ignore = Task.Run(async () =>
-                {
-                    await Task.Delay(1000);
-                    cts.Cancel();
-                });
+            var ignore = Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                cts.Cancel();
+            });
 
-                await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-                {
-                    var result = await readerWriter.ReadAsync();
-                    var buffer = result.Buffer;
-                });
-            }
+            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            {
+                var result = await _pipe.ReadAsync();
+                var buffer = result.Buffer;
+            });
         }
 
         [Fact]
         public async Task HelloWorldAcrossTwoBlocks()
         {
             const int blockSize = 4032;
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                //     block 1       ->    block2
-                // [padding..hello]  ->  [  world   ]
-                var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
-                var bytes = Encoding.ASCII.GetBytes("Hello World");
-                var writeBuffer = readerWriter.Alloc();
-                writeBuffer.Write(paddingBytes);
-                writeBuffer.Write(bytes);
-                await writeBuffer.FlushAsync();
+            //     block 1       ->    block2
+            // [padding..hello]  ->  [  world   ]
+            var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
+            var bytes = Encoding.ASCII.GetBytes("Hello World");
+            var writeBuffer = _pipe.Alloc();
+            writeBuffer.Write(paddingBytes);
+            writeBuffer.Write(bytes);
+            await writeBuffer.FlushAsync();
 
-                var result = await readerWriter.ReadAsync();
-                var buffer = result.Buffer;
-                Assert.False(buffer.IsSingleSpan);
-                var helloBuffer = buffer.Slice(blockSize - 5);
-                Assert.False(helloBuffer.IsSingleSpan);
-                var memory = new List<Memory<byte>>();
-                foreach (var m in helloBuffer)
-                {
-                    memory.Add(m);
-                }
-                var spans = memory;
-                Assert.Equal(2, memory.Count);
-                var helloBytes = new byte[spans[0].Length];
-                spans[0].Span.CopyTo(helloBytes);
-                var worldBytes = new byte[spans[1].Length];
-                spans[1].Span.CopyTo(worldBytes);
-                Assert.Equal("Hello", Encoding.ASCII.GetString(helloBytes));
-                Assert.Equal(" World", Encoding.ASCII.GetString(worldBytes));
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
+            Assert.False(buffer.IsSingleSpan);
+            var helloBuffer = buffer.Slice(blockSize - 5);
+            Assert.False(helloBuffer.IsSingleSpan);
+            var memory = new List<Memory<byte>>();
+            foreach (var m in helloBuffer)
+            {
+                memory.Add(m);
             }
+            var spans = memory;
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
+
+            Assert.Equal(2, memory.Count);
+            var helloBytes = new byte[spans[0].Length];
+            spans[0].Span.CopyTo(helloBytes);
+            var worldBytes = new byte[spans[1].Length];
+            spans[1].Span.CopyTo(worldBytes);
+            Assert.Equal("Hello", Encoding.ASCII.GetString(helloBytes));
+            Assert.Equal(" World", Encoding.ASCII.GetString(worldBytes));
         }
 
         [Fact]
         public async Task IndexOfNotFoundReturnsEnd()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                var bytes = Encoding.ASCII.GetBytes("Hello World");
+            var bytes = Encoding.ASCII.GetBytes("Hello World");
 
-                await readerWriter.WriteAsync(bytes);
-                var result = await readerWriter.ReadAsync();
-                var buffer = result.Buffer;
-                ReadableBuffer slice;
-                ReadCursor cursor;
+            await _pipe.WriteAsync(bytes);
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
+            ReadableBuffer slice;
+            ReadCursor cursor;
 
-                Assert.False(buffer.TrySliceTo(10, out slice, out cursor));
-            }
+            Assert.False(buffer.TrySliceTo(10, out slice, out cursor));
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
@@ -460,116 +436,90 @@ namespace System.IO.Pipelines.Tests
             var vecUpperR = new Vector<byte>((byte)'R');
 
             const int blockSize = 4032;
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                //     block 1       ->    block2
-                // [padding..hello]  ->  [  world   ]
-                var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
-                var bytes = Encoding.ASCII.GetBytes("Hello World");
-                var writeBuffer = readerWriter.Alloc();
-                writeBuffer.Write(paddingBytes);
-                writeBuffer.Write(bytes);
-                await writeBuffer.FlushAsync();
+            //     block 1       ->    block2
+            // [padding..hello]  ->  [  world   ]
+            var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
+            var bytes = Encoding.ASCII.GetBytes("Hello World");
+            var writeBuffer = _pipe.Alloc();
+            writeBuffer.Write(paddingBytes);
+            writeBuffer.Write(bytes);
+            await writeBuffer.FlushAsync();
 
-                var result = await readerWriter.ReadAsync();
-                var buffer = result.Buffer;
-                ReadableBuffer slice;
-                ReadCursor cursor;
-                Assert.False(buffer.TrySliceTo((byte)'R', out slice, out cursor));
-            }
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
+            ReadableBuffer slice;
+            ReadCursor cursor;
+            Assert.False(buffer.TrySliceTo((byte)'R', out slice, out cursor));
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
         public async Task SlowPathIndexOfAcrossBlocks()
         {
             const int blockSize = 4032;
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                //     block 1       ->    block2
-                // [padding..hello]  ->  [  world   ]
-                var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
-                var bytes = Encoding.ASCII.GetBytes("Hello World");
-                var writeBuffer = readerWriter.Alloc();
-                writeBuffer.Write(paddingBytes);
-                writeBuffer.Write(bytes);
-                await writeBuffer.FlushAsync();
+            //     block 1       ->    block2
+            // [padding..hello]  ->  [  world   ]
+            var paddingBytes = Enumerable.Repeat((byte)'a', blockSize - 5).ToArray();
+            var bytes = Encoding.ASCII.GetBytes("Hello World");
+            var writeBuffer = _pipe.Alloc();
+            writeBuffer.Write(paddingBytes);
+            writeBuffer.Write(bytes);
+            await writeBuffer.FlushAsync();
 
-                var result = await readerWriter.ReadAsync();
-                var buffer = result.Buffer;
-                ReadableBuffer slice;
-                ReadCursor cursor;
-                Assert.False(buffer.IsSingleSpan);
-                Assert.True(buffer.TrySliceTo((byte)' ', out slice, out cursor));
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
+            ReadableBuffer slice;
+            ReadCursor cursor;
+            Assert.False(buffer.IsSingleSpan);
+            Assert.True(buffer.TrySliceTo((byte)' ', out slice, out cursor));
 
-                slice = buffer.Slice(cursor).Slice(1);
-                var array = slice.ToArray();
+            slice = buffer.Slice(cursor).Slice(1);
+            var array = slice.ToArray();
 
-                Assert.Equal("World", Encoding.ASCII.GetString(array));
-            }
+            Assert.Equal("World", Encoding.ASCII.GetString(array));
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
         public void AllocMoreThanPoolBlockSizeThrows()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                Assert.Throws<ArgumentOutOfRangeException>(() => readerWriter.Alloc(8192));
-            }
+            Assert.Throws<ArgumentOutOfRangeException>(() => _pipe.Alloc(8192));
         }
 
         [Fact]
         public void ReadingStartedCompletesOnCompleteReader()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
+            _pipe.CompleteReader();
 
-                readerWriter.CompleteReader();
-
-                Assert.True(readerWriter.ReadingStarted.IsCompleted);
-            }
+            Assert.True(_pipe.ReadingStarted.IsCompleted);
         }
 
         [Fact]
         public void ReadingStartedCompletesOnCallToReadAsync()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
+            _pipe.ReadAsync();
 
-                readerWriter.ReadAsync();
-
-                Assert.True(readerWriter.ReadingStarted.IsCompleted);
-            }
+            Assert.True(_pipe.ReadingStarted.IsCompleted);
         }
 
         [Fact]
         public void ThrowsOnReadAfterCompleteReader()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
+            _pipe.CompleteReader();
 
-                readerWriter.CompleteReader();
-
-                Assert.Throws<InvalidOperationException>(() => readerWriter.ReadAsync());
-            }
+            Assert.Throws<InvalidOperationException>(() => _pipe.ReadAsync());
         }
 
         [Fact]
         public void ThrowsOnAllocAfterCompleteWriter()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
 
-                readerWriter.CompleteWriter();
+            _pipe.CompleteWriter();
 
-                Assert.Throws<InvalidOperationException>(() => readerWriter.Alloc());
-            }
+            Assert.Throws<InvalidOperationException>(() => _pipe.Alloc());
+            _pipe.Commit();
         }
 
         [Fact]
@@ -580,7 +530,7 @@ namespace System.IO.Pipelines.Tests
             using (var factory = new PipelineFactory(pool))
             {
                 var readerWriter = factory.Create();
-                await readerWriter.WriteAsync(new byte[] {1});
+                await readerWriter.WriteAsync(new byte[] { 1 });
 
                 readerWriter.CompleteWriter();
                 readerWriter.CompleteReader();
@@ -595,26 +545,48 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task CompleteReaderThrowsIfReadInProgress()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                await readerWriter.WriteAsync(new byte[1]);
-                await readerWriter.ReadAsync();
+            await _pipe.WriteAsync(new byte[1]);
+            var result = await _pipe.ReadAsync();
+            var buffer = result.Buffer;
 
-                Assert.Throws<InvalidOperationException>(() => readerWriter.CompleteReader());
-            }
+            Assert.Throws<InvalidOperationException>(() => _pipe.CompleteReader());
+
+            _pipe.AdvanceReader(buffer.Start, buffer.Start);
         }
 
         [Fact]
         public void CompleteWriterThrowsIfWriteInProgress()
         {
-            using (var factory = new PipelineFactory())
-            {
-                var readerWriter = factory.Create();
-                readerWriter.Alloc();
+            _pipe.Alloc();
 
-                Assert.Throws<InvalidOperationException>(() => readerWriter.CompleteWriter());
-            }
+            Assert.Throws<InvalidOperationException>(() => _pipe.CompleteWriter());
+
+            _pipe.Commit();
+        }
+
+        [Fact]
+        public async Task ReadAsync_ThrowsIfWriterCompletedWithException()
+        {
+            _pipe.CompleteWriter(new InvalidOperationException("Writer exception"));
+
+            var invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pipe.ReadAsync());
+            Assert.Equal("Writer exception", invalidOperationException.Message);
+            invalidOperationException = await Assert.ThrowsAsync<InvalidOperationException>(async () => await _pipe.ReadAsync());
+            Assert.Equal("Writer exception", invalidOperationException.Message);
+        }
+
+        [Fact]
+        public void FlushAsync_ReturnsCompletedTaskWhenMaxSizeIfZero()
+        {
+            var writableBuffer = _pipe.Alloc(1);
+            writableBuffer.Advance(1);
+            var flushTask = writableBuffer.FlushAsync();
+            Assert.True(flushTask.IsCompleted);
+
+            writableBuffer = _pipe.Alloc(1);
+            writableBuffer.Advance(1);
+            flushTask = writableBuffer.FlushAsync();
+            Assert.True(flushTask.IsCompleted);
         }
 
         private class DisposeTrackingOwnedMemory : OwnedMemory<byte>, IBufferPool
