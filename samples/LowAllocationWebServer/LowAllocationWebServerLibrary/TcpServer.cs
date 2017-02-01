@@ -158,7 +158,17 @@ namespace Microsoft.Net.Sockets
             SocketImports.closesocket(_handle);
         }
 
-        public int Send(Memory<byte> buffer)
+        public unsafe int Send(ReadOnlySpan<byte> buffer)
+        {
+            // TODO: this nedfs to be pinned for longer
+            fixed (byte* bytes = &buffer.DangerousGetPinnableReference())
+            {
+                IntPtr pointer = new IntPtr(bytes);
+                return SendPinned(pointer, buffer.Length);
+            }
+        }
+
+        public int Send(ReadOnlyMemory<byte> buffer)
         {
             // This can work with Span<byte> because it's synchronous but we need pinning support
             unsafe {
