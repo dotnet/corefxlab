@@ -86,29 +86,11 @@ namespace Microsoft.Net.Http
             Log.LogRequest(request);
 
             // TODO: this block is a mess. 
-            using (var response = new HttpResponse(1024))
+            using (var response = new ConnectionFormatter(socket))
             {
                 WriteResponse(request, response);
                 s_pool.Return(requestBuffer);
-                var responseLength = response.WrittenBytes;
-
-                var headers = response.Headers;
-                if (Log.IsVerbose)
-                {
-                    Log.LogMessage(Log.Level.Verbose, Encoding.UTF8.GetString(headers.ToArray()));
-                }
-
-                var body = response.Body;
-
-                if (Log.IsVerbose)
-                {
-                    Log.LogMessage(Log.Level.Verbose, "Body:");
-                    Log.LogMessage(Log.Level.Verbose, Encoding.UTF8.GetString(body.ToArray()));
-                }
-
-                socket.Send(headers);
-                socket.Send(body);
-
+                response.Finish();
                 socket.Close();
             }
 
@@ -118,39 +100,36 @@ namespace Microsoft.Net.Http
             }
         }
 
-        protected virtual void WriteResponseFor400(Span<byte> requestBytes, HttpResponse response) // Bad Request
+        protected virtual void WriteResponseFor400(Span<byte> requestBytes, ConnectionFormatter response) // Bad Request
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", requestBytes.Length);
-            WriteCommonHeaders(response, HttpVersion.V1_1, 400, "Bad Request", false);
-            var formatter = new ResponseFormatter(response);
-            formatter.WriteEoh();
+            WriteCommonHeaders(ref response, HttpVersion.V1_1, 400, "Bad Request");
+            response.AppendEoh();
         }
 
         // TODO: HttpRequest is a large struct. We cannot pass it around like that
-        protected virtual void WriteResponseFor404(HttpRequest request, HttpResponse response) // Not Found
+        protected virtual void WriteResponseFor404(HttpRequest request, ConnectionFormatter response) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.Path.ToUtf8String(TextEncoder.Utf8));
-            WriteCommonHeaders(response, HttpVersion.V1_1, 404, "Not Found", false);
-            var formatter = new ResponseFormatter(response);
-            formatter.WriteEoh();
+            WriteCommonHeaders(ref response, HttpVersion.V1_1, 404, "Not Found");
+            response.AppendEoh();
         }
 
         // TODO: this is not a very general purpose routine. Maybe should not be in this base class?
-        protected static void WriteCommonHeaders(
-            HttpResponse response,
+        protected static void WriteCommonHeaders<TFormatter>(
+            ref TFormatter formatter,
             HttpVersion version,
             int statuCode,
-            string reasonCode,
-            bool keepAlive)
+            string reasonCode)
+            where TFormatter : ITextOutput
         {
             var currentTime = DateTime.UtcNow;
-            var formatter = new ResponseFormatter(response);
             formatter.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
             formatter.Append("Transfer-Encoding : chunked\r\n");
             formatter.Append("Server : .NET Core Sample Server\r\n");
             formatter.Format("Date : {0:R}\r\n", DateTime.UtcNow);
         }
 
-        protected abstract void WriteResponse(HttpRequest request, HttpResponse response);
+        protected abstract void WriteResponse(HttpRequest request, ConnectionFormatter response);
     }
 }

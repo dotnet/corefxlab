@@ -159,7 +159,7 @@ namespace Microsoft.Net.Sockets
         }
 
         public unsafe int Send(ReadOnlySpan<byte> buffer)
-        {
+        {          
             // TODO: this nedfs to be pinned for longer
             fixed (byte* bytes = &buffer.DangerousGetPinnableReference())
             {
