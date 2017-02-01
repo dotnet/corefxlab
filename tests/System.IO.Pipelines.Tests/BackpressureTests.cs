@@ -6,7 +6,7 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class BackpressureTests: IDisposable
+    public class BackpressureTests : IDisposable
     {
         private PipelineFactory _pipelineFactory;
 
@@ -15,7 +15,11 @@ namespace System.IO.Pipelines.Tests
         public BackpressureTests()
         {
             _pipelineFactory = new PipelineFactory();
-            _pipe = _pipelineFactory.Create(32, 64);
+            _pipe = _pipelineFactory.Create(new PipeOptions
+            {
+                MaximumSizeLow = 32,
+                MaximumSizeHigh = 64
+            });
         }
 
         public void Dispose()

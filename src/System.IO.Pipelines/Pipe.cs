@@ -16,7 +16,9 @@ namespace System.IO.Pipelines
         private static readonly Action _awaitableIsNotCompleted = () => { };
 
         private readonly IBufferPool _pool;
-        private readonly long _maximumSizeHight;
+        private readonly IScheduler _scheduler;
+
+        private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
         private Action _awaitableState;
@@ -62,24 +64,33 @@ namespace System.IO.Pipelines
         /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
         /// </summary>
         /// <param name="pool"></param>
+        /// <param name="scheduler"></param>
         /// <param name="maximumSizeLow"></param>
         /// <param name="maximumSizeHigh"></param>
-        public Pipe(IBufferPool pool, long maximumSizeLow = 0, long maximumSizeHigh = 0)
+        public Pipe(IBufferPool pool, IScheduler scheduler = null, long maximumSizeLow = 0, long maximumSizeHigh = 0)
         {
+            if (pool == null)
+            {
+                throw new ArgumentNullException(nameof(pool));
+            }
+
             if (maximumSizeLow < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(maximumSizeLow));
             }
+
             if (maximumSizeHigh < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(maximumSizeHigh));
             }
+
             if (maximumSizeLow > maximumSizeHigh)
             {
-                throw new ArgumentException(nameof(maximumSizeHigh) + " should be greater or equal to "+ nameof(maximumSizeLow), nameof(maximumSizeHigh));
+                throw new ArgumentException(nameof(maximumSizeHigh) + " should be greater or equal to " + nameof(maximumSizeLow), nameof(maximumSizeHigh));
             }
             _pool = pool;
-            _maximumSizeHight = maximumSizeHigh;
+            _scheduler = scheduler ?? InlineScheduler.Default;
+            _maximumSizeHigh = maximumSizeHigh;
             _maximumSizeLow = maximumSizeLow;
             _awaitableState = _awaitableIsNotCompleted;
             _flushAwaitableState = _awaitableIsCompleted;
@@ -304,8 +315,8 @@ namespace System.IO.Pipelines
 
                 _length += _currentWriteLength;
                 // Do not reset when writing is complete
-                if (_maximumSizeHight  > 0 &&
-                    _length >= _maximumSizeHight &&
+                if (_maximumSizeHigh > 0 &&
+                    _length >= _maximumSizeHigh &&
                     !Writing.IsCompleted)
                 {
                     ResetAwaitable(ref _flushAwaitableState);
@@ -596,7 +607,7 @@ namespace System.IO.Pipelines
                 _readingTcs.TrySetResult(null);
             }
 
-            FlushAsync();
+            var ignore = FlushAsync();
         }
 
         // Awaiter support members
@@ -616,9 +627,7 @@ namespace System.IO.Pipelines
             }
             else if (ReferenceEquals(awaitableState, _awaitableIsCompleted))
             {
-                // Dispatch here to avoid stack diving
-                // Task.Run(continuation);
-                continuation();
+                _scheduler.Schedule(continuation);
             }
             else
             {
@@ -667,7 +676,7 @@ namespace System.IO.Pipelines
             if (!ReferenceEquals(awaitableState, _awaitableIsCompleted) &&
                 !ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
             {
-                awaitableState();
+                _scheduler.Schedule(awaitableState);
             }
         }
 

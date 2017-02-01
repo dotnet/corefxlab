@@ -34,7 +34,10 @@ namespace System.IO.Pipelines.Networking.Libuv
             _handle = handle;
 
             _input = _thread.PipelineFactory.Create();
-            _output = _thread.PipelineFactory.Create();
+            _output = _thread.PipelineFactory.Create(new PipeOptions
+            {
+                Scheduler = thread
+            });
 
             StartReading();
             _sendingTask = ProcessWrites();
@@ -69,9 +72,6 @@ namespace System.IO.Pipelines.Networking.Libuv
 
                     try
                     {
-                        // Make sure we're on the libuv thread
-                        await _thread;
-
                         if (buffer.IsEmpty && result.IsCompleted)
                         {
                             break;
