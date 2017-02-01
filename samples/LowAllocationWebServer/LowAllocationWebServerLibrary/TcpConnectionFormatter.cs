@@ -10,64 +10,20 @@ using System.Text.Utf8;
 
 namespace Microsoft.Net.Http
 {
-    class OwnedLinkableBuffer : OwnedMemory<byte>, IMemoryList<byte>
-    {
-        internal OwnedLinkableBuffer _next;
-        int _written;
-
-        public OwnedLinkableBuffer(int desiredSize = 1024) : base(ArrayPool<byte>.Shared.Rent(desiredSize))
-        { }
-
-        public Memory<byte> First => Memory;
-
-        public Memory<byte> Free => Memory.Slice(_written);
-
-        public IMemoryList<byte> Rest => _next;
-
-        int? ISequence<Memory<byte>>.Length => null;
-
-        public int CopyTo(Span<byte> buffer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Enlarge(int desiredSize)
-        {
-            _next = new OwnedLinkableBuffer(desiredSize);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            var array = Array;
-            base.Dispose(disposing);
-            ArrayPool<byte>.Shared.Return(array);
-            _next.Dispose();
-        }
-
-        internal void Advance(int bytes)
-        {
-            _written += bytes;
-        }
-    }
-
-    public class ConnectionFormatter : ITextOutput, IDisposable
+    public class TcpConnectionFormatter : ITextOutput, IDisposable
     {
         static byte[] s_terminator = new Utf8String("0\r\n\r\n").Bytes.ToArray();
         const int ChunkPrefixSize = 10;
 
         TcpConnection _connection;
         int _written;
-        byte[] _buffer = new byte[1024];
-        int _headersEndIndex = 0;
+        byte[] _buffer;
+        bool _headerSent;
 
-        public ConnectionFormatter(TcpConnection connection)
+        public TcpConnectionFormatter(TcpConnection connection, int bufferSize = 4096)
         {
             _connection = connection;
+            _buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         }
 
         public EncodingData Encoding => EncodingData.InvariantUtf8;
@@ -97,11 +53,11 @@ namespace Microsoft.Net.Http
         {
             ReadOnlySpan<byte> toSend;
             // if send headers
-            if (_headersEndIndex > 0)
+            if (!_headerSent)
             {
-                toSend = _buffer.Slice(ChunkPrefixSize, _headersEndIndex);
+                toSend = _buffer.Slice(ChunkPrefixSize, _written);
                 _written = 0;
-                _headersEndIndex = -1; // headers sent
+                _headerSent = true;
             }
             else
             {
@@ -120,7 +76,7 @@ namespace Microsoft.Net.Http
             _connection.Send(toSend);
         }
 
-        public void Finish()
+        void Finish()
         {
             if (_written > 0)
             {
@@ -128,9 +84,12 @@ namespace Microsoft.Net.Http
                 _connection.Send((ReadOnlySpan<byte>)s_terminator);
             }
         }
+
         public void Dispose()
         {
             Finish();
+            ArrayPool<byte>.Shared.Return(_buffer);
+            _buffer = null;
         }
         int WriteChunkPrefix(Span<byte> chunkPrefixBuffer, int chunkLength)
         {
@@ -155,9 +114,8 @@ namespace Microsoft.Net.Http
         /// </summary>
         public void AppendEoh()
         {
-            if (_headersEndIndex == -1) throw new Exception("headers already sent");
+            if (_headerSent) throw new Exception("headers already sent");
             this.AppendHttpNewLine();
-            _headersEndIndex += _written;
             Send();
         }
     }
