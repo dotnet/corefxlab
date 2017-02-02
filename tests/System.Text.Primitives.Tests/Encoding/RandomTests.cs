@@ -147,8 +147,8 @@ namespace System.Text.Utf8.Tests
         [Theory]
         [MemberData("StringEqualsTestCases_EmptyStrings")]
         [MemberData("StringEqualsTestCases_SimpleStrings")]
-        public unsafe void StringEquals(bool expected, Utf8String s1, Utf8String s2)
-        {
+        public unsafe void StringEqualsWithThreeArgs(bool expected, Utf8String s1, Utf8String s2)
+        {   // TODO: investigate why the tests fail if we have two methods with the same name StringEquals
             Assert.Equal(expected, s1.Equals(s2));
             Assert.Equal(expected, s2.Equals(s1));
         }
