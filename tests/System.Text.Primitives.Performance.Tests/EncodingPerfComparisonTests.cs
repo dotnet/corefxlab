@@ -29,7 +29,7 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                        utf8.GetBytes(charArray, 0, characters.Length, utf8Buffer, 0);
+                    utf8.GetBytes(charArray, 0, characters.Length, utf8Buffer, 0);
                 span = new Span<byte>(utf8Buffer);
             }
         }

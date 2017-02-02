@@ -12,10 +12,10 @@ namespace Microsoft.Net.Http
     public class ApiRoutingTable<TRequestId>
     {
         const int tablecapacity = 20;
-        Utf8String[] _uris = new Utf8String[tablecapacity];
+        byte[][] _uris = new byte[tablecapacity][];
         TRequestId[] _requestIds = new TRequestId[tablecapacity];
         HttpMethod[] _verbs = new HttpMethod[tablecapacity];
-        Action<HttpRequest, HttpResponse>[] _handlers = new Action<HttpRequest, HttpResponse>[tablecapacity];
+        Action<HttpRequest, TcpConnectionFormatter>[] _handlers = new Action<HttpRequest, TcpConnectionFormatter>[tablecapacity];
         int _count;
 
         public TRequestId GetRequestId(HttpRequestLine requestLine)
@@ -26,13 +26,14 @@ namespace Microsoft.Net.Http
             return default(TRequestId);
         }
 
-        public bool TryHandle(HttpRequest request, HttpResponse response)
+        public bool TryHandle(HttpRequest request, TcpConnectionFormatter response)
         {
+            // TODO: this should not allocate new string
             Utf8String requestUtf8 = request.Path.ToUtf8String(TextEncoder.Utf8);
             for (int i = 0; i < _count; i++)
             {
                 // TODO: this should check the verb too
-                if (requestUtf8.Equals(_uris[i]))
+                if (requestUtf8.Equals(new Utf8String(_uris[i])))
                 {
                     _handlers[i](request, response);
                     return true;
@@ -41,19 +42,14 @@ namespace Microsoft.Net.Http
             return false;
         }
 
-        public void Add(HttpMethod method, Utf8String requestUri, TRequestId requestId, Action<HttpRequest, HttpResponse> handler = null)
+        public void Add(HttpMethod method, string requestUri, TRequestId requestId, Action<HttpRequest, TcpConnectionFormatter> handler = null)
         {
             if (_count == tablecapacity) throw new NotImplementedException("ApiReoutingTable does not resize yet.");
-            _uris[_count] = requestUri;
+            _uris[_count] = new Utf8String(requestUri).Bytes.ToArray();
             _requestIds[_count] = requestId;
             _verbs[_count] = method;
             _handlers[_count] = handler;
             _count++;
-        }
-
-        public void Add(HttpMethod method, string requestUri, TRequestId requestId, Action<HttpRequest, HttpResponse> handler = null)
-        {
-            Add(method, new Utf8String(requestUri), requestId, handler);
         }
     }
 }

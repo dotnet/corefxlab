@@ -11,7 +11,7 @@ using System.IO.Pipelines.Networking.Libuv.Internal;
 namespace System.IO.Pipelines.Networking.Libuv
 {
     // This class needs a bunch of work to make sure it's thread safe
-    public class UvThread : ICriticalNotifyCompletion, IDisposable
+    public class UvThread : IDisposable, IScheduler
     {
         private readonly Thread _thread = new Thread(OnStart)
         {
@@ -55,11 +55,6 @@ namespace System.IO.Pipelines.Networking.Libuv
 
             _postHandle.Send();
         }
-
-        // Awaiter impl
-        public bool IsCompleted => Thread.CurrentThread.ManagedThreadId == _thread.ManagedThreadId;
-
-        public UvThread GetAwaiter() => this;
 
         public void GetResult()
         {
@@ -132,21 +127,16 @@ namespace System.IO.Pipelines.Networking.Libuv
             }
         }
 
-        public void UnsafeOnCompleted(Action continuation)
-        {
-            OnCompleted(continuation);
-        }
-
-        public void OnCompleted(Action continuation)
-        {
-            Post(state => ((Action)state)(), continuation);
-        }
-
         public void Dispose()
         {
             Stop();
 
             PipelineFactory.Dispose();
+        }
+
+        public void Schedule(Action action)
+        {
+            Post(state => ((Action)state)(), action);
         }
 
         private struct Work
