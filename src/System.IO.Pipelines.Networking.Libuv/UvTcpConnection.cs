@@ -198,9 +198,10 @@ namespace System.IO.Pipelines.Networking.Libuv
                     handle.ReadStop();
 
                     // Resume reading when the awaitable completes
-                    await awaitable;
-
-                    StartReading();
+                    if (await awaitable)
+                    {
+                        StartReading();
+                    }
                 }
             }
 

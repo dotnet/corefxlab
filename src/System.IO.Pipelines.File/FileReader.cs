@@ -79,9 +79,10 @@ namespace System.IO.Pipelines.File
         private static async Task Continue(WritableBufferAwaitable awaitable, ReadOperation operation)
         {
             // Keep reading once we get the completion
-            await awaitable;
-
-            operation.Read();
+            if (await awaitable)
+            {
+                operation.Read();
+            }
         }
 
         private class ReadOperation

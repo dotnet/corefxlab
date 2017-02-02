@@ -18,7 +18,7 @@ namespace System.IO.Pipelines
     {
         bool IsCompleted { get; }
 
-        void GetResult();
+        bool GetResult();
 
         void OnCompleted(Action continuation);
     }

@@ -365,11 +365,7 @@ namespace System.IO.Pipelines
                 Commit();
             }
 
-            // TODO: Can factor out this lock
-            lock (_sync)
-            {
-                Resume(_readerScheduler, ref _readerCallback);
-            }
+            Resume(_readerScheduler, ref _readerCallback);
 
             return new WritableBufferAwaitable(this);
         }
@@ -643,8 +639,8 @@ namespace System.IO.Pipelines
         private static void GetResult(Action awaitableState,
             ref int cancelledState,
             Task task,
-            out bool readingIsCancelled,
-            out bool readingIsCompleted)
+            out bool isCancelled,
+            out bool isCompleted)
         {
             if (!IsCompleted(awaitableState))
             {
@@ -652,13 +648,13 @@ namespace System.IO.Pipelines
             }
 
             // Change the state from to be cancelled -> observed
-            readingIsCancelled = Interlocked.CompareExchange(
+            isCancelled = Interlocked.CompareExchange(
                 ref cancelledState,
                 CancelledState.CancellationObserved,
                 CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
 
-            readingIsCompleted = task.IsCompleted;
-            if (readingIsCompleted)
+            isCompleted = task.IsCompleted;
+            if (isCompleted)
             {
                 // Observe any exceptions if the reading task is completed
                 task.GetAwaiter().GetResult();
@@ -727,22 +723,23 @@ namespace System.IO.Pipelines
 
         ReadResult IReadableBufferAwaiter.GetResult()
         {
-            bool readingIsCancelled;
-            bool readingIsCompleted;
-            GetResult(_readerCallback, ref _cancelledState, Reading, out readingIsCancelled, out readingIsCompleted);
-            return new ReadResult(Read(), readingIsCancelled, readingIsCompleted);
+            bool isCancelled;
+            bool isCompleted;
+            GetResult(_readerCallback, ref _cancelledState, Reading, out isCancelled, out isCompleted);
+            return new ReadResult(Read(), isCancelled, isCompleted);
         }
 
         // IFlushAwaiter members
 
         bool IWritableBufferAwaiter.IsCompleted => IsCompleted(_writerCallback);
 
-        void IWritableBufferAwaiter.GetResult()
+        bool IWritableBufferAwaiter.GetResult()
         {
-            bool readingIsCancelled;
-            bool readingIsCompleted;
+            bool isCancelled;
+            bool isCompleted;
             int cancelledState = CancelledState.NotCancelled;
-            GetResult(_writerCallback, ref cancelledState, _writingTcs.Task, out readingIsCancelled, out readingIsCompleted);
+            GetResult(_writerCallback, ref cancelledState, _writingTcs.Task, out isCancelled, out isCompleted);
+            return isCompleted;
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
