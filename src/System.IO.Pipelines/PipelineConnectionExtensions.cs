@@ -19,11 +19,11 @@ namespace System.IO.Pipelines
 
     public static class PipelineWriterExtensions
     {
-        public static Task WriteAsync(this IPipelineWriter output, Span<byte> source)
+        public static async Task WriteAsync(this IPipelineWriter output, Span<byte> source)
         {
             var writeBuffer = output.Alloc();
             writeBuffer.Write(source);
-            return writeBuffer.FlushAsync();
+            await writeBuffer.FlushAsync();
         }
     }
 

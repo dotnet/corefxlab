@@ -13,11 +13,11 @@
     <ProjectReference Include="..\..\tests\Benchmarks\Benchmarks.csproj" />
     <ProjectReference Include="..\..\tests\System.Binary.Base64.Tests\System.Binary.Base64.Tests.csproj" />
     <ProjectReference Include="..\..\tests\System.Slices.Tests\System.Slices.Tests.csproj" />
-    <ProjectReference Include="..\..\tests\System.Text.Primitives.Tests\System.Text.Primitives.Tests.csproj" />
+    <ProjectReference Include="..\..\tests\System.Text.Primitives.Performance.Tests\System.Text.Primitives.Performance.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="xunit.performance.api" Version="1.0.0-alpha-build0043" />
+    <PackageReference Include="xunit.performance.api" Version="1.0.0-alpha-build0046" />
   </ItemGroup>
 
 </Project>

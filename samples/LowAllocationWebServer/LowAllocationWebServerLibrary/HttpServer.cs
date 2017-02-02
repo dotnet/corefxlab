@@ -10,24 +10,23 @@ using System.Text.Utf8;
 using System.Text.Http;
 using System.Threading.Tasks;
 using System.Text;
-using System.Collections.Sequences;
+using System.Threading;
 
 namespace Microsoft.Net.Http
 {
     public abstract class HttpServer
     {
-        readonly static ArrayPool<byte> s_pool = ArrayPool<byte>.Shared;
-
-        protected static Utf8String HttpNewline = new Utf8String(new byte[] { 13, 10 });
-
-        protected volatile bool _isCancelled = false;
+        CancellationToken _cancellation;
         TcpServer _listener;
+
         public Log Log { get; protected set; }
 
-        const int RequestBufferSize = 2048;
+        public int RequestBufferSize = 1024;
+        public int ResponseBufferSize = 1024;
 
-        protected HttpServer(Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
+        protected HttpServer(CancellationToken cancellation, Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
         {
+            _cancellation = cancellation;
             Log = log;
             _listener = new TcpServer(port, address1, address2, address3, address4);
         }
@@ -35,32 +34,22 @@ namespace Microsoft.Net.Http
         public Task StartAsync()
         {
             return Task.Run(() => {
-                this.Start();
+                Start();
             });
-        }
-
-        public void Stop()
-        {
-            _isCancelled = true;
-            Log.LogVerbose("Server Terminated");
         }
 
         void Start()
         {
-            try
-            {
-                while (!_isCancelled)
-                {
+            try {
+                while (!_cancellation.IsCancellationRequested) {
                     TcpConnection socket = _listener.Accept();
                     ProcessRequest(socket);
                 }
                 _listener.Stop();
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 Log.LogError(e.Message);
                 Log.LogVerbose(e.ToString());
-                Stop();
             }
         }
 
@@ -68,89 +57,91 @@ namespace Microsoft.Net.Http
         {
             Log.LogVerbose("Processing Request");
 
-            var requestBuffer = s_pool.Rent(RequestBufferSize);
-            var arrayMemory = new OwnedArray<byte>(requestBuffer);
+            using (OwnedBuffer rootBuffer = MemoryPool.Rent(RequestBufferSize)) {
+                OwnedBuffer requestBuffer = rootBuffer;
 
-            var requestByteCount = socket.Receive(requestBuffer);
+                while (true) {
+                    Memory<byte> requestMemory = requestBuffer.Memory;
 
-            if (requestByteCount == 0)
-            {
-                socket.Close();
-                return;
-            }
+                    int requestBytesRead = socket.Receive(requestMemory);
+                    if (requestBytesRead == 0) {
+                        socket.Close();
+                        return;
+                    }
 
-            var requestMemory = arrayMemory.Memory.Slice(0, requestByteCount);
-            var requestBytes = new ReadOnlyBytes(requestMemory);
+                    requestBuffer.Append(requestBytesRead);
 
-            var request = HttpRequest.Parse(requestBytes);
-            Log.LogRequest(request);
-
-            // TODO: this block is a mess. 
-            using (var response = new HttpResponse(1024))
-            {
-                WriteResponse(request, response);
-                s_pool.Return(requestBuffer);
-                var responseLength = response.WrittenBytes;
-
-                var headers = response.Headers;
-                if (Log.IsVerbose)
-                {
-                    Log.LogMessage(Log.Level.Verbose, Encoding.UTF8.GetString(headers.ToArray()));
+                    if (requestBytesRead == requestMemory.Length) {
+                        requestBuffer = requestBuffer.Enlarge(RequestBufferSize);
+                    }
+                    else {
+                        break;
+                    }
                 }
 
-                var body = response.Body;
+                var requestBytes = new ReadOnlyBytes(rootBuffer);
 
-                if (Log.IsVerbose)
-                {
-                    Log.LogMessage(Log.Level.Verbose, "Body:");
-                    Log.LogMessage(Log.Level.Verbose, Encoding.UTF8.GetString(body.ToArray()));
+                HttpRequest parsedRequest = HttpRequest.Parse(requestBytes);
+                Log.LogRequest(parsedRequest);
+
+                using (var response = new TcpConnectionFormatter(socket, ResponseBufferSize)) {
+                    WriteResponse(parsedRequest, response);
                 }
-
-                socket.Send(headers);
-                socket.Send(body);
 
                 socket.Close();
             }
 
-            if (Log.IsVerbose)
-            {
+            if (Log.IsVerbose) {
                 Log.LogMessage(Log.Level.Verbose, "Request Processed and Response Sent", DateTime.UtcNow.Ticks);
             }
         }
 
-        protected virtual void WriteResponseFor400(Span<byte> requestBytes, HttpResponse response) // Bad Request
+        protected virtual void WriteResponseFor400(Span<byte> requestBytes, TcpConnectionFormatter response) // Bad Request
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", requestBytes.Length);
-            WriteCommonHeaders(response, HttpVersion.V1_1, 400, "Bad Request", false);
-            var formatter = new ResponseFormatter(response);
-            formatter.WriteEoh();
+            WriteCommonHeaders(ref response, HttpVersion.V1_1, 400, "Bad Request");
+            response.AppendEoh();
         }
 
         // TODO: HttpRequest is a large struct. We cannot pass it around like that
-        protected virtual void WriteResponseFor404(HttpRequest request, HttpResponse response) // Not Found
+        protected virtual void WriteResponseFor404(HttpRequest request, TcpConnectionFormatter response) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.Path.ToUtf8String(TextEncoder.Utf8));
-            WriteCommonHeaders(response, HttpVersion.V1_1, 404, "Not Found", false);
-            var formatter = new ResponseFormatter(response);
-            formatter.WriteEoh();
+            WriteCommonHeaders(ref response, HttpVersion.V1_1, 404, "Not Found");
+            response.AppendEoh();
         }
 
         // TODO: this is not a very general purpose routine. Maybe should not be in this base class?
-        protected static void WriteCommonHeaders(
-            HttpResponse response,
+        protected static void WriteCommonHeaders<TFormatter>(
+            ref TFormatter formatter,
             HttpVersion version,
             int statuCode,
-            string reasonCode,
-            bool keepAlive)
+            string reasonCode)
+            where TFormatter : ITextOutput
         {
             var currentTime = DateTime.UtcNow;
-            var formatter = new ResponseFormatter(response);
             formatter.AppendHttpStatusLine(version, statuCode, new Utf8String(reasonCode));
             formatter.Append("Transfer-Encoding : chunked\r\n");
             formatter.Append("Server : .NET Core Sample Server\r\n");
             formatter.Format("Date : {0:R}\r\n", DateTime.UtcNow);
         }
 
-        protected abstract void WriteResponse(HttpRequest request, HttpResponse response);
+        protected abstract void WriteResponse(HttpRequest request, TcpConnectionFormatter response);
+    }
+
+    public abstract class RoutingServer<T> : HttpServer
+    {
+        protected static readonly ApiRoutingTable<T> Apis = new ApiRoutingTable<T>();
+
+        public RoutingServer(CancellationToken cancellation, Log log, ushort port, byte address1, byte address2, byte address3, byte address4) : base(cancellation, log, port, address1, address2, address3, address4)
+        {
+        }
+
+        protected override void WriteResponse(HttpRequest request, TcpConnectionFormatter response)
+        {
+            if (!Apis.TryHandle(request, response)) {
+                WriteResponseFor404(request, response);
+            }
+        }
     }
 }
