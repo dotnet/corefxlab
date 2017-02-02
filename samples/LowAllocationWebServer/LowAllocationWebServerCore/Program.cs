@@ -12,8 +12,7 @@ namespace LowAllocationWebServer
         public static void Main(string[] args)
         {
             Console.WriteLine("Sample Rest Server Started");
-            Console.WriteLine("The server implements /time REST method.");
-            Console.WriteLine("Browse to http://<host>:8080/time or http://<host>:8080/plaintext to test it.\n");
+            Console.WriteLine("Browse to http://<host>:8080/time, http://<host>:8080/plaintext, or http://<host>:8080/json to test it.\n");
 
             var log = new ConsoleLog((Log.Level.Verbose));
             var cancellation = new CancellationTokenSource();

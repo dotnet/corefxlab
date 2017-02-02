@@ -21,8 +21,8 @@ namespace Microsoft.Net.Http
 
         public Log Log { get; protected set; }
 
-        const int RequestBufferSize = 512;
-        const int ResponseBufferSize = 1024;
+        public int RequestBufferSize = 1024;
+        public int ResponseBufferSize = 1024;
 
         protected HttpServer(CancellationToken cancellation, Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
         {
@@ -40,17 +40,14 @@ namespace Microsoft.Net.Http
 
         void Start()
         {
-            try
-            {
-                while (!_cancellation.IsCancellationRequested)
-                {
+            try {
+                while (!_cancellation.IsCancellationRequested) {
                     TcpConnection socket = _listener.Accept();
                     ProcessRequest(socket);
                 }
                 _listener.Stop();
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 Log.LogError(e.Message);
                 Log.LogVerbose(e.ToString());
             }
@@ -60,35 +57,41 @@ namespace Microsoft.Net.Http
         {
             Log.LogVerbose("Processing Request");
 
-            using (var buffer = MemoryPool.Rent(RequestBufferSize))
-            {
-                var requestMemory = buffer.Memory;
+            using (OwnedBuffer rootBuffer = MemoryPool.Rent(RequestBufferSize)) {
+                OwnedBuffer requestBuffer = rootBuffer;
 
-                // TODO: this needs to be resizable
-                var requestBytesRead = socket.Receive(buffer.Memory);
+                while (true) {
+                    Memory<byte> requestMemory = requestBuffer.Memory;
 
-                if (requestBytesRead == 0)
-                {
-                    socket.Close();
-                    return;
+                    int requestBytesRead = socket.Receive(requestMemory);
+                    if (requestBytesRead == 0) {
+                        socket.Close();
+                        return;
+                    }
+
+                    requestBuffer.Append(requestBytesRead);
+
+                    if (requestBytesRead == requestMemory.Length) {
+                        requestBuffer = requestBuffer.Enlarge(RequestBufferSize);
+                    }
+                    else {
+                        break;
+                    }
                 }
 
-                requestMemory = requestMemory.Slice(0, requestBytesRead);
-                var requestBytes = new ReadOnlyBytes(requestMemory);
+                var requestBytes = new ReadOnlyBytes(rootBuffer);
 
-                var parsedRequest = HttpRequest.Parse(requestBytes);
+                HttpRequest parsedRequest = HttpRequest.Parse(requestBytes);
                 Log.LogRequest(parsedRequest);
 
-                using (var response = new TcpConnectionFormatter(socket, ResponseBufferSize))
-                {
+                using (var response = new TcpConnectionFormatter(socket, ResponseBufferSize)) {
                     WriteResponse(parsedRequest, response);
                 }
 
                 socket.Close();
             }
 
-            if (Log.IsVerbose)
-            {
+            if (Log.IsVerbose) {
                 Log.LogMessage(Log.Level.Verbose, "Request Processed and Response Sent", DateTime.UtcNow.Ticks);
             }
         }
@@ -136,8 +139,7 @@ namespace Microsoft.Net.Http
 
         protected override void WriteResponse(HttpRequest request, TcpConnectionFormatter response)
         {
-            if (!Apis.TryHandle(request, response))
-            {
+            if (!Apis.TryHandle(request, response)) {
                 WriteResponseFor404(request, response);
             }
         }

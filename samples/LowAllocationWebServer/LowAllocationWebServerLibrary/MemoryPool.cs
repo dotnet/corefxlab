@@ -5,23 +5,11 @@ using System.Buffers;
 
 namespace Microsoft.Net.Http
 {
-    public static class MemoryPool {
+    static class MemoryPool {
 
-        public static OwnedMemory<byte> Rent(int size)
+        public static OwnedBuffer Rent(int size = OwnedBuffer.DefaultBufferSize)
         {
-            return new PooledMemory(size);
-        }
-
-        class PooledMemory : OwnedMemory<byte>
-        {
-            public PooledMemory(int size) : base(ArrayPool<byte>.Shared.Rent(size)) { }
-
-            protected override void Dispose(bool disposing)
-            {
-                var array = Array;
-                base.Dispose(disposing);
-                ArrayPool<byte>.Shared.Return(array);
-            }
+            return new OwnedBuffer(size);
         }
     }
 }
