@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    internal struct FlushAsyncAwaitable : ICriticalNotifyCompletion
+    public struct WritableBufferAwaitable : ICriticalNotifyCompletion
     {
-        private readonly IFlushAwaiter _awaiter;
+        private readonly IWritableBufferAwaiter _awaiter;
 
-        public FlushAsyncAwaitable(IFlushAwaiter awaiter)
+        public WritableBufferAwaitable(IWritableBufferAwaiter awaiter)
         {
             _awaiter = awaiter;
         }
@@ -18,7 +18,7 @@ namespace System.IO.Pipelines
 
         public bool GetResult() => _awaiter.GetResult();
 
-        public FlushAsyncAwaitable GetAwaiter() => this;
+        public WritableBufferAwaitable GetAwaiter() => this;
 
         public void UnsafeOnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
 

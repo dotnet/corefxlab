@@ -105,7 +105,7 @@ namespace System.IO.Pipelines
         /// Will <see cref="Commit"/> if necessary.
         /// </summary>
         /// <returns>A task that completes when the data is fully flushed.</returns>
-        public Task<bool> FlushAsync()
+        public WritableBufferAwaitable FlushAsync()
         {
             return _pipe.FlushAsync();
         }

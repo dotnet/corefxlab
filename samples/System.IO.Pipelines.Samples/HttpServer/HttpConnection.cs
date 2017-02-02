@@ -135,7 +135,7 @@ namespace System.IO.Pipelines.Samples.Http
             }
         }
 
-        private Task EndResponse()
+        private async Task EndResponse()
         {
             var buffer = _output.Alloc();
 
@@ -149,7 +149,7 @@ namespace System.IO.Pipelines.Samples.Http
                 WriteEndResponse(buffer);
             }
 
-            return buffer.FlushAsync();
+            await buffer.FlushAsync();
         }
 
         private void Reset()
@@ -165,7 +165,7 @@ namespace System.IO.Pipelines.Samples.Http
             _path = null;
         }
 
-        public Task WriteAsync(Span<byte> data)
+        public async Task WriteAsync(Span<byte> data)
         {
             var buffer = _output.Alloc();
 
@@ -186,7 +186,7 @@ namespace System.IO.Pipelines.Samples.Http
                 buffer.Write(data);
             }
 
-            return buffer.FlushAsync();
+            await buffer.FlushAsync();
         }
 
         private void WriteBeginResponseHeaders(WritableBuffer buffer)

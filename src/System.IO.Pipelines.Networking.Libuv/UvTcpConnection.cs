@@ -33,8 +33,15 @@ namespace System.IO.Pipelines.Networking.Libuv
             _thread = thread;
             _handle = handle;
 
-            _input = _thread.PipelineFactory.Create();
-            _output = _thread.PipelineFactory.Create();
+            _input = _thread.PipelineFactory.Create(new PipeOptions
+            {
+                WriterScheduler = thread
+            });
+
+            _output = _thread.PipelineFactory.Create(new PipeOptions
+            {
+                ReaderScheduler = thread
+            });
 
             StartReading();
             _sendingTask = ProcessWrites();
@@ -69,9 +76,6 @@ namespace System.IO.Pipelines.Networking.Libuv
 
                     try
                     {
-                        // Make sure we're on the libuv thread
-                        await _thread;
-
                         if (buffer.IsEmpty && result.IsCompleted)
                         {
                             break;
@@ -150,7 +154,7 @@ namespace System.IO.Pipelines.Networking.Libuv
             ((UvTcpConnection)state).OnRead(handle, status);
         }
 
-        private void OnRead(UvStreamHandle handle, int status)
+        private async void OnRead(UvStreamHandle handle, int status)
         {
             if (status == 0)
             {
@@ -186,15 +190,18 @@ namespace System.IO.Pipelines.Networking.Libuv
             {
                 _inputBuffer.Advance(readCount);
 
-                var task = _inputBuffer.FlushAsync();
+                var awaitable = _inputBuffer.FlushAsync();
 
-                if (!task.IsCompleted)
+                if (!awaitable.IsCompleted)
                 {
                     // If there's back pressure
                     handle.ReadStop();
 
-                    // Resume reading when task continues
-                    task.ContinueWith((t, state) => ((UvTcpConnection)state).StartReading(), this);
+                    // Resume reading when the awaitable completes
+                    if (await awaitable)
+                    {
+                        StartReading();
+                    }
                 }
             }
 
