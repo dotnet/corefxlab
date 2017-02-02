@@ -159,8 +159,8 @@ namespace Microsoft.Net.Sockets
         }
 
         public unsafe int Send(ReadOnlySpan<byte> buffer)
-        {          
-            // TODO: this nedfs to be pinned for longer
+        {
+            // TODO: This can work with Span<byte> because it's synchronous but we need async pinning support
             fixed (byte* bytes = &buffer.DangerousGetPinnableReference())
             {
                 IntPtr pointer = new IntPtr(bytes);
@@ -170,18 +170,7 @@ namespace Microsoft.Net.Sockets
 
         public int Send(ReadOnlyMemory<byte> buffer)
         {
-            // This can work with Span<byte> because it's synchronous but we need pinning support
-            unsafe {
-                ArraySegment<byte> segment;
-                if (buffer.TryGetArray(out segment)) {
-                    return Send(segment);
-                }
-                else {
-                    void* pointer;
-                    buffer.TryGetPointer(out pointer);
-                    return SendPinned(new IntPtr(pointer), buffer.Length);
-                }
-            }
+            return Send(buffer.Span);
         }
 
         public int Send(ArraySegment<byte> buffer)
@@ -199,21 +188,19 @@ namespace Microsoft.Net.Sockets
             }
         }
 
+        public unsafe int Receive(Span<byte> buffer)
+        {
+            // TODO: This can work with Span<byte> because it's synchronous but we need async pinning support
+            fixed (byte* bytes = &buffer.DangerousGetPinnableReference())
+            {
+                IntPtr pointer = new IntPtr(bytes);
+                return ReceivePinned(pointer, buffer.Length);
+            }
+        }
+
         public int Receive(Memory<byte> buffer)
         {
-            // This can work with Span<byte> because it's synchronous but we need pinning support
-            unsafe
-            {
-                ArraySegment<byte> segment;
-                if (buffer.TryGetArray(out segment)) {
-                    return Receive(segment);
-                }
-                else {
-                    void* pointer;
-                    buffer.TryGetPointer(out pointer);
-                    return ReceivePinned(new IntPtr(pointer), buffer.Length);
-                }
-            }
+            return Receive(buffer.Span);
         }
 
         public int Receive(ArraySegment<byte> buffer)

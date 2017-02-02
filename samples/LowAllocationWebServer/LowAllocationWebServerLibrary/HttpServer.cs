@@ -10,24 +10,23 @@ using System.Text.Utf8;
 using System.Text.Http;
 using System.Threading.Tasks;
 using System.Text;
-using System.Collections.Sequences;
+using System.Threading;
 
 namespace Microsoft.Net.Http
 {
     public abstract class HttpServer
     {
-        readonly static ArrayPool<byte> s_pool = ArrayPool<byte>.Shared;
-
-        protected static Utf8String HttpNewline = new Utf8String(new byte[] { 13, 10 });
-
-        protected volatile bool _isCancelled = false;
+        CancellationToken _cancellation;
         TcpServer _listener;
+
         public Log Log { get; protected set; }
 
-        const int RequestBufferSize = 2048;
+        const int RequestBufferSize = 512;
+        const int ResponseBufferSize = 1024;
 
-        protected HttpServer(Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
+        protected HttpServer(CancellationToken cancellation, Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
         {
+            _cancellation = cancellation;
             Log = log;
             _listener = new TcpServer(port, address1, address2, address3, address4);
         }
@@ -35,21 +34,15 @@ namespace Microsoft.Net.Http
         public Task StartAsync()
         {
             return Task.Run(() => {
-                this.Start();
+                Start();
             });
-        }
-
-        public void Stop()
-        {
-            _isCancelled = true;
-            Log.LogVerbose("Server Terminated");
         }
 
         void Start()
         {
             try
             {
-                while (!_isCancelled)
+                while (!_cancellation.IsCancellationRequested)
                 {
                     TcpConnection socket = _listener.Accept();
                     ProcessRequest(socket);
@@ -60,7 +53,6 @@ namespace Microsoft.Net.Http
             {
                 Log.LogError(e.Message);
                 Log.LogVerbose(e.ToString());
-                Stop();
             }
         }
 
@@ -68,29 +60,30 @@ namespace Microsoft.Net.Http
         {
             Log.LogVerbose("Processing Request");
 
-            var requestBuffer = s_pool.Rent(RequestBufferSize);
-            var arrayMemory = new OwnedArray<byte>(requestBuffer);
-
-            var requestByteCount = socket.Receive(requestBuffer);
-
-            if (requestByteCount == 0)
+            using (var buffer = MemoryPool.Rent(RequestBufferSize))
             {
-                socket.Close();
-                return;
-            }
+                var requestMemory = buffer.Memory;
 
-            var requestMemory = arrayMemory.Memory.Slice(0, requestByteCount);
-            var requestBytes = new ReadOnlyBytes(requestMemory);
+                // TODO: this needs to be resizable
+                var requestBytesRead = socket.Receive(buffer.Memory);
 
-            var request = HttpRequest.Parse(requestBytes);
-            Log.LogRequest(request);
+                if (requestBytesRead == 0)
+                {
+                    socket.Close();
+                    return;
+                }
 
-            // TODO: this block is a mess. 
-            using (var response = new ConnectionFormatter(socket))
-            {
-                WriteResponse(request, response);
-                s_pool.Return(requestBuffer);
-                response.Finish();
+                requestMemory = requestMemory.Slice(0, requestBytesRead);
+                var requestBytes = new ReadOnlyBytes(requestMemory);
+
+                var parsedRequest = HttpRequest.Parse(requestBytes);
+                Log.LogRequest(parsedRequest);
+
+                using (var response = new TcpConnectionFormatter(socket, ResponseBufferSize))
+                {
+                    WriteResponse(parsedRequest, response);
+                }
+
                 socket.Close();
             }
 
@@ -100,7 +93,7 @@ namespace Microsoft.Net.Http
             }
         }
 
-        protected virtual void WriteResponseFor400(Span<byte> requestBytes, ConnectionFormatter response) // Bad Request
+        protected virtual void WriteResponseFor400(Span<byte> requestBytes, TcpConnectionFormatter response) // Bad Request
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 400 Bad Request", requestBytes.Length);
             WriteCommonHeaders(ref response, HttpVersion.V1_1, 400, "Bad Request");
@@ -108,7 +101,7 @@ namespace Microsoft.Net.Http
         }
 
         // TODO: HttpRequest is a large struct. We cannot pass it around like that
-        protected virtual void WriteResponseFor404(HttpRequest request, ConnectionFormatter response) // Not Found
+        protected virtual void WriteResponseFor404(HttpRequest request, TcpConnectionFormatter response) // Not Found
         {
             Log.LogMessage(Log.Level.Warning, "Request {0}, Response: 404 Not Found", request.Path.ToUtf8String(TextEncoder.Utf8));
             WriteCommonHeaders(ref response, HttpVersion.V1_1, 404, "Not Found");
@@ -130,6 +123,23 @@ namespace Microsoft.Net.Http
             formatter.Format("Date : {0:R}\r\n", DateTime.UtcNow);
         }
 
-        protected abstract void WriteResponse(HttpRequest request, ConnectionFormatter response);
+        protected abstract void WriteResponse(HttpRequest request, TcpConnectionFormatter response);
+    }
+
+    public abstract class RoutingServer<T> : HttpServer
+    {
+        protected static readonly ApiRoutingTable<T> Apis = new ApiRoutingTable<T>();
+
+        public RoutingServer(CancellationToken cancellation, Log log, ushort port, byte address1, byte address2, byte address3, byte address4) : base(cancellation, log, port, address1, address2, address3, address4)
+        {
+        }
+
+        protected override void WriteResponse(HttpRequest request, TcpConnectionFormatter response)
+        {
+            if (!Apis.TryHandle(request, response))
+            {
+                WriteResponseFor404(request, response);
+            }
+        }
     }
 }
