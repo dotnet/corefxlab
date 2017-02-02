@@ -10,7 +10,7 @@ namespace System.Slices.Tests
 {
     public partial class ReadOnlyBytesTests
     {
-        [Fact(Skip = "[VS2017] Error: The active Test Run was aborted.")]
+        [Fact]
         public void SingleSegmentBytesReader()
         {
             ReadOnlyBytes bytes = Create("AB CD#EF&&");
