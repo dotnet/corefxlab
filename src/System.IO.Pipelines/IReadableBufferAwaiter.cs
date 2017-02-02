@@ -14,11 +14,11 @@ namespace System.IO.Pipelines
         void OnCompleted(Action continuation);
     }
 
-    public interface IFlushAwaiter
+    public interface IWritableBufferAwaiter
     {
         bool IsCompleted { get; }
 
-        bool GetResult();
+        void GetResult();
 
         void OnCompleted(Action continuation);
     }

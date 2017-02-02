@@ -12,6 +12,8 @@ namespace System.IO.Pipelines
 
         public int MaximumSizeLow { get; set; }
 
-        public IScheduler Scheduler { get; set; }
+        public IScheduler WriterScheduler { get; set; }
+
+        public IScheduler ReaderScheduler { get; set; }
     }
 }

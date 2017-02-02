@@ -10,19 +10,20 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Default <see cref="IPipelineWriter"/> and <see cref="IPipelineReader"/> implementation.
     /// </summary>
-    public class Pipe : IPipelineReader, IPipelineWriter, IReadableBufferAwaiter, IFlushAwaiter
+    public class Pipe : IPipelineReader, IPipelineWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
     {
         private static readonly Action _awaitableIsCompleted = () => { };
         private static readonly Action _awaitableIsNotCompleted = () => { };
 
         private readonly IBufferPool _pool;
-        private readonly IScheduler _scheduler;
+        private readonly IScheduler _readerScheduler;
+        private readonly IScheduler _writerScheduler;
 
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
-        private Action _awaitableState;
-        private Action _flushAwaitableState;
+        private Action _readerCallback;
+        private Action _writerCallback;
 
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
@@ -64,36 +65,38 @@ namespace System.IO.Pipelines
         /// Initializes the <see cref="Pipe"/> with the specifed <see cref="IBufferPool"/>.
         /// </summary>
         /// <param name="pool"></param>
-        /// <param name="scheduler"></param>
-        /// <param name="maximumSizeLow"></param>
-        /// <param name="maximumSizeHigh"></param>
-        public Pipe(IBufferPool pool, IScheduler scheduler = null, long maximumSizeLow = 0, long maximumSizeHigh = 0)
+        /// <param name="options"></param>
+        public Pipe(IBufferPool pool, PipeOptions options = null)
         {
             if (pool == null)
             {
                 throw new ArgumentNullException(nameof(pool));
             }
 
-            if (maximumSizeLow < 0)
+            options = options ?? new PipeOptions();
+
+            if (options.MaximumSizeLow < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(maximumSizeLow));
+                throw new ArgumentOutOfRangeException(nameof(options.MaximumSizeLow));
             }
 
-            if (maximumSizeHigh < 0)
+            if (options.MaximumSizeHigh < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(maximumSizeHigh));
+                throw new ArgumentOutOfRangeException(nameof(options.MaximumSizeHigh));
             }
 
-            if (maximumSizeLow > maximumSizeHigh)
+            if (options.MaximumSizeLow > options.MaximumSizeHigh)
             {
-                throw new ArgumentException(nameof(maximumSizeHigh) + " should be greater or equal to " + nameof(maximumSizeLow), nameof(maximumSizeHigh));
+                throw new ArgumentException(nameof(options.MaximumSizeHigh) + " should be greater or equal to " + nameof(options.MaximumSizeLow), nameof(options.MaximumSizeHigh));
             }
+
             _pool = pool;
-            _scheduler = scheduler ?? InlineScheduler.Default;
-            _maximumSizeHigh = maximumSizeHigh;
-            _maximumSizeLow = maximumSizeLow;
-            _awaitableState = _awaitableIsNotCompleted;
-            _flushAwaitableState = _awaitableIsCompleted;
+            _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
+            _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
+            _maximumSizeHigh = options.MaximumSizeHigh;
+            _maximumSizeLow = options.MaximumSizeLow;
+            _readerCallback = _awaitableIsNotCompleted;
+            _writerCallback = _awaitableIsCompleted;
         }
 
         /// <summary>
@@ -319,7 +322,7 @@ namespace System.IO.Pipelines
                     _length >= _maximumSizeHigh &&
                     !Writing.IsCompleted)
                 {
-                    ResetAwaitable(ref _flushAwaitableState);
+                    Reset(ref _writerCallback);
                 }
             }
 
@@ -354,7 +357,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal async Task<bool> FlushAsync()
+        internal WritableBufferAwaitable FlushAsync()
         {
             if (_producingState == State.Active)
             {
@@ -362,7 +365,13 @@ namespace System.IO.Pipelines
                 Commit();
             }
 
-            return await SignalWriterAsync();
+            // TODO: Can factor out this lock
+            lock (_sync)
+            {
+                Resume(_readerScheduler, ref _readerCallback);
+            }
+
+            return new WritableBufferAwaitable(this);
         }
 
         internal ReadableBuffer AsReadableBuffer()
@@ -373,16 +382,6 @@ namespace System.IO.Pipelines
             }
 
             return new ReadableBuffer(new ReadCursor(_commitHead, _commitHeadIndex), new ReadCursor(_writingHead, _writingHead.End));
-        }
-
-        internal FlushAsyncAwaitable SignalWriterAsync()
-        {
-            // TODO: Can factor out this lock
-            lock (_sync)
-            {
-                Complete(ref _awaitableState);
-            }
-            return new FlushAsyncAwaitable(this);
         }
 
         private ReadableBuffer Read()
@@ -465,12 +464,13 @@ namespace System.IO.Pipelines
                 _readHead.Start = consumed.Index;
             }
 
-            bool completeFlush;
+            bool resumeWriter;
+
             // Reading commit head shared with writer
             lock (_sync)
             {
                 _length -= consumedBytes;
-                completeFlush = _length < _maximumSizeLow;
+                resumeWriter = _length < _maximumSizeLow;
 
                 // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
                 Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
@@ -484,7 +484,7 @@ namespace System.IO.Pipelines
                 // 2. Cancellation wasn't requested
                 if (consumedEverything && _cancelledState != CancelledState.CancellationRequested)
                 {
-                    ResetAwaitable(ref _awaitableState);
+                    Reset(ref _readerCallback);
                 }
             }
 
@@ -504,11 +504,10 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotConsumingToComplete);
             }
 
-            if (completeFlush)
+            if (resumeWriter)
             {
-                Complete(ref _flushAwaitableState);
+                Resume(_writerScheduler, ref _writerCallback);
             }
-
         }
 
         private void SignalWriter(Exception exception)
@@ -553,7 +552,8 @@ namespace System.IO.Pipelines
                 _startingReadingTcs.TrySetResult(null);
 
                 SignalWriter(exception);
-                Complete(ref _flushAwaitableState);
+
+                Resume(_writerScheduler, ref _writerCallback);
 
                 if (Reading.IsCompleted)
                 {
@@ -573,7 +573,7 @@ namespace System.IO.Pipelines
                 // Mark reading is cancellable
                 _cancelledState = CancelledState.CancellationRequested;
 
-                Complete(ref _awaitableState);
+                Resume(_readerScheduler, ref _readerCallback);
             }
         }
 
@@ -606,15 +606,13 @@ namespace System.IO.Pipelines
             {
                 _readingTcs.TrySetResult(null);
             }
-
-            var ignore = FlushAsync();
         }
 
         // Awaiter support members
 
-        private bool IsCompleted(Action awaitableState) => ReferenceEquals(awaitableState, _awaitableIsCompleted);
+        private static bool IsCompleted(Action awaitableState) => ReferenceEquals(awaitableState, _awaitableIsCompleted);
 
-        private void OnCompleted(Action continuation, ref Action action, TaskCompletionSource<object> taskCompletionSource)
+        private static void OnCompleted(Action continuation, IScheduler scheduler, ref Action action, TaskCompletionSource<object> taskCompletionSource)
         {
             var awaitableState = Interlocked.CompareExchange(
                 ref action,
@@ -627,7 +625,7 @@ namespace System.IO.Pipelines
             }
             else if (ReferenceEquals(awaitableState, _awaitableIsCompleted))
             {
-                _scheduler.Schedule(continuation);
+                scheduler.Schedule(continuation);
             }
             else
             {
@@ -642,7 +640,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private void GetResult(Action awaitableState,
+        private static void GetResult(Action awaitableState,
             ref int cancelledState,
             Task task,
             out bool readingIsCancelled,
@@ -667,7 +665,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private void Complete(ref Action state)
+        private static void Resume(IScheduler scheduler, ref Action state)
         {
             var awaitableState = Interlocked.Exchange(
                 ref state,
@@ -676,11 +674,11 @@ namespace System.IO.Pipelines
             if (!ReferenceEquals(awaitableState, _awaitableIsCompleted) &&
                 !ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
             {
-                _scheduler.Schedule(awaitableState);
+                scheduler.Schedule(awaitableState);
             }
         }
 
-        private static void ResetAwaitable(ref Action awaitableState)
+        private static void Reset(ref Action awaitableState)
         {
             Interlocked.CompareExchange(
                 ref awaitableState,
@@ -720,34 +718,36 @@ namespace System.IO.Pipelines
 
         // IReadableBufferAwaiter members
 
-        bool IReadableBufferAwaiter.IsCompleted => IsCompleted(_awaitableState);
+        bool IReadableBufferAwaiter.IsCompleted => IsCompleted(_readerCallback);
 
-        void IReadableBufferAwaiter.OnCompleted(Action continuation) => OnCompleted(continuation, ref _awaitableState, _readingTcs);
+        void IReadableBufferAwaiter.OnCompleted(Action continuation)
+        {
+            OnCompleted(continuation, _readerScheduler, ref _readerCallback, _readingTcs);
+        }
 
         ReadResult IReadableBufferAwaiter.GetResult()
         {
             bool readingIsCancelled;
             bool readingIsCompleted;
-            GetResult(_awaitableState, ref _cancelledState, Reading, out readingIsCancelled, out readingIsCompleted);
+            GetResult(_readerCallback, ref _cancelledState, Reading, out readingIsCancelled, out readingIsCompleted);
             return new ReadResult(Read(), readingIsCancelled, readingIsCompleted);
         }
 
         // IFlushAwaiter members
 
-        bool IFlushAwaiter.IsCompleted => IsCompleted(_flushAwaitableState);
+        bool IWritableBufferAwaiter.IsCompleted => IsCompleted(_writerCallback);
 
-        bool IFlushAwaiter.GetResult()
+        void IWritableBufferAwaiter.GetResult()
         {
             bool readingIsCancelled;
             bool readingIsCompleted;
             int cancelledState = CancelledState.NotCancelled;
-            GetResult(_flushAwaitableState, ref cancelledState, _writingTcs.Task, out readingIsCancelled, out readingIsCompleted);
-            return !readingIsCompleted;
+            GetResult(_writerCallback, ref cancelledState, _writingTcs.Task, out readingIsCancelled, out readingIsCompleted);
         }
 
-        void IFlushAwaiter.OnCompleted(Action continuation)
+        void IWritableBufferAwaiter.OnCompleted(Action continuation)
         {
-            OnCompleted(continuation, ref _flushAwaitableState, _writingTcs);
+            OnCompleted(continuation, _writerScheduler, ref _writerCallback, _writingTcs);
         }
 
         // Can't use enums with Interlocked

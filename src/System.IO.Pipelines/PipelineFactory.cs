@@ -34,12 +34,7 @@ namespace System.IO.Pipelines
 
         public Pipe Create(PipeOptions options)
         {
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-
-            return new Pipe(_pool, options.Scheduler, options.MaximumSizeLow, options.MaximumSizeHigh);
+            return new Pipe(_pool, options);
         }
 
         public IPipelineReader CreateReader(Stream stream)

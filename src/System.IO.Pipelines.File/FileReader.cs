@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 
 namespace System.IO.Pipelines.File
@@ -58,7 +57,7 @@ namespace System.IO.Pipelines.File
             var buffer = operation.BoxedBuffer.Value;
 
             buffer.Advance((int)numBytes);
-            var task = buffer.FlushAsync();
+            var awaitable = buffer.FlushAsync();
 
             if (numBytes == 0 || operation.Writer.Writing.IsCompleted)
             {
@@ -67,15 +66,22 @@ namespace System.IO.Pipelines.File
                 // The operation can be disposed when there's nothing more to produce
                 operation.Dispose();
             }
-            else if (task.IsCompleted)
+            else if (awaitable.IsCompleted)
             {
                 operation.Read();
             }
             else
             {
-                // Keep reading once we get the completion
-                task.ContinueWith((t, s) => ((ReadOperation)s).Read(), operation);
+                var ignore = Continue(awaitable, operation);
             }
+        }
+
+        private static async Task Continue(WritableBufferAwaitable awaitable, ReadOperation operation)
+        {
+            // Keep reading once we get the completion
+            await awaitable;
+
+            operation.Read();
         }
 
         private class ReadOperation
