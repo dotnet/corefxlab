@@ -14,10 +14,6 @@ namespace System
         int _index;
         int _length;
 
-        internal ReadOnlyMemory(OwnedMemory<T> owner, long id)
-            : this(owner, id, 0, owner.GetSpanInternal(id).Length)
-        { }
-
         internal ReadOnlyMemory(OwnedMemory<T> owner, long id, int index, int length)
         {
             _owner = owner;
@@ -47,7 +43,7 @@ namespace System
             return new ReadOnlyMemory<T>(_owner, _id, _index + index, length);
         }
 
-        public ReadOnlySpan<T> Span => _owner.GetSpanInternal(_id).Slice(_index, _length);
+        public ReadOnlySpan<T> Span => _owner.GetSpanInternal(_id, _index, _length);
 
         public DisposableReservation<T> Reserve()
         {
