@@ -739,7 +739,7 @@ namespace System.IO.Pipelines
             bool isCompleted;
             int cancelledState = CancelledState.NotCancelled;
             GetResult(_writerCallback, ref cancelledState, _writingTcs.Task, out isCancelled, out isCompleted);
-            return isCompleted;
+            return !isCompleted;
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
