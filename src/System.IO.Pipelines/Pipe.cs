@@ -437,6 +437,8 @@ namespace System.IO.Pipelines
             {
                 SignalReader(exception);
 
+                Resume(_readerScheduler, ref _readerCallback);
+
                 if (Writing.IsCompleted)
                 {
                     Dispose();
@@ -739,7 +741,7 @@ namespace System.IO.Pipelines
             bool isCompleted;
             int cancelledState = CancelledState.NotCancelled;
             GetResult(_writerCallback, ref cancelledState, _writingTcs.Task, out isCancelled, out isCompleted);
-            return isCompleted;
+            return !isCompleted;
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)

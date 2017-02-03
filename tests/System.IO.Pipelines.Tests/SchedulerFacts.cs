@@ -15,24 +15,36 @@ namespace System.IO.Pipelines.Tests
         {
             using (var factory = new PipelineFactory())
             {
-                var scheduler = new ThreadScheduler();
-                var pipe = factory.Create(new PipeOptions
+                using (var scheduler = new ThreadScheduler())
                 {
-                    ReaderScheduler = scheduler
-                });
+                    var pipe = factory.Create(new PipeOptions
+                    {
+                        ReaderScheduler = scheduler
+                    });
 
-                var reading = Task.Run(async () =>
-                {
-                    await pipe.ReadAsync();
+                    Func<Task> doRead = async () =>
+                    {
+                        var oid = Thread.CurrentThread.ManagedThreadId;
 
-                    Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
-                });
+                        var result = await pipe.ReadAsync();
 
-                var buffer = pipe.Alloc();
-                buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
-                await buffer.FlushAsync();
+                        Assert.NotEqual(oid, Thread.CurrentThread.ManagedThreadId);
 
-                await reading;
+                        Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
+
+                        pipe.AdvanceReader(result.Buffer.End, result.Buffer.End);
+
+                        pipe.CompleteReader();
+                    };
+
+                    var reading = doRead();
+
+                    var buffer = pipe.Alloc();
+                    buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
+                    await buffer.FlushAsync();
+
+                    await reading;
+                }
             }
         }
 
@@ -41,36 +53,44 @@ namespace System.IO.Pipelines.Tests
         {
             using (var factory = new PipelineFactory())
             {
-                var scheduler = new ThreadScheduler();
-                var pipe = factory.Create(new PipeOptions
+                using (var scheduler = new ThreadScheduler())
                 {
-                    MaximumSizeLow = 32,
-                    MaximumSizeHigh = 64,
-                    WriterScheduler = scheduler
-                });
+                    var pipe = factory.Create(new PipeOptions
+                    {
+                        MaximumSizeLow = 32,
+                        MaximumSizeHigh = 64,
+                        WriterScheduler = scheduler
+                    });
 
-                var writableBuffer = pipe.Alloc(64);
-                writableBuffer.Advance(64);
-                var flushAsync = writableBuffer.FlushAsync();
+                    var writableBuffer = pipe.Alloc(64);
+                    writableBuffer.Advance(64);
+                    var flushAsync = writableBuffer.FlushAsync();
 
-                Assert.False(flushAsync.IsCompleted);
+                    Assert.False(flushAsync.IsCompleted);
 
-                var writing = Task.Run(async () =>
-                {
-                    await flushAsync;
+                    Func<Task> doWrite = async () =>
+                    {
+                        var oid = Thread.CurrentThread.ManagedThreadId;
 
-                    pipe.CompleteWriter();
+                        await flushAsync;
 
-                    Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
-                });
+                        Assert.NotEqual(oid, Thread.CurrentThread.ManagedThreadId);
 
-                var result = await pipe.ReadAsync();
+                        pipe.CompleteWriter();
 
-                pipe.AdvanceReader(result.Buffer.End, result.Buffer.End);
+                        Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
+                    };
 
-                pipe.CompleteReader();
+                    var writing = doWrite();
 
-                await writing;
+                    var result = await pipe.ReadAsync();
+
+                    pipe.AdvanceReader(result.Buffer.End, result.Buffer.End);
+
+                    pipe.CompleteReader();
+
+                    await writing;
+                }
             }
         }
 
@@ -81,16 +101,22 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = factory.Create();
 
-                var id = Thread.CurrentThread.ManagedThreadId;
+                var id = 0;
 
-                var reading = Task.Run(async () =>
+                Func<Task> doRead = async () =>
                 {
-                    await pipe.ReadAsync();
+                    var result = await pipe.ReadAsync();
 
                     Assert.Equal(Thread.CurrentThread.ManagedThreadId, id);
 
+                    pipe.AdvanceReader(result.Buffer.End, result.Buffer.End);
+
                     pipe.CompleteReader();
-                });
+                };
+
+                var reading = doRead();
+
+                id = Thread.CurrentThread.ManagedThreadId;
 
                 var buffer = pipe.Alloc();
                 buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
@@ -121,14 +147,16 @@ namespace System.IO.Pipelines.Tests
 
                 int id = 0;
 
-                var writing = Task.Run(async () =>
+                Func<Task> doWrite = async () =>
                 {
                     await flushAsync;
 
                     pipe.CompleteWriter();
 
                     Assert.Equal(Thread.CurrentThread.ManagedThreadId, id);
-                });
+                };
+
+                var writing = doWrite();
 
                 var result = await pipe.ReadAsync();
 
@@ -142,7 +170,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private class ThreadScheduler : IScheduler
+        private class ThreadScheduler : IScheduler, IDisposable
         {
             private BlockingCollection<Action> _work = new BlockingCollection<Action>();
 
@@ -150,7 +178,7 @@ namespace System.IO.Pipelines.Tests
 
             public ThreadScheduler()
             {
-                Thread = new Thread(Work);
+                Thread = new Thread(Work) { IsBackground = true };
                 Thread.Start();
             }
 
@@ -165,6 +193,11 @@ namespace System.IO.Pipelines.Tests
                 {
                     callback();
                 }
+            }
+
+            public void Dispose()
+            {
+                _work.CompleteAdding();
             }
         }
     }

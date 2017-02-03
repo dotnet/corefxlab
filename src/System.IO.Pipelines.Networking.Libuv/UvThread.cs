@@ -136,6 +136,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         public void Schedule(Action action)
         {
+            // REVIEW: Should we inline actions if we're already on the libuv thread?
             Post(state => ((Action)state)(), action);
         }
 
