@@ -18,7 +18,7 @@ namespace System.Runtime
         public T[] Items
         {
             get {
-                return _memory.Span.ToArray();
+                return _memory.ToArray();
             }
         }
     }
@@ -36,7 +36,7 @@ namespace System.Runtime
         public T[] Items
         {
             get {
-                return _memory.Span.ToArray();
+                return _memory.ToArray();
             }
         }
     }

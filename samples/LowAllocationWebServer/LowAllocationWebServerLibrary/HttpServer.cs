@@ -59,19 +59,19 @@ namespace Microsoft.Net.Http
 
             using (OwnedBuffer rootBuffer = MemoryPool.Rent(RequestBufferSize)) {
                 OwnedBuffer requestBuffer = rootBuffer;
-
+                int totalWritten = 0;
                 while (true) {
-                    Memory<byte> requestMemory = requestBuffer.Memory;
+                    Span<byte> requestSpan = requestBuffer.Span;
 
-                    int requestBytesRead = socket.Receive(requestMemory);
+                    int requestBytesRead = socket.Receive(requestSpan);
                     if (requestBytesRead == 0) {
                         socket.Close();
                         return;
                     }
 
-                    requestBuffer.Append(requestBytesRead);
-
-                    if (requestBytesRead == requestMemory.Length) {
+                    requestBuffer.Advance(requestBytesRead);
+                    totalWritten += requestBytesRead;
+                    if (requestBytesRead == requestSpan.Length) {
                         requestBuffer = requestBuffer.Enlarge(RequestBufferSize);
                     }
                     else {
@@ -79,7 +79,7 @@ namespace Microsoft.Net.Http
                     }
                 }
 
-                var requestBytes = new ReadOnlyBytes(rootBuffer);
+                var requestBytes = new ReadOnlyBytes(rootBuffer, totalWritten);
 
                 HttpRequest parsedRequest = HttpRequest.Parse(requestBytes);
                 Log.LogRequest(parsedRequest);
