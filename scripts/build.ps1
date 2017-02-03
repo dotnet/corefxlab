@@ -44,18 +44,9 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", 
 }
 
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
-    if ($file -match "System.CommandLine.Tests" -or
-        $file -match "System.Collections.Generic.MultiValueDictionary.Tests" -or
-        $file -match "System.IO.Pipelines.Tests" -or
-        $file -match "System.Text.Formatting.Globalization.Tests" -or
-        $file -match "System.Time.Tests") {
-        Write-Warning "Skipping tests in $file. These tests use RESX files that need to be updated since the VS2017 project conversion."
-        continue;
-    }
-    elseif ($file -match "Benchmarks" -or
+    if ($file -match "Benchmarks" -or
 			$file -match "System.Binary.Base64.Tests" -or
-			$file -match "System.Slices.Tests" -or
-            $file -match "System.Text.Json.Tests") {
+			$file -match "System.Slices.Tests") {
         Write-Warning "Skipping tests in $file. These tests use the xunit.performance package which needs to be updated for dotnet SDK rc4."
         continue;
     }

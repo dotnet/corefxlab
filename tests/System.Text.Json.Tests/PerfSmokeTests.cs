@@ -21,7 +21,7 @@ namespace System.Text.Json.Tests
         // ReSharper disable once ConvertToConstant.Local
         private static readonly bool OutputResults = true;
 
-        [Fact, ActiveIssue(411)]
+        [Fact(Skip = "The tests are flaky and the GC sometimes reports allocations")]
         public void ReadBasicJson()
         {
             Output("====== TEST ReadBasicJson ======");
@@ -29,7 +29,7 @@ namespace System.Text.Json.Tests
             RunTest(TestJson.BasicJson);
         }
 
-        [Fact, ActiveIssue(411)]
+        [Fact(Skip = "The tests are flaky and the GC sometimes reports allocations")]
         public void ReadProjectLockJson()
         {
             Output("====== TEST ReadProjectLockJson ======");
@@ -37,8 +37,8 @@ namespace System.Text.Json.Tests
             RunTest(TestJson.ProjectLockJson);
         }
 
-        [Fact(Skip = "[VS2017] conversion issue")]
-        public void ReadHeavyNestedJson()
+        [Fact(Skip = "The tests are flaky and the GC sometimes reports allocations")]
+        public void ReadHeavyNestedJsonPerf()
         {
             Output("====== TEST ReadHeavyNestedJson ======");
             ReadJsonHelper(TestJson.HeavyNestedJson); // Do not test first iteration
