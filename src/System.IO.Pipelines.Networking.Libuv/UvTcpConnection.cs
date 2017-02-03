@@ -21,6 +21,7 @@ namespace System.IO.Pipelines.Networking.Libuv
         protected readonly Pipe _output;
         private readonly UvThread _thread;
         private readonly UvTcpHandle _handle;
+        private volatile bool _stopping;
 
         private int _pendingWrites;
 
@@ -54,6 +55,11 @@ namespace System.IO.Pipelines.Networking.Libuv
         }
         protected virtual void Dispose(bool disposing)
         {
+            _stopping = true;
+            _output.CancelPendingRead();
+
+            _sendingTask.Wait();
+
             _output.CompleteWriter();
             _output.CompleteReader();
 
@@ -69,7 +75,7 @@ namespace System.IO.Pipelines.Networking.Libuv
         {
             try
             {
-                while (true)
+                while (!_stopping)
                 {
                     var result = await _output.ReadAsync();
                     var buffer = result.Buffer;

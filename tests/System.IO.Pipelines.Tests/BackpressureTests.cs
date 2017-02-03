@@ -82,16 +82,6 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task FlushAsyncThrowsIfCalledMultipleTimes()
-        {
-            var writableBuffer = _pipe.Alloc(64);
-            writableBuffer.Advance(64);
-            var flushAsync = writableBuffer.FlushAsync();
-            Assert.False(flushAsync.IsCompleted);
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await writableBuffer.FlushAsync());
-        }
-
-        [Fact]
         public async Task FlushAsyncThrowsIfReaderCompletedWithException()
         {
             _pipe.CompleteReader(new InvalidOperationException("Reader failed"));

@@ -90,6 +90,9 @@ namespace System.IO.Pipelines.Networking.Libuv
             try
             {
                 await listener._callback?.Invoke(connection);
+
+                // Make sure we dispose off the libuv thread
+                await Task.Yield();
             }
             catch
             {
