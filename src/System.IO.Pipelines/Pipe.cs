@@ -437,6 +437,8 @@ namespace System.IO.Pipelines
             {
                 SignalReader(exception);
 
+                Resume(_readerScheduler, ref _readerCallback);
+
                 if (Writing.IsCompleted)
                 {
                     Dispose();
