@@ -50,7 +50,9 @@ namespace System.Buffers
             Initialize(array, arrayOffset, length, pointer);
         }
 
-        public Memory<T> Memory => new Memory<T>(this, Id);
+        public Memory<T> Memory => new Memory<T>(this, Id, 0, Length);
+        public ReadOnlyMemory<T> ReadOnlyMemory => new ReadOnlyMemory<T>(this, Id, 0, Length);
+
         public Span<T> Span
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -133,8 +135,6 @@ namespace System.Buffers
 
         protected virtual void OnZeroReferences()
         { }
-
-
         #endregion
 
         #region Used by Memory<T>
@@ -178,16 +178,47 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Span<T> GetSpanInternal(long id)
+        internal Span<T> GetSpanInternal(long id, int index, int length)
         {
             VerifyId(id);
-            return Span;
+            var array = Array;
+            if (array != null)
+                return new Span<T>(array, Offset + index, length);
+            else
+                unsafe {
+                    if ((uint)index > (uint)Length || (uint)length > (uint)(Length - index))
+                        ThrowArgHelper();
+                    IntPtr newPtr = Add(Pointer, index);
+                    return new Span<T>(newPtr.ToPointer(), length);
+                }
+        }
+
+        // TODO: this is taken from SpanHelpers. If we move this type to System.Memory, we should remove this helper
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static IntPtr Add(IntPtr start, int index)
+        {
+            Debug.Assert(start.ToInt64() >= 0);
+            Debug.Assert(index >= 0);
+
+            unsafe
+            {
+                if (sizeof(IntPtr) == sizeof(int)) {
+                    // 32-bit path.
+                    uint byteLength = (uint)index * (uint)Unsafe.SizeOf<T>();
+                    return (IntPtr)(((byte*)start) + byteLength);
+                }
+                else {
+                    // 64-bit path.
+                    ulong byteLength = (ulong)index * (ulong)Unsafe.SizeOf<T>();
+                    return (IntPtr)(((byte*)start) + byteLength);
+                }
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         Span<T> IMemory<T>.GetSpan(long id)
         {
-            return GetSpanInternal(id);
+            return GetSpanInternal(id, 0, Length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -197,6 +228,10 @@ namespace System.Buffers
 
         void ThrowIdHelper() {
             throw new ObjectDisposedException(nameof(Memory<T>));
+        }
+        void ThrowArgHelper()
+        {
+            throw new ArgumentOutOfRangeException();
         }
         #endregion
     }
