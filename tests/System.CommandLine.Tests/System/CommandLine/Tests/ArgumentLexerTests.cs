@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-
 using Xunit;
 
 namespace System.CommandLine.Tests
@@ -40,13 +39,14 @@ namespace System.CommandLine.Tests
         [Fact]
         public void Lex_OptionArguments()
         {
-            var text = "-a:va -b=vb --c vc";
+            var text = "-a:va -b=vb --c vc -d=C:bar";
             var actual = Lex(text);
             var expected = new[] {
                 new ArgumentToken("-", "a", "va"),
                 new ArgumentToken("-", "b", "vb"),
                 new ArgumentToken("--", "c", null),
-                new ArgumentToken(null, "vc", null)
+                new ArgumentToken(null, "vc", null),
+                new ArgumentToken("-", "d", "C:bar"), 
             };
 
             Assert.Equal(expected, actual);
