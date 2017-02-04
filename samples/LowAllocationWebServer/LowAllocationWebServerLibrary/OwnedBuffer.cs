@@ -25,6 +25,8 @@ namespace Microsoft.Net.Http
 
         public IMemoryList<byte> Rest => _next;
 
+        public int WrittenByteCount => _written;
+
         ReadOnlyMemory<byte> IReadOnlyMemoryList<byte>.First => Memory;
 
         IReadOnlyMemoryList<byte> IReadOnlyMemoryList<byte>.Rest => _next;
@@ -96,7 +98,7 @@ namespace Microsoft.Net.Http
             return _next;
         }
 
-        public void Append(int bytes)
+        public void Advance(int bytes)
         {
             _written = bytes;
         }
