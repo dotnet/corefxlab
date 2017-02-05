@@ -19,6 +19,9 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         private const long RestartSendCorrelations = -2;
 
         private readonly static Task _completedTask = Task.FromResult(0);
+        private readonly static WritableBufferAwaitable NoBackPressure = new WritableBufferAwaitable(new NoBackPresureAwaitable());
+
+        private WritableBufferAwaitable _lastFlush = NoBackPressure;
 
         private readonly long _connectionId;
         private readonly IntPtr _socket;
@@ -204,19 +207,42 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             if (bytesTransferred == 0)
             {
                 _input.CompleteWriter();
+                // TODO: Disposable?
             }
             else
             {
                 _buffer.Advance((int)bytesTransferred);
                 _buffer.Commit();
 
-                ProcessReceives();
+                if (_lastFlush.IsCompleted)
+                {
+                    // No back pressure being applied to continue reading
+                    ProcessReceives();
+                }
+                else
+                {
+                    var ignore = Continue(_lastFlush, this);
+                }
             }
         }
 
         public void ReceiveEndComplete()
         {
-            _buffer.FlushAsync();
+            _lastFlush = _buffer.FlushAsync();
+        }
+
+        private static async Task Continue(WritableBufferAwaitable awaitable, RioTcpConnection connection)
+        {
+            // Keep reading once we get the completion
+            if (await awaitable)
+            {
+                connection.ProcessReceives();
+            }
+            else
+            {
+                connection._input.CompleteWriter();
+                // TODO: Disposable?
+            }
         }
 
         private unsafe RioBufferSegment GetSegmentFromMemory(Memory<byte> memory)
@@ -290,6 +316,20 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        private class NoBackPresureAwaitable : IWritableBufferAwaiter
+        {
+            public bool IsCompleted => true;
+
+            public bool GetResult()
+            {
+                throw new InvalidOperationException();
+            }
+            public void OnCompleted(Action continuation)
+            {
+                throw new InvalidOperationException();
+            }
         }
 
         private enum ErrorType
