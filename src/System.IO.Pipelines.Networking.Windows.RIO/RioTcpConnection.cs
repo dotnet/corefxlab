@@ -201,7 +201,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         public void ReceiveBeginComplete(uint bytesTransferred)
         {
-            if (bytesTransferred == 0 || _input.Writing.IsCompleted)
+            if (bytesTransferred == 0)
             {
                 _input.CompleteWriter();
             }
@@ -222,7 +222,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         private unsafe RioBufferSegment GetSegmentFromMemory(Memory<byte> memory)
         {
             void* pointer;
-            if(!memory.TryGetPointer(out pointer))
+            if (!memory.TryGetPointer(out pointer))
             {
                 throw new InvalidOperationException("Memory needs to be pinned");
             }

@@ -19,8 +19,6 @@ namespace System.IO.Pipelines
 
         protected abstract Task WriteAsync(ReadableBuffer buffer);
 
-        public Task Writing => _pipe.Writing;
-
         public WritableBuffer Alloc(int minimumSize = 0) => _pipe.Alloc(minimumSize);
 
         public void Complete(Exception exception = null) => _pipe.CompleteWriter(exception);

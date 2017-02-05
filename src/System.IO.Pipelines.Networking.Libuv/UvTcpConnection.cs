@@ -195,23 +195,33 @@ namespace System.IO.Pipelines.Networking.Libuv
             else
             {
                 _inputBuffer.Advance(readCount);
+                _inputBuffer.Commit();
 
-                var awaitable = _inputBuffer.FlushAsync();
-
-                if (!awaitable.IsCompleted)
+                // Flush if there was data
+                if (readCount > 0)
                 {
-                    // If there's back pressure
-                    handle.ReadStop();
+                    var awaitable = _inputBuffer.FlushAsync();
 
-                    // Resume reading when the awaitable completes
-                    if (await awaitable)
+                    if (!awaitable.IsCompleted)
                     {
-                        StartReading();
+                        // If there's back pressure
+                        handle.ReadStop();
+
+                        // Resume reading when the awaitable completes
+                        if (await awaitable)
+                        {
+                            StartReading();
+                        }
+                        else
+                        {
+                            // We're done writing, the reading is gone
+                            _input.CompleteWriter();
+                        }
                     }
                 }
             }
 
-            if (normalDone || _input.Writing.IsCompleted)
+            if (normalDone)
             {
                 _input.CompleteWriter();
             }

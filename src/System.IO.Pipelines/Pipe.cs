@@ -117,7 +117,7 @@ namespace System.IO.Pipelines
         /// This task indicates the consumer has completed and will not read anymore data.
         /// When this task is triggered, the producer should stop producing data.
         /// </remarks>
-        public Task Writing => _writingTcs.Task;
+        private Task Writing => _writingTcs.Task;
 
         internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
 
