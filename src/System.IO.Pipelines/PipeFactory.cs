@@ -14,30 +14,30 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Factory used to creaet instances of various pipelines.
     /// </summary>
-    public class PipelineFactory : IDisposable
+    public class PipeFactory : IDisposable
     {
         private readonly IBufferPool _pool;
 
-        public PipelineFactory() : this(new MemoryPool())
+        public PipeFactory() : this(new MemoryPool())
         {
         }
 
-        public PipelineFactory(IBufferPool pool)
+        public PipeFactory(IBufferPool pool)
         {
             _pool = pool;
         }
 
-        public Pipe Create()
+        public IPipe Create()
         {
             return new Pipe(_pool);
         }
 
-        public Pipe Create(PipeOptions options)
+        public IPipe Create(PipeOptions options)
         {
             return new Pipe(_pool, options);
         }
 
-        public IPipelineReader CreateReader(Stream stream)
+        public IPipeReader CreateReader(Stream stream)
         {
             if (!stream.CanRead)
             {
@@ -56,12 +56,12 @@ namespace System.IO.Pipelines
             await stream.CopyToAsync(pipe);
         }
 
-        public IPipelineConnection CreateConnection(NetworkStream stream)
+        public IPipeConnection CreateConnection(NetworkStream stream)
         {
-            return new StreamPipelineConnection(this, stream);
+            return new StreamPipeConnection(this, stream);
         }
 
-        public IPipelineWriter CreateWriter(Stream stream)
+        public IPipeWriter CreateWriter(Stream stream)
         {
             if (!stream.CanWrite)
             {
@@ -87,7 +87,7 @@ namespace System.IO.Pipelines
             return pipe;
         }
 
-        public IPipelineWriter CreateWriter(IPipelineWriter writer, Func<IPipelineReader, IPipelineWriter, Task> consume)
+        public IPipeWriter CreateWriter(IPipeWriter writer, Func<IPipeReader, IPipeWriter, Task> consume)
         {
             var pipe = new Pipe(_pool);
 
@@ -98,14 +98,14 @@ namespace System.IO.Pipelines
             return pipe;
         }
 
-        public IPipelineReader CreateReader(IPipelineReader reader, Func<IPipelineReader, IPipelineWriter, Task> produce)
+        public IPipeReader CreateReader(IPipeReader reader, Func<IPipeReader, IPipeWriter, Task> produce)
         {
             var pipe = new Pipe(_pool);
             Execute(reader, pipe, produce);
             return pipe;
         }
 
-        private async void Execute(IPipelineReader reader, Pipe pipe, Func<IPipelineReader, IPipelineWriter, Task> produce)
+        private async void Execute(IPipeReader reader, Pipe pipe, Func<IPipeReader, IPipeWriter, Task> produce)
         {
             await pipe.ReadingStarted;
 

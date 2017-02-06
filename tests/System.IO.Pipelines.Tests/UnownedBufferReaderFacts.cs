@@ -499,7 +499,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task StreamAsPipelineReaderUsesUnderlyingPipelineReaderIfAvailable()
         {
-            var stream = new StreamAndPipelineReader();
+            var stream = new StreamAndPipeReader();
             var sw = new StreamWriter(stream);
             sw.Write("Hello");
             sw.Flush();
@@ -529,7 +529,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task StreamAsPipelineReaderReadStream()
         {
-            var stream = new StreamAndPipelineReader();
+            var stream = new StreamAndPipeReader();
             var sw = new StreamWriter(stream);
             sw.Write("Hello");
             sw.Flush();
@@ -551,7 +551,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal("World", Encoding.UTF8.GetString(readBuf, 0, read));
         }
 
-        private class StreamAndPipelineReader : Stream, IPipelineReader
+        private class StreamAndPipeReader : Stream, IPipeReader
         {
             private readonly Pipe _pipe = new Pipe(ArrayBufferPool.Instance);
 

@@ -12,9 +12,9 @@ namespace System.IO.Pipelines
 {
     /// <summary>
     /// Works in buffers which it does not own, as opposed to using a <see cref="IBufferPool"/>. Designed
-    /// to allow Streams to be easily adapted to <see cref="IPipelineReader"/> via <see cref="System.IO.Stream.CopyToAsync(System.IO.Stream)"/>
+    /// to allow Streams to be easily adapted to <see cref="IPipeReader"/> via <see cref="System.IO.Stream.CopyToAsync(System.IO.Stream)"/>
     /// </summary>
-    public class UnownedBufferReader : IPipelineReader, IReadableBufferAwaiter
+    public class UnownedBufferReader : IPipeReader, IReadableBufferAwaiter
     {
         private static readonly Action _awaitableIsCompleted = () => { };
         private static readonly Action _awaitableIsNotCompleted = () => { };
@@ -45,7 +45,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// A <see cref="Task"/> that completes when the consumer starts consuming the <see cref="IPipelineReader"/>.
+        /// A <see cref="Task"/> that completes when the consumer starts consuming the <see cref="IPipeReader"/>.
         /// </summary>
         public Task ReadingStarted => _startingReadingTcs.Task;
 
@@ -181,7 +181,7 @@ namespace System.IO.Pipelines
         }
 
         // Called by the READER
-        void IPipelineReader.Advance(ReadCursor consumed, ReadCursor examined)
+        void IPipeReader.Advance(ReadCursor consumed, ReadCursor examined)
         {
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
@@ -226,7 +226,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         // Called by the READER
-        void IPipelineReader.Complete(Exception exception)
+        void IPipeReader.Complete(Exception exception)
         {
             if (exception != null)
             {
@@ -269,7 +269,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Cancel to currently pending call to <see cref="ReadAsync"/> without completing the <see cref="IPipelineReader"/>.
+        /// Cancel to currently pending call to <see cref="ReadAsync"/> without completing the <see cref="IPipeReader"/>.
         /// </summary>
         public void CancelPendingRead()
         {
@@ -279,7 +279,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Asynchronously reads a sequence of bytes from the current <see cref="IPipelineReader"/>.
+        /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
         // Called by the READER

@@ -291,10 +291,10 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void EnsureMoreThanPoolBlockSizeThrows()
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 var pipe = factory.Create();
-                var buffer = pipe.Alloc();
+                var buffer = pipe.Writer.Alloc();
                 Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Ensure(8192));
             }
         }
@@ -315,10 +315,10 @@ namespace System.IO.Pipelines.Tests
         [MemberData(nameof(HexNumbers))]
         public void WriteHex(int value, string hex)
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 var pipe = factory.Create();
-                var buffer = pipe.Alloc();
+                var buffer = pipe.Writer.Alloc();
                 buffer.Append(value, EncodingData.InvariantUtf8, 'x');
 
                 Assert.Equal(hex, buffer.AsReadableBuffer().GetAsciiString());

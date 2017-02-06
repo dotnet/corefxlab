@@ -16,7 +16,7 @@ namespace System.IO.Pipelines.Samples
     {
         public static void RunSingleSegmentParser(int numberOfRequests, int concurrentConnections, byte[] requestPayload, Action<HttpRequestSingleSegment, WritableBuffer> writeResponse)
         {
-            var factory = new PipelineFactory();
+            var factory = new PipeFactory();
             var listener = new FakeListener(factory, concurrentConnections);
 
             listener.OnConnection(async connection =>
@@ -76,7 +76,7 @@ namespace System.IO.Pipelines.Samples
 
         public static void Run(int numberOfRequests, int concurrentConnections, byte[] requestPayload, Action<HttpRequest, WritableBuffer> writeResponse)
         {
-            var factory = new PipelineFactory();
+            var factory = new PipeFactory();
             var listener = new FakeListener(factory, concurrentConnections);
 
             listener.OnConnection(async connection => {

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines
 {
-    public abstract class PipelineWriter : IPipelineWriter
+    public abstract class PipeWriter : IPipeWriter
     {
         private readonly Pipe _pipe;
 
-        public PipelineWriter(IBufferPool pool)
+        public PipeWriter(IBufferPool pool)
         {
             _pipe = new Pipe(pool);
 
@@ -23,7 +23,7 @@ namespace System.IO.Pipelines
 
         public void Complete(Exception exception = null) => _pipe.CompleteWriter(exception);
 
-        private async void Consume(IPipelineReader input)
+        private async void Consume(IPipeReader input)
         {
             while (true)
             {
@@ -47,5 +47,7 @@ namespace System.IO.Pipelines
 
             input.Complete();
         }
+
+        public Task ReadingStarted => _pipe.Writer.ReadingStarted;
     }
 }

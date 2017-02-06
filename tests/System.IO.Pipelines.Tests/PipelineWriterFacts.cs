@@ -105,7 +105,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private class MyCustomStream : Stream, IPipelineWriter
+        private class MyCustomStream : Stream, IPipeWriter
         {
             private readonly Pipe _pipe = new Pipe(ArrayBufferPool.Instance);
 
@@ -178,6 +178,8 @@ namespace System.IO.Pipelines.Tests
                 _pipe.CompleteReader();
                 _pipe.CompleteWriter();
             }
+
+            public Task ReadingStarted => Task.CompletedTask;
         }
     }
 }

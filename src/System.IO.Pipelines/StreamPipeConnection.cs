@@ -6,17 +6,17 @@ using System.IO;
 
 namespace System.IO.Pipelines
 {
-    internal class StreamPipelineConnection : IPipelineConnection
+    internal class StreamPipeConnection : IPipeConnection
     {
-        public StreamPipelineConnection(PipelineFactory factory, Stream stream)
+        public StreamPipeConnection(PipeFactory factory, Stream stream)
         {
             Input = factory.CreateReader(stream);
             Output = factory.CreateWriter(stream);
         }
 
-        public IPipelineReader Input { get; }
+        public IPipeReader Input { get; }
 
-        public IPipelineWriter Output { get; }
+        public IPipeWriter Output { get; }
 
         public void Dispose()
         {

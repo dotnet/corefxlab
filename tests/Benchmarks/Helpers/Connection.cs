@@ -1,26 +1,26 @@
 ﻿namespace System.IO.Pipelines
 {
-    public class PipelineConnection : IPipelineConnection
+    public class PipeConnection : IPipeConnection
     {
-        public PipelineConnection(PipelineFactory factory)
+        public PipeConnection(PipeFactory factory)
         {
             Input = factory.Create();
             Output = factory.Create();
         }
 
-        IPipelineReader IPipelineConnection.Input => Input;
-        IPipelineWriter IPipelineConnection.Output => Output;
+        IPipeReader IPipeConnection.Input => Input.Reader;
+        IPipeWriter IPipeConnection.Output => Output.Writer;
 
-        public Pipe Input { get; }
+        public IPipe Input { get; }
 
-        public Pipe Output { get; }
+        public IPipe Output { get; }
 
         public void Dispose()
         {
-            Input.CompleteReader();
-            Input.CompleteWriter();
-            Output.CompleteReader();
-            Output.CompleteWriter();
+            Input.Reader.Complete();
+            Input.Writer.Complete();
+            Output.Reader.Complete();
+            Output.Writer.Complete();
         }
     }
 }

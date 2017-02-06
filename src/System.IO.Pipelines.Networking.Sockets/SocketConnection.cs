@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 namespace System.IO.Pipelines.Networking.Sockets
 {
     /// <summary>
-    /// Represents an <see cref="IPipelineConnection"/> implementation using the async Socket API
+    /// Represents an <see cref="IPipeConnection"/> implementation using the async Socket API
     /// </summary>
-    public class SocketConnection : IPipelineConnection
+    public class SocketConnection : IPipeConnection
     {
         private static readonly EventHandler<SocketAsyncEventArgs> _asyncCompleted = OnAsyncCompleted;
 
@@ -37,8 +37,8 @@ namespace System.IO.Pipelines.Networking.Sockets
 
 
         private readonly bool _ownsFactory;
-        private PipelineFactory _factory;
-        private Pipe _input, _output;
+        private PipeFactory _factory;
+        private IPipe _input, _output;
         private Socket _socket;
         private Task _receiveTask;
         private Task _sendTask;
@@ -72,19 +72,19 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
         }
 
-        internal SocketConnection(Socket socket, PipelineFactory factory)
+        internal SocketConnection(Socket socket, PipeFactory factory)
         {
             socket.NoDelay = true;
             _socket = socket;
             if (factory == null)
             {
                 _ownsFactory = true;
-                factory = new PipelineFactory();
+                factory = new PipeFactory();
             }
             _factory = factory;
 
-            _input = PipelineFactory.Create();
-            _output = PipelineFactory.Create();
+            _input = PipeFactory.Create();
+            _output = PipeFactory.Create();
 
             _receiveTask = ReceiveFromSocketAndPushToWriterAsync();
             _sendTask = ReadFromReaderAndWriteToSocketAsync();
@@ -93,14 +93,14 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// <summary>
         /// Provides access to data received from the socket
         /// </summary>
-        public IPipelineReader Input => _input;
+        public IPipeReader Input => _input.Reader;
 
         /// <summary>
         /// Provides access to write data to the socket
         /// </summary>
-        public IPipelineWriter Output => _output;
+        public IPipeWriter Output => _output.Writer;
 
-        private PipelineFactory PipelineFactory => _factory;
+        private PipeFactory PipeFactory => _factory;
 
         private Socket Socket => _socket;
 
@@ -108,8 +108,8 @@ namespace System.IO.Pipelines.Networking.Sockets
         /// Begins an asynchronous connect operation to the designated endpoint
         /// </summary>
         /// <param name="endPoint">The endpoint to which to connect</param>
-        /// <param name="factory">Optionally allows the underlying <see cref="PipelineFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipelineFactory"/> will be instantiated and owned by the connection</param>
-        public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, PipelineFactory factory = null)
+        /// <param name="factory">Optionally allows the underlying <see cref="PipeFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipeFactory"/> will be instantiated and owned by the connection</param>
+        public static Task<SocketConnection> ConnectAsync(IPEndPoint endPoint, PipeFactory factory = null)
         {
             var args = new SocketAsyncEventArgs();
             args.RemoteEndPoint = endPoint;
@@ -175,12 +175,12 @@ namespace System.IO.Pipelines.Networking.Sockets
             if (disposing)
             {
                 _stopping = true;
-                _output.CancelPendingRead();
+                _output.Reader.CancelPendingRead();
 
                 Task.WaitAll(_sendTask, _receiveTask);
 
-                _output.CompleteWriter();
-                _input.CompleteReader();
+                _output.Writer.Complete();
+                _input.Reader.Complete();
 
                 GC.SuppressFinalize(this);
 
@@ -217,7 +217,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             {
                 if (e.SocketError == SocketError.Success)
                 {
-                    tcs.TrySetResult(new SocketConnection(e.ConnectSocket, (PipelineFactory)tcs.Task.AsyncState));
+                    tcs.TrySetResult(new SocketConnection(e.ConnectSocket, (PipeFactory)tcs.Task.AsyncState));
                 }
                 else
                 {
@@ -250,7 +250,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             {
                 // wait for someone to be interested in data before we
                 // start allocating buffers and probing the socket
-                await _input.ReadingStarted;
+                await _input.Writer.ReadingStarted;
                 args = GetOrCreateSocketAsyncEventArgs();
                 while (!_stopping)
                 {
@@ -339,7 +339,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                         // certainly want to coalesce the initial buffer (from the speculative receive) with the initial
                         // data, but we probably don't want to buffer indefinitely; for now, it will buffer up to 4 pages
                         // before flushing (entirely arbitrarily) - might want to make this configurable later
-                        buffer = _input.Alloc(SmallBufferSize * 2);
+                        buffer = _input.Writer.Alloc(SmallBufferSize * 2);
                         haveWriteBuffer = true;
 
                         const int FlushInputEveryBytes = 4 * MemoryPool.MaxPooledBlockLength;
@@ -393,7 +393,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                         }
                     }
                 }
-                _input.CompleteWriter();
+                _input.Writer.Complete();
             }
             catch (Exception ex)
             {
@@ -403,7 +403,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                 {
                     args.UserToken = null;
                 }
-                _input?.CompleteWriter(ex);
+                _input?.Writer.Complete(ex);
             }
             finally
             {
@@ -528,7 +528,7 @@ namespace System.IO.Pipelines.Networking.Sockets
 
                 while (!_stopping)
                 {
-                    var result = await _output.ReadAsync();
+                    var result = await _output.Reader.ReadAsync();
                     var buffer = result.Buffer;
                     try
                     {
@@ -559,10 +559,10 @@ namespace System.IO.Pipelines.Networking.Sockets
                     }
                     finally
                     {
-                        _output.Advance(buffer.End);
+                        _output.Reader.Advance(buffer.End);
                     }
                 }
-                _output.CompleteReader();
+                _output.Reader.Complete();
             }
             catch (Exception ex)
             {
@@ -572,7 +572,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                 {
                     args.UserToken = null;
                 }
-                _output?.CompleteReader(ex);
+                _output?.Reader.Complete(ex);
             }
             finally
             {

@@ -9,7 +9,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Defines a class that provides a pipeline to which data can be written.
     /// </summary>
-    public interface IPipelineWriter
+    public interface IPipeWriter
     {
         /// <summary>
         /// Allocates memory from the pipeline to write into.
@@ -23,5 +23,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         void Complete(Exception exception = null);
+
+        Task ReadingStarted { get; }
     }
 }

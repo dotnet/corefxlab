@@ -11,7 +11,7 @@ namespace System.IO.Pipelines
 {
     public static class PipelineConnectionExtensions
     {
-        public static Stream GetStream(this IPipelineConnection connection)
+        public static Stream GetStream(this IPipeConnection connection)
         {
             return new PipelineConnectionStream(connection);
         }
@@ -19,7 +19,7 @@ namespace System.IO.Pipelines
 
     public static class PipelineWriterExtensions
     {
-        public static async Task WriteAsync(this IPipelineWriter output, Span<byte> source)
+        public static async Task WriteAsync(this IPipeWriter output, Span<byte> source)
         {
             var writeBuffer = output.Alloc();
             writeBuffer.Write(source);
@@ -29,12 +29,12 @@ namespace System.IO.Pipelines
 
     public static class PipelineReaderExtensions
     {
-        public static void Advance(this IPipelineReader input, ReadCursor cursor)
+        public static void Advance(this IPipeReader input, ReadCursor cursor)
         {
             input.Advance(cursor, cursor);
         }
 
-        public static ValueTask<int> ReadAsync(this IPipelineReader input, Span<byte> destination)
+        public static ValueTask<int> ReadAsync(this IPipeReader input, Span<byte> destination)
         {
             while (true)
             {
@@ -67,12 +67,12 @@ namespace System.IO.Pipelines
             return new ValueTask<int>(input.ReadAsyncAwaited(destination));
         }
 
-        public static Task CopyToAsync(this IPipelineReader input, Stream stream)
+        public static Task CopyToAsync(this IPipeReader input, Stream stream)
         {
             return input.CopyToAsync(stream, 4096, CancellationToken.None);
         }
 
-        public static async Task CopyToAsync(this IPipelineReader input, Stream stream, int bufferSize, CancellationToken cancellationToken)
+        public static async Task CopyToAsync(this IPipeReader input, Stream stream, int bufferSize, CancellationToken cancellationToken)
         {
             // TODO: Use bufferSize argument
             while (!cancellationToken.IsCancellationRequested)
@@ -95,7 +95,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        public static async Task CopyToAsync(this IPipelineReader input, IPipelineWriter output)
+        public static async Task CopyToAsync(this IPipeReader input, IPipeWriter output)
         {
             while (true)
             {
@@ -124,7 +124,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private static async Task<int> ReadAsyncAwaited(this IPipelineReader input, Span<byte> destination)
+        private static async Task<int> ReadAsyncAwaited(this IPipeReader input, Span<byte> destination)
         {
             while (true)
             {

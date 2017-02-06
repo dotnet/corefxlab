@@ -4,7 +4,7 @@
 namespace System.IO.Pipelines
 {
     /// <summary>
-    /// The result of a <see cref="IPipelineReader.ReadAsync"/> call.
+    /// The result of a <see cref="IPipeReader.ReadAsync"/> call.
     /// </summary>
     public struct ReadResult
     {
@@ -26,7 +26,7 @@ namespace System.IO.Pipelines
         public bool IsCancelled { get; }
 
         /// <summary>
-        /// True if the <see cref="IPipelineReader"/> is complete
+        /// True if the <see cref="IPipeReader"/> is complete
         /// </summary>
         public bool IsCompleted { get; }
     }

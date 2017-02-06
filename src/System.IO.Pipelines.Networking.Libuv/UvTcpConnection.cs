@@ -9,7 +9,7 @@ using System.IO.Pipelines.Networking.Libuv.Interop;
 
 namespace System.IO.Pipelines.Networking.Libuv
 {
-    public class UvTcpConnection : IPipelineConnection
+    public class UvTcpConnection : IPipeConnection
     {
         private const int EOF = -4095;
 
@@ -17,8 +17,8 @@ namespace System.IO.Pipelines.Networking.Libuv
         private static readonly Func<UvStreamHandle, int, object, Uv.uv_buf_t> _allocCallback = AllocCallback;
         private static readonly Action<UvWriteReq, int, object> _writeCallback = WriteCallback;
 
-        protected readonly Pipe _input;
-        protected readonly Pipe _output;
+        protected readonly IPipe _input;
+        protected readonly IPipe _output;
         private readonly UvThread _thread;
         private readonly UvTcpHandle _handle;
         private volatile bool _stopping;
@@ -34,14 +34,14 @@ namespace System.IO.Pipelines.Networking.Libuv
             _thread = thread;
             _handle = handle;
 
-            _input = _thread.PipelineFactory.Create(new PipeOptions
+            _input = _thread.PipeFactory.Create(new PipeOptions
             {
                 // ReaderScheduler = TaskRunScheduler.Default, // execute user code on the thread pool
                 // ReaderScheduler = thread,
                 WriterScheduler = thread // resume from back pressure on the uv thread
             });
 
-            _output = _thread.PipelineFactory.Create(new PipeOptions
+            _output = _thread.PipeFactory.Create(new PipeOptions
             {
                 // WriterScheduler = TaskRunScheduler.Default, // Execute the flush callback on the thread pool
                 // WriterScheduler = thread,
@@ -60,17 +60,17 @@ namespace System.IO.Pipelines.Networking.Libuv
         protected virtual void Dispose(bool disposing)
         {
             _stopping = true;
-            _output.CancelPendingRead();
+            _output.Reader.CancelPendingRead();
 
             _sendingTask.Wait();
 
-            _output.CompleteWriter();
-            _input.CompleteReader();
+            _output.Writer.Complete();
+            _input.Reader.Complete();
         }
 
         public IPipelineWriter Output => _output;
 
-        public IPipelineReader Input => _input;
+        public IPipeReader Input => _input.Reader;
 
         private async Task ProcessWrites()
         {
@@ -78,7 +78,7 @@ namespace System.IO.Pipelines.Networking.Libuv
             {
                 while (!_stopping)
                 {
-                    var result = await _output.ReadAsync();
+                    var result = await _output.Reader.ReadAsync();
                     var buffer = result.Buffer;
 
                     try
@@ -95,17 +95,17 @@ namespace System.IO.Pipelines.Networking.Libuv
                     }
                     finally
                     {
-                        _output.Advance(buffer.End);
+                        _output.Reader.Advance(buffer.End);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _output.CompleteReader(ex);
+                _output.Reader.Complete(ex);
             }
             finally
             {
-                _output.CompleteReader();
+                _output.Reader.Complete();
 
                 // Drain the pending writes
                 if (_pendingWrites > 0)
@@ -118,7 +118,7 @@ namespace System.IO.Pipelines.Networking.Libuv
                 _handle.Dispose();
 
                 // We'll never call the callback after disposing the handle
-                _input.CompleteWriter();
+                _input.Writer.Complete();
             }
         }
 
@@ -194,7 +194,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
                 // REVIEW: Should we treat ECONNRESET as an error?
                 // Ignore the error for now
-                _input.CompleteWriter();
+                _input.Writer.Complete();
             }
             else
             {
@@ -222,7 +222,7 @@ namespace System.IO.Pipelines.Networking.Libuv
                         else
                         {
                             // We're done writing, the reading is gone
-                            _input.CompleteWriter();
+                            _input.Writer.Complete();
                         }
                     }
                 }
@@ -230,7 +230,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
             if (normalDone)
             {
-                _input.CompleteWriter();
+                _input.Writer.Complete();
             }
         }
 
@@ -241,7 +241,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private unsafe Uv.uv_buf_t OnAlloc(UvStreamHandle handle, int status)
         {
-            var inputBuffer = _input.Alloc(2048);
+            var inputBuffer = _input.Writer.Alloc(2048);
 
             _inputBuffer = inputBuffer;
 

@@ -151,7 +151,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        static async Task<Tuple<int, int, int>> PingClient(IPipelineConnection connection, int messagesToSend)
+        static async Task<Tuple<int, int, int>> PingClient(IPipeConnection connection, int messagesToSend)
         {
             int count = 0;
             var watch = Stopwatch.StartNew();
@@ -205,7 +205,7 @@ namespace System.IO.Pipelines.Tests
 
         }
 
-        private static async Task PongServer(IPipelineConnection connection)
+        private static async Task PongServer(IPipeConnection connection)
         {
             while (true)
             {
@@ -261,7 +261,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private async Task Echo(IPipelineConnection connection)
+        private async Task Echo(IPipeConnection connection)
         {
             while (true)
             {
