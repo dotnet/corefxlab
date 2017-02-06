@@ -75,11 +75,11 @@ namespace System.IO.Pipelines
                 var innerPipe = (Pipe)state;
                 if (task.IsFaulted)
                 {
-                    innerPipe.CompleteReader(task.Exception.InnerException);
+                    innerPipe.Reader.Complete(task.Exception.InnerException);
                 }
                 else
                 {
-                    innerPipe.CompleteReader();
+                    innerPipe.Reader.Complete();
                 }
             },
             pipe, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);

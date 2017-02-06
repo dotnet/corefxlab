@@ -17,7 +17,7 @@ namespace System.IO.Pipelines.Tests
             using (var memoryPool = new MemoryPool())
             {
                 var pipe = new Pipe(memoryPool);
-                var buffer = pipe.Alloc();
+                var buffer = pipe.Writer.Alloc();
                 buffer.Advance(0); // doing nothing, the hard way
                 await buffer.FlushAsync();
             }
@@ -35,11 +35,11 @@ namespace System.IO.Pipelines.Tests
             using (var memoryPool = new MemoryPool())
             {
                 var pipe = new Pipe(memoryPool);
-                var buffer = pipe.Alloc();
+                var buffer = pipe.Writer.Alloc();
                 buffer.Append(value, EncodingData.InvariantUtf8);
                 await buffer.FlushAsync();
 
-                var result = await pipe.ReadAsync();
+                var result = await pipe.Reader.ReadAsync();
                 var inputBuffer = result.Buffer;
 
                 Assert.Equal(valueAsString, inputBuffer.GetUtf8String());
@@ -60,16 +60,16 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
                 output.Write(data);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
-                pipe.CompleteWriter();
+                pipe.Writer.Complete();
 
                 int offset = 0;
                 while (true)
                 {
-                    var result = await pipe.ReadAsync();
+                    var result = await pipe.Reader.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
@@ -95,16 +95,16 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
                 output.Append(data, EncodingData.InvariantUtf8);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
-                pipe.CompleteWriter();
+                pipe.Writer.Complete();
 
                 int offset = 0;
                 while (true)
                 {
-                    var result = await pipe.ReadAsync();
+                    var result = await pipe.Reader.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
@@ -130,16 +130,16 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
                 output.Append(data, EncodingData.InvariantUtf8);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
-                pipe.CompleteWriter();
+                pipe.Writer.Complete();
 
                 int offset = 0;
                 while (true)
                 {
-                    var result = await pipe.ReadAsync();
+                    var result = await pipe.Reader.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
@@ -171,7 +171,7 @@ namespace System.IO.Pipelines.Tests
             using (var memoryPool = new MemoryPool())
             {
                 var pipe = new Pipe(memoryPool);
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
 
                 Assert.True(output.AsReadableBuffer().IsEmpty);
                 Assert.Equal(0, output.AsReadableBuffer().Length);
@@ -210,7 +210,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
 
                 byte[] predictablyGibberish = new byte[512];
                 const int SEED = 1235412;
@@ -251,7 +251,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
                 var readable = output.AsReadableBuffer();
                 output.Append(readable);
                 Assert.Equal(0, output.AsReadableBuffer().Length);
@@ -269,7 +269,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
 
                 for (int i = 0; i < 20; i++)
                 {

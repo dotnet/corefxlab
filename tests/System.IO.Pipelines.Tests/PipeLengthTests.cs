@@ -77,9 +77,9 @@ namespace System.IO.Pipelines.Tests
             writableBuffer.Commit();
             writableBuffer.FlushAsync();
 
-            var result = _pipe.ReadAsync().GetResult();
+            var result = _pipe.Reader.ReadAsync().GetResult();
             var consumed = result.Buffer.Slice(5).Start;
-            _pipe.AdvanceReader(consumed, consumed);
+            _pipe.Reader.Advance(consumed, consumed);
 
             Assert.Equal(5, _pipe.Length);
         }
@@ -92,8 +92,8 @@ namespace System.IO.Pipelines.Tests
             writableBuffer.Commit();
             writableBuffer.FlushAsync();
 
-            var result = _pipe.ReadAsync().GetResult();
-            _pipe.AdvanceReader(result.Buffer.Start, result.Buffer.End);
+            var result = _pipe.Reader.ReadAsync().GetResult();
+            _pipe.Reader.Advance(result.Buffer.Start, result.Buffer.End);
 
             Assert.Equal(10, _pipe.Length);
         }
@@ -114,9 +114,9 @@ namespace System.IO.Pipelines.Tests
 
             for (int i = 1024 * 1024 - 1; i >= 0; i--)
             {
-                var result = _pipe.ReadAsync().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetResult();
                 var consumed = result.Buffer.Slice(1).Start;
-                _pipe.AdvanceReader(consumed, consumed);
+                _pipe.Reader.Advance(consumed, consumed);
 
                 Assert.Equal(i, _pipe.Length);
             }
