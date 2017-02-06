@@ -27,7 +27,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private TaskCompletionSource<object> _drainWrites;
         private Task _sendingTask;
-        private WritableBuffer _inputBuffer;
+        private WritableBuffer? _inputBuffer;
 
         public UvTcpConnection(UvThread thread, UvTcpHandle handle)
         {
@@ -36,12 +36,16 @@ namespace System.IO.Pipelines.Networking.Libuv
 
             _input = _thread.PipelineFactory.Create(new PipeOptions
             {
-                WriterScheduler = thread
+                // ReaderScheduler = TaskRunScheduler.Default, // execute user code on the thread pool
+                // ReaderScheduler = thread,
+                WriterScheduler = thread // resume from back pressure on the uv thread
             });
 
             _output = _thread.PipelineFactory.Create(new PipeOptions
             {
-                ReaderScheduler = thread
+                // WriterScheduler = TaskRunScheduler.Default, // Execute the flush callback on the thread pool
+                // WriterScheduler = thread,
+                ReaderScheduler = thread // user code will dispatch back to the uv thread for writes,
             });
 
             StartReading();
@@ -61,9 +65,6 @@ namespace System.IO.Pipelines.Networking.Libuv
             _sendingTask.Wait();
 
             _output.CompleteWriter();
-            _output.CompleteReader();
-
-            _input.CompleteWriter();
             _input.CompleteReader();
         }
 
@@ -167,7 +168,8 @@ namespace System.IO.Pipelines.Networking.Libuv
                 // A zero status does not indicate an error or connection end. It indicates
                 // there is no data to be read right now.
                 // See the note at http://docs.libuv.org/en/v1.x/stream.html#c.uv_read_cb.
-                _inputBuffer.Commit();
+                _inputBuffer?.Commit();
+                _inputBuffer = null;
                 return;
             }
 
@@ -188,19 +190,24 @@ namespace System.IO.Pipelines.Networking.Libuv
                 handle.Libuv.Check(status, out uvError);
                 error = new IOException(uvError.Message, uvError);
 
+                _inputBuffer?.Commit();
+
                 // REVIEW: Should we treat ECONNRESET as an error?
                 // Ignore the error for now
                 _input.CompleteWriter();
             }
             else
             {
-                _inputBuffer.Advance(readCount);
-                _inputBuffer.Commit();
+                var inputBuffer = _inputBuffer.Value;
+                _inputBuffer = null;
+
+                inputBuffer.Advance(readCount);
+                inputBuffer.Commit();
 
                 // Flush if there was data
                 if (readCount > 0)
                 {
-                    var awaitable = _inputBuffer.FlushAsync();
+                    var awaitable = inputBuffer.FlushAsync();
 
                     if (!awaitable.IsCompleted)
                     {
@@ -234,15 +241,18 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private unsafe Uv.uv_buf_t OnAlloc(UvStreamHandle handle, int status)
         {
-            _inputBuffer = _input.Alloc(2048);
+            var inputBuffer = _input.Alloc(2048);
+
+            _inputBuffer = inputBuffer;
 
             void* pointer;
-            if (!_inputBuffer.Memory.TryGetPointer(out pointer))
+            if (!inputBuffer.Memory.TryGetPointer(out pointer))
             {
                 throw new InvalidOperationException("Pointer must be pinned");
             }
 
-            return handle.Libuv.buf_init((IntPtr)pointer, _inputBuffer.Memory.Length);
+
+            return handle.Libuv.buf_init((IntPtr)pointer, inputBuffer.Memory.Length);
         }
     }
 }
