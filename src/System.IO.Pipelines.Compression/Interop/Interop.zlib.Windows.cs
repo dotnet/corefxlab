@@ -54,7 +54,7 @@ namespace System.IO.Pipelines.Compression
                 int memLevel,
                 ZLibNative.CompressionStrategy strategy)
             {
-                fixed (byte* versionString = ZLibVersion)
+                fixed (byte* versionString = &ZLibVersion[0])
                 fixed (ZLibNative.ZStream* streamBytes = &stream)
                 {
                     byte* pBytes = (byte*) streamBytes;
@@ -94,7 +94,7 @@ namespace System.IO.Pipelines.Compression
                 ref ZLibNative.ZStream stream,
                 int windowBits)
             {
-                fixed (byte* versionString = ZLibVersion)
+                fixed (byte* versionString = &ZLibVersion[0])
                 fixed (ZLibNative.ZStream* streamBytes = &stream)
                 {
                     byte* pBytes = (byte*) streamBytes;
