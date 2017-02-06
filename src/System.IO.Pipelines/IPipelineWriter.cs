@@ -12,15 +12,6 @@ namespace System.IO.Pipelines
     public interface IPipelineWriter
     {
         /// <summary>
-        /// Gets a task that completes when no more data will be read from the pipeline.
-        /// </summary>
-        /// <remarks>
-        /// This task indicates the consumer has completed and will not read anymore data.
-        /// When this task is triggered, the producer should stop producing data.
-        /// </remarks>
-        Task Writing { get; }
-
-        /// <summary>
         /// Allocates memory from the pipeline to write into.
         /// </summary>
         /// <param name="minimumSize">The minimum size buffer to allocate</param>

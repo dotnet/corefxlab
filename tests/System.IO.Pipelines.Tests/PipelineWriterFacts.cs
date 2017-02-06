@@ -136,8 +136,6 @@ namespace System.IO.Pipelines.Tests
                 }
             }
 
-            public Task Writing => _pipe.Writing;
-
             public WritableBuffer Alloc(int minimumSize = 0)
             {
                 return _pipe.Alloc(minimumSize);

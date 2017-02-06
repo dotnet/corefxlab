@@ -86,7 +86,6 @@ namespace System.IO.Pipelines.Networking.Sockets
             _input = PipelineFactory.Create();
             _output = PipelineFactory.Create();
 
-            ShutdownSocketWhenWritingCompletedAsync();
             _receiveTask = ReceiveFromSocketAndPushToWriterAsync();
             _sendTask = ReadFromReaderAndWriteToSocketAsync();
         }
@@ -244,35 +243,11 @@ namespace System.IO.Pipelines.Networking.Sockets
             UseSmallBuffer
         }
 
-        private async void ShutdownSocketWhenWritingCompletedAsync()
-        {
-            // the intent of this is so that *external* callers can cause the
-            // socket to become shut down; a natural consequence is that this
-            // will also run if we shut it down from inside, but... that isn't
-            // a huge problem
-            try
-            {
-                await _input.Writing;
-            }
-            catch { } // lots of swallowing here; this is all in crazy conditions
-            try
-            {
-                Socket.Shutdown(SocketShutdown.Receive);
-            }
-            catch { }
-        }
-
         private async Task ReceiveFromSocketAndPushToWriterAsync()
         {
             SocketAsyncEventArgs args = null;
             try
             {
-                // if the consumer says they don't want the data, we need to shut down the receive
-                GC.KeepAlive(_input.Writing.ContinueWith(delegate
-                {// GC.KeepAlive here just to shut the compiler up
-                    try { Socket.Shutdown(SocketShutdown.Receive); } catch { }
-                }));
-
                 // wait for someone to be interested in data before we
                 // start allocating buffers and probing the socket
                 await _input.ReadingStarted;
@@ -414,7 +389,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                         RecycleSmallBuffer(ref initialSegment);
                         if (haveWriteBuffer)
                         {
-                            await buffer.FlushAsync();
+                            _stopping = !await buffer.FlushAsync();
                         }
                     }
                 }
@@ -432,6 +407,12 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
             finally
             {
+                try
+                {
+                    Socket.Shutdown(SocketShutdown.Receive);
+                }
+                catch { }
+
                 RecycleSocketAsyncEventArgs(args);
             }
         }

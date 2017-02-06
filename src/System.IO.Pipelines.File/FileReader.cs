@@ -59,7 +59,7 @@ namespace System.IO.Pipelines.File
             buffer.Advance((int)numBytes);
             var awaitable = buffer.FlushAsync();
 
-            if (numBytes == 0 || operation.Writer.Writing.IsCompleted)
+            if (numBytes == 0)
             {
                 operation.Writer.Complete();
 
@@ -68,6 +68,7 @@ namespace System.IO.Pipelines.File
             }
             else if (awaitable.IsCompleted)
             {
+                // No back pressure being applied to continue reading
                 operation.Read();
             }
             else
@@ -82,6 +83,12 @@ namespace System.IO.Pipelines.File
             if (await awaitable)
             {
                 operation.Read();
+            }
+            else
+            {
+                operation.Writer.Complete();
+
+                operation.Dispose();
             }
         }
 
