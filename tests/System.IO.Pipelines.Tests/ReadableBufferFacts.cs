@@ -600,14 +600,21 @@ namespace System.IO.Pipelines.Tests
 
         private class NativePool : IBufferPool
         {
-            public void Dispose()
+            private readonly NativeBufferPool _pool = new NativeBufferPool(4096);
+
+            public NativePool()
             {
 
             }
 
+            public void Dispose()
+            {
+                _pool.Dispose();
+            }
+
             public OwnedMemory<byte> Lease(int size)
             {
-                return NativeBufferPool.Shared.Rent(size);
+                return _pool.Rent(size);
             }
         }
     }

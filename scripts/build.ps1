@@ -44,11 +44,11 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", 
 }
 
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
-    if ($file -match "Benchmarks" -or
-			$file -match "System.Binary.Base64.Tests" -or
-			$file -match "System.Slices.Tests") {
-        Write-Warning "Skipping tests in $file. These tests use the xunit.performance package which needs to be updated for dotnet SDK rc4."
-        continue;
+    if ($file -match "System.Buffers.Experimental.Tests") {
+    }
+    else {
+		Write-Warning "Skipping tests in $file. These tests use the xunit.performance package which needs to be updated for dotnet SDK rc4."
+		continue;
     }
     Write-Host "Building and running tests for project $file..."
     Invoke-Expression "$dotnetExePath test $file -c $Configuration -- -notrait category=performance -notrait category=outerloop"
