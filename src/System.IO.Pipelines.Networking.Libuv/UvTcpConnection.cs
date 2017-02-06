@@ -68,7 +68,7 @@ namespace System.IO.Pipelines.Networking.Libuv
             _input.Reader.Complete();
         }
 
-        public IPipelineWriter Output => _output;
+        public IPipeWriter Output => _output.Writer;
 
         public IPipeReader Input => _input.Reader;
 

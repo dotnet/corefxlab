@@ -178,8 +178,6 @@ namespace System.IO.Pipelines.Tests
                 _pipe.Reader.Complete();
                 _pipe.Writer.Complete();
             }
-
-            public Task ReadingStarted => Task.CompletedTask;
         }
     }
 }

@@ -47,7 +47,5 @@ namespace System.IO.Pipelines
 
             input.Complete();
         }
-
-        public Task ReadingStarted => _pipe.Writer.ReadingStarted;
     }
 }

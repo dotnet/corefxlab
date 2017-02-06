@@ -324,7 +324,7 @@ namespace System.IO.Pipelines.Tests
             });
 
             // Wait until reading starts to cancel the pending read
-            await _pipe.Writer.ReadingStarted;
+            await _pipe.ReadingStarted;
 
             _pipe.Reader.CancelPendingRead();
 
@@ -493,7 +493,7 @@ namespace System.IO.Pipelines.Tests
         {
             _pipe.Reader.Complete();
 
-            Assert.True(_pipe.Writer.ReadingStarted.IsCompleted);
+            Assert.True(_pipe.ReadingStarted.IsCompleted);
         }
 
         [Fact]
@@ -501,7 +501,7 @@ namespace System.IO.Pipelines.Tests
         {
             _pipe.Reader.ReadAsync();
 
-            Assert.True(_pipe.Writer.ReadingStarted.IsCompleted);
+            Assert.True(_pipe.ReadingStarted.IsCompleted);
         }
 
         [Fact]
