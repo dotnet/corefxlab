@@ -749,10 +749,4 @@ namespace System.IO.Pipelines
             public static int CancellationObserved = 2;
         }
     }
-
-    public interface IPipe
-    {
-        IPipeReader Reader { get; }
-        IPipeWriter Writer { get; }
-    }
 }
