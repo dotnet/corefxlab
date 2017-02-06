@@ -64,6 +64,8 @@ namespace System.IO.Pipelines.Samples.Http
             {
                 var result = await _input.ReadAsync();
                 var buffer = result.Buffer;
+                var consumed = buffer.Start;
+                var examined = buffer.Start;
 
                 try
                 {
@@ -73,7 +75,7 @@ namespace System.IO.Pipelines.Samples.Http
                         return;
                     }
 
-                    var parserResult = _parser.ParseRequest(ref buffer);
+                    var parserResult = _parser.ParseRequest(buffer, out consumed, out examined);
 
                     switch (parserResult)
                     {
@@ -106,7 +108,7 @@ namespace System.IO.Pipelines.Samples.Http
                 }
                 finally
                 {
-                    _input.Advance(buffer.Start, buffer.End);
+                    _input.Advance(consumed, examined);
                 }
 
                 var context = _application.CreateContext(this);

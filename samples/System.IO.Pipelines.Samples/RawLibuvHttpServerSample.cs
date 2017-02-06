@@ -3,7 +3,6 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.IO.Pipelines.Networking.Libuv;
-using System.IO.Pipelines.Text.Primitives;
 using System.Text;
 using System.Text.Formatting;
 
@@ -26,6 +25,8 @@ namespace System.IO.Pipelines.Samples
                     // Wait for data
                     var result = await connection.Input.ReadAsync();
                     var input = result.Buffer;
+                    var consumed = input.Start;
+                    var examined = input.Start;
 
                     try
                     {
@@ -36,7 +37,7 @@ namespace System.IO.Pipelines.Samples
                         }
 
                         // Parse the input http request
-                        var parseResult = httpParser.ParseRequest(ref input);
+                        var parseResult = httpParser.ParseRequest(input, out consumed, out examined);
 
                         switch (parseResult)
                         {
@@ -71,7 +72,7 @@ namespace System.IO.Pipelines.Samples
                     finally
                     {
                         // Consume the input
-                        connection.Input.Advance(input.Start, input.End);
+                        connection.Input.Advance(consumed, examined);
                     }
                 }
             });
