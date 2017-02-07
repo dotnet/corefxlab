@@ -19,6 +19,9 @@ namespace System.Runtime
         [ThreadStatic]
         static ObjectTable t_threadLocalCounts;
 
+        [ThreadStatic]
+        static BloomFilter t_maybeReferenced;
+
         // all thread local counts; these are tallied up when global count is comupted
         static ObjectTable[] s_allTables = new ObjectTable[Environment.ProcessorCount];
         static int s_allTablesCount;
@@ -82,6 +85,24 @@ namespace System.Runtime
                     allTables[s_allTablesCount++] = localCounts;
             }
             return localCounts;
+        }
+
+        internal static BloomFilter GetMaybeReferenced() {
+            var maybeReferenced = t_maybeReferenced;
+            if(maybeReferenced == null) {
+                t_maybeReferenced = new BloomFilter();
+                maybeReferenced = t_maybeReferenced;
+            }
+            maybeReferenced.Clear();
+            var allTables = s_allTables;
+            lock (allTables)
+            {
+                for (int index = 0; index < s_allTablesCount; index++)
+                {
+                    allTables[index].AddMaybeReferenced(maybeReferenced);
+                }
+            }
+            return maybeReferenced;
         }
     }
 
@@ -165,6 +186,14 @@ namespace System.Runtime
                 }
             }
             return false;
+        }
+
+        internal void AddMaybeReferenced(BloomFilter b) 
+        {
+            for (int index = _first; index < _items.Length; index++)
+            {
+                b.Add(_items[index]);
+            }
         }
     }
 }
