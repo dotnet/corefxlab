@@ -21,7 +21,7 @@ namespace System.IO.Pipelines.Tests
         }
         static readonly Span<byte> _ping = new Span<byte>(Encoding.ASCII.GetBytes("PING")), _pong = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
 
-        [Fact(Skip="Trying to find a hang")]
+        [Fact]
         public async Task CanCreateWorkingEchoServer_PipelineLibuvServer_NonPipelineClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
