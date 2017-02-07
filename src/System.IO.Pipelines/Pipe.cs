@@ -126,19 +126,8 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="minimumSize">The minimum size buffer to allocate</param>
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
-        WritableBuffer IPipeWriter.Alloc(int minimumSize = 0)
+        WritableBuffer IPipeWriter.Alloc(int minimumSize)
         {
-            // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _producingState, State.Active) != State.NotActive)
-            {
-
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyProducing
-#if PRODUCING_LOCATION_TRACKING
-                    , _producingLocation
-#endif
-                    );
-            }
-
 #if PRODUCING_LOCATION_TRACKING
             _producingLocation = Environment.StackTrace;
 #endif
@@ -155,8 +144,19 @@ namespace System.IO.Pipelines
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
             }
-            else if (minimumSize > 0)
+
+            // CompareExchange not required as its setting to current value if test fails
+            if (Interlocked.Exchange(ref _producingState, State.Active) != State.NotActive)
             {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyProducing
+#if PRODUCING_LOCATION_TRACKING
+                    , _producingLocation
+#endif
+                    );
+            }
+
+            if (minimumSize > 0)
+            { 
                 try
                 {
                     AllocateWriteHead(minimumSize);
@@ -417,7 +417,7 @@ namespace System.IO.Pipelines
         /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-        void IPipeWriter.Complete(Exception exception = null)
+        void IPipeWriter.Complete(Exception exception)
         {
             if (_producingState != State.NotActive)
             {
@@ -512,7 +512,7 @@ namespace System.IO.Pipelines
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-        void IPipeReader.Complete(Exception exception = null)
+        void IPipeReader.Complete(Exception exception)
         {
             if (_consumingState != State.NotActive)
             {
