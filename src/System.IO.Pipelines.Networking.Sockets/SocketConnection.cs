@@ -388,7 +388,10 @@ namespace System.IO.Pipelines.Networking.Sockets
                         RecycleSmallBuffer(ref initialSegment);
                         if (haveWriteBuffer)
                         {
-                            _stopping = !await buffer.FlushAsync();
+                            if (!await buffer.FlushAsync())
+                            {
+                                _stopping = true;
+                            }
                         }
                     }
                 }
