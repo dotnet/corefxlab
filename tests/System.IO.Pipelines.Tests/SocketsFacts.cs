@@ -21,7 +21,7 @@ namespace System.IO.Pipelines.Tests
         }
         static readonly Span<byte> _ping = new Span<byte>(Encoding.ASCII.GetBytes("PING")), _pong = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
 
-        [Fact]
+        [Fact(Skip = "Trying to find a hang")]
         public async Task CanCreateWorkingEchoServer_PipelineLibuvServer_NonPipelineClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-        [Fact]
+        [Fact(Skip = "Trying to find a hang")]
         public async Task CanCreateWorkingEchoServer_PipelineSocketServer_PipelineSocketClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
@@ -84,7 +84,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-        [Fact]
+        [Fact(Skip = "Trying to find a hang")]
         public void CanCreateWorkingEchoServer_PipelineSocketServer_NonPipelineClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
@@ -101,7 +101,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-        [Fact(Skip="Trying to find a hang")]
+        [Fact(Skip = "Trying to find a hang")]
         public async Task RunStressPingPongTest_Libuv()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5020);
