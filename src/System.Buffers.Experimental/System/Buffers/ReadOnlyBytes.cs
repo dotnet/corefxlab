@@ -81,7 +81,7 @@ namespace System.Buffers
             return true;
         }
 
-        public ReadOnlyMemory<Byte> First => _first;
+        public ReadOnlyMemory<byte> First => _first;
 
         public IReadOnlyMemoryList<byte> Rest => _rest;
 
