@@ -44,7 +44,7 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", 
 }
 
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
-    if ($file -match "System.Buffers.Experimental.Tests") {
+    if ($file -match "System.IO.Pipelines.Tests") {
     }
     else {
 		Write-Warning "Skipping tests in $file. These tests use the xunit.performance package which needs to be updated for dotnet SDK rc4."
