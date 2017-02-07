@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-        [Fact(Skip="Trying to find a hang")]
+        [Fact]
         public async Task CanCreateWorkingEchoServer_PipelineSocketServer_PipelineSocketClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
