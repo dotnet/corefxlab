@@ -84,7 +84,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-        [Fact(Skip="Trying to find a hang")]
+        [Fact]
         public void CanCreateWorkingEchoServer_PipelineSocketServer_NonPipelineClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
