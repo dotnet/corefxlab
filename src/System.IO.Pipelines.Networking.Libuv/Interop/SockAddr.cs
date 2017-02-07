@@ -85,7 +85,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
             {
                 // otherwise IPv6
                 var bytes = new byte[16];
-                fixed (byte* b = bytes)
+                fixed (byte* b = &bytes[0])
                 {
                     *((long*)b) = _field1;
                     *((long*)(b + 8)) = _field2;

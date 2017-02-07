@@ -10,7 +10,7 @@ using System.IO.Pipelines.Networking.Windows.RIO.Internal.Winsock;
 
 namespace System.IO.Pipelines.Networking.Windows.RIO
 {
-    public sealed class RioTcpConnection : IPipelineConnection
+    public sealed class RioTcpConnection : IPipeConnection
     {
         private const RioSendFlags MessagePart = RioSendFlags.Defer | RioSendFlags.DontNotify;
         private const RioSendFlags MessageEnd = RioSendFlags.None;
@@ -29,8 +29,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         private long _previousSendCorrelation = RestartSendCorrelations;
 
-        private readonly Pipe _input;
-        private readonly Pipe _output;
+        private readonly IPipe _input;
+        private readonly IPipe _output;
 
         private readonly SemaphoreSlim _outgoingSends = new SemaphoreSlim(RioTcpServer.MaxWritesPerSocket);
         private readonly SemaphoreSlim _previousSendsComplete = new SemaphoreSlim(1);
@@ -47,8 +47,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _rio = rio;
             _rioThread = rioThread;
 
-            _input = rioThread.PipelineFactory.Create();
-            _output = rioThread.PipelineFactory.Create();
+            _input = rioThread.PipeFactory.Create();
+            _output = rioThread.PipeFactory.Create();
 
             _requestQueue = requestQueue;
 
@@ -58,12 +58,12 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _sendTask = ProcessSends();
         }
 
-        public IPipelineReader Input => _input;
-        public IPipelineWriter Output => _output;
+        public IPipeReader Input => _input.Reader;
+        public IPipeWriter Output => _output.Writer;
 
         private void ProcessReceives()
         {
-            _buffer = _input.Alloc(2048);
+            _buffer = _input.Writer.Alloc(2048);
             var receiveBufferSeg = GetSegmentFromMemory(_buffer.Memory);
 
             if (!_rio.RioReceive(_requestQueue, ref receiveBufferSeg, 1, RioReceiveFlags.None, 0))
@@ -76,7 +76,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         {
             while (true)
             {
-                var result = await _output.ReadAsync();
+                var result = await _output.Reader.ReadAsync();
                 var buffer = result.Buffer;
 
                 if (buffer.IsEmpty && result.IsCompleted)
@@ -105,10 +105,10 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
                     await SendAsync(current, endOfMessage: true);
                 }
 
-                _output.Advance(buffer.End);
+                _output.Reader.Advance(buffer.End);
             }
 
-            _output.CompleteReader();
+            _output.Reader.Complete();
         }
 
         private Task SendAsync(Memory<byte> memory, bool endOfMessage)
@@ -201,9 +201,9 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         public void ReceiveBeginComplete(uint bytesTransferred)
         {
-            if (bytesTransferred == 0 || _input.Writing.IsCompleted)
+            if (bytesTransferred == 0)
             {
-                _input.CompleteWriter();
+                _input.Writer.Complete();
             }
             else
             {
@@ -222,7 +222,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         private unsafe RioBufferSegment GetSegmentFromMemory(Memory<byte> memory)
         {
             void* pointer;
-            if(!memory.TryGetPointer(out pointer))
+            if (!memory.TryGetPointer(out pointer))
             {
                 throw new InvalidOperationException("Memory needs to be pinned");
             }

@@ -13,16 +13,16 @@ namespace System.Buffers
     public struct ReadOnlyBytes : IReadOnlyMemoryList<byte>
     {
         ReadOnlyMemory<byte> _first;
+        int _totalLength;
         IReadOnlyMemoryList<byte> _rest;
-        int _length;
-
+        
         static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest, int length)
         {
             _rest = rest;
             _first = first;
-            _length = length;
+            _totalLength = length;
         }
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest) :
@@ -64,9 +64,9 @@ namespace System.Buffers
 
             value = rest.First;
             // we need to slice off the last segment based on length of this. ReadOnlyBytes is a potentially shorted view over a longer buffer list.
-            if (value.Length + position.Tag > _length && _length != Unspecified)
+            if (value.Length + position.Tag > _totalLength && _totalLength != Unspecified)
             {
-                value = value.Slice(0, _length - position.Tag);
+                value = value.Slice(0, _totalLength - position.Tag);
                 if (value.Length == 0) return false;
             }
             if (advance)
@@ -85,11 +85,11 @@ namespace System.Buffers
         public int? Length
         {
             get {
-                if (_length == Unspecified)
+                if (_totalLength == Unspecified)
                 {
                     return null;
                 }
-                return _length;
+                return _totalLength;
             }
         }
 
@@ -104,13 +104,14 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBytes Slice(int index, int length)
         {
-            if (First.Length >= length + index)
+            var first = First;
+            if (first.Length >= length + index)
             {
-                return new ReadOnlyBytes(First.Slice(index, length));
+                return new ReadOnlyBytes(first.Slice(index, length));
             }
-            if (First.Length > index)
+            if (first.Length > index)
             {
-                return new ReadOnlyBytes(_first.Slice(index), _rest, length);
+                return new ReadOnlyBytes(first.Slice(index), _rest, length);
             }
             return SliceRest(index, length);
         }
@@ -118,7 +119,16 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBytes Slice(int index)
         {
-            return Slice(index, ComputeLength() - index); // TODO (pri 1): this computes the Length; it should not.
+            if (_totalLength != Unspecified) {
+                return Slice(index, _totalLength - index);
+            }
+            else {
+                var first = First;
+                if (first.Length > index) {
+                    return new ReadOnlyBytes(first.Slice(index), _rest);
+                }
+                return new ReadOnlyBytes(_rest).Slice(index - first.Length);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -127,21 +137,23 @@ namespace System.Buffers
             var first = _first.Span;
             var index = first.IndexOf(bytes);
             if (index != -1) return index;
-
             return first.IndexOfStraddling(_rest, bytes);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int IndexOf(byte value)
         {
             var first = _first.Span;
             var index = first.IndexOf(value);
             if (index != -1) return index;
+            return IndexOfRest(value, first.Length);
+        }
 
+        int IndexOfRest(byte value, int firstLength)
+        {
             if (_rest == null) return -1;
-
-            index = _rest.IndexOf(value);
-            if (index != -1) return first.Length + index;
-
+            var index = _rest.IndexOf(value);
+            if (index != -1) return firstLength + index;
             return -1;
         }
 
@@ -182,7 +194,7 @@ namespace System.Buffers
         // TODO (pri 3): the problem is that this makes the type mutable, and since the type is a struct, the mutation can be lost when the stack unwinds.
         public int ComputeLength()
         {
-            if (_length != Unspecified) return _length;
+            if (_totalLength != Unspecified) return _totalLength;
 
             int length = 0;
             if (_rest != null)

@@ -9,13 +9,13 @@ using Microsoft.Win32.SafeHandles;
 
 namespace System.IO.Pipelines.File
 {
-    public class FileReader : PipelineReader
+    public class FileReader : PipeReader
     {
         public FileReader(MemoryPool pool) : base(pool)
         {
         }
 
-        public FileReader(Pipe pipe) : base(pipe)
+        public FileReader(IPipe pipe) : base(pipe)
         {
         }
 
@@ -29,7 +29,7 @@ namespace System.IO.Pipelines.File
 
             var readOperation = new ReadOperation
             {
-                Writer = _pipe,
+                Writer = Pipe.Writer,
                 FileHandle = fileHandle,
                 ThreadPoolBoundHandle = handle,
                 IOCallback = IOCallback
@@ -38,7 +38,7 @@ namespace System.IO.Pipelines.File
             var overlapped = new PreAllocatedOverlapped(IOCallback, readOperation, null);
             readOperation.PreAllocatedOverlapped = overlapped;
 
-            _pipe.ReadingStarted.ContinueWith((t, state) =>
+            Task.Factory.StartNew(state =>
             {
                 ((ReadOperation)state).Read();
             },
@@ -59,7 +59,7 @@ namespace System.IO.Pipelines.File
             buffer.Advance((int)numBytes);
             var awaitable = buffer.FlushAsync();
 
-            if (numBytes == 0 || operation.Writer.Writing.IsCompleted)
+            if (numBytes == 0)
             {
                 operation.Writer.Complete();
 
@@ -68,6 +68,7 @@ namespace System.IO.Pipelines.File
             }
             else if (awaitable.IsCompleted)
             {
+                // No back pressure being applied to continue reading
                 operation.Read();
             }
             else
@@ -83,6 +84,12 @@ namespace System.IO.Pipelines.File
             {
                 operation.Read();
             }
+            else
+            {
+                operation.Writer.Complete();
+
+                operation.Dispose();
+            }
         }
 
         private class ReadOperation
@@ -96,7 +103,7 @@ namespace System.IO.Pipelines.File
 
             public unsafe NativeOverlapped* Overlapped { get; set; }
 
-            public IPipelineWriter Writer { get; set; }
+            public IPipeWriter Writer { get; set; }
 
             public StrongBox<WritableBuffer> BoxedBuffer { get; set; }
 

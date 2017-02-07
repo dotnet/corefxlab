@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.File
 {
     public static class ReadableFilePipelineFactoryExtensions
     {
-        public static IPipelineReader ReadFile(this PipelineFactory factory, string path)
+        public static IPipeReader ReadFile(this PipeFactory factory, string path)
         {
             var pipe = factory.Create();
 

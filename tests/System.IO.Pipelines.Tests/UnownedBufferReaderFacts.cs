@@ -499,7 +499,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task StreamAsPipelineReaderUsesUnderlyingPipelineReaderIfAvailable()
         {
-            var stream = new StreamAndPipelineReader();
+            var stream = new StreamAndPipeReader();
             var sw = new StreamWriter(stream);
             sw.Write("Hello");
             sw.Flush();
@@ -529,7 +529,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task StreamAsPipelineReaderReadStream()
         {
-            var stream = new StreamAndPipelineReader();
+            var stream = new StreamAndPipeReader();
             var sw = new StreamWriter(stream);
             sw.Write("Hello");
             sw.Flush();
@@ -551,7 +551,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal("World", Encoding.UTF8.GetString(readBuf, 0, read));
         }
 
-        private class StreamAndPipelineReader : Stream, IPipelineReader
+        private class StreamAndPipeReader : Stream, IPipeReader
         {
             private readonly Pipe _pipe = new Pipe(ArrayBufferPool.Instance);
 
@@ -582,16 +582,16 @@ namespace System.IO.Pipelines.Tests
                 }
             }
 
-            public void CancelPendingRead() => _pipe.CancelPendingRead();
+            public void CancelPendingRead() => _pipe.Reader.CancelPendingRead();
 
             public void Advance(ReadCursor consumed, ReadCursor examined)
             {
-                _pipe.AdvanceReader(consumed, examined);
+                _pipe.Reader.Advance(consumed, examined);
             }
 
             public void Complete(Exception exception = null)
             {
-                _pipe.CompleteReader(exception);
+                _pipe.Reader.Complete(exception);
             }
 
             public override void Flush()
@@ -611,7 +611,7 @@ namespace System.IO.Pipelines.Tests
 
             public ReadableBufferAwaitable ReadAsync()
             {
-                return _pipe.ReadAsync();
+                return _pipe.Reader.ReadAsync();
             }
 
             public override long Seek(long offset, SeekOrigin origin)
@@ -634,14 +634,14 @@ namespace System.IO.Pipelines.Tests
                 return _pipe.WriteAsync(new Span<byte>(buffer, offset, count));
             }
 
-            public void FinishWriting() => _pipe.CompleteWriter();
+            public void FinishWriting() => _pipe.Writer.Complete();
 
             protected override void Dispose(bool disposing)
             {
                 base.Dispose(disposing);
 
-                _pipe.CompleteReader();
-                _pipe.CompleteWriter();
+                _pipe.Reader.Complete();
+                _pipe.Writer.Complete();
             }
         }
 

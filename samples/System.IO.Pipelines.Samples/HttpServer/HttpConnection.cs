@@ -14,8 +14,8 @@ namespace System.IO.Pipelines.Samples.Http
         private static readonly byte[] _chunkedEndBytes = Encoding.UTF8.GetBytes("0\r\n\r\n");
         private static readonly byte[] _endChunkBytes = Encoding.ASCII.GetBytes("\r\n");
 
-        private readonly IPipelineReader _input;
-        private readonly IPipelineWriter _output;
+        private readonly IPipeReader _input;
+        private readonly IPipeWriter _output;
         private readonly IHttpApplication<TContext> _application;
 
         public RequestHeaderDictionary RequestHeaders => _parser.RequestHeaders;
@@ -38,7 +38,7 @@ namespace System.IO.Pipelines.Samples.Http
 
         private HttpRequestParser _parser = new HttpRequestParser();
 
-        public HttpConnection(IHttpApplication<TContext> application, IPipelineReader input, IPipelineWriter output)
+        public HttpConnection(IHttpApplication<TContext> application, IPipeReader input, IPipeWriter output)
         {
             _application = application;
             _input = input;
@@ -47,9 +47,9 @@ namespace System.IO.Pipelines.Samples.Http
             _responseBody = new HttpResponseStream<TContext>(this);
         }
 
-        public IPipelineReader Input => _input;
+        public IPipeReader Input => _input;
 
-        public IPipelineWriter Output => _output;
+        public IPipeWriter Output => _output;
 
         public HttpRequestStream<TContext> RequestBody { get; set; }
 
@@ -64,6 +64,8 @@ namespace System.IO.Pipelines.Samples.Http
             {
                 var result = await _input.ReadAsync();
                 var buffer = result.Buffer;
+                var consumed = buffer.Start;
+                var examined = buffer.Start;
 
                 try
                 {
@@ -73,7 +75,7 @@ namespace System.IO.Pipelines.Samples.Http
                         return;
                     }
 
-                    var parserResult = _parser.ParseRequest(ref buffer);
+                    var parserResult = _parser.ParseRequest(buffer, out consumed, out examined);
 
                     switch (parserResult)
                     {
@@ -106,7 +108,7 @@ namespace System.IO.Pipelines.Samples.Http
                 }
                 finally
                 {
-                    _input.Advance(buffer.Start, buffer.End);
+                    _input.Advance(consumed, examined);
                 }
 
                 var context = _application.CreateContext(this);

@@ -11,22 +11,22 @@ namespace System.IO.Pipelines
     public static class StreamExtensions
     {
         /// <summary>
-        /// Adapts a <see cref="Stream"/> into a <see cref="IPipelineWriter"/>.
+        /// Adapts a <see cref="Stream"/> into a <see cref="IPipeWriter"/>.
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        public static IPipelineWriter AsPipelineWriter(this Stream stream)
+        public static IPipeWriter AsPipelineWriter(this Stream stream)
         {
-            return (stream as IPipelineWriter) ?? stream.AsPipelineWriter(ArrayBufferPool.Instance);
+            return (stream as IPipeWriter) ?? stream.AsPipelineWriter(ArrayBufferPool.Instance);
         }
 
         /// <summary>
-        /// Adapts a <see cref="Stream"/> into a <see cref="IPipelineWriter"/>.
+        /// Adapts a <see cref="Stream"/> into a <see cref="IPipeWriter"/>.
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="pool"></param>
         /// <returns></returns>
-        public static IPipelineWriter AsPipelineWriter(this Stream stream, IBufferPool pool)
+        public static IPipeWriter AsPipelineWriter(this Stream stream, IBufferPool pool)
         {
             var pipe = new Pipe(pool);
             pipe.CopyToAsync(stream).ContinueWith((task, state) =>
@@ -35,11 +35,11 @@ namespace System.IO.Pipelines
 
                 if (task.IsFaulted)
                 {
-                    innerPipe.CompleteReader(task.Exception.InnerException);
+                    innerPipe.Reader.Complete(task.Exception.InnerException);
                 }
                 else
                 {
-                    innerPipe.CompleteReader();
+                    innerPipe.Reader.Complete();
                 }
             }, 
             pipe, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
@@ -48,23 +48,23 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Adapts a <see cref="Stream"/> into a <see cref="IPipelineReader"/>.
+        /// Adapts a <see cref="Stream"/> into a <see cref="IPipeReader"/>.
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        public static IPipelineReader AsPipelineReader(this Stream stream) => AsPipelineReader(stream, CancellationToken.None);
+        public static IPipeReader AsPipelineReader(this Stream stream) => AsPipelineReader(stream, CancellationToken.None);
 
         /// <summary>
-        /// Adapts a <see cref="Stream"/> into a <see cref="IPipelineReader"/>.
+        /// Adapts a <see cref="Stream"/> into a <see cref="IPipeReader"/>.
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static IPipelineReader AsPipelineReader(this Stream stream, CancellationToken cancellationToken)
+        public static IPipeReader AsPipelineReader(this Stream stream, CancellationToken cancellationToken)
         {
-            if (stream is IPipelineReader)
+            if (stream is IPipeReader)
             {
-                return (IPipelineReader)stream;
+                return (IPipeReader)stream;
             }
 
             var streamAdaptor = new UnownedBufferStream(stream);
@@ -73,12 +73,12 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Copies the content of a <see cref="Stream"/> into a <see cref="IPipelineWriter"/>.
+        /// Copies the content of a <see cref="Stream"/> into a <see cref="IPipeWriter"/>.
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="writer"></param>
         /// <returns></returns>
-        public static Task CopyToAsync(this Stream stream, IPipelineWriter writer)
+        public static Task CopyToAsync(this Stream stream, IPipeWriter writer)
         {
             return stream.CopyToAsync(new PipelineWriterStream(writer));
         }
@@ -88,7 +88,7 @@ namespace System.IO.Pipelines
             private readonly Stream _stream;
             private readonly UnownedBufferReader _reader;
 
-            public IPipelineReader Reader => _reader;
+            public IPipeReader Reader => _reader;
 
             public override bool CanRead => false;
             public override bool CanSeek => false;
@@ -176,9 +176,9 @@ namespace System.IO.Pipelines
 
         private class PipelineWriterStream : Stream
         {
-            private IPipelineWriter _writer;
+            private IPipeWriter _writer;
 
-            public PipelineWriterStream(IPipelineWriter writer)
+            public PipelineWriterStream(IPipeWriter writer)
             {
                 _writer = writer;
             }

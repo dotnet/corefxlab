@@ -32,7 +32,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         public UvLoopHandle Loop { get; private set; }
 
-        public PipelineFactory PipelineFactory { get; } = new PipelineFactory();
+        public PipeFactory PipeFactory { get; } = new PipeFactory();
 
         public WriteReqPool WriteReqPool { get; }
 
@@ -131,7 +131,7 @@ namespace System.IO.Pipelines.Networking.Libuv
         {
             Stop();
 
-            PipelineFactory.Dispose();
+            PipeFactory.Dispose();
         }
 
         public void Schedule(Action action)
