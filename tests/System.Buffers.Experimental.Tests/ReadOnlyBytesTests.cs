@@ -37,7 +37,7 @@ namespace System.Slices.Tests
             Assert.Equal(11, index);
         }
 
-        [Fact]
+        [Fact(Skip = "flaky")]
         public void ReadOnlyBytesEnumeration()
         {
             var buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
