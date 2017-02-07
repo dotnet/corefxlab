@@ -127,7 +127,7 @@ namespace System.IO.Pipelines.Tests
         }
 
 
-        [Fact(Skip="Trying to find a hang")]
+        [Fact]
         public async Task RunStressPingPongTest_Socket()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5020);
