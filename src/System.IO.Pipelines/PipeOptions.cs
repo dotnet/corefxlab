@@ -8,9 +8,9 @@ namespace System.IO.Pipelines
 {
     public class PipeOptions
     {
-        public int MaximumSizeHigh { get; set; }
+        public long MaximumSizeHigh { get; set; }
 
-        public int MaximumSizeLow { get; set; }
+        public long MaximumSizeLow { get; set; }
 
         public IScheduler WriterScheduler { get; set; }
 
