@@ -6,7 +6,7 @@ namespace System.Buffers.Tests
 {
     public class NativeBufferPoolTests
     {
-        [Fact]
+        [Fact(Skip = "ReadOnlyBytesTests are flaky")]
         public void BasicsWork() {
             var pool = NativeBufferPool.Shared;
             var buffer = pool.Rent(10);
