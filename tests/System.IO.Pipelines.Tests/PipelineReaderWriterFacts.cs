@@ -297,7 +297,7 @@ namespace System.IO.Pipelines.Tests
             var output = _pipe.Writer.Alloc();
             output.Write(bytes);
 
-            var task = Task.Run(async () =>
+            Func<Task> taskFunc = async () =>
             {
                 var result = await _pipe.Reader.ReadAsync();
                 var buffer = result.Buffer;
@@ -321,10 +321,9 @@ namespace System.IO.Pipelines.Tests
                 _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
 
                 _pipe.Reader.Complete();
-            });
+            };
 
-            // Wait until reading starts to cancel the pending read
-            await _pipe.ReadingStarted;
+            var task = taskFunc();
 
             _pipe.Reader.CancelPendingRead();
 
@@ -486,22 +485,6 @@ namespace System.IO.Pipelines.Tests
         public void AllocMoreThanPoolBlockSizeThrows()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => _pipe.Writer.Alloc(8192));
-        }
-
-        [Fact]
-        public void ReadingStartedCompletesOnCompleteReader()
-        {
-            _pipe.Reader.Complete();
-
-            Assert.True(_pipe.ReadingStarted.IsCompleted);
-        }
-
-        [Fact]
-        public void ReadingStartedCompletesOnCallToReadAsync()
-        {
-            _pipe.Reader.ReadAsync();
-
-            Assert.True(_pipe.ReadingStarted.IsCompleted);
         }
 
         [Fact]

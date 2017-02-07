@@ -43,7 +43,6 @@ namespace System.IO.Pipelines
         // REVIEW: This object might be getting a little big :)
         private readonly TaskCompletionSource<object> _readingTcs = new TaskCompletionSource<object>();
         private readonly TaskCompletionSource<object> _writingTcs = new TaskCompletionSource<object>();
-        private readonly TaskCompletionSource<object> _startingReadingTcs = new TaskCompletionSource<object>();
         private bool _disposed;
 
 #if CONSUMING_LOCATION_TRACKING
@@ -100,11 +99,6 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// A <see cref="Task"/> that completes when the consumer starts consuming the <see cref="IPipeReader"/>.
-        /// </summary>
-        public Task ReadingStarted => _startingReadingTcs.Task;
-
-        /// <summary>
         /// Gets a task that completes when no more data will be added to the pipeline.
         /// </summary>
         /// <remarks>This task indicates the producer has completed and will not write anymore data.</remarks>
@@ -156,7 +150,7 @@ namespace System.IO.Pipelines
             }
 
             if (minimumSize > 0)
-            { 
+            {
                 try
                 {
                     AllocateWriteHead(minimumSize);
@@ -412,7 +406,7 @@ namespace System.IO.Pipelines
 
             return new ReadableBuffer(new ReadCursor(head), readEnd);
         }
-        
+
         /// <summary>
         /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>
@@ -528,9 +522,6 @@ namespace System.IO.Pipelines
             // TODO: Review this lock?
             lock (_sync)
             {
-                // Trigger this if it's never been triggered
-                _startingReadingTcs.TrySetResult(null);
-
                 Complete(_writingTcs, exception);
 
                 Resume(_writerScheduler, ref _writerCallback);
@@ -571,7 +562,6 @@ namespace System.IO.Pipelines
 #endif
                     );
             }
-            _startingReadingTcs.TrySetResult(null);
 
             return new ReadableBufferAwaitable(this);
         }
@@ -654,7 +644,7 @@ namespace System.IO.Pipelines
                 _awaitableIsNotCompleted,
                 _awaitableIsCompleted);
         }
-        
+
         private void Complete(TaskCompletionSource<object> taskCompletionSource, Exception exception)
         {
             if (exception != null)
