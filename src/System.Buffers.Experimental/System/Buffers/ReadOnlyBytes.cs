@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Sequences;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -20,14 +21,16 @@ namespace System.Buffers
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest, int length)
         {
+            Debug.Assert(rest != null || length <= first.Length);
             _rest = rest;
             _first = first;
             _totalLength = length;
         }
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest) :
-            this(first, rest, Unspecified)
-        { }
+            this(first, rest, rest==null?first.Length:Unspecified)
+        {
+        }
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> memory) :
             this(memory, null, memory.Length)
@@ -111,6 +114,7 @@ namespace System.Buffers
             }
             if (first.Length > index)
             {
+                Debug.Assert(_rest != null);
                 return new ReadOnlyBytes(first.Slice(index), _rest, length);
             }
             return SliceRest(index, length);
@@ -297,7 +301,15 @@ namespace System.Buffers
                 }
                 current._first = buffer;
             }
-            return new ReadOnlyBytes(first);
+
+            if (first.Rest == null)
+            {
+                return new ReadOnlyBytes(first, first.First.Length);
+            }
+            else
+            {
+                return new ReadOnlyBytes(first);
+            }
         }
     }
 }
