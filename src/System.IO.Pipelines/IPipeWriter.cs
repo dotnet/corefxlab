@@ -9,7 +9,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Defines a class that provides a pipeline to which data can be written.
     /// </summary>
-    public interface IPipelineWriter
+    public interface IPipeWriter
     {
         /// <summary>
         /// Allocates memory from the pipeline to write into.

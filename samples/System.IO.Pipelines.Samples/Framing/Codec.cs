@@ -81,7 +81,7 @@ namespace System.IO.Pipelines.Samples.Framing
             thread.Dispose();
         }
 
-        public static IPipelineConnection MakePipeline(IPipelineConnection connection)
+        public static IPipeConnection MakePipeline(IPipeConnection connection)
         {
             // Do something fancy here to wrap the connection, SSL etc
             return connection;
@@ -97,7 +97,7 @@ namespace System.IO.Pipelines.Samples.Framing
     {
         private PipelineTextOutput _textOutput;
 
-        public void Initialize(IPipelineConnection connection)
+        public void Initialize(IPipeConnection connection)
         {
             _textOutput = new PipelineTextOutput(connection.Output, EncodingData.InvariantUtf8);
         }
@@ -135,7 +135,7 @@ namespace System.IO.Pipelines.Samples.Framing
 
     public interface IFrameHandler<TInput>
     {
-        void Initialize(IPipelineConnection connection);
+        void Initialize(IPipeConnection connection);
 
         Task HandleAsync(TInput message);
     }

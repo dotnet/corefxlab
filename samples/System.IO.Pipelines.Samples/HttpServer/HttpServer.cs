@@ -91,7 +91,7 @@ namespace System.IO.Pipelines.Samples.Http
             _listenSocket.Bind(new IPEndPoint(ip, port));
             _listenSocket.Listen(10);
 
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 while (true)
                 {
@@ -154,20 +154,20 @@ namespace System.IO.Pipelines.Samples.Http
             }
         }
 
-        private static async Task ProcessConnection<TContext>(IHttpApplication<TContext> application, PipelineFactory pipelineFactory, Socket socket)
+        private static async Task ProcessConnection<TContext>(IHttpApplication<TContext> application, PipeFactory pipeFactory, Socket socket)
         {
             using (var ns = new NetworkStream(socket))
             {
-                using (var connection = pipelineFactory.CreateConnection(ns))
+                using (var connection = pipeFactory.CreateConnection(ns))
                 {
                     await ProcessClient(application, connection);
                 }
             }
         }
 
-        private static async Task ProcessClient<TContext>(IHttpApplication<TContext> application, IPipelineConnection pipelineConnection)
+        private static async Task ProcessClient<TContext>(IHttpApplication<TContext> application, IPipeConnection pipeConnection)
         {
-            var connection = new HttpConnection<TContext>(application, pipelineConnection.Input, pipelineConnection.Output);
+            var connection = new HttpConnection<TContext>(application, pipeConnection.Input, pipeConnection.Output);
 
             await connection.ProcessAllRequests();
         }

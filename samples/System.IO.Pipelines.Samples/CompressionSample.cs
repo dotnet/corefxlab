@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.Samples
     {
         public static void Run()
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 var filePath = Path.GetFullPath("Program.cs");
 

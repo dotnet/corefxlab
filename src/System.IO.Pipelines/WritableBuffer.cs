@@ -77,7 +77,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Moves forward the underlying <see cref="IPipelineWriter"/>'s write cursor but does not commit the data.
+        /// Moves forward the underlying <see cref="IPipeWriter"/>'s write cursor but does not commit the data.
         /// </summary>
         /// <param name="bytesWritten">number of bytes to be marked as written.</param>
         /// <remarks>Forwards the start of available <see cref="Memory"/> by <paramref name="bytesWritten"/>.</remarks>
@@ -89,7 +89,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Commits all outstanding written data to the underlying <see cref="IPipelineWriter"/> so they can be read
+        /// Commits all outstanding written data to the underlying <see cref="IPipeWriter"/> so they can be read
         /// and seals the <see cref="WritableBuffer"/> so no more data can be committed.
         /// </summary>
         /// <remarks>
@@ -101,7 +101,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Signals the <see cref="IPipelineReader"/> data is available.
+        /// Signals the <see cref="IPipeReader"/> data is available.
         /// Will <see cref="Commit"/> if necessary.
         /// </summary>
         /// <returns>A task that completes when the data is fully flushed.</returns>

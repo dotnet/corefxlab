@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace System.IO.Pipelines
 {
     /// <summary>
-    /// Default <see cref="IPipelineWriter"/> and <see cref="IPipelineReader"/> implementation.
+    /// Default <see cref="IPipeWriter"/> and <see cref="IPipeReader"/> implementation.
     /// </summary>
-    public class Pipe : IPipelineReader, IPipelineWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
+    internal class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
     {
         private static readonly Action _awaitableIsCompleted = () => { };
         private static readonly Action _awaitableIsNotCompleted = () => { };
@@ -100,7 +100,7 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// A <see cref="Task"/> that completes when the consumer starts consuming the <see cref="IPipelineReader"/>.
+        /// A <see cref="Task"/> that completes when the consumer starts consuming the <see cref="IPipeReader"/>.
         /// </summary>
         public Task ReadingStarted => _startingReadingTcs.Task;
 
@@ -126,19 +126,8 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="minimumSize">The minimum size buffer to allocate</param>
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
-        public WritableBuffer Alloc(int minimumSize = 0)
+        WritableBuffer IPipeWriter.Alloc(int minimumSize)
         {
-            // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _producingState, State.Active) != State.NotActive)
-            {
-
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyProducing
-#if PRODUCING_LOCATION_TRACKING
-                    , _producingLocation
-#endif
-                    );
-            }
-
 #if PRODUCING_LOCATION_TRACKING
             _producingLocation = Environment.StackTrace;
 #endif
@@ -155,8 +144,19 @@ namespace System.IO.Pipelines
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
             }
-            else if (minimumSize > 0)
+
+            // CompareExchange not required as its setting to current value if test fails
+            if (Interlocked.Exchange(ref _producingState, State.Active) != State.NotActive)
             {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyProducing
+#if PRODUCING_LOCATION_TRACKING
+                    , _producingLocation
+#endif
+                    );
+            }
+
+            if (minimumSize > 0)
+            { 
                 try
                 {
                     AllocateWriteHead(minimumSize);
@@ -333,7 +333,7 @@ namespace System.IO.Pipelines
 #endif
         }
 
-        public void AdvanceWriter(int bytesWritten)
+        internal void AdvanceWriter(int bytesWritten)
         {
             EnsureAlloc();
 
@@ -412,14 +412,12 @@ namespace System.IO.Pipelines
 
             return new ReadableBuffer(new ReadCursor(head), readEnd);
         }
-
-        void IPipelineWriter.Complete(Exception exception) => CompleteWriter(exception);
-
+        
         /// <summary>
         /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-        public void CompleteWriter(Exception exception = null)
+        void IPipeWriter.Complete(Exception exception)
         {
             if (_producingState != State.NotActive)
             {
@@ -435,7 +433,7 @@ namespace System.IO.Pipelines
             // TODO: Review this lock?
             lock (_sync)
             {
-                SignalReader(exception);
+                Complete(_readingTcs, exception);
 
                 Resume(_readerScheduler, ref _readerCallback);
 
@@ -446,7 +444,9 @@ namespace System.IO.Pipelines
             }
         }
 
-        public void AdvanceReader(ReadCursor consumed, ReadCursor examined)
+        // Reading
+
+        void IPipeReader.Advance(ReadCursor consumed, ReadCursor examined)
         {
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
@@ -508,29 +508,11 @@ namespace System.IO.Pipelines
             }
         }
 
-        private void SignalWriter(Exception exception)
-        {
-            if (exception != null)
-            {
-                _writingTcs.TrySetException(exception);
-            }
-            else
-            {
-                _writingTcs.TrySetResult(null);
-            }
-        }
-
-        // Reading
-
-        void IPipelineReader.Complete(Exception exception) => CompleteReader(exception);
-
-        void IPipelineReader.Advance(ReadCursor consumed, ReadCursor examined) => AdvanceReader(consumed, examined);
-
         /// <summary>
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
-        public void CompleteReader(Exception exception = null)
+        void IPipeReader.Complete(Exception exception)
         {
             if (_consumingState != State.NotActive)
             {
@@ -549,7 +531,7 @@ namespace System.IO.Pipelines
                 // Trigger this if it's never been triggered
                 _startingReadingTcs.TrySetResult(null);
 
-                SignalWriter(exception);
+                Complete(_writingTcs, exception);
 
                 Resume(_writerScheduler, ref _writerCallback);
 
@@ -561,9 +543,9 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Cancel to currently pending call to <see cref="ReadAsync"/> without completing the <see cref="IPipelineReader"/>.
+        /// Cancel to currently pending call to <see cref="ReadAsync"/> without completing the <see cref="IPipeReader"/>.
         /// </summary>
-        public void CancelPendingRead()
+        void IPipeReader.CancelPendingRead()
         {
             // TODO: Can factor out this lock
             lock (_sync)
@@ -576,10 +558,10 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Asynchronously reads a sequence of bytes from the current <see cref="IPipelineReader"/>.
+        /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
         /// </summary>
         /// <returns>A <see cref="PipeAwaitable"/> representing the asynchronous read operation.</returns>
-        public ReadableBufferAwaitable ReadAsync()
+        ReadableBufferAwaitable IPipeReader.ReadAsync()
         {
             if (Writing.IsCompleted)
             {
@@ -594,17 +576,6 @@ namespace System.IO.Pipelines
             return new ReadableBufferAwaitable(this);
         }
 
-        private void SignalReader(Exception exception)
-        {
-            if (exception != null)
-            {
-                _readingTcs.TrySetException(exception);
-            }
-            else
-            {
-                _readingTcs.TrySetResult(null);
-            }
-        }
 
         // Awaiter support members
 
@@ -683,6 +654,18 @@ namespace System.IO.Pipelines
                 _awaitableIsNotCompleted,
                 _awaitableIsCompleted);
         }
+        
+        private void Complete(TaskCompletionSource<object> taskCompletionSource, Exception exception)
+        {
+            if (exception != null)
+            {
+                taskCompletionSource.TrySetException(exception);
+            }
+            else
+            {
+                taskCompletionSource.TrySetResult(null);
+            }
+        }
 
         private void Dispose()
         {
@@ -731,7 +714,7 @@ namespace System.IO.Pipelines
             return new ReadResult(Read(), isCancelled, isCompleted);
         }
 
-        // IFlushAwaiter members
+        // IWritableBufferAwaiter members
 
         bool IWritableBufferAwaiter.IsCompleted => IsCompleted(_writerCallback);
 
@@ -748,6 +731,9 @@ namespace System.IO.Pipelines
         {
             OnCompleted(continuation, _writerScheduler, ref _writerCallback, _writingTcs);
         }
+
+        public IPipeReader Reader => this;
+        public IPipeWriter Writer => this;
 
         // Can't use enums with Interlocked
         private static class State

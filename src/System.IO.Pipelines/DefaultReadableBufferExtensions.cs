@@ -54,7 +54,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        public static async Task<ReadableBuffer> ReadToEndAsync(this IPipelineReader input)
+        public static async Task<ReadableBuffer> ReadToEndAsync(this IPipeReader input)
         {
             while (true)
             {

@@ -12,11 +12,11 @@ namespace System.IO.Pipelines.Text.Primitives
 {
     public class PipelineTextOutput : ITextOutput
     {
-        private readonly IPipelineWriter _writer;
+        private readonly IPipeWriter _writer;
         private WritableBuffer _writableBuffer;
         private bool _needAlloc = true;
 
-        public PipelineTextOutput(IPipelineWriter writer, EncodingData encoding)
+        public PipelineTextOutput(IPipeWriter writer, EncodingData encoding)
         {
             _writer = writer;
             Encoding = encoding;

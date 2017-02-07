@@ -16,19 +16,19 @@ namespace System.IO.Pipelines.Networking.Sockets
         private readonly bool _ownsFactory;
         private Socket _socket;
         private Socket Socket => _socket;
-        private PipelineFactory _factory;
-        private PipelineFactory PipelineFactory => _factory;
+        private PipeFactory _factory;
+        private PipeFactory PipeFactory => _factory;
         private Func<SocketConnection, Task> Callback { get; set; }
         static readonly EventHandler<SocketAsyncEventArgs> _asyncCompleted = OnAsyncCompleted;
 
         /// <summary>
         /// Creates a new SocketListener instance
         /// </summary>
-        /// <param name="factory">Optionally allows the underlying <see cref="PipelineFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipelineFactory"/> will be instantiated and owned by the listener</param>
-        public SocketListener(PipelineFactory factory = null)
+        /// <param name="factory">Optionally allows the underlying <see cref="PipeFactory"/> (and hence memory pool) to be specified; if one is not provided, a <see cref="PipeFactory"/> will be instantiated and owned by the listener</param>
+        public SocketListener(PipeFactory factory = null)
         {
             _ownsFactory = factory == null;
-            _factory = factory ?? new PipelineFactory();
+            _factory = factory ?? new PipeFactory();
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         {
             if (e.SocketError == SocketError.Success)
             {
-                var conn = new SocketConnection(e.AcceptSocket, PipelineFactory);
+                var conn = new SocketConnection(e.AcceptSocket, PipeFactory);
                 e.AcceptSocket = null;
                 ExecuteConnection(conn);
             }
