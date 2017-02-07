@@ -61,7 +61,7 @@ namespace System.Slices.Tests
             Assert.Equal(6, length);
         }
 
-        [Fact(Skip = "flaky")]
+        [Fact]
         public void ReadOnlyTailBytesEnumeration()
         {
             for (int i = 0; i < 6; i++)
@@ -79,7 +79,7 @@ namespace System.Slices.Tests
             }
         }
 
-        [Fact(Skip = "flaky")]
+        [Fact]
         public void ReadOnlyFrontBytesEnumeration()
         {
             for (int i = 0; i < 7; i++)
@@ -97,7 +97,7 @@ namespace System.Slices.Tests
             }
         }
 
-        [Fact(Skip = "flaky")]
+        [Fact]
         public void SegmentedReadOnlyBytesBasics()
         {
             var bytes = Parse("A|CD|EFG");
