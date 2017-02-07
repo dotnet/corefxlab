@@ -9,7 +9,7 @@ namespace System.IO.Pipelines.Tests
 {
     public class SeekTests
     {
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [InlineData("a", "a", 'a', 0)]
         [InlineData("ab", "a", 'a', 0)]
         [InlineData("aab", "a", 'a', 0)]
@@ -60,7 +60,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(expectIndex, result.Index - start.Index);
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [MemberData(nameof(SeekByteLimitData))]
         public void TestSeekByteLimitAcrossBlocks(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
         {
@@ -98,7 +98,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [MemberData(nameof(SeekByteLimitData))]
         public void TestSeekByteLimitWithinSameBlock(string input, char seek, int limit, int expectedBytesScanned, int expectedReturnValue)
         {
@@ -124,7 +124,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [MemberData(nameof(SeekIteratorLimitData))]
         public void TestSeekIteratorLimitWithinSameBlock(string input, char seek, char limitAfter, int expectedReturnValue)
         {
@@ -184,7 +184,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [MemberData(nameof(SeekIteratorLimitData))]
         public void TestSeekIteratorLimitAcrossBlocks(string input, char seek, char limitAt, int expectedReturnValue)
         {

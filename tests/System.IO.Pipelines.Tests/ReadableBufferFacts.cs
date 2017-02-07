@@ -120,7 +120,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [InlineData(" hello", "hello")]
         [InlineData("    hello", "hello")]
         [InlineData("\r\n hello", "hello")]
@@ -146,7 +146,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [InlineData("hello ", "hello")]
         [InlineData("hello    ", "hello")]
         [InlineData("hello \r\n", "hello")]
@@ -172,7 +172,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [InlineData("foo\rbar\r\n", "\r\n", "foo\rbar")]
         [InlineData("foo\rbar\r\n", "\rbar", "foo")]
         [InlineData("/pathpath/", "path/", "/path")]
@@ -287,7 +287,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(value, slice.GetUInt64());
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [InlineData("abc,def,ghi", ',')]
         [InlineData("a;b;c;d", ';')]
         [InlineData("a;b;c;d", ',')]
@@ -518,7 +518,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [MemberData(nameof(OutOfRangeSliceCases))]
         public void ReadableBufferDoesNotAllowSlicingOutOfRange(Action<ReadableBuffer> fail)
         {
@@ -529,7 +529,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [MemberData(nameof(Size100ReadableBuffers))]
         public void ReadableBufferMove_MovesReadCursor(ReadableBuffer buffer)
         {
@@ -537,7 +537,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(buffer.Slice(65).Start, cursor);
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [MemberData(nameof(Size100ReadableBuffers))]
         public void ReadableBufferMove_ChecksBounds(ReadableBuffer buffer)
         {

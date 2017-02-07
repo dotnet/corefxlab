@@ -23,7 +23,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [InlineData(1, "1")]
         [InlineData(20, "20")]
         [InlineData(300, "300")]
@@ -46,7 +46,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [InlineData(5)]
         [InlineData(50)]
         [InlineData(500)]
@@ -81,7 +81,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [InlineData(5)]
         [InlineData(50)]
         [InlineData(500)]
@@ -116,7 +116,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(data.Length, offset);
             }
         }
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [InlineData(5)]
         [InlineData(50)]
         [InlineData(500)]
@@ -311,7 +311,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory]
+        [Theory(Skip = "Trying to find a hang")]
         [MemberData(nameof(HexNumbers))]
         public void WriteHex(int value, string hex)
         {
