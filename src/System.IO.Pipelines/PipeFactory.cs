@@ -51,8 +51,6 @@ namespace System.IO.Pipelines
 
         private async void ExecuteCopyToAsync(Pipe pipe, Stream stream)
         {
-            await pipe.ReadingStarted;
-
             await stream.CopyToAsync(pipe);
         }
 
@@ -101,15 +99,8 @@ namespace System.IO.Pipelines
         public IPipeReader CreateReader(IPipeReader reader, Func<IPipeReader, IPipeWriter, Task> produce)
         {
             var pipe = new Pipe(_pool);
-            Execute(reader, pipe, produce);
+            produce(reader, pipe);
             return pipe;
-        }
-
-        private async void Execute(IPipeReader reader, Pipe pipe, Func<IPipeReader, IPipeWriter, Task> produce)
-        {
-            await pipe.ReadingStarted;
-
-            await produce(reader, pipe);
         }
 
         public void Dispose() => _pool.Dispose();

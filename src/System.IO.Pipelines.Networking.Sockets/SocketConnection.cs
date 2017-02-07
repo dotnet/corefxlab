@@ -250,7 +250,6 @@ namespace System.IO.Pipelines.Networking.Sockets
             {
                 // wait for someone to be interested in data before we
                 // start allocating buffers and probing the socket
-                await _input.ReadingStarted;
                 args = GetOrCreateSocketAsyncEventArgs();
                 while (!_stopping)
                 {

@@ -6,6 +6,5 @@ namespace System.IO.Pipelines
     {
         IPipeReader Reader { get; }
         IPipeWriter Writer { get; }
-        Task ReadingStarted { get; }
     }
 }

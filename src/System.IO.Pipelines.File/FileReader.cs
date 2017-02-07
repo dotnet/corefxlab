@@ -38,7 +38,7 @@ namespace System.IO.Pipelines.File
             var overlapped = new PreAllocatedOverlapped(IOCallback, readOperation, null);
             readOperation.PreAllocatedOverlapped = overlapped;
 
-            Pipe.ReadingStarted.ContinueWith((t, state) =>
+            Task.Factory.StartNew(state =>
             {
                 ((ReadOperation)state).Read();
             },
