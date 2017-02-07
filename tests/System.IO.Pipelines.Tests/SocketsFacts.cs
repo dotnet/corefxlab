@@ -101,7 +101,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-        [Fact(Skip = "Trying to find a hang")]
+        [Fact]
         public async Task RunStressPingPongTest_Libuv()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5020);
@@ -127,7 +127,7 @@ namespace System.IO.Pipelines.Tests
         }
 
 
-        [Fact]
+        [Fact(Skip = "Trying to find a hang")]
         public async Task RunStressPingPongTest_Socket()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5020);
