@@ -52,6 +52,26 @@ namespace System.IO.Pipelines.Networking.Libuv
             _sendingTask = ProcessWrites();
         }
 
+        public async Task DisposeAsync()
+        {
+            // Dispose on the thread pool so we don't return on the libuv thread
+            await Task.Factory.StartNew(state => ((UvTcpConnection)state).DisposeAsyncCore(), this);
+        }
+
+        private async Task DisposeAsyncCore()
+        {
+            if (!_stopping)
+            {
+                _stopping = true;
+                _output.Reader.CancelPendingRead();
+
+                await _sendingTask.ConfigureAwait(false);
+
+                _output.Writer.Complete();
+                _input.Reader.Complete();
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -59,13 +79,7 @@ namespace System.IO.Pipelines.Networking.Libuv
         }
         protected virtual void Dispose(bool disposing)
         {
-            _stopping = true;
-            _output.Reader.CancelPendingRead();
-
-            _sendingTask.Wait();
-
-            _output.Writer.Complete();
-            _input.Reader.Complete();
+            DisposeAsync().GetAwaiter().GetResult();
         }
 
         public IPipeWriter Output => _output.Writer;

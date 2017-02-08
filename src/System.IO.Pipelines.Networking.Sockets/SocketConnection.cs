@@ -43,6 +43,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         private Task _receiveTask;
         private Task _sendTask;
         private volatile bool _stopping;
+        private bool _disposed;
 
         static SocketConnection()
         {
@@ -83,8 +84,19 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
             _factory = factory;
 
-            _input = PipeFactory.Create();
-            _output = PipeFactory.Create();
+            // TODO: Make this configurable
+            // Dispatch to avoid deadlocks
+            _input = PipeFactory.Create(new PipeOptions
+            {
+                ReaderScheduler = TaskRunScheduler.Default,
+                WriterScheduler = TaskRunScheduler.Default
+            });
+
+            _output = PipeFactory.Create(new PipeOptions
+            {
+                ReaderScheduler = TaskRunScheduler.Default,
+                WriterScheduler = TaskRunScheduler.Default
+            });
 
             _receiveTask = ReceiveFromSocketAndPushToWriterAsync();
             _sendTask = ReadFromReaderAndWriteToSocketAsync();
@@ -167,6 +179,27 @@ namespace System.IO.Pipelines.Networking.Sockets
                 }
             }
         }
+
+        public async Task DisposeAsync()
+        {
+            if (!_disposed)
+            {
+                _disposed = true;
+                _stopping = true;
+                _output.Reader.CancelPendingRead();
+
+                await Task.WhenAll(_sendTask, _receiveTask);
+
+                _output.Writer.Complete();
+                _input.Reader.Complete();
+
+                _socket?.Dispose();
+                _socket = null;
+                if (_ownsFactory) { _factory?.Dispose(); }
+                _factory = null;
+            }
+        }
+
         /// <summary>
         /// Releases all resources owned by the connection
         /// </summary>
@@ -174,20 +207,9 @@ namespace System.IO.Pipelines.Networking.Sockets
         {
             if (disposing)
             {
-                _stopping = true;
-                _output.Reader.CancelPendingRead();
-
-                Task.WaitAll(_sendTask, _receiveTask);
-
-                _output.Writer.Complete();
-                _input.Reader.Complete();
-
                 GC.SuppressFinalize(this);
 
-                _socket?.Dispose();
-                _socket = null;
-                if (_ownsFactory) { _factory?.Dispose(); }
-                _factory = null;
+                DisposeAsync().GetAwaiter().GetResult();
             }
         }
 
