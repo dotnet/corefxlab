@@ -137,14 +137,11 @@ namespace System.IO.Pipelines.Networking.Sockets
             // will cause a stack-dive in the sync (backlog) case
         }
 
-        private async void ExecuteConnection(SocketConnection conn)
+        private async void ExecuteConnection(SocketConnection connection)
         {
             try
             {
-                await Callback?.Invoke(conn);
-                // Jump of the stack because we might be in ReceiveFromSocketAndPushToWriterAsync CompleteWriter stack
-                // and it will deadlock with Dispose
-                await Task.Yield();
+                await Callback?.Invoke(connection);
             }
             catch
             {
@@ -152,7 +149,7 @@ namespace System.IO.Pipelines.Networking.Sockets
             }
             finally
             {
-                conn.Dispose();
+                await connection.DisposeAsync();
             }
         }
     }
