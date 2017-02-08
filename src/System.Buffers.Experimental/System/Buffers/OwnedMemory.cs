@@ -23,7 +23,7 @@ namespace System.Buffers
 
         ~OwnedNativeMemory()
         {
-            Dispose();
+            Dispose(false);
         }
 
         protected override void Dispose(bool disposing)

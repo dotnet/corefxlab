@@ -107,14 +107,16 @@ namespace System.Buffers
             Interlocked.Exchange(ref _id,  FreedId);
             if (HasOutstandingReferences) throw new InvalidOperationException("outstanding references detected.");
             Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        { 
+            _id = FreedId;
             _array = null;
             _pointer = IntPtr.Zero;
             _length = 0;
             _arrayIndex = 0;
         }
-
-        protected virtual void Dispose(bool disposing)
-        { }
 
         public bool IsDisposed => Id == FreedId;
 
