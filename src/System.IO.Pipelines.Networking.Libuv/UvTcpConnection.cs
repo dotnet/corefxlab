@@ -15,7 +15,6 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private static readonly Action<UvStreamHandle, int, object> _readCallback = ReadCallback;
         private static readonly Func<UvStreamHandle, int, object, Uv.uv_buf_t> _allocCallback = AllocCallback;
-        private static readonly Action<UvWriteReq, int, object> _writeCallback = WriteCallback;
 
         protected readonly IPipe _input;
         protected readonly IPipe _output;
@@ -23,9 +22,6 @@ namespace System.IO.Pipelines.Networking.Libuv
         private readonly UvTcpHandle _handle;
         private volatile bool _stopping;
 
-        private int _pendingWrites;
-
-        private TaskCompletionSource<object> _drainWrites;
         private Task _sendingTask;
         private WritableBuffer? _inputBuffer;
 
@@ -104,7 +100,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
                         if (!buffer.IsEmpty)
                         {
-                            BeginWrite(buffer);
+                            await WriteAsync(buffer);
                         }
                     }
                     finally
@@ -121,14 +117,6 @@ namespace System.IO.Pipelines.Networking.Libuv
             {
                 _output.Reader.Complete();
 
-                // Drain the pending writes
-                if (_pendingWrites > 0)
-                {
-                    _drainWrites = new TaskCompletionSource<object>();
-
-                    await _drainWrites.Task;
-                }
-
                 _handle.Dispose();
 
                 // We'll never call the callback after disposing the handle
@@ -136,32 +124,18 @@ namespace System.IO.Pipelines.Networking.Libuv
             }
         }
 
-        private void BeginWrite(ReadableBuffer buffer)
+        private async Task WriteAsync(ReadableBuffer buffer)
         {
             var writeReq = _thread.WriteReqPool.Allocate();
 
-            _pendingWrites++;
-
-            writeReq.Write(_handle, buffer, _writeCallback, this);
-        }
-
-        private static void WriteCallback(UvWriteReq writeReq, int status, object state)
-        {
-            ((UvTcpConnection)state).EndWrite(writeReq);
-        }
-
-        private void EndWrite(UvWriteReq writeReq)
-        {
-            _pendingWrites--;
-
-            _thread.WriteReqPool.Return(writeReq);
-
-            if (_drainWrites != null)
+            try
             {
-                if (_pendingWrites == 0)
-                {
-                    _drainWrites.TrySetResult(null);
-                }
+                await writeReq.WriteAsync(_handle, buffer);
+
+            }
+            finally
+            {
+                _thread.WriteReqPool.Return(writeReq);
             }
         }
 
