@@ -228,7 +228,8 @@ namespace System.Buffers
                     length += segment.Length;
                 }
             }
-            return length + _first.Length;
+            _totalLength = length + _first.Length;
+            return _totalLength;
         }
 
         // this is used for unspecified _length; ReadOnlyBytes can be created from list of buffers of unknown total size, 

@@ -11,13 +11,35 @@ namespace System.Slices.Tests
     public partial class ReadOnlyBytesTests
     {
         [Fact]
-        public void ReadOnlyBytesBasics()
+        public void SingleSegmentBasics()
         {
             ReadOnlyMemory<byte> buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
             var bytes = new ReadOnlyBytes(buffer);
             var sliced  = bytes.Slice(1, 3);
             var span = sliced.First.Span;
             Assert.Equal((byte)2, span[0]);
+
+            Assert.Equal(buffer.Length, bytes.Length.Value);
+            Assert.Equal(buffer.Length, bytes.ComputeLength());
+
+            bytes = new ReadOnlyBytes(buffer, null, -1);
+            Assert.False(bytes.Length.HasValue);
+            Assert.Equal(buffer.Length, bytes.ComputeLength());
+            Assert.Equal(buffer.Length, bytes.Length.Value);
+        }
+
+        [Fact]
+        public void MultiSegmentBasics()
+        {
+            var bytes = Parse("A|CD|EFG");
+            bytes = bytes.Slice(2, 3);
+            Assert.Equal((byte)'D', bytes.First.Span[0]);
+
+            bytes = Parse("A|CD|EFG");
+
+            Assert.False(bytes.Length.HasValue);
+            Assert.Equal(6, bytes.ComputeLength());
+            Assert.Equal(6, bytes.Length.Value);
         }
 
         [Fact]
@@ -160,6 +182,50 @@ namespace System.Slices.Tests
         }
 
         [Fact]
+        public void MultiSegmentIndexOfSpan()
+        {
+            var bytes = ReadOnlyBytes.Create(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+            Assert.Equal(10, bytes.First.Length);
+            Assert.Equal(9, bytes.First.Span[9]);
+            Assert.NotEqual(null, bytes.Rest);
+
+            var index = bytes.IndexOf(new byte[] { 2, 3 });
+            Assert.Equal(2, index);
+
+            index = bytes.IndexOf(new byte[] { 8, 9, 10 });
+            Assert.Equal(8, index);
+
+            index = bytes.IndexOf(new byte[] { 11, 12, 13, 14 });
+            Assert.Equal(11, index);
+
+            index = bytes.IndexOf(new byte[] { 19 });
+            Assert.Equal(19, index);
+
+            index = bytes.IndexOf(new byte[] { 0 });
+            Assert.Equal(0, index);
+
+            index = bytes.IndexOf(new byte[] { 9 });
+            Assert.Equal(9, index);
+
+            index = bytes.IndexOf(new byte[] { 10 });
+            Assert.Equal(10, index);
+        }
+
+        [Fact]
+        public void MultiSegmentIndexOfByte()
+        {
+            var bytes = ReadOnlyBytes.Create(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
+            Assert.Equal(10, bytes.First.Length);
+            Assert.Equal(9, bytes.First.Span[9]);
+            Assert.NotEqual(null, bytes.Rest);
+
+            for(int i=0; i<20; i++){
+                var index = bytes.IndexOf((byte)i);
+                Assert.Equal(i, index);
+            }
+        }
+
+        [Fact]
         public void ReadOnlyBytesEnumeration()
         {
             var buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
@@ -181,24 +247,6 @@ namespace System.Slices.Tests
                 length += segment.Length;
             }
             Assert.Equal(6, length);
-        }
-
-        [Fact]
-        public void ReadOnlyBytesIndexOf()
-        {
-            var bytes = ReadOnlyBytes.Create(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 });
-            Assert.Equal(10, bytes.First.Length);
-            Assert.Equal(9, bytes.First.Span[9]);
-            Assert.NotEqual(null, bytes.Rest);
-
-            var index = bytes.IndexOf(new byte[] { 2, 3 });
-            Assert.Equal(2, index);
-
-            index = bytes.IndexOf(new byte[] { 8, 9, 10 });
-            Assert.Equal(8, index);
-
-            index = bytes.IndexOf(new byte[] { 11, 12, 13, 14 });
-            Assert.Equal(11, index);
         }
 
         [Fact]
@@ -235,14 +283,6 @@ namespace System.Slices.Tests
                 }
                 Assert.Equal(i, length);
             }
-        }
-
-        [Fact]
-        public void SegmentedReadOnlyBytesBasics()
-        {
-            var bytes = Parse("A|CD|EFG");
-            bytes = bytes.Slice(2, 3);
-            Assert.Equal((byte)'D', bytes.First.Span[0]);
         }
 
         private ReadOnlyBytes Create(params string[] segments)
