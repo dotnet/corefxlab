@@ -43,20 +43,121 @@ namespace System.Slices.Tests
         {
             var array1 = new byte[] { 0, 1 };
             var array2 = new byte[] { 2, 3 };
-            var totalLenght = array1.Length + array2.Length;
+            var totalLength = array1.Length + array2.Length;
             ReadOnlyBytes bytes = ReadOnlyBytes.Create(array1, array2);
 
             ReadOnlyBytes sliced = bytes;
             ReadOnlySpan<byte> span;
-            for(int i=1; i<=totalLenght; i++) {
+            for(int i=1; i<=totalLength; i++) {
                 sliced  = bytes.Slice(i);
                 span = sliced.First.Span;
-                Assert.Equal(totalLenght - i, sliced.ComputeLength());
-                if(i!=totalLenght) Assert.Equal(i, span[0]);
+                Assert.Equal(totalLength - i, sliced.ComputeLength());
+                if(i!=totalLength) Assert.Equal(i, span[0]);
             }
             Assert.Equal(0, span.Length);
         }
 
+        [Fact]
+        public void SingleSegmentCopyToKnownLength()
+        {
+            var array = new byte[] { 0, 1, 2, 3, 4, 5, 6 };
+            ReadOnlyMemory<byte> buffer = array;
+            var bytes = new ReadOnlyBytes(buffer, null, array.Length);
+
+            { // copy to equal
+                var copy = new byte[array.Length];
+                var copied = bytes.CopyTo(copy);
+                Assert.Equal(array.Length, copied);
+                Assert.Equal(array, copy);
+            }
+
+            { // copy to smaller
+                var copy = new byte[array.Length - 1];
+                var copied = bytes.CopyTo(copy);
+                Assert.Equal(copy.Length, copied);
+                for(int i=0; i<copied; i++) {
+                    Assert.Equal(array[i], copy[i]);
+                }
+            }
+
+            { // copy to larger
+                var copy = new byte[array.Length + 1];
+                var copied = bytes.CopyTo(copy);
+                Assert.Equal(array.Length, copied);
+                for (int i = 0; i < copied; i++) {
+                    Assert.Equal(array[i], copy[i]);
+                }
+            }
+        }
+
+        [Fact]
+        public void SingleSegmentCopyToUnknownLength()
+        {
+            var array = new byte[] { 0, 1, 2, 3, 4, 5, 6 };
+            ReadOnlyMemory<byte> buffer = array;
+            var bytes = new ReadOnlyBytes(buffer, null, -1);
+
+            { // copy to equal
+                var copy = new byte[array.Length];
+                var copied = bytes.CopyTo(copy);
+                Assert.Equal(array.Length, copied);
+                Assert.Equal(array, copy);
+            }
+
+            { // copy to smaller
+                var copy = new byte[array.Length - 1];
+                var copied = bytes.CopyTo(copy);
+                Assert.Equal(copy.Length, copied);
+                for (int i = 0; i < copied; i++) {
+                    Assert.Equal(array[i], copy[i]);
+                }
+            }
+
+            { // copy to larger
+                var copy = new byte[array.Length + 1];
+                var copied = bytes.CopyTo(copy);
+                Assert.Equal(array.Length, copied);
+                for (int i = 0; i < copied; i++) {
+                    Assert.Equal(array[i], copy[i]);
+                }
+            }
+        }
+
+        [Fact]
+        public void MultiSegmentCopyToUnknownLength()
+        {
+            var array1 = new byte[] { 0, 1 };
+            var array2 = new byte[] { 2, 3 };
+            var totalLength = array1.Length + array2.Length;
+            ReadOnlyBytes bytes = ReadOnlyBytes.Create(array1, array2);
+
+            { // copy to equal
+                var copy = new byte[totalLength];
+                var copied = bytes.CopyTo(copy);
+                Assert.Equal(totalLength, copied);
+                for (int i = 0; i < totalLength; i++) {
+                    Assert.Equal(i, copy[i]);
+                }
+            }
+
+            { // copy to smaller
+                var copy = new byte[totalLength - 1];
+                var copied = bytes.CopyTo(copy);
+                Assert.Equal(copy.Length, copied);
+                for (int i = 0; i < copied; i++) {
+                    Assert.Equal(i, copy[i]);
+                }
+            }
+
+            { // copy to larger
+                var copy = new byte[totalLength + 1];
+                var copied = bytes.CopyTo(copy);
+                Assert.Equal(totalLength, copied);
+                for (int i = 0; i < totalLength; i++) {
+                    Assert.Equal(i, copy[i]);
+                }
+            }
+        }
 
         [Fact]
         public void ReadOnlyBytesEnumeration()
