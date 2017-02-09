@@ -706,7 +706,7 @@ namespace System.IO.Pipelines
 
             public void ThrowIfFailed()
             {
-                if (_exception != _completedNoException)
+                if (_exception != null && _exception != _completedNoException)
                 {
                     throw _exception;
                 }
