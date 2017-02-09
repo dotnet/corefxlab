@@ -107,10 +107,16 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBytes Slice(int index, int length)
         {
+            if(length==0) return ReadOnlyBytes.Empty;
+
             var first = First;
             if (first.Length >= length + index)
             {
-                return new ReadOnlyBytes(first.Slice(index, length));
+                var slice = first.Slice(index, length);
+                if(slice.Length > 0) {
+                    return new ReadOnlyBytes(first.Slice(index, length));
+                }
+                return ReadOnlyBytes.Empty;
             }
             if (first.Length > index)
             {
@@ -129,9 +135,20 @@ namespace System.Buffers
             else {
                 var first = First;
                 if (first.Length > index) {
-                    return new ReadOnlyBytes(first.Slice(index), _rest);
+                    var slice = first.Slice(index);
+                    if(slice.Length > 0 || _rest!=null) {
+                        return new ReadOnlyBytes(slice, _rest);
+                    }
+                    return ReadOnlyBytes.Empty;
                 }
-                return new ReadOnlyBytes(_rest).Slice(index - first.Length);
+
+                var toSlice = index - first.Length;
+                if (_rest == null && toSlice == 0) return Empty;
+                var rest = new ReadOnlyBytes(_rest);
+                if(toSlice > 0) {
+                    rest = rest.Slice(toSlice);
+                }
+                return rest;
             }
         }
 
