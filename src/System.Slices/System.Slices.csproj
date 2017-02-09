@@ -1,26 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>Slices of arrays and buffers</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.Slices</AssemblyName>
-    <PackageId>System.Slices</PackageId>
     <PackageTags>Slice Span Slices Spans</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="System\**\*.cs" Exclude="tools\**\*.cs;bin\**;obj\**;**\*.xproj;packages\**" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="4.4.0-*" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.4.0-*" />
     <PackageReference Include="System.Diagnostics.Tools" Version="4.3.0" />
   </ItemGroup>
-
 </Project>

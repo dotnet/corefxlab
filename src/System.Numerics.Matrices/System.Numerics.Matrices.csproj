@@ -1,18 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
-
   <PropertyGroup>
     <Description>Manipulation of Matrices</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.Numerics.Matrices</AssemblyName>
-    <PackageId>System.Numerics.Matrices</PackageId>
     <PackageTags>.NET matrix matrices corefxlab</PackageTags>
   </PropertyGroup>
-
-  <ItemGroup>
-  </ItemGroup>
-
 </Project>

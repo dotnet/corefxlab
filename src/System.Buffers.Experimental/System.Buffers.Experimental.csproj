@@ -1,24 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>Pool of unmanaged Span&lt;byte&gt; values</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.Buffers.Experimental</AssemblyName>
-    <PackageId>System.Buffers.Experimental</PackageId>
     <PackageTags>Span Spans Pool corefxlab</PackageTags>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Collections.Sequences\System.Collections.Sequences.csproj" />
     <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Buffers" Version="4.3.0" />
   </ItemGroup>
-
 </Project>

@@ -1,20 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>64 bit decimal floating point value</Description>
     <Copyright>.NET Foundation, All rights reserved</Copyright>
     <Authors>.NET Foundation and contributors</Authors>
     <TargetFramework>netstandard1.0</TargetFramework>
-    <AssemblyName>System.Numerics.Dec64</AssemblyName>
-    <PackageId>System.Numerics.Dec64</PackageId>
     <PackageTags>.NET 64 bit decimal floating point value</PackageTags>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Runtime" Version="4.3.0" />
     <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
   </ItemGroup>
-
 </Project>
