@@ -692,22 +692,21 @@ namespace System.IO.Pipelines
 
         private struct Completion
         {
-            private int _completed;
+            private static readonly Exception _completedNoException = new Exception();
+
             private Exception _exception;
 
-            public bool IsCompleted => _completed == 1;
+            public bool IsCompleted => _exception != null;
 
             public void TryComplete(Exception exception = null)
             {
-                if (Interlocked.CompareExchange(ref _completed, 1, 0) == 0)
-                {
-                    _exception = exception;
-                }
+                // Set the exception object to the exception passed in or a sentinel value
+                Interlocked.CompareExchange(ref _exception, exception ?? _completedNoException, null);
             }
 
             public void ThrowIfFailed()
             {
-                if (_exception != null)
+                if (_exception != _completedNoException)
                 {
                     throw _exception;
                 }
