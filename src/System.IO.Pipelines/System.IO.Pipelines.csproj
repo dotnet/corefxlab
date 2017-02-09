@@ -1,35 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>An abstraction for doing efficient asynchronous IO</Description>
     <TargetFrameworks>net451;netstandard1.3</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.IO.Pipelines</AssemblyName>
-    <PackageId>System.IO.Pipelines</PackageId>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <RootNamespace /> 
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
     <ProjectReference Include="..\System.Binary\System.Binary.csproj" />
     <ProjectReference Include="..\System.Collections.Sequences\System.Collections.Sequences.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Buffers" Version="4.3.0" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
 </Project>

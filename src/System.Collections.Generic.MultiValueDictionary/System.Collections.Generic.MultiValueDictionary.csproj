@@ -1,27 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>Dictionary allowing multiple values per key</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
-    <AssemblyName>System.Collections.Generic.MultiValueDictionary</AssemblyName>
-    <PackageId>System.Collections.Generic.MultiValueDictionary</PackageId>
     <PackageTags>.NET Core MultiValueDictionary MultiDictionary Dictionary corefxlab</PackageTags>
     <RootNamespace /> 
   </PropertyGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)">
       <Link>Properties.Resources</Link>
     </EmbeddedResource>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Collections" Version="4.3.0" />
     <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
     <PackageReference Include="System.Diagnostics.Tools" Version="4.3.0" />
     <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
   </ItemGroup>
-
 </Project>

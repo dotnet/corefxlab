@@ -1,30 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>Primitives for dealing with reading and writing text to and from pipelines</Description>
     <TargetFrameworks>net451;netstandard1.3</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.IO.Pipelines.Text.Primitives</AssemblyName>
-    <PackageId>System.IO.Pipelines.Text.Primitives</PackageId>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
 </Project>

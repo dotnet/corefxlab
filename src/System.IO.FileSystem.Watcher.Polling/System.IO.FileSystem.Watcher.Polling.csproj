@@ -1,19 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>Polling file system watcher</Description>
     <TargetFramework>netstandard1.3</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.IO.FileSystem.Watcher.Polling</AssemblyName>
-    <PackageId>System.IO.FileSystem.Watcher.Polling</PackageId>
     <PackageTags>.NET Core FileSystemWatcher Polling corefxlab</PackageTags>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.0.0" />
     <PackageReference Include="System.Threading.Timer" Version="4.3.0" />
   </ItemGroup>
-
 </Project>

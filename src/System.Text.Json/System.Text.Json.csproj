@@ -1,29 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>Non-allocating JSON reader and writer</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.Text.Json</AssemblyName>
-    <PackageId>System.Text.Json</PackageId>
     <PackageTags>.NET json non-allocating corefxlab</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="System\**\*.cs" Exclude="experiments\**\*.cs;bin\**;obj\**;**\*.xproj;packages\**" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-  </ItemGroup>
-
 </Project>
