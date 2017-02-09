@@ -21,6 +21,44 @@ namespace System.Slices.Tests
         }
 
         [Fact]
+        public void SingleSegmentSlicing()
+        {
+            var array = new byte[] { 0, 1, 2, 3, 4, 5, 6 };
+            ReadOnlyMemory<byte> buffer = array;
+            var bytes = new ReadOnlyBytes(buffer);
+
+            ReadOnlyBytes sliced = bytes;
+            ReadOnlySpan<byte> span;
+            for(int i=1; i<=array.Length; i++) {
+                sliced  = bytes.Slice(i);
+                span = sliced.First.Span;
+                Assert.Equal(array.Length - i, span.Length);
+                if(i!=array.Length) Assert.Equal(i, span[0]);
+            }
+            Assert.Equal(0, span.Length);
+        }
+
+        [Fact]
+        public void MultiSegmentSlicing()
+        {
+            var array1 = new byte[] { 0, 1 };
+            var array2 = new byte[] { 2, 3 };
+            var totalLenght = array1.Length + array2.Length;
+            ReadOnlyBytes bytes = ReadOnlyBytes.Create(array1, array2);
+
+            ReadOnlyBytes sliced = bytes;
+            ReadOnlySpan<byte> span;
+            for(int i=1; i<=totalLenght; i++) {
+                sliced  = bytes.Slice(i);
+                span = sliced.First.Span;
+                Assert.Equal(totalLenght - i, sliced.ComputeLength());
+                if(i!=totalLenght) Assert.Equal(i, span[0]);
+            }
+            Assert.Equal(0, span.Length);
+        }
+
+
+        [Fact]
         public void ReadOnlyBytesEnumeration()
         {
             var buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
