@@ -1,19 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>Non-allocating collections</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.Collections.Sequences</AssemblyName>
-    <PackageId>System.Collections.Sequences</PackageId>
     <PackageTags>collections, non-allocating, corefxlab</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
   </ItemGroup>
-
 </Project>

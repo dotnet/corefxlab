@@ -1,16 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>Date and Time helper classes</Description>
     <TargetFrameworks>netstandard1.3;net45</TargetFrameworks>
-    <AssemblyName>System.Time</AssemblyName>
-    <PackageId>System.Time</PackageId>
     <PackageTags>Date TimeOfDay Time corefxlab</PackageTags>
     <RootNamespace />
   </PropertyGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
     <PackageReference Include="System.Diagnostics.Contracts" Version="4.0.1" />
     <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
@@ -18,11 +13,9 @@
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.0" />
     <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.0" />
   </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System.Xml" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
-
 </Project>

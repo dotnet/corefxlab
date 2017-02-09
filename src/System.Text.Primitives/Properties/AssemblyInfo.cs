@@ -9,9 +9,6 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft Corporation")]
-[assembly: AssemblyProduct("System.Text.Primitives")]
 [assembly: AssemblyTrademark("")]
 
 [assembly: InternalsVisibleTo("System.Text.Primitives.Performance.Tests,PublicKey="+

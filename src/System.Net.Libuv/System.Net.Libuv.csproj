@@ -1,25 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>libuv .NET Core wrapper</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.Net.Libuv</AssemblyName>
-    <PackageId>System.Net.Libuv</PackageId>
     <PackageTags>.NET libuv corefxlab</PackageTags>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
     <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Libuv" Version="1.9.1" />
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
   </ItemGroup>
-
 </Project>

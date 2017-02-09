@@ -1,30 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>JSON dynamic object</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.Text.Json.Dynamic</AssemblyName>
-    <PackageId>System.Text.Json.Dynamic</PackageId>
     <PackageTags>.NET json non-allocating corefxlab</PackageTags>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="System\**\*.cs" Exclude="experiments\**\*.cs;bin\**;obj\**;**\*.xproj;packages\**" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
     <ProjectReference Include="..\System.Text.Json\System.Text.Json.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
   </ItemGroup>
-
 </Project>

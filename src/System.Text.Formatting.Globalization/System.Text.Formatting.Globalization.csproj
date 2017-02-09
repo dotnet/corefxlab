@@ -1,28 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>A formatting library for pl-PL</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
-    <AssemblyName>System.Text.Formatting.Globalization</AssemblyName>
-    <PackageId>System.Text.Formatting.Globalization</PackageId>
     <PackageTags>pl PL formatting globalization corefxlab</PackageTags>
-    <RootNamespace /> 
   </PropertyGroup>
-
   <ItemGroup>
-    <EmbeddedResource Include="locales.bin" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)">
-      <Link>System.Text.Formatting.locales.bin</Link>
-    </EmbeddedResource>
+    <EmbeddedResource Include="locales.bin" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-  </ItemGroup>
-
 </Project>
