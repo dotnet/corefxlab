@@ -181,14 +181,15 @@ namespace System.Buffers
         public int CopyTo(Span<byte> buffer)
         {
             var first = First;
-            if (first.Length > buffer.Length)
+            var firstLength = first.Length;
+            if (firstLength > buffer.Length)
             {
-                first.Slice(buffer.Length).CopyTo(buffer);
+                first.Slice(0, buffer.Length).CopyTo(buffer);
                 return buffer.Length;
             }
             first.CopyTo(buffer);
-            // TODO (pri 2): do we need to compute the length here?
-            return first.Length + _rest.CopyTo(buffer.Slice(first.Length, ComputeLength() - first.Length));
+            if (buffer.Length == firstLength || _rest == null) return firstLength;
+            return firstLength + _rest.CopyTo(buffer.Slice(firstLength));
         }
 
         ReadOnlyBytes SliceRest(int index, int length)
