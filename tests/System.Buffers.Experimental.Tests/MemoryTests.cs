@@ -7,7 +7,7 @@ namespace System.Slices.Tests
 {
     public class MemoryTests
     {
-        [Fact(Skip = "flaky")]
+        [Fact]
         public void SimpleTestS()
         {            
             using(var owned = new OwnedNativeMemory(1024)) {
@@ -43,7 +43,7 @@ namespace System.Slices.Tests
             }
         }
 
-        [Fact(Skip = "flaky")]
+        [Fact]
         public void NativeMemoryLifetime()
         {
             Memory<byte> copyStoredForLater;
@@ -81,7 +81,7 @@ namespace System.Slices.Tests
             });
         }
 
-        [Fact(Skip = "flaky")]
+        [Fact]
         public unsafe void PinnedArrayMemoryLifetime()
         {
             Memory<byte> copyStoredForLater;
