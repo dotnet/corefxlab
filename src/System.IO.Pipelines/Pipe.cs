@@ -12,18 +12,13 @@ namespace System.IO.Pipelines
     /// </summary>
     internal class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
     {
-        private static readonly Action _awaitableIsCompleted = () => { };
-        private static readonly Action _awaitableIsNotCompleted = () => { };
-
         private readonly IBufferPool _pool;
-        private readonly IScheduler _readerScheduler;
-        private readonly IScheduler _writerScheduler;
 
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
-        private Action _readerCallback;
-        private Action _writerCallback;
+        private Awaitable _readerAwaitable;
+        private Awaitable _writerAwaitable;
 
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
@@ -40,8 +35,8 @@ namespace System.IO.Pipelines
         private object _sync = new object();
         private int _cancelledState;
 
-        private Completion _writerCompletion = new Completion();
-        private Completion _readerCompletion = new Completion();
+        private Completion _writerCompletion;
+        private Completion _readerCompletion;
         private bool _disposed;
 
 #if CONSUMING_LOCATION_TRACKING
@@ -89,12 +84,11 @@ namespace System.IO.Pipelines
             }
 
             _pool = pool;
-            _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
-            _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
-            _readerCallback = _awaitableIsNotCompleted;
-            _writerCallback = _awaitableIsCompleted;
+
+            _readerAwaitable = new Awaitable(false, options.ReaderScheduler ?? InlineScheduler.Default);
+            _writerAwaitable = new Awaitable(true, options.WriterScheduler ?? InlineScheduler.Default);
         }
 
         internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
@@ -300,7 +294,7 @@ namespace System.IO.Pipelines
                     _length >= _maximumSizeHigh &&
                     !_readerCompletion.IsCompleted)
                 {
-                    Reset(ref _writerCallback);
+                    _writerAwaitable.Reset();
                 }
             }
 
@@ -343,7 +337,7 @@ namespace System.IO.Pipelines
                 Commit();
             }
 
-            Resume(_readerScheduler, ref _readerCallback);
+            _readerAwaitable.Resume();
 
             return new WritableBufferAwaitable(this);
         }
@@ -413,7 +407,7 @@ namespace System.IO.Pipelines
             {
                 _writerCompletion.TryComplete(exception);
 
-                Resume(_readerScheduler, ref _readerCallback);
+                _readerAwaitable.Resume();
 
                 if (_readerCompletion.IsCompleted)
                 {
@@ -460,7 +454,7 @@ namespace System.IO.Pipelines
                 // 2. Cancellation wasn't requested
                 if (consumedEverything && _cancelledState != CancelledState.CancellationRequested)
                 {
-                    Reset(ref _readerCallback);
+                    _readerAwaitable.Reset();
                 }
             }
 
@@ -482,7 +476,7 @@ namespace System.IO.Pipelines
 
             if (resumeWriter)
             {
-                Resume(_writerScheduler, ref _writerCallback);
+                _writerAwaitable.Resume();
             }
         }
 
@@ -508,7 +502,7 @@ namespace System.IO.Pipelines
             {
                 _readerCompletion.TryComplete(exception);
 
-                Resume(_writerScheduler, ref _writerCallback);
+                _writerAwaitable.Resume();
 
                 if (_writerCompletion.IsCompleted)
                 {
@@ -528,7 +522,7 @@ namespace System.IO.Pipelines
                 // Mark reading is cancellable
                 _cancelledState = CancelledState.CancellationRequested;
 
-                Resume(_readerScheduler, ref _readerCallback);
+                _readerAwaitable.Resume();
             }
         }
 
@@ -550,46 +544,13 @@ namespace System.IO.Pipelines
             return new ReadableBufferAwaitable(this);
         }
 
-
-        // Awaiter support members
-
-        private static bool IsCompleted(Action awaitableState) => ReferenceEquals(awaitableState, _awaitableIsCompleted);
-
-        private static void OnCompleted(Action continuation, IScheduler scheduler, ref Action action, ref Completion completion)
-        {
-            var awaitableState = Interlocked.CompareExchange(
-                ref action,
-                continuation,
-                _awaitableIsNotCompleted);
-
-            if (ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
-            {
-                return;
-            }
-            else if (ReferenceEquals(awaitableState, _awaitableIsCompleted))
-            {
-                scheduler.Schedule(continuation);
-            }
-            else
-            {
-                completion.TryComplete(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
-
-                Interlocked.Exchange(
-                    ref action,
-                    _awaitableIsCompleted);
-
-                Task.Run(continuation);
-                Task.Run(awaitableState);
-            }
-        }
-
-        private static void GetResult(Action awaitableState,
+        private static void GetResult(ref Awaitable awaitableState,
             ref int cancelledState,
             ref Completion completion,
             out bool isCancelled,
             out bool isCompleted)
         {
-            if (!IsCompleted(awaitableState))
+            if (!awaitableState.IsCompleted())
             {
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
             }
@@ -602,27 +563,6 @@ namespace System.IO.Pipelines
 
             isCompleted = completion.IsCompleted;
             completion.ThrowIfFailed();
-        }
-
-        private static void Resume(IScheduler scheduler, ref Action state)
-        {
-            var awaitableState = Interlocked.Exchange(
-                ref state,
-                _awaitableIsCompleted);
-
-            if (!ReferenceEquals(awaitableState, _awaitableIsCompleted) &&
-                !ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
-            {
-                scheduler.Schedule(awaitableState);
-            }
-        }
-
-        private static void Reset(ref Action awaitableState)
-        {
-            Interlocked.CompareExchange(
-                ref awaitableState,
-                _awaitableIsNotCompleted,
-                _awaitableIsCompleted);
         }
 
         private void Dispose()
@@ -654,41 +594,111 @@ namespace System.IO.Pipelines
 
         // IReadableBufferAwaiter members
 
-        bool IReadableBufferAwaiter.IsCompleted => IsCompleted(_readerCallback);
+        bool IReadableBufferAwaiter.IsCompleted => _readerAwaitable.IsCompleted();
 
         void IReadableBufferAwaiter.OnCompleted(Action continuation)
         {
-            OnCompleted(continuation, _readerScheduler, ref _readerCallback, ref _writerCompletion);
+            _readerAwaitable.OnCompleted(continuation, ref _writerCompletion);
         }
 
         ReadResult IReadableBufferAwaiter.GetResult()
         {
-            bool isCancelled;
-            bool isCompleted;
-            GetResult(_readerCallback, ref _cancelledState, ref _writerCompletion, out isCancelled, out isCompleted);
+            GetResult(ref _readerAwaitable,
+                ref _cancelledState,
+                ref _writerCompletion,
+                out bool isCancelled,
+                out bool isCompleted);
             return new ReadResult(Read(), isCancelled, isCompleted);
         }
 
         // IWritableBufferAwaiter members
 
-        bool IWritableBufferAwaiter.IsCompleted => IsCompleted(_writerCallback);
+        bool IWritableBufferAwaiter.IsCompleted => _writerAwaitable.IsCompleted();
 
         bool IWritableBufferAwaiter.GetResult()
         {
-            bool isCancelled;
-            bool isCompleted;
-            int cancelledState = CancelledState.NotCancelled;
-            GetResult(_writerCallback, ref cancelledState, ref _readerCompletion, out isCancelled, out isCompleted);
+            var cancelledState = CancelledState.NotCancelled;
+            GetResult(ref _writerAwaitable,
+                ref cancelledState,
+                ref _readerCompletion,
+                out bool isCancelled,
+                out bool isCompleted);
             return !isCompleted;
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
         {
-            OnCompleted(continuation, _writerScheduler, ref _writerCallback, ref _readerCompletion);
+            _writerAwaitable.OnCompleted(continuation, ref _readerCompletion);
         }
 
         public IPipeReader Reader => this;
         public IPipeWriter Writer => this;
+
+        private struct Awaitable
+        {
+            private static readonly Action _awaitableIsCompleted = () => { };
+            private static readonly Action _awaitableIsNotCompleted = () => { };
+
+            private Action _state;
+            private readonly IScheduler _scheduler;
+
+            public Awaitable(bool completed, IScheduler scheduler)
+            {
+                _state = completed ? _awaitableIsCompleted : _awaitableIsNotCompleted;
+                _scheduler = scheduler;
+            }
+
+            public void Resume()
+            {
+                var awaitableState = Interlocked.Exchange(
+                    ref _state,
+                    _awaitableIsCompleted);
+
+                if (!ReferenceEquals(awaitableState, _awaitableIsCompleted) &&
+                    !ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
+                {
+                    _scheduler.Schedule(awaitableState);
+                }
+            }
+
+            public void Reset()
+            {
+                Interlocked.CompareExchange(
+                    ref _state,
+                    _awaitableIsNotCompleted,
+                    _awaitableIsCompleted);
+            }
+
+            public bool IsCompleted() => ReferenceEquals(_state, _awaitableIsCompleted);
+
+            public void OnCompleted(Action continuation, ref Completion completion)
+            {
+                var awaitableState = Interlocked.CompareExchange(
+                    ref _state,
+                    continuation,
+                    _awaitableIsNotCompleted);
+
+                if (ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
+                {
+                    return;
+                }
+                else if (ReferenceEquals(awaitableState, _awaitableIsCompleted))
+                {
+                    _scheduler.Schedule(continuation);
+                }
+                else
+                {
+                    completion.TryComplete(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
+
+                    Interlocked.Exchange(
+                        ref _state,
+                        _awaitableIsCompleted);
+
+                    Task.Run(continuation);
+                    Task.Run(awaitableState);
+                }
+            }
+        }
 
         private struct Completion
         {
