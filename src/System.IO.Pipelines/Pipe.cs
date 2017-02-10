@@ -19,11 +19,11 @@ namespace System.IO.Pipelines
         private long _length;
         private long _currentWriteLength;
 
-        private Awaitable _readerAwaitable;
-        private Awaitable _writerAwaitable;
+        private PipeAwaitable _readerAwaitable;
+        private PipeAwaitable _writerAwaitable;
 
-        private Completion _writerCompletion;
-        private Completion _readerCompletion;
+        private PipeCompletion _writerCompletion;
+        private PipeCompletion _readerCompletion;
 
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
@@ -35,8 +35,8 @@ namespace System.IO.Pipelines
         // The write head which is the extent of the IPipelineWriter's written bytes
         private BufferSegment _writingHead;
 
-        private OperationState _consumingState;
-        private OperationState _producingState;
+        private PipeOperationState _consumingState;
+        private PipeOperationState _producingState;
         private object _sync = new object();
 
         private bool _disposed;
@@ -76,8 +76,8 @@ namespace System.IO.Pipelines
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
 
-            _readerAwaitable = new Awaitable(options.ReaderScheduler ?? InlineScheduler.Default, completed: false);
-            _writerAwaitable = new Awaitable(options.WriterScheduler ?? InlineScheduler.Default, completed: true);
+            _readerAwaitable = new PipeAwaitable(options.ReaderScheduler ?? InlineScheduler.Default, completed: false);
+            _writerAwaitable = new PipeAwaitable(options.WriterScheduler ?? InlineScheduler.Default, completed: true);
         }
 
         internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
@@ -476,8 +476,8 @@ namespace System.IO.Pipelines
             return new ReadableBufferAwaitable(this);
         }
 
-        private static void GetResult(ref Awaitable awaitableState,
-            ref Completion completion,
+        private static void GetResult(ref PipeAwaitable awaitableState,
+            ref PipeCompletion completion,
             out bool isCancelled,
             out bool isCompleted)
         {
