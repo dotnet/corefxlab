@@ -2,20 +2,20 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace System.IO.Pipelines
 {
     /// <summary>
     /// Default <see cref="IPipeWriter"/> and <see cref="IPipeReader"/> implementation.
     /// </summary>
-    internal partial class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
+    internal class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
     {
-        private readonly IBufferPool _pool;
+        private readonly object _sync = new object();
 
+        private readonly IBufferPool _pool;
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
+
         private long _length;
         private long _currentWriteLength;
 
@@ -37,7 +37,6 @@ namespace System.IO.Pipelines
 
         private PipeOperationState _consumingState;
         private PipeOperationState _producingState;
-        private object _sync = new object();
 
         private bool _disposed;
 
@@ -350,7 +349,7 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         void IPipeWriter.Complete(Exception exception)
         {
-            if (!_producingState.IsActive)
+            if (_producingState.IsActive)
             {
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveProducer, _producingState.Location);
             }

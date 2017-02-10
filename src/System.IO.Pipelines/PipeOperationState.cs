@@ -50,6 +50,11 @@ namespace System.IO.Pipelines
             }
         }
 
+        public override string ToString()
+        {
+            return $"{nameof(IsActive)}: {IsActive}";
+        }
+
         private static class State
         {
             public static int NotActive = 0;

@@ -44,5 +44,10 @@ namespace System.IO.Pipelines
 #endif
             }
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(IsCompleted)}: {IsCompleted}";
+        }
     }
 }

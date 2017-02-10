@@ -95,6 +95,11 @@ namespace System.IO.Pipelines
                        CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
         }
 
+        public override string ToString()
+        {
+            return $"CancelledState: {_cancelledState}, {nameof(IsCompleted)}: {IsCompleted}";
+        }
+
         private static class CancelledState
         {
             public static int NotCancelled = 0;
