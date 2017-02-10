@@ -45,7 +45,7 @@ namespace System.IO.Pipelines
 #if OPERATION_LOCATION_TRACKING
                 return _operationStartLocation;
 #else
-                    return null;
+                return null;
 #endif
             }
         }

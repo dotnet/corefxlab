@@ -40,7 +40,7 @@ namespace System.IO.Pipelines
 #if COMPLETION_LOCATION_TRACKING
                 return _completionLocation;
 #else
-                    return null;
+                return null;
 #endif
             }
         }
