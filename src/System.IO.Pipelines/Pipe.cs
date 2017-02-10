@@ -16,9 +16,14 @@ namespace System.IO.Pipelines
 
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
+        private long _length;
+        private long _currentWriteLength;
 
         private Awaitable _readerAwaitable;
         private Awaitable _writerAwaitable;
+
+        private Completion _writerCompletion;
+        private Completion _readerCompletion;
 
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
@@ -30,26 +35,11 @@ namespace System.IO.Pipelines
         // The write head which is the extent of the IPipelineWriter's written bytes
         private BufferSegment _writingHead;
 
-        private int _consumingState;
-        private int _producingState;
+        private OperationState _consumingState;
+        private OperationState _producingState;
         private object _sync = new object();
 
-        private Completion _writerCompletion;
-        private Completion _readerCompletion;
         private bool _disposed;
-
-#if CONSUMING_LOCATION_TRACKING
-        private string _consumingLocation;
-#endif
-#if PRODUCING_LOCATION_TRACKING
-        private string _producingLocation;
-#endif
-#if COMPLETION_LOCATION_TRACKING
-        private string _completeWriterLocation;
-        private string _completeReaderLocation;
-#endif
-        private long _length;
-        private long _currentWriteLength;
 
         internal long Length => _length;
 
@@ -99,16 +89,9 @@ namespace System.IO.Pipelines
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
         WritableBuffer IPipeWriter.Alloc(int minimumSize)
         {
-#if PRODUCING_LOCATION_TRACKING
-            _producingLocation = Environment.StackTrace;
-#endif
             if (_writerCompletion.IsCompleted)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed
-#if COMPLETION_LOCATION_TRACKING
-                    , _completeWriterLocation
-#endif
-                    );
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed, _writerCompletion.Location);
             }
 
             if (minimumSize < 0)
@@ -117,14 +100,7 @@ namespace System.IO.Pipelines
             }
 
             // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _producingState, State.Active) != State.NotActive)
-            {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyProducing
-#if PRODUCING_LOCATION_TRACKING
-                    , _producingLocation
-#endif
-                    );
-            }
+            _producingState.Begin();
 
             if (minimumSize > 0)
             {
@@ -135,7 +111,7 @@ namespace System.IO.Pipelines
                 catch (Exception)
                 {
                     // Reset producing state if allocation failed
-                    Interlocked.Exchange(ref _producingState, State.NotActive);
+                    _producingState.End();
                     throw;
                 }
             }
@@ -253,7 +229,7 @@ namespace System.IO.Pipelines
 
         private void EnsureAlloc()
         {
-            if (_producingState == State.NotActive)
+            if (!_producingState.IsActive)
             {
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotProducingNoAlloc);
             }
@@ -262,10 +238,7 @@ namespace System.IO.Pipelines
         internal void Commit()
         {
             // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _producingState, State.NotActive) != State.Active)
-            {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotProducingToComplete);
-            }
+            _producingState.End();
 
             if (_writingHead == null)
             {
@@ -299,9 +272,6 @@ namespace System.IO.Pipelines
 
             // Clear the writing state
             _writingHead = null;
-#if PRODUCING_LOCATION_TRACKING
-            _producingLocation = null;
-#endif
         }
 
         internal void AdvanceWriter(int bytesWritten)
@@ -330,7 +300,7 @@ namespace System.IO.Pipelines
 
         internal WritableBufferAwaitable FlushAsync()
         {
-            if (_producingState == State.Active)
+            if (_producingState.IsActive)
             {
                 // Commit the data as not already committed
                 Commit();
@@ -353,18 +323,8 @@ namespace System.IO.Pipelines
 
         private ReadableBuffer Read()
         {
-            // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _consumingState, State.Active) != State.NotActive)
-            {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyConsuming
-#if CONSUMING_LOCATION_TRACKING
-                    , _consumingLocation
-#endif
-                    );
-            }
-#if CONSUMING_LOCATION_TRACKING
-            _consumingLocation = Environment.StackTrace;
-#endif
+            _consumingState.Begin();
+
             ReadCursor readEnd;
             // No need to read end if there is no head
             var head = _readHead;
@@ -390,17 +350,11 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         void IPipeWriter.Complete(Exception exception)
         {
-            if (_producingState != State.NotActive)
+            if (!_producingState.IsActive)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveProducer
-#if PRODUCING_LOCATION_TRACKING
-                    , _producingLocation
-#endif
-                    );
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveProducer, _producingState.Location);
             }
-#if COMPLETION_LOCATION_TRACKING
-            _completeWriterLocation += Environment.StackTrace + Environment.NewLine;
-#endif
+
             // TODO: Review this lock?
             lock (_sync)
             {
@@ -462,14 +416,8 @@ namespace System.IO.Pipelines
                 returnSegment.Dispose();
             }
 
-#if CONSUMING_LOCATION_TRACKING
-            _consumingLocation = null;
-#endif
             // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _consumingState, State.NotActive) != State.Active)
-            {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotConsumingToComplete);
-            }
+            _consumingState.End();
 
             if (resumeWriter)
             {
@@ -483,17 +431,11 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         void IPipeReader.Complete(Exception exception)
         {
-            if (_consumingState != State.NotActive)
+            if (_consumingState.IsActive)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveConsumer
-#if CONSUMING_LOCATION_TRACKING
-                    , _consumingLocation
-#endif
-                    );
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveConsumer, _consumingState.Location);
             }
-#if COMPLETION_LOCATION_TRACKING
-            _completeReaderLocation += Environment.StackTrace + Environment.NewLine;
-#endif
+
             // TODO: Review this lock?
             lock (_sync)
             {
@@ -528,11 +470,7 @@ namespace System.IO.Pipelines
         {
             if (_readerCompletion.IsCompleted)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed
-#if COMPLETION_LOCATION_TRACKING
-                    , _completeReaderLocation
-#endif
-                    );
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
             }
 
             return new ReadableBufferAwaitable(this);
@@ -621,10 +559,57 @@ namespace System.IO.Pipelines
         public IPipeWriter Writer => this;
 
         // Can't use enums with Interlocked
-        private static class State
+        private struct OperationState
         {
-            public static int NotActive = 0;
-            public static int Active = 1;
+            private int _state;
+#if OPERATION_LOCATION_TRACKING
+            private string _operationStartLocation;
+#endif
+
+            public void Begin()
+            {
+                var success =  Interlocked.Exchange(ref _state, State.Active) == State.NotActive;
+                if (!success)
+                {
+                    throw new InvalidOperationException("Operation in progress " + Location);
+                }
+#if OPERATION_LOCATION_TRACKING
+                _operationStartLocation = Environment.StackTrace;
+#endif
+            }
+
+            public void End()
+            {
+                var success = Interlocked.Exchange(ref _state, State.NotActive) == State.Active;
+                if (!success)
+                {
+                    throw new InvalidOperationException("No operation in progress " + Location);
+                }
+#if OPERATION_LOCATION_TRACKING
+                _operationStartLocation = null;
+#endif
+            }
+
+            public bool IsActive => _state == State.Active;
+
+            public string Location
+            {
+                get
+                {
+#if OPERATION_LOCATION_TRACKING
+                    return _operationStartLocation;
+#else
+                    return null;
+#endif
+                }
+            }
+
+            private static class State
+            {
+                public static int NotActive = 0;
+                public static int Active = 1;
+            }
+
         }
     }
 }
