@@ -87,8 +87,8 @@ namespace System.IO.Pipelines
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
 
-            _readerAwaitable = new Awaitable(false, options.ReaderScheduler ?? InlineScheduler.Default);
-            _writerAwaitable = new Awaitable(true, options.WriterScheduler ?? InlineScheduler.Default);
+            _readerAwaitable = new Awaitable(options.ReaderScheduler ?? InlineScheduler.Default, completed: false);
+            _writerAwaitable = new Awaitable(options.WriterScheduler ?? InlineScheduler.Default, completed: true);
         }
 
         internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
@@ -550,7 +550,7 @@ namespace System.IO.Pipelines
             out bool isCancelled,
             out bool isCompleted)
         {
-            if (!awaitableState.IsCompleted())
+            if (!awaitableState.IsCompleted)
             {
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
             }
@@ -594,7 +594,7 @@ namespace System.IO.Pipelines
 
         // IReadableBufferAwaiter members
 
-        bool IReadableBufferAwaiter.IsCompleted => _readerAwaitable.IsCompleted();
+        bool IReadableBufferAwaiter.IsCompleted => _readerAwaitable.IsCompleted;
 
         void IReadableBufferAwaiter.OnCompleted(Action continuation)
         {
@@ -613,7 +613,7 @@ namespace System.IO.Pipelines
 
         // IWritableBufferAwaiter members
 
-        bool IWritableBufferAwaiter.IsCompleted => _writerAwaitable.IsCompleted();
+        bool IWritableBufferAwaiter.IsCompleted => _writerAwaitable.IsCompleted;
 
         bool IWritableBufferAwaiter.GetResult()
         {
@@ -642,7 +642,7 @@ namespace System.IO.Pipelines
             private Action _state;
             private readonly IScheduler _scheduler;
 
-            public Awaitable(bool completed, IScheduler scheduler)
+            public Awaitable(IScheduler scheduler, bool completed)
             {
                 _state = completed ? _awaitableIsCompleted : _awaitableIsNotCompleted;
                 _scheduler = scheduler;
@@ -669,7 +669,7 @@ namespace System.IO.Pipelines
                     _awaitableIsCompleted);
             }
 
-            public bool IsCompleted() => ReferenceEquals(_state, _awaitableIsCompleted);
+            public bool IsCompleted => ReferenceEquals(_state, _awaitableIsCompleted);
 
             public void OnCompleted(Action continuation, ref Completion completion)
             {
