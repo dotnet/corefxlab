@@ -100,7 +100,7 @@ namespace System.IO.Pipelines
             }
 
             // CompareExchange not required as its setting to current value if test fails
-            _producingState.Begin();
+            _producingState.Begin(ExceptionResource.AlreadyProducing);
 
             if (minimumSize > 0)
             {
@@ -111,7 +111,7 @@ namespace System.IO.Pipelines
                 catch (Exception)
                 {
                     // Reset producing state if allocation failed
-                    _producingState.End();
+                    _producingState.End(ExceptionResource.NotProducingToComplete);
                     throw;
                 }
             }
@@ -238,7 +238,7 @@ namespace System.IO.Pipelines
         internal void Commit()
         {
             // CompareExchange not required as its setting to current value if test fails
-            _producingState.End();
+            _producingState.End(ExceptionResource.NotProducingToComplete);
 
             if (_writingHead == null)
             {
@@ -323,7 +323,7 @@ namespace System.IO.Pipelines
 
         private ReadableBuffer Read()
         {
-            _consumingState.Begin();
+            _consumingState.Begin(ExceptionResource.AlreadyConsuming);
 
             ReadCursor readEnd;
             // No need to read end if there is no head
@@ -417,7 +417,7 @@ namespace System.IO.Pipelines
             }
 
             // CompareExchange not required as its setting to current value if test fails
-            _consumingState.End();
+            _consumingState.End(ExceptionResource.NotConsumingToComplete);
 
             if (resumeWriter)
             {
@@ -557,59 +557,5 @@ namespace System.IO.Pipelines
 
         public IPipeReader Reader => this;
         public IPipeWriter Writer => this;
-
-        // Can't use enums with Interlocked
-        private struct OperationState
-        {
-            private int _state;
-#if OPERATION_LOCATION_TRACKING
-            private string _operationStartLocation;
-#endif
-
-            public void Begin()
-            {
-                var success =  Interlocked.Exchange(ref _state, State.Active) == State.NotActive;
-                if (!success)
-                {
-                    throw new InvalidOperationException("Operation in progress " + Location);
-                }
-#if OPERATION_LOCATION_TRACKING
-                _operationStartLocation = Environment.StackTrace;
-#endif
-            }
-
-            public void End()
-            {
-                var success = Interlocked.Exchange(ref _state, State.NotActive) == State.Active;
-                if (!success)
-                {
-                    throw new InvalidOperationException("No operation in progress " + Location);
-                }
-#if OPERATION_LOCATION_TRACKING
-                _operationStartLocation = null;
-#endif
-            }
-
-            public bool IsActive => _state == State.Active;
-
-            public string Location
-            {
-                get
-                {
-#if OPERATION_LOCATION_TRACKING
-                    return _operationStartLocation;
-#else
-                    return null;
-#endif
-                }
-            }
-
-            private static class State
-            {
-                public static int NotActive = 0;
-                public static int Active = 1;
-            }
-
-        }
     }
 }
