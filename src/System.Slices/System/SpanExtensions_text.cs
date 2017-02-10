@@ -49,7 +49,7 @@ namespace System
 
         public static int IndexOf(this ReadOnlySpan<char> str, string value)
         {
-            return ReadOnlySpanExtensions.IndexOf(str, value.Slice());
+            return SpanExtensions.IndexOf(str, value.Slice());
         }
 
         public static int IndexOfAny(this ReadOnlySpan<char> str, params char[] values)
