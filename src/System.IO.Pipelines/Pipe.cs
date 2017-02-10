@@ -258,16 +258,17 @@ namespace System.IO.Pipelines
                 // Always move the commit head to the write head
                 _commitHead = _writingHead;
                 _commitHeadIndex = _writingHead.End;
+            }
 
-                _length += _currentWriteLength;
+            var currentLenght = Interlocked.Add(ref _length, _currentWriteLength);
+
                 // Do not reset if reader is complete
                 if (_maximumSizeHigh > 0 &&
-                    _length >= _maximumSizeHigh &&
+                currentLenght >= _maximumSizeHigh &&
                     !_readerCompletion.IsCompleted)
                 {
                     _writerAwaitable.Reset();
                 }
-            }
 
             // Clear the writing state
             _writingHead = null;
@@ -354,9 +355,6 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveProducer, _producingState.Location);
             }
 
-            // TODO: Review this lock?
-            lock (_sync)
-            {
                 _writerCompletion.TryComplete(exception);
 
                 _readerAwaitable.Resume();
@@ -366,7 +364,6 @@ namespace System.IO.Pipelines
                     Dispose();
                 }
             }
-        }
 
         // Reading
 
@@ -386,13 +383,14 @@ namespace System.IO.Pipelines
                 _readHead.Start = consumed.Index;
             }
 
-            bool resumeWriter;
+            var currentLength = Interlocked.Add(ref _length, -consumedBytes);
+            // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
+            Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
 
             // Reading commit head shared with writer
+            bool consumedEverything;
             lock (_sync)
             {
-                _length -= consumedBytes;
-                resumeWriter = _length < _maximumSizeLow;
 
 
                 var consumedEverything = examined.Segment == _commitHead &&
@@ -406,7 +404,6 @@ namespace System.IO.Pipelines
                 {
                     _readerAwaitable.Reset();
                 }
-            }
 
             while (returnStart != null && returnStart != returnEnd)
             {
@@ -418,7 +415,7 @@ namespace System.IO.Pipelines
             // CompareExchange not required as its setting to current value if test fails
             _consumingState.End(ExceptionResource.NotConsumingToComplete);
 
-            if (resumeWriter)
+            if (currentLength < _maximumSizeLow)
             {
                 _writerAwaitable.Resume();
             }
@@ -435,9 +432,6 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveConsumer, _consumingState.Location);
             }
 
-            // TODO: Review this lock?
-            lock (_sync)
-            {
                 _readerCompletion.TryComplete(exception);
 
                 _writerAwaitable.Resume();
@@ -447,19 +441,14 @@ namespace System.IO.Pipelines
                     Dispose();
                 }
             }
-        }
 
         /// <summary>
         /// Cancel to currently pending call to <see cref="ReadAsync"/> without completing the <see cref="IPipeReader"/>.
         /// </summary>
         void IPipeReader.CancelPendingRead()
         {
-            // TODO: Can factor out this lock
-            lock (_sync)
-            {
                 _readerAwaitable.Cancel();
             }
-        }
 
         /// <summary>
         /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
@@ -493,10 +482,6 @@ namespace System.IO.Pipelines
 
         private void Dispose()
         {
-            // TODO: Review throw if not completed?
-
-            lock (_sync)
-            {
                 if (_disposed)
                 {
                     return;
@@ -516,7 +501,6 @@ namespace System.IO.Pipelines
                 _readHead = null;
                 _commitHead = null;
             }
-        }
 
         // IReadableBufferAwaiter members
 
