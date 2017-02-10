@@ -384,8 +384,6 @@ namespace System.IO.Pipelines
             }
 
             var currentLength = Interlocked.Add(ref _length, -consumedBytes);
-            // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
-            Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
 
             // Reading commit head shared with writer
             bool consumedEverything;
@@ -396,6 +394,9 @@ namespace System.IO.Pipelines
                 var consumedEverything = examined.Segment == _commitHead &&
                                          examined.Index == _commitHeadIndex &&
                                          !_writerCompletion.IsCompleted;
+
+            // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
+            var cancelledState = Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
 
                 // We reset the awaitable to not completed if
                 // 1. We've consumed everything the producer produced so far
