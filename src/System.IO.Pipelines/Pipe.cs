@@ -33,7 +33,6 @@ namespace System.IO.Pipelines
         private int _consumingState;
         private int _producingState;
         private object _sync = new object();
-        private int _cancelledState;
 
         private Completion _writerCompletion;
         private Completion _readerCompletion;
@@ -442,8 +441,6 @@ namespace System.IO.Pipelines
                 _length -= consumedBytes;
                 resumeWriter = _length < _maximumSizeLow;
 
-                // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
-                Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
 
                 var consumedEverything = examined.Segment == _commitHead &&
                                          examined.Index == _commitHeadIndex &&
@@ -452,7 +449,7 @@ namespace System.IO.Pipelines
                 // We reset the awaitable to not completed if
                 // 1. We've consumed everything the producer produced so far
                 // 2. Cancellation wasn't requested
-                if (consumedEverything && _cancelledState != CancelledState.CancellationRequested)
+                if (consumedEverything)
                 {
                     _readerAwaitable.Reset();
                 }
@@ -519,10 +516,7 @@ namespace System.IO.Pipelines
             // TODO: Can factor out this lock
             lock (_sync)
             {
-                // Mark reading is cancellable
-                _cancelledState = CancelledState.CancellationRequested;
-
-                _readerAwaitable.Resume();
+                _readerAwaitable.Cancel();
             }
         }
 
@@ -545,7 +539,6 @@ namespace System.IO.Pipelines
         }
 
         private static void GetResult(ref Awaitable awaitableState,
-            ref int cancelledState,
             ref Completion completion,
             out bool isCancelled,
             out bool isCompleted)
@@ -556,11 +549,7 @@ namespace System.IO.Pipelines
             }
 
             // Change the state from to be cancelled -> observed
-            isCancelled = Interlocked.CompareExchange(
-                ref cancelledState,
-                CancelledState.CancellationObserved,
-                CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
-
+            isCancelled = awaitableState.ObserveCancelation();
             isCompleted = completion.IsCompleted;
             completion.ThrowIfFailed();
         }
@@ -604,7 +593,6 @@ namespace System.IO.Pipelines
         ReadResult IReadableBufferAwaiter.GetResult()
         {
             GetResult(ref _readerAwaitable,
-                ref _cancelledState,
                 ref _writerCompletion,
                 out bool isCancelled,
                 out bool isCompleted);
@@ -617,9 +605,7 @@ namespace System.IO.Pipelines
 
         bool IWritableBufferAwaiter.GetResult()
         {
-            var cancelledState = CancelledState.NotCancelled;
             GetResult(ref _writerAwaitable,
-                ref cancelledState,
                 ref _readerCompletion,
                 out bool isCancelled,
                 out bool isCompleted);
@@ -636,14 +622,17 @@ namespace System.IO.Pipelines
 
         private struct Awaitable
         {
+
             private static readonly Action _awaitableIsCompleted = () => { };
             private static readonly Action _awaitableIsNotCompleted = () => { };
 
+            private int _cancelledState;
             private Action _state;
             private readonly IScheduler _scheduler;
 
             public Awaitable(IScheduler scheduler, bool completed)
             {
+                _cancelledState = CancelledState.NotCancelled;
                 _state = completed ? _awaitableIsCompleted : _awaitableIsNotCompleted;
                 _scheduler = scheduler;
             }
@@ -663,10 +652,18 @@ namespace System.IO.Pipelines
 
             public void Reset()
             {
-                Interlocked.CompareExchange(
-                    ref _state,
-                    _awaitableIsNotCompleted,
-                    _awaitableIsCompleted);
+                // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
+                Interlocked.CompareExchange(ref _cancelledState,
+                    CancelledState.NotCancelled,
+                    CancelledState.CancellationObserved);
+
+                if (_cancelledState != CancelledState.CancellationRequested)
+                {
+                    Interlocked.CompareExchange(
+                        ref _state,
+                        _awaitableIsNotCompleted,
+                        _awaitableIsCompleted);
+                }
             }
 
             public bool IsCompleted => ReferenceEquals(_state, _awaitableIsCompleted);
@@ -698,6 +695,27 @@ namespace System.IO.Pipelines
                     Task.Run(awaitableState);
                 }
             }
+
+            public void Cancel()
+            {
+                _cancelledState = CancelledState.CancellationRequested;
+                Resume();
+            }
+
+            public bool ObserveCancelation()
+            {
+                return Interlocked.CompareExchange(
+                    ref _cancelledState,
+                    CancelledState.CancellationObserved,
+                    CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
+            }
+
+            private static class CancelledState
+            {
+                public static int NotCancelled = 0;
+                public static int CancellationRequested = 1;
+                public static int CancellationObserved = 2;
+            }
         }
 
         private struct Completion
@@ -728,13 +746,6 @@ namespace System.IO.Pipelines
         {
             public static int NotActive = 0;
             public static int Active = 1;
-        }
-
-        private static class CancelledState
-        {
-            public static int NotCancelled = 0;
-            public static int CancellationRequested = 1;
-            public static int CancellationObserved = 2;
         }
     }
 }
