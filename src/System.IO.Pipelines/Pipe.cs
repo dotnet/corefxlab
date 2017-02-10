@@ -10,7 +10,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Default <see cref="IPipeWriter"/> and <see cref="IPipeReader"/> implementation.
     /// </summary>
-    internal class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
+    internal partial class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
     {
         private readonly IBufferPool _pool;
 
@@ -619,127 +619,6 @@ namespace System.IO.Pipelines
 
         public IPipeReader Reader => this;
         public IPipeWriter Writer => this;
-
-        private struct Awaitable
-        {
-
-            private static readonly Action _awaitableIsCompleted = () => { };
-            private static readonly Action _awaitableIsNotCompleted = () => { };
-
-            private int _cancelledState;
-            private Action _state;
-            private readonly IScheduler _scheduler;
-
-            public Awaitable(IScheduler scheduler, bool completed)
-            {
-                _cancelledState = CancelledState.NotCancelled;
-                _state = completed ? _awaitableIsCompleted : _awaitableIsNotCompleted;
-                _scheduler = scheduler;
-            }
-
-            public void Resume()
-            {
-                var awaitableState = Interlocked.Exchange(
-                    ref _state,
-                    _awaitableIsCompleted);
-
-                if (!ReferenceEquals(awaitableState, _awaitableIsCompleted) &&
-                    !ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
-                {
-                    _scheduler.Schedule(awaitableState);
-                }
-            }
-
-            public void Reset()
-            {
-                // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
-                Interlocked.CompareExchange(ref _cancelledState,
-                    CancelledState.NotCancelled,
-                    CancelledState.CancellationObserved);
-
-                if (_cancelledState != CancelledState.CancellationRequested)
-                {
-                    Interlocked.CompareExchange(
-                        ref _state,
-                        _awaitableIsNotCompleted,
-                        _awaitableIsCompleted);
-                }
-            }
-
-            public bool IsCompleted => ReferenceEquals(_state, _awaitableIsCompleted);
-
-            public void OnCompleted(Action continuation, ref Completion completion)
-            {
-                var awaitableState = Interlocked.CompareExchange(
-                    ref _state,
-                    continuation,
-                    _awaitableIsNotCompleted);
-
-                if (ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
-                {
-                    return;
-                }
-                else if (ReferenceEquals(awaitableState, _awaitableIsCompleted))
-                {
-                    _scheduler.Schedule(continuation);
-                }
-                else
-                {
-                    completion.TryComplete(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
-
-                    Interlocked.Exchange(
-                        ref _state,
-                        _awaitableIsCompleted);
-
-                    Task.Run(continuation);
-                    Task.Run(awaitableState);
-                }
-            }
-
-            public void Cancel()
-            {
-                _cancelledState = CancelledState.CancellationRequested;
-                Resume();
-            }
-
-            public bool ObserveCancelation()
-            {
-                return Interlocked.CompareExchange(
-                    ref _cancelledState,
-                    CancelledState.CancellationObserved,
-                    CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
-            }
-
-            private static class CancelledState
-            {
-                public static int NotCancelled = 0;
-                public static int CancellationRequested = 1;
-                public static int CancellationObserved = 2;
-            }
-        }
-
-        private struct Completion
-        {
-            private static readonly Exception _completedNoException = new Exception();
-
-            private Exception _exception;
-
-            public bool IsCompleted => _exception != null;
-
-            public void TryComplete(Exception exception = null)
-            {
-                // Set the exception object to the exception passed in or a sentinel value
-                Interlocked.CompareExchange(ref _exception, exception ?? _completedNoException, null);
-            }
-
-            public void ThrowIfFailed()
-            {
-                if (_exception != null && _exception != _completedNoException)
-                {
-                    throw _exception;
-                }
-            }
-        }
 
         // Can't use enums with Interlocked
         private static class State
