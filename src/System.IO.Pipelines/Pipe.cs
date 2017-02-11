@@ -2,8 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace System.IO.Pipelines
 {
@@ -12,18 +10,20 @@ namespace System.IO.Pipelines
     /// </summary>
     internal class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
     {
-        private static readonly Action _awaitableIsCompleted = () => { };
-        private static readonly Action _awaitableIsNotCompleted = () => { };
+        private readonly object _sync = new object();
 
         private readonly IBufferPool _pool;
-        private readonly IScheduler _readerScheduler;
-        private readonly IScheduler _writerScheduler;
-
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
-        private Action _readerCallback;
-        private Action _writerCallback;
+        private long _length;
+        private long _currentWriteLength;
+
+        private PipeAwaitable _readerAwaitable;
+        private PipeAwaitable _writerAwaitable;
+
+        private PipeCompletion _writerCompletion;
+        private PipeCompletion _readerCompletion;
 
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
@@ -35,27 +35,10 @@ namespace System.IO.Pipelines
         // The write head which is the extent of the IPipelineWriter's written bytes
         private BufferSegment _writingHead;
 
-        private int _consumingState;
-        private int _producingState;
-        private object _sync = new object();
-        private int _cancelledState;
+        private PipeOperationState _consumingState;
+        private PipeOperationState _producingState;
 
-        private Completion _writerCompletion = new Completion();
-        private Completion _readerCompletion = new Completion();
         private bool _disposed;
-
-#if CONSUMING_LOCATION_TRACKING
-        private string _consumingLocation;
-#endif
-#if PRODUCING_LOCATION_TRACKING
-        private string _producingLocation;
-#endif
-#if COMPLETION_LOCATION_TRACKING
-        private string _completeWriterLocation;
-        private string _completeReaderLocation;
-#endif
-        private long _length;
-        private long _currentWriteLength;
 
         internal long Length => _length;
 
@@ -89,12 +72,11 @@ namespace System.IO.Pipelines
             }
 
             _pool = pool;
-            _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
-            _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
-            _readerCallback = _awaitableIsNotCompleted;
-            _writerCallback = _awaitableIsCompleted;
+
+            _readerAwaitable = new PipeAwaitable(options.ReaderScheduler ?? InlineScheduler.Default, completed: false);
+            _writerAwaitable = new PipeAwaitable(options.WriterScheduler ?? InlineScheduler.Default, completed: true);
         }
 
         internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
@@ -106,16 +88,9 @@ namespace System.IO.Pipelines
         /// <returns>A <see cref="WritableBuffer"/> that can be written to.</returns>
         WritableBuffer IPipeWriter.Alloc(int minimumSize)
         {
-#if PRODUCING_LOCATION_TRACKING
-            _producingLocation = Environment.StackTrace;
-#endif
             if (_writerCompletion.IsCompleted)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed
-#if COMPLETION_LOCATION_TRACKING
-                    , _completeWriterLocation
-#endif
-                    );
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed, _writerCompletion.Location);
             }
 
             if (minimumSize < 0)
@@ -124,14 +99,7 @@ namespace System.IO.Pipelines
             }
 
             // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _producingState, State.Active) != State.NotActive)
-            {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyProducing
-#if PRODUCING_LOCATION_TRACKING
-                    , _producingLocation
-#endif
-                    );
-            }
+            _producingState.Begin(ExceptionResource.AlreadyProducing);
 
             if (minimumSize > 0)
             {
@@ -142,7 +110,7 @@ namespace System.IO.Pipelines
                 catch (Exception)
                 {
                     // Reset producing state if allocation failed
-                    Interlocked.Exchange(ref _producingState, State.NotActive);
+                    _producingState.End(ExceptionResource.NotProducingToComplete);
                     throw;
                 }
             }
@@ -260,7 +228,7 @@ namespace System.IO.Pipelines
 
         private void EnsureAlloc()
         {
-            if (_producingState == State.NotActive)
+            if (!_producingState.IsActive)
             {
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotProducingNoAlloc);
             }
@@ -269,10 +237,7 @@ namespace System.IO.Pipelines
         internal void Commit()
         {
             // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _producingState, State.NotActive) != State.Active)
-            {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotProducingToComplete);
-            }
+            _producingState.End(ExceptionResource.NotProducingToComplete);
 
             if (_writingHead == null)
             {
@@ -300,15 +265,12 @@ namespace System.IO.Pipelines
                     _length >= _maximumSizeHigh &&
                     !_readerCompletion.IsCompleted)
                 {
-                    Reset(ref _writerCallback);
+                    _writerAwaitable.Reset();
                 }
             }
 
             // Clear the writing state
             _writingHead = null;
-#if PRODUCING_LOCATION_TRACKING
-            _producingLocation = null;
-#endif
         }
 
         internal void AdvanceWriter(int bytesWritten)
@@ -337,13 +299,13 @@ namespace System.IO.Pipelines
 
         internal WritableBufferAwaitable FlushAsync()
         {
-            if (_producingState == State.Active)
+            if (_producingState.IsActive)
             {
                 // Commit the data as not already committed
                 Commit();
             }
 
-            Resume(_readerScheduler, ref _readerCallback);
+            _readerAwaitable.Resume();
 
             return new WritableBufferAwaitable(this);
         }
@@ -360,18 +322,8 @@ namespace System.IO.Pipelines
 
         private ReadableBuffer Read()
         {
-            // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _consumingState, State.Active) != State.NotActive)
-            {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyConsuming
-#if CONSUMING_LOCATION_TRACKING
-                    , _consumingLocation
-#endif
-                    );
-            }
-#if CONSUMING_LOCATION_TRACKING
-            _consumingLocation = Environment.StackTrace;
-#endif
+            _consumingState.Begin(ExceptionResource.AlreadyConsuming);
+
             ReadCursor readEnd;
             // No need to read end if there is no head
             var head = _readHead;
@@ -397,23 +349,17 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         void IPipeWriter.Complete(Exception exception)
         {
-            if (_producingState != State.NotActive)
+            if (_producingState.IsActive)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveProducer
-#if PRODUCING_LOCATION_TRACKING
-                    , _producingLocation
-#endif
-                    );
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveProducer, _producingState.Location);
             }
-#if COMPLETION_LOCATION_TRACKING
-            _completeWriterLocation += Environment.StackTrace + Environment.NewLine;
-#endif
+
             // TODO: Review this lock?
             lock (_sync)
             {
                 _writerCompletion.TryComplete(exception);
 
-                Resume(_readerScheduler, ref _readerCallback);
+                _readerAwaitable.Resume();
 
                 if (_readerCompletion.IsCompleted)
                 {
@@ -448,8 +394,6 @@ namespace System.IO.Pipelines
                 _length -= consumedBytes;
                 resumeWriter = _length < _maximumSizeLow;
 
-                // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
-                Interlocked.CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
 
                 var consumedEverything = examined.Segment == _commitHead &&
                                          examined.Index == _commitHeadIndex &&
@@ -458,9 +402,9 @@ namespace System.IO.Pipelines
                 // We reset the awaitable to not completed if
                 // 1. We've consumed everything the producer produced so far
                 // 2. Cancellation wasn't requested
-                if (consumedEverything && _cancelledState != CancelledState.CancellationRequested)
+                if (consumedEverything)
                 {
-                    Reset(ref _readerCallback);
+                    _readerAwaitable.Reset();
                 }
             }
 
@@ -471,18 +415,12 @@ namespace System.IO.Pipelines
                 returnSegment.Dispose();
             }
 
-#if CONSUMING_LOCATION_TRACKING
-            _consumingLocation = null;
-#endif
             // CompareExchange not required as its setting to current value if test fails
-            if (Interlocked.Exchange(ref _consumingState, State.NotActive) != State.Active)
-            {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotConsumingToComplete);
-            }
+            _consumingState.End(ExceptionResource.NotConsumingToComplete);
 
             if (resumeWriter)
             {
-                Resume(_writerScheduler, ref _writerCallback);
+                _writerAwaitable.Resume();
             }
         }
 
@@ -492,23 +430,17 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         void IPipeReader.Complete(Exception exception)
         {
-            if (_consumingState != State.NotActive)
+            if (_consumingState.IsActive)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveConsumer
-#if CONSUMING_LOCATION_TRACKING
-                    , _consumingLocation
-#endif
-                    );
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveConsumer, _consumingState.Location);
             }
-#if COMPLETION_LOCATION_TRACKING
-            _completeReaderLocation += Environment.StackTrace + Environment.NewLine;
-#endif
+
             // TODO: Review this lock?
             lock (_sync)
             {
                 _readerCompletion.TryComplete(exception);
 
-                Resume(_writerScheduler, ref _writerCallback);
+                _writerAwaitable.Resume();
 
                 if (_writerCompletion.IsCompleted)
                 {
@@ -525,10 +457,7 @@ namespace System.IO.Pipelines
             // TODO: Can factor out this lock
             lock (_sync)
             {
-                // Mark reading is cancellable
-                _cancelledState = CancelledState.CancellationRequested;
-
-                Resume(_readerScheduler, ref _readerCallback);
+                _readerAwaitable.Cancel();
             }
         }
 
@@ -540,89 +469,26 @@ namespace System.IO.Pipelines
         {
             if (_readerCompletion.IsCompleted)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed
-#if COMPLETION_LOCATION_TRACKING
-                    , _completeReaderLocation
-#endif
-                    );
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
             }
 
             return new ReadableBufferAwaitable(this);
         }
 
-
-        // Awaiter support members
-
-        private static bool IsCompleted(Action awaitableState) => ReferenceEquals(awaitableState, _awaitableIsCompleted);
-
-        private static void OnCompleted(Action continuation, IScheduler scheduler, ref Action action, ref Completion completion)
-        {
-            var awaitableState = Interlocked.CompareExchange(
-                ref action,
-                continuation,
-                _awaitableIsNotCompleted);
-
-            if (ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
-            {
-                return;
-            }
-            else if (ReferenceEquals(awaitableState, _awaitableIsCompleted))
-            {
-                scheduler.Schedule(continuation);
-            }
-            else
-            {
-                completion.TryComplete(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
-
-                Interlocked.Exchange(
-                    ref action,
-                    _awaitableIsCompleted);
-
-                Task.Run(continuation);
-                Task.Run(awaitableState);
-            }
-        }
-
-        private static void GetResult(Action awaitableState,
-            ref int cancelledState,
-            ref Completion completion,
+        private static void GetResult(ref PipeAwaitable awaitableState,
+            ref PipeCompletion completion,
             out bool isCancelled,
             out bool isCompleted)
         {
-            if (!IsCompleted(awaitableState))
+            if (!awaitableState.IsCompleted)
             {
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
             }
 
             // Change the state from to be cancelled -> observed
-            isCancelled = Interlocked.CompareExchange(
-                ref cancelledState,
-                CancelledState.CancellationObserved,
-                CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
-
+            isCancelled = awaitableState.ObserveCancelation();
             isCompleted = completion.IsCompleted;
             completion.ThrowIfFailed();
-        }
-
-        private static void Resume(IScheduler scheduler, ref Action state)
-        {
-            var awaitableState = Interlocked.Exchange(
-                ref state,
-                _awaitableIsCompleted);
-
-            if (!ReferenceEquals(awaitableState, _awaitableIsCompleted) &&
-                !ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
-            {
-                scheduler.Schedule(awaitableState);
-            }
-        }
-
-        private static void Reset(ref Action awaitableState)
-        {
-            Interlocked.CompareExchange(
-                ref awaitableState,
-                _awaitableIsNotCompleted,
-                _awaitableIsCompleted);
         }
 
         private void Dispose()
@@ -654,77 +520,41 @@ namespace System.IO.Pipelines
 
         // IReadableBufferAwaiter members
 
-        bool IReadableBufferAwaiter.IsCompleted => IsCompleted(_readerCallback);
+        bool IReadableBufferAwaiter.IsCompleted => _readerAwaitable.IsCompleted;
 
         void IReadableBufferAwaiter.OnCompleted(Action continuation)
         {
-            OnCompleted(continuation, _readerScheduler, ref _readerCallback, ref _writerCompletion);
+            _readerAwaitable.OnCompleted(continuation, ref _writerCompletion);
         }
 
         ReadResult IReadableBufferAwaiter.GetResult()
         {
-            bool isCancelled;
-            bool isCompleted;
-            GetResult(_readerCallback, ref _cancelledState, ref _writerCompletion, out isCancelled, out isCompleted);
+            GetResult(ref _readerAwaitable,
+                ref _writerCompletion,
+                out bool isCancelled,
+                out bool isCompleted);
             return new ReadResult(Read(), isCancelled, isCompleted);
         }
 
         // IWritableBufferAwaiter members
 
-        bool IWritableBufferAwaiter.IsCompleted => IsCompleted(_writerCallback);
+        bool IWritableBufferAwaiter.IsCompleted => _writerAwaitable.IsCompleted;
 
         bool IWritableBufferAwaiter.GetResult()
         {
-            bool isCancelled;
-            bool isCompleted;
-            int cancelledState = CancelledState.NotCancelled;
-            GetResult(_writerCallback, ref cancelledState, ref _readerCompletion, out isCancelled, out isCompleted);
+            GetResult(ref _writerAwaitable,
+                ref _readerCompletion,
+                out bool isCancelled,
+                out bool isCompleted);
             return !isCompleted;
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
         {
-            OnCompleted(continuation, _writerScheduler, ref _writerCallback, ref _readerCompletion);
+            _writerAwaitable.OnCompleted(continuation, ref _readerCompletion);
         }
 
         public IPipeReader Reader => this;
         public IPipeWriter Writer => this;
-
-        private struct Completion
-        {
-            private static readonly Exception _completedNoException = new Exception();
-
-            private Exception _exception;
-
-            public bool IsCompleted => _exception != null;
-
-            public void TryComplete(Exception exception = null)
-            {
-                // Set the exception object to the exception passed in or a sentinel value
-                Interlocked.CompareExchange(ref _exception, exception ?? _completedNoException, null);
-            }
-
-            public void ThrowIfFailed()
-            {
-                if (_exception != null && _exception != _completedNoException)
-                {
-                    throw _exception;
-                }
-            }
-        }
-
-        // Can't use enums with Interlocked
-        private static class State
-        {
-            public static int NotActive = 0;
-            public static int Active = 1;
-        }
-
-        private static class CancelledState
-        {
-            public static int NotCancelled = 0;
-            public static int CancellationRequested = 1;
-            public static int CancellationObserved = 2;
-        }
     }
 }
