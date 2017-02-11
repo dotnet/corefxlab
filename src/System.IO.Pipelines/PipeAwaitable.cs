@@ -37,17 +37,20 @@ namespace System.IO.Pipelines
 
         public void Reset()
         {
+            Interlocked.CompareExchange(
+                ref _state,
+                _awaitableIsNotCompleted,
+                _awaitableIsCompleted);
+
             // Change the state from observed -> not cancelled. We only want to reset the cancelled state if it was observed
-            Interlocked.CompareExchange(ref _cancelledState,
+            var cancelledState = Interlocked.CompareExchange(
+                ref _cancelledState,
                 CancelledState.NotCancelled,
                 CancelledState.CancellationObserved);
 
-            if (_cancelledState != CancelledState.CancellationRequested)
+            if (cancelledState != CancelledState.CancellationRequested)
             {
-                Interlocked.CompareExchange(
-                    ref _state,
-                    _awaitableIsNotCompleted,
-                    _awaitableIsCompleted);
+                Resume();
             }
         }
 
