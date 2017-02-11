@@ -395,9 +395,7 @@ namespace System.IO.Pipelines
                                      examined.Index == _commitHeadIndex &&
                                      !_writerCompletion.IsCompleted;
             }
-            // We reset the awaitable to not completed if
-            // 1. We've consumed everything the producer produced so far
-            // 2. Cancellation wasn't requested
+            // We reset the awaitable to not completed if we've consumed everything the producer produced so far
             if (consumedEverything)
             {
                 _readerAwaitable.Reset();

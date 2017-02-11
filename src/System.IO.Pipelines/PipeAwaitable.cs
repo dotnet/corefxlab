@@ -48,7 +48,10 @@ namespace System.IO.Pipelines
                 CancelledState.NotCancelled,
                 CancelledState.CancellationObserved);
 
-            if (cancelledState != CancelledState.CancellationRequested)
+            // Resume if there is no cancelation requested
+            // We are reseting and resuming again to prevent race which happens if
+            // cancelation is requested between 
+            if (cancelledState == CancelledState.CancellationRequested)
             {
                 Resume();
             }
