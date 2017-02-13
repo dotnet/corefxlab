@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+using System.Threading;
 
 namespace System.IO.Pipelines
 {
@@ -245,6 +246,7 @@ namespace System.IO.Pipelines
                 return;
             }
 
+            long currentLength;
             // Changing commit head shared with Reader
             lock (_sync)
             {
@@ -258,15 +260,15 @@ namespace System.IO.Pipelines
                 // Always move the commit head to the write head
                 _commitHead = _writingHead;
                 _commitHeadIndex = _writingHead.End;
+                currentLength = (_length += _currentWriteLength);
+            }
 
-                _length += _currentWriteLength;
-                // Do not reset if reader is complete
-                if (_maximumSizeHigh > 0 &&
-                    _length >= _maximumSizeHigh &&
-                    !_readerCompletion.IsCompleted)
-                {
-                    _writerAwaitable.Reset();
-                }
+            // Do not reset if reader is complete
+            if (_maximumSizeHigh > 0 &&
+                currentLength >= _maximumSizeHigh &&
+                !_readerCompletion.IsCompleted)
+            {
+                _writerAwaitable.Reset();
             }
 
             // Clear the writing state
@@ -354,17 +356,13 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveProducer, _producingState.Location);
             }
 
-            // TODO: Review this lock?
-            lock (_sync)
+            _writerCompletion.TryComplete(exception);
+
+            _readerAwaitable.Resume();
+
+            if (_readerCompletion.IsCompleted)
             {
-                _writerCompletion.TryComplete(exception);
-
-                _readerAwaitable.Resume();
-
-                if (_readerCompletion.IsCompleted)
-                {
-                    Dispose();
-                }
+                Dispose();
             }
         }
 
@@ -386,26 +384,21 @@ namespace System.IO.Pipelines
                 _readHead.Start = consumed.Index;
             }
 
-            bool resumeWriter;
-
             // Reading commit head shared with writer
+            bool consumedEverything;
+            long currentLength;
             lock (_sync)
             {
-                _length -= consumedBytes;
-                resumeWriter = _length < _maximumSizeLow;
 
-
-                var consumedEverything = examined.Segment == _commitHead &&
-                                         examined.Index == _commitHeadIndex &&
-                                         !_writerCompletion.IsCompleted;
-
-                // We reset the awaitable to not completed if
-                // 1. We've consumed everything the producer produced so far
-                // 2. Cancellation wasn't requested
-                if (consumedEverything)
-                {
-                    _readerAwaitable.Reset();
-                }
+                currentLength = (_length -= consumedBytes);
+                consumedEverything = examined.Segment == _commitHead &&
+                                     examined.Index == _commitHeadIndex &&
+                                     !_writerCompletion.IsCompleted;
+            }
+            // We reset the awaitable to not completed if we've consumed everything the producer produced so far
+            if (consumedEverything)
+            {
+                _readerAwaitable.Reset();
             }
 
             while (returnStart != null && returnStart != returnEnd)
@@ -418,7 +411,7 @@ namespace System.IO.Pipelines
             // CompareExchange not required as its setting to current value if test fails
             _consumingState.End(ExceptionResource.NotConsumingToComplete);
 
-            if (resumeWriter)
+            if (currentLength < _maximumSizeLow)
             {
                 _writerAwaitable.Resume();
             }
@@ -435,17 +428,13 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveConsumer, _consumingState.Location);
             }
 
-            // TODO: Review this lock?
-            lock (_sync)
+            _readerCompletion.TryComplete(exception);
+
+            _writerAwaitable.Resume();
+
+            if (_writerCompletion.IsCompleted)
             {
-                _readerCompletion.TryComplete(exception);
-
-                _writerAwaitable.Resume();
-
-                if (_writerCompletion.IsCompleted)
-                {
-                    Dispose();
-                }
+                Dispose();
             }
         }
 
@@ -454,11 +443,7 @@ namespace System.IO.Pipelines
         /// </summary>
         void IPipeReader.CancelPendingRead()
         {
-            // TODO: Can factor out this lock
-            lock (_sync)
-            {
-                _readerAwaitable.Cancel();
-            }
+            _readerAwaitable.Cancel();
         }
 
         /// <summary>
@@ -493,29 +478,24 @@ namespace System.IO.Pipelines
 
         private void Dispose()
         {
-            // TODO: Review throw if not completed?
-
-            lock (_sync)
+            if (_disposed)
             {
-                if (_disposed)
-                {
-                    return;
-                }
-
-                _disposed = true;
-                // Return all segments
-                var segment = _readHead;
-                while (segment != null)
-                {
-                    var returnSegment = segment;
-                    segment = segment.Next;
-
-                    returnSegment.Dispose();
-                }
-
-                _readHead = null;
-                _commitHead = null;
+                return;
             }
+
+            _disposed = true;
+            // Return all segments
+            var segment = _readHead;
+            while (segment != null)
+            {
+                var returnSegment = segment;
+                segment = segment.Next;
+
+                returnSegment.Dispose();
+            }
+
+            _readHead = null;
+            _commitHead = null;
         }
 
         // IReadableBufferAwaiter members
