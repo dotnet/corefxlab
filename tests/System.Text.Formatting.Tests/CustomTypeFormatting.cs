@@ -19,7 +19,7 @@ namespace System.Text.Formatting.Tests
             _inMonths = inMonths;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        public bool TryFormat(Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoding)
         {
             if (!PrimitiveFormatter.TryFormat(_age, buffer, out bytesWritten, format, encoding))
             {
@@ -73,7 +73,7 @@ namespace System.Text.Formatting.Tests
         {
             byte[] buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
-            using (var writer = new StreamFormatter(stream, EncodingData.InvariantUtf8, pool))
+            using (var writer = new StreamFormatter(stream, TextEncoder.InvariantUtf8, pool))
             {
                 writer.Append(new Age(56));
                 writer.Append(new Age(14, inMonths: true));

@@ -61,7 +61,7 @@ namespace System.IO.Pipelines.Tests
                     try
                     {
                         var output = client.Output.Alloc();
-                        output.Append(MessageToSend, EncodingData.InvariantUtf8);
+                        output.Append(MessageToSend, TextEncoder.InvariantUtf8);
                         await output.FlushAsync();
                         client.Output.Complete();
 

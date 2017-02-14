@@ -305,7 +305,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = factory.Create();
                 var output = readerWriter.Writer.Alloc();
-                output.Append(input, EncodingData.InvariantUtf8);
+                output.Append(input, TextEncoder.InvariantUtf8);
 
                 var readable = output.AsReadableBuffer();
 
@@ -410,7 +410,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = factory.Create();
                 var output = readerWriter.Writer.Alloc();
-                output.Append("Hello World", EncodingData.InvariantUtf8);
+                output.Append("Hello World", TextEncoder.InvariantUtf8);
                 await output.FlushAsync();
                 var ms = new MemoryStream();
                 var result = await readerWriter.Reader.ReadAsync();
@@ -432,7 +432,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var readerWriter = factory.Create();
                 var output = readerWriter.Writer.Alloc();
-                output.Append("Hello World", EncodingData.InvariantUtf8);
+                output.Append("Hello World", TextEncoder.InvariantUtf8);
                 await output.FlushAsync();
                 var ms = new MemoryStream();
                 var result = await readerWriter.Reader.ReadAsync();

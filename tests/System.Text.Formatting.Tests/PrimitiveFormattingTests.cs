@@ -305,7 +305,7 @@ namespace System.Text.Formatting.Tests
             var x = TextFormat.Parse("x");
             var X = TextFormat.Parse("X");
 
-            var sb = new ArrayFormatter(256, EncodingData.InvariantUtf8);
+            var sb = new ArrayFormatter(256, TextEncoder.InvariantUtf8);
             sb.Append((ulong)255, x);
             sb.Append((uint)255, X);
 
@@ -346,7 +346,7 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            using(var writer = new StreamFormatter(stream, EncodingData.InvariantUtf8, pool)) {
+            using(var writer = new StreamFormatter(stream, TextEncoder.InvariantUtf8, pool)) {
                 writer.Append(100);
                 writer.Append(-100);
                 writer.Append('h');
@@ -361,7 +361,7 @@ namespace System.Text.Formatting.Tests
             var buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
 
-            using(var utf8Writer = new StreamFormatter(stream, EncodingData.InvariantUtf8, pool)) {
+            using(var utf8Writer = new StreamFormatter(stream, TextEncoder.InvariantUtf8, pool)) {
                 utf8Writer.Append("Hello");
                 utf8Writer.Append(" ");
                 utf8Writer.Append("World!");
@@ -372,7 +372,7 @@ namespace System.Text.Formatting.Tests
             }
 
             stream.Position = 0;
-            using(var utf16Writer = new StreamFormatter(stream, EncodingData.InvariantUtf16, pool)) {
+            using(var utf16Writer = new StreamFormatter(stream, TextEncoder.InvariantUtf16, pool)) {
                 utf16Writer.Append("Hello");
                 utf16Writer.Append(" ");
                 utf16Writer.Append("World!");
@@ -387,7 +387,7 @@ namespace System.Text.Formatting.Tests
         {
             int length = 260;
             {
-                var formatter = new ArrayFormatter(length, EncodingData.InvariantUtf8);
+                var formatter = new ArrayFormatter(length, TextEncoder.InvariantUtf8);
                 string data = new string('#', length);
                 formatter.Append(data);
                 Assert.Equal(length, formatter.CommitedByteCount);

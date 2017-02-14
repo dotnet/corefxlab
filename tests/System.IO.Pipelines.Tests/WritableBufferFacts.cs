@@ -40,7 +40,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
                 var buffer = pipe.Writer.Alloc();
-                buffer.Append(value, EncodingData.InvariantUtf8);
+                buffer.Append(value, TextEncoder.InvariantUtf8);
                 await buffer.FlushAsync();
 
                 var result = await pipe.Reader.ReadAsync();
@@ -100,7 +100,7 @@ namespace System.IO.Pipelines.Tests
                 var pipe = new Pipe(memoryPool);
 
                 var output = pipe.Writer.Alloc();
-                output.Append(data, EncodingData.InvariantUtf8);
+                output.Append(data, TextEncoder.InvariantUtf8);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
@@ -135,7 +135,7 @@ namespace System.IO.Pipelines.Tests
                 var pipe = new Pipe(memoryPool);
 
                 var output = pipe.Writer.Alloc();
-                output.Append(data, EncodingData.InvariantUtf8);
+                output.Append(data, TextEncoder.InvariantUtf8);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
@@ -181,7 +181,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(0, output.AsReadableBuffer().Length);
 
 
-                output.Append("hello world", EncodingData.InvariantUtf8);
+                output.Append("hello world", TextEncoder.InvariantUtf8);
                 var readable = output.AsReadableBuffer();
 
                 // check that looks about right
@@ -191,7 +191,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.True(readable.Slice(1, 3).Equals(Encoding.UTF8.GetBytes("ell")));
 
                 // check it all works after we write more
-                output.Append("more data", EncodingData.InvariantUtf8);
+                output.Append("more data", TextEncoder.InvariantUtf8);
 
                 // note that the snapshotted readable should not have changed by this
                 Assert.False(readable.IsEmpty);
@@ -323,7 +323,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = factory.Create();
                 var buffer = pipe.Writer.Alloc();
-                buffer.Append(value, EncodingData.InvariantUtf8, 'x');
+                buffer.Append(value, TextEncoder.InvariantUtf8, 'x');
 
                 Assert.Equal(hex, buffer.AsReadableBuffer().GetAsciiString());
             }

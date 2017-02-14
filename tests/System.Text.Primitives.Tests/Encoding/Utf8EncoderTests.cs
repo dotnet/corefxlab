@@ -33,7 +33,7 @@ namespace System.Text.Utf8.Tests
             Span<byte> span = new Span<byte>(utf8Buffer);
             int charactersConsumed;
             int bytesWritten;
-            Assert.True(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+            Assert.True(TextEncoder.InvariantUtf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
 
             Assert.Equal(0, charactersConsumed);
             Assert.Equal(expectedBytesWritten, bytesWritten);
@@ -52,7 +52,7 @@ namespace System.Text.Utf8.Tests
             Span<byte> span = new Span<byte>(utf8Buffer);
             int charactersConsumed;
             int bytesWritten;
-            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+            Assert.False(TextEncoder.InvariantUtf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
 
             Assert.Equal(0, charactersConsumed);
             Assert.Equal(0, bytesWritten);
@@ -72,7 +72,7 @@ namespace System.Text.Utf8.Tests
             Span<byte> span = new Span<byte>(utf8Buffer);
             int charactersConsumed;
             int bytesWritten;
-            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+            Assert.False(TextEncoder.InvariantUtf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
 
             Assert.Equal(499, bytesWritten);
 
@@ -80,7 +80,7 @@ namespace System.Text.Utf8.Tests
             Span<byte> span2 = new Span<byte>(utf8BufferRemaining);
             int charactersConsumed2;
             int bytesWritten2;
-            Assert.True(TextEncoder.Utf8.TryEncode(characters.Slice(charactersConsumed), span2, out charactersConsumed2, out bytesWritten2));
+            Assert.True(TextEncoder.InvariantUtf8.TryEncode(characters.Slice(charactersConsumed), span2, out charactersConsumed2, out bytesWritten2));
 
             byte[] utf8BufferActual = span2.ToArray();
 
@@ -104,7 +104,7 @@ namespace System.Text.Utf8.Tests
             Span<byte> span = new Span<byte>(utf8Buffer);
             int charactersConsumed;
             int bytesWritten;
-            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+            Assert.False(TextEncoder.InvariantUtf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
 
             Assert.Equal(0, charactersConsumed);
             Assert.Equal(expectedBytesWritten, bytesWritten);
@@ -120,7 +120,7 @@ namespace System.Text.Utf8.Tests
             Span<byte> span = new Span<byte>(utf8Buffer);
             int charactersConsumed;
             int bytesWritten;
-            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+            Assert.False(TextEncoder.InvariantUtf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
 
             Assert.True(charactersConsumed < unicodeString.Length);
             Assert.Equal(expectedBytesWritten, bytesWritten);
@@ -150,8 +150,8 @@ namespace System.Text.Utf8.Tests
             int bytesWritten;
             int charactersConsumed2;
             int bytesWritten2;
-            Assert.True(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
-            Assert.True(TextEncoder.Utf8.TryEncode(characters2, span.Slice(bytesWritten), out charactersConsumed2, out bytesWritten2));
+            Assert.True(TextEncoder.InvariantUtf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+            Assert.True(TextEncoder.InvariantUtf8.TryEncode(characters2, span.Slice(bytesWritten), out charactersConsumed2, out bytesWritten2));
 
             byte[] utf8BufferActual = span.ToArray();
 
@@ -185,8 +185,8 @@ namespace System.Text.Utf8.Tests
             int bytesWritten;
             int charactersConsumed2;
             int bytesWritten2;
-            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
-            Assert.True(TextEncoder.Utf8.TryEncode(characters2.Slice(charactersConsumed), span.Slice(bytesWritten), out charactersConsumed2, out bytesWritten2));
+            Assert.False(TextEncoder.InvariantUtf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+            Assert.True(TextEncoder.InvariantUtf8.TryEncode(characters2.Slice(charactersConsumed), span.Slice(bytesWritten), out charactersConsumed2, out bytesWritten2));
 
             Assert.Equal(unicodeString2.Length, charactersConsumed + charactersConsumed2);
             Assert.Equal(expectedBytesWritten, bytesWritten + bytesWritten2);
@@ -227,7 +227,7 @@ namespace System.Text.Utf8.Tests
             Span<byte> span = new Span<byte>(utf8Buffer);
             int charactersConsumed;
             int bytesWritten;
-            Assert.True(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
+            Assert.True(TextEncoder.InvariantUtf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
 
             byte[] utf8BufferActual = span.ToArray();
 
@@ -255,7 +255,7 @@ namespace System.Text.Utf8.Tests
             Span<byte> span = new Span<byte>(utf8Buffer);
             int charactersConsumed;
             int bytesWritten;
-            if (!TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten))
+            if (!TextEncoder.InvariantUtf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten))
             {
                 return false;
             }
@@ -479,9 +479,9 @@ namespace System.Text.Utf8.Tests
 
         public static object[][] TryEncodeFromUTF16ToUTF8TestData = {
             // empty
-            new object[] { TextEncoder.Utf8, new byte[] { }, new ReadOnlySpan<char>(new char[]{ (char)0x0050 } ), false },
+            new object[] { TextEncoder.InvariantUtf8, new byte[] { }, new ReadOnlySpan<char>(new char[]{ (char)0x0050 } ), false },
             // multiple bytes
-            new object[] { TextEncoder.Utf8, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
+            new object[] { TextEncoder.InvariantUtf8, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
                 new ReadOnlySpan<char>(new char[]{ (char)0x0050, (char)0x03E8, (char)0xAFC8, (char)0xD852, (char)0xDDF0 } ), true },
         };
 
@@ -504,29 +504,29 @@ namespace System.Text.Utf8.Tests
 
         public static object[][] TryEncodeFromUnicodeMultipleCodePointsTestData = {
             // empty
-            new object[] { TextEncoder.Utf8, new byte[] { }, new ReadOnlySpan<uint>(new uint[] { 0x50 }), false },
-            new object[] { TextEncoder.Utf16, new byte[] { }, new ReadOnlySpan<uint>(new uint[] { 0x50 }), false },
+            new object[] { TextEncoder.InvariantUtf8, new byte[] { }, new ReadOnlySpan<uint>(new uint[] { 0x50 }), false },
+            new object[] { TextEncoder.InvariantUtf16, new byte[] { }, new ReadOnlySpan<uint>(new uint[] { 0x50 }), false },
             // multiple bytes
-            new object[] { TextEncoder.Utf8, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 }, new ReadOnlySpan<uint>(
+            new object[] { TextEncoder.InvariantUtf8, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 }, new ReadOnlySpan<uint>(
                 new uint[] {
                     0x50,
                     0x3E8,
                     0xAFC8,
                     0x249F0 } ), true },
-            new object[] { TextEncoder.Utf16, new byte[] { 0x50, 0x00, 0xE8,  0x03, 0xC8, 0xAF, 0x52, 0xD8, 0xF0, 0xDD }, new ReadOnlySpan<uint>(
+            new object[] { TextEncoder.InvariantUtf16, new byte[] { 0x50, 0x00, 0xE8,  0x03, 0xC8, 0xAF, 0x52, 0xD8, 0xF0, 0xDD }, new ReadOnlySpan<uint>(
                 new uint[] {
                     0x50,
                     0x3E8,
                     0xAFC8,
                     0x249F0 } ), true },
             // multiple bytes - buffer too small
-            new object[] { TextEncoder.Utf8, new byte[] { 0x50 }, new ReadOnlySpan<uint>(
+            new object[] { TextEncoder.InvariantUtf8, new byte[] { 0x50 }, new ReadOnlySpan<uint>(
                 new uint[] {
                     0x50,
                     0x3E8,
                     0xAFC8,
                     0x249F0 } ), false },
-            new object[] { TextEncoder.Utf16, new byte[] { 0x50, 0x00 }, new ReadOnlySpan<uint>(
+            new object[] { TextEncoder.InvariantUtf16, new byte[] { 0x50, 0x00 }, new ReadOnlySpan<uint>(
                 new uint[] {
                     0x50,
                     0x3E8,
@@ -553,16 +553,16 @@ namespace System.Text.Utf8.Tests
 
         public static object[][] TryDecodeToUnicodeMultipleCodePointsTestData = {
             //empty
-            new object[] { TextEncoder.Utf8, new Span<uint>(new uint[] {}), new Span<byte> (new byte[] {}), true },
-            new object[] { TextEncoder.Utf16, new Span<uint>(new uint[] {}), new Span<byte> (new byte[] {}), true },
+            new object[] { TextEncoder.InvariantUtf8, new Span<uint>(new uint[] {}), new Span<byte> (new byte[] {}), true },
+            new object[] { TextEncoder.InvariantUtf16, new Span<uint>(new uint[] {}), new Span<byte> (new byte[] {}), true },
             // multiple bytes
-            new object[] { TextEncoder.Utf8, new Span<uint>(
+            new object[] { TextEncoder.InvariantUtf8, new Span<uint>(
                 new uint[] {
                     0x50,
                     0x3E8,
                     0xAFC8,
                     0x249F0 } ), new Span<byte> (new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 }), true },
-            new object[] { TextEncoder.Utf16, new Span<uint>(
+            new object[] { TextEncoder.InvariantUtf16, new Span<uint>(
                 new uint[] {
                     0x50,
                     0x3E8,
@@ -587,7 +587,7 @@ namespace System.Text.Utf8.Tests
 
         }
         
-        public static object[][] Encoders = { new object[] { TextEncoder.Utf8 }, new object[] { TextEncoder.Utf16 } };
+        public static object[][] Encoders = { new object[] { TextEncoder.InvariantUtf8 }, new object[] { TextEncoder.InvariantUtf16 } };
 
         [Theory, MemberData("Encoders")]
         public void BruteTestingRoundtripEncodeDecodeAllUnicodeCodePoints(TextEncoder encoder)
@@ -627,7 +627,7 @@ namespace System.Text.Utf8.Tests
             }
         }
 
-        public static object[][] UsingBothEncoders = { new object[] { TextEncoder.Utf8, Encoding.UTF8 }, new object[] { TextEncoder.Utf16, Encoding.Unicode } };
+        public static object[][] UsingBothEncoders = { new object[] { TextEncoder.InvariantUtf8, Encoding.UTF8 }, new object[] { TextEncoder.InvariantUtf16, Encoding.Unicode } };
 
         [Theory, MemberData("UsingBothEncoders")]
         public void BruteTestingEncodeAllUnicodeCodePoints(TextEncoder encoder, Encoding systemTextEncoder)
@@ -806,14 +806,14 @@ namespace System.Text.Utf8.Tests
             var input = new Span<byte>(inputBytes);
             var output = new Span<byte>(new byte[outputSize]);
 
-            Assert.False(TextEncoder.Utf16.TryEncode(input, output, out consumed, out written));
+            Assert.False(TextEncoder.InvariantUtf16.TryEncode(input, output, out consumed, out written));
             Assert.Equal(expected1.Length, written);
             Assert.Equal(expectedConsumed, consumed);
             Assert.True(AreByteArraysEqual(expected1, output.Slice(0, written).ToArray()));
 
             input = input.Slice(consumed);
             output = new Span<byte>(new byte[expected2.Length]);
-            Assert.True(TextEncoder.Utf16.TryEncode(input, output, out consumed, out written));
+            Assert.True(TextEncoder.InvariantUtf16.TryEncode(input, output, out consumed, out written));
             Assert.Equal(expected2.Length, written);
             Assert.Equal(inputBytes.Length - expectedConsumed, consumed);
             Assert.True(AreByteArraysEqual(expected2, output.ToArray()));
@@ -828,14 +828,14 @@ namespace System.Text.Utf8.Tests
             var input = new Span<byte>(inputBytes);
             var output = new Span<byte>(new byte[outputSize]);
 
-            Assert.False(TextEncoder.Utf8.TryDecode(input, output.NonPortableCast<byte, char>(), out consumed, out written));
+            Assert.False(TextEncoder.InvariantUtf8.TryDecode(input, output.NonPortableCast<byte, char>(), out consumed, out written));
             Assert.Equal(expected1.Length, written * sizeof(char));
             Assert.Equal(expectedConsumed, consumed);
             Assert.True(AreByteArraysEqual(expected1, output.Slice(0, written * sizeof(char)).ToArray()));
 
             input = input.Slice(consumed);
             output = new Span<byte>(new byte[expected2.Length]);
-            Assert.True(TextEncoder.Utf8.TryDecode(input, output.NonPortableCast<byte, char>(), out consumed, out written));
+            Assert.True(TextEncoder.InvariantUtf8.TryDecode(input, output.NonPortableCast<byte, char>(), out consumed, out written));
             Assert.Equal(expected2.Length, written * sizeof(char));
             Assert.Equal(inputBytes.Length - expectedConsumed, consumed);
             Assert.True(AreByteArraysEqual(expected2, output.ToArray()));
@@ -875,14 +875,14 @@ namespace System.Text.Utf8.Tests
             var input = new Span<char>(inputBytes);
             var output = new Span<byte>(new byte[outputSize]);
 
-            Assert.False(TextEncoder.Utf8.TryEncode(input, output, out consumed, out written));
+            Assert.False(TextEncoder.InvariantUtf8.TryEncode(input, output, out consumed, out written));
             Assert.Equal(expected1.Length, written);
             Assert.Equal(expectedConsumed, consumed);
             Assert.True(AreByteArraysEqual(expected1, output.Slice(0, written).ToArray()));
 
             input = input.Slice(consumed);
             output = new Span<byte>(new byte[expected2.Length]);
-            Assert.True(TextEncoder.Utf8.TryEncode(input, output, out consumed, out written));
+            Assert.True(TextEncoder.InvariantUtf8.TryEncode(input, output, out consumed, out written));
             Assert.Equal(expected2.Length, written);
             Assert.Equal(inputBytes.Length - expectedConsumed, consumed);
             Assert.True(AreByteArraysEqual(expected2, output.ToArray()));
@@ -897,14 +897,14 @@ namespace System.Text.Utf8.Tests
             var input = new Span<char>(inputBytes).AsBytes();
             var output = new Span<byte>(new byte[outputSize]);
 
-            Assert.False(TextEncoder.Utf16.TryDecode(input, output, out consumed, out written));
+            Assert.False(TextEncoder.InvariantUtf16.TryDecode(input, output, out consumed, out written));
             Assert.Equal(expected1.Length, written);
             Assert.Equal(expectedConsumed, consumed);
             Assert.True(AreByteArraysEqual(expected1, output.Slice(0, written).ToArray()));
 
             input = input.Slice(consumed * sizeof(char));
             output = new Span<byte>(new byte[expected2.Length]);
-            Assert.True(TextEncoder.Utf16.TryDecode(input, output, out consumed, out written));
+            Assert.True(TextEncoder.InvariantUtf16.TryDecode(input, output, out consumed, out written));
             Assert.Equal(expected2.Length, written);
             Assert.Equal(inputBytes.Length - expectedConsumed, consumed);
             Assert.True(AreByteArraysEqual(expected2, output.ToArray()));

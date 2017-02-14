@@ -19,11 +19,11 @@ namespace System.Slices.Tests
             var bytes = new ReadOnlyBytes(s_requestBytes);
             HttpRequest request = HttpRequest.Parse(bytes);
 
-            Assert.Equal("GET", request.Verb.ToString(TextEncoder.Utf8));
-            Assert.Equal("/developer/documentation/data-insertion/r-sample-http-get", request.Path.ToString(TextEncoder.Utf8));
-            Assert.Equal("HTTP/1.1", request.Version.ToString(TextEncoder.Utf8));
+            Assert.Equal("GET", request.Verb.ToString(TextEncoder.InvariantUtf8));
+            Assert.Equal("/developer/documentation/data-insertion/r-sample-http-get", request.Path.ToString(TextEncoder.InvariantUtf8));
+            Assert.Equal("HTTP/1.1", request.Version.ToString(TextEncoder.InvariantUtf8));
             var headers = request.Headers.ToString();
-            var body = bytes.Slice(request.BodyIndex).ToString(TextEncoder.Utf8);
+            var body = bytes.Slice(request.BodyIndex).ToString(TextEncoder.InvariantUtf8);
             Assert.Equal("Hello World", body);
 
             HttpHeader header;
@@ -43,11 +43,11 @@ namespace System.Slices.Tests
             ReadOnlyBytes bytes = s_segmentedRequest;
             HttpRequest request = HttpRequest.Parse(bytes);
 
-            Assert.Equal("GET", request.Verb.ToString(TextEncoder.Utf8));
-            Assert.Equal("/developer/documentation/data-insertion/r-sample-http-get", request.Path.ToString(TextEncoder.Utf8));
-            Assert.Equal("HTTP/1.1", request.Version.ToString(TextEncoder.Utf8));
+            Assert.Equal("GET", request.Verb.ToString(TextEncoder.InvariantUtf8));
+            Assert.Equal("/developer/documentation/data-insertion/r-sample-http-get", request.Path.ToString(TextEncoder.InvariantUtf8));
+            Assert.Equal("HTTP/1.1", request.Version.ToString(TextEncoder.InvariantUtf8));
             var headers = request.Headers.ToString();
-            var body = bytes.Slice(request.BodyIndex).ToString(TextEncoder.Utf8);
+            var body = bytes.Slice(request.BodyIndex).ToString(TextEncoder.InvariantUtf8);
             Assert.Equal("Hello World", body);
 
             HttpHeader header;

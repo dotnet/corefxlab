@@ -9,16 +9,16 @@ namespace System.Text
     public static partial class PrimitiveParser
     {
 
-        public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
+        public static bool TryParseByte(ReadOnlySpan<byte> text, out byte value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
-            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoding.IsInvariantUtf8)
+            if (encoder.IsInvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -29,7 +29,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseByte(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoding.IsInvariantUtf16)
+            else if (encoder.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
                 int charsConsumed;
@@ -58,7 +58,7 @@ namespace System.Text
 
             uint nextSymbol;
             int thisSymbolConsumed;
-            if (!encoding.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(byte);
                 bytesConsumed = 0;
@@ -77,7 +77,7 @@ namespace System.Text
 
             while (index < text.Length)
             {
-                bool success = encoding.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
                 if (!success || nextSymbol > 9)
                 {
                     bytesConsumed = index;
@@ -103,16 +103,16 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
+        public static bool TryParseUInt16(ReadOnlySpan<byte> text, out ushort value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
-            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoding.IsInvariantUtf8)
+            if (encoder.IsInvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -123,7 +123,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseUInt16(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoding.IsInvariantUtf16)
+            else if (encoder.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
                 int charsConsumed;
@@ -152,7 +152,7 @@ namespace System.Text
 
             uint nextSymbol;
             int thisSymbolConsumed;
-            if (!encoding.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(ushort);
                 bytesConsumed = 0;
@@ -171,7 +171,7 @@ namespace System.Text
 
             while (index < text.Length)
             {
-                bool success = encoding.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
                 if (!success || nextSymbol > 9)
                 {
                     bytesConsumed = index;
@@ -197,16 +197,16 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
+        public static bool TryParseUInt32(ReadOnlySpan<byte> text, out uint value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
-            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoding.IsInvariantUtf8)
+            if (encoder.IsInvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -217,7 +217,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseUInt32(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoding.IsInvariantUtf16)
+            else if (encoder.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
                 int charsConsumed;
@@ -246,7 +246,7 @@ namespace System.Text
 
             uint nextSymbol;
             int thisSymbolConsumed;
-            if (!encoding.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(uint);
                 bytesConsumed = 0;
@@ -265,7 +265,7 @@ namespace System.Text
 
             while (index < text.Length)
             {
-                bool success = encoding.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
                 if (!success || nextSymbol > 9)
                 {
                     bytesConsumed = index;
@@ -291,16 +291,16 @@ namespace System.Text
             return true;
         }
 
-        public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
+        public static bool TryParseUInt64(ReadOnlySpan<byte> text, out ulong value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
-            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoding.IsInvariantUtf8)
+            if (encoder.IsInvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -311,7 +311,7 @@ namespace System.Text
                     return InvariantUtf8.TryParseUInt64(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoding.IsInvariantUtf16)
+            else if (encoder.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
                 int charsConsumed;
@@ -340,7 +340,7 @@ namespace System.Text
 
             uint nextSymbol;
             int thisSymbolConsumed;
-            if (!encoding.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(ulong);
                 bytesConsumed = 0;
@@ -359,7 +359,7 @@ namespace System.Text
 
             while (index < text.Length)
             {
-                bool success = encoding.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
                 if (!success || nextSymbol > 9)
                 {
                     bytesConsumed = index;

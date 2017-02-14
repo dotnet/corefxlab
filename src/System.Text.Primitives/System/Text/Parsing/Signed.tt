@@ -27,16 +27,16 @@ namespace System.Text
 foreach (IntegerTypeToParse typeToParse in typesToParse)
 {
 #>
-        public static bool TryParse<#=typeToParse.ClassName#>(ReadOnlySpan<byte> text, out <#=typeToParse.PrimitiveName#> value, out int bytesConsumed, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
+        public static bool TryParse<#=typeToParse.ClassName#>(ReadOnlySpan<byte> text, out <#=typeToParse.PrimitiveName#> value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
-            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
 
             if (!format.IsDefault && format.HasPrecision)
             {
                 throw new NotImplementedException("Format with precision not supported.");
             }
 
-            if (encoding.IsInvariantUtf8)
+            if (encoder.IsInvariantUtf8)
             {
                 if (format.IsHexadecimal)
                 {
@@ -47,7 +47,7 @@ foreach (IntegerTypeToParse typeToParse in typesToParse)
                     return InvariantUtf8.TryParse<#=typeToParse.ClassName#>(text, out value, out bytesConsumed);
                 }
             }
-            else if (encoding.IsInvariantUtf16)
+            else if (encoder.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
                 int charsConsumed;
@@ -76,7 +76,7 @@ foreach (IntegerTypeToParse typeToParse in typesToParse)
 
             uint nextSymbol;
             int thisSymbolConsumed;
-            if (!encoding.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
+            if (!encoder.TryParseSymbol(text, out nextSymbol, out thisSymbolConsumed))
             {
                 value = default(<#=typeToParse.PrimitiveName#>);
                 bytesConsumed = 0;
@@ -84,16 +84,16 @@ foreach (IntegerTypeToParse typeToParse in typesToParse)
             }
 
             int sign = 1;
-            if ((EncodingData.Symbol)nextSymbol == EncodingData.Symbol.MinusSign)
+            if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
             {
                 sign = -1;
             }
 
             int signConsumed = 0;
-            if ((EncodingData.Symbol)nextSymbol == EncodingData.Symbol.PlusSign || (EncodingData.Symbol)nextSymbol == EncodingData.Symbol.MinusSign)
+            if ((TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.PlusSign || (TextEncoder.Symbol)nextSymbol == TextEncoder.Symbol.MinusSign)
             {
                 signConsumed = thisSymbolConsumed;
-                if (!encoding.TryParseSymbol(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
+                if (!encoder.TryParseSymbol(text.Slice(signConsumed), out nextSymbol, out thisSymbolConsumed))
                 {
                     value = default(<#=typeToParse.PrimitiveName#>);
                     bytesConsumed = 0;
@@ -113,7 +113,7 @@ foreach (IntegerTypeToParse typeToParse in typesToParse)
 
             while (index < text.Length)
             {
-                bool success = encoding.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
+                bool success = encoder.TryParseSymbol(text.Slice(index), out nextSymbol, out thisSymbolConsumed);
                 if (!success || nextSymbol > 9)
                 {
                     bytesConsumed = index;

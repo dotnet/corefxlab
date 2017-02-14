@@ -9,7 +9,7 @@ namespace System.Text
 {
     public static partial class PrimitiveFormatter
     {
-        public static bool TryFormat(this Guid value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
+        public static bool TryFormat(this Guid value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
             if (format.IsDefault)
             {
@@ -17,7 +17,7 @@ namespace System.Text
             }
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 'D' || format.Symbol == 'N' || format.Symbol == 'B' || format.Symbol == 'P');
 
-            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
 
             bool dash = true;
             char tail = '\0';
@@ -34,12 +34,12 @@ namespace System.Text
                     break;
 
                 case 'B':
-                    if (!TryWriteChar('{', buffer, ref bytesWritten, encoding)) { return false; }
+                    if (!TryWriteChar('{', buffer, ref bytesWritten, encoder)) { return false; }
                     tail = '}';
                     break;
 
                 case 'P':
-                    if (!TryWriteChar('(', buffer, ref bytesWritten, encoding)) { return false; }
+                    if (!TryWriteChar('(', buffer, ref bytesWritten, encoder)) { return false; }
                     tail = ')';
                     break;
 
@@ -54,51 +54,51 @@ namespace System.Text
             {
                 byte* bytes = (byte*)&value;
 
-                if (!TryWriteByte(bytes[3], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[2], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[1], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[0], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
+                if (!TryWriteByte(bytes[3], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[2], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[1], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[0], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoding)) { return false; }
+                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoder)) { return false; }
                 }
 
-                if (!TryWriteByte(bytes[5], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[4], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
+                if (!TryWriteByte(bytes[5], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[4], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoding)) { return false; }
+                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoder)) { return false; }
                 }
 
-                if (!TryWriteByte(bytes[7], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[6], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
+                if (!TryWriteByte(bytes[7], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[6], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoding)) { return false; }
+                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoder)) { return false; }
                 }
 
-                if (!TryWriteByte(bytes[8], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[9], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
+                if (!TryWriteByte(bytes[8], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[9], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
 
                 if (dash)
                 {
-                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoding)) { return false; }
+                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoder)) { return false; }
                 }
 
-                if (!TryWriteByte(bytes[10], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[11], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[12], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[13], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[14], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
-                if (!TryWriteByte(bytes[15], buffer, ref bytesWritten, byteFormat, encoding)) { return false; }
+                if (!TryWriteByte(bytes[10], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[11], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[12], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[13], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[14], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+                if (!TryWriteByte(bytes[15], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
             }
 
             if (tail != '\0')
             {
-                if (!TryWriteChar(tail, buffer, ref bytesWritten, encoding)) { return false; }
+                if (!TryWriteChar(tail, buffer, ref bytesWritten, encoder)) { return false; }
             }
 
             return true;
@@ -107,10 +107,10 @@ namespace System.Text
         // the following two helpers are more compact APIs for formatting.
         // the public APis cannot be like this because we cannot trust them to always do the right thing with bytesWritten
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteByte(byte b, Span<byte> buffer, ref int bytesWritten, TextFormat byteFormat, EncodingData encoding)
+        static bool TryWriteByte(byte b, Span<byte> buffer, ref int bytesWritten, TextFormat byteFormat, TextEncoder encoder)
         {
             int written;
-            if (!b.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, encoding))
+            if (!b.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, encoder))
             {
                 bytesWritten = 0;
                 return false;
@@ -120,10 +120,10 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteInt32(int i, Span<byte> buffer, ref int bytesWritten, TextFormat byteFormat, EncodingData encoding)
+        static bool TryWriteInt32(int i, Span<byte> buffer, ref int bytesWritten, TextFormat byteFormat, TextEncoder encoder)
         {
             int written;
-            if (!i.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, encoding))
+            if (!i.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, encoder))
             {
                 bytesWritten = 0;
                 return false;
@@ -133,10 +133,10 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteInt64(long i, Span<byte> buffer, ref int bytesWritten, TextFormat byteFormat, EncodingData encoding)
+        static bool TryWriteInt64(long i, Span<byte> buffer, ref int bytesWritten, TextFormat byteFormat, TextEncoder encoder)
         {
             int written;
-            if (!i.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, encoding))
+            if (!i.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, encoder))
             {
                 bytesWritten = 0;
                 return false;
@@ -146,7 +146,7 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteChar(char character, Span<byte> buffer, ref int bytesWritten, EncodingData encoding)
+        static bool TryWriteChar(char character, Span<byte> buffer, ref int bytesWritten, TextEncoder encoder)
         {
             int consumed;
             int written;
@@ -155,7 +155,7 @@ namespace System.Text
             {
                 ReadOnlySpan<char> charSpan = new ReadOnlySpan<char>(&character, 1);
 
-                if (!encoding.TextEncoder.TryEncode(charSpan, buffer.Slice(bytesWritten), out consumed, out written))
+                if (!encoder.TryEncode(charSpan, buffer.Slice(bytesWritten), out consumed, out written))
                 {
                     bytesWritten = 0;
                     return false;
@@ -167,10 +167,10 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteString(string text, Span<byte> buffer, ref int bytesWritten, EncodingData encoding)
+        static bool TryWriteString(string text, Span<byte> buffer, ref int bytesWritten, TextEncoder encoder)
         {
             int written;
-            if (!encoding.TextEncoder.TryEncode(text, buffer.Slice(bytesWritten), out written))
+            if (!encoder.TryEncode(text, buffer.Slice(bytesWritten), out written))
             {
                 bytesWritten = 0;
                 return false;

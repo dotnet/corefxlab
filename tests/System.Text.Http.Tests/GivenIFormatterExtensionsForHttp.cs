@@ -31,7 +31,7 @@ namespace System.Text.Http.Tests
 
         public GivenIFormatterExtensionsForHttp()
         {
-            _formatter = new ArrayFormatter(124, EncodingData.InvariantUtf8, ArrayPool<byte>.Shared);
+            _formatter = new ArrayFormatter(124, TextEncoder.InvariantUtf8, ArrayPool<byte>.Shared);
         }
 
         [Fact]

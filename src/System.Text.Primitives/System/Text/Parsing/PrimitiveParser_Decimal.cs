@@ -8,18 +8,18 @@ namespace System.Text
 {
     public static partial class PrimitiveParser
     {
-        public static bool TryParseDecimal(ReadOnlySpan<byte> text, out decimal value, out int bytesConsumed, EncodingData encoding = default(EncodingData))
+        public static bool TryParseDecimal(ReadOnlySpan<byte> text, out decimal value, out int bytesConsumed, TextEncoder encoder = null)
         {
-            encoding = encoding.IsDefault ? EncodingData.InvariantUtf8 : encoding;
+            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
 
             bytesConsumed = 0;
             value = default(decimal);
 
-            if (encoding.IsInvariantUtf8)
+            if (encoder.IsInvariantUtf8)
             {
                 return InvariantUtf8.TryParseDecimal(text, out value, out bytesConsumed);
             }
-            else if (encoding.IsInvariantUtf16)
+            else if (encoder.IsInvariantUtf16)
             {
                 ReadOnlySpan<char> textChars = text.Cast<byte, char>();
                 int charactersConsumed;
