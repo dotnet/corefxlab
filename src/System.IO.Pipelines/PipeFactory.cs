@@ -49,9 +49,9 @@ namespace System.IO.Pipelines
             return pipe;
         }
 
-        private async void ExecuteCopyToAsync(Pipe pipe, Stream stream)
+        private Task ExecuteCopyToAsync(Pipe pipe, Stream stream)
         {
-            await stream.CopyToAsync(pipe);
+            return stream.CopyToAsync(pipe);
         }
 
         public IPipeConnection CreateConnection(NetworkStream stream)
