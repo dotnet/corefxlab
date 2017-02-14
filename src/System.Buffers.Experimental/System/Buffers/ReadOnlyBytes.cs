@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Sequences;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -20,14 +21,16 @@ namespace System.Buffers
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest, int length)
         {
+            Debug.Assert(rest != null || length <= first.Length);
             _rest = rest;
             _first = first;
             _totalLength = length;
         }
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest) :
-            this(first, rest, Unspecified)
-        { }
+            this(first, rest, rest==null?first.Length:Unspecified)
+        {
+        }
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> memory) :
             this(memory, null, memory.Length)
@@ -78,7 +81,7 @@ namespace System.Buffers
             return true;
         }
 
-        public ReadOnlyMemory<Byte> First => _first;
+        public ReadOnlyMemory<byte> First => _first;
 
         public IReadOnlyMemoryList<byte> Rest => _rest;
 
@@ -104,13 +107,20 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBytes Slice(int index, int length)
         {
+            if(length==0) return ReadOnlyBytes.Empty;
+
             var first = First;
             if (first.Length >= length + index)
             {
-                return new ReadOnlyBytes(first.Slice(index, length));
+                var slice = first.Slice(index, length);
+                if(slice.Length > 0) {
+                    return new ReadOnlyBytes(first.Slice(index, length));
+                }
+                return ReadOnlyBytes.Empty;
             }
             if (first.Length > index)
             {
+                Debug.Assert(_rest != null);
                 return new ReadOnlyBytes(first.Slice(index), _rest, length);
             }
             return SliceRest(index, length);
@@ -125,9 +135,20 @@ namespace System.Buffers
             else {
                 var first = First;
                 if (first.Length > index) {
-                    return new ReadOnlyBytes(first.Slice(index), _rest);
+                    var slice = first.Slice(index);
+                    if(slice.Length > 0 || _rest!=null) {
+                        return new ReadOnlyBytes(slice, _rest);
+                    }
+                    return ReadOnlyBytes.Empty;
                 }
-                return new ReadOnlyBytes(_rest).Slice(index - first.Length);
+
+                var toSlice = index - first.Length;
+                if (_rest == null && toSlice == 0) return Empty;
+                var rest = new ReadOnlyBytes(_rest);
+                if(toSlice > 0) {
+                    rest = rest.Slice(toSlice);
+                }
+                return rest;
             }
         }
 
@@ -160,14 +181,15 @@ namespace System.Buffers
         public int CopyTo(Span<byte> buffer)
         {
             var first = First;
-            if (first.Length > buffer.Length)
+            var firstLength = first.Length;
+            if (firstLength > buffer.Length)
             {
-                first.Slice(buffer.Length).CopyTo(buffer);
+                first.Slice(0, buffer.Length).CopyTo(buffer);
                 return buffer.Length;
             }
             first.CopyTo(buffer);
-            // TODO (pri 2): do we need to compute the length here?
-            return first.Length + _rest.CopyTo(buffer.Slice(first.Length, ComputeLength() - first.Length));
+            if (buffer.Length == firstLength || _rest == null) return firstLength;
+            return firstLength + _rest.CopyTo(buffer.Slice(firstLength));
         }
 
         ReadOnlyBytes SliceRest(int index, int length)
@@ -206,7 +228,8 @@ namespace System.Buffers
                     length += segment.Length;
                 }
             }
-            return length + _first.Length;
+            _totalLength = length + _first.Length;
+            return _totalLength;
         }
 
         // this is used for unspecified _length; ReadOnlyBytes can be created from list of buffers of unknown total size, 
@@ -297,7 +320,15 @@ namespace System.Buffers
                 }
                 current._first = buffer;
             }
-            return new ReadOnlyBytes(first);
+
+            if (first.Rest == null)
+            {
+                return new ReadOnlyBytes(first, first.First.Length);
+            }
+            else
+            {
+                return new ReadOnlyBytes(first);
+            }
         }
     }
 }

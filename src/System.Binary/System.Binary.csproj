@@ -1,22 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>Non-allocating ninary reader and writer</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.Binary</AssemblyName>
-    <PackageId>System.Binary</PackageId>
     <PackageTags>.NET non-allocating binary readers and writers</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-  </ItemGroup>
-
 </Project>

@@ -1,4 +1,8 @@
-﻿using System.Buffers.Pools;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System.Buffers.Pools;
 using System.Collections.Generic;
 using Xunit;
 
@@ -6,7 +10,7 @@ namespace System.Buffers.Tests
 {
     public class NativeBufferPoolTests
     {
-        [Fact(Skip = "ReadOnlyBytesTests are flaky")]
+        [Fact]
         public void BasicsWork() {
             var pool = NativeBufferPool.Shared;
             var buffer = pool.Rent(10);

@@ -1,4 +1,8 @@
-﻿using Xunit;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using Xunit;
 
 namespace System.Text.Utf8.Tests
 {
@@ -52,53 +56,6 @@ namespace System.Text.Utf8.Tests
 
             Assert.Equal(0, charactersConsumed);
             Assert.Equal(0, bytesWritten);
-        }
-
-        [Fact]
-        public void TestEncodingInputBufferMaxSize()
-        {
-            int maxCharArraySize = int.MaxValue / 4; // TODO: want this to be int.MaxValue (need gcAllowVeryLargeObjects = true)
-            char[] charArray = new char[maxCharArraySize];
-
-            ReadOnlySpan<char> characters = new ReadOnlySpan<char>(charArray);
-            int expectedBytesWritten = GetByteCount(characters);
-            byte[] utf8Buffer = new byte[expectedBytesWritten];
-            Span<byte> span = new Span<byte>(utf8Buffer);
-            int charactersConsumed;
-            int bytesWritten;
-            Assert.True(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
-
-            Assert.Equal(maxCharArraySize, charactersConsumed);
-            Assert.Equal(expectedBytesWritten, bytesWritten);
-        }
-
-        [Fact]
-        public void TestEncodingOutputBufferMaxSize()
-        {
-            int maxByteArraySize = int.MaxValue / 2; // TODO: want this to be int.MaxValue (need gcAllowVeryLargeObjects = true)
-            string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
-            int expectedBytesWritten = GetByteCount(characters);
-            char[] charArray = characters.ToArray();
-            byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
-
-            Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
-            byte[] utf8Buffer = new byte[maxByteArraySize];
-            Span<byte> span = new Span<byte>(utf8Buffer);
-            int charactersConsumed;
-            int bytesWritten;
-            Assert.True(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
-
-            byte[] utf8BufferActual = span.ToArray();
-
-            Assert.Equal(unicodeString.Length, charactersConsumed);
-            Assert.Equal(utf8BufferExpected.Length, bytesWritten);
-            Assert.Equal(utf8BufferExpected.Length, expectedBytesWritten);
-
-            for (int i = 0; i < utf8BufferExpected.Length; i++)
-            {
-                Assert.Equal(utf8BufferExpected[i], utf8BufferActual[i]);
-            }
         }
 
         [Fact]

@@ -1,26 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <Import Project="..\..\tools\common.props" />
-
   <PropertyGroup>
     <Description>File I/O pipeline implementation</Description>
     <TargetFrameworks>netstandard1.3;net46</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.IO.Pipelines.File</AssemblyName>
-    <PackageId>System.IO.Pipelines.File</PackageId>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Threading.Overlapped" Version="4.3.0" />
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
 </Project>

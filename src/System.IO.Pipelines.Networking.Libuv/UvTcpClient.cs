@@ -31,9 +31,6 @@ namespace System.IO.Pipelines.Networking.Libuv
 
             var connection = await _connectTcs.Task;
 
-            // Get back onto the current context
-            await Task.Yield();
-
             return connection;
         }
 
@@ -53,7 +50,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
             var connection = new UvTcpConnection(client._thread, client._connectSocket);
 
-            client._connectTcs.TrySetResult(connection);
+            Task.Run(() => client._connectTcs.TrySetResult(connection));
         }
     }
 }
