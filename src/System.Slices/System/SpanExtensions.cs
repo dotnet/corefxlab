@@ -40,7 +40,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOf(this ReadOnlyMemory<byte> memory, ReadOnlySpan<byte> values)
         {
-            return ReadOnlySpanExtensions.IndexOf(memory.Span, values);
+            return SpanExtensions.IndexOf(memory.Span, values);
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using System.IO.Pipelines.Networking.Libuv;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Networking.Sockets;
 using System.IO.Pipelines.Text.Primitives;
 using System;
@@ -42,7 +46,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task CanCreateWorkingEchoServer_PipelineSocketServer_PipelineSocketClient()
         {
-            var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
+            var endpoint = new IPEndPoint(IPAddress.Loopback, 5020);
             const string MessageToSend = "Hello world!";
             string reply = null;
 
@@ -54,30 +58,35 @@ namespace System.IO.Pipelines.Tests
 
                 using (var client = await SocketConnection.ConnectAsync(endpoint))
                 {
-                    var output = client.Output.Alloc();
-                    output.Append(MessageToSend, EncodingData.InvariantUtf8);
-                    await output.FlushAsync();
-                    client.Output.Complete();
-
-                    while (true)
+                    try
                     {
-                        var result = await client.Input.ReadAsync();
-                        // Jump of the stack because we might be in ReceiveFromSocketAndPushToWriterAsync CompleteWriter stack
-                        // and it will deadlock with Dispose
-                        await Task.Yield();
-                        var input = result.Buffer;
+                        var output = client.Output.Alloc();
+                        output.Append(MessageToSend, EncodingData.InvariantUtf8);
+                        await output.FlushAsync();
+                        client.Output.Complete();
 
-                        // wait for the end of the data before processing anything
-                        if (result.IsCompleted)
+                        while (true)
                         {
-                            reply = input.GetUtf8String();
-                            client.Input.Advance(input.End);
-                            break;
+                            var result = await client.Input.ReadAsync();
+
+                            var input = result.Buffer;
+
+                            // wait for the end of the data before processing anything
+                            if (result.IsCompleted)
+                            {
+                                reply = input.GetUtf8String();
+                                client.Input.Advance(input.End);
+                                break;
+                            }
+                            else
+                            {
+                                client.Input.Advance(input.Start, input.End);
+                            }
                         }
-                        else
-                        {
-                            client.Input.Advance(input.Start, input.End);
-                        }
+                    }
+                    finally
+                    {
+                        await client.DisposeAsync();
                     }
                 }
             }
@@ -87,7 +96,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void CanCreateWorkingEchoServer_PipelineSocketServer_NonPipelineClient()
         {
-            var endpoint = new IPEndPoint(IPAddress.Loopback, 5010);
+            var endpoint = new IPEndPoint(IPAddress.Loopback, 5030);
             const string MessageToSend = "Hello world!";
             string reply = null;
 
@@ -104,7 +113,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task RunStressPingPongTest_Libuv()
         {
-            var endpoint = new IPEndPoint(IPAddress.Loopback, 5020);
+            var endpoint = new IPEndPoint(IPAddress.Loopback, 5040);
 
             using (var thread = new UvThread())
             using (var server = new UvTcpListener(thread, endpoint))
@@ -115,12 +124,19 @@ namespace System.IO.Pipelines.Tests
                 const int SendCount = 500, ClientCount = 5;
                 for (int loop = 0; loop < ClientCount; loop++)
                 {
-                    using (var client = await new UvTcpClient(thread, endpoint).ConnectAsync())
+                    using (var connection = await new UvTcpClient(thread, endpoint).ConnectAsync())
                     {
-                        var tuple = await PingClient(client, SendCount);
-                        Assert.Equal(SendCount, tuple.Item1);
-                        Assert.Equal(SendCount, tuple.Item2);
-                        Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
+                        try
+                        {
+                            var tuple = await PingClient(connection, SendCount);
+                            Assert.Equal(SendCount, tuple.Item1);
+                            Assert.Equal(SendCount, tuple.Item2);
+                            Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
+                        }
+                        finally
+                        {
+                            await connection.DisposeAsync();
+                        }
                     }
                 }
             }
@@ -130,7 +146,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task RunStressPingPongTest_Socket()
         {
-            var endpoint = new IPEndPoint(IPAddress.Loopback, 5020);
+            var endpoint = new IPEndPoint(IPAddress.Loopback, 5050);
 
             using (var server = new SocketListener())
             {
@@ -140,18 +156,25 @@ namespace System.IO.Pipelines.Tests
                 const int SendCount = 500, ClientCount = 5;
                 for (int loop = 0; loop < ClientCount; loop++)
                 {
-                    using (var client = await SocketConnection.ConnectAsync(endpoint))
+                    using (var connection = await SocketConnection.ConnectAsync(endpoint))
                     {
-                        var tuple = await PingClient(client, SendCount);
-                        Assert.Equal(SendCount, tuple.Item1);
-                        Assert.Equal(SendCount, tuple.Item2);
-                        Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
+                        try
+                        {
+                            var tuple = await PingClient(connection, SendCount);
+                            Assert.Equal(SendCount, tuple.Item1);
+                            Assert.Equal(SendCount, tuple.Item2);
+                            Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
+                        }
+                        finally
+                        {
+                            await connection.DisposeAsync();
+                        }
                     }
                 }
             }
         }
 
-        static async Task<Tuple<int, int, int>> PingClient(IPipelineConnection connection, int messagesToSend)
+        static async Task<Tuple<int, int, int>> PingClient(IPipeConnection connection, int messagesToSend)
         {
             int count = 0;
             var watch = Stopwatch.StartNew();
@@ -205,7 +228,7 @@ namespace System.IO.Pipelines.Tests
 
         }
 
-        private static async Task PongServer(IPipelineConnection connection)
+        private static async Task PongServer(IPipeConnection connection)
         {
             while (true)
             {
@@ -261,7 +284,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private async Task Echo(IPipelineConnection connection)
+        private async Task Echo(IPipeConnection connection)
         {
             while (true)
             {

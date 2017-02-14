@@ -1,22 +1,26 @@
-﻿using System.Collections.Generic;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Samples
 {
     public class FakeListener
     {
-        private readonly List<PipelineConnection> _connections = new List<PipelineConnection>();
+        private readonly List<PipeConnection> _connections = new List<PipeConnection>();
         private Task[] _connectionTasks;
 
-        public FakeListener(PipelineFactory factory, int concurrentConnections)
+        public FakeListener(PipeFactory factory, int concurrentConnections)
         {
             for (int i = 0; i < concurrentConnections; i++)
             {
-                _connections.Add(new PipelineConnection(factory));
+                _connections.Add(new PipeConnection(factory));
             }
         }
 
-        public void OnConnection(Func<IPipelineConnection, Task> callback)
+        public void OnConnection(Func<IPipeConnection, Task> callback)
         {
             _connectionTasks = new Task[_connections.Count];
             for (int i = 0; i < _connections.Count; i++)
@@ -31,7 +35,7 @@ namespace System.IO.Pipelines.Samples
             for (int i = 0; i < _connections.Count; i++)
             {
                 var connection = _connections[i];
-                tasks[i] = connection.Input.WriteAsync(request);
+                tasks[i] = connection.Input.Writer.WriteAsync(request);
             }
 
             return Task.WhenAll(tasks);
@@ -41,7 +45,7 @@ namespace System.IO.Pipelines.Samples
         {
             foreach (var c in _connections)
             {
-                c.Input.CompleteWriter();
+                c.Input.Writer.Complete();
             }
 
             Task.WaitAll(_connectionTasks);

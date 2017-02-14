@@ -1,4 +1,8 @@
-﻿using System.Buffers;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime;
@@ -10,12 +14,12 @@ namespace System
     [DebuggerTypeProxy(typeof(MemoryDebuggerView<>))]
     public struct Memory<T> : IEquatable<Memory<T>>, IEquatable<ReadOnlyMemory<T>>
     {
-        OwnedMemory<T> _owner;
-        long _id;
-        int _index;
-        int _length;
+        readonly OwnedMemory<T> _owner;
+        readonly int _id;
+        readonly int _index;
+        readonly int _length;
 
-        internal Memory(OwnedMemory<T> owner, long id, int index, int length)
+        internal Memory(OwnedMemory<T> owner, int id, int index, int length)
         {
             _owner = owner;
             _id = id;

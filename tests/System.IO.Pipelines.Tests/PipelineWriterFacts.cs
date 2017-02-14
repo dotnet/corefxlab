@@ -1,4 +1,8 @@
-﻿using System;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -105,7 +109,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private class MyCustomStream : Stream, IPipelineWriter
+        private class MyCustomStream : Stream, IPipeWriter
         {
             private readonly Pipe _pipe = new Pipe(ArrayBufferPool.Instance);
 
@@ -136,16 +140,14 @@ namespace System.IO.Pipelines.Tests
                 }
             }
 
-            public Task Writing => _pipe.Writing;
-
             public WritableBuffer Alloc(int minimumSize = 0)
             {
-                return _pipe.Alloc(minimumSize);
+                return _pipe.Writer.Alloc(minimumSize);
             }
 
             public void Complete(Exception exception = null)
             {
-                _pipe.CompleteWriter(exception);
+                _pipe.Writer.Complete(exception);
             }
 
             public override void Flush()
@@ -177,8 +179,8 @@ namespace System.IO.Pipelines.Tests
             {
                 base.Dispose(disposing);
 
-                _pipe.CompleteReader();
-                _pipe.CompleteWriter();
+                _pipe.Reader.Complete();
+                _pipe.Writer.Complete();
             }
         }
     }

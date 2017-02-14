@@ -132,7 +132,7 @@ namespace System
         {
             return first.Length >= 512
                 ? MemoryEqual(first, second)
-                : ReadOnlySpanExtensions.SequenceEqual<short>(first, second);
+                : SpanExtensions.SequenceEqual<short>(first, second);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace System
         {
             return first.Length >= 256
                 ? MemoryEqual(first, second)
-                : ReadOnlySpanExtensions.SequenceEqual(first, second);
+                : SpanExtensions.SequenceEqual(first, second);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace System
         {
             return first.Length >= 256
                 ? MemoryEqual(first, second)
-                : ReadOnlySpanExtensions.SequenceEqual(first, second);
+                : SpanExtensions.SequenceEqual(first, second);
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace System
                 return SequenceEqual(Cast<T, short>(first), Cast<U, short>(second));
             }
 
-            return ReadOnlySpanExtensions.SequenceEqual(Cast<T, byte>(first), Cast<U, byte>(second));
+            return SpanExtensions.SequenceEqual(Cast<T, byte>(first), Cast<U, byte>(second));
         }
     }
 }

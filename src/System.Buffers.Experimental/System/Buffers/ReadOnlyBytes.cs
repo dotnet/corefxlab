@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Sequences;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -13,21 +14,23 @@ namespace System.Buffers
     public struct ReadOnlyBytes : IReadOnlyMemoryList<byte>
     {
         ReadOnlyMemory<byte> _first;
+        int _totalLength;
         IReadOnlyMemoryList<byte> _rest;
-        int _length;
-
+        
         static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest, int length)
         {
+            Debug.Assert(rest != null || length <= first.Length);
             _rest = rest;
             _first = first;
-            _length = length;
+            _totalLength = length;
         }
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest) :
-            this(first, rest, Unspecified)
-        { }
+            this(first, rest, rest==null?first.Length:Unspecified)
+        {
+        }
 
         public ReadOnlyBytes(ReadOnlyMemory<byte> memory) :
             this(memory, null, memory.Length)
@@ -64,9 +67,9 @@ namespace System.Buffers
 
             value = rest.First;
             // we need to slice off the last segment based on length of this. ReadOnlyBytes is a potentially shorted view over a longer buffer list.
-            if (value.Length + position.Tag > _length && _length != Unspecified)
+            if (value.Length + position.Tag > _totalLength && _totalLength != Unspecified)
             {
-                value = value.Slice(0, _length - position.Tag);
+                value = value.Slice(0, _totalLength - position.Tag);
                 if (value.Length == 0) return false;
             }
             if (advance)
@@ -78,18 +81,18 @@ namespace System.Buffers
             return true;
         }
 
-        public ReadOnlyMemory<Byte> First => _first;
+        public ReadOnlyMemory<byte> First => _first;
 
         public IReadOnlyMemoryList<byte> Rest => _rest;
 
         public int? Length
         {
             get {
-                if (_length == Unspecified)
+                if (_totalLength == Unspecified)
                 {
                     return null;
                 }
-                return _length;
+                return _totalLength;
             }
         }
 
@@ -104,13 +107,21 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBytes Slice(int index, int length)
         {
-            if (First.Length >= length + index)
+            if(length==0) return ReadOnlyBytes.Empty;
+
+            var first = First;
+            if (first.Length >= length + index)
             {
-                return new ReadOnlyBytes(First.Slice(index, length));
+                var slice = first.Slice(index, length);
+                if(slice.Length > 0) {
+                    return new ReadOnlyBytes(first.Slice(index, length));
+                }
+                return ReadOnlyBytes.Empty;
             }
-            if (First.Length > index)
+            if (first.Length > index)
             {
-                return new ReadOnlyBytes(_first.Slice(index), _rest, length);
+                Debug.Assert(_rest != null);
+                return new ReadOnlyBytes(first.Slice(index), _rest, length);
             }
             return SliceRest(index, length);
         }
@@ -118,7 +129,27 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBytes Slice(int index)
         {
-            return Slice(index, ComputeLength() - index); // TODO (pri 1): this computes the Length; it should not.
+            if (_totalLength != Unspecified) {
+                return Slice(index, _totalLength - index);
+            }
+            else {
+                var first = First;
+                if (first.Length > index) {
+                    var slice = first.Slice(index);
+                    if(slice.Length > 0 || _rest!=null) {
+                        return new ReadOnlyBytes(slice, _rest);
+                    }
+                    return ReadOnlyBytes.Empty;
+                }
+
+                var toSlice = index - first.Length;
+                if (_rest == null && toSlice == 0) return Empty;
+                var rest = new ReadOnlyBytes(_rest);
+                if(toSlice > 0) {
+                    rest = rest.Slice(toSlice);
+                }
+                return rest;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -127,35 +158,38 @@ namespace System.Buffers
             var first = _first.Span;
             var index = first.IndexOf(bytes);
             if (index != -1) return index;
-
             return first.IndexOfStraddling(_rest, bytes);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int IndexOf(byte value)
         {
             var first = _first.Span;
             var index = first.IndexOf(value);
             if (index != -1) return index;
+            return IndexOfRest(value, first.Length);
+        }
 
+        int IndexOfRest(byte value, int firstLength)
+        {
             if (_rest == null) return -1;
-
-            index = _rest.IndexOf(value);
-            if (index != -1) return first.Length + index;
-
+            var index = _rest.IndexOf(value);
+            if (index != -1) return firstLength + index;
             return -1;
         }
 
         public int CopyTo(Span<byte> buffer)
         {
             var first = First;
-            if (first.Length > buffer.Length)
+            var firstLength = first.Length;
+            if (firstLength > buffer.Length)
             {
-                first.Slice(buffer.Length).CopyTo(buffer);
+                first.Slice(0, buffer.Length).CopyTo(buffer);
                 return buffer.Length;
             }
             first.CopyTo(buffer);
-            // TODO (pri 2): do we need to compute the length here?
-            return first.Length + _rest.CopyTo(buffer.Slice(first.Length, ComputeLength() - first.Length));
+            if (buffer.Length == firstLength || _rest == null) return firstLength;
+            return firstLength + _rest.CopyTo(buffer.Slice(firstLength));
         }
 
         ReadOnlyBytes SliceRest(int index, int length)
@@ -182,7 +216,7 @@ namespace System.Buffers
         // TODO (pri 3): the problem is that this makes the type mutable, and since the type is a struct, the mutation can be lost when the stack unwinds.
         public int ComputeLength()
         {
-            if (_length != Unspecified) return _length;
+            if (_totalLength != Unspecified) return _totalLength;
 
             int length = 0;
             if (_rest != null)
@@ -194,7 +228,8 @@ namespace System.Buffers
                     length += segment.Length;
                 }
             }
-            return length + _first.Length;
+            _totalLength = length + _first.Length;
+            return _totalLength;
         }
 
         // this is used for unspecified _length; ReadOnlyBytes can be created from list of buffers of unknown total size, 
@@ -285,7 +320,15 @@ namespace System.Buffers
                 }
                 current._first = buffer;
             }
-            return new ReadOnlyBytes(first);
+
+            if (first.Rest == null)
+            {
+                return new ReadOnlyBytes(first, first.First.Length);
+            }
+            else
+            {
+                return new ReadOnlyBytes(first);
+            }
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using System;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -17,7 +21,7 @@ namespace System.IO.Pipelines.Samples
             var thread = new UvThread();
             var client = new UvTcpClient(thread, new IPEndPoint(IPAddress.Loopback, 5000));
 
-            var consoleOutput = thread.PipelineFactory.CreateWriter(Console.OpenStandardOutput());
+            var consoleOutput = thread.PipeFactory.CreateWriter(Console.OpenStandardOutput());
 
             var connection = await client.ConnectAsync();
 
@@ -36,7 +40,7 @@ namespace System.IO.Pipelines.Samples
                 await Task.Delay(1000);
             }
         }
-        private static async Task CopyCompletedAsync(IPipelineReader input, IPipelineWriter output)
+        private static async Task CopyCompletedAsync(IPipeReader input, IPipeWriter output)
         {
             var result = await input.ReadAsync();
             var inputBuffer = result.Buffer;

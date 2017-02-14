@@ -1,4 +1,8 @@
-﻿using System;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +17,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task ReadAsyncCallbackRunsOnReaderScheduler()
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 using (var scheduler = new ThreadScheduler())
                 {
@@ -26,20 +30,20 @@ namespace System.IO.Pipelines.Tests
                     {
                         var oid = Thread.CurrentThread.ManagedThreadId;
 
-                        var result = await pipe.ReadAsync();
+                        var result = await pipe.Reader.ReadAsync();
 
                         Assert.NotEqual(oid, Thread.CurrentThread.ManagedThreadId);
 
                         Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
 
-                        pipe.AdvanceReader(result.Buffer.End, result.Buffer.End);
+                        pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
 
-                        pipe.CompleteReader();
+                        pipe.Reader.Complete();
                     };
 
                     var reading = doRead();
 
-                    var buffer = pipe.Alloc();
+                    var buffer = pipe.Writer.Alloc();
                     buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
                     await buffer.FlushAsync();
 
@@ -51,7 +55,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task FlushCallbackRunsOnWriterScheduler()
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 using (var scheduler = new ThreadScheduler())
                 {
@@ -62,7 +66,7 @@ namespace System.IO.Pipelines.Tests
                         WriterScheduler = scheduler
                     });
 
-                    var writableBuffer = pipe.Alloc(64);
+                    var writableBuffer = pipe.Writer.Alloc(64);
                     writableBuffer.Advance(64);
                     var flushAsync = writableBuffer.FlushAsync();
 
@@ -76,18 +80,18 @@ namespace System.IO.Pipelines.Tests
 
                         Assert.NotEqual(oid, Thread.CurrentThread.ManagedThreadId);
 
-                        pipe.CompleteWriter();
+                        pipe.Writer.Complete();
 
                         Assert.Equal(Thread.CurrentThread.ManagedThreadId, scheduler.Thread.ManagedThreadId);
                     };
 
                     var writing = doWrite();
 
-                    var result = await pipe.ReadAsync();
+                    var result = await pipe.Reader.ReadAsync();
 
-                    pipe.AdvanceReader(result.Buffer.End, result.Buffer.End);
+                    pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
 
-                    pipe.CompleteReader();
+                    pipe.Reader.Complete();
 
                     await writing;
                 }
@@ -97,7 +101,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task DefaultReaderSchedulerRunsInline()
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 var pipe = factory.Create();
 
@@ -105,24 +109,24 @@ namespace System.IO.Pipelines.Tests
 
                 Func<Task> doRead = async () =>
                 {
-                    var result = await pipe.ReadAsync();
+                    var result = await pipe.Reader.ReadAsync();
 
                     Assert.Equal(Thread.CurrentThread.ManagedThreadId, id);
 
-                    pipe.AdvanceReader(result.Buffer.End, result.Buffer.End);
+                    pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
 
-                    pipe.CompleteReader();
+                    pipe.Reader.Complete();
                 };
 
                 var reading = doRead();
 
                 id = Thread.CurrentThread.ManagedThreadId;
 
-                var buffer = pipe.Alloc();
+                var buffer = pipe.Writer.Alloc();
                 buffer.Write(Encoding.UTF8.GetBytes("Hello World"));
                 await buffer.FlushAsync();
 
-                pipe.CompleteWriter();
+                pipe.Writer.Complete();
 
                 await reading;
             }
@@ -131,7 +135,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task DefaultWriterSchedulerRunsInline()
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 var pipe = factory.Create(new PipeOptions
                 {
@@ -139,7 +143,7 @@ namespace System.IO.Pipelines.Tests
                     MaximumSizeHigh = 64
                 });
 
-                var writableBuffer = pipe.Alloc(64);
+                var writableBuffer = pipe.Writer.Alloc(64);
                 writableBuffer.Advance(64);
                 var flushAsync = writableBuffer.FlushAsync();
 
@@ -151,20 +155,20 @@ namespace System.IO.Pipelines.Tests
                 {
                     await flushAsync;
 
-                    pipe.CompleteWriter();
+                    pipe.Writer.Complete();
 
                     Assert.Equal(Thread.CurrentThread.ManagedThreadId, id);
                 };
 
                 var writing = doWrite();
 
-                var result = await pipe.ReadAsync();
+                var result = await pipe.Reader.ReadAsync();
 
                 id = Thread.CurrentThread.ManagedThreadId;
 
-                pipe.AdvanceReader(result.Buffer.End, result.Buffer.End);
+                pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
 
-                pipe.CompleteReader();
+                pipe.Reader.Complete();
 
                 await writing;
             }

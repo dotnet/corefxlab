@@ -102,7 +102,9 @@ namespace System.Buffers
                 return index;
             }
 
-            return IndexOfRest(value) + _currentSegment.Length - _currentSegmentIndex;
+            var indexOfRest = IndexOfRest(value);
+            if (indexOfRest == -1) return -1;
+            return indexOfRest + _currentSegment.Length - _currentSegmentIndex;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -148,7 +150,9 @@ namespace System.Buffers
             }
 
             first.CopyTo(buffer);
-            return first.Length + _unreadSegments.Rest.CopyTo(buffer.Slice(first.Length));
+            var rest = _unreadSegments.Rest;
+            if (rest == null) return first.Length;
+            return first.Length + rest.CopyTo(buffer.Slice(first.Length));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -220,6 +224,8 @@ namespace System.Buffers
 
         int IndexOfStraddling(ReadOnlySpan<byte> value)
         {
+            var rest = _unreadSegments.Rest;
+            if (rest == null) return -1;
             ReadOnlySpan<byte> unread = Unread;
             int index = 0;
             // try to find the bytes straddling _first and _rest
@@ -257,7 +263,7 @@ namespace System.Buffers
                 }
 
                 bytesToSearchAgain.CopyTo(tempSpan);
-                _unreadSegments.Rest.CopyTo(tempSpan.Slice(bytesToSearchAgain.Length));
+                rest.CopyTo(tempSpan.Slice(bytesToSearchAgain.Length));
                 index = tempSpan.IndexOf(value);
                 if (index != -1)
                 {
@@ -266,7 +272,7 @@ namespace System.Buffers
             }
 
             // try to find the bytes in _rest
-            index = _unreadSegments.Rest.IndexOf(value);
+            index = rest.IndexOf(value);
             if (index != -1) return unread.Length + index;
 
             return -1;

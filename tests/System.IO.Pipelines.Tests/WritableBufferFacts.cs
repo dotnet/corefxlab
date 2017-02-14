@@ -1,4 +1,8 @@
-﻿using System;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -17,7 +21,7 @@ namespace System.IO.Pipelines.Tests
             using (var memoryPool = new MemoryPool())
             {
                 var pipe = new Pipe(memoryPool);
-                var buffer = pipe.Alloc();
+                var buffer = pipe.Writer.Alloc();
                 buffer.Advance(0); // doing nothing, the hard way
                 await buffer.FlushAsync();
             }
@@ -35,11 +39,11 @@ namespace System.IO.Pipelines.Tests
             using (var memoryPool = new MemoryPool())
             {
                 var pipe = new Pipe(memoryPool);
-                var buffer = pipe.Alloc();
+                var buffer = pipe.Writer.Alloc();
                 buffer.Append(value, EncodingData.InvariantUtf8);
                 await buffer.FlushAsync();
 
-                var result = await pipe.ReadAsync();
+                var result = await pipe.Reader.ReadAsync();
                 var inputBuffer = result.Buffer;
 
                 Assert.Equal(valueAsString, inputBuffer.GetUtf8String());
@@ -60,16 +64,16 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
                 output.Write(data);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
-                pipe.CompleteWriter();
+                pipe.Writer.Complete();
 
                 int offset = 0;
                 while (true)
                 {
-                    var result = await pipe.ReadAsync();
+                    var result = await pipe.Reader.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
@@ -95,16 +99,16 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
                 output.Append(data, EncodingData.InvariantUtf8);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
-                pipe.CompleteWriter();
+                pipe.Writer.Complete();
 
                 int offset = 0;
                 while (true)
                 {
-                    var result = await pipe.ReadAsync();
+                    var result = await pipe.Reader.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
@@ -130,16 +134,16 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
                 output.Append(data, EncodingData.InvariantUtf8);
                 var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
-                pipe.CompleteWriter();
+                pipe.Writer.Complete();
 
                 int offset = 0;
                 while (true)
                 {
-                    var result = await pipe.ReadAsync();
+                    var result = await pipe.Reader.ReadAsync();
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
@@ -171,7 +175,7 @@ namespace System.IO.Pipelines.Tests
             using (var memoryPool = new MemoryPool())
             {
                 var pipe = new Pipe(memoryPool);
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
 
                 Assert.True(output.AsReadableBuffer().IsEmpty);
                 Assert.Equal(0, output.AsReadableBuffer().Length);
@@ -210,7 +214,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
 
                 byte[] predictablyGibberish = new byte[512];
                 const int SEED = 1235412;
@@ -251,7 +255,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
                 var readable = output.AsReadableBuffer();
                 output.Append(readable);
                 Assert.Equal(0, output.AsReadableBuffer().Length);
@@ -269,7 +273,7 @@ namespace System.IO.Pipelines.Tests
             {
                 var pipe = new Pipe(memoryPool);
 
-                var output = pipe.Alloc();
+                var output = pipe.Writer.Alloc();
 
                 for (int i = 0; i < 20; i++)
                 {
@@ -291,10 +295,10 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void EnsureMoreThanPoolBlockSizeThrows()
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 var pipe = factory.Create();
-                var buffer = pipe.Alloc();
+                var buffer = pipe.Writer.Alloc();
                 Assert.Throws<ArgumentOutOfRangeException>(() => buffer.Ensure(8192));
             }
         }
@@ -315,10 +319,10 @@ namespace System.IO.Pipelines.Tests
         [MemberData(nameof(HexNumbers))]
         public void WriteHex(int value, string hex)
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 var pipe = factory.Create();
-                var buffer = pipe.Alloc();
+                var buffer = pipe.Writer.Alloc();
                 buffer.Append(value, EncodingData.InvariantUtf8, 'x');
 
                 Assert.Equal(hex, buffer.AsReadableBuffer().GetAsciiString());

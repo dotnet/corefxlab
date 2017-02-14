@@ -13,9 +13,9 @@ namespace System.IO.Pipelines
         private readonly static Task<int> _initialCachedTask = Task.FromResult(0);
         private Task<int> _cachedTask = _initialCachedTask;
 
-        private readonly IPipelineConnection _connection;
+        private readonly IPipeConnection _connection;
 
-        public PipelineConnectionStream(IPipelineConnection connection)
+        public PipelineConnectionStream(IPipeConnection connection)
         {
             _connection = connection;
         }

@@ -9,43 +9,63 @@ using System.IO.Pipelines.Networking.Libuv.Interop;
 
 namespace System.IO.Pipelines.Networking.Libuv
 {
-    public class UvTcpConnection : IPipelineConnection
+    public class UvTcpConnection : IPipeConnection
     {
         private const int EOF = -4095;
 
         private static readonly Action<UvStreamHandle, int, object> _readCallback = ReadCallback;
         private static readonly Func<UvStreamHandle, int, object, Uv.uv_buf_t> _allocCallback = AllocCallback;
-        private static readonly Action<UvWriteReq, int, object> _writeCallback = WriteCallback;
 
-        protected readonly Pipe _input;
-        protected readonly Pipe _output;
+        protected readonly IPipe _input;
+        protected readonly IPipe _output;
         private readonly UvThread _thread;
         private readonly UvTcpHandle _handle;
         private volatile bool _stopping;
 
-        private int _pendingWrites;
-
-        private TaskCompletionSource<object> _drainWrites;
         private Task _sendingTask;
-        private WritableBuffer _inputBuffer;
+        private WritableBuffer? _inputBuffer;
 
         public UvTcpConnection(UvThread thread, UvTcpHandle handle)
         {
             _thread = thread;
             _handle = handle;
 
-            _input = _thread.PipelineFactory.Create(new PipeOptions
+            _input = _thread.PipeFactory.Create(new PipeOptions
             {
-                WriterScheduler = thread
+                // ReaderScheduler = TaskRunScheduler.Default, // execute user code on the thread pool
+                // ReaderScheduler = thread,
+                WriterScheduler = thread // resume from back pressure on the uv thread
             });
 
-            _output = _thread.PipelineFactory.Create(new PipeOptions
+            _output = _thread.PipeFactory.Create(new PipeOptions
             {
-                ReaderScheduler = thread
+                // WriterScheduler = TaskRunScheduler.Default, // Execute the flush callback on the thread pool
+                // WriterScheduler = thread,
+                ReaderScheduler = thread // user code will dispatch back to the uv thread for writes,
             });
 
             StartReading();
             _sendingTask = ProcessWrites();
+        }
+
+        public async Task DisposeAsync()
+        {
+            // Dispose on the thread pool so we don't return on the libuv thread
+            await Task.Factory.StartNew(state => ((UvTcpConnection)state).DisposeAsyncCore(), this);
+        }
+
+        private async Task DisposeAsyncCore()
+        {
+            if (!_stopping)
+            {
+                _stopping = true;
+                _output.Reader.CancelPendingRead();
+
+                await _sendingTask.ConfigureAwait(false);
+
+                _output.Writer.Complete();
+                _input.Reader.Complete();
+            }
         }
 
         public void Dispose()
@@ -55,21 +75,12 @@ namespace System.IO.Pipelines.Networking.Libuv
         }
         protected virtual void Dispose(bool disposing)
         {
-            _stopping = true;
-            _output.CancelPendingRead();
-
-            _sendingTask.Wait();
-
-            _output.CompleteWriter();
-            _output.CompleteReader();
-
-            _input.CompleteWriter();
-            _input.CompleteReader();
+            DisposeAsync().GetAwaiter().GetResult();
         }
 
-        public IPipelineWriter Output => _output;
+        public IPipeWriter Output => _output.Writer;
 
-        public IPipelineReader Input => _input;
+        public IPipeReader Input => _input.Reader;
 
         private async Task ProcessWrites()
         {
@@ -77,7 +88,7 @@ namespace System.IO.Pipelines.Networking.Libuv
             {
                 while (!_stopping)
                 {
-                    var result = await _output.ReadAsync();
+                    var result = await _output.Reader.ReadAsync();
                     var buffer = result.Buffer;
 
                     try
@@ -89,64 +100,42 @@ namespace System.IO.Pipelines.Networking.Libuv
 
                         if (!buffer.IsEmpty)
                         {
-                            BeginWrite(buffer);
+                            await WriteAsync(buffer);
                         }
                     }
                     finally
                     {
-                        _output.Advance(buffer.End);
+                        _output.Reader.Advance(buffer.End);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _output.CompleteReader(ex);
+                _output.Reader.Complete(ex);
             }
             finally
             {
-                _output.CompleteReader();
-
-                // Drain the pending writes
-                if (_pendingWrites > 0)
-                {
-                    _drainWrites = new TaskCompletionSource<object>();
-
-                    await _drainWrites.Task;
-                }
+                _output.Reader.Complete();
 
                 _handle.Dispose();
 
                 // We'll never call the callback after disposing the handle
-                _input.CompleteWriter();
+                _input.Writer.Complete();
             }
         }
 
-        private void BeginWrite(ReadableBuffer buffer)
+        private async Task WriteAsync(ReadableBuffer buffer)
         {
             var writeReq = _thread.WriteReqPool.Allocate();
 
-            _pendingWrites++;
-
-            writeReq.Write(_handle, buffer, _writeCallback, this);
-        }
-
-        private static void WriteCallback(UvWriteReq writeReq, int status, object state)
-        {
-            ((UvTcpConnection)state).EndWrite(writeReq);
-        }
-
-        private void EndWrite(UvWriteReq writeReq)
-        {
-            _pendingWrites--;
-
-            _thread.WriteReqPool.Return(writeReq);
-
-            if (_drainWrites != null)
+            try
             {
-                if (_pendingWrites == 0)
-                {
-                    _drainWrites.TrySetResult(null);
-                }
+                await writeReq.WriteAsync(_handle, buffer);
+
+            }
+            finally
+            {
+                _thread.WriteReqPool.Return(writeReq);
             }
         }
 
@@ -167,7 +156,8 @@ namespace System.IO.Pipelines.Networking.Libuv
                 // A zero status does not indicate an error or connection end. It indicates
                 // there is no data to be read right now.
                 // See the note at http://docs.libuv.org/en/v1.x/stream.html#c.uv_read_cb.
-                _inputBuffer.Commit();
+                _inputBuffer?.Commit();
+                _inputBuffer = null;
                 return;
             }
 
@@ -188,32 +178,47 @@ namespace System.IO.Pipelines.Networking.Libuv
                 handle.Libuv.Check(status, out uvError);
                 error = new IOException(uvError.Message, uvError);
 
+                _inputBuffer?.Commit();
+
                 // REVIEW: Should we treat ECONNRESET as an error?
                 // Ignore the error for now
-                _input.CompleteWriter();
+                _input.Writer.Complete();
             }
             else
             {
-                _inputBuffer.Advance(readCount);
+                var inputBuffer = _inputBuffer.Value;
+                _inputBuffer = null;
 
-                var awaitable = _inputBuffer.FlushAsync();
+                inputBuffer.Advance(readCount);
+                inputBuffer.Commit();
 
-                if (!awaitable.IsCompleted)
+                // Flush if there was data
+                if (readCount > 0)
                 {
-                    // If there's back pressure
-                    handle.ReadStop();
+                    var awaitable = inputBuffer.FlushAsync();
 
-                    // Resume reading when the awaitable completes
-                    if (await awaitable)
+                    if (!awaitable.IsCompleted)
                     {
-                        StartReading();
+                        // If there's back pressure
+                        handle.ReadStop();
+
+                        // Resume reading when the awaitable completes
+                        if (await awaitable)
+                        {
+                            StartReading();
+                        }
+                        else
+                        {
+                            // We're done writing, the reading is gone
+                            _input.Writer.Complete();
+                        }
                     }
                 }
             }
 
-            if (normalDone || _input.Writing.IsCompleted)
+            if (normalDone)
             {
-                _input.CompleteWriter();
+                _input.Writer.Complete();
             }
         }
 
@@ -224,15 +229,18 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private unsafe Uv.uv_buf_t OnAlloc(UvStreamHandle handle, int status)
         {
-            _inputBuffer = _input.Alloc(2048);
+            var inputBuffer = _input.Writer.Alloc(2048);
+
+            _inputBuffer = inputBuffer;
 
             void* pointer;
-            if (!_inputBuffer.Memory.TryGetPointer(out pointer))
+            if (!inputBuffer.Memory.TryGetPointer(out pointer))
             {
                 throw new InvalidOperationException("Pointer must be pinned");
             }
 
-            return handle.Libuv.buf_init((IntPtr)pointer, _inputBuffer.Memory.Length);
+
+            return handle.Libuv.buf_init((IntPtr)pointer, inputBuffer.Memory.Length);
         }
     }
 }

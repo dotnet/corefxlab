@@ -8,10 +8,10 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Defines a class that provides a pipeline from which data can be read.
     /// </summary>
-    public interface IPipelineReader
+    public interface IPipeReader
     {
         /// <summary>
-        /// Asynchronously reads a sequence of bytes from the current <see cref="IPipelineReader"/>.
+        /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
         ReadableBufferAwaitable ReadAsync();
@@ -28,7 +28,7 @@ namespace System.IO.Pipelines
         void Advance(ReadCursor consumed, ReadCursor examined);
 
         /// <summary>
-        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipelineReader"/>.
+        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipeReader"/>.
         /// </summary>
         void CancelPendingRead();
 

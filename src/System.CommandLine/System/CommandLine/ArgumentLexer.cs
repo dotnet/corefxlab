@@ -179,20 +179,16 @@ namespace System.CommandLine
 
         private static bool TrySplitNameValue(string text, out string name, out string value)
         {
-            return TrySplitNameValue(text, ':', out name, out value) ||
-                   TrySplitNameValue(text, '=', out name, out value);
-        }
-
-        private static bool TrySplitNameValue(string text, char separator, out string name, out string value)
-        {
-            var i = text.IndexOf(separator);
-            if (i >= 0)
+            for (int idx = 0; idx < text.Length; idx++)
             {
-                name = text.Substring(0, i);
-                value = text.Substring(i + 1);
-                return true;
+                char ch = text[idx];
+                if (ch == ':' || ch == '=')
+                {
+                    name = text.Substring(0, idx);
+                    value = text.Substring(idx + 1);
+                    return true;
+                }
             }
-
             name = null;
             value = null;
             return false;

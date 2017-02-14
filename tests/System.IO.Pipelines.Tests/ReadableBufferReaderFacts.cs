@@ -1,4 +1,8 @@
-﻿using System;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,16 +41,16 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task TakeTraversesSegments()
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 var readerWriter = factory.Create();
-                var w = readerWriter.Alloc();
+                var w = readerWriter.Writer.Alloc();
                 w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
                 w.Append(ReadableBuffer.Create(new byte[] { 2 }, 0, 1));
                 w.Append(ReadableBuffer.Create(new byte[] { 3 }, 0, 1));
                 await w.FlushAsync();
 
-                var result = await readerWriter.ReadAsync();
+                var result = await readerWriter.Reader.ReadAsync();
                 var buffer = result.Buffer;
                 var reader = new ReadableBufferReader(buffer);
 
@@ -60,15 +64,15 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task PeekTraversesSegments()
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 var readerWriter = factory.Create();
-                var w = readerWriter.Alloc();
+                var w = readerWriter.Writer.Alloc();
                 w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
                 w.Append(ReadableBuffer.Create(new byte[] { 2 }, 0, 1));
                 await w.FlushAsync();
 
-                var result = await readerWriter.ReadAsync();
+                var result = await readerWriter.Reader.ReadAsync();
                 var buffer = result.Buffer;
                 var reader = new ReadableBufferReader(buffer);
 
@@ -83,15 +87,15 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task PeekWorkesWithEmptySegments()
         {
-            using (var factory = new PipelineFactory())
+            using (var factory = new PipeFactory())
             {
                 var readerWriter = factory.Create();
-                var w = readerWriter.Alloc();
+                var w = readerWriter.Writer.Alloc();
                 w.Append(ReadableBuffer.Create(new byte[] { 0 }, 0, 0));
                 w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
                 await w.FlushAsync();
 
-                var result = await readerWriter.ReadAsync();
+                var result = await readerWriter.Reader.ReadAsync();
                 var buffer = result.Buffer;
                 var reader = new ReadableBufferReader(buffer);
 

@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Time.Resources;
+using System.Time.Properties;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;

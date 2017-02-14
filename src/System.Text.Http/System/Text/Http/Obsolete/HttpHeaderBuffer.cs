@@ -59,7 +59,7 @@ namespace System.Text.Http.SingleSegment
         internal static ReadOnlySpan<byte> SliceTo(this ReadOnlySpan<byte> buffer, int start, byte terminator, out int consumedBytes)
         {
             var slice = buffer.Slice(start);
-            var index = ReadOnlySpanExtensions.IndexOf(slice, terminator);
+            var index = System.SpanExtensions.IndexOf(slice, terminator);
             if (index == -1) {
                 consumedBytes = 0;
                 return Span<byte>.Empty;
@@ -89,7 +89,7 @@ namespace System.Text.Http.SingleSegment
             while (true)
             {
                 var slice = buffer.Slice(start + offset);
-                var index = ReadOnlySpanExtensions.IndexOf(slice, terminatorFirst);
+                var index = System.SpanExtensions.IndexOf(slice, terminatorFirst);
                 if (index == -1 || index == slice.Length - 1)
                 {
                     consumedBytes = 0;

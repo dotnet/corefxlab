@@ -1,36 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>A formatting library for pl-PL</Description>
-    <Copyright>Microsoft Corporation, All rights reserved</Copyright>
-    <VersionPrefix>0.1.0</VersionPrefix>
-    <Authors>Microsoft Corporation</Authors>
     <TargetFramework>netstandard1.1</TargetFramework>
-    <AssemblyName>System.Text.Formatting.Globalization</AssemblyName>
-    <AssemblyOriginatorKeyFile>../../tools/Key.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>System.Text.Formatting.Globalization</PackageId>
     <PackageTags>pl PL formatting globalization corefxlab</PackageTags>
-    <PackageReleaseNotes>Pre-release package, for testing only</PackageReleaseNotes>
-    <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/dotnet/corefxlab</PackageProjectUrl>
-    <PackageLicenseUrl>http://go.microsoft.com/fwlink/?LinkId=329770</PackageLicenseUrl>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
-
   <ItemGroup>
-    <EmbeddedResource Include="locales.bin" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)">
-      <Link>System.Text.Formatting.locales.bin</Link>
-    </EmbeddedResource>
+    <EmbeddedResource Include="locales.bin" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-  </ItemGroup>
-
 </Project>

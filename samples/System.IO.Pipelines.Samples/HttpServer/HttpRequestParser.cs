@@ -1,4 +1,8 @@
-﻿using System.IO.Pipelines.Samples.Http;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System.IO.Pipelines.Samples.Http;
 using System.IO.Pipelines.Text.Primitives;
 
 namespace System.IO.Pipelines.Samples
@@ -17,8 +21,11 @@ namespace System.IO.Pipelines.Samples
 
         public RequestHeaderDictionary RequestHeaders = new RequestHeaderDictionary();
 
-        public ParseResult ParseRequest(ref ReadableBuffer buffer)
+        public ParseResult ParseRequest(ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined)
         {
+            consumed = buffer.Start;
+            examined = buffer.Start;
+
             if (_state == ParsingState.StartLine)
             {
                 // Find \n
@@ -63,6 +70,8 @@ namespace System.IO.Pipelines.Samples
                 _httpVersion = httpVersion.Preserve();
 
                 _state = ParsingState.Headers;
+                consumed = buffer.Start;
+                examined = buffer.Start;
             }
 
             // Parse headers
@@ -83,6 +92,9 @@ namespace System.IO.Pipelines.Samples
                 }
 
                 buffer = buffer.Slice(delim).Slice(2);
+
+                consumed = buffer.Start;
+                examined = buffer.Start;
 
                 // End of headers
                 if (headerPair.IsEmpty)

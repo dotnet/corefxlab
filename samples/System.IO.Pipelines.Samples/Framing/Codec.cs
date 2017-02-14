@@ -1,4 +1,8 @@
-﻿using System;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -81,7 +85,7 @@ namespace System.IO.Pipelines.Samples.Framing
             thread.Dispose();
         }
 
-        public static IPipelineConnection MakePipeline(IPipelineConnection connection)
+        public static IPipeConnection MakePipeline(IPipeConnection connection)
         {
             // Do something fancy here to wrap the connection, SSL etc
             return connection;
@@ -97,7 +101,7 @@ namespace System.IO.Pipelines.Samples.Framing
     {
         private PipelineTextOutput _textOutput;
 
-        public void Initialize(IPipelineConnection connection)
+        public void Initialize(IPipeConnection connection)
         {
             _textOutput = new PipelineTextOutput(connection.Output, EncodingData.InvariantUtf8);
         }
@@ -135,7 +139,7 @@ namespace System.IO.Pipelines.Samples.Framing
 
     public interface IFrameHandler<TInput>
     {
-        void Initialize(IPipelineConnection connection);
+        void Initialize(IPipeConnection connection);
 
         Task HandleAsync(TInput message);
     }

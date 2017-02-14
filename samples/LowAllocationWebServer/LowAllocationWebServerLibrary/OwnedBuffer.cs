@@ -1,4 +1,8 @@
-﻿using System;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.Buffers;
 using System.Collections.Sequences;
 
@@ -24,6 +28,8 @@ namespace Microsoft.Net.Http
         public Memory<byte> First => Memory;
 
         public IMemoryList<byte> Rest => _next;
+
+        public int WrittenByteCount => _written;
 
         ReadOnlyMemory<byte> IReadOnlyMemoryList<byte>.First => Memory;
 
@@ -96,7 +102,7 @@ namespace Microsoft.Net.Http
             return _next;
         }
 
-        public void Append(int bytes)
+        public void Advance(int bytes)
         {
             _written = bytes;
         }

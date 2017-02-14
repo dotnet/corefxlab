@@ -17,7 +17,7 @@ namespace System.Text.Formatting
     {
         public static EncodingData CreateEncoding(string localeId)
         {
-            var resourceName = "System.Text.Formatting.locales.bin";
+            var resourceName = "System.Text.Formatting.Globalization.locales.bin";
             var resourceStream = typeof(EncodingProvider).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName);
             if (resourceStream == null)
             {

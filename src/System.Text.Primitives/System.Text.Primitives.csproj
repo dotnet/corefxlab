@@ -1,39 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Efficient parsing, formatting, and encoding APIs</Description>
     <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
-    <VersionPrefix>0.1.0</VersionPrefix>
-    <Authors>Microsoft Corporation</Authors>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>System.Text.Primitives</AssemblyName>
-    <AssemblyOriginatorKeyFile>../../tools/Key.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>System.Text.Primitives</PackageId>
     <PackageTags>.NET formatting parsing encoding UTF8</PackageTags>
-    <PackageReleaseNotes>Pre-release package, for testing only</PackageReleaseNotes>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/dotnet/corefxlab</PackageProjectUrl>
-    <PackageLicenseUrl>http://go.microsoft.com/fwlink/?LinkId=329770</PackageLicenseUrl>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="System\**\*.cs;Properties\**\*.cs" Exclude="GenerateCompatibilityTests\**\*.cs;bin\**;obj\**;**\*.xproj;packages\**" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="4.4.0-*" />
   </ItemGroup>
-
 </Project>
