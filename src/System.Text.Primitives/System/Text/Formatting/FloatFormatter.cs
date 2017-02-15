@@ -9,30 +9,32 @@ namespace System.Text
 {
     internal static class FloatFormatter
     {
-        public static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), EncodingData encoding = default(EncodingData))
+        public static bool TryFormatNumber(double value, bool isSingle, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 'E' || format.Symbol == 'F');
+
+            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
 
             bytesWritten = 0;
             int written;
 
             if (Double.IsNaN(value))
             {
-                return encoding.TryEncode(EncodingData.Symbol.NaN, buffer, out bytesWritten);
+                return encoder.TryEncode(TextEncoder.Symbol.NaN, buffer, out bytesWritten);
             }
 
             if (Double.IsInfinity(value))
             {
                 if (Double.IsNegativeInfinity(value))
                 {
-                    if (!encoding.TryEncode(EncodingData.Symbol.MinusSign, buffer, out written))
+                    if (!encoder.TryEncode(TextEncoder.Symbol.MinusSign, buffer, out written))
                     {
                         bytesWritten = 0;
                         return false;
                     }
                     bytesWritten += written;
                 }
-                if (!encoding.TryEncode(EncodingData.Symbol.InfinitySign, buffer.Slice(bytesWritten), out written))
+                if (!encoder.TryEncode(TextEncoder.Symbol.InfinitySign, buffer.Slice(bytesWritten), out written))
                 {
                     bytesWritten = 0;
                     return false;
@@ -44,7 +46,7 @@ namespace System.Text
             // TODO: the lines below need to be replaced with properly implemented algorithm
             // the problem is the algorithm is complex, so I am commiting a stub for now
             var hack = value.ToString(format.Symbol.ToString());
-            return encoding.TextEncoder.TryEncode(hack, buffer, out bytesWritten);
+            return encoder.TryEncode(hack, buffer, out bytesWritten);
         }
     }
 }

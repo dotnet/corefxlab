@@ -11,14 +11,14 @@ namespace System.Buffers
     /// </summary>
     public struct BytesReader
     {
-        readonly EncodingData _encoding;
+        readonly TextEncoder _encoding;
         ReadOnlyBytes _unreadSegments;
         int _index; // index relative to the begining of bytes passed to the constructor
 
         ReadOnlyMemory<byte> _currentSegment;
         int _currentSegmentIndex;
         
-        public BytesReader(ReadOnlyBytes bytes, EncodingData encoding)
+        public BytesReader(ReadOnlyBytes bytes, TextEncoder encoding)
         {
             _unreadSegments = bytes;
             _currentSegment = _unreadSegments.First;
@@ -27,7 +27,7 @@ namespace System.Buffers
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyMemory<byte> bytes, EncodingData encoding)
+        public BytesReader(ReadOnlyMemory<byte> bytes, TextEncoder encoding)
         {
             _unreadSegments = new ReadOnlyBytes(bytes);
             _currentSegment = bytes;
@@ -36,23 +36,23 @@ namespace System.Buffers
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyMemory<byte> bytes) : this(bytes, EncodingData.InvariantUtf8)
+        public BytesReader(ReadOnlyMemory<byte> bytes) : this(bytes, TextEncoder.InvariantUtf8)
         { }
 
-        public BytesReader(ReadOnlyBytes bytes) : this(bytes, EncodingData.InvariantUtf8)
+        public BytesReader(ReadOnlyBytes bytes) : this(bytes, TextEncoder.InvariantUtf8)
         { }
 
-        public BytesReader(IReadOnlyMemoryList<byte> bytes) : this(bytes, EncodingData.InvariantUtf8)
+        public BytesReader(IReadOnlyMemoryList<byte> bytes) : this(bytes, TextEncoder.InvariantUtf8)
         { }
 
-        public BytesReader(IReadOnlyMemoryList<byte> bytes, EncodingData encoding) : this(new ReadOnlyBytes(bytes))
+        public BytesReader(IReadOnlyMemoryList<byte> bytes, TextEncoder encoding) : this(new ReadOnlyBytes(bytes))
         { }
 
         public byte Peek() => _currentSegment.Span[_currentSegmentIndex];
 
         public ReadOnlySpan<byte> Unread => _currentSegment.Span.Slice(_currentSegmentIndex);
 
-        public EncodingData Encoding => _encoding;
+        public TextEncoder Encoding => _encoding;
 
         public ReadOnlyBytes? ReadBytesUntil(byte value)
         {

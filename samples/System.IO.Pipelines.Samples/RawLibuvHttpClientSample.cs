@@ -29,8 +29,8 @@ namespace System.IO.Pipelines.Samples
             {
                 var buffer = connection.Output.Alloc();
 
-                buffer.Append("GET / HTTP/1.1", EncodingData.InvariantUtf8);
-                buffer.Append("\r\n\r\n", EncodingData.InvariantUtf8);
+                buffer.Append("GET / HTTP/1.1", TextEncoder.InvariantUtf8);
+                buffer.Append("\r\n\r\n", TextEncoder.InvariantUtf8);
 
                 await buffer.FlushAsync();
 

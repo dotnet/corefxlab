@@ -123,7 +123,7 @@ namespace System.Text.Http.Tests
             var parsed = HttpRequestSingleSegment.Parse(request);
             Assert.Equal(HttpMethod.Get, parsed.RequestLine.Method);
             Assert.Equal(HttpVersion.V1_1, parsed.RequestLine.Version);
-            Assert.Equal("/", parsed.RequestLine.RequestUri.ToString(TextEncoder.Utf8));
+            Assert.Equal("/", parsed.RequestLine.RequestUri.ToString(TextEncoder.InvariantUtf8));
             Assert.Equal(1, parsed.Headers.Count);
             Assert.Equal(0, parsed.Body.Length);
         } 

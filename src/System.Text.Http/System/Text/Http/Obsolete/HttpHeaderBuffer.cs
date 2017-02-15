@@ -7,9 +7,9 @@ namespace System.Text.Http.SingleSegment
     {
         //TODO: Issue #390: Switch HttpHeaderBuffer to use Slices.Span.
         private Span<byte> _bytes;
-        private readonly EncodingData _encoding;
+        private readonly TextEncoder _encoding;
 
-        public HttpHeaderBuffer(Span<byte> bytes, EncodingData encoding)
+        public HttpHeaderBuffer(Span<byte> bytes, TextEncoder encoding)
         {
             _bytes = bytes;
             _encoding = encoding;
@@ -23,7 +23,7 @@ namespace System.Text.Http.SingleSegment
             }
 
             int bytesWritten;
-            _encoding.TextEncoder.TryEncode(newValue, _bytes, out bytesWritten);            
+            _encoding.TryEncode(newValue, _bytes, out bytesWritten);            
 
             _bytes.SetFromRestOfSpanToEmpty(newValue.Length);
         }        

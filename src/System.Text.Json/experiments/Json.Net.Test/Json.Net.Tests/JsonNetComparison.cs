@@ -489,7 +489,7 @@ namespace Json.Net.Tests
         {
             var buffer = new byte[1024];
             var stream = new MemoryStream(buffer);
-            var writer = new JsonWriter(stream, EncodingData.Encoding.Utf8, prettyPrint: true);
+            var writer = new JsonWriter(stream, TextEncoder.Encoding.Utf8, prettyPrint: true);
             writer.WriteObjectStart();
             writer.WriteAttribute("CPU", "Intel");
             writer.WriteAttribute("PSU", "500W");

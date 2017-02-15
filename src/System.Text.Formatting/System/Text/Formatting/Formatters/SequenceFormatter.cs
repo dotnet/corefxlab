@@ -9,7 +9,7 @@ namespace System.Text.Formatting
 {
     public static class SequenceFormatterExtensions
     {
-        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, EncodingData encoding = default(EncodingData)) where TSequence : ISequence<Memory<byte>>
+        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, TextEncoder encoding = default(TextEncoder)) where TSequence : ISequence<Memory<byte>>
         {
             return new SequenceFormatter<TSequence>(sequence, encoding);
         }
@@ -18,7 +18,7 @@ namespace System.Text.Formatting
     public class SequenceFormatter<TSequence> : ITextOutput where TSequence : ISequence<Memory<byte>>
     {
         ISequence<Memory<byte>> _buffers;
-        EncodingData _encoding;
+        TextEncoder _encoding;
 
         Position _currentPosition = Position.First;
         int _currentWrittenBytes;
@@ -26,7 +26,7 @@ namespace System.Text.Formatting
         int _previousWrittenBytes;
         int _totalWritten;
 
-        public SequenceFormatter(TSequence buffers, EncodingData encoding)
+        public SequenceFormatter(TSequence buffers, TextEncoder encoding)
         {
             _encoding = encoding;
             _buffers = buffers;
@@ -57,7 +57,7 @@ namespace System.Text.Formatting
         }
         private bool NeedShift => _previousWrittenBytes != -1; 
 
-        EncodingData ITextOutput.Encoding => _encoding;
+        TextEncoder ITextOutput.Encoding => _encoding;
 
         public int TotalWritten => _totalWritten;
 

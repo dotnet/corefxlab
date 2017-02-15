@@ -9,30 +9,30 @@ namespace System.Text
 {
     internal static class IntegerFormatter
     {
-        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
         {
             Precondition.Require(numberOfBytes <= sizeof(long));
 
             if (value >= 0)
             {
-                return TryFormatUInt64(unchecked((ulong)value), numberOfBytes, buffer, out bytesWritten, format, encoding);
+                return TryFormatUInt64(unchecked((ulong)value), numberOfBytes, buffer, out bytesWritten, format, encoder);
             }
             else if (format.IsHexadecimal)
             {
                 ulong bitMask = GetBitMask(numberOfBytes);
-                return TryFormatUInt64(unchecked((ulong)value) & bitMask, numberOfBytes, buffer, out bytesWritten, format, encoding);
+                return TryFormatUInt64(unchecked((ulong)value) & bitMask, numberOfBytes, buffer, out bytesWritten, format, encoder);
             }
             else
             {
                 int minusSignBytes = 0;
-                if(!encoding.TryEncode(EncodingData.Symbol.MinusSign, buffer, out minusSignBytes))
+                if(!encoder.TryEncode(TextEncoder.Symbol.MinusSign, buffer, out minusSignBytes))
                 {
                     bytesWritten = 0;
                     return false;
                 }
 
                 int digitBytes = 0;
-                if(!TryFormatUInt64(unchecked((ulong)-value), numberOfBytes, buffer.Slice(minusSignBytes), out digitBytes, format, encoding))
+                if(!TryFormatUInt64(unchecked((ulong)-value), numberOfBytes, buffer.Slice(minusSignBytes), out digitBytes, format, encoder))
                 {
                     bytesWritten = 0;
                     return false;
@@ -42,30 +42,30 @@ namespace System.Text
             }
         }
 
-        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
         {
             if(format.Symbol == 'g')
             {
                 format.Symbol = 'G';
             }
 
-            if (format.IsHexadecimal && encoding.IsInvariantUtf16) {
+            if (format.IsHexadecimal && encoder.IsInvariantUtf16) {
                 return TryFormatHexadecimalInvariantCultureUtf16(value, buffer, out bytesWritten, format);
             }
 
-            if (format.IsHexadecimal && encoding.IsInvariantUtf8) {
+            if (format.IsHexadecimal && encoder.IsInvariantUtf8) {
                 return TryFormatHexadecimalInvariantCultureUtf8(value, buffer, out bytesWritten, format);
             }
 
-            if ((encoding.IsInvariantUtf16) && (format.Symbol == 'D' || format.Symbol == 'G')) {
+            if ((encoder.IsInvariantUtf16) && (format.Symbol == 'D' || format.Symbol == 'G')) {
                 return TryFormatDecimalInvariantCultureUtf16(value, buffer, out bytesWritten, format);
             }
 
-            if ((encoding.IsInvariantUtf8) && (format.Symbol == 'D' || format.Symbol == 'G')) {
+            if ((encoder.IsInvariantUtf8) && (format.Symbol == 'D' || format.Symbol == 'G')) {
                 return TryFormatDecimalInvariantCultureUtf8(value, buffer, out bytesWritten, format);
             }
 
-            return TryFormatDecimal(value, buffer, out bytesWritten, format, encoding);     
+            return TryFormatDecimal(value, buffer, out bytesWritten, format, encoder);     
         }
 
         private static bool TryFormatDecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format)
@@ -295,7 +295,7 @@ namespace System.Text
         // It does it twice to avoid reversing the formatted buffer, which can be tricky given it should handle arbitrary cultures.
         // One optimization I thought we could do is to do div/mod once and store digits in a temp buffer (but that would allocate). Modification to the idea would be to store the digits in a local struct
         // Another idea possibly worth tying would be to special case cultures that have constant digit size, and go back to the format + reverse buffer approach.
-        private static bool TryFormatDecimal(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format, EncodingData encoding)
+        private static bool TryFormatDecimal(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
         {
             if(format.IsDefault)
             {
@@ -336,7 +336,7 @@ namespace System.Text
                 var leadingZerosCount = format.Precision - digitsCount - trailingZerosCount;
                 while (leadingZerosCount-- > 0)
                 {
-                    if (!encoding.TryEncode(EncodingData.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!encoder.TryEncode(TextEncoder.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -346,7 +346,7 @@ namespace System.Text
             }
 
             // Append first digit
-            if (!encoding.TryEncode((EncodingData.Symbol)value, buffer.Slice(bytesWritten), out digitBytes))
+            if (!encoder.TryEncode((TextEncoder.Symbol)value, buffer.Slice(bytesWritten), out digitBytes))
             {
                 bytesWritten = 0;
                 return false;
@@ -365,7 +365,7 @@ namespace System.Text
                     if (digitsCount + trailingZerosCount > 0)
                     {
                         // There is a new group immediately after the first digit
-                        if (!encoding.TryEncode(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!encoder.TryEncode(TextEncoder.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
@@ -380,7 +380,7 @@ namespace System.Text
                 {
                     if (digitsLeftInGroup == 0)
                     {
-                        if (!encoding.TryEncode(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!encoder.TryEncode(TextEncoder.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
@@ -392,7 +392,7 @@ namespace System.Text
                     var nextDigit = reversedValueExceptFirst % 10UL;
                     reversedValueExceptFirst = reversedValueExceptFirst / 10UL;
 
-                    if (!encoding.TryEncode((EncodingData.Symbol)nextDigit, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!encoder.TryEncode((TextEncoder.Symbol)nextDigit, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -406,7 +406,7 @@ namespace System.Text
                 {
                     if (digitsLeftInGroup == 0)
                     {
-                        if (!encoding.TryEncode(EncodingData.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!encoder.TryEncode(TextEncoder.Symbol.GroupSeparator, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;
@@ -415,7 +415,7 @@ namespace System.Text
                         digitsLeftInGroup = GroupSize;
                     }
 
-                    if (!encoding.TryEncode(EncodingData.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!encoder.TryEncode(TextEncoder.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -431,7 +431,7 @@ namespace System.Text
                     var bufferSlice = buffer.Slice(bytesWritten);
                     var nextDigit = reversedValueExceptFirst % 10UL;
                     reversedValueExceptFirst = reversedValueExceptFirst / 10UL;
-                    if (!encoding.TryEncode((EncodingData.Symbol)nextDigit, bufferSlice, out digitBytes))
+                    if (!encoder.TryEncode((TextEncoder.Symbol)nextDigit, bufferSlice, out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -442,7 +442,7 @@ namespace System.Text
                 // Append trailing zeros if any
                 while (trailingZerosCount-- > 0)
                 {
-                    if (!encoding.TryEncode(EncodingData.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!encoder.TryEncode(TextEncoder.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -458,7 +458,7 @@ namespace System.Text
 
                 if (trailingZerosAfterDecimalCount > 0)
                 {
-                    if (!encoding.TryEncode(EncodingData.Symbol.DecimalSeparator, buffer.Slice(bytesWritten), out digitBytes))
+                    if (!encoder.TryEncode(TextEncoder.Symbol.DecimalSeparator, buffer.Slice(bytesWritten), out digitBytes))
                     {
                         bytesWritten = 0;
                         return false;
@@ -467,7 +467,7 @@ namespace System.Text
 
                     while (trailingZerosAfterDecimalCount-- > 0)
                     {
-                        if (!encoding.TryEncode(EncodingData.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
+                        if (!encoder.TryEncode(TextEncoder.Symbol.D0, buffer.Slice(bytesWritten), out digitBytes))
                         {
                             bytesWritten = 0;
                             return false;

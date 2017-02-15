@@ -177,7 +177,7 @@ namespace System.Text.Formatting
             {
                 ReadOnlySpan<char> charSpan = new ReadOnlySpan<char>(&value, 1);
 
-                if (!formatter.Encoding.TextEncoder.TryEncode(charSpan, formatter.Buffer, out consumed, out bytesWritten))
+                if (!formatter.Encoding.TryEncode(charSpan, formatter.Buffer, out consumed, out bytesWritten))
                 {
                     return false;
                 }
@@ -198,7 +198,7 @@ namespace System.Text.Formatting
         {
             int bytesWritten;
             int consumed;
-            if (!formatter.Encoding.TextEncoder.TryEncode(value, formatter.Buffer, out consumed, out bytesWritten)) {
+            if (!formatter.Encoding.TryEncode(value, formatter.Buffer, out consumed, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -230,7 +230,7 @@ namespace System.Text.Formatting
         public static bool TryAppend<TFormatter>(this TFormatter formatter, string value) where TFormatter : ITextOutput
         {
             int bytesWritten;
-            if (!formatter.Encoding.TextEncoder.TryEncode(value, formatter.Buffer, out bytesWritten)) {
+            if (!formatter.Encoding.TryEncode(value, formatter.Buffer, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);
@@ -248,7 +248,7 @@ namespace System.Text.Formatting
         {
             int bytesWritten;
             int consumed;
-            if (!formatter.Encoding.TextEncoder.TryEncode(value, formatter.Buffer, out consumed, out bytesWritten)) {
+            if (!formatter.Encoding.TryEncode(value, formatter.Buffer, out consumed, out bytesWritten)) {
                 return false;
             }
             formatter.Advance(bytesWritten);

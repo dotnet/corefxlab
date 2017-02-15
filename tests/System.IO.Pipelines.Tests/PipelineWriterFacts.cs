@@ -22,7 +22,7 @@ namespace System.IO.Pipelines.Tests
             var writer = stream.AsPipelineWriter();
 
             var buffer = writer.Alloc();
-            buffer.Append("Hello World", EncodingData.InvariantUtf8);
+            buffer.Append("Hello World", TextEncoder.InvariantUtf8);
             await buffer.FlushAsync();
 
             Assert.Equal("Hello World", Encoding.UTF8.GetString(stream.ToArray()));
@@ -36,7 +36,7 @@ namespace System.IO.Pipelines.Tests
             var writer = stream.AsPipelineWriter();
 
             var buffer = writer.Alloc();
-            buffer.Append("Hello World", EncodingData.InvariantUtf8);
+            buffer.Append("Hello World", TextEncoder.InvariantUtf8);
             await buffer.FlushAsync();
 
             Assert.Equal("Hello World", Encoding.UTF8.GetString(stream.ToArray()));
@@ -46,7 +46,7 @@ namespace System.IO.Pipelines.Tests
             writer = stream.AsPipelineWriter();
 
             buffer = writer.Alloc();
-            buffer.Append("Hello World", EncodingData.InvariantUtf8);
+            buffer.Append("Hello World", TextEncoder.InvariantUtf8);
             await buffer.FlushAsync();
 
             Assert.Equal("Hello WorldHello World", Encoding.UTF8.GetString(stream.ToArray()));
@@ -62,7 +62,7 @@ namespace System.IO.Pipelines.Tests
             var writer = stream.AsPipelineWriter();
 
             var buffer = writer.Alloc();
-            buffer.Append("Hello World", EncodingData.InvariantUtf8);
+            buffer.Append("Hello World", TextEncoder.InvariantUtf8);
             await buffer.FlushAsync();
 
             Assert.Equal("Hello World", Encoding.UTF8.GetString(stream.ToArray()));
@@ -84,7 +84,7 @@ namespace System.IO.Pipelines.Tests
             var writer = stream.AsPipelineWriter();
 
             var buffer = writer.Alloc();
-            buffer.Append("Hello World", EncodingData.InvariantUtf8);
+            buffer.Append("Hello World", TextEncoder.InvariantUtf8);
 
             Assert.Equal(0, stream.Length);
             buffer.Commit();
@@ -99,7 +99,7 @@ namespace System.IO.Pipelines.Tests
                 var writer = stream.AsPipelineWriter();
 
                 var output = writer.Alloc();
-                output.Append("Hello World", EncodingData.InvariantUtf8);
+                output.Append("Hello World", TextEncoder.InvariantUtf8);
                 await output.FlushAsync();
                 writer.Complete();
 
