@@ -45,13 +45,22 @@ namespace System.IO.Pipelines
             }
 
             var pipe = new Pipe(_pool);
-            ExecuteCopyToAsync(pipe, stream);
+            var ignore = ExecuteCopyToAsync(pipe, stream);
             return pipe;
         }
 
-        private Task ExecuteCopyToAsync(Pipe pipe, Stream stream)
+        private async Task ExecuteCopyToAsync(Pipe pipe, Stream stream)
         {
-            return stream.CopyToAsync(pipe);
+            try
+            {
+                await stream.CopyToAsync(pipe);
+            }
+            catch (Exception ex)
+            {
+                pipe.Writer.Complete(ex);
+                return;
+            }
+            pipe.Writer.Complete();
         }
 
         public IPipeConnection CreateConnection(NetworkStream stream)
@@ -99,7 +108,11 @@ namespace System.IO.Pipelines
         public IPipeReader CreateReader(IPipeReader reader, Func<IPipeReader, IPipeWriter, Task> produce)
         {
             var pipe = new Pipe(_pool);
-            produce(reader, pipe);
+
+            produce(reader, pipe).ContinueWith(t =>
+            {
+            });
+
             return pipe;
         }
 

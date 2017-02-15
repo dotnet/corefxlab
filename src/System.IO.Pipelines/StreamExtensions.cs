@@ -29,21 +29,7 @@ namespace System.IO.Pipelines
         public static IPipeWriter AsPipelineWriter(this Stream stream, IBufferPool pool)
         {
             var pipe = new Pipe(pool);
-            pipe.CopyToAsync(stream).ContinueWith((task, state) =>
-            {
-                var innerPipe = (Pipe)state;
-
-                if (task.IsFaulted)
-                {
-                    innerPipe.Reader.Complete(task.Exception.InnerException);
-                }
-                else
-                {
-                    innerPipe.Reader.Complete();
-                }
-            }, 
-            pipe, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-
+            pipe.CopyToAsync(stream);
             return pipe;
         }
 
@@ -78,9 +64,18 @@ namespace System.IO.Pipelines
         /// <param name="stream"></param>
         /// <param name="writer"></param>
         /// <returns></returns>
-        public static Task CopyToAsync(this Stream stream, IPipeWriter writer)
+        public static async Task CopyToAsync(this Stream stream, IPipeWriter writer)
         {
-            return stream.CopyToAsync(new PipelineWriterStream(writer));
+            try
+            {
+                await stream.CopyToAsync(new PipelineWriterStream(writer));
+            }
+            catch (Exception ex)
+            {
+                writer.Complete(ex);
+                return;
+            }
+            writer.Complete();
         }
 
         private class UnownedBufferStream : Stream
