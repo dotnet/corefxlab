@@ -142,7 +142,7 @@ namespace System.Text.Formatting {
             int bytesWritten;
             int charactersConsumed;
 
-            if (!formatter.Encoding.TryEncode(characters, buffer, out charactersConsumed, out bytesWritten))
+            if (!formatter.Encoder.TryEncode(characters, buffer, out charactersConsumed, out bytesWritten))
             {
                 Debug.Assert(false, "this should never happen"); // because I pre-resized the buffer to 4 bytes per char at the top of this method.
             }

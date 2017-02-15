@@ -7,12 +7,12 @@ namespace System.Text.Http.SingleSegment
     {
         //TODO: Issue #390: Switch HttpHeaderBuffer to use Slices.Span.
         private Span<byte> _bytes;
-        private readonly TextEncoder _encoding;
+        private readonly TextEncoder _encoder;
 
-        public HttpHeaderBuffer(Span<byte> bytes, TextEncoder encoding)
+        public HttpHeaderBuffer(Span<byte> bytes, TextEncoder encoder)
         {
             _bytes = bytes;
-            _encoding = encoding;
+            _encoder = encoder;
         }
 
         public void UpdateValue(string newValue)
@@ -23,7 +23,7 @@ namespace System.Text.Http.SingleSegment
             }
 
             int bytesWritten;
-            _encoding.TryEncode(newValue, _bytes, out bytesWritten);            
+            _encoder.TryEncode(newValue, _bytes, out bytesWritten);            
 
             _bytes.SetFromRestOfSpanToEmpty(newValue.Length);
         }        

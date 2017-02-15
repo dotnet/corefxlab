@@ -13,7 +13,7 @@ namespace System.Text.Formatting.Globalization.Tests
         public void CustomCulture()
         {
             var sb = new StringFormatter();
-            sb.Encoding = EncodingProvider.CreateEncoding("pl-PL");
+            sb.Encoder = EncodingProvider.CreateEncoding("pl-PL");
 
             sb.Append(-10000, TextFormat.Parse('N'));
             Assert.Equal("-10\u00A0000,00", sb.ToString()); // \u00A0 is a space group separator

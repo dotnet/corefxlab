@@ -11,27 +11,27 @@ namespace System.Buffers
     /// </summary>
     public struct BytesReader
     {
-        readonly TextEncoder _encoding;
+        readonly TextEncoder _encoder;
         ReadOnlyBytes _unreadSegments;
         int _index; // index relative to the begining of bytes passed to the constructor
 
         ReadOnlyMemory<byte> _currentSegment;
         int _currentSegmentIndex;
         
-        public BytesReader(ReadOnlyBytes bytes, TextEncoder encoding)
+        public BytesReader(ReadOnlyBytes bytes, TextEncoder encoder)
         {
             _unreadSegments = bytes;
             _currentSegment = _unreadSegments.First;
-            _encoding = encoding;
+            _encoder = encoder;
             _currentSegmentIndex = 0;
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyMemory<byte> bytes, TextEncoder encoding)
+        public BytesReader(ReadOnlyMemory<byte> bytes, TextEncoder encoder)
         {
             _unreadSegments = new ReadOnlyBytes(bytes);
             _currentSegment = bytes;
-            _encoding = encoding;
+            _encoder = encoder;
             _currentSegmentIndex = 0;
             _index = 0;
         }
@@ -45,14 +45,14 @@ namespace System.Buffers
         public BytesReader(IReadOnlyMemoryList<byte> bytes) : this(bytes, TextEncoder.Utf8)
         { }
 
-        public BytesReader(IReadOnlyMemoryList<byte> bytes, TextEncoder encoding) : this(new ReadOnlyBytes(bytes))
+        public BytesReader(IReadOnlyMemoryList<byte> bytes, TextEncoder encoder) : this(new ReadOnlyBytes(bytes))
         { }
 
         public byte Peek() => _currentSegment.Span[_currentSegmentIndex];
 
         public ReadOnlySpan<byte> Unread => _currentSegment.Span.Slice(_currentSegmentIndex);
 
-        public TextEncoder Encoding => _encoding;
+        public TextEncoder Encoder => _encoder;
 
         public ReadOnlyBytes? ReadBytesUntil(byte value)
         {
@@ -296,7 +296,7 @@ namespace System.Buffers
         {
             int consumed;
             var unread = Unread;
-            if (PrimitiveParser.TryParseBoolean(unread, out value, out consumed, _encoding))
+            if (PrimitiveParser.TryParseBoolean(unread, out value, out consumed, _encoder))
             {
                 if (unread.Length > consumed)
                 {
@@ -311,7 +311,7 @@ namespace System.Buffers
                 var tempSpan = new Span<byte>(temp, 15);
                 var copied = CopyTo(tempSpan);
 
-                if (PrimitiveParser.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _encoding))
+                if (PrimitiveParser.TryParseBoolean(tempSpan.Slice(0, copied), out value, out consumed, _encoder))
                 {
                     Advance(consumed);
                     return true;
@@ -325,7 +325,7 @@ namespace System.Buffers
         {
             int consumed;
             var unread = Unread;
-            if (PrimitiveParser.TryParseUInt64(unread, out value, out consumed, default(TextFormat), _encoding))
+            if (PrimitiveParser.TryParseUInt64(unread, out value, out consumed, default(TextFormat), _encoder))
             {
                 if (unread.Length > consumed)
                 {
@@ -340,7 +340,7 @@ namespace System.Buffers
                 var tempSpan = new Span<byte>(temp, 32);
                 var copied = CopyTo(tempSpan);
 
-                if (PrimitiveParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _encoding))
+                if (PrimitiveParser.TryParseUInt64(tempSpan.Slice(0, copied), out value, out consumed, 'G', _encoder))
                 {
                     Advance(consumed);
                     return true;

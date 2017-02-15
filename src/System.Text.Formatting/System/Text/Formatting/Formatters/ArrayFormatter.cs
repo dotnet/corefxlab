@@ -10,13 +10,13 @@ namespace System.Text.Formatting
     public class ArrayFormatter : ITextOutput
     {
         ResizableArray<byte> _buffer;
-        TextEncoder _encoding;
+        TextEncoder _encoder;
         ArrayPool<byte> _pool;
 
-        public ArrayFormatter(int capacity, TextEncoder encoding, ArrayPool<byte> pool = null)
+        public ArrayFormatter(int capacity, TextEncoder encoder, ArrayPool<byte> pool = null)
         {
             _pool = pool != null ? pool : ArrayPool<byte>.Shared;
-            _encoding = encoding;
+            _encoder = encoder;
             _buffer = new ResizableArray<byte>(_pool.Rent(capacity));
         }
 
@@ -29,7 +29,7 @@ namespace System.Text.Formatting
         public ArraySegment<byte> Free => _buffer.Free;
         public ArraySegment<byte> Formatted => _buffer.Full;
 
-        public TextEncoder Encoding => _encoding;
+        public TextEncoder Encoder => _encoder;
 
         public Span<byte> Buffer => Free.Slice();
 

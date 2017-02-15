@@ -50,7 +50,7 @@ namespace System.Text.Formatting.Tests
         public void CustomCulture()
         {
             var sb = new StringFormatter();
-            sb.Encoding = Culture5;
+            sb.Encoder = Culture5;
 
             sb.Append(-1234567890);
             Assert.Equal("_?BBBBBCCCCCDDDDDEEEEEFFFFFGGGGGHHHHHIIIIIJJJJJAAAAA", sb.ToString());

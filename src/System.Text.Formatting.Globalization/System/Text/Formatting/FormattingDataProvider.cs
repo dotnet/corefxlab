@@ -26,11 +26,11 @@ namespace System.Text.Formatting
 
             using (resourceStream)
             {
-                return CreateEncoding(localeId, resourceStream);
+                return CreateEncoder(localeId, resourceStream);
             }
         }
 
-        private static TextEncoder CreateEncoding(string localeId, Stream resourceStream)
+        private static TextEncoder CreateEncoder(string localeId, Stream resourceStream)
         {
             const int maxIdLength = 15;
             const int recordSize = 20;

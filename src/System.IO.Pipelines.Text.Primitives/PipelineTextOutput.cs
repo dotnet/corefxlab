@@ -16,13 +16,13 @@ namespace System.IO.Pipelines.Text.Primitives
         private WritableBuffer _writableBuffer;
         private bool _needAlloc = true;
 
-        public PipelineTextOutput(IPipeWriter writer, TextEncoder encoding)
+        public PipelineTextOutput(IPipeWriter writer, TextEncoder encoder)
         {
             _writer = writer;
-            Encoding = encoding;
+            Encoder = encoder;
         }
 
-        public TextEncoder Encoding { get; }
+        public TextEncoder Encoder { get; }
 
         public Span<byte> Buffer
         {

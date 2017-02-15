@@ -172,7 +172,7 @@ namespace System.Text.Formatting.Tests
         private void CustomCultureFormat()
         {
             StringFormatter sb = new StringFormatter(numbersToWrite * 3, pool);
-            sb.Encoding = CreateCustomCulture();
+            sb.Encoder = CreateCustomCulture();
 
             timer.Restart();
             for (int itteration = 0; itteration < itterationsCulture; itteration++)

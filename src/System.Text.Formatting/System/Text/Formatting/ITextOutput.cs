@@ -10,6 +10,6 @@ namespace System.Text.Formatting
     // One thing I am not sure here is if it's ok for these APIs to be synchronous, but I guess I will wait till I find a concrete issue with this.
     public interface ITextOutput : IOutput
     {
-        TextEncoder Encoding { get; }
+        TextEncoder Encoder { get; }
     }
 }
