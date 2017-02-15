@@ -16,7 +16,7 @@ namespace System.Text
                 format.Symbol = 'G';
             }
             Precondition.Require(format.Symbol == 'G');
-            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
+            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
             return FloatFormatter.TryFormatNumber(value, false, buffer, out bytesWritten, format, encoder);
         }
 
@@ -27,7 +27,7 @@ namespace System.Text
                 format.Symbol = 'G';
             }
             Precondition.Require(format.Symbol == 'G');
-            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
+            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
             return FloatFormatter.TryFormatNumber(value, true, buffer, out bytesWritten, format, encoder);
         }
     }

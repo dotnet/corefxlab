@@ -17,7 +17,7 @@ namespace System.Text.Formatting
             _encoding = encoding;
         }
 
-        public OutputFormatter(TOutput output) : this(output, TextEncoder.InvariantUtf8)
+        public OutputFormatter(TOutput output) : this(output, TextEncoder.Utf8)
         {
         }
 

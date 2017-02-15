@@ -5,7 +5,7 @@ using System.Text.Utf8;
 
 namespace System.Text.Utf16
 {
-    class Utf16TextEncodingLE : TextEncoder
+    class Utf16TextEncoderLE : TextEncoder
     {
         #region Built-in Invariant Symbol Table
 
@@ -35,12 +35,12 @@ namespace System.Text.Utf16
 
         #region Constructors
 
-        public Utf16TextEncodingLE()
+        public Utf16TextEncoderLE()
             : this(Utf16DigitsAndSymbols)
         {
         }
 
-        public Utf16TextEncodingLE(byte[][] symbols)
+        public Utf16TextEncoderLE(byte[][] symbols)
             : base(symbols, EncodingName.Utf16)
         {
         }

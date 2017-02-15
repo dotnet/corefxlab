@@ -182,7 +182,7 @@ namespace System.IO.Pipelines.Samples.Http
 
             if (_autoChunk)
             {
-                buffer.Append(data.Length, TextEncoder.InvariantUtf8, 'x');
+                buffer.Append(data.Length, TextEncoder.Utf8, 'x');
                 buffer.Write(_endChunkBytes);
                 buffer.Write(data);
                 buffer.Write(_endChunkBytes);

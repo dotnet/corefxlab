@@ -10,7 +10,7 @@ namespace System.Text
     {
         public static bool TryParseBoolean(ReadOnlySpan<byte> text, out bool value, out int bytesConsumed, TextEncoder encoder = null)
         {
-            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
+            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
 
             bytesConsumed = 0;
             value = default(bool);

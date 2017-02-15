@@ -11,7 +11,7 @@ namespace System.Text.Formatting
     {
         ResizableArray<byte> _buffer;
         ArrayPool<byte> _pool;
-        public TextEncoder Encoding { get; set; } = TextEncoder.InvariantUtf16;
+        public TextEncoder Encoding { get; set; } = TextEncoder.Utf16;
 
         public StringFormatter(int characterCapacity = 32, ArrayPool<byte> pool = null)
         {

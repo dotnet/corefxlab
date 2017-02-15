@@ -30,7 +30,7 @@ namespace Microsoft.Net.Http
             _buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         }
 
-        public TextEncoder Encoding => TextEncoder.InvariantUtf8;
+        public TextEncoder Encoding => TextEncoder.Utf8;
 
         public Span<byte> Buffer {
             get {
@@ -97,7 +97,7 @@ namespace Microsoft.Net.Http
         }
         int WriteChunkPrefix(Span<byte> chunkPrefixBuffer, int chunkLength)
         {
-            if (!PrimitiveFormatter.TryFormat(chunkLength, chunkPrefixBuffer, out var written, 'X', TextEncoder.InvariantUtf8))
+            if (!PrimitiveFormatter.TryFormat(chunkLength, chunkPrefixBuffer, out var written, 'X', TextEncoder.Utf8))
             {
                 throw new Exception("cannot format chunk length");
             }

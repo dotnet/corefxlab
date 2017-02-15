@@ -36,13 +36,13 @@ namespace System.Buffers
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyMemory<byte> bytes) : this(bytes, TextEncoder.InvariantUtf8)
+        public BytesReader(ReadOnlyMemory<byte> bytes) : this(bytes, TextEncoder.Utf8)
         { }
 
-        public BytesReader(ReadOnlyBytes bytes) : this(bytes, TextEncoder.InvariantUtf8)
+        public BytesReader(ReadOnlyBytes bytes) : this(bytes, TextEncoder.Utf8)
         { }
 
-        public BytesReader(IReadOnlyMemoryList<byte> bytes) : this(bytes, TextEncoder.InvariantUtf8)
+        public BytesReader(IReadOnlyMemoryList<byte> bytes) : this(bytes, TextEncoder.Utf8)
         { }
 
         public BytesReader(IReadOnlyMemoryList<byte> bytes, TextEncoder encoding) : this(new ReadOnlyBytes(bytes))

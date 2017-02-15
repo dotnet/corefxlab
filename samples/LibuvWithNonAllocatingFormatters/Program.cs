@@ -84,7 +84,7 @@ namespace LibuvWithNonAllocatingFormatters
                         }
                     }
 
-                    var formatter = new ArrayFormatter(512, TextEncoder.InvariantUtf8);
+                    var formatter = new ArrayFormatter(512, TextEncoder.Utf8);
                     formatter.Clear();
                     formatter.Append("HTTP/1.1 200 OK");
                     formatter.Append("\r\n\r\n");

@@ -54,7 +54,7 @@ namespace System.Text
             }
             Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
 
-            encoder = encoder== null ? TextEncoder.InvariantUtf8 : encoder;
+            encoder = encoder== null ? TextEncoder.Utf8 : encoder;
 
             switch (format.Symbol)
             {
@@ -77,7 +77,7 @@ namespace System.Text
             }
             Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
 
-            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
+            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
 
             switch (format.Symbol)
             {
@@ -252,7 +252,7 @@ namespace System.Text
             }
             Precondition.Require(format.Symbol == 'G' || format.Symbol == 't' || format.Symbol == 'c' || format.Symbol == 'g');
 
-            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
+            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
 
             if (format.Symbol != 't')
             {

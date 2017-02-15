@@ -48,8 +48,8 @@ namespace System.Text
 
         #region Static instances
 
-        public readonly static TextEncoder InvariantUtf8 = new Utf8TextEncoding();
-        public readonly static TextEncoder InvariantUtf16 = new Utf16TextEncodingLE();
+        public readonly static TextEncoder Utf8 = new Utf8TextEncoder();
+        public readonly static TextEncoder Utf16 = new Utf16TextEncoderLE();
 
         #endregion Static instances
 
@@ -65,9 +65,9 @@ namespace System.Text
 
         public EncodingName Encoding => _encodingName;
 
-        public bool IsInvariantUtf8 => this == InvariantUtf8;
+        public bool IsInvariantUtf8 => this == Utf8;
 
-        public bool IsInvariantUtf16 => this == InvariantUtf16;
+        public bool IsInvariantUtf16 => this == Utf16;
 
         #endregion Properties
 
@@ -409,12 +409,12 @@ namespace System.Text
 
         public static TextEncoder CreateUtf8Encoder(byte[][] symbols)
         {
-            return new Utf8TextEncoding(symbols);
+            return new Utf8TextEncoder(symbols);
         }
 
         public static TextEncoder CreateUtf16Encoder(byte[][] symbols)
         {
-            return new Utf16TextEncodingLE(symbols);
+            return new Utf16TextEncoderLE(symbols);
         }
 
         #endregion Static factory methods

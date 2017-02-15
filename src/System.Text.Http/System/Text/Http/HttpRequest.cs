@@ -73,14 +73,14 @@ namespace System.Text.Http
 
         public void Deconstruct(out string name, out string value)
         {
-            name = Name.ToString(TextEncoder.InvariantUtf8);
-            value = Value.ToString(TextEncoder.InvariantUtf8);
+            name = Name.ToString(TextEncoder.Utf8);
+            value = Value.ToString(TextEncoder.Utf8);
         }
 
         public void Deconstruct(out Utf8String name, out Utf8String value)
         {
-            name = Name.ToUtf8String(TextEncoder.InvariantUtf8);
-            value = Value.ToUtf8String(TextEncoder.InvariantUtf8);
+            name = Name.ToUtf8String(TextEncoder.Utf8);
+            value = Value.ToUtf8String(TextEncoder.Utf8);
         }
     }
 
@@ -120,7 +120,7 @@ namespace System.Text.Http
 
         public override string ToString()
         {
-            return _headers.ToString(TextEncoder.InvariantUtf8);
+            return _headers.ToString(TextEncoder.Utf8);
         }
     }
 
@@ -191,7 +191,7 @@ namespace System.Text.Http
 
         public static Utf8String ToUtf8String(this ReadOnlyBytes bytes, TextEncoder encoder)
         {
-            var sb = new ArrayFormatter(bytes.ComputeLength(), TextEncoder.InvariantUtf8);
+            var sb = new ArrayFormatter(bytes.ComputeLength(), TextEncoder.Utf8);
             if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
                 var position = Position.First;

@@ -10,7 +10,7 @@ namespace System.Text
     {
         public static bool TryParseSByte(ReadOnlySpan<byte> text, out sbyte value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
-            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
+            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
 
             if (!format.IsDefault && format.HasPrecision)
             {
@@ -125,7 +125,7 @@ namespace System.Text
 
         public static bool TryParseInt16(ReadOnlySpan<byte> text, out short value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
-            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
+            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
 
             if (!format.IsDefault && format.HasPrecision)
             {
@@ -240,7 +240,7 @@ namespace System.Text
 
         public static bool TryParseInt32(ReadOnlySpan<byte> text, out int value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
-            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
+            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
 
             if (!format.IsDefault && format.HasPrecision)
             {
@@ -355,7 +355,7 @@ namespace System.Text
 
         public static bool TryParseInt64(ReadOnlySpan<byte> text, out long value, out int bytesConsumed, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
-            encoder = encoder == null ? TextEncoder.InvariantUtf8 : encoder;
+            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
 
             if (!format.IsDefault && format.HasPrecision)
             {

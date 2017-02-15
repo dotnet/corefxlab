@@ -45,7 +45,7 @@ namespace System.Text.Formatting
 
             byte[] idBytes = new byte[maxIdLength];
             int idByteCount;
-            if (!TextEncoder.InvariantUtf8.TryEncode(localeId, new Span<byte>(idBytes), out idByteCount))
+            if (!TextEncoder.Utf8.TryEncode(localeId, new Span<byte>(idBytes), out idByteCount))
             {
                 throw new Exception("bad locale id");
             }

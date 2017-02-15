@@ -31,7 +31,7 @@ namespace System.Text.Http.Tests
 
         public GivenIFormatterExtensionsForHttp()
         {
-            _formatter = new ArrayFormatter(124, TextEncoder.InvariantUtf8, ArrayPool<byte>.Shared);
+            _formatter = new ArrayFormatter(124, TextEncoder.Utf8, ArrayPool<byte>.Shared);
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace System.Text.Http.Tests
         //[Fact(Skip = "Issue https://github.com/dotnet/corefxlab/issues/599")]
         //public void WriteHttpHeader_resizes_the_buffer_taking_into_consideration_the_reserver()
         //{
-        //    _formatter = new BufferFormatter(32, FormattingData.InvariantUtf8, ArrayPool<byte>.Shared);
+        //    _formatter = new BufferFormatter(32, FormattingData.Utf8, ArrayPool<byte>.Shared);
 
         //    var httpHeaderBuffer =
         //        _formatter.WriteHttpHeader(GetUtf8EncodedString("Connection"), GetUtf8EncodedString("close"));

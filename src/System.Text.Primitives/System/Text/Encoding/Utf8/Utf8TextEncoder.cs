@@ -3,7 +3,7 @@
 
 namespace System.Text.Utf8
 {
-    class Utf8TextEncoding : TextEncoder
+    class Utf8TextEncoder : TextEncoder
     {
         #region Built-in Invariant Symbol Table
 
@@ -33,12 +33,12 @@ namespace System.Text.Utf8
 
         #region Constructors
 
-        public Utf8TextEncoding()
+        public Utf8TextEncoder()
             : this(Utf8DigitsAndSymbols)
         {
         }
 
-        public Utf8TextEncoding(byte[][] symbols)
+        public Utf8TextEncoder(byte[][] symbols)
             : base(symbols, EncodingName.Utf8)
         {
         }

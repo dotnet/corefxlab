@@ -38,7 +38,7 @@ Accept-Language: en-US,en;q=0.8,it;q=0.6,ms;q=0.4
             using (iteration.StartMeasurement())
             {
                 RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response) => {
-                    var formatter = new OutputFormatter<WritableBuffer>(response, TextEncoder.InvariantUtf8);
+                    var formatter = new OutputFormatter<WritableBuffer>(response, TextEncoder.Utf8);
                     formatter.Append("HTTP/1.1 200 OK");
                     formatter.Append("\r\nContent-Length: 13");
                     formatter.Append("\r\nContent-Type: text/plain");
@@ -64,7 +64,7 @@ Accept-Language: en-US,en;q=0.8,it;q=0.6,ms;q=0.4
             using (iteration.StartMeasurement())
             {
                 RawInMemoryHttpServer.RunSingleSegmentParser(numberOfRequests, concurrentConnections, s_genericRequest, (request, response)=> {
-                    var formatter = new OutputFormatter<WritableBuffer>(response, TextEncoder.InvariantUtf8);
+                    var formatter = new OutputFormatter<WritableBuffer>(response, TextEncoder.Utf8);
                     formatter.Append("HTTP/1.1 200 OK");
                     formatter.Append("\r\nContent-Length: 13");
                     formatter.Append("\r\nContent-Type: text/plain");
@@ -90,7 +90,7 @@ Accept-Language: en-US,en;q=0.8,it;q=0.6,ms;q=0.4
             using (iteration.StartMeasurement())
             {
                 RawInMemoryHttpServer.Run(numberOfRequests, concurrentConnections, s_genericRequest, (request, response) => {
-                    var formatter = new OutputFormatter<WritableBuffer>(response, TextEncoder.InvariantUtf8);
+                    var formatter = new OutputFormatter<WritableBuffer>(response, TextEncoder.Utf8);
                     formatter.Append("HTTP/1.1 200 OK");
                     formatter.Append("\r\nContent-Length: 25");
                     formatter.Append("\r\nContent-Type: application/json");

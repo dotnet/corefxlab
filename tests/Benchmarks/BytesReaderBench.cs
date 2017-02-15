@@ -32,7 +32,7 @@ public class BytesReaderBench
 
         foreach (var iteration in Benchmark.Iterations)
         {
-            var reader = new BytesReader(s_bytes, TextEncoder.InvariantUtf8);
+            var reader = new BytesReader(s_bytes, TextEncoder.Utf8);
 
             using (iteration.StartMeasurement())
             {

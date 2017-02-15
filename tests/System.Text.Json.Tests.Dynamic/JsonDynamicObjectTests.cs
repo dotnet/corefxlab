@@ -61,7 +61,7 @@ namespace System.Text.Json.Dynamic.Tests
         {
             var jsonText = new Utf8String("{\"FirstName\":\"John\",\"LastName\":\"Smith\",\"Address\":{\"Street\":\"21 2nd Street\",\"City\":\"New York\",\"State\":\"NY\",\"Zip\":\"10021-3100\"},\"IsAlive\":true,\"Age\":25,\"Spouse\":null}");
             JsonDynamicObject json = JsonDynamicObject.Parse(jsonText, 100);
-            var formatter = new ArrayFormatter(1024, TextEncoder.InvariantUtf8);
+            var formatter = new ArrayFormatter(1024, TextEncoder.Utf8);
             formatter.Append(json);
             var formattedText = new Utf8String(formatter.Formatted);
 
@@ -76,7 +76,7 @@ namespace System.Text.Json.Dynamic.Tests
             dynamic json = new JsonDynamicObject();
             json.First = "John";
 
-            var formatter = new ArrayFormatter(1024, TextEncoder.InvariantUtf8);
+            var formatter = new ArrayFormatter(1024, TextEncoder.Utf8);
             formatter.Append((JsonDynamicObject)json);
             var formattedText = new Utf8String(formatter.Formatted);
             Assert.Equal(new Utf8String("{\"First\":\"John\"}"), formattedText);

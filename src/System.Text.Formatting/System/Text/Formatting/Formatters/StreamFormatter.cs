@@ -14,7 +14,7 @@ namespace System.Text.Formatting
         byte[] _buffer;
         ArrayPool<byte> _pool;
 
-        public StreamFormatter(Stream stream, ArrayPool<byte> pool) : this(stream, TextEncoder.InvariantUtf16, pool)
+        public StreamFormatter(Stream stream, ArrayPool<byte> pool) : this(stream, TextEncoder.Utf16, pool)
         {
         }
 

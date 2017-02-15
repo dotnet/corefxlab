@@ -39,11 +39,11 @@ namespace System.IO.Pipelines.Samples
             var connection = await state.ConnectionTask;
 
             var requestBuffer = connection.Output.Alloc();
-            requestBuffer.Append($"{request.Method} {path} HTTP/1.1", TextEncoder.InvariantUtf8);
+            requestBuffer.Append($"{request.Method} {path} HTTP/1.1", TextEncoder.Utf8);
             WriteHeaders(request.Headers, ref requestBuffer);
 
             // End of the headers
-            requestBuffer.Append("\r\n\r\n", TextEncoder.InvariantUtf8);
+            requestBuffer.Append("\r\n\r\n", TextEncoder.Utf8);
 
             if (request.Method != HttpMethod.Get && request.Method != HttpMethod.Head)
             {
@@ -258,7 +258,7 @@ namespace System.IO.Pipelines.Samples
         {
             foreach (var header in headers)
             {
-                buffer.Append($"{header.Key}:{string.Join(",", header.Value)}\r\n", TextEncoder.InvariantUtf8);
+                buffer.Append($"{header.Key}:{string.Join(",", header.Value)}\r\n", TextEncoder.Utf8);
             }
         }
 

@@ -73,7 +73,7 @@ namespace System.Text.Formatting.Tests
         {
             byte[] buffer = new byte[1024];
             MemoryStream stream = new MemoryStream(buffer);
-            using (var writer = new StreamFormatter(stream, TextEncoder.InvariantUtf8, pool))
+            using (var writer = new StreamFormatter(stream, TextEncoder.Utf8, pool))
             {
                 writer.Append(new Age(56));
                 writer.Append(new Age(14, inMonths: true));

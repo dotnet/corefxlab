@@ -150,7 +150,7 @@ namespace System.Text.Utf8
         {
             int consumed;
             string value;
-            if (!TextEncoder.InvariantUtf8.TryDecode(this.Bytes, out value, out consumed))
+            if (!TextEncoder.Utf8.TryDecode(this.Bytes, out value, out consumed))
                 // TODO: The bytes here do not fully decode correctly. What should we do?
                 return string.Empty;
 
