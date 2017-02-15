@@ -5,6 +5,14 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="LowAllocationWebServerCore\obj\**" />
+    <Compile Remove="LowAllocationWebServerLibrary\obj\**" />
+    <EmbeddedResource Remove="LowAllocationWebServerCore\obj\**" />
+    <EmbeddedResource Remove="LowAllocationWebServerLibrary\obj\**" />
+    <None Remove="LowAllocationWebServerCore\obj\**" />
+    <None Remove="LowAllocationWebServerLibrary\obj\**" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\src\System.Text.Json\System.Text.Json.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Formatting\System.Text.Formatting.csproj" />
