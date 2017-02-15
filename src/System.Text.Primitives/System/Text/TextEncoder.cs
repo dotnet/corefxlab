@@ -223,7 +223,7 @@ namespace System.Text
 
         #region Symbol Parsing / Formatting
 
-        public bool TryParseSymbol(ReadOnlySpan<byte> buffer, out Symbol symbol, out int bytesConsumed)
+        public bool TryParseSymbol(ReadOnlySpan<byte> encodedBytes, out Symbol symbol, out int bytesConsumed)
         {
             int trieIndex = 0;
             int bufferIndex = 0;
@@ -234,7 +234,7 @@ namespace System.Text
                 if (node.ValueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value
                 {
                     symbol = (Symbol)node.IndexOrSymbol;
-                    if (VerifySuffix(buffer, bufferIndex, symbol))
+                    if (VerifySuffix(encodedBytes, bufferIndex, symbol))
                     {
                         bytesConsumed = _symbols[node.IndexOrSymbol].Length - bufferIndex;
                         return true;
@@ -248,7 +248,7 @@ namespace System.Text
                 }
                 else
                 {
-                    int search = BinarySearch(trieIndex, bufferIndex, buffer[0]);    // we search the _parsingTrie for the nextByte
+                    int search = BinarySearch(trieIndex, bufferIndex, encodedBytes[0]);    // we search the _parsingTrie for the nextByte
 
                     if (search > 0)   // if we found a node
                     {
@@ -266,11 +266,11 @@ namespace System.Text
             }
         }
 
-        public bool TryEncode(Symbol symbol, Span<byte> buffer, out int bytesWritten)
+        public bool TryEncode(Symbol symbol, Span<byte> encodedBytes, out int bytesWritten)
         {
             byte[] bytes = _symbols[(int)symbol];
             bytesWritten = bytes.Length;
-            if (bytesWritten > buffer.Length)
+            if (bytesWritten > encodedBytes.Length)
             {
                 bytesWritten = 0;
                 return false;
@@ -278,18 +278,18 @@ namespace System.Text
 
             if (bytesWritten == 2)
             {
-                buffer[0] = bytes[0];
-                buffer[1] = bytes[1];
+                encodedBytes[0] = bytes[0];
+                encodedBytes[1] = bytes[1];
                 return true;
             }
 
             if (bytesWritten == 1)
             {
-                buffer[0] = bytes[0];
+                encodedBytes[0] = bytes[0];
                 return true;
             }
 
-            bytes.CopyTo(buffer);
+            bytes.CopyTo(encodedBytes);
             return true;
         }
 
@@ -300,7 +300,7 @@ namespace System.Text
         /// <param name="nextByte">The next byte to be parsed</param>
         /// <param name="bytesParsed">The total number of bytes parsed (will be zero until a code unit is deciphered)</param>
         /// <returns></returns>
-        internal bool TryParseSymbol(ReadOnlySpan<byte> buffer, out uint symbol, out int consumed)
+        internal bool TryParseSymbol(ReadOnlySpan<byte> encodedBytes, out uint symbol, out int consumed)
         {
             int trieIndex = 0;
             int codeUnitIndex = 0;
@@ -310,7 +310,7 @@ namespace System.Text
                 if (_parsingTrie[trieIndex].ValueOrNumChildren == 0)    // if numChildren == 0, we're on a leaf & we've found our value and completed the code unit
                 {
                     symbol = (uint)_parsingTrie[trieIndex].IndexOrSymbol;  // return the parsed value
-                    if (VerifySuffix(buffer, codeUnitIndex, (Symbol)symbol))
+                    if (VerifySuffix(encodedBytes, codeUnitIndex, (Symbol)symbol))
                     {
                         consumed = _symbols[(int)symbol].Length;
                         return true;
@@ -324,7 +324,7 @@ namespace System.Text
                 }
                 else
                 {
-                    int search = BinarySearch(trieIndex, codeUnitIndex, buffer[codeUnitIndex]);    // we search the _parsingTrie for the nextByte
+                    int search = BinarySearch(trieIndex, codeUnitIndex, encodedBytes[codeUnitIndex]);    // we search the _parsingTrie for the nextByte
 
                     if (search > 0)   // if we found a node
                     {
