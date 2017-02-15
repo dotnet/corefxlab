@@ -19,9 +19,9 @@ namespace System.Text.Formatting.Tests
             _inMonths = inMonths;
         }
 
-        public bool TryFormat(Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoding)
+        public bool TryFormat(Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
         {
-            if (!PrimitiveFormatter.TryFormat(_age, buffer, out bytesWritten, format, encoding))
+            if (!PrimitiveFormatter.TryFormat(_age, buffer, out bytesWritten, format, encoder))
             {
                 return false;
             }
@@ -33,7 +33,7 @@ namespace System.Text.Formatting.Tests
             unsafe
             {
                 ReadOnlySpan<char> symbolSpan = new ReadOnlySpan<char>(&symbol, 1);
-                if (!encoding.TextEncoder.TryEncode(symbolSpan, buffer.Slice(bytesWritten), out consumed, out symbolBytes))
+                if (!encoder.TryEncode(symbolSpan, buffer.Slice(bytesWritten), out consumed, out symbolBytes))
                 {
                     return false;
                 }

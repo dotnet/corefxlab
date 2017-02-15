@@ -23,7 +23,7 @@ namespace System.Text.Http.SingleSegment
             }
 
             int bytesWritten;
-            _encoding.TextEncoder.TryEncode(newValue, _bytes, out bytesWritten);            
+            _encoding.TryEncode(newValue, _bytes, out bytesWritten);            
 
             _bytes.SetFromRestOfSpanToEmpty(newValue.Length);
         }        

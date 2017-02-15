@@ -873,7 +873,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseSByte(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoding);
+            result = PrimitiveParser.TryParseSByte(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoder);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1058,7 +1058,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt16(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoding);
+            result = PrimitiveParser.TryParseInt16(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoder);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1243,7 +1243,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt32(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoding);
+            result = PrimitiveParser.TryParseInt32(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoder);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
@@ -1428,7 +1428,7 @@ namespace System.Text.Primitives.Tests
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             bool result;
 
-            result = PrimitiveParser.TryParseInt64(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoding);
+            result = PrimitiveParser.TryParseInt64(utf8Span.Slice(index), out parsedValue, out consumed, 'G', s_thaiEncoder);
 
             Assert.Equal(expectSuccess, result);
             Assert.Equal(expectedValue, parsedValue);
