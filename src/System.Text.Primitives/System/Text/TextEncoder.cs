@@ -55,7 +55,7 @@ namespace System.Text
 
         #region Private data
 
-        private readonly EncodingName _encodingName;
+        private readonly EncodingName _encoding;
         private readonly byte[][] _symbols;                     // this could be flattened into a single array
         private readonly ParsingTrie.Node[] _parsingTrie;       // prefix tree used for parsing
 
@@ -63,7 +63,7 @@ namespace System.Text
 
         #region Properties
 
-        public EncodingName Encoding => _encodingName;
+        public EncodingName Encoding => _encoding;
 
         public bool IsInvariantUtf8 => this == Utf8;
 
@@ -73,9 +73,9 @@ namespace System.Text
 
         #region Constructors
 
-        protected TextEncoder(byte[][] symbols, EncodingName encodingName)
+        protected TextEncoder(byte[][] symbols, EncodingName encoding)
         {
-            _encodingName = encodingName;
+            _encoding = encoding;
             _symbols = symbols;
             _parsingTrie = ParsingTrie.Create(symbols);
         }
