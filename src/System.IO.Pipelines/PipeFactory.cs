@@ -55,7 +55,7 @@ namespace System.IO.Pipelines
             {
                 await stream.CopyToAsync(pipe);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 pipe.Writer.Complete(ex);
                 return;
@@ -98,9 +98,7 @@ namespace System.IO.Pipelines
         {
             var pipe = new Pipe(_pool);
 
-            consume(pipe, writer).ContinueWith(t =>
-            {
-            });
+            consume(pipe, writer);
 
             return pipe;
         }
@@ -109,9 +107,7 @@ namespace System.IO.Pipelines
         {
             var pipe = new Pipe(_pool);
 
-            produce(reader, pipe).ContinueWith(t =>
-            {
-            });
+            produce(reader, pipe);
 
             return pipe;
         }
