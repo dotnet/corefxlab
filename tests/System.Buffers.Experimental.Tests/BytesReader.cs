@@ -147,7 +147,7 @@ namespace System.Slices.Tests
             var eol = new Span<byte>(s_eol);
             var bytes = new ReadOnlyBytes(data);
 
-            var reader = new BytesReader(bytes, EncodingData.InvariantUtf8);
+            var reader = new BytesReader(bytes, TextEncoder.Utf8);
 
             while (true)
             {

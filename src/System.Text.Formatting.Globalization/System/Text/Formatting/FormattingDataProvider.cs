@@ -15,7 +15,7 @@ namespace System.Text.Formatting
     // For now, the data might contain errors.
     public class EncodingProvider
     {
-        public static EncodingData CreateEncoding(string localeId)
+        public static TextEncoder CreateEncoding(string localeId)
         {
             var resourceName = "System.Text.Formatting.Globalization.locales.bin";
             var resourceStream = typeof(EncodingProvider).GetTypeInfo().Assembly.GetManifestResourceStream(resourceName);
@@ -26,11 +26,11 @@ namespace System.Text.Formatting
 
             using (resourceStream)
             {
-                return CreateEncoding(localeId, resourceStream);
+                return CreateEncoder(localeId, resourceStream);
             }
         }
 
-        private static EncodingData CreateEncoding(string localeId, Stream resourceStream)
+        private static TextEncoder CreateEncoder(string localeId, Stream resourceStream)
         {
             const int maxIdLength = 15;
             const int recordSize = 20;
@@ -45,7 +45,7 @@ namespace System.Text.Formatting
 
             byte[] idBytes = new byte[maxIdLength];
             int idByteCount;
-            if (!EncodingData.InvariantUtf8.TextEncoder.TryEncode(localeId, new Span<byte>(idBytes), out idByteCount))
+            if (!TextEncoder.Utf8.TryEncode(localeId, new Span<byte>(idBytes), out idByteCount))
             {
                 throw new Exception("bad locale id");
             }
@@ -92,7 +92,7 @@ namespace System.Text.Formatting
                 Array.Copy(data, stringStart, utf16digitsAndSymbols[stringIndex], 0, stringLength);
             }
 
-            return new EncodingData(utf16digitsAndSymbols, TextEncoder.Utf16);
+            return TextEncoder.CreateUtf16Encoder(utf16digitsAndSymbols);
         }
 
         static ushort ReadUInt16At(byte[] data, int ushortIndex)

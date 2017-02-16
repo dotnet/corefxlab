@@ -3,8 +3,48 @@
 
 namespace System.Text.Utf8
 {
-    class Utf8TextEncoding : TextEncoder
+    class Utf8TextEncoder : TextEncoder
     {
+        #region Built-in Invariant Symbol Table
+
+        private static readonly byte[][] Utf8DigitsAndSymbols = new byte[][]
+        {
+            new byte[] { 48, },
+            new byte[] { 49, },
+            new byte[] { 50, },
+            new byte[] { 51, },
+            new byte[] { 52, },
+            new byte[] { 53, },
+            new byte[] { 54, },
+            new byte[] { 55, },
+            new byte[] { 56, },
+            new byte[] { 57, }, // digit 9
+            new byte[] { 46, }, // decimal separator
+            new byte[] { 44, }, // group separator
+            new byte[] { 73, 110, 102, 105, 110, 105, 116, 121, },
+            new byte[] { 45, }, // minus sign
+            new byte[] { 43, }, // plus sign
+            new byte[] { 78, 97, 78, }, // NaN
+            new byte[] { 69, }, // E
+            new byte[] { 101, }, // e
+        };
+
+        #endregion Built-in Invariant Symbol Table
+
+        #region Constructors
+
+        public Utf8TextEncoder()
+            : this(Utf8DigitsAndSymbols)
+        {
+        }
+
+        public Utf8TextEncoder(byte[][] symbols)
+            : base(symbols, EncodingName.Utf8)
+        {
+        }
+
+        #endregion Constructors
+
         #region Decoding implementation
 
         public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, out string text, out int bytesConsumed)

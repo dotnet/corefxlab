@@ -191,7 +191,7 @@ namespace System.Text.Http
 
         public static Utf8String ToUtf8String(this ReadOnlyBytes bytes, TextEncoder encoder)
         {
-            var sb = new ArrayFormatter(bytes.ComputeLength(), EncodingData.InvariantUtf8);
+            var sb = new ArrayFormatter(bytes.ComputeLength(), TextEncoder.Utf8);
             if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
                 var position = Position.First;

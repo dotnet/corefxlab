@@ -29,7 +29,7 @@ namespace System.Text.Primitives.Tests
             bool actualValue;
             int actualConsumed;
 
-            result = PrimitiveParser.TryParseBoolean(byteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf8);
+            result = PrimitiveParser.TryParseBoolean(byteSpan, out actualValue, out actualConsumed, TextEncoder.Utf8);
 
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
@@ -61,7 +61,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedConsumed, actualConsumed);
 
             ReadOnlySpan<byte> utf16ByteSpan = charSpan.AsBytes();
-            result = PrimitiveParser.TryParseBoolean(utf16ByteSpan, out actualValue, out actualConsumed, EncodingData.InvariantUtf16);
+            result = PrimitiveParser.TryParseBoolean(utf16ByteSpan, out actualValue, out actualConsumed, TextEncoder.Utf16);
             Assert.True(result);
             Assert.Equal(expectedValue, actualValue);
             Assert.Equal(expectedConsumed, actualConsumed / 2);

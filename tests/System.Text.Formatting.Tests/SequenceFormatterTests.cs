@@ -17,7 +17,7 @@ namespace System.Text.Formatting.Tests
             list.Add(new byte[10]);
             list.Add(new byte[10]);
 
-            var formatter = list.CreateFormatter(EncodingData.InvariantUtf8);
+            var formatter = list.CreateFormatter(TextEncoder.Utf8);
             formatter.Append(new string('x', 10));
             formatter.Append(new string('x', 8));
             formatter.Append(new string('x', 8));

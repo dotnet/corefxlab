@@ -10,15 +10,15 @@ namespace System.Text.Formatting
     public struct StreamFormatter : ITextOutput, IDisposable
     {
         Stream _stream;
-        EncodingData _encoding;
+        TextEncoder _encoder;
         byte[] _buffer;
         ArrayPool<byte> _pool;
 
-        public StreamFormatter(Stream stream, ArrayPool<byte> pool) : this(stream, EncodingData.InvariantUtf16, pool)
+        public StreamFormatter(Stream stream, ArrayPool<byte> pool) : this(stream, TextEncoder.Utf16, pool)
         {
         }
 
-        public StreamFormatter(Stream stream, EncodingData encoding, ArrayPool<byte> pool, int bufferSize = 256)
+        public StreamFormatter(Stream stream, TextEncoder encoder, ArrayPool<byte> pool, int bufferSize = 256)
         {
             _pool = pool;
             _buffer = null;
@@ -26,7 +26,7 @@ namespace System.Text.Formatting
             {
                 _buffer = _pool.Rent(bufferSize);
             }
-            _encoding = encoding;
+            _encoder = encoder;
             _stream = stream;
         }
 
@@ -64,10 +64,10 @@ namespace System.Text.Formatting
             _stream.Write(_buffer, 0, bytes);
         }
 
-        EncodingData ITextOutput.Encoding
+        TextEncoder ITextOutput.Encoder
         {
             get {
-                return _encoding;
+                return _encoder;
             }
         }
 

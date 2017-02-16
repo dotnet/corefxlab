@@ -9,21 +9,21 @@ namespace System.Text.Formatting
     public struct OutputFormatter<TOutput> : ITextOutput where TOutput : IOutput
     {
         TOutput _output;
-        EncodingData _encoding;
+        TextEncoder _encoder;
 
-        public OutputFormatter(TOutput output, EncodingData encoding)
+        public OutputFormatter(TOutput output, TextEncoder encoder)
         {
             _output = output;
-            _encoding = encoding;
+            _encoder = encoder;
         }
 
-        public OutputFormatter(TOutput output) : this(output, EncodingData.InvariantUtf8)
+        public OutputFormatter(TOutput output) : this(output, TextEncoder.Utf8)
         {
         }
 
         public Span<byte> Buffer => _output.Buffer;
 
-        public EncodingData Encoding => _encoding;
+        public TextEncoder Encoder => _encoder;
 
         public void Advance(int bytes) => _output.Advance(bytes);
 

@@ -5,8 +5,48 @@ using System.Text.Utf8;
 
 namespace System.Text.Utf16
 {
-    class Utf16TextEncodingLE : TextEncoder
+    class Utf16TextEncoderLE : TextEncoder
     {
+        #region Built-in Invariant Symbol Table
+
+        private static readonly byte[][] Utf16DigitsAndSymbols = new byte[][]
+        {
+            new byte[] { 48, 0, }, // digit 0
+            new byte[] { 49, 0, },
+            new byte[] { 50, 0, },
+            new byte[] { 51, 0, },
+            new byte[] { 52, 0, },
+            new byte[] { 53, 0, },
+            new byte[] { 54, 0, },
+            new byte[] { 55, 0, },
+            new byte[] { 56, 0, },
+            new byte[] { 57, 0, }, // digit 9
+            new byte[] { 46, 0, }, // decimal separator
+            new byte[] { 44, 0, }, // group separator
+            new byte[] { 73, 0, 110, 0, 102, 0, 105, 0, 110, 0, 105, 0, 116, 0, 121, 0, }, // Infinity
+            new byte[] { 45, 0, }, // minus sign 
+            new byte[] { 43, 0, }, // plus sign 
+            new byte[] { 78, 0, 97, 0, 78, 0, }, // NaN
+            new byte[] { 69, 0, }, // E
+            new byte[] { 101, 0, }, // e
+        };
+
+        #endregion Built-in Invariant Symbol Table
+
+        #region Constructors
+
+        public Utf16TextEncoderLE()
+            : this(Utf16DigitsAndSymbols)
+        {
+        }
+
+        public Utf16TextEncoderLE(byte[][] symbols)
+            : base(symbols, EncodingName.Utf16)
+        {
+        }
+
+        #endregion Constructors
+
         #region Decoding implementation
 
         public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, out string text, out int bytesConsumed)

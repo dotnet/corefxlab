@@ -15,7 +15,7 @@ namespace System.Text.Json.Tests
         [Fact]
         public void WriteJsonUtf8()
         {
-            var formatter = new ArrayFormatter(1024, EncodingData.InvariantUtf8);            
+            var formatter = new ArrayFormatter(1024, TextEncoder.Utf8);
             var json = new JsonWriter<ArrayFormatter>(formatter, prettyPrint: true);
             Write(ref json);
 
@@ -27,7 +27,7 @@ namespace System.Text.Json.Tests
         [Fact]
         public void WriteJsonUtf16()
         {
-            var formatter = new ArrayFormatter(1024, EncodingData.InvariantUtf16);
+            var formatter = new ArrayFormatter(1024, TextEncoder.Utf16);
             var json = new JsonWriter<ArrayFormatter>(formatter, prettyPrint: false);
             Write(ref json);
 

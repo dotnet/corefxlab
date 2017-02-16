@@ -6,8 +6,35 @@ using System.Collections.Generic;
 
 namespace System.Text
 {
-    public partial struct EncodingData : IEquatable<EncodingData>
+    internal static class ParsingTrie
     {
+        #region Parsing trie struct
+
+        // The parsing trie is structured as an array, which means that there are two types of
+        // "nodes" for representational purposes
+        //
+        // The first node type (the parent node) uses the valueOrNumChildren to represent the number of children
+        // underneath it. The index is unused for this type of node, except when it's used for
+        // sequential node mapping (see below). If valueOrNumChildren is zero for this type of node, the index
+        // is used and represents an index into _digitsAndSymbols.
+        //
+        // The second node types immediately follow the first (the childe nodes). They are composed of a value
+        // (valueOrNumChildren), which is walked via binary search, and an index, which points to another
+        // node contained in the array.
+        //
+        // We use the int index here to encode max-min info for sequential leaves
+        // It's very common for digits to be encoded sequentially, so we save time by mapping here
+        // The index is formatted as such: 0xAABBCCDD, where AA = the min value,
+        // BB = the index of the min value relative to the current node (1-indexed),
+        // CC = the max value, and DD = the max value's index in the same coord-system as BB.
+        public struct Node
+        {
+            public byte ValueOrNumChildren;
+            public int IndexOrSymbol;
+        }
+
+        #endregion Parsing trie struct
+
         /// <summary>
         /// A Suffix represents the ending sequence of bytes that correspond to a symbol.
         /// Suffixes play an important role in the parsing trie generation algorithm.
@@ -107,15 +134,15 @@ namespace System.Text
             }
         }
 
-		private struct Sequence : IComparable<Sequence>
+        private struct Sequence : IComparable<Sequence>
         {
             public int BeginningIndex;
             public int EndIndex;
             public byte BeginningValue;
             public byte EndValue;
 
-			// This constructor creates a sequence of length 0.
-			public Sequence(int index, byte value)
+            // This constructor creates a sequence of length 0.
+            public Sequence(int index, byte value)
             {
                 BeginningIndex = index;
                 EndIndex = index;
@@ -123,16 +150,16 @@ namespace System.Text
                 EndValue = value;
             }
 
-			public int CompareTo(Sequence other)
+            public int CompareTo(Sequence other)
             {
                 int thisLength = EndIndex - BeginningIndex;
                 int otherLength = other.EndIndex - other.BeginningIndex;
                 return thisLength.CompareTo(otherLength);
             }
 
-			public int Length
+            public int Length
             {
-				get
+                get
                 {
                     return EndIndex - BeginningIndex;
                 }
@@ -161,12 +188,12 @@ namespace System.Text
         }
 
         // The return value here is the index in parsingTrieList at which the parent node was placed.
-        private static int CreateParsingTrieNodeAndChildren(ref List<ParsingTrieNode> parsingTrieList, List<Suffix> sortedSuffixes)
+        private static int CreateParsingTrieNodeAndChildren(ref List<Node> parsingTrieList, List<Suffix> sortedSuffixes)
         {
             // If there is only one suffix, create a leaf node
             if (sortedSuffixes.Count == 1)
             {
-                ParsingTrieNode leafNode = new ParsingTrieNode();
+                Node leafNode = new Node();
                 leafNode.ValueOrNumChildren = 0;
                 leafNode.IndexOrSymbol = sortedSuffixes[0].SymbolIndex;
                 int leafNodeIndex = parsingTrieList.Count;
@@ -194,26 +221,26 @@ namespace System.Text
                 {
                     beginningByte = suffix.Bytes[0];
 
-					// Determine if the new clump is part of a sequence
-					if (beginningByte == currentSequence.EndValue + 1)
+                    // Determine if the new clump is part of a sequence
+                    if (beginningByte == currentSequence.EndValue + 1)
                     {
                         // This clump is part of the current sequence
                         currentSequence.EndIndex++;
                         currentSequence.EndValue++;
 
-						if (!currentSequence.Equals(longestSequence) && currentSequence.CompareTo(longestSequence) > 0)
+                        if (!currentSequence.Equals(longestSequence) && currentSequence.CompareTo(longestSequence) > 0)
                         {
                             // Replace the longest sequence with this sequence
                             longestSequence = currentSequence;
                         }
                     }
-					else
+                    else
                     {
                         // This clump is part of a new sequence
                         currentSequence = new Sequence(clumps.Count, beginningByte);
                     }
-					
-					// This is a new clump, with at least one suffix inside it. Add to the list of clumps.
+
+                    // This is a new clump, with at least one suffix inside it. Add to the list of clumps.
                     currentClump = new SuffixClump(beginningByte);
                     currentClump.Suffixes.Add(new Suffix(suffix.SymbolIndex, suffix.Bytes.Slice(1)));
                     clumps.Add(currentClump);
@@ -221,14 +248,14 @@ namespace System.Text
             }
 
             // Now that we know how many children there are, create parent node and place in list
-            ParsingTrieNode parentNode = new ParsingTrieNode();
+            Node parentNode = new Node();
             parentNode.ValueOrNumChildren = (byte)clumps.Count;
             // Only bother specifying a sequence if the longest sequence is sufficiently long
             if (longestSequence.Length > 5)
             {
                 parentNode.IndexOrSymbol = longestSequence.CreateSequenceMap();
             }
-			else
+            else
             {
                 parentNode.IndexOrSymbol = 0;
             }
@@ -240,14 +267,14 @@ namespace System.Text
             int childNodeStartIndex = parsingTrieList.Count;
             for (int i = 0; i < clumps.Count; i++)
             {
-                parsingTrieList.Add(default(ParsingTrieNode));
+                parsingTrieList.Add(default(Node));
             }
 
             // Process child nodes
-            List<ParsingTrieNode> childNodes = new List<ParsingTrieNode>();
+            List<Node> childNodes = new List<Node>();
             foreach (SuffixClump clump in clumps)
             {
-                ParsingTrieNode childNode = new ParsingTrieNode();
+                Node childNode = new Node();
                 childNode.ValueOrNumChildren = clump.BeginningByte;
                 childNode.IndexOrSymbol = CreateParsingTrieNodeAndChildren(ref parsingTrieList, clump.Suffixes);
                 childNodes.Add(childNode);
@@ -255,7 +282,7 @@ namespace System.Text
 
             // Place child nodes in spots allocated for them
             int childNodeIndex = childNodeStartIndex;
-            foreach (ParsingTrieNode childNode in childNodes)
+            foreach (Node childNode in childNodes)
             {
                 parsingTrieList[childNodeIndex] = childNode;
                 childNodeIndex++;
@@ -264,7 +291,7 @@ namespace System.Text
             return parentNodeIndex;
         }
 
-        private static ParsingTrieNode[] CreateParsingTrie(byte[][] symbols)
+        public static Node[] Create(byte[][] symbols)
         {
             List<Suffix> symbolList = new List<Suffix>(symbols.Length);
             for (int i = 0; i < symbols.Length; i++)
@@ -279,7 +306,7 @@ namespace System.Text
             // counting the number of children a node has.
             symbolList.Sort();
 
-            List<ParsingTrieNode> parsingTrieList = new List<ParsingTrieNode>(100);
+            List<Node> parsingTrieList = new List<Node>(100);
             CreateParsingTrieNodeAndChildren(ref parsingTrieList, symbolList);
 
             return parsingTrieList.ToArray();

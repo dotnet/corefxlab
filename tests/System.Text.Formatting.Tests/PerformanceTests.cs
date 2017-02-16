@@ -172,7 +172,7 @@ namespace System.Text.Formatting.Tests
         private void CustomCultureFormat()
         {
             StringFormatter sb = new StringFormatter(numbersToWrite * 3, pool);
-            sb.Encoding = CreateCustomCulture();
+            sb.Encoder = CreateCustomCulture();
 
             timer.Restart();
             for (int itteration = 0; itteration < itterationsCulture; itteration++)
@@ -221,7 +221,7 @@ namespace System.Text.Formatting.Tests
             string text = "Hello World!";
             int stringsToWrite = 2000;
             int size = stringsToWrite * text.Length + stringsToWrite;
-            ArrayFormatter formatter = new ArrayFormatter(size, EncodingData.InvariantUtf8, pool);
+            ArrayFormatter formatter = new ArrayFormatter(size, TextEncoder.Utf8, pool);
 
             timer.Restart();
             for (int itteration = 0; itteration < itterationsInvariant; itteration++)
@@ -260,7 +260,7 @@ namespace System.Text.Formatting.Tests
             PrintTime();
         }
 
-        static EncodingData CreateCustomCulture()
+        static TextEncoder CreateCustomCulture()
         {
             var utf16digitsAndSymbols = new byte[17][];
             for (ushort digit = 0; digit < 10; digit++)
@@ -269,10 +269,10 @@ namespace System.Text.Formatting.Tests
                 var digitString = new string(digitChar, 1);
                 utf16digitsAndSymbols[digit] = GetBytesUtf16(digitString);
             }
-            utf16digitsAndSymbols[(ushort)EncodingData.Symbol.DecimalSeparator] = GetBytesUtf16(".");
-            utf16digitsAndSymbols[(ushort)EncodingData.Symbol.GroupSeparator] = GetBytesUtf16(",");
-            utf16digitsAndSymbols[(ushort)EncodingData.Symbol.MinusSign] = GetBytesUtf16("_?");
-            return new EncodingData(utf16digitsAndSymbols, TextEncoder.Utf16);
+            utf16digitsAndSymbols[(ushort)TextEncoder.Symbol.DecimalSeparator] = GetBytesUtf16(".");
+            utf16digitsAndSymbols[(ushort)TextEncoder.Symbol.GroupSeparator] = GetBytesUtf16(",");
+            utf16digitsAndSymbols[(ushort)TextEncoder.Symbol.MinusSign] = GetBytesUtf16("_?");
+            return TextEncoder.CreateUtf16Encoder(utf16digitsAndSymbols);
         }
         static byte[] GetBytesUtf16(string text)
         {
