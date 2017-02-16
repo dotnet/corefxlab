@@ -55,7 +55,7 @@ namespace System.IO.Pipelines
             {
                 await stream.CopyToAsync(pipe);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 pipe.Writer.Complete(ex);
                 return;
