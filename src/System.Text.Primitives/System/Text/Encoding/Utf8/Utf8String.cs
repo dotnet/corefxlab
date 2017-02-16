@@ -10,7 +10,7 @@ using System.Text.Utf16;
 namespace System.Text.Utf8
 {
     [DebuggerDisplay("{ToString()}u8")]
-    public partial struct Utf8String : IEquatable<Utf8String>, IComparable<Utf8String> 
+    public partial struct Utf8String
     {
         private ReadOnlySpan<byte> _buffer;
 
