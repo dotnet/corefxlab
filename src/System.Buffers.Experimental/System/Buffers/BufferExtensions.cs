@@ -3,6 +3,7 @@
 
 using System.Collections.Sequences;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -117,5 +118,107 @@ namespace System.Buffers
 
             return -1;
         }
+
+        static readonly int s_longSize = Vector<ulong>.Count;
+        static readonly int s_byteSize = Vector<byte>.Count;
+
+        public static int IndexOfVectorized(this Span<byte> buffer, byte value)
+        {
+            Debug.Assert(s_longSize == 4 || s_longSize == 2);
+
+            var byteSize = s_byteSize;
+
+            if (buffer.Length < byteSize * 2 || !Vector.IsHardwareAccelerated) return buffer.IndexOf(value);
+
+            Vector<byte> match = new Vector<byte>(value);
+            var vectors = buffer.NonPortableCast<byte, Vector<byte>>();
+            var zero = Vector<byte>.Zero;
+
+            for (int vectorIndex = 0; vectorIndex < vectors.Length; vectorIndex++)
+            {
+                var vector = vectors.GetItem(vectorIndex);
+                var result = Vector.Equals(vector, match);
+                if (result != zero)
+                {
+                    var longer = Vector.AsVectorUInt64(result);
+                    Debug.Assert(s_longSize == 4 || s_longSize == 2);
+
+                    var candidate = longer[0];
+                    if (candidate != 0) return vectorIndex * byteSize + IndexOf(candidate);
+                    candidate = longer[1];
+                    if (candidate != 0) return 8 + vectorIndex * byteSize + IndexOf(candidate);
+                    if (s_longSize == 4)
+                    {
+                        candidate = longer[2];
+                        if (candidate != 0) return 16 + vectorIndex * byteSize + IndexOf(candidate);
+                        candidate = longer[3];
+                        if (candidate != 0) return 24 + vectorIndex * byteSize + IndexOf(candidate);
+                    }
+                }
+            }
+
+            var processed = vectors.Length * byteSize;
+            var index = buffer.Slice(processed).IndexOf(value);
+            if (index == -1) return -1;
+            return index + processed;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value)
+        {
+            Debug.Assert(s_longSize == 4 || s_longSize == 2);
+
+            var byteSize = s_byteSize;
+
+            if (buffer.Length < byteSize * 2 || !Vector.IsHardwareAccelerated) return buffer.IndexOf(value);
+
+            Vector<byte> match = new Vector<byte>(value);
+            var vectors = buffer.NonPortableCast<byte, Vector<byte>>();
+            var zero = Vector<byte>.Zero;
+
+            for (int vectorIndex = 0; vectorIndex < vectors.Length; vectorIndex++)
+            {
+                var vector = vectors[vectorIndex];
+                var result = Vector.Equals(vector, match);
+                if (result != zero)
+                {
+                    var longer = Vector.AsVectorUInt64(result);
+                    var candidate = longer[0];
+                    if (candidate != 0) return vectorIndex * byteSize + IndexOf(candidate);
+                    candidate = longer[1];
+                    if (candidate != 0) return 8 + vectorIndex * byteSize + IndexOf(candidate);
+                    if (s_longSize == 4)
+                    {
+                        candidate = longer[2];
+                        if (candidate != 0) return 16 + vectorIndex * byteSize + IndexOf(candidate);
+                        candidate = longer[3];
+                        if (candidate != 0) return 24 + vectorIndex * byteSize + IndexOf(candidate);
+                    }
+                }
+            }
+
+            var processed = vectors.Length * byteSize;
+            var index = buffer.Slice(processed).IndexOf(value);
+            if (index == -1) return -1;
+            return index + processed;
+        }
+
+        // used by IndexOfVectorized
+        static int IndexOf(ulong next)
+        {
+            // Flag least significant power of two bit
+            var powerOfTwoFlag = (next ^ (next - 1));
+            // Shift all powers of two into the high byte and extract
+            var foundByteIndex = (int)((powerOfTwoFlag * _xorPowerOfTwoToHighByte) >> 57);
+            return foundByteIndex;
+        }
+
+        const ulong _xorPowerOfTwoToHighByte = (0x07ul |
+                                                0x06ul << 8 |
+                                                0x05ul << 16 |
+                                                0x04ul << 24 |
+                                                0x03ul << 32 |
+                                                0x02ul << 40 |
+                                                0x01ul << 48) + 1;
     }
 }
