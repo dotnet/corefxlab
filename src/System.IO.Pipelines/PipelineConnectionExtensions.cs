@@ -67,6 +67,25 @@ namespace System.IO.Pipelines
             return new ValueTask<int>(input.ReadAsyncAwaited(destination));
         }
 
+        public static Task CopyToEndAsync(this IPipeReader input, Stream stream)
+        {
+            return input.CopyToEndAsync(stream, 4096, CancellationToken.None);
+        }
+
+        public static async Task CopyToEndAsync(this IPipeReader input, Stream stream, int bufferSize, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await input.CopyToAsync(stream, bufferSize, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                input.Complete(ex);
+                return;
+            }
+            return;
+        }
+
         public static Task CopyToAsync(this IPipeReader input, Stream stream)
         {
             return input.CopyToAsync(stream, 4096, CancellationToken.None);

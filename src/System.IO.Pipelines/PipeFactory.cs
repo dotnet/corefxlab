@@ -62,20 +62,7 @@ namespace System.IO.Pipelines
             }
 
             var pipe = new Pipe(_pool);
-
-            pipe.CopyToAsync(stream).ContinueWith((task, state) =>
-            {
-                var innerPipe = (Pipe)state;
-                if (task.IsFaulted)
-                {
-                    innerPipe.Reader.Complete(task.Exception.InnerException);
-                }
-                else
-                {
-                    innerPipe.Reader.Complete();
-                }
-            },
-            pipe, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+            var ignore = pipe.CopyToEndAsync(stream);
 
             return pipe;
         }
