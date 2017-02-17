@@ -67,24 +67,6 @@ namespace System.IO.Pipelines
             return pipe;
         }
 
-        public IPipeWriter CreateWriter(IPipeWriter writer, Func<IPipeReader, IPipeWriter, Task> consume)
-        {
-            var pipe = new Pipe(_pool);
-
-            consume(pipe, writer);
-
-            return pipe;
-        }
-
-        public IPipeReader CreateReader(IPipeReader reader, Func<IPipeReader, IPipeWriter, Task> produce)
-        {
-            var pipe = new Pipe(_pool);
-
-            produce(reader, pipe);
-
-            return pipe;
-        }
-
         public void Dispose() => _pool.Dispose();
     }
 }
