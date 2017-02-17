@@ -45,22 +45,8 @@ namespace System.IO.Pipelines
             }
 
             var pipe = new Pipe(_pool);
-            var ignore = ExecuteCopyToAsync(pipe, stream);
+            var ignore = stream.CopyToEndAsync(pipe);
             return pipe;
-        }
-
-        private async Task ExecuteCopyToAsync(Pipe pipe, Stream stream)
-        {
-            try
-            {
-                await stream.CopyToAsync(pipe);
-            }
-            catch (Exception ex)
-            {
-                pipe.Writer.Complete(ex);
-                return;
-            }
-            pipe.Writer.Complete();
         }
 
         public IPipeConnection CreateConnection(NetworkStream stream)

@@ -69,6 +69,20 @@ namespace System.IO.Pipelines
             return stream.CopyToAsync(new PipelineWriterStream(writer));
         }
 
+        public static async Task CopyToEndAsync(this Stream stream, IPipeWriter writer)
+        {
+            try
+            {
+                await stream.CopyToAsync(writer);
+            }
+            catch (Exception ex)
+            {
+                writer.Complete(ex);
+                return;
+            }
+            writer.Complete();
+        }
+
         private class UnownedBufferStream : Stream
         {
             private readonly Stream _stream;
