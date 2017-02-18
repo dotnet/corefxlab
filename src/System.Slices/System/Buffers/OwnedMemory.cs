@@ -26,7 +26,7 @@ namespace System.Buffers
 
         public int Length => _length;
 
-        protected int Id => _id;
+        internal int Id => _id;
         protected T[] Array => _array;
         protected IntPtr Pointer => _pointer;
         protected int Offset => _arrayIndex;
@@ -49,8 +49,8 @@ namespace System.Buffers
             Initialize(array, arrayOffset, length, pointer);
         }
 
-        public Memory<T> Memory => new Memory<T>(this, Id, 0, Length);
-        public ReadOnlyMemory<T> ReadOnlyMemory => new ReadOnlyMemory<T>(this, Id, 0, Length);
+        public Memory<T> Memory => new Memory<T>(this, 0, Length);
+        public ReadOnlyMemory<T> ReadOnlyMemory => new ReadOnlyMemory<T>(this, 0, Length);
 
         public Span<T> Span
         {

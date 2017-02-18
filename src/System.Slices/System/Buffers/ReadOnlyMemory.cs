@@ -18,6 +18,14 @@ namespace System
         readonly int _index;
         readonly int _length;
 
+        internal ReadOnlyMemory(OwnedMemory<T> owner, int index, int length)
+        {
+            _owner = owner;
+            _id = owner.Id;
+            _index = index;
+            _length = length;
+        }
+
         internal ReadOnlyMemory(OwnedMemory<T> owner, int id, int index, int length)
         {
             _owner = owner;
