@@ -26,12 +26,12 @@ namespace System.IO.Pipelines.Tests
                 {
                     var reader = pipe.Reader.ReadAsync();
                 });
-                Assert.Equal<byte>(buffer, stream.ToArray());
+                Assert.Equal(buffer, stream.ToArray());
             }
         }
 
         [Fact]
-        public async Task CopyFromPipeToEndThrow()
+        public async Task CopyFromPipeToEndObserveStreamThrow()
         {
             var buffer = new byte[1000];
             (new Random()).NextBytes(buffer);
@@ -50,7 +50,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task CopyFromPipeNoEndThrow()
+        public async Task CopyFromPipeObserveStreamThrow()
         {
             var buffer = new byte[1000];
             (new Random()).NextBytes(buffer);
@@ -99,13 +99,13 @@ namespace System.IO.Pipelines.Tests
                 var reader = await pipe.Reader.ReadAsync();
 
                 Assert.True(reader.IsCompleted);
-                Assert.Equal<byte>(buffer, reader.Buffer.ToArray());
+                Assert.Equal(buffer, reader.Buffer.ToArray());
                 pipe.Reader.Advance(reader.Buffer.End);
             }
         }
 
         [Fact]
-        public async Task CopyFromStreamToEndThrow()
+        public async Task CopyFromStreamToEndObserveStreamThrow()
         {
             using (var pipeFactory = new PipeFactory())
             using (var stream = new FakeExceptionStream())
@@ -121,7 +121,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task CopyFromStreamNoEndThrow()
+        public async Task CopyFromStreamNoEndObserveStreamThrow()
         {
             using (var pipeFactory = new PipeFactory())
             using (var stream = new FakeExceptionStream())
@@ -147,7 +147,7 @@ namespace System.IO.Pipelines.Tests
                 var reader = await pipe.Reader.ReadAsync();
 
                 Assert.False(reader.IsCompleted);
-                Assert.Equal<byte>(buffer, reader.Buffer.ToArray());
+                Assert.Equal(buffer, reader.Buffer.ToArray());
                 pipe.Reader.Advance(reader.Buffer.End);
             }
         }
