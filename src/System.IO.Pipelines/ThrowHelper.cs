@@ -35,6 +35,11 @@ namespace System.IO.Pipelines
             throw GetArgumentOutOfRangeException_BufferRequestTooLarge(maxSize);
         }
 
+        internal static void ThrowArgumentException_ReadableBufferCtor()
+        {
+            throw new ArgumentException("End should be greater or equal to start");
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(ExceptionArgument argument)
         {

@@ -57,12 +57,13 @@ namespace System.IO.Pipelines
         {
             _start = start;
             _end = end;
+            _length = -1;
+
             if (!end.IsEnd && !end.GreaterOrEqual(start))
             {
-                throw new ArgumentException("End should be greater or equal to start");
+                ThrowHelper.ThrowArgumentException_ReadableBufferCtor();
             }
-            start.TryGetBuffer(end, out _first, out start);
-            _length = -1;
+            start.TryGetBuffer(end, out _first);
         }
 
         private ReadableBuffer(ref ReadableBuffer buffer)
@@ -78,10 +79,9 @@ namespace System.IO.Pipelines
 
             _start = begin;
             _end = end;
-
             _length = buffer._length;
 
-            begin.TryGetBuffer(end, out _first, out begin);
+            begin.TryGetBuffer(end, out _first);
         }
 
         /// <summary>

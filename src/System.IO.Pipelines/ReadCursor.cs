@@ -176,6 +176,37 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal bool TryGetBuffer(ReadCursor end, out Memory<byte> data)
+        {
+            if (IsDefault)
+            {
+                data = Memory<byte>.Empty;
+                return false;
+            }
+
+            var segment = _segment;
+            var index = _index;
+
+            if (end.Segment == segment)
+            {
+                var following = end.Index - index;
+
+                if (following > 0)
+                {
+                    data = segment.Memory.Slice(index, following);
+                    return true;
+                }
+
+                data = Memory<byte>.Empty;
+                return false;
+            }
+            else
+            {
+                return TryGetBufferMultiBlock(end, out data);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal bool TryGetBuffer(ReadCursor end, out Memory<byte> data, out ReadCursor cursor)
         {
             if (IsDefault)
@@ -207,6 +238,52 @@ namespace System.IO.Pipelines
             {
                 return TryGetBufferMultiBlock(end, out data, out cursor);
             }
+        }
+
+        private bool TryGetBufferMultiBlock(ReadCursor end, out Memory<byte> data)
+        {
+            var segment = _segment;
+            var index = _index;
+
+            // Determine if we might attempt to copy data from segment.Next before
+            // calculating "following" so we don't risk skipping data that could
+            // be added after segment.End when we decide to copy from segment.Next.
+            // segment.End will always be advanced before segment.Next is set.
+
+            int following = 0;
+
+            while (true)
+            {
+                var wasLastSegment = segment.Next == null || end.Segment == segment;
+
+                if (end.Segment == segment)
+                {
+                    following = end.Index - index;
+                }
+                else
+                {
+                    following = segment.End - index;
+                }
+
+                if (following > 0)
+                {
+                    break;
+                }
+
+                if (wasLastSegment)
+                {
+                    data = Memory<byte>.Empty;
+                    return false;
+                }
+                else
+                {
+                    segment = segment.Next;
+                    index = segment.Start;
+                }
+            }
+
+            data = segment.Memory.Slice(index, following);
+            return true;
         }
 
         private bool TryGetBufferMultiBlock(ReadCursor end, out Memory<byte> data, out ReadCursor cursor)
