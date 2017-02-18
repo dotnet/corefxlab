@@ -55,14 +55,15 @@ namespace System.IO.Pipelines
 
         internal ReadableBuffer(ReadCursor start, ReadCursor end)
         {
+            if (!end.IsEnd)
+            {
+                ThrowHelper.ThrowArgumentException_ReadableBufferCtor();
+            }
+
             _start = start;
             _end = end;
             _length = -1;
 
-            if (!end.IsEnd && !end.GreaterOrEqual(start))
-            {
-                ThrowHelper.ThrowArgumentException_ReadableBufferCtor();
-            }
             start.TryGetBuffer(end, out _first);
         }
 
