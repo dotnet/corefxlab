@@ -8,6 +8,8 @@ namespace System.IO.Pipelines
 {
     public struct ReadCursor : IEquatable<ReadCursor>
     {
+        private static readonly Memory<byte> _emptyMemory = Memory<byte>.Empty;
+
         private BufferSegment _segment;
         private int _index;
 
@@ -180,7 +182,7 @@ namespace System.IO.Pipelines
         {
             if (IsDefault)
             {
-                data = Memory<byte>.Empty;
+                data = _emptyMemory;
                 return false;
             }
 
@@ -197,7 +199,7 @@ namespace System.IO.Pipelines
                     return true;
                 }
 
-                data = Memory<byte>.Empty;
+                data = _emptyMemory;
                 return false;
             }
             else
@@ -211,7 +213,7 @@ namespace System.IO.Pipelines
         {
             if (IsDefault)
             {
-                data = Memory<byte>.Empty;
+                data = _emptyMemory;
                 cursor = this;
                 return false;
             }
@@ -230,7 +232,7 @@ namespace System.IO.Pipelines
                     return true;
                 }
 
-                data = Memory<byte>.Empty;
+                data = _emptyMemory;
                 cursor = this;
                 return false;
             }
@@ -272,7 +274,7 @@ namespace System.IO.Pipelines
 
                 if (wasLastSegment)
                 {
-                    data = Memory<byte>.Empty;
+                    data = _emptyMemory;
                     return false;
                 }
                 else
@@ -318,7 +320,7 @@ namespace System.IO.Pipelines
 
                 if (wasLastSegment)
                 {
-                    data = Memory<byte>.Empty;
+                    data = _emptyMemory;
                     cursor = this;
                     return false;
                 }
