@@ -49,8 +49,8 @@ namespace System.Buffers
             Initialize(array, arrayOffset, length, pointer);
         }
 
-        public Memory<T> Memory => new Memory<T>(this, 0, Length);
-        public ReadOnlyMemory<T> ReadOnlyMemory => new ReadOnlyMemory<T>(this, 0, Length);
+        public Memory<T> Memory => new Memory<T>(this, Length);
+        public ReadOnlyMemory<T> ReadOnlyMemory => new ReadOnlyMemory<T>(this, Length);
 
         public Span<T> Span
         {
