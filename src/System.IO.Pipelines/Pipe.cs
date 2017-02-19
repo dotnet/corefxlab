@@ -50,6 +50,7 @@ namespace System.IO.Pipelines
         /// <param name="options"></param>
         public Pipe(IBufferPool pool, PipeOptions options = null)
         {
+            EmptyByteMemory.EnsureInitalized();
             if (pool == null)
             {
                 throw new ArgumentNullException(nameof(pool));
@@ -80,7 +81,7 @@ namespace System.IO.Pipelines
             _writerAwaitable = new PipeAwaitable(options.WriterScheduler ?? InlineScheduler.Default, completed: true);
         }
 
-        internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
+        internal Memory<byte> Memory => _writingHead?.ReadOnlyMemory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? EmptyByteMemory.ReadOnlyEmpty;
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.
@@ -285,7 +286,7 @@ namespace System.IO.Pipelines
                 Debug.Assert(!_writingHead.ReadOnly);
                 Debug.Assert(_writingHead.Next == null);
 
-                var buffer = _writingHead.Memory;
+                var buffer = _writingHead.ReadOnlyMemory;
                 var bufferIndex = _writingHead.End + bytesWritten;
 
                 Debug.Assert(bufferIndex <= buffer.Length);

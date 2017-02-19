@@ -560,11 +560,11 @@ namespace System.IO.Pipelines
             }
             if (currentSegment == _end.Segment)
             {
-                item = currentSegment.Memory.Slice(currentSegment.Start, _end.Index - currentSegment.Start);
+                item = currentSegment.ReadOnlyMemory.Slice(currentSegment.Start, _end.Index - currentSegment.Start);
             }
             else
             {
-                item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
+                item = currentSegment.ReadOnlyMemory.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
             }
             return true;
         }

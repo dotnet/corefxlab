@@ -186,11 +186,11 @@ namespace System.IO.Pipelines
                 var following = end.Index - index;
                 if (segment != null && following > 0)
                 {
-                    data = segment.Memory.Slice(index, following);
+                    data = segment.ReadOnlyMemory.Slice(index, following);
                 }
                 else
                 {
-                    data = Memory<byte>.Empty;
+                    data = EmptyByteMemory.ReadOnlyEmpty;
                 }
 
                 return !data.IsEmpty;
@@ -231,7 +231,7 @@ namespace System.IO.Pipelines
 
                 if (wasLastSegment)
                 {
-                    data = Memory<byte>.Empty;
+                    data = EmptyByteMemory.ReadOnlyEmpty;
                     return false;
                 }
                 else
@@ -241,7 +241,7 @@ namespace System.IO.Pipelines
                 }
             }
 
-            data = segment.Memory.Slice(index, following);
+            data = segment.ReadOnlyMemory.Slice(index, following);
             return true;
         }
 
@@ -253,7 +253,7 @@ namespace System.IO.Pipelines
             }
 
             var sb = new StringBuilder();
-            Span<byte> span = Segment.Memory.Span.Slice(Index, Segment.End - Index);
+            Span<byte> span = Segment.ReadOnlyMemory.Span.Slice(Index, Segment.End - Index);
             SpanExtensions.AppendAsLiteral(span, sb);
             return sb.ToString();
         }
