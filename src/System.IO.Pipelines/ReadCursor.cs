@@ -8,8 +8,6 @@ namespace System.IO.Pipelines
 {
     public struct ReadCursor : IEquatable<ReadCursor>
     {
-        private static readonly Memory<byte> _emptyMemory = Memory<byte>.Empty;
-
         private BufferSegment _segment;
         private int _index;
 
@@ -180,33 +178,27 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal bool TryGetBuffer(ReadCursor end, out Memory<byte> data)
         {
-            if (IsDefault)
-            {
-                data = _emptyMemory;
-                return false;
-            }
-
             var segment = _segment;
-            var index = _index;
 
             if (end.Segment == segment)
             {
+                var index = _index;
                 var following = end.Index - index;
-
-                if (following > 0)
+                if (segment != null && following > 0)
                 {
                     data = segment.Memory.Slice(index, following);
-                    return true;
+                }
+                else
+                {
+                    data = Memory<byte>.Empty;
                 }
 
-                data = _emptyMemory;
-                return false;
+                return !data.IsEmpty;
             }
-            else
-            {
-                return TryGetBufferMultiBlock(end, out data);
-            }
+
+            return TryGetBufferMultiBlock(end, out data);
         }
+
         private bool TryGetBufferMultiBlock(ReadCursor end, out Memory<byte> data)
         {
             var segment = _segment;
@@ -239,7 +231,7 @@ namespace System.IO.Pipelines
 
                 if (wasLastSegment)
                 {
-                    data = _emptyMemory;
+                    data = Memory<byte>.Empty;
                     return false;
                 }
                 else
