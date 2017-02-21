@@ -30,7 +30,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Fact]
+        [Fact] 
         public async Task CopyFromPipeToEndObserveStreamThrow()
         {
             var buffer = new byte[1000];
