@@ -176,12 +176,11 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool TryGetBuffer(ReadCursor end, out Memory<byte> data, out ReadCursor cursor)
+        internal bool TryGetBuffer(ReadCursor end, out Memory<byte> data)
         {
             if (IsDefault)
             {
                 data = Memory<byte>.Empty;
-                cursor = this;
                 return false;
             }
 
@@ -195,21 +194,19 @@ namespace System.IO.Pipelines
                 if (following > 0)
                 {
                     data = segment.Memory.Slice(index, following);
-                    cursor = new ReadCursor(segment, index + following);
                     return true;
                 }
 
                 data = Memory<byte>.Empty;
-                cursor = this;
                 return false;
             }
             else
             {
-                return TryGetBufferMultiBlock(end, out data, out cursor);
+                return TryGetBufferMultiBlock(end, out data);
             }
         }
 
-        private bool TryGetBufferMultiBlock(ReadCursor end, out Memory<byte> data, out ReadCursor cursor)
+        private bool TryGetBufferMultiBlock(ReadCursor end, out Memory<byte> data)
         {
             var segment = _segment;
             var index = _index;
@@ -242,7 +239,6 @@ namespace System.IO.Pipelines
                 if (wasLastSegment)
                 {
                     data = Memory<byte>.Empty;
-                    cursor = this;
                     return false;
                 }
                 else
@@ -253,7 +249,6 @@ namespace System.IO.Pipelines
             }
 
             data = segment.Memory.Slice(index, following);
-            cursor = new ReadCursor(segment, index + following);
             return true;
         }
 

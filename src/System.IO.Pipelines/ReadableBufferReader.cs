@@ -15,7 +15,7 @@ namespace System.IO.Pipelines
         private int _overallIndex;
         private bool _end;
 
-        public ReadableBufferReader(ReadableBuffer buffer): this(buffer.Start, buffer.End)
+        public ReadableBufferReader(ReadableBuffer buffer) : this(buffer.Start, buffer.End)
         {
         }
 
@@ -41,11 +41,17 @@ namespace System.IO.Pipelines
 
         public int Index => _overallIndex;
 
+        public Span<byte> Span => _currentMemory;
+
         public ReadCursor Cursor
         {
             get
             {
                 var currentSegment = _enumerator.CurrentSegment;
+                if (_end)
+                {
+                    return new ReadCursor(currentSegment, currentSegment.Start + _currentMemory.Length);
+                }
                 return new ReadCursor(currentSegment, currentSegment.Start + _index);
             }
         }
@@ -80,7 +86,7 @@ namespace System.IO.Pipelines
 
         private void MoveNext()
         {
-            if (_enumerator.MoveNext())
+            if (_enumerator.MoveNext() && !_enumerator.Current.IsEmpty)
             {
                 _currentMemory = _enumerator.Current.Span;
                 _index = 0;
@@ -88,6 +94,32 @@ namespace System.IO.Pipelines
             else
             {
                 _end = true;
+            }
+        }
+
+        public void Skip(int length)
+        {
+            if (length < 0)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+            }
+
+            while (!_end && length > 0)
+            {
+                if ((_index + length) < _currentMemory.Length)
+                {
+                    _index += length;
+                    length = 0;
+                    break;
+                }
+
+                length -= (_currentMemory.Length - _index);
+                MoveNext();
+            }
+
+            if (length > 0)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
         }
     }

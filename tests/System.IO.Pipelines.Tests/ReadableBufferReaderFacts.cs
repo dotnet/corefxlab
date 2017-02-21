@@ -21,6 +21,16 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void CursorIsCorrectAtEnd()
+        {
+            var reader = new ReadableBufferReader(ReadableBuffer.Create(new byte[] { 1, 2 }, 0, 2));
+            reader.Take();
+            reader.Take();
+            Assert.True(reader.End);
+            Assert.True(reader.Cursor.IsEnd);
+        }
+
+        [Fact]
         public void TakeReturnsByteAndMoves()
         {
             var reader = new ReadableBufferReader(ReadableBuffer.Create(new byte[] { 1, 2 }, 0, 2));
@@ -36,6 +46,74 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(1, reader.Take());
             Assert.Equal(2, reader.Take());
             Assert.Equal(-1, reader.Peek());
+        }
+
+        [Fact]
+        public void SkipToEndThenPeekReturnsMinusOne()
+        {
+            var reader = new ReadableBufferReader(ReadableBuffer.Create(new byte[] { 1, 2, 3, 4, 5 }, 0, 5));
+            reader.Skip(5);
+            Assert.True(reader.End);
+            Assert.Equal(-1, reader.Peek());
+            Assert.True(reader.Cursor.IsEnd);
+        }
+
+        [Fact]
+        public void SkipSingleBufferSkipsBytes()
+        {
+            var reader = new ReadableBufferReader(ReadableBuffer.Create(new byte[] { 1, 2, 3, 4, 5 }, 0, 5));
+            reader.Skip(2);
+            Assert.Equal(3, reader.Peek());
+            reader.Skip(2);
+            Assert.Equal(5, reader.Peek());
+        }
+
+        [Fact]
+        public void SkippingPastLengthThrows()
+        {
+            var reader = new ReadableBufferReader(ReadableBuffer.Create(new byte[] { 1, 2, 3, 4, 5 }, 0, 5));
+            Assert.Throws<ArgumentOutOfRangeException>(() => reader.Skip(6));
+        }
+
+        [Fact]
+        public async Task SkipTraversesSegments()
+        {
+            using (var factory = new PipeFactory())
+            {
+                var readerWriter = factory.Create();
+                var w = readerWriter.Writer.Alloc();
+                w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
+                w.Append(ReadableBuffer.Create(new byte[] { 2 }, 0, 1));
+                w.Append(ReadableBuffer.Create(new byte[] { 3 }, 0, 1));
+                await w.FlushAsync();
+
+                var result = await readerWriter.Reader.ReadAsync();
+                var buffer = result.Buffer;
+                var reader = new ReadableBufferReader(buffer);
+
+                reader.Skip(2);
+                Assert.Equal(3, reader.Take());
+            }
+        }
+
+        [Fact]
+        public async Task SkipThrowsPastLengthMultipleSegments()
+        {
+            using (var factory = new PipeFactory())
+            {
+                var readerWriter = factory.Create();
+                var w = readerWriter.Writer.Alloc();
+                w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
+                w.Append(ReadableBuffer.Create(new byte[] { 2 }, 0, 1));
+                w.Append(ReadableBuffer.Create(new byte[] { 3 }, 0, 1));
+                await w.FlushAsync();
+
+                var result = await readerWriter.Reader.ReadAsync();
+                var buffer = result.Buffer;
+                var reader = new ReadableBufferReader(buffer);
+
+                Assert.Throws<ArgumentOutOfRangeException>(() => reader.Skip(4));
+            }
         }
 
         [Fact]
