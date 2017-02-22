@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.Text;
@@ -36,7 +35,13 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The buffer being tracked
         /// </summary>
-        private OwnedMemory<byte> _buffer;
+        private readonly OwnedMemory<byte> _buffer;
+
+        /// <summary>
+        /// Should never be assigned to. Cannot be made readonly directly otherwise functions Slice etc will make a defensive copy.
+        /// In future this may be able to be changed to a "readonly ref" and Merged with `Memory`
+        /// </summary>
+        internal Memory<byte> ReadOnlyMemory;
 
         public BufferSegment(OwnedMemory<byte> buffer)
         {
@@ -44,6 +49,7 @@ namespace System.IO.Pipelines
             Start = 0;
             End = 0;
 
+            ReadOnlyMemory = _buffer.Memory;
             _buffer.AddReference();
         }
 
@@ -62,10 +68,11 @@ namespace System.IO.Pipelines
                 _buffer = unowned.MakeCopy(start, end - start, out Start, out End);
             }
 
+            ReadOnlyMemory = _buffer.Memory;
             _buffer.AddReference();
         }
 
-        public Memory<byte> Memory => _buffer.Memory;
+        public Memory<byte> Memory => ReadOnlyMemory;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified

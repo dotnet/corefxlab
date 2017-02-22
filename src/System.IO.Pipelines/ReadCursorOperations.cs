@@ -49,7 +49,7 @@ namespace System.IO.Pipelines
                     following = block.End - index;
                 }
                 ArraySegment<byte> array;
-                var getArrayResult = block.Memory.TryGetArray(out array);
+                var getArrayResult = block.ReadOnlyMemory.TryGetArray(out array);
                 Debug.Assert(getArrayResult);
 
                 while (following > 0)
@@ -142,7 +142,7 @@ namespace System.IO.Pipelines
                     following = block.End - index;
                 }
                 ArraySegment<byte> array;
-                var getArrayResult = block.Memory.TryGetArray(out array);
+                var getArrayResult = block.ReadOnlyMemory.TryGetArray(out array);
                 Debug.Assert(getArrayResult);
 
                 while (following > 0)
@@ -249,7 +249,7 @@ namespace System.IO.Pipelines
                     following = block.End - index;
                 }
                 ArraySegment<byte> array;
-                var getArrayResult = block.Memory.TryGetArray(out array);
+                var getArrayResult = block.ReadOnlyMemory.TryGetArray(out array);
                 Debug.Assert(getArrayResult);
 
                 while (following > 0)

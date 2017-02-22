@@ -176,40 +176,30 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool TryGetBuffer(ReadCursor end, out Memory<byte> data, out ReadCursor cursor)
+        internal bool TryGetBuffer(ReadCursor end, out Memory<byte> data)
         {
-            if (IsDefault)
-            {
-                data = Memory<byte>.Empty;
-                cursor = this;
-                return false;
-            }
-
             var segment = _segment;
-            var index = _index;
 
             if (end.Segment == segment)
             {
+                var index = _index;
                 var following = end.Index - index;
-
-                if (following > 0)
+                if (segment != null && following > 0)
                 {
-                    data = segment.Memory.Slice(index, following);
-                    cursor = new ReadCursor(segment, index + following);
-                    return true;
+                    data = segment.ReadOnlyMemory.Slice(index, following);
+                }
+                else
+                {
+                    data = EmptyByteMemory.ReadOnlyEmpty;
                 }
 
-                data = Memory<byte>.Empty;
-                cursor = this;
-                return false;
+                return !data.IsEmpty;
             }
-            else
-            {
-                return TryGetBufferMultiBlock(end, out data, out cursor);
-            }
+
+            return TryGetBufferMultiBlock(end, out data);
         }
 
-        private bool TryGetBufferMultiBlock(ReadCursor end, out Memory<byte> data, out ReadCursor cursor)
+        private bool TryGetBufferMultiBlock(ReadCursor end, out Memory<byte> data)
         {
             var segment = _segment;
             var index = _index;
@@ -241,8 +231,7 @@ namespace System.IO.Pipelines
 
                 if (wasLastSegment)
                 {
-                    data = Memory<byte>.Empty;
-                    cursor = this;
+                    data = EmptyByteMemory.ReadOnlyEmpty;
                     return false;
                 }
                 else
@@ -252,8 +241,7 @@ namespace System.IO.Pipelines
                 }
             }
 
-            data = segment.Memory.Slice(index, following);
-            cursor = new ReadCursor(segment, index + following);
+            data = segment.ReadOnlyMemory.Slice(index, following);
             return true;
         }
 
@@ -265,7 +253,7 @@ namespace System.IO.Pipelines
             }
 
             var sb = new StringBuilder();
-            Span<byte> span = Segment.Memory.Span.Slice(Index, Segment.End - Index);
+            Span<byte> span = Segment.ReadOnlyMemory.Span.Slice(Index, Segment.End - Index);
             SpanExtensions.AppendAsLiteral(span, sb);
             return sb.ToString();
         }

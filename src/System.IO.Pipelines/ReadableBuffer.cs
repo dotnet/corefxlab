@@ -57,12 +57,9 @@ namespace System.IO.Pipelines
         {
             _start = start;
             _end = end;
-            if (!end.IsEnd && !end.GreaterOrEqual(start))
-            {
-                throw new ArgumentException("End should be greater or equal to start");
-            }
-            start.TryGetBuffer(end, out _first, out start);
             _length = -1;
+
+            start.TryGetBuffer(end, out _first);
         }
 
         private ReadableBuffer(ref ReadableBuffer buffer)
@@ -78,10 +75,9 @@ namespace System.IO.Pipelines
 
             _start = begin;
             _end = end;
-
             _length = buffer._length;
 
-            begin.TryGetBuffer(end, out _first, out begin);
+            begin.TryGetBuffer(end, out _first);
         }
 
         /// <summary>
@@ -489,10 +485,15 @@ namespace System.IO.Pipelines
         {
             if (data == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            return Create(data, 0, data.Length);
+            var segment = new BufferSegment(new OwnedArray<byte>(data))
+            {
+                Start = 0,
+                End = data.Length
+            };
+            return new ReadableBuffer(new ReadCursor(segment, 0), new ReadCursor(segment, data.Length));
         }
 
         /// <summary>
@@ -510,15 +511,16 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
             }
 
-            if (length < 0 || (offset + length) > data.Length)
+            if (length < 0 || data.Length - offset < length)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            var buffer = new OwnedArray<byte>(data);
-            var segment = new BufferSegment(buffer);
-            segment.Start = offset;
-            segment.End = offset + length;
+            var segment = new BufferSegment(new OwnedArray<byte>(data))
+            {
+                Start = offset,
+                End = offset + length
+            };
             return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
         }
 
@@ -558,11 +560,11 @@ namespace System.IO.Pipelines
             }
             if (currentSegment == _end.Segment)
             {
-                item = currentSegment.Memory.Slice(currentSegment.Start, _end.Index - currentSegment.Start);
+                item = currentSegment.ReadOnlyMemory.Slice(currentSegment.Start, _end.Index - currentSegment.Start);
             }
             else
             {
-                item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
+                item = currentSegment.ReadOnlyMemory.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
             }
             return true;
         }

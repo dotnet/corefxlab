@@ -17,7 +17,7 @@ namespace System.IO.Pipelines
         public MemoryEnumerator(ReadCursor start, ReadCursor end)
         {
             _segmentEnumerator = new SegmentEnumerator(start, end);
-            _current = Memory<byte>.Empty;
+            _current = EmptyByteMemory.ReadOnlyEmpty;
         }
 
         /// <summary>
@@ -35,11 +35,11 @@ namespace System.IO.Pipelines
         {
             if (!_segmentEnumerator.MoveNext())
             {
-                _current = Memory<byte>.Empty;
+                _current = EmptyByteMemory.ReadOnlyEmpty;
                 return false;
             }
             var current = _segmentEnumerator.Current;
-            _current = current.Segment.Memory.Slice(current.Start, current.Length);
+            _current = current.Segment.ReadOnlyMemory.Slice(current.Start, current.Length);
 
             return true;
         }
