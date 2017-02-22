@@ -81,12 +81,16 @@ namespace System.Text
         private struct Suffix : IComparable<Suffix>
         {
             public int SymbolIndex;
-            public ReadOnlySpan<byte> Bytes;
+            public byte[] Bytes;
 
             public Suffix(int symbolIndex, ReadOnlySpan<byte> bytes)
             {
                 SymbolIndex = symbolIndex;
-                Bytes = bytes;
+
+                // HACKHACK: Keeping Bytes as a Span property on Suffix will cause crashing in .NET Core 2.0.
+                //           Storing as pure array for now until we can re-visit.
+                //           This is necessary to unblock usage of fast Span for Kestrel and others.
+                Bytes = bytes.ToArray();
             }
 
             public int CompareTo(Suffix other)
