@@ -160,15 +160,14 @@ namespace System.Buffers
                         do
                         {
                             var vFlaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
-                            if (vFlaggedMatches.Equals(Vector<byte>.Zero))
+                            if (!vFlaggedMatches.Equals(Vector<byte>.Zero))
                             {
-                                offset += Vector<byte>.Count;
-                                continue;
+                                // Found match, reuse Vector values to keep register pressure low
+                                values = vFlaggedMatches;
+                                break;
                             }
-                            // reusing Vector values to keep register pressure low
-                            values = vFlaggedMatches;
-                            break;
 
+                            offset += Vector<byte>.Count;
                         } while (length - Vector<byte>.Count >= offset);
 
                         // Found match? Perform secondary search outside out of loop, so above loop body is small
@@ -187,12 +186,13 @@ namespace System.Buffers
                 while (length - sizeof(ulong) >= offset)
                 {
                     flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
-                    if (flaggedMatches == 0)
+                    if (flaggedMatches != 0)
                     {
-                        offset += sizeof(ulong);
-                        continue;
+                        // Found match
+                        break;
                     }
-                    break;
+
+                    offset += sizeof(ulong);
                 }
 
                 // Found match? Perform secondary search outside out of loop, so above loop body is small
