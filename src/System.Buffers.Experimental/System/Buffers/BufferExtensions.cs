@@ -495,9 +495,10 @@ namespace System.Buffers
 
             public bool MoveNext()
             {
-                if (_currentMatches > 0)
+                var currentMatches = _currentMatches;
+                if (currentMatches > 0)
                 {
-                    var location = _currentMatches ^ (_currentMatches - 1);
+                    var location = currentMatches ^ (currentMatches - 1);
                     _currentMatches -= location;
                     _index = BitScanForward(location);
                     return true;
@@ -509,13 +510,44 @@ namespace System.Buffers
                         return false;
                     }
 
-                    return MoveNextSeek();
+                    if (_upperBound - _examinedIndex < sizeof(ulong))
+                    {
+                        return MoveNextScan();
+                    }
+                    else
+                    {
+                        return MoveNextSeek();
+                    }
                 }
             }
 
+            // Small search space
+            private unsafe bool MoveNextScan()
+            {
+                var offset = _examinedIndex;
+                var upperBound = _upperBound;
+                var value = _value;
+
+                ref byte searchStart = ref _buffer.DangerousGetPinnableReference();
+                for (; offset < upperBound; offset++)
+                {
+                    if (Unsafe.Add(ref searchStart, offset) == value)
+                    {
+                        _examinedIndex = offset;
+                        goto exit; // goto rather than inline return to keep loop body small
+                    }
+                }
+                // No Matches
+                offset = -1;
+                _examinedIndex = _upperBound;
+            exit:
+                _index = offset;
+                return offset >= 0;
+            }
+
+            // Large search space
             private unsafe bool MoveNextSeek()
             {
-                // if length < sizeof(ulong) don't fix? 
                 var offset = _examinedIndex;
                 fixed (byte* pSearchSpace = &_buffer.DangerousGetPinnableReference())
                 {
