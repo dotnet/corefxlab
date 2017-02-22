@@ -503,7 +503,7 @@ namespace System.Buffers
                 {
                     var location = currentMatches ^ (currentMatches - 1);
                     _currentMatches &= ~location;
-                    _index = _offsetIndex + BitScanForward(location);
+                    _index = _offsetIndex + FindLocationIndex(location);
                     return true;
                 }
                 else
@@ -592,7 +592,7 @@ namespace System.Buffers
                                 _offsetIndex = offset;
                                 _examinedCount = offset + Vector<byte>.Count;
                                 // Update offset to first match
-                                offset += BitScanForward(location);
+                                offset += FindLocationIndex(location);
                                 // goto rather than inline return to keep function smaller
                                 goto exitFixed;
                             }
@@ -625,7 +625,7 @@ namespace System.Buffers
                         _offsetIndex = offset;
                         _examinedCount = offset + sizeof(ulong);
                         // Update offset to first match
-                        offset += BitScanForward(location);
+                        offset += FindLocationIndex(location);
                         // goto rather than inline return to keep function smaller
                         goto exitFixed;
                     }
@@ -652,7 +652,7 @@ namespace System.Buffers
 
             public int Current => _index;
 
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static ulong FlagFoundBytes(Vector<byte> match)
             {
                 // Pack all matches in Vector into a ulong as bit flags
@@ -671,7 +671,7 @@ namespace System.Buffers
                 return result;
             }
 
-            //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static byte FlagFoundBytes(ulong match)
             {
                 // Pack all matches in ulong into a byte as bit flags
@@ -694,7 +694,7 @@ namespace System.Buffers
             };
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private static int BitScanForward(ulong flaggedMatches)
+            private static int FindLocationIndex(ulong flaggedMatches)
             {
                 // Using De Bruijn sequence as need to scan full 64 bits of ulong
                 const ulong debruijn64 = 0x03f79d71b4cb0a89UL;
