@@ -432,7 +432,8 @@ namespace System.Buffers
                                                        0x01ul << 21 |
                                                        0x01ul << 28 |
                                                        0x01ul << 35 |
-                                                       0x01ul << 42 ) + 1;
+                                                       0x01ul << 42 |
+                                                       0x01ul << 49 );
         private const ulong byteBroadcastToUlong = ~0UL / byte.MaxValue;
         private const ulong filterByteHighBitsInUlong = (byteBroadcastToUlong >> 1) | (byteBroadcastToUlong << (sizeof(ulong) * 8 - 1));
 
@@ -480,7 +481,8 @@ namespace System.Buffers
             private readonly int _upperBound;
 
             private ulong _currentMatches;
-            private int _examinedIndex;
+            private int _examinedCount;
+            private int _offsetIndex;
             private int _index;
 
             internal MatchesEnumerator(ReadOnlySpan<byte> buffer, byte value, int start, int upperBound)
@@ -489,7 +491,8 @@ namespace System.Buffers
                 _value = value;
                 _upperBound = upperBound;
                 _currentMatches = 0;
-                _examinedIndex = start - 1;
+                _examinedCount = start;
+                _offsetIndex = 0;
                 _index = -1;
             }
 
@@ -499,18 +502,18 @@ namespace System.Buffers
                 if (currentMatches > 0)
                 {
                     var location = currentMatches ^ (currentMatches - 1);
-                    _currentMatches -= location;
-                    _index = BitScanForward(location);
+                    _currentMatches &= ~location;
+                    _index = _offsetIndex + BitScanForward(location);
                     return true;
                 }
                 else
                 {
-                    if (_examinedIndex == _upperBound)
+                    if (_examinedCount >= _upperBound)
                     {
                         return false;
                     }
 
-                    if (_upperBound - _examinedIndex < sizeof(ulong))
+                    if (_upperBound - _examinedCount < sizeof(ulong))
                     {
                         return MoveNextScan();
                     }
@@ -524,7 +527,7 @@ namespace System.Buffers
             // Small search space
             private unsafe bool MoveNextScan()
             {
-                var offset = _examinedIndex;
+                var offset = _examinedCount;
                 var upperBound = _upperBound;
                 var value = _value;
 
@@ -533,14 +536,14 @@ namespace System.Buffers
                 {
                     if (Unsafe.Add(ref searchStart, offset) == value)
                     {
-                        _examinedIndex = offset;
+                        _examinedCount = offset + 1;
                         // goto rather than inline return to keep loop body small
                         goto exit;
                     }
                 }
                 // No Matches, mark as everything checked
                 offset = -1;
-                _examinedIndex = _upperBound;
+                _examinedCount = _upperBound;
             exit:
                 _index = offset;
                 return offset >= 0;
@@ -549,7 +552,7 @@ namespace System.Buffers
             // Large search space
             private unsafe bool MoveNextSeek()
             {
-                var offset = _examinedIndex;
+                var offset = _examinedCount;
                 fixed (byte* pSearchSpace = &_buffer.DangerousGetPinnableReference())
                 {
                     var searchStart = pSearchSpace;
@@ -584,9 +587,10 @@ namespace System.Buffers
                                 // Get first match as bit flag
                                 var location = matches ^ (matches - 1);
                                 // Store remaining matches
-                                _currentMatches = matches - location;
+                                _currentMatches = matches & ~location;
                                 // Set current extent of examined data
-                                _examinedIndex += offset + Vector<byte>.Count;
+                                _offsetIndex = offset;
+                                _examinedCount = offset + Vector<byte>.Count;
                                 // Update offset to first match
                                 offset += BitScanForward(location);
                                 // goto rather than inline return to keep function smaller
@@ -612,13 +616,14 @@ namespace System.Buffers
                     if (upperBound - sizeof(ulong) >= offset)
                     {
                         // Flag all the bits where match was found
-                        var matches = (ulong)FlagFoundBytes(flaggedMatches) << 56;
+                        var matches = (ulong)FlagFoundBytes(flaggedMatches * 0xff);
                         // Get first match as bit flag
                         var location = matches ^ (matches - 1);
                         // Store remaining matches
-                        _currentMatches = matches - location;
+                        _currentMatches = matches & ~location;
                         // Set current extent of examined data
-                        _examinedIndex += offset + sizeof(ulong);
+                        _offsetIndex = offset;
+                        _examinedCount = offset + sizeof(ulong);
                         // Update offset to first match
                         offset += BitScanForward(location);
                         // goto rather than inline return to keep function smaller
@@ -630,13 +635,13 @@ namespace System.Buffers
                     {
                         if (*(searchStart + offset) == value)
                         {
-                            _examinedIndex = offset;
+                            _examinedCount = offset + 1;
                             goto exitFixed; // goto rather than inline return to keep loop body small
                         }
                     }
                     // No Matches, mark as everything checked
                     offset = -1;
-                    _examinedIndex = _upperBound;
+                    _examinedCount = _upperBound;
                     // Don't goto out of fixed block
             exitFixed:;
                 }
@@ -647,7 +652,7 @@ namespace System.Buffers
 
             public int Current => _index;
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            //[MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static ulong FlagFoundBytes(Vector<byte> match)
             {
                 // Pack all matches in Vector into a ulong as bit flags
@@ -657,14 +662,16 @@ namespace System.Buffers
                 for (var i = 0; i < Vector<ulong>.Count; i++)
                 {
                     var candidate = vector64[i];
-                    if (candidate == 0) continue;
-                    result |= (ulong)FlagFoundBytes(candidate) << ((Vector<ulong>.Count - i) * 8);
+                    if (candidate != 0)
+                    {
+                        result |= (ulong)FlagFoundBytes(candidate) << (i * 8);
+                    }
                 }
                 
                 return result;
             }
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            //[MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static byte FlagFoundBytes(ulong match)
             {
                 // Pack all matches in ulong into a byte as bit flags
@@ -676,24 +683,25 @@ namespace System.Buffers
 
             private static readonly int[] debruijnLookup =
             {
-                0,  1, 48,  2, 57, 49, 28,  3,
-               61, 58, 50, 42, 38, 29, 17,  4,
-               62, 55, 59, 36, 53, 51, 43, 22,
-               45, 39, 33, 30, 24, 18, 12,  5,
-               63, 47, 56, 27, 60, 41, 37, 16,
-               54, 35, 52, 21, 44, 32, 23, 11,
-               46, 26, 40, 15, 34, 20, 31, 10,
-               25, 14, 19,  9, 13,  8,  7,  6
+                0, 47,  1, 56, 48, 27,  2, 60,
+               57, 49, 41, 37, 28, 16,  3, 61,
+               54, 58, 35, 52, 50, 42, 21, 44,
+               38, 32, 29, 23, 17, 11,  4, 62,
+               46, 55, 26, 59, 40, 36, 15, 53,
+               34, 51, 20, 43, 31, 22, 10, 45,
+               25, 39, 14, 33, 19, 30,  9, 24,
+               13, 18,  8, 12,  7,  6,  5, 63
             };
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static int BitScanForward(ulong flaggedMatches)
             {
                 // Using De Bruijn sequence as need to scan full 64 bits of ulong
-                const long debruijn64 = 0x03f79d71b4cb0a89L;
+                const ulong debruijn64 = 0x03f79d71b4cb0a89UL;
                 unchecked
                 {
-                    return debruijnLookup[((flaggedMatches & (ulong)-(long)flaggedMatches) * debruijn64) >> 58];
+                    //var powerOfTwoFlag = flaggedMatches ^ (flaggedMatches - 1);
+                    return debruijnLookup[(flaggedMatches * debruijn64) >> 58];
                 }
             }
         }
