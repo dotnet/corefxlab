@@ -253,6 +253,10 @@ namespace System.Buffers
             return index;
         }
 
+        public static MatchesEnumerator MatchIndicies(this ReadOnlySpan<byte> buffer, byte value)
+        {
+            return new MatchesEnumerator(buffer, value);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int LocateFirstFoundByte(Vector<byte> match)
@@ -311,14 +315,150 @@ namespace System.Buffers
 #endif
         }
 
-        private const ulong xorPowerOfTwoToHighByte = (0x07ul |
-                                                       0x06ul << 8 |
+        private const ulong xorPowerOfTwoToHighByte = (0x07ul       |
+                                                       0x06ul << 8  |
                                                        0x05ul << 16 |
                                                        0x04ul << 24 |
                                                        0x03ul << 32 |
                                                        0x02ul << 40 |
-                                                       0x01ul << 48) + 1;
+                                                       0x01ul << 48 ) + 1;
+        private const ulong flagsToHighByte =         (0x01ul       |
+                                                       0x01ul << 7  |
+                                                       0x01ul << 14 |
+                                                       0x01ul << 21 |
+                                                       0x01ul << 28 |
+                                                       0x01ul << 35 |
+                                                       0x01ul << 42 ) + 1;
         private const ulong byteBroadcastToUlong = ~0UL / byte.MaxValue;
         private const ulong filterByteHighBitsInUlong = (byteBroadcastToUlong >> 1) | (byteBroadcastToUlong << (sizeof(ulong) * 8 - 1));
+
+        public struct MatchesEnumerator
+        {
+            private ReadOnlySpan<byte> _buffer; // don't make readonly, methods called on it
+            private readonly byte _value;
+
+            private ulong _currentMatches;
+            private int _examinedIndex;
+            private int _index;
+
+            internal MatchesEnumerator(ReadOnlySpan<byte> buffer, byte value)
+            {
+                _buffer = buffer;
+                _value = value;
+                _currentMatches = 0;
+                _examinedIndex = -1;
+                _index = -1;
+            }
+
+
+            public bool MoveNext()
+            {
+                if (_currentMatches > 0)
+                {
+                    // Do stuff
+                    return true;
+                }
+                else
+                {
+                    if (_examinedIndex == _buffer.Length)
+                    {
+                        return false;
+                    }
+
+                    return MoveNextSeek();
+                }
+            }
+
+            private unsafe bool MoveNextSeek()
+            {
+                var offset = _examinedIndex;
+                fixed (byte* pSearchSpace = &_buffer.DangerousGetPinnableReference())
+                {
+                    var searchStart = pSearchSpace;
+
+                    var length = _buffer.Length;
+                    var value = _value;
+
+                    if (Vector.IsHardwareAccelerated)
+                    {
+                        if (length - Vector<byte>.Count >= offset)
+                        {
+                            Vector<byte> values = GetVector(value);
+                            do
+                            {
+                                var flaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
+                                if (flaggedMatches.Equals(Vector<byte>.Zero))
+                                {
+                                    offset += Vector<byte>.Count;
+                                    continue;
+                                }
+
+                                _currentMatches = FlagFoundBytes(flaggedMatches);
+                                offset += LocateFirstFoundByte(flaggedMatches);
+                                goto exitFixed;
+
+                            } while (length - Vector<byte>.Count >= offset);
+                        }
+                    }
+
+                    while (length - sizeof(ulong) >= offset)
+                    {
+                        var flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
+                        if (flaggedMatches == 0)
+                        {
+                            offset += sizeof(ulong);
+                            continue;
+                        }
+
+                        _currentMatches = (ulong)FlagFoundBytes(flaggedMatches) << 56;
+                        offset += LocateFirstFoundByte(flaggedMatches);
+                        goto exitFixed;
+                    }
+
+                    for (; offset < length; offset++)
+                    {
+                        if (*(searchStart + offset) == value)
+                        {
+                            goto exitFixed;
+                        }
+                    }
+                    // No Matches
+                    offset = -1;
+                    _examinedIndex = _buffer.Length;
+                    // Don't goto out of fixed block
+                    exitFixed:;
+                }
+
+                return offset >= 0;
+            }
+
+            public int Current => _index;
+
+            public void Reset()
+            {
+                _currentMatches = 0;
+                _index = -1;
+            }
+
+            private static ulong FlagFoundBytes(Vector<byte> match)
+            {
+                var vector64 = Vector.AsVectorUInt64(match);
+                ulong result = 0;
+                // Pattern unrolled by jit https://github.com/dotnet/coreclr/pull/8001
+                for (var i = 0; i < Vector<ulong>.Count; i++)
+                {
+                    var candidate = vector64[i];
+                    if (candidate == 0) continue;
+                    result |= (ulong)FlagFoundBytes(candidate) << ((Vector<ulong>.Count - i) * 8);
+                }
+                
+                return result;
+            }
+
+            private static byte FlagFoundBytes(ulong match)
+            {
+                return (byte)(((match & filterByteHighBitsInUlong) * flagsToHighByte) >> 56);
+            }
+        }
     }
 }
