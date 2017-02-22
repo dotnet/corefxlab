@@ -253,19 +253,113 @@ namespace System.Buffers
             return index;
         }
 
-        public static MatchesEnumerator MatchIndicies(this ReadOnlySpan<byte> buffer, byte value)
+        public static int ValidateCompileTimeEnumeratorUse(ReadOnlySpan<byte> input, int lastOffset, int maxBytesRemaining)
         {
-            return new MatchesEnumerator(buffer, value);
+            var upperBound = lastOffset + maxBytesRemaining;
+            int headerStart = lastOffset;
+            foreach (var headerEnd in input.MatchIndicies((byte)'\r', lastOffset, Math.Min(input.Length - lastOffset, maxBytesRemaining)))
+            {
+                if (headerEnd == upperBound)
+                {
+                    throw new Exception("Bad...");
+                }
+
+                if (headerEnd == input.Length)
+                {
+                    // Incomplete
+                    return headerStart;
+                }
+
+                if (input[headerEnd + 1] != (byte)'\n')
+                {
+                    throw new Exception("Bad...");
+                }
+
+                if (headerEnd == headerStart)
+                {
+                    // End of headers
+                    return -1;
+                }
+
+                string headerName = null;
+                string headerValue = null;
+                var isFirst = true;
+                foreach (var valueStart in input.MatchIndicies((byte)':', headerStart, headerEnd - 1))
+                {
+                    if (!isFirst)
+                    {
+                        throw new Exception("Bad...");
+                    }
+                    else
+                    {
+                        isFirst = false;
+                        headerName = input.ToAsciiString(headerStart, valueStart - headerStart);
+                        headerValue = input.ToAsciiString(valueStart + 1, headerEnd - 1 - valueStart);
+                    }
+                }
+
+                if (string.IsNullOrEmpty(headerName) || string.IsNullOrEmpty(headerValue))
+                {
+                    throw new Exception("Bad...");
+                }
+
+                // Do something with headers
+
+                headerStart = headerEnd + 1;
+            }
+
+            if (input.Length >= upperBound)
+            {
+                throw new Exception("Bad...");
+            }
+
+            // Incomplete
+            return headerStart;
         }
 
-        public static MatchesEnumerator MatchIndicies(this ReadOnlySpan<byte> buffer, byte value, int start)
+        public static string ToAsciiString(this ReadOnlySpan<byte> buffer)
         {
-            return new MatchesEnumerator(buffer, value, start);
+            if (buffer.Length == 0)
+            {
+                return string.Empty;
+            }
+
+            return string.Empty;
         }
 
-        public static MatchesEnumerator MatchIndicies(this ReadOnlySpan<byte> buffer, byte value, int start, int length)
+        public static string ToAsciiString(this ReadOnlySpan<byte> buffer, int start)
         {
-            return new MatchesEnumerator(buffer, value, start, length);
+            if (buffer.Length - start == 0)
+            {
+                return string.Empty;
+            }
+
+            return string.Empty;
+        }
+
+        public static string ToAsciiString(this ReadOnlySpan<byte> buffer, int start, int length)
+        {
+            if (length == 0)
+            {
+                return string.Empty;
+            }
+
+            return string.Empty;
+        }
+
+        public static MatchesEnumerable MatchIndicies(this ReadOnlySpan<byte> buffer, byte value)
+        {
+            return new MatchesEnumerable(buffer, value);
+        }
+
+        public static MatchesEnumerable MatchIndicies(this ReadOnlySpan<byte> buffer, byte value, int start)
+        {
+            return new MatchesEnumerable(buffer, value, start);
+        }
+
+        public static MatchesEnumerable MatchIndicies(this ReadOnlySpan<byte> buffer, byte value, int start, int length)
+        {
+            return new MatchesEnumerable(buffer, value, start, length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -342,41 +436,58 @@ namespace System.Buffers
         private const ulong byteBroadcastToUlong = ~0UL / byte.MaxValue;
         private const ulong filterByteHighBitsInUlong = (byteBroadcastToUlong >> 1) | (byteBroadcastToUlong << (sizeof(ulong) * 8 - 1));
 
+        public struct MatchesEnumerable
+        {
+            private readonly ReadOnlySpan<byte> _buffer;
+            private readonly byte _value;
+            private readonly int _start;
+            private readonly int _upperBound;
+
+            internal MatchesEnumerable(ReadOnlySpan<byte> buffer, byte value)
+            {
+                _buffer = buffer;
+                _value = value;
+                _start = 0;
+                _upperBound = buffer.Length;
+            }
+
+            internal MatchesEnumerable(ReadOnlySpan<byte> buffer, byte value, int start)
+            {
+                _buffer = buffer;
+                _value = value;
+                _start = start;
+                _upperBound = buffer.Length;
+            }
+
+            internal MatchesEnumerable(ReadOnlySpan<byte> buffer, byte value, int start, int length)
+            {
+                _buffer = buffer;
+                _value = value;
+                _start = start;
+                _upperBound = length + start;
+            }
+
+            public MatchesEnumerator GetEnumerator()
+            {
+                return new MatchesEnumerator(_buffer, _value, _start, _upperBound);
+            }
+        }
+
         public struct MatchesEnumerator
         {
             private ReadOnlySpan<byte> _buffer; // don't make readonly, methods called on it
             private readonly byte _value;
-            private readonly int _length;
+            private readonly int _upperBound;
 
             private ulong _currentMatches;
             private int _examinedIndex;
             private int _index;
 
-            internal MatchesEnumerator(ReadOnlySpan<byte> buffer, byte value)
+            internal MatchesEnumerator(ReadOnlySpan<byte> buffer, byte value, int start, int upperBound)
             {
                 _buffer = buffer;
                 _value = value;
-                _length = _buffer.Length;
-                _currentMatches = 0;
-                _examinedIndex = -1;
-                _index = -1;
-            }
-
-            internal MatchesEnumerator(ReadOnlySpan<byte> buffer, byte value, int start)
-            {
-                _buffer = buffer;
-                _value = value;
-                _length = _buffer.Length;
-                _currentMatches = 0;
-                _examinedIndex = start - 1;
-                _index = -1;
-            }
-
-            internal MatchesEnumerator(ReadOnlySpan<byte> buffer, byte value, int start, int length)
-            {
-                _buffer = buffer;
-                _value = value;
-                _length = length - start;
+                _upperBound = upperBound;
                 _currentMatches = 0;
                 _examinedIndex = start - 1;
                 _index = -1;
@@ -386,12 +497,14 @@ namespace System.Buffers
             {
                 if (_currentMatches > 0)
                 {
-                    // Do stuff
+                    var location = _currentMatches ^ (_currentMatches - 1);
+                    _currentMatches -= location;
+                    // TODO: set _index to bitscanreverse(location)
                     return true;
                 }
                 else
                 {
-                    if (_examinedIndex == _length)
+                    if (_examinedIndex == _upperBound)
                     {
                         return false;
                     }
@@ -402,17 +515,18 @@ namespace System.Buffers
 
             private unsafe bool MoveNextSeek()
             {
+                // if length < sizeof(ulong) don't fix? 
                 var offset = _examinedIndex;
                 fixed (byte* pSearchSpace = &_buffer.DangerousGetPinnableReference())
                 {
                     var searchStart = pSearchSpace;
 
-                    var length = _length;
+                    var upperBound = _upperBound;
                     var value = _value;
 
                     if (Vector.IsHardwareAccelerated)
                     {
-                        if (length - Vector<byte>.Count >= offset)
+                        if (upperBound - Vector<byte>.Count >= offset)
                         {
                             Vector<byte> values = GetVector(value);
                             do
@@ -425,14 +539,15 @@ namespace System.Buffers
                                 }
 
                                 _currentMatches = FlagFoundBytes(flaggedMatches);
-                                offset += LocateFirstFoundByte(flaggedMatches);
+                                _examinedIndex += offset + Vector<byte>.Count;
+                                offset += LocateFirstFoundByte(flaggedMatches); // something better?
                                 goto exitFixed;
 
-                            } while (length - Vector<byte>.Count >= offset);
+                            } while (upperBound - Vector<byte>.Count >= offset);
                         }
                     }
 
-                    while (length - sizeof(ulong) >= offset)
+                    while (upperBound - sizeof(ulong) >= offset)
                     {
                         var flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
                         if (flaggedMatches == 0)
@@ -442,34 +557,31 @@ namespace System.Buffers
                         }
 
                         _currentMatches = (ulong)FlagFoundBytes(flaggedMatches) << 56;
-                        offset += LocateFirstFoundByte(flaggedMatches);
+                        _examinedIndex += offset + sizeof(ulong);
+                        offset += LocateFirstFoundByte(flaggedMatches); // something better?
                         goto exitFixed;
                     }
 
-                    for (; offset < length; offset++)
+                    for (; offset < upperBound; offset++)
                     {
                         if (*(searchStart + offset) == value)
                         {
+                            _examinedIndex = offset;
                             goto exitFixed;
                         }
                     }
                     // No Matches
                     offset = -1;
-                    _examinedIndex = _length;
+                    _examinedIndex = _upperBound;
                     // Don't goto out of fixed block
                     exitFixed:;
                 }
 
+                _index = offset;
                 return offset >= 0;
             }
 
             public int Current => _index;
-
-            public void Reset()
-            {
-                _currentMatches = 0;
-                _index = -1;
-            }
 
             private static ulong FlagFoundBytes(Vector<byte> match)
             {
