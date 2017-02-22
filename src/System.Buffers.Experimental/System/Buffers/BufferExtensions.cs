@@ -561,20 +561,19 @@ namespace System.Buffers
                     {
                         if (upperBound - Vector<byte>.Count >= offset)
                         {
+                            // Check Vector lengths
                             Vector<byte> values = GetVector(value);
                             do
                             {
                                 var vFlaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
-                                if (vFlaggedMatches.Equals(Vector<byte>.Zero))
+                                if (!vFlaggedMatches.Equals(Vector<byte>.Zero))
                                 {
-                                    offset += Vector<byte>.Count;
-                                    continue;
+                                    // reusing Vector values to keep register pressure low
+                                    values = vFlaggedMatches; 
+                                    break;
                                 }
 
-                                // reusing Vector values to keep register pressure low
-                                values = vFlaggedMatches; 
-                                break;
-
+                                offset += Vector<byte>.Count;
                             } while (upperBound - Vector<byte>.Count >= offset);
 
                             // Found match? Perform updating out of loop, so above loop body is small
@@ -601,13 +600,12 @@ namespace System.Buffers
                     while (upperBound - sizeof(ulong) >= offset)
                     {
                         flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
-                        if (flaggedMatches == 0)
+                        if (flaggedMatches != 0)
                         {
-                            offset += sizeof(ulong);
-                            continue;
+                            break;
                         }
 
-                        break;
+                        offset += sizeof(ulong);
                     }
 
                     // Found match? Perform updating out of loop, so above loop body is small
