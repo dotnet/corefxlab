@@ -258,6 +258,16 @@ namespace System.Buffers
             return new MatchesEnumerator(buffer, value);
         }
 
+        public static MatchesEnumerator MatchIndicies(this ReadOnlySpan<byte> buffer, byte value, int start)
+        {
+            return new MatchesEnumerator(buffer, value, start);
+        }
+
+        public static MatchesEnumerator MatchIndicies(this ReadOnlySpan<byte> buffer, byte value, int start, int length)
+        {
+            return new MatchesEnumerator(buffer, value, start, length);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int LocateFirstFoundByte(Vector<byte> match)
         {
@@ -336,6 +346,7 @@ namespace System.Buffers
         {
             private ReadOnlySpan<byte> _buffer; // don't make readonly, methods called on it
             private readonly byte _value;
+            private readonly int _length;
 
             private ulong _currentMatches;
             private int _examinedIndex;
@@ -345,11 +356,31 @@ namespace System.Buffers
             {
                 _buffer = buffer;
                 _value = value;
+                _length = _buffer.Length;
                 _currentMatches = 0;
                 _examinedIndex = -1;
                 _index = -1;
             }
 
+            internal MatchesEnumerator(ReadOnlySpan<byte> buffer, byte value, int start)
+            {
+                _buffer = buffer;
+                _value = value;
+                _length = _buffer.Length;
+                _currentMatches = 0;
+                _examinedIndex = start - 1;
+                _index = -1;
+            }
+
+            internal MatchesEnumerator(ReadOnlySpan<byte> buffer, byte value, int start, int length)
+            {
+                _buffer = buffer;
+                _value = value;
+                _length = length - start;
+                _currentMatches = 0;
+                _examinedIndex = start - 1;
+                _index = -1;
+            }
 
             public bool MoveNext()
             {
@@ -360,7 +391,7 @@ namespace System.Buffers
                 }
                 else
                 {
-                    if (_examinedIndex == _buffer.Length)
+                    if (_examinedIndex == _length)
                     {
                         return false;
                     }
@@ -376,7 +407,7 @@ namespace System.Buffers
                 {
                     var searchStart = pSearchSpace;
 
-                    var length = _buffer.Length;
+                    var length = _length;
                     var value = _value;
 
                     if (Vector.IsHardwareAccelerated)
@@ -424,7 +455,7 @@ namespace System.Buffers
                     }
                     // No Matches
                     offset = -1;
-                    _examinedIndex = _buffer.Length;
+                    _examinedIndex = _length;
                     // Don't goto out of fixed block
                     exitFixed:;
                 }
