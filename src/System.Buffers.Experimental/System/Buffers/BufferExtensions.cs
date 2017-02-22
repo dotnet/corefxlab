@@ -124,135 +124,81 @@ namespace System.Buffers
 
         public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value)
         {
-            var index = -1;
             var length = buffer.Length;
             if (length == 0)
             {
-                goto exit;
+                return 0;
             }
 
-            fixed (byte* pHaystack = &buffer.DangerousGetPinnableReference())
-            {
-                var haystack = pHaystack;
-                index = 0;
-
-                if (Vector.IsHardwareAccelerated)
-                {
-                    if (length - Vector<byte>.Count >= index)
-                    {
-                        Vector<byte> needles = GetVector(value);
-                        do
-                        {
-                            var flaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(haystack + index), needles);
-                            if (flaggedMatches.Equals(Vector<byte>.Zero))
-                            {
-                                index += Vector<byte>.Count;
-                                continue;
-                            }
-
-                            index += LocateFirstFoundByte(flaggedMatches);
-                            goto exitFixed;
-
-                        } while (length - Vector<byte>.Count >= index);
-                    }
-                }
-
-                while (length - sizeof(ulong) >= index)
-                {
-                    var flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(haystack + index), value);
-                    if (flaggedMatches == 0)
-                    {
-                        index += sizeof(ulong);
-                        continue;
-                    }
-
-                    index += LocateFirstFoundByte(flaggedMatches);
-                    goto exitFixed;
-                }
-
-                for (; index < length; index++)
-                {
-                    if (*(haystack + index) == value)
-                    {
-                        goto exitFixed;
-                    }
-                }
-                // No Matches
-                index = -1;
-                // Don't goto out of fixed block
-        exitFixed:;
-            }
-        exit:
-            return index;
+            return IndexOfVectorized(ref buffer.DangerousGetPinnableReference(), value, length);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value)
         {
-            Debug.Assert(s_longSize == 4 || s_longSize == 2);
-
-            var index = -1;
             var length = buffer.Length;
             if (length == 0)
             {
-                goto exit;
+                return 0;
             }
 
-            fixed (byte* pHaystack = &buffer.DangerousGetPinnableReference())
+            return IndexOfVectorized(ref buffer.DangerousGetPinnableReference(), value, length);
+        }
+
+        private static unsafe int IndexOfVectorized(ref byte searchSpace, byte value, int length)
+        {
+            fixed (byte* pSearchSpace = &searchSpace)
             {
-                var haystack = pHaystack;
-                index = 0;
+                var searchStart = pSearchSpace;
+                var offset = 0;
 
                 if (Vector.IsHardwareAccelerated)
                 {
-                    if (length - Vector<byte>.Count >= index)
+                    if (length - Vector<byte>.Count >= offset)
                     {
-                        Vector<byte> needles = GetVector(value);
+                        Vector<byte> values = GetVector(value);
                         do
                         {
-                            var flaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(haystack + index), needles);
+                            var flaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
                             if (flaggedMatches.Equals(Vector<byte>.Zero))
                             {
-                                index += Vector<byte>.Count;
+                                offset += Vector<byte>.Count;
                                 continue;
                             }
 
-                            index += LocateFirstFoundByte(flaggedMatches);
+                            offset += LocateFirstFoundByte(flaggedMatches);
                             goto exitFixed;
 
-                        } while (length - Vector<byte>.Count >= index);
+                        } while (length - Vector<byte>.Count >= offset);
                     }
                 }
 
-                while (length - sizeof(ulong) >= index)
+                while (length - sizeof(ulong) >= offset)
                 {
-                    var flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(haystack + index), value);
+                    var flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
                     if (flaggedMatches == 0)
                     {
-                        index += sizeof(ulong);
+                        offset += sizeof(ulong);
                         continue;
                     }
 
-                    index += LocateFirstFoundByte(flaggedMatches);
+                    offset += LocateFirstFoundByte(flaggedMatches);
                     goto exitFixed;
                 }
 
-                for (; index < length; index++)
+                for (; offset < length; offset++)
                 {
-                    if (*(haystack + index) == value)
+                    if (*(searchStart + offset) == value)
                     {
                         goto exitFixed;
                     }
                 }
                 // No Matches
-                index = -1;
-                // Don't goto out of fixed block
+                offset = -1;
         exitFixed:;
+                return offset;
             }
-        exit:
-            return index;
-        }
 
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int LocateFirstFoundByte(Vector<byte> match)
@@ -301,7 +247,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Vector<byte> GetVector(byte vectorByte)
         {
-#if !NETCOREAPP1_2
+#if !NETCOREAPP
             // Vector<byte> .ctor doesn't become an intrinsic due to detection issue
             // However this does cause it to become an intrinsic (with additional multiply and reg->reg copy)
             // https://github.com/dotnet/coreclr/issues/7459#issuecomment-253965670
