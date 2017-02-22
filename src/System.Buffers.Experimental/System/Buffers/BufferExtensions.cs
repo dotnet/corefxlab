@@ -499,7 +499,7 @@ namespace System.Buffers
                 {
                     var location = _currentMatches ^ (_currentMatches - 1);
                     _currentMatches -= location;
-                    // TODO: set _index to bitscanreverse(location)
+                    _index = BitScanForward(location);
                     return true;
                 }
                 else
@@ -531,35 +531,52 @@ namespace System.Buffers
                             Vector<byte> values = GetVector(value);
                             do
                             {
-                                var flaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
-                                if (flaggedMatches.Equals(Vector<byte>.Zero))
+                                values = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
+                                if (values.Equals(Vector<byte>.Zero))
                                 {
                                     offset += Vector<byte>.Count;
                                     continue;
                                 }
 
-                                _currentMatches = FlagFoundBytes(flaggedMatches);
-                                _examinedIndex += offset + Vector<byte>.Count;
-                                offset += LocateFirstFoundByte(flaggedMatches); // something better?
-                                goto exitFixed;
+                                break;
 
                             } while (upperBound - Vector<byte>.Count >= offset);
+
+                            if (upperBound - Vector<byte>.Count >= offset)
+                            {
+                                // Perform out of loop, so loop body is small
+                                var matches = FlagFoundBytes(values);
+                                var location = matches ^ (matches - 1);
+                                _currentMatches = matches - location;
+                                _examinedIndex += offset + Vector<byte>.Count;
+                                offset += BitScanForward(location);
+                                goto exitFixed; // goto rather than inline return to keep function smaller
+                            }
                         }
                     }
 
+                    ulong flaggedMatches = 0;
                     while (upperBound - sizeof(ulong) >= offset)
                     {
-                        var flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
+                        flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
                         if (flaggedMatches == 0)
                         {
                             offset += sizeof(ulong);
                             continue;
                         }
 
-                        _currentMatches = (ulong)FlagFoundBytes(flaggedMatches) << 56;
+                        break;
+                    }
+
+                    if (upperBound - sizeof(ulong) >= offset)
+                    {
+                        // Perform out of loop, so loop body is small
+                        var matches = (ulong)FlagFoundBytes(flaggedMatches) << 56;
+                        var location = matches ^ (matches - 1);
+                        _currentMatches = matches - location;
                         _examinedIndex += offset + sizeof(ulong);
-                        offset += LocateFirstFoundByte(flaggedMatches); // something better?
-                        goto exitFixed;
+                        offset += BitScanForward(location);
+                        goto exitFixed; // goto rather than inline return to keep function smaller
                     }
 
                     for (; offset < upperBound; offset++)
@@ -567,14 +584,14 @@ namespace System.Buffers
                         if (*(searchStart + offset) == value)
                         {
                             _examinedIndex = offset;
-                            goto exitFixed;
+                            goto exitFixed; // goto rather than inline return to keep loop body small
                         }
                     }
                     // No Matches
                     offset = -1;
                     _examinedIndex = _upperBound;
                     // Don't goto out of fixed block
-                    exitFixed:;
+            exitFixed:;
                 }
 
                 _index = offset;
@@ -583,6 +600,7 @@ namespace System.Buffers
 
             public int Current => _index;
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static ulong FlagFoundBytes(Vector<byte> match)
             {
                 var vector64 = Vector.AsVectorUInt64(match);
@@ -598,9 +616,35 @@ namespace System.Buffers
                 return result;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static byte FlagFoundBytes(ulong match)
             {
-                return (byte)(((match & filterByteHighBitsInUlong) * flagsToHighByte) >> 56);
+                unchecked
+                {
+                    return (byte)(((match & filterByteHighBitsInUlong) * flagsToHighByte) >> 56);
+                }
+            }
+
+            private static readonly int[] debruijnLookup =
+            {
+                0,  1, 48,  2, 57, 49, 28,  3,
+               61, 58, 50, 42, 38, 29, 17,  4,
+               62, 55, 59, 36, 53, 51, 43, 22,
+               45, 39, 33, 30, 24, 18, 12,  5,
+               63, 47, 56, 27, 60, 41, 37, 16,
+               54, 35, 52, 21, 44, 32, 23, 11,
+               46, 26, 40, 15, 34, 20, 31, 10,
+               25, 14, 19,  9, 13,  8,  7,  6
+            };
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private static int BitScanForward(ulong flaggedMatches)
+            {
+                const long debruijn64 = 0x03f79d71b4cb0a89L;
+                unchecked
+                {
+                    return debruijnLookup[((flaggedMatches & (ulong)-(long)flaggedMatches) * debruijn64) >> 58];
+                }
             }
         }
     }
