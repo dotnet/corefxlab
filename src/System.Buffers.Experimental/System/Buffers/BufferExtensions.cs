@@ -563,13 +563,14 @@ namespace System.Buffers
                             Vector<byte> values = GetVector(value);
                             do
                             {
-                                values = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
-                                if (values.Equals(Vector<byte>.Zero))
+                                var vFlaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
+                                if (vFlaggedMatches.Equals(Vector<byte>.Zero))
                                 {
                                     offset += Vector<byte>.Count;
                                     continue;
                                 }
 
+                                values = vFlaggedMatches; // reusing Vector values to keep register pressure low
                                 break;
 
                             } while (upperBound - Vector<byte>.Count >= offset);
