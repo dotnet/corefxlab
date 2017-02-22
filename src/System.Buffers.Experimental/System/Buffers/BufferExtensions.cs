@@ -127,7 +127,7 @@ namespace System.Buffers
             var length = buffer.Length;
             if (length == 0)
             {
-                return 0;
+                return -1;
             }
 
             return IndexOfVectorized(ref buffer.DangerousGetPinnableReference(), value, length);
@@ -138,7 +138,7 @@ namespace System.Buffers
             var length = buffer.Length;
             if (length == 0)
             {
-                return 0;
+                return -1;
             }
 
             return IndexOfVectorized(ref buffer.DangerousGetPinnableReference(), value, length);
