@@ -534,10 +534,11 @@ namespace System.Buffers
                     if (Unsafe.Add(ref searchStart, offset) == value)
                     {
                         _examinedIndex = offset;
-                        goto exit; // goto rather than inline return to keep loop body small
+                        // goto rather than inline return to keep loop body small
+                        goto exit;
                     }
                 }
-                // No Matches
+                // No Matches, mark as everything checked
                 offset = -1;
                 _examinedIndex = _upperBound;
             exit:
@@ -570,25 +571,33 @@ namespace System.Buffers
                                     continue;
                                 }
 
-                                values = vFlaggedMatches; // reusing Vector values to keep register pressure low
+                                // reusing Vector values to keep register pressure low
+                                values = vFlaggedMatches; 
                                 break;
 
                             } while (upperBound - Vector<byte>.Count >= offset);
 
+                            // Found match? Perform updating out of loop, so above loop body is small
                             if (upperBound - Vector<byte>.Count >= offset)
                             {
-                                // Perform out of loop, so loop body is small
+                                // Flag all the bits where match was found
                                 var matches = FlagFoundBytes(values);
+                                // Get first match as bit flag
                                 var location = matches ^ (matches - 1);
+                                // Store remaining matches
                                 _currentMatches = matches - location;
+                                // Set current extent of examined data
                                 _examinedIndex += offset + Vector<byte>.Count;
+                                // Update offset to first match
                                 offset += BitScanForward(location);
-                                goto exitFixed; // goto rather than inline return to keep function smaller
+                                // goto rather than inline return to keep function smaller
+                                goto exitFixed;
                             }
                         }
                     }
 
                     ulong flaggedMatches = 0;
+                    // Check ulong length
                     while (upperBound - sizeof(ulong) >= offset)
                     {
                         flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
@@ -601,17 +610,24 @@ namespace System.Buffers
                         break;
                     }
 
+                    // Found match? Perform updating out of loop, so above loop body is small
                     if (upperBound - sizeof(ulong) >= offset)
                     {
-                        // Perform out of loop, so loop body is small
+                        // Flag all the bits where match was found
                         var matches = (ulong)FlagFoundBytes(flaggedMatches) << 56;
+                        // Get first match as bit flag
                         var location = matches ^ (matches - 1);
+                        // Store remaining matches
                         _currentMatches = matches - location;
+                        // Set current extent of examined data
                         _examinedIndex += offset + sizeof(ulong);
+                        // Update offset to first match
                         offset += BitScanForward(location);
-                        goto exitFixed; // goto rather than inline return to keep function smaller
+                        // goto rather than inline return to keep function smaller
+                        goto exitFixed;
                     }
 
+                    // Haven't found match, scan through remaining
                     for (; offset < upperBound; offset++)
                     {
                         if (*(searchStart + offset) == value)
@@ -620,7 +636,7 @@ namespace System.Buffers
                             goto exitFixed; // goto rather than inline return to keep loop body small
                         }
                     }
-                    // No Matches
+                    // No Matches, mark as everything checked
                     offset = -1;
                     _examinedIndex = _upperBound;
                     // Don't goto out of fixed block
@@ -636,6 +652,7 @@ namespace System.Buffers
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static ulong FlagFoundBytes(Vector<byte> match)
             {
+                // Pack all matches in Vector into a ulong as bit flags
                 var vector64 = Vector.AsVectorUInt64(match);
                 ulong result = 0;
                 // Pattern unrolled by jit https://github.com/dotnet/coreclr/pull/8001
@@ -652,6 +669,7 @@ namespace System.Buffers
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static byte FlagFoundBytes(ulong match)
             {
+                // Pack all matches in ulong into a byte as bit flags
                 unchecked
                 {
                     return (byte)(((match & filterByteHighBitsInUlong) * flagsToHighByte) >> 56);
@@ -673,6 +691,7 @@ namespace System.Buffers
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static int BitScanForward(ulong flaggedMatches)
             {
+                // Using De Bruijn sequence as need to scan full 64 bits of ulong
                 const long debruijn64 = 0x03f79d71b4cb0a89L;
                 unchecked
                 {
