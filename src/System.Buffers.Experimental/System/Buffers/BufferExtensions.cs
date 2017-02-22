@@ -153,42 +153,63 @@ namespace System.Buffers
 
                 if (Vector.IsHardwareAccelerated)
                 {
+                    // Check Vector lengths
                     if (length - Vector<byte>.Count >= offset)
                     {
                         Vector<byte> values = GetVector(value);
                         do
                         {
-                            var flaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
-                            if (flaggedMatches.Equals(Vector<byte>.Zero))
+                            var vFlaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
+                            if (vFlaggedMatches.Equals(Vector<byte>.Zero))
                             {
                                 offset += Vector<byte>.Count;
                                 continue;
                             }
-
-                            offset += LocateFirstFoundByte(flaggedMatches);
-                            goto exitFixed;
+                            // reusing Vector values to keep register pressure low
+                            values = vFlaggedMatches;
+                            break;
 
                         } while (length - Vector<byte>.Count >= offset);
+
+                        // Found match? Perform secondary search outside out of loop, so above loop body is small
+                        if (length - Vector<byte>.Count >= offset)
+                        {
+                            // Find offset of first match
+                            offset += LocateFirstFoundByte(values);
+                            // goto rather than inline return to keep function smaller
+                            goto exitFixed;
+                        }
                     }
                 }
 
+                ulong flaggedMatches = 0;
+                // Check ulong length
                 while (length - sizeof(ulong) >= offset)
                 {
-                    var flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
+                    flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
                     if (flaggedMatches == 0)
                     {
                         offset += sizeof(ulong);
                         continue;
                     }
+                    break;
+                }
 
+                // Found match? Perform secondary search outside out of loop, so above loop body is small
+                if (length - sizeof(ulong) >= offset)
+                {
+                    // Find offset of first match
                     offset += LocateFirstFoundByte(flaggedMatches);
+                    // goto rather than inline return to keep function smaller
                     goto exitFixed;
                 }
 
+                // Haven't found match, scan through remaining
                 for (; offset < length; offset++)
                 {
                     if (*(searchStart + offset) == value)
                     {
+                        // goto rather than inline return to keep loop body small
                         goto exitFixed;
                     }
                 }
