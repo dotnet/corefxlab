@@ -231,8 +231,10 @@ namespace System.Buffers
             for (; i < Vector<ulong>.Count; i++)
             {
                 candidate = vector64[i];
-                if (candidate == 0) continue;
-                break;
+                if (candidate != 0)
+                {
+                    break;
+                }
             }
 
             // Single LEA instruction with jitted const (using function result)
