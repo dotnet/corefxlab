@@ -122,6 +122,26 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
+        public void MatchEnumeratorSeekSeeks()
+        {
+            byte match = (byte)'a';
+            byte skip = (byte)'b';
+            int len = 10246;
+            var buffer = Enumerable.Repeat(skip, len).Concat(new[] { match }).ToArray();
+
+            ReadOnlySpan<byte> span = buffer;
+
+            var index = 0;
+            foreach (var matchIndex in span.MatchIndicies(match))
+            {
+                Assert.Equal(len, matchIndex);
+                index += len;
+            }
+
+            Assert.Equal(buffer.Length - 1, index);
+        }
+
+        [Fact]
         public void MatchEnumeratorScanMatches()
         {
             byte value = (byte)'a';
@@ -178,6 +198,26 @@ namespace System.Buffers.Tests
             }
 
             Assert.Equal(buffer.Length, i);
+        }
+
+        [Fact]
+        public void MatchEnumeratorScanScans()
+        {
+            byte match = (byte)'a';
+            byte skip = (byte)'b';
+            int len = 6;
+            var buffer = Enumerable.Repeat(skip, len).Concat(new[] { match }).ToArray();
+
+            ReadOnlySpan<byte> span = buffer;
+
+            var index = 0;
+            foreach (var matchIndex in span.MatchIndicies(match))
+            {
+                Assert.Equal(len, matchIndex);
+                index += len;
+            }
+
+            Assert.Equal(buffer.Length - 1, index);
         }
     }
 }
