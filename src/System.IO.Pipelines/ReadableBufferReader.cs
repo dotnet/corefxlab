@@ -15,7 +15,7 @@ namespace System.IO.Pipelines
         private int _overallIndex;
         private bool _end;
 
-        public ReadableBufferReader(ReadableBuffer buffer): this(buffer.Start, buffer.End)
+        public ReadableBufferReader(ReadableBuffer buffer) : this(buffer.Start, buffer.End)
         {
         }
 
@@ -26,15 +26,7 @@ namespace System.IO.Pipelines
             _overallIndex = 0;
             _enumerator = new MemoryEnumerator(start, end);
             _currentMemory = default(Span<byte>);
-            while (_enumerator.MoveNext())
-            {
-                if (!_enumerator.Current.IsEmpty)
-                {
-                    _currentMemory = _enumerator.Current.Span;
-                    return;
-                }
-            }
-            _end = true;
+            MoveNext();
         }
 
         public bool End => _end;
@@ -46,6 +38,10 @@ namespace System.IO.Pipelines
             get
             {
                 var currentSegment = _enumerator.CurrentSegment;
+                if (_end)
+                {
+                    return new ReadCursor(currentSegment, currentSegment.Start + _currentMemory.Length);
+                }
                 return new ReadCursor(currentSegment, currentSegment.Start + _index);
             }
         }
@@ -80,14 +76,42 @@ namespace System.IO.Pipelines
 
         private void MoveNext()
         {
-            if (_enumerator.MoveNext())
+            while (_enumerator.MoveNext())
             {
-                _currentMemory = _enumerator.Current.Span;
-                _index = 0;
+                if (!_enumerator.Current.IsEmpty)
+                {
+                    _currentMemory = _enumerator.Current.Span;
+                    _index = 0;
+                    return;
+                }
             }
-            else
+
+            _end = true;
+        }
+
+        public void Skip(int length)
+        {
+            if (length < 0)
             {
-                _end = true;
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+            }
+
+            while (!_end && length > 0)
+            {
+                if ((_index + length) < _currentMemory.Length)
+                {
+                    _index += length;
+                    length = 0;
+                    break;
+                }
+
+                length -= (_currentMemory.Length - _index);
+                MoveNext();
+            }
+
+            if (length > 0)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
         }
     }

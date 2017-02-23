@@ -9,7 +9,6 @@ namespace System.IO.Pipelines
 {
     internal class ThrowHelper
     {
-
         public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument)
         {
             throw GetArgumentOutOfRangeException(argument);

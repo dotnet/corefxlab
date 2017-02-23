@@ -31,7 +31,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Determines if the <see cref="ReadableBuffer"/> is empty.
         /// </summary>
-        public bool IsEmpty => _first.IsEmpty && Length == 0;
+        public bool IsEmpty => _start == _end;
 
         /// <summary>
         /// Determins if the <see cref="ReadableBuffer"/> is a single <see cref="Memory{Byte}"/>.
@@ -57,11 +57,7 @@ namespace System.IO.Pipelines
         {
             _start = start;
             _end = end;
-            if (!end.IsEnd && !end.GreaterOrEqual(start))
-            {
-                throw new ArgumentException("End should be greater or equal to start");
-            }
-            start.TryGetBuffer(end, out _first, out start);
+            start.TryGetBuffer(end, out _first);
             _length = -1;
         }
 
@@ -81,7 +77,7 @@ namespace System.IO.Pipelines
 
             _length = buffer._length;
 
-            begin.TryGetBuffer(end, out _first, out begin);
+            begin.TryGetBuffer(end, out _first);
         }
 
         /// <summary>
