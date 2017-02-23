@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Runtime.CompilerServices;
+
 namespace System.IO.Pipelines
 {
     internal struct SegmentEnumerator
@@ -33,48 +35,53 @@ namespace System.IO.Pipelines
         /// Moves to the next <see cref="Memory{Byte}"/> in the <see cref="ReadableBuffer"/>
         /// </summary>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            if (_segment == null)
+            var segment = _segment;
+
+            if (segment == null)
             {
                 return false;
             }
 
-            int start = _segment.Start;
-            int end = _segment.End;
+            var start = _startIndex;
+            var end = segment.End;
 
-            if (_startIndex != 0)
-            {
-                start = _startIndex;
-                _startIndex = 0;
-            }
-
-            if (_segment == _endSegment)
+            if (segment == _endSegment)
             {
                 end = _endIndex;
-            }
-
-            _current = new SegmentPart()
-            {
-                Segment = _segment,
-                Start = start,
-                End = end,
-            };
-
-            if (_segment == _endSegment)
-            {
                 _segment = null;
             }
             else
             {
-                _segment = _segment.Next;
+                _segment = segment.Next;
                 if (_segment == null)
                 {
-                    throw new InvalidOperationException("Segments ended by end was never seen");
+                    if (_endSegment != null)
+                    {
+                        ThrowEndNotSeen();
+                    }
+                }
+                else
+                {
+                    _startIndex = _segment.Start;
                 }
             }
 
+            _current = new SegmentPart()
+            {
+                Segment = segment,
+                Start = start,
+                End = end,
+            };
+
             return true;
+        }
+
+        private void ThrowEndNotSeen()
+        {
+            throw new InvalidOperationException("Segments ended by end was never seen");
         }
 
         public SegmentEnumerator GetEnumerator()

@@ -17,7 +17,7 @@ namespace System.IO.Pipelines
         public MemoryEnumerator(ReadCursor start, ReadCursor end)
         {
             _segmentEnumerator = new SegmentEnumerator(start, end);
-            _current = Memory<byte>.Empty;
+            _current = default(Memory<byte>);
         }
 
         /// <summary>
