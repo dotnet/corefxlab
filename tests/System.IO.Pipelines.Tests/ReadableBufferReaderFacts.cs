@@ -76,112 +76,90 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task SkipTraversesSegments()
+        public void CtorFindsFirstNonEmptySegment()
         {
-            using (var factory = new PipeFactory())
-            {
-                var readerWriter = factory.Create();
-                var w = readerWriter.Writer.Alloc();
-                w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
-                w.Append(ReadableBuffer.Create(new byte[] { 2 }, 0, 1));
-                w.Append(ReadableBuffer.Create(new byte[] { 3 }, 0, 1));
-                await w.FlushAsync();
+            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { }, new byte[] { 1 } });
+            var reader = new ReadableBufferReader(buffer);
 
-                var result = await readerWriter.Reader.ReadAsync();
-                var buffer = result.Buffer;
-                var reader = new ReadableBufferReader(buffer);
-
-                reader.Skip(2);
-                Assert.Equal(3, reader.Take());
-            }
+            Assert.Equal(1, reader.Peek());
         }
 
         [Fact]
-        public async Task SkipThrowsPastLengthMultipleSegments()
+        public void EmptySegmentsAreSkippedOnMoveNext()
         {
-            using (var factory = new PipeFactory())
-            {
-                var readerWriter = factory.Create();
-                var w = readerWriter.Writer.Alloc();
-                w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
-                w.Append(ReadableBuffer.Create(new byte[] { 2 }, 0, 1));
-                w.Append(ReadableBuffer.Create(new byte[] { 3 }, 0, 1));
-                await w.FlushAsync();
+            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { 1 }, new byte[] { }, new byte[] { }, new byte[] { 2 } });
+            var reader = new ReadableBufferReader(buffer);
 
-                var result = await readerWriter.Reader.ReadAsync();
-                var buffer = result.Buffer;
-                var reader = new ReadableBufferReader(buffer);
-
-                Assert.Throws<ArgumentOutOfRangeException>(() => reader.Skip(4));
-            }
+            Assert.Equal(1, reader.Peek());
+            reader.Skip(1);
+            Assert.Equal(2, reader.Peek());
         }
 
         [Fact]
-        public async Task TakeTraversesSegments()
+        public void PeekGoesToEndIfAllEmptySegments()
         {
-            using (var factory = new PipeFactory())
-            {
-                var readerWriter = factory.Create();
-                var w = readerWriter.Writer.Alloc();
-                w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
-                w.Append(ReadableBuffer.Create(new byte[] { 2 }, 0, 1));
-                w.Append(ReadableBuffer.Create(new byte[] { 3 }, 0, 1));
-                await w.FlushAsync();
+            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { }, new byte[] { }, new byte[] { }, new byte[] { } });
+            var reader = new ReadableBufferReader(buffer);
 
-                var result = await readerWriter.Reader.ReadAsync();
-                var buffer = result.Buffer;
-                var reader = new ReadableBufferReader(buffer);
-
-                Assert.Equal(1, reader.Take());
-                Assert.Equal(2, reader.Take());
-                Assert.Equal(3, reader.Take());
-                Assert.Equal(-1, reader.Take());
-            }
+            Assert.Equal(-1, reader.Peek());
+            Assert.True(reader.End);
+            Assert.True(reader.Cursor.IsEnd);
         }
 
         [Fact]
-        public async Task PeekTraversesSegments()
+        public void SkipTraversesSegments()
         {
-            using (var factory = new PipeFactory())
-            {
-                var readerWriter = factory.Create();
-                var w = readerWriter.Writer.Alloc();
-                w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
-                w.Append(ReadableBuffer.Create(new byte[] { 2 }, 0, 1));
-                await w.FlushAsync();
+            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { 1 }, new byte[] { 2 }, new byte[] { 3 } });
+            var reader = new ReadableBufferReader(buffer);
 
-                var result = await readerWriter.Reader.ReadAsync();
-                var buffer = result.Buffer;
-                var reader = new ReadableBufferReader(buffer);
-
-                Assert.Equal(1, reader.Take());
-                Assert.Equal(2, reader.Peek());
-                Assert.Equal(2, reader.Take());
-                Assert.Equal(-1, reader.Peek());
-                Assert.Equal(-1, reader.Take());
-            }
+            reader.Skip(2);
+            Assert.Equal(3, reader.Take());
         }
 
         [Fact]
-        public async Task PeekWorkesWithEmptySegments()
+        public void SkipThrowsPastLengthMultipleSegments()
         {
-            using (var factory = new PipeFactory())
-            {
-                var readerWriter = factory.Create();
-                var w = readerWriter.Writer.Alloc();
-                w.Append(ReadableBuffer.Create(new byte[] { 0 }, 0, 0));
-                w.Append(ReadableBuffer.Create(new byte[] { 1 }, 0, 1));
-                await w.FlushAsync();
+            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { 1 }, new byte[] { 2 }, new byte[] { 3 } });
+            var reader = new ReadableBufferReader(buffer);
 
-                var result = await readerWriter.Reader.ReadAsync();
-                var buffer = result.Buffer;
-                var reader = new ReadableBufferReader(buffer);
+            Assert.Throws<ArgumentOutOfRangeException>(() => reader.Skip(4));
+        }
 
-                Assert.Equal(1, reader.Peek());
-                Assert.Equal(1, reader.Take());
-                Assert.Equal(-1, reader.Peek());
-                Assert.Equal(-1, reader.Take());
-            }
+        [Fact]
+        public void TakeTraversesSegments()
+        {
+            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { 1 }, new byte[] { 2 }, new byte[] { 3 } });
+            var reader = new ReadableBufferReader(buffer);
+
+            Assert.Equal(1, reader.Take());
+            Assert.Equal(2, reader.Take());
+            Assert.Equal(3, reader.Take());
+            Assert.Equal(-1, reader.Take());
+        }
+
+        [Fact]
+        public void PeekTraversesSegments()
+        {
+            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { 1 }, new byte[] { 2 } });
+            var reader = new ReadableBufferReader(buffer);
+
+            Assert.Equal(1, reader.Take());
+            Assert.Equal(2, reader.Peek());
+            Assert.Equal(2, reader.Take());
+            Assert.Equal(-1, reader.Peek());
+            Assert.Equal(-1, reader.Take());
+        }
+
+        [Fact]
+        public void PeekWorkesWithEmptySegments()
+        {
+            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] {  }, new byte[] { 1 } });
+            var reader = new ReadableBufferReader(buffer);
+
+            Assert.Equal(1, reader.Peek());
+            Assert.Equal(1, reader.Take());
+            Assert.Equal(-1, reader.Peek());
+            Assert.Equal(-1, reader.Take());
         }
 
         [Fact]

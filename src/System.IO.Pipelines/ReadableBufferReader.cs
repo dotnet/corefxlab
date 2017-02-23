@@ -26,22 +26,12 @@ namespace System.IO.Pipelines
             _overallIndex = 0;
             _enumerator = new MemoryEnumerator(start, end);
             _currentMemory = default(Span<byte>);
-            while (_enumerator.MoveNext())
-            {
-                if (!_enumerator.Current.IsEmpty)
-                {
-                    _currentMemory = _enumerator.Current.Span;
-                    return;
-                }
-            }
-            _end = true;
+            MoveNext();
         }
 
         public bool End => _end;
 
         public int Index => _overallIndex;
-
-        public Span<byte> Span => _currentMemory;
 
         public ReadCursor Cursor
         {
@@ -86,15 +76,17 @@ namespace System.IO.Pipelines
 
         private void MoveNext()
         {
-            if (_enumerator.MoveNext() && !_enumerator.Current.IsEmpty)
+            while (_enumerator.MoveNext())
             {
-                _currentMemory = _enumerator.Current.Span;
-                _index = 0;
+                if (!_enumerator.Current.IsEmpty)
+                {
+                    _currentMemory = _enumerator.Current.Span;
+                    _index = 0;
+                    return;
+                }
             }
-            else
-            {
-                _end = true;
-            }
+
+            _end = true;
         }
 
         public void Skip(int length)
