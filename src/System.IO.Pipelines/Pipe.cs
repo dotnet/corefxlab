@@ -12,7 +12,9 @@ namespace System.IO.Pipelines
     internal class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
     {
         // This sync objects protects the following state:
-        // 1. _
+        // 1. _commitHead & _commitHeadIndex
+        // 2. _length
+        // 3. _readerAwaitable & _writerAwaitable
         private readonly object _sync = new object();
 
         private readonly IBufferPool _pool;
@@ -248,8 +250,6 @@ namespace System.IO.Pipelines
                 return;
             }
 
-            Action continuation = null;
-
             // Changing commit head shared with Reader
             lock (_sync)
             {
@@ -270,7 +270,7 @@ namespace System.IO.Pipelines
                     _length >= _maximumSizeHigh &&
                     !_readerCompletion.IsCompleted)
                 {
-                     _writerAwaitable.Reset();
+                    _writerAwaitable.Reset();
                 }
             }
 
@@ -405,13 +405,14 @@ namespace System.IO.Pipelines
             Action continuation = null;
             lock (_sync)
             {
-
+                var oldLength = _length;
                 _length -= consumedBytes;
                 consumedEverything = examined.Segment == _commitHead &&
                                      examined.Index == _commitHeadIndex &&
                                      !_writerCompletion.IsCompleted;
 
-                if (_length < _maximumSizeLow)
+                if (oldLength >= _maximumSizeLow &&
+                    _length < _maximumSizeLow)
                 {
                     continuation = _writerAwaitable.Complete();
                 }
@@ -431,7 +432,7 @@ namespace System.IO.Pipelines
 
             // CompareExchange not required as its setting to current value if test fails
             _consumingState.End(ExceptionResource.NotConsumingToComplete);
-            
+
             _writerAwaitable.Resume(continuation);
         }
 
