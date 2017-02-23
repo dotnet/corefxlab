@@ -43,7 +43,7 @@ namespace System
             return owner.Memory;
         }
 
-        public static Memory<T> Empty => OwnerEmptyMemory<T>.Shared.Memory;
+        public static Memory<T> Empty { get; } = OwnerEmptyMemory<T>.Shared.Memory;
 
         public int Length => _length;
 
