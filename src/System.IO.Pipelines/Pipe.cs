@@ -21,6 +21,9 @@ namespace System.IO.Pipelines
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
+        private readonly IScheduler _readerScheduler;
+        private readonly IScheduler _writerScheduler;
+
         private long _length;
         private long _currentWriteLength;
 
@@ -44,8 +47,6 @@ namespace System.IO.Pipelines
         private PipeOperationState _producingState;
 
         private bool _disposed;
-        private IScheduler _readerScheduler;
-        private IScheduler _writerScheduler;
 
         internal long Length => _length;
 
@@ -154,27 +155,27 @@ namespace System.IO.Pipelines
         {
             BufferSegment segment = null;
 
-            if (_commitHead != null && !_commitHead.ReadOnly)
-            {
-                // Try to return the tail so the calling code can append to it
-                int remaining = _commitHead.WritableBytes;
-
-                if (count <= remaining)
-                {
-                    // Free tail space of the right amount, use that
-                    segment = _commitHead;
-                }
-            }
-
-            if (segment == null)
-            {
-                // No free tail space, allocate a new segment
-                segment = new BufferSegment(_pool.Lease(count));
-            }
-
             // Changing commit head shared with Reader
             lock (_sync)
             {
+                if (_commitHead != null && !_commitHead.ReadOnly)
+                {
+                    // Try to return the tail so the calling code can append to it
+                    int remaining = _commitHead.WritableBytes;
+
+                    if (count <= remaining)
+                    {
+                        // Free tail space of the right amount, use that
+                        segment = _commitHead;
+                    }
+                }
+
+                if (segment == null)
+                {
+                    // No free tail space, allocate a new segment
+                    segment = new BufferSegment(_pool.Lease(count));
+                }
+
                 if (_commitHead == null)
                 {
                     // No previous writes have occurred
@@ -209,17 +210,19 @@ namespace System.IO.Pipelines
             if (_writingHead == null)
             {
                 // No active write
-
-                if (_commitHead == null)
+                lock (_sync)
                 {
-                    // No allocated buffers yet, not locking as _readHead will be null
-                    _commitHead = clonedBegin;
-                }
-                else
-                {
-                    Debug.Assert(_commitHead.Next == null);
-                    // Allocated buffer, append as next segment
-                    _commitHead.Next = clonedBegin;
+                    if (_commitHead == null)
+                    {
+                        // No allocated buffers yet, not locking as _readHead will be null
+                        _commitHead = clonedBegin;
+                    }
+                    else
+                    {
+                        Debug.Assert(_commitHead.Next == null);
+                        // Allocated buffer, append as next segment
+                        _commitHead.Next = clonedBegin;
+                    }
                 }
             }
             else

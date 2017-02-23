@@ -66,9 +66,7 @@ namespace System.IO.Pipelines
             {
                 completion.TryComplete(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
 
-                Interlocked.Exchange(
-                    ref _state,
-                    _awaitableIsCompleted);
+                _state = _awaitableIsCompleted;
 
                 Task.Run(continuation);
                 Task.Run(awaitableState);
