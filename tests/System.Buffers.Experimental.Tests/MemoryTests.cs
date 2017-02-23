@@ -46,17 +46,32 @@ namespace System.Slices.Tests
         [Fact]
         public void NativeMemoryLifetime()
         {
-            Memory<byte> copyStoredForLater;
             var owner = new OwnedNativeMemory(1024);
+            TestLifetime(owner);
+        }
+
+        [Fact]
+        public unsafe void PinnedArrayMemoryLifetime()
+        {
+            var bytes = new byte[1024];
+            fixed (byte* pBytes = bytes) {
+                var owner = new OwnedPinnedArray<byte>(bytes, pBytes);
+                TestLifetime(owner);            
+            }
+        }
+
+        static void TestLifetime(OwnedMemory<byte> owned)
+        {
+            Memory<byte> copyStoredForLater;
             try {
-                Memory<byte> memory = owner.Memory;
+                Memory<byte> memory = owned.Memory;
                 Memory<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
                 var r = memorySlice.Reserve();
                 try {
-                    Assert.Throws<InvalidOperationException>(() => { // memory is reserved; cannot dispose
-                        owner.Dispose();
-                    }); 
+                    Assert.Throws<InvalidOperationException>(() => { // memory is reserved; premature dispose check fires
+                        owned.Dispose();
+                    });
                     Assert.Throws<ObjectDisposedException>(() => {
                         // memory is disposed
                         Span<byte> span = memorySlice.Span;
@@ -64,59 +79,14 @@ namespace System.Slices.Tests
                     });
                 }
                 finally {
-                    Assert.Throws<ObjectDisposedException>(() => {
-                        // memory is disposed
-                        r.Dispose();
-                    });
+                    r.Dispose(); // release reservation
                 }
             }
             finally {
-                Assert.Throws<InvalidOperationException>(() => {
-                    // memory is still reserved as Release failed.
-                    owner.Dispose();
-                });
+                owned.Dispose(); // can finish dispose with no exception
             }
-            Assert.Throws<ObjectDisposedException>(() => { // manager is disposed
-                var span = copyStoredForLater.Span;
-            });
-        }
-
-        [Fact]
-        public unsafe void PinnedArrayMemoryLifetime()
-        {
-            Memory<byte> copyStoredForLater;
-            var bytes = new byte[1024];
-            fixed (byte* pBytes = bytes) {
-                var owner = new OwnedPinnedArray<byte>(bytes, pBytes);
-                try {
-                    Memory<byte> memory = owner.Memory;
-                    Memory<byte> memorySlice = memory.Slice(10);
-                    copyStoredForLater = memorySlice;
-                    var r = memorySlice.Reserve();
-                    try {
-                        Assert.Throws<InvalidOperationException>(() => { // memory is reserved; cannot dispose
-                            owner.Dispose();
-                        });
-                        Assert.Throws<ObjectDisposedException>(() => {
-                            Span<byte> span = memorySlice.Span;
-                            span[0] = 255;
-                        });
-                    }
-                    finally {
-                        Assert.Throws<ObjectDisposedException>(() => {
-                            // memory has been Disposed, so cannot free reservation
-                            r.Dispose();
-                        });
-                    }
-                }
-                finally {
-                    Assert.Throws<InvalidOperationException>(() => {
-                        // memory is still reserved as Release failed.
-                        owner.Dispose();
-                    });
-                }
-            }
-            Assert.Throws<ObjectDisposedException>(() => { // manager is disposed
+            Assert.Throws<ObjectDisposedException>(() => {
+                // memory is disposed; cannot use copy stored for later
                 var span = copyStoredForLater.Span;
             });
         }

@@ -15,29 +15,26 @@ namespace System
     public struct Memory<T> : IEquatable<Memory<T>>, IEquatable<ReadOnlyMemory<T>>
     {
         readonly OwnedMemory<T> _owner;
-        readonly int _id;
         readonly int _index;
         readonly int _length;
 
         internal Memory(OwnedMemory<T> owner, int length)
         {
             _owner = owner;
-            _id = owner.Id;
             _index = 0;
             _length = length;
         }
 
-        private Memory(OwnedMemory<T> owner, int id, int index, int length)
+        private Memory(OwnedMemory<T> owner, int index, int length)
         {
             _owner = owner;
-            _id = id;
             _index = index;
             _length = length;
         }
 
         public static implicit operator ReadOnlyMemory<T>(Memory<T> memory)
         {
-            return new ReadOnlyMemory<T>(memory._owner, memory._id, memory._index, memory._length);
+            return new ReadOnlyMemory<T>(memory._owner, memory._index, memory._length);
         }
 
         public static implicit operator Memory<T>(T[] array)
@@ -54,20 +51,20 @@ namespace System
 
         public Memory<T> Slice(int index)
         {
-            return new Memory<T>(_owner, _id, _index + index, _length - index);
+            return new Memory<T>(_owner, _index + index, _length - index);
         }
         public Memory<T> Slice(int index, int length)
         {
-            return new Memory<T>(_owner, _id, _index + index, length);
+            return new Memory<T>(_owner, _index + index, length);
         }
 
-        public Span<T> Span => _owner.GetSpanInternal(_id, _index, _length);
+        public Span<T> Span => _owner.GetSpanInternal(_index, _length);
 
-        public DisposableReservation<T> Reserve() => new DisposableReservation<T>(_owner, _id);
+        public DisposableReservation<T> Reserve() => new DisposableReservation<T>(_owner);
 
         public unsafe bool TryGetPointer(out void* pointer)
         {
-            if (!_owner.TryGetPointerInternal(_id, out pointer)) {
+            if (!_owner.TryGetPointerInternal(out pointer)) {
                 return false;
             }
             pointer = Add(pointer, _index);
@@ -76,7 +73,7 @@ namespace System
 
         public bool TryGetArray(out ArraySegment<T> buffer)
         {
-            if (!_owner.TryGetArrayInternal(_id, out buffer)) {
+            if (!_owner.TryGetArrayInternal(out buffer)) {
                 return false;
             }
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
@@ -117,7 +114,6 @@ namespace System
         {
             return
                 _owner == other._owner &&
-                _id == other._id &&
                 _index == other._index &&
                 _length == other._length;
         }
@@ -145,7 +141,7 @@ namespace System
         [EditorBrowsable( EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _id.GetHashCode(), _length.GetHashCode());
+            return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
         }
 
         public override string ToString()
