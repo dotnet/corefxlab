@@ -331,7 +331,13 @@ namespace System.IO.Pipelines
                 return new ReadableBuffer(); // Nothing written return empty
             }
 
-            return new ReadableBuffer(new ReadCursor(_commitHead, _commitHeadIndex), new ReadCursor(_writingHead, _writingHead.End));
+            ReadCursor readStart;
+            lock (_sync)
+            {
+                readStart = new ReadCursor(_commitHead, _commitHeadIndex);
+            }
+
+            return new ReadableBuffer(readStart, new ReadCursor(_writingHead, _writingHead.End));
         }
 
         private ReadableBuffer Read()
