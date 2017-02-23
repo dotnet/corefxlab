@@ -232,7 +232,7 @@ namespace System.Buffers
             return TryIndicesOf(ref buffer.DangerousGetPinnableReference(), value, length, indices, out numberOfIndices);
         }
 
-        public static bool IndicesOf(this ReadOnlySpan<byte> buffer, byte value, Span<int> indices, out int numberOfIndices)
+        public static bool TryIndicesOf(this ReadOnlySpan<byte> buffer, byte value, Span<int> indices, out int numberOfIndices)
         {
             var length = buffer.Length;
             if (length == 0 || indices.Length == 0)
@@ -243,7 +243,6 @@ namespace System.Buffers
 
             return TryIndicesOf(ref buffer.DangerousGetPinnableReference(), value, length, indices, out numberOfIndices);
         }
-
 
         private unsafe static bool TryIndicesOf(ref byte searchSpace, byte value, int length, Span<int> indices, out int numberOfIndices)
         {
