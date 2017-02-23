@@ -44,6 +44,8 @@ namespace System.IO.Pipelines
         private PipeOperationState _producingState;
 
         private bool _disposed;
+        private IScheduler _readerScheduler;
+        private IScheduler _writerScheduler;
 
         internal long Length => _length;
 
@@ -79,9 +81,10 @@ namespace System.IO.Pipelines
             _pool = pool;
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
-
-            _readerAwaitable = new PipeAwaitable(options.ReaderScheduler ?? InlineScheduler.Default, completed: false);
-            _writerAwaitable = new PipeAwaitable(options.WriterScheduler ?? InlineScheduler.Default, completed: true);
+            _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
+            _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
+            _readerAwaitable = new PipeAwaitable(completed: false);
+            _writerAwaitable = new PipeAwaitable(completed: true);
         }
 
         internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
@@ -316,7 +319,7 @@ namespace System.IO.Pipelines
                 awaitable = _readerAwaitable.Complete();
             }
 
-            _readerAwaitable.Resume(awaitable);
+            TrySchedule(_readerScheduler, awaitable);
 
             return new WritableBufferAwaitable(this);
         }
@@ -374,7 +377,7 @@ namespace System.IO.Pipelines
                 awaitable = _readerAwaitable.Complete();
             }
 
-            _readerAwaitable.Resume(awaitable);
+            TrySchedule(_readerScheduler, awaitable);
 
             if (_readerCompletion.IsCompleted)
             {
@@ -401,26 +404,25 @@ namespace System.IO.Pipelines
             }
 
             // Reading commit head shared with writer
-            bool consumedEverything;
             Action continuation = null;
             lock (_sync)
             {
                 var oldLength = _length;
                 _length -= consumedBytes;
-                consumedEverything = examined.Segment == _commitHead &&
-                                     examined.Index == _commitHeadIndex &&
-                                     !_writerCompletion.IsCompleted;
 
                 if (oldLength >= _maximumSizeLow &&
                     _length < _maximumSizeLow)
                 {
                     continuation = _writerAwaitable.Complete();
                 }
-            }
-            // We reset the awaitable to not completed if we've consumed everything the producer produced so far
-            if (consumedEverything)
-            {
-                _readerAwaitable.Reset();
+
+                // We reset the awaitable to not completed if we've consumed everything the producer produced so far
+                if (examined.Segment == _commitHead &&
+                    examined.Index == _commitHeadIndex &&
+                    !_writerCompletion.IsCompleted)
+                {
+                    _readerAwaitable.Reset();
+                }
             }
 
             while (returnStart != null && returnStart != returnEnd)
@@ -433,7 +435,7 @@ namespace System.IO.Pipelines
             // CompareExchange not required as its setting to current value if test fails
             _consumingState.End(ExceptionResource.NotConsumingToComplete);
 
-            _writerAwaitable.Resume(continuation);
+            TrySchedule(_writerScheduler, continuation);
         }
 
         /// <summary>
@@ -454,7 +456,7 @@ namespace System.IO.Pipelines
             {
                 awaitable = _writerAwaitable.Complete();
             }
-            _writerAwaitable.Resume(awaitable);
+            TrySchedule(_writerScheduler, awaitable);
 
             if (_writerCompletion.IsCompleted)
             {
@@ -472,7 +474,7 @@ namespace System.IO.Pipelines
             {
                 awaitable = _readerAwaitable.Cancel();
             }
-            _readerAwaitable.Resume(awaitable);
+            TrySchedule(_readerScheduler, awaitable);
         }
 
         /// <summary>
@@ -503,6 +505,14 @@ namespace System.IO.Pipelines
             isCancelled = awaitableState.ObserveCancelation();
             isCompleted = completion.IsCompleted;
             completion.ThrowIfFailed();
+        }
+
+        private static void TrySchedule(IScheduler scheduler, Action action)
+        {
+            if (action != null)
+            {
+                scheduler.Schedule(action);
+            }
         }
 
         private void Dispose()
@@ -538,7 +548,7 @@ namespace System.IO.Pipelines
             {
                 awaitable = _readerAwaitable.OnCompleted(continuation, ref _writerCompletion);
             }
-            _readerAwaitable.Resume(awaitable);
+            TrySchedule(_readerScheduler, awaitable);
         }
 
         ReadResult IReadableBufferAwaiter.GetResult()
@@ -570,7 +580,7 @@ namespace System.IO.Pipelines
             {
                 awaitable = _writerAwaitable.OnCompleted(continuation, ref _readerCompletion);
             }
-            _writerAwaitable.Resume(awaitable);
+            TrySchedule(_writerScheduler, awaitable);
         }
 
         public IPipeReader Reader => this;

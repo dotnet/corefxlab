@@ -13,13 +13,11 @@ namespace System.IO.Pipelines
 
         private CancelledState _cancelledState;
         private Action _state;
-        private readonly IScheduler _scheduler;
 
-        public PipeAwaitable(IScheduler scheduler, bool completed)
+        public PipeAwaitable(bool completed)
         {
             _cancelledState = CancelledState.NotCancelled;
             _state = completed ? _awaitableIsCompleted : _awaitableIsNotCompleted;
-            _scheduler = scheduler;
         }
 
         public Action Complete()
@@ -33,14 +31,6 @@ namespace System.IO.Pipelines
                 return awaitableState;
             }
             return null;
-        }
-
-        public void Resume(Action action)
-        {
-            if (action != null)
-            {
-                _scheduler.Schedule(action);
-            }
         }
 
         public void Reset()
