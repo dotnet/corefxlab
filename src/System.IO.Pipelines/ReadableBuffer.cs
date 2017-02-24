@@ -31,7 +31,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Determines if the <see cref="ReadableBuffer"/> is empty.
         /// </summary>
-        public bool IsEmpty => _start == _end;
+        public bool IsEmpty => _first.IsEmpty && Length == 0;
 
         /// <summary>
         /// Determins if the <see cref="ReadableBuffer"/> is a single <see cref="Memory{Byte}"/>.
