@@ -246,6 +246,7 @@ namespace System.Buffers
 
         private unsafe static bool TryIndicesOf(ref byte searchSpace, byte value, int length, Span<int> indices, out int numberOfIndices)
         {
+            var result = false;
             numberOfIndices = 0;
 
             fixed (byte* pSearchSpace = &searchSpace)
@@ -319,6 +320,7 @@ namespace System.Buffers
                     }
 
                     // No Matches
+                    result = true;
                     break;
 
             exitFixed:;
@@ -328,7 +330,7 @@ namespace System.Buffers
                 }
             }
 
-            return numberOfIndices > 0;
+            return result && numberOfIndices < indices.Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

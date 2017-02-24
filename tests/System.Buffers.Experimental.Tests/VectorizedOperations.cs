@@ -85,12 +85,12 @@ namespace System.Buffers.Tests
                 dataBytes[i] = (byte)(i % gap);
             Span<byte> data = dataBytes;
 
-            Span<int> indices = new int[dataBytes.Length / gap];
+            Span<int> indices = new int[(dataBytes.Length / gap) + 1];
 
             // Validate correctness
             int count;
             Assert.True(data.TryIndicesOf(target, indices, out count));
-            Assert.Equal(indices.Length, count);
+            Assert.Equal(indices.Length - 1, count);
 
             var idx = 0;
             var cur = 0;
@@ -110,6 +110,21 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
+        public void NotFoundIndicesOf()
+        {
+            byte[] dataBytes = new byte[20];
+            for (var i = 0; i < dataBytes.Length; i++)
+                dataBytes[i] = (byte)1;
+            Span<byte> data = dataBytes;
+
+            Span<int> indices = new int[1];
+
+            int count;
+            Assert.True(data.TryIndicesOf(2, indices, out count));
+            Assert.Equal(0, count);
+        }
+
+        [Fact]
         public void PartialIndicesOf()
         {
             int gap = 8;
@@ -121,12 +136,32 @@ namespace System.Buffers.Tests
             Span<int> indices = new int[(dataBytes.Length / gap) - 5];
 
             int count;
-            Assert.True(data.TryIndicesOf(3, indices, out count));
+            Assert.False(data.TryIndicesOf(3, indices, out count));
             Assert.Equal(indices.Length, count);
 
             Span<byte> left = data.Slice(indices[count - 1]);
             Assert.True(left.TryIndicesOf(1, indices, out count));
             Assert.Equal(5, count);
+        }
+
+        [Fact]
+        public void ExactIndicesOf()
+        {
+            int gap = 8;
+            byte[] dataBytes = new byte[200];
+            for (var i = 0; i < dataBytes.Length; i++)
+                dataBytes[i] = (byte)(i % gap);
+            Span<byte> data = dataBytes;
+
+            Span<int> indices = new int[dataBytes.Length / gap];
+
+            int count;
+            Assert.False(data.TryIndicesOf(3, indices, out count));
+            Assert.Equal(indices.Length, count);
+
+            Span<byte> left = data.Slice(indices[count - 1]);
+            Assert.True(left.TryIndicesOf(1, indices, out count));
+            Assert.Equal(0, count);
         }
 
         [Fact]
