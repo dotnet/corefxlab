@@ -86,7 +86,7 @@ namespace System.IO.Pipelines.Text.Primitives
         {
             uint value;
             int consumed;
-            if(!buffer.TryParseUInt32(out value, out consumed))
+            if (!buffer.TryParseUInt32(out value, out consumed))
             {
                 throw new InvalidOperationException("could not parse uint");
             }
@@ -109,14 +109,14 @@ namespace System.IO.Pipelines.Text.Primitives
                 ArraySegment<byte> data;
                 if (buffer.First.TryGetPointer(out pointer))
                 {
-                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64((byte*)pointer, len, out value)) 
+                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64((byte*)pointer, len, out value))
                     {
                         throw new InvalidOperationException();
                     }
                 }
                 else if (buffer.First.TryGetArray(out data))
                 {
-                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(data.Array, out value)) 
+                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(data.Array, out value))
                     {
                         throw new InvalidOperationException();
                     }
@@ -131,7 +131,8 @@ namespace System.IO.Pipelines.Text.Primitives
                 var data = stackalloc byte[len];
                 buffer.CopyTo(new Span<byte>(data, len));
                 addr = data;
-                if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(addr, len, out value)) {
+                if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(addr, len, out value))
+                {
                     throw new InvalidOperationException();
                 }
             }
@@ -139,7 +140,8 @@ namespace System.IO.Pipelines.Text.Primitives
             {
                 // Heap allocated copy to parse into array (should be rare)
                 var arr = buffer.ToArray();
-                if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(arr, out value)) {
+                if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(arr, out value))
+                {
                     throw new InvalidOperationException();
                 }
 
@@ -147,6 +149,31 @@ namespace System.IO.Pipelines.Text.Primitives
             }
 
             return value;
+        }
+
+        public unsafe static string GetAsciiString(this Span<byte> span)
+        {
+            if (span.IsEmpty)
+            {
+                return null;
+            }
+
+            var asciiString = new string('\0', span.Length);
+
+            fixed (char* outputStart = asciiString)
+            {
+                var output = outputStart;
+
+                fixed (byte* buffer = &span.DangerousGetPinnableReference())
+                {
+                    if (!AsciiUtilities.TryGetAsciiString(buffer, output, span.Length))
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
+            }
+
+            return asciiString;
         }
 
         /// <summary>

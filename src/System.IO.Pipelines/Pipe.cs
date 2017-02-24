@@ -11,11 +11,18 @@ namespace System.IO.Pipelines
     /// </summary>
     internal class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
     {
+        // This sync objects protects the following state:
+        // 1. _commitHead & _commitHeadIndex
+        // 2. _length
+        // 3. _readerAwaitable & _writerAwaitable
         private readonly object _sync = new object();
 
         private readonly IBufferPool _pool;
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
+
+        private readonly IScheduler _readerScheduler;
+        private readonly IScheduler _writerScheduler;
 
         private long _length;
         private long _currentWriteLength;
@@ -75,9 +82,10 @@ namespace System.IO.Pipelines
             _pool = pool;
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
-
-            _readerAwaitable = new PipeAwaitable(options.ReaderScheduler ?? InlineScheduler.Default, completed: false);
-            _writerAwaitable = new PipeAwaitable(options.WriterScheduler ?? InlineScheduler.Default, completed: true);
+            _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
+            _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
+            _readerAwaitable = new PipeAwaitable(completed: false);
+            _writerAwaitable = new PipeAwaitable(completed: true);
         }
 
         internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
@@ -147,27 +155,27 @@ namespace System.IO.Pipelines
         {
             BufferSegment segment = null;
 
-            if (_commitHead != null && !_commitHead.ReadOnly)
-            {
-                // Try to return the tail so the calling code can append to it
-                int remaining = _commitHead.WritableBytes;
-
-                if (count <= remaining)
-                {
-                    // Free tail space of the right amount, use that
-                    segment = _commitHead;
-                }
-            }
-
-            if (segment == null)
-            {
-                // No free tail space, allocate a new segment
-                segment = new BufferSegment(_pool.Lease(count));
-            }
-
             // Changing commit head shared with Reader
             lock (_sync)
             {
+                if (_commitHead != null && !_commitHead.ReadOnly)
+                {
+                    // Try to return the tail so the calling code can append to it
+                    int remaining = _commitHead.WritableBytes;
+
+                    if (count <= remaining)
+                    {
+                        // Free tail space of the right amount, use that
+                        segment = _commitHead;
+                    }
+                }
+
+                if (segment == null)
+                {
+                    // No free tail space, allocate a new segment
+                    segment = new BufferSegment(_pool.Lease(count));
+                }
+
                 if (_commitHead == null)
                 {
                     // No previous writes have occurred
@@ -202,17 +210,19 @@ namespace System.IO.Pipelines
             if (_writingHead == null)
             {
                 // No active write
-
-                if (_commitHead == null)
+                lock (_sync)
                 {
-                    // No allocated buffers yet, not locking as _readHead will be null
-                    _commitHead = clonedBegin;
-                }
-                else
-                {
-                    Debug.Assert(_commitHead.Next == null);
-                    // Allocated buffer, append as next segment
-                    _commitHead.Next = clonedBegin;
+                    if (_commitHead == null)
+                    {
+                        // No allocated buffers yet, not locking as _readHead will be null
+                        _commitHead = clonedBegin;
+                    }
+                    else
+                    {
+                        Debug.Assert(_commitHead.Next == null);
+                        // Allocated buffer, append as next segment
+                        _commitHead.Next = clonedBegin;
+                    }
                 }
             }
             else
@@ -246,7 +256,6 @@ namespace System.IO.Pipelines
                 return;
             }
 
-            long currentLength;
             // Changing commit head shared with Reader
             lock (_sync)
             {
@@ -260,15 +269,15 @@ namespace System.IO.Pipelines
                 // Always move the commit head to the write head
                 _commitHead = _writingHead;
                 _commitHeadIndex = _writingHead.End;
-                currentLength = (_length += _currentWriteLength);
-            }
+                _length += _currentWriteLength;
 
-            // Do not reset if reader is complete
-            if (_maximumSizeHigh > 0 &&
-                currentLength >= _maximumSizeHigh &&
-                !_readerCompletion.IsCompleted)
-            {
-                _writerAwaitable.Reset();
+                // Do not reset if reader is complete
+                if (_maximumSizeHigh > 0 &&
+                    _length >= _maximumSizeHigh &&
+                    !_readerCompletion.IsCompleted)
+                {
+                    _writerAwaitable.Reset();
+                }
             }
 
             // Clear the writing state
@@ -307,7 +316,13 @@ namespace System.IO.Pipelines
                 Commit();
             }
 
-            _readerAwaitable.Resume();
+            Action awaitable;
+            lock (_sync)
+            {
+                awaitable = _readerAwaitable.Complete();
+            }
+
+            TrySchedule(_readerScheduler, awaitable);
 
             return new WritableBufferAwaitable(this);
         }
@@ -319,7 +334,13 @@ namespace System.IO.Pipelines
                 return new ReadableBuffer(); // Nothing written return empty
             }
 
-            return new ReadableBuffer(new ReadCursor(_commitHead, _commitHeadIndex), new ReadCursor(_writingHead, _writingHead.End));
+            ReadCursor readStart;
+            lock (_sync)
+            {
+                readStart = new ReadCursor(_commitHead, _commitHeadIndex);
+            }
+
+            return new ReadableBuffer(readStart, new ReadCursor(_writingHead, _writingHead.End));
         }
 
         private ReadableBuffer Read()
@@ -358,7 +379,14 @@ namespace System.IO.Pipelines
 
             _writerCompletion.TryComplete(exception);
 
-            _readerAwaitable.Resume();
+            Action awaitable;
+
+            lock (_sync)
+            {
+                awaitable = _readerAwaitable.Complete();
+            }
+
+            TrySchedule(_readerScheduler, awaitable);
 
             if (_readerCompletion.IsCompleted)
             {
@@ -385,20 +413,25 @@ namespace System.IO.Pipelines
             }
 
             // Reading commit head shared with writer
-            bool consumedEverything;
-            long currentLength;
+            Action continuation = null;
             lock (_sync)
             {
+                var oldLength = _length;
+                _length -= consumedBytes;
 
-                currentLength = (_length -= consumedBytes);
-                consumedEverything = examined.Segment == _commitHead &&
-                                     examined.Index == _commitHeadIndex &&
-                                     !_writerCompletion.IsCompleted;
-            }
-            // We reset the awaitable to not completed if we've consumed everything the producer produced so far
-            if (consumedEverything)
-            {
-                _readerAwaitable.Reset();
+                if (oldLength >= _maximumSizeLow &&
+                    _length < _maximumSizeLow)
+                {
+                    continuation = _writerAwaitable.Complete();
+                }
+
+                // We reset the awaitable to not completed if we've consumed everything the producer produced so far
+                if (examined.Segment == _commitHead &&
+                    examined.Index == _commitHeadIndex &&
+                    !_writerCompletion.IsCompleted)
+                {
+                    _readerAwaitable.Reset();
+                }
             }
 
             while (returnStart != null && returnStart != returnEnd)
@@ -411,10 +444,7 @@ namespace System.IO.Pipelines
             // CompareExchange not required as its setting to current value if test fails
             _consumingState.End(ExceptionResource.NotConsumingToComplete);
 
-            if (currentLength < _maximumSizeLow)
-            {
-                _writerAwaitable.Resume();
-            }
+            TrySchedule(_writerScheduler, continuation);
         }
 
         /// <summary>
@@ -430,7 +460,12 @@ namespace System.IO.Pipelines
 
             _readerCompletion.TryComplete(exception);
 
-            _writerAwaitable.Resume();
+            Action awaitable;
+            lock (_sync)
+            {
+                awaitable = _writerAwaitable.Complete();
+            }
+            TrySchedule(_writerScheduler, awaitable);
 
             if (_writerCompletion.IsCompleted)
             {
@@ -443,7 +478,12 @@ namespace System.IO.Pipelines
         /// </summary>
         void IPipeReader.CancelPendingRead()
         {
-            _readerAwaitable.Cancel();
+            Action awaitable;
+            lock (_sync)
+            {
+                awaitable = _readerAwaitable.Cancel();
+            }
+            TrySchedule(_readerScheduler, awaitable);
         }
 
         /// <summary>
@@ -476,6 +516,14 @@ namespace System.IO.Pipelines
             completion.ThrowIfFailed();
         }
 
+        private static void TrySchedule(IScheduler scheduler, Action action)
+        {
+            if (action != null)
+            {
+                scheduler.Schedule(action);
+            }
+        }
+
         private void Dispose()
         {
             if (_disposed)
@@ -504,7 +552,12 @@ namespace System.IO.Pipelines
 
         void IReadableBufferAwaiter.OnCompleted(Action continuation)
         {
-            _readerAwaitable.OnCompleted(continuation, ref _writerCompletion);
+            Action awaitable;
+            lock (_sync)
+            {
+                awaitable = _readerAwaitable.OnCompleted(continuation, ref _writerCompletion);
+            }
+            TrySchedule(_readerScheduler, awaitable);
         }
 
         ReadResult IReadableBufferAwaiter.GetResult()
@@ -531,7 +584,12 @@ namespace System.IO.Pipelines
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
         {
-            _writerAwaitable.OnCompleted(continuation, ref _readerCompletion);
+            Action awaitable;
+            lock (_sync)
+            {
+                awaitable = _writerAwaitable.OnCompleted(continuation, ref _readerCompletion);
+            }
+            TrySchedule(_writerScheduler, awaitable);
         }
 
         public IPipeReader Reader => this;

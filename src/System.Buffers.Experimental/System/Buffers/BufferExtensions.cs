@@ -122,103 +122,172 @@ namespace System.Buffers
         static readonly int s_longSize = Vector<ulong>.Count;
         static readonly int s_byteSize = Vector<byte>.Count;
 
-        public static int IndexOfVectorized(this Span<byte> buffer, byte value)
+        public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value)
         {
-            Debug.Assert(s_longSize == 4 || s_longSize == 2);
-
-            var byteSize = s_byteSize;
-
-            if (buffer.Length < byteSize * 2 || !Vector.IsHardwareAccelerated) return buffer.IndexOf(value);
-
-            Vector<byte> match = new Vector<byte>(value);
-            var vectors = buffer.NonPortableCast<byte, Vector<byte>>();
-            var zero = Vector<byte>.Zero;
-
-            for (int vectorIndex = 0; vectorIndex < vectors.Length; vectorIndex++)
+            var length = buffer.Length;
+            if (length == 0)
             {
-                var vector = vectors.GetItem(vectorIndex);
-                var result = Vector.Equals(vector, match);
-                if (result != zero)
-                {
-                    var longer = Vector.AsVectorUInt64(result);
-                    Debug.Assert(s_longSize == 4 || s_longSize == 2);
+                return -1;
+            }
 
-                    var candidate = longer[0];
-                    if (candidate != 0) return vectorIndex * byteSize + IndexOf(candidate);
-                    candidate = longer[1];
-                    if (candidate != 0) return 8 + vectorIndex * byteSize + IndexOf(candidate);
-                    if (s_longSize == 4)
+            return IndexOfVectorized(ref buffer.DangerousGetPinnableReference(), value, length);
+        }
+
+        public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value)
+        {
+            var length = buffer.Length;
+            if (length == 0)
+            {
+                return -1;
+            }
+
+            return IndexOfVectorized(ref buffer.DangerousGetPinnableReference(), value, length);
+        }
+
+        private static unsafe int IndexOfVectorized(ref byte searchSpace, byte value, int length)
+        {
+            fixed (byte* pSearchSpace = &searchSpace)
+            {
+                var searchStart = pSearchSpace;
+                var offset = 0;
+
+                if (Vector.IsHardwareAccelerated)
+                {
+                    // Check Vector lengths
+                    if (length - Vector<byte>.Count >= offset)
                     {
-                        candidate = longer[2];
-                        if (candidate != 0) return 16 + vectorIndex * byteSize + IndexOf(candidate);
-                        candidate = longer[3];
-                        if (candidate != 0) return 24 + vectorIndex * byteSize + IndexOf(candidate);
+                        Vector<byte> values = GetVector(value);
+                        do
+                        {
+                            var vFlaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
+                            if (!vFlaggedMatches.Equals(Vector<byte>.Zero))
+                            {
+                                // Found match, reuse Vector values to keep register pressure low
+                                values = vFlaggedMatches;
+                                break;
+                            }
+
+                            offset += Vector<byte>.Count;
+                        } while (length - Vector<byte>.Count >= offset);
+
+                        // Found match? Perform secondary search outside out of loop, so above loop body is small
+                        if (length - Vector<byte>.Count >= offset)
+                        {
+                            // Find offset of first match
+                            offset += LocateFirstFoundByte(values);
+                            // goto rather than inline return to keep function smaller
+                            goto exitFixed;
+                        }
                     }
+                }
+
+                ulong flaggedMatches = 0;
+                // Check ulong length
+                while (length - sizeof(ulong) >= offset)
+                {
+                    flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
+                    if (flaggedMatches != 0)
+                    {
+                        // Found match
+                        break;
+                    }
+
+                    offset += sizeof(ulong);
+                }
+
+                // Found match? Perform secondary search outside out of loop, so above loop body is small
+                if (length - sizeof(ulong) >= offset)
+                {
+                    // Find offset of first match
+                    offset += LocateFirstFoundByte(flaggedMatches);
+                    // goto rather than inline return to keep function smaller
+                    goto exitFixed;
+                }
+
+                // Haven't found match, scan through remaining
+                for (; offset < length; offset++)
+                {
+                    if (*(searchStart + offset) == value)
+                    {
+                        // goto rather than inline return to keep loop body small
+                        goto exitFixed;
+                    }
+                }
+                // No Matches
+                offset = -1;
+        exitFixed:;
+                return offset;
+            }
+
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int LocateFirstFoundByte(Vector<byte> match)
+        {
+            var vector64 = Vector.AsVectorUInt64(match);
+            ulong candidate = 0;
+            var i = 0;
+            // Pattern unrolled by jit https://github.com/dotnet/coreclr/pull/8001
+            for (; i < Vector<ulong>.Count; i++)
+            {
+                candidate = vector64[i];
+                if (candidate != 0)
+                {
+                    break;
                 }
             }
 
-            var processed = vectors.Length * byteSize;
-            var index = buffer.Slice(processed).IndexOf(value);
-            if (index == -1) return -1;
-            return index + processed;
+            // Single LEA instruction with jitted const (using function result)
+            return i * 8 + LocateFirstFoundByte(candidate);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int LocateFirstFoundByte(ulong match)
         {
-            Debug.Assert(s_longSize == 4 || s_longSize == 2);
-
-            var byteSize = s_byteSize;
-
-            if (buffer.Length < byteSize * 2 || !Vector.IsHardwareAccelerated) return buffer.IndexOf(value);
-
-            Vector<byte> match = new Vector<byte>(value);
-            var vectors = buffer.NonPortableCast<byte, Vector<byte>>();
-            var zero = Vector<byte>.Zero;
-
-            for (int vectorIndex = 0; vectorIndex < vectors.Length; vectorIndex++)
+            unchecked
             {
-                var vector = vectors[vectorIndex];
-                var result = Vector.Equals(vector, match);
-                if (result != zero)
-                {
-                    var longer = Vector.AsVectorUInt64(result);
-                    var candidate = longer[0];
-                    if (candidate != 0) return vectorIndex * byteSize + IndexOf(candidate);
-                    candidate = longer[1];
-                    if (candidate != 0) return 8 + vectorIndex * byteSize + IndexOf(candidate);
-                    if (s_longSize == 4)
-                    {
-                        candidate = longer[2];
-                        if (candidate != 0) return 16 + vectorIndex * byteSize + IndexOf(candidate);
-                        candidate = longer[3];
-                        if (candidate != 0) return 24 + vectorIndex * byteSize + IndexOf(candidate);
-                    }
-                }
+                // Flag least significant power of two bit
+                var powerOfTwoFlag = match ^ (match - 1);
+                // Shift all powers of two into the high byte and extract
+                return (int)((powerOfTwoFlag * xorPowerOfTwoToHighByte) >> 57);
             }
-
-            var processed = vectors.Length * byteSize;
-            var index = buffer.Slice(processed).IndexOf(value);
-            if (index == -1) return -1;
-            return index + processed;
         }
 
-        // used by IndexOfVectorized
-        static int IndexOf(ulong next)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong SetLowBitsForByteMatch(ulong potentialMatch, byte search)
         {
-            // Flag least significant power of two bit
-            var powerOfTwoFlag = (next ^ (next - 1));
-            // Shift all powers of two into the high byte and extract
-            var foundByteIndex = (int)((powerOfTwoFlag * _xorPowerOfTwoToHighByte) >> 57);
-            return foundByteIndex;
+            unchecked
+            {
+                var flaggedValue = potentialMatch ^ (byteBroadcastToUlong * search);
+                return (
+                        (flaggedValue - byteBroadcastToUlong) &
+                        ~(flaggedValue) &
+                        filterByteHighBitsInUlong
+                       ) >> 7;
+            }
         }
 
-        const ulong _xorPowerOfTwoToHighByte = (0x07ul |
-                                                0x06ul << 8 |
-                                                0x05ul << 16 |
-                                                0x04ul << 24 |
-                                                0x03ul << 32 |
-                                                0x02ul << 40 |
-                                                0x01ul << 48) + 1;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector<byte> GetVector(byte vectorByte)
+        {
+#if !NETCOREAPP
+            // Vector<byte> .ctor doesn't become an intrinsic due to detection issue
+            // However this does cause it to become an intrinsic (with additional multiply and reg->reg copy)
+            // https://github.com/dotnet/coreclr/issues/7459#issuecomment-253965670
+            return Vector.AsVectorByte(new Vector<uint>(vectorByte * 0x01010101u));
+#else
+            return new Vector<byte>(vectorByte);
+#endif
+        }
+
+        private const ulong xorPowerOfTwoToHighByte = (0x07ul |
+                                                       0x06ul << 8 |
+                                                       0x05ul << 16 |
+                                                       0x04ul << 24 |
+                                                       0x03ul << 32 |
+                                                       0x02ul << 40 |
+                                                       0x01ul << 48) + 1;
+        private const ulong byteBroadcastToUlong = ~0UL / byte.MaxValue;
+        private const ulong filterByteHighBitsInUlong = (byteBroadcastToUlong >> 1) | (byteBroadcastToUlong << (sizeof(ulong) * 8 - 1));
     }
 }
