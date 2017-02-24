@@ -11,8 +11,14 @@ results.
 2. Restore this project
    (`dotnet restore`)
 
-3. Run the harness--make sure to use the release configuration
+3a. Run the harness--make sure to use the release configuration
    (`dotnet run -c Release`)
+   
+3b. To run specific tests only, pass in the type names to the harness (this run types found in any of the assemblies):
+   (`dotnet run -c Release -- --perf:typenames name1 [name2] [...]`)
+   
+3c. To run specific tests found in a specific assembly only, pass in the assembly name and type names to the harness:
+   (`dotnet run -c Release -- --assembly Benchmarks --perf:typenames name1 [name2] [...]`)
 
 ## Add a New Performance Test
 
