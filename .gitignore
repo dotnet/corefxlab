@@ -255,9 +255,11 @@ nuget.exe
 .vscode
 *.props
 
-#xunit perf reports
+#xunit and BenchmarkDotNet artifacts
 scripts/PerfHarness/*.csv
 scripts/PerfHarness/*.xml
 scripts/PerfHarness/*.md
 scripts/PerfHarness/*.etl
-binaries
+BenchmarkDotNet.Artifacts/
+BDN.Generated/
+binaries/
