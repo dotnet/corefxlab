@@ -10,9 +10,23 @@ public class PerfHarness
 {
     public static void Main(string[] args)
     {
+        string[] assemblies = GetTestAssemblies();
+        
+        int pos =  Array.IndexOf(args, "--assembly");
+
         using (XunitPerformanceHarness harness = new XunitPerformanceHarness(args))
         {
-            foreach(var testName in GetTestAssemblies())
+            if (pos > -1 && args.Length > pos + 1)
+            {
+                pos = Array.IndexOf(assemblies, args[pos + 1]);
+                if (pos > -1)
+                {
+                    harness.RunBenchmarks(GetTestAssembly(assemblies[pos]));
+                    return;
+                }
+            }
+
+            foreach(var testName in assemblies)
             {
                 harness.RunBenchmarks(GetTestAssembly(testName));
             }
