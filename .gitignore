@@ -143,6 +143,7 @@ publish/
 csx/
 *.build.csdef
 
+
 # Windows Store app package directory
 AppPackages/
 
@@ -184,6 +185,7 @@ UpgradeLog*.htm
 FakesAssemblies/
 
 ### MonoDevelop ###
+
 *.pidb
 *.userprefs
 
