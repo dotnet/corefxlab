@@ -14,14 +14,19 @@ namespace System
     public struct ReadOnlyMemory<T> : IEquatable<ReadOnlyMemory<T>>, IEquatable<Memory<T>>
     {
         readonly OwnedMemory<T> _owner;
-        readonly int _id;
         readonly int _index;
         readonly int _length;
 
-        internal ReadOnlyMemory(OwnedMemory<T> owner, int id, int index, int length)
+        internal ReadOnlyMemory(OwnedMemory<T> owner, int length)
         {
             _owner = owner;
-            _id = id;
+            _index = 0;
+            _length = length;
+        }
+
+        internal ReadOnlyMemory(OwnedMemory<T> owner,int index, int length)
+        {
+            _owner = owner;
             _index = index;
             _length = length;
         }
@@ -32,7 +37,7 @@ namespace System
             return owner.Memory;
         }
 
-        public static ReadOnlyMemory<T> Empty => Memory<T>.Empty;
+        public static ReadOnlyMemory<T> Empty { get; } = OwnerEmptyMemory<T>.Shared.Memory;
 
         public int Length => _length;
 
@@ -40,14 +45,14 @@ namespace System
 
         public ReadOnlyMemory<T> Slice(int index)
         {
-            return new ReadOnlyMemory<T>(_owner, _id, _index + index, _length - index);
+            return new ReadOnlyMemory<T>(_owner, _index + index, _length - index);
         }
         public ReadOnlyMemory<T> Slice(int index, int length)
         {
-            return new ReadOnlyMemory<T>(_owner, _id, _index + index, length);
+            return new ReadOnlyMemory<T>(_owner, _index + index, length);
         }
 
-        public ReadOnlySpan<T> Span => _owner.GetSpanInternal(_id, _index, _length);
+        public ReadOnlySpan<T> Span => _owner.GetSpanInternal(_index, _length);
 
         public DisposableReservation<T> Reserve()
         {
@@ -56,7 +61,7 @@ namespace System
    
         public unsafe bool TryGetPointer(out void* pointer)
         {
-            if (!_owner.TryGetPointerInternal(_id, out pointer)) {
+            if (!_owner.TryGetPointerInternal(out pointer)) {
                 return false;
             }
             pointer = Memory<T>.Add(pointer, _index);
@@ -65,7 +70,7 @@ namespace System
 
         public unsafe bool TryGetArray(out ArraySegment<T> buffer)
         {
-            if (!_owner.TryGetArrayInternal(_id, out buffer)) {
+            if (!_owner.TryGetArrayInternal(out buffer)) {
                 return false;
             }
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
@@ -106,7 +111,6 @@ namespace System
         {
             return
                 _owner == other._owner &&
-                _id == other._id &&
                 _index == other._index &&
                 _length == other._length;
         }
@@ -132,7 +136,7 @@ namespace System
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _id.GetHashCode(), _length.GetHashCode());
+            return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
         }
 
         public override string ToString()

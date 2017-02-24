@@ -26,7 +26,7 @@ namespace System.Buffers
 
         public int Length => _length;
 
-        protected int Id => _id;
+        internal int Id => _id;
         protected T[] Array => _array;
         protected IntPtr Pointer => _pointer;
         protected int Offset => _arrayIndex;
@@ -49,8 +49,8 @@ namespace System.Buffers
             Initialize(array, arrayOffset, length, pointer);
         }
 
-        public Memory<T> Memory => new Memory<T>(this, Id, 0, Length);
-        public ReadOnlyMemory<T> ReadOnlyMemory => new ReadOnlyMemory<T>(this, Id, 0, Length);
+        public Memory<T> Memory => new Memory<T>(this, Length);
+        public ReadOnlyMemory<T> ReadOnlyMemory => new ReadOnlyMemory<T>(this, Length);
 
         public Span<T> Span
         {
@@ -140,39 +140,31 @@ namespace System.Buffers
         #endregion
 
         #region Used by Memory<T>
-        void IKnown.AddReference(long id)
+        void IKnown.AddReference()
         {
             AddReference();
-            try {
-                VerifyId(id);
-            } catch (ObjectDisposedException e) {
-                Release();
-                throw e;
-            }
         }
 
-        void IKnown.Release(long id)
+        void IKnown.Release()
         {
-            VerifyId(id);
             Release();
         }
 
-        internal unsafe bool TryGetPointerInternal(long id, out void* pointer)
+        internal unsafe bool TryGetPointerInternal(out void* pointer)
         {
-            VerifyId(id);
             return TryGetPointerCore(out pointer);
         }
 
-        internal bool TryGetArrayInternal(long id, out ArraySegment<T> buffer)
+        internal bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
-            VerifyId(id);
             return TryGetArrayCore(out buffer);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Span<T> GetSpanInternal(long id, int index, int length)
+        internal Span<T> GetSpanInternal(int index, int length)
         {
-            VerifyId(id);
+            if (IsDisposed) ThrowIdHelper();
+
             var array = Array;
             if (array != null) 
             {
@@ -226,22 +218,20 @@ namespace System.Buffers
 
     interface IKnown
     {
-        void AddReference(long id);
-        void Release(long id);
+        void AddReference();
+        void Release();
     }
 
     public struct DisposableReservation<T> : IDisposable
     {
         OwnedMemory<T> _owner;
-        long _id;
 
-        internal DisposableReservation(OwnedMemory<T> owner, long id)
+        internal DisposableReservation(OwnedMemory<T> owner)
         {
-            _id = id;
             _owner = owner;
             switch(ReferenceCountingSettings.OwnedMemory) {
                 case ReferenceCountingMethod.Interlocked:
-                    ((IKnown)_owner).AddReference(_id);
+                    ((IKnown)_owner).AddReference();
                     break;
                 case ReferenceCountingMethod.ReferenceCounter:
                     ReferenceCounter.AddReference(_owner);
@@ -257,7 +247,7 @@ namespace System.Buffers
         {
             switch (ReferenceCountingSettings.OwnedMemory) {
                 case ReferenceCountingMethod.Interlocked:
-                    ((IKnown)_owner).Release(_id);
+                    ((IKnown)_owner).Release();
                     break;
                 case ReferenceCountingMethod.ReferenceCounter:
                     ReferenceCounter.Release(_owner);

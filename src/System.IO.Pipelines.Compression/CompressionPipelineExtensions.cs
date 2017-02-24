@@ -12,61 +12,81 @@ namespace System.IO.Pipelines.Compression
         public static IPipeReader DeflateDecompress(this IPipeReader reader, PipeFactory factory)
         {
             var inflater = new ReadableDeflateTransform(ZLibNative.Deflate_DefaultWindowBits);
-            return factory.CreateReader(reader, inflater.Execute);
+            var pipe = factory.Create();
+            var ignore = inflater.Execute(reader, pipe.Writer);
+            return pipe.Reader;
         }
 
         public static IPipeReader DeflateCompress(this IPipeReader reader, PipeFactory factory, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.Deflate_DefaultWindowBits);
-            return factory.CreateReader(reader, deflater.Execute);
+            var pipe = factory.Create();
+            var ignore = deflater.Execute(reader, pipe.Writer);
+            return pipe.Reader;
         }
 
         public static IPipeReader GZipDecompress(this IPipeReader reader, PipeFactory factory)
         {
             var inflater = new ReadableDeflateTransform(ZLibNative.GZip_DefaultWindowBits);
-            return factory.CreateReader(reader, inflater.Execute);
+            var pipe = factory.Create();
+            var ignore = inflater.Execute(reader, pipe.Writer);
+            return pipe.Reader;
         }
 
         public static IPipeWriter GZipCompress(this IPipeWriter writer, PipeFactory factory, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.GZip_DefaultWindowBits);
-            return factory.CreateWriter(writer, deflater.Execute);
+            var pipe = factory.Create();
+            var ignore = deflater.Execute(pipe.Reader, writer);
+            return pipe.Writer;
         }
 
         public static IPipeReader GZipCompress(this IPipeReader reader, PipeFactory factory, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.GZip_DefaultWindowBits);
-            return factory.CreateReader(reader, deflater.Execute);
+            var pipe = factory.Create();
+            var ignore = deflater.Execute(reader, pipe.Writer);
+            return pipe.Reader;
         }
 
         public static IPipeReader CreateDeflateDecompressReader(this PipeFactory factory, IPipeReader reader)
         {
             var inflater = new ReadableDeflateTransform(ZLibNative.Deflate_DefaultWindowBits);
-            return factory.CreateReader(reader, inflater.Execute);
+            var pipe = factory.Create();
+            var ignore = inflater.Execute(reader, pipe.Writer);
+            return pipe.Reader;
         }
 
         public static IPipeReader CreateDeflateCompressReader(this PipeFactory factory, IPipeReader reader, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.Deflate_DefaultWindowBits);
-            return factory.CreateReader(reader, deflater.Execute);
+            var pipe = factory.Create();
+            var ignore = deflater.Execute(reader, pipe.Writer);
+            return pipe.Reader;
         }
 
         public static IPipeReader CreateGZipDecompressReader(this PipeFactory factory, IPipeReader reader)
         {
             var inflater = new ReadableDeflateTransform(ZLibNative.GZip_DefaultWindowBits);
-            return factory.CreateReader(reader, inflater.Execute);
+            var pipe = factory.Create();
+            var ignore = inflater.Execute(reader, pipe.Writer);
+            return pipe.Reader;
         }
 
         public static IPipeWriter CreateGZipCompressWriter(this PipeFactory factory, IPipeWriter writer, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.GZip_DefaultWindowBits);
-            return factory.CreateWriter(writer, deflater.Execute);
+            var pipe = factory.Create();
+            var ignore = deflater.Execute(pipe.Reader, writer);
+            return pipe.Writer;
         }
 
         public static IPipeReader CreateGZipCompressReader(this PipeFactory factory, IPipeReader reader, CompressionLevel compressionLevel)
         {
             var deflater = new WritableDeflateTransform(compressionLevel, ZLibNative.GZip_DefaultWindowBits);
-            return factory.CreateReader(reader, deflater.Execute);
+            var pipe = factory.Create();
+            var ignore = deflater.Execute(reader, pipe.Writer);
+            return pipe.Reader;
         }
 
         private class WritableDeflateTransform

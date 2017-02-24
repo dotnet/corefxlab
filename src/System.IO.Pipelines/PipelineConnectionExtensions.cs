@@ -19,10 +19,15 @@ namespace System.IO.Pipelines
 
     public static class PipelineWriterExtensions
     {
-        public static async Task WriteAsync(this IPipeWriter output, Span<byte> source)
+        public static Task WriteAsync(this IPipeWriter output, Span<byte> source)
         {
             var writeBuffer = output.Alloc();
             writeBuffer.Write(source);
+            return AwaitFlushAsync(writeBuffer);
+        }
+
+        private static async Task AwaitFlushAsync(WritableBuffer writeBuffer)
+        {
             await writeBuffer.FlushAsync();
         }
     }
@@ -65,6 +70,25 @@ namespace System.IO.Pipelines
             }
 
             return new ValueTask<int>(input.ReadAsyncAwaited(destination));
+        }
+
+        public static Task CopyToEndAsync(this IPipeReader input, Stream stream)
+        {
+            return input.CopyToEndAsync(stream, 4096, CancellationToken.None);
+        }
+
+        public static async Task CopyToEndAsync(this IPipeReader input, Stream stream, int bufferSize, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await input.CopyToAsync(stream, bufferSize, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                input.Complete(ex);
+                return;
+            }
+            return;
         }
 
         public static Task CopyToAsync(this IPipeReader input, Stream stream)

@@ -45,13 +45,8 @@ namespace System.IO.Pipelines
             }
 
             var pipe = new Pipe(_pool);
-            ExecuteCopyToAsync(pipe, stream);
+            var ignore = stream.CopyToEndAsync(pipe);
             return pipe;
-        }
-
-        private async void ExecuteCopyToAsync(Pipe pipe, Stream stream)
-        {
-            await stream.CopyToAsync(pipe);
         }
 
         public IPipeConnection CreateConnection(NetworkStream stream)
@@ -67,39 +62,8 @@ namespace System.IO.Pipelines
             }
 
             var pipe = new Pipe(_pool);
+            var ignore = pipe.CopyToEndAsync(stream);
 
-            pipe.CopyToAsync(stream).ContinueWith((task, state) =>
-            {
-                var innerPipe = (Pipe)state;
-                if (task.IsFaulted)
-                {
-                    innerPipe.Reader.Complete(task.Exception.InnerException);
-                }
-                else
-                {
-                    innerPipe.Reader.Complete();
-                }
-            },
-            pipe, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-
-            return pipe;
-        }
-
-        public IPipeWriter CreateWriter(IPipeWriter writer, Func<IPipeReader, IPipeWriter, Task> consume)
-        {
-            var pipe = new Pipe(_pool);
-
-            consume(pipe, writer).ContinueWith(t =>
-            {
-            });
-
-            return pipe;
-        }
-
-        public IPipeReader CreateReader(IPipeReader reader, Func<IPipeReader, IPipeWriter, Task> produce)
-        {
-            var pipe = new Pipe(_pool);
-            produce(reader, pipe);
             return pipe;
         }
 
