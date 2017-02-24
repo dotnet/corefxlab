@@ -21,6 +21,14 @@ namespace System.IO.Pipelines.Tests
     public class ReadableBufferFacts
     {
         [Fact]
+        public void EmptyIsCorrect()
+        {
+            var buffer = BufferUtilities.CreateBuffer(0, 0);
+            Assert.Equal(0, buffer.Length);
+            Assert.True(buffer.IsEmpty);
+        }
+
+        [Fact]
         public async Task TestIndexOfWorksForAllLocations()
         {
             using (var factory = new PipeFactory())

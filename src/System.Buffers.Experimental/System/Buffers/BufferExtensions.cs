@@ -218,7 +218,119 @@ namespace System.Buffers
         exitFixed:;
                 return offset;
             }
+        }
 
+        public static bool TryIndicesOf(this Span<byte> buffer, byte value, Span<int> indices, out int numberOfIndices)
+        {
+            var length = buffer.Length;
+            if (length == 0 || indices.Length == 0)
+            {
+                numberOfIndices = 0;
+                return false;
+            }
+
+            return TryIndicesOf(ref buffer.DangerousGetPinnableReference(), value, length, indices, out numberOfIndices);
+        }
+
+        public static bool TryIndicesOf(this ReadOnlySpan<byte> buffer, byte value, Span<int> indices, out int numberOfIndices)
+        {
+            var length = buffer.Length;
+            if (length == 0 || indices.Length == 0)
+            {
+                numberOfIndices = 0;
+                return false;
+            }
+
+            return TryIndicesOf(ref buffer.DangerousGetPinnableReference(), value, length, indices, out numberOfIndices);
+        }
+
+        private unsafe static bool TryIndicesOf(ref byte searchSpace, byte value, int length, Span<int> indices, out int numberOfIndices)
+        {
+            var result = false;
+            numberOfIndices = 0;
+
+            fixed (byte* pSearchSpace = &searchSpace)
+            {
+                var searchStart = pSearchSpace;
+                var offset = 0;
+
+                while (true)
+                {
+                    if (Vector.IsHardwareAccelerated)
+                    {
+                        // Check Vector lengths
+                        if (length - Vector<byte>.Count >= offset)
+                        {
+                            Vector<byte> values = GetVector(value);
+                            do
+                            {
+                                var vFlaggedMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchStart + offset), values);
+                                if (!vFlaggedMatches.Equals(Vector<byte>.Zero))
+                                {
+                                    // Found match, reuse Vector values to keep register pressure low
+                                    values = vFlaggedMatches;
+                                    break;
+                                }
+
+                                offset += Vector<byte>.Count;
+                            } while (length - Vector<byte>.Count >= offset);
+
+                            // Found match? Perform secondary search outside out of loop, so above loop body is small
+                            if (length - Vector<byte>.Count >= offset)
+                            {
+                                // Find offset of first match
+                                offset += LocateFirstFoundByte(values);
+                                // goto rather than inline return to keep function smaller
+                                goto exitFixed;
+                            }
+                        }
+                    }
+
+                    ulong flaggedMatches = 0;
+                    // Check ulong length
+                    while (length - sizeof(ulong) >= offset)
+                    {
+                        flaggedMatches = SetLowBitsForByteMatch(*(ulong*)(searchStart + offset), value);
+                        if (flaggedMatches != 0)
+                        {
+                            // Found match
+                            break;
+                        }
+
+                        offset += sizeof(ulong);
+                    }
+
+                    // Found match? Perform secondary search outside out of loop, so above loop body is small
+                    if (length - sizeof(ulong) >= offset)
+                    {
+                        // Find offset of first match
+                        offset += LocateFirstFoundByte(flaggedMatches);
+                        // goto rather than inline return to keep function smaller
+                        goto exitFixed;
+                    }
+
+                    // Haven't found match, scan through remaining
+                    for (; offset < length; offset++)
+                    {
+                        if (*(searchStart + offset) == value)
+                        {
+                            // goto rather than inline return to keep loop body small
+                            goto exitFixed;
+                        }
+                    }
+
+                    // No Matches
+                    result = true;
+                    break;
+
+            exitFixed:;
+                    indices[numberOfIndices++] = offset++;
+                    if (numberOfIndices >= indices.Length)
+                        break;
+                }
+            }
+
+            return result && numberOfIndices < indices.Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
