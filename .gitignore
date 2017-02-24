@@ -257,4 +257,7 @@ nuget.exe
 
 #xunit perf reports
 scripts/PerfHarness/*.csv
+scripts/PerfHarness/*.xml
+scripts/PerfHarness/*.md
+scripts/PerfHarness/*.etl
 binaries
