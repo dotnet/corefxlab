@@ -47,7 +47,7 @@ namespace System
             where T : struct
         {
             Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
-            return slice.Cast<byte, T>()[0];
+            return Unsafe.As<byte, T>(ref slice.DangerousGetPinnableReference());
         }
 
         /// <summary>
@@ -58,7 +58,37 @@ namespace System
             where T : struct
         {
             Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
-            return slice.Cast<byte, T>()[0];
+            return Unsafe.As<byte, T>(ref slice.DangerousGetPinnableReference());
+        }
+
+        /// <summary>
+        /// Reads a structure of type T out of a slice of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryRead<[Primitive]T>(this ReadOnlySpan<byte> slice, out T value)
+            where T : struct
+        {
+            if (Unsafe.SizeOf<T>() > (uint)slice.Length) {
+                value = default(T);
+                return false;
+            }
+            value = Unsafe.As<byte, T>(ref slice.DangerousGetPinnableReference());
+            return true;
+        }
+
+        /// <summary>
+        /// Reads a structure of type T out of a slice of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryRead<[Primitive]T>(this Span<byte> slice, out T value)
+            where T : struct
+        {
+            if (Unsafe.SizeOf<T>() > (uint)slice.Length) {
+                value = default(T);
+                return false;
+            }
+            value = Unsafe.As<byte, T>(ref slice.DangerousGetPinnableReference());
+            return true;
         }
 
         /// <summary>
@@ -71,6 +101,21 @@ namespace System
             Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
             Span<T> castedSlice = slice.Cast<byte, T>();
             castedSlice[0] = value;
+        }
+
+        /// <summary>
+        /// Writes a structure of type T into a slice of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryWrite<[Primitive]T>(this Span<byte> slice, T value)
+            where T : struct
+        {
+            if (Unsafe.SizeOf<T>() > (uint)slice.Length) {
+                return false;
+            }
+            Span<T> castedSlice = slice.Cast<byte, T>();
+            castedSlice[0] = value;
+            return true;
         }
     }
 }

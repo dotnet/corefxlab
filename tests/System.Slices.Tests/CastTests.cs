@@ -9,6 +9,48 @@ namespace System.Slices.Tests
     public class CastTests
     {
         [Fact]
+        public void TryReadSpan()
+        {
+            uint value;
+            Span<byte> buffer;
+
+            buffer = new Span<byte>(new byte[] { 1, 0, 0, 0 });
+            Assert.True(buffer.TryRead(out value));
+            Assert.Equal(1u, value);
+
+            buffer = new Span<byte>(new byte[] { 1, 0, 0 });
+            Assert.False(buffer.TryRead(out value));
+        }
+
+        [Fact]
+        public void TryReadReadOnlySpan()
+        {
+            uint value;
+            ReadOnlySpan<byte> buffer;
+
+            buffer = new ReadOnlySpan<byte>(new byte[] { 1, 0, 0, 0 });
+            Assert.True(buffer.TryRead(out value));
+            Assert.Equal(1u, value);
+
+            buffer = new ReadOnlySpan<byte>(new byte[] { 1, 0, 0 });
+            Assert.False(buffer.TryRead(out value));
+        }
+
+        [Fact]
+        public void TryWrite()
+        {
+            Span<byte> buffer = new byte[4];
+
+            Assert.True(buffer.TryWrite(uint.MaxValue));
+            for (var i= 0; i<buffer.Length; i++) {
+                Assert.Equal(255, buffer[i]);
+            }
+
+            buffer = buffer.Slice(1);
+            Assert.False(buffer.TryWrite(uint.MaxValue));
+        }
+
+        [Fact]
         public void IntArraySpanCastedToByteArraySpanHasSameBytesAsOriginalArray()
         {
             var ints = new int[100000];
