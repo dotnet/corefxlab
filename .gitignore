@@ -257,6 +257,9 @@ nuget.exe
 
 #xunit and BenchmarkDotNet artifacts
 scripts/PerfHarness/*.csv
+scripts/PerfHarness/*.xml
+scripts/PerfHarness/*.md
+scripts/PerfHarness/*.etl
 BenchmarkDotNet.Artifacts/
 BDN.Generated/
 binaries/
