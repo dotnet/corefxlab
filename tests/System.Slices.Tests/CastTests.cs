@@ -32,7 +32,7 @@ namespace System.Slices.Tests
             Assert.True(buffer.TryRead(out value));
             Assert.Equal(1u, value);
 
-            buffer = new Span<byte>(new byte[] { 1, 0, 0 });
+            buffer = new ReadOnlySpan<byte>(new byte[] { 1, 0, 0 });
             Assert.False(buffer.TryRead(out value));
         }
 
