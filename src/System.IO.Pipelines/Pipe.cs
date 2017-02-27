@@ -43,8 +43,8 @@ namespace System.IO.Pipelines
         // The write head which is the extent of the IPipelineWriter's written bytes
         private BufferSegment _writingHead;
 
-        private PipeOperationState _consumingState;
-        private PipeOperationState _producingState;
+        private PipeOperationState _readingState;
+        private PipeOperationState _writingState;
 
         private bool _disposed;
 
@@ -108,7 +108,7 @@ namespace System.IO.Pipelines
             }
 
             // CompareExchange not required as its setting to current value if test fails
-            _producingState.Begin(ExceptionResource.AlreadyProducing);
+            _writingState.Begin(ExceptionResource.AlreadyWriting);
 
             if (minimumSize > 0)
             {
@@ -119,7 +119,7 @@ namespace System.IO.Pipelines
                 catch (Exception)
                 {
                     // Reset producing state if allocation failed
-                    _producingState.End(ExceptionResource.NotProducingToComplete);
+                    _writingState.End(ExceptionResource.NoWriteToComplete);
                     throw;
                 }
             }
@@ -239,16 +239,16 @@ namespace System.IO.Pipelines
 
         private void EnsureAlloc()
         {
-            if (!_producingState.IsActive)
+            if (!_writingState.IsActive)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotProducingNoAlloc);
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NotWritingNoAlloc);
             }
         }
 
         internal void Commit()
         {
             // CompareExchange not required as its setting to current value if test fails
-            _producingState.End(ExceptionResource.NotProducingToComplete);
+            _writingState.End(ExceptionResource.NoWriteToComplete);
 
             if (_writingHead == null)
             {
@@ -310,7 +310,7 @@ namespace System.IO.Pipelines
 
         internal WritableBufferAwaitable FlushAsync()
         {
-            if (_producingState.IsActive)
+            if (_writingState.IsActive)
             {
                 // Commit the data as not already committed
                 Commit();
@@ -345,7 +345,7 @@ namespace System.IO.Pipelines
 
         private ReadableBuffer Read()
         {
-            _consumingState.Begin(ExceptionResource.AlreadyConsuming);
+            _readingState.Begin(ExceptionResource.AlreadyReading);
 
             ReadCursor readEnd;
             // No need to read end if there is no head
@@ -372,9 +372,9 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         void IPipeWriter.Complete(Exception exception)
         {
-            if (_producingState.IsActive)
+            if (_writingState.IsActive)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveProducer, _producingState.Location);
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter, _writingState.Location);
             }
 
             _writerCompletion.TryComplete(exception);
@@ -442,7 +442,7 @@ namespace System.IO.Pipelines
             }
 
             // CompareExchange not required as its setting to current value if test fails
-            _consumingState.End(ExceptionResource.NotConsumingToComplete);
+            _readingState.End(ExceptionResource.NoReadToComplete);
 
             TrySchedule(_writerScheduler, continuation);
         }
@@ -453,9 +453,9 @@ namespace System.IO.Pipelines
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         void IPipeReader.Complete(Exception exception)
         {
-            if (_consumingState.IsActive)
+            if (_readingState.IsActive)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveConsumer, _consumingState.Location);
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveReader, _readingState.Location);
             }
 
             _readerCompletion.TryComplete(exception);

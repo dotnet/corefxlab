@@ -82,23 +82,23 @@ namespace System.IO.Pipelines
             string resourceString = null;
             switch (argument)
             {
-                case ExceptionResource.AlreadyProducing:
-                    resourceString = "Already producing.";
+                case ExceptionResource.AlreadyWriting:
+                    resourceString = "Already writing.";
                     break;
-                case ExceptionResource.NotProducingNoAlloc:
-                    resourceString = "No ongoing producing operation. Make sure Alloc() was called.";
+                case ExceptionResource.NotWritingNoAlloc:
+                    resourceString = "No writing operation. Make sure Alloc() was called.";
                     break;
-                case ExceptionResource.NotProducingToComplete:
-                    resourceString = "No ongoing producing operation to complete.";
+                case ExceptionResource.NoWriteToComplete:
+                    resourceString = "No writing operation to complete.";
                     break;
-                case ExceptionResource.AlreadyConsuming:
-                    resourceString = "Already consuming.";
+                case ExceptionResource.AlreadyReading:
+                    resourceString = "Already reading.";
                     break;
-                case ExceptionResource.NotConsumingToComplete:
-                    resourceString = "No ongoing consuming operation to complete.";
+                case ExceptionResource.NoReadToComplete:
+                    resourceString = "No reading operation to complete.";
                     break;
                 case ExceptionResource.NoConcurrentOperation:
-                    resourceString = "Concurrent reads or flushes are not supported.";
+                    resourceString = "Concurrent reads or writes are not supported.";
                     break;
                 case ExceptionResource.GetResultNotCompleted:
                     resourceString = "Can't GetResult unless completed";
@@ -109,11 +109,11 @@ namespace System.IO.Pipelines
                 case ExceptionResource.NoReadingAllowed:
                     resourceString = "Reading is not allowed after reader was completed";
                     break;
-                case ExceptionResource.CompleteWriterActiveProducer:
-                    resourceString = "Can't complete writer while producer operation is ongoing.";
+                case ExceptionResource.CompleteWriterActiveWriter:
+                    resourceString = "Can't complete writer while writing.";
                     break;
-                case ExceptionResource.CompleteReaderActiveConsumer:
-                    resourceString = "Can't complete reader while consuming operation is ongoing.";
+                case ExceptionResource.CompleteReaderActiveReader:
+                    resourceString = "Can't complete reader while reading.";
                     break;
             }
 
@@ -142,16 +142,16 @@ namespace System.IO.Pipelines
 
     internal enum ExceptionResource
     {
-        AlreadyProducing,
-        NotProducingNoAlloc,
-        NotProducingToComplete,
-        AlreadyConsuming,
-        NotConsumingToComplete,
+        AlreadyWriting,
+        NotWritingNoAlloc,
+        NoWriteToComplete,
+        AlreadyReading,
+        NoReadToComplete,
         NoConcurrentOperation,
         GetResultNotCompleted,
         NoWritingAllowed,
         NoReadingAllowed,
-        CompleteWriterActiveProducer,
-        CompleteReaderActiveConsumer
+        CompleteWriterActiveWriter,
+        CompleteReaderActiveReader
     }
 }
