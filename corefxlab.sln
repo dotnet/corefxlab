@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26131.2
@@ -130,6 +130,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json.Tests.Dynamic", "tests\System.Text.Json.Tests.Dynamic\System.Text.Json.Tests.Dynamic.csproj", "{1ED92192-6C2A-44A5-9098-F9CBABB0292D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Primitives.Performance.Tests", "tests\System.Text.Primitives.Performance.Tests\System.Text.Primitives.Performance.Tests.csproj", "{04970622-6C7A-4FB4-814A-9BFE051A2E68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.IO.Pipelines.Performance.Tests", "tests\System.IO.Pipelines.Performance.Tests\System.IO.Pipelines.Performance.Tests.csproj", "{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -837,6 +839,18 @@ Global
 		{04970622-6C7A-4FB4-814A-9BFE051A2E68}.Release|x64.Build.0 = Release|x64
 		{04970622-6C7A-4FB4-814A-9BFE051A2E68}.Release|x86.ActiveCfg = Release|x86
 		{04970622-6C7A-4FB4-814A-9BFE051A2E68}.Release|x86.Build.0 = Release|x86
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Debug|x64.ActiveCfg = Debug|x64
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Debug|x64.Build.0 = Debug|x64
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Debug|x86.ActiveCfg = Debug|x86
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Debug|x86.Build.0 = Debug|x86
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Release|x64.ActiveCfg = Release|x64
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Release|x64.Build.0 = Release|x64
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Release|x86.ActiveCfg = Release|x86
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -900,5 +914,6 @@ Global
 		{E87AA970-5AE9-405E-8D34-F31EF415BE6D} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{1ED92192-6C2A-44A5-9098-F9CBABB0292D} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{04970622-6C7A-4FB4-814A-9BFE051A2E68} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
+		{E68CF803-CC9F-458A-B0C7-1C2E0A0A3E4A} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 	EndGlobalSection
 EndGlobal

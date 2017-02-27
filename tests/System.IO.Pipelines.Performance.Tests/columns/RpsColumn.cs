@@ -6,7 +6,7 @@ using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 
-namespace System.IO.Pipelines.Performance.Tests.columns
+namespace System.IO.Pipelines.Performance.Tests
 {
     public class RpsColumn : IColumn
     {

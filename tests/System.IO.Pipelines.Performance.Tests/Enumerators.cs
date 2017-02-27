@@ -1,4 +1,3 @@
-using System.IO.Pipelines.Performance.Tests.configs;
 using System.IO.Pipelines.Tests;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
