@@ -5,7 +5,7 @@ using System.IO.Pipelines;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 
-namespace Microsoft.AspNetCore.Server.Kestrel.Performance
+namespace System.IO.Pipelines.Performance.Tests
 {
     [Config(typeof(CoreConfig))]
     public class PipeThroughput

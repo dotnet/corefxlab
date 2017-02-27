@@ -44,12 +44,6 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", 
 }
 
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
-    if ($file -match "System.IO.Pipelines.Performance.Tests")
-    {
-        Write-Warning "Building Benchmark.NET project $file. Benchmark would not be ran as part of the build."
-        # Invoke-Expression "$dotnetExePath build $file -c $Configuration"
-        continue;
-    }
     Write-Host "Building and running tests for project $file..."
     Invoke-Expression "$dotnetExePath test $file -c $Configuration -- -notrait category=performance -notrait category=outerloop"
 
