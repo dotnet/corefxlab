@@ -27,6 +27,8 @@ namespace System.IO.Pipelines
 
         internal BufferSegment CurrentSegment => _segmentEnumerator.Current.Segment;
 
+        internal int CurrentSegmentStartIndex => _segmentEnumerator.Current.Start;
+
         /// <summary>
         /// Moves to the next <see cref="Memory{Byte}"/> in the <see cref="ReadableBuffer"/>
         /// </summary>
