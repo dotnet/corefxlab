@@ -28,14 +28,34 @@ namespace System.IO.Pipelines.Performance.Tests
         private ReadableBuffer _plainTextBuffer;
         private ReadableBuffer _plainTextPipelinedBuffer;
         private ReadableBuffer _liveAspNetBuffer;
+        private ReadableBuffer _liveAspNetMultiBuffer;
 
         [Setup]
         public void Setup()
         {
+            var liveaspnetRequestBytes = Encoding.UTF8.GetBytes(liveaspnetRequest);
             var pipelinedRequests = string.Join("", Enumerable.Repeat(plaintextRequest, 16));
             _plainTextPipelinedBuffer = ReadableBuffer.Create(Encoding.UTF8.GetBytes(pipelinedRequests));
             _plainTextBuffer = ReadableBuffer.Create(Encoding.UTF8.GetBytes(plaintextRequest));
-            _liveAspNetBuffer = ReadableBuffer.Create(Encoding.UTF8.GetBytes(liveaspnetRequest));
+            _liveAspNetBuffer = ReadableBuffer.Create(liveaspnetRequestBytes);
+
+            // Split the liveaspnetRequest across 3 byte[]
+            var remaining = liveaspnetRequestBytes.Length;
+            var consumed = 0;
+            var liveAspNetBuffers = new List<byte[]>();
+            var chunk = remaining / 3;
+
+            while (remaining > 0)
+            {
+                var bytes = new byte[Math.Min(chunk, remaining)];
+                Buffer.BlockCopy(liveaspnetRequestBytes, consumed, bytes, 0, bytes.Length);
+                consumed += bytes.Length;
+                remaining -= bytes.Length;
+
+                liveAspNetBuffers.Add(bytes);
+            }
+
+            _liveAspNetMultiBuffer = BufferUtilities.CreateBuffer(liveAspNetBuffers.ToArray());
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
@@ -54,6 +74,12 @@ namespace System.IO.Pipelines.Performance.Tests
         public void SeekLiveAspNet()
         {
             FindAllNewLines(_liveAspNetBuffer);
+        }
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void SeekLiveAspNetMultiBuffer()
+        {
+            FindAllNewLines(_liveAspNetMultiBuffer);
         }
 
         private static void FindAllNewLines(ReadableBuffer buffer)
