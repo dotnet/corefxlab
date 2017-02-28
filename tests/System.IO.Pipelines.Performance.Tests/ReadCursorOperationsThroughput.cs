@@ -1,0 +1,75 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO.Pipelines.Tests;
+using System.Linq;
+using System.Text;
+using BenchmarkDotNet.Attributes;
+
+namespace System.IO.Pipelines.Performance.Tests
+{
+    [Config(typeof(CoreConfig))]
+    public class ReadCursorOperationsThroughput
+    {
+        private const int InnerLoopCount = 512;
+
+        private const string plaintextRequest = "GET /plaintext HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
+
+        private const string liveaspnetRequest = "GET https://live.asp.net/ HTTP/1.1\r\n" +
+            "Host: live.asp.net\r\n" +
+            "Connection: keep-alive\r\n" +
+            "Upgrade-Insecure-Requests: 1\r\n" +
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36\r\n" +
+            "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\n" +
+            "DNT: 1\r\n" +
+            "Accept-Encoding: gzip, deflate, sdch, br\r\n" +
+            "Accept-Language: en-US,en;q=0.8\r\n" +
+            "Cookie: __unam=7a67379-1s65dc575c4-6d778abe-1; omniID=9519gfde_3347_4762_8762_df51458c8ec2\r\n\r\n";
+
+        private ReadableBuffer _plainTextBuffer;
+        private ReadableBuffer _plainTextPipelinedBuffer;
+        private ReadableBuffer _liveAspNetBuffer;
+
+        [Setup]
+        public void Setup()
+        {
+            var pipelinedRequests = string.Join("", Enumerable.Repeat(plaintextRequest, 16));
+            _plainTextPipelinedBuffer = ReadableBuffer.Create(Encoding.UTF8.GetBytes(pipelinedRequests));
+            _plainTextBuffer = ReadableBuffer.Create(Encoding.UTF8.GetBytes(plaintextRequest));
+            _liveAspNetBuffer = ReadableBuffer.Create(Encoding.UTF8.GetBytes(liveaspnetRequest));
+        }
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void SeekPlainText()
+        {
+            FindAllNewLines(_plainTextBuffer);
+        }
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void SeekPlainTextPipelined()
+        {
+            FindAllNewLines(_plainTextPipelinedBuffer);
+        }
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void SeekLiveAspNet()
+        {
+            FindAllNewLines(_liveAspNetBuffer);
+        }
+
+        private static void FindAllNewLines(ReadableBuffer buffer)
+        {
+            var start = buffer.Start;
+            var end = buffer.End;
+
+            while (true)
+            {
+                if (ReadCursorOperations.Seek(start, end, out var found, (byte)'\n') == -1)
+                {
+                    break;
+                }
+
+                start = buffer.Move(found, 1);
+            }
+        }
+    }
+}

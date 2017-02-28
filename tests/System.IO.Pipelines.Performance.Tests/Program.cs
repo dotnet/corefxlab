@@ -35,6 +35,10 @@ namespace System.IO.Pipelines.Performance.Tests
             {
                 BenchmarkRunner.Run<PipeThroughput>();
             }
+            if (type.HasFlag(BenchmarkType.ReadCursorOperations))
+            {
+                BenchmarkRunner.Run<ReadCursorOperationsThroughput>();
+            }
         }
     }
 
@@ -43,6 +47,7 @@ namespace System.IO.Pipelines.Performance.Tests
     {
         Enumerators = 1,
         Throughtput = 2,
+        ReadCursorOperations = 4,
         All = uint.MaxValue
     }
 }
