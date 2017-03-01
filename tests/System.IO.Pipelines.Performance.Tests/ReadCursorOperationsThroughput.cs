@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.Performance.Tests
     [Config(typeof(CoreConfig))]
     public class ReadCursorOperationsThroughput
     {
-        private const int InnerLoopCount = 512;
+        private const int InnerLoopCount = 1024;
 
         private const string plaintextRequest = "GET /plaintext HTTP/1.1\r\nHost: www.example.com\r\n\r\n";
 
@@ -34,7 +34,7 @@ namespace System.IO.Pipelines.Performance.Tests
         public void Setup()
         {
             var liveaspnetRequestBytes = Encoding.UTF8.GetBytes(liveaspnetRequest);
-            var pipelinedRequests = string.Join("", Enumerable.Repeat(plaintextRequest, 16));
+            var pipelinedRequests = string.Concat(Enumerable.Repeat(plaintextRequest, 16));
             _plainTextPipelinedBuffer = ReadableBuffer.Create(Encoding.UTF8.GetBytes(pipelinedRequests));
             _plainTextBuffer = ReadableBuffer.Create(Encoding.UTF8.GetBytes(plaintextRequest));
             _liveAspNetBuffer = ReadableBuffer.Create(liveaspnetRequestBytes);
