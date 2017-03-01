@@ -10,15 +10,17 @@ namespace System.IO.Pipelines
     {
         public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0)
         {
-            var enumerator = new MemoryEnumerator(begin, end);
+            var enumerator = new SegmentEnumerator(begin, end);
             while (enumerator.MoveNext())
             {
-                var span = enumerator.Current.Span;
-                var segment = enumerator.CurrentSegment;
+                var segmentPart = enumerator.Current;
+                var segment = segmentPart.Segment;
+                var span = segment.Memory.Span.Slice(segmentPart.Start, segmentPart.Length);
+
                 int index = span.IndexOfVectorized(byte0);
                 if (index != -1)
                 {
-                    result = new ReadCursor(segment, enumerator.CurrentSegmentStartIndex + index);
+                    result = new ReadCursor(segment, segmentPart.Start + index);
                     return span[index];
                 }
             }
@@ -29,11 +31,12 @@ namespace System.IO.Pipelines
 
         public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1)
         {
-            var enumerator = new MemoryEnumerator(begin, end);
+            var enumerator = new SegmentEnumerator(begin, end);
             while (enumerator.MoveNext())
             {
-                var span = enumerator.Current.Span;
-                var segment = enumerator.CurrentSegment;
+                var segmentPart = enumerator.Current;
+                var segment = segmentPart.Segment;
+                var span = segment.Memory.Span.Slice(segmentPart.Start, segmentPart.Length);
 
                 int index1 = span.IndexOfVectorized(byte0);
                 int index2 = span.IndexOfVectorized(byte1);
@@ -41,7 +44,7 @@ namespace System.IO.Pipelines
                 var index = MinIndex(index1, index2);
                 if (index != -1)
                 {
-                    result = new ReadCursor(segment, enumerator.CurrentSegmentStartIndex + index);
+                    result = new ReadCursor(segment, segmentPart.Start + index);
                     return span[index];
                 }
             }
@@ -52,11 +55,12 @@ namespace System.IO.Pipelines
 
         public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1, byte byte2)
         {
-            var enumerator = new MemoryEnumerator(begin, end);
+            var enumerator = new SegmentEnumerator(begin, end);
             while (enumerator.MoveNext())
             {
-                var span = enumerator.Current.Span;
-                var segment = enumerator.CurrentSegment;
+                var segmentPart = enumerator.Current;
+                var segment = segmentPart.Segment;
+                var span = segment.Memory.Span.Slice(segmentPart.Start, segmentPart.Length);
 
                 int index1 = span.IndexOfVectorized(byte0);
                 int index2 = span.IndexOfVectorized(byte1);
@@ -66,7 +70,7 @@ namespace System.IO.Pipelines
 
                 if (index != -1)
                 {
-                    result = new ReadCursor(segment, enumerator.CurrentSegmentStartIndex + index);
+                    result = new ReadCursor(segment, segmentPart.Start + index);
                     return span[index];
                 }
             }
