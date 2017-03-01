@@ -8,7 +8,7 @@ namespace System.IO.Pipelines
 {
     public static class ReadCursorOperations
     {
-        public static unsafe int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0)
+        public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0)
         {
             var enumerator = new MemoryEnumerator(begin, end);
             while (enumerator.MoveNext())
@@ -27,22 +27,18 @@ namespace System.IO.Pipelines
             return -1;
         }
 
-        public static unsafe int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1)
+        public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1)
         {
-            // use address of ushort rather than stackalloc as the inliner won't inline functions with stackalloc
-            ushort twoBytes;
-            byte* byteArray = (byte*)&twoBytes;
-            byteArray[0] = byte0;
-            byteArray[1] = byte1;
-            var targets = new Span<byte>(byteArray, 2);
             var enumerator = new MemoryEnumerator(begin, end);
             while (enumerator.MoveNext())
             {
                 var span = enumerator.Current.Span;
                 var segment = enumerator.CurrentSegment;
 
-                // TODO: Vectorize
-                int index = span.IndexOf(targets);
+                int index1 = span.IndexOfVectorized(byte0);
+                int index2 = span.IndexOfVectorized(byte1);
+
+                var index = MinIndex(index1, index2);
                 if (index != -1)
                 {
                     result = new ReadCursor(segment, enumerator.CurrentSegmentStartIndex + index);
@@ -54,24 +50,20 @@ namespace System.IO.Pipelines
             return -1;
         }
 
-        public static unsafe int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1, byte byte2)
+        public static int Seek(ReadCursor begin, ReadCursor end, out ReadCursor result, byte byte0, byte byte1, byte byte2)
         {
-            // use address of uint rather than stackalloc as the inliner won't inline functions with stackalloc
-            uint fourBytes;
-            byte* byteArray = (byte*)&fourBytes;
-            byteArray[0] = byte0;
-            byteArray[1] = byte1;
-            byteArray[2] = byte2;
-
-            var targets = new Span<byte>(byteArray, 3);
             var enumerator = new MemoryEnumerator(begin, end);
             while (enumerator.MoveNext())
             {
                 var span = enumerator.Current.Span;
                 var segment = enumerator.CurrentSegment;
 
-                // TODO: Vectorize
-                int index = span.IndexOf(targets);
+                int index1 = span.IndexOfVectorized(byte0);
+                int index2 = span.IndexOfVectorized(byte1);
+                int index3 = span.IndexOfVectorized(byte2);
+
+                var index = MinIndex(index1, index2, index3);
+
                 if (index != -1)
                 {
                     result = new ReadCursor(segment, enumerator.CurrentSegmentStartIndex + index);
@@ -81,6 +73,23 @@ namespace System.IO.Pipelines
 
             result = end;
             return -1;
+        }
+
+        private static int MinIndex(int v1, int v2)
+        {
+            v1 = v1 == -1 ? int.MaxValue : v1;
+            v2 = v2 == -1 ? int.MaxValue : v2;
+            var result = Math.Min(v1, v2);
+            return result == int.MaxValue ? -1 : result;
+        }
+
+        private static int MinIndex(int v1, int v2, int v3)
+        {
+            v1 = v1 == -1 ? int.MaxValue : v1;
+            v2 = v2 == -1 ? int.MaxValue : v2;
+            v3 = v3 == -1 ? int.MaxValue : v3;
+            var result = Math.Min(Math.Min(v1, v2), v3);
+            return result == int.MaxValue ? -1 : result;
         }
     }
 }
