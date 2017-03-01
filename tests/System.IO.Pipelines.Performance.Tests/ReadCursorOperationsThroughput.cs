@@ -70,13 +70,13 @@ namespace System.IO.Pipelines.Performance.Tests
             FindAllNewLines(_plainTextPipelinedBuffer);
         }
 
-        // [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
         public void SeekLiveAspNet()
         {
             FindAllNewLines(_liveAspNetBuffer);
         }
 
-        // [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
         public void SeekLiveAspNetMultiBuffer()
         {
             FindAllNewLines(_liveAspNetMultiBuffer);
