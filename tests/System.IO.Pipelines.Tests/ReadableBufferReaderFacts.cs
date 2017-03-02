@@ -190,6 +190,17 @@ namespace System.IO.Pipelines.Tests
             var expected = slice == int.MaxValue ? readableBuffer.End : readableBuffer.Slice(slice).Start;
             Assert.Equal(expected, reader.Cursor);
         }
+
+        [Fact]
+        public void SlicingBufferReturnsCorrectCursor()
+        {
+            var buffer = ReadableBuffer.Create(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 0, 10);
+            var sliced = buffer.Slice(2);
+
+            var reader = new ReadableBufferReader(sliced);
+            Assert.Equal(sliced.Start, reader.Cursor);
+            Assert.Equal(2, reader.Peek());
+        }
     }
 
 }
