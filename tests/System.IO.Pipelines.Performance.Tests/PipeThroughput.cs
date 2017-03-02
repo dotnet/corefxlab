@@ -57,8 +57,8 @@ namespace System.IO.Pipelines.Performance.Tests
             {
                 var writableBuffer = _pipe.Writer.Alloc(_writeLenght);
                 writableBuffer.Advance(_writeLenght);
-                writableBuffer.FlushAsync().GetAwaiter().GetResult();
-                var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
+                writableBuffer.FlushAsync().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetResult();
                 _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
             }
         }

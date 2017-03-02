@@ -31,7 +31,13 @@ namespace System.IO.Pipelines
         private static Task FlushAsync(WritableBuffer writeBuffer)
         {
             var awaitable = writeBuffer.FlushAsync();
-            return awaitable.IsCompleted ? _completedTask : FlushAsyncAwaited(awaitable);
+            if (awaitable.IsCompleted)
+            {
+                awaitable.GetResult();
+                return _completedTask;
+            }
+
+            return FlushAsyncAwaited(awaitable);
         }
 
         private static async Task FlushAsyncAwaited(WritableBufferAwaitable awaitable)

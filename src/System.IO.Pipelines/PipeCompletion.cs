@@ -29,8 +29,13 @@ namespace System.IO.Pipelines
         {
             if (_exception != null && _exception != _completedNoException)
             {
-                throw _exception;
+                ThrowFailed();
             }
+        }
+
+        private void ThrowFailed()
+        {
+            throw _exception;
         }
 
         public string Location
