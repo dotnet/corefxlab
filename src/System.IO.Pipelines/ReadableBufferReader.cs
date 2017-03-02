@@ -9,9 +9,9 @@ namespace System.IO.Pipelines
 {
     public struct ReadableBufferReader
     {
-        private Span<byte> _currentMemory;
+        private Span<byte> _currentSpan;
         private int _index;
-        private MemoryEnumerator _enumerator;
+        private SegmentEnumerator _enumerator;
         private int _overallIndex;
         private bool _end;
 
@@ -24,8 +24,8 @@ namespace System.IO.Pipelines
             _end = false;
             _index = 0;
             _overallIndex = 0;
-            _enumerator = new MemoryEnumerator(start, end);
-            _currentMemory = default(Span<byte>);
+            _enumerator = new SegmentEnumerator(start, end);
+            _currentSpan = default(Span<byte>);
             MoveNext();
         }
 
@@ -37,12 +37,14 @@ namespace System.IO.Pipelines
         {
             get
             {
-                var currentSegment = _enumerator.CurrentSegment;
+                var part = _enumerator.Current;
+
                 if (_end)
                 {
-                    return new ReadCursor(currentSegment, currentSegment.Start + _currentMemory.Length);
+                    return new ReadCursor(part.Segment, part.Start + _currentSpan.Length);
                 }
-                return new ReadCursor(currentSegment, currentSegment.Start + _index);
+
+                return new ReadCursor(part.Segment, part.Start + _index);
             }
         }
 
@@ -53,7 +55,7 @@ namespace System.IO.Pipelines
             {
                 return -1;
             }
-            return _currentMemory[_index];
+            return _currentSpan[_index];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -66,7 +68,7 @@ namespace System.IO.Pipelines
                 _overallIndex++;
             }
 
-            if (_index >= _currentMemory.Length)
+            if (_index >= _currentSpan.Length)
             {
                 MoveNext();
             }
@@ -78,9 +80,10 @@ namespace System.IO.Pipelines
         {
             while (_enumerator.MoveNext())
             {
-                if (!_enumerator.Current.IsEmpty)
+                if (_enumerator.Current.Length != 0)
                 {
-                    _currentMemory = _enumerator.Current.Span;
+                    var part = _enumerator.Current;
+                    _currentSpan = part.Segment.Memory.Span.Slice(part.Start, part.Length);
                     _index = 0;
                     return;
                 }
@@ -98,14 +101,14 @@ namespace System.IO.Pipelines
 
             while (!_end && length > 0)
             {
-                if ((_index + length) < _currentMemory.Length)
+                if ((_index + length) < _currentSpan.Length)
                 {
                     _index += length;
                     length = 0;
                     break;
                 }
 
-                length -= (_currentMemory.Length - _index);
+                length -= (_currentSpan.Length - _index);
                 MoveNext();
             }
 
