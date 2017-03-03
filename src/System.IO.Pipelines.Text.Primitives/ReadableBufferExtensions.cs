@@ -151,29 +151,29 @@ namespace System.IO.Pipelines.Text.Primitives
             return value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe static string GetAsciiString(this Span<byte> span)
         {
-            if (span.IsEmpty)
-            {
+            var len = span.Length;
+            if (len == 0) {
                 return null;
             }
 
-            var asciiString = new string('\0', span.Length);
+            var asciiString = new string('\0', len);
 
-            fixed (char* outputStart = asciiString)
-            {
-                var output = outputStart;
-
-                fixed (byte* buffer = &span.DangerousGetPinnableReference())
-                {
-                    if (!AsciiUtilities.TryGetAsciiString(buffer, output, span.Length))
-                    {
-                        throw new InvalidOperationException();
-                    }
+            fixed (char* destination = asciiString)
+            fixed (byte* source = &span.DangerousGetPinnableReference()) {
+                if (!AsciiUtilities.TryGetAsciiString(source, destination, len)) {
+                    ThrowInvalidOperation();
                 }
             }
-
+            
             return asciiString;
+        }
+
+        static void ThrowInvalidOperation()
+        {
+            throw new InvalidOperationException();
         }
 
         /// <summary>
