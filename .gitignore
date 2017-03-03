@@ -260,6 +260,7 @@ scripts/PerfHarness/*.csv
 scripts/PerfHarness/*.xml
 scripts/PerfHarness/*.md
 scripts/PerfHarness/*.etl
+scripts/PerfHarness/results/
 BenchmarkDotNet.Artifacts/
 BDN.Generated/
 binaries/

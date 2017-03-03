@@ -151,6 +151,7 @@ namespace System.IO.Pipelines.Text.Primitives
             return value;
         }
 
+        [Obsolete("Use System.Text.PrimitiveEncoder.DecodeAscii method")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe static string GetAsciiString(this Span<byte> span)
         {
