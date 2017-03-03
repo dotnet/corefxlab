@@ -30,6 +30,7 @@
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Text.Primitives\System.IO.Pipelines.Text.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines\System.IO.Pipelines.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Formatting\System.Text.Formatting.csproj" />
+    <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Http\System.Text.Http.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Json\System.Text.Json.csproj" />
   </ItemGroup>
