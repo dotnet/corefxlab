@@ -506,7 +506,7 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
             }
 
-            if (length < 0 || (offset + length) > data.Length)
+            if (length < 0 || length > data.Length - offset)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
