@@ -239,6 +239,7 @@ namespace System.IO.Pipelines.Tests
                 }
                 reader.Skip(span.Length);
             }
+            Assert.Equal(buffer.Length, reader.ConsumedBytes);
         }
     }
 
