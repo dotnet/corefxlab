@@ -12,7 +12,7 @@ namespace System.IO.Pipelines
         private Span<byte> _currentSpan;
         private int _index;
         private SegmentEnumerator _enumerator;
-        private int _overallIndex;
+        private int _consumedBytes;
         private bool _end;
 
         public ReadableBufferReader(ReadableBuffer buffer) : this(buffer.Start, buffer.End)
@@ -23,7 +23,7 @@ namespace System.IO.Pipelines
         {
             _end = false;
             _index = 0;
-            _overallIndex = 0;
+            _consumedBytes = 0;
             _enumerator = new SegmentEnumerator(start, end);
             _currentSpan = default(Span<byte>);
             MoveNext();
@@ -31,7 +31,7 @@ namespace System.IO.Pipelines
 
         public bool End => _end;
 
-        public int Index => _overallIndex;
+        public int Index => _index;
 
         public ReadCursor Cursor
         {
@@ -47,6 +47,10 @@ namespace System.IO.Pipelines
                 return new ReadCursor(part.Segment, part.Start + _index);
             }
         }
+
+        public Span<byte> Span => _currentSpan;
+
+        public int ConsumedBytes => _consumedBytes;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
@@ -65,7 +69,7 @@ namespace System.IO.Pipelines
             if (!_end)
             {
                 _index++;
-                _overallIndex++;
+                _consumedBytes++;
             }
 
             if (_index >= _currentSpan.Length)
@@ -98,6 +102,8 @@ namespace System.IO.Pipelines
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
+
+            _consumedBytes += length;
 
             while (!_end && length > 0)
             {

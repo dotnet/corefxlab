@@ -34,7 +34,11 @@ namespace System.IO.Pipelines.Tests
         public void TakeReturnsByteAndMoves()
         {
             var reader = new ReadableBufferReader(ReadableBuffer.Create(new byte[] { 1, 2 }, 0, 2));
+            Assert.Equal(0, reader.Index);
+            Assert.Equal(1, reader.Span[reader.Index]);
             Assert.Equal(1, reader.Take());
+            Assert.Equal(1, reader.Index);
+            Assert.Equal(2, reader.Span[reader.Index]);
             Assert.Equal(2, reader.Take());
             Assert.Equal(-1, reader.Take());
         }
@@ -63,9 +67,13 @@ namespace System.IO.Pipelines.Tests
         {
             var reader = new ReadableBufferReader(ReadableBuffer.Create(new byte[] { 1, 2, 3, 4, 5 }, 0, 5));
             reader.Skip(2);
+            Assert.Equal(2, reader.Index);
+            Assert.Equal(3, reader.Span[reader.Index]);
             Assert.Equal(3, reader.Peek());
             reader.Skip(2);
             Assert.Equal(5, reader.Peek());
+            Assert.Equal(4, reader.Index);
+            Assert.Equal(5, reader.Span[reader.Index]);
         }
 
         [Fact]
@@ -113,6 +121,8 @@ namespace System.IO.Pipelines.Tests
             var reader = new ReadableBufferReader(buffer);
 
             reader.Skip(2);
+            Assert.Equal(0, reader.Index);
+            Assert.Equal(3, reader.Span[reader.Index]);
             Assert.Equal(3, reader.Take());
         }
 
@@ -143,7 +153,13 @@ namespace System.IO.Pipelines.Tests
             var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { 1 }, new byte[] { 2 } });
             var reader = new ReadableBufferReader(buffer);
 
+            Assert.Equal(0, reader.Index);
+            Assert.Equal(1, reader.Span.Length);
+            Assert.Equal(1, reader.Span[0]);
             Assert.Equal(1, reader.Take());
+            Assert.Equal(0, reader.Index);
+            Assert.Equal(1, reader.Span.Length);
+            Assert.Equal(2, reader.Span[0]);
             Assert.Equal(2, reader.Peek());
             Assert.Equal(2, reader.Take());
             Assert.Equal(-1, reader.Peek());
@@ -156,6 +172,8 @@ namespace System.IO.Pipelines.Tests
             var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] {  }, new byte[] { 1 } });
             var reader = new ReadableBufferReader(buffer);
 
+            Assert.Equal(0, reader.Index);
+            Assert.Equal(1, reader.Span.Length);
             Assert.Equal(1, reader.Peek());
             Assert.Equal(1, reader.Take());
             Assert.Equal(-1, reader.Peek());
@@ -167,6 +185,8 @@ namespace System.IO.Pipelines.Tests
         {
             var reader = new ReadableBufferReader(ReadableBuffer.Create(new byte[] { 0 }, 0, 0));
 
+            Assert.Equal(0, reader.Index);
+            Assert.Equal(0, reader.Span.Length);
             Assert.Equal(-1, reader.Peek());
             Assert.Equal(-1, reader.Take());
         }
@@ -200,6 +220,26 @@ namespace System.IO.Pipelines.Tests
             var reader = new ReadableBufferReader(sliced);
             Assert.Equal(sliced.Start, reader.Cursor);
             Assert.Equal(2, reader.Peek());
+            Assert.Equal(0, reader.Index);
+        }
+
+        [Fact]
+        public void ReaderIndexIsCorrect()
+        {
+            var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { 1, 2, 3, 4 }, new byte[] { 5, 6, 7 }, new byte[] { 8, 9, 10 } });
+            var reader = new ReadableBufferReader(buffer);
+
+            var counter = 1;
+            while (!reader.End)
+            {
+                var span = reader.Span;
+                for (int i = reader.Index; i < span.Length; i++)
+                {
+                    Assert.Equal(counter++, reader.Span[i]);
+                }
+                reader.Skip(span.Length);
+            }
+            Assert.Equal(buffer.Length, reader.ConsumedBytes);
         }
     }
 
