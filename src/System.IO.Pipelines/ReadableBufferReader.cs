@@ -65,12 +65,15 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Take()
         {
-            var value = Peek();
-            if (!_end)
+            if (_end)
             {
-                _index++;
-                _consumedBytes++;
+                return -1;
             }
+
+            var value = _currentSpan[_index];
+
+            _index++;
+            _consumedBytes++;
 
             if (_index >= _currentSpan.Length)
             {
@@ -80,14 +83,16 @@ namespace System.IO.Pipelines
             return value;
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private void MoveNext()
         {
             while (_enumerator.MoveNext())
             {
-                if (_enumerator.Current.Length != 0)
+                var part = _enumerator.Current;
+                var length = part.Length;
+                if (length != 0)
                 {
-                    var part = _enumerator.Current;
-                    _currentSpan = part.Segment.Memory.Span.Slice(part.Start, part.Length);
+                    _currentSpan = part.Segment.Memory.Span.Slice(part.Start, length);
                     _index = 0;
                     return;
                 }
