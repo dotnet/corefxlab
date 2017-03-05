@@ -197,8 +197,7 @@ namespace System.Buffers
                     Vector<byte> values = GetVector(value);
                     do
                     {
-                        var vData = Unsafe.Read<Vector<byte>>(searchSpace + offset);
-                        var vMatches = Vector.Equals(vData, values);
+                        var vMatches = Vector.Equals(Unsafe.Read<Vector<byte>>(searchSpace + offset), values);
                         if (!vMatches.Equals(Vector<byte>.Zero))
                         {
                             // Found match, reuse Vector values to keep register pressure low
@@ -269,8 +268,9 @@ namespace System.Buffers
                     do
                     {
                         var vData = Unsafe.Read<Vector<byte>>(searchSpace + offset);
-                        var vMatches = Vector.Equals(vData, values0);
-                        vMatches = Vector.ConditionalSelect(vMatches, vMatches, Vector.Equals(vData, values1));
+                        var vMatches = Vector.BitwiseOr(
+                                            Vector.Equals(vData, values0), 
+                                            Vector.Equals(vData, values1));
                         if (!vMatches.Equals(Vector<byte>.Zero))
                         {
                             // Found match, reuse Vector values0 to keep register pressure low
@@ -342,9 +342,11 @@ namespace System.Buffers
                     do
                     {
                         var vData = Unsafe.Read<Vector<byte>>(searchSpace + offset);
-                        var vMatches = Vector.Equals(vData, values0);
-                        vMatches = Vector.ConditionalSelect(vMatches, vMatches, Vector.Equals(vData, values1));
-                        vMatches = Vector.ConditionalSelect(vMatches, vMatches, Vector.Equals(vData, values2));
+                        var vMatches = Vector.BitwiseOr(
+                                        Vector.BitwiseOr(
+                                            Vector.Equals(vData, values0), 
+                                            Vector.Equals(vData, values1)),
+                                            Vector.Equals(vData, values2));
                         if (!vMatches.Equals(Vector<byte>.Zero))
                         {
                             // Found match, reuse Vector values0 to keep register pressure low
