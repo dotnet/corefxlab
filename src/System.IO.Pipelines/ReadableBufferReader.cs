@@ -1,52 +1,82 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
     public struct ReadableBufferReader
     {
+        private BufferSegment _currentSegment;
         private Span<byte> _currentSpan;
-        private int _index;
-        private SegmentEnumerator _enumerator;
-        private int _consumedBytes;
-        private bool _end;
 
-        public ReadableBufferReader(ReadableBuffer buffer) : this(buffer.Start, buffer.End)
+        private int _cursorOffset;
+        private int _spanIndex;
+        private int _remainingBytes;
+        private int _consumedBytes;
+
+        public ReadableBufferReader(ReadableBuffer buffer) : this()
         {
+            var start = buffer.Start;
+            var length = buffer.Length;
+            var segment = start.Segment;
+            var startIndex = start.Index;
+
+            Initalize(segment, startIndex, length);
         }
 
         public ReadableBufferReader(ReadCursor start, ReadCursor end) : this()
         {
-            _end = false;
-            _index = 0;
-            _consumedBytes = 0;
-            _enumerator = new SegmentEnumerator(start, end);
-            _currentSpan = default(Span<byte>);
-            MoveNext();
+            var length = start.GetLength(end);
+            var segment = start.Segment;
+            var startIndex = start.Index;
+
+            Initalize(segment, startIndex, length);
         }
 
-        public bool End => _end;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Initalize(BufferSegment segment, int startIndex, int length)
+        {
+            if (length == 0)
+            {
+                _currentSpan = default(Span<byte>);
+            }
+            else
+            {
+                while (segment != null && segment.End == startIndex)
+                {
+                    segment = segment.Next;
+                    if (segment == null)
+                    {
+                        Debug.Assert(length == 0);
+                        break;
+                    }
 
-        public int Index => _index;
+                    startIndex = segment.Start;
+                }
+                _currentSpan = segment.Memory.Span.Slice(startIndex, segment.End - startIndex);
+            }
 
-        public ReadCursor Cursor
+            _cursorOffset = startIndex;
+            _currentSegment = segment;
+            _remainingBytes = length;
+            _consumedBytes = 0;
+            _spanIndex = 0;
+        }
+
+        public bool End
         {
             get
             {
-                var part = _enumerator.Current;
-
-                if (_end)
-                {
-                    return new ReadCursor(part.Segment, part.Start + _currentSpan.Length);
-                }
-
-                return new ReadCursor(part.Segment, part.Start + _index);
+                Debug.Assert(_remainingBytes >= 0);
+                return _remainingBytes == 0;
             }
         }
+
+        public int Index => _spanIndex;
+
+        public ReadCursor Cursor => new ReadCursor(_currentSegment, _cursorOffset + _spanIndex);
 
         public Span<byte> Span => _currentSpan;
 
@@ -55,78 +85,92 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
         {
-            if (_end)
+            if (End)
             {
                 return -1;
             }
-            return _currentSpan[_index];
+            return _currentSpan[_spanIndex];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Take()
         {
-            if (_end)
+            if (End)
             {
                 return -1;
             }
 
-            var value = _currentSpan[_index];
-
-            _index++;
+            _remainingBytes--;
             _consumedBytes++;
+            var value = _currentSpan[_spanIndex];
+            _spanIndex++;
 
-            if (_index >= _currentSpan.Length)
+            if (_spanIndex >= _currentSpan.Length)
             {
-                MoveNext();
+                TraverseSegments(0);
             }
 
             return value;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private void MoveNext()
-        {
-            while (_enumerator.MoveNext())
-            {
-                var part = _enumerator.Current;
-                var length = part.Length;
-                if (length != 0)
-                {
-                    _currentSpan = part.Segment.Memory.Span.Slice(part.Start, length);
-                    _index = 0;
-                    return;
-                }
-            }
-
-            _end = true;
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Skip(int length)
         {
-            if (length < 0)
+            if ((uint)_remainingBytes < (uint)length)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
+            _remainingBytes -= length;
             _consumedBytes += length;
 
-            while (!_end && length > 0)
+            var spanLength = _currentSpan.Length;
+            if (spanLength - length > _spanIndex)
             {
-                if ((_index + length) < _currentSpan.Length)
+                _spanIndex += length;
+            }
+            else
+            {
+                TraverseSegments(length - (spanLength - _spanIndex));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void TraverseSegments(int skip)
+        {
+            var segment = _currentSegment;
+            if (_remainingBytes <= 0)
+            {
+                goto complete;
+            }
+
+            segment = segment.Next;
+            var remaining = skip;
+            var segmentLength = segment.ReadableBytes;
+            while (segmentLength <= remaining || segmentLength == 0)
+            {
+                remaining -= segmentLength;
+
+                if (segment.Next == null && _remainingBytes == 0)
                 {
-                    _index += length;
-                    length = 0;
-                    break;
+                    goto complete;
                 }
-
-                length -= (_currentSpan.Length - _index);
-                MoveNext();
+                segment = segment.Next;
+                Debug.Assert(segment != null);
+                segmentLength = segment.ReadableBytes;
             }
 
-            if (length > 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
-            }
+            _currentSegment = segment;
+            _spanIndex = 0;
+            _cursorOffset = segment.Start;
+            _currentSpan = segment.Memory.Span.Slice(segment.Start, segment.End - segment.Start);
+            return;
+        complete:
+            Debug.Assert(_remainingBytes == 0);
+            _currentSegment = segment;
+            _spanIndex = 0;
+            _cursorOffset = segment.End;
+            _currentSpan = default(Span<byte>);
         }
     }
 }
