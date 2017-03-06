@@ -145,7 +145,7 @@ namespace System.IO.Pipelines.Samples.Http
 #endif
         public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
         {
-            return _connection.Input.CopyToAsync(destination, bufferSize, cancellationToken);
+            return _connection.Input.CopyToEndAsync(destination, bufferSize, cancellationToken);
         }
 
     }

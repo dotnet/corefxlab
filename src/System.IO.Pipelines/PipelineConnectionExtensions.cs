@@ -95,41 +95,54 @@ namespace System.IO.Pipelines
         {
             try
             {
-                await input.CopyToAsync(stream, bufferSize, cancellationToken);
+                // TODO: Use bufferSize argument
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    var result = await input.ReadAsync();
+                    var inputBuffer = result.Buffer;
+                    try
+                    {
+                        if (inputBuffer.IsEmpty && result.IsCompleted)
+                        {
+                            input.Complete();
+                            return;
+                        }
+
+                        await inputBuffer.CopyToAsync(stream);
+                    }
+                    finally
+                    {
+                        input.Advance(inputBuffer.End);
+                    }
+                }
             }
             catch (Exception ex)
             {
                 input.Complete(ex);
-                return;
             }
-            return;
         }
 
         public static Task CopyToAsync(this IPipeReader input, Stream stream)
         {
-            return input.CopyToAsync(stream, 4096, CancellationToken.None);
+            return input.CopyToAsync(stream, 4096);
         }
 
-        public static async Task CopyToAsync(this IPipeReader input, Stream stream, int bufferSize, CancellationToken cancellationToken)
+        public static async Task CopyToAsync(this IPipeReader input, Stream stream, int bufferSize)
         {
-            // TODO: Use bufferSize argument
-            while (!cancellationToken.IsCancellationRequested)
+            var result = await input.ReadAsync();
+            var inputBuffer = result.Buffer;
+            try
             {
-                var result = await input.ReadAsync();
-                var inputBuffer = result.Buffer;
-                try
+                if (inputBuffer.IsEmpty && result.IsCompleted)
                 {
-                    if (inputBuffer.IsEmpty && result.IsCompleted)
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    await inputBuffer.CopyToAsync(stream);
-                }
-                finally
-                {
-                    input.Advance(inputBuffer.End);
-                }
+                await inputBuffer.CopyToAsync(stream);
+            }
+            finally
+            {
+                input.Advance(inputBuffer.End);
             }
         }
 
