@@ -82,6 +82,8 @@ namespace System.IO.Pipelines
 
         public int ConsumedBytes => _consumedBytes;
 
+        public int RemainingBytes => _remainingBytes;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
         {
