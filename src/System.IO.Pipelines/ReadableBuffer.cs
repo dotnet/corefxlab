@@ -15,8 +15,6 @@ namespace System.IO.Pipelines
     {
         private static readonly int VectorWidth = Vector<byte>.Count;
 
-        private Memory<byte> _first;
-
         private ReadCursor _start;
         private ReadCursor _end;
         private int _length;
@@ -24,14 +22,14 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Length of the <see cref="ReadableBuffer"/> in bytes.
         /// </summary>
-        public int Length => _length >= 0 ? _length : GetLength();
+        public int Length => _length;
 
         int? ISequence<ReadOnlyMemory<byte>>.Length => Length;
 
         /// <summary>
         /// Determines if the <see cref="ReadableBuffer"/> is empty.
         /// </summary>
-        public bool IsEmpty => _first.IsEmpty && Length == 0;
+        public bool IsEmpty => _length == 0;
 
         /// <summary>
         /// Determins if the <see cref="ReadableBuffer"/> is a single <see cref="Memory{Byte}"/>.
@@ -41,7 +39,14 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The first <see cref="Memory{Byte}"/> in the <see cref="ReadableBuffer"/>.
         /// </summary>
-        public Memory<byte> First => _first;
+        public Memory<byte> First
+        {
+            get
+            {
+                _start.TryGetBuffer(_end, out Memory<byte> first);
+                return first;
+            }
+        }
 
         /// <summary>
         /// A cursor to the start of the <see cref="ReadableBuffer"/>.
@@ -57,8 +62,7 @@ namespace System.IO.Pipelines
         {
             _start = start;
             _end = end;
-            start.TryGetBuffer(end, out _first);
-            _length = -1;
+            _length = start.GetLength(_end);
         }
 
         private ReadableBuffer(ref ReadableBuffer buffer)
@@ -66,8 +70,7 @@ namespace System.IO.Pipelines
             var begin = buffer._start;
             var end = buffer._end;
 
-            BufferSegment segmentTail;
-            var segmentHead = BufferSegment.Clone(begin, end, out segmentTail);
+            var segmentHead = BufferSegment.Clone(begin, end, out BufferSegment segmentTail);
 
             begin = new ReadCursor(segmentHead);
             end = new ReadCursor(segmentTail, segmentTail.End);
@@ -76,8 +79,6 @@ namespace System.IO.Pipelines
             _end = end;
 
             _length = buffer._length;
-
-            begin.TryGetBuffer(end, out _first);
         }
 
         /// <summary>
@@ -339,14 +340,6 @@ namespace System.IO.Pipelines
             return buffer;
         }
 
-        private int GetLength()
-        {
-            var begin = _start;
-            var length = begin.GetLength(_end);
-            _length = length;
-            return length;
-        }
-
         /// <summary>
         ///
         /// </summary>
@@ -512,9 +505,11 @@ namespace System.IO.Pipelines
             }
 
             var buffer = new OwnedArray<byte>(data);
-            var segment = new BufferSegment(buffer);
-            segment.Start = offset;
-            segment.End = offset + length;
+            var segment = new BufferSegment(buffer)
+            {
+                Start = offset,
+                End = offset + length
+            };
             return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
         }
 

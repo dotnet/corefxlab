@@ -16,45 +16,30 @@ namespace System.IO.Pipelines
         private int _remainingBytes;
         private int _consumedBytes;
 
-        public ReadableBufferReader(ReadableBuffer buffer) : this()
+        public ReadableBufferReader(ReadableBuffer buffer)
         {
             var start = buffer.Start;
             var length = buffer.Length;
             var segment = start.Segment;
             var startIndex = start.Index;
 
-            Initalize(segment, startIndex, length);
-        }
+            while (segment != null && segment.End == startIndex)
+            {
+                segment = segment.Next;
+                if (segment == null)
+                {
+                    break;
+                }
 
-        public ReadableBufferReader(ReadCursor start, ReadCursor end) : this()
-        {
-            var length = start.GetLength(end);
-            var segment = start.Segment;
-            var startIndex = start.Index;
+                startIndex = segment.Start;
+            }
 
-            Initalize(segment, startIndex, length);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Initalize(BufferSegment segment, int startIndex, int length)
-        {
             if (length == 0)
             {
                 _currentSpan = default(Span<byte>);
             }
             else
             {
-                while (segment != null && segment.End == startIndex)
-                {
-                    segment = segment.Next;
-                    if (segment == null)
-                    {
-                        Debug.Assert(length == 0);
-                        break;
-                    }
-
-                    startIndex = segment.Start;
-                }
                 _currentSpan = segment.Memory.Span.Slice(startIndex, segment.End - startIndex);
             }
 
@@ -65,14 +50,7 @@ namespace System.IO.Pipelines
             _spanIndex = 0;
         }
 
-        public bool End
-        {
-            get
-            {
-                Debug.Assert(_remainingBytes >= 0);
-                return _remainingBytes == 0;
-            }
-        }
+        public bool End => _remainingBytes == 0;
 
         public int Index => _spanIndex;
 
@@ -87,27 +65,30 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
         {
-            if (End)
+            if (_remainingBytes == 0)
             {
                 return -1;
             }
+
             return _currentSpan[_spanIndex];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Take()
         {
-            if (End)
+            if (_remainingBytes == 0)
             {
                 return -1;
             }
 
+            var spanIndex = _spanIndex;
             _remainingBytes--;
             _consumedBytes++;
-            var value = _currentSpan[_spanIndex];
-            _spanIndex++;
+            _spanIndex = spanIndex + 1;
 
-            if (_spanIndex >= _currentSpan.Length)
+            var value = _currentSpan[spanIndex];
+
+            if (spanIndex >= _currentSpan.Length - 1 && _remainingBytes > 0)
             {
                 TraverseSegments(0);
             }
@@ -127,7 +108,12 @@ namespace System.IO.Pipelines
             _consumedBytes += length;
 
             var spanLength = _currentSpan.Length;
-            if (spanLength - length > _spanIndex)
+            if (spanLength - length == _spanIndex)
+            {
+                _spanIndex += length;
+                TraverseSegments(0);
+            }
+            else if (spanLength - length > _spanIndex)
             {
                 _spanIndex += length;
             }
@@ -155,6 +141,8 @@ namespace System.IO.Pipelines
 
                 if (segment.Next == null && _remainingBytes == 0)
                 {
+                    _spanIndex = 0;
+                    _cursorOffset = segment.End;
                     goto complete;
                 }
                 segment = segment.Next;
@@ -165,13 +153,11 @@ namespace System.IO.Pipelines
             _currentSegment = segment;
             _spanIndex = 0;
             _cursorOffset = segment.Start;
-            _currentSpan = segment.Memory.Span.Slice(segment.Start, segment.End - segment.Start);
+            _currentSpan = segment.Memory.Span.Slice(segment.Start, Math.Min(segment.End - segment.Start, _remainingBytes));
             return;
         complete:
             Debug.Assert(_remainingBytes == 0);
             _currentSegment = segment;
-            _spanIndex = 0;
-            _cursorOffset = segment.End;
             _currentSpan = default(Span<byte>);
         }
     }
