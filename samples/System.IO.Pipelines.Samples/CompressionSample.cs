@@ -31,14 +31,16 @@ namespace System.IO.Pipelines.Samples
                               .DeflateDecompress(factory);
 
                 // Wrap the console in a pipeline writer
-                var output = factory.CreateWriter(Console.OpenStandardOutput());
+
+                var outputPipe = factory.Create();
+                outputPipe.Reader.CopyToEndAsync(Console.OpenStandardOutput());
 
                 // Copy from the file reader to the console writer
-                input.CopyToAsync(output).GetAwaiter().GetResult();
+                input.CopyToAsync(outputPipe.Writer).GetAwaiter().GetResult();
 
                 input.Complete();
 
-                output.Complete();
+                outputPipe.Writer.Complete();
             }
         }
     }

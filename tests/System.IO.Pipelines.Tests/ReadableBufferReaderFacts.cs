@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO.Pipelines.Testing;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;

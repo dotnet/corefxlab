@@ -9,5 +9,6 @@
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
+    <ProjectReference Include="..\System.IO.Pipelines.Extensions\System.IO.Pipelines.Extensions.csproj" />
   </ItemGroup>
 </Project>

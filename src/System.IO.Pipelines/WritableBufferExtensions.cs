@@ -1,17 +1,12 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Binary;
-using System.Runtime;
-using System.Runtime.CompilerServices;
-
 namespace System.IO.Pipelines
 {
     /// <summary>
     /// Common extension methods against writable buffers
     /// </summary>
-    public static class DefaultWritableBufferExtensions
+    public static class WritableBufferExtensions
     {
         /// <summary>
         /// Writes the source <see cref="Span{Byte}"/> to the <see cref="WritableBuffer"/>.
@@ -54,30 +49,6 @@ namespace System.IO.Pipelines
 
                 buffer.Advance(writable);
             }
-        }
-
-        /// <summary>
-        /// Reads a structure of type T out of a buffer of bytes.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteBigEndian<[Primitive]T>(this WritableBuffer buffer, T value) where T : struct
-        {
-            int len = Unsafe.SizeOf<T>();
-            buffer.Ensure(len);
-            buffer.Memory.Span.WriteBigEndian(value);
-            buffer.Advance(len);
-        }
-
-        /// <summary>
-        /// Reads a structure of type T out of a buffer of bytes.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteLittleEndian<[Primitive]T>(this WritableBuffer buffer, T value) where T : struct
-        {
-            int len = Unsafe.SizeOf<T>();
-            buffer.Ensure(len);
-            buffer.Memory.Span.WriteLittleEndian(value);
-            buffer.Advance(len);
         }
     }
 }

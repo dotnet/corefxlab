@@ -3,8 +3,12 @@
 
 namespace System.IO.Pipelines
 {
-    public interface IScheduler
+    public interface IWritableBufferAwaiter
     {
-        void Schedule(Action action);
+        bool IsCompleted { get; }
+
+        bool GetResult();
+
+        void OnCompleted(Action continuation);
     }
 }

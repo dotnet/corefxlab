@@ -6,7 +6,7 @@ using System.Buffers;
 using System.Linq;
 using System.Text;
 
-namespace System.IO.Pipelines.Tests
+namespace System.IO.Pipelines.Testing
 {
     public class BufferUtilities
     {

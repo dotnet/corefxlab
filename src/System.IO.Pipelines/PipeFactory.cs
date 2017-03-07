@@ -37,36 +37,6 @@ namespace System.IO.Pipelines
             return new Pipe(_pool, options);
         }
 
-        public IPipeReader CreateReader(Stream stream)
-        {
-            if (!stream.CanRead)
-            {
-                ThrowHelper.ThrowNotSupportedException();
-            }
-
-            var pipe = new Pipe(_pool);
-            var ignore = stream.CopyToEndAsync(pipe);
-            return pipe;
-        }
-
-        public IPipeConnection CreateConnection(NetworkStream stream)
-        {
-            return new StreamPipeConnection(this, stream);
-        }
-
-        public IPipeWriter CreateWriter(Stream stream)
-        {
-            if (!stream.CanWrite)
-            {
-                ThrowHelper.ThrowNotSupportedException();
-            }
-
-            var pipe = new Pipe(_pool);
-            var ignore = pipe.CopyToEndAsync(stream);
-
-            return pipe;
-        }
-
         public void Dispose() => _pool.Dispose();
     }
 }
