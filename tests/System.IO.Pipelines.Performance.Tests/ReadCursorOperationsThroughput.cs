@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Pipelines.Testing;
 using System.IO.Pipelines.Tests;
 using System.Linq;
 using System.Text;

@@ -89,9 +89,6 @@ namespace System.IO.Pipelines
             return this;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public void Reset()
         {
             ThrowHelper.ThrowNotSupportedException();

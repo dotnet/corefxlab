@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Buffers;
+using System.IO.Pipelines.Testing;
 using System.Numerics;
 using Xunit;
 

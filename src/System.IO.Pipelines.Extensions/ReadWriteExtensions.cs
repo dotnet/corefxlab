@@ -10,50 +10,8 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines
 {
-    /// <summary>
-    /// Common extension methods against readable buffers
-    /// </summary>
-    public static class DefaultReadableBufferExtensions
+    public static class ReadWriteExtensions
     {
-        /// <summary>
-        /// Copies a <see cref="ReadableBuffer"/> to a <see cref="Stream"/> asynchronously
-        /// </summary>
-        /// <param name="buffer">The <see cref="ReadableBuffer"/> to copy</param>
-        /// <param name="stream">The target <see cref="Stream"/></param>
-        /// <returns></returns>
-        public static Task CopyToAsync(this ReadableBuffer buffer, Stream stream)
-        {
-            if (buffer.IsSingleSpan)
-            {
-                return WriteToStream(stream, buffer.First);
-            }
-
-            return CopyMultipleToStreamAsync(buffer, stream);
-        }
-
-        private static async Task CopyMultipleToStreamAsync(this ReadableBuffer buffer, Stream stream)
-        {
-            foreach (var memory in buffer)
-            {
-                await WriteToStream(stream, memory);
-            }
-        }
-
-        private static async Task WriteToStream(Stream stream, Memory<byte> memory)
-        {
-            ArraySegment<byte> data;
-            if (memory.TryGetArray(out data))
-            {
-                await stream.WriteAsync(data.Array, data.Offset, data.Count).ConfigureAwait(continueOnCapturedContext: false);
-            }
-            else
-            {
-                // Copy required 
-                var array = memory.Span.ToArray();
-                await stream.WriteAsync(array, 0, array.Length).ConfigureAwait(continueOnCapturedContext: false);
-            }
-        }
-
         public static async Task<ReadableBuffer> ReadToEndAsync(this IPipeReader input)
         {
             while (true)
@@ -110,6 +68,30 @@ namespace System.IO.Pipelines
             var localSpan = new Span<byte>(local, len);
             buffer.Slice(0, len).CopyTo(localSpan);
             return localSpan.ReadLittleEndian<T>();
+        }
+
+        /// <summary>
+        /// Reads a structure of type T out of a buffer of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteBigEndian<[Primitive]T>(this WritableBuffer buffer, T value) where T : struct
+        {
+            int len = Unsafe.SizeOf<T>();
+            buffer.Ensure(len);
+            buffer.Memory.Span.WriteBigEndian(value);
+            buffer.Advance(len);
+        }
+
+        /// <summary>
+        /// Reads a structure of type T out of a buffer of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void WriteLittleEndian<[Primitive]T>(this WritableBuffer buffer, T value) where T : struct
+        {
+            int len = Unsafe.SizeOf<T>();
+            buffer.Ensure(len);
+            buffer.Memory.Span.WriteLittleEndian(value);
+            buffer.Advance(len);
         }
     }
 }

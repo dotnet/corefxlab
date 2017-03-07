@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -83,6 +81,66 @@ namespace System.IO.Pipelines
             writer.Complete();
         }
 
+        /// <summary>
+        /// Copies a <see cref="ReadableBuffer"/> to a <see cref="Stream"/> asynchronously
+        /// </summary>
+        /// <param name="buffer">The <see cref="ReadableBuffer"/> to copy</param>
+        /// <param name="stream">The target <see cref="Stream"/></param>
+        /// <returns></returns>
+        public static Task CopyToAsync(this ReadableBuffer buffer, Stream stream)
+        {
+            if (buffer.IsSingleSpan)
+            {
+                return WriteToStream(stream, buffer.First);
+            }
+
+            return CopyMultipleToStreamAsync(buffer, stream);
+        }
+
+        private static async Task CopyMultipleToStreamAsync(this ReadableBuffer buffer, Stream stream)
+        {
+            foreach (var memory in buffer)
+            {
+                await WriteToStream(stream, memory);
+            }
+        }
+
+        private static async Task WriteToStream(Stream stream, Memory<byte> memory)
+        {
+            ArraySegment<byte> data;
+            if (memory.TryGetArray(out data))
+            {
+                await stream.WriteAsync(data.Array, data.Offset, data.Count)
+                    .ConfigureAwait(continueOnCapturedContext: false);
+            }
+            else
+            {
+                // Copy required 
+                var array = memory.Span.ToArray();
+                await stream.WriteAsync(array, 0, array.Length).ConfigureAwait(continueOnCapturedContext: false);
+            }
+        }
+
+
+        public static Task CopyToEndAsync(this IPipeReader input, Stream stream)
+        {
+            return input.CopyToEndAsync(stream, 4096, CancellationToken.None);
+        }
+
+        public static async Task CopyToEndAsync(this IPipeReader input, Stream stream, int bufferSize, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await input.CopyToAsync(stream, bufferSize, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                input.Complete(ex);
+                return;
+            }
+            return;
+        }
+
         private class UnownedBufferStream : Stream
         {
             private readonly Stream _stream;
@@ -94,27 +152,12 @@ namespace System.IO.Pipelines
             public override bool CanSeek => false;
             public override bool CanWrite => true;
 
-            public override long Length
-            {
-                get
-                {
-                    ThrowHelper.ThrowNotSupportedException();
-                    return 0;
-                }
-            }
+            public override long Length => throw new NotSupportedException();
 
             public override long Position
             {
-                get
-                {
-                    ThrowHelper.ThrowNotSupportedException();
-                    return 0;
-                }
-
-                set
-                {
-                    ThrowHelper.ThrowNotSupportedException();
-                }
+                get => throw new NotSupportedException();
+                set => throw new NotSupportedException();
             }
 
             public UnownedBufferStream(Stream stream)
@@ -158,19 +201,17 @@ namespace System.IO.Pipelines
 
             public override long Seek(long offset, SeekOrigin origin)
             {
-                ThrowHelper.ThrowNotSupportedException();
-                return 0;
+                throw new NotSupportedException();
             }
 
             public override void SetLength(long value)
             {
-                ThrowHelper.ThrowNotSupportedException();
+                throw new NotSupportedException();
             }
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                ThrowHelper.ThrowNotSupportedException();
-                return 0;
+                throw new NotSupportedException();
             }
         }
 
@@ -189,54 +230,37 @@ namespace System.IO.Pipelines
 
             public override bool CanWrite => true;
 
-            public override long Length
-            {
-                get
-                {
-                    ThrowHelper.ThrowNotSupportedException();
-                    return 0;
-                }
-            }
+            public override long Length => throw new NotSupportedException();
 
             public override long Position
             {
-                get
-                {
-                    ThrowHelper.ThrowNotSupportedException();
-                    return 0;
-                }
-
-                set
-                {
-                    ThrowHelper.ThrowNotSupportedException();
-                }
+                get => throw new NotSupportedException();
+                set => throw new NotSupportedException();
             }
 
             public override void Flush()
             {
-                ThrowHelper.ThrowNotSupportedException();
+                throw new NotSupportedException();
             }
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                ThrowHelper.ThrowNotSupportedException();
-                return 0;
+                throw new NotSupportedException();
             }
 
             public override long Seek(long offset, SeekOrigin origin)
             {
-                ThrowHelper.ThrowNotSupportedException();
-                return 0;
+                throw new NotSupportedException();
             }
 
             public override void SetLength(long value)
             {
-                ThrowHelper.ThrowNotSupportedException();
+                throw new NotSupportedException();
             }
 
             public override void Write(byte[] buffer, int offset, int count)
             {
-                ThrowHelper.ThrowNotSupportedException();
+                throw new NotSupportedException();
             }
 
             public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)

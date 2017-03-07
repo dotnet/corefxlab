@@ -1,4 +1,4 @@
-using System.IO.Pipelines.Tests;
+using System.IO.Pipelines.Testing;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 

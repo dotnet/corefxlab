@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Globalization;
 using System.IO;
+using System.IO.Pipelines.Testing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
