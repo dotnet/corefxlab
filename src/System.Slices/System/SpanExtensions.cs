@@ -68,6 +68,7 @@ namespace System
 
             int remainingLength = Math.Min(count, spanLength - index);
 
+            index--;
             while (remainingLength >= 8)
             {
                 if (value == Unsafe.Add(ref searchSpace, ++index))

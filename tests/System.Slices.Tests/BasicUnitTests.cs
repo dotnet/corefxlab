@@ -520,16 +520,21 @@ namespace System.Slices.Tests
         #endregion
 
         #region SpanIndexOfByte
+
         [Fact]
         public static void TestMatchWithIndexAndCount_Byte()
         {
-            int length = 100;
-            byte[] a = new byte[length];
-            a[50] = 99;
-            Span<byte> span = new Span<byte>(a);
-
-            int idx = span.IndexOf(99, 45, 10);
-            Assert.Equal(50, idx);
+            for (int i = 1; i < 10; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    byte[] a = new byte[i];
+                    a[j] = 99;
+                    ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+                    int idx = span.IndexOf(99, 0, 10);
+                    Assert.Equal(j, idx);
+                }
+            }
         }
 
         [Fact]
@@ -544,18 +549,35 @@ namespace System.Slices.Tests
             Assert.Equal(50, idx);
         }
 
-        [Fact]
-        public static void TestIndexOfComparison_Byte()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        [InlineData(500)]
+        [InlineData(1000)]
+        [InlineData(5000)]
+        public static void TestIndexOfComparison_Byte(int length)
         {
-            byte[] a = new byte[1000];
-
-            for (int i = 0; i < a.Length; i++)
-            {
-                a[i] = (byte)(i + 1);
-            }
+            const byte lookupVal = 99;
+            var a = new byte[length];
+            a[length / 2] = lookupVal;
 
             var bytes = new Span<byte>(a);
-            Assert.Equal(bytes.IndexOf(255, 250, 10) - 250, bytes.Slice(250, 10).IndexOf(255));
+            int startIndex = length / 4;
+            int count = length / 2 + 1;
+
+            int actualResult = bytes.IndexOf(lookupVal, startIndex, count) - startIndex;
+            int expectedResult = bytes.Slice(startIndex, count).IndexOf(lookupVal);
+            Assert.Equal(actualResult, expectedResult);
         }
 
         [Fact]
@@ -620,13 +642,17 @@ namespace System.Slices.Tests
         [Fact]
         public static void TestMatchWithIndexAndCountReadOnly_Byte()
         {
-            int length = 100;
-            byte[] a = new byte[length];
-            a[50] = 99;
-            ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
-
-            int idx = span.IndexOf(99, 45, 10);
-            Assert.Equal(50, idx);
+            for (int i = 1; i < 10; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    byte[] a = new byte[i];
+                    a[j] = 99;
+                    ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+                    int idx = span.IndexOf(99, 0, 10);
+                    Assert.Equal(j, idx);
+                }
+            }
         }
 
         [Fact]
@@ -641,18 +667,35 @@ namespace System.Slices.Tests
             Assert.Equal(50, idx);
         }
 
-        [Fact]
-        public static void TestIndexOfComparisonReadOnly_Byte()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        [InlineData(500)]
+        [InlineData(1000)]
+        [InlineData(5000)]
+        public static void TestIndexOfComparisonReadOnly_Byte(int length)
         {
-            byte[] a = new byte[1000];
-
-            for (int i = 0; i < a.Length; i++)
-            {
-                a[i] = (byte)(i + 1);
-            }
+            const byte lookupVal = 99;
+            var a = new byte[length];
+            a[length / 2] = lookupVal;
 
             var bytes = new ReadOnlySpan<byte>(a);
-            Assert.Equal(bytes.IndexOf(255, 250, 10) - 250, bytes.Slice(250, 10).IndexOf(255));
+            int startIndex = length / 4;
+            int count = length / 2 + 1;
+
+            int actualResult = bytes.IndexOf(lookupVal, startIndex, count) - startIndex;
+            int expectedResult = bytes.Slice(startIndex, count).IndexOf(lookupVal);
+            Assert.Equal(actualResult, expectedResult);
         }
 
         [Fact]

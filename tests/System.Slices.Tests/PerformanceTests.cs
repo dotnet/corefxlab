@@ -49,18 +49,32 @@ namespace System.Slices.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 10000000)]
+        [Benchmark(InnerIterationCount = 100000)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        [InlineData(500)]
         [InlineData(1000)]
-        public void SpanIndexOfWithIndexAndCountComparison(int length)
+        [InlineData(5000)]
+        public int SpanIndexOfWithIndexAndCountComparisonValueAtEnd(int length)
         {
-            byte[] a = new byte[length];
-
-            for (int i = 0; i < a.Length; i++)
-            {
-                a[i] = (byte)(i + 1);
-            }
+            const byte lookupVal = 99;
+            var a = new byte[length];
+            a[length - 1] = lookupVal;
 
             var bytes = new Span<byte>(a);
+            int startIndex = length / 2;
+            int count = length - startIndex;
+            var result = -1;
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -68,24 +82,40 @@ namespace System.Slices.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        int result = bytes.IndexOf(255, 250, 10);
+                        result = bytes.IndexOf(lookupVal, startIndex, count);
                     }
                 }
             }
+            Console.WriteLine(result);
+            return result;
         }
 
-        [Benchmark(InnerIterationCount = 10000000)]
+        [Benchmark(InnerIterationCount = 100000)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        [InlineData(500)]
         [InlineData(1000)]
-        public void SpanIndexOfWithSliceComparison(int length)
+        [InlineData(5000)]
+        public int SpanIndexOfWithSliceComparisonValueAtEnd(int length)
         {
-            byte[] a = new byte[length];
-
-            for (int i = 0; i < a.Length; i++)
-            {
-                a[i] = (byte)(i + 1);
-            }
+            const byte lookupVal = 99;
+            var a = new byte[length];
+            a[length - 1] = lookupVal;
 
             var bytes = new Span<byte>(a);
+            int startIndex = length / 2;
+            int count = length - startIndex;
+            var result = -1;
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -93,10 +123,176 @@ namespace System.Slices.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        int result = bytes.Slice(250, 10).IndexOf(255);
+                        result = bytes.Slice(startIndex, count).IndexOf(lookupVal);
                     }
                 }
             }
+            Console.WriteLine(result);
+            return result;
+        }
+
+        [Benchmark(InnerIterationCount = 100000)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        [InlineData(500)]
+        [InlineData(1000)]
+        [InlineData(5000)]
+        public int SpanIndexOfWithIndexAndCountComparisonValueAtStart(int length)
+        {
+            const byte lookupVal = 99;
+            var a = new byte[length];
+            a[0] = lookupVal;
+
+            var bytes = new Span<byte>(a);
+            int startIndex = 0;
+            int count = length - startIndex;
+            var result = -1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        result = bytes.IndexOf(lookupVal, startIndex, count);
+                    }
+                }
+            }
+            Console.WriteLine(result);
+            return result;
+        }
+
+        [Benchmark(InnerIterationCount = 100000)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        [InlineData(500)]
+        [InlineData(1000)]
+        [InlineData(5000)]
+        public int SpanIndexOfWithSliceComparisonValueAtStart(int length)
+        {
+            const byte lookupVal = 99;
+            var a = new byte[length];
+            a[0] = lookupVal;
+
+            var bytes = new Span<byte>(a);
+            int startIndex = 0;
+            int count = length - startIndex;
+            var result = -1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        result = bytes.Slice(startIndex, count).IndexOf(lookupVal);
+                    }
+                }
+            }
+            Console.WriteLine(result);
+            return result;
+        }
+
+        [Benchmark(InnerIterationCount = 100000)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        [InlineData(500)]
+        [InlineData(1000)]
+        [InlineData(5000)]
+        public int SpanIndexOfWithIndexAndCountComparisonValueInMiddle(int length)
+        {
+            const byte lookupVal = 99;
+            var a = new byte[length];
+            a[length / 2] = lookupVal;
+
+            var bytes = new Span<byte>(a);
+            int startIndex = length / 4;
+            int count = length / 2 + 1;
+            var result = -1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        result = bytes.IndexOf(lookupVal, startIndex, count);
+                    }
+                }
+            }
+            Console.WriteLine(result);
+            return result;
+        }
+
+        [Benchmark(InnerIterationCount = 100000)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        [InlineData(500)]
+        [InlineData(1000)]
+        [InlineData(5000)]
+        public int SpanIndexOfWithSliceComparisonValueInMiddle(int length)
+        {
+            const byte lookupVal = 99;
+            var a = new byte[length];
+            a[length / 2] = lookupVal;
+
+            var bytes = new Span<byte>(a);
+            int startIndex = length / 4;
+            int count = length / 2 + 1;
+            var result = -1;
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        result = bytes.Slice(startIndex, count).IndexOf(lookupVal);
+                    }
+                }
+            }
+            Console.WriteLine(result);
+            return result;
         }
     }
 }
