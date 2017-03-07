@@ -126,12 +126,60 @@ namespace System.Buffers
                 return IndexOfVectorized(pSearchSpace, buffer.Length, value);
             }
         }
+        public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value, int startIndex)
+        {
+            if ((uint)startIndex > (uint)buffer.Length)
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, buffer.Length - startIndex, value);
+            }
+        }
+        public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value, int startIndex, int count)
+        {
+            if ((uint)startIndex > (uint)buffer.Length || (uint)count > (uint)(buffer.Length - startIndex))
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, count, value);
+            }
+        }
 
         public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value0, byte value1)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
                 return IndexOfVectorized(pSearchSpace, buffer.Length, value0, value1);
+            }
+        }
+        public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value0, byte value1, int startIndex)
+        {
+            if ((uint)startIndex > (uint)buffer.Length)
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, buffer.Length - startIndex, value0, value1);
+            }
+        }
+        public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value0, byte value1, int startIndex, int count)
+        {
+            if ((uint)startIndex > (uint)buffer.Length || (uint)count > (uint)(buffer.Length - startIndex))
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, count, value0, value1);
             }
         }
 
@@ -142,12 +190,60 @@ namespace System.Buffers
                 return IndexOfVectorized(pSearchSpace, buffer.Length, value0, value1, value2);
             }
         }
+        public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value0, byte value1, byte value2, int startIndex)
+        {
+            if ((uint)startIndex > (uint)buffer.Length)
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, buffer.Length - startIndex, value0, value1, value2);
+            }
+        }
+        public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value0, byte value1, byte value2, int startIndex, int count)
+        {
+            if ((uint)startIndex > (uint)buffer.Length || (uint)count > (uint)(buffer.Length - startIndex))
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, count, value0, value1, value2);
+            }
+        }
 
         public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
                 return IndexOfVectorized(pSearchSpace, buffer.Length, value);
+            }
+        }
+        public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value, int startIndex)
+        {
+            if ((uint)startIndex > (uint)buffer.Length)
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, buffer.Length - startIndex, value);
+            }
+        }
+        public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value, int startIndex, int count)
+        {
+            if ((uint)startIndex > (uint)buffer.Length || (uint)count > (uint)(buffer.Length - startIndex))
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, count, value);
             }
         }
 
@@ -158,12 +254,60 @@ namespace System.Buffers
                 return IndexOfVectorized(pSearchSpace, buffer.Length, value0, value1);
             }
         }
+        public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value0, byte value1, int startIndex)
+        {
+            if ((uint)startIndex > (uint)buffer.Length)
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, buffer.Length - startIndex, value0, value1);
+            }
+        }
+        public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value0, byte value1, int startIndex, int count)
+        {
+            if ((uint)startIndex > (uint)buffer.Length || (uint)count > (uint)(buffer.Length - startIndex))
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, count, value0, value1);
+            }
+        }
 
         public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value0, byte value1, byte value2)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
                 return IndexOfVectorized(pSearchSpace, buffer.Length, value0, value1, value2);
+            }
+        }
+        public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value0, byte value1, byte value2, int startIndex)
+        {
+            if ((uint)startIndex > (uint)buffer.Length)
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, buffer.Length - startIndex, value0, value1, value2);
+            }
+        }
+        public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value0, byte value1, byte value2, int startIndex, int count)
+        {
+            if ((uint)startIndex > (uint)buffer.Length || (uint)count > (uint)(buffer.Length - startIndex))
+            {
+                return -1;
+            }
+
+            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            {
+                return IndexOfVectorized(pSearchSpace + startIndex, count, value0, value1, value2);
             }
         }
 
