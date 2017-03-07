@@ -37,18 +37,19 @@ namespace System.IO.Pipelines
         public static bool TrySliceTo(this ReadableBuffer buffer, Span<byte> span, out ReadableBuffer slice, out ReadCursor cursor)
         {
             var result = false;
+            var subBuffer = buffer;
             do
             {
                 // Find the first byte
-                if (!buffer.TrySliceTo(span[0], out slice, out cursor))
+                if (!subBuffer.TrySliceTo(span[0], out slice, out cursor))
                 {
                     break;
                 }
 
                 // Move the buffer to where you fonud the first byte then search for the next byte
-                buffer = buffer.Slice(cursor);
+                subBuffer = buffer.Slice(cursor);
 
-                if (buffer.StartsWith(span))
+                if (subBuffer.StartsWith(span))
                 {
                     slice = buffer.Slice(buffer.Start, cursor);
                     result = true;
@@ -57,8 +58,8 @@ namespace System.IO.Pipelines
 
                 // REVIEW: We need to check the performance of Slice in a loop like this
                 // Not a match so skip(1) 
-                buffer = buffer.Slice(1);
-            } while (!buffer.IsEmpty);
+                subBuffer = subBuffer.Slice(1);
+            } while (!subBuffer.IsEmpty);
 
             return result;
         }
