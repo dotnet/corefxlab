@@ -8,7 +8,6 @@ namespace System.IO.Pipelines
 {
     public static class PipelineReaderExtensions
     {
-
         public static Task CopyToAsync(this IPipeReader input, Stream stream)
         {
             return input.CopyToAsync(stream, 4096, CancellationToken.None);
