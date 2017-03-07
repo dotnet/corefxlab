@@ -8,7 +8,7 @@ namespace System.Slices.Tests
 {
     public class PerformanceTests
     {
-        /*[Benchmark(InnerIterationCount = 100000)]
+        [Benchmark(InnerIterationCount = 10000000)]
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
@@ -47,25 +47,11 @@ namespace System.Slices.Tests
                     }
                 }
             }
-        }*/
+        }
 
-        [Benchmark(InnerIterationCount = 100000)]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [InlineData(7)]
-        [InlineData(8)]
-        [InlineData(9)]
-        [InlineData(10)]
-        [InlineData(50)]
-        [InlineData(100)]
-        [InlineData(500)]
+        [Benchmark(InnerIterationCount = 10000000)]
         [InlineData(1000)]
-        [InlineData(5000)]
-        public void SpanIndexOf(int length)
+        public void SpanIndexOfWithIndexAndCountComparison(int length)
         {
             byte[] a = new byte[length];
 
@@ -82,8 +68,32 @@ namespace System.Slices.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        //int result = bytes.IndexOf(0, length, 1);
-                        int result = bytes.IndexOf2(0, length, 1);
+                        int result = bytes.IndexOf(250, 10, 255);
+                    }
+                }
+            }
+        }
+
+        [Benchmark(InnerIterationCount = 10000000)]
+        [InlineData(1000)]
+        public void SpanIndexOfWithSliceComparison(int length)
+        {
+            byte[] a = new byte[length];
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                a[i] = (byte)(i + 1);
+            }
+
+            var bytes = new Span<byte>(a);
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        int result = bytes.Slice(250, 10).IndexOf(255);
                     }
                 }
             }

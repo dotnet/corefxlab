@@ -545,6 +545,20 @@ namespace System.Slices.Tests
         }
 
         [Fact]
+        public static void TestIndexOfComparison()
+        {
+            byte[] a = new byte[1000];
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                a[i] = (byte)(i + 1);
+            }
+
+            var bytes = new Span<byte>(a);
+            Assert.Equal(bytes.IndexOf(250, 10, 255) - 250, bytes.Slice(250, 10).IndexOf(255));
+        }
+
+        [Fact]
         public static void TestMatchWithCountGreaterThanLength_Byte()
         {
             int length = 100;

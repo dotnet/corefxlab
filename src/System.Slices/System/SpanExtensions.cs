@@ -43,27 +43,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOf(this Span<byte> span, int index, int count, byte value)
         {
-            int spanLength = span.Length;
-            if (index >= spanLength || count == 0)
-            {
-                return -1;
-            }
-
-            int length = Math.Min(count, spanLength - index);
-
-            var retVal = SpanExtensions.IndexOf(span.Slice(index, length), value);
-            return retVal == -1 ? retVal : index + retVal;
-
-            /*ref byte searchSpace = ref span.DangerousGetPinnableReference();
-            Unsafe.Add(ref searchSpace, index);
-
-            return IndexOf(ref searchSpace, value, index, count, span.Length);*/
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf2(this Span<byte> span, int index, int count, byte value)
-        {
-            return IndexOf(ref span.DangerousGetPinnableReference(), value, index, count, span.Length);
+            return IndexOfHelper(ref span.DangerousGetPinnableReference(), index, count, value, span.Length);
         }
 
         /// <summary>
@@ -76,39 +56,17 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOf(this ReadOnlySpan<byte> span, int index, int count, byte value)
         {
-            int spanLength = span.Length;
+            return IndexOfHelper(ref span.DangerousGetPinnableReference(), index, count, value, span.Length);
+        }
+
+        private static int IndexOfHelper(ref byte searchSpace, int index, int count, byte value, int spanLength)
+        {
             if (index >= spanLength || count == 0)
             {
                 return -1;
             }
 
-            int length = Math.Min(count, spanLength - index);
-
-            var retVal = SpanExtensions.IndexOf(span.Slice(index, length), value);
-            return retVal == -1 ? retVal : index + retVal;
-
-            /*ref byte searchSpace = ref span.DangerousGetPinnableReference();
-            Unsafe.Add(ref searchSpace, index);
-
-            return IndexOf(ref searchSpace, value, index, count, span.Length);*/
-        }
-
-        private static int IndexOf(ref byte searchSpace, byte value, int startIndex, int count, int spanLength)
-        {
-            Debug.Assert(count >= 0);
-            Debug.Assert(spanLength >= 0);
-            Debug.Assert(startIndex >= 0);
-
-            int index = startIndex;
-
-            if (startIndex >= spanLength || count == 0)
-            {
-                return -1;
-            }
-
-            int remainingLength = Math.Min(count, spanLength - startIndex);
-
-            Unsafe.Add(ref searchSpace, startIndex);
+            int remainingLength = Math.Min(count, spanLength - index);
 
             while (remainingLength >= 8)
             {
