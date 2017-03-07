@@ -68,7 +68,7 @@ namespace System.Slices.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        int result = bytes.IndexOf(250, 10, 255);
+                        int result = bytes.IndexOf(255, 250, 10);
                     }
                 }
             }

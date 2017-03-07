@@ -528,7 +528,7 @@ namespace System.Slices.Tests
             a[50] = 99;
             Span<byte> span = new Span<byte>(a);
 
-            int idx = span.IndexOf(45, 10, 99);
+            int idx = span.IndexOf(99, 45, 10);
             Assert.Equal(50, idx);
         }
 
@@ -540,12 +540,12 @@ namespace System.Slices.Tests
             a[50] = 99;
             Span<byte> span = new Span<byte>(a);
 
-            int idx = span.IndexOf(45, 75, 99);
+            int idx = span.IndexOf(99, 45, 75);
             Assert.Equal(50, idx);
         }
 
         [Fact]
-        public static void TestIndexOfComparison()
+        public static void TestIndexOfComparison_Byte()
         {
             byte[] a = new byte[1000];
 
@@ -555,7 +555,7 @@ namespace System.Slices.Tests
             }
 
             var bytes = new Span<byte>(a);
-            Assert.Equal(bytes.IndexOf(250, 10, 255) - 250, bytes.Slice(250, 10).IndexOf(255));
+            Assert.Equal(bytes.IndexOf(255, 250, 10) - 250, bytes.Slice(250, 10).IndexOf(255));
         }
 
         [Fact]
@@ -566,7 +566,7 @@ namespace System.Slices.Tests
             a[50] = 99;
             Span<byte> span = new Span<byte>(a);
 
-            int idx = span.IndexOf(0, 105, 99);
+            int idx = span.IndexOf(99, 0, 105);
             Assert.Equal(50, idx);
         }
 
@@ -578,7 +578,7 @@ namespace System.Slices.Tests
             a[50] = 99;
             Span<byte> span = new Span<byte>(a);
 
-            int idx = span.IndexOf(0, 105, 5);
+            int idx = span.IndexOf(5, 0, 105);
             Assert.Equal(-1, idx);
         }
 
@@ -590,7 +590,7 @@ namespace System.Slices.Tests
             a[50] = 99;
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
 
-            int idx = span.IndexOf(45, 3, 99);
+            int idx = span.IndexOf(99, 45, 3);
             Assert.Equal(-1, idx);
         }
 
@@ -601,7 +601,7 @@ namespace System.Slices.Tests
             byte[] a = new byte[length];
             a[50] = 99;
             Span<byte> span = new Span<byte>(a);
-            int idx = span.IndexOf(length + 1, 10, 99);
+            int idx = span.IndexOf(99, length + 1, 10);
             Assert.Equal(-1, idx);
         }
 
@@ -611,7 +611,7 @@ namespace System.Slices.Tests
             byte[] a = new byte[length];
             a[50] = 99;
             Span<byte> span = new Span<byte>(a);
-            int idx = span.IndexOf(0, 0, 99);
+            int idx = span.IndexOf(99, 0, 0);
             Assert.Equal(-1, idx);
         }
         #endregion
@@ -625,7 +625,7 @@ namespace System.Slices.Tests
             a[50] = 99;
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
 
-            int idx = span.IndexOf(45, 10, 99);
+            int idx = span.IndexOf(99, 45, 10);
             Assert.Equal(50, idx);
         }
 
@@ -637,8 +637,22 @@ namespace System.Slices.Tests
             a[50] = 99;
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
 
-            int idx = span.IndexOf(45, 75, 99);
+            int idx = span.IndexOf(99, 45, 75);
             Assert.Equal(50, idx);
+        }
+
+        [Fact]
+        public static void TestIndexOfComparisonReadOnly_Byte()
+        {
+            byte[] a = new byte[1000];
+
+            for (int i = 0; i < a.Length; i++)
+            {
+                a[i] = (byte)(i + 1);
+            }
+
+            var bytes = new ReadOnlySpan<byte>(a);
+            Assert.Equal(bytes.IndexOf(255, 250, 10) - 250, bytes.Slice(250, 10).IndexOf(255));
         }
 
         [Fact]
@@ -649,7 +663,7 @@ namespace System.Slices.Tests
             a[50] = 99;
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
 
-            int idx = span.IndexOf(0, 105, 99);
+            int idx = span.IndexOf(99, 0, 105);
             Assert.Equal(50, idx);
         }
 
@@ -661,7 +675,7 @@ namespace System.Slices.Tests
             a[50] = 99;
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
 
-            int idx = span.IndexOf(0, 105, 5);
+            int idx = span.IndexOf(5, 0, 105);
             Assert.Equal(-1, idx);
         }
 
@@ -673,7 +687,7 @@ namespace System.Slices.Tests
             a[50] = 99;
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
 
-            int idx = span.IndexOf(45, 3, 99);
+            int idx = span.IndexOf(99, 45, 3);
             Assert.Equal(-1, idx);
         }
 
@@ -684,7 +698,7 @@ namespace System.Slices.Tests
             byte[] a = new byte[length];
             a[50] = 99;
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
-            int idx = span.IndexOf(length + 1, 10, 99);
+            int idx = span.IndexOf(99, length + 1, 10);
             Assert.Equal(-1, idx);
         }
 
@@ -694,7 +708,7 @@ namespace System.Slices.Tests
             byte[] a = new byte[length];
             a[50] = 99;
             ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
-            int idx = span.IndexOf(0, 0, 99);
+            int idx = span.IndexOf(99, 0, 0);
             Assert.Equal(-1, idx);
         }
         #endregion

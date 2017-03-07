@@ -41,7 +41,7 @@ namespace System
         /// <param name="count">The number of bytes to search starting from the index.</param>
         /// <param name="value">The value to search for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf(this Span<byte> span, int index, int count, byte value)
+        public static int IndexOf(this Span<byte> span, byte value, int index, int count)
         {
             return IndexOfHelper(ref span.DangerousGetPinnableReference(), index, count, value, span.Length);
         }
@@ -54,7 +54,7 @@ namespace System
         /// <param name="count">The number of bytes to search starting from the index.</param>
         /// <param name="value">The value to search for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf(this ReadOnlySpan<byte> span, int index, int count, byte value)
+        public static int IndexOf(this ReadOnlySpan<byte> span, byte value, int index, int count)
         {
             return IndexOfHelper(ref span.DangerousGetPinnableReference(), index, count, value, span.Length);
         }
