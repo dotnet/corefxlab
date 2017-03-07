@@ -163,7 +163,7 @@ namespace System.Slices.Tests
                                        ReferenceCountingMethod.ReferenceCounter));
 
 
-        [MemberData(nameof(ReservationPerformanceData))]
+        /*[MemberData(nameof(ReservationPerformanceData))]
         [Benchmark]
         public void ReservationPerformance(int number, int size, int threads, ReferenceCountingMethod m)
         {
@@ -205,7 +205,7 @@ namespace System.Slices.Tests
             });
 
             ReferenceCountingSettings.OwnedMemory = o;
-        }
+        }*/
 
         [Fact]
         public unsafe void ReferenceCounting()

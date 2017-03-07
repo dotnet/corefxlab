@@ -106,22 +106,11 @@ namespace System
         {
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool StartsWith(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
         {
-            if (value.Length > str.Length)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < value.Length; i++)
-            {
-                if (str[i] != value[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            int length = value.Length;
+            return str.Length >= length && (length == 0 || str.Slice(0, length).SequenceEqual(value));
         }
     }
 }
