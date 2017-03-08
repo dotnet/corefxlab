@@ -136,7 +136,11 @@ namespace System.IO.Pipelines
             var segment = _writingHead;
             if (segment == null)
             {
-                segment = AllocateWriteHead(count);
+                // Changing commit head shared with Reader
+                lock (_sync)
+                {
+                    segment = AllocateWriteHead(count);
+                }
             }
 
             var bytesLeftInBuffer = segment.WritableBytes;
@@ -157,38 +161,34 @@ namespace System.IO.Pipelines
         {
             BufferSegment segment = null;
 
-            // Changing commit head shared with Reader
-            lock (_sync)
+            if (_commitHead != null && !_commitHead.ReadOnly)
             {
-                if (_commitHead != null && !_commitHead.ReadOnly)
-                {
-                    // Try to return the tail so the calling code can append to it
-                    int remaining = _commitHead.WritableBytes;
+                // Try to return the tail so the calling code can append to it
+                int remaining = _commitHead.WritableBytes;
 
-                    if (count <= remaining)
-                    {
-                        // Free tail space of the right amount, use that
-                        segment = _commitHead;
-                    }
+                if (count <= remaining)
+                {
+                    // Free tail space of the right amount, use that
+                    segment = _commitHead;
                 }
+            }
 
-                if (segment == null)
-                {
-                    // No free tail space, allocate a new segment
-                    segment = new BufferSegment(_pool.Lease(count));
-                }
+            if (segment == null)
+            {
+                // No free tail space, allocate a new segment
+                segment = new BufferSegment(_pool.Lease(count));
+            }
 
-                if (_commitHead == null)
-                {
-                    // No previous writes have occurred
-                    _commitHead = segment;
-                }
-                else if (segment != _commitHead && _commitHead.Next == null)
-                {
-                    // Append the segment to the commit head if writes have been committed
-                    // and it isn't the same segment (unused tail space)
-                    _commitHead.Next = segment;
-                }
+            if (_commitHead == null)
+            {
+                // No previous writes have occurred
+                _commitHead = segment;
+            }
+            else if (segment != _commitHead && _commitHead.Next == null)
+            {
+                // Append the segment to the commit head if writes have been committed
+                // and it isn't the same segment (unused tail space)
+                _commitHead.Next = segment;
             }
 
             // Set write head to assigned segment
