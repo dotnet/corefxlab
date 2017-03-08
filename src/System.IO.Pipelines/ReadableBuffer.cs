@@ -56,7 +56,7 @@ namespace System.IO.Pipelines
         {
             _start = start;
             _end = end;
-            _length = start.GetLength(_end);
+            _length = start.GetLength(end);
 
         }
 
