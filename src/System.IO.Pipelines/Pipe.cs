@@ -404,7 +404,7 @@ namespace System.IO.Pipelines
             int consumedBytes = 0;
             if (!consumed.IsDefault)
             {
-                consumedBytes = ReadCursor.GetLength(_readHead, _readHead.Start, consumed.Segment, consumed.Index);
+                consumedBytes = new ReadCursor(_readHead).GetLength(consumed);
 
                 returnStart = _readHead;
                 returnEnd = consumed.Segment;

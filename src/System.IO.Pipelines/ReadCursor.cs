@@ -55,6 +55,7 @@ namespace System.IO.Pipelines
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private bool IsEndMultiSegment()
         {
             var segment = _segment.Next;
@@ -69,27 +70,35 @@ namespace System.IO.Pipelines
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal int GetLength(ReadCursor end)
         {
             if (IsDefault)
             {
                 return 0;
             }
-            return GetLength(_segment, _index, end._segment, end._index);
+
+            if (_segment == end._segment)
+            {
+                return end.Index - _index;
+            }
+
+            return GetLengthMultiSegment(end);
         }
 
-        internal static int GetLength(BufferSegment start, int startIndex, BufferSegment end, int endIndex)
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private int GetLengthMultiSegment(ReadCursor end)
         {
-            var segment = start;
-            var index = startIndex;
+            var segment = _segment;
+            var index = _index;
             var length = 0;
             checked
             {
                 while (true)
                 {
-                    if (segment == end)
+                    if (segment == end._segment)
                     {
-                        return length + endIndex - index;
+                        return length + end._index - index;
                     }
                     else if (segment.Next == null)
                     {
@@ -105,6 +114,7 @@ namespace System.IO.Pipelines
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal ReadCursor Seek(int bytes, ReadCursor end, bool checkEndReachable = true)
         {
             if (IsEnd)
