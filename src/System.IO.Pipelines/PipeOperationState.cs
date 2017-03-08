@@ -1,42 +1,48 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace System.IO.Pipelines
 {
     internal struct PipeOperationState
     {
-        private int _state;
+        private bool _active;
 #if OPERATION_LOCATION_TRACKING
         private string _operationStartLocation;
 #endif
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Begin(ExceptionResource exception)
         {
-            var success =  Interlocked.Exchange(ref _state, State.Active) == State.NotActive;
-            if (!success)
+            if (_active)
             {
                 ThrowHelper.ThrowInvalidOperationException(exception, Location);
             }
+
+            _active = true;
+
 #if OPERATION_LOCATION_TRACKING
             _operationStartLocation = Environment.StackTrace;
 #endif
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void End(ExceptionResource exception)
         {
-            var success = Interlocked.Exchange(ref _state, State.NotActive) == State.Active;
-            if (!success)
+            if (!_active)
             {
                 ThrowHelper.ThrowInvalidOperationException(exception, Location);
             }
+
+            _active = false;
 #if OPERATION_LOCATION_TRACKING
             _operationStartLocation = null;
 #endif
         }
 
-        public bool IsActive => _state == State.Active;
+        public bool IsActive => _active;
 
         public string Location
         {
@@ -53,12 +59,6 @@ namespace System.IO.Pipelines
         public override string ToString()
         {
             return $"{nameof(IsActive)}: {IsActive}";
-        }
-
-        private static class State
-        {
-            public static int NotActive = 0;
-            public static int Active = 1;
         }
     }
 }

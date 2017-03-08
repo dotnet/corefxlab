@@ -9,14 +9,14 @@ namespace System.IO.Pipelines.Performance.Tests
     {
         public static void Main(string[] args)
         {
-            var options = (uint[]) Enum.GetValues(typeof(BenchmarkType));
+            var options = (uint[])Enum.GetValues(typeof(BenchmarkType));
             BenchmarkType type;
             if (args.Length != 1 || !Enum.TryParse(args[0], out type))
             {
                 Console.WriteLine($"Please add benchmark to run as parameter:");
                 for (var i = 0; i < options.Length; i++)
                 {
-                    Console.WriteLine($"  {((BenchmarkType) options[i]).ToString()}");
+                    Console.WriteLine($"  {((BenchmarkType)options[i]).ToString()}");
                 }
 
                 return;
@@ -31,7 +31,7 @@ namespace System.IO.Pipelines.Performance.Tests
             {
                 BenchmarkRunner.Run<Enumerators>();
             }
-            if (type.HasFlag(BenchmarkType.Throughtput))
+            if (type.HasFlag(BenchmarkType.Throughput))
             {
                 BenchmarkRunner.Run<PipeThroughput>();
             }
@@ -46,7 +46,7 @@ namespace System.IO.Pipelines.Performance.Tests
     public enum BenchmarkType : uint
     {
         Enumerators = 1,
-        Throughtput = 2,
+        Throughput = 2,
         ReadCursorOperations = 4,
         All = uint.MaxValue
     }

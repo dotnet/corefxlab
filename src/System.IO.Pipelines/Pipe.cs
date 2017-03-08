@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.Threading;
 
 namespace System.IO.Pipelines
 {
@@ -107,24 +106,27 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
             }
 
-            // CompareExchange not required as its setting to current value if test fails
-            _writingState.Begin(ExceptionResource.AlreadyWriting);
-
-            if (minimumSize > 0)
+            lock (_sync)
             {
-                try
+                // CompareExchange not required as its setting to current value if test fails
+                _writingState.Begin(ExceptionResource.AlreadyWriting);
+
+                if (minimumSize > 0)
                 {
-                    AllocateWriteHead(minimumSize);
+                    try
+                    {
+                        AllocateWriteHeadUnsynchronized(minimumSize);
+                    }
+                    catch (Exception)
+                    {
+                        // Reset producing state if allocation failed
+                        _writingState.End(ExceptionResource.NoWriteToComplete);
+                        throw;
+                    }
                 }
-                catch (Exception)
-                {
-                    // Reset producing state if allocation failed
-                    _writingState.End(ExceptionResource.NoWriteToComplete);
-                    throw;
-                }
+                _currentWriteLength = 0;
+                return new WritableBuffer(this);
             }
-            _currentWriteLength = 0;
-            return new WritableBuffer(this);
         }
 
         internal void Ensure(int count = 1)
@@ -134,7 +136,11 @@ namespace System.IO.Pipelines
             var segment = _writingHead;
             if (segment == null)
             {
-                segment = AllocateWriteHead(count);
+                // Changing commit head shared with Reader
+                lock (_sync)
+                {
+                    segment = AllocateWriteHeadUnsynchronized(count);
+                }
             }
 
             var bytesLeftInBuffer = segment.WritableBytes;
@@ -151,42 +157,38 @@ namespace System.IO.Pipelines
             }
         }
 
-        private BufferSegment AllocateWriteHead(int count)
+        private BufferSegment AllocateWriteHeadUnsynchronized(int count)
         {
             BufferSegment segment = null;
 
-            // Changing commit head shared with Reader
-            lock (_sync)
+            if (_commitHead != null && !_commitHead.ReadOnly)
             {
-                if (_commitHead != null && !_commitHead.ReadOnly)
-                {
-                    // Try to return the tail so the calling code can append to it
-                    int remaining = _commitHead.WritableBytes;
+                // Try to return the tail so the calling code can append to it
+                int remaining = _commitHead.WritableBytes;
 
-                    if (count <= remaining)
-                    {
-                        // Free tail space of the right amount, use that
-                        segment = _commitHead;
-                    }
+                if (count <= remaining)
+                {
+                    // Free tail space of the right amount, use that
+                    segment = _commitHead;
                 }
+            }
 
-                if (segment == null)
-                {
-                    // No free tail space, allocate a new segment
-                    segment = new BufferSegment(_pool.Lease(count));
-                }
+            if (segment == null)
+            {
+                // No free tail space, allocate a new segment
+                segment = new BufferSegment(_pool.Lease(count));
+            }
 
-                if (_commitHead == null)
-                {
-                    // No previous writes have occurred
-                    _commitHead = segment;
-                }
-                else if (segment != _commitHead && _commitHead.Next == null)
-                {
-                    // Append the segment to the commit head if writes have been committed
-                    // and it isn't the same segment (unused tail space)
-                    _commitHead.Next = segment;
-                }
+            if (_commitHead == null)
+            {
+                // No previous writes have occurred
+                _commitHead = segment;
+            }
+            else if (segment != _commitHead && _commitHead.Next == null)
+            {
+                // Append the segment to the commit head if writes have been committed
+                // and it isn't the same segment (unused tail space)
+                _commitHead.Next = segment;
             }
 
             // Set write head to assigned segment
@@ -247,7 +249,15 @@ namespace System.IO.Pipelines
 
         internal void Commit()
         {
-            // CompareExchange not required as its setting to current value if test fails
+            // Changing commit head shared with Reader
+            lock (_sync)
+            {
+                CommitUnsynchronized();
+            }
+        }
+
+        internal void CommitUnsynchronized()
+        {
             _writingState.End(ExceptionResource.NoWriteToComplete);
 
             if (_writingHead == null)
@@ -256,30 +266,25 @@ namespace System.IO.Pipelines
                 return;
             }
 
-            // Changing commit head shared with Reader
-            lock (_sync)
+            if (_readHead == null)
             {
-                if (_readHead == null)
-                {
-                    // Update the head to point to the head of the buffer.
-                    // This happens if we called alloc(0) then write
-                    _readHead = _commitHead;
-                }
-
-                // Always move the commit head to the write head
-                _commitHead = _writingHead;
-                _commitHeadIndex = _writingHead.End;
-                _length += _currentWriteLength;
-
-                // Do not reset if reader is complete
-                if (_maximumSizeHigh > 0 &&
-                    _length >= _maximumSizeHigh &&
-                    !_readerCompletion.IsCompleted)
-                {
-                    _writerAwaitable.Reset();
-                }
+                // Update the head to point to the head of the buffer.
+                // This happens if we called alloc(0) then write
+                _readHead = _commitHead;
             }
 
+            // Always move the commit head to the write head
+            _commitHead = _writingHead;
+            _commitHeadIndex = _writingHead.End;
+            _length += _currentWriteLength;
+
+            // Do not reset if reader is complete
+            if (_maximumSizeHigh > 0 &&
+                _length >= _maximumSizeHigh &&
+                !_readerCompletion.IsCompleted)
+            {
+                _writerAwaitable.Reset();
+            }
             // Clear the writing state
             _writingHead = null;
         }
@@ -310,15 +315,15 @@ namespace System.IO.Pipelines
 
         internal WritableBufferAwaitable FlushAsync()
         {
-            if (_writingState.IsActive)
-            {
-                // Commit the data as not already committed
-                Commit();
-            }
-
             Action awaitable;
             lock (_sync)
             {
+                if (_writingState.IsActive)
+                {
+                    // Commit the data as not already committed
+                    CommitUnsynchronized();
+                }
+
                 awaitable = _readerAwaitable.Complete();
             }
 
@@ -341,29 +346,6 @@ namespace System.IO.Pipelines
             }
 
             return new ReadableBuffer(readStart, new ReadCursor(_writingHead, _writingHead.End));
-        }
-
-        private ReadableBuffer Read()
-        {
-            _readingState.Begin(ExceptionResource.AlreadyReading);
-
-            ReadCursor readEnd;
-            // No need to read end if there is no head
-            var head = _readHead;
-            if (head == null)
-            {
-                readEnd = new ReadCursor(null);
-            }
-            else
-            {
-                // Reading commit head shared with writer
-                lock (_sync)
-                {
-                    readEnd = new ReadCursor(_commitHead, _commitHeadIndex);
-                }
-            }
-
-            return new ReadableBuffer(new ReadCursor(head), readEnd);
         }
 
         /// <summary>
@@ -404,7 +386,7 @@ namespace System.IO.Pipelines
             int consumedBytes = 0;
             if (!consumed.IsDefault)
             {
-                consumedBytes = ReadCursor.GetLength(_readHead, _readHead.Start, consumed.Segment, consumed.Index);
+                consumedBytes = new ReadCursor(_readHead).GetLength(consumed);
 
                 returnStart = _readHead;
                 returnEnd = consumed.Segment;
@@ -432,6 +414,8 @@ namespace System.IO.Pipelines
                 {
                     _readerAwaitable.Reset();
                 }
+
+                _readingState.End(ExceptionResource.NoReadToComplete);
             }
 
             while (returnStart != null && returnStart != returnEnd)
@@ -440,9 +424,6 @@ namespace System.IO.Pipelines
                 returnStart = returnStart.Next;
                 returnSegment.Dispose();
             }
-
-            // CompareExchange not required as its setting to current value if test fails
-            _readingState.End(ExceptionResource.NoReadToComplete);
 
             TrySchedule(_writerScheduler, continuation);
         }
@@ -566,7 +547,29 @@ namespace System.IO.Pipelines
                 ref _writerCompletion,
                 out bool isCancelled,
                 out bool isCompleted);
-            return new ReadResult(Read(), isCancelled, isCompleted);
+
+            ReadableBuffer buffer;
+            lock (_sync)
+            {
+                ReadCursor readEnd;
+                // No need to read end if there is no head
+                var head = _readHead;
+                if (head == null)
+                {
+                    readEnd = new ReadCursor(null);
+                }
+                else
+                {
+                    // Reading commit head shared with writer
+                    readEnd = new ReadCursor(_commitHead, _commitHeadIndex);
+                }
+
+                _readingState.Begin(ExceptionResource.AlreadyReading);
+
+                buffer = new ReadableBuffer(new ReadCursor(head), readEnd);
+            }
+
+            return new ReadResult(buffer, isCancelled, isCompleted);
         }
 
         // IWritableBufferAwaiter members
