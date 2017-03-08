@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.Threading;
 
 namespace System.IO.Pipelines
 {
@@ -345,31 +344,6 @@ namespace System.IO.Pipelines
             return new ReadableBuffer(readStart, new ReadCursor(_writingHead, _writingHead.End));
         }
 
-        private ReadableBuffer Read()
-        {
-            lock (_sync)
-            {
-                ReadCursor readEnd;
-                // No need to read end if there is no head
-                var head = _readHead;
-                if (head == null)
-                {
-                    readEnd = new ReadCursor(null);
-                }
-                else
-                {
-                    // Reading commit head shared with writer
-
-                    readEnd = new ReadCursor(_commitHead, _commitHeadIndex);
-
-                }
-
-                _readingState.Begin(ExceptionResource.AlreadyReading);
-
-                return new ReadableBuffer(new ReadCursor(head), readEnd);
-            }
-        }
-
         /// <summary>
         /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>
@@ -569,7 +543,31 @@ namespace System.IO.Pipelines
                 ref _writerCompletion,
                 out bool isCancelled,
                 out bool isCompleted);
-            return new ReadResult(Read(), isCancelled, isCompleted);
+
+            ReadableBuffer buffer;
+            lock (_sync)
+            {
+                ReadCursor readEnd;
+                // No need to read end if there is no head
+                var head = _readHead;
+                if (head == null)
+                {
+                    readEnd = new ReadCursor(null);
+                }
+                else
+                {
+                    // Reading commit head shared with writer
+
+                    readEnd = new ReadCursor(_commitHead, _commitHeadIndex);
+
+                }
+
+                _readingState.Begin(ExceptionResource.AlreadyReading);
+
+                buffer = new ReadableBuffer(new ReadCursor(head), readEnd);
+            }
+
+            return new ReadResult(buffer, isCancelled, isCompleted);
         }
 
         // IWritableBufferAwaiter members
