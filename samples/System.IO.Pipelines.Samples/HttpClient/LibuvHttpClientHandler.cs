@@ -161,15 +161,12 @@ namespace System.IO.Pipelines.Samples
                             responseBuffer = responseBuffer.Slice(1);
                             if (responseBuffer.Length == 0)
                             {
-                                ch = responseBuffer.First.Span[0];
-                            }
-                            responseBuffer = responseBuffer.Slice(1);
-
-                            if (ch == -1)
-                            {
                                 break;
                             }
-                            else if (ch == '\n')
+                            ch = responseBuffer.First.Span[0];
+                            responseBuffer = responseBuffer.Slice(1);
+
+                            if (ch == '\n')
                             {
                                 consumed = responseBuffer.Start;
                                 needMoreData = false;
