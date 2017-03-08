@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    public static class TrySliceToExtensions
+    public static class ReadableBufferExtensionsExtensions
     {
         private static readonly int VectorWidth = Vector<byte>.Count;
 
@@ -202,6 +202,53 @@ namespace System.IO.Pipelines
             // Vector<byte> .ctor is a bit fussy to get working; however this always seems to work
             // https://github.com/dotnet/coreclr/issues/7459#issuecomment-253965670
             return Vector.AsVectorByte(new Vector<ulong>(vectorByte * 0x0101010101010101ul));
+        }
+
+
+        /// <summary>
+        /// Checks to see if the <see cref="ReadableBuffer"/> starts with the specified <see cref="Span{Byte}"/>.
+        /// </summary>
+        /// <param name="value">The <see cref="Span{Byte}"/> to compare to</param>
+        /// <returns>True if the bytes StartsWith, false if not</returns>
+        public static bool StartsWith(this ReadableBuffer buffer, Span<byte> value)
+        {
+            if (buffer.Length < value.Length)
+            {
+                // just nope
+                return false;
+            }
+
+            return buffer.Slice(0, value.Length).Equals(value);
+        }
+
+        /// <summary>
+        /// Checks to see if the <see cref="ReadableBuffer"/> is Equal to the specified <see cref="Span{Byte}"/>.
+        /// </summary>
+        /// <param name="value">The <see cref="Span{Byte}"/> to compare to</param>
+        /// <returns>True if the bytes are equal, false if not</returns>
+        public static bool Equals(this ReadableBuffer buffer,  Span<byte> value)
+        {
+            if (value.Length != buffer.Length)
+            {
+                return false;
+            }
+
+            if (buffer.IsSingleSpan)
+            {
+                return buffer.First.Span.BlockEquals(value);
+            }
+
+            foreach (var memory in buffer)
+            {
+                var compare = value.Slice(0, memory.Length);
+                if (!memory.Span.BlockEquals(compare))
+                {
+                    return false;
+                }
+
+                value = value.Slice(memory.Length);
+            }
+            return true;
         }
     }
 }
