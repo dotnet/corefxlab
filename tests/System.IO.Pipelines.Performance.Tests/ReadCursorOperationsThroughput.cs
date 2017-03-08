@@ -116,9 +116,17 @@ namespace System.IO.Pipelines.Performance.Tests
             while (!reader.End)
             {
                 var span = reader.Span;
+
+                // Trim the start if we have an index
+                if (reader.Index > 0)
+                {
+                    span = span.Slice(reader.Index);
+                }
+
                 while (span.Length > 0)
                 {
                     var length = span.IndexOfVectorized((byte)'\n');
+                    var skip = length;
 
                     if (length == -1)
                     {
@@ -131,14 +139,16 @@ namespace System.IO.Pipelines.Performance.Tests
                         }
 
                         length = span.Length;
+                        skip = buffer.Slice(current, found).Length + 1;
                     }
                     else
                     {
                         length += 1;
+                        skip = length;
                     }
 
                     span = span.Slice(length);
-                    reader.Skip(length);
+                    reader.Skip(skip);
                 }
             }
         }
