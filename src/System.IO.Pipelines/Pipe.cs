@@ -107,24 +107,27 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
             }
 
-            // CompareExchange not required as its setting to current value if test fails
-            _writingState.Begin(ExceptionResource.AlreadyWriting);
-
-            if (minimumSize > 0)
+            lock (_sync)
             {
-                try
+                // CompareExchange not required as its setting to current value if test fails
+                _writingState.Begin(ExceptionResource.AlreadyWriting);
+
+                if (minimumSize > 0)
                 {
-                    AllocateWriteHead(minimumSize);
+                    try
+                    {
+                        AllocateWriteHead(minimumSize);
+                    }
+                    catch (Exception)
+                    {
+                        // Reset producing state if allocation failed
+                        _writingState.End(ExceptionResource.NoWriteToComplete);
+                        throw;
+                    }
                 }
-                catch (Exception)
-                {
-                    // Reset producing state if allocation failed
-                    _writingState.End(ExceptionResource.NoWriteToComplete);
-                    throw;
-                }
+                _currentWriteLength = 0;
+                return new WritableBuffer(this);
             }
-            _currentWriteLength = 0;
-            return new WritableBuffer(this);
         }
 
         internal void Ensure(int count = 1)
