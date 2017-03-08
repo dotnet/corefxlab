@@ -55,7 +55,7 @@ namespace System.IO.Pipelines.Testing
 
         public static ReadableBuffer CreateBuffer(params string[] inputs)
         {
-            return CreateBuffer(inputs.Select(i => Encoding.ASCII.GetBytes(i)).ToArray());
+            return CreateBuffer(inputs.Select(i => Encoding.UTF8.GetBytes(i)).ToArray());
         }
 
         public static ReadableBuffer CreateBuffer(params int[] inputs)
