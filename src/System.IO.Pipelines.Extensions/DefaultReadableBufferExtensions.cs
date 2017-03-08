@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    public static class ReadableBufferExtensionsExtensions
+    public static class DefaultReadableBufferExtensions
     {
         private static readonly int VectorWidth = Vector<byte>.Count;
 
@@ -218,7 +218,7 @@ namespace System.IO.Pipelines
                 return false;
             }
 
-            return buffer.Slice(0, value.Length).Equals(value);
+            return buffer.Slice(0, value.Length).EqualsTo(value);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="value">The <see cref="Span{Byte}"/> to compare to</param>
         /// <returns>True if the bytes are equal, false if not</returns>
-        public static bool Equals(this ReadableBuffer buffer,  Span<byte> value)
+        public static bool EqualsTo(this ReadableBuffer buffer, Span<byte> value)
         {
             if (value.Length != buffer.Length)
             {

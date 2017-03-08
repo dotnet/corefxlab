@@ -33,9 +33,6 @@ namespace System.IO.Pipelines
         /// </summary>
         public bool IsSingleSpan => _start.Segment == _end.Segment;
 
-        /// <summary>
-        /// The first <see cref="Memory{Byte}"/> in the <see cref="ReadableBuffer"/>.
-        /// </summary>
         public Memory<byte> First
         {
             get
@@ -44,7 +41,7 @@ namespace System.IO.Pipelines
                 return first;
             }
         }
-
+        
         /// <summary>
         /// A cursor to the start of the <see cref="ReadableBuffer"/>.
         /// </summary>
@@ -152,21 +149,6 @@ namespace System.IO.Pipelines
 
             var begin = _start.Seek(start, _end, false);
             return new ReadableBuffer(begin, _end);
-        }
-
-        /// <summary>
-        /// Returns the first byte in the <see cref="ReadableBuffer"/>.
-        /// </summary>
-        /// <returns>-1 if the buffer is empty, the first byte otherwise.</returns>
-        public int Peek()
-        {
-            if (IsEmpty)
-            {
-                return -1;
-            }
-
-            var span = First.Span;
-            return span[0];
         }
 
         /// <summary>

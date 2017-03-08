@@ -134,7 +134,7 @@ namespace System.IO.Pipelines.Samples.Http
                 return false;
             }
 
-            return key.Equals(buffer);
+            return key.EqualsTo(buffer);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -147,18 +147,22 @@ namespace System.IO.Pipelines.Samples
 
                     while (!responseBuffer.IsEmpty)
                     {
-                        var ch = responseBuffer.Peek();
-
-                        if (ch == -1)
+                        if (responseBuffer.Length == 0)
                         {
                             break;
                         }
+
+                        var first = responseBuffer.First.Span;
+                        int ch = first[0];
 
                         if (ch == '\r')
                         {
                             // Check for final CRLF.
                             responseBuffer = responseBuffer.Slice(1);
-                            ch = responseBuffer.Peek();
+                            if (responseBuffer.Length == 0)
+                            {
+                                ch = responseBuffer.First.Span[0];
+                            }
                             responseBuffer = responseBuffer.Slice(1);
 
                             if (ch == -1)
