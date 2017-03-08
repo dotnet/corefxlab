@@ -247,18 +247,17 @@ namespace System.IO.Pipelines
 
         internal void Commit()
         {
-            // CompareExchange not required as its setting to current value if test fails
-            _writingState.End(ExceptionResource.NoWriteToComplete);
-
-            if (_writingHead == null)
-            {
-                // Nothing written to commit
-                return;
-            }
-
             // Changing commit head shared with Reader
             lock (_sync)
             {
+                _writingState.End(ExceptionResource.NoWriteToComplete);
+
+                if (_writingHead == null)
+                {
+                    // Nothing written to commit
+                    return;
+                }
+
                 if (_readHead == null)
                 {
                     // Update the head to point to the head of the buffer.
@@ -345,25 +344,27 @@ namespace System.IO.Pipelines
 
         private ReadableBuffer Read()
         {
-            _readingState.Begin(ExceptionResource.AlreadyReading);
-
-            ReadCursor readEnd;
-            // No need to read end if there is no head
-            var head = _readHead;
-            if (head == null)
+            lock (_sync)
             {
-                readEnd = new ReadCursor(null);
-            }
-            else
-            {
-                // Reading commit head shared with writer
-                lock (_sync)
+                ReadCursor readEnd;
+                // No need to read end if there is no head
+                var head = _readHead;
+                if (head == null)
                 {
-                    readEnd = new ReadCursor(_commitHead, _commitHeadIndex);
+                    readEnd = new ReadCursor(null);
                 }
-            }
+                else
+                {
+                    // Reading commit head shared with writer
 
-            return new ReadableBuffer(new ReadCursor(head), readEnd);
+                    readEnd = new ReadCursor(_commitHead, _commitHeadIndex);
+
+                }
+
+                _readingState.Begin(ExceptionResource.AlreadyReading);
+
+                return new ReadableBuffer(new ReadCursor(head), readEnd);
+            }
         }
 
         /// <summary>
@@ -432,6 +433,8 @@ namespace System.IO.Pipelines
                 {
                     _readerAwaitable.Reset();
                 }
+
+                _readingState.End(ExceptionResource.NoReadToComplete);
             }
 
             while (returnStart != null && returnStart != returnEnd)
@@ -440,9 +443,6 @@ namespace System.IO.Pipelines
                 returnStart = returnStart.Next;
                 returnSegment.Dispose();
             }
-
-            // CompareExchange not required as its setting to current value if test fails
-            _readingState.End(ExceptionResource.NoReadToComplete);
 
             TrySchedule(_writerScheduler, continuation);
         }
