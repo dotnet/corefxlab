@@ -201,7 +201,7 @@ namespace System.IO.Pipelines.Tests
                     }
                     else
                     {
-                        havePong = inputBuffer.Equals(_ping);
+                        havePong = inputBuffer.EqualsTo(_ping);
                         if (havePong)
                         {
                             count++;
@@ -247,7 +247,7 @@ namespace System.IO.Pipelines.Tests
                 }
                 else
                 {
-                    bool isPing = inputBuffer.Equals(_ping);
+                    bool isPing = inputBuffer.EqualsTo(_ping);
                     if (isPing)
                     {
                         await connection.Output.WriteAsync(_pong);

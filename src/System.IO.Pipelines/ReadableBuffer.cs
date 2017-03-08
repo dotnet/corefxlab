@@ -3,8 +3,6 @@
 
 using System.Buffers;
 using System.Collections.Sequences;
-using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -14,8 +12,6 @@ namespace System.IO.Pipelines
     /// </summary>
     public struct ReadableBuffer : ISequence<ReadOnlyMemory<byte>>
     {
-        private Memory<byte> _first;
-
         private ReadCursor _start;
         private ReadCursor _end;
         private int _length;
@@ -23,25 +19,29 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Length of the <see cref="ReadableBuffer"/> in bytes.
         /// </summary>
-        public int Length => _length >= 0 ? _length : GetLength();
+        public int Length => _length;
 
         int? ISequence<ReadOnlyMemory<byte>>.Length => Length;
 
         /// <summary>
         /// Determines if the <see cref="ReadableBuffer"/> is empty.
         /// </summary>
-        public bool IsEmpty => _first.IsEmpty && Length == 0;
+        public bool IsEmpty => _length == 0;
 
         /// <summary>
         /// Determins if the <see cref="ReadableBuffer"/> is a single <see cref="Memory{Byte}"/>.
         /// </summary>
         public bool IsSingleSpan => _start.Segment == _end.Segment;
 
-        /// <summary>
-        /// The first <see cref="Memory{Byte}"/> in the <see cref="ReadableBuffer"/>.
-        /// </summary>
-        public Memory<byte> First => _first;
-
+        public Memory<byte> First
+        {
+            get
+            {
+                _start.TryGetBuffer(_end, out Memory<byte> first);
+                return first;
+            }
+        }
+        
         /// <summary>
         /// A cursor to the start of the <see cref="ReadableBuffer"/>.
         /// </summary>
@@ -56,8 +56,8 @@ namespace System.IO.Pipelines
         {
             _start = start;
             _end = end;
-            start.TryGetBuffer(end, out _first);
-            _length = -1;
+            _length = start.GetLength(end);
+
         }
 
         private ReadableBuffer(ref ReadableBuffer buffer)
@@ -75,8 +75,6 @@ namespace System.IO.Pipelines
             _end = end;
 
             _length = buffer._length;
-
-            begin.TryGetBuffer(end, out _first);
         }
 
         /// <summary>
@@ -154,21 +152,6 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// Returns the first byte in the <see cref="ReadableBuffer"/>.
-        /// </summary>
-        /// <returns>-1 if the buffer is empty, the first byte otherwise.</returns>
-        public int Peek()
-        {
-            if (IsEmpty)
-            {
-                return -1;
-            }
-
-            var span = First.Span;
-            return span[0];
-        }
-
-        /// <summary>
         /// This transfers ownership of the buffer from the <see cref="IPipeReader"/> to the caller of this method. Preserved buffers must be disposed to avoid
         /// memory leaks.
         /// </summary>
@@ -206,14 +189,6 @@ namespace System.IO.Pipelines
             return buffer;
         }
 
-        private int GetLength()
-        {
-            var begin = _start;
-            var length = begin.GetLength(_end);
-            _length = length;
-            return length;
-        }
-
         /// <summary>
         ///
         /// </summary>
@@ -234,52 +209,6 @@ namespace System.IO.Pipelines
         public MemoryEnumerator GetEnumerator()
         {
             return new MemoryEnumerator(_start, _end);
-        }
-
-        /// <summary>
-        /// Checks to see if the <see cref="ReadableBuffer"/> starts with the specified <see cref="Span{Byte}"/>.
-        /// </summary>
-        /// <param name="value">The <see cref="Span{Byte}"/> to compare to</param>
-        /// <returns>True if the bytes StartsWith, false if not</returns>
-        public bool StartsWith(Span<byte> value)
-        {
-            if (Length < value.Length)
-            {
-                // just nope
-                return false;
-            }
-
-            return Slice(0, value.Length).Equals(value);
-        }
-
-        /// <summary>
-        /// Checks to see if the <see cref="ReadableBuffer"/> is Equal to the specified <see cref="Span{Byte}"/>.
-        /// </summary>
-        /// <param name="value">The <see cref="Span{Byte}"/> to compare to</param>
-        /// <returns>True if the bytes are equal, false if not</returns>
-        public bool Equals(Span<byte> value)
-        {
-            if (value.Length != Length)
-            {
-                return false;
-            }
-
-            if (IsSingleSpan)
-            {
-                return First.Span.BlockEquals(value);
-            }
-
-            foreach (var memory in this)
-            {
-                var compare = value.Slice(0, memory.Length);
-                if (!memory.Span.BlockEquals(compare))
-                {
-                    return false;
-                }
-
-                value = value.Slice(memory.Length);
-            }
-            return true;
         }
 
         internal void ClearCursors()

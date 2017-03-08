@@ -77,7 +77,7 @@ namespace System.IO.Pipelines.Tests
                     var input = result.Buffer;
                     if (input.Length == 0) break;
 
-                    Assert.True(input.Equals(new Span<byte>(data, offset, input.Length)));
+                    Assert.True(input.EqualsTo(new Span<byte>(data, offset, input.Length)));
                     offset += input.Length;
                     pipe.Advance(input.End);
                 }
@@ -187,8 +187,8 @@ namespace System.IO.Pipelines.Tests
                 // check that looks about right
                 Assert.False(readable.IsEmpty);
                 Assert.Equal(11, readable.Length);
-                Assert.True(readable.Equals(Encoding.UTF8.GetBytes("hello world")));
-                Assert.True(readable.Slice(1, 3).Equals(Encoding.UTF8.GetBytes("ell")));
+                Assert.True(readable.EqualsTo(Encoding.UTF8.GetBytes("hello world")));
+                Assert.True(readable.Slice(1, 3).EqualsTo(Encoding.UTF8.GetBytes("ell")));
 
                 // check it all works after we write more
                 output.Append("more data", TextEncoder.Utf8);
@@ -196,14 +196,14 @@ namespace System.IO.Pipelines.Tests
                 // note that the snapshotted readable should not have changed by this
                 Assert.False(readable.IsEmpty);
                 Assert.Equal(11, readable.Length);
-                Assert.True(readable.Equals(Encoding.UTF8.GetBytes("hello world")));
-                Assert.True(readable.Slice(1, 3).Equals(Encoding.UTF8.GetBytes("ell")));
+                Assert.True(readable.EqualsTo(Encoding.UTF8.GetBytes("hello world")));
+                Assert.True(readable.Slice(1, 3).EqualsTo(Encoding.UTF8.GetBytes("ell")));
 
                 // if we fetch it again, we can see everything
                 readable = output.AsReadableBuffer();
                 Assert.False(readable.IsEmpty);
                 Assert.Equal(20, readable.Length);
-                Assert.True(readable.Equals(Encoding.UTF8.GetBytes("hello worldmore data")));
+                Assert.True(readable.EqualsTo(Encoding.UTF8.GetBytes("hello worldmore data")));
             }
         }
 
