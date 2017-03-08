@@ -115,7 +115,7 @@ namespace System.IO.Pipelines
                 {
                     try
                     {
-                        AllocateWriteHead(minimumSize);
+                        AllocateWriteHeadUnsynchronized(minimumSize);
                     }
                     catch (Exception)
                     {
@@ -139,7 +139,7 @@ namespace System.IO.Pipelines
                 // Changing commit head shared with Reader
                 lock (_sync)
                 {
-                    segment = AllocateWriteHead(count);
+                    segment = AllocateWriteHeadUnsynchronized(count);
                 }
             }
 
@@ -157,7 +157,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private BufferSegment AllocateWriteHead(int count)
+        private BufferSegment AllocateWriteHeadUnsynchronized(int count)
         {
             BufferSegment segment = null;
 
@@ -252,35 +252,39 @@ namespace System.IO.Pipelines
             // Changing commit head shared with Reader
             lock (_sync)
             {
-                _writingState.End(ExceptionResource.NoWriteToComplete);
+                CommitUnsynchronized();
+            }
+        }
 
-                if (_writingHead == null)
-                {
-                    // Nothing written to commit
-                    return;
-                }
+        internal void CommitUnsynchronized()
+        {
+            _writingState.End(ExceptionResource.NoWriteToComplete);
 
-                if (_readHead == null)
-                {
-                    // Update the head to point to the head of the buffer.
-                    // This happens if we called alloc(0) then write
-                    _readHead = _commitHead;
-                }
-
-                // Always move the commit head to the write head
-                _commitHead = _writingHead;
-                _commitHeadIndex = _writingHead.End;
-                _length += _currentWriteLength;
-
-                // Do not reset if reader is complete
-                if (_maximumSizeHigh > 0 &&
-                    _length >= _maximumSizeHigh &&
-                    !_readerCompletion.IsCompleted)
-                {
-                    _writerAwaitable.Reset();
-                }
+            if (_writingHead == null)
+            {
+                // Nothing written to commit
+                return;
             }
 
+            if (_readHead == null)
+            {
+                // Update the head to point to the head of the buffer.
+                // This happens if we called alloc(0) then write
+                _readHead = _commitHead;
+            }
+
+            // Always move the commit head to the write head
+            _commitHead = _writingHead;
+            _commitHeadIndex = _writingHead.End;
+            _length += _currentWriteLength;
+
+            // Do not reset if reader is complete
+            if (_maximumSizeHigh > 0 &&
+                _length >= _maximumSizeHigh &&
+                !_readerCompletion.IsCompleted)
+            {
+                _writerAwaitable.Reset();
+            }
             // Clear the writing state
             _writingHead = null;
         }
@@ -311,15 +315,15 @@ namespace System.IO.Pipelines
 
         internal WritableBufferAwaitable FlushAsync()
         {
-            if (_writingState.IsActive)
-            {
-                // Commit the data as not already committed
-                Commit();
-            }
-
             Action awaitable;
             lock (_sync)
             {
+                if (_writingState.IsActive)
+                {
+                    // Commit the data as not already committed
+                    CommitUnsynchronized();
+                }
+
                 awaitable = _readerAwaitable.Complete();
             }
 
