@@ -2,7 +2,7 @@
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>An abstraction for doing efficient asynchronous IO</Description>
-    <TargetFrameworks>net451;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>netstandard1.1</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
     <!--<DefineConstants Condition="'$(Configuration)' == 'Debug'">$(DefineConstants);OPERATION_LOCATION_TRACKING;COMPLETION_LOCATION_TRACKING</DefineConstants>-->
@@ -12,8 +12,6 @@
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Buffers" Version="4.3.0" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
   </ItemGroup>
 </Project>
