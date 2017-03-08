@@ -561,9 +561,7 @@ namespace System.IO.Pipelines
                 else
                 {
                     // Reading commit head shared with writer
-
                     readEnd = new ReadCursor(_commitHead, _commitHeadIndex);
-
                 }
 
                 _readingState.Begin(ExceptionResource.AlreadyReading);
