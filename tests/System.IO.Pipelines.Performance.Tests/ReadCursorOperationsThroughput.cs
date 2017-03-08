@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO.Pipelines.Testing;
 using System.IO.Pipelines.Tests;
@@ -66,9 +67,21 @@ namespace System.IO.Pipelines.Performance.Tests
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void SeekPlainTextReadableBufferReader()
+        {
+            FindAllNewLinesReadableBufferReader(_plainTextBuffer);
+        }
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
         public void SeekPlainTextPipelined()
         {
             FindAllNewLines(_plainTextPipelinedBuffer);
+        }
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void SeekPlainTextPipelinedReadableBufferReader()
+        {
+            FindAllNewLinesReadableBufferReader(_plainTextPipelinedBuffer);
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
@@ -81,6 +94,63 @@ namespace System.IO.Pipelines.Performance.Tests
         public void SeekLiveAspNetMultiBuffer()
         {
             FindAllNewLines(_liveAspNetMultiBuffer);
+        }
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void SeekLiveAspNetReadableBufferReader()
+        {
+            FindAllNewLinesReadableBufferReader(_liveAspNetBuffer);
+        }
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void SeekLiveAspNetMultiBufferReadableBufferReader()
+        {
+            FindAllNewLinesReadableBufferReader(_liveAspNetMultiBuffer);
+        }
+
+        private static void FindAllNewLinesReadableBufferReader(ReadableBuffer buffer)
+        {
+            var reader = new ReadableBufferReader(buffer);
+            var end = buffer.End;
+
+            while (!reader.End)
+            {
+                var span = reader.Span;
+
+                // Trim the start if we have an index
+                if (reader.Index > 0)
+                {
+                    span = span.Slice(reader.Index);
+                }
+
+                while (span.Length > 0)
+                {
+                    var length = span.IndexOfVectorized((byte)'\n');
+                    var skip = length;
+
+                    if (length == -1)
+                    {
+                        var current = reader.Cursor;
+
+                        if (ReadCursorOperations.Seek(current, end, out var found, (byte)'\n') == -1)
+                        {
+                            // We're done
+                            return;
+                        }
+
+                        length = span.Length;
+                        skip = buffer.Slice(current, found).Length + 1;
+                    }
+                    else
+                    {
+                        length += 1;
+                        skip = length;
+                    }
+
+                    span = span.Slice(length);
+                    reader.Skip(skip);
+                }
+            }
         }
 
         private static void FindAllNewLines(ReadableBuffer buffer)
