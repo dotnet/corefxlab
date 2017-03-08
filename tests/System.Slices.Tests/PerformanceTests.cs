@@ -92,7 +92,7 @@ namespace System.Slices.Tests
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         private static void TestBenchSlice(Span<byte> bytes, int startIndex, int count)
         {
-            _sResult += bytes.IndexOf(LookupVal, startIndex, count);
+            _sResult += bytes.Slice(startIndex, count).IndexOf(LookupVal);
         }
 
         [Benchmark(InnerIterationCount = 100000)]
