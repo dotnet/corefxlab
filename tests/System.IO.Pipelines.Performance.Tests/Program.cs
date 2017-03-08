@@ -9,12 +9,6 @@ namespace System.IO.Pipelines.Performance.Tests
     {
         public static void Main(string[] args)
         {
-            //var p = new PipeThroughput();
-            //p.Setup();
-            //for (int i = 0; i < 100000; i++)
-            //{
-            //    p.ParseLiveAspNetInline();
-            //}
             var options = (uint[])Enum.GetValues(typeof(BenchmarkType));
             BenchmarkType type;
             if (args.Length != 1 || !Enum.TryParse(args[0], out type))
