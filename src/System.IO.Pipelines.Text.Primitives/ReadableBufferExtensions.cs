@@ -105,17 +105,12 @@ namespace System.IO.Pipelines.Text.Primitives
             if (buffer.IsSingleSpan)
             {
                 // It fits!
-                var handle = buffer.First.GetPinnedMemoryHandle();
-                try
+                fixed (byte* source = &buffer.First.Span.DangerousGetPinnableReference())
                 {
-                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64((byte*)handle.PinnedPointer, len, out value))
+                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(source, len, out value))
                     {
-                        throw new InvalidOperationException();
+                        ThrowInvalidOperation();
                     }
-                }
-                finally
-                {
-                    handle.Free();
                 }
             }
             else if (len < 128) // REVIEW: What's a good number
@@ -189,17 +184,12 @@ namespace System.IO.Pipelines.Text.Primitives
 
                 foreach (var memory in buffer)
                 {
-                    var handle = memory.GetPinnedMemoryHandle();
-                    try
+                    fixed (byte* source = &memory.Span.DangerousGetPinnableReference())
                     {
-                        if (!AsciiUtilities.TryGetAsciiString((byte*)handle.PinnedPointer, output + offset, memory.Length))
+                        if (!AsciiUtilities.TryGetAsciiString(source, output + offset, memory.Length))
                         {
-                            throw new InvalidOperationException();
+                            ThrowInvalidOperation();
                         }
-                    }
-                    finally
-                    {
-                        handle.Free();
                     }
 
                     offset += memory.Length;

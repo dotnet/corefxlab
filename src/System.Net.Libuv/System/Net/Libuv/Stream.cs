@@ -85,27 +85,21 @@ namespace System.Net.Libuv
         {
             // This can work with Span<byte> because it's synchronous but we need pinning support
             EnsureNotDisposed();
-
-            var handle = data.GetPinnedMemoryHandle();
-            IntPtr ptrData = (IntPtr)handle.PinnedPointer;
-            var length = data.Length;
-
-            try
+            
+            fixed (byte* source = &data.Span.DangerousGetPinnableReference())
             {
+                var length = data.Length;
+                
                 if (IsUnix)
                 {
-                    var buffer = new UVBuffer.Unix(ptrData, (uint)length);
+                    var buffer = new UVBuffer.Unix((IntPtr)source, (uint)length);
                     UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
                 }
                 else
                 {
-                    var buffer = new UVBuffer.Windows(ptrData, (uint)length);
+                    var buffer = new UVBuffer.Windows((IntPtr)source, (uint)length);
                     UVException.ThrowIfError(UVInterop.uv_try_write(Handle, &buffer, 1));
                 }
-            }
-            finally
-            {
-                handle.Free();
             }
         }
 

@@ -112,11 +112,8 @@ namespace System.IO.Pipelines.File
             public unsafe void Read()
             {
                 var buffer = Writer.Alloc(2048);
-                var handle = buffer.Memory.GetPinnedMemoryHandle();
-
-                try
+                fixed (byte* source = &buffer.Memory.Span.DangerousGetPinnableReference())
                 {
-                    var data = (IntPtr)handle.PinnedPointer;
                     var count = buffer.Memory.Length;
 
                     var overlapped = ThreadPoolBoundHandle.AllocateNativeOverlapped(PreAllocatedOverlapped);
@@ -126,7 +123,7 @@ namespace System.IO.Pipelines.File
 
                     BoxedBuffer = new StrongBox<WritableBuffer>(buffer);
 
-                    int r = ReadFile(FileHandle, data, count, IntPtr.Zero, overlapped);
+                    int r = ReadFile(FileHandle, (IntPtr)source, count, IntPtr.Zero, overlapped);
 
                     // TODO: Error handling
 
@@ -136,10 +133,6 @@ namespace System.IO.Pipelines.File
                     {
                         Writer.Complete(Marshal.GetExceptionForHR(hr));
                     }
-                }
-                finally
-                {
-                    handle.Free();
                 }
             }
 
