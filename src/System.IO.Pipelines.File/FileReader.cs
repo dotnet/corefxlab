@@ -112,30 +112,27 @@ namespace System.IO.Pipelines.File
             public unsafe void Read()
             {
                 var buffer = Writer.Alloc(2048);
-                void* pointer;
-                if (!buffer.Memory.TryGetPointer(out pointer))
+                fixed (byte* source = &buffer.Memory.Span.DangerousGetPinnableReference())
                 {
-                    throw new InvalidOperationException("Memory needs to be pinned");
-                }
-                var data = (IntPtr)pointer;
-                var count = buffer.Memory.Length;
+                    var count = buffer.Memory.Length;
 
-                var overlapped = ThreadPoolBoundHandle.AllocateNativeOverlapped(PreAllocatedOverlapped);
-                overlapped->OffsetLow = Offset;
+                    var overlapped = ThreadPoolBoundHandle.AllocateNativeOverlapped(PreAllocatedOverlapped);
+                    overlapped->OffsetLow = Offset;
 
-                Overlapped = overlapped;
+                    Overlapped = overlapped;
 
-                BoxedBuffer = new StrongBox<WritableBuffer>(buffer);
+                    BoxedBuffer = new StrongBox<WritableBuffer>(buffer);
 
-                int r = ReadFile(FileHandle, data, count, IntPtr.Zero, overlapped);
+                    int r = ReadFile(FileHandle, (IntPtr)source, count, IntPtr.Zero, overlapped);
 
-                // TODO: Error handling
+                    // TODO: Error handling
 
-                // 997
-                int hr = Marshal.GetLastWin32Error();
-                if (hr != 997)
-                {
-                    Writer.Complete(Marshal.GetExceptionForHR(hr));
+                    // 997
+                    int hr = Marshal.GetLastWin32Error();
+                    if (hr != 997)
+                    {
+                        Writer.Complete(Marshal.GetExceptionForHR(hr));
+                    }
                 }
             }
 

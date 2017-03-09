@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -20,6 +20,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
         private object _state;
         private const int BUFFER_COUNT = 4;
 
+        private List<MemoryHandle> _handles = new List<MemoryHandle>();
         private List<GCHandle> _pins = new List<GCHandle>(BUFFER_COUNT + 1);
 
         private LibuvAwaitable<UvWriteReq> _awaitable = new LibuvAwaitable<UvWriteReq>();
@@ -84,30 +85,18 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
                 if (nBuffers == 1)
                 {
                     var memory = buffer.First;
-                    void* pointer;
-                    if (memory.TryGetPointer(out pointer))
-                    {
-                        pBuffers[0] = Libuv.buf_init((IntPtr)pointer, memory.Length);
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Memory needs to be pinned");
-                    }
+                    var memoryHandle = memory.Pin();
+                    _handles.Add(memoryHandle);
+                    pBuffers[0] = Libuv.buf_init((IntPtr)memoryHandle.PinnedPointer, memory.Length);
                 }
                 else
                 {
                     int i = 0;
-                    void* pointer;
                     foreach (var memory in buffer)
                     {
-                        if (memory.TryGetPointer(out pointer))
-                        {
-                            pBuffers[i++] = Libuv.buf_init((IntPtr)pointer, memory.Length);
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException("Memory needs to be pinned");
-                        }
+                        var memoryHandle = memory.Pin();
+                        _handles.Add(memoryHandle);
+                        pBuffers[i++] = Libuv.buf_init((IntPtr)memoryHandle.PinnedPointer, memory.Length);
                     }
                 }
 
@@ -131,6 +120,12 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
                 pin.Free();
             }
             req._pins.Clear();
+
+            foreach (var handle in req._handles)
+            {
+                handle.Free();
+            }
+            req._handles.Clear();
         }
 
         private static void UvWriteCb(IntPtr ptr, int status)

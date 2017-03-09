@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Buffers;
+using System.Collections.Generic;
 using System.IO.Compression;
 using System.Threading.Tasks;
 
@@ -100,6 +102,8 @@ namespace System.IO.Pipelines.Compression
 
             public async Task Execute(IPipeReader reader, IPipeWriter writer)
             {
+                List<MemoryHandle> handles = new List<MemoryHandle>();
+
                 while (true)
                 {
                     var result = await reader.ReadAsync();
@@ -121,33 +125,20 @@ namespace System.IO.Pipelines.Compression
 
                     unsafe
                     {
-                        // TODO: Pin pointer if not pinned
-                        void* inPointer;
-                        if (memory.TryGetPointer(out inPointer))
-                        {
-                            _deflater.SetInput((IntPtr)inPointer, memory.Length);
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException("Pointer needs to be pinned");
-                        }
+                        var handle = memory.Pin();
+                        handles.Add(handle);
+                        _deflater.SetInput((IntPtr)handle.PinnedPointer, memory.Length);
                     }
 
                     while (!_deflater.NeedsInput())
                     {
                         unsafe
                         {
-                            void* outPointer;
                             writerBuffer.Ensure();
-                            if (writerBuffer.Memory.TryGetPointer(out outPointer))
-                            {
-                                int written = _deflater.ReadDeflateOutput((IntPtr)outPointer, writerBuffer.Memory.Length);
-                                writerBuffer.Advance(written);
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException("Pointer needs to be pinned");
-                            }
+                            var handle = writerBuffer.Memory.Pin();
+                            handles.Add(handle);
+                            int written = _deflater.ReadDeflateOutput((IntPtr)handle.PinnedPointer, writerBuffer.Memory.Length);
+                            writerBuffer.Advance(written);
                         }
                     }
 
@@ -168,19 +159,13 @@ namespace System.IO.Pipelines.Compression
 
                     unsafe
                     {
-                        void* pointer;
                         writerBuffer.Ensure();
                         var memory = writerBuffer.Memory;
-                        if (memory.TryGetPointer(out pointer))
-                        {
-                            int compressedBytes;
-                            flushed = _deflater.Flush((IntPtr)pointer, memory.Length, out compressedBytes);
-                            writerBuffer.Advance(compressedBytes);
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException("Pointer needs to be pinned");
-                        }
+                        var handle = memory.Pin();
+                        handles.Add(handle);
+                        int compressedBytes;
+                        flushed = _deflater.Flush((IntPtr)handle.PinnedPointer, memory.Length, out compressedBytes);
+                        writerBuffer.Advance(compressedBytes);
                     }
 
                     await writerBuffer.FlushAsync();
@@ -195,15 +180,13 @@ namespace System.IO.Pipelines.Compression
 
                     unsafe
                     {
-                        void* pointer;
                         writerBuffer.Ensure();
                         var memory = writerBuffer.Memory;
-                        if (memory.TryGetPointer(out pointer))
-                        {
-                            int compressedBytes;
-                            finished = _deflater.Finish((IntPtr)pointer, memory.Length, out compressedBytes);
-                            writerBuffer.Advance(compressedBytes);
-                        }
+                        var handle = memory.Pin();
+                        handles.Add(handle);
+                        int compressedBytes;
+                        finished = _deflater.Finish((IntPtr)handle.PinnedPointer, memory.Length, out compressedBytes);
+                        writerBuffer.Advance(compressedBytes);
                     }
 
                     await writerBuffer.FlushAsync();
@@ -215,6 +198,11 @@ namespace System.IO.Pipelines.Compression
                 writer.Complete();
 
                 _deflater.Dispose();
+
+                foreach (var handle in handles)
+                {
+                    handle.Free();
+                }
             }
         }
 
@@ -229,6 +217,8 @@ namespace System.IO.Pipelines.Compression
 
             public async Task Execute(IPipeReader reader, IPipeWriter writer)
             {
+                List<MemoryHandle> handles = new List<MemoryHandle>();
+
                 while (true)
                 {
                     var result = await reader.ReadAsync();
@@ -251,27 +241,15 @@ namespace System.IO.Pipelines.Compression
                     {
                         unsafe
                         {
-                            void* pointer;
-                            if (memory.TryGetPointer(out pointer))
-                            {
-                                _inflater.SetInput((IntPtr)pointer, memory.Length);
+                            var handle = memory.Pin();
+                            handles.Add(handle);
+                            _inflater.SetInput((IntPtr)handle.PinnedPointer, memory.Length);
 
-                                void* writePointer;
-                                writerBuffer.Ensure();
-                                if (writerBuffer.Memory.TryGetPointer(out writePointer))
-                                {
-                                    int written = _inflater.Inflate((IntPtr)writePointer, writerBuffer.Memory.Length);
-                                    writerBuffer.Advance(written);
-                                }
-                                else
-                                {
-                                    throw new InvalidOperationException("Pointer needs to be pinned");
-                                }
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException("Pointer needs to be pinned");
-                            }
+                            writerBuffer.Ensure();
+                            handle = writerBuffer.Memory.Pin();
+                            handles.Add(handle);
+                            int written = _inflater.Inflate((IntPtr)handle.PinnedPointer, writerBuffer.Memory.Length);
+                            writerBuffer.Advance(written);
 
                             var consumed = memory.Length - _inflater.AvailableInput;
 
@@ -289,6 +267,11 @@ namespace System.IO.Pipelines.Compression
                 writer.Complete();
 
                 _inflater.Dispose();
+
+                foreach (var handle in handles)
+                {
+                    handle.Free();
+                }
             }
         }
     }
