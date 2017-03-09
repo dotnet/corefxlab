@@ -50,70 +50,75 @@ namespace System.Slices.Tests
             }
         }
 
-        private static volatile int _sResult = -1;
         private const byte LookupVal = 99;
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-        private static void GetDataValueAtEnd(int length, out Span<byte> bytes, out int startIndex, out int count)
+        private static void GetData(int length, int location, out Span<byte> bytes, out int startIndex, out int count)
         {
-            var a = new byte[length];
-            a[length - 1] = LookupVal;
+            // location = 0 - value is at start
+            // location = 1 - value is at middle
+            // location = 2 - value is at end
+            byte[] a = GetArray(length);
+
+            switch (location)
+            {
+                case 0:
+                    a[0] = LookupVal;
+                    startIndex = 0;
+                    count = length;
+                    break;
+                case 1:
+                    a[length / 2] = LookupVal;
+                    startIndex = length / 4;
+                    count = length / 2 + 1;
+                    break;
+                default:
+                    a[length - 1] = LookupVal;
+                    startIndex = length / 2;
+                    count = length - startIndex;
+                    break;
+            }
+
             bytes = new Span<byte>(a);
-            startIndex = length / 2;
-            count = length - startIndex;
         }
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-        private static void GetDataValueAtStart(int length, out Span<byte> bytes, out int startIndex, out int count)
+        private static byte[] GetArray(int length)
         {
+            var rand = new Random(42);
             var a = new byte[length];
-            a[0] = LookupVal;
-            bytes = new Span<byte>(a);
-            startIndex = 0;
-            count = length - startIndex;
-        }
-
-        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
-        private static void GetDataValueAtMiddle(int length, out Span<byte> bytes, out int startIndex, out int count)
-        {
-            var a = new byte[length];
-            a[length / 2] = LookupVal;
-            bytes = new Span<byte>(a);
-            startIndex = length / 4;
-            count = length / 2 + 1;
+            for (int i = 0; i < a.Length; i++)
+            {
+                byte temp = (byte)rand.Next(0, 255);
+                if (temp == LookupVal)
+                {
+                    temp++;
+                }
+                a[i] = temp;
+            }
+            return a;
         }
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         private static void TestBenchIndexOf(Span<byte> bytes, int startIndex, int count)
         {
-            _sResult += bytes.IndexOf(LookupVal, startIndex, count);
+            bytes.IndexOf(LookupVal, startIndex, count);
         }
 
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         private static void TestBenchSlice(Span<byte> bytes, int startIndex, int count)
         {
-            _sResult += bytes.Slice(startIndex, count).IndexOf(LookupVal);
+            bytes.Slice(startIndex, count).IndexOf(LookupVal);
         }
 
-        [Benchmark(InnerIterationCount = 100000)]
+        [Benchmark(InnerIterationCount = 1000000)]
         [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [InlineData(7)]
-        [InlineData(8)]
-        [InlineData(9)]
         [InlineData(10)]
-        [InlineData(50)]
         [InlineData(100)]
-        [InlineData(500)]
         [InlineData(1000)]
-        [InlineData(5000)]
         public static void SpanIndexOfWithIndexAndCountComparisonValueAtEnd(int length)
         {
-            GetDataValueAtEnd(length, out Span<byte> bytes, out int startIndex, out int count);
+            GetData(length, 2, out Span<byte> bytes, out int startIndex, out int count);
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -127,25 +132,14 @@ namespace System.Slices.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 100000)]
+        [Benchmark(InnerIterationCount = 1000000)]
         [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [InlineData(7)]
-        [InlineData(8)]
-        [InlineData(9)]
         [InlineData(10)]
-        [InlineData(50)]
         [InlineData(100)]
-        [InlineData(500)]
         [InlineData(1000)]
-        [InlineData(5000)]
         public static void SpanIndexOfWithSliceComparisonValueAtEnd(int length)
         {
-            GetDataValueAtEnd(length, out Span<byte> bytes, out int startIndex, out int count);
+            GetData(length, 2, out Span<byte> bytes, out int startIndex, out int count);
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -159,25 +153,14 @@ namespace System.Slices.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 100000)]
+        [Benchmark(InnerIterationCount = 10000000)]
         [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [InlineData(7)]
-        [InlineData(8)]
-        [InlineData(9)]
         [InlineData(10)]
-        [InlineData(50)]
         [InlineData(100)]
-        [InlineData(500)]
         [InlineData(1000)]
-        [InlineData(5000)]
         public static void SpanIndexOfWithIndexAndCountComparisonValueAtStart(int length)
         {
-            GetDataValueAtStart(length, out Span<byte> bytes, out int startIndex, out int count);
+            GetData(length, 0, out Span<byte> bytes, out int startIndex, out int count);
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -191,25 +174,14 @@ namespace System.Slices.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 100000)]
+        [Benchmark(InnerIterationCount = 10000000)]
         [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [InlineData(7)]
-        [InlineData(8)]
-        [InlineData(9)]
         [InlineData(10)]
-        [InlineData(50)]
         [InlineData(100)]
-        [InlineData(500)]
         [InlineData(1000)]
-        [InlineData(5000)]
         public static void SpanIndexOfWithSliceComparisonValueAtStart(int length)
         {
-            GetDataValueAtStart(length, out Span<byte> bytes, out int startIndex, out int count);
+            GetData(length, 0, out Span<byte> bytes, out int startIndex, out int count);
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -223,25 +195,14 @@ namespace System.Slices.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 100000)]
+        [Benchmark(InnerIterationCount = 1000000)]
         [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [InlineData(7)]
-        [InlineData(8)]
-        [InlineData(9)]
         [InlineData(10)]
-        [InlineData(50)]
         [InlineData(100)]
-        [InlineData(500)]
         [InlineData(1000)]
-        [InlineData(5000)]
         public static void SpanIndexOfWithIndexAndCountComparisonValueInMiddle(int length)
         {
-            GetDataValueAtMiddle(length, out Span<byte> bytes, out int startIndex, out int count);
+            GetData(length, 1, out Span<byte> bytes, out int startIndex, out int count);
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -255,25 +216,14 @@ namespace System.Slices.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 100000)]
+        [Benchmark(InnerIterationCount = 1000000)]
         [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [InlineData(7)]
-        [InlineData(8)]
-        [InlineData(9)]
         [InlineData(10)]
-        [InlineData(50)]
         [InlineData(100)]
-        [InlineData(500)]
         [InlineData(1000)]
-        [InlineData(5000)]
         public static void SpanIndexOfWithSliceComparisonValueInMiddle(int length)
         {
-            GetDataValueAtMiddle(length, out Span<byte> bytes, out int startIndex, out int count);
+            GetData(length, 1, out Span<byte> bytes, out int startIndex, out int count);
 
             foreach (var iteration in Benchmark.Iterations)
             {
