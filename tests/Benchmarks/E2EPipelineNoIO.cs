@@ -15,17 +15,14 @@ using System.Text.Json;
 
 public partial class E2EPipelineTests
 {
-    private static readonly byte[] s_genericRequest = Encoding.UTF8.GetBytes(@"GET /developer/documentation/data-insertion/r-sample-http-get HTTP/1.1
-Host: marketing.adobe.com
-Connection: keep-alive
-Cache-Control: max-age=0
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Encoding: gzip, deflate, sdch, br
-Accept-Language: en-US,en;q=0.8,it;q=0.6,ms;q=0.4
+    private static readonly byte[] s_genericRequest = Encoding.UTF8.GetBytes(_plaintextTechEmpowerRequest);
 
-");
+    private const string _plaintextTechEmpowerRequest =
+        "GET /plaintext HTTP/1.1\r\n" +
+        "Host: localhost\r\n" +
+        "Accept: text/plain,text/html;q=0.9,application/xhtml+xml;q=0.9,application/xml;q=0.8,*/*;q=0.7\r\n" +
+        "Connection: keep-alive\r\n" +
+        "\r\n";
 
     [Benchmark]
     [InlineData(1000, 256)]
