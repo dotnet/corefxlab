@@ -105,25 +105,17 @@ namespace System.IO.Pipelines.Text.Primitives
             if (buffer.IsSingleSpan)
             {
                 // It fits!
-                void* pointer;
-                ArraySegment<byte> data;
-                if (buffer.First.TryGetPointer(out pointer))
+                var handle = buffer.First.GetPinnedMemoryHandle();
+                try
                 {
-                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64((byte*)pointer, len, out value))
+                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64((byte*)handle.PinnedPointer, len, out value))
                     {
                         throw new InvalidOperationException();
                     }
                 }
-                else if (buffer.First.TryGetArray(out data))
+                finally
                 {
-                    if (!PrimitiveParser.InvariantUtf8.TryParseUInt64(data.Array, out value))
-                    {
-                        throw new InvalidOperationException();
-                    }
-                }
-                else
-                {
-                    throw new InvalidOperationException();
+                    handle.Free();
                 }
             }
             else if (len < 128) // REVIEW: What's a good number
@@ -197,27 +189,17 @@ namespace System.IO.Pipelines.Text.Primitives
 
                 foreach (var memory in buffer)
                 {
-                    void* pointer;
-                    if (memory.TryGetPointer(out pointer))
+                    var handle = memory.GetPinnedMemoryHandle();
+                    try
                     {
-                        if (!AsciiUtilities.TryGetAsciiString((byte*)pointer, output + offset, memory.Length))
+                        if (!AsciiUtilities.TryGetAsciiString((byte*)handle.PinnedPointer, output + offset, memory.Length))
                         {
                             throw new InvalidOperationException();
                         }
                     }
-                    else
+                    finally
                     {
-                        ArraySegment<byte> data;
-                        if (memory.TryGetArray(out data))
-                        {
-                            fixed (byte* ptr = &data.Array[0])
-                            {
-                                if (!AsciiUtilities.TryGetAsciiString(ptr + data.Offset, output + offset, memory.Length))
-                                {
-                                    throw new InvalidOperationException();
-                                }
-                            }
-                        }
+                        handle.Free();
                     }
 
                     offset += memory.Length;

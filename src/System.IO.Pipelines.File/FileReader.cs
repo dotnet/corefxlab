@@ -112,30 +112,34 @@ namespace System.IO.Pipelines.File
             public unsafe void Read()
             {
                 var buffer = Writer.Alloc(2048);
-                void* pointer;
-                if (!buffer.Memory.TryGetPointer(out pointer))
+                var handle = buffer.Memory.GetPinnedMemoryHandle();
+
+                try
                 {
-                    throw new InvalidOperationException("Memory needs to be pinned");
+                    var data = (IntPtr)handle.PinnedPointer;
+                    var count = buffer.Memory.Length;
+
+                    var overlapped = ThreadPoolBoundHandle.AllocateNativeOverlapped(PreAllocatedOverlapped);
+                    overlapped->OffsetLow = Offset;
+
+                    Overlapped = overlapped;
+
+                    BoxedBuffer = new StrongBox<WritableBuffer>(buffer);
+
+                    int r = ReadFile(FileHandle, data, count, IntPtr.Zero, overlapped);
+
+                    // TODO: Error handling
+
+                    // 997
+                    int hr = Marshal.GetLastWin32Error();
+                    if (hr != 997)
+                    {
+                        Writer.Complete(Marshal.GetExceptionForHR(hr));
+                    }
                 }
-                var data = (IntPtr)pointer;
-                var count = buffer.Memory.Length;
-
-                var overlapped = ThreadPoolBoundHandle.AllocateNativeOverlapped(PreAllocatedOverlapped);
-                overlapped->OffsetLow = Offset;
-
-                Overlapped = overlapped;
-
-                BoxedBuffer = new StrongBox<WritableBuffer>(buffer);
-
-                int r = ReadFile(FileHandle, data, count, IntPtr.Zero, overlapped);
-
-                // TODO: Error handling
-
-                // 997
-                int hr = Marshal.GetLastWin32Error();
-                if (hr != 997)
+                finally
                 {
-                    Writer.Complete(Marshal.GetExceptionForHR(hr));
+                    handle.Free();
                 }
             }
 

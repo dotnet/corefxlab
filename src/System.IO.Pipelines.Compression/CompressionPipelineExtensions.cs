@@ -121,33 +121,20 @@ namespace System.IO.Pipelines.Compression
 
                     unsafe
                     {
-                        // TODO: Pin pointer if not pinned
-                        void* inPointer;
-                        if (memory.TryGetPointer(out inPointer))
-                        {
-                            _deflater.SetInput((IntPtr)inPointer, memory.Length);
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException("Pointer needs to be pinned");
-                        }
+                        var handle = memory.GetPinnedMemoryHandle();
+                        _deflater.SetInput((IntPtr)handle.PinnedPointer, memory.Length);
+                        handle.Free();
                     }
 
                     while (!_deflater.NeedsInput())
                     {
                         unsafe
                         {
-                            void* outPointer;
                             writerBuffer.Ensure();
-                            if (writerBuffer.Memory.TryGetPointer(out outPointer))
-                            {
-                                int written = _deflater.ReadDeflateOutput((IntPtr)outPointer, writerBuffer.Memory.Length);
-                                writerBuffer.Advance(written);
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException("Pointer needs to be pinned");
-                            }
+                            var handle = writerBuffer.Memory.GetPinnedMemoryHandle();
+                            int written = _deflater.ReadDeflateOutput((IntPtr)handle.PinnedPointer, writerBuffer.Memory.Length);
+                            writerBuffer.Advance(written);
+                            handle.Free();
                         }
                     }
 
@@ -168,19 +155,13 @@ namespace System.IO.Pipelines.Compression
 
                     unsafe
                     {
-                        void* pointer;
                         writerBuffer.Ensure();
                         var memory = writerBuffer.Memory;
-                        if (memory.TryGetPointer(out pointer))
-                        {
-                            int compressedBytes;
-                            flushed = _deflater.Flush((IntPtr)pointer, memory.Length, out compressedBytes);
-                            writerBuffer.Advance(compressedBytes);
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException("Pointer needs to be pinned");
-                        }
+                        var handle = memory.GetPinnedMemoryHandle();
+                        int compressedBytes;
+                        flushed = _deflater.Flush((IntPtr)handle.PinnedPointer, memory.Length, out compressedBytes);
+                        writerBuffer.Advance(compressedBytes);
+                        handle.Free();
                     }
 
                     await writerBuffer.FlushAsync();
@@ -195,15 +176,13 @@ namespace System.IO.Pipelines.Compression
 
                     unsafe
                     {
-                        void* pointer;
                         writerBuffer.Ensure();
                         var memory = writerBuffer.Memory;
-                        if (memory.TryGetPointer(out pointer))
-                        {
-                            int compressedBytes;
-                            finished = _deflater.Finish((IntPtr)pointer, memory.Length, out compressedBytes);
-                            writerBuffer.Advance(compressedBytes);
-                        }
+                        var handle = memory.GetPinnedMemoryHandle();
+                        int compressedBytes;
+                        finished = _deflater.Finish((IntPtr)handle.PinnedPointer, memory.Length, out compressedBytes);
+                        writerBuffer.Advance(compressedBytes);
+                        handle.Free();
                     }
 
                     await writerBuffer.FlushAsync();
@@ -251,27 +230,15 @@ namespace System.IO.Pipelines.Compression
                     {
                         unsafe
                         {
-                            void* pointer;
-                            if (memory.TryGetPointer(out pointer))
-                            {
-                                _inflater.SetInput((IntPtr)pointer, memory.Length);
+                            var handle = memory.GetPinnedMemoryHandle();
+                            _inflater.SetInput((IntPtr)handle.PinnedPointer, memory.Length);
+                            handle.Free();
 
-                                void* writePointer;
-                                writerBuffer.Ensure();
-                                if (writerBuffer.Memory.TryGetPointer(out writePointer))
-                                {
-                                    int written = _inflater.Inflate((IntPtr)writePointer, writerBuffer.Memory.Length);
-                                    writerBuffer.Advance(written);
-                                }
-                                else
-                                {
-                                    throw new InvalidOperationException("Pointer needs to be pinned");
-                                }
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException("Pointer needs to be pinned");
-                            }
+                            writerBuffer.Ensure();
+                            handle = writerBuffer.Memory.GetPinnedMemoryHandle();
+                            int written = _inflater.Inflate((IntPtr)handle.PinnedPointer, writerBuffer.Memory.Length);
+                            writerBuffer.Advance(written);
+                            handle.Free();
 
                             var consumed = memory.Length - _inflater.AvailableInput;
 
