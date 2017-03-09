@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Buffers;
+using System.Collections.Generic;
 using System.IO.Compression;
 using System.Threading.Tasks;
 
@@ -100,6 +102,8 @@ namespace System.IO.Pipelines.Compression
 
             public async Task Execute(IPipeReader reader, IPipeWriter writer)
             {
+                List<MemoryHandle> handles = new List<MemoryHandle>();
+
                 while (true)
                 {
                     var result = await reader.ReadAsync();
@@ -122,8 +126,8 @@ namespace System.IO.Pipelines.Compression
                     unsafe
                     {
                         var handle = memory.GetPinnedMemoryHandle();
+                        handles.Add(handle);
                         _deflater.SetInput((IntPtr)handle.PinnedPointer, memory.Length);
-                        handle.Free();
                     }
 
                     while (!_deflater.NeedsInput())
@@ -132,9 +136,9 @@ namespace System.IO.Pipelines.Compression
                         {
                             writerBuffer.Ensure();
                             var handle = writerBuffer.Memory.GetPinnedMemoryHandle();
+                            handles.Add(handle);
                             int written = _deflater.ReadDeflateOutput((IntPtr)handle.PinnedPointer, writerBuffer.Memory.Length);
                             writerBuffer.Advance(written);
-                            handle.Free();
                         }
                     }
 
@@ -158,10 +162,10 @@ namespace System.IO.Pipelines.Compression
                         writerBuffer.Ensure();
                         var memory = writerBuffer.Memory;
                         var handle = memory.GetPinnedMemoryHandle();
+                        handles.Add(handle);
                         int compressedBytes;
                         flushed = _deflater.Flush((IntPtr)handle.PinnedPointer, memory.Length, out compressedBytes);
                         writerBuffer.Advance(compressedBytes);
-                        handle.Free();
                     }
 
                     await writerBuffer.FlushAsync();
@@ -179,10 +183,10 @@ namespace System.IO.Pipelines.Compression
                         writerBuffer.Ensure();
                         var memory = writerBuffer.Memory;
                         var handle = memory.GetPinnedMemoryHandle();
+                        handles.Add(handle);
                         int compressedBytes;
                         finished = _deflater.Finish((IntPtr)handle.PinnedPointer, memory.Length, out compressedBytes);
                         writerBuffer.Advance(compressedBytes);
-                        handle.Free();
                     }
 
                     await writerBuffer.FlushAsync();
@@ -194,6 +198,11 @@ namespace System.IO.Pipelines.Compression
                 writer.Complete();
 
                 _deflater.Dispose();
+
+                foreach (var handle in handles)
+                {
+                    handle.Free();
+                }
             }
         }
 
@@ -208,6 +217,8 @@ namespace System.IO.Pipelines.Compression
 
             public async Task Execute(IPipeReader reader, IPipeWriter writer)
             {
+                List<MemoryHandle> handles = new List<MemoryHandle>();
+
                 while (true)
                 {
                     var result = await reader.ReadAsync();
@@ -231,14 +242,14 @@ namespace System.IO.Pipelines.Compression
                         unsafe
                         {
                             var handle = memory.GetPinnedMemoryHandle();
+                            handles.Add(handle);
                             _inflater.SetInput((IntPtr)handle.PinnedPointer, memory.Length);
-                            handle.Free();
 
                             writerBuffer.Ensure();
                             handle = writerBuffer.Memory.GetPinnedMemoryHandle();
+                            handles.Add(handle);
                             int written = _inflater.Inflate((IntPtr)handle.PinnedPointer, writerBuffer.Memory.Length);
                             writerBuffer.Advance(written);
-                            handle.Free();
 
                             var consumed = memory.Length - _inflater.AvailableInput;
 
@@ -256,6 +267,11 @@ namespace System.IO.Pipelines.Compression
                 writer.Complete();
 
                 _inflater.Dispose();
+
+                foreach (var handle in handles)
+                {
+                    handle.Free();
+                }
             }
         }
     }
