@@ -2,32 +2,31 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace System
+namespace System.Buffers
 {
-    public unsafe struct PinnedMemoryHandle<T>
+    public unsafe struct MemoryHandle
     {
-        readonly OwnedMemory<T> _owner;
-        readonly GCHandle _handle;
-        readonly void* _pointer;
+        IKnown _owner;
+        GCHandle _handle;
+        void* _pointer;
 
-        internal PinnedMemoryHandle(OwnedMemory<T> owner, int index)
+        internal static MemoryHandle Create<T>(OwnedMemory<T> owner, int index)
         {
-            _owner = owner;
-            if (_owner.TryGetPointerInternal(out _pointer))
+            void* pointer;
+            GCHandle handle;
+            if (owner.TryGetPointerInternal(out pointer))
             {
-                _pointer = Memory<T>.Add(_pointer, index);
+                pointer = Memory<T>.Add(pointer, index);
             }
             else
             {
                 ArraySegment<T> buffer;
-                if (_owner.TryGetArrayInternal(out buffer))
+                if (owner.TryGetArrayInternal(out buffer))
                 {
-                    _handle = GCHandle.Alloc(buffer.Array, GCHandleType.Pinned);
-                    _pointer = Memory<T>.Add((void*)_handle.AddrOfPinnedObject(), buffer.Offset + index);
+                    handle = GCHandle.Alloc(buffer.Array, GCHandleType.Pinned);
+                    pointer = Memory<T>.Add((void*)handle.AddrOfPinnedObject(), buffer.Offset + index);
                 }
                 else
                 {
@@ -35,7 +34,13 @@ namespace System
                 }
             }
 
-            _owner.AddReference();
+            owner.AddReference();
+
+            return new MemoryHandle {
+                _owner = owner,
+                _handle = handle,
+                _pointer = pointer
+            };
         }
 
         public void* PinnedPointer

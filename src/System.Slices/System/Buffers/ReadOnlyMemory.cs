@@ -59,7 +59,7 @@ namespace System
             return _owner.Memory.Reserve();
         }
 
-        public unsafe PinnedMemoryHandle<T> GetPinnedMemoryHandle() => new PinnedMemoryHandle<T>(_owner, _index);
+        public unsafe MemoryHandle GetPinnedMemoryHandle() => MemoryHandle.Create(_owner, _index);
    
         public unsafe bool TryGetPointer(out void* pointer)
         {

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
         private object _state;
         private const int BUFFER_COUNT = 4;
 
-        private List<PinnedMemoryHandle<byte>> _handles = new List<PinnedMemoryHandle<byte>>();
+        private List<MemoryHandle> _handles = new List<MemoryHandle>();
         private List<GCHandle> _pins = new List<GCHandle>(BUFFER_COUNT + 1);
 
         private LibuvAwaitable<UvWriteReq> _awaitable = new LibuvAwaitable<UvWriteReq>();
