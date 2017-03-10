@@ -81,8 +81,7 @@ namespace System.Slices.Tests
 
             bytes = new Span<byte>(a);
         }
-
-        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+        
         private static byte[] GetArray(int length)
         {
             var rand = new Random(42);
@@ -98,23 +97,26 @@ namespace System.Slices.Tests
             }
             return a;
         }
-
-        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+        
         private static void TestBenchIndexOf(Span<byte> bytes, int startIndex, int count)
         {
-            bytes.IndexOf(LookupVal, startIndex, count);
+            var temp = bytes.IndexOf(LookupVal, startIndex, count);
+            if (temp == -1)
+            {
+                Console.WriteLine(temp);
+            }
         }
-
-        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+        
         private static void TestBenchSlice(Span<byte> bytes, int startIndex, int count)
         {
-            bytes.Slice(startIndex, count).IndexOf(LookupVal);
+            var temp = bytes.Slice(startIndex, count).IndexOf(LookupVal);
+            if (temp == -1)
+            {
+                Console.WriteLine(temp);
+            }
         }
 
         [Benchmark(InnerIterationCount = 1000000)]
-        [InlineData(1)]
-        [InlineData(10)]
-        [InlineData(100)]
         [InlineData(1000)]
         public static void SpanIndexOfWithIndexAndCountComparisonValueAtEnd(int length)
         {
@@ -133,9 +135,6 @@ namespace System.Slices.Tests
         }
 
         [Benchmark(InnerIterationCount = 1000000)]
-        [InlineData(1)]
-        [InlineData(10)]
-        [InlineData(100)]
         [InlineData(1000)]
         public static void SpanIndexOfWithSliceComparisonValueAtEnd(int length)
         {
@@ -154,9 +153,6 @@ namespace System.Slices.Tests
         }
 
         [Benchmark(InnerIterationCount = 10000000)]
-        [InlineData(1)]
-        [InlineData(10)]
-        [InlineData(100)]
         [InlineData(1000)]
         public static void SpanIndexOfWithIndexAndCountComparisonValueAtStart(int length)
         {
@@ -175,9 +171,6 @@ namespace System.Slices.Tests
         }
 
         [Benchmark(InnerIterationCount = 10000000)]
-        [InlineData(1)]
-        [InlineData(10)]
-        [InlineData(100)]
         [InlineData(1000)]
         public static void SpanIndexOfWithSliceComparisonValueAtStart(int length)
         {
@@ -196,9 +189,6 @@ namespace System.Slices.Tests
         }
 
         [Benchmark(InnerIterationCount = 1000000)]
-        [InlineData(1)]
-        [InlineData(10)]
-        [InlineData(100)]
         [InlineData(1000)]
         public static void SpanIndexOfWithIndexAndCountComparisonValueInMiddle(int length)
         {
@@ -217,9 +207,6 @@ namespace System.Slices.Tests
         }
 
         [Benchmark(InnerIterationCount = 1000000)]
-        [InlineData(1)]
-        [InlineData(10)]
-        [InlineData(100)]
         [InlineData(1000)]
         public static void SpanIndexOfWithSliceComparisonValueInMiddle(int length)
         {

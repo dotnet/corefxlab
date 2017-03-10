@@ -41,9 +41,9 @@ namespace System
         /// <param name="count">The number of bytes to search starting from the index.</param>
         /// <param name="value">The value to search for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf(this Span<byte> span, byte value, int index, int count)
+        public static int IndexOf(this Span<byte> span, byte value, int startIndex, int count)
         {
-            return IndexOfHelper(ref span.DangerousGetPinnableReference(), index, count, value, span.Length);
+            return IndexOfHelper(ref span.DangerousGetPinnableReference(), startIndex, count, value, span.Length);
         }
 
         /// <summary>
@@ -54,21 +54,17 @@ namespace System
         /// <param name="count">The number of bytes to search starting from the index.</param>
         /// <param name="value">The value to search for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf(this ReadOnlySpan<byte> span, byte value, int index, int count)
+        public static int IndexOf(this ReadOnlySpan<byte> span, byte value, int startIndex, int count)
         {
-            return IndexOfHelper(ref span.DangerousGetPinnableReference(), index, count, value, span.Length);
+            return IndexOfHelper(ref span.DangerousGetPinnableReference(), startIndex, count, value, span.Length);
         }
 
-        private static int IndexOfHelper(ref byte searchSpace, int index, int count, byte value, int spanLength)
+        private static int IndexOfHelper(ref byte searchSpace, int startIndex, int count, byte value, int length)
         {
-            if (index >= spanLength || count == 0)
-            {
-                return -1;
-            }
+            Debug.Assert(length >= 0);
 
-            int remainingLength = Math.Min(count, spanLength - index);
-
-            index--;
+            int index = startIndex - 1;
+            int remainingLength = Math.Min(count, length - startIndex);
             while (remainingLength >= 8)
             {
                 if (value == Unsafe.Add(ref searchSpace, ++index))
