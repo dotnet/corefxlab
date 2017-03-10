@@ -139,10 +139,10 @@ namespace System.Slices.Tests
             {
                 var span = new Span<ulong>((void*)huge, ULongThreeGiBLimit);
 
-                var asInt = span.Cast<ulong, int>();
+                var asInt = span.NonPortableCast<ulong, int>();
                 Assert.Equal(Int32ThreeGiBLimit, asInt.Length);
 
-                var asULong = asInt.Cast<int, ulong>();
+                var asULong = asInt.NonPortableCast<int, ulong>();
                 Assert.Equal(ULongThreeGiBLimit, asULong.Length);
 
                 asULong[ULongTwoGiBLimit + 4] = 42;
@@ -279,10 +279,10 @@ namespace System.Slices.Tests
             {
                 var span = new ReadOnlySpan<ulong>((void*)huge, ULongThreeGiBLimit);
 
-                var asInt = span.Cast<ulong, int>();
+                var asInt = span.NonPortableCast<ulong, int>();
                 Assert.Equal(Int32ThreeGiBLimit, asInt.Length);
 
-                var asULong = asInt.Cast<int, ulong>();
+                var asULong = asInt.NonPortableCast<int, ulong>();
                 Assert.Equal(ULongThreeGiBLimit, asULong.Length);
 
                 var writable = new Span<ulong>((void*)huge, ULongThreeGiBLimit);

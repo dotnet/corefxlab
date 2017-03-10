@@ -12,34 +12,6 @@ namespace System
     public static partial class SpanExtensionsLabs
     {
         /// <summary>
-        /// Casts a Slice of one primitive type (T) to another primitive type (U).
-        /// These types may not contain managed objects, in order to preserve type
-        /// safety.  This is checked statically by a Roslyn analyzer.
-        /// </summary>
-        /// <param name="slice">The source slice, of type T.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<U> Cast<[Primitive]T, [Primitive]U>(this Span<T> slice)
-            where T : struct
-            where U : struct
-        {
-            return slice.NonPortableCast<T, U>();
-        }
-
-        /// <summary>
-        /// Casts a Slice of one primitive type (T) to another primitive type (U).
-        /// These types may not contain managed objects, in order to preserve type
-        /// safety.  This is checked statically by a Roslyn analyzer.
-        /// </summary>
-        /// <param name="slice">The source slice, of type T.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<U> Cast<[Primitive]T, [Primitive]U>(this ReadOnlySpan<T> slice)
-            where T : struct
-            where U : struct
-        {
-            return slice.NonPortableCast<T, U>();
-        }
-
-        /// <summary>
         /// Reads a structure of type T out of a slice of bytes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -47,7 +19,7 @@ namespace System
             where T : struct
         {
             Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
-            return Unsafe.As<byte, T>(ref slice.DangerousGetPinnableReference());
+            return Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
         }
 
         /// <summary>
@@ -58,7 +30,7 @@ namespace System
             where T : struct
         {
             Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
-            return Unsafe.As<byte, T>(ref slice.DangerousGetPinnableReference());
+            return Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
         }
 
         /// <summary>
@@ -72,7 +44,7 @@ namespace System
                 value = default(T);
                 return false;
             }
-            value = Unsafe.As<byte, T>(ref slice.DangerousGetPinnableReference());
+            value = Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
             return true;
         }
 
@@ -87,7 +59,7 @@ namespace System
                 value = default(T);
                 return false;
             }
-            value = Unsafe.As<byte, T>(ref slice.DangerousGetPinnableReference());
+            value = Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
             return true;
         }
 
@@ -99,8 +71,7 @@ namespace System
             where T : struct
         {
             Contract.RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
-            Span<T> castedSlice = slice.Cast<byte, T>();
-            castedSlice[0] = value;
+            Unsafe.WriteUnaligned<T>(ref slice.DangerousGetPinnableReference(), value);
         }
 
         /// <summary>
@@ -113,8 +84,7 @@ namespace System
             if (Unsafe.SizeOf<T>() > (uint)slice.Length) {
                 return false;
             }
-            Span<T> castedSlice = slice.Cast<byte, T>();
-            castedSlice[0] = value;
+            Unsafe.WriteUnaligned<T>(ref slice.DangerousGetPinnableReference(), value);
             return true;
         }
     }

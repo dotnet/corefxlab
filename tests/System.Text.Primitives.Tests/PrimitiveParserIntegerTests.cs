@@ -163,7 +163,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -241,7 +241,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -319,7 +319,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -397,7 +397,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -475,7 +475,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -553,7 +553,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -631,7 +631,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -709,7 +709,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -790,7 +790,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -895,7 +895,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -975,7 +975,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -1080,7 +1080,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -1160,7 +1160,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -1265,7 +1265,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -1345,7 +1345,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
@@ -1450,7 +1450,7 @@ namespace System.Text.Primitives.Tests
             int consumed;
             ReadOnlySpan<byte> utf8Span = UtfEncode(text, false);
             ReadOnlySpan<byte> utf16ByteSpan = UtfEncode(text, true);
-            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.Cast<byte, char>();
+            ReadOnlySpan<char> utf16CharSpan = utf16ByteSpan.NonPortableCast<byte, char>();
             byte[] textBytes = utf8Span.ToArray();
             char[] textChars = utf16CharSpan.ToArray();
             bool result;
