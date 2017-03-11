@@ -42,4 +42,4 @@ Option | Description
 --perf:runid | User defined id given to the performance harness.
 --perf:typenames | The (optional) type names of the test classes to run.
 --help | Display this help screen.
---version | Display version information
+--version | Display version information.
