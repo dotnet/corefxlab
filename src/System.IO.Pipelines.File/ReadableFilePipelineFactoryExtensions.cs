@@ -13,10 +13,9 @@ namespace System.IO.Pipelines.File
         public static IPipeReader ReadFile(this PipeFactory factory, string path)
         {
             var pipe = factory.Create();
-
-            var file = new FileReader(pipe);
+            var file = new FileReader(pipe.Writer);
             file.OpenReadFile(path);
-            return file;
+            return pipe.Reader;
         }
     }
 }
