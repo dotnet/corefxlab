@@ -31,7 +31,7 @@ namespace System.Text
             }
             else if (encoder.IsInvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
+                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
                 bool result;
                 if (format.IsHexadecimal)
@@ -125,7 +125,7 @@ namespace System.Text
             }
             else if (encoder.IsInvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
+                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
                 bool result;
                 if (format.IsHexadecimal)
@@ -219,7 +219,7 @@ namespace System.Text
             }
             else if (encoder.IsInvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
+                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
                 bool result;
                 if (format.IsHexadecimal)
@@ -313,7 +313,7 @@ namespace System.Text
             }
             else if (encoder.IsInvariantUtf16)
             {
-                ReadOnlySpan<char> utf16Text = text.Cast<byte, char>();
+                ReadOnlySpan<char> utf16Text = text.NonPortableCast<byte, char>();
                 int charsConsumed;
                 bool result;
                 if (format.IsHexadecimal)

@@ -201,18 +201,18 @@ namespace System
             // perf: it is cheaper to compare 'n' long elements than 'n*8' bytes (in a loop)
             if ((bytesCount & 0x00000007) == 0) // fast % sizeof(long)
             {
-                return SequenceEqual(Cast<T, long>(first), Cast<U, long>(second));
+                return SequenceEqual(first.NonPortableCast<T, long>(), second.NonPortableCast<U, long>());
             }
             if ((bytesCount & 0x00000003) == 0) // fast % sizeof(int)
             {
-                return SequenceEqual(Cast<T, int>(first), Cast<U, int>(second));
+                return SequenceEqual(first.NonPortableCast<T, int>(), second.NonPortableCast<U, int>());
             }
             if ((bytesCount & 0x00000001) == 0) // fast % sizeof(short)
             {
-                return SequenceEqual(Cast<T, short>(first), Cast<U, short>(second));
+                return SequenceEqual(first.NonPortableCast<T, short>(), second.NonPortableCast<U, short>());
             }
 
-            return SequenceEqual(Cast<T, byte>(first), Cast<U, byte>(second));
+            return SequenceEqual(first.NonPortableCast<T, byte>(), second.NonPortableCast<U, byte>());
         }
 
         /// <summary>
@@ -233,18 +233,18 @@ namespace System
             // perf: it is cheaper to compare 'n' long elements than 'n*8' bytes (in a loop)
             if ((bytesCount & 0x00000007) == 0) // fast % sizeof(long)
             {
-                return SequenceEqual(Cast<T, long>(first), Cast<U, long>(second));
+                return SequenceEqual(first.NonPortableCast<T, long>(), second.NonPortableCast<U, long>());
             }
             if ((bytesCount & 0x00000003) == 0) // fast % sizeof(int)
             {
-                return SequenceEqual(Cast<T, int>(first), Cast<U, int>(second));
+                return SequenceEqual(first.NonPortableCast<T, int>(), second.NonPortableCast<U, int>());
             }
             if ((bytesCount & 0x00000001) == 0) // fast % sizeof(short)
             {
-                return SequenceEqual(Cast<T, short>(first), Cast<U, short>(second));
+                return SequenceEqual(first.NonPortableCast<T, short>(), second.NonPortableCast<U, short>());
             }
 
-            return SpanExtensions.SequenceEqual(Cast<T, byte>(first), Cast<U, byte>(second));
+            return SpanExtensions.SequenceEqual(first.NonPortableCast<T, byte>(), second.NonPortableCast<U, byte>());
         }
     }
 }

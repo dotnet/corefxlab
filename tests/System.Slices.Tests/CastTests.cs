@@ -56,7 +56,7 @@ namespace System.Slices.Tests
             var ints = new int[100000];
             Random r = new Random(42324232);
             for (int i = 0; i < ints.Length; i++) { ints[i] = r.Next(); }
-            var bytes = ints.Slice().Cast<int, byte>();
+            var bytes = ints.Slice().NonPortableCast<int, byte>();
             Assert.Equal(bytes.Length, ints.Length * sizeof(int));
             for (int i = 0; i < ints.Length; i++)
             {
@@ -73,7 +73,7 @@ namespace System.Slices.Tests
             var bytes = new byte[100000];
             Random r = new Random(541345);
             for (int i = 0; i < bytes.Length; i++) { bytes[i] = (byte)r.Next(256); }
-            var ints = bytes.Slice().Cast<byte, int>();
+            var ints = bytes.Slice().NonPortableCast<byte, int>();
             Assert.Equal(ints.Length, bytes.Length / sizeof(int));
             for (int i = 0; i < ints.Length; i++)
             {
@@ -91,7 +91,7 @@ namespace System.Slices.Tests
         {
             var sourceSlice = new SevenBytesStruct[sourceLength].Slice();
 
-            var targetSlice = sourceSlice.Cast<SevenBytesStruct, short>();
+            var targetSlice = sourceSlice.NonPortableCast<SevenBytesStruct, short>();
 
             Assert.Equal((sourceLength * 7) / sizeof(short), targetSlice.Length);
         }
@@ -105,7 +105,7 @@ namespace System.Slices.Tests
         {
             var sourceSlice = new short[sourceLength].Slice();
 
-            var targetSlice = sourceSlice.Cast<short, SevenBytesStruct>();
+            var targetSlice = sourceSlice.NonPortableCast<short, SevenBytesStruct>();
 
             Assert.Equal(0, targetSlice.Length);
         }
@@ -117,7 +117,7 @@ namespace System.Slices.Tests
         {
             var sourceSlice = new short[sourceLength].Slice();
 
-            var targetSlice = sourceSlice.Cast<short, SevenBytesStruct>();
+            var targetSlice = sourceSlice.NonPortableCast<short, SevenBytesStruct>();
 
             Assert.Equal(1, targetSlice.Length);
         }
@@ -133,7 +133,7 @@ namespace System.Slices.Tests
 
                 Assert.Throws<OverflowException>(() =>
                 {
-                    var targetSlice = sourceSlice.Cast<SevenBytesStruct, short>();
+                    var targetSlice = sourceSlice.NonPortableCast<SevenBytesStruct, short>();
                 });
             }
         }

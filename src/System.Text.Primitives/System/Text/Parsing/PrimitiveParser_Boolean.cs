@@ -21,7 +21,7 @@ namespace System.Text
             }
             if (encoder.IsInvariantUtf16)
             {
-                ReadOnlySpan<char> textChars = text.Cast<byte, char>();
+                ReadOnlySpan<char> textChars = text.NonPortableCast<byte, char>();
                 int charactersConsumed;
                 bool result = InvariantUtf16.TryParseBoolean(textChars, out value, out charactersConsumed);
                 bytesConsumed = charactersConsumed * sizeof(char);
