@@ -9,14 +9,13 @@ using Microsoft.Win32.SafeHandles;
 
 namespace System.IO.Pipelines.File
 {
-    public class FileReader : PipeReader
+    public class FileReader
     {
-        public FileReader(MemoryPool pool) : base(pool)
-        {
-        }
+        private readonly IPipeWriter _writer;
 
-        public FileReader(IPipe pipe) : base(pipe)
+        public FileReader(IPipeWriter writer)
         {
+            _writer = writer;
         }
 
         // Win32 file impl
@@ -29,7 +28,7 @@ namespace System.IO.Pipelines.File
 
             var readOperation = new ReadOperation
             {
-                Writer = Pipe.Writer,
+                Writer = _writer,
                 FileHandle = fileHandle,
                 ThreadPoolBoundHandle = handle,
                 IOCallback = IOCallback
