@@ -31,3 +31,15 @@ following changes to enable it to run using this harness:
 * Add the new element to the array returned by `GetTestAssemblies()` inside
   `PerfHarness.cs`. The element should be the name of the perf test project
   assembly, excluding the file extension.
+
+## Xunit-Performance-Api
+
+Here are the list of command line options available when running performance tests (starting from build [1.0.0-alpha-build0048](https://dotnet.myget.org/feed/dotnet-core/package/nuget/xunit.performance.api) onwards).
+
+Option | Description
+--- | ---
+--perf:outputdir | Specifies the output directory name.
+--perf:runid | User defined id given to the performance harness.
+--perf:typenames | The (optional) type names of the test classes to run.
+--help | Display this help screen.
+--version | Display version information
