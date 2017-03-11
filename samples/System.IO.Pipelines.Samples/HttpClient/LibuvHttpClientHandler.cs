@@ -45,7 +45,7 @@ namespace System.IO.Pipelines.Samples
             // End of the headers
             requestBuffer.Append("\r\n\r\n", TextEncoder.Utf8);
 
-            if (request.Method != HttpMethod.Get && request.Method != HttpMethod.Head)
+            if (request.Method != System.Net.Http.HttpMethod.Get && request.Method != System.Net.Http.HttpMethod.Head)
             {
                 WriteHeaders(request.Content.Headers, ref requestBuffer);
 

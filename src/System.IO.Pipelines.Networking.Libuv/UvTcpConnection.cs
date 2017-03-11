@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Networking.Libuv.Interop;
+using System.Buffers;
 
 namespace System.IO.Pipelines.Networking.Libuv
 {
@@ -24,6 +25,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private Task _sendingTask;
         private WritableBuffer? _inputBuffer;
+        private MemoryHandle _inputBufferHandle;
 
         public UvTcpConnection(UvThread thread, UvTcpHandle handle)
         {
@@ -151,6 +153,8 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private async void OnRead(UvStreamHandle handle, int status)
         {
+            _inputBufferHandle.Free();
+
             if (status == 0)
             {
                 // A zero status does not indicate an error or connection end. It indicates
@@ -232,15 +236,9 @@ namespace System.IO.Pipelines.Networking.Libuv
             var inputBuffer = _input.Writer.Alloc(2048);
 
             _inputBuffer = inputBuffer;
+            _inputBufferHandle = inputBuffer.Memory.Pin();
 
-            void* pointer;
-            if (!inputBuffer.Memory.TryGetPointer(out pointer))
-            {
-                throw new InvalidOperationException("Pointer must be pinned");
-            }
-
-
-            return handle.Libuv.buf_init((IntPtr)pointer, inputBuffer.Memory.Length);
+            return handle.Libuv.buf_init((IntPtr)_inputBufferHandle.PinnedPointer, inputBuffer.Memory.Length);
         }
     }
 }

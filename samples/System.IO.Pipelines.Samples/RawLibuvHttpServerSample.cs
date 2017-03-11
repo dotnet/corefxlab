@@ -8,7 +8,6 @@ using System.Net;
 using System.Threading;
 using System.IO.Pipelines.Networking.Libuv;
 using System.Text;
-using System.Text.Formatting;
 
 namespace System.IO.Pipelines.Samples
 {
@@ -20,9 +19,18 @@ namespace System.IO.Pipelines.Samples
             int port = 5000;
             var thread = new UvThread();
             var listener = new UvTcpListener(thread, new IPEndPoint(ip, port));
+
+            var outputString = "HTTP/1.1 200 OK" +
+                               "\r\nContent-Length: 13" +
+                               "\r\nContent-Type: text/plain" +
+                               "\r\n\r\n" +
+                               "Hello, World!";
+
+            var data = Encoding.UTF8.GetBytes(outputString);
+
             listener.OnConnection(async connection =>
             {
-                var httpParser = new HttpRequestParser();
+                var frame = new Http11Frame();
 
                 while (true)
                 {
@@ -40,38 +48,22 @@ namespace System.IO.Pipelines.Samples
                             break;
                         }
 
-                        // Parse the input http request
-                        var parseResult = httpParser.ParseRequest(input, out consumed, out examined);
-
-                        switch (parseResult)
+                        if (!frame.ParseRequest(input, out consumed, out examined))
                         {
-                            case HttpRequestParser.ParseResult.Incomplete:
-                                if (result.IsCompleted)
-                                {
-                                    // Didn't get the whole request and the connection ended
-                                    throw new EndOfStreamException();
-                                }
-                                // Need more data
-                                continue;
-                            case HttpRequestParser.ParseResult.Complete:
-                                break;
-                            case HttpRequestParser.ParseResult.BadRequest:
-                                throw new Exception();
-                            default:
-                                break;
+                            if (result.IsCompleted)
+                            {
+                                // Didn't get the whole request and the connection ended
+                                throw new EndOfStreamException();
+                            }
+
+                            continue;
                         }
 
-                        // Writing directly to pooled buffers
                         var output = connection.Output.Alloc();
-                        var formatter = new OutputFormatter<WritableBuffer>(output, TextEncoder.Utf8);
-                        formatter.Append("HTTP/1.1 200 OK");
-                        formatter.Append("\r\nContent-Length: 13");
-                        formatter.Append("\r\nContent-Type: text/plain");
-                        formatter.Append("\r\n\r\n");
-                        formatter.Append("Hello, World!");
+                        output.WriteFast(data);
                         await output.FlushAsync();
 
-                        httpParser.Reset();
+                        frame.Reset();
                     }
                     finally
                     {
@@ -94,6 +86,74 @@ namespace System.IO.Pipelines.Samples
 
             listener.Dispose();
             thread.Dispose();
+        }
+
+        private class Http11Frame : IHttpRequestLineHandler, IHttpHeadersHandler
+        {
+            private KestrelHttpParser _httpParser = new KestrelHttpParser();
+            private RequestProcessingStatus _requestProcessingStatus;
+
+            public bool ParseRequest(ReadableBuffer buffer, out ReadCursor consumed, out ReadCursor examined)
+            {
+                consumed = buffer.Start;
+                examined = buffer.End;
+
+                switch (_requestProcessingStatus)
+                {
+                    case RequestProcessingStatus.RequestPending:
+                        if (buffer.IsEmpty)
+                        {
+                            break;
+                        }
+
+                        _requestProcessingStatus = RequestProcessingStatus.ParsingRequestLine;
+                        goto case RequestProcessingStatus.ParsingRequestLine;
+                    case RequestProcessingStatus.ParsingRequestLine:
+                        if (_httpParser.ParseRequestLine(this, buffer, out consumed, out examined))
+                        {
+                            buffer = buffer.Slice(consumed, buffer.End);
+
+                            _requestProcessingStatus = RequestProcessingStatus.ParsingHeaders;
+                            goto case RequestProcessingStatus.ParsingHeaders;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    case RequestProcessingStatus.ParsingHeaders:
+                        if (_httpParser.ParseHeaders(this, buffer, out consumed, out examined, out int consumedBytes))
+                        {
+                            _requestProcessingStatus = RequestProcessingStatus.AppStarted;
+                        }
+                        break;
+                }
+
+                return _requestProcessingStatus == RequestProcessingStatus.AppStarted;
+            }
+
+            public void OnHeader(Span<byte> name, Span<byte> value)
+            {
+
+            }
+
+            public void OnStartLine(HttpMethod method, HttpVersion version, Span<byte> target, Span<byte> path, Span<byte> query, Span<byte> customMethod, bool pathEncoded)
+            {
+
+            }
+
+            public void Reset()
+            {
+                _requestProcessingStatus = RequestProcessingStatus.RequestPending;
+                _httpParser.Reset();
+            }
+
+            private enum RequestProcessingStatus
+            {
+                RequestPending,
+                ParsingRequestLine,
+                ParsingHeaders,
+                AppStarted
+            }
         }
     }
 }
