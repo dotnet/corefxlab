@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Buffers.Pools;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -557,7 +558,7 @@ namespace System.IO.Pipelines.Tests
 
         private class StreamAndPipeReader : Stream, IPipeReader
         {
-            private readonly Pipe _pipe = new Pipe(ArrayBufferPool.Instance);
+            private readonly Pipe _pipe = new Pipe(ManagedBufferPool.Shared);
 
             public override bool CanRead => true;
 
