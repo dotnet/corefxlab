@@ -14,9 +14,9 @@ namespace System.Buffers.Tests
         public void BasicsWork() {
             var pool = NativeBufferPool.Shared;
             var buffer = pool.Rent(10);
-            pool.Return(buffer);
-            buffer = pool.Rent(10); 
-            pool.Return(buffer);
+            buffer.Dispose();
+            buffer = pool.Rent(10);
+            buffer.Dispose();
         }
     }
 }

@@ -28,10 +28,11 @@ namespace System.Buffers.Pools
             _bufferCount = bufferCount;
             _memory = Marshal.AllocHGlobal(_bufferSize * _bufferCount);
         }
- 
+
         protected override void Dispose(bool disposing)
         {
-            lock (_lock) {
+            lock (_lock)
+            {
                 if (_disposed) return;
                 _disposed = true;
             }
@@ -44,48 +45,55 @@ namespace System.Buffers.Pools
             if (numberOfBytes > _bufferSize) new NotSupportedException();
 
             int i;
-            lock (_lock) {
-                for(i = 0; i < _rented.Length; i++) {
-                    if (!_rented[i]) {
+            lock (_lock)
+            {
+                for (i = 0; i < _rented.Length; i++)
+                {
+                    if (!_rented[i])
+                    {
                         _rented[i] = true;
                         break;
                     }
                 }
             }
 
-            if (i >= _rented.Length) {
-                    throw new NotImplementedException("no more buffers to rent");
+            if (i >= _rented.Length)
+            {
+                throw new NotImplementedException("no more buffers to rent");
             }
 
-            return new BufferManager(new IntPtr((byte*)(_memory + i * _bufferSize)), _bufferSize);
+            return new BufferManager(this, new IntPtr((byte*)(_memory + i * _bufferSize)), _bufferSize);
         }
 
-        public override void Return(OwnedMemory<byte> buffer)
+        internal void Return(BufferManager pooledBuffer)
         {
-            var pooledBuffer = buffer as BufferManager;
-            if (pooledBuffer == null) throw new Exception();
-
             var memory = pooledBuffer.Pointer.ToInt64();
-            if(memory < _memory.ToInt64() || memory > _memory.ToInt64() + _bufferSize * _bufferCount) {
-                throw new Exception("not rented from this pool");
-            }
-
             var offset = memory - _memory.ToInt64();
             var index = offset / _bufferSize;
 
-            lock (_lock) {
-                buffer.Dispose();
-                if (_rented[index] == false) throw new Exception("this buffer is not rented");
+            lock (_lock)
+            {
                 _rented[index] = false;
             }
         }
 
-        sealed class BufferManager : OwnedMemory<byte>
+        internal sealed class BufferManager : OwnedMemory<byte>
         {
-            public BufferManager(IntPtr memory, int length) : base(null, 0, length, memory)
-            {}
+            private readonly NativeBufferPool _pool;
+
+            public BufferManager(NativeBufferPool pool, IntPtr memory, int length) : base(null, 0, length, memory)
+            {
+                _pool = pool;
+            }
 
             public new IntPtr Pointer => base.Pointer;
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+
+                _pool.Return(this);
+            }
         }
     }
 }

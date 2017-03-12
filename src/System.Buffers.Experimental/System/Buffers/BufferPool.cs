@@ -7,8 +7,6 @@ namespace System.Buffers.Pools
     {
         public abstract OwnedMemory<byte> Rent(int minimumBufferSize);
 
-        public abstract void Return(OwnedMemory<byte> buffer);
-
         public void Dispose()
         {
             Dispose(true);

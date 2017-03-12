@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers.Pools;
 using System.Diagnostics;
 
 namespace System.IO.Pipelines
@@ -16,7 +17,7 @@ namespace System.IO.Pipelines
         // 3. _readerAwaitable & _writerAwaitable
         private readonly object _sync = new object();
 
-        private readonly IBufferPool _pool;
+        private readonly BufferPool _pool;
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
@@ -54,7 +55,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="pool"></param>
         /// <param name="options"></param>
-        public Pipe(IBufferPool pool, PipeOptions options = null)
+        public Pipe(BufferPool pool, PipeOptions options = null)
         {
             if (pool == null)
             {
@@ -148,7 +149,7 @@ namespace System.IO.Pipelines
             // If inadequate bytes left or if the segment is readonly
             if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < count || segment.ReadOnly)
             {
-                var nextBuffer = _pool.Lease(count);
+                var nextBuffer = _pool.Rent(count);
                 var nextSegment = new BufferSegment(nextBuffer);
 
                 segment.Next = nextSegment;
@@ -176,7 +177,7 @@ namespace System.IO.Pipelines
             if (segment == null)
             {
                 // No free tail space, allocate a new segment
-                segment = new BufferSegment(_pool.Lease(count));
+                segment = new BufferSegment(_pool.Rent(count));
             }
 
             if (_commitHead == null)

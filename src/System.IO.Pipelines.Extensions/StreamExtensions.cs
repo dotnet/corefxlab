@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers.Pools;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace System.IO.Pipelines
         /// <returns></returns>
         public static IPipeWriter AsPipelineWriter(this Stream stream)
         {
-            return (stream as IPipeWriter) ?? stream.AsPipelineWriter(ArrayBufferPool.Instance);
+            return (stream as IPipeWriter) ?? stream.AsPipelineWriter(ManagedBufferPool.Shared);
         }
 
         /// <summary>
@@ -24,7 +25,7 @@ namespace System.IO.Pipelines
         /// <param name="stream"></param>
         /// <param name="pool"></param>
         /// <returns></returns>
-        public static IPipeWriter AsPipelineWriter(this Stream stream, IBufferPool pool)
+        public static IPipeWriter AsPipelineWriter(this Stream stream, BufferPool pool)
         {
             var pipe = new Pipe(pool);
             pipe.CopyToAsync(stream);
