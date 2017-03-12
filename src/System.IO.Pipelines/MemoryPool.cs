@@ -4,6 +4,7 @@
 using System.Buffers;
 using System.Buffers.Pools;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace System.IO.Pipelines
 {
