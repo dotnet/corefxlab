@@ -90,9 +90,9 @@ namespace System.Buffers.Pools
 
             protected override void Dispose(bool disposing)
             {
-                base.Dispose(disposing);
-
                 _pool.Return(this);
+
+                base.Dispose(disposing);
             }
         }
     }

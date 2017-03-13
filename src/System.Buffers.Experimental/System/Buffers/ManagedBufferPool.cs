@@ -32,9 +32,9 @@ namespace System.Buffers.Pools
 
             protected override void Dispose(bool disposing)
             {
-                base.Dispose(disposing);
-
                 ArrayPool<byte>.Shared.Return(Array);
+
+                base.Dispose(disposing);
             }
         }
     }
