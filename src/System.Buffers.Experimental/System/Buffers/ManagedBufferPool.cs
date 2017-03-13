@@ -17,21 +17,25 @@ namespace System.Buffers.Pools
 
         public override OwnedMemory<byte> Rent(int minimumBufferSize)
         {
-            var array = ArrayPool<byte>.Shared.Rent(minimumBufferSize);
-            return new OwnedArray<byte>(array);
-        }
-
-        public override void Return(OwnedMemory<byte> buffer)
-        {
-            var ownedArray = buffer as OwnedArray<byte>;
-            if (ownedArray == null) throw new InvalidOperationException("buffer not rented from this pool");
-            ArrayPool<byte>.Shared.Return(ownedArray.Array);
-            buffer.Dispose();
+            return new ArrayPoolMemory(minimumBufferSize);
         }
 
         protected override void Dispose(bool disposing)
         {
-            throw new NotImplementedException();
+        }
+
+        private class ArrayPoolMemory : OwnedMemory<byte>
+        {
+            public ArrayPoolMemory(int size) : base(ArrayPool<byte>.Shared.Rent(size))
+            {
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                ArrayPool<byte>.Shared.Return(Array);
+
+                base.Dispose(disposing);
+            }
         }
     }
 }

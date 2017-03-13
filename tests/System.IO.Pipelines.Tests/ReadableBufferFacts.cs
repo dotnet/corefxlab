@@ -436,8 +436,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task CopyToAsyncNativeMemory()
         {
-            using (var pool = new NativePool())
-            using (var factory = new PipeFactory(pool))
+            using (var factory = new PipeFactory(NativeBufferPool.Shared))
             {
                 var readerWriter = factory.Create();
                 var output = readerWriter.Writer.Alloc();
@@ -608,19 +607,6 @@ namespace System.IO.Pipelines.Tests
                     b => b.Slice(0, 70).Slice(0, b.End),
                     b => b.Slice(70, b.Start)
                 };
-            }
-        }
-
-        private class NativePool : IBufferPool
-        {
-            public void Dispose()
-            {
-
-            }
-
-            public OwnedMemory<byte> Lease(int size)
-            {
-                return NativeBufferPool.Shared.Rent(size);
             }
         }
     }

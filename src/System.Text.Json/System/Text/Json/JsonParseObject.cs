@@ -344,7 +344,7 @@ namespace System.Text.Json
             if (_pool == null) throw new InvalidOperationException("only root object can (and should) be disposed.");
             _db = ReadOnlySpan<byte>.Empty;
             _values = ReadOnlySpan<byte>.Empty;
-            _pool.Return(_dbMemory);
+            _dbMemory.Dispose();
             _dbMemory = null;
         }
     }

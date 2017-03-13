@@ -225,7 +225,7 @@ namespace System.Text.Json
 
             var newStackMemory = newScratch.Memory.Slice(dbLength);
             _stack.Resize(newStackMemory);
-            _pool.Return(_scratchManager);
+            _scratchManager.Dispose();
             _scratchManager = newScratch;
         }
 

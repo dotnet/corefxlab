@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Buffers.Pools;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 
@@ -10,7 +11,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Used to allocate and distribute re-usable blocks of memory.
     /// </summary>
-    public class MemoryPool : IBufferPool
+    public class MemoryPool : BufferPool
     {
         /// <summary>
         /// The gap between blocks' starting address. 4096 is chosen because most operating systems are 4k pages in size and alignment.
@@ -67,7 +68,7 @@ namespace System.IO.Pipelines
 
         private Action<MemoryPoolSlab> _slabDeallocationCallback;
 
-        public OwnedMemory<byte> Lease(int size)
+        public override OwnedMemory<byte> Rent(int size)
         {
             if (size > _blockLength)
             {
@@ -98,7 +99,7 @@ namespace System.IO.Pipelines
         {
             Debug.Assert(!_disposedValue, "Block being leased from disposed pool!");
 #else
-        public MemoryPoolBlock Lease()
+        private MemoryPoolBlock Lease()
         {
 #endif
             MemoryPoolBlock block;
@@ -191,7 +192,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        protected void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!_disposedValue)
             {
@@ -223,21 +224,6 @@ namespace System.IO.Pipelines
                 // N/A: set large fields to null.
 
             }
-        }
-
-        // N/A: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~MemoryPool2() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            // N/A: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
         }
     }
 }

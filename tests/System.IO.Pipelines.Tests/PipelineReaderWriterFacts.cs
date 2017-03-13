@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
 using Xunit;
+using System.Buffers.Pools;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -510,7 +511,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task MultipleCompleteReaderWriterCauseDisposeOnlyOnce()
         {
-            var pool = new DisposeTrackingOwnedMemory(new byte[1]);
+            var pool = new DisposeTrackingBufferPool();
 
             using (var factory = new PipeFactory(pool))
             {
@@ -574,23 +575,36 @@ namespace System.IO.Pipelines.Tests
             Assert.True(flushTask.IsCompleted);
         }
 
-        private class DisposeTrackingOwnedMemory : OwnedMemory<byte>, IBufferPool
+        private class DisposeTrackingBufferPool :  BufferPool
         {
-            public DisposeTrackingOwnedMemory(byte[] array) : base(array)
+            private DisposeTrackingOwnedMemory _memory = new DisposeTrackingOwnedMemory(new byte[1]);
+
+            public override OwnedMemory<byte> Rent(int size)
             {
+                return _memory;
             }
+
+            public int Disposed => _memory.Disposed;
 
             protected override void Dispose(bool disposing)
             {
-                Disposed++;
-                base.Dispose(disposing);
+                
             }
 
-            public int Disposed { get; set; }
-
-            public OwnedMemory<byte> Lease(int size)
+            private class DisposeTrackingOwnedMemory : OwnedMemory<byte>
             {
-                return this;
+                public DisposeTrackingOwnedMemory(byte[] array) : base(array)
+                {
+                }
+
+                protected override void Dispose(bool disposing)
+                {
+                    Disposed++;
+                    base.Dispose(disposing);
+                }
+
+                public int Disposed { get; set; }
+
             }
         }
     }

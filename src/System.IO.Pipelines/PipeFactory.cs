@@ -1,12 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Buffers.Pools;
 
 namespace System.IO.Pipelines
 {
@@ -15,13 +10,13 @@ namespace System.IO.Pipelines
     /// </summary>
     public class PipeFactory : IDisposable
     {
-        private readonly IBufferPool _pool;
+        private readonly BufferPool _pool;
 
         public PipeFactory() : this(new MemoryPool())
         {
         }
 
-        public PipeFactory(IBufferPool pool)
+        public PipeFactory(BufferPool pool)
         {
             _pool = pool;
         }
