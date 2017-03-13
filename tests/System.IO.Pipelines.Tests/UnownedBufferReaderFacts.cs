@@ -605,12 +605,12 @@ namespace System.IO.Pipelines.Tests
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                return _pipe.ReadAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                return _pipe.ReadAsync(new ArraySegment<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
-                return await _pipe.ReadAsync(new Span<byte>(buffer, offset, count));
+                return await _pipe.ReadAsync(new ArraySegment<byte>(buffer, offset, count));
             }
 
             public ReadableBufferAwaitable ReadAsync()

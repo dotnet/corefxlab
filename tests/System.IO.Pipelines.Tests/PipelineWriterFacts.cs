@@ -157,7 +157,7 @@ namespace System.IO.Pipelines.Tests
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                return _pipe.ReadAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                return _pipe.ReadAsync(new ArraySegment<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             public override long Seek(long offset, SeekOrigin origin)

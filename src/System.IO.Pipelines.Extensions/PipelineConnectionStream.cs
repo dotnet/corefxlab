@@ -94,7 +94,7 @@ namespace System.IO.Pipelines
 
         private ValueTask<int> ReadAsync(ArraySegment<byte> buffer)
         {
-            return _connection.Input.ReadAsync(new Span<byte>(buffer.Array, buffer.Offset, buffer.Count));
+            return _connection.Input.ReadAsync(buffer);
         }
 
 #if NET451
