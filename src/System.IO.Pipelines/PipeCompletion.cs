@@ -16,6 +16,8 @@ namespace System.IO.Pipelines
 
         public bool IsCompleted => _exception != null;
 
+        public bool IsCompletedSuccessfully => _exception == _completedNoException;
+
         public void TryComplete(Exception exception = null)
         {
 #if COMPLETION_LOCATION_TRACKING

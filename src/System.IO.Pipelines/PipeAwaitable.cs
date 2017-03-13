@@ -35,8 +35,7 @@ namespace System.IO.Pipelines
 
         public void Reset()
         {
-            if (_state == _awaitableIsCompleted &&
-                _cancelledState != CancelledState.CancellationRequested)
+            if (IsCompletedSuccessfully)
             {
                 _state = _awaitableIsNotCompleted;
             }
@@ -49,6 +48,8 @@ namespace System.IO.Pipelines
         }
 
         public bool IsCompleted => ReferenceEquals(_state, _awaitableIsCompleted);
+
+        public bool IsCompletedSuccessfully => IsCompleted && _cancelledState != CancelledState.CancellationRequested;
 
         public Action OnCompleted(Action continuation, ref PipeCompletion completion)
         {

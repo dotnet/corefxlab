@@ -599,6 +599,8 @@ namespace System.IO.Pipelines
             return new FlushResult(isCancelled, isCompleted);
         }
 
+        bool IWritableBufferAwaiter.IsCompletedSuccessfully => _writerAwaitable.IsCompletedSuccessfully && _readerCompletion.IsCompletedSuccessfully;
+
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
         {
             Action awaitable;
