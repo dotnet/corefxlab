@@ -50,7 +50,7 @@ namespace System.IO.Pipelines
         /// Thread-safe collection of blocks which are currently in the pool. A slab will pre-allocate all of the block tracking objects
         /// and add them to this collection. When memory is requested it is taken from here first, and when it is returned it is re-added.
         /// </summary>
-        private readonly ConcurrentQueue<MemoryPoolBlock> _blocks = new ConcurrentQueue<MemoryPoolBlock>();
+        private readonly ConcurrentQueue<BlockWrapper> _blocks = new ConcurrentQueue<BlockWrapper>();
 
         /// <summary>
         /// Thread-safe collection of slabs which have been allocated by this pool. As long as a slab is in this collection and slab.IsActive, 
@@ -89,38 +89,45 @@ namespace System.IO.Pipelines
             _slabDeallocationCallback = callback;
         }
 
+#if BLOCK_LEASE_TRACKING
         /// <summary>
         /// Called to take a block from the pool.
         /// </summary>
         /// <returns>The block that is reserved for the called. It must be passed to Return when it is no longer being used.</returns>
-#if DEBUG
         private MemoryPoolBlock Lease()
         {
             Debug.Assert(!_disposedValue, "Block being leased from disposed pool!");
-#else
-        public MemoryPoolBlock Lease()
-        {
-#endif
             MemoryPoolBlock block;
-            if (_blocks.TryDequeue(out block))
+            if (_blocks.TryDequeue(out BlockWrapper wrapper))
             {
                 // block successfully taken from the stack - return it
-
-#if BLOCK_LEASE_TRACKING
+                block = wrapper.Block;
                 block.Leaser = Environment.StackTrace;
                 block.IsLeased = true;
-#endif
                 return block;
             }
             // no blocks available - grow the pool
             block = AllocateSlab();
-
-#if BLOCK_LEASE_TRACKING
             block.Leaser = Environment.StackTrace;
             block.IsLeased = true;
-#endif
             return block;
         }
+#else
+        /// <summary>
+        /// Called to take a block from the pool.
+        /// </summary>
+        /// <returns>The block that is reserved for the called. It must be passed to Return when it is no longer being used.</returns>
+        public MemoryPoolBlock Lease()
+        {
+            if (_blocks.TryDequeue(out BlockWrapper wrapper))
+            {
+                // block successfully taken from the stack - return it
+                return wrapper.Block;
+            }
+            // no blocks available - grow the pool
+            return AllocateSlab();
+        }
+#endif
 
         /// <summary>
         /// Internal method called when a block is requested and the pool is empty. It allocates one additional slab, creates all of the 
@@ -128,6 +135,8 @@ namespace System.IO.Pipelines
         /// </summary>
         private MemoryPoolBlock AllocateSlab()
         {
+            const int poolAllocationLength = _slabLength - _blockStride;
+
             var slab = MemoryPoolSlab.Create(_slabLength);
             _slabs.Push(slab);
 
@@ -137,7 +146,6 @@ namespace System.IO.Pipelines
             var basePtr = slab.NativePointer;
             var firstOffset = (int)((_blockStride - 1) - ((ulong)(basePtr + _blockStride - 1) % _blockStride));
 
-            var poolAllocationLength = _slabLength - _blockStride;
 
             var offset = firstOffset;
             for (;
@@ -183,7 +191,7 @@ namespace System.IO.Pipelines
 
             if (block.Slab != null && block.Slab.IsActive)
             {
-                _blocks.Enqueue(block);
+                _blocks.Enqueue(new BlockWrapper() { Block = block });
             }
             else
             {
@@ -212,10 +220,9 @@ namespace System.IO.Pipelines
                 }
 
                 // Discard blocks in pool
-                MemoryPoolBlock block;
-                while (_blocks.TryDequeue(out block))
+                while (_blocks.TryDequeue(out BlockWrapper wrapper))
                 {
-                    GC.SuppressFinalize(block);
+                    GC.SuppressFinalize(wrapper.Block);
                 }
 
                 // N/A: free unmanaged resources (unmanaged objects) and override a finalizer below.
@@ -238,6 +245,12 @@ namespace System.IO.Pipelines
             Dispose(true);
             // N/A: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
+        }
+
+        // To make the Array in _blocks ConcurrentQueue invariant and avoid type checks
+        private struct BlockWrapper
+        {
+            public MemoryPoolBlock Block;
         }
     }
 }
