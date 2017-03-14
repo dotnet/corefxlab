@@ -290,5 +290,470 @@ namespace System.Slices.Tests
             object[] array = new string[10];
             Assert.Throws<ArrayTypeMismatchException>(() => { var slice = new Span<object>(array, 0, 10); });
         }
+
+        #region ReadOnlySpanStartsWithByte
+        [Fact]
+        public static void ZeroLengthStartsWith_Byte()
+        {
+            byte[] a = { 4, 5, 6 };
+            ReadOnlySpan<byte> bytes = new ReadOnlySpan<byte>(a);
+            ReadOnlySpan<byte> slice = new ReadOnlySpan<byte>(a, 2, 0);
+            Assert.True(bytes.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void StartsWithNoMatchEmptySpan_Byte()
+        {
+            byte[] a = { 4, 5, 6 };
+            byte[] b = { 1, 2, 3 };
+            ReadOnlySpan<byte> bytes = new ReadOnlySpan<byte>(a, 0, 0);
+            ReadOnlySpan<byte> slice = new ReadOnlySpan<byte>(b, 0, 1);
+            Assert.False(bytes.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void StartsWithMatchEmptySpans_Byte()
+        {
+            byte[] a = { 4, 5, 6 };
+            byte[] b = { 1, 2, 3 };
+            ReadOnlySpan<byte> bytes = new ReadOnlySpan<byte>(a, 0, 0);
+            ReadOnlySpan<byte> slice = new ReadOnlySpan<byte>(b, 0, 0);
+            Assert.True(bytes.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void SameSpanStartsWith_Byte()
+        {
+            byte[] a = { 4, 5, 6 };
+            ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+            Assert.True(span.StartsWith(span));
+        }
+
+        [Fact]
+        public static void SameSpanValuesStartsWith_Byte()
+        {
+            byte[] a = { 4, 5, 6 };
+            ReadOnlySpan<byte> bytes = new ReadOnlySpan<byte>(a);
+            ReadOnlySpan<byte> slice = new ReadOnlySpan<byte>(a);
+            Assert.True(bytes.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void LengthMismatchStartsWith_Byte()
+        {
+            byte[] a = { 4, 5, 6 };
+            ReadOnlySpan<byte> bytes = new ReadOnlySpan<byte>(a, 0, 2);
+            ReadOnlySpan<byte> slice = new ReadOnlySpan<byte>(a);
+            Assert.False(bytes.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void StartsWithMatch_Byte()
+        {
+            byte[] a = { 4, 5, 6 };
+            ReadOnlySpan<byte> bytes = new ReadOnlySpan<byte>(a);
+            ReadOnlySpan<byte> slice = new ReadOnlySpan<byte>(a, 0, 1);
+            Assert.True(bytes.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void StartsWithNoMatch_Byte()
+        {
+            byte[] a = { 4, 5, 6 };
+            byte[] b = { 1, 2, 3 };
+            ReadOnlySpan<byte> bytes = new ReadOnlySpan<byte>(a);
+            ReadOnlySpan<byte> slice = new ReadOnlySpan<byte>(b, 0, 1);
+            Assert.False(bytes.StartsWith(slice));
+        }
+        #endregion
+
+        #region ReadOnlySpanStartsWithChar
+        [Fact]
+        public static void ZeroLengthStartsWith_Char()
+        {
+            char[] a = { '4', '5', '6' };
+            ReadOnlySpan<char> str = new ReadOnlySpan<char>(a);
+            ReadOnlySpan<char> value = new ReadOnlySpan<char>(a, 2, 0);
+            Assert.True(str.StartsWith(value));
+        }
+
+        [Fact]
+        public static void StartsWithNoMatchEmptySpan_Char()
+        {
+            char[] a = { '4', '5', '6' };
+            char[] b = { '1', '2', '3' };
+            ReadOnlySpan<char> str = new ReadOnlySpan<char>(a, 0, 0);
+            ReadOnlySpan<char> value = new ReadOnlySpan<char>(b, 0, 1);
+            Assert.False(str.StartsWith(value));
+        }
+
+        [Fact]
+        public static void StartsWithMatchEmptySpans_Char()
+        {
+            char[] a = { '4', '5', '6' };
+            char[] b = { '1', '2', '3' };
+            ReadOnlySpan<char> str = new ReadOnlySpan<char>(a, 0, 0);
+            ReadOnlySpan<char> value = new ReadOnlySpan<char>(b, 0, 0);
+            Assert.True(str.StartsWith(value));
+        }
+
+        [Fact]
+        public static void SameSpanStartsWith_Char()
+        {
+            char[] a = { '4', '5', '6' };
+            ReadOnlySpan<char> span = new ReadOnlySpan<char>(a);
+            Assert.True(span.StartsWith(span));
+        }
+
+        [Fact]
+        public static void SameSpanValuesStartsWith_Char()
+        {
+            char[] a = { '4', '5', '6' };
+            ReadOnlySpan<char> str = new ReadOnlySpan<char>(a);
+            ReadOnlySpan<char> value = new ReadOnlySpan<char>(a);
+            Assert.True(str.StartsWith(value));
+        }
+
+        [Fact]
+        public static void LengthMismatchStartsWith_Char()
+        {
+            char[] a = { '4', '5', '6' };
+            ReadOnlySpan<char> str = new ReadOnlySpan<char>(a, 0, 2);
+            ReadOnlySpan<char> value = new ReadOnlySpan<char>(a);
+            Assert.False(str.StartsWith(value));
+        }
+
+        [Fact]
+        public static void StartsWithMatch_Char()
+        {
+            char[] a = { '4', '5', '6' };
+            ReadOnlySpan<char> str = new ReadOnlySpan<char>(a);
+            ReadOnlySpan<char> value = new ReadOnlySpan<char>(a, 0, 1);
+            Assert.True(str.StartsWith(value));
+        }
+
+        [Fact]
+        public static void StartsWithNoMatch_Char()
+        {
+            char[] a = { '4', '5', '6' };
+            char[] b = { '1', '2', '3' };
+            ReadOnlySpan<char> str = new ReadOnlySpan<char>(a);
+            ReadOnlySpan<char> value = new ReadOnlySpan<char>(b, 0, 1);
+            Assert.False(str.StartsWith(value));
+        }
+        #endregion
+
+        #region ReadOnlySpanStartsWith<T>
+        [Fact]
+        public static void ZeroLengthStartsWith()
+        {
+            int[] a = { 4, 5, 6 };
+            ReadOnlySpan<int> items = new ReadOnlySpan<int>(a);
+            ReadOnlySpan<int> slice = new ReadOnlySpan<int>(a, 2, 0);
+            Assert.True(items.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void StartsWithNoMatchEmptySpan()
+        {
+            int[] a = { 4, 5, 6 };
+            int[] b = { 1, 2, 3 };
+            ReadOnlySpan<int> items = new ReadOnlySpan<int>(a, 0, 0);
+            ReadOnlySpan<int> slice = new ReadOnlySpan<int>(b, 0, 1);
+            Assert.False(items.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void StartsWithMatchEmptySpans()
+        {
+            int[] a = { 4, 5, 6 };
+            int[] b = { 1, 2, 3 };
+            ReadOnlySpan<int> items = new ReadOnlySpan<int>(a, 0, 0);
+            ReadOnlySpan<int> slice = new ReadOnlySpan<int>(b, 0, 0);
+            Assert.True(items.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void SameSpanStartsWith()
+        {
+            int[] a = { 4, 5, 6 };
+            ReadOnlySpan<int> span = new ReadOnlySpan<int>(a);
+            Assert.True(span.StartsWith(span));
+        }
+
+        [Fact]
+        public static void SameSpanValuesStartsWith()
+        {
+            int[] a = { 4, 5, 6 };
+            ReadOnlySpan<int> items = new ReadOnlySpan<int>(a);
+            ReadOnlySpan<int> slice = new ReadOnlySpan<int>(a);
+            Assert.True(items.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void LengthMismatchStartsWith()
+        {
+            int[] a = { 4, 5, 6 };
+            ReadOnlySpan<int> items = new ReadOnlySpan<int>(a, 0, 2);
+            ReadOnlySpan<int> slice = new ReadOnlySpan<int>(a);
+            Assert.False(items.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void StartsWithMatch()
+        {
+            int[] a = { 4, 5, 6 };
+            ReadOnlySpan<int> items = new ReadOnlySpan<int>(a);
+            ReadOnlySpan<int> slice = new ReadOnlySpan<int>(a, 0, 1);
+            Assert.True(items.StartsWith(slice));
+        }
+
+        [Fact]
+        public static void StartsWithNoMatch()
+        {
+            int[] a = { 4, 5, 6 };
+            int[] b = { 1, 2, 3 };
+            ReadOnlySpan<int> items = new ReadOnlySpan<int>(a);
+            ReadOnlySpan<int> slice = new ReadOnlySpan<int>(b, 0, 1);
+            Assert.False(items.StartsWith(slice));
+        }
+        #endregion
+
+        #region SpanIndexOfByte
+
+        [Fact]
+        public static void TestMatchWithIndexAndCount_Byte()
+        {
+            for (int i = 1; i < 10; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    byte[] a = new byte[i];
+                    a[j] = 99;
+                    ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+                    int idx = span.IndexOf(99, 0, 10);
+                    Assert.Equal(j, idx);
+                }
+            }
+        }
+
+        [Fact]
+        public static void TestMatchWithIndexAndCountGreaterThanLength_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            Span<byte> span = new Span<byte>(a);
+
+            int idx = span.IndexOf(99, 45, 75);
+            Assert.Equal(50, idx);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        [InlineData(500)]
+        [InlineData(1000)]
+        [InlineData(5000)]
+        public static void TestIndexOfComparison_Byte(int length)
+        {
+            const byte lookupVal = 99;
+            var a = new byte[length];
+            a[length / 2] = lookupVal;
+
+            var bytes = new Span<byte>(a);
+            int startIndex = length / 4;
+            int count = length / 2 + 1;
+
+            int actualResult = bytes.IndexOf(lookupVal, startIndex, count) - startIndex;
+            int expectedResult = bytes.Slice(startIndex, count).IndexOf(lookupVal);
+            Assert.Equal(actualResult, expectedResult);
+        }
+
+        [Fact]
+        public static void TestMatchWithCountGreaterThanLength_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            Span<byte> span = new Span<byte>(a);
+
+            int idx = span.IndexOf(99, 0, 105);
+            Assert.Equal(50, idx);
+        }
+
+        [Fact]
+        public static void TestNoMatchWithCountGreaterThanLength_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            Span<byte> span = new Span<byte>(a);
+
+            int idx = span.IndexOf(5, 0, 105);
+            Assert.Equal(-1, idx);
+        }
+
+        [Fact]
+        public static void TestNoMatchWithIndexAndCount_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+
+            int idx = span.IndexOf(99, 45, 3);
+            Assert.Equal(-1, idx);
+        }
+
+        [Fact]
+        public static void StartIndexTooLargeIndexOf_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            Span<byte> span = new Span<byte>(a);
+            int idx = span.IndexOf(99, length + 1, 10);
+            Assert.Equal(-1, idx);
+        }
+
+        public static void ZeroCountIndexOf_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            Span<byte> span = new Span<byte>(a);
+            int idx = span.IndexOf(99, 0, 0);
+            Assert.Equal(-1, idx);
+        }
+        #endregion
+
+        #region ReadOnlySpanIndexOfByte
+        [Fact]
+        public static void TestMatchWithIndexAndCountReadOnly_Byte()
+        {
+            for (int i = 1; i < 10; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    byte[] a = new byte[i];
+                    a[j] = 99;
+                    ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+                    int idx = span.IndexOf(99, 0, 10);
+                    Assert.Equal(j, idx);
+                }
+            }
+        }
+
+        [Fact]
+        public static void TestMatchWithIndexAndCountGreaterThanLengthReadOnly_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+
+            int idx = span.IndexOf(99, 45, 75);
+            Assert.Equal(50, idx);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(50)]
+        [InlineData(100)]
+        [InlineData(500)]
+        [InlineData(1000)]
+        [InlineData(5000)]
+        public static void TestIndexOfComparisonReadOnly_Byte(int length)
+        {
+            const byte lookupVal = 99;
+            var a = new byte[length];
+            a[length / 2] = lookupVal;
+
+            var bytes = new ReadOnlySpan<byte>(a);
+            int startIndex = length / 4;
+            int count = length / 2 + 1;
+
+            int actualResult = bytes.IndexOf(lookupVal, startIndex, count) - startIndex;
+            int expectedResult = bytes.Slice(startIndex, count).IndexOf(lookupVal);
+            Assert.Equal(actualResult, expectedResult);
+        }
+
+        [Fact]
+        public static void TestMatchWithCountGreaterThanLengthReadOnly_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+
+            int idx = span.IndexOf(99, 0, 105);
+            Assert.Equal(50, idx);
+        }
+
+        [Fact]
+        public static void TestNoMatchWithCountGreaterThanLengthReadOnly_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+
+            int idx = span.IndexOf(5, 0, 105);
+            Assert.Equal(-1, idx);
+        }
+
+        [Fact]
+        public static void TestNoMatchWithIndexAndCountReadOnly_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+
+            int idx = span.IndexOf(99, 45, 3);
+            Assert.Equal(-1, idx);
+        }
+
+        [Fact]
+        public static void StartIndexTooLargeIndexOfReadOnly_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+            int idx = span.IndexOf(99, length + 1, 10);
+            Assert.Equal(-1, idx);
+        }
+
+        public static void ZeroCountIndexOfReadOnly_Byte()
+        {
+            int length = 100;
+            byte[] a = new byte[length];
+            a[50] = 99;
+            ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(a);
+            int idx = span.IndexOf(99, 0, 0);
+            Assert.Equal(-1, idx);
+        }
+        #endregion
     }
 }
