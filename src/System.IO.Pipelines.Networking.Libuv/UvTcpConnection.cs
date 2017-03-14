@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Networking.Libuv.Interop;
+using System.Buffers;
 
 namespace System.IO.Pipelines.Networking.Libuv
 {
@@ -232,15 +233,11 @@ namespace System.IO.Pipelines.Networking.Libuv
             var inputBuffer = _input.Writer.Alloc(2048);
 
             _inputBuffer = inputBuffer;
+            
+            // REVIEW: Does this leak?
+            var pinned = inputBuffer.Memory.Pin();
 
-            void* pointer;
-            if (!inputBuffer.Memory.TryGetPointer(out pointer))
-            {
-                throw new InvalidOperationException("Pointer must be pinned");
-            }
-
-
-            return handle.Libuv.buf_init((IntPtr)pointer, inputBuffer.Memory.Length);
+            return handle.Libuv.buf_init((IntPtr)pinned.PinnedPointer, inputBuffer.Memory.Length);
         }
     }
 }
