@@ -52,60 +52,6 @@ namespace System
             return SpanExtensions.IndexOf(str, value.Slice());
         }
 
-        public static int IndexOfAny(this ReadOnlySpan<char> str, params char[] values)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static int IndexOfAny(this ReadOnlySpan<char> str, params string[] values)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static int IndexOfAny(this ReadOnlySpan<char> str, params ReadOnlySpan<char>[] values)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static int LastIndexOf(this ReadOnlySpan<char> str, char value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static int LastIndexOf(this ReadOnlySpan<char> str, string value)
-        {
-            return LastIndexOf(str, value.Slice());
-        }
-
-        public static int LastIndexOf(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static int LastIndexOfAny(this ReadOnlySpan<char> str, params char[] values)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static int LastIndexOfAny(this ReadOnlySpan<char> str, params string[] values)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static int LastIndexOfAny(this ReadOnlySpan<char> str, params ReadOnlySpan<char>[] values)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static SplitEnumerator Split(this ReadOnlySpan<char> str, params char[] separator)
-        {
-            throw new NotImplementedException();
-        }
-
-        public struct SplitEnumerator
-        {
-        }
-
         public static bool StartsWith(this ReadOnlySpan<char> str, ReadOnlySpan<char> value)
         {
             if (value.Length > str.Length)
