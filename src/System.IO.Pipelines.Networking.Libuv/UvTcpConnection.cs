@@ -25,6 +25,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private Task _sendingTask;
         private WritableBuffer? _inputBuffer;
+        private MemoryHandle? _inputBufferHandle;
 
         public UvTcpConnection(UvThread thread, UvTcpHandle handle)
         {
@@ -159,6 +160,10 @@ namespace System.IO.Pipelines.Networking.Libuv
                 // See the note at http://docs.libuv.org/en/v1.x/stream.html#c.uv_read_cb.
                 _inputBuffer?.Commit();
                 _inputBuffer = null;
+
+                _inputBufferHandle?.Free();
+                _inputBufferHandle = null;
+
                 return;
             }
 
@@ -188,7 +193,10 @@ namespace System.IO.Pipelines.Networking.Libuv
             else
             {
                 var inputBuffer = _inputBuffer.Value;
+                var inputBufferHandle = _inputBufferHandle.Value;
+
                 _inputBuffer = null;
+                _inputBufferHandle = null;
 
                 inputBuffer.Advance(readCount);
                 inputBuffer.Commit();
@@ -215,6 +223,8 @@ namespace System.IO.Pipelines.Networking.Libuv
                         }
                     }
                 }
+
+                inputBufferHandle.Free();
             }
 
             if (normalDone)
@@ -231,13 +241,12 @@ namespace System.IO.Pipelines.Networking.Libuv
         private unsafe Uv.uv_buf_t OnAlloc(UvStreamHandle handle, int status)
         {
             var inputBuffer = _input.Writer.Alloc(2048);
+            var pinnedHandle = inputBuffer.Memory.Pin();
 
             _inputBuffer = inputBuffer;
+            _inputBufferHandle = pinnedHandle;
             
-            // REVIEW: Does this leak?
-            var pinned = inputBuffer.Memory.Pin();
-
-            return handle.Libuv.buf_init((IntPtr)pinned.PinnedPointer, inputBuffer.Memory.Length);
+            return handle.Libuv.buf_init((IntPtr)pinnedHandle.PinnedPointer, inputBuffer.Memory.Length);
         }
     }
 }
