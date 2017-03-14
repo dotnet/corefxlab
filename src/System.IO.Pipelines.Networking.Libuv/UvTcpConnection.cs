@@ -22,7 +22,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private Task _sendingTask;
         private WritableBuffer? _inputBuffer;
-        private MemoryHandle? _inputBufferHandle;
+        private MemoryHandle? _inputBufferPin;
 
         public UvTcpConnection(UvThread thread, UvTcpHandle handle)
         {
@@ -157,9 +157,7 @@ namespace System.IO.Pipelines.Networking.Libuv
                 // See the note at http://docs.libuv.org/en/v1.x/stream.html#c.uv_read_cb.
                 _inputBuffer?.Commit();
                 _inputBuffer = null;
-
-                _inputBufferHandle?.Free();
-                _inputBufferHandle = null;
+                UnpinInputBuffer();
 
                 return;
             }
@@ -182,6 +180,7 @@ namespace System.IO.Pipelines.Networking.Libuv
                 error = new IOException(uvError.Message, uvError);
 
                 _inputBuffer?.Commit();
+                UnpinInputBuffer();
 
                 // REVIEW: Should we treat ECONNRESET as an error?
                 // Ignore the error for now
@@ -190,13 +189,13 @@ namespace System.IO.Pipelines.Networking.Libuv
             else
             {
                 var inputBuffer = _inputBuffer.Value;
-                var inputBufferHandle = _inputBufferHandle.Value;
 
                 _inputBuffer = null;
-                _inputBufferHandle = null;
+                _inputBufferPin = null;
 
                 inputBuffer.Advance(readCount);
                 inputBuffer.Commit();
+                UnpinInputBuffer();
 
                 // Flush if there was data
                 if (readCount > 0)
@@ -220,14 +219,18 @@ namespace System.IO.Pipelines.Networking.Libuv
                         }
                     }
                 }
-
-                inputBufferHandle.Free();
             }
 
             if (normalDone)
             {
                 _input.Writer.Complete();
             }
+        }
+
+        private void UnpinInputBuffer()
+        {
+            _inputBufferPin?.Free();
+            _inputBufferPin = null;
         }
 
         private static Uv.uv_buf_t AllocCallback(UvStreamHandle handle, int status, object state)
@@ -238,10 +241,10 @@ namespace System.IO.Pipelines.Networking.Libuv
         private unsafe Uv.uv_buf_t OnAlloc(UvStreamHandle handle, int status)
         {
             var inputBuffer = _input.Writer.Alloc(2048);
-            var pinnedHandle = inputBuffer.Memory.Pin();
-
             _inputBuffer = inputBuffer;
-            _inputBufferHandle = pinnedHandle;
+
+            var pinnedHandle = inputBuffer.Memory.Pin();
+            _inputBufferPin = pinnedHandle;
             
             return handle.Libuv.buf_init((IntPtr)pinnedHandle.PinnedPointer, inputBuffer.Memory.Length);
         }
