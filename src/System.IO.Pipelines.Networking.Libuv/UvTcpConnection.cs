@@ -191,7 +191,6 @@ namespace System.IO.Pipelines.Networking.Libuv
                 var inputBuffer = _inputBuffer.Value;
 
                 _inputBuffer = null;
-                _inputBufferPin = null;
 
                 inputBuffer.Advance(readCount);
                 inputBuffer.Commit();
