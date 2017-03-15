@@ -3,7 +3,7 @@
 using System.Buffers;
 using Xunit;
 
-namespace System.Buffers.Tests
+namespace System.Slices.Tests
 {
     public class VectorizedOperationsTests
     {
