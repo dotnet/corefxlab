@@ -11,5 +11,6 @@
     <PackageReference Include="System.Memory" Version="4.4.0-*" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.4.0-*" />
     <PackageReference Include="System.Diagnostics.Tools" Version="4.3.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
   </ItemGroup>
 </Project>
