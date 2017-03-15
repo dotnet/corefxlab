@@ -5,7 +5,7 @@
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace System.Slices.Tests
+namespace System.Buffers.Tests
 {
     public unsafe class OverflowTests
     {
@@ -262,7 +262,7 @@ namespace System.Slices.Tests
         public void ReadOnlyArrayCtorStartLengthOverflow()
         {
             var arr = new Guid[20];
-            
+
             var slice = new ReadOnlySpan<Guid>(arr, 2, 2);
             Guid guid = Guid.NewGuid();
             arr[3] = guid;

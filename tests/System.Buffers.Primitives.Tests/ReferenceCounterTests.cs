@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace System.Slices.Tests
+namespace System.Buffers.Tests
 {
     public class ReferenceCounterTests
     {

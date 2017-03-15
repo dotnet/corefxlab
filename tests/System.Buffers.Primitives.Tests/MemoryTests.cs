@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Xunit.Performance;
 
-namespace System.Slices.Tests
+namespace System.Buffers.Tests
 {
     public class MemoryTests
     {
@@ -28,7 +28,7 @@ namespace System.Slices.Tests
                 Span<byte> copy = new byte[20];
                 memory.Slice(10, 20).CopyTo(copy);
                 Assert.Equal(10, copy[0]);
-            }     
+            }
         }
 
         [Fact]
@@ -158,7 +158,7 @@ namespace System.Slices.Tests
             MakePermutations(MakeArray(1,4,10),
                              MakeArray(100,1000),
                              MakeArray(1,2,4,8,12),
-                             MakeArray(ReferenceCountingMethod.None, 
+                             MakeArray(ReferenceCountingMethod.None,
                                        ReferenceCountingMethod.Interlocked,
                                        ReferenceCountingMethod.ReferenceCounter));
 

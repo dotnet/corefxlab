@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using Xunit;
 
-namespace System.Slices.Tests
+namespace System.Buffers.Tests
 {
     public class IndexOfTests
     {
@@ -61,7 +61,7 @@ namespace System.Slices.Tests
 
                 Assert.True(index >= 0);
                 Assert.Equal(indexInArray, index);
-                
+
             }
         }
 
