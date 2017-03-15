@@ -38,12 +38,6 @@ namespace System
             return items.Slice(0, slice.Length).SequenceEqual(slice);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf(this ReadOnlyMemory<byte> memory, ReadOnlySpan<byte> values)
-        {
-            return SpanExtensions.IndexOf(memory.Span, values);
-        }
-
         public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())

@@ -117,5 +117,11 @@ namespace System.Buffers
 
             return -1;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOf(this ReadOnlyMemory<byte> memory, ReadOnlySpan<byte> values)
+        {
+            return SpanExtensions.IndexOf(memory.Span, values);
+        }
     }
 }
