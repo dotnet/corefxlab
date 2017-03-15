@@ -61,20 +61,5 @@ namespace System.Text.Http.Tests
             result.Slice().SequenceEqual(_httpMessageInBytes);
             _formatter.Clear();
         }
-
-        //[Fact(Skip = "Issue https://github.com/dotnet/corefxlab/issues/599")]
-        //public void WriteHttpHeader_resizes_the_buffer_taking_into_consideration_the_reserver()
-        //{
-        //    _formatter = new BufferFormatter(32, FormattingData.Utf8, ArrayPool<byte>.Shared);
-
-        //    var httpHeaderBuffer =
-        //        _formatter.WriteHttpHeader(GetUtf8EncodedString("Connection"), GetUtf8EncodedString("close"));
-
-        //    httpHeaderBuffer.UpdateValue("18446744073709551615");
-
-        //    var result = _formatter.Buffer;
-
-        //    result.Should().ContainInOrder(Utf8Encoding.GetBytes("Connection : 18446744073709551615\r\n"));
-        //}
     }
 }
