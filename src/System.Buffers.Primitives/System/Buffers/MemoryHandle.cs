@@ -53,12 +53,16 @@ namespace System.Buffers
 
         public void Free()
         {
-            if (_handle.IsAllocated)
+            if (_owner != null)
             {
-                _handle.Free();
-            }
+                if (_handle.IsAllocated)
+                {
+                    _handle.Free();
+                }
 
-            _owner.Release();
+                _owner.Release();
+                _owner = null;
+            }
         }
     }
 }
