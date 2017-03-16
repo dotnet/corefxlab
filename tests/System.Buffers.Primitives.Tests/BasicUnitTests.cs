@@ -4,7 +4,7 @@ using System.Buffers;
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace System.Slices.Tests
+namespace System.Buffers.Tests
 {
     public class SlicesTests
     {

@@ -9,7 +9,7 @@
     <EmbeddedResource Include="locales.bin" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
+    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
-    <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
+    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Libuv" Version="1.9.1" />

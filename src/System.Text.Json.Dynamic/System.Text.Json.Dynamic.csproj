@@ -9,7 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
-    <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
+    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\System.Text.Json\System.Text.Json.csproj" />
   </ItemGroup>
   <ItemGroup>

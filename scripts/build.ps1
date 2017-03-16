@@ -22,7 +22,7 @@ $dotnetExePath="$PSScriptRoot\..\dotnet\dotnet.exe"
 
 if ($Restore -eq "true") {
     Write-Host "Restoring all packages"
-    Invoke-Expression "$dotnetExePath restore"
+    Invoke-Expression "$dotnetExePath restore corefxlab.sln"
     if ($lastexitcode -ne 0) {
         Write-Error "Failed to restore packages."
         exit -1

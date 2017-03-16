@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace System.Slices.Tests
+namespace System.Buffers.Tests
 {
     public class EqualityTests
     {

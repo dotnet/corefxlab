@@ -8,7 +8,7 @@
     <!--<DefineConstants Condition="'$(Configuration)' == 'Debug'">$(DefineConstants);OPERATION_LOCATION_TRACKING;COMPLETION_LOCATION_TRACKING</DefineConstants>-->
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
+    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
   </ItemGroup>
   <ItemGroup>

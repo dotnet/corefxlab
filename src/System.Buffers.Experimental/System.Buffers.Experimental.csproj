@@ -7,8 +7,8 @@
     <PackageTags>Span Spans Pool corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\System.Collections.Sequences\System.Collections.Sequences.csproj" />
-    <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>

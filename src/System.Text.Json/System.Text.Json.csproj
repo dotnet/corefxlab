@@ -13,7 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />
-    <ProjectReference Include="..\System.Slices\System.Slices.csproj" />
+    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
   </ItemGroup>
 </Project>
