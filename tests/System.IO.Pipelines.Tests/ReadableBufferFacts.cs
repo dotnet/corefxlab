@@ -212,6 +212,8 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
+        private static List<MemoryHandle> _handles = new List<MemoryHandle>();
+
         private unsafe void TestIndexOfWorksForAllLocations(ref ReadableBuffer readBuffer, byte emptyValue)
         {
             byte huntValue = (byte)~emptyValue;
@@ -235,10 +237,18 @@ namespace System.IO.Pipelines.Tests
 
                 Assert.True(found);
                 var remaining = readBuffer.Slice(cursor);
-                void* pointer;
-                Assert.True(remaining.First.TryGetPointer(out pointer));
-                Assert.True((byte*)pointer == addresses[i]);
+                var handle = remaining.First.Pin();
+                Assert.True(handle.PinnedPointer != null);
+                Assert.True((byte*)handle.PinnedPointer == addresses[i]);
+                handle.Free();
             }
+
+            // free up memory handles
+            foreach (var handle in _handles)
+            {
+                handle.Free();
+            }
+            _handles.Clear();
         }
 
         private static unsafe byte*[] BuildPointerIndex(ref ReadableBuffer readBuffer)
@@ -248,9 +258,9 @@ namespace System.IO.Pipelines.Tests
             int index = 0;
             foreach (var memory in readBuffer)
             {
-                void* pointer;
-                memory.TryGetPointer(out pointer);
-                var ptr = (byte*)pointer;
+                var handle = memory.Pin();
+                _handles.Add(handle);
+                var ptr = (byte*)handle.PinnedPointer;
                 for (int i = 0; i < memory.Length; i++)
                 {
                     addresses[index++] = ptr++;
@@ -287,17 +297,18 @@ namespace System.IO.Pipelines.Tests
 
         private unsafe void TestValue(ref ReadableBuffer readBuffer, ulong value)
         {
-            void* pointer;
-            Assert.True(readBuffer.First.TryGetPointer(out pointer));
-            var ptr = (byte*)pointer;
-            string s = value.ToString(CultureInfo.InvariantCulture);
-            int written;
-            fixed (char* c = s)
+            fixed (byte* ptr = &readBuffer.First.Span.DangerousGetPinnableReference())
             {
-                written = Encoding.ASCII.GetBytes(c, s.Length, ptr, readBuffer.Length);
+                Assert.True(ptr != null);
+                string s = value.ToString(CultureInfo.InvariantCulture);
+                int written;
+                fixed (char* c = s)
+                {
+                    written = Encoding.ASCII.GetBytes(c, s.Length, ptr, readBuffer.Length);
+                }
+                var slice = readBuffer.Slice(0, written);
+                Assert.Equal(value, slice.GetUInt64());
             }
-            var slice = readBuffer.Slice(0, written);
-            Assert.Equal(value, slice.GetUInt64());
         }
 
         [Theory]
