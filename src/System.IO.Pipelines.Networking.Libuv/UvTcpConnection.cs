@@ -22,7 +22,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private Task _sendingTask;
         private WritableBuffer? _inputBuffer;
-        private MemoryHandle? _inputBufferPin;
+        private MemoryHandle _inputBufferPin;
 
         public UvTcpConnection(UvThread thread, UvTcpHandle handle)
         {
@@ -228,8 +228,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private void UnpinInputBuffer()
         {
-            _inputBufferPin?.Free();
-            _inputBufferPin = null;
+            _inputBufferPin.Free();
         }
 
         private static Uv.uv_buf_t AllocCallback(UvStreamHandle handle, int status, object state)
