@@ -63,7 +63,7 @@ public class IndexOfBench
             using (iteration.StartMeasurement())
             {
                 for(int i=0; i<s_loops; i++) {
-                    index += buffer.IndexOfVectorized(255);
+                    index += buffer.IndexOf(255);
                 }
             }
         }

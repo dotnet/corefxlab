@@ -38,55 +38,122 @@ namespace System
             return items.Slice(0, slice.Length).SequenceEqual(slice);
         }
 
-        public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value)
+        public static int IndexOfNon_Vectorized(this Span<byte> span, byte value)
+        {
+            return IndexOfNon_Vectorized(ref span.DangerousGetPinnableReference(), value, span.Length);
+        }
+
+        public unsafe static int IndexOf(this Span<byte> buffer, byte value0, byte value1)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
-                return IndexOfVectorized(pSearchSpace, buffer.Length, value);
+                return IndexOf(pSearchSpace, buffer.Length, value0, value1);
             }
         }
 
-        public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value0, byte value1)
+        public unsafe static int IndexOf(this Span<byte> buffer, byte value0, byte value1, byte value2)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
-                return IndexOfVectorized(pSearchSpace, buffer.Length, value0, value1);
+                return IndexOf(pSearchSpace, buffer.Length, value0, value1, value2);
             }
         }
 
-        public unsafe static int IndexOfVectorized(this Span<byte> buffer, byte value0, byte value1, byte value2)
+        public static int IndexOfNon_Vectorized(this ReadOnlySpan<byte> span, byte value)
+        {
+            return IndexOfNon_Vectorized(ref span.DangerousGetPinnableReference(), value, span.Length);
+        }
+
+        public unsafe static int IndexOf(this ReadOnlySpan<byte> buffer, byte value0, byte value1)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
-                return IndexOfVectorized(pSearchSpace, buffer.Length, value0, value1, value2);
+                return IndexOf(pSearchSpace, buffer.Length, value0, value1);
             }
         }
 
-        public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value)
+        public unsafe static int IndexOf(this ReadOnlySpan<byte> buffer, byte value0, byte value1, byte value2)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
-                return IndexOfVectorized(pSearchSpace, buffer.Length, value);
+                return IndexOf(pSearchSpace, buffer.Length, value0, value1, value2);
             }
         }
 
-        public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value0, byte value1)
+        private static unsafe int IndexOfNon_Vectorized(ref byte searchSpace, byte value, int length)
         {
-            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
+            Debug.Assert(length >= 0);
+
+            IntPtr index = (IntPtr)0; // Use IntPtr for arithmetic to avoid unnecessary 64->32->64 truncations
+            while (length >= 8)
             {
-                return IndexOfVectorized(pSearchSpace, buffer.Length, value0, value1);
+                length -= 8;
+
+                if (value == Unsafe.Add(ref searchSpace, index))
+                    goto Found;
+                if (value == Unsafe.Add(ref searchSpace, index + 1))
+                    goto Found1;
+                if (value == Unsafe.Add(ref searchSpace, index + 2))
+                    goto Found2;
+                if (value == Unsafe.Add(ref searchSpace, index + 3))
+                    goto Found3;
+                if (value == Unsafe.Add(ref searchSpace, index + 4))
+                    goto Found4;
+                if (value == Unsafe.Add(ref searchSpace, index + 5))
+                    goto Found5;
+                if (value == Unsafe.Add(ref searchSpace, index + 6))
+                    goto Found6;
+                if (value == Unsafe.Add(ref searchSpace, index + 7))
+                    goto Found7;
+
+                index += 8;
             }
+
+            if (length >= 4)
+            {
+                length -= 4;
+
+                if (value == Unsafe.Add(ref searchSpace, index))
+                    goto Found;
+                if (value == Unsafe.Add(ref searchSpace, index + 1))
+                    goto Found1;
+                if (value == Unsafe.Add(ref searchSpace, index + 2))
+                    goto Found2;
+                if (value == Unsafe.Add(ref searchSpace, index + 3))
+                    goto Found3;
+
+                index += 4;
+            }
+
+            while (length > 0)
+            {
+                if (value == Unsafe.Add(ref searchSpace, index))
+                    goto Found;
+
+                index += 1;
+                length--;
+            }
+            return -1;
+
+            Found: // Workaround for https://github.com/dotnet/coreclr/issues/9692
+            return (int)(byte*)index;
+            Found1:
+            return (int)(byte*)(index + 1);
+            Found2:
+            return (int)(byte*)(index + 2);
+            Found3:
+            return (int)(byte*)(index + 3);
+            Found4:
+            return (int)(byte*)(index + 4);
+            Found5:
+            return (int)(byte*)(index + 5);
+            Found6:
+            return (int)(byte*)(index + 6);
+            Found7:
+            return (int)(byte*)(index + 7);
         }
 
-        public unsafe static int IndexOfVectorized(this ReadOnlySpan<byte> buffer, byte value0, byte value1, byte value2)
-        {
-            fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
-            {
-                return IndexOfVectorized(pSearchSpace, buffer.Length, value0, value1, value2);
-            }
-        }
-
-        private static unsafe int IndexOfVectorized(byte* searchSpace, int length, byte value)
+        private static unsafe int IndexOf(byte* searchSpace, int length, byte value)
         {
             var offset = 0;
             // If length < vector length the jump over Vector dominates the search; as the Vector section is quite chunky
@@ -155,7 +222,7 @@ namespace System
             return offset;
         }
 
-        private static unsafe int IndexOfVectorized(byte* searchSpace, int length, byte value0, byte value1)
+        private static unsafe int IndexOf(byte* searchSpace, int length, byte value0, byte value1)
         {
             var offset = 0;
             // If length < vector length the jump over Vector dominates the search; as the Vector section is quite chunky
@@ -228,7 +295,7 @@ namespace System
             return offset;
         }
 
-        private static unsafe int IndexOfVectorized(byte* searchSpace, int length, byte value0, byte value1, byte value2)
+        private static unsafe int IndexOf(byte* searchSpace, int length, byte value0, byte value1, byte value2)
         {
             var offset = 0;
             // If length < vector length the jump over Vector dominates the search; as the Vector section is quite chunky

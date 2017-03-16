@@ -17,7 +17,7 @@ namespace System.IO.Pipelines
                 var segment = segmentPart.Segment;
                 var span = segment.Memory.Span.Slice(segmentPart.Start, segmentPart.Length);
 
-                int index = span.IndexOfVectorized(byte0);
+                int index = span.IndexOf(byte0);
                 if (index != -1)
                 {
                     result = new ReadCursor(segment, segmentPart.Start + index);
@@ -38,7 +38,7 @@ namespace System.IO.Pipelines
                 var segment = segmentPart.Segment;
                 var span = segment.Memory.Span.Slice(segmentPart.Start, segmentPart.Length);
 
-                int index = span.IndexOfVectorized(byte0, byte1);
+                int index = span.IndexOf(byte0, byte1);
 
                 if (index != -1)
                 {
@@ -60,7 +60,7 @@ namespace System.IO.Pipelines
                 var segment = segmentPart.Segment;
                 var span = segment.Memory.Span.Slice(segmentPart.Start, segmentPart.Length);
 
-                int index = span.IndexOfVectorized(byte0, byte1, byte2);
+                int index = span.IndexOf(byte0, byte1, byte2);
 
                 if (index != -1)
                 {
