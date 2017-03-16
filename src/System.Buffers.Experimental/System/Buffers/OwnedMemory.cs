@@ -6,6 +6,37 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
+    public class OwnedNativeMemory : OwnedMemory<byte>
+    {
+        public OwnedNativeMemory(int length) : this(length, Marshal.AllocHGlobal(length))
+        { }
+
+        public OwnedNativeMemory(int length, IntPtr address) : base(null, 0, length, address) { }
+
+        public static implicit operator IntPtr(OwnedNativeMemory owner)
+        {
+            unsafe
+            {
+                return new IntPtr(owner.Pointer);
+            }
+        }
+
+        ~OwnedNativeMemory()
+        {
+            Dispose(false);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (base.Pointer != IntPtr.Zero) {
+                Marshal.FreeHGlobal(base.Pointer);
+            }
+            base.Dispose(disposing);
+        }
+
+        public new unsafe byte* Pointer => (byte*)base.Pointer.ToPointer();
+    }
+
     // This is to support secnarios today covered by Memory<T> in corefxlab
     public class OwnedPinnedArray<T> : OwnedMemory<T>
     {
@@ -15,7 +46,8 @@ namespace System.Buffers
             base(array, 0, array.Length, new IntPtr(pointer))
         {
             var computedPointer = new IntPtr(Unsafe.AsPointer(ref Array[0]));
-            if (computedPointer != new IntPtr(pointer)) {
+            if (computedPointer != new IntPtr(pointer))
+            {
                 throw new InvalidOperationException();
             }
             _handle = handle;
@@ -49,7 +81,8 @@ namespace System.Buffers
 
         protected override void Dispose(bool disposing)
         {
-            if (_handle.IsAllocated) {
+            if (_handle.IsAllocated)
+            {
                 _handle.Free();
             }
             base.Dispose(disposing);
