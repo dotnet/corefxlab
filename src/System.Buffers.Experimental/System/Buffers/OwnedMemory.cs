@@ -46,7 +46,8 @@ namespace System.Buffers
             base(array, 0, array.Length, new IntPtr(pointer))
         {
             var computedPointer = new IntPtr(Unsafe.AsPointer(ref Array[0]));
-            if (computedPointer != new IntPtr(pointer)) {
+            if (computedPointer != new IntPtr(pointer))
+            {
                 throw new InvalidOperationException();
             }
             _handle = handle;
@@ -80,7 +81,8 @@ namespace System.Buffers
 
         protected override void Dispose(bool disposing)
         {
-            if (_handle.IsAllocated) {
+            if (_handle.IsAllocated)
+            {
                 _handle.Free();
             }
             base.Dispose(disposing);
