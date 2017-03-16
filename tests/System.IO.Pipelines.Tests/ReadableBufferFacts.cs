@@ -212,15 +212,15 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        private static List<MemoryHandle> _handles = new List<MemoryHandle>();
-
         private unsafe void TestIndexOfWorksForAllLocations(ref ReadableBuffer readBuffer, byte emptyValue)
         {
             byte huntValue = (byte)~emptyValue;
 
+            var handles = new List<MemoryHandle>();
+
             // we're going to fully index the final locations of the buffer, so that we
             // can mutate etc in constant time
-            var addresses = BuildPointerIndex(ref readBuffer);
+            var addresses = BuildPointerIndex(ref readBuffer, handles);
 
             // check it isn't there to start with
             ReadableBuffer slice;
@@ -244,14 +244,14 @@ namespace System.IO.Pipelines.Tests
             }
 
             // free up memory handles
-            foreach (var handle in _handles)
+            foreach (var handle in handles)
             {
                 handle.Free();
             }
-            _handles.Clear();
+            handles.Clear();
         }
 
-        private static unsafe byte*[] BuildPointerIndex(ref ReadableBuffer readBuffer)
+        private static unsafe byte*[] BuildPointerIndex(ref ReadableBuffer readBuffer, List<MemoryHandle> handles)
         {
 
             byte*[] addresses = new byte*[readBuffer.Length];
@@ -259,7 +259,7 @@ namespace System.IO.Pipelines.Tests
             foreach (var memory in readBuffer)
             {
                 var handle = memory.Pin();
-                _handles.Add(handle);
+                handles.Add(handle);
                 var ptr = (byte*)handle.PinnedPointer;
                 for (int i = 0; i < memory.Length; i++)
                 {
