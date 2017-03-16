@@ -15,9 +15,9 @@ namespace System.IO.Pipelines.Samples
         private PreservedBuffer _path;
         private PreservedBuffer _method;
 
-        public ReadableBuffer HttpVersion => _httpVersion.Buffer;
-        public ReadableBuffer Path => _path.Buffer;
-        public ReadableBuffer Method => _method.Buffer;
+        public ReadableBuffer HttpVersion => _httpVersion?.Buffer;
+        public ReadableBuffer Path => _path?.Buffer;
+        public ReadableBuffer Method => _method?.Buffer;
 
         public RequestHeaderDictionary RequestHeaders = new RequestHeaderDictionary();
 
@@ -122,9 +122,9 @@ namespace System.IO.Pipelines.Samples
         {
             _state = ParsingState.StartLine;
 
-            _method.Dispose();
-            _path.Dispose();
-            _httpVersion.Dispose();
+            _method?.Dispose();
+            _path?.Dispose();
+            _httpVersion?.Dispose();
 
             RequestHeaders.Reset();
         }
