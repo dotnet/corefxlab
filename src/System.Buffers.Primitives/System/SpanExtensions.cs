@@ -38,9 +38,9 @@ namespace System
             return items.Slice(0, slice.Length).SequenceEqual(slice);
         }
 
-        public static int IndexOfNon_Vectorized(this Span<byte> span, byte value)
+        public static int SequentialIndexOf(this Span<byte> span, byte value)
         {
-            return IndexOfNon_Vectorized(ref span.DangerousGetPinnableReference(), value, span.Length);
+            return SequentialIndexOf(ref span.DangerousGetPinnableReference(), value, span.Length);
         }
 
         public unsafe static int IndexOf(this Span<byte> buffer, byte value0, byte value1)
@@ -59,9 +59,9 @@ namespace System
             }
         }
 
-        public static int IndexOfNon_Vectorized(this ReadOnlySpan<byte> span, byte value)
+        public static int SequentialIndexOf(this ReadOnlySpan<byte> span, byte value)
         {
-            return IndexOfNon_Vectorized(ref span.DangerousGetPinnableReference(), value, span.Length);
+            return SequentialIndexOf(ref span.DangerousGetPinnableReference(), value, span.Length);
         }
 
         public unsafe static int IndexOf(this ReadOnlySpan<byte> buffer, byte value0, byte value1)
@@ -80,7 +80,7 @@ namespace System
             }
         }
 
-        private static unsafe int IndexOfNon_Vectorized(ref byte searchSpace, byte value, int length)
+        private static unsafe int SequentialIndexOf(ref byte searchSpace, byte value, int length)
         {
             Debug.Assert(length >= 0);
 
