@@ -284,6 +284,47 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public async Task AdvanceShouldResetStateIfReadCancelled()
+        {
+            _pipe.Reader.CancelPendingRead();
+
+            var result = await _pipe.Reader.ReadAsync();
+            var buffer = result.Buffer;
+            _pipe.Reader.Advance(buffer.End);
+
+            Assert.False(result.IsCompleted);
+            Assert.True(result.IsCancelled);
+            Assert.True(buffer.IsEmpty);
+
+            var awaitable = _pipe.Reader.ReadAsync();
+            Assert.False(awaitable.IsCompleted);
+        }
+
+
+
+        [Fact]
+        public async Task ReadingCanBeCancelled()
+        {
+            var cts = new CancellationTokenSource();
+            cts.Token.Register(() =>
+            {
+                _pipe.Writer.Complete(new OperationCanceledException(cts.Token));
+            });
+
+            var ignore = Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                cts.Cancel();
+            });
+
+            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            {
+                var result = await _pipe.Reader.ReadAsync();
+                var buffer = result.Buffer;
+            });
+        }
+
+        [Fact]
         public async Task HelloWorldAcrossTwoBlocks()
         {
             const int blockSize = 4032;

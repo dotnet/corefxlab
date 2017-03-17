@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Threading;
 
 namespace System.IO.Pipelines
 {
@@ -103,9 +104,9 @@ namespace System.IO.Pipelines
         /// Will <see cref="Commit"/> if necessary.
         /// </summary>
         /// <returns>A task that completes when the data is fully flushed.</returns>
-        public WritableBufferAwaitable FlushAsync()
+        public WritableBufferAwaitable FlushAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _pipe.FlushAsync();
+            return _pipe.FlushAsync(cancellationToken);
         }
     }
 }
