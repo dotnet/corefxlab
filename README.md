@@ -23,7 +23,10 @@ holes or issues with our platform without being drowned in large PRs.
 Currently, this repo contains the following experimental components:
 
 * **System.Slices**
-A set of features for representing and manipulating managed, native, and stack memory. The package includes types Span\<T\>, ReadOnlySpan\<T\>, and Memory\<T\>. See more information about the features at [span.md](docs/specs/span.md).
+These APIs moved to System.Memory (a component in the CoreFx repo) and to System.Buffers.Primitives (a component in this repo)
+
+* **System.Buffers.Primitives**
+A set of features for representing and manipulating managed, native buffers. The package complements Span\<T\> and ReadOnlySpan\<T\> primitives of System.Memory package. See more information about the features at [span.md](docs/specs/span.md) and [memory.md](docs/specs/memory.md).
 
 * **System.Text.Formatting**. 
 System.Text.Formatting APIs are similar to the existing StringBuilder and TextWriter APIs. 
