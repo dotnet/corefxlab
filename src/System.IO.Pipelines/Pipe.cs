@@ -377,11 +377,6 @@ namespace System.IO.Pipelines
             }
         }
 
-        public void CancelPendingFlush()
-        {
-            throw new NotImplementedException();
-        }
-
         // Reading
 
         void IPipeReader.Advance(ReadCursor consumed, ReadCursor examined)
