@@ -617,23 +617,4 @@ namespace System.IO.Pipelines
         public IPipeReader Reader => this;
         public IPipeWriter Writer => this;
     }
-
-    public struct FlushResult
-    {
-        public FlushResult(bool isCancelled, bool isCompleted)
-        {
-            IsCancelled = isCancelled;
-            IsCompleted = isCompleted;
-        }
-
-        /// <summary>
-        /// True if the currrent read was cancelled
-        /// </summary>
-        public bool IsCancelled { get; }
-
-        /// <summary>
-        /// True if the <see cref="IPipeReader"/> is complete
-        /// </summary>
-        public bool IsCompleted { get; }
-    }
 }

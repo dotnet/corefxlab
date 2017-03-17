@@ -588,7 +588,7 @@ namespace System.IO.Pipelines.Tests
 
             protected override void Dispose(bool disposing)
             {
-                
+
             }
 
             private class DisposeTrackingOwnedMemory : OwnedMemory<byte>
