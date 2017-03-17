@@ -125,7 +125,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
                 while (span.Length > 0)
                 {
-                    var length = span.IndexOfVectorized((byte)'\n');
+                    var length = span.IndexOf((byte)'\n');
                     var skip = length;
 
                     if (length == -1)
