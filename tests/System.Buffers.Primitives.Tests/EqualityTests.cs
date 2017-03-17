@@ -414,9 +414,6 @@ namespace System.Buffers.Tests
                 Enumerable.Range(0, 200).Select(index => new CustomStructWithNonTrivialEquals(index)).ToArray().Slice();
             var sliceOfSameBytes = sliceOfStructuresWithCustomEquals.ToArray().Slice();
 
-            Assert.False(sliceOfStructuresWithCustomEquals.SequenceEqual(sliceOfSameBytes));
-            Assert.False(sliceOfSameBytes.SequenceEqual(sliceOfStructuresWithCustomEquals));
-
             Assert.True(sliceOfStructuresWithCustomEquals.SequenceEqual<CustomStructWithNonTrivialEquals>(sliceOfSameBytes));
             Assert.True(sliceOfSameBytes.SequenceEqual(sliceOfStructuresWithCustomEquals));
         }
