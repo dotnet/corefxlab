@@ -151,6 +151,11 @@ namespace System.IO.Pipelines.Tests
                 _pipe.Writer.Complete(exception);
             }
 
+            public void CancelPendingFlush()
+            {
+
+            }
+
             public override void Flush()
             {
 

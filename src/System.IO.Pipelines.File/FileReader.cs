@@ -79,7 +79,8 @@ namespace System.IO.Pipelines.File
         private static async Task Continue(WritableBufferAwaitable awaitable, ReadOperation operation)
         {
             // Keep reading once we get the completion
-            if (await awaitable)
+            var flushResult = await awaitable;
+            if (!flushResult.IsCompleted)
             {
                 operation.Read();
             }

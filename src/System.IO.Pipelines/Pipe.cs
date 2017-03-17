@@ -377,6 +377,11 @@ namespace System.IO.Pipelines
             }
         }
 
+        public void CancelPendingFlush()
+        {
+            throw new NotImplementedException();
+        }
+
         // Reading
 
         void IPipeReader.Advance(ReadCursor consumed, ReadCursor examined)
@@ -466,6 +471,19 @@ namespace System.IO.Pipelines
                 awaitable = _readerAwaitable.Cancel();
             }
             TrySchedule(_readerScheduler, awaitable);
+        }
+
+        /// <summary>
+        /// Cancel to currently pending call to <see cref="WritableBuffer.FlushAsync"/> without completing the <see cref="IPipeWriter"/>.
+        /// </summary>
+        void IPipeWriter.CancelPendingFlush()
+        {
+            Action awaitable;
+            lock (_sync)
+            {
+                awaitable = _writerAwaitable.Cancel();
+            }
+            TrySchedule(_writerScheduler, awaitable);
         }
 
         /// <summary>
@@ -577,13 +595,13 @@ namespace System.IO.Pipelines
 
         bool IWritableBufferAwaiter.IsCompleted => _writerAwaitable.IsCompleted;
 
-        bool IWritableBufferAwaiter.GetResult()
+        FlushResult IWritableBufferAwaiter.GetResult()
         {
             GetResult(ref _writerAwaitable,
                 ref _readerCompletion,
                 out bool isCancelled,
                 out bool isCompleted);
-            return !isCompleted;
+            return new FlushResult(isCancelled, isCompleted);
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
@@ -598,5 +616,24 @@ namespace System.IO.Pipelines
 
         public IPipeReader Reader => this;
         public IPipeWriter Writer => this;
+    }
+
+    public struct FlushResult
+    {
+        public FlushResult(bool isCancelled, bool isCompleted)
+        {
+            IsCancelled = isCancelled;
+            IsCompleted = isCompleted;
+        }
+
+        /// <summary>
+        /// True if the currrent read was cancelled
+        /// </summary>
+        public bool IsCancelled { get; }
+
+        /// <summary>
+        /// True if the <see cref="IPipeReader"/> is complete
+        /// </summary>
+        public bool IsCompleted { get; }
     }
 }

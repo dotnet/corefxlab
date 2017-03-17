@@ -20,5 +20,10 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="exception">Optional Exception indicating a failure that's causing the pipeline to complete.</param>
         void Complete(Exception exception = null);
+
+        /// <summary>
+        /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipeReader"/>.
+        /// </summary>
+        void CancelPendingFlush();
     }
 }
