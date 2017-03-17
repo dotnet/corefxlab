@@ -407,18 +407,6 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
-        public void NonByteWiseEqualsMethodsAreBeingRespectedForSequentialEqualityButIgnoredForStructuralEquality()
-        {
-            // we just don't call memcmp for these structures
-            var sliceOfStructuresWithCustomEquals =
-                Enumerable.Range(0, 200).Select(index => new CustomStructWithNonTrivialEquals(index)).ToArray().Slice();
-            var sliceOfSameBytes = sliceOfStructuresWithCustomEquals.ToArray().Slice();
-
-            Assert.True(sliceOfStructuresWithCustomEquals.SequenceEqual<CustomStructWithNonTrivialEquals>(sliceOfSameBytes));
-            Assert.True(sliceOfSameBytes.SequenceEqual(sliceOfStructuresWithCustomEquals));
-        }
-
-        [Fact]
         public void SequentialEqualityOfSpansOfFloatingPointTypesDoesNotUseBitwiseComparison()
         {
             SequentialEqualityOfSpansOfFloatingPointTypesDoesNotUseBitwiseComparison(
