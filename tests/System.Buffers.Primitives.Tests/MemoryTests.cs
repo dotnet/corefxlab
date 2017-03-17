@@ -235,6 +235,72 @@ namespace System.Buffers.Tests
             reservation.Dispose();
             Assert.Equal(true, owned.IsDisposed);
         }
+
+        [Fact]
+        public void PinAddReferenceReleaseTest()
+        {
+            var array = new byte[1024];
+            OwnedArray<byte> owned = array;
+            var memory = owned.Memory;
+            Assert.False(owned.HasOutstandingReferences);
+            var h = memory.Pin();
+            Assert.True(owned.HasOutstandingReferences);
+            h.Free();
+            Assert.False(owned.HasOutstandingReferences);
+        }
+
+        [Fact]
+        public void MemoryHandleFreeUninitialized()
+        {
+            var h = default(MemoryHandle);
+            h.Free();
+        }
+
+        [Fact]
+        public void MemoryHandleDoubleFree() 
+        {
+            var array = new byte[1024];
+            OwnedArray<byte> owned = array;
+            var memory = owned.Memory;
+            var h = memory.Pin();
+            Assert.True(owned.HasOutstandingReferences);
+            owned.AddReference();
+            Assert.True(owned.HasOutstandingReferences);
+            h.Free();
+            Assert.True(owned.HasOutstandingReferences);
+            h.Free();
+            Assert.True(owned.HasOutstandingReferences);
+            owned.Release();
+            Assert.False(owned.HasOutstandingReferences);
+        }
+
+
+        WeakReference LeakHandle()
+        {
+            // Creates an object that is both Pinned with a MemoryHandle,
+            // and has a weak reference.
+            var array = new byte[1024];
+            OwnedArray<byte> owned = array;
+            var memory = owned.Memory;
+            memory.Pin();
+            return new WeakReference(array);
+        }
+
+        void DoGC()
+        {
+            GC.Collect(2);
+            GC.WaitForPendingFinalizers();
+            GC.Collect(2);
+        }
+
+        [Fact]
+        void PinGCArrayTest()
+        {
+            var w = LeakHandle();
+            // Weak reference should be kept alive.
+            DoGC();
+            Assert.True(w.IsAlive);
+        }
     }
 
     class CustomMemory : OwnedMemory<byte>
