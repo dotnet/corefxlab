@@ -207,7 +207,8 @@ namespace System.IO.Pipelines.Networking.Libuv
                         handle.ReadStop();
 
                         // Resume reading when the awaitable completes
-                        if (await awaitable)
+                        var flushResult = await awaitable;
+                        if (!flushResult.IsCompleted)
                         {
                             StartReading();
                         }
@@ -243,7 +244,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
             var pinnedHandle = inputBuffer.Memory.Pin();
             _inputBufferPin = pinnedHandle;
-            
+
             return handle.Libuv.buf_init((IntPtr)pinnedHandle.PinnedPointer, inputBuffer.Memory.Length);
         }
     }

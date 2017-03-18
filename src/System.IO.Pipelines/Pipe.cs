@@ -469,6 +469,19 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
+        /// Cancel to currently pending call to <see cref="WritableBuffer.FlushAsync"/> without completing the <see cref="IPipeWriter"/>.
+        /// </summary>
+        void IPipeWriter.CancelPendingFlush()
+        {
+            Action awaitable;
+            lock (_sync)
+            {
+                awaitable = _writerAwaitable.Cancel();
+            }
+            TrySchedule(_writerScheduler, awaitable);
+        }
+
+        /// <summary>
         /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
         /// </summary>
         /// <returns>A <see cref="PipeAwaitable"/> representing the asynchronous read operation.</returns>
@@ -577,13 +590,13 @@ namespace System.IO.Pipelines
 
         bool IWritableBufferAwaiter.IsCompleted => _writerAwaitable.IsCompleted;
 
-        bool IWritableBufferAwaiter.GetResult()
+        FlushResult IWritableBufferAwaiter.GetResult()
         {
             GetResult(ref _writerAwaitable,
                 ref _readerCompletion,
                 out bool isCancelled,
                 out bool isCompleted);
-            return !isCompleted;
+            return new FlushResult(isCancelled, isCompleted);
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)

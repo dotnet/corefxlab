@@ -7,7 +7,7 @@ namespace System.IO.Pipelines
     {
         bool IsCompleted { get; }
 
-        bool GetResult();
+        FlushResult GetResult();
 
         void OnCompleted(Action continuation);
     }

@@ -40,7 +40,8 @@ namespace System.IO.Pipelines.Tests
             writableBuffer.Advance(32);
             var flushAsync = writableBuffer.FlushAsync();
             Assert.True(flushAsync.IsCompleted);
-            Assert.True(flushAsync.GetResult());
+            var flushResult = flushAsync.GetResult();
+            Assert.False(flushResult.IsCompleted);
         }
 
         [Fact]
@@ -66,12 +67,13 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.Advance(consumed, consumed);
 
             Assert.True(flushAsync.IsCompleted);
-            Assert.True(flushAsync.GetResult());
+            var flushResult = flushAsync.GetResult();
+            Assert.False(flushResult.IsCompleted);
         }
 
         [Fact]
         public void FlushAsyncAwaitableDoesNotCompletesWhenReaderAdvancesUnderHight()
-        { 
+        {
             var writableBuffer = _pipe.Writer.Alloc(64);
             writableBuffer.Advance(64);
             var flushAsync = writableBuffer.FlushAsync();
@@ -99,7 +101,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void FlushAsyncReturnsFalseIfReaderCompletes()
+        public void FlushAsyncReturnsCompletedIfReaderCompletes()
         {
             var writableBuffer = _pipe.Writer.Alloc(64);
             writableBuffer.Advance(64);
@@ -110,7 +112,39 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.Complete();
 
             Assert.True(flushAsync.IsCompleted);
-            Assert.False(flushAsync.GetResult());
+            var flushResult = flushAsync.GetResult();
+            Assert.True(flushResult.IsCompleted);
+        }
+
+        [Fact]
+        public void FlushAsyncReturnsCanceledIfFlushCancelled()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(64);
+            writableBuffer.Advance(64);
+            var flushAsync = writableBuffer.FlushAsync();
+
+            Assert.False(flushAsync.IsCompleted);
+
+            _pipe.Writer.CancelPendingFlush();
+
+            Assert.True(flushAsync.IsCompleted);
+            var flushResult = flushAsync.GetResult();
+            Assert.True(flushResult.IsCancelled);
+        }
+
+        [Fact]
+        public void FlushAsyncReturnsCanceledIfCancelledBeforeFlush()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(64);
+            writableBuffer.Advance(64);
+
+            _pipe.Writer.CancelPendingFlush();
+
+            var flushAsync = writableBuffer.FlushAsync();
+
+            Assert.True(flushAsync.IsCompleted);
+            var flushResult = flushAsync.GetResult();
+            Assert.True(flushResult.IsCancelled);
         }
 
         [Fact]
@@ -127,7 +161,8 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.Advance(consumed, consumed);
 
             Assert.True(flushAsync.IsCompleted);
-            Assert.True(flushAsync.GetResult());
+            var flushResult = flushAsync.GetResult();
+            Assert.False(flushResult.IsCompleted);
 
             writableBuffer = _pipe.Writer.Alloc(64);
             writableBuffer.Advance(64);
