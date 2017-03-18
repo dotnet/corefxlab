@@ -69,8 +69,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json.Tests", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Json.Tests.Dynamic", "tests\System.Text.Json.Tests.Dynamic\System.Text.Json.Tests.Dynamic.csproj", "{645F271D-87B5-4289-9DCE-E9CE881E7460}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Primitives.Performance.Tests", "tests\System.Text.Primitives.Performance.Tests\System.Text.Primitives.Performance.Tests.csproj", "{E54AECA2-8709-478D-BB65-E4268B43B53A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Threading.Tasks.Channels.Tests", "tests\System.Threading.Tasks.Channels.Tests\System.Threading.Tasks.Channels.Tests.csproj", "{6038B696-5E27-46EA-83B6-5AFB1D6001AE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{EDFD30EA-9024-45C0-8CB3-64ADD8463585}"
