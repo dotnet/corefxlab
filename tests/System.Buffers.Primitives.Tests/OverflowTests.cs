@@ -26,7 +26,16 @@ namespace System.Buffers.Tests
         [Fact]
         public void SliceStartInt32Overflow()
         {
-            var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            IntPtr huge;
+            try
+            {
+                huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            }
+            catch (Exception)
+            {
+                return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+            }
+            
             try
             {
                 var span = new Span<Guid>((void*)huge, GuidThreeGiBLimit);
@@ -45,7 +54,16 @@ namespace System.Buffers.Tests
         [Fact]
         public void SliceStartUInt32Overflow()
         {
-            var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            IntPtr huge;
+            try
+            {
+                huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            }
+            catch (Exception)
+            {
+                return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+            }
+
             try
             {
                 var span = new Span<Guid>((void*)huge, GuidThreeGiBLimit);
@@ -64,7 +82,16 @@ namespace System.Buffers.Tests
         [Fact]
         public void SliceStartLengthInt32Overflow()
         {
-            var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            IntPtr huge;
+            try
+            {
+                huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            }
+            catch (Exception)
+            {
+                return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+            }
+
             try
             {
                 var span = new Span<Guid>((void*)huge, GuidThreeGiBLimit);
@@ -83,7 +110,16 @@ namespace System.Buffers.Tests
         [Fact]
         public void SliceStartLengthUInt32Overflow()
         {
-            var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            IntPtr huge;
+            try
+            {
+                huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            }
+            catch (Exception)
+            {
+                return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+            }
+
             try
             {
                 var span = new Span<Guid>((void*)huge, GuidThreeGiBLimit);
@@ -134,7 +170,16 @@ namespace System.Buffers.Tests
         [Fact]
         public void CastOverflow()
         {
-            var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            IntPtr huge;
+            try
+            {
+                huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            }
+            catch (Exception)
+            {
+                return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+            }
+
             try
             {
                 var span = new Span<ulong>((void*)huge, ULongThreeGiBLimit);
@@ -157,7 +202,16 @@ namespace System.Buffers.Tests
         [Fact]
         public void ReadOnlySliceStartInt32Overflow()
         {
-            var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            IntPtr huge;
+            try
+            {
+                huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            }
+            catch (Exception)
+            {
+                return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+            }
+
             try
             {
                 var mutable = new Span<Guid>((void*)huge, GuidThreeGiBLimit);
@@ -178,7 +232,16 @@ namespace System.Buffers.Tests
         [Fact]
         public void ReadOnlySliceStartUInt32Overflow()
         {
-            var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            IntPtr huge;
+            try
+            {
+                huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            }
+            catch (Exception)
+            {
+                return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+            }
+
             try
             {
                 var mutable = new Span<Guid>((void*)huge, GuidThreeGiBLimit);
@@ -199,7 +262,16 @@ namespace System.Buffers.Tests
         [Fact]
         public void ReadOnlySliceStartLengthInt32Overflow()
         {
-            var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            IntPtr huge;
+            try
+            {
+                huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            }
+            catch (Exception)
+            {
+                return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+            }
+
             try
             {
                 var mutable = new Span<Guid>((void*)huge, GuidThreeGiBLimit);
@@ -220,7 +292,16 @@ namespace System.Buffers.Tests
         [Fact]
         public void ReadOnlySliceStartLengthUInt32Overflow()
         {
-            var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            IntPtr huge;
+            try
+            {
+                huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            }
+            catch (Exception)
+            {
+                return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+            }
+
             try
             {
                 var mutable = new Span<Guid>((void*)huge, GuidThreeGiBLimit);
@@ -274,7 +355,16 @@ namespace System.Buffers.Tests
         [Fact]
         public void ReadOnlyCastOverflow()
         {
-            var huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            IntPtr huge;
+            try
+            {
+                huge = Marshal.AllocHGlobal(new IntPtr(ThreeGiB));
+            }
+            catch (Exception)
+            {
+                return;  // It's not implausible to believe that a 3gb allocation will fail - if so, skip this test to avoid unnecessary test flakiness.
+            }
+
             try
             {
                 var span = new ReadOnlySpan<ulong>((void*)huge, ULongThreeGiBLimit);
