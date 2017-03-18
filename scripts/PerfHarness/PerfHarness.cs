@@ -48,7 +48,7 @@ public class PerfHarness
         return new [] {
             "Benchmarks",
             "System.Binary.Base64.Tests",
-            "System.Text.Primitives.Performance.Tests",
+            "System.Text.Primitives.Tests",
             "System.Buffers.Primitives.Tests"
         };
     }

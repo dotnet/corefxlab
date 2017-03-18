@@ -537,8 +537,6 @@ namespace System.Text.Utf8.Tests
         [InlineData(0, "abc", "")]
         [InlineData(-1, "", "a")]
         [InlineData(-1, "", "abc")]
-        [InlineData(-1, "", "abc")]
-        [InlineData(-1, "", "abc")]
         [InlineData(0, "a", "a")]
         [InlineData(-1, "a", "b")]
         [InlineData(0, "abc", "a")]
@@ -555,7 +553,6 @@ namespace System.Text.Utf8.Tests
         [InlineData(-1, "abababab", "bbababa")]
         [InlineData(-1, "abababab", "bababaa")]
         [InlineData(7, "aaabaacaaac", "aaac")]
-        [InlineData(7, "aaabaacaaac", "aaac")]
         [InlineData(7, "baabaaabaaaa", "baaaa")]
         public void IndexOfTests(int expected, string s, string substring)
         {
@@ -568,8 +565,6 @@ namespace System.Text.Utf8.Tests
         [InlineData("", "", "")]
         [InlineData("abc", "abc", "")]
         [InlineData(null, "", "a")]
-        [InlineData(null, "", "abc")]
-        [InlineData(null, "", "abc")]
         [InlineData(null, "", "abc")]
         [InlineData("a", "a", "a")]
         [InlineData(null, "a", "b")]
@@ -586,7 +581,6 @@ namespace System.Text.Utf8.Tests
         [InlineData("bababab", "abababab", "bababa")]
         [InlineData(null, "abababab", "bbababa")]
         [InlineData(null, "abababab", "bababaa")]
-        [InlineData("aaac", "aaabaacaaac", "aaac")]
         [InlineData("aaac", "aaabaacaaac", "aaac")]
         [InlineData("baaaa", "baabaaabaaaa", "baaaa")]
         public void SubstringFromTests(string expected, string s, string substring)
@@ -609,8 +603,6 @@ namespace System.Text.Utf8.Tests
         [InlineData("", "abc", "")]
         [InlineData(null, "", "a")]
         [InlineData(null, "", "abc")]
-        [InlineData(null, "", "abc")]
-        [InlineData(null, "", "abc")]
         [InlineData("", "a", "a")]
         [InlineData(null, "a", "b")]
         [InlineData("", "abc", "a")]
@@ -626,7 +618,6 @@ namespace System.Text.Utf8.Tests
         [InlineData("a", "abababab", "bababa")]
         [InlineData(null, "abababab", "bbababa")]
         [InlineData(null, "abababab", "bababaa")]
-        [InlineData("aaabaac", "aaabaacaaac", "aaac")]
         [InlineData("aaabaac", "aaabaacaaac", "aaac")]
         [InlineData("baabaaa", "baabaaabaaaa", "baaaa")]
         public void SubstringToTests(string expected, string s, string substring)
@@ -647,7 +638,6 @@ namespace System.Text.Utf8.Tests
         [Theory]
         [InlineData("abc", 'a')]
         [InlineData("", 'a')]
-        [InlineData("abc", 'a')]
         [InlineData("abc", 'c')]
         [InlineData("a", 'c')]
         [InlineData("c", 'c')]
@@ -682,7 +672,6 @@ namespace System.Text.Utf8.Tests
         [InlineData(false, 1, "abc", "abc")]
         [InlineData(false, 0, "abc", "b")]
         [InlineData(false, 2, "abc", "b")]
-        [InlineData(false, 0, "abc", "bc")]
         [InlineData(false, 0, "abc", "bc")]
         [InlineData(false, 1, "abc", "c")]
         public void IsSubstringAtTest(bool expected, int position, string s, string substring)

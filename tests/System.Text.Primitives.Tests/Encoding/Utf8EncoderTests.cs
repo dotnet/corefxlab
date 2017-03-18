@@ -630,7 +630,7 @@ namespace System.Text.Utf8.Tests
         public static object[][] UsingBothEncoders = { new object[] { TextEncoder.Utf8, Encoding.UTF8 }, new object[] { TextEncoder.Utf16, Encoding.Unicode } };
 
         [Theory, MemberData("UsingBothEncoders")]
-        public void BruteTestingEncodeAllUnicodeCodePoints(TextEncoder encoder, Encoding systemTextEncoder)
+        public void EncodeAllUnicodeCodePoints(TextEncoder encoder, Encoding systemEncoder)
         {
             const uint maximumValidCodePoint = 0x10FFFF;
             uint[] codePoints = new uint[maximumValidCodePoint + 1];
@@ -667,12 +667,12 @@ namespace System.Text.Utf8.Tests
 
             string unicodeString = plainText.ToString();
             ReadOnlySpan<char> characters = unicodeString.Slice();
-            int byteCount = systemTextEncoder.GetByteCount(unicodeString);
+            int byteCount = systemEncoder.GetByteCount(unicodeString);
             byte[] buff = new byte[byteCount];
             Span<byte> expectedBuffer;
             char[] charArray = characters.ToArray();
 
-            systemTextEncoder.GetBytes(charArray, 0, characters.Length, buff, 0);
+            systemEncoder.GetBytes(charArray, 0, characters.Length, buff, 0);
             expectedBuffer = new Span<byte>(buff);
 
             int minLength = Math.Min(expectedBuffer.Length, buffer.Length);
