@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <VersionSuffix>$([System.DateTime]::Now.ToString(eyyMMdd-1))</VersionSuffix>
+    <VersionSuffix Condition="$(VersionSuffix) == ''">$([System.DateTime]::Now.ToString(eyyMMdd-1))</VersionSuffix>
     <Copyright>Microsoft Corporation, All rights reserved</Copyright>
     <VersionPrefix>0.1.0</VersionPrefix>
     <Authors>Microsoft Corporation</Authors>
