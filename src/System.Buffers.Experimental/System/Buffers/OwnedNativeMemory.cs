@@ -3,7 +3,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace System.Buffers.Experimental.System.Buffers
+namespace System.Buffers
 {
     public class OwnedNativeMemory : OwnedMemory<byte>
     {
