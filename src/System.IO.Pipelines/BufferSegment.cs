@@ -35,9 +35,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The buffer being tracked
         /// </summary>
-        private OwnedMemory<byte> _buffer;
-
-        private Memory<byte> _memory;
+        private readonly OwnedMemory<byte> _buffer;
 
         public BufferSegment(OwnedMemory<byte> buffer)
         {
@@ -46,7 +44,6 @@ namespace System.IO.Pipelines
             End = 0;
 
             _buffer.AddReference();
-            _memory = _buffer.Memory;
         }
 
         public BufferSegment(OwnedMemory<byte> buffer, int start, int end)
@@ -65,10 +62,9 @@ namespace System.IO.Pipelines
             }
 
             _buffer.AddReference();
-            _memory = _buffer.Memory;
         }
 
-        public Memory<byte> Memory => _memory;
+        public Memory<byte> Memory => _buffer.Memory;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
