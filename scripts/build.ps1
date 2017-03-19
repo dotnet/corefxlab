@@ -2,7 +2,8 @@
     [string]$Configuration="Debug",
     [string]$Restore="true",
     [string]$Channel="preview",
-    [string]$Version="1.0.0"
+    [string]$Version="1.0.0",
+    [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1')
 )
 
 Write-Host "Commencing full build for Configuration=$Configuration."
@@ -22,7 +23,7 @@ $dotnetExePath="$PSScriptRoot\..\dotnet\dotnet.exe"
 
 if ($Restore -eq "true") {
     Write-Host "Restoring all packages"
-    Invoke-Expression "$dotnetExePath restore corefxlab.sln"
+    Invoke-Expression "$dotnetExePath restore corefxlab.sln /p:VersionSuffix=$BuildVersion"
     if ($lastexitcode -ne 0) {
         Write-Error "Failed to restore packages."
         exit -1
@@ -34,7 +35,7 @@ $projectsFailed = New-Object System.Collections.Generic.List[String]
 
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", "System*.csproj", "AllDirectories")) {
     Write-Host "Building $file..."
-    Invoke-Expression "$dotnetExePath build $file -c $Configuration"
+    Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
 
     if ($lastexitcode -ne 0) {
         Write-Error "Failed to build project $file"
