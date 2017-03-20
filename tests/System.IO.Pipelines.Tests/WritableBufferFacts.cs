@@ -27,6 +27,18 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
+        [Fact]
+        public async Task ThrowsOnAdvanceWithNoMemory()
+        {
+            using (var memoryPool = new MemoryPool())
+            {
+                var pipe = new Pipe(memoryPool);
+                var buffer = pipe.Writer.Alloc();
+                Assert.Throws(() => buffer.Advance(1));
+                await buffer.FlushAsync();
+            }
+        }
+
         [Theory]
         [InlineData(1, "1")]
         [InlineData(20, "20")]
