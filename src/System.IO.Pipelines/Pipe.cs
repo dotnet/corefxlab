@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
@@ -88,7 +89,13 @@ namespace System.IO.Pipelines
             _writerAwaitable = new PipeAwaitable(completed: true);
         }
 
-        internal Buffer<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
+        internal Buffer<byte> Buffer => _writingHead?.AvailableBuffer ?? EmptyBuffer;
+
+        private static Buffer<byte> EmptyBuffer
+        {
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            get { return Buffer<byte>.Empty; }
+        }
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.
