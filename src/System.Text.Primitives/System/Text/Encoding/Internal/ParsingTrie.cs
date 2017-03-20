@@ -217,9 +217,10 @@ namespace System.Text
 
             foreach (Suffix suffix in sortedSuffixes)
             {
+                var bytesSpan = new Span<byte>(suffix.Bytes);
                 if (suffix.Bytes[0] == beginningByte)
                 {
-                    currentClump.Suffixes.Add(new Suffix(suffix.SymbolIndex, suffix.Bytes.Slice(1)));
+                    currentClump.Suffixes.Add(new Suffix(suffix.SymbolIndex, bytesSpan.Slice(1)));
                 }
                 else
                 {
@@ -246,7 +247,7 @@ namespace System.Text
 
                     // This is a new clump, with at least one suffix inside it. Add to the list of clumps.
                     currentClump = new SuffixClump(beginningByte);
-                    currentClump.Suffixes.Add(new Suffix(suffix.SymbolIndex, suffix.Bytes.Slice(1)));
+                    currentClump.Suffixes.Add(new Suffix(suffix.SymbolIndex, bytesSpan.Slice(1)));
                     clumps.Add(currentClump);
                 }
             }

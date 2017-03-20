@@ -209,11 +209,11 @@ namespace System.Text
                     return false;
                 }
 
-                s_dayNamesUtf8[(int)value.DayOfWeek].CopyTo(buffer);
+                new Span<byte>(s_dayNamesUtf8[(int)value.DayOfWeek]).CopyTo(buffer);
                 TryFormat(value.Day, buffer.Slice(5), out bytesWritten, D2, encoder);
                 buffer[7] = (byte)' ';
                 var monthBytes = s_monthNamesUtf8[value.Month - 1];
-                monthBytes.CopyTo(buffer.Slice(8));
+                new Span<byte>(monthBytes).CopyTo(buffer.Slice(8));
                 buffer[11] = (byte)' ';
                 TryFormat(value.Year, buffer.Slice(12), out bytesWritten, D4, encoder);
                 buffer[16] = (byte)' ';
@@ -222,7 +222,7 @@ namespace System.Text
                 TryFormat(value.Minute, buffer.Slice(20), out bytesWritten, D2, encoder);
                 buffer[22] = (byte)':';
                 TryFormat(value.Second, buffer.Slice(23), out bytesWritten, D2, encoder);
-                s_gmtUtf8Bytes.CopyTo(buffer.Slice(25));
+                new Span<byte>(s_gmtUtf8Bytes).CopyTo(buffer.Slice(25));
                 bytesWritten = 29;
                 return true;
             }
