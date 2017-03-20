@@ -5,11 +5,11 @@ using System;
 using System.Collections.Sequences;
 
 namespace System.Buffers {
-    public interface IReadOnlyMemoryList<T> : ISequence<ReadOnlyMemory<T>>
+    public interface IReadOnlyBufferList<T> : ISequence<ReadOnlyBuffer<T>>
     {
         int CopyTo(Span<T> buffer);
-        ReadOnlyMemory<T> First { get; }
+        ReadOnlyBuffer<T> First { get; }
 
-        IReadOnlyMemoryList<T> Rest { get; }
+        IReadOnlyBufferList<T> Rest { get; }
     }
 }

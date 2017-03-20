@@ -22,7 +22,7 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var enumerator = new MemoryEnumerator(_readableBuffer.Start, _readableBuffer.End);
+                var enumerator = new BufferEnumerator(_readableBuffer.Start, _readableBuffer.End);
                 while (enumerator.MoveNext())
                 {
                     var memory = enumerator.Current;

@@ -216,7 +216,7 @@ namespace System.IO.Pipelines.Tests
         {
             byte huntValue = (byte)~emptyValue;
 
-            var handles = new List<MemoryHandle>();
+            var handles = new List<BufferHandle>();
 
             // we're going to fully index the final locations of the buffer, so that we
             // can mutate etc in constant time
@@ -251,7 +251,7 @@ namespace System.IO.Pipelines.Tests
             handles.Clear();
         }
 
-        private static unsafe byte*[] BuildPointerIndex(ref ReadableBuffer readBuffer, List<MemoryHandle> handles)
+        private static unsafe byte*[] BuildPointerIndex(ref ReadableBuffer readBuffer, List<BufferHandle> handles)
         {
 
             byte*[] addresses = new byte*[readBuffer.Length];
@@ -514,9 +514,9 @@ namespace System.IO.Pipelines.Tests
 
                 {
                     // empty buffer
-                    var readable = output.AsReadableBuffer() as ISequence<ReadOnlyMemory<byte>>;
+                    var readable = output.AsReadableBuffer() as ISequence<ReadOnlyBuffer<byte>>;
                     var position = Position.First;
-                    ReadOnlyMemory<byte> memory;
+                    ReadOnlyBuffer<byte> memory;
                     int spanCount = 0;
                     while (readable.TryGet(ref position, out memory))
                     {
@@ -527,9 +527,9 @@ namespace System.IO.Pipelines.Tests
                 }
 
                 {
-                    var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }) as ISequence<ReadOnlyMemory<byte>>;
+                    var readable = BufferUtilities.CreateBuffer(new byte[] { 1 }, new byte[] { 2, 2 }, new byte[] { 3, 3, 3 }) as ISequence<ReadOnlyBuffer<byte>>;
                     var position = Position.First;
-                    ReadOnlyMemory<byte> memory;
+                    ReadOnlyBuffer<byte> memory;
                     int spanCount = 0;
                     while (readable.TryGet(ref position, out memory))
                     {

@@ -13,7 +13,7 @@ namespace System.Slices.Tests
         [Fact]
         public void SingleSegmentBasics()
         {
-            ReadOnlyMemory<byte> buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
+            ReadOnlyBuffer<byte> buffer = new byte[] { 1, 2, 3, 4, 5, 6 };
             var bytes = new ReadOnlyBytes(buffer);
             var sliced  = bytes.Slice(1, 3);
             var span = sliced.First.Span;
@@ -46,7 +46,7 @@ namespace System.Slices.Tests
         public void SingleSegmentSlicing()
         {
             var array = new byte[] { 0, 1, 2, 3, 4, 5, 6 };
-            ReadOnlyMemory<byte> buffer = array;
+            ReadOnlyBuffer<byte> buffer = array;
             var bytes = new ReadOnlyBytes(buffer);
 
             ReadOnlyBytes sliced = bytes;
@@ -83,7 +83,7 @@ namespace System.Slices.Tests
         public void SingleSegmentCopyToKnownLength()
         {
             var array = new byte[] { 0, 1, 2, 3, 4, 5, 6 };
-            ReadOnlyMemory<byte> buffer = array;
+            ReadOnlyBuffer<byte> buffer = array;
             var bytes = new ReadOnlyBytes(buffer, null, array.Length);
 
             { // copy to equal
@@ -116,7 +116,7 @@ namespace System.Slices.Tests
         public void SingleSegmentCopyToUnknownLength()
         {
             var array = new byte[] { 0, 1, 2, 3, 4, 5, 6 };
-            ReadOnlyMemory<byte> buffer = array;
+            ReadOnlyBuffer<byte> buffer = array;
             var bytes = new ReadOnlyBytes(buffer, null, -1);
 
             { // copy to equal
@@ -232,7 +232,7 @@ namespace System.Slices.Tests
             var bytes = new ReadOnlyBytes(buffer);
             var position = new Position();
             int length = 0;
-            ReadOnlyMemory<byte> segment;
+            ReadOnlyBuffer<byte> segment;
             while (bytes.TryGet(ref position, out segment))
             {
                 length += segment.Length;
@@ -258,7 +258,7 @@ namespace System.Slices.Tests
                 multibytes = multibytes.Slice(i);
                 var position = new Position();
                 var length = 0;
-                ReadOnlyMemory<byte> segment;
+                ReadOnlyBuffer<byte> segment;
                 while (multibytes.TryGet(ref position, out segment))
                 {
                     length += segment.Length;
@@ -276,7 +276,7 @@ namespace System.Slices.Tests
                 multibytes = multibytes.Slice(0, i);
                 var position = new Position();
                 var length = 0;
-                ReadOnlyMemory<byte> segment;
+                ReadOnlyBuffer<byte> segment;
                 while (multibytes.TryGet(ref position, out segment))
                 {
                     length += segment.Length;

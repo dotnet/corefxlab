@@ -20,20 +20,20 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Available memory.
         /// </summary>
-        public Memory<byte> Memory => _pipe.Memory;
+        public Buffer<byte> Buffer => _pipe.Buffer;
 
         /// <summary>
         /// Returns the number of bytes currently written and uncommitted.
         /// </summary>
         public int BytesWritten => AsReadableBuffer().Length;
 
-        Span<byte> IOutput.Buffer => Memory.Span;
+        Span<byte> IOutput.Buffer => Buffer.Span;
 
         void IOutput.Enlarge(int desiredBufferLength) => Ensure(NewSize(desiredBufferLength));
 
         private int NewSize(int desiredBufferLength)
         {
-            var currentSize = Memory.Length;
+            var currentSize = Buffer.Length;
             if(desiredBufferLength == 0) {
                 if (currentSize <= 0) return 256;
                 else return currentSize * 2;
@@ -55,7 +55,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="count">number of bytes</param>
         /// <remarks>
-        /// Used when writing to <see cref="Memory"/> directly. 
+        /// Used when writing to <see cref="Buffer"/> directly. 
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">
         /// More requested than underlying <see cref="IBufferPool"/> can allocate in a contiguous block.
@@ -78,7 +78,7 @@ namespace System.IO.Pipelines
         /// Moves forward the underlying <see cref="IPipeWriter"/>'s write cursor but does not commit the data.
         /// </summary>
         /// <param name="bytesWritten">number of bytes to be marked as written.</param>
-        /// <remarks>Forwards the start of available <see cref="Memory"/> by <paramref name="bytesWritten"/>.</remarks>
+        /// <remarks>Forwards the start of available <see cref="Buffer"/> by <paramref name="bytesWritten"/>.</remarks>
         /// <exception cref="ArgumentException"><paramref name="bytesWritten"/> is larger than the current data available data.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="bytesWritten"/> is negative.</exception>
         public void Advance(int bytesWritten)

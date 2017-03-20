@@ -112,9 +112,9 @@ namespace System.IO.Pipelines.File
             public unsafe void Read()
             {
                 var buffer = Writer.Alloc(2048);
-                fixed (byte* source = &buffer.Memory.Span.DangerousGetPinnableReference())
+                fixed (byte* source = &buffer.Buffer.Span.DangerousGetPinnableReference())
                 {
-                    var count = buffer.Memory.Length;
+                    var count = buffer.Buffer.Length;
 
                     var overlapped = ThreadPoolBoundHandle.AllocateNativeOverlapped(PreAllocatedOverlapped);
                     overlapped->OffsetLow = Offset;

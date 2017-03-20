@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace System.Buffers
 {
-    public abstract class OwnedMemory<T> : IDisposable, IKnown
+    public abstract class OwnedBuffer<T> : IDisposable, IKnown
     {
         static long _nextId = InitializedId + 1;
         const int InitializedId = int.MinValue;
@@ -39,18 +39,18 @@ namespace System.Buffers
             } 
         }
 
-        private OwnedMemory() { }
+        private OwnedBuffer() { }
 
-        protected OwnedMemory(T[] array) : this(array, 0, array.Length) { }
+        protected OwnedBuffer(T[] array) : this(array, 0, array.Length) { }
 
-        protected OwnedMemory(T[] array, int arrayOffset, int length, IntPtr pointer = default(IntPtr))
+        protected OwnedBuffer(T[] array, int arrayOffset, int length, IntPtr pointer = default(IntPtr))
         {
             _id = InitializedId;
             Initialize(array, arrayOffset, length, pointer);
         }
 
-        public Memory<T> Memory => new Memory<T>(this, Length);
-        public ReadOnlyMemory<T> ReadOnlyMemory => new ReadOnlyMemory<T>(this, Length);
+        public Buffer<T> Buffer => new Buffer<T>(this, Length);
+        public ReadOnlyBuffer<T> ReadOnlyMemory => new ReadOnlyBuffer<T>(this, Length);
 
         public Span<T> Span
         {
@@ -65,7 +65,7 @@ namespace System.Buffers
             }
         }
 
-        public static implicit operator OwnedMemory<T>(T[] array) => new OwnedArray<T>(array);
+        public static implicit operator OwnedBuffer<T>(T[] array) => new OwnedArray<T>(array);
 
         protected bool TryGetArrayCore(out ArraySegment<T> buffer)
         {
@@ -207,13 +207,18 @@ namespace System.Buffers
         }
 
         void ThrowIdHelper() {
-            throw new ObjectDisposedException(nameof(Memory<T>));
+            throw new ObjectDisposedException(nameof(Buffer<T>));
         }
         void ThrowArgHelper()
         {
             throw new ArgumentOutOfRangeException();
         }
         #endregion
+
+        public static OwnedBuffer<T> Create(ArraySegment<T> segment)
+        {
+            return new OwnedArray<T>(segment);
+        }
     }
 
     interface IKnown
@@ -224,9 +229,9 @@ namespace System.Buffers
 
     public struct DisposableReservation<T> : IDisposable
     {
-        OwnedMemory<T> _owner;
+        OwnedBuffer<T> _owner;
 
-        internal DisposableReservation(OwnedMemory<T> owner)
+        internal DisposableReservation(OwnedBuffer<T> owner)
         {
             _owner = owner;
             switch(ReferenceCountingSettings.OwnedMemory) {

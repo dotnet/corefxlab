@@ -15,7 +15,7 @@ namespace System.Buffers
         ReadOnlyBytes _unreadSegments;
         int _index; // index relative to the begining of bytes passed to the constructor
 
-        ReadOnlyMemory<byte> _currentSegment;
+        ReadOnlyBuffer<byte> _currentSegment;
         int _currentSegmentIndex;
         
         public BytesReader(ReadOnlyBytes bytes, TextEncoder encoder)
@@ -27,7 +27,7 @@ namespace System.Buffers
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyMemory<byte> bytes, TextEncoder encoder)
+        public BytesReader(ReadOnlyBuffer<byte> bytes, TextEncoder encoder)
         {
             _unreadSegments = new ReadOnlyBytes(bytes);
             _currentSegment = bytes;
@@ -36,16 +36,16 @@ namespace System.Buffers
             _index = 0;
         }
 
-        public BytesReader(ReadOnlyMemory<byte> bytes) : this(bytes, TextEncoder.Utf8)
+        public BytesReader(ReadOnlyBuffer<byte> bytes) : this(bytes, TextEncoder.Utf8)
         { }
 
         public BytesReader(ReadOnlyBytes bytes) : this(bytes, TextEncoder.Utf8)
         { }
 
-        public BytesReader(IReadOnlyMemoryList<byte> bytes) : this(bytes, TextEncoder.Utf8)
+        public BytesReader(IReadOnlyBufferList<byte> bytes) : this(bytes, TextEncoder.Utf8)
         { }
 
-        public BytesReader(IReadOnlyMemoryList<byte> bytes, TextEncoder encoder) : this(new ReadOnlyBytes(bytes))
+        public BytesReader(IReadOnlyBufferList<byte> bytes, TextEncoder encoder) : this(new ReadOnlyBytes(bytes))
         { }
 
         public byte Peek() => _currentSegment.Span[_currentSegmentIndex];
@@ -182,7 +182,7 @@ namespace System.Buffers
                 if (newSegments == null && toAdvance == 0)
                 {
                     _unreadSegments = ReadOnlyBytes.Empty;
-                    _currentSegment = ReadOnlyMemory<byte>.Empty;
+                    _currentSegment = ReadOnlyBuffer<byte>.Empty;
                     _currentSegmentIndex = 0;
                     return;
                 }
@@ -210,7 +210,7 @@ namespace System.Buffers
             }
         }
 
-        int IndexOf(IReadOnlyMemoryList<byte> sequence, byte value)
+        int IndexOf(IReadOnlyBufferList<byte> sequence, byte value)
         {
             if (sequence == null) return -1;
             var first = sequence.First;

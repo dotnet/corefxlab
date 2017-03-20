@@ -9,60 +9,60 @@ using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace System
+namespace System.Buffers
 {
-    [DebuggerTypeProxy(typeof(MemoryDebuggerView<>))]
-    public struct Memory<T> : IEquatable<Memory<T>>, IEquatable<ReadOnlyMemory<T>>
+    [DebuggerTypeProxy(typeof(BufferDebuggerView<>))]
+    public struct Buffer<T> : IEquatable<Buffer<T>>, IEquatable<ReadOnlyBuffer<T>>
     {
-        readonly OwnedMemory<T> _owner;
+        readonly OwnedBuffer<T> _owner;
         readonly int _index;
         readonly int _length;
 
-        internal Memory(OwnedMemory<T> owner, int length)
+        internal Buffer(OwnedBuffer<T> owner, int length)
         {
             _owner = owner;
             _index = 0;
             _length = length;
         }
 
-        private Memory(OwnedMemory<T> owner, int index, int length)
+        private Buffer(OwnedBuffer<T> owner, int index, int length)
         {
             _owner = owner;
             _index = index;
             _length = length;
         }
 
-        public static implicit operator ReadOnlyMemory<T>(Memory<T> memory)
+        public static implicit operator ReadOnlyBuffer<T>(Buffer<T> buffer)
         {
-            return new ReadOnlyMemory<T>(memory._owner, memory._index, memory._length);
+            return new ReadOnlyBuffer<T>(buffer._owner, buffer._index, buffer._length);
         }
 
-        public static implicit operator Memory<T>(T[] array)
+        public static implicit operator Buffer<T>(T[] array)
         {
             var owner = new OwnedArray<T>(array);
-            return owner.Memory;
+            return owner.Buffer;
         }
 
-        public static Memory<T> Empty { get; } = OwnerEmptyMemory<T>.Shared.Memory;
+        public static Buffer<T> Empty { get; } = OwnerEmptyMemory<T>.Shared.Buffer;
 
         public int Length => _length;
 
         public bool IsEmpty => Length == 0;
 
-        public Memory<T> Slice(int index)
+        public Buffer<T> Slice(int index)
         {
-            return new Memory<T>(_owner, _index + index, _length - index);
+            return new Buffer<T>(_owner, _index + index, _length - index);
         }
-        public Memory<T> Slice(int index, int length)
+        public Buffer<T> Slice(int index, int length)
         {
-            return new Memory<T>(_owner, _index + index, length);
+            return new Buffer<T>(_owner, _index + index, length);
         }
 
         public Span<T> Span => _owner.GetSpanInternal(_index, _length);
 
         public DisposableReservation<T> Reserve() => new DisposableReservation<T>(_owner);
 
-        public unsafe MemoryHandle Pin() => MemoryHandle.Create(_owner, _index);
+        public unsafe BufferHandle Pin() => BufferHandle.Create(_owner, _index);
 
         public unsafe bool TryGetPointer(out void* pointer)
         {
@@ -97,45 +97,45 @@ namespace System
             Span.CopyTo(span);
         }
 
-        public void CopyTo(Memory<T> memory)
+        public void CopyTo(Buffer<T> buffer)
         {
-            Span.CopyTo(memory.Span);
+            Span.CopyTo(buffer.Span);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
         {
-            if(!(obj is Memory<T>)) {
+            if(!(obj is Buffer<T>)) {
                 return false;
             }
 
-            var other = (Memory<T>)obj;
+            var other = (Buffer<T>)obj;
             return Equals(other);
         }
-        public bool Equals(Memory<T> other)
+        public bool Equals(Buffer<T> other)
         {
             return
                 _owner == other._owner &&
                 _index == other._index &&
                 _length == other._length;
         }
-        public bool Equals(ReadOnlyMemory<T> other)
+        public bool Equals(ReadOnlyBuffer<T> other)
         {
             return other.Equals(this);
         }
-        public static bool operator==(Memory<T> left, Memory<T> right)
+        public static bool operator==(Buffer<T> left, Buffer<T> right)
         {
             return left.Equals(right);
         }
-        public static bool operator!=(Memory<T> left, Memory<T> right)
+        public static bool operator!=(Buffer<T> left, Buffer<T> right)
         {
             return !left.Equals(right);
         }
-        public static bool operator ==(Memory<T> left, ReadOnlyMemory<T> right)
+        public static bool operator ==(Buffer<T> left, ReadOnlyBuffer<T> right)
         {
             return left.Equals(right);
         }
-        public static bool operator !=(Memory<T> left, ReadOnlyMemory<T> right)
+        public static bool operator !=(Buffer<T> left, ReadOnlyBuffer<T> right)
         {
             return !left.Equals(right);
         }

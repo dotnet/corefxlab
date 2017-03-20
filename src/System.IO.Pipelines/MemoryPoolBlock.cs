@@ -10,7 +10,7 @@ namespace System.IO.Pipelines
     /// Block tracking object used by the byte buffer memory pool. A slab is a large allocation which is divided into smaller blocks. The
     /// individual blocks are then treated as independent array segments.
     /// </summary>
-    public class MemoryPoolBlock : OwnedMemory<byte>
+    public class MemoryPoolBlock : OwnedBuffer<byte>
     {
         private readonly int _offset;
         private readonly int _length;
@@ -84,7 +84,7 @@ namespace System.IO.Pipelines
         public override string ToString()
         {
             var builder = new StringBuilder();
-            SpanExtensions.AppendAsLiteral(Memory.Span, builder);
+            SpanExtensions.AppendAsLiteral(Buffer.Span, builder);
             return builder.ToString();
         }
 

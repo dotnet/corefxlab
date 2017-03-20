@@ -15,15 +15,16 @@ namespace System.Buffers.Tests
         public void SimpleTestS()
         {
             {
-                OwnedArray<byte> owned = new byte[1024];
+                var array = new byte[1024];
+                OwnedBuffer<byte> owned = array;
                 var span = owned.Span;
                 span[10] = 10;
-                Assert.Equal(10, owned.Array[10]);
-
-                var memory = owned.Memory;
-                var array = memory.ToArray();
-                Assert.Equal(owned.Length, array.Length);
                 Assert.Equal(10, array[10]);
+
+                var memory = owned.Buffer;
+                var toArrayResult = memory.ToArray();
+                Assert.Equal(owned.Length, array.Length);
+                Assert.Equal(10, toArrayResult[10]);
 
                 Span<byte> copy = new byte[20];
                 memory.Slice(10, 20).CopyTo(copy);
@@ -34,17 +35,18 @@ namespace System.Buffers.Tests
         [Fact]
         public void ArrayMemoryLifetime()
         {
-            var owner = new OwnedArray<byte>(1024);
-            TestLifetime(owner);
+            var array = new byte[1024];
+            OwnedBuffer<byte> owned = array;
+            TestLifetime(owned);
         }
 
-        static void TestLifetime(OwnedMemory<byte> owned)
+        static void TestLifetime(OwnedBuffer<byte> owned)
         {
-            Memory<byte> copyStoredForLater;
+            Buffer<byte> copyStoredForLater;
             try
             {
-                Memory<byte> memory = owned.Memory;
-                Memory<byte> memorySlice = memory.Slice(10);
+                Buffer<byte> memory = owned.Buffer;
+                Buffer<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
                 var r = memorySlice.Reserve();
                 try
@@ -78,15 +80,16 @@ namespace System.Buffers.Tests
         public void RacyAccess()
         {
             for(int k = 0; k < 1000; k++) {
-                var owners   = new OwnedArray<byte>[128];
-                var memories = new Memory<byte>[owners.Length];
+                var owners   = new OwnedBuffer<byte>[128];
+                var memories = new Buffer<byte>[owners.Length];
                 var reserves = new DisposableReservation<byte>[owners.Length];
                 var disposeSuccesses = new bool[owners.Length];
                 var reserveSuccesses = new bool[owners.Length];
 
                 for (int i = 0; i < owners.Length; i++) {
-                    owners[i] = new OwnedArray<byte>(1024);
-                    memories[i] = owners[i].Memory;
+                    var array = new byte[1024];
+                    owners[i] = array;
+                    memories[i] = owners[i].Buffer;
                 }
 
                 var dispose_task = Task.Run(() => {
@@ -173,12 +176,12 @@ namespace System.Buffers.Tests
             ReferenceCountingSettings.OwnedMemory = m;
 
             Benchmark.Iterate( () => {
-                var owners   = new OwnedMemory<byte>[number];
-                var memories = new Memory<byte>[owners.Length];
+                var owners   = new OwnedBuffer<byte>[number];
+                var memories = new Buffer<byte>[owners.Length];
 
                 for (int i = 0; i < owners.Length; i++) {
                     owners[i] = new AutoPooledMemory(size);
-                    memories[i] = owners[i].Memory;
+                    memories[i] = owners[i].Buffer;
                 }
 
                 var tasks = new List<Task>(threads);
@@ -211,7 +214,7 @@ namespace System.Buffers.Tests
         public unsafe void ReferenceCounting()
         {
             var owned = new CustomMemory();
-            var memory = owned.Memory;
+            var memory = owned.Buffer;
             Assert.Equal(0, owned.OnZeroRefencesCount);
             Assert.False(owned.HasOutstandingReferences);
             using (memory.Reserve()) {
@@ -225,8 +228,8 @@ namespace System.Buffers.Tests
         [Fact]
         public void AutoDispose()
         {
-            OwnedMemory<byte> owned = new AutoPooledMemory(1000);
-            var memory = owned.Memory;
+            OwnedBuffer<byte> owned = new AutoPooledMemory(1000);
+            var memory = owned.Buffer;
             Assert.Equal(false, owned.IsDisposed);
             var reservation = memory.Reserve();
             Assert.Equal(false, owned.IsDisposed);
@@ -240,8 +243,8 @@ namespace System.Buffers.Tests
         public void PinAddReferenceReleaseTest()
         {
             var array = new byte[1024];
-            OwnedArray<byte> owned = array;
-            var memory = owned.Memory;
+            OwnedBuffer<byte> owned = array;
+            var memory = owned.Buffer;
             Assert.False(owned.HasOutstandingReferences);
             var h = memory.Pin();
             Assert.True(owned.HasOutstandingReferences);
@@ -252,7 +255,7 @@ namespace System.Buffers.Tests
         [Fact]
         public void MemoryHandleFreeUninitialized()
         {
-            var h = default(MemoryHandle);
+            var h = default(BufferHandle);
             h.Free();
         }
 
@@ -260,8 +263,8 @@ namespace System.Buffers.Tests
         public void MemoryHandleDoubleFree() 
         {
             var array = new byte[1024];
-            OwnedArray<byte> owned = array;
-            var memory = owned.Memory;
+            OwnedBuffer<byte> owned = array;
+            var memory = owned.Buffer;
             var h = memory.Pin();
             Assert.True(owned.HasOutstandingReferences);
             owned.AddReference();
@@ -280,8 +283,8 @@ namespace System.Buffers.Tests
             // Creates an object that is both Pinned with a MemoryHandle,
             // and has a weak reference.
             var array = new byte[1024];
-            OwnedArray<byte> owned = array;
-            var memory = owned.Memory;
+            OwnedBuffer<byte> owned = array;
+            var memory = owned.Buffer;
             memory.Pin();
             return new WeakReference(array);
         }
@@ -303,7 +306,7 @@ namespace System.Buffers.Tests
         }
     }
 
-    class CustomMemory : OwnedMemory<byte>
+    class CustomMemory : OwnedBuffer<byte>
     {
         int _onZeroRefencesCount;
 
@@ -317,7 +320,7 @@ namespace System.Buffers.Tests
         }
     }
 
-    class AutoDisposeMemory<T> : OwnedMemory<T>
+    class AutoDisposeMemory<T> : OwnedBuffer<T>
     {
         public AutoDisposeMemory(T[] array) : base(array, 0, array.Length) {
             AddReference();

@@ -1,42 +1,43 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Diagnostics;
 
 namespace System.Runtime
 {
-    internal class MemoryDebuggerView<T>
+    internal class BufferDebuggerView<T>
     {
-        private ReadOnlyMemory<T> _memory;
+        private ReadOnlyBuffer<T> _buffer;
 
-        public MemoryDebuggerView(Memory<T> memory)
+        public BufferDebuggerView(Buffer<T> buffer)
         {
-            _memory = memory;
+            _buffer = buffer;
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] Items
         {
             get {
-                return _memory.ToArray();
+                return _buffer.ToArray();
             }
         }
     }
 
-    internal class ReadOnlyMemoryDebuggerView<T>
+    internal class ReadOnlyBufferDebuggerView<T>
     {
-        private ReadOnlyMemory<T> _memory;
+        private ReadOnlyBuffer<T> _buffer;
 
-        public ReadOnlyMemoryDebuggerView(ReadOnlyMemory<T> memory)
+        public ReadOnlyBufferDebuggerView(ReadOnlyBuffer<T> buffer)
         {
-            _memory = memory;
+            _buffer = buffer;
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         public T[] Items
         {
             get {
-                return _memory.ToArray();
+                return _buffer.ToArray();
             }
         }
     }

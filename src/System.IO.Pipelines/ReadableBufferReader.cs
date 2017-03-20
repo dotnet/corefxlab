@@ -90,7 +90,7 @@ namespace System.IO.Pipelines
                 var length = part.Length;
                 if (length != 0)
                 {
-                    _currentSpan = part.Segment.Memory.Span.Slice(part.Start, length);
+                    _currentSpan = part.Segment.Buffer.Span.Slice(part.Start, length);
                     _index = 0;
                     return;
                 }

@@ -1,5 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Buffers;
 using System.Collections.Sequences;
 using System.Text.Utf8;
 using Xunit;
@@ -45,9 +47,9 @@ namespace System.Text.Parsing.Tests
             Assert.Equal(expectedConsumed, consumed);
         }
 
-        static ArrayList<ReadOnlyMemory<byte>> ToUtf8Buffers(params string[] segments)
+        static ArrayList<ReadOnlyBuffer<byte>> ToUtf8Buffers(params string[] segments)
         {
-            var buffers = new ArrayList<ReadOnlyMemory<byte>>();
+            var buffers = new ArrayList<ReadOnlyBuffer<byte>>();
             foreach (var segment in segments) {
                 buffers.Add(new Utf8String(segment).Bytes.ToArray());
             }

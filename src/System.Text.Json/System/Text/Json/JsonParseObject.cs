@@ -11,7 +11,7 @@ namespace System.Text.Json
     public struct JsonObject : IDisposable
     {
         private BufferPool _pool;
-        private OwnedMemory<byte> _dbMemory;
+        private OwnedBuffer<byte> _dbMemory;
         private ReadOnlySpan<byte> _db; 
         private ReadOnlySpan<byte> _values;
 
@@ -29,7 +29,7 @@ namespace System.Text.Json
             return result;
         }
 
-        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, BufferPool pool = null, OwnedMemory<byte> dbMemory = null)
+        internal JsonObject(ReadOnlySpan<byte> values, ReadOnlySpan<byte> db, BufferPool pool = null, OwnedBuffer<byte> dbMemory = null)
         {
             _db = db;
             _values = values;
