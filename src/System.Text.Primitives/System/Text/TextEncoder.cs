@@ -289,7 +289,7 @@ namespace System.Text
                 return true;
             }
 
-            bytes.CopyTo(encodedBytes);
+            new Span<byte>(bytes).CopyTo(encodedBytes);
             return true;
         }
 
