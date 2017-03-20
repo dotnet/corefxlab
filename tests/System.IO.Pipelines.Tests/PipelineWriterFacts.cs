@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
 using Xunit;
 using System.Text.Formatting;
-using System.Buffers.Pools;
+using System.Buffers;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -112,7 +112,7 @@ namespace System.IO.Pipelines.Tests
 
         private class MyCustomStream : Stream, IPipeWriter
         {
-            private readonly Pipe _pipe = new Pipe(ManagedBufferPool.Shared);
+            private readonly Pipe _pipe = new Pipe(BufferPool.Default);
 
             public override bool CanRead => true;
 

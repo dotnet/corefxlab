@@ -5,14 +5,14 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
-    public class OwnedNativeMemory : OwnedMemory<byte>
+    public class OwnedNativeBuffer : OwnedBuffer<byte>
     {
-        public OwnedNativeMemory(int length) : this(length, Marshal.AllocHGlobal(length))
+        public OwnedNativeBuffer(int length) : this(length, Marshal.AllocHGlobal(length))
         { }
 
-        public OwnedNativeMemory(int length, IntPtr address) : base(null, 0, length, address) { }
+        public OwnedNativeBuffer(int length, IntPtr address) : base(null, 0, length, address) { }
 
-        public static implicit operator IntPtr(OwnedNativeMemory owner)
+        public static implicit operator IntPtr(OwnedNativeBuffer owner)
         {
             unsafe
             {
@@ -20,7 +20,7 @@ namespace System.Buffers
             }
         }
 
-        ~OwnedNativeMemory()
+        ~OwnedNativeBuffer()
         {
             Dispose(false);
         }

@@ -39,7 +39,7 @@ namespace System.Buffers.Pools
             Marshal.FreeHGlobal(_memory);
         }
 
-        public override OwnedMemory<byte> Rent(int numberOfBytes)
+        public override OwnedBuffer<byte> Rent(int numberOfBytes)
         {
             if (numberOfBytes < 1) throw new ArgumentOutOfRangeException(nameof(numberOfBytes));
             if (numberOfBytes > _bufferSize) new NotSupportedException();
@@ -77,7 +77,7 @@ namespace System.Buffers.Pools
             }
         }
 
-        internal sealed class BufferManager : OwnedMemory<byte>
+        internal sealed class BufferManager : OwnedBuffer<byte>
         {
             private readonly NativeBufferPool _pool;
 

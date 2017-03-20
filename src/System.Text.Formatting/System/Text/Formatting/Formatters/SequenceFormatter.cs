@@ -9,15 +9,15 @@ namespace System.Text.Formatting
 {
     public static class SequenceFormatterExtensions
     {
-        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, TextEncoder encoder = default(TextEncoder)) where TSequence : ISequence<Memory<byte>>
+        public static SequenceFormatter<TSequence> CreateFormatter<TSequence>(this TSequence sequence, TextEncoder encoder = default(TextEncoder)) where TSequence : ISequence<Buffer<byte>>
         {
             return new SequenceFormatter<TSequence>(sequence, encoder);
         }
     }
 
-    public class SequenceFormatter<TSequence> : ITextOutput where TSequence : ISequence<Memory<byte>>
+    public class SequenceFormatter<TSequence> : ITextOutput where TSequence : ISequence<Buffer<byte>>
     {
-        ISequence<Memory<byte>> _buffers;
+        ISequence<Buffer<byte>> _buffers;
         TextEncoder _encoder;
 
         Position _currentPosition = Position.First;
@@ -40,17 +40,17 @@ namespace System.Text.Formatting
             }
         }
 
-        private Memory<byte> Current { 
+        private Buffer<byte> Current { 
             get {
-                Memory<byte> result;
+                Buffer<byte> result;
                 if (!_buffers.TryGet(ref _currentPosition, out result, advance: false)) { throw new InvalidOperationException(); }
                 return result;
             }
         }
-        private Memory<byte> Previous
+        private Buffer<byte> Previous
         {
             get {
-                Memory<byte> result;
+                Buffer<byte> result;
                 if (!_buffers.TryGet(ref _previousPosition, out result, advance: false)) { throw new InvalidOperationException(); }
                 return result;
             }
@@ -68,7 +68,7 @@ namespace System.Text.Formatting
             _previousPosition = _currentPosition;
             _previousWrittenBytes = _currentWrittenBytes;
 
-            Memory<byte> span;
+            Buffer<byte> span;
             if (!_buffers.TryGet(ref _currentPosition, out span)) {
                 throw new InvalidOperationException();
             }

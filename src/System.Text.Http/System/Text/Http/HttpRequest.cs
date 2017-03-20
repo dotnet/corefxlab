@@ -12,7 +12,7 @@ namespace System.Text.Http
     {
         public HttpMethod Method;
         public HttpVersion Version;
-        public Memory<byte> RequestUri;
+        public Buffer<byte> RequestUri;
 
         public override string ToString()
         {
@@ -152,7 +152,7 @@ namespace System.Text.Http
             return ToString(bytes.Value, encoder);
         }
 
-        public static string ToString(this Memory<byte> bytes, TextEncoder encoder)
+        public static string ToString(this Buffer<byte> bytes, TextEncoder encoder)
         {
             if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
@@ -170,7 +170,7 @@ namespace System.Text.Http
             if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
                 var position = Position.First;
-                ReadOnlyMemory<byte> segment;
+                ReadOnlyBuffer<byte> segment;
                 while (bytes.TryGet(ref position, out segment, true))
                 {
                     sb.Append(new Utf8String(segment.Span));
@@ -195,7 +195,7 @@ namespace System.Text.Http
             if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
                 var position = Position.First;
-                ReadOnlyMemory<byte> segment;
+                ReadOnlyBuffer<byte> segment;
                 while (bytes.TryGet(ref position, out segment, true))
                 {
                     sb.Append(new Utf8String(segment.Span));

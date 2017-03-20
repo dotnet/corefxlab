@@ -78,7 +78,7 @@ namespace System.IO.Pipelines
         {
             int len = Unsafe.SizeOf<T>();
             buffer.Ensure(len);
-            buffer.Memory.Span.WriteBigEndian(value);
+            buffer.Buffer.Span.WriteBigEndian(value);
             buffer.Advance(len);
         }
 
@@ -90,7 +90,7 @@ namespace System.IO.Pipelines
         {
             int len = Unsafe.SizeOf<T>();
             buffer.Ensure(len);
-            buffer.Memory.Span.WriteLittleEndian(value);
+            buffer.Buffer.Span.WriteLittleEndian(value);
             buffer.Advance(len);
         }
     }

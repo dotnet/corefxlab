@@ -27,12 +27,12 @@ namespace System.IO.Pipelines
         }
 
         /// <summary>
-        /// The current <see cref="Memory{Byte}"/>
+        /// The current <see cref="Buffer{Byte}"/>
         /// </summary>
         public SegmentPart Current => _current;
 
         /// <summary>
-        /// Moves to the next <see cref="Memory{Byte}"/> in the <see cref="ReadableBuffer"/>
+        /// Moves to the next <see cref="Buffer{Byte}"/> in the <see cref="ReadableBuffer"/>
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

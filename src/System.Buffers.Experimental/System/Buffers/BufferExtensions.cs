@@ -9,21 +9,21 @@ namespace System.Buffers
 {
     public static class BufferExtensions
     {
-        public static ReadOnlySpan<byte> ToSpan<T>(this T memorySequence) where T : ISequence<ReadOnlyMemory<byte>>
+        public static ReadOnlySpan<byte> ToSpan<T>(this T bufferSequence) where T : ISequence<ReadOnlyBuffer<byte>>
         {
             Position position = Position.First;
-            ReadOnlyMemory<byte> memory;
-            ResizableArray<byte> array = new ResizableArray<byte>(memorySequence.Length.GetValueOrDefault(1024)); 
-            while (memorySequence.TryGet(ref position, out memory))
+            ReadOnlyBuffer<byte> buffer;
+            ResizableArray<byte> array = new ResizableArray<byte>(bufferSequence.Length.GetValueOrDefault(1024)); 
+            while (bufferSequence.TryGet(ref position, out buffer))
             {
-                array.AddAll(memory.Span);
+                array.AddAll(buffer.Span);
             }
             array.Resize(array.Count);
             return array.Items.Slice(0, array.Count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf(this IReadOnlyMemoryList<byte> sequence, ReadOnlySpan<byte> value)
+        public static int IndexOf(this IReadOnlyBufferList<byte> sequence, ReadOnlySpan<byte> value)
         {
             var first = sequence.First.Span;
             var index = first.IndexOf(value);
@@ -35,7 +35,7 @@ namespace System.Buffers
             return IndexOfStraddling(first, sequence.Rest, value);
         }
 
-        public static int IndexOf(this IReadOnlyMemoryList<byte> sequence, byte value)
+        public static int IndexOf(this IReadOnlyBufferList<byte> sequence, byte value)
         {
             var first = sequence.First.Span;
             var index = first.IndexOf(value);
@@ -53,7 +53,7 @@ namespace System.Buffers
         // TODO (pri 3): I am pretty sure this whole routine can be written much better
 
         // searches values that potentially straddle between first and rest
-        internal static int IndexOfStraddling(this ReadOnlySpan<byte> first, IReadOnlyMemoryList<byte> rest, ReadOnlySpan<byte> value)
+        internal static int IndexOfStraddling(this ReadOnlySpan<byte> first, IReadOnlyBufferList<byte> rest, ReadOnlySpan<byte> value)
         {
             Debug.Assert(rest != null);
 
@@ -119,9 +119,9 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int IndexOf(this ReadOnlyMemory<byte> memory, ReadOnlySpan<byte> values)
+        public static int IndexOf(this ReadOnlyBuffer<byte> buffer, ReadOnlySpan<byte> values)
         {
-            return SpanExtensions.IndexOf(memory.Span, values);
+            return SpanExtensions.IndexOf(buffer.Span, values);
         }
     }
 }

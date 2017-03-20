@@ -15,7 +15,7 @@ namespace System.IO.Pipelines
             {
                 var segmentPart = enumerator.Current;
                 var segment = segmentPart.Segment;
-                var span = segment.Memory.Span.Slice(segmentPart.Start, segmentPart.Length);
+                var span = segment.Buffer.Span.Slice(segmentPart.Start, segmentPart.Length);
 
                 int index = span.IndexOf(byte0);
                 if (index != -1)
@@ -36,7 +36,7 @@ namespace System.IO.Pipelines
             {
                 var segmentPart = enumerator.Current;
                 var segment = segmentPart.Segment;
-                var span = segment.Memory.Span.Slice(segmentPart.Start, segmentPart.Length);
+                var span = segment.Buffer.Span.Slice(segmentPart.Start, segmentPart.Length);
 
                 int index = span.IndexOf(byte0, byte1);
 
@@ -58,7 +58,7 @@ namespace System.IO.Pipelines
             {
                 var segmentPart = enumerator.Current;
                 var segment = segmentPart.Segment;
-                var span = segment.Memory.Span.Slice(segmentPart.Start, segmentPart.Length);
+                var span = segment.Buffer.Span.Slice(segmentPart.Start, segmentPart.Length);
 
                 int index = span.IndexOf(byte0, byte1, byte2);
 

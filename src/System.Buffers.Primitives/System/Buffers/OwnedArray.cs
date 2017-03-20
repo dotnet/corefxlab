@@ -3,7 +3,7 @@
 
 namespace System.Buffers
 {
-    public sealed class OwnedArray<T> : OwnedMemory<T>
+    internal sealed class OwnedArray<T> : OwnedBuffer<T>
     {
         public new T[] Array => base.Array;
 
@@ -30,10 +30,10 @@ namespace System.Buffers
         { }
     }
 
-    internal class OwnerEmptyMemory<T> : OwnedMemory<T>
+    internal class OwnerEmptyMemory<T> : OwnedBuffer<T>
     {
         readonly static T[] s_empty = new T[0];
-        public readonly static OwnedMemory<T> Shared = new OwnerEmptyMemory<T>();
+        public readonly static OwnedBuffer<T> Shared = new OwnerEmptyMemory<T>();
 
         public OwnerEmptyMemory() : base(s_empty, 0, 0) { }
 

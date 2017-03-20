@@ -68,7 +68,7 @@ namespace System.IO.Pipelines
 
         private Action<MemoryPoolSlab> _slabDeallocationCallback;
 
-        public override OwnedMemory<byte> Rent(int size)
+        public override OwnedBuffer<byte> Rent(int size)
         {
             if (size > _blockLength)
             {

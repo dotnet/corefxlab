@@ -10,12 +10,12 @@ namespace System.Slices.Tests
         [Fact]
         public void SimpleTestS()
         {            
-            using(var owned = new OwnedNativeMemory(1024)) {
+            using(var owned = new OwnedNativeBuffer(1024)) {
                 var span = owned.Span;
                 span[10] = 10;
                 unsafe { Assert.Equal(10, owned.Pointer[10]); }
 
-                var memory = owned.Memory;
+                var memory = owned.Buffer;
                 var array = memory.ToArray();
                 Assert.Equal(owned.Length, array.Length);
                 Assert.Equal(10, array[10]);
@@ -25,14 +25,14 @@ namespace System.Slices.Tests
                 Assert.Equal(10, copy[0]);
             }
 
-            using (OwnedPinnedArray<byte> owned = new byte[1024]) {
+            using (OwnedPinnedBuffer<byte> owned = new byte[1024]) {
                 var span = owned.Span;
                 span[10] = 10;
                 Assert.Equal(10, owned.Array[10]);
 
                 unsafe { Assert.Equal(10, owned.Pointer[10]); }
 
-                var memory = owned.Memory;
+                var memory = owned.Buffer;
                 var array = memory.ToArray();
                 Assert.Equal(owned.Length, array.Length);
                 Assert.Equal(10, array[10]);
@@ -46,7 +46,7 @@ namespace System.Slices.Tests
         [Fact]
         public void NativeMemoryLifetime()
         {
-            var owner = new OwnedNativeMemory(1024);
+            var owner = new OwnedNativeBuffer(1024);
             TestLifetime(owner);
         }
 
@@ -55,17 +55,17 @@ namespace System.Slices.Tests
         {
             var bytes = new byte[1024];
             fixed (byte* pBytes = bytes) {
-                var owner = new OwnedPinnedArray<byte>(bytes, pBytes);
+                var owner = new OwnedPinnedBuffer<byte>(bytes, pBytes);
                 TestLifetime(owner);            
             }
         }
 
-        static void TestLifetime(OwnedMemory<byte> owned)
+        static void TestLifetime(OwnedBuffer<byte> owned)
         {
-            Memory<byte> copyStoredForLater;
+            Buffer<byte> copyStoredForLater;
             try {
-                Memory<byte> memory = owned.Memory;
-                Memory<byte> memorySlice = memory.Slice(10);
+                Buffer<byte> memory = owned.Buffer;
+                Buffer<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
                 var r = memorySlice.Reserve();
                 try {

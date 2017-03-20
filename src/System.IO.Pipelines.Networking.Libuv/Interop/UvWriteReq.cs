@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
         private object _state;
         private const int BUFFER_COUNT = 4;
 
-        private List<MemoryHandle> _handles = new List<MemoryHandle>();
+        private List<BufferHandle> _handles = new List<BufferHandle>();
         private List<GCHandle> _pins = new List<GCHandle>(BUFFER_COUNT + 1);
 
         private LibuvAwaitable<UvWriteReq> _awaitable = new LibuvAwaitable<UvWriteReq>();

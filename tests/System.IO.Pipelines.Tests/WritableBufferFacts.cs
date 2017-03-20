@@ -66,7 +66,7 @@ namespace System.IO.Pipelines.Tests
 
                 var output = pipe.Writer.Alloc();
                 output.Write(data);
-                var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
+                var foo = output.Buffer.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 
@@ -101,7 +101,7 @@ namespace System.IO.Pipelines.Tests
 
                 var output = pipe.Writer.Alloc();
                 output.Append(data, TextEncoder.Utf8);
-                var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
+                var foo = output.Buffer.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 
@@ -136,7 +136,7 @@ namespace System.IO.Pipelines.Tests
 
                 var output = pipe.Writer.Alloc();
                 output.Append(data, TextEncoder.Utf8);
-                var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
+                var foo = output.Buffer.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 

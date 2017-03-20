@@ -95,8 +95,8 @@ namespace LibuvWithNonAllocatingFormatters
                     }
 
                     var segment = formatter.Formatted;
-                    using (var memory = new OwnedPinnedArray<byte>(segment.Array)) {
-                        connection.TryWrite(memory.Memory.Slice(segment.Offset, segment.Count));
+                    using (var memory = new OwnedPinnedBuffer<byte>(segment.Array)) {
+                        connection.TryWrite(memory.Buffer.Slice(segment.Offset, segment.Count));
                         connection.Dispose();
                     }
                 };
