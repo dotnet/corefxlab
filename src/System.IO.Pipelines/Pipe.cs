@@ -293,9 +293,14 @@ namespace System.IO.Pipelines
         internal void AdvanceWriter(int bytesWritten)
         {
             EnsureAlloc();
-
             if (bytesWritten > 0)
             {
+
+                if (_writingHead == null)
+                {
+                    throw new InvalidOperationException("Cannot advance without buffer allocated");
+                }
+
                 Debug.Assert(_writingHead != null);
                 Debug.Assert(!_writingHead.ReadOnly);
                 Debug.Assert(_writingHead.Next == null);
@@ -303,7 +308,10 @@ namespace System.IO.Pipelines
                 var buffer = _writingHead.Buffer;
                 var bufferIndex = _writingHead.End + bytesWritten;
 
-                Debug.Assert(bufferIndex <= buffer.Length);
+                if (bufferIndex > buffer.Length)
+                {
+                    throw new InvalidOperationException("Cannot advance past memory size");
+                }
 
                 _writingHead.End = bufferIndex;
                 _currentWriteLength += bytesWritten;

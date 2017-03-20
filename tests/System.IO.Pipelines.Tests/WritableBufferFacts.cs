@@ -28,14 +28,23 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task ThrowsOnAdvanceWithNoMemory()
+        public void ThrowsOnAdvanceWithNoMemory()
         {
             using (var memoryPool = new MemoryPool())
             {
                 var pipe = new Pipe(memoryPool);
                 var buffer = pipe.Writer.Alloc();
-                Assert.Throws(() => buffer.Advance(1));
-                await buffer.FlushAsync();
+                Assert.Throws<InvalidOperationException>(() => buffer.Advance(1));
+            }
+        }
+        [Fact]
+        public void ThrowsOnAdvanceOverMemorySize()
+        {
+            using (var memoryPool = new MemoryPool())
+            {
+                var pipe = new Pipe(memoryPool);
+                var buffer = pipe.Writer.Alloc(1);
+                Assert.Throws<InvalidOperationException>(() => buffer.Advance(buffer.Buffer.Length + 1));
             }
         }
 
