@@ -298,7 +298,7 @@ namespace System.IO.Pipelines
 
                 if (_writingHead == null)
                 {
-                    throw new InvalidOperationException("Cannot advance without buffer allocated");
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingWithNoBuffer);
                 }
 
                 Debug.Assert(_writingHead != null);
@@ -310,7 +310,7 @@ namespace System.IO.Pipelines
 
                 if (bufferIndex > buffer.Length)
                 {
-                    throw new InvalidOperationException("Cannot advance past memory size");
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingPastBufferSize);
                 }
 
                 _writingHead.End = bufferIndex;
