@@ -15,10 +15,8 @@ namespace Benchmarks
 
         const int SliceSpanIterations = 100000;
         const int SliceSpanDataSize = 1000;
-        const int StartMarker = 4;
-        const int SliceLength = SliceSpanDataSize - 20;
 
-        static readonly Buffer<int> Buffer = new int[SliceSpanDataSize];
+        static readonly Buffer<int> SliceSpanBuffer = new int[SliceSpanDataSize];
 
         /// <summary>
         /// A method that tests slicing a Buffer<T> before reading the Span property.
@@ -30,9 +28,11 @@ namespace Benchmarks
         [Benchmark]
         public static void MemorySliceThenSpan()
         {
+            GetBookEnds(out int start, out int length);
+
             Benchmark.Iterate(() => {
                 for (var i = 0; i < SliceSpanIterations; i++)
-                    DoSliceThenSpan<int>(Buffer, StartMarker, SliceLength);
+                    DoSliceThenSpan(start, length);
             });
         }
 
@@ -46,9 +46,11 @@ namespace Benchmarks
         [Benchmark]
         public static void MemorySpanThenSlice()
         {
+            GetBookEnds(out int start, out int length);
+
             Benchmark.Iterate(() => {
                 for (var i = 0; i < SliceSpanIterations; i++)
-                    DoSpanThenSlice<int>(Buffer, StartMarker, SliceLength);
+                    DoSpanThenSlice(start, length);
             });
         }
 
@@ -58,9 +60,9 @@ namespace Benchmarks
         /// we are not trying to measure.
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        static Span<T> DoSpanThenSlice<T>(Buffer<T> buffer, int start, int length)
+        static Span<int> DoSpanThenSlice(int start, int length)
         {
-            return buffer.Span.Slice(start, length);
+            return SliceSpanBuffer.Span.Slice(start, length);
         }
 
         /// <summary>
@@ -69,9 +71,16 @@ namespace Benchmarks
         /// we are not trying to measure.
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        static Span<T> DoSliceThenSpan<T>(Buffer<T> buffer, int start, int length)
+        static Span<int> DoSliceThenSpan(int start, int length)
         {
-            return buffer.Slice(start, length).Span;
+            return SliceSpanBuffer.Slice(start, length).Span;
+        }
+
+        static void GetBookEnds(out int start, out int length)
+        {
+            Random rnd = new Random(42);
+            start = rnd.Next(0, SliceSpanDataSize / 2);
+            length = rnd.Next(0, SliceSpanDataSize / 2);
         }
 
         #endregion Slice+Span vs Span+Slice
