@@ -89,17 +89,6 @@ namespace System.Buffers
 
         public IBufferList<byte> Rest => _rest;
 
-        public int? Length
-        {
-            get {
-                if (_length == Unspecified)
-                {
-                    return null;
-                }
-                return _length;
-            }
-        }
-
         public static ReadWriteBytes Empty => s_empty;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -189,13 +178,6 @@ namespace System.Buffers
             internal Buffer<byte> _first;
             internal BufferListNode _rest;
             public Buffer<byte> First => _first;
-
-            public int? Length
-            {
-                get {
-                    throw new NotImplementedException();
-                }
-            }
 
             public IBufferList<byte> Rest => _rest;
 

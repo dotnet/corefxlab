@@ -88,8 +88,6 @@ namespace System.Text.Http
     {
         internal ReadOnlyBytes _headers;
 
-        public int? Length => null;
-
         public bool TryGet(ref Position position, out HttpHeader value, bool advance = true)
         {
             var bytes = _headers.Slice(position.IntegerPosition);

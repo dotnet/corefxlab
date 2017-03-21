@@ -35,10 +35,6 @@ namespace Microsoft.Net.Http
 
         IReadOnlyBufferList<byte> IReadOnlyBufferList<byte>.Rest => _next;
 
-        // TODO: maybe these should be renamed to no conflict with OwnedBuffer<T>.Length?
-        int? ISequence<Buffer<byte>>.Length => null;
-        int? ISequence<ReadOnlyBuffer<byte>>.Length => null;
-
         public int CopyTo(Span<byte> buffer)
         {
             if (buffer.Length > _written) {
