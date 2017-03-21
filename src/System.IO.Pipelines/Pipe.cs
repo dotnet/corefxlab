@@ -102,10 +102,16 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowed, _writerCompletion.Location);
             }
 
+            if (!_writerAwaitable.IsCompleted)
+            {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoWritingAllowedDuringFlush);
+            }
+
             if (minimumSize < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.minimumSize);
             }
+
 
             lock (_sync)
             {
@@ -295,13 +301,11 @@ namespace System.IO.Pipelines
             EnsureAlloc();
             if (bytesWritten > 0)
             {
-
                 if (_writingHead == null)
                 {
                     ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingWithNoBuffer);
                 }
 
-                Debug.Assert(_writingHead != null);
                 Debug.Assert(!_writingHead.ReadOnly);
                 Debug.Assert(_writingHead.Next == null);
 

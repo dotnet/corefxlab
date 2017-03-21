@@ -116,10 +116,13 @@ namespace System.IO.Pipelines
                     resourceString = "Can't complete reader while reading.";
                     break;
                 case ExceptionResource.AdvancingPastBufferSize:
-                    resourceString = "Cannot advance past buffer size";
+                    resourceString = "Can't advance past buffer size";
                     break;
                 case ExceptionResource.AdvancingWithNoBuffer:
-                    resourceString = "Cannot advance without buffer allocated";
+                    resourceString = "Can't advance without buffer allocated";
+                    break;
+                case ExceptionResource.NoWritingAllowedDuringFlush:
+                    resourceString = "Can't allocate while flushing";
                     break;
             }
 
@@ -160,6 +163,7 @@ namespace System.IO.Pipelines
         CompleteWriterActiveWriter,
         CompleteReaderActiveReader,
         AdvancingPastBufferSize,
-        AdvancingWithNoBuffer
+        AdvancingWithNoBuffer,
+        NoWritingAllowedDuringFlush
     }
 }

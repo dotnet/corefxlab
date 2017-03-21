@@ -170,5 +170,16 @@ namespace System.IO.Pipelines.Tests
 
             Assert.False(flushAsync.IsCompleted);
         }
+
+        [Fact]
+        public void ThrowsOnAllocDuringFlush()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(64);
+            writableBuffer.Advance(64);
+            var flushTask = writableBuffer.FlushAsync();
+            Assert.False(flushTask.IsCompleted);
+            var exception = Assert.Throws<InvalidOperationException>(() => _pipe.Writer.Alloc());
+            Assert.Equal("Can't allocate while flushing", exception.Message);
+        }
     }
 }

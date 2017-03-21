@@ -50,6 +50,8 @@ namespace System.IO.Pipelines
 
         public bool IsCompleted => ReferenceEquals(_state, _awaitableIsCompleted);
 
+        public bool IsAwaitingCallback => !IsCompleted && ReferenceEquals(_state, _awaitableIsNotCompleted);
+
         public Action OnCompleted(Action continuation, ref PipeCompletion completion)
         {
             var awaitableState = _state;
