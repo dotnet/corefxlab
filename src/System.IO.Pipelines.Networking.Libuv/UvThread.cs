@@ -121,7 +121,14 @@ namespace System.IO.Pipelines.Networking.Libuv
 
                 _postHandle.Send();
 
-                _thread.Join();
+                // REVIEW: Make it configurable
+                if (!_thread.Join(5000))
+                {
+                    if (Thread.CurrentThread.ManagedThreadId == _thread.ManagedThreadId)
+                    {
+                        throw new InvalidOperationException("Can't unwind on the loop thread");
+                    }
+                }
 
                 // REVIEW: Can you restart the thread?
             }
