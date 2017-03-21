@@ -23,6 +23,7 @@
   <!-- Project references -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
+    <ProjectReference Include="..\..\src\System.Binary\System.Binary.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
   <ItemGroup>

@@ -42,5 +42,68 @@ namespace System.Binary
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T ReadLittleEndian<[Primitive]T>(this Span<byte> span) where T : struct
             => BitConverter.IsLittleEndian ? span.Read<T>() : UnsafeUtilities.Reverse(span.Read<T>());
+
+        /// <summary>
+        /// Reads a structure of type T out of a slice of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T Read<[Primitive]T>(this Span<byte> slice)
+            where T : struct
+        {
+            RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
+            return Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
+        }
+
+        /// <summary>
+        /// Reads a structure of type T out of a slice of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T Read<[Primitive]T>(this ReadOnlySpan<byte> slice)
+            where T : struct
+        {
+            RequiresInInclusiveRange(Unsafe.SizeOf<T>(), (uint)slice.Length);
+            return Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
+        }
+
+        /// <summary>
+        /// Reads a structure of type T out of a slice of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryRead<[Primitive]T>(this ReadOnlySpan<byte> slice, out T value)
+            where T : struct
+        {
+            if (Unsafe.SizeOf<T>() > (uint)slice.Length)
+            {
+                value = default(T);
+                return false;
+            }
+            value = Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
+            return true;
+        }
+
+        /// <summary>
+        /// Reads a structure of type T out of a slice of bytes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryRead<[Primitive]T>(this Span<byte> slice, out T value)
+            where T : struct
+        {
+            if (Unsafe.SizeOf<T>() > (uint)slice.Length)
+            {
+                value = default(T);
+                return false;
+            }
+            value = Unsafe.ReadUnaligned<T>(ref slice.DangerousGetPinnableReference());
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RequiresInInclusiveRange(int start, uint length)
+        {
+            if ((uint)start > length)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 }
