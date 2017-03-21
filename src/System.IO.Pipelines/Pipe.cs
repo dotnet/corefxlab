@@ -419,11 +419,17 @@ namespace System.IO.Pipelines
                 _readingState.End(ExceptionResource.NoReadToComplete);
             }
 
-            while (returnStart != null && returnStart != returnEnd)
+            while (returnStart != null)
             {
                 var returnSegment = returnStart;
-                returnStart = returnStart.Next;
                 returnSegment.Dispose();
+
+                if (returnSegment == returnEnd)
+                {
+                    break;
+                }
+
+                returnStart = returnStart.Next;
             }
 
             TrySchedule(_writerScheduler, continuation);

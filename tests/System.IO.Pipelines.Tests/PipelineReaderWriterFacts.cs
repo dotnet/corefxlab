@@ -509,26 +509,6 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task MultipleCompleteReaderWriterCauseDisposeOnlyOnce()
-        {
-            var pool = new DisposeTrackingBufferPool();
-
-            using (var factory = new PipeFactory(pool))
-            {
-                var readerWriter = factory.Create();
-                await readerWriter.Writer.WriteAsync(new byte[] { 1 });
-
-                readerWriter.Writer.Complete();
-                readerWriter.Reader.Complete();
-                Assert.Equal(1, pool.Disposed);
-
-                readerWriter.Writer.Complete();
-                readerWriter.Reader.Complete();
-                Assert.Equal(1, pool.Disposed);
-            }
-        }
-
-        [Fact]
         public async Task CompleteReaderThrowsIfReadInProgress()
         {
             await _pipe.Writer.WriteAsync(new byte[1]);
@@ -573,39 +553,6 @@ namespace System.IO.Pipelines.Tests
             writableBuffer.Advance(1);
             flushTask = writableBuffer.FlushAsync();
             Assert.True(flushTask.IsCompleted);
-        }
-
-        private class DisposeTrackingBufferPool :  BufferPool
-        {
-            private DisposeTrackingOwnedMemory _memory = new DisposeTrackingOwnedMemory(new byte[1]);
-
-            public override OwnedBuffer<byte> Rent(int size)
-            {
-                return _memory;
-            }
-
-            public int Disposed => _memory.Disposed;
-
-            protected override void Dispose(bool disposing)
-            {
-
-            }
-
-            private class DisposeTrackingOwnedMemory : OwnedBuffer<byte>
-            {
-                public DisposeTrackingOwnedMemory(byte[] array) : base(array)
-                {
-                }
-
-                protected override void Dispose(bool disposing)
-                {
-                    Disposed++;
-                    base.Dispose(disposing);
-                }
-
-                public int Disposed { get; set; }
-
-            }
         }
     }
 }
