@@ -92,7 +92,7 @@ namespace System.Collections.Sequences
             }           
 
             var newArray = new T[newSize];
-            _array.CopyTo(newArray, 0);
+            new Span<T>(_array, 0, _count).CopyTo(newArray);
             _array = newArray;
             return oldArray;
         }

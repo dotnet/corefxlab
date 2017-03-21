@@ -28,8 +28,6 @@ namespace System.Collections.Sequences
 
         public int Length => _count;
 
-        int? ISequence<T>.Length => Length;
-
         public bool TryGet(ref Position position, out T item, bool advance = true)
         {
             item = default(T);

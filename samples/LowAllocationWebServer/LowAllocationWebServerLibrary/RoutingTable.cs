@@ -21,7 +21,7 @@ namespace Microsoft.Net.Http
         public TRequestId GetRequestId(HttpRequestLine requestLine)
         {
             for(int i=0; i<_count; i++) {
-                if (requestLine.RequestUri.Equals(_uris[i]) && requestLine.Method == _verbs[i]) return _requestIds[i];
+                if (requestLine.RequestUri.Span.SequenceEqual(_uris[i]) && requestLine.Method == _verbs[i]) return _requestIds[i];
             }
             return default(TRequestId);
         }

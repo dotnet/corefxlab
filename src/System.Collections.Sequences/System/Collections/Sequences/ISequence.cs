@@ -14,7 +14,5 @@ namespace System.Collections.Sequences
         /// <returns></returns>
         /// <remarks></remarks>
         bool TryGet(ref Position position, out T item, bool advance = true);
-
-        int? Length { get; }
     }
 }

@@ -21,8 +21,6 @@ namespace System.IO.Pipelines
         /// </summary>
         public int Length => _length;
 
-        int? ISequence<ReadOnlyBuffer<byte>>.Length => Length;
-
         /// <summary>
         /// Determines if the <see cref="ReadableBuffer"/> is empty.
         /// </summary>

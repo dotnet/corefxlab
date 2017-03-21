@@ -87,8 +87,6 @@ namespace System.Collections.Sequences
 
         public int Length => _count;
 
-        int? ISequence<KeyValuePair<K, V>>.Length => Length;
-
         public bool TryGet(ref Position position, out KeyValuePair<K, V> item, bool advance = true)
         {
             item = default(KeyValuePair<K, V>);

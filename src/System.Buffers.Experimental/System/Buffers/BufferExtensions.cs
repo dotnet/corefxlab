@@ -13,7 +13,7 @@ namespace System.Buffers
         {
             Position position = Position.First;
             ReadOnlyBuffer<byte> buffer;
-            ResizableArray<byte> array = new ResizableArray<byte>(bufferSequence.Length.GetValueOrDefault(1024)); 
+            ResizableArray<byte> array = new ResizableArray<byte>(1024); 
             while (bufferSequence.TryGet(ref position, out buffer))
             {
                 array.AddAll(buffer.Span);

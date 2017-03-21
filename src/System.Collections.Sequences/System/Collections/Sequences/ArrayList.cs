@@ -21,8 +21,6 @@ namespace System.Collections.Sequences
 
         public int Length => _items.Count;
 
-        int? ISequence<T>.Length => Length;
-
         public T this[int index] => _items[index];
 
         public void Add(T item)
