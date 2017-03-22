@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Binary;
 using System.Buffers;
 using System.Buffers.Pools;
 using System.Runtime.CompilerServices;
@@ -398,7 +399,7 @@ namespace System.Text.Json
 
         private void ParseLiteral(JsonObject.JsonValueType literal, ReadOnlySpan<byte> expected)
         {
-            if (!System.SpanExtensions.StartsWith(_values.Slice(_valuesIndex), expected)) {
+            if (!_values.Slice(_valuesIndex).StartsWith(expected)) {
                 throw new FormatException("Invalid json, tried to read " + literal.ToString());
             }
             AppendDbRow(literal, _valuesIndex, expected.Length);
