@@ -1,10 +1,19 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.Buffers.Pools
+namespace System.Buffers.Internal
 {
     internal sealed partial class ManagedBufferPool : BufferPool
     {
+        public override OwnedBuffer<byte> Rent(int minimumBufferSize)
+        {
+            return new ArrayPoolMemory(minimumBufferSize);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+        }
+
         private class ArrayPoolMemory : OwnedBuffer<byte>
         {
             byte[] _array;

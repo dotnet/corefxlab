@@ -14,14 +14,5 @@ namespace System.Buffers.Internal
                 return s_shared;
             }
         }
-
-        public override OwnedBuffer<byte> Rent(int minimumBufferSize)
-        {
-            return new ArrayPoolMemory(minimumBufferSize);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-        }
     }
 }
