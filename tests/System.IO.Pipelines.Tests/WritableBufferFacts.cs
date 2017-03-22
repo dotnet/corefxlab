@@ -27,6 +27,30 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
+        [Fact]
+        public void ThrowsOnAdvanceWithNoMemory()
+        {
+            using (var memoryPool = new MemoryPool())
+            {
+                var pipe = new Pipe(memoryPool);
+                var buffer = pipe.Writer.Alloc();
+                var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(1));
+                Assert.Equal("Can't advance without buffer allocated", exception.Message);
+            }
+        }
+
+        [Fact]
+        public void ThrowsOnAdvanceOverMemorySize()
+        {
+            using (var memoryPool = new MemoryPool())
+            {
+                var pipe = new Pipe(memoryPool);
+                var buffer = pipe.Writer.Alloc(1);
+                var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(buffer.Buffer.Length + 1));
+                Assert.Equal("Can't advance past buffer size", exception.Message);
+            }
+        }
+
         [Theory]
         [InlineData(1, "1")]
         [InlineData(20, "20")]

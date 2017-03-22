@@ -293,17 +293,23 @@ namespace System.IO.Pipelines
         internal void AdvanceWriter(int bytesWritten)
         {
             EnsureAlloc();
-
             if (bytesWritten > 0)
             {
-                Debug.Assert(_writingHead != null);
+                if (_writingHead == null)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingWithNoBuffer);
+                }
+
                 Debug.Assert(!_writingHead.ReadOnly);
                 Debug.Assert(_writingHead.Next == null);
 
                 var buffer = _writingHead.Buffer;
                 var bufferIndex = _writingHead.End + bytesWritten;
 
-                Debug.Assert(bufferIndex <= buffer.Length);
+                if (bufferIndex > buffer.Length)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingPastBufferSize);
+                }
 
                 _writingHead.End = bufferIndex;
                 _currentWriteLength += bytesWritten;

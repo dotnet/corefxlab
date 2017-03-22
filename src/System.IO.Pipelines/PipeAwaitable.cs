@@ -57,7 +57,7 @@ namespace System.IO.Pipelines
             {
                 _state = continuation;
             }
-            
+
             if (ReferenceEquals(awaitableState, _awaitableIsCompleted))
             {
                 return continuation;

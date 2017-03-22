@@ -115,6 +115,12 @@ namespace System.IO.Pipelines
                 case ExceptionResource.CompleteReaderActiveReader:
                     resourceString = "Can't complete reader while reading.";
                     break;
+                case ExceptionResource.AdvancingPastBufferSize:
+                    resourceString = "Can't advance past buffer size";
+                    break;
+                case ExceptionResource.AdvancingWithNoBuffer:
+                    resourceString = "Can't advance without buffer allocated";
+                    break;
             }
 
             resourceString = resourceString ?? $"Error ResourceKey not defined {argument}.";
@@ -152,6 +158,8 @@ namespace System.IO.Pipelines
         NoWritingAllowed,
         NoReadingAllowed,
         CompleteWriterActiveWriter,
-        CompleteReaderActiveReader
+        CompleteReaderActiveReader,
+        AdvancingPastBufferSize,
+        AdvancingWithNoBuffer
     }
 }
