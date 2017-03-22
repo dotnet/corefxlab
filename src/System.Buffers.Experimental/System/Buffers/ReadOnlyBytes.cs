@@ -11,15 +11,15 @@ namespace System.Buffers
     /// <summary>
     ///  Multi-segment buffer
     /// </summary>
-    public struct ReadOnlyBytes : IReadOnlyMemoryList<byte>
+    public struct ReadOnlyBytes : IReadOnlyBufferList<byte>
     {
-        ReadOnlyMemory<byte> _first;
+        ReadOnlyBuffer<byte> _first;
         int _totalLength;
-        IReadOnlyMemoryList<byte> _rest;
+        IReadOnlyBufferList<byte> _rest;
         
-        static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
+        static readonly ReadOnlyBytes s_empty = new ReadOnlyBytes(ReadOnlyBuffer<byte>.Empty);
 
-        public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest, int length)
+        public ReadOnlyBytes(ReadOnlyBuffer<byte> first, IReadOnlyBufferList<byte> rest, int length)
         {
             Debug.Assert(rest != null || length <= first.Length);
             _rest = rest;
@@ -27,24 +27,24 @@ namespace System.Buffers
             _totalLength = length;
         }
 
-        public ReadOnlyBytes(ReadOnlyMemory<byte> first, IReadOnlyMemoryList<byte> rest) :
+        public ReadOnlyBytes(ReadOnlyBuffer<byte> first, IReadOnlyBufferList<byte> rest) :
             this(first, rest, rest==null?first.Length:Unspecified)
         {
         }
 
-        public ReadOnlyBytes(ReadOnlyMemory<byte> memory) :
-            this(memory, null, memory.Length)
+        public ReadOnlyBytes(ReadOnlyBuffer<byte> buffer) :
+            this(buffer, null, buffer.Length)
         { }
 
-        public ReadOnlyBytes(IReadOnlyMemoryList<byte> segments, int length) :
+        public ReadOnlyBytes(IReadOnlyBufferList<byte> segments, int length) :
             this(segments.First, segments.Rest, length)
         { }
 
-        public ReadOnlyBytes(IReadOnlyMemoryList<byte> segments) :
+        public ReadOnlyBytes(IReadOnlyBufferList<byte> segments) :
             this(segments.First, segments.Rest, Unspecified)
         { }
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> value, bool advance = true)
+        public bool TryGet(ref Position position, out ReadOnlyBuffer<byte> value, bool advance = true)
         {
             if (position == Position.First)
             {
@@ -58,10 +58,10 @@ namespace System.Buffers
                 return true;
             }
 
-            var rest = position.ObjectPosition as IReadOnlyMemoryList<byte>;
+            var rest = position.ObjectPosition as IReadOnlyBufferList<byte>;
             if (rest == null)
             {
-                value = default(ReadOnlyMemory<byte>);
+                value = default(ReadOnlyBuffer<byte>);
                 return false;
             }
 
@@ -81,9 +81,9 @@ namespace System.Buffers
             return true;
         }
 
-        public ReadOnlyMemory<byte> First => _first;
+        public ReadOnlyBuffer<byte> First => _first;
 
-        public IReadOnlyMemoryList<byte> Rest => _rest;
+        public IReadOnlyBufferList<byte> Rest => _rest;
 
         public int? Length
         {
@@ -198,7 +198,7 @@ namespace System.Buffers
             {
                 if (First.Length == index && length == 0)
                 {
-                    return new ReadOnlyBytes(ReadOnlyMemory<byte>.Empty);
+                    return new ReadOnlyBytes(ReadOnlyBuffer<byte>.Empty);
                 }
                 else
                 {
@@ -222,7 +222,7 @@ namespace System.Buffers
             if (_rest != null)
             {
                 Position position = new Position();
-                ReadOnlyMemory<byte> segment;
+                ReadOnlyBuffer<byte> segment;
                 while (_rest.TryGet(ref position, out segment))
                 {
                     length += segment.Length;
@@ -236,11 +236,11 @@ namespace System.Buffers
         // and knowing the length is not needed in amy operations, e.g. slicing small section of the front.
         const int Unspecified = -1;
 
-        class MemoryListNode : IReadOnlyMemoryList<byte>
+        class BufferListNode : IReadOnlyBufferList<byte>
         {
-            internal ReadOnlyMemory<byte> _first;
-            internal MemoryListNode _rest;
-            public ReadOnlyMemory<byte> First => _first;
+            internal ReadOnlyBuffer<byte> _first;
+            internal BufferListNode _rest;
+            public ReadOnlyBuffer<byte> First => _first;
 
             public int? Length {
                 get {
@@ -248,13 +248,13 @@ namespace System.Buffers
                 }
             }
 
-            public IReadOnlyMemoryList<byte> Rest => _rest;
+            public IReadOnlyBufferList<byte> Rest => _rest;
 
             public int CopyTo(Span<byte> buffer)
             {
                 int copied = 0;
                 var position = Position.First;
-                ReadOnlyMemory<byte> segment;
+                ReadOnlyBuffer<byte> segment;
                 var free = buffer;
                 while (TryGet(ref position, out segment, true))
                 {
@@ -274,7 +274,7 @@ namespace System.Buffers
                 return copied;
             }
 
-            public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+            public bool TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance = true)
             {
                 if (position == Position.First)
                 {
@@ -282,9 +282,9 @@ namespace System.Buffers
                     if (advance) { position.IntegerPosition++; position.ObjectPosition = _rest; }
                     return true;
                 }
-                else if (position.ObjectPosition == null) { item = default(ReadOnlyMemory<byte>); return false; }
+                else if (position.ObjectPosition == null) { item = default(ReadOnlyBuffer<byte>); return false; }
 
-                var sequence = (MemoryListNode)position.ObjectPosition;
+                var sequence = (BufferListNode)position.ObjectPosition;
                 item = sequence._first;
                 if (advance)
                 {
@@ -304,18 +304,18 @@ namespace System.Buffers
 
         public static ReadOnlyBytes Create(params byte[][] buffers)
         {
-            MemoryListNode first = null;
-            MemoryListNode current = null;
+            BufferListNode first = null;
+            BufferListNode current = null;
             foreach (var buffer in buffers)
             {
                 if (first == null)
                 {
-                    current = new MemoryListNode();
+                    current = new BufferListNode();
                     first = current;
                 }
                 else
                 {
-                    current._rest = new MemoryListNode();
+                    current._rest = new BufferListNode();
                     current = current._rest;
                 }
                 current._first = buffer;

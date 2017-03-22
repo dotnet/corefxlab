@@ -224,7 +224,8 @@ namespace System.IO.Pipelines.Tests
             connection.Output.Complete();
             watch.Stop();
 
-            return Tuple.Create(sendCount, replyCount, (int)watch.ElapsedMilliseconds);
+            // Task.Run here so that we're not on the UV thread when we complete
+            return await Task.Run(() => Tuple.Create(sendCount, replyCount, (int)watch.ElapsedMilliseconds));
 
         }
 

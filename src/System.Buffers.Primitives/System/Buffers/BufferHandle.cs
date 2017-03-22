@@ -6,19 +6,19 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
-    public unsafe struct MemoryHandle
+    public unsafe struct BufferHandle
     {
         IKnown _owner;
         GCHandle _handle;
         void* _pointer;
 
-        internal static MemoryHandle Create<T>(OwnedMemory<T> owner, int index)
+        internal static BufferHandle Create<T>(OwnedBuffer<T> owner, int index)
         {
             void* pointer;
             GCHandle handle;
             if (owner.TryGetPointerInternal(out pointer))
             {
-                pointer = Memory<T>.Add(pointer, index);
+                pointer = Buffer<T>.Add(pointer, index);
             }
             else
             {
@@ -26,7 +26,7 @@ namespace System.Buffers
                 if (owner.TryGetArrayInternal(out buffer))
                 {
                     handle = GCHandle.Alloc(buffer.Array, GCHandleType.Pinned);
-                    pointer = Memory<T>.Add((void*)handle.AddrOfPinnedObject(), buffer.Offset + index);
+                    pointer = Buffer<T>.Add((void*)handle.AddrOfPinnedObject(), buffer.Offset + index);
                 }
                 else
                 {
@@ -36,7 +36,7 @@ namespace System.Buffers
 
             owner.AddReference();
 
-            return new MemoryHandle {
+            return new BufferHandle {
                 _owner = owner,
                 _handle = handle,
                 _pointer = pointer

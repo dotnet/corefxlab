@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers;
-using System.Linq;
 using System.Text;
 
 namespace System.IO.Pipelines.Testing
@@ -12,10 +11,11 @@ namespace System.IO.Pipelines.Testing
     {
         public static ReadableBuffer CreateBuffer(params byte[][] inputs)
         {
-            if (inputs == null || !inputs.Any())
+            if (inputs == null || inputs.Length == 0)
             {
                 throw new InvalidOperationException();
             }
+
             var i = 0;
 
             BufferSegment last = null;
@@ -34,9 +34,9 @@ namespace System.IO.Pipelines.Testing
                     chars[dataOffset + j] = s[j];
                 }
 
-                // Create a segment that has offset relative to the OwnedMemory and OwnedMemory itself has offset relative to array
-                var ownedMemory = new OwnedArray<byte>(new ArraySegment<byte>(chars, memoryOffset, length * 3));
-                var current = new BufferSegment(ownedMemory, length, length * 2);
+                // Create a segment that has offset relative to the OwnedBuffer and OwnedBuffer itself has offset relative to array
+                var ownedBuffer = OwnedBuffer<byte>.Create(new ArraySegment<byte>(chars, memoryOffset, length * 3));
+                var current = new BufferSegment(ownedBuffer, length, length * 2);
                 if (first == null)
                 {
                     first = current;
@@ -55,12 +55,22 @@ namespace System.IO.Pipelines.Testing
 
         public static ReadableBuffer CreateBuffer(params string[] inputs)
         {
-            return CreateBuffer(inputs.Select(i => Encoding.UTF8.GetBytes(i)).ToArray());
+            var buffers = new byte[inputs.Length][];
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                buffers[i] = Encoding.UTF8.GetBytes(inputs[i]);
+            }
+            return CreateBuffer(buffers);
         }
 
         public static ReadableBuffer CreateBuffer(params int[] inputs)
         {
-            return CreateBuffer(inputs.Select(i => new byte[i]).ToArray());
+            var buffers = new byte[inputs.Length][];
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                buffers[i] = new byte[inputs[i]];
+            }
+            return CreateBuffer(buffers);
         }
     }
 }

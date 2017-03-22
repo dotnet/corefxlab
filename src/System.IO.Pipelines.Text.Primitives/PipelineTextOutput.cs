@@ -30,7 +30,7 @@ namespace System.IO.Pipelines.Text.Primitives
             {
                 EnsureBuffer();
 
-                return _writableBuffer.Memory.Span;
+                return _writableBuffer.Buffer.Span;
             }
         }
 

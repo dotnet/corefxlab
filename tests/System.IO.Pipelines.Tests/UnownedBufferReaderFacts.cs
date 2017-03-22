@@ -3,8 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Buffers.Pools;
-using System.IO;
+using System.Buffers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -269,7 +268,7 @@ namespace System.IO.Pipelines.Tests
 
             var reader = stream.AsPipelineReader();
 
-            var data = Memory<byte>.Empty;
+            var data = Buffer<byte>.Empty;
 
             while (true)
             {
@@ -558,7 +557,7 @@ namespace System.IO.Pipelines.Tests
 
         private class StreamAndPipeReader : Stream, IPipeReader
         {
-            private readonly Pipe _pipe = new Pipe(ManagedBufferPool.Shared);
+            private readonly Pipe _pipe = new Pipe(BufferPool.Default);
 
             public override bool CanRead => true;
 

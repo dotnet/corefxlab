@@ -27,6 +27,30 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
+        [Fact]
+        public void ThrowsOnAdvanceWithNoMemory()
+        {
+            using (var memoryPool = new MemoryPool())
+            {
+                var pipe = new Pipe(memoryPool);
+                var buffer = pipe.Writer.Alloc();
+                var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(1));
+                Assert.Equal("Can't advance without buffer allocated", exception.Message);
+            }
+        }
+
+        [Fact]
+        public void ThrowsOnAdvanceOverMemorySize()
+        {
+            using (var memoryPool = new MemoryPool())
+            {
+                var pipe = new Pipe(memoryPool);
+                var buffer = pipe.Writer.Alloc(1);
+                var exception = Assert.Throws<InvalidOperationException>(() => buffer.Advance(buffer.Buffer.Length + 1));
+                Assert.Equal("Can't advance past buffer size", exception.Message);
+            }
+        }
+
         [Theory]
         [InlineData(1, "1")]
         [InlineData(20, "20")]
@@ -66,7 +90,7 @@ namespace System.IO.Pipelines.Tests
 
                 var output = pipe.Writer.Alloc();
                 output.Write(data);
-                var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
+                var foo = output.Buffer.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 
@@ -101,7 +125,7 @@ namespace System.IO.Pipelines.Tests
 
                 var output = pipe.Writer.Alloc();
                 output.Append(data, TextEncoder.Utf8);
-                var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
+                var foo = output.Buffer.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 
@@ -136,7 +160,7 @@ namespace System.IO.Pipelines.Tests
 
                 var output = pipe.Writer.Alloc();
                 output.Append(data, TextEncoder.Utf8);
-                var foo = output.Memory.IsEmpty; // trying to see if .Memory breaks
+                var foo = output.Buffer.IsEmpty; // trying to see if .Memory breaks
                 await output.FlushAsync();
                 pipe.Writer.Complete();
 

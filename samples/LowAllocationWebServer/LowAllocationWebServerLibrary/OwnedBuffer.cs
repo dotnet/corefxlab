@@ -8,7 +8,7 @@ using System.Collections.Sequences;
 
 namespace Microsoft.Net.Http
 {
-    class OwnedBuffer : OwnedMemory<byte>, IMemoryList<byte>, IReadOnlyMemoryList<byte>
+    class OwnedBuffer : OwnedBuffer<byte>, IBufferList<byte>, IReadOnlyBufferList<byte>
     {
         public const int DefaultBufferSize = 1024;
         internal OwnedBuffer _next;
@@ -25,42 +25,38 @@ namespace Microsoft.Net.Http
         {
         }
 
-        public Memory<byte> First => Memory;
+        public Buffer<byte> First => Buffer;
 
-        public IMemoryList<byte> Rest => _next;
+        public IBufferList<byte> Rest => _next;
 
         public int WrittenByteCount => _written;
 
-        ReadOnlyMemory<byte> IReadOnlyMemoryList<byte>.First => Memory;
+        ReadOnlyBuffer<byte> IReadOnlyBufferList<byte>.First => Buffer;
 
-        IReadOnlyMemoryList<byte> IReadOnlyMemoryList<byte>.Rest => _next;
-
-        // TODO: maybe these should be renamed to no conflict with OwnedMemory<T>.Length?
-        int? ISequence<Memory<byte>>.Length => null;
-        int? ISequence<ReadOnlyMemory<byte>>.Length => null;
+        IReadOnlyBufferList<byte> IReadOnlyBufferList<byte>.Rest => _next;
 
         public int CopyTo(Span<byte> buffer)
         {
             if (buffer.Length > _written) {
-                Memory.Slice(0, _written).CopyTo(buffer);
+                Buffer.Slice(0, _written).CopyTo(buffer);
                 return _next.CopyTo(buffer.Slice(_written));
             }
 
-            Memory.Slice(0, buffer.Length).CopyTo(buffer);
+            Buffer.Slice(0, buffer.Length).CopyTo(buffer);
             return buffer.Length;
         }
 
-        public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
+        public bool TryGet(ref Position position, out Buffer<byte> item, bool advance = true)
         {
             if (position == Position.First) {
-                item = Memory.Slice(0, _written);
+                item = Buffer.Slice(0, _written);
                 if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
                 return true;
             }
-            else if (position.ObjectPosition == null) { item = default(Memory<byte>); return false; }
+            else if (position.ObjectPosition == null) { item = default(Buffer<byte>); return false; }
 
             var sequence = (OwnedBuffer)position.ObjectPosition;
-            item = sequence.Memory.Slice(0, _written);
+            item = sequence.Buffer.Slice(0, _written);
             if (advance) {
                 if (position == Position.First) {
                     position.ObjectPosition = _next;
@@ -73,17 +69,17 @@ namespace Microsoft.Net.Http
             return true;
         }
 
-        public bool TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance = true)
+        public bool TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance = true)
         {
             if (position == Position.First) {
-                item = Memory.Slice(0, _written);
+                item = Buffer.Slice(0, _written);
                 if (advance) { position.IntegerPosition++; position.ObjectPosition = _next; }
                 return true;
             }
-            else if (position.ObjectPosition == null) { item = default(ReadOnlyMemory<byte>); return false; }
+            else if (position.ObjectPosition == null) { item = default(ReadOnlyBuffer<byte>); return false; }
 
             var sequence = (OwnedBuffer)position.ObjectPosition;
-            item = sequence.Memory.Slice(0, _written);
+            item = sequence.Buffer.Slice(0, _written);
             if (advance) {
                 if (position == Position.First) {
                     position.ObjectPosition = _next;

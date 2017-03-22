@@ -13,39 +13,39 @@ namespace System
     /// </summary>
     public static partial class SpanExtensionsLabs
     {
-        public unsafe static int IndexOf(this Span<byte> buffer, byte value0, byte value1)
+        public unsafe static int IndexOfAny(this Span<byte> buffer, byte value0, byte value1)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
-                return IndexOf(pSearchSpace, buffer.Length, value0, value1);
+                return IndexOfAny(pSearchSpace, buffer.Length, value0, value1);
             }
         }
 
-        public unsafe static int IndexOf(this Span<byte> buffer, byte value0, byte value1, byte value2)
+        public unsafe static int IndexOfAny(this Span<byte> buffer, byte value0, byte value1, byte value2)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
-                return IndexOf(pSearchSpace, buffer.Length, value0, value1, value2);
+                return IndexOfAny(pSearchSpace, buffer.Length, value0, value1, value2);
             }
         }
 
-        public unsafe static int IndexOf(this ReadOnlySpan<byte> buffer, byte value0, byte value1)
+        public unsafe static int IndexOfAny(this ReadOnlySpan<byte> buffer, byte value0, byte value1)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
-                return IndexOf(pSearchSpace, buffer.Length, value0, value1);
+                return IndexOfAny(pSearchSpace, buffer.Length, value0, value1);
             }
         }
 
-        public unsafe static int IndexOf(this ReadOnlySpan<byte> buffer, byte value0, byte value1, byte value2)
+        public unsafe static int IndexOfAny(this ReadOnlySpan<byte> buffer, byte value0, byte value1, byte value2)
         {
             fixed (byte* pSearchSpace = &buffer.DangerousGetPinnableReference())
             {
-                return IndexOf(pSearchSpace, buffer.Length, value0, value1, value2);
+                return IndexOfAny(pSearchSpace, buffer.Length, value0, value1, value2);
             }
         }
-
-        private static unsafe int IndexOf(byte* searchSpace, int length, byte value0, byte value1)
+        
+        private static unsafe int IndexOfAny(byte* searchSpace, int length, byte value0, byte value1)
         {
             var offset = 0;
             // If length < vector length the jump over Vector dominates the search; as the Vector section is quite chunky
@@ -118,7 +118,7 @@ namespace System
             return offset;
         }
 
-        private static unsafe int IndexOf(byte* searchSpace, int length, byte value0, byte value1, byte value2)
+        private static unsafe int IndexOfAny(byte* searchSpace, int length, byte value0, byte value1, byte value2)
         {
             var offset = 0;
             // If length < vector length the jump over Vector dominates the search; as the Vector section is quite chunky

@@ -70,7 +70,7 @@ namespace System.Collections.Sequences
             if (items.Length > _array.Length - _count) {
                 Resize(items.Length + _count);
             }
-            items.CopyTo(_array.Slice(_count));
+            items.CopyTo(new Span<T>(_array, _count));
             _count += items.Length;
         }
 
@@ -92,7 +92,7 @@ namespace System.Collections.Sequences
             }           
 
             var newArray = new T[newSize];
-            _array.CopyTo(newArray, 0);
+            new Span<T>(_array, 0, _count).CopyTo(newArray);
             _array = newArray;
             return oldArray;
         }

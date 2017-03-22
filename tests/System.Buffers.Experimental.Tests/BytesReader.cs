@@ -173,7 +173,7 @@ namespace System.Slices.Tests
             if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
                 var position = Position.First;
-                ReadOnlyMemory<byte> segment;
+                ReadOnlyBuffer<byte> segment;
                 while (bytes.TryGet(ref position, out segment))
                 {
                     sb.Append(new Utf8String(segment.Span));

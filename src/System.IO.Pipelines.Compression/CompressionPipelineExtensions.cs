@@ -102,7 +102,7 @@ namespace System.IO.Pipelines.Compression
 
             public async Task Execute(IPipeReader reader, IPipeWriter writer)
             {
-                List<MemoryHandle> handles = new List<MemoryHandle>();
+                List<BufferHandle> handles = new List<BufferHandle>();
 
                 while (true)
                 {
@@ -121,13 +121,13 @@ namespace System.IO.Pipelines.Compression
                     }
 
                     var writerBuffer = writer.Alloc();
-                    var memory = inputBuffer.First;
+                    var buffer = inputBuffer.First;
 
                     unsafe
                     {
-                        var handle = memory.Pin();
+                        var handle = buffer.Pin();
                         handles.Add(handle);
-                        _deflater.SetInput((IntPtr)handle.PinnedPointer, memory.Length);
+                        _deflater.SetInput((IntPtr)handle.PinnedPointer, buffer.Length);
                     }
 
                     while (!_deflater.NeedsInput())
@@ -135,14 +135,14 @@ namespace System.IO.Pipelines.Compression
                         unsafe
                         {
                             writerBuffer.Ensure();
-                            var handle = writerBuffer.Memory.Pin();
+                            var handle = writerBuffer.Buffer.Pin();
                             handles.Add(handle);
-                            int written = _deflater.ReadDeflateOutput((IntPtr)handle.PinnedPointer, writerBuffer.Memory.Length);
+                            int written = _deflater.ReadDeflateOutput((IntPtr)handle.PinnedPointer, writerBuffer.Buffer.Length);
                             writerBuffer.Advance(written);
                         }
                     }
 
-                    var consumed = memory.Length - _deflater.AvailableInput;
+                    var consumed = buffer.Length - _deflater.AvailableInput;
 
                     inputBuffer = inputBuffer.Slice(0, consumed);
 
@@ -160,7 +160,7 @@ namespace System.IO.Pipelines.Compression
                     unsafe
                     {
                         writerBuffer.Ensure();
-                        var memory = writerBuffer.Memory;
+                        var memory = writerBuffer.Buffer;
                         var handle = memory.Pin();
                         handles.Add(handle);
                         int compressedBytes;
@@ -181,7 +181,7 @@ namespace System.IO.Pipelines.Compression
                     unsafe
                     {
                         writerBuffer.Ensure();
-                        var memory = writerBuffer.Memory;
+                        var memory = writerBuffer.Buffer;
                         var handle = memory.Pin();
                         handles.Add(handle);
                         int compressedBytes;
@@ -217,7 +217,7 @@ namespace System.IO.Pipelines.Compression
 
             public async Task Execute(IPipeReader reader, IPipeWriter writer)
             {
-                List<MemoryHandle> handles = new List<MemoryHandle>();
+                List<BufferHandle> handles = new List<BufferHandle>();
 
                 while (true)
                 {
@@ -236,22 +236,22 @@ namespace System.IO.Pipelines.Compression
                     }
 
                     var writerBuffer = writer.Alloc();
-                    var memory = inputBuffer.First;
-                    if (memory.Length > 0)
+                    var buffer = inputBuffer.First;
+                    if (buffer.Length > 0)
                     {
                         unsafe
                         {
-                            var handle = memory.Pin();
+                            var handle = buffer.Pin();
                             handles.Add(handle);
-                            _inflater.SetInput((IntPtr)handle.PinnedPointer, memory.Length);
+                            _inflater.SetInput((IntPtr)handle.PinnedPointer, buffer.Length);
 
                             writerBuffer.Ensure();
-                            handle = writerBuffer.Memory.Pin();
+                            handle = writerBuffer.Buffer.Pin();
                             handles.Add(handle);
-                            int written = _inflater.Inflate((IntPtr)handle.PinnedPointer, writerBuffer.Memory.Length);
+                            int written = _inflater.Inflate((IntPtr)handle.PinnedPointer, writerBuffer.Buffer.Length);
                             writerBuffer.Advance(written);
 
-                            var consumed = memory.Length - _inflater.AvailableInput;
+                            var consumed = buffer.Length - _inflater.AvailableInput;
 
                             inputBuffer = inputBuffer.Slice(0, consumed);
                         }

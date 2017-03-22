@@ -10,4 +10,7 @@
     <ProjectReference Include="..\System.Binary\System.Binary.csproj" />
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
+  </ItemGroup>
 </Project>

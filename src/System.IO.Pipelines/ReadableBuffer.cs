@@ -10,7 +10,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that can read a sequential series of bytes.
     /// </summary>
-    public struct ReadableBuffer : ISequence<ReadOnlyMemory<byte>>
+    public struct ReadableBuffer : ISequence<ReadOnlyBuffer<byte>>
     {
         private ReadCursor _start;
         private ReadCursor _end;
@@ -21,23 +21,21 @@ namespace System.IO.Pipelines
         /// </summary>
         public int Length => _length;
 
-        int? ISequence<ReadOnlyMemory<byte>>.Length => Length;
-
         /// <summary>
         /// Determines if the <see cref="ReadableBuffer"/> is empty.
         /// </summary>
         public bool IsEmpty => _length == 0;
 
         /// <summary>
-        /// Determins if the <see cref="ReadableBuffer"/> is a single <see cref="Memory{Byte}"/>.
+        /// Determins if the <see cref="ReadableBuffer"/> is a single <see cref="Buffer{Byte}"/>.
         /// </summary>
         public bool IsSingleSpan => _start.Segment == _end.Segment;
 
-        public Memory<byte> First
+        public Buffer<byte> First
         {
             get
             {
-                _start.TryGetBuffer(_end, out Memory<byte> first);
+                _start.TryGetBuffer(_end, out Buffer<byte> first);
                 return first;
             }
         }
@@ -172,10 +170,10 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.destination);
             }
 
-            foreach (var memory in this)
+            foreach (var buffer in this)
             {
-                memory.Span.CopyTo(destination);
-                destination = destination.Slice(memory.Length);
+                buffer.Span.CopyTo(destination);
+                destination = destination.Slice(buffer.Length);
             }
         }
 
@@ -196,9 +194,9 @@ namespace System.IO.Pipelines
         public override string ToString()
         {
             var sb = new StringBuilder();
-            foreach (var memory in this)
+            foreach (var buffer in this)
             {
-                SpanExtensions.AppendAsLiteral(memory.Span, sb);
+                SpanExtensions.AppendAsLiteral(buffer.Span, sb);
             }
             return sb.ToString();
         }
@@ -206,9 +204,9 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Returns an enumerator over the <see cref="ReadableBuffer"/>
         /// </summary>
-        public MemoryEnumerator GetEnumerator()
+        public BufferEnumerator GetEnumerator()
         {
-            return new MemoryEnumerator(_start, _end);
+            return new BufferEnumerator(_start, _end);
         }
 
         internal void ClearCursors()
@@ -250,14 +248,14 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            var buffer = new OwnedArray<byte>(data);
+            OwnedBuffer<byte> buffer = data;
             var segment = new BufferSegment(buffer);
             segment.Start = offset;
             segment.End = offset + length;
             return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
         }
 
-        bool ISequence<ReadOnlyMemory<byte>>.TryGet(ref Position position, out ReadOnlyMemory<byte> item, bool advance)
+        bool ISequence<ReadOnlyBuffer<byte>>.TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance)
         {
             if (position == Position.First)
             {
@@ -278,7 +276,7 @@ namespace System.IO.Pipelines
             }
             else if (position == Position.AfterLast)
             {
-                item = default(ReadOnlyMemory<byte>);
+                item = default(ReadOnlyBuffer<byte>);
                 return false;
             }
 
@@ -293,11 +291,11 @@ namespace System.IO.Pipelines
             }
             if (currentSegment == _end.Segment)
             {
-                item = currentSegment.Memory.Slice(currentSegment.Start, _end.Index - currentSegment.Start);
+                item = currentSegment.Buffer.Slice(currentSegment.Start, _end.Index - currentSegment.Start);
             }
             else
             {
-                item = currentSegment.Memory.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
+                item = currentSegment.Buffer.Slice(currentSegment.Start, currentSegment.End - currentSegment.Start);
             }
             return true;
         }

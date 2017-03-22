@@ -35,23 +35,23 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The buffer being tracked
         /// </summary>
-        private OwnedMemory<byte> _buffer;
+        private OwnedBuffer<byte> _owned;
 
-        private Memory<byte> _memory;
+        private Buffer<byte> _buffer;
 
-        public BufferSegment(OwnedMemory<byte> buffer)
+        public BufferSegment(OwnedBuffer<byte> buffer)
         {
-            _buffer = buffer;
+            _owned = buffer;
             Start = 0;
             End = 0;
 
-            _buffer.AddReference();
-            _memory = _buffer.Memory;
+            _owned.AddReference();
+            _buffer = _owned.Buffer;
         }
 
-        public BufferSegment(OwnedMemory<byte> buffer, int start, int end)
+        public BufferSegment(OwnedBuffer<byte> buffer, int start, int end)
         {
-            _buffer = buffer;
+            _owned = buffer;
             Start = start;
             End = end;
             ReadOnly = true;
@@ -61,14 +61,14 @@ namespace System.IO.Pipelines
             var unowned = buffer as UnownedBuffer;
             if (unowned != null)
             {
-                _buffer = unowned.MakeCopy(start, end - start, out Start, out End);
+                _owned = unowned.MakeCopy(start, end - start, out Start, out End);
             }
 
-            _buffer.AddReference();
-            _memory = _buffer.Memory;
+            _owned.AddReference();
+            _buffer = _owned.Buffer;
         }
 
-        public Memory<byte> Memory => _memory;
+        public Buffer<byte> Buffer => _buffer;
 
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
@@ -88,13 +88,13 @@ namespace System.IO.Pipelines
 
         public void Dispose()
         {
-            Debug.Assert(_buffer.HasOutstandingReferences);
+            Debug.Assert(_owned.HasOutstandingReferences);
 
-            _buffer.Release();
+            _owned.Release();
 
-            if (!_buffer.HasOutstandingReferences)
+            if (!_owned.HasOutstandingReferences)
             {
-                _buffer.Dispose();
+                _owned.Dispose();
             }
         }
 
@@ -106,7 +106,7 @@ namespace System.IO.Pipelines
         public override string ToString()
         {
             var builder = new StringBuilder();
-            var data = _buffer.Memory.Slice(Start, ReadableBytes).Span;
+            var data = _owned.Buffer.Slice(Start, ReadableBytes).Span;
 
             for (int i = 0; i < ReadableBytes; i++)
             {
@@ -122,24 +122,24 @@ namespace System.IO.Pipelines
 
             if (beginOrig == endOrig)
             {
-                lastSegment = new BufferSegment(beginOrig._buffer, beginBuffer.Index, endBuffer.Index);
+                lastSegment = new BufferSegment(beginOrig._owned, beginBuffer.Index, endBuffer.Index);
                 return lastSegment;
             }
 
-            var beginClone = new BufferSegment(beginOrig._buffer, beginBuffer.Index, beginOrig.End);
+            var beginClone = new BufferSegment(beginOrig._owned, beginBuffer.Index, beginOrig.End);
             var endClone = beginClone;
 
             beginOrig = beginOrig.Next;
 
             while (beginOrig != endOrig)
             {
-                endClone.Next = new BufferSegment(beginOrig._buffer, beginOrig.Start, beginOrig.End);
+                endClone.Next = new BufferSegment(beginOrig._owned, beginOrig.Start, beginOrig.End);
 
                 endClone = endClone.Next;
                 beginOrig = beginOrig.Next;
             }
 
-            lastSegment = new BufferSegment(endOrig._buffer, endOrig.Start, endBuffer.Index);
+            lastSegment = new BufferSegment(endOrig._owned, endOrig.Start, endBuffer.Index);
             endClone.Next = lastSegment;
 
             return beginClone;

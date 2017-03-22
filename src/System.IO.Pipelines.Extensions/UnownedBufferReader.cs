@@ -93,7 +93,7 @@ namespace System.IO.Pipelines
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         // Called by the WRITER
-        public async Task WriteAsync(OwnedMemory<byte> buffer, CancellationToken cancellationToken)
+        public async Task WriteAsync(OwnedBuffer<byte> buffer, CancellationToken cancellationToken)
         {
             // If Writing has stopped, why is the caller writing??
             if (Writing.Status != TaskStatus.WaitingForActivation)
@@ -119,7 +119,7 @@ namespace System.IO.Pipelines
                 // Allocate a new segment to hold the buffer being written.
                 using (var segment = new BufferSegment(buffer))
                 {
-                    segment.End = buffer.Memory.Length;
+                    segment.End = buffer.Buffer.Length;
 
                     if (_head == null || _head.ReadableBytes == 0)
                     {

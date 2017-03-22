@@ -64,7 +64,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         private void ProcessReceives()
         {
             _buffer = _input.Writer.Alloc(2048);
-            var receiveBufferSeg = GetSegmentFromMemory(_buffer.Memory);
+            var receiveBufferSeg = GetSegmentFromMemory(_buffer.Buffer);
 
             if (!_rio.RioReceive(_requestQueue, ref receiveBufferSeg, 1, RioReceiveFlags.None, 0))
             {
@@ -111,7 +111,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _output.Reader.Complete();
         }
 
-        private Task SendAsync(Memory<byte> memory, bool endOfMessage)
+        private Task SendAsync(Buffer<byte> memory, bool endOfMessage)
         {
             if (!IsReadyToSend)
             {
@@ -130,7 +130,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             return _completedTask;
         }
 
-        private async Task SendAsyncAwaited(Memory<byte> memory, bool endOfMessage)
+        private async Task SendAsyncAwaited(Buffer<byte> memory, bool endOfMessage)
         {
             await ReadyToSend;
 
@@ -219,7 +219,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _buffer.FlushAsync();
         }
 
-        private unsafe RioBufferSegment GetSegmentFromMemory(Memory<byte> memory)
+        private unsafe RioBufferSegment GetSegmentFromMemory(Buffer<byte> memory)
         {
             void* pointer;
             if (!memory.TryGetPointer(out pointer))

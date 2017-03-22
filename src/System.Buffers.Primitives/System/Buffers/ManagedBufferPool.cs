@@ -3,9 +3,9 @@
 
 namespace System.Buffers.Pools
 {
-    public sealed class ManagedBufferPool : BufferPool
+    internal sealed class ManagedBufferPool : BufferPool
     {
-        static ManagedBufferPool s_shared = new ManagedBufferPool();
+        readonly static ManagedBufferPool s_shared = new ManagedBufferPool();
 
         public static ManagedBufferPool Shared
         {
@@ -15,7 +15,7 @@ namespace System.Buffers.Pools
             }
         }
 
-        public override OwnedMemory<byte> Rent(int minimumBufferSize)
+        public override OwnedBuffer<byte> Rent(int minimumBufferSize)
         {
             return new ArrayPoolMemory(minimumBufferSize);
         }
@@ -24,7 +24,7 @@ namespace System.Buffers.Pools
         {
         }
 
-        private class ArrayPoolMemory : OwnedMemory<byte>
+        private class ArrayPoolMemory : OwnedBuffer<byte>
         {
             public ArrayPoolMemory(int size) : base(ArrayPool<byte>.Shared.Rent(size))
             {

@@ -7,48 +7,48 @@ using System.Runtime.CompilerServices;
 
 namespace System.Buffers
 {
-    public interface IMemoryList<T> : ISequence<Memory<T>>
+    public interface IBufferList<T> : ISequence<Buffer<T>>
     {
         int CopyTo(Span<T> buffer);
-        Memory<T> First { get; }
-        IMemoryList<T> Rest { get; }
+        Buffer<T> First { get; }
+        IBufferList<T> Rest { get; }
     }
 
     /// <summary>
     ///  Multi-segment buffer
     /// </summary>
-    public struct ReadWriteBytes : IMemoryList<byte>
+    public struct ReadWriteBytes : IBufferList<byte>
     {
-        Memory<byte> _first;
-        IMemoryList<byte> _rest;
+        Buffer<byte> _first;
+        IBufferList<byte> _rest;
         int _length;
 
-        static readonly ReadWriteBytes s_empty = new ReadWriteBytes(Memory<byte>.Empty);
+        static readonly ReadWriteBytes s_empty = new ReadWriteBytes(Buffer<byte>.Empty);
 
-        public ReadWriteBytes(Memory<byte> first, IMemoryList<byte> rest, int length)
+        public ReadWriteBytes(Buffer<byte> first, IBufferList<byte> rest, int length)
         {
             _rest = rest;
             _first = first;
             _length = length;
         }
 
-        public ReadWriteBytes(Memory<byte> first, IMemoryList<byte> rest) :
+        public ReadWriteBytes(Buffer<byte> first, IBufferList<byte> rest) :
             this(first, rest, Unspecified)
         { }
 
-        public ReadWriteBytes(Memory<byte> memory) :
-            this(memory, null, memory.Length)
+        public ReadWriteBytes(Buffer<byte> buffer) :
+            this(buffer, null, buffer.Length)
         { }
 
-        public ReadWriteBytes(IMemoryList<byte> segments, int length) :
+        public ReadWriteBytes(IBufferList<byte> segments, int length) :
             this(segments.First, segments.Rest, length)
         { }
 
-        public ReadWriteBytes(IMemoryList<byte> segments) :
+        public ReadWriteBytes(IBufferList<byte> segments) :
             this(segments.First, segments.Rest, Unspecified)
         { }
 
-        public bool TryGet(ref Position position, out Memory<byte> value, bool advance = true)
+        public bool TryGet(ref Position position, out Buffer<byte> value, bool advance = true)
         {
             if (position == Position.First)
             {
@@ -62,10 +62,10 @@ namespace System.Buffers
                 return true;
             }
 
-            var rest = position.ObjectPosition as IMemoryList<byte>;
+            var rest = position.ObjectPosition as IBufferList<byte>;
             if (rest == null)
             {
-                value = default(Memory<byte>);
+                value = default(Buffer<byte>);
                 return false;
             }
 
@@ -85,20 +85,9 @@ namespace System.Buffers
             return true;
         }
 
-        public Memory<Byte> First => _first;
+        public Buffer<byte> First => _first;
 
-        public IMemoryList<byte> Rest => _rest;
-
-        public int? Length
-        {
-            get {
-                if (_length == Unspecified)
-                {
-                    return null;
-                }
-                return _length;
-            }
-        }
+        public IBufferList<byte> Rest => _rest;
 
         public static ReadWriteBytes Empty => s_empty;
 
@@ -147,7 +136,7 @@ namespace System.Buffers
             {
                 if (First.Length == index && length == 0)
                 {
-                    return new ReadWriteBytes(Memory<byte>.Empty);
+                    return new ReadWriteBytes(Buffer<byte>.Empty);
                 }
                 else
                 {
@@ -171,7 +160,7 @@ namespace System.Buffers
             if (_rest != null)
             {
                 Position position = new Position();
-                Memory<byte> segment;
+                Buffer<byte> segment;
                 while (_rest.TryGet(ref position, out segment))
                 {
                     length += segment.Length;
@@ -184,26 +173,19 @@ namespace System.Buffers
         // and knowing the length is not needed in amy operations, e.g. slicing small section of the front.
         const int Unspecified = -1;
 
-        class MemoryListNode : IMemoryList<byte>
+        class BufferListNode : IBufferList<byte>
         {
-            internal Memory<byte> _first;
-            internal MemoryListNode _rest;
-            public Memory<byte> First => _first;
+            internal Buffer<byte> _first;
+            internal BufferListNode _rest;
+            public Buffer<byte> First => _first;
 
-            public int? Length
-            {
-                get {
-                    throw new NotImplementedException();
-                }
-            }
-
-            public IMemoryList<byte> Rest => _rest;
+            public IBufferList<byte> Rest => _rest;
 
             public int CopyTo(Span<byte> buffer)
             {
                 int copied = 0;
                 var position = Position.First;
-                Memory<byte> segment;
+                Buffer<byte> segment;
                 var free = buffer;
                 while (TryGet(ref position, out segment, true))
                 {
@@ -223,7 +205,7 @@ namespace System.Buffers
                 return copied;
             }
 
-            public bool TryGet(ref Position position, out Memory<byte> item, bool advance = true)
+            public bool TryGet(ref Position position, out Buffer<byte> item, bool advance = true)
             {
                 if (position == Position.First)
                 {
@@ -231,9 +213,9 @@ namespace System.Buffers
                     if (advance) { position.IntegerPosition++; position.ObjectPosition = _rest; }
                     return true;
                 }
-                else if (position.ObjectPosition == null) { item = default(Memory<byte>); return false; }
+                else if (position.ObjectPosition == null) { item = default(Buffer<byte>); return false; }
 
-                var sequence = (MemoryListNode)position.ObjectPosition;
+                var sequence = (BufferListNode)position.ObjectPosition;
                 item = sequence._first;
                 if (advance)
                 {
@@ -253,18 +235,18 @@ namespace System.Buffers
 
         public static ReadWriteBytes Create(params byte[][] buffers)
         {
-            MemoryListNode first = null;
-            MemoryListNode current = null;
+            BufferListNode first = null;
+            BufferListNode current = null;
             foreach (var buffer in buffers)
             {
                 if (first == null)
                 {
-                    current = new MemoryListNode();
+                    current = new BufferListNode();
                     first = current;
                 }
                 else
                 {
-                    current._rest = new MemoryListNode();
+                    current._rest = new BufferListNode();
                     current = current._rest;
                 }
                 current._first = buffer;

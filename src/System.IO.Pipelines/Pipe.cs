@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers.Pools;
+using System.Buffers;
 using System.Diagnostics;
 
 namespace System.IO.Pipelines
@@ -88,7 +88,7 @@ namespace System.IO.Pipelines
             _writerAwaitable = new PipeAwaitable(completed: true);
         }
 
-        internal Memory<byte> Memory => _writingHead?.Memory.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Memory<byte>.Empty;
+        internal Buffer<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.
@@ -293,17 +293,23 @@ namespace System.IO.Pipelines
         internal void AdvanceWriter(int bytesWritten)
         {
             EnsureAlloc();
-
             if (bytesWritten > 0)
             {
-                Debug.Assert(_writingHead != null);
+                if (_writingHead == null)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingWithNoBuffer);
+                }
+
                 Debug.Assert(!_writingHead.ReadOnly);
                 Debug.Assert(_writingHead.Next == null);
 
-                var buffer = _writingHead.Memory;
+                var buffer = _writingHead.Buffer;
                 var bufferIndex = _writingHead.End + bytesWritten;
 
-                Debug.Assert(bufferIndex <= buffer.Length);
+                if (bufferIndex > buffer.Length)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingPastBufferSize);
+                }
 
                 _writingHead.End = bufferIndex;
                 _currentWriteLength += bytesWritten;

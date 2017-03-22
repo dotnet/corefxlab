@@ -380,7 +380,7 @@ namespace System.IO.Pipelines.Networking.Sockets
                         while (Socket.Available != 0 && buffer.BytesWritten < FlushInputEveryBytes)
                         {
                             buffer.Ensure(); // ask for *something*, then use whatever is available (usually much much more)
-                            SetBuffer(buffer.Memory, args);
+                            SetBuffer(buffer.Buffer, args);
                             // await async for the io work to be completed
                             await Socket.ReceiveSignalAsync(args);
 
@@ -607,7 +607,7 @@ namespace System.IO.Pipelines.Networking.Sockets
         }
 
         // unsafe+async not good friends
-        private unsafe void SetBuffer(Memory<byte> memory, SocketAsyncEventArgs args, int ignore = 0)
+        private unsafe void SetBuffer(Buffer<byte> memory, SocketAsyncEventArgs args, int ignore = 0)
         {
             ArraySegment<byte> segment;
             if (!memory.TryGetArray(out segment))

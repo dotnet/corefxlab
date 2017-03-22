@@ -15,15 +15,15 @@ namespace System.IO.Pipelines
         /// <param name="source">The <see cref="Span{Byte}"/> to write</param>
         public static void Write(this WritableBuffer buffer, ReadOnlySpan<byte> source)
         {
-            if (buffer.Memory.IsEmpty)
+            if (buffer.Buffer.IsEmpty)
             {
                 buffer.Ensure();
             }
 
             // Fast path, try copying to the available memory directly
-            if (source.Length <= buffer.Memory.Length)
+            if (source.Length <= buffer.Buffer.Length)
             {
-                source.CopyTo(buffer.Memory.Span);
+                source.CopyTo(buffer.Buffer.Span);
                 buffer.Advance(source.Length);
                 return;
             }
@@ -33,7 +33,7 @@ namespace System.IO.Pipelines
 
             while (remaining > 0)
             {
-                var writable = Math.Min(remaining, buffer.Memory.Length);
+                var writable = Math.Min(remaining, buffer.Buffer.Length);
 
                 buffer.Ensure(writable);
 
@@ -42,7 +42,7 @@ namespace System.IO.Pipelines
                     continue;
                 }
 
-                source.Slice(offset, writable).CopyTo(buffer.Memory.Span);
+                source.Slice(offset, writable).CopyTo(buffer.Buffer.Span);
 
                 remaining -= writable;
                 offset += writable;

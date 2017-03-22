@@ -38,7 +38,7 @@ namespace System.Text.Json
 
     internal struct TwoStacks
     {
-        Memory<byte> _memory;
+        Buffer<byte> _memory;
         int topOfStackObj;
         int topOfStackArr;
         int capacity;
@@ -55,7 +55,7 @@ namespace System.Text.Json
             }
         }
 
-        public TwoStacks(Memory<byte> db)
+        public TwoStacks(Buffer<byte> db)
         {
             _memory = db;
             topOfStackObj = _memory.Length;
@@ -103,7 +103,7 @@ namespace System.Text.Json
             return value;
         }
 
-        internal void Resize(Memory<byte> newStackMemory)
+        internal void Resize(Buffer<byte> newStackMemory)
         {
             _memory.Slice(0, Math.Max(objectStackCount, arrayStackCount) * 8).Span.CopyTo(newStackMemory.Span);
             _memory = newStackMemory;
@@ -112,10 +112,10 @@ namespace System.Text.Json
 
     internal struct JsonParser
     {
-        private Memory<byte> _db;
+        private Buffer<byte> _db;
         private ReadOnlySpan<byte> _values; // TODO: this should be ReadOnlyMemory<byte>
-        private Memory<byte> _scratchMemory;
-        private OwnedMemory<byte> _scratchManager;
+        private Buffer<byte> _scratchMemory;
+        private OwnedBuffer<byte> _scratchManager;
         BufferPool _pool;
         TwoStacks _stack;
 
@@ -145,9 +145,9 @@ namespace System.Text.Json
         public JsonObject Parse(ReadOnlySpan<byte> utf8Json, BufferPool pool = null)
         {
             _pool = pool;
-            if (_pool == null) _pool = ManagedBufferPool.Shared;
+            if (_pool == null) _pool = BufferPool.Default;
             _scratchManager = _pool.Rent(utf8Json.Length * 4);
-            _scratchMemory = _scratchManager.Memory;
+            _scratchMemory = _scratchManager.Buffer;
 
             int dbLength = _scratchMemory.Length / 2;
             _db = _scratchMemory.Slice(0, dbLength);
@@ -220,11 +220,11 @@ namespace System.Text.Json
             var newScratch = _pool.Rent(_scratchMemory.Length * 2);
             int dbLength = newScratch.Length / 2;
 
-            var newDb = newScratch.Memory.Slice(0, dbLength);
+            var newDb = newScratch.Buffer.Slice(0, dbLength);
             _db.Slice(0, _valuesIndex).Span.CopyTo(newDb.Span);
             _db = newDb;
 
-            var newStackMemory = newScratch.Memory.Slice(dbLength);
+            var newStackMemory = newScratch.Buffer.Slice(dbLength);
             _stack.Resize(newStackMemory);
             _scratchManager.Dispose();
             _scratchManager = newScratch;

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -186,11 +187,11 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool TryGetBuffer(ReadCursor end, out Memory<byte> data)
+        internal bool TryGetBuffer(ReadCursor end, out Buffer<byte> data)
         {
             if (IsDefault)
             {
-                data = Memory<byte>.Empty;
+                data = Buffer<byte>.Empty;
                 return false;
             }
 
@@ -203,11 +204,11 @@ namespace System.IO.Pipelines
 
                 if (following > 0)
                 {
-                    data = segment.Memory.Slice(index, following);
+                    data = segment.Buffer.Slice(index, following);
                     return true;
                 }
 
-                data = Memory<byte>.Empty;
+                data = Buffer<byte>.Empty;
                 return false;
             }
             else
@@ -216,7 +217,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        private bool TryGetBufferMultiBlock(ReadCursor end, out Memory<byte> data)
+        private bool TryGetBufferMultiBlock(ReadCursor end, out Buffer<byte> data)
         {
             var segment = _segment;
             var index = _index;
@@ -248,7 +249,7 @@ namespace System.IO.Pipelines
 
                 if (wasLastSegment)
                 {
-                    data = Memory<byte>.Empty;
+                    data = Buffer<byte>.Empty;
                     return false;
                 }
                 else
@@ -258,7 +259,7 @@ namespace System.IO.Pipelines
                 }
             }
 
-            data = segment.Memory.Slice(index, following);
+            data = segment.Buffer.Slice(index, following);
             return true;
         }
 
@@ -270,7 +271,7 @@ namespace System.IO.Pipelines
             }
 
             var sb = new StringBuilder();
-            Span<byte> span = Segment.Memory.Span.Slice(Index, Segment.End - Index);
+            Span<byte> span = Segment.Buffer.Span.Slice(Index, Segment.End - Index);
             SpanExtensions.AppendAsLiteral(span, sb);
             return sb.ToString();
         }

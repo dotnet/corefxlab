@@ -11,7 +11,4 @@
     <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\System.Collections.Sequences\System.Collections.Sequences.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
-  </ItemGroup>
 </Project>
