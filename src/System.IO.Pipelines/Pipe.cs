@@ -295,13 +295,11 @@ namespace System.IO.Pipelines
             EnsureAlloc();
             if (bytesWritten > 0)
             {
-
                 if (_writingHead == null)
                 {
                     ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvancingWithNoBuffer);
                 }
 
-                Debug.Assert(_writingHead != null);
                 Debug.Assert(!_writingHead.ReadOnly);
                 Debug.Assert(_writingHead.Next == null);
 
