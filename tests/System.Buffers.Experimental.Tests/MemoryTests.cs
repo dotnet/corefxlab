@@ -25,7 +25,7 @@ namespace System.Slices.Tests
                 Assert.Equal(10, copy[0]);
             }
 
-            using (OwnedPinnedBuffer<byte> owned = new byte[1024]) {
+            using (OwnedPinnedBuffer<byte> owned = new OwnedPinnedBuffer<byte>(new byte[1024])) {
                 var span = owned.Span;
                 span[10] = 10;
                 Assert.Equal(10, owned.Array[10]);
@@ -71,11 +71,6 @@ namespace System.Slices.Tests
                 try {
                     Assert.Throws<InvalidOperationException>(() => { // memory is reserved; premature dispose check fires
                         owned.Dispose();
-                    });
-                    Assert.Throws<ObjectDisposedException>(() => {
-                        // memory is disposed
-                        Span<byte> span = memorySlice.Span;
-                        span[0] = 255;
                     });
                 }
                 finally {

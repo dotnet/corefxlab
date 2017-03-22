@@ -35,7 +35,7 @@ namespace System.IO.Pipelines.Testing
                 }
 
                 // Create a segment that has offset relative to the OwnedBuffer and OwnedBuffer itself has offset relative to array
-                var ownedBuffer = OwnedBuffer<byte>.Create(new ArraySegment<byte>(chars, memoryOffset, length * 3));
+                var ownedBuffer = new SegmentBuffer(new ArraySegment<byte>(chars, memoryOffset, length * 3));
                 var current = new BufferSegment(ownedBuffer, length, length * 2);
                 if (first == null)
                 {
@@ -71,6 +71,38 @@ namespace System.IO.Pipelines.Testing
                 buffers[i] = new byte[inputs[i]];
             }
             return CreateBuffer(buffers);
+        }
+
+        class SegmentBuffer : OwnedBuffer<byte>
+        {
+            private ArraySegment<byte> _segment;
+
+            public SegmentBuffer(ArraySegment<byte> arraySegment)
+            {
+                _segment = arraySegment;
+            }
+
+            public override int Length => _segment.Count;
+
+            public override Span<byte> Span => new Span<byte>(_segment.Array, _segment.Offset, _segment.Count);
+
+            public override Span<byte> GetSpan(int index, int length)
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+                return Span.Slice(index, length);
+            }
+
+            protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+            {
+                buffer = _segment;
+                return true;
+            }
+
+            protected override unsafe bool TryGetPointerInternal(out void* pointer)
+            {
+                pointer = null;
+                return false;
+            }
         }
     }
 }

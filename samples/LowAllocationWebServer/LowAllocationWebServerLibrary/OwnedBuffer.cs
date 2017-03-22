@@ -13,9 +13,12 @@ namespace Microsoft.Net.Http
         public const int DefaultBufferSize = 1024;
         internal OwnedBuffer _next;
         int _written;
+        byte[] _array;
 
-        public OwnedBuffer(int desiredSize = DefaultBufferSize) : base(Allocate(desiredSize))
-        { }
+        public OwnedBuffer(int desiredSize = DefaultBufferSize)
+        {
+            _array = Allocate(desiredSize);
+        }
 
         static byte[] Allocate(int size)
         {
@@ -34,6 +37,10 @@ namespace Microsoft.Net.Http
         ReadOnlyBuffer<byte> IReadOnlyBufferList<byte>.First => Buffer;
 
         IReadOnlyBufferList<byte> IReadOnlyBufferList<byte>.Rest => _next;
+
+        public override int Length => _array.Length;
+
+        public override Span<byte> Span => _array;
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -105,13 +112,31 @@ namespace Microsoft.Net.Http
 
         protected override void Dispose(bool disposing)
         {
-            var array = Array;
+            var array = _array;
             base.Dispose(disposing);
             Free(array);
             if (_next != null) {
                 _next.Dispose();
             }
             _next = null;
+        }
+
+        public override Span<byte> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            return new Span<byte>(_array, index, length);
+        }
+
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
+
+        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        {
+            buffer = new ArraySegment<byte>(_array);
+            return true;
         }
     }
 }

@@ -7,18 +7,31 @@ namespace System.Buffers
 {
     public class OwnedNativeBuffer : OwnedBuffer<byte>
     {
-        public OwnedNativeBuffer(int length) : this(length, Marshal.AllocHGlobal(length))
-        { }
+        IntPtr _pointer;
+        int _length;
 
-        public OwnedNativeBuffer(int length, IntPtr address) : base(null, 0, length, address) { }
+        public override int Length => _length;
+
+        public unsafe override Span<byte> Span => new Span<byte>((byte*)_pointer.ToPointer(), _length);
+
+        public OwnedNativeBuffer(int length) 
+        {
+            _pointer = Marshal.AllocHGlobal(length);
+            _length = length;
+        }
+
+        public OwnedNativeBuffer(int length, IntPtr address)
+        {
+            _pointer = address;
+            _length = length;
+        }
 
         public static implicit operator IntPtr(OwnedNativeBuffer owner)
         {
-            unsafe
-            {
-                return new IntPtr(owner.Pointer);
-            }
+            return owner._pointer;
         }
+
+        public unsafe byte* Pointer => (byte*)_pointer.ToPointer();
 
         ~OwnedNativeBuffer()
         {
@@ -27,13 +40,34 @@ namespace System.Buffers
 
         protected override void Dispose(bool disposing)
         {
-            if (base.Pointer != IntPtr.Zero)
+            if (_pointer != null)
             {
-                Marshal.FreeHGlobal(base.Pointer);
+                Marshal.FreeHGlobal(_pointer);
             }
             base.Dispose(disposing);
+            _pointer = IntPtr.Zero;
         }
 
-        public new unsafe byte* Pointer => (byte*)base.Pointer.ToPointer();
+        public override Span<byte> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            if (_length - index < length) throw new IndexOutOfRangeException();
+            unsafe
+            {
+                return new Span<byte>((byte*)_pointer.ToPointer() + index, length);
+            }
+        }
+
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = _pointer.ToPointer();
+            return true;
+        }
+
+        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        {
+            buffer = default(ArraySegment<byte>);
+            return false;
+        }
     }
 }

@@ -54,10 +54,7 @@ namespace System.Buffers
             return new Buffer<T>(_owner, _index + index, length);
         }
 
-        public Span<T> Span {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _owner.GetSpanInternal(_index, _length); }
-        }
+        public Span<T> Span => _owner.GetSpan(_index, _length);
 
         public DisposableReservation<T> Reserve() => new DisposableReservation<T>(_owner);
 

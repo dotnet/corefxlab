@@ -5,39 +5,84 @@ namespace System.Buffers.Internal
 {
     internal sealed class OwnedArray<T> : OwnedBuffer<T>
     {
-        public new T[] Array => base.Array;
+        T[] _array;
+
+        public override int Length => _array.Length;
+
+        public override Span<T> Span => _array;
+
+        public override Span<T> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            return new Span<T>(_array, index, length);
+        }
 
         public static implicit operator T[](OwnedArray<T> owner) {
-            return owner.Array;
+            return owner._array;
         }
 
         public static implicit operator OwnedArray<T>(T[] array) {
             return new OwnedArray<T>(array);
         }
 
-        public static implicit operator OwnedArray<T>(ArraySegment<T> segment)
+        public OwnedArray(int length) 
         {
-            return new OwnedArray<T>(segment);
+            _array = new T[length];
         }
 
-        public OwnedArray(int length) : base(new T[length], 0, length)
-        {}
+        public OwnedArray(T[] array)
+        {
+            _array = array;
+        }
 
-        public OwnedArray(T[] array) : base(array, 0, array.Length)
-        {}
+        protected override void Dispose(bool disposing)
+        {
+            _array = null;
+            base.Dispose(disposing);
+        }
 
-        public OwnedArray(ArraySegment<T> segment) : base(segment.Array, segment.Offset, segment.Count)
-        { }
+        protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
+        {
+            buffer = new ArraySegment<T>(_array);
+            return true;
+        }
+
+        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = null;
+            return false;
+
+        }
     }
 
     internal class OwnerEmptyMemory<T> : OwnedBuffer<T>
     {
-        readonly static T[] s_empty = new T[0];
         public readonly static OwnedBuffer<T> Shared = new OwnerEmptyMemory<T>();
+        static readonly T[] s_empty = new T[0];
 
-        public OwnerEmptyMemory() : base(s_empty, 0, 0) { }
+        public override int Length => 0;
+
+        public override Span<T> Span => Span<T>.Empty;
+
+        public override Span<T> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            return new Span<T>(s_empty, index, length);
+        }
 
         protected override void Dispose(bool disposing)
         {}
+
+        protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
+        {
+            buffer = new ArraySegment<T>(s_empty);
+            return true;
+        }
+
+        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
     }
 }
