@@ -27,7 +27,7 @@ namespace System.Buffers
         protected OwnedBuffer() { }
         
         public Buffer<T> Buffer => new Buffer<T>(this, Length);
-        public ReadOnlyBuffer<T> ReadOnlyMemory => new ReadOnlyBuffer<T>(this, Length);
+        public ReadOnlyBuffer<T> ReadOnlyBuffer => new ReadOnlyBuffer<T>(this, Length);
 
         public abstract Span<T> Span { get; }
         public abstract Span<T> GetSpan(int index, int length);
@@ -60,7 +60,7 @@ namespace System.Buffers
         protected virtual void OnZeroReferences()
         { }
 
-        #region Used by Memory<T>
+    #region Used by Memory<T>
 
         internal protected abstract unsafe bool TryGetPointerInternal(out void* pointer);
 
