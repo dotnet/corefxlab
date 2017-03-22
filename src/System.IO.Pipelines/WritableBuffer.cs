@@ -2,25 +2,93 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
+    /// <summary>
+    /// StackOnly abstraction for fast forward only writes
+    /// </summary>
+    public struct WritableBufferWriter
+    {
+        private readonly Pipe _pipe;
+        private Span<byte> _span;
+
+        public WritableBufferWriter(WritableBuffer writableBuffer) : this(writableBuffer.Pipe)
+        {
+        }
+
+        internal WritableBufferWriter(Pipe pipe)
+        {
+            _pipe = pipe;
+            _span = pipe.Buffer.Span;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void WriteFast(byte[] source, int offset, int length)
+        {
+            CheckDaSpan();
+
+            var sourceLength = length;
+            if (sourceLength <= _span.Length)
+            {
+                ref byte pSource = ref source[offset];
+                ref byte pDest = ref _span.DangerousGetPinnableReference();
+                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)sourceLength);
+                _span = _span.Slice(sourceLength);
+                _pipe.AdvanceWriter(sourceLength);
+                return;
+            }
+
+            WriteMultiBuffer(source, offset, length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CheckDaSpan()
+        {
+            if (_span.Length == 0)
+            {
+                _pipe.Ensure();
+                _span = _pipe.Buffer.Span;
+            }
+        }
+
+        private void WriteMultiBuffer(byte[] source, int offset, int length)
+        {
+            var remaining = length;
+
+            while (remaining > 0)
+            {
+                var writable = Math.Min(remaining, _span.Length);
+
+                ref byte pSource = ref source[offset];
+                ref byte pDest = ref _span.DangerousGetPinnableReference();
+
+                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)writable);
+
+                remaining -= writable;
+                offset += writable;
+
+                _pipe.AdvanceWriter(writable);
+                CheckDaSpan();
+            }
+        }
+    }
+
     /// <summary>
     /// Represents a buffer that can write a sequential series of bytes.
     /// </summary>
     public struct WritableBuffer : IOutput
     {
-        private Pipe _pipe;
-
         internal WritableBuffer(Pipe pipe)
         {
-            _pipe = pipe;
+            Pipe = pipe;
         }
 
         /// <summary>
         /// Available memory.
         /// </summary>
-        public Buffer<byte> Buffer => _pipe.Buffer;
+        public Buffer<byte> Buffer => Pipe.Buffer;
 
         /// <summary>
         /// Returns the number of bytes currently written and uncommitted.
@@ -28,6 +96,7 @@ namespace System.IO.Pipelines
         public int BytesWritten => AsReadableBuffer().Length;
 
         Span<byte> IOutput.Buffer => Buffer.Span;
+        internal Pipe Pipe { get; set; }
 
         void IOutput.Enlarge(int desiredBufferLength) => Ensure(NewSize(desiredBufferLength));
 
@@ -46,7 +115,7 @@ namespace System.IO.Pipelines
         /// </summary>
         public ReadableBuffer AsReadableBuffer()
         {
-            return _pipe.AsReadableBuffer();
+            return Pipe.AsReadableBuffer();
         }
 
         /// <summary>
@@ -55,14 +124,14 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="count">number of bytes</param>
         /// <remarks>
-        /// Used when writing to <see cref="Buffer"/> directly. 
+        /// Used when writing to <see cref="Buffer"/> directly.
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">
         /// More requested than underlying <see cref="IBufferPool"/> can allocate in a contiguous block.
         /// </exception>
         public void Ensure(int count = 1)
         {
-            _pipe.Ensure(count);
+            Pipe.Ensure(count);
         }
 
         /// <summary>
@@ -71,7 +140,7 @@ namespace System.IO.Pipelines
         /// <param name="buffer">The <see cref="ReadableBuffer"/> to append</param>
         public void Append(ReadableBuffer buffer)
         {
-            _pipe.Append(buffer);
+            Pipe.Append(buffer);
         }
 
         /// <summary>
@@ -83,7 +152,7 @@ namespace System.IO.Pipelines
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="bytesWritten"/> is negative.</exception>
         public void Advance(int bytesWritten)
         {
-            _pipe.AdvanceWriter(bytesWritten);
+            Pipe.AdvanceWriter(bytesWritten);
         }
 
         /// <summary>
@@ -95,7 +164,7 @@ namespace System.IO.Pipelines
         /// </remarks>
         public void Commit()
         {
-            _pipe.Commit();
+            Pipe.Commit();
         }
 
         /// <summary>
@@ -105,7 +174,7 @@ namespace System.IO.Pipelines
         /// <returns>A task that completes when the data is fully flushed.</returns>
         public WritableBufferAwaitable FlushAsync()
         {
-            return _pipe.FlushAsync();
+            return Pipe.FlushAsync();
         }
     }
 }

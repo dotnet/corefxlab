@@ -13,7 +13,7 @@ namespace System.IO.Pipelines.Performance.Tests
     {
         private const int _writeLenght = 57;
         private const int InnerLoopCount = 512;
-        private readonly byte[][] _plaintextWrites = new []
+        private readonly byte[][] _plaintextWrites =
         {
             new byte[] { 72, 84, 84, 80, 47, 49, 46, 49, 32}, // HTTP/1.1
             new byte[] { 50, 48, 48, 32, 79, 75}, // 200 OK
@@ -76,11 +76,11 @@ namespace System.IO.Pipelines.Performance.Tests
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
-        public void ParseLiveAspNetInlineWithWriting()
+        public void ParseLiveAspNetInlineWithWriteFast()
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var writableBuffer = _pipe.Writer.Alloc(_writeLenght);
+                var writableBuffer = _pipe.Writer.Alloc();
 
                 foreach (var write in _plaintextWrites)
                 {
@@ -93,7 +93,26 @@ namespace System.IO.Pipelines.Performance.Tests
             }
         }
 
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void ParseLiveAspNetInlineWithWBW()
+        {
+            for (int i = 0; i < InnerLoopCount; i++)
+            {
+                var writableBuffer = _pipe.Writer.Alloc();
+                var writer = new WritableBufferWriter(writableBuffer);
+                foreach (var write in _plaintextWrites)
+                {
+                    writer.WriteFast(write, 0, write.Length);
+                }
 
+                writableBuffer.FlushAsync().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetResult();
+                _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+            }
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteFast(WritableBuffer buffer, byte[] source, int offset, int length)
         {
             Span<byte> dest;

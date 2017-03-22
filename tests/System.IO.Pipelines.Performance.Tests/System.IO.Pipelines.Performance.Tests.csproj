@@ -18,6 +18,7 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <!--<RuntimeFrameworkVersion>2.0.0-beta-001808-00</RuntimeFrameworkVersion>-->
   </PropertyGroup>
 
   <ItemGroup>
