@@ -18,7 +18,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// This object cannot be instantiated outside of the static Create method
         /// </summary>
-        protected MemoryPoolBlock(MemoryPool pool, MemoryPoolSlab slab, int offset, int length) : base(slab.Array, offset, length, slab.NativePointer + offset)
+        protected MemoryPoolBlock(MemoryPool pool, MemoryPoolSlab slab, int offset, int length)
         {
             _offset = offset;
             _length = length;
@@ -37,6 +37,10 @@ namespace System.IO.Pipelines
         /// </summary>
         public MemoryPoolSlab Slab { get; }
 
+        public sealed override int Length => _length;
+
+        public sealed override Span<byte> Span => new Span<byte>(Slab.Array, _offset, _length);
+
 #if BLOCK_LEASE_TRACKING
         public bool IsLeased { get; set; }
         public string Leaser { get; set; }
@@ -51,14 +55,6 @@ namespace System.IO.Pipelines
             {
                 // Need to make a new object because this one is being finalized
                 Pool.Return(new MemoryPoolBlock(Pool, Slab, _offset, _length));
-            }
-        }
-
-        internal void Initialize()
-        {
-            if (IsDisposed)
-            {
-                Initialize(Slab.Array, _offset, _length, Slab.NativePointer + _offset);
             }
         }
 
@@ -94,6 +90,25 @@ namespace System.IO.Pipelines
             base.Dispose(disposing);
 
             Pool.Return(this);
+        }
+
+        public override Span<byte> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            if (length > _length - index) ThrowIndexOutOfRange();
+            return new Span<byte>(Slab.Array, _offset + index, length);
+        }
+
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = (Slab.NativePointer + _offset).ToPointer();
+            return true;
+        }
+
+        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        {
+            buffer = new ArraySegment<byte>(Slab.Array, _offset, _length);
+            return true;
         }
     }
 }

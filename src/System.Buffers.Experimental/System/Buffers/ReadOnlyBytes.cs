@@ -242,12 +242,6 @@ namespace System.Buffers
             internal BufferListNode _rest;
             public ReadOnlyBuffer<byte> First => _first;
 
-            public int? Length {
-                get {
-                    throw new NotImplementedException();
-                }
-            }
-
             public IReadOnlyBufferList<byte> Rest => _rest;
 
             public int CopyTo(Span<byte> buffer)

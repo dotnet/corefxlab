@@ -11,118 +11,40 @@ namespace System.Buffers
 {
     public abstract class OwnedBuffer<T> : IDisposable, IKnown
     {
-        static long _nextId = InitializedId + 1;
-        const int InitializedId = int.MinValue;
-        const int FreedId = int.MinValue + 1;
-
-        T[] _array;
-        int _arrayIndex;
-        int _length;
-
-        IntPtr _pointer;
-
+        bool _disposed;
         int _referenceCount;
-        int _id;
 
-        public int Length => _length;
-
-        internal int Id => _id;
-        protected T[] Array => _array;
-        protected IntPtr Pointer => _pointer;
-        protected int Offset => _arrayIndex;
+        public abstract int Length { get; }
 
         public bool HasOutstandingReferences { 
             get { 
-                return _referenceCount != 0 
+                return _referenceCount > 0 
                         || (ReferenceCountingSettings.OwnedMemory == ReferenceCountingMethod.ReferenceCounter
                             && ReferenceCounter.HasReference(this)); 
             } 
         }
 
-        private OwnedBuffer() { }
-
-        protected OwnedBuffer(T[] array) : this(array, 0, array.Length) { }
-
-        protected OwnedBuffer(T[] array, int arrayOffset, int length, IntPtr pointer = default(IntPtr))
-        {
-            _id = InitializedId;
-            Initialize(array, arrayOffset, length, pointer);
-        }
-
+        protected OwnedBuffer() { }
+        
         public Buffer<T> Buffer => new Buffer<T>(this, Length);
         public ReadOnlyBuffer<T> ReadOnlyMemory => new ReadOnlyBuffer<T>(this, Length);
 
-        public Span<T> Span
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get {
-                var array = Array;
-                if (array != null)
-                    return new Span<T>(array, _arrayIndex, _length);
-                else unsafe {
-                    return new Span<T>(Pointer.ToPointer(), Length);
-                }
-            }
-        }
+        public abstract Span<T> Span { get; }
+        public abstract Span<T> GetSpan(int index, int length);
 
         public static implicit operator OwnedBuffer<T>(T[] array) => new OwnedArray<T>(array);
 
-        protected bool TryGetArrayCore(out ArraySegment<T> buffer)
-        {
-            if (Array == null) {
-                buffer = default(ArraySegment<T>);
-                return false;
-            }
-
-            buffer = new ArraySegment<T>(Array, Offset, Length);
-            return true;
-        }
-
-        protected unsafe bool TryGetPointerCore(out void* pointer)
-        {
-            if (Pointer == IntPtr.Zero) {
-                pointer = null;
-                return false;
-            }
-
-            pointer = Pointer.ToPointer();
-            return true;
-        }
-
-        #region Lifetime Management
-        protected void Initialize(T[] array, int arrayOffset, int length, IntPtr pointer = default(IntPtr))
-        {
-            Contract.Requires(array != null || pointer != IntPtr.Zero);
-            Contract.Requires(array == null || arrayOffset + length <= array.Length);
-            if (!IsDisposed && Id!=InitializedId) {
-                throw new InvalidOperationException("this instance has to be disposed to initialize");
-            }
-
-            _id = (int)Interlocked.Increment(ref _nextId);
-            _array = array;
-            _arrayIndex = arrayOffset;
-            _length = length;
-            _pointer = pointer;
-            _referenceCount = 0;
-        }
-
         public void Dispose()
         {
-            Interlocked.Exchange(ref _id,  FreedId);
             if (HasOutstandingReferences) throw new InvalidOperationException("outstanding references detected.");
             Dispose(true);
         }
 
-        protected virtual void Dispose(bool disposing)
-        { 
-            _id = FreedId;
-            _array = null;
-            _pointer = IntPtr.Zero;
-            _length = 0;
-            _arrayIndex = 0;
+        protected virtual void Dispose(bool disposing) {
+            _disposed = true;
         }
 
-        public bool IsDisposed => Id == FreedId;
+        public bool IsDisposed => _disposed;
 
         public void AddReference()
         {
@@ -137,47 +59,12 @@ namespace System.Buffers
 
         protected virtual void OnZeroReferences()
         { }
-        #endregion
 
         #region Used by Memory<T>
-        void IKnown.AddReference()
-        {
-            AddReference();
-        }
 
-        void IKnown.Release()
-        {
-            Release();
-        }
+        internal protected abstract unsafe bool TryGetPointerInternal(out void* pointer);
 
-        internal unsafe bool TryGetPointerInternal(out void* pointer)
-        {
-            return TryGetPointerCore(out pointer);
-        }
-
-        internal bool TryGetArrayInternal(out ArraySegment<T> buffer)
-        {
-            return TryGetArrayCore(out buffer);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Span<T> GetSpanInternal(int index, int length)
-        {
-            if (IsDisposed) ThrowIdHelper();
-
-            var array = Array;
-            if (array != null) 
-            {
-                return new Span<T>(array, Offset + index, length);
-            }
-            else
-                unsafe {
-                    if ((uint)index > (uint)Length || (uint)length > (uint)(Length - index))
-                        ThrowArgHelper();
-                    IntPtr newPtr = Add(Pointer, index);
-                    return new Span<T>(newPtr.ToPointer(), length);
-                }
-        }
+        internal protected abstract bool TryGetArrayInternal(out ArraySegment<T> buffer);
 
         // TODO: this is taken from SpanHelpers. If we move this type to System.Memory, we should remove this helper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -201,24 +88,15 @@ namespace System.Buffers
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void VerifyId(long id) {
-            if (Id != id) ThrowIdHelper();
-        }
-
-        void ThrowIdHelper() {
+        protected void ThrowObjectDisposed()
+        {
             throw new ObjectDisposedException(nameof(Buffer<T>));
         }
-        void ThrowArgHelper()
+        protected void ThrowIndexOutOfRange()
         {
-            throw new ArgumentOutOfRangeException();
+            throw new IndexOutOfRangeException();
         }
         #endregion
-
-        public static OwnedBuffer<T> Create(ArraySegment<T> segment)
-        {
-            return new OwnedArray<T>(segment);
-        }
     }
 
     interface IKnown

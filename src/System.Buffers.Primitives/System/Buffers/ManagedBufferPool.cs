@@ -3,7 +3,7 @@
 
 namespace System.Buffers.Pools
 {
-    internal sealed class ManagedBufferPool : BufferPool
+    internal sealed partial class ManagedBufferPool : BufferPool
     {
         readonly static ManagedBufferPool s_shared = new ManagedBufferPool();
 
@@ -22,20 +22,6 @@ namespace System.Buffers.Pools
 
         protected override void Dispose(bool disposing)
         {
-        }
-
-        private class ArrayPoolMemory : OwnedBuffer<byte>
-        {
-            public ArrayPoolMemory(int size) : base(ArrayPool<byte>.Shared.Rent(size))
-            {
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                ArrayPool<byte>.Shared.Return(Array);
-
-                base.Dispose(disposing);
-            }
         }
     }
 }

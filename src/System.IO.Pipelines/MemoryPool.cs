@@ -76,7 +76,6 @@ namespace System.IO.Pipelines
             }
 
             var block = Lease();
-            block.Initialize();
             return block;
         }
 
