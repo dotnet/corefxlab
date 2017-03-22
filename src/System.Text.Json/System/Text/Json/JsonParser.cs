@@ -399,7 +399,7 @@ namespace System.Text.Json
 
         private void ParseLiteral(JsonObject.JsonValueType literal, ReadOnlySpan<byte> expected)
         {
-            if (!_values.Slice(_valuesIndex, expected.Length).SequenceEqual(expected)) {
+            if (!_values.Slice(_valuesIndex).StartsWith(expected)) {
                 throw new FormatException("Invalid json, tried to read " + literal.ToString());
             }
             AppendDbRow(literal, _valuesIndex, expected.Length);
