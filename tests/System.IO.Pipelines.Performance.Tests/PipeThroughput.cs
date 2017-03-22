@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.IO.Pipelines;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 
@@ -12,6 +13,17 @@ namespace System.IO.Pipelines.Performance.Tests
     {
         private const int _writeLenght = 57;
         private const int InnerLoopCount = 512;
+        private readonly byte[][] _plaintextWrites = new []
+        {
+            new byte[] { 72, 84, 84, 80, 47, 49, 46, 49, 32}, // HTTP/1.1
+            new byte[] { 50, 48, 48, 32, 79, 75}, // 200 OK
+            new byte[] { 13, 10, 68, 97, 116, 101, 58, 32, 87, 101, 100, 44, 32, 50, 50, 32, 77, 97, 114, 32, 50, 48, 49, 55, 32, 50, 49, 58, 51, 55, 58, 49, 52, 32, 71, 77, 84}, // \r\nDate: Wed, 22 Mar 2017 21:37:14 GMT
+            new byte[] { 13, 10, 67, 111, 110, 116, 101, 110, 116, 45, 84, 121, 112, 101, 58, 32}, // \r\nContent-Type:
+            new byte[] { 13, 10, 83, 101, 114, 118, 101, 114, 58, 32, 75, 101, 115, 116, 114, 101, 108}, // \r\nServer: Kestrel
+            new byte[] { 13, 10, 67, 111, 110, 116, 101, 110, 116, 45, 76, 101, 110, 103, 116, 104, 58, 32}, // \r\nContent-Length:
+            new byte[] { 13, 10, 13, 10}, // \r\n\r\n
+            new byte[] { 72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33}, // Hello, World!
+        };
 
         private IPipe _pipe;
         private PipeFactory _pipelineFactory;
@@ -23,7 +35,7 @@ namespace System.IO.Pipelines.Performance.Tests
             _pipe = _pipelineFactory.Create();
         }
 
-        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        //[Benchmark(OperationsPerInvoke = InnerLoopCount)]
         public void ParseLiveAspNetTwoTasks()
         {
             var writing = Task.Run(async () =>
@@ -50,7 +62,7 @@ namespace System.IO.Pipelines.Performance.Tests
             Task.WaitAll(writing, reading);
         }
 
-        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        //[Benchmark(OperationsPerInvoke = InnerLoopCount)]
         public void ParseLiveAspNetInline()
         {
             for (int i = 0; i < InnerLoopCount; i++)
@@ -62,5 +74,79 @@ namespace System.IO.Pipelines.Performance.Tests
                 _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
             }
         }
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void ParseLiveAspNetInlineWithWriting()
+        {
+            for (int i = 0; i < InnerLoopCount; i++)
+            {
+                var writableBuffer = _pipe.Writer.Alloc(_writeLenght);
+
+                foreach (var write in _plaintextWrites)
+                {
+                    WriteFast(writableBuffer, write, 0, write.Length);
+                }
+
+                writableBuffer.FlushAsync().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetResult();
+                _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+            }
+        }
+
+
+        public static void WriteFast(WritableBuffer buffer, byte[] source, int offset, int length)
+        {
+            Span<byte> dest;
+            var destLength = dest.Length;
+
+            if (destLength == 0)
+            {
+                buffer.Ensure();
+
+                // Get the new span and length
+                dest = buffer.Buffer.Span;
+                destLength = dest.Length;
+            }
+
+            var sourceLength = length;
+            if (sourceLength <= destLength)
+            {
+                ref byte pSource = ref source[offset];
+                ref byte pDest = ref dest.DangerousGetPinnableReference();
+                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)sourceLength);
+                buffer.Advance(sourceLength);
+                return;
+            }
+
+            WriteMultiBuffer(buffer, source, offset, length);
+        }
+
+        private static void WriteMultiBuffer(WritableBuffer buffer, byte[] source, int offset, int length)
+        {
+            var remaining = length;
+
+            while (remaining > 0)
+            {
+                var writable = Math.Min(remaining, buffer.Buffer.Length);
+
+                buffer.Ensure(writable);
+
+                if (writable == 0)
+                {
+                    continue;
+                }
+
+                ref byte pSource = ref source[offset];
+                ref byte pDest = ref buffer.Buffer.Span.DangerousGetPinnableReference();
+
+                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)writable);
+
+                remaining -= writable;
+                offset += writable;
+
+                buffer.Advance(writable);
+            }
+        }
+
     }
 }
