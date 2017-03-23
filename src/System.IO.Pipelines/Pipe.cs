@@ -563,14 +563,17 @@ namespace System.IO.Pipelines
 
         ReadResult IReadableBufferAwaiter.GetResult()
         {
-            GetResult(ref _readerAwaitable,
-                ref _writerCompletion,
-                out bool isCancelled,
-                out bool isCompleted);
+            bool isCancelled;
+            bool isCompleted;
 
             ReadableBuffer buffer;
             lock (_sync)
             {
+                GetResult(ref _readerAwaitable,
+                    ref _writerCompletion,
+                    out isCancelled,
+                    out isCompleted);
+
                 ReadCursor readEnd;
                 // No need to read end if there is no head
                 var head = _readHead;
@@ -598,11 +601,14 @@ namespace System.IO.Pipelines
 
         FlushResult IWritableBufferAwaiter.GetResult()
         {
-            GetResult(ref _writerAwaitable,
-                ref _readerCompletion,
-                out bool isCancelled,
-                out bool isCompleted);
-            return new FlushResult(isCancelled, isCompleted);
+            lock (_sync)
+            {
+                GetResult(ref _writerAwaitable,
+                    ref _readerCompletion,
+                    out bool isCancelled,
+                    out bool isCompleted);
+                return new FlushResult(isCancelled, isCompleted);
+            }
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
