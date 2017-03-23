@@ -390,10 +390,20 @@ namespace System.IO.Pipelines
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
 
+            int examinedBytes = 0;
+            if (!examined.IsDefault)
+            {
+                examinedBytes = new ReadCursor(_readHead).GetLength(examined);
+            }
+
             int consumedBytes = 0;
             if (!consumed.IsDefault)
             {
                 consumedBytes = new ReadCursor(_readHead).GetLength(consumed);
+                if (consumedBytes > examinedBytes)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.ConsumingPastExamined);
+                }
 
                 returnStart = _readHead;
                 returnEnd = consumed.Segment;
@@ -409,7 +419,7 @@ namespace System.IO.Pipelines
                 _length -= consumedBytes;
 
                 if (oldLength >= _maximumSizeLow &&
-                    _length < _maximumSizeLow)
+                    (oldLength - examinedBytes) < _maximumSizeLow)
                 {
                     continuation = _writerAwaitable.Complete();
                 }
