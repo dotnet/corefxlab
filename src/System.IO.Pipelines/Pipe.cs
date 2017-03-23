@@ -391,14 +391,20 @@ namespace System.IO.Pipelines
             BufferSegment returnEnd = null;
 
             int consumedBytes = 0;
+            int examinedBytes = 0;
             if (!consumed.IsDefault)
             {
                 consumedBytes = new ReadCursor(_readHead).GetLength(consumed);
+                examinedBytes = consumedBytes + consumed.GetLength(examined);
 
                 returnStart = _readHead;
                 returnEnd = consumed.Segment;
                 _readHead = consumed.Segment;
                 _readHead.Start = consumed.Index;
+            }
+            else if (!examined.IsDefault)
+            {
+                examinedBytes = new ReadCursor(_readHead).GetLength(examined);
             }
 
             // Reading commit head shared with writer
@@ -409,7 +415,7 @@ namespace System.IO.Pipelines
                 _length -= consumedBytes;
 
                 if (oldLength >= _maximumSizeLow &&
-                    _length < _maximumSizeLow)
+                    (oldLength - examinedBytes) < _maximumSizeLow)
                 {
                     continuation = _writerAwaitable.Complete();
                 }
