@@ -80,7 +80,7 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var writableBuffer = _pipe.Writer.Alloc();
+                var writableBuffer = _pipe.Writer.Alloc(1);
 
                 foreach (var write in _plaintextWrites)
                 {
@@ -98,7 +98,7 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var writableBuffer = _pipe.Writer.Alloc();
+                var writableBuffer = _pipe.Writer.Alloc(1);
                 var writer = new WritableBufferWriter(writableBuffer);
                 foreach (var write in _plaintextWrites)
                 {
@@ -112,7 +112,7 @@ namespace System.IO.Pipelines.Performance.Tests
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void WriteFast(WritableBuffer buffer, byte[] source, int offset, int length)
         {
             Span<byte> dest;

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <AssemblyOriginatorKeyFile>../../tools/test_key.snk</AssemblyOriginatorKeyFile>
@@ -18,7 +18,7 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <!--<RuntimeFrameworkVersion>2.0.0-beta-001808-00</RuntimeFrameworkVersion>-->
+    <RuntimeFrameworkVersion>2.0.0-beta-001808-00</RuntimeFrameworkVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -24,11 +24,9 @@ namespace System.IO.Pipelines
             _span = pipe.Buffer.Span;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public void WriteFast(byte[] source, int offset, int length)
         {
-            CheckDaSpan();
-
             var sourceLength = length;
             if (sourceLength <= _span.Length)
             {
@@ -43,14 +41,11 @@ namespace System.IO.Pipelines
             WriteMultiBuffer(source, offset, length);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private void CheckDaSpan()
         {
-            if (_span.Length == 0)
-            {
-                _pipe.Ensure();
-                _span = _pipe.Buffer.Span;
-            }
+            _pipe.Ensure();
+            _span = _pipe.Buffer.Span;
         }
 
         private void WriteMultiBuffer(byte[] source, int offset, int length)
@@ -70,6 +65,7 @@ namespace System.IO.Pipelines
                 offset += writable;
 
                 _pipe.AdvanceWriter(writable);
+
                 CheckDaSpan();
             }
         }

@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
@@ -290,22 +291,19 @@ namespace System.IO.Pipelines
             _writingHead = null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void AdvanceWriter(int bytesWritten)
         {
-            EnsureAlloc();
+            //EnsureAlloc();
 
             if (bytesWritten > 0)
             {
                 Debug.Assert(_writingHead != null);
                 Debug.Assert(!_writingHead.ReadOnly);
                 Debug.Assert(_writingHead.Next == null);
+                Debug.Assert(_writingHead.End + bytesWritten <= _writingHead.Buffer.Length);
 
-                var buffer = _writingHead.Buffer;
-                var bufferIndex = _writingHead.End + bytesWritten;
-
-                Debug.Assert(bufferIndex <= buffer.Length);
-
-                _writingHead.End = bufferIndex;
+                _writingHead.End += bytesWritten;
                 _currentWriteLength += bytesWritten;
             }
             else if (bytesWritten < 0)

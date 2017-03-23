@@ -14,7 +14,7 @@ namespace System.IO.Pipelines.Performance.Tests
             {
                 var pipeThroughput = new PipeThroughput();
                 pipeThroughput.Setup();
-                for (int i = 0; i < 10000; i++)
+                for (int i = 0; i < 100000; i++)
                 {
                     pipeThroughput.ParseLiveAspNetInlineWithWBW();
                 }
