@@ -84,7 +84,6 @@ namespace System.IO.Pipelines
             BufferSegment endSegment,
             int endIndex)
         {
-
             if (start == endSegment)
             {
                 return endIndex - startIndex;

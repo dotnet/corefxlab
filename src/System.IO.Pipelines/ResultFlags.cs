@@ -5,6 +5,6 @@ namespace System.IO.Pipelines
     {
         None = 0,
         Cancelled = 1,
-        Completed = 1 >> 2
+        Completed = 2
     }
 }

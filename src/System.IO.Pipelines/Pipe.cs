@@ -575,11 +575,13 @@ namespace System.IO.Pipelines
                     result.ResultBuffer.BufferEnd.Segment = _commitHead;
                     result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
                     result.ResultBuffer.BufferLength = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
+
+                    result.ResultBuffer.BufferStart.Segment = head;
+                    result.ResultBuffer.BufferStart.Index = head.Start;
                 }
 
                 _readingState.Begin(ExceptionResource.AlreadyReading);
 
-                result.ResultBuffer.BufferStart.Segment = head;
             }
             return result;
         }
