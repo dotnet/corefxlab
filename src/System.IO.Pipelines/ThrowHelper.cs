@@ -121,9 +121,6 @@ namespace System.IO.Pipelines
                 case ExceptionResource.AdvancingWithNoBuffer:
                     resourceString = "Can't advance without buffer allocated";
                     break;
-                case ExceptionResource.ConsumingPastExamined:
-                    resourceString = "Can't consume unexamined data.";
-                    break;
             }
 
             resourceString = resourceString ?? $"Error ResourceKey not defined {argument}.";
@@ -163,7 +160,6 @@ namespace System.IO.Pipelines
         CompleteWriterActiveWriter,
         CompleteReaderActiveReader,
         AdvancingPastBufferSize,
-        AdvancingWithNoBuffer,
-        ConsumingPastExamined
+        AdvancingWithNoBuffer
     }
 }
