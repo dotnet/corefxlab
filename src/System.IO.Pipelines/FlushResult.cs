@@ -10,11 +10,11 @@ namespace System.IO.Pipelines
         /// <summary>
         /// True if the currrent flush was cancelled
         /// </summary>
-        public bool IsCancelled => (ResultFlags & ResultFlags.Cancelled) > 0;
+        public bool IsCancelled => (ResultFlags & ResultFlags.Cancelled) != 0;
 
         /// <summary>
         /// True if the <see cref="IPipeWriter"/> is complete
         /// </summary>
-        public bool IsCompleted => (ResultFlags & ResultFlags.Completed) > 0;
+        public bool IsCompleted => (ResultFlags & ResultFlags.Completed) != 0;
     }
 }
