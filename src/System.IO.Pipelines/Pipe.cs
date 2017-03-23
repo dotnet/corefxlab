@@ -385,7 +385,7 @@ namespace System.IO.Pipelines
             int consumedBytes = 0;
             if (!consumed.IsDefault)
             {
-                consumedBytes = new ReadCursor(_readHead).GetLength(consumed);
+                consumedBytes = ReadCursor.GetLength(_readHead, 0, consumed.Segment,consumed.Index);
 
                 returnStart = _readHead;
                 returnEnd = consumed.Segment;
@@ -493,21 +493,6 @@ namespace System.IO.Pipelines
             return new ReadableBufferAwaitable(this);
         }
 
-        private static void GetResult(ref PipeAwaitable awaitableState,
-            ref PipeCompletion completion,
-            out bool isCancelled,
-            out bool isCompleted)
-        {
-            if (!awaitableState.IsCompleted)
-            {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
-            }
-
-            // Change the state from to be cancelled -> observed
-            isCancelled = awaitableState.ObserveCancelation();
-            isCompleted = completion.IsCompleted;
-            completion.ThrowIfFailed();
-        }
 
         private static void TrySchedule(IScheduler scheduler, Action action)
         {
@@ -555,33 +540,47 @@ namespace System.IO.Pipelines
 
         ReadResult IReadableBufferAwaiter.GetResult()
         {
-            GetResult(ref _readerAwaitable,
-                ref _writerCompletion,
-                out bool isCancelled,
-                out bool isCompleted);
+            if (!_readerAwaitable.IsCompleted)
+            {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
+            }
 
-            ReadableBuffer buffer;
+            ReadResult result = new ReadResult();
+            result._flags = ResultFlags.None;
+
             lock (_sync)
             {
-                ReadCursor readEnd;
+                if (_readerAwaitable.ObserveCancelation())
+                {
+                    result._flags |= ResultFlags.Cancelled;
+                }
+                if (_writerCompletion.IsCompleted)
+                {
+                    result._flags |= ResultFlags.Completed;
+                }
+                else
+                {
+                    _writerCompletion.ThrowIfFailed();
+                }
+
                 // No need to read end if there is no head
                 var head = _readHead;
                 if (head == null)
                 {
-                    readEnd = new ReadCursor(null);
+                    result.Buffer._end._segment = null;
                 }
                 else
                 {
                     // Reading commit head shared with writer
-                    readEnd = new ReadCursor(_commitHead, _commitHeadIndex);
+                    result.Buffer._end._segment = _commitHead;
+                    result.Buffer._end._index = _commitHeadIndex;
                 }
 
                 _readingState.Begin(ExceptionResource.AlreadyReading);
-
-                buffer = new ReadableBuffer(new ReadCursor(head), readEnd);
+                result.Buffer._start._segment = head;
             }
 
-            return new ReadResult(buffer, isCancelled, isCompleted);
+            return result;
         }
 
         // IWritableBufferAwaiter members
@@ -590,11 +589,15 @@ namespace System.IO.Pipelines
 
         FlushResult IWritableBufferAwaiter.GetResult()
         {
-            GetResult(ref _writerAwaitable,
-                ref _readerCompletion,
-                out bool isCancelled,
-                out bool isCompleted);
-            return new FlushResult(isCancelled, isCompleted);
+            if (!_writerAwaitable.IsCompleted)
+            {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
+            }
+            lock (_sync)
+            {
+                _readerCompletion.ThrowIfFailed();
+                return new FlushResult(_writerAwaitable.ObserveCancelation(), _readerCompletion.IsCompleted);
+            }
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)

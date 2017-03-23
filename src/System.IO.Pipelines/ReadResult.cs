@@ -8,26 +8,29 @@ namespace System.IO.Pipelines
     /// </summary>
     public struct ReadResult
     {
-        public ReadResult(ReadableBuffer buffer, bool isCancelled, bool isCompleted)
-        {
-            Buffer = buffer;
-            IsCancelled = isCancelled;
-            IsCompleted = isCompleted;
-        }
 
         /// <summary>
         /// The <see cref="ReadableBuffer"/> that was read
         /// </summary>
-        public ReadableBuffer Buffer { get; }
+        public ReadableBuffer Buffer;
 
+        internal ResultFlags _flags;
         /// <summary>
         /// True if the currrent read was cancelled
         /// </summary>
-        public bool IsCancelled { get; }
+        public bool IsCancelled => (_flags & ResultFlags.Cancelled) > 0;
 
         /// <summary>
         /// True if the <see cref="IPipeReader"/> is complete
         /// </summary>
-        public bool IsCompleted { get; }
+        public bool IsCompleted => (_flags & ResultFlags.Completed) > 0;
+    }
+
+    [Flags]
+    internal enum ResultFlags: byte
+    {
+        None = 0,
+        Cancelled = 1,
+        Completed = 1 >> 2
     }
 }

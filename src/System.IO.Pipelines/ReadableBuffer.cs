@@ -12,8 +12,8 @@ namespace System.IO.Pipelines
     /// </summary>
     public struct ReadableBuffer : ISequence<ReadOnlyBuffer<byte>>
     {
-        private ReadCursor _start;
-        private ReadCursor _end;
+        internal ReadCursor _start;
+        internal ReadCursor _end;
         private int _length;
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace System.IO.Pipelines
                 return first;
             }
         }
-        
+
         /// <summary>
         /// A cursor to the start of the <see cref="ReadableBuffer"/>.
         /// </summary>
@@ -57,7 +57,6 @@ namespace System.IO.Pipelines
             _start = start;
             _end = end;
             _length = start.GetLength(end);
-
         }
 
         private ReadableBuffer(ref ReadableBuffer buffer)

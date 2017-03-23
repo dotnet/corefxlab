@@ -9,8 +9,8 @@ namespace System.IO.Pipelines
 {
     public struct ReadCursor : IEquatable<ReadCursor>
     {
-        private BufferSegment _segment;
-        private int _index;
+        internal BufferSegment _segment;
+        internal int _index;
 
         internal ReadCursor(BufferSegment segment)
         {
@@ -72,34 +72,47 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int GetLength(
+            BufferSegment start,
+            int startIndex,
+            BufferSegment endSegment,
+            int endIndex)
+        {
+
+            if (start == endSegment)
+            {
+                return endIndex - startIndex;
+            }
+
+            return GetLengthMultiSegment(start, startIndex, endSegment, endIndex);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal int GetLength(ReadCursor end)
         {
             if (IsDefault)
             {
                 return 0;
             }
-
-            if (_segment == end._segment)
-            {
-                return end.Index - _index;
-            }
-
-            return GetLengthMultiSegment(end);
+            return GetLength(_segment, _index, end.Segment, end.Index);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private int GetLengthMultiSegment(ReadCursor end)
+        private static int GetLengthMultiSegment(BufferSegment start,
+            int startIndex,
+            BufferSegment endSegment,
+            int endIndex)
         {
-            var segment = _segment;
-            var index = _index;
+            var segment = start;
+            var index = startIndex;
             var length = 0;
             checked
             {
                 while (true)
                 {
-                    if (segment == end._segment)
+                    if (segment == endSegment)
                     {
-                        return length + end._index - index;
+                        return length + endIndex - index;
                     }
                     else if (segment.Next == null)
                     {

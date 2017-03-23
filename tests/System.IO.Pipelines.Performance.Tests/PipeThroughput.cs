@@ -62,7 +62,7 @@ namespace System.IO.Pipelines.Performance.Tests
             Task.WaitAll(writing, reading);
         }
 
-        //[Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
         public void ParseLiveAspNetInline()
         {
             for (int i = 0; i < InnerLoopCount; i++)
