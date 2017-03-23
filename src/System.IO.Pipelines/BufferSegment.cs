@@ -7,9 +7,9 @@ using System.Text;
 
 namespace System.IO.Pipelines
 {
-    // TODO: Pool segments
     internal class BufferSegment : IDisposable
     {
+        internal BufferSegmentPool SourcePool { get; set; }
         /// <summary>
         /// The Start represents the offset into Array where the range of "active" bytes begins. At the point when the block is leased
         /// the Start is guaranteed to be equal to 0. The value of Start may be assigned anywhere between 0 and
@@ -39,17 +39,24 @@ namespace System.IO.Pipelines
 
         private Buffer<byte> _buffer;
 
-        public BufferSegment(OwnedBuffer<byte> buffer)
+        internal BufferSegment()
+        {
+        }
+
+        internal BufferSegment Initalize(OwnedBuffer<byte> buffer)
         {
             _owned = buffer;
             Start = 0;
             End = 0;
+            ReadOnly = false;
 
             _owned.AddReference();
             _buffer = _owned.Buffer;
+
+            return this;
         }
 
-        public BufferSegment(OwnedBuffer<byte> buffer, int start, int end)
+        internal BufferSegment Initalize(OwnedBuffer<byte> buffer, int start, int end)
         {
             _owned = buffer;
             Start = start;
@@ -66,6 +73,8 @@ namespace System.IO.Pipelines
 
             _owned.AddReference();
             _buffer = _owned.Buffer;
+
+            return this;
         }
 
         public Buffer<byte> Buffer => _buffer;
@@ -74,7 +83,7 @@ namespace System.IO.Pipelines
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
         /// since this would break cloning.
         /// </summary>
-        public bool ReadOnly { get; }
+        public bool ReadOnly { get; private set; }
 
         /// <summary>
         /// The amount of readable bytes in this segment. Is is the amount of bytes between Start and End.
@@ -96,6 +105,14 @@ namespace System.IO.Pipelines
             {
                 _owned.Dispose();
             }
+
+            // Set refs to null
+            _owned = null;
+            Next = null;
+            // Contains ref
+            _buffer = default(Buffer<byte>);
+
+            SourcePool?.Return(this);
         }
 
 
@@ -119,30 +136,36 @@ namespace System.IO.Pipelines
         {
             var beginOrig = beginBuffer.Segment;
             var endOrig = endBuffer.Segment;
+            var pool = endOrig.SourcePool;
 
             if (beginOrig == endOrig)
             {
-                lastSegment = new BufferSegment(beginOrig._owned, beginBuffer.Index, endBuffer.Index);
+                lastSegment = Create(pool, beginOrig._owned, beginBuffer.Index, endBuffer.Index);
                 return lastSegment;
             }
 
-            var beginClone = new BufferSegment(beginOrig._owned, beginBuffer.Index, beginOrig.End);
+            var beginClone = Create(pool, beginOrig._owned, beginBuffer.Index, beginOrig.End);
             var endClone = beginClone;
 
             beginOrig = beginOrig.Next;
 
             while (beginOrig != endOrig)
             {
-                endClone.Next = new BufferSegment(beginOrig._owned, beginOrig.Start, beginOrig.End);
+                endClone.Next = Create(pool, beginOrig._owned, beginOrig.Start, beginOrig.End);
 
                 endClone = endClone.Next;
                 beginOrig = beginOrig.Next;
             }
 
-            lastSegment = new BufferSegment(endOrig._owned, endOrig.Start, endBuffer.Index);
+            lastSegment = Create(pool, endOrig._owned, endOrig.Start, endBuffer.Index);
             endClone.Next = lastSegment;
 
             return beginClone;
+        }
+
+        private static BufferSegment Create(BufferSegmentPool pool, OwnedBuffer<byte> buffer, int start, int end)
+        {
+            return pool?.Rent(buffer, start, end) ?? new BufferSegment().Initalize(buffer, start, end);
         }
     }
 }

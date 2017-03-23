@@ -16,6 +16,7 @@ namespace System.IO.Pipelines
     /// </summary>
     public class UnownedBufferReader : IPipeReader, IReadableBufferAwaiter
     {
+        private static readonly BufferSegmentPool _pool = new BufferSegmentPool();
         private static readonly Action _awaitableIsCompleted = () => { };
         private static readonly Action _awaitableIsNotCompleted = () => { };
 
@@ -117,7 +118,7 @@ namespace System.IO.Pipelines
                 cancellationToken.ThrowIfCancellationRequested();
 
                 // Allocate a new segment to hold the buffer being written.
-                using (var segment = new BufferSegment(buffer))
+                using (var segment = _pool.Rent(buffer))
                 {
                     segment.End = buffer.Buffer.Length;
 

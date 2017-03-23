@@ -163,7 +163,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Span<T> GetSpanInternal(int index, int length)
         {
-            if (IsDisposed) ThrowIdHelper();
+            if (IsDisposed) OwnedBuffer.ThrowIdHelper();
 
             var array = Array;
             if (array != null) 
@@ -173,7 +173,7 @@ namespace System.Buffers
             else
                 unsafe {
                     if ((uint)index > (uint)Length || (uint)length > (uint)(Length - index))
-                        ThrowArgHelper();
+                        OwnedBuffer.ThrowArgHelper();
                     IntPtr newPtr = Add(Pointer, index);
                     return new Span<T>(newPtr.ToPointer(), length);
                 }
@@ -203,21 +203,27 @@ namespace System.Buffers
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void VerifyId(long id) {
-            if (Id != id) ThrowIdHelper();
+            if (Id != id) OwnedBuffer.ThrowIdHelper();
         }
 
-        void ThrowIdHelper() {
-            throw new ObjectDisposedException(nameof(Buffer<T>));
-        }
-        void ThrowArgHelper()
-        {
-            throw new ArgumentOutOfRangeException();
-        }
         #endregion
 
         public static OwnedBuffer<T> Create(ArraySegment<T> segment)
         {
             return new Internal.OwnedArray<T>(segment);
+        }
+    }
+
+    internal static class OwnedBuffer
+    {
+        internal static void ThrowIdHelper()
+        {
+            throw new ObjectDisposedException(nameof(OwnedBuffer));
+        }
+
+        internal static void ThrowArgHelper()
+        {
+            throw new ArgumentOutOfRangeException();
         }
     }
 

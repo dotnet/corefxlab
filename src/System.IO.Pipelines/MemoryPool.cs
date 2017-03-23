@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -46,6 +47,11 @@ namespace System.IO.Pipelines
         /// </summary>
         private const int _slabLength = _blockStride * _blockCount;
 
+#if !BLOCK_LEASE_TRACKING
+        [ThreadStatic]
+        private static MemoryPoolBlock _threadCached;
+#endif
+
         /// <summary>
         /// Thread-safe collection of blocks which are currently in the pool. A slab will pre-allocate all of the block tracking objects
         /// and add them to this collection. When memory is requested it is taken from here first, and when it is returned it is re-added.
@@ -69,14 +75,23 @@ namespace System.IO.Pipelines
 
         public override OwnedBuffer<byte> Rent(int size)
         {
-            if (size > _blockLength)
+            if ((uint)size > (uint)_blockLength)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockLength);
+                // Negative or too large
+                ThrowHelper.ThrowArgumentOutOfRangeException_BufferRequest(_blockLength);
             }
 
-            var block = Lease();
-            block.Initialize();
-            return block;
+#if !BLOCK_LEASE_TRACKING
+            // Only use ThreadStatic if lease tracking is not enabled
+            var block = _threadCached;
+            if (block != null)
+            {
+                _threadCached = null;
+                block.Initialize();
+                return block;
+            }
+#endif
+            return Lease();
         }
 
         public void RegisterSlabAllocationCallback(Action<MemoryPoolSlab> callback)
@@ -93,34 +108,42 @@ namespace System.IO.Pipelines
         /// Called to take a block from the pool.
         /// </summary>
         /// <returns>The block that is reserved for the called. It must be passed to Return when it is no longer being used.</returns>
-#if DEBUG
+
+#if !BLOCK_LEASE_TRACKING
         private MemoryPoolBlock Lease()
         {
-            Debug.Assert(!_disposedValue, "Block being leased from disposed pool!");
+            if (_blocks.TryDequeue(out var block))
+            {
+                // block successfully taken from the stack - return it
+                block.Initialize();
+                return block;
+            }
+            // no blocks available - grow the pool
+            return AllocateSlab();
+        }
 #else
         private MemoryPoolBlock Lease()
         {
-#endif
+            Debug.Assert(!_disposedValue, "Block being leased from disposed pool!");
+
             MemoryPoolBlock block;
             if (_blocks.TryDequeue(out block))
             {
                 // block successfully taken from the stack - return it
 
-#if BLOCK_LEASE_TRACKING
                 block.Leaser = Environment.StackTrace;
                 block.IsLeased = true;
-#endif
+                block.Initialize();
                 return block;
             }
             // no blocks available - grow the pool
             block = AllocateSlab();
-
-#if BLOCK_LEASE_TRACKING
             block.Leaser = Environment.StackTrace;
             block.IsLeased = true;
-#endif
+            block.Initialize();
             return block;
         }
+#endif
 
         /// <summary>
         /// Internal method called when a block is requested and the pool is empty. It allocates one additional slab, creates all of the 
@@ -173,15 +196,37 @@ namespace System.IO.Pipelines
         /// leaving "dead zones" in the slab due to lost block tracking objects.
         /// </summary>
         /// <param name="block">The block to return. It must have been acquired by calling Lease on the same memory pool instance.</param>
+#if !BLOCK_LEASE_TRACKING
         public void Return(MemoryPoolBlock block)
         {
-#if BLOCK_LEASE_TRACKING
+            if (block.Slab.IsActive)
+            {
+                // Added returned segment to thread static keeps it hotter
+                // and means it won't get reset and used by other threads if there is 
+                // about to be a use after free by the current thread
+                var currentBlock = _threadCached;
+                _threadCached = block;
+
+                if (currentBlock != null)
+                {
+                    // Was a current block in thread cache
+                    // Add this less recently used block to queue
+                    _blocks.Enqueue(block);
+                }
+            }
+            else
+            {
+                GC.SuppressFinalize(block);
+            }
+        }
+#else
+        public void Return(MemoryPoolBlock block)
+        {
             Debug.Assert(block.Pool == this, "Returned block was not leased from this pool");
             Debug.Assert(block.IsLeased, $"Block being returned to pool twice: {block.Leaser}{Environment.NewLine}");
             block.IsLeased = false;
-#endif
 
-            if (block.Slab != null && block.Slab.IsActive)
+            if (block.Slab.IsActive)
             {
                 _blocks.Enqueue(block);
             }
@@ -190,21 +235,21 @@ namespace System.IO.Pipelines
                 GC.SuppressFinalize(block);
             }
         }
+#endif
 
         protected override void Dispose(bool disposing)
         {
             if (!_disposedValue)
             {
                 _disposedValue = true;
-#if DEBUG
+#if BLOCK_LEASE_TRACKING
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
 #endif
                 if (disposing)
                 {
-                    MemoryPoolSlab slab;
-                    while (_slabs.TryPop(out slab))
+                    while (_slabs.TryPop(out var slab))
                     {
                         // dispose managed state (managed objects).
                         slab.Dispose();
@@ -212,16 +257,10 @@ namespace System.IO.Pipelines
                 }
 
                 // Discard blocks in pool
-                MemoryPoolBlock block;
-                while (_blocks.TryDequeue(out block))
+                while (_blocks.TryDequeue(out var block))
                 {
                     GC.SuppressFinalize(block);
                 }
-
-                // N/A: free unmanaged resources (unmanaged objects) and override a finalizer below.
-
-                // N/A: set large fields to null.
-
             }
         }
     }

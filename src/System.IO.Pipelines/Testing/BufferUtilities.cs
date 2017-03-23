@@ -9,6 +9,8 @@ namespace System.IO.Pipelines.Testing
 {
     public class BufferUtilities
     {
+        private static readonly BufferSegmentPool _pool = new BufferSegmentPool();
+
         public static ReadableBuffer CreateBuffer(params byte[][] inputs)
         {
             if (inputs == null || inputs.Length == 0)
@@ -36,7 +38,7 @@ namespace System.IO.Pipelines.Testing
 
                 // Create a segment that has offset relative to the OwnedBuffer and OwnedBuffer itself has offset relative to array
                 var ownedBuffer = OwnedBuffer<byte>.Create(new ArraySegment<byte>(chars, memoryOffset, length * 3));
-                var current = new BufferSegment(ownedBuffer, length, length * 2);
+                var current = _pool.Rent(ownedBuffer, length, length * 2);
                 if (first == null)
                 {
                     first = current;

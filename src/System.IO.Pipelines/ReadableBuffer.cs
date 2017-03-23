@@ -12,6 +12,7 @@ namespace System.IO.Pipelines
     /// </summary>
     public struct ReadableBuffer : ISequence<ReadOnlyBuffer<byte>>
     {
+        private static readonly BufferSegmentPool _pool = new BufferSegmentPool();
         internal ReadCursor BufferStart;
         internal ReadCursor BufferEnd;
         internal int BufferLength;
@@ -248,9 +249,10 @@ namespace System.IO.Pipelines
             }
 
             OwnedBuffer<byte> buffer = data;
-            var segment = new BufferSegment(buffer);
+            var segment = _pool.Rent(buffer);
             segment.Start = offset;
             segment.End = offset + length;
+
             return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
         }
 

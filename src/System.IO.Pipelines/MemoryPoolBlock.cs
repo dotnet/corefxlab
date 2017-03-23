@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Diagnostics;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -45,11 +46,12 @@ namespace System.IO.Pipelines
         ~MemoryPoolBlock()
         {
 #if BLOCK_LEASE_TRACKING
-            Debug.Assert(Slab == null || !Slab.IsActive, $"{Environment.NewLine}{Environment.NewLine}*** Block being garbage collected instead of returned to pool: {Leaser} ***{Environment.NewLine}");
+            Debug.Assert(!Slab.IsActive, $"{Environment.NewLine}{Environment.NewLine}*** Block being garbage collected instead of returned to pool: {Leaser} ***{Environment.NewLine}");
 #endif
-            if (Slab != null && Slab.IsActive)
+            if (Slab.IsActive)
             {
                 // Need to make a new object because this one is being finalized
+                // When tracking is not set this could be a thread static cached block after the thread end
                 Pool.Return(new MemoryPoolBlock(Pool, Slab, _offset, _length));
             }
         }

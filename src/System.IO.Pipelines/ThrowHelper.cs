@@ -29,9 +29,9 @@ namespace System.IO.Pipelines
             throw GetNotSupportedException();
         }
 
-        public static void ThrowArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize)
+        public static void ThrowArgumentOutOfRangeException_BufferRequest(int maxSize)
         {
-            throw GetArgumentOutOfRangeException_BufferRequestTooLarge(maxSize);
+            throw GetArgumentOutOfRangeException_BufferRequest(maxSize);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -59,10 +59,18 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static ArgumentOutOfRangeException GetArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize)
+        public static ArgumentOutOfRangeException GetArgumentOutOfRangeException_BufferRequest(int maxSize)
         {
-            return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.size),
-                $"Cannot allocate more than {maxSize} bytes in a single buffer");
+            if (maxSize < 0)
+            {
+                return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.size),
+                    $"Cannot allocate a negative buffer({maxSize} bytes)");
+            }
+            else
+            {
+                return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.size),
+                    $"Cannot allocate more than {maxSize} bytes in a single buffer");
+            }
         }
 
         private static string GetArgumentName(ExceptionArgument argument)

@@ -19,6 +19,7 @@ namespace System.IO.Pipelines
         private readonly object _sync = new object();
 
         private readonly BufferPool _pool;
+        private readonly BufferSegmentPool _segmentPool;
         private readonly long _maximumSizeHigh;
         private readonly long _maximumSizeLow;
 
@@ -81,6 +82,7 @@ namespace System.IO.Pipelines
             }
 
             _pool = pool;
+            _segmentPool = new BufferSegmentPool();
             _maximumSizeHigh = options.MaximumSizeHigh;
             _maximumSizeLow = options.MaximumSizeLow;
             _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
@@ -150,8 +152,7 @@ namespace System.IO.Pipelines
             // If inadequate bytes left or if the segment is readonly
             if (bytesLeftInBuffer == 0 || bytesLeftInBuffer < count || segment.ReadOnly)
             {
-                var nextBuffer = _pool.Rent(count);
-                var nextSegment = new BufferSegment(nextBuffer);
+                var nextSegment = _segmentPool.Rent(_pool.Rent(count));
 
                 segment.Next = nextSegment;
 
@@ -178,7 +179,7 @@ namespace System.IO.Pipelines
             if (segment == null)
             {
                 // No free tail space, allocate a new segment
-                segment = new BufferSegment(_pool.Rent(count));
+                segment = _segmentPool.Rent(_pool.Rent(count));
             }
 
             if (_commitHead == null)
@@ -208,8 +209,7 @@ namespace System.IO.Pipelines
 
             EnsureAlloc();
 
-            BufferSegment clonedEnd;
-            var clonedBegin = BufferSegment.Clone(buffer.Start, buffer.End, out clonedEnd);
+            var clonedBegin = BufferSegment.Clone(buffer.Start, buffer.End, out BufferSegment clonedEnd);
 
             if (_writingHead == null)
             {
