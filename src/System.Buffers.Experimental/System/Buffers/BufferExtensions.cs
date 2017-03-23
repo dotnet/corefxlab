@@ -64,7 +64,7 @@ namespace System.Buffers
             if ((uint) start > (uint) textLength)
                 throw new ArgumentOutOfRangeException(nameof(start));
 
-            if (textLength == 0) return ReadOnlySpan<char>.Empty;
+            if (textLength - start == 0) return ReadOnlySpan<char>.Empty;
 
             fixed (char* charPointer = text)
             {
