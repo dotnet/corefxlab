@@ -26,13 +26,11 @@ namespace System.IO.Pipelines
             _writableBuffer.Advance(count);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public void Write(byte[] source)
         {
             Write(source, 0, source.Length);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public void Write(byte[] source, int offset, int length)
         {
             if (length <= _span.Length && length > 0)
