@@ -10,7 +10,7 @@ namespace System.IO.Pipelines.Performance.Tests
     [Config(typeof(CoreConfig))]
     public class PipeThroughput
     {
-        private const int _writeLenght = 57;
+        private const int WriteLength = 57;
         private const int InnerLoopCount = 512;
 
         private readonly byte[][] _plaintextWrites =
@@ -42,15 +42,15 @@ namespace System.IO.Pipelines.Performance.Tests
             {
                 for (int i = 0; i < InnerLoopCount; i++)
                 {
-                    var writableBuffer = _pipe.Writer.Alloc(_writeLenght);
-                    writableBuffer.Advance(_writeLenght);
+                    var writableBuffer = _pipe.Writer.Alloc(WriteLength);
+                    writableBuffer.Advance(WriteLength);
                     await writableBuffer.FlushAsync();
                 }
             });
 
             var reading = Task.Run(async () =>
             {
-                int remaining = InnerLoopCount * _writeLenght;
+                int remaining = InnerLoopCount * WriteLength;
                 while (remaining != 0)
                 {
                     var result = await _pipe.Reader.ReadAsync();
@@ -67,8 +67,8 @@ namespace System.IO.Pipelines.Performance.Tests
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
-                var writableBuffer = _pipe.Writer.Alloc(_writeLenght);
-                writableBuffer.Advance(_writeLenght);
+                var writableBuffer = _pipe.Writer.Alloc(WriteLength);
+                writableBuffer.Advance(WriteLength);
                 writableBuffer.FlushAsync().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetResult();
                 _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
@@ -103,6 +103,25 @@ namespace System.IO.Pipelines.Performance.Tests
                 foreach (var write in _plaintextWrites)
                 {
                     WriteFast(writableBuffer, write, 0, write.Length);
+                }
+
+                writableBuffer.FlushAsync().GetResult();
+                var result = _pipe.Reader.ReadAsync().GetResult();
+                _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = InnerLoopCount)]
+        public void WriteableBufferWriterWriteFastPlaintextResponse()
+        {
+            for (int i = 0; i < InnerLoopCount; i++)
+            {
+                var writableBuffer = _pipe.Writer.Alloc(1);
+                var writer = new WritableBufferWriter(writableBuffer);
+
+                foreach (var write in _plaintextWrites)
+                {
+                    writer.Write(write, 0, write.Length);
                 }
 
                 writableBuffer.FlushAsync().GetResult();
