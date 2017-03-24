@@ -59,7 +59,7 @@ namespace System.Buffers
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                if (_owner == null) OwnedBuffer.ThrowIdHelper();
+                if (_owner == null) OwnedBuffer.ThrowObjectDisposed();
 
                 return _owner.GetSpanInternal(_index, _length);
             }
