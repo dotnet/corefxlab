@@ -6,7 +6,7 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class WritableBufferWriterFacts: IDisposable
+    public class WritableBufferWriterFacts : IDisposable
     {
         private PipeFactory _pipeFactory;
         private IPipe _pipe;

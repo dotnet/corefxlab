@@ -10,17 +10,17 @@ namespace System.IO.Pipelines
     /// </summary>
     public struct WritableBuffer : IOutput
     {
-        internal Pipe Pipe;
+        private Pipe _pipe;
 
         internal WritableBuffer(Pipe pipe)
         {
-            Pipe = pipe;
+            _pipe = pipe;
         }
 
         /// <summary>
         /// Available memory.
         /// </summary>
-        public Buffer<byte> Buffer => Pipe.Buffer;
+        public Buffer<byte> Buffer => _pipe.Buffer;
 
         /// <summary>
         /// Returns the number of bytes currently written and uncommitted.
@@ -46,7 +46,7 @@ namespace System.IO.Pipelines
         /// </summary>
         public ReadableBuffer AsReadableBuffer()
         {
-            return Pipe.AsReadableBuffer();
+            return _pipe.AsReadableBuffer();
         }
 
         /// <summary>
@@ -55,14 +55,14 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="count">number of bytes</param>
         /// <remarks>
-        /// Used when writing to <see cref="Buffer"/> directly.
+        /// Used when writing to <see cref="Buffer"/> directly. 
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">
         /// More requested than underlying <see cref="IBufferPool"/> can allocate in a contiguous block.
         /// </exception>
         public void Ensure(int count = 1)
         {
-            Pipe.Ensure(count);
+            _pipe.Ensure(count);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace System.IO.Pipelines
         /// <param name="buffer">The <see cref="ReadableBuffer"/> to append</param>
         public void Append(ReadableBuffer buffer)
         {
-            Pipe.Append(buffer);
+            _pipe.Append(buffer);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace System.IO.Pipelines
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="bytesWritten"/> is negative.</exception>
         public void Advance(int bytesWritten)
         {
-            Pipe.AdvanceWriter(bytesWritten);
+            _pipe.AdvanceWriter(bytesWritten);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace System.IO.Pipelines
         /// </remarks>
         public void Commit()
         {
-            Pipe.Commit();
+            _pipe.Commit();
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace System.IO.Pipelines
         /// <returns>A task that completes when the data is fully flushed.</returns>
         public WritableBufferAwaitable FlushAsync()
         {
-            return Pipe.FlushAsync();
+            return _pipe.FlushAsync();
         }
     }
 }
