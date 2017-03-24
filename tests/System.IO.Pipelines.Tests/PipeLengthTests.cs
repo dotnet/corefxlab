@@ -106,7 +106,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ByteByByteTest()
         {
-            WritableBuffer writableBuffer;
+            WritableBuffer writableBuffer = default(WritableBuffer);
             for (int i = 1; i <= 1024 * 1024; i++)
             {
                 writableBuffer = _pipe.Writer.Alloc(100);
@@ -115,6 +115,7 @@ namespace System.IO.Pipelines.Tests
 
                 Assert.Equal(i, _pipe.Length);
             }
+
             writableBuffer.FlushAsync();
 
             for (int i = 1024 * 1024 - 1; i >= 0; i--)
