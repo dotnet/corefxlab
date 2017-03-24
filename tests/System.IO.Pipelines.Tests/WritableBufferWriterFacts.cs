@@ -47,13 +47,13 @@ namespace System.IO.Pipelines.Tests
         public void SlicesSpanAndAdvancesAfterWrite()
         {
             _buffer = _pipe.Writer.Alloc(1);
-            var initialLenght = _buffer.Buffer.Length;
+            var initialLength = _buffer.Buffer.Length;
 
             var writer = new WritableBufferWriter(_buffer);
 
             writer.Write(new byte[] { 1, 2, 3 });
 
-            Assert.Equal(initialLenght - 3, writer.Span.Length);
+            Assert.Equal(initialLength - 3, writer.Span.Length);
             Assert.Equal(_buffer.Buffer.Length, writer.Span.Length);
             Assert.Equal(new byte[] { 1, 2, 3 }, Read());
         }
