@@ -49,8 +49,8 @@ namespace System.Buffers
             Initialize(array, arrayOffset, length, pointer);
         }
 
-        public Buffer<T> Buffer => new Buffer<T>(this, Length);
-        public ReadOnlyBuffer<T> ReadOnlyMemory => new ReadOnlyBuffer<T>(this, Length);
+        public Buffer<T> Buffer => new Buffer<T>(this, 0, Length);
+        public ReadOnlyBuffer<T> ReadOnlyBuffer => new ReadOnlyBuffer<T>(this, 0, Length);
 
         public Span<T> Span
         {
@@ -65,7 +65,7 @@ namespace System.Buffers
             }
         }
 
-        public static implicit operator OwnedBuffer<T>(T[] array) => new OwnedArray<T>(array);
+        public static implicit operator OwnedBuffer<T>(T[] array) => new Internal.OwnedArray<T>(array);
 
         protected bool TryGetArrayCore(out ArraySegment<T> buffer)
         {
@@ -217,7 +217,7 @@ namespace System.Buffers
 
         public static OwnedBuffer<T> Create(ArraySegment<T> segment)
         {
-            return new OwnedArray<T>(segment);
+            return new Internal.OwnedArray<T>(segment);
         }
     }
 
