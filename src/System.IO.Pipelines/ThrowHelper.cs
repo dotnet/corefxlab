@@ -9,6 +9,24 @@ namespace System.IO.Pipelines
 {
     internal class ThrowHelper
     {
+        public static void ThrowArgumentOutOfRangeException(int sourceLength, int offset)
+        {
+            throw GetArgumentOutOfRangeException(sourceLength, offset);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(int sourceLength, int offset)
+        {
+            if ((uint)offset > (uint)sourceLength)
+            {
+                // Offset is negative or less than array length
+                return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.offset));
+            }
+
+            // The third parameter (not passed) length must be out of range
+            return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.length));
+        }
+
         public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument)
         {
             throw GetArgumentOutOfRangeException(argument);
@@ -41,13 +59,13 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static InvalidOperationException GetInvalidOperationException(ExceptionResource resource, string location = null)
+        private static InvalidOperationException GetInvalidOperationException(ExceptionResource resource, string location = null)
         {
             return new InvalidOperationException(GetResourceString(resource, location));
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static NotSupportedException GetNotSupportedException()
+        private static NotSupportedException GetNotSupportedException()
         {
             return new NotSupportedException();
         }
@@ -59,7 +77,7 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static ArgumentOutOfRangeException GetArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize)
+        private static ArgumentOutOfRangeException GetArgumentOutOfRangeException_BufferRequestTooLarge(int maxSize)
         {
             return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.size),
                 $"Cannot allocate more than {maxSize} bytes in a single buffer");
