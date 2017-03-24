@@ -5,6 +5,7 @@ using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
@@ -86,9 +87,16 @@ namespace System.IO.Pipelines
             var block = _threadCached;
             if (block != null)
             {
-                _threadCached = null;
-                block.Initialize();
-                return block;
+                if (block.Slab.IsActive)
+                {
+                    _threadCached = null;
+                    block.Initialize();
+                    return block;
+                }
+                else
+                {
+                    TrashBlock(block);
+                }
             }
 #endif
             return Lease();
@@ -216,7 +224,7 @@ namespace System.IO.Pipelines
             }
             else
             {
-                GC.SuppressFinalize(block);
+                TrashBlock(block);
             }
         }
 #else
@@ -232,10 +240,15 @@ namespace System.IO.Pipelines
             }
             else
             {
-                GC.SuppressFinalize(block);
+                TrashBlock(block);
             }
         }
 #endif
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void TrashBlock(MemoryPoolBlock block)
+        {
+            GC.SuppressFinalize(block);
+        }
 
         protected override void Dispose(bool disposing)
         {
