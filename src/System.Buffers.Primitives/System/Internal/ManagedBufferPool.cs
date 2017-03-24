@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace System.Buffers.Pools
+namespace System.Buffers.Internal
 {
     internal sealed class ManagedBufferPool : BufferPool
     {

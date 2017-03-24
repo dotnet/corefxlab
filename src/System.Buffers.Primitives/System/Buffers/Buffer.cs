@@ -2,12 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace System.Buffers
 {
@@ -18,47 +16,48 @@ namespace System.Buffers
         readonly int _index;
         readonly int _length;
 
-        internal Buffer(OwnedBuffer<T> owner, int length)
-        {
-            _owner = owner;
-            _index = 0;
-            _length = length;
-        }
-
-        private Buffer(OwnedBuffer<T> owner, int index, int length)
+        internal Buffer(OwnedBuffer<T> owner, int index, int length)
         {
             _owner = owner;
             _index = index;
             _length = length;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ReadOnlyBuffer<T>(Buffer<T> buffer)
         {
             return new ReadOnlyBuffer<T>(buffer._owner, buffer._index, buffer._length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Buffer<T>(T[] array)
         {
-            var owner = new OwnedArray<T>(array);
+            var owner = new Internal.OwnedArray<T>(array);
             return owner.Buffer;
         }
 
-        public static Buffer<T> Empty { get; } = OwnerEmptyMemory<T>.Shared.Buffer;
+        public static Buffer<T> Empty { get; } = Internal.OwnerEmptyMemory<T>.Shared.Buffer;
 
         public int Length => _length;
 
         public bool IsEmpty => Length == 0;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Buffer<T> Slice(int index)
         {
             return new Buffer<T>(_owner, _index + index, _length - index);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Buffer<T> Slice(int index, int length)
         {
             return new Buffer<T>(_owner, _index + index, length);
         }
 
-        public Span<T> Span => _owner.GetSpanInternal(_index, _length);
+        public Span<T> Span {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return _owner.GetSpanInternal(_index, _length); }
+        }
 
         public DisposableReservation<T> Reserve() => new DisposableReservation<T>(_owner);
 
@@ -87,20 +86,11 @@ namespace System.Buffers
             return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }
 
-        public T[] ToArray()
-        {
-            return Span.ToArray();
-        }
+        public T[] ToArray() => Span.ToArray();
 
-        public void CopyTo(Span<T> span)
-        {
-            Span.CopyTo(span);
-        }
+        public void CopyTo(Span<T> span) => Span.CopyTo(span);
 
-        public void CopyTo(Buffer<T> buffer)
-        {
-            Span.CopyTo(buffer.Span);
-        }
+        public void CopyTo(Buffer<T> buffer) => Span.CopyTo(buffer.Span);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)
@@ -144,28 +134,6 @@ namespace System.Buffers
         public override int GetHashCode()
         {
             return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
-        }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            var data = Span;
-            sb.Append("[");
-
-            bool first = true;
-            int i;
-            for(i=0; i<Length; i++) {
-                if (i > 7) break;
-                if (first) first = false;
-                else sb.Append(", ");
-                sb.Append(data[i].ToString());
-            }
-            if (i < Span.Length)
-            {
-                sb.Append(",...");
-            }
-            sb.Append("]");
-            return sb.ToString();
         }
     }
 }
