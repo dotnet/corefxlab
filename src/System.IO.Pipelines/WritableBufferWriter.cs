@@ -73,9 +73,9 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void Ensure()
+        public void Ensure(int count = 1)
         {
-            _writableBuffer.Ensure();
+            _writableBuffer.Ensure(count);
             _span = _writableBuffer.Buffer.Span;
         }
     }

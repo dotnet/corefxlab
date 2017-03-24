@@ -105,5 +105,16 @@ namespace System.IO.Pipelines.Tests
 
             Assert.Equal(expectedBytes, Read());
         }
+
+        [Fact]
+        public void EnsureAllocatesSpan()
+        {
+            _buffer = _pipe.Writer.Alloc();
+            var writer = new WritableBufferWriter(_buffer);
+            writer.Ensure(10);
+
+            Assert.True(writer.Span.Length > 10);
+            Assert.Equal(new byte[] {}, Read());
+        }
     }
 }
