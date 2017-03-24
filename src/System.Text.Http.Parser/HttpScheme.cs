@@ -3,7 +3,7 @@
 
 namespace System.Text.Http.Parser
 {
-    public enum HttpScheme
+    internal enum HttpScheme
     {
         Unknown = -1,
         Http = 0,

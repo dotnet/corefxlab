@@ -3,7 +3,7 @@
 
 namespace System.Text.Http.Parser
 {
-    public enum RequestRejectionReason
+    internal enum RequestRejectionReason
     {
         UnrecognizedHTTPVersion,
         InvalidRequestLine,
