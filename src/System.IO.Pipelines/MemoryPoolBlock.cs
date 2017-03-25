@@ -84,7 +84,7 @@ namespace System.IO.Pipelines
         public override string ToString()
         {
             var builder = new StringBuilder();
-            SpanExtensions.AppendAsLiteral(Buffer.Span, builder);
+            SpanExtensions.AppendAsLiteral(Buffer.Span.Slice(_offset, _length), builder);
             return builder.ToString();
         }
 
