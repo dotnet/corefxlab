@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,8 +8,7 @@ namespace System.IO.Pipelines
 {
     public class PipelineConnectionStream : Stream
     {
-        private readonly static Task<int> _initialCachedTask = Task.FromResult(0);
-        private Task<int> _cachedTask = _initialCachedTask;
+        private Task<int> _cachedTask = TaskUtilities.ZeroTask;
 
         private readonly IPipeConnection _connection;
 
@@ -59,7 +56,7 @@ namespace System.IO.Pipelines
                 if (_cachedTask.Result != task.Result)
                 {
                     // Needs .AsTask to match Stream's Async method return types
-                    _cachedTask = task.AsTask();
+                    _cachedTask = task.Result != 0 ? task.AsTask() : TaskUtilities.ZeroTask;
                 }
             }
             else
@@ -89,7 +86,7 @@ namespace System.IO.Pipelines
         public override Task FlushAsync(CancellationToken cancellationToken)
         {
             // No-op since writes are immediate.
-            return Task.FromResult(0);
+            return TaskUtilities.CompletedTask;
         }
 
         private ValueTask<int> ReadAsync(ArraySegment<byte> buffer)

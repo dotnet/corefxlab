@@ -7,8 +7,6 @@ namespace System.IO.Pipelines
 {
     public static class PipelineWriterExtensions
     {
-        private readonly static Task _completedTask = Task.FromResult(0);
-
         public static Task WriteAsync(this IPipeWriter output, Span<byte> source)
         {
             var writeBuffer = output.Alloc();
@@ -19,12 +17,13 @@ namespace System.IO.Pipelines
         private static Task FlushAsync(WritableBuffer writeBuffer)
         {
             var awaitable = writeBuffer.FlushAsync();
-            if (awaitable.IsCompleted)
+            if (awaitable.IsCompletedSuccessfully)
             {
-                awaitable.GetResult();
-                return _completedTask;
+                return TaskUtilities.CompletedTask;
             }
 
+            // Failed results we pass to the awaited form so it can return
+            // a faulted task rather than throwing directly
             return FlushAsyncAwaited(awaitable);
         }
 

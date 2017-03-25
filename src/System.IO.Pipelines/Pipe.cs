@@ -613,6 +613,8 @@ namespace System.IO.Pipelines
             return result;
         }
 
+        bool IWritableBufferAwaiter.IsCompletedSuccessfully => _writerAwaitable.IsCompletedSuccessfully && _readerCompletion.IsCompletedSuccessfully;
+
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
         {
             Action awaitable;

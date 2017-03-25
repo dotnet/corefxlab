@@ -14,6 +14,8 @@ namespace System.IO.Pipelines
             _awaiter = awaiter;
         }
 
+        public bool IsCompletedSuccessfully => _awaiter.IsCompletedSuccessfully;
+
         public bool IsCompleted => _awaiter.IsCompleted;
 
         public FlushResult GetResult() => _awaiter.GetResult();

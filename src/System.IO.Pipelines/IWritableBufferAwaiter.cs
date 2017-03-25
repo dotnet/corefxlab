@@ -9,6 +9,8 @@ namespace System.IO.Pipelines
 
         FlushResult GetResult();
 
+        bool IsCompletedSuccessfully { get; }
+
         void OnCompleted(Action continuation);
     }
 }
