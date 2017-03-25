@@ -120,10 +120,12 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
         {
             var pin = memory.Pin();
             var spanPtr = (IntPtr)pin.PinnedPointer;
+            pin.Free();
+
             long startAddress;
             long spanAddress = spanPtr.ToInt64();
             var bufferId = GetBufferId(spanPtr, out startAddress);
-
+            
             checked
             {
                 var offset = (uint)(spanAddress - startAddress);
