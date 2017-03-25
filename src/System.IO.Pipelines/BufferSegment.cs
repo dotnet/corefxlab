@@ -51,34 +51,39 @@ namespace System.IO.Pipelines
 
         internal BufferSegment Initalize(OwnedBuffer<byte> buffer)
         {
-            _owned = buffer;
-            _length = buffer.Length;
+            Start = 0;
+            End = 0;
             ReadOnly = false;
+            _length = buffer.Length;
 
-            _owned.AddReference();
+            _owned = buffer;
             _buffer = _owned.Buffer;
+            _owned.AddReference();
 
             return this;
         }
 
         internal BufferSegment Initalize(OwnedBuffer<byte> buffer, int start, int end)
         {
-            _owned = buffer;
-            _length = buffer.Length;
             Start = start;
             End = end;
             ReadOnly = true;
+            _length = buffer.Length;
 
             // For unowned buffers, we need to make a copy here so that the caller can 
             // give up the give this buffer back to the caller
             var unowned = buffer as UnownedBuffer;
-            if (unowned != null)
+            if (unowned == null)
+            {
+                _owned = buffer;
+            }
+            else
             {
                 _owned = unowned.MakeCopy(start, end - start, out Start, out End);
             }
 
-            _owned.AddReference();
             _buffer = _owned.Buffer;
+            _owned.AddReference();
 
             return this;
         }
@@ -121,12 +126,12 @@ namespace System.IO.Pipelines
             {
                 _owned.Dispose();
             }
-
+#if DEBUG
             // Clear indexes
             Start = 0;
             End = 0;
             _length = 0;
-
+#endif
             // Set refs to null
             _owned = null;
             Next = null;
