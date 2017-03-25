@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.IO.Pipelines;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -48,6 +49,39 @@ namespace System.Text.Http.Parser
             }
 
             examined = consumed;
+            return true;
+        }
+
+        static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
+        public unsafe bool ParseRequestLine<T>(T handler, ReadOnlyBytes buffer, out int consumed) where T : IHttpRequestLineHandler
+        {
+            // Prepare the first span
+            var span = buffer.First.Span;
+            var lineIndex = span.IndexOf(ByteLF);
+            if (lineIndex >= 0)
+            {
+                consumed = lineIndex + 1;
+                span = span.Slice(0, lineIndex + 1);
+            }
+            else
+            {
+                var eol = buffer.IndexOf(s_Eol);
+                if (eol == -1)
+                {
+                    consumed = 0;
+                    return false;
+                }
+
+                span = buffer.Slice(eol + s_Eol.Length).ToSpan();
+            }
+
+            // Fix and parse the span
+            fixed (byte* data = &span.DangerousGetPinnableReference())
+            {
+                ParseRequestLine(handler, data, span.Length);
+            }
+
+            consumed = span.Length;
             return true;
         }
 
