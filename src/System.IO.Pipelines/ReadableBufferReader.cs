@@ -99,25 +99,42 @@ namespace System.IO.Pipelines
             _end = true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Skip(int length)
         {
-            if (length < 0)
+            if (length < 0 || _end)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
             _consumedBytes += length;
 
+            var remaining = _currentSpan.Length - _index;
+            if (length < remaining)
+            {
+                _index += length;
+            }
+            else
+            {
+                SkipMultiSegment(length - remaining);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public void SkipMultiSegment(int length)
+        {
+            MoveNext();
             while (!_end && length > 0)
             {
-                if ((_index + length) < _currentSpan.Length)
+                var remaining = _currentSpan.Length - _index;
+                if (length < remaining)
                 {
                     _index += length;
                     length = 0;
                     break;
                 }
 
-                length -= (_currentSpan.Length - _index);
+                length -= remaining;
                 MoveNext();
             }
 
