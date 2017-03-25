@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Buffers;
 using FluentAssertions;
 using Xunit;
 using System.Text.Utf8;
@@ -120,7 +119,7 @@ namespace System.Text.Http.Tests
         [Fact]
         public void CanParseBodylessRequest()
         {
-            var request = new Utf8String("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").CopyBytes().Slice();
+            var request = new Utf8String("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").CopyBytes().AsSpan();
             var parsed = HttpRequestSingleSegment.Parse(request);
             Assert.Equal(HttpMethod.Get, parsed.RequestLine.Method);
             Assert.Equal(HttpVersion.V1_1, parsed.RequestLine.Version);

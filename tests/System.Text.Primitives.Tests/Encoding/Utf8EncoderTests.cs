@@ -23,7 +23,7 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingInputBufferEmpty()
         {
             string unicodeString = "";
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int expectedBytesWritten = GetByteCount(characters);
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
@@ -43,7 +43,7 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingOutputBufferEmpty()
         {
             string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
 
@@ -62,7 +62,7 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingOutputBufferTooSmall()
         {
             string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int expectedBytesWritten = GetByteCount(characters);
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
@@ -98,7 +98,7 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingInputBufferContainsOnlyInvalidData()
         {
             string unicodeString = GenerateOnlyInvalidString(CharLength);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int expectedBytesWritten = GetByteCount(characters);
             byte[] utf8Buffer = new byte[expectedBytesWritten];
             Span<byte> span = new Span<byte>(utf8Buffer);
@@ -114,7 +114,7 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingInputBufferContainsSomeInvalidData()
         {
             string unicodeString = GenerateStringWithInvalidChars(CharLength);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int expectedBytesWritten = GetByteCount(characters);
             byte[] utf8Buffer = new byte[expectedBytesWritten + 100];
             Span<byte> span = new Span<byte>(utf8Buffer);
@@ -130,14 +130,14 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingOutputBufferTooLarge()
         {
             string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
 
             Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
 
             string unicodeString2 = GenerateValidString(CharLength, 0x0800, Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> characters2 = unicodeString2.Slice();
+            ReadOnlySpan<char> characters2 = unicodeString2.AsSpan();
             char[] charArray2 = characters2.ToArray();
             byte[] utf8BufferExpected2 = new byte[Encoding.UTF8.GetByteCount(charArray2)];
 
@@ -173,10 +173,10 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingEndOnHighSurrogateAndRestart()
         {
             string unicodeString = GenerateValidStringEndsWithHighStartsWithLow(CharLength, false, 0, Utf8OneByteLastCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
 
             string unicodeString2 = unicodeString + GenerateValidStringEndsWithHighStartsWithLow(CharLength, true, 0, Utf8OneByteLastCodePoint);
-            ReadOnlySpan<char> characters2 = unicodeString2.Slice();
+            ReadOnlySpan<char> characters2 = unicodeString2.AsSpan();
 
             int expectedBytesWritten = GetByteCount(characters2);
             byte[] utf8Buffer = new byte[expectedBytesWritten];
@@ -216,7 +216,7 @@ namespace System.Text.Utf8.Tests
             charLengthOfAllCharacters += 2 * ((Utf16HighSurrogateLastCodePoint - Utf16HighSurrogateFirstCodePoint) + 1) * ((Utf16LowSurrogateLastCodePoint - Utf16LowSurrogateFirstCodePoint) + 1);  //double char
             Assert.Equal(unicodeString.Length, charLengthOfAllCharacters);  // should be equal to 2160640
 
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
 
@@ -245,7 +245,7 @@ namespace System.Text.Utf8.Tests
         private bool Validate(int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateValidString(CharLength, minCodePoint, maxCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
 
@@ -666,7 +666,7 @@ namespace System.Text.Utf8.Tests
             Assert.True(encoder.TryEncode(codePointsSpan, buffer, out consumed, out bytesWritten));
 
             string unicodeString = plainText.ToString();
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int byteCount = systemEncoder.GetByteCount(unicodeString);
             byte[] buff = new byte[byteCount];
             Span<byte> expectedBuffer;

@@ -41,7 +41,7 @@ namespace System.Text.Http.Tests
 
             var result = _formatter.Formatted;
 
-            result.Slice().SequenceEqual(_statusLineInBytes);
+            result.AsSpan().SequenceEqual(_statusLineInBytes);
             _formatter.Clear();
         }
 
@@ -58,7 +58,7 @@ namespace System.Text.Http.Tests
 
             var result = _formatter.Formatted;
 
-            result.Slice().SequenceEqual(_httpMessageInBytes);
+            result.AsSpan().SequenceEqual(_httpMessageInBytes);
             _formatter.Clear();
         }
     }

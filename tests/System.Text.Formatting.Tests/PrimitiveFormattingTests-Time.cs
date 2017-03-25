@@ -74,7 +74,7 @@ namespace System.Text.Formatting.Tests
 
             var sb = new ArrayFormatter(100, TextEncoder.Utf8);
             sb.Append(time, 'R');
-            var result = sb.Formatted.Slice().ToArray();
+            var result = sb.Formatted.AsSpan().ToArray();
             var resultString = Encoding.UTF8.GetString(result);
 
             Assert.Equal(expected, resultString);

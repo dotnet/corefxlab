@@ -50,7 +50,7 @@ namespace System.Buffers.Tests
         {
             Debug.Assert(values.Distinct().Count() == values.Length);
 
-            ReadOnlySpan<T> slice = values.Slice();
+            ReadOnlySpan<T> slice = values.AsSpan();
 
             for (int i = 0; i < values.Length; i++)
             {
@@ -70,7 +70,7 @@ namespace System.Buffers.Tests
         {
             Debug.Assert(values.Distinct().Count() < values.Length);
 
-            ReadOnlySpan<T> slice = values.Slice();
+            ReadOnlySpan<T> slice = values.AsSpan();
 
             for (int i = 0; i < values.Length; i++)
             {
@@ -89,7 +89,7 @@ namespace System.Buffers.Tests
         {
             Debug.Assert(!values.Intersect(nonExistingValues).Any());
 
-            ReadOnlySpan<T> slice = values.Slice();
+            ReadOnlySpan<T> slice = values.AsSpan();
 
             for (int i = 0; i < nonExistingValues.Length; i++)
             {

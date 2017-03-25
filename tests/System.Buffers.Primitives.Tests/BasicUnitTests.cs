@@ -281,7 +281,7 @@ namespace System.Buffers.Tests
         public void CovariantSlicesNotSupported2()
         {
             object[] array = new string[10];
-            Assert.Throws<ArrayTypeMismatchException>(() => { var slice = array.Slice(0); });
+            Assert.Throws<ArrayTypeMismatchException>(() => { var slice = array.AsSpan().Slice(0); });
         }
 
         [Fact]
