@@ -22,22 +22,27 @@ namespace System.IO.Pipelines
         private ConcurrentQueue<BufferSegment> Pool => _pool ?? CreateThreadStaticPool();
 
         // Rent from thread static pool
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private BufferSegment Rent()
         {
             var segment = _threadCached;
             if (segment != null)
             {
                 _threadCached = null;
-            }
-            else
-            {
-                Pool.TryDequeue(out segment);
-                if (segment == null)
-                {
-                    segment = new BufferSegment();
-                }
+                segment.SourcePool = this;
+                return segment;
             }
 
+            return Dequeue();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private BufferSegment Dequeue()
+        {
+            if (!Pool.TryDequeue(out var segment))
+            {
+                segment = new BufferSegment();
+            }
             segment.SourcePool = this;
             return segment;
         }
@@ -49,21 +54,27 @@ namespace System.IO.Pipelines
             => Rent().Initalize(buffer, start, end);
 
         // Return to local pool (thread static of Renting thread)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Return(BufferSegment segment)
         {
             // Added returned segment to thread static keeps it hotter
             // and means it won't get reset and used by other threads if there is 
             // about to be a use after free by the current thread
             var currentSegment = _threadCached;
-            segment.SourcePool = null;
             _threadCached = segment;
 
             if (currentSegment != null)
             {
-                // Was a current segment in thread cache
-                // Add this less recently used segment to queue if we have one
-                _localPool?.Enqueue(currentSegment);
+                Enqueue(currentSegment);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void Enqueue(BufferSegment currentSegment)
+        {
+            // Was a current segment in thread cache
+            // Add this less recently used segment to queue if we have one
+            _localPool?.Enqueue(currentSegment);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

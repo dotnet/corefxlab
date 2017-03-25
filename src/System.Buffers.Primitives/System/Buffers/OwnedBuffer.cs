@@ -114,6 +114,7 @@ namespace System.Buffers
             Reactivate();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
             Interlocked.Exchange(ref _id, FreedId);

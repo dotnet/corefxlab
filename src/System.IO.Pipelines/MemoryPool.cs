@@ -88,50 +88,22 @@ namespace System.IO.Pipelines
             if (block != null)
             {
                 _threadCached = null;
-                if (block.Slab.IsActive)
-                {
-                    block.Initialize();
-                    return block;
-                }
-                else
+                if (!block.Slab.IsActive)
                 {
                     TrashBlock(block);
+                    block = null;
                 }
             }
-#endif
-            return Lease();
-        }
 
-        public void RegisterSlabAllocationCallback(Action<MemoryPoolSlab> callback)
-        {
-            _slabAllocationCallback = callback;
-        }
-
-        public void RegisterSlabDeallocationCallback(Action<MemoryPoolSlab> callback)
-        {
-            _slabDeallocationCallback = callback;
-        }
-
-        /// <summary>
-        /// Called to take a block from the pool.
-        /// </summary>
-        /// <returns>The block that is reserved for the called. It must be passed to Return when it is no longer being used.</returns>
-
-#if !BLOCK_LEASE_TRACKING
-        private MemoryPoolBlock Lease()
-        {
-            if (_blocks.TryDequeue(out var block))
+            if (block == null && !_blocks.TryDequeue(out block))
             {
-                // block successfully taken from the stack - return it
-                block.Initialize();
-                return block;
+                // no blocks available - grow the pool
+                block = AllocateSlab();
             }
-            // no blocks available - grow the pool
-            return AllocateSlab();
-        }
+
+            block.Initialize();
+            return block;
 #else
-        private MemoryPoolBlock Lease()
-        {
             Debug.Assert(!_disposedValue, "Block being leased from disposed pool!");
 
             MemoryPoolBlock block;
@@ -149,8 +121,18 @@ namespace System.IO.Pipelines
             block.Leaser = Environment.StackTrace;
             block.IsLeased = true;
             return block;
-        }
 #endif
+        }
+
+        public void RegisterSlabAllocationCallback(Action<MemoryPoolSlab> callback)
+        {
+            _slabAllocationCallback = callback;
+        }
+
+        public void RegisterSlabDeallocationCallback(Action<MemoryPoolSlab> callback)
+        {
+            _slabDeallocationCallback = callback;
+        }
 
         /// <summary>
         /// Internal method called when a block is requested and the pool is empty. It allocates one additional slab, creates all of the 
@@ -192,7 +174,6 @@ namespace System.IO.Pipelines
                     this,
                     slab);
 
-            newBlock.Initialize();
             return newBlock;
         }
 
@@ -205,6 +186,7 @@ namespace System.IO.Pipelines
         /// </summary>
         /// <param name="block">The block to return. It must have been acquired by calling Lease on the same memory pool instance.</param>
 #if !BLOCK_LEASE_TRACKING
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Return(MemoryPoolBlock block)
         {
             if (block.Slab.IsActive)
@@ -217,14 +199,23 @@ namespace System.IO.Pipelines
 
                 if (currentBlock != null)
                 {
-                    // Was a current block in thread cache
-                    // Add this less recently used block to queue
-                    _blocks.Enqueue(currentBlock);
+                    Enqueue(currentBlock);
                 }
             }
             else
             {
                 TrashBlock(block);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void Enqueue(MemoryPoolBlock currentBlock)
+        {
+            // Was a current block in thread cache
+            // Add this less recently used block to queue
+            if (currentBlock.Slab.IsActive)
+            {
+                _blocks.Enqueue(currentBlock);
             }
         }
 #else

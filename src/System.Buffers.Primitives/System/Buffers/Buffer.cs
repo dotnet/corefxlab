@@ -40,7 +40,7 @@ namespace System.Buffers
 
         public int Length => _length;
 
-        public bool IsEmpty => Length == 0;
+        public bool IsEmpty => _length == 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Buffer<T> Slice(int index)
