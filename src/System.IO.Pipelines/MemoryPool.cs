@@ -219,7 +219,7 @@ namespace System.IO.Pipelines
                 {
                     // Was a current block in thread cache
                     // Add this less recently used block to queue
-                    _blocks.Enqueue(block);
+                    _blocks.Enqueue(currentBlock);
                 }
             }
             else
