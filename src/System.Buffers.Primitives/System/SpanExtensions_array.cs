@@ -14,7 +14,7 @@ namespace System
     {
         public static void CopyTo<T>(this T[] array, Span<T> span)
         {
-            new Span<T>(array).CopyTo(span);
+            array.AsSpan().CopyTo(span);
         }
     }
 }
