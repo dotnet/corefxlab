@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.IO.Pipelines.Networking.Windows.RIO.Internal.Winsock;
+using System.Buffers;
 
 namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 {
@@ -92,7 +93,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             }
         }
 
-        public IntPtr GetBufferId(IntPtr address, out long startAddress)
+        private IntPtr GetBufferId(IntPtr address, out long startAddress)
         {
             var id = IntPtr.Zero;
             startAddress = 0;
@@ -114,6 +115,21 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             }
 
             return id;
+        }
+
+        public unsafe RioBufferSegment GetSegmentFromMemory(Buffer<byte> memory)
+        {
+            var pin = memory.Pin();
+            var spanPtr = (IntPtr)pin.PinnedPointer;
+            long startAddress;
+            long spanAddress = spanPtr.ToInt64();
+            var bufferId = GetBufferId(spanPtr, out startAddress);
+
+            checked
+            {
+                var offset = (uint)(spanAddress - startAddress);
+                return new RioBufferSegment(bufferId, offset, (uint)memory.Length);
+            }
         }
 
         private void OnSlabAllocated(MemoryPoolSlab slab)

@@ -64,7 +64,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         private void ProcessReceives()
         {
             _buffer = _input.Writer.Alloc(2048);
-            var receiveBufferSeg = GetSegmentFromMemory(_buffer.Buffer);
+            var receiveBufferSeg = _rioThread.GetSegmentFromMemory(_buffer.Buffer);
 
             if (!_rio.RioReceive(_requestQueue, ref receiveBufferSeg, 1, RioReceiveFlags.None, 0))
             {
@@ -120,7 +120,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
             var flushSends = endOfMessage || MaxOutstandingSendsReached;
 
-            Send(GetSegmentFromMemory(memory), flushSends);
+            Send(_rioThread.GetSegmentFromMemory(memory), flushSends);
 
             if (flushSends && !endOfMessage)
             {
@@ -136,7 +136,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
             var flushSends = endOfMessage || MaxOutstandingSendsReached;
 
-            Send(GetSegmentFromMemory(memory), flushSends);
+            Send(_rioThread.GetSegmentFromMemory(memory), flushSends);
 
             if (flushSends && !endOfMessage)
             {
@@ -217,25 +217,6 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         public void ReceiveEndComplete()
         {
             _buffer.FlushAsync();
-        }
-
-        private unsafe RioBufferSegment GetSegmentFromMemory(Buffer<byte> memory)
-        {
-            void* pointer;
-            if (!memory.TryGetPointer(out pointer))
-            {
-                throw new InvalidOperationException("Memory needs to be pinned");
-            }
-            var spanPtr = (IntPtr)pointer;
-            long startAddress;
-            long spanAddress = spanPtr.ToInt64();
-            var bufferId = _rioThread.GetBufferId(spanPtr, out startAddress);
-
-            checked
-            {
-                var offset = (uint)(spanAddress - startAddress);
-                return new RioBufferSegment(bufferId, offset, (uint)memory.Length);
-            }
         }
 
         private static void ThrowError(ErrorType type)
