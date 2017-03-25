@@ -96,8 +96,9 @@ namespace System.Buffers
         {
             if (!IsDisposed && Id != InitializedId) OwnedBuffer.ThrowNotDisposed();
 
-            _id = (int)Interlocked.Increment(ref _nextId);
             _referenceCount = 0;
+
+            _id = (int)Interlocked.Increment(ref _nextId);
         }
 
         protected void Initialize(T[] array, int arrayOffset, int length, IntPtr pointer = default(IntPtr))
@@ -105,12 +106,12 @@ namespace System.Buffers
             Contract.Requires(array != null || pointer != IntPtr.Zero);
             Contract.Requires(array == null || arrayOffset + length <= array.Length);
 
-            Reactivate();
-
             _array = array;
             _arrayIndex = arrayOffset;
             _length = length;
             _pointer = pointer;
+
+            Reactivate();
         }
 
         public void Dispose()
@@ -123,10 +124,10 @@ namespace System.Buffers
         protected virtual void Dispose(bool disposing)
         { 
             _id = FreedId;
-            _array = null;
             _pointer = IntPtr.Zero;
             _length = 0;
             _arrayIndex = 0;
+            _array = null;
         }
 
         public bool IsDisposed => Id == FreedId;
