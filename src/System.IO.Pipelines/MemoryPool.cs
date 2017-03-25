@@ -87,9 +87,9 @@ namespace System.IO.Pipelines
             var block = _threadCached;
             if (block != null)
             {
+                _threadCached = null;
                 if (block.Slab.IsActive)
                 {
-                    _threadCached = null;
                     block.Initialize();
                     return block;
                 }
@@ -148,7 +148,6 @@ namespace System.IO.Pipelines
             block = AllocateSlab();
             block.Leaser = Environment.StackTrace;
             block.IsLeased = true;
-            block.Initialize();
             return block;
         }
 #endif
@@ -193,6 +192,7 @@ namespace System.IO.Pipelines
                     this,
                     slab);
 
+            newBlock.Initialize();
             return newBlock;
         }
 

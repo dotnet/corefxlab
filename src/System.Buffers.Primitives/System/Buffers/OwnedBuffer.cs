@@ -90,6 +90,8 @@ namespace System.Buffers
         }
 
         #region Lifetime Management
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void Reactivate()
         {
             if (!IsDisposed && Id != InitializedId) OwnedBuffer.ThrowNotDisposed();
@@ -102,19 +104,18 @@ namespace System.Buffers
         {
             Contract.Requires(array != null || pointer != IntPtr.Zero);
             Contract.Requires(array == null || arrayOffset + length <= array.Length);
-            if (!IsDisposed && Id!=InitializedId) OwnedBuffer.ThrowNotDisposed();
 
-            _id = (int)Interlocked.Increment(ref _nextId);
+            Reactivate();
+
             _array = array;
             _arrayIndex = arrayOffset;
             _length = length;
             _pointer = pointer;
-            _referenceCount = 0;
         }
 
         public void Dispose()
         {
-            Interlocked.Exchange(ref _id,  FreedId);
+            Interlocked.Exchange(ref _id, FreedId);
             if (HasOutstandingReferences) OwnedBuffer.ThrowOutstandingReferences();
             Dispose(true);
         }

@@ -52,7 +52,7 @@ namespace System.IO.Pipelines
             {
                 // Need to make a new object because this one is being finalized
                 // When tracking is not set this could be a thread static cached block after the thread end
-                Pool.Return(new MemoryPoolBlock(Pool, Slab, _offset, _length));
+                (new MemoryPoolBlock(Pool, Slab, _offset, _length)).Dispose();
             }
         }
 
@@ -92,6 +92,14 @@ namespace System.IO.Pipelines
 
         protected override void Dispose(bool disposing)
         {
+#if DEBUG
+            var end = _offset + _length;
+            var slab = Slab.Array;
+            for (var i = _offset; i < end; i++)
+            {
+                slab[i] = 0;
+            }
+#endif
             Pool.Return(this);
         }
     }
