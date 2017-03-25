@@ -513,7 +513,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector<byte> GetVector(byte vectorByte)
+        static Vector<byte> GetVector(byte vectorByte)
         {
             // Vector<byte> .ctor doesn't become an intrinsic due to detection issue
             // However this does cause it to become an intrinsic (with additional multiply and reg->reg copy)
