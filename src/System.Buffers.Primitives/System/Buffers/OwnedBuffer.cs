@@ -90,36 +90,45 @@ namespace System.Buffers
         }
 
         #region Lifetime Management
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected void Reactivate()
+        {
+            if (!IsDisposed && Id != InitializedId) OwnedBuffer.ThrowNotDisposed();
+
+            _referenceCount = 0;
+
+            _id = (int)Interlocked.Increment(ref _nextId);
+        }
+
         protected void Initialize(T[] array, int arrayOffset, int length, IntPtr pointer = default(IntPtr))
         {
             Contract.Requires(array != null || pointer != IntPtr.Zero);
             Contract.Requires(array == null || arrayOffset + length <= array.Length);
-            if (!IsDisposed && Id!=InitializedId) {
-                throw new InvalidOperationException("this instance has to be disposed to initialize");
-            }
 
-            _id = (int)Interlocked.Increment(ref _nextId);
             _array = array;
             _arrayIndex = arrayOffset;
             _length = length;
             _pointer = pointer;
-            _referenceCount = 0;
+
+            Reactivate();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            Interlocked.Exchange(ref _id,  FreedId);
-            if (HasOutstandingReferences) throw new InvalidOperationException("outstanding references detected.");
+            Interlocked.Exchange(ref _id, FreedId);
+            if (HasOutstandingReferences) OwnedBuffer.ThrowOutstandingReferences();
             Dispose(true);
         }
 
         protected virtual void Dispose(bool disposing)
         { 
             _id = FreedId;
-            _array = null;
             _pointer = IntPtr.Zero;
             _length = 0;
             _arrayIndex = 0;
+            _array = null;
         }
 
         public bool IsDisposed => Id == FreedId;
@@ -163,7 +172,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Span<T> GetSpanInternal(int index, int length)
         {
-            if (IsDisposed) ThrowIdHelper();
+            if (IsDisposed) OwnedBuffer.ThrowObjectDisposed();
 
             var array = Array;
             if (array != null) 
@@ -173,7 +182,7 @@ namespace System.Buffers
             else
                 unsafe {
                     if ((uint)index > (uint)Length || (uint)length > (uint)(Length - index))
-                        ThrowArgHelper();
+                        OwnedBuffer.ThrowArgumentOutOfRange();
                     IntPtr newPtr = Add(Pointer, index);
                     return new Span<T>(newPtr.ToPointer(), length);
                 }
@@ -203,21 +212,37 @@ namespace System.Buffers
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void VerifyId(long id) {
-            if (Id != id) ThrowIdHelper();
+            if (Id != id) OwnedBuffer.ThrowObjectDisposed();
         }
 
-        void ThrowIdHelper() {
-            throw new ObjectDisposedException(nameof(Buffer<T>));
-        }
-        void ThrowArgHelper()
-        {
-            throw new ArgumentOutOfRangeException();
-        }
         #endregion
 
         public static OwnedBuffer<T> Create(ArraySegment<T> segment)
         {
             return new Internal.OwnedArray<T>(segment);
+        }
+    }
+
+    internal static class OwnedBuffer
+    {
+        internal static void ThrowObjectDisposed()
+        {
+            throw new ObjectDisposedException(nameof(OwnedBuffer));
+        }
+
+        internal static void ThrowArgumentOutOfRange()
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+
+        internal static void ThrowOutstandingReferences()
+        {
+            throw new InvalidOperationException("outstanding references detected.");
+        }
+
+        internal static void ThrowNotDisposed()
+        {
+            throw new InvalidOperationException("this instance has to be disposed to initialize");
         }
     }
 

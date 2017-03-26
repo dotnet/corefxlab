@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Diagnostics;
 using System.Text;
 
 namespace System.IO.Pipelines
@@ -45,12 +46,13 @@ namespace System.IO.Pipelines
         ~MemoryPoolBlock()
         {
 #if BLOCK_LEASE_TRACKING
-            Debug.Assert(Slab == null || !Slab.IsActive, $"{Environment.NewLine}{Environment.NewLine}*** Block being garbage collected instead of returned to pool: {Leaser} ***{Environment.NewLine}");
+            Debug.Assert(!Slab.IsActive, $"{Environment.NewLine}{Environment.NewLine}*** Block being garbage collected instead of returned to pool: {Leaser} ***{Environment.NewLine}");
 #endif
-            if (Slab != null && Slab.IsActive)
+            if (Slab.IsActive)
             {
                 // Need to make a new object because this one is being finalized
-                Pool.Return(new MemoryPoolBlock(Pool, Slab, _offset, _length));
+                // When tracking is not set this could be a thread static cached block after the thread end
+                (new MemoryPoolBlock(Pool, Slab, _offset, _length)).Dispose();
             }
         }
 
@@ -58,7 +60,7 @@ namespace System.IO.Pipelines
         {
             if (IsDisposed)
             {
-                Initialize(Slab.Array, _offset, _length, Slab.NativePointer + _offset);
+                Reactivate();
             }
         }
 
@@ -90,9 +92,14 @@ namespace System.IO.Pipelines
 
         protected override void Dispose(bool disposing)
         {
-            // Dispose before returning to pool to prevent race between Lease and Dispose
-            base.Dispose(disposing);
-
+#if DEBUG
+            var end = _offset + _length;
+            var slab = Slab.Array;
+            for (var i = _offset; i < end; i++)
+            {
+                slab[i] = 0;
+            }
+#endif
             Pool.Return(this);
         }
     }

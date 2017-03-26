@@ -40,7 +40,7 @@ namespace System.Buffers
 
         public int Length => _length;
 
-        public bool IsEmpty => Length == 0;
+        public bool IsEmpty => _length == 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Buffer<T> Slice(int index)
@@ -54,9 +54,15 @@ namespace System.Buffers
             return new Buffer<T>(_owner, _index + index, length);
         }
 
-        public Span<T> Span {
+        public Span<T> Span
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _owner.GetSpanInternal(_index, _length); }
+            get
+            {
+                if (_owner == null) OwnedBuffer.ThrowObjectDisposed();
+
+                return _owner.GetSpanInternal(_index, _length);
+            }
         }
 
         public DisposableReservation<T> Reserve() => new DisposableReservation<T>(_owner);
