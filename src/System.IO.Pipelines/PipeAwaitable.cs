@@ -38,7 +38,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reset()
         {
-            if (_state == _awaitableIsCompleted &&
+            if (ReferenceEquals(_state, _awaitableIsCompleted) &&
                 _cancelledState != CancelledState.CancellationRequested)
             {
                 _state = _awaitableIsNotCompleted;
@@ -56,7 +56,7 @@ namespace System.IO.Pipelines
         public Action OnCompleted(Action continuation, ref PipeCompletion completion)
         {
             var awaitableState = _state;
-            if (_state == _awaitableIsNotCompleted)
+            if (ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
             {
                 _state = continuation;
             }
