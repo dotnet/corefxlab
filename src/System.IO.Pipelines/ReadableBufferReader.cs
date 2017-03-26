@@ -17,14 +17,15 @@ namespace System.IO.Pipelines
         {
         }
 
-        public ReadableBufferReader(ReadCursor start, ReadCursor end) : this()
+        public ReadableBufferReader(ReadCursor start, ReadCursor end)
         {
             _end = false;
             _index = 0;
             _consumedBytes = 0;
-            _enumerator = new SegmentEnumerator(start, end);
             _currentSpan = default(Span<byte>);
-            MoveNext();
+            _enumerator = new SegmentEnumerator(start, end);
+
+            AdvanceSegmentInlined();
         }
 
         public bool End => _end;
@@ -37,12 +38,17 @@ namespace System.IO.Pipelines
             {
                 var part = _enumerator.Current;
 
-                if (_end)
+                ReadCursor cursor;
+                if (!_end)
                 {
-                    return new ReadCursor(part.Segment, part.Start + _currentSpan.Length);
+                    cursor = new ReadCursor(part.Segment, part.Start + _index);
+                }
+                else
+                {
+                    cursor = new ReadCursor(part.Segment, part.Start + _currentSpan.Length);
                 }
 
-                return new ReadCursor(part.Segment, part.Start + _index);
+                return cursor;
             }
         }
 
@@ -53,50 +59,34 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
         {
-            if (_end)
+            if (!_end)
             {
-                return -1;
+                return _currentSpan[_index];
             }
-            return _currentSpan[_index];
+
+            return -1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Take()
         {
-            if (_end)
+            if (!_end)
             {
-                return -1;
-            }
+                var index = _index;
+                var value = _currentSpan[index];
 
-            var value = _currentSpan[_index];
+                _index = index + 1;
+                _consumedBytes++;
 
-            _index++;
-            _consumedBytes++;
-
-            if (_index >= _currentSpan.Length)
-            {
-                MoveNext();
-            }
-
-            return value;
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private void MoveNext()
-        {
-            while (_enumerator.MoveNext())
-            {
-                var part = _enumerator.Current;
-                var length = part.Length;
-                if (length != 0)
+                if (index + 1 >= _currentSpan.Length)
                 {
-                    _currentSpan = part.Segment.Buffer.Span.Slice(part.Start, length);
-                    _index = 0;
-                    return;
+                    AdvanceSegmentNoInline();
                 }
+
+                return value;
             }
 
-            _end = true;
+            return -1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -123,25 +113,53 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void SkipMultiSegment(int length)
         {
-            MoveNext();
-            while (!_end && length > 0)
+            AdvanceSegmentInlined();
+            if (length > 0 && _end)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+            }
+
+            do
             {
                 var remaining = _currentSpan.Length - _index;
                 if (length < remaining)
                 {
                     _index += length;
-                    length = 0;
-                    break;
+                    return;
                 }
 
                 length -= remaining;
-                MoveNext();
-            }
+                AdvanceSegmentNoInline();
+            } while (length > 0 && !_end );
 
             if (length > 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void AdvanceSegmentNoInline()
+        {
+            AdvanceSegmentInlined();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void AdvanceSegmentInlined()
+        {
+            while (_enumerator.MoveNext())
+            {
+                var part = _enumerator.Current;
+                var length = part.Length;
+                if (length != 0)
+                {
+                    _currentSpan = part.Segment.Buffer.Span.Slice(part.Start, length);
+                    _index = 0;
+                    return;
+                }
+            }
+
+            _end = true;
         }
     }
 }
