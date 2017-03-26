@@ -28,12 +28,34 @@ namespace System.IO.Pipelines
 
         public void Write(byte[] source)
         {
-            Write(source, 0, source.Length);
+            if (source.Length > 0 && _span.Length >= source.Length)
+            {
+                ref byte pSource = ref source[0];
+                ref byte pDest = ref _span.DangerousGetPinnableReference();
+
+                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)source.Length);
+
+                Advance(source.Length);
+            }
+            else
+            {
+                WriteMultiBuffer(source, 0, source.Length);
+            }
         }
 
         public void Write(byte[] source, int offset, int length)
         {
-            if (length <= _span.Length && length > 0)
+            // If offset or length is negative the cast to uint will make them larger than int.MaxValue
+            // so each test both tests for negative values and greater than values. This pattern wil also
+            // elide the second bounds check that would occur at source[offset]; as is pre-checked 
+            // https://github.com/dotnet/coreclr/pull/9773
+            if ((uint)offset > (uint)source.Length || (uint)length > (uint)(source.Length - offset))
+            {
+                // Only need to pass in array length and offset for ThrowHelper to determine which test failed
+                ThrowHelper.ThrowArgumentOutOfRangeException(source.Length, offset);
+            }
+
+            if (length > 0 && _span.Length <= length)
             {
                 ref byte pSource = ref source[offset];
                 ref byte pDest = ref _span.DangerousGetPinnableReference();
@@ -41,10 +63,11 @@ namespace System.IO.Pipelines
                 Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)length);
 
                 Advance(length);
-                return;
             }
-
-            WriteMultiBuffer(source, offset, length);
+            else
+            {
+                WriteMultiBuffer(source, offset, length);
+            }
         }
 
         private void WriteMultiBuffer(byte[] source, int offset, int length)
