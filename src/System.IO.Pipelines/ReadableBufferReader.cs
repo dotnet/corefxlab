@@ -130,7 +130,7 @@ namespace System.IO.Pipelines
 
                 length -= remaining;
                 AdvanceSegmentNoInline();
-            } while (length > 0 && !_end );
+            } while (length > 0 && !_end);
 
             if (length > 0)
             {
