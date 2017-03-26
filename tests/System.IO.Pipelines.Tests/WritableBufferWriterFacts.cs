@@ -59,6 +59,30 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void ThrowsForInvalidParameters()
+        {
+            _buffer = _pipe.Writer.Alloc(1);
+            var initialLength = _buffer.Buffer.Length;
+
+            var writer = new WritableBufferWriter(_buffer);
+            var array = new byte[] { 1, 2, 3 };
+
+            writer.Write(array, 0, 0);
+            writer.Write(array, array.Length, 0);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, -1, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, 0, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, 0, array.Length + 1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, array.Length + 1, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, -1, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, array.Length + 1, array.Length + 1));
+
+            writer.Write(array, 0, array.Length);
+
+            Assert.Equal(array, Read());
+        }
+
+        [Fact]
         public void CanWriteIntoHeadlessBuffer()
         {
             _buffer = _pipe.Writer.Alloc();
@@ -86,10 +110,12 @@ namespace System.IO.Pipelines.Tests
         {
             _buffer = _pipe.Writer.Alloc();
             var writer = new WritableBufferWriter(_buffer);
+            var array = new byte[] { };
 
-            writer.Write(new byte[] { });
+            writer.Write(array);
+            writer.Write(array, 0, array.Length);
 
-            Assert.Equal(new byte[] { }, Read());
+            Assert.Equal(array, Read());
         }
 
         [Fact]

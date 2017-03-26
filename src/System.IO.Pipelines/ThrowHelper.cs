@@ -59,7 +59,7 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static InvalidOperationException GetInvalidOperationException(ExceptionResource resource, string location = null)
+        public static InvalidOperationException GetInvalidOperationException(ExceptionResource resource, string location = null)
         {
             return new InvalidOperationException(GetResourceString(resource, location));
         }
