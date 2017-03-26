@@ -2,7 +2,7 @@
     [string]$Configuration="Debug",
     [string]$Restore="true",
     [string]$Channel="preview",
-    [string]$Version="1.0.0",
+    [string]$Version="2.0.0-preview1-005418",
     [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1')
 )
 

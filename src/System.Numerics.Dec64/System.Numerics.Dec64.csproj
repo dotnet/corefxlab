@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
+  <Import Project="..\..\tools\dependencies.props" />
   <PropertyGroup>
     <Description>64 bit decimal floating point value</Description>
     <Copyright>.NET Foundation, All rights reserved</Copyright>
@@ -8,7 +9,7 @@
     <PackageTags>.NET 64 bit decimal floating point value</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Runtime" Version="4.3.0" />
-    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
+    <PackageReference Include="System.Runtime" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="$(CoreFxVersion)" />
   </ItemGroup>
 </Project>

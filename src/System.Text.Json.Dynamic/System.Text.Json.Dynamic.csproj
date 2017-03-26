@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
+  <Import Project="..\..\tools\dependencies.props" />
   <PropertyGroup>
     <Description>JSON dynamic object</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
@@ -13,6 +14,6 @@
     <ProjectReference Include="..\System.Text.Json\System.Text.Json.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
+    <PackageReference Include="System.Dynamic.Runtime" Version="$(CoreFxVersion)" />
   </ItemGroup>
 </Project>

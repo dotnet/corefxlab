@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
+  <Import Project="..\..\tools\dependencies.props" />
   <PropertyGroup>
     <Description>An abstraction for doing efficient asynchronous IO</Description>
     <TargetFramework>netstandard1.1</TargetFramework>

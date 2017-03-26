@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
+  <Import Project="..\..\tools\dependencies.props" />
   <PropertyGroup>
     <Description>libuv .NET Core wrapper</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
@@ -12,7 +13,7 @@
     <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Libuv" Version="1.9.1" />
-    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
+    <PackageReference Include="Libuv" Version="$(LibuvVersion)" />
+    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="$(CoreFxVersion)" />
   </ItemGroup>
 </Project>
