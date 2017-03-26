@@ -28,7 +28,19 @@ namespace System.IO.Pipelines
 
         public void Write(byte[] source)
         {
-            Write(source, 0, source.Length);
+            if (source.Length > 0 && _span.Length >= source.Length)
+            {
+                ref byte pSource = ref source[0];
+                ref byte pDest = ref _span.DangerousGetPinnableReference();
+
+                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)source.Length);
+
+                Advance(source.Length);
+            }
+            else
+            {
+                WriteMultiBuffer(source, 0, source.Length);
+            }
         }
 
         public void Write(byte[] source, int offset, int length)
