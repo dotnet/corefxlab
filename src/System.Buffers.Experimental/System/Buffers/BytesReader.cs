@@ -50,6 +50,21 @@ namespace System.Buffers
 
         public byte Peek() => _currentSegment.Span[_currentSegmentIndex];
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte Read()
+        {
+            var result = _currentSegment.Span[_currentSegmentIndex];
+            _index++;
+            var unreadLength = _currentSegment.Length - _currentSegmentIndex;
+            if (1 < unreadLength) {
+                _currentSegmentIndex++;
+            }
+            else {
+                AdvanceNextSegment(1, advancedInCurrent: unreadLength);
+            }
+            return result;
+        }
+
         public ReadOnlySpan<byte> Unread => _currentSegment.Span.Slice(_currentSegmentIndex);
 
         public TextEncoder Encoder => _encoder;
