@@ -11,7 +11,7 @@ namespace System.IO.Pipelines
         private int _index;
         private SegmentEnumerator _enumerator;
         private int _consumedBytes;
-        private bool _end;
+        private bool _hasData;
 
         public ReadableBufferReader(ReadableBuffer buffer) : this(buffer.Start, buffer.End)
         {
@@ -19,7 +19,7 @@ namespace System.IO.Pipelines
 
         public ReadableBufferReader(ReadCursor start, ReadCursor end)
         {
-            _end = false;
+            _hasData = true;
             _index = 0;
             _consumedBytes = 0;
             _currentSpan = default(Span<byte>);
@@ -28,7 +28,7 @@ namespace System.IO.Pipelines
             AdvanceSegmentInlined();
         }
 
-        public bool End => _end;
+        public bool End => !_hasData;
 
         public int Index => _index;
 
@@ -37,7 +37,7 @@ namespace System.IO.Pipelines
             get
             {
                 var part = _enumerator.Current;
-                var index = !_end ? _index : _currentSpan.Length;
+                var index = _hasData ? _index : _currentSpan.Length;
 
                 return new ReadCursor()
                 {
@@ -54,7 +54,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
         {
-            if (!_end)
+            if (_hasData)
             {
                 return _currentSpan[_index];
             }
@@ -65,7 +65,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Take()
         {
-            if (!_end)
+            if (_hasData)
             {
                 var index = _index;
                 var value = _currentSpan[index];
@@ -87,7 +87,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Skip(int length)
         {
-            if (length < 0 || _end)
+            if (length < 0 || !_hasData)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
@@ -109,7 +109,7 @@ namespace System.IO.Pipelines
         public void SkipMultiSegment(int length)
         {
             AdvanceSegmentInlined();
-            if (length > 0 && _end)
+            if (length > 0 && !_hasData)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
@@ -125,7 +125,7 @@ namespace System.IO.Pipelines
 
                 length -= remaining;
                 AdvanceSegmentNoInline();
-            } while (length > 0 && !_end);
+            } while (length > 0 && _hasData);
 
             if (length > 0)
             {
@@ -154,7 +154,7 @@ namespace System.IO.Pipelines
                 }
             }
 
-            _end = true;
+            _hasData = false;
         }
     }
 }
