@@ -37,18 +37,13 @@ namespace System.IO.Pipelines
             get
             {
                 var part = _enumerator.Current;
+                var index = !_end ? _index : _currentSpan.Length;
 
-                ReadCursor cursor;
-                if (!_end)
+                return new ReadCursor()
                 {
-                    cursor = new ReadCursor(part.Segment, part.Start + _index);
-                }
-                else
-                {
-                    cursor = new ReadCursor(part.Segment, part.Start + _currentSpan.Length);
-                }
-
-                return cursor;
+                    Segment = part.Segment,
+                    Index = part.Start + index
+                };
             }
         }
 
