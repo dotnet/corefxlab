@@ -97,8 +97,12 @@ namespace System.Buffers
             if (!IsDisposed && Id!=InitializedId) {
                 throw new InvalidOperationException("this instance has to be disposed to initialize");
             }
-
-            _id = (int)Interlocked.Increment(ref _nextId);
+            
+            do
+            {
+                _id = (int)Interlocked.Increment(ref _nextId);
+            } while(_id == InitializedId || _id == FreedId); // if we wrap around and collide with sentinels: pick again
+            
             _array = array;
             _arrayIndex = arrayOffset;
             _length = length;
