@@ -222,10 +222,11 @@ namespace System.IO.Pipelines
         {
             if (data == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            return Create(data, 0, data.Length);
+            OwnedBuffer<byte> buffer = data;
+            return CreateInternal(buffer, 0, data.Length);
         }
 
         /// <summary>
@@ -262,6 +263,11 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
+            return CreateInternal(data, offset, length);
+        }
+
+        private static ReadableBuffer CreateInternal(OwnedBuffer<byte> data, int offset, int length)
+        {
             var segment = new BufferSegment(data);
             segment.Start = offset;
             segment.End = offset + length;
