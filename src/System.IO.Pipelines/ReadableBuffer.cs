@@ -238,21 +238,8 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            if (offset < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
-            }
-
-            if (length < 0 || length > data.Length - offset)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
-            }
-
             OwnedBuffer<byte> buffer = data;
-            var segment = new BufferSegment(buffer);
-            segment.Start = offset;
-            segment.End = offset + length;
-            return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
+            return Create(buffer, offset, length);
         }
 
         /// <summary>
