@@ -94,7 +94,7 @@ namespace System.IO.Pipelines.Performance.Tests
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
-        public void WriteFastPlaintextResponse()
+        public void WriteSpanPlaintextResponse()
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
@@ -102,7 +102,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
                 foreach (var write in _plaintextWrites)
                 {
-                    writableBuffer.Write(write, 0, write.Length);
+                    writableBuffer.Write((ReadOnlySpan<byte>)write);
                 }
 
                 writableBuffer.FlushAsync().GetResult();
