@@ -372,7 +372,10 @@ namespace System.Text.Http.Parser
                             valueEnd = index;
                             state = State.ArferCR;
                         }
-                        // TODO: should value characters be validated?
+                        // TODO: why only these are rejected?
+                        if (next == ByteLF) {
+                            RejectRequest(RequestRejectionReason.InvalidCharactersInHeaderName);
+                        }
                         // TODO: should whitespace after all values (i.e. right before CRLF) be removed here?
                         // else just keep advancing chracters in name
                     }
@@ -382,7 +385,12 @@ namespace System.Text.Http.Parser
                             nameEnd = index;
                         }
                         if (next == ByteCR) state = State.ArferCR;
-                        // TODO: should name characters be validated?
+
+                        // TODO: why only these are rejected?
+                        if (next == ByteSpace || next == ByteTab) {
+                            RejectRequest(RequestRejectionReason.InvalidCharactersInHeaderName);
+                        }
+                        
                         // else just keep advancing chracters in name
                     }
                     else if (state == State.BeforValue) {
