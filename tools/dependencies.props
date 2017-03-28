@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <CoreFxVerson>4.3.0</CoreFxVerson>
+    <SystemMemoryVersion>4.4.0-*</SystemMemoryVersion>
+    <SystemCompilerServicesUnsafeVersion>4.4.0-*</SystemCompilerServicesUnsafeVersion>
+    <LibuvVersion>1.9.1</LibuvVersion>
+    <TestSdkVersion>15.0.0</TestSdkVersion>
+    <XunitVersion>2.2.0</XunitVersion>
+    <XunitPerformanceVersion>1.0.0-alpha-build0049</XunitPerformanceVersion>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <RuntimeFrameworkVersion>2.0.0-beta-001745-00</RuntimeFrameworkVersion>
+  </PropertyGroup>
+</Project>
