@@ -7,6 +7,6 @@ namespace System.Text.Http.Parser
 {
     public interface IHttpRequestLineHandler
     {
-        void OnStartLine(Http.Method method, Http.Version version, Span<byte> target, Span<byte> path, Span<byte> query, Span<byte> customMethod, bool pathEncoded);
+        void OnStartLine(Http.Method method, Http.Version version, ReadOnlySpan<byte> target, ReadOnlySpan<byte> path, ReadOnlySpan<byte> query, ReadOnlySpan<byte> customMethod, bool pathEncoded);
     }
 }
