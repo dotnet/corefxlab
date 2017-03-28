@@ -2,7 +2,7 @@
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Date and Time helper classes</Description>
-    <TargetFrameworks>netstandard1.3;net45</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;netstandard1.3;net45</TargetFrameworks>
     <PackageTags>Date TimeOfDay Time corefxlab</PackageTags>
     <RootNamespace />
   </PropertyGroup>
