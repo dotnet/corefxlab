@@ -55,7 +55,7 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentOutOfRangeException(source.Length, offset);
             }
 
-            if (length > 0 && _span.Length <= length)
+            if (length > 0 && _span.Length >= length)
             {
                 ref byte pSource = ref source[offset];
                 ref byte pDest = ref _span.DangerousGetPinnableReference();
