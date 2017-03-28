@@ -47,7 +47,7 @@ namespace System.IO.Pipelines
         {
             // If offset or length is negative the cast to uint will make them larger than int.MaxValue
             // so each test both tests for negative values and greater than values. This pattern wil also
-            // elide the second bounds check that would occur at source[offset]; as is pre-checked 
+            // elide the second bounds check that would occur at source[offset]; as is pre-checked
             // https://github.com/dotnet/coreclr/pull/9773
             if ((uint)offset > (uint)source.Length || (uint)length > (uint)(source.Length - offset))
             {
@@ -55,7 +55,7 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentOutOfRangeException(source.Length, offset);
             }
 
-            if (length > 0 && _span.Length <= length)
+            if (length > 0 && _span.Length >= length)
             {
                 ref byte pSource = ref source[offset];
                 ref byte pDest = ref _span.DangerousGetPinnableReference();
