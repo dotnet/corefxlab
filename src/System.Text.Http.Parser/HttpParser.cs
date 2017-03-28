@@ -354,13 +354,14 @@ namespace System.Text.Http.Parser
                 while (true) {
                     index++;
                     // get next byte 
-                    while (index == length) {
+                    while (length <= index) {
                         if (rest == null) {
                             RejectRequest(RequestRejectionReason.InvalidRequestHeadersNoCRLF);
                         }
                         span = rest.First.Span;
+                        length = span.Length;
                         rest = rest.Rest;
-                        index = -1;
+                        index = 0;
                         straddling = true;
                         throw new NotImplementedException("call to OnHeader below needs to account for straddling spans");
                     }
