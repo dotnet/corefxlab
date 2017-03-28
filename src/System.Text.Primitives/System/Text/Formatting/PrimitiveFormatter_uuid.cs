@@ -9,114 +9,81 @@ namespace System.Text
 {
     public static partial class PrimitiveFormatter
     {
-        public static bool TryFormat(this Guid value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
-        {
-            if (format.IsDefault)
-            {
-                format.Symbol = 'G';
-            }
-            Precondition.Require(format.Symbol == 'G' || format.Symbol == 'D' || format.Symbol == 'N' || format.Symbol == 'B' || format.Symbol == 'P');
+        private const string HexTable = "0123456789abcdef";
+        private const int GuidChars = 32;
 
+        public static unsafe bool TryFormat(this Guid value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        {
             encoder = encoder == null ? TextEncoder.Utf8 : encoder;
 
-            bool dash = true;
-            char tail = '\0';
-            bytesWritten = 0;
+            bool dash = format.Symbol != 'N';
+            bool bookEnds = (format.Symbol == 'B') || (format.Symbol == 'P');
+            int bytesNeeded = GuidChars + (dash ? 4 : 0) + (bookEnds ? 2 : 0);
 
-            switch (format.Symbol)
-            {
-                case 'D':
-                case 'G':
-                    break;
+            byte* chars = stackalloc byte[bytesNeeded];
+            byte* bytes = (byte*)&value;
+            int idx = 0;
 
-                case 'N':
-                    dash = false;
-                    break;
+            if (bookEnds && format.Symbol == 'B')
+                *(chars + idx++) = (byte)'{';
+            else if (bookEnds && format.Symbol == (byte)'P')
+                *(chars + idx++) = (byte)'(';
 
-                case 'B':
-                    if (!TryWriteChar('{', buffer, ref bytesWritten, encoder)) { return false; }
-                    tail = '}';
-                    break;
+            WriteHexByte(bytes[3], chars, idx++);
+            WriteHexByte(bytes[2], chars, idx+2);
+            WriteHexByte(bytes[1], chars, idx+4);
+            WriteHexByte(bytes[0], chars, idx+6);
+            idx += 8;
 
-                case 'P':
-                    if (!TryWriteChar('(', buffer, ref bytesWritten, encoder)) { return false; }
-                    tail = ')';
-                    break;
+            if (dash)
+                *(chars + idx++) = (byte)'-';
 
-                default:
-                    Precondition.Require(false); // how did we get here? 
-                    break;
-            }
+            WriteHexByte(bytes[5], chars, idx);
+            WriteHexByte(bytes[4], chars, idx+2);
+            idx += 4;
 
+            if (dash)
+                *(chars + idx++) = (byte)'-';
 
-            var byteFormat = new TextFormat('x', 2);
-            unsafe
-            {
-                byte* bytes = (byte*)&value;
+            WriteHexByte(bytes[7], chars, idx);
+            WriteHexByte(bytes[6], chars, idx+2);
+            idx += 4;
 
-                if (!TryWriteByte(bytes[3], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[2], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[1], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[0], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+            if (dash)
+                *(chars + idx++) = (byte)'-';
 
-                if (dash)
-                {
-                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoder)) { return false; }
-                }
+            WriteHexByte(bytes[8], chars, idx);
+            WriteHexByte(bytes[9], chars, idx+2);
+            idx += 4;
 
-                if (!TryWriteByte(bytes[5], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[4], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+            if (dash)
+                *(chars + idx++) = (byte)'-';
 
-                if (dash)
-                {
-                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoder)) { return false; }
-                }
+            WriteHexByte(bytes[10], chars, idx);
+            WriteHexByte(bytes[11], chars, idx+2);
+            WriteHexByte(bytes[12], chars, idx+4);
+            WriteHexByte(bytes[13], chars, idx+6);
+            WriteHexByte(bytes[14], chars, idx+8);
+            WriteHexByte(bytes[15], chars, idx+10);
+            idx += 12;
 
-                if (!TryWriteByte(bytes[7], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[6], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
+            if (bookEnds && format.Symbol == 'B')
+                *(chars + idx++) = (byte)'}';
+            else if (bookEnds && format.Symbol == 'P')
+                *(chars + idx++) = (byte)')';
 
-                if (dash)
-                {
-                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoder)) { return false; }
-                }
+            int consumed;
+            Span<byte> utf8 = new Span<byte>(chars, bytesNeeded);
+            return encoder.TryEncode(utf8, buffer, out consumed, out bytesWritten);
 
-                if (!TryWriteByte(bytes[8], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[9], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-
-                if (dash)
-                {
-                    if (!TryWriteChar('-', buffer, ref bytesWritten, encoder)) { return false; }
-                }
-
-                if (!TryWriteByte(bytes[10], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[11], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[12], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[13], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[14], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-                if (!TryWriteByte(bytes[15], buffer, ref bytesWritten, byteFormat, encoder)) { return false; }
-            }
-
-            if (tail != '\0')
-            {
-                if (!TryWriteChar(tail, buffer, ref bytesWritten, encoder)) { return false; }
-            }
-
-            return true;
         }
 
-        // the following two helpers are more compact APIs for formatting.
-        // the public APis cannot be like this because we cannot trust them to always do the right thing with bytesWritten
+        // This method assumes the buffer passed starting at index has space for at least 2 more chars.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryWriteByte(byte b, Span<byte> buffer, ref int bytesWritten, TextFormat byteFormat, TextEncoder encoder)
+        private static unsafe void WriteHexByte(byte value, byte* buffer, int index)
         {
-            int written;
-            if (!b.TryFormat(buffer.Slice(bytesWritten), out written, byteFormat, encoder))
-            {
-                bytesWritten = 0;
-                return false;
-            }
-            bytesWritten += written;
-            return true;
+            *(buffer + index) = (byte)HexTable[value >> 4];
+            *(buffer + index + 1) = (byte)HexTable[value & 0xF];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
