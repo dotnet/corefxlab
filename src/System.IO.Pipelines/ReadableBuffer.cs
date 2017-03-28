@@ -255,6 +255,32 @@ namespace System.IO.Pipelines
             return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
         }
 
+        /// <summary>
+        /// Create a <see cref="ReadableBuffer"/> over an OwnedBuffer.
+        /// </summary>
+        public static ReadableBuffer Create(OwnedBuffer<byte> data, int offset, int length)
+        {
+            if (data == null)
+            {
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+            }
+
+            if (offset < 0)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
+            }
+
+            if (length < 0 || length > data.Length - offset)
+            {
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+            }
+
+            var segment = new BufferSegment(data);
+            segment.Start = offset;
+            segment.End = offset + length;
+            return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
+        }
+
         bool ISequence<ReadOnlyBuffer<byte>>.TryGet(ref Position position, out ReadOnlyBuffer<byte> item, bool advance)
         {
             if (position == Position.First)
