@@ -118,6 +118,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 
         public unsafe RioBufferSegment GetSegmentFromMemory(Buffer<byte> memory)
         {
+            // It's ok to unpin the handle here because the memory is from the pool
+            // we created, which is already pinned.
             var pin = memory.Pin();
             var spanPtr = (IntPtr)pin.PinnedPointer;
             pin.Free();
