@@ -1,0 +1,129 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Xunit;
+using System.Text.Http.Parser;
+using System.IO.Pipelines;
+using System.Collections.Generic;
+using System.Buffers;
+
+namespace System.Text.Http.Parser.Tests
+{
+    public class HttpParserBasicTests
+    {
+        byte[] _simpleRequestBytes = Encoding.ASCII.GetBytes("GET /plaintext HTTP/1.1\r\nN: V\r\n\r\n");
+
+        [Fact]
+        public void HttpParserBasicsRobSimple()
+        {
+            var parser = new HttpParser();
+            var request = new Request();
+            ReadOnlyBytes buffer = new ReadOnlyBytes(_simpleRequestBytes);
+
+            Assert.True(parser.ParseRequestLine(request, buffer, out var consumed));
+            Assert.Equal(25, consumed);
+
+            Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed));
+            Assert.Equal(8, consumed);
+
+            // request line
+            Assert.Equal(Http.Method.Get, request.Method);
+            Assert.Equal(Http.Version.Http11, request.Version);
+            Assert.Equal("/plaintext", request.Path);
+
+            // headers
+            Assert.Equal(1, request.Headers.Count);
+            Assert.True(request.Headers.ContainsKey("N"));       
+            Assert.Equal("V", request.Headers["N"]);
+        }
+
+        [Fact]
+        public void HttpParserBasicsRob()
+        {
+            var parser = new HttpParser();
+            var request = new Request();
+            ReadOnlyBytes buffer = new ReadOnlyBytes(_plaintextTechEmpowerRequestBytes);
+
+            Assert.True(parser.ParseRequestLine(request, buffer, out var consumed));
+            Assert.Equal(25, consumed);
+
+            Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed));
+            Assert.Equal(139, consumed);
+
+            // request line
+            Assert.Equal(Http.Method.Get, request.Method);
+            Assert.Equal(Http.Version.Http11, request.Version);
+            Assert.Equal("/plaintext", request.Path);
+
+            // headers
+            Assert.Equal(3, request.Headers.Count);
+            Assert.True(request.Headers.ContainsKey("Host"));
+            Assert.True(request.Headers.ContainsKey("Accept"));
+            Assert.True(request.Headers.ContainsKey("Connection"));
+            Assert.Equal("localhost", request.Headers["Host"]);
+            Assert.Equal("text/plain,text/html;q=0.9,application/xhtml+xml;q=0.9,application/xml;q=0.8,*/*;q=0.7", request.Headers["Accept"]);
+            Assert.Equal("keep-alive", request.Headers["Connection"]);
+        }
+
+        [Fact]
+        public void HttpParserBasics()
+        {
+            var parser = new HttpParser();
+            var request = new Request();
+            ReadableBuffer buffer = ReadableBuffer.Create(_plaintextTechEmpowerRequestBytes);
+
+            Assert.True(parser.ParseRequestLine(request, buffer, out var consumed, out var read));
+            Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out var examined, out var consumedBytes));
+            Assert.Equal(139, consumedBytes);
+
+            // request line
+            Assert.Equal(Http.Method.Get, request.Method);
+            Assert.Equal(Http.Version.Http11, request.Version);
+            Assert.Equal("/plaintext", request.Path);
+
+            // headers
+            Assert.Equal(3, request.Headers.Count);
+            Assert.True(request.Headers.ContainsKey("Host"));
+            Assert.True(request.Headers.ContainsKey("Accept"));
+            Assert.True(request.Headers.ContainsKey("Connection"));
+            Assert.Equal("localhost", request.Headers["Host"]);
+            Assert.Equal("text/plain,text/html;q=0.9,application/xhtml+xml;q=0.9,application/xml;q=0.8,*/*;q=0.7", request.Headers["Accept"]);
+            Assert.Equal("keep-alive", request.Headers["Connection"]);
+        }
+
+        private const string _plaintextTechEmpowerRequest =
+"GET /plaintext HTTP/1.1\r\n" +
+"Host: localhost\r\n" +
+"Accept: text/plain,text/html;q=0.9,application/xhtml+xml;q=0.9,application/xml;q=0.8,*/*;q=0.7\r\n" +
+"Connection: keep-alive\r\n" +
+"\r\n";
+        byte[] _plaintextTechEmpowerRequestBytes = Encoding.ASCII.GetBytes(_plaintextTechEmpowerRequest);
+    }
+
+    class Request : IHttpHeadersHandler, IHttpRequestLineHandler
+    {
+        public Http.Method Method;
+        public Http.Version Version;
+        public string Path;
+        public string Query;
+        public string Target;
+
+        public Dictionary<string, string> Headers = new Dictionary<string, string>();
+
+        public void OnHeader(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
+        {
+            var nameString = PrimitiveEncoder.DecodeAscii(name);
+            var valueString = PrimitiveEncoder.DecodeAscii(value);
+            Headers.Add(nameString, valueString);
+        }
+
+        public void OnStartLine(Http.Method method, Http.Version version, ReadOnlySpan<byte> target, ReadOnlySpan<byte> path, ReadOnlySpan<byte> query, ReadOnlySpan<byte> customMethod, bool pathEncoded)
+        {
+            Method = method;
+            Version = version;
+            Path = PrimitiveEncoder.DecodeAscii(path);
+            Query = PrimitiveEncoder.DecodeAscii(query);
+            Target = PrimitiveEncoder.DecodeAscii(target);
+        }
+    }
+}

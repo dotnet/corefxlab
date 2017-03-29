@@ -56,7 +56,8 @@ namespace System.Buffers
         // searches values that potentially straddle between first and rest
         internal static int IndexOfStraddling(this ReadOnlySpan<byte> first, IReadOnlyBufferList<byte> rest, ReadOnlySpan<byte> value)
         {
-            Debug.Assert(rest != null);
+            Debug.Assert(first.IndexOf(value) == -1);
+            if (rest == null) return -1;
 
             // we only need to search the end of the first buffer. More precisely, only up to value.Length - 1 bytes in the first buffer
             // The other bytes in first, were already search and presumably did not match
