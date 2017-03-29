@@ -285,87 +285,6 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task AdvanceShouldResetStateIfReadCancelled()
-        {
-            _pipe.Reader.CancelPendingRead();
-
-            var result = await _pipe.Reader.ReadAsync();
-            var buffer = result.Buffer;
-            _pipe.Reader.Advance(buffer.End);
-
-            Assert.False(result.IsCompleted);
-            Assert.True(result.IsCancelled);
-            Assert.True(buffer.IsEmpty);
-
-            var awaitable = _pipe.Reader.ReadAsync();
-            Assert.False(awaitable.IsCompleted);
-        }
-
-        [Fact]
-        public async Task CancellingPendingReadBeforeReadAsync()
-        {
-            _pipe.Reader.CancelPendingRead();
-
-            var result = await _pipe.Reader.ReadAsync();
-            var buffer = result.Buffer;
-            _pipe.Reader.Advance(buffer.End);
-
-            Assert.False(result.IsCompleted);
-            Assert.True(result.IsCancelled);
-            Assert.True(buffer.IsEmpty);
-
-            var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var output = _pipe.Writer.Alloc();
-            output.Write(bytes);
-            await output.FlushAsync();
-
-            result = await _pipe.Reader.ReadAsync();
-            buffer = result.Buffer;
-
-            Assert.Equal(11, buffer.Length);
-            Assert.False(result.IsCancelled);
-            Assert.True(buffer.IsSingleSpan);
-            var array = new byte[11];
-            buffer.First.Span.CopyTo(array);
-            Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
-
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
-        }
-
-        [Fact]
-        public async Task CancellingBeforeAdvance()
-        {
-            var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var output = _pipe.Writer.Alloc();
-            output.Write(bytes);
-            await output.FlushAsync();
-
-            var result = await _pipe.Reader.ReadAsync();
-            var buffer = result.Buffer;
-
-            Assert.Equal(11, buffer.Length);
-            Assert.False(result.IsCancelled);
-            Assert.True(buffer.IsSingleSpan);
-            var array = new byte[11];
-            buffer.First.Span.CopyTo(array);
-            Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
-
-            _pipe.Reader.CancelPendingRead();
-
-            _pipe.Reader.Advance(buffer.End);
-
-            var awaitable = _pipe.Reader.ReadAsync();
-
-            Assert.True(awaitable.IsCompleted);
-
-            result = await awaitable;
-
-            Assert.True(result.IsCancelled);
-
-            _pipe.Reader.Advance(buffer.Start, buffer.Start);
-        }
-
-        [Fact]
         public async Task CancellingPendingAfterReadAsync()
         {
             var bytes = Encoding.ASCII.GetBytes("Hello World");
@@ -405,52 +324,6 @@ namespace System.IO.Pipelines.Tests
             await task;
 
             _pipe.Writer.Complete();
-        }
-
-        [Fact]
-        public async Task WriteAndCancellingPendingReadBeforeReadAsync()
-        {
-            var bytes = Encoding.ASCII.GetBytes("Hello World");
-            var output = _pipe.Writer.Alloc();
-            output.Write(bytes);
-            await output.FlushAsync();
-
-            _pipe.Reader.CancelPendingRead();
-
-            var result = await _pipe.Reader.ReadAsync();
-            var buffer = result.Buffer;
-
-            Assert.False(result.IsCompleted);
-            Assert.True(result.IsCancelled);
-            Assert.False(buffer.IsEmpty);
-            Assert.Equal(11, buffer.Length);
-            Assert.True(buffer.IsSingleSpan);
-            var array = new byte[11];
-            buffer.First.Span.CopyTo(array);
-            Assert.Equal("Hello World", Encoding.ASCII.GetString(array));
-            _pipe.Reader.Advance(buffer.End, buffer.End);
-        }
-
-        [Fact]
-        public async Task ReadingCanBeCancelled()
-        {
-            var cts = new CancellationTokenSource();
-            cts.Token.Register(() =>
-            {
-                _pipe.Writer.Complete(new OperationCanceledException(cts.Token));
-            });
-
-            var ignore = Task.Run(async () =>
-            {
-                await Task.Delay(1000);
-                cts.Cancel();
-            });
-
-            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-            {
-                var result = await _pipe.Reader.ReadAsync();
-                var buffer = result.Buffer;
-            });
         }
 
         [Fact]
@@ -1486,46 +1359,6 @@ namespace System.IO.Pipelines.Tests
             writableBuffer.Advance(1);
             flushTask = writableBuffer.FlushAsync();
             Assert.True(flushTask.IsCompleted);
-        }
-
-        [Fact]
-        public void ReadAsyncCompletedAfterPreCancellation()
-        {
-            _pipe.Reader.CancelPendingRead();
-            _pipe.Writer.WriteAsync(new byte[] { 1, 2, 3 }).GetAwaiter().GetResult();
-
-            var awaitable = _pipe.Reader.ReadAsync();
-
-            Assert.True(awaitable.IsCompleted);
-
-            var result = awaitable.GetResult();
-
-            Assert.True(result.IsCancelled);
-
-            awaitable = _pipe.Reader.ReadAsync();
-
-            Assert.True(awaitable.IsCompleted);
-        }
-        [Fact]
-
-        public void FlushAsyncCompletedAfterPreCancellation()
-        {
-            var writableBuffer = _pipe.Writer.Alloc(1);
-            writableBuffer.Advance(1);
-
-            _pipe.Writer.CancelPendingFlush();
-
-            var flushAsync = writableBuffer.FlushAsync();
-
-            Assert.True(flushAsync.IsCompleted);
-
-            var flushResult = flushAsync.GetResult();
-
-            Assert.True(flushResult.IsCancelled);
-
-            flushAsync = writableBuffer.FlushAsync();
-
-            Assert.True(flushAsync.IsCompleted);
         }
 
         private class DisposeTrackingBufferPool : BufferPool

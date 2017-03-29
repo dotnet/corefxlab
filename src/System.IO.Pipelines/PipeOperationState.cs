@@ -8,7 +8,7 @@ namespace System.IO.Pipelines
 {
     internal struct PipeOperationState
     {
-        private bool _active;
+        private State _state;
 #if OPERATION_LOCATION_TRACKING
         private string _operationStartLocation;
 #endif
@@ -16,12 +16,29 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Begin(ExceptionResource exception)
         {
-            if (_active)
+            // Inactive and Tenative are allowed
+            if (_state == State.Active)
             {
                 ThrowHelper.ThrowInvalidOperationException(exception, Location);
             }
 
-            _active = true;
+            _state = State.Active;
+
+#if OPERATION_LOCATION_TRACKING
+            _operationStartLocation = Environment.StackTrace;
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void BeginTentative(ExceptionResource exception)
+        {
+            // Inactive and Tenative are allowed
+            if (_state == State.Active)
+            {
+                ThrowHelper.ThrowInvalidOperationException(exception, Location);
+            }
+
+            _state = State.Tentative;
 
 #if OPERATION_LOCATION_TRACKING
             _operationStartLocation = Environment.StackTrace;
@@ -31,18 +48,18 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void End(ExceptionResource exception)
         {
-            if (!_active)
+            if (_state == State.Inactive)
             {
                 ThrowHelper.ThrowInvalidOperationException(exception, Location);
             }
 
-            _active = false;
+            _state = State.Inactive;
 #if OPERATION_LOCATION_TRACKING
             _operationStartLocation = null;
 #endif
         }
 
-        public bool IsActive => _active;
+        public bool IsActive => _state == State.Active;
 
         public string Location
         {
@@ -58,7 +75,14 @@ namespace System.IO.Pipelines
 
         public override string ToString()
         {
-            return $"{nameof(IsActive)}: {IsActive}";
+            return $"State: {_state}";
         }
+    }
+
+    internal enum State: byte
+    {
+        Inactive = 1,
+        Active = 2,
+        Tentative = 3
     }
 }
