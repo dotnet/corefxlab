@@ -97,7 +97,7 @@ namespace System.IO.Pipelines.Performance.Tests
         }
 
         [Benchmark(OperationsPerInvoke = InnerLoopCount)]
-        public void WriteFastPlaintextResponse()
+        public void WriteSpanPlaintextResponse()
         {
             for (int i = 0; i < InnerLoopCount; i++)
             {
@@ -105,7 +105,7 @@ namespace System.IO.Pipelines.Performance.Tests
 
                 foreach (var write in _plaintextWrites)
                 {
-                    WriteFast(writableBuffer, write, 0, write.Length);
+                    writableBuffer.Write((ReadOnlySpan<byte>)write);
                 }
 
                 writableBuffer.FlushAsync().GetResult();
@@ -132,61 +132,6 @@ namespace System.IO.Pipelines.Performance.Tests
                 var result = _pipe.Reader.ReadAsync().GetResult();
                 var buffer = result.Buffer;
                 _pipe.Reader.Advance(buffer.End, buffer.End);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteFast(WritableBuffer buffer, byte[] source, int offset, int length)
-        {
-            Span<byte> dest;
-            var destLength = dest.Length;
-
-            if (destLength == 0)
-            {
-                buffer.Ensure();
-
-                // Get the new span and length
-                dest = buffer.Buffer.Span;
-                destLength = dest.Length;
-            }
-
-            var sourceLength = length;
-            if (sourceLength <= destLength)
-            {
-                ref byte pSource = ref source[offset];
-                ref byte pDest = ref dest.DangerousGetPinnableReference();
-                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)sourceLength);
-                buffer.Advance(sourceLength);
-                return;
-            }
-
-            WriteMultiBuffer(buffer, source, offset, length);
-        }
-
-        private static void WriteMultiBuffer(WritableBuffer buffer, byte[] source, int offset, int length)
-        {
-            var remaining = length;
-
-            while (remaining > 0)
-            {
-                var writable = Math.Min(remaining, buffer.Buffer.Length);
-
-                buffer.Ensure(writable);
-
-                if (writable == 0)
-                {
-                    continue;
-                }
-
-                ref byte pSource = ref source[offset];
-                ref byte pDest = ref buffer.Buffer.Span.DangerousGetPinnableReference();
-
-                Unsafe.CopyBlockUnaligned(ref pDest, ref pSource, (uint)writable);
-
-                remaining -= writable;
-                offset += writable;
-
-                buffer.Advance(writable);
             }
         }
     }
