@@ -489,10 +489,6 @@ namespace System.IO.Pipelines
             TrySchedule(_writerScheduler, awaitable);
         }
 
-        /// <summary>
-        /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
-        /// </summary>
-        /// <returns>A <see cref="PipeAwaitable"/> representing the asynchronous read operation.</returns>
         ReadableBufferAwaitable IPipeReader.ReadAsync()
         {
             if (_readerCompletion.IsCompleted)
@@ -501,6 +497,24 @@ namespace System.IO.Pipelines
             }
 
             return new ReadableBufferAwaitable(this);
+        }
+
+        bool IPipeReader.TryRead(out ReadResult result)
+        {
+            if (_readerCompletion.IsCompleted)
+            {
+                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
+            }
+
+            result = new ReadResult();
+
+            if (!_readerAwaitable.IsCompleted)
+            {
+                return false;
+            }
+
+            GetResult(ref result);
+            return true;
         }
 
         private static void TrySchedule(IScheduler scheduler, Action action)
@@ -555,6 +569,12 @@ namespace System.IO.Pipelines
             }
 
             var result = new ReadResult();
+            GetResult(ref result);
+            return result;
+        }
+
+        private void GetResult(ref ReadResult result)
+        {
             lock (_sync)
             {
                 if (_writerCompletion.IsCompletedOrThrow())
@@ -581,9 +601,7 @@ namespace System.IO.Pipelines
                 }
 
                 _readingState.Begin(ExceptionResource.AlreadyReading);
-
             }
-            return result;
         }
 
         // IWritableBufferAwaiter members

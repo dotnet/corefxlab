@@ -12,7 +12,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO.Pipelines.Text.Primitives;
 using Xunit;
-using System.Buffers.Pools;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -78,6 +77,36 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(8, reader.Slice(8).ReadLittleEndian<int>());
 
             _pipe.Reader.Advance(reader.Start, reader.Start);
+        }
+
+        [Fact]
+        public void WhenTryReadReturnsFalseDontNeedToCallAdvance()
+        {
+            var gotData = _pipe.Reader.TryRead(out var result);
+            Assert.False(gotData);
+            // Throws because we didn't read any data
+            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Advance(default(ReadCursor)));
+        }
+
+        [Fact]
+        public async Task SyncReadThenAsyncRead()
+        {
+            var buffer = _pipe.Writer.Alloc();
+            buffer.Write(Encoding.ASCII.GetBytes("Hello World"));
+            await buffer.FlushAsync();
+
+            var gotData = _pipe.Reader.TryRead(out var result);
+            Assert.True(gotData);
+
+            Assert.Equal("Hello World", result.Buffer.GetAsciiString());
+
+            _pipe.Reader.Advance(result.Buffer.Move(result.Buffer.Start, 6));
+
+            result = await _pipe.Reader.ReadAsync();
+
+            Assert.Equal("World", result.Buffer.GetAsciiString());
+
+            _pipe.Reader.Advance(result.Buffer.End);
         }
 
         [Fact]
@@ -575,7 +604,7 @@ namespace System.IO.Pipelines.Tests
             Assert.True(flushTask.IsCompleted);
         }
 
-        private class DisposeTrackingBufferPool :  BufferPool
+        private class DisposeTrackingBufferPool : BufferPool
         {
             private DisposeTrackingOwnedMemory _memory = new DisposeTrackingOwnedMemory(new byte[1]);
 
