@@ -221,16 +221,31 @@ namespace System.IO.Pipelines
         {
             if (data == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            return Create(data, 0, data.Length);
+            OwnedBuffer<byte> buffer = data;
+            return CreateInternal(buffer, 0, data.Length);
         }
 
         /// <summary>
         /// Create a <see cref="ReadableBuffer"/> over an array.
         /// </summary>
         public static ReadableBuffer Create(byte[] data, int offset, int length)
+        {
+            if (data == null)
+            {
+                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+            }
+
+            OwnedBuffer<byte> buffer = data;
+            return Create(buffer, offset, length);
+        }
+
+        /// <summary>
+        /// Create a <see cref="ReadableBuffer"/> over an OwnedBuffer.
+        /// </summary>
+        public static ReadableBuffer Create(OwnedBuffer<byte> data, int offset, int length)
         {
             if (data == null)
             {
@@ -247,8 +262,12 @@ namespace System.IO.Pipelines
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            OwnedBuffer<byte> buffer = data;
-            var segment = new BufferSegment(buffer);
+            return CreateInternal(data, offset, length);
+        }
+
+        private static ReadableBuffer CreateInternal(OwnedBuffer<byte> data, int offset, int length)
+        {
+            var segment = new BufferSegment(data);
             segment.Start = offset;
             segment.End = offset + length;
             return new ReadableBuffer(new ReadCursor(segment, offset), new ReadCursor(segment, offset + length));
