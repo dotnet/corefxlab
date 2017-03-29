@@ -108,6 +108,11 @@ namespace System.IO.Pipelines
             return _pipe.FlushAsync();
         }
 
+        /// <summary>
+        /// Signals the <see cref="IPipeReader"/> data is available.
+        /// </summary>
+        /// <param name="result">The <see cref="FlushResult"/></param>
+        /// <returns>True if data is fully flushed</returns>
         public bool TryFlush(out FlushResult result)
         {
             return _pipe.TryFlush(out result);
