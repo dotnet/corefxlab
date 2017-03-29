@@ -489,10 +489,6 @@ namespace System.IO.Pipelines
             TrySchedule(_writerScheduler, awaitable);
         }
 
-        /// <summary>
-        /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
-        /// </summary>
-        /// <returns>A <see cref="PipeAwaitable"/> representing the asynchronous read operation.</returns>
         ReadableBufferAwaitable IPipeReader.ReadAsync()
         {
             if (_readerCompletion.IsCompleted)
@@ -501,6 +497,26 @@ namespace System.IO.Pipelines
             }
 
             return new ReadableBufferAwaitable(this);
+        }
+
+        bool IPipeReader.TryRead(out ReadResult result)
+        {
+            lock (_sync)
+            {
+                if (_readerCompletion.IsCompleted)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
+                }
+
+                result = new ReadResult();
+                if (!_readerAwaitable.IsCompleted)
+                {
+                    return false;
+                }
+
+                GetResult(ref result);
+                return true;
+            }
         }
 
         private static void TrySchedule(IScheduler scheduler, Action action)
@@ -557,33 +573,37 @@ namespace System.IO.Pipelines
             var result = new ReadResult();
             lock (_sync)
             {
-                if (_writerCompletion.IsCompletedOrThrow())
-                {
-                    result.ResultFlags |= ResultFlags.Completed;
-                }
-
-                if (_readerAwaitable.ObserveCancelation())
-                {
-                    result.ResultFlags |= ResultFlags.Cancelled;
-                }
-
-                // No need to read end if there is no head
-                var head = _readHead;
-                if (head != null)
-                {
-                    // Reading commit head shared with writer
-                    result.ResultBuffer.BufferEnd.Segment = _commitHead;
-                    result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
-                    result.ResultBuffer.BufferLength = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
-
-                    result.ResultBuffer.BufferStart.Segment = head;
-                    result.ResultBuffer.BufferStart.Index = head.Start;
-                }
-
-                _readingState.Begin(ExceptionResource.AlreadyReading);
-
+                GetResult(ref result);
             }
             return result;
+        }
+
+        private void GetResult(ref ReadResult result)
+        {
+            if (_writerCompletion.IsCompletedOrThrow())
+            {
+                result.ResultFlags |= ResultFlags.Completed;
+            }
+
+            if (_readerAwaitable.ObserveCancelation())
+            {
+                result.ResultFlags |= ResultFlags.Cancelled;
+            }
+
+            // No need to read end if there is no head
+            var head = _readHead;
+            if (head != null)
+            {
+                // Reading commit head shared with writer
+                result.ResultBuffer.BufferEnd.Segment = _commitHead;
+                result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
+                result.ResultBuffer.BufferLength = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
+
+                result.ResultBuffer.BufferStart.Segment = head;
+                result.ResultBuffer.BufferStart.Index = head.Start;
+            }
+
+            _readingState.Begin(ExceptionResource.AlreadyReading);
         }
 
         // IWritableBufferAwaiter members
@@ -610,6 +630,7 @@ namespace System.IO.Pipelines
                     result.ResultFlags |= ResultFlags.Completed;
                 }
             }
+
             return result;
         }
 
