@@ -20,7 +20,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Available memory.
         /// </summary>
-        public Buffer<byte> Buffer => _pipe.Buffer;
+        public Buffer<byte> Buffer => _pipe.Data;
 
         /// <summary>
         /// Returns the number of bytes currently written and uncommitted.

@@ -10,7 +10,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Default <see cref="IPipeWriter"/> and <see cref="IPipeReader"/> implementation.
     /// </summary>
-    internal class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter
+    internal class Pipe : IPipe, IPipeReader, IPipeWriter, IReadableBufferAwaiter, IWritableBufferAwaiter, IReadableBufferContainer
     {
         // This sync objects protects the following state:
         // 1. _commitHead & _commitHeadIndex
@@ -36,6 +36,8 @@ namespace System.IO.Pipelines
 
         // The read head which is the extent of the IPipelineReader's consumed bytes
         private BufferSegment _readHead;
+        private BufferSegment _readTail;
+        private int _readTailIndex;
 
         // The commit head which is the extent of the bytes available to the IPipelineReader to consume
         private BufferSegment _commitHead;
@@ -89,7 +91,7 @@ namespace System.IO.Pipelines
             _writerAwaitable = new PipeAwaitable(completed: true);
         }
 
-        internal Buffer<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
+        internal Buffer<byte> Data => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.
@@ -424,6 +426,10 @@ namespace System.IO.Pipelines
                     _readerAwaitable.Reset();
                 }
 
+                // Reset the read tail
+                _readTail = null;
+                _readTailIndex = 0;
+
                 _readingState.End(ExceptionResource.NoReadToComplete);
             }
 
@@ -567,18 +573,11 @@ namespace System.IO.Pipelines
                     result.ResultFlags |= ResultFlags.Cancelled;
                 }
 
-                // No need to read end if there is no head
-                var head = _readHead;
-                if (head != null)
-                {
-                    // Reading commit head shared with writer
-                    result.ResultBuffer.BufferEnd.Segment = _commitHead;
-                    result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
-                    result.ResultBuffer.BufferLength = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
+                result.BufferContainer = this;
 
-                    result.ResultBuffer.BufferStart.Segment = head;
-                    result.ResultBuffer.BufferStart.Index = head.Start;
-                }
+                // Store the read tail since the commit head and commit index are shared with the writer
+                _readTail = _commitHead;
+                _readTailIndex = _commitHeadIndex;
 
                 _readingState.Begin(ExceptionResource.AlreadyReading);
 
@@ -625,5 +624,24 @@ namespace System.IO.Pipelines
 
         public IPipeReader Reader => this;
         public IPipeWriter Writer => this;
+
+        public ReadableBuffer Buffer
+        {
+            get
+            {
+                var buffer = new ReadableBuffer();
+                var head = _readHead;
+                if (head != null)
+                {
+                    // Reading commit head shared with writer
+                    buffer.BufferEnd.Segment = _readTail;
+                    buffer.BufferEnd.Index = _readTailIndex;
+                    buffer.BufferLength = ReadCursor.GetLength(head, head.Start, _readTail, _readTailIndex);
+                    buffer.BufferStart.Segment = head;
+                    buffer.BufferStart.Index = head.Start;
+                }
+                return buffer;
+            }
+        }
     }
 }
