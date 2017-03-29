@@ -54,8 +54,9 @@ namespace System.IO.Pipelines.Performance.Tests
                 while (remaining != 0)
                 {
                     var result = await _pipe.Reader.ReadAsync();
-                    remaining -= result.Buffer.Length;
-                    _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                    var buffer = result.Buffer;
+                    remaining -= buffer.Length;
+                    _pipe.Reader.Advance(buffer.End, buffer.End);
                 }
             });
 
@@ -71,7 +72,8 @@ namespace System.IO.Pipelines.Performance.Tests
                 writableBuffer.Advance(WriteLength);
                 writableBuffer.FlushAsync().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetResult();
-                _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                var buffer = result.Buffer;
+                _pipe.Reader.Advance(buffer.End, buffer.End);
             }
         }
 
@@ -89,7 +91,8 @@ namespace System.IO.Pipelines.Performance.Tests
 
                 writableBuffer.FlushAsync().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetResult();
-                _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                var buffer = result.Buffer;
+                _pipe.Reader.Advance(buffer.End, buffer.End);
             }
         }
 
@@ -107,7 +110,8 @@ namespace System.IO.Pipelines.Performance.Tests
 
                 writableBuffer.FlushAsync().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetResult();
-                _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                var buffer = result.Buffer;
+                _pipe.Reader.Advance(buffer.End, buffer.End);
             }
         }
 
@@ -126,7 +130,8 @@ namespace System.IO.Pipelines.Performance.Tests
 
                 writableBuffer.FlushAsync().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetResult();
-                _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+                var buffer = result.Buffer;
+                _pipe.Reader.Advance(buffer.End, buffer.End);
             }
         }
 
