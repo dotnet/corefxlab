@@ -589,10 +589,12 @@ namespace System.IO.Pipelines
                 result.ResultFlags |= ResultFlags.Completed;
             }
 
-            if (_readerAwaitable.ObserveCancelation())
+            var isCancelled = _readerAwaitable.ObserveCancelation();
+            if (isCancelled)
             {
                 result.ResultFlags |= ResultFlags.Cancelled;
             }
+
             // No need to read end if there is no head
             var head = _readHead;
 
@@ -605,12 +607,15 @@ namespace System.IO.Pipelines
 
                 result.ResultBuffer.BufferStart.Segment = head;
                 result.ResultBuffer.BufferStart.Index = head.Start;
+            }
 
-                _readingState.Begin(ExceptionResource.AlreadyReading);
+            if (isCancelled)
+            {
+                _readingState.BeginTentative(ExceptionResource.AlreadyReading);
             }
             else
             {
-                _readingState.BeginTentative(ExceptionResource.AlreadyReading);
+                _readingState.Begin(ExceptionResource.AlreadyReading);
             }
         }
 

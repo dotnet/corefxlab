@@ -84,8 +84,7 @@ namespace System.IO.Pipelines.Tests
         {
             var gotData = _pipe.Reader.TryRead(out var result);
             Assert.False(gotData);
-            // Throws because we didn't read any data
-            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Advance(default(ReadCursor)));
+            _pipe.Reader.Advance(default(ReadCursor));
         }
 
         [Fact]
