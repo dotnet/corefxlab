@@ -356,7 +356,8 @@ namespace System.Text.Http.Parser
                     // get next byte 
                     while (length <= index) {
                         if (rest == null) {
-                            RejectRequest(RequestRejectionReason.InvalidRequestHeadersNoCRLF);
+                            consumedBytes = 0;
+                            return false;
                         }
                         span = rest.First.Span;
                         length = span.Length;
@@ -387,7 +388,7 @@ namespace System.Text.Http.Parser
                         if (next == ByteCR) state = State.ArferCR;
 
                         // TODO: why only these are rejected?
-                        if (next == ByteSpace || next == ByteTab) {
+                        if (next == ByteSpace || next == ByteTab || next == ByteLF) {
                             RejectRequest(RequestRejectionReason.InvalidCharactersInHeaderName);
                         }
                         
