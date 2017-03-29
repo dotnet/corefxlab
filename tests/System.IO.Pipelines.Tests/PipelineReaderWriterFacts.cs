@@ -89,6 +89,47 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void TryReadAfterReaderCompleteThrows()
+        {
+            _pipe.Reader.Complete();
+
+            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.TryRead(out var result));
+        }
+
+        [Fact]
+        public void TryReadAfterCloseWriterWithExceptionThrows()
+        {
+            _pipe.Writer.Complete(new Exception("wow"));
+
+            var ex = Assert.Throws<Exception>(() => _pipe.Reader.TryRead(out var result));
+            Assert.Equal("wow", ex.Message);
+        }
+
+        [Fact]
+        public void TryReadAfterCancelPendingReadReturnsTrue()
+        {
+            _pipe.Reader.CancelPendingRead();
+
+            var gotData = _pipe.Reader.TryRead(out var result);
+
+            Assert.True(result.IsCancelled);
+
+            _pipe.Reader.Advance(result.Buffer.End);
+        }
+
+        [Fact]
+        public void TryReadAfterWriterCompleteReturnsTrue()
+        {
+            _pipe.Writer.Complete();
+
+            var gotData = _pipe.Reader.TryRead(out var result);
+
+            Assert.True(result.IsCompleted);
+
+            _pipe.Reader.Advance(result.Buffer.End);
+        }
+
+        [Fact]
         public async Task SyncReadThenAsyncRead()
         {
             var buffer = _pipe.Writer.Alloc();

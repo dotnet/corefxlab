@@ -322,7 +322,33 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
+        internal bool TryFlush(out FlushResult result)
+        {
+            // Always signal the reader
+            SignalReader();
+
+            result = new FlushResult();
+            lock (_sync)
+            {
+                if (!_writerAwaitable.IsCompleted)
+                {
+                    return false;
+                }
+
+                GetResult(ref result);
+                return true;
+            }
+        }
+
         internal WritableBufferAwaitable FlushAsync()
+        {
+            // Signal the reader
+            SignalReader();
+
+            return new WritableBufferAwaitable(this);
+        }
+
+        private void SignalReader()
         {
             Action awaitable;
             lock (_sync)
@@ -337,8 +363,6 @@ namespace System.IO.Pipelines
             }
 
             TrySchedule(_readerScheduler, awaitable);
-
-            return new WritableBufferAwaitable(this);
         }
 
         internal ReadableBuffer AsReadableBuffer()
@@ -501,20 +525,22 @@ namespace System.IO.Pipelines
 
         bool IPipeReader.TryRead(out ReadResult result)
         {
-            if (_readerCompletion.IsCompleted)
+            lock (_sync)
             {
-                ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
+                if (_readerCompletion.IsCompleted)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.NoReadingAllowed, _readerCompletion.Location);
+                }
+
+                result = new ReadResult();
+                if (!_readerAwaitable.IsCompleted)
+                {
+                    return false;
+                }
+
+                GetResult(ref result);
+                return true;
             }
-
-            result = new ReadResult();
-
-            if (!_readerAwaitable.IsCompleted)
-            {
-                return false;
-            }
-
-            GetResult(ref result);
-            return true;
         }
 
         private static void TrySchedule(IScheduler scheduler, Action action)
@@ -569,39 +595,39 @@ namespace System.IO.Pipelines
             }
 
             var result = new ReadResult();
-            GetResult(ref result);
+            lock (_sync)
+            {
+                GetResult(ref result);
+            }
             return result;
         }
 
         private void GetResult(ref ReadResult result)
         {
-            lock (_sync)
+            if (_writerCompletion.IsCompletedOrThrow())
             {
-                if (_writerCompletion.IsCompletedOrThrow())
-                {
-                    result.ResultFlags |= ResultFlags.Completed;
-                }
-
-                if (_readerAwaitable.ObserveCancelation())
-                {
-                    result.ResultFlags |= ResultFlags.Cancelled;
-                }
-
-                // No need to read end if there is no head
-                var head = _readHead;
-                if (head != null)
-                {
-                    // Reading commit head shared with writer
-                    result.ResultBuffer.BufferEnd.Segment = _commitHead;
-                    result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
-                    result.ResultBuffer.BufferLength = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
-
-                    result.ResultBuffer.BufferStart.Segment = head;
-                    result.ResultBuffer.BufferStart.Index = head.Start;
-                }
-
-                _readingState.Begin(ExceptionResource.AlreadyReading);
+                result.ResultFlags |= ResultFlags.Completed;
             }
+
+            if (_readerAwaitable.ObserveCancelation())
+            {
+                result.ResultFlags |= ResultFlags.Cancelled;
+            }
+
+            // No need to read end if there is no head
+            var head = _readHead;
+            if (head != null)
+            {
+                // Reading commit head shared with writer
+                result.ResultBuffer.BufferEnd.Segment = _commitHead;
+                result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
+                result.ResultBuffer.BufferLength = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
+
+                result.ResultBuffer.BufferStart.Segment = head;
+                result.ResultBuffer.BufferStart.Index = head.Start;
+            }
+
+            _readingState.Begin(ExceptionResource.AlreadyReading);
         }
 
         // IWritableBufferAwaiter members
@@ -618,17 +644,23 @@ namespace System.IO.Pipelines
                     ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
                 }
 
-                // Change the state from to be cancelled -> observed
-                if (_writerAwaitable.ObserveCancelation())
-                {
-                    result.ResultFlags |= ResultFlags.Cancelled;
-                }
-                if (_readerCompletion.IsCompletedOrThrow())
-                {
-                    result.ResultFlags |= ResultFlags.Completed;
-                }
+                GetResult(ref result);
             }
+
             return result;
+        }
+
+        private void GetResult(ref FlushResult result)
+        {
+            // Change the state from to be cancelled -> observed
+            if (_writerAwaitable.ObserveCancelation())
+            {
+                result.ResultFlags |= ResultFlags.Cancelled;
+            }
+            if (_readerCompletion.IsCompletedOrThrow())
+            {
+                result.ResultFlags |= ResultFlags.Completed;
+            }
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)

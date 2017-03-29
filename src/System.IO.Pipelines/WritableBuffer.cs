@@ -107,5 +107,10 @@ namespace System.IO.Pipelines
         {
             return _pipe.FlushAsync();
         }
+
+        public bool TryFlush(out FlushResult result)
+        {
+            return _pipe.TryFlush(out result);
+        }
     }
 }
