@@ -322,33 +322,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal bool TryFlush(out FlushResult result)
-        {
-            // Always signal the reader
-            SignalReader();
-
-            result = new FlushResult();
-            lock (_sync)
-            {
-                if (!_writerAwaitable.IsCompleted)
-                {
-                    return false;
-                }
-
-                GetResult(ref result);
-                return true;
-            }
-        }
-
         internal WritableBufferAwaitable FlushAsync()
-        {
-            // Signal the reader
-            SignalReader();
-
-            return new WritableBufferAwaitable(this);
-        }
-
-        private void SignalReader()
         {
             Action awaitable;
             lock (_sync)
@@ -363,6 +337,8 @@ namespace System.IO.Pipelines
             }
 
             TrySchedule(_readerScheduler, awaitable);
+
+            return new WritableBufferAwaitable(this);
         }
 
         internal ReadableBuffer AsReadableBuffer()
@@ -644,23 +620,18 @@ namespace System.IO.Pipelines
                     ThrowHelper.ThrowInvalidOperationException(ExceptionResource.GetResultNotCompleted);
                 }
 
-                GetResult(ref result);
+                // Change the state from to be cancelled -> observed
+                if (_writerAwaitable.ObserveCancelation())
+                {
+                    result.ResultFlags |= ResultFlags.Cancelled;
+                }
+                if (_readerCompletion.IsCompletedOrThrow())
+                {
+                    result.ResultFlags |= ResultFlags.Completed;
+                }
             }
 
             return result;
-        }
-
-        private void GetResult(ref FlushResult result)
-        {
-            // Change the state from to be cancelled -> observed
-            if (_writerAwaitable.ObserveCancelation())
-            {
-                result.ResultFlags |= ResultFlags.Cancelled;
-            }
-            if (_readerCompletion.IsCompletedOrThrow())
-            {
-                result.ResultFlags |= ResultFlags.Completed;
-            }
         }
 
         void IWritableBufferAwaiter.OnCompleted(Action continuation)

@@ -45,31 +45,12 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void TryFlushReturnsTrueWhenSizeLessThenLimit()
-        {
-            var writableBuffer = _pipe.Writer.Alloc(32);
-            writableBuffer.Advance(32);
-            var flushAsync = writableBuffer.TryFlush(out var result);
-            Assert.True(flushAsync);
-            Assert.False(result.IsCompleted);
-        }
-
-        [Fact]
         public void FlushAsyncReturnsNonCompletedSizeWhenCommitOverTheLimit()
         {
             var writableBuffer = _pipe.Writer.Alloc(64);
             writableBuffer.Advance(64);
             var flushAsync = writableBuffer.FlushAsync();
             Assert.False(flushAsync.IsCompleted);
-        }
-
-        [Fact]
-        public void TryFlushReturnsFalseSizeWhenCommitOverTheLimit()
-        {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
-            var flushAsync = writableBuffer.TryFlush(out var result);
-            Assert.False(flushAsync);
         }
 
         [Fact]
