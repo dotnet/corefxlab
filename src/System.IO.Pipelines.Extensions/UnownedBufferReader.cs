@@ -346,7 +346,7 @@ namespace System.IO.Pipelines
                 Reading.GetAwaiter().GetResult();
             }
 
-            return new ReadResult(this, readingIsCancelled, readingIsCompleted);
+            return new ReadResult(null, readingIsCancelled, readingIsCompleted);
         }
 
         private void Dispose()

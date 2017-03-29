@@ -8,10 +8,10 @@ namespace System.IO.Pipelines
     /// </summary>
     public struct ReadResult
     {
-        internal IReadableBufferContainer BufferContainer;
+        internal Pipe BufferContainer;
         internal ResultFlags ResultFlags;
 
-        public ReadResult(IReadableBufferContainer bufferContainer, bool isCancelled, bool isCompleted)
+        internal ReadResult(Pipe bufferContainer, bool isCancelled, bool isCompleted)
         {
             BufferContainer = bufferContainer;
             ResultFlags = ResultFlags.None;
@@ -29,7 +29,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The <see cref="ReadableBuffer"/> that was read
         /// </summary>
-        public ReadableBuffer Buffer => ((Pipe)BufferContainer).Buffer;
+        public ReadableBuffer Buffer => BufferContainer.Buffer;
 
         /// <summary>
         /// True if the currrent read was cancelled
