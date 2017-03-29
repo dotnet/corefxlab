@@ -14,7 +14,7 @@ namespace System.IO.Pipelines
     /// Works in buffers which it does not own, as opposed to using a <see cref="IBufferPool"/>. Designed
     /// to allow Streams to be easily adapted to <see cref="IPipeReader"/> via <see cref="System.IO.Stream.CopyToAsync(System.IO.Stream)"/>
     /// </summary>
-    public class UnownedBufferReader : IPipeReader, IReadableBufferAwaiter
+    public class UnownedBufferReader : IPipeReader, IReadableBufferAwaiter, IReadableBufferContainer
     {
         private static readonly Action _awaitableIsCompleted = () => { };
         private static readonly Action _awaitableIsNotCompleted = () => { };
@@ -67,6 +67,15 @@ namespace System.IO.Pipelines
         bool IReadableBufferAwaiter.IsCompleted => IsCompleted;
 
         private bool IsCompleted => ReferenceEquals(_awaitableState, _awaitableIsCompleted);
+
+        public ReadableBuffer Buffer
+        {
+            get
+            {
+                // This is safe because _head and _tail can't change during a read
+                return new ReadableBuffer(new ReadCursor(_head), new ReadCursor(_tail, _tail?.End ?? 0));
+            }
+        }
 
         /// <summary>
         /// Writes a new buffer into the pipeline. The task returned by this operation only completes when the next
@@ -166,18 +175,6 @@ namespace System.IO.Pipelines
             {
                 awaitableState();
             }
-        }
-
-        // Called by the READER
-        private ReadableBuffer Read()
-        {
-            if (_consuming)
-            {
-                throw new InvalidOperationException("Cannot Read until the previous read has been acknowledged by calling Advance");
-            }
-            _consuming = true;
-
-            return new ReadableBuffer(new ReadCursor(_head), new ReadCursor(_tail, _tail?.End ?? 0));
         }
 
         // Called by the READER
@@ -334,6 +331,13 @@ namespace System.IO.Pipelines
                 throw new InvalidOperationException("can't GetResult unless completed");
             }
 
+            if (_consuming)
+            {
+                throw new InvalidOperationException("Cannot Read until the previous read has been acknowledged by calling Advance");
+            }
+
+            _consuming = true;
+
             var readingIsCancelled = CompareExchange(ref _cancelledState, CancelledState.CancellationObserved, CancelledState.CancellationRequested) == CancelledState.CancellationRequested;
             var readingIsCompleted = Reading.IsCompleted;
             if (readingIsCompleted)
@@ -342,7 +346,7 @@ namespace System.IO.Pipelines
                 Reading.GetAwaiter().GetResult();
             }
 
-            return new ReadResult(Read(), readingIsCancelled, readingIsCompleted);
+            return new ReadResult(this, readingIsCancelled, readingIsCompleted);
         }
 
         private void Dispose()
