@@ -29,7 +29,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The <see cref="ReadableBuffer"/> that was read
         /// </summary>
-        public ReadableBuffer Buffer => BufferContainer.Buffer;
+        public ReadableBuffer Buffer => ((Pipe)BufferContainer).Buffer;
 
         /// <summary>
         /// True if the currrent read was cancelled

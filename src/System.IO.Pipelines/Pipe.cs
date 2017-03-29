@@ -91,7 +91,7 @@ namespace System.IO.Pipelines
             _writerAwaitable = new PipeAwaitable(completed: true);
         }
 
-        internal Buffer<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
+        internal Buffer<byte> Data => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
 
         /// <summary>
         /// Allocates memory from the pipeline to write into.
@@ -625,7 +625,7 @@ namespace System.IO.Pipelines
         public IPipeReader Reader => this;
         public IPipeWriter Writer => this;
 
-        ReadableBuffer IReadableBufferContainer.Buffer
+        public ReadableBuffer Buffer
         {
             get
             {
