@@ -8,6 +8,7 @@ namespace System.Text
 {
     internal static class FormattingHelpers
     {
+        private const int FractionDigits = 7;
         private const string HexTable = "0123456789abcdef";
 
         #region UTF-8 Helper methods
@@ -21,58 +22,32 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteTwoDigits(int value, ref byte buffer, int index)
+        public static int WriteFractionDigits(long value, int digitCount, ref byte buffer, int index)
         {
-            Precondition.Require(value >= 0 && value <= 99);
+            for (var i = FractionDigits; i > digitCount; i--)
+                value = DivMod10(value, out long m);
 
-            ulong v1 = FormattingHelpers.DivMod10((ulong)value, out ulong v2);
-            Unsafe.Add(ref buffer, index) = (byte)('0' + v1);
-            Unsafe.Add(ref buffer, index + 1) = (byte)('0' + v2);
+            return WriteDigits(value, digitCount, ref buffer, index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteFourDigits(int value, ref byte buffer, int index)
+        public static int WriteDigits(long value, ref byte buffer, int index)
         {
-            Precondition.Require(value >= 0 && value <= 9999);
-
-            ulong left = DivMod10((ulong)value, out ulong v);
-            Unsafe.Add(ref buffer, index + 3) = (byte)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 2) = (byte)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 1) = (byte)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index) = (byte)('0' + v);
+            return WriteDigits(value, CountDigits(value), ref buffer, index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteFractionDigits(ulong value, ref byte buffer, int index)
+        public static int WriteDigits(long value, int digitCount, ref byte buffer, int index)
         {
-            //Precondition.Require(value >= 0 && value <= 9999);
+            long left = value;
 
-            ulong left = DivMod10(value, out ulong v);
-            Unsafe.Add(ref buffer, index + 6) = (byte)('0' + v);
+            for (var i = digitCount - 1; i >= 0; i--)
+            {
+                left = DivMod10(left, out long num);
+                Unsafe.Add(ref buffer, index + i) = (byte)('0' + num);
+            }
 
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 5) = (byte)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 4) = (byte)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 3) = (byte)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 2) = (byte)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 1) = (byte)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index) = (byte)('0' + v);
+            return digitCount;
         }
 
         #endregion UTF-8 Helper methods
@@ -88,72 +63,97 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteTwoDigits(int value, ref char buffer, int index)
+        public static int WriteFractionDigits(long value, int digitCount, ref char buffer, int index)
         {
-            Precondition.Require(value >= 0 && value <= 99);
+            for (var i = FractionDigits; i > digitCount; i--)
+                value = DivMod10(value, out long m);
 
-            ulong v1 = DivMod10((ulong)value, out ulong v2);
-            Unsafe.Add(ref buffer, index) = (char)('0' + v1);
-            Unsafe.Add(ref buffer, index + 1) = (char)('0' + v2);
+            return WriteDigits(value, digitCount, ref buffer, index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteFourDigits(int value, ref char buffer, int index)
+        public static int WriteDigits(long value, ref char buffer, int index)
         {
-            Precondition.Require(value >= 0 && value <= 9999);
-
-            ulong left = DivMod10((ulong)value, out ulong v);
-            Unsafe.Add(ref buffer, index + 3) = (char)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 2) = (char)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 1) = (char)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index) = (char)('0' + v);
+            return WriteDigits(value, CountDigits(value), ref buffer, index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteFractionDigits(ulong value, ref char buffer, int index)
+        public static int WriteDigits(long value, int digitCount, ref char buffer, int index)
         {
-            //Precondition.Require(value >= 0 && value <= 9999);
+            long left = value;
 
-            ulong left = DivMod10(value, out ulong v);
-            Unsafe.Add(ref buffer, index + 6) = (char)('0' + v);
+            for (var i = digitCount - 1; i >= 0; i--)
+            {
+                left = DivMod10(left, out long num);
+                Unsafe.Add(ref buffer, index + i) = (char)('0' + num);
+            }
 
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 5) = (char)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 4) = (char)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 3) = (char)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 2) = (char)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index + 1) = (char)('0' + v);
-
-            left = DivMod10(left, out v);
-            Unsafe.Add(ref buffer, index) = (char)('0' + v);
+            return digitCount;
         }
 
         #endregion UTF-16 Helper methods
+
+        #region Fast Math Helper methods
 
         /// <summary>
         /// This method for doing division and modulus for integers by 10 is ~5-6 times faster
         /// than the division and multiplication operators.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ulong DivMod10(ulong n, out ulong modulo)
+        public static long DivMod10(long n, out long modulo)
         {
-            ulong d = ((0x1999999A * n) >> 32);
-            modulo = n - (d * 10);
-            return d;
+            // This commented implementation is faster, but only works for positive integer values 
+            // between 0 and 1073741828.
+            //      long d = ((0x1999999A * n) >> 32);
+            //      modulo = (n - (d * 10));
+            //      return d;
+
+            return DivMod(n, 10, out modulo);
         }
+
+        /// <summary>
+        /// We don't have access to Math.DivRem, so this is a copy of the implementation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long DivMod(long numerator, long denominator, out long modulo)
+        {
+            long div = numerator / denominator;
+            modulo = numerator - (div * denominator);
+            return div;
+        }
+
+        #endregion Fast Math Helper methods
+
+        #region Character counting helper methods
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountDigits(long n)
+        {
+            Precondition.Require(n >= 0);
+
+            if (n == 0) return 1;
+            return (int)Math.Floor(Math.Log10(n)) + 1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountFractionDigits(long n)
+        {
+            Precondition.Require(n >= 0);
+
+            long left = n;
+            long m = 0;
+            int count = FractionDigits;
+
+            // Remove all the 0 (zero) values from the right.
+            while (left > 0 && m == 0 && count > 0)
+            {
+                left = DivMod10(left, out m);
+                count--;
+            }
+
+            return count + 1;
+        }
+
+        #endregion Character counting helper methods
     }
 }

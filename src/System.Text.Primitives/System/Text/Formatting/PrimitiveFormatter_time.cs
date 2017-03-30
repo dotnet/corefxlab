@@ -64,6 +64,20 @@ namespace System.Text
             }
         }
 
+        public static bool TryFormat(this TimeSpan value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
+        {
+            if (format.IsDefault)
+            {
+                format.Symbol = 'c';
+            }
+
+            Precondition.Require(format.Symbol == 'G' || format.Symbol == 'g' || format.Symbol == 'c' || format.Symbol == 't' || format.Symbol == 'T');
+
+            encoder = encoder == null ? TextEncoder.Utf8 : encoder;
+
+            return TryFormatTimeSpan(value, format.Symbol, buffer, out bytesWritten, encoder);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static bool TryFormatDateTimeFormatG(DateTime value, Span<byte> buffer, out int bytesWritten, TextEncoder encoder)
         {
@@ -96,6 +110,18 @@ namespace System.Text
                 return InvariantUtf8TimeFormatter.TryFormatRfc1123(value, buffer, out bytesWritten);
             else if (encoder.IsInvariantUtf16)
                 return InvariantUtf16TimeFormatter.TryFormatRfc1123(value, buffer, out bytesWritten);
+            else
+                throw new NotImplementedException();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static bool TryFormatTimeSpan(TimeSpan value, char format, Span<byte> buffer, out int bytesWritten, TextEncoder encoder)
+        {
+            // for now it only works for invariant culture
+            if (encoder.IsInvariantUtf8)
+                return InvariantUtf8TimeFormatter.TryFormat(value, format, buffer, out bytesWritten);
+            else if (encoder.IsInvariantUtf16)
+                return InvariantUtf16TimeFormatter.TryFormat(value, format, buffer, out bytesWritten);
             else
                 throw new NotImplementedException();
         }

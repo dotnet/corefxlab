@@ -9,6 +9,8 @@ namespace System.Text
     {
         #region Constants
 
+        private const int DefaultFractionDigits = 7;
+
         private const char Colon = ':';
         private const char Comma = ',';
         private const char Minus = '-';
@@ -67,22 +69,22 @@ namespace System.Text
             Span<char> dst = buffer.NonPortableCast<byte, char>();
             ref char utf16Bytes = ref dst.DangerousGetPinnableReference();
 
-            FormattingHelpers.WriteTwoDigits(value.Month, ref utf16Bytes, 0);
+            FormattingHelpers.WriteDigits(value.Month, 2, ref utf16Bytes, 0);
             Unsafe.Add(ref utf16Bytes, 2) = Slash;
 
-            FormattingHelpers.WriteTwoDigits(value.Day, ref utf16Bytes, 3);
+            FormattingHelpers.WriteDigits(value.Day, 2, ref utf16Bytes, 3);
             Unsafe.Add(ref utf16Bytes, 5) = Slash;
 
-            FormattingHelpers.WriteFourDigits(value.Year, ref utf16Bytes, 6);
+            FormattingHelpers.WriteDigits(value.Year, 4, ref utf16Bytes, 6);
             Unsafe.Add(ref utf16Bytes, 10) = Space;
 
-            FormattingHelpers.WriteTwoDigits(value.Hour, ref utf16Bytes, 11);
+            FormattingHelpers.WriteDigits(value.Hour, 2, ref utf16Bytes, 11);
             Unsafe.Add(ref utf16Bytes, 13) = Colon;
 
-            FormattingHelpers.WriteTwoDigits(value.Minute, ref utf16Bytes, 14);
+            FormattingHelpers.WriteDigits(value.Minute, 2, ref utf16Bytes, 14);
             Unsafe.Add(ref utf16Bytes, 16) = Colon;
 
-            FormattingHelpers.WriteTwoDigits(value.Second, ref utf16Bytes, 17);
+            FormattingHelpers.WriteDigits(value.Second, 2, ref utf16Bytes, 17);
 
             return true;
         }
@@ -122,26 +124,26 @@ namespace System.Text
             Span<char> dst = buffer.NonPortableCast<byte, char>();
             ref char utf16Bytes = ref dst.DangerousGetPinnableReference();
 
-            FormattingHelpers.WriteFourDigits(value.Year, ref utf16Bytes, 0);
+            FormattingHelpers.WriteDigits(value.Year, 4, ref utf16Bytes, 0);
             Unsafe.Add(ref utf16Bytes, 4) = Minus;
 
-            FormattingHelpers.WriteTwoDigits(value.Month, ref utf16Bytes, 5);
+            FormattingHelpers.WriteDigits(value.Month, 2, ref utf16Bytes, 5);
             Unsafe.Add(ref utf16Bytes, 7) = Minus;
 
-            FormattingHelpers.WriteTwoDigits(value.Day, ref utf16Bytes, 8);
+            FormattingHelpers.WriteDigits(value.Day, 2, ref utf16Bytes, 8);
             Unsafe.Add(ref utf16Bytes, 10) = TimeMarker;
 
-            FormattingHelpers.WriteTwoDigits(value.Hour, ref utf16Bytes, 11);
+            FormattingHelpers.WriteDigits(value.Hour, 2, ref utf16Bytes, 11);
             Unsafe.Add(ref utf16Bytes, 13) = Colon;
 
-            FormattingHelpers.WriteTwoDigits(value.Minute, ref utf16Bytes, 14);
+            FormattingHelpers.WriteDigits(value.Minute, 2, ref utf16Bytes, 14);
             Unsafe.Add(ref utf16Bytes, 16) = Colon;
 
-            FormattingHelpers.WriteTwoDigits(value.Second, ref utf16Bytes, 17);
+            FormattingHelpers.WriteDigits(value.Second, 2, ref utf16Bytes, 17);
             Unsafe.Add(ref utf16Bytes, 19) = Period;
 
-            ulong fraction = (ulong)(value.Ticks % TimeSpan.TicksPerSecond);
-            FormattingHelpers.WriteFractionDigits(fraction, ref utf16Bytes, 20);
+            FormattingHelpers.DivMod(value.Ticks, TimeSpan.TicksPerSecond, out long fraction);
+            FormattingHelpers.WriteFractionDigits(fraction, DefaultFractionDigits, ref utf16Bytes, 20);
 
             if (kind == DateTimeKind.Local)
             {
@@ -155,9 +157,9 @@ namespace System.Text
                 }
 
                 Unsafe.Add(ref utf16Bytes, 27) = sign;
-                FormattingHelpers.WriteTwoDigits(hours, ref utf16Bytes, 28);
+                FormattingHelpers.WriteDigits(hours, 2, ref utf16Bytes, 28);
                 Unsafe.Add(ref utf16Bytes, 30) = Colon;
-                FormattingHelpers.WriteTwoDigits(offset.Minutes, ref utf16Bytes, 31);
+                FormattingHelpers.WriteDigits(offset.Minutes, 2, ref utf16Bytes, 31);
             }
             else if (kind == DateTimeKind.Utc)
             {
@@ -188,7 +190,7 @@ namespace System.Text
             Unsafe.Add(ref utf16Bytes, 3) = Comma;
             Unsafe.Add(ref utf16Bytes, 4) = Space;
 
-            FormattingHelpers.WriteTwoDigits(value.Day, ref utf16Bytes, 5);
+            FormattingHelpers.WriteDigits(value.Day, 2, ref utf16Bytes, 5);
             Unsafe.Add(ref utf16Bytes, 7) = ' ';
 
             var monthAbbrev = MonthAbbreviations[value.Month - 1];
@@ -197,21 +199,94 @@ namespace System.Text
             Unsafe.Add(ref utf16Bytes, 10) = monthAbbrev[2];
             Unsafe.Add(ref utf16Bytes, 11) = Space;
 
-            FormattingHelpers.WriteFourDigits(value.Year, ref utf16Bytes, 12);
+            FormattingHelpers.WriteDigits(value.Year, 4, ref utf16Bytes, 12);
             Unsafe.Add(ref utf16Bytes, 16) = Space;
 
-            FormattingHelpers.WriteTwoDigits(value.Hour, ref utf16Bytes, 17);
+            FormattingHelpers.WriteDigits(value.Hour, 2, ref utf16Bytes, 17);
             Unsafe.Add(ref utf16Bytes, 19) = Colon;
 
-            FormattingHelpers.WriteTwoDigits(value.Minute, ref utf16Bytes, 20);
+            FormattingHelpers.WriteDigits(value.Minute, 2, ref utf16Bytes, 20);
             Unsafe.Add(ref utf16Bytes, 22) = Colon;
 
-            FormattingHelpers.WriteTwoDigits(value.Second, ref utf16Bytes, 23);
+            FormattingHelpers.WriteDigits(value.Second, 2, ref utf16Bytes, 23);
             Unsafe.Add(ref utf16Bytes, 25) = Space;
 
             Unsafe.Add(ref utf16Bytes, 26) = GMT1;
             Unsafe.Add(ref utf16Bytes, 27) = GMT2;
             Unsafe.Add(ref utf16Bytes, 28) = GMT3;
+
+            return true;
+        }
+
+        public static bool TryFormat(TimeSpan value, char format, Span<byte> buffer, out int bytesWritten)
+        {
+            bool longForm = (format == 'G');
+            bool constant = (format == 't' || format == 'T' || format == 'c');
+
+            long ticks = value.Ticks;
+            bool showSign = false;
+            if (ticks < 0)
+            {
+                showSign = true;
+                ticks = -ticks;
+            }
+
+            int days = (int)FormattingHelpers.DivMod(ticks, TimeSpan.TicksPerDay, out long timeLeft);
+            int hours = (int)FormattingHelpers.DivMod(timeLeft, TimeSpan.TicksPerHour, out timeLeft);
+            int minutes = (int)FormattingHelpers.DivMod(timeLeft, TimeSpan.TicksPerMinute, out timeLeft);
+            int seconds = (int)FormattingHelpers.DivMod(timeLeft, TimeSpan.TicksPerSecond, out long fraction);
+
+            int dayDigits = 0;
+            int hourDigits = (constant || longForm || hours > 9) ? 2 : 1;
+            int fractionDigits = 0;
+
+            bytesWritten = hourDigits + 6; // [h]h:mm:ss
+            if (showSign)
+                bytesWritten += 1;  // [-]
+            if (longForm || days > 0)
+            {
+                dayDigits = FormattingHelpers.CountDigits(days);
+                bytesWritten += dayDigits + 1; // [d'.']
+            }
+            if (longForm || fraction > 0)
+            {
+                fractionDigits = (longForm || constant) ? DefaultFractionDigits : FormattingHelpers.CountFractionDigits(fraction);
+                bytesWritten += fractionDigits + 1; // ['.'fffffff] or ['.'FFFFFFF] for short-form
+            }
+
+            bytesWritten *= sizeof(char);
+            if (buffer.Length < bytesWritten)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+
+            Span<char> dst = buffer.NonPortableCast<byte, char>();
+            ref char utf16Bytes = ref dst.DangerousGetPinnableReference();
+            int idx = 0;
+
+            if (showSign)
+                Unsafe.Add(ref utf16Bytes, idx++) = Minus;
+
+            if (dayDigits > 0)
+            {
+                idx += FormattingHelpers.WriteDigits(days, dayDigits, ref utf16Bytes, idx);
+                Unsafe.Add(ref utf16Bytes, idx++) = constant ? Period : Colon;
+            }
+
+            idx += FormattingHelpers.WriteDigits(hours, hourDigits, ref utf16Bytes, idx);
+            Unsafe.Add(ref utf16Bytes, idx++) = Colon;
+
+            idx += FormattingHelpers.WriteDigits(minutes, 2, ref utf16Bytes, idx);
+            Unsafe.Add(ref utf16Bytes, idx++) = Colon;
+
+            idx += FormattingHelpers.WriteDigits(seconds, 2, ref utf16Bytes, idx);
+
+            if (fractionDigits > 0)
+            {
+                Unsafe.Add(ref utf16Bytes, idx++) = Period;
+                idx += FormattingHelpers.WriteFractionDigits(fraction, fractionDigits, ref utf16Bytes, idx);
+            }
 
             return true;
         }
