@@ -33,7 +33,17 @@ if ($Restore -eq "true") {
 $errorsEncountered = 0
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
-foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", "System*.csproj", "AllDirectories")) {
+$csproj = @(".csproj")
+$source = @("src\", "samples\")
+$test = @("tests\")
+$root = "$PSScriptRoot\..\"
+$projectsInSolution = Get-Content 'corefxlab.sln' | Select-String -Pattern $csproj -SimpleMatch | Out-String
+$projectLinesSplitUp = $projectsInSolution.Split(',',[System.StringSplitOptions]::RemoveEmptyEntries) | Where-Object {$_ -match '\S'}
+
+$projectLinesSplitUp | Select-String -Pattern $source -SimpleMatch | ForEach-Object {
+    $fileName = $_ -replace ' "', "" -replace '"', ""
+    $file = $root + $fileName
+
     Write-Host "Building $file..."
     Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
 
@@ -44,7 +54,9 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", 
     }
 }
 
-foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
+$projectLinesSplitUp | Select-String -Pattern $test -SimpleMatch | ForEach-Object {
+    $fileName = $_ -replace ' "', "" -replace '"', ""
+    $file = $root + $fileName
     Write-Host "Building and running tests for project $file..."
     Invoke-Expression "$dotnetExePath test $file -c $Configuration -- -notrait category=performance -notrait category=outerloop"
 
