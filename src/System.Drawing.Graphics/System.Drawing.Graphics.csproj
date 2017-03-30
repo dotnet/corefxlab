@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
-    <PropertyGroup>
+  <PropertyGroup>
     <Description>CLI commandline command parsing</Description>
     <TargetFramework>netstandard1.5</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

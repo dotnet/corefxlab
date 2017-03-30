@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
-    <PropertyGroup>
+  <PropertyGroup>
     <Description>Provides synchronization data structures for passing data between producers and consumers.</Description>
     <TargetFramework>netstandard1.3</TargetFramework>
     <PackageTags>tasks channels threading asynchrony async corefxlab</PackageTags>

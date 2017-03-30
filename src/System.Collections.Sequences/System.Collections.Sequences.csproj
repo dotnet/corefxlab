@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
-    <PropertyGroup>
+  <PropertyGroup>
     <Description>Non-allocating collections</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

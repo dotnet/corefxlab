@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
+  <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputType>Exe</OutputType>
