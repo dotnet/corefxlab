@@ -132,10 +132,15 @@ namespace System.Buffers.Tests
                 int sourceLength = 620000000;
                 var sourceSlice = new Span<SevenBytesStruct>(&dummy, sourceLength);
 
-                Assert.Throws<OverflowException>(() =>
+                try
                 {
                     var targetSlice = sourceSlice.NonPortableCast<SevenBytesStruct, short>();
-                });
+                    Assert.True(false);
+                }
+                catch (Exception ex)
+                {
+                    Assert.True(ex is OverflowException);
+                }
             }
         }
     }

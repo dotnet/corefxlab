@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Dictionary allowing multiple values per key</Description>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;netstandard1.1</TargetFrameworks>
     <PackageTags>.NET Core MultiValueDictionary MultiDictionary Dictionary corefxlab</PackageTags>
     <RootNamespace /> 
   </PropertyGroup>

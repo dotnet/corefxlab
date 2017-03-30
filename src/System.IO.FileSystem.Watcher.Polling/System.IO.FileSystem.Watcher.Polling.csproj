@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Polling file system watcher</Description>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;netstandard1.3</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET Core FileSystemWatcher Polling corefxlab</PackageTags>
   </PropertyGroup>

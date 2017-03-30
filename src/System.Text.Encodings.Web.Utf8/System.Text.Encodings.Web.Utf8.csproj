@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Provides types for encoding and escaping strings for use in JavaScript, HyperText Markup Language (HTML), and uniform resource locators (URL).</Description>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;netstandard1.1</TargetFrameworks>
     <PackageTags>Encoding;Decoding</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
   </PropertyGroup>

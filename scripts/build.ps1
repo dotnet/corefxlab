@@ -2,7 +2,7 @@
     [string]$Configuration="Debug",
     [string]$Restore="true",
     [string]$Channel="preview",
-    [string]$Version="1.0.0",
+    [string]$Version="2.0.0-preview1-005418",
     [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1')
 )
 
@@ -34,6 +34,11 @@ $errorsEncountered = 0
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", "System*.csproj", "AllDirectories")) {
+    if ($file -match "System.Reflection.Metadata.Cil")
+    {
+        Write-Warning "Skipping building $file."
+        continue;
+    }
     Write-Host "Building $file..."
     Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
 
@@ -45,6 +50,11 @@ foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", 
 }
 
 foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
+    if ($file -match "System.Reflection.Metadata.Cil.Tests")
+    {
+        Write-Warning "Skipping tests in $file."
+        continue;
+    }
     Write-Host "Building and running tests for project $file..."
     Invoke-Expression "$dotnetExePath test $file -c $Configuration -- -notrait category=performance -notrait category=outerloop"
 

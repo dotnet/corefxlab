@@ -1,9 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Efficient parsing, formatting, and encoding APIs</Description>
-    <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;netstandard1.1</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET formatting parsing encoding UTF8</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>

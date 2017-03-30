@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>64 bit decimal floating point value</Description>
     <Copyright>.NET Foundation, All rights reserved</Copyright>
     <Authors>.NET Foundation and contributors</Authors>
-    <TargetFramework>netstandard1.0</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;netstandard1.0</TargetFrameworks>
     <PackageTags>.NET 64 bit decimal floating point value</PackageTags>
   </PropertyGroup>
   <ItemGroup>

@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>An abstraction for doing efficient asynchronous IO</Description>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;netstandard1.1</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
     <!--<DefineConstants Condition="'$(Configuration)' == 'Debug'">$(DefineConstants);OPERATION_LOCATION_TRACKING;COMPLETION_LOCATION_TRACKING</DefineConstants>-->

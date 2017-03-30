@@ -2,7 +2,7 @@
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Primitives for dealing with reading and writing text to and from pipelines</Description>
-    <TargetFrameworks>net451;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net451;netstandard1.3</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>

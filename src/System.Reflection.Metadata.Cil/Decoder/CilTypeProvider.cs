@@ -4,7 +4,6 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Reflection.Metadata.Decoding;
 using System.Text;
 
 namespace System.Reflection.Metadata.Cil.Decoder

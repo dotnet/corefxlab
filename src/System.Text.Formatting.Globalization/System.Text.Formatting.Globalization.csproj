@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>A formatting library for pl-PL</Description>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;netstandard1.1</TargetFrameworks>
     <PackageTags>pl PL formatting globalization corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>
