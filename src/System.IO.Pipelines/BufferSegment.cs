@@ -144,5 +144,38 @@ namespace System.IO.Pipelines
 
             return beginClone;
         }
+
+        internal static BufferSegment Clone(BufferSegment segment, int index, int length)
+        {
+            var remaining = length - (segment.End - index);
+            if (remaining <= 0)
+            {
+                return new BufferSegment(segment._owned, index, index + length);
+            }
+
+            var beginClone = new BufferSegment(segment._owned, index, segment.End);
+            var endClone = beginClone;
+
+            segment = segment.Next;
+
+            while (segment != null)
+            {
+                var segmentLength = segment.End - segment.Start;
+                if (segmentLength > remaining)
+                {
+                    endClone.Next = new BufferSegment(segment._owned, segment.Start, segment.Start + remaining);
+                    remaining = 0;
+                    break;
+                }
+
+                endClone.Next = new BufferSegment(segment._owned, segment.Start, segment.End);
+                endClone = endClone.Next;
+                segment = segment.Next;
+
+                remaining -= segmentLength;
+            }
+
+            return beginClone;
+        }
     }
 }

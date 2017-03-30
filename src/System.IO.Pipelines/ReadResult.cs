@@ -15,8 +15,8 @@ namespace System.IO.Pipelines
 
         public ReadResult(ReadableBuffer buffer, bool isCancelled, bool isCompleted)
         {
-            Segment = buffer.BufferStart.Segment;
-            Index = buffer.BufferStart.Index;
+            Segment = buffer.StartSegment;
+            Index = buffer.StartIndex;
             Length = buffer.BufferLength;
             ResultFlags = ResultFlags.None;
 
