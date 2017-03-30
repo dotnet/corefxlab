@@ -10,15 +10,14 @@ namespace System.Buffers.Tests
 {
     public class EqualityTests
     {
-        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
+        [Fact]
         public void SpansMustNotBeBoxed()
         {
             var span = Span<byte>.Empty;
 
             try
             {
-                span.Equals((object)span);
-
+                span.Equals(new object());
                 // we are not using Assert.Throw in order to not catch span in lambda/clojure
                 Assert.True(false, "Expected exception was not thrown");
             }
@@ -28,7 +27,7 @@ namespace System.Buffers.Tests
 
             try
             {
-                readOnlySpan.Equals((object)readOnlySpan);
+                readOnlySpan.Equals(new object());
                 Assert.True(false, "Expected exception was not thrown");
             }
             catch (NotSupportedException) { }
