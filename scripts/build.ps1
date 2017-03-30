@@ -38,11 +38,11 @@ $source = @("src\", "samples\")
 $test = @("tests\")
 $root = "$PSScriptRoot\..\"
 $projectsInSolution = Get-Content 'corefxlab.sln' | Select-String -Pattern $csproj -SimpleMatch | Out-String
-$projectLinesSplitUp = $projectsInSolution.Split(',',[System.StringSplitOptions]::RemoveEmptyEntries) | Where-Object {$_ -match '\S'}
+$projectLinesSplitUp = $projectsInSolution.Split(',',[System.StringSplitOptions]::RemoveEmptyEntries)
 
 $projectLinesSplitUp | Select-String -Pattern $source -SimpleMatch | ForEach-Object {
     $fileName = $_ -replace ' "', "" -replace '"', ""
-    $file = $root + $fileName
+    $file = -join ($root, $fileName)
 
     Write-Host "Building $file..."
     Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
@@ -56,7 +56,8 @@ $projectLinesSplitUp | Select-String -Pattern $source -SimpleMatch | ForEach-Obj
 
 $projectLinesSplitUp | Select-String -Pattern $test -SimpleMatch | ForEach-Object {
     $fileName = $_ -replace ' "', "" -replace '"', ""
-    $file = $root + $fileName
+    $file = -join ($root, $fileName)
+
     Write-Host "Building and running tests for project $file..."
     Invoke-Expression "$dotnetExePath test $file -c $Configuration -- -notrait category=performance -notrait category=outerloop"
 
