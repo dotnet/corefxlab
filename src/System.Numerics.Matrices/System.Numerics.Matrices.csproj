@@ -1,7 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
-  <Import Project="..\..\tools\dependencies.props" />
-  <PropertyGroup>
+    <PropertyGroup>
     <Description>Manipulation of Matrices</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

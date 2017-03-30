@@ -1,7 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
-  <Import Project="..\..\tools\dependencies.props" />
-  <PropertyGroup>
+    <PropertyGroup>
     <Description>Polling file system watcher</Description>
     <TargetFramework>netstandard1.3</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

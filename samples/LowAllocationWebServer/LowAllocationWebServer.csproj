@@ -1,6 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\tools\dependencies.props" />
-  <PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OutputType>Exe</OutputType>

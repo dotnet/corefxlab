@@ -1,7 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
-  <Import Project="..\..\tools\dependencies.props" />
-  <PropertyGroup>
+    <PropertyGroup>
     <Description>64 bit decimal floating point value</Description>
     <Copyright>.NET Foundation, All rights reserved</Copyright>
     <Authors>.NET Foundation and contributors</Authors>
