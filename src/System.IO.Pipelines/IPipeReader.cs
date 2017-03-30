@@ -34,6 +34,17 @@ namespace System.IO.Pipelines
         void Advance(ReadCursor consumed, ReadCursor examined);
 
         /// <summary>
+        /// Moves forward the pipeline's read cursor to after the consumed data.
+        /// </summary>
+        /// <param name="consumedBytes">The count of bytes that has been succesfully proceesed.</param>
+        /// <param name="examinedBytes">The count of bytes that has been read and examined.</param>
+        /// <remarks>
+        /// The memory for the consumed data will be released and no longer available.
+        /// The examined data communicates to the pipeline when it should signal more data is available.
+        /// </remarks>
+        void Advance(int consumedBytes, int examinedBytes);
+
+        /// <summary>
         /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipeReader"/>.
         /// </summary>
         void CancelPendingRead();

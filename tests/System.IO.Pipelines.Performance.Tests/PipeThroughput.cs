@@ -56,7 +56,7 @@ namespace System.IO.Pipelines.Performance.Tests
                     var result = await _pipe.Reader.ReadAsync();
                     var buffer = result.Buffer;
                     remaining -= buffer.Length;
-                    _pipe.Reader.Advance(buffer.End, buffer.End);
+                    _pipe.Reader.Advance(buffer.Length, buffer.Length);
                 }
             });
 
@@ -73,7 +73,7 @@ namespace System.IO.Pipelines.Performance.Tests
                 writableBuffer.FlushAsync().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetResult();
                 var buffer = result.Buffer;
-                _pipe.Reader.Advance(buffer.End, buffer.End);
+                _pipe.Reader.Advance(buffer.Length, buffer.Length);
             }
         }
 
@@ -92,7 +92,7 @@ namespace System.IO.Pipelines.Performance.Tests
                 writableBuffer.FlushAsync().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetResult();
                 var buffer = result.Buffer;
-                _pipe.Reader.Advance(buffer.End, buffer.End);
+                _pipe.Reader.Advance(buffer.Length, buffer.Length);
             }
         }
 
@@ -111,7 +111,7 @@ namespace System.IO.Pipelines.Performance.Tests
                 writableBuffer.FlushAsync().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetResult();
                 var buffer = result.Buffer;
-                _pipe.Reader.Advance(buffer.End, buffer.End);
+                _pipe.Reader.Advance(buffer.Length, buffer.Length);
             }
         }
 
@@ -131,7 +131,7 @@ namespace System.IO.Pipelines.Performance.Tests
                 writableBuffer.FlushAsync().GetResult();
                 var result = _pipe.Reader.ReadAsync().GetResult();
                 var buffer = result.Buffer;
-                _pipe.Reader.Advance(buffer.End, buffer.End);
+                _pipe.Reader.Advance(buffer.Length, buffer.Length);
             }
         }
     }

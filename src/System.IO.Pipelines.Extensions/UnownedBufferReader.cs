@@ -221,6 +221,56 @@ namespace System.IO.Pipelines
             _consuming = false;
         }
 
+        // Called by the READER
+        void IPipeReader.Advance(int consumedBytes, int examinedBytes)
+        {
+            BufferSegment returnStart = null;
+            BufferSegment returnEnd = null;
+
+            ReadCursor cursor = new ReadCursor(_head, _head.Start);
+            if (consumedBytes > 0)
+            {
+                returnStart = cursor.Segment;
+
+                cursor = cursor.Seek(consumedBytes);
+
+                returnEnd = cursor.Segment;
+                _head = cursor.Segment;
+                _head.Start = cursor.Index;
+            }
+
+            if (examinedBytes > consumedBytes)
+            {
+                cursor = cursor.Seek(consumedBytes - examinedBytes);
+            }
+
+            // Again, we don't need an interlock here because Read and Write proceed serially.
+            // REVIEW: examined.IsEnd (PipelineReaderWriter has changed this logic)
+            var consumedEverything = cursor.IsEnd &&
+                                     Reading.Status == TaskStatus.WaitingForActivation &&
+                                     _awaitableState == _awaitableIsCompleted;
+
+            CompareExchange(ref _cancelledState, CancelledState.NotCancelled, CancelledState.CancellationObserved);
+
+            if (consumedEverything && _cancelledState != CancelledState.CancellationRequested)
+            {
+                _awaitableState = _awaitableIsNotCompleted;
+            }
+
+            while (returnStart != returnEnd)
+            {
+                var returnSegment = returnStart;
+                returnStart = returnStart.Next;
+                returnSegment.Dispose();
+            }
+
+            if (!_consuming)
+            {
+                throw new InvalidOperationException("No ongoing consuming operation to complete.");
+            }
+            _consuming = false;
+        }
+
         /// <summary>
         /// Signal to the producer that the consumer is done reading.
         /// </summary>

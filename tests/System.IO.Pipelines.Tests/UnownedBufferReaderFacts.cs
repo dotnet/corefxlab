@@ -593,6 +593,11 @@ namespace System.IO.Pipelines.Tests
                 _pipe.Reader.Advance(consumed, examined);
             }
 
+            public void Advance(int consumedBytes, int examinedBytes)
+            {
+                _pipe.Reader.Advance(consumedBytes, consumedBytes);
+            }
+
             public void Complete(Exception exception = null)
             {
                 _pipe.Reader.Complete(exception);
