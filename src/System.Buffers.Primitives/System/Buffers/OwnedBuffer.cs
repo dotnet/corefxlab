@@ -78,7 +78,7 @@ namespace System.Buffers
             return true;
         }
 
-        protected unsafe bool TryGetPointerCore(out void* pointer)
+        public unsafe bool TryGetPointer(out void* pointer)
         {
             if (Pointer == IntPtr.Zero) {
                 pointer = null;
@@ -150,9 +150,18 @@ namespace System.Buffers
             Release();
         }
 
-        internal unsafe bool TryGetPointerInternal(out void* pointer)
+        internal unsafe bool TryGetPointerInternal(int offset, out void* pointer)
         {
-            return TryGetPointerCore(out pointer);
+            if (!TryGetPointer(out pointer)) {
+                return false;
+            }
+            pointer = Add(pointer, offset);
+            return true;
+        }
+
+        internal static unsafe void* Add(void* pointer, int offset)
+        {
+            return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }
 
         internal bool TryGetArrayInternal(out ArraySegment<T> buffer)

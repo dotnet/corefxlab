@@ -62,11 +62,7 @@ namespace System.Buffers
    
         public unsafe bool TryGetPointer(out void* pointer)
         {
-            if (!_owner.TryGetPointerInternal(out pointer)) {
-                return false;
-            }
-            pointer = Buffer<T>.Add(pointer, _index);
-            return true;
+            return _owner.TryGetPointerInternal(_index, out pointer);
         }
 
         public unsafe bool TryGetArray(out ArraySegment<T> buffer)

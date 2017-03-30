@@ -65,11 +65,7 @@ namespace System.Buffers
 
         public unsafe bool TryGetPointer(out void* pointer)
         {
-            if (!_owner.TryGetPointerInternal(out pointer)) {
-                return false;
-            }
-            pointer = Add(pointer, _index);
-            return true;
+            return _owner.TryGetPointerInternal(_index, out pointer);
         }
 
         public bool TryGetArray(out ArraySegment<T> buffer)
@@ -79,11 +75,6 @@ namespace System.Buffers
             }
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
             return true;
-        }
-
-        internal static unsafe void* Add(void* pointer, int offset)
-        {
-            return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }
 
         public T[] ToArray() => Span.ToArray();
