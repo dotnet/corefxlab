@@ -35,7 +35,7 @@ namespace System.IO.Pipelines
         {
             if (!_segmentEnumerator.MoveNext())
             {
-                _current = Buffer<byte>.Empty;
+                _current = default(Buffer<byte>);
                 return false;
             }
             var current = _segmentEnumerator.Current;

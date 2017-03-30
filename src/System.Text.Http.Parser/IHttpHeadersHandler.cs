@@ -7,6 +7,6 @@ namespace System.Text.Http.Parser
 {
     public interface IHttpHeadersHandler
     {
-        void OnHeader(Span<byte> name, Span<byte> value);
+        void OnHeader(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value);
     }
 }

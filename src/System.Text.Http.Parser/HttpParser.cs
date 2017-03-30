@@ -88,7 +88,7 @@ namespace System.Text.Http.Parser
         private unsafe void ParseRequestLine<T>(T handler, byte* data, int length) where T : IHttpRequestLineHandler
         {
             int offset;
-            Span<byte> customMethod;
+            ReadOnlySpan<byte> customMethod;
             // Get Method and set the offset
             var method = HttpUtilities.GetKnownMethod(data, length, out offset);
             if (method == Http.Method.Custom)
@@ -148,7 +148,7 @@ namespace System.Text.Http.Parser
                 RejectRequestLine(data, length);
             }
 
-            var pathBuffer = new Span<byte>(data + pathStart, offset - pathStart);
+            var pathBuffer = new ReadOnlySpan<byte>(data + pathStart, offset - pathStart);
 
             // Query string
             var queryStart = offset;
@@ -171,8 +171,8 @@ namespace System.Text.Http.Parser
                 RejectRequestLine(data, length);
             }
 
-            var targetBuffer = new Span<byte>(data + pathStart, offset - pathStart);
-            var query = new Span<byte>(data + queryStart, offset - queryStart);
+            var targetBuffer = new ReadOnlySpan<byte>(data + pathStart, offset - pathStart);
+            var query = new ReadOnlySpan<byte>(data + queryStart, offset - queryStart);
 
             // Consume space
             offset++;
@@ -199,7 +199,7 @@ namespace System.Text.Http.Parser
                 RejectRequestLine(data, length);
             }
 
-            var line = new Span<byte>(data, length);
+            var line = new ReadOnlySpan<byte>(data, length);
 
             handler.OnStartLine(method, httpVersion, targetBuffer, pathBuffer, query, customMethod, pathEncoded);
         }
@@ -282,7 +282,7 @@ namespace System.Text.Http.Parser
                                 index = reader.Index;
                             }
 
-                            var endIndex = new Span<byte>(pBuffer + index, remaining).IndexOf(ByteLF);
+                            var endIndex = new ReadOnlySpan<byte>(pBuffer + index, remaining).IndexOf(ByteLF);
                             var length = 0;
 
                             if (endIndex != -1)
@@ -336,6 +336,104 @@ namespace System.Text.Http.Parser
                 if (done)
                 {
                     examined = consumed;
+                }
+            }
+        }
+
+        public unsafe bool ParseHeaders<T>(T handler, ReadOnlyBytes buffer, out int consumedBytes) where T : IHttpHeadersHandler
+        {
+            var span = buffer.First.Span;
+            var rest = buffer.Rest;
+            var length = span.Length;
+            int index = -1;
+            State state = State.ParsingName;
+            int nameStart = 0, nameEnd = 0, valueStart = 0, valueEnd = 0;
+            bool sawCRLF = false;
+            bool straddling = false;
+            fixed (byte* pBuffer = &span.DangerousGetPinnableReference()) {
+                while (true) {
+                    index++;
+                    // get next byte 
+                    while (length <= index) {
+                        if (rest == null) {
+                            consumedBytes = 0;
+                            return false;
+                        }
+                        span = rest.First.Span;
+                        length = span.Length;
+                        rest = rest.Rest;
+                        index = 0;
+                        straddling = true;
+                        throw new NotImplementedException("call to OnHeader below needs to account for straddling spans");
+                    }
+                    var next = pBuffer[index];
+
+                    if (state == State.ParsingValue) {
+                        if (next == ByteCR) {
+                            valueEnd = index;
+                            state = State.ArferCR;
+                        }
+                        // TODO: why only these are rejected?
+                        if (next == ByteLF) {
+                            RejectRequest(RequestRejectionReason.InvalidCharactersInHeaderName);
+                        }
+                        // TODO: should whitespace after all values (i.e. right before CRLF) be removed here?
+                        // else just keep advancing chracters in name
+                    }
+                    else if (state == State.ParsingName) {
+                        if (next == ByteColon) {
+                            state = State.BeforValue;
+                            nameEnd = index;
+                        }
+                        if (next == ByteCR) state = State.ArferCR;
+
+                        // TODO: why only these are rejected?
+                        if (next == ByteSpace || next == ByteTab || next == ByteLF) {
+                            RejectRequest(RequestRejectionReason.InvalidCharactersInHeaderName);
+                        }
+                        
+                        // else just keep advancing chracters in name
+                    }
+                    else if (state == State.BeforValue) {
+                        if (next != ByteSpace && next != ByteTab) {
+                            state = State.ParsingValue;
+                            valueStart = index;
+                        }
+                        else if (next == ByteCR) RejectRequest(RequestRejectionReason.InvalidCharactersInHeaderName);
+                        // else skip whitespace
+                    }
+                    else if (state == State.ArferCR) {
+                        if (next == ByteLF) {
+                            sawCRLF = true;
+                            if (nameEnd != 0) {
+                                if (!straddling) {
+                                    ReadOnlySpan<byte> nameBuffer = new ReadOnlySpan<byte>(pBuffer + nameStart, nameEnd - nameStart);
+                                    ReadOnlySpan<byte> valueBuffer = new ReadOnlySpan<byte>(pBuffer + valueStart, valueEnd - valueStart);
+                                    handler.OnHeader(nameBuffer, valueBuffer);
+                                    nameEnd = 0;
+                                    state = State.ParsingName;
+                                    nameStart = index + 1;
+                                    straddling = false;
+                                }
+                                else {
+                                    throw new NotImplementedException("header is straddling spans");
+                                }
+                            }
+                            else {
+                                if (sawCRLF) {
+                                    consumedBytes = index + 1;
+                                    return true;
+                                }
+                                RejectRequest(RequestRejectionReason.InvalidRequestHeadersNoCRLF);
+                            }
+                        }
+                        else {
+                            RejectRequest(RequestRejectionReason.InvalidRequestHeadersNoCRLF);
+                        }
+                    }                    
+                    else { 
+                        throw new Exception("bug in parser: unknown state");
+                    }
                 }
             }
         }
@@ -415,8 +513,8 @@ namespace System.Text.Http.Parser
                 }
             }
 
-            var nameBuffer = new Span<byte>(headerLine, nameEnd);
-            var valueBuffer = new Span<byte>(headerLine + valueStart, valueEnd - valueStart + 1);
+            var nameBuffer = new ReadOnlySpan<byte>(headerLine, nameEnd);
+            var valueBuffer = new ReadOnlySpan<byte>(headerLine + valueStart, valueEnd - valueStart + 1);
 
             handler.OnHeader(nameBuffer, valueBuffer);
         }
@@ -457,7 +555,6 @@ namespace System.Text.Http.Parser
             return true;
         }
 
-
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static bool TryGetNewLineSpan(ref ReadableBuffer buffer, ref Span<byte> span, out ReadCursor end)
         {
@@ -473,7 +570,7 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private unsafe Span<byte> GetUnknownMethod(byte* data, int length, out int methodLength)
+        private unsafe ReadOnlySpan<byte> GetUnknownMethod(byte* data, int length, out int methodLength)
         {
             methodLength = 0;
             for (var i = 0; i < length; i++)
@@ -496,7 +593,7 @@ namespace System.Text.Http.Parser
                 }
             }
 
-            return new Span<byte>(data, methodLength);
+            return new ReadOnlySpan<byte>(data, methodLength);
         }
 
         // TODO: this could be optimized by using a table
@@ -553,6 +650,14 @@ namespace System.Text.Http.Parser
             // However this does cause it to become an intrinsic (with additional multiply and reg->reg copy)
             // https://github.com/dotnet/coreclr/issues/7459#issuecomment-253965670
             return Vector.AsVectorByte(new Vector<uint>(vectorByte * 0x01010101u));
+        }
+
+        enum State : byte
+        {
+            ParsingName,
+            BeforValue,
+            ParsingValue,
+            ArferCR,
         }
     }
 }

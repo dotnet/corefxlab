@@ -663,6 +663,8 @@ namespace System.IO.Pipelines.Tests
                 _pipe.Reader.Complete();
                 _pipe.Writer.Complete();
             }
+
+            public bool TryRead(out ReadResult result) => _pipe.Reader.TryRead(out result);
         }
 
         private class CallbackStream : Stream

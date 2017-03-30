@@ -22,24 +22,114 @@ public class HttpParserBench
         "Connection: keep-alive\r\n" +
         "\r\n";
 
-    const int Itterations = 1000;
+    private static readonly byte[] s_plaintextTechEmpowerHeadersBytes = Encoding.UTF8.GetBytes(_plaintextTechEmpowerHeaders);
+
+    private const string _plaintextTechEmpowerHeaders =
+    "Host: localhost\r\n" +
+    "Accept: text/plain,text/html;q=0.9,application/xhtml+xml;q=0.9,application/xml;q=0.8,*/*;q=0.7\r\n" +
+    "Connection: keep-alive\r\n" +
+    "\r\n";
+
+    const int Itterations = 10000;
 
     [Benchmark(InnerIterationCount = Itterations)]
-    static ulong HttpParserRob()
+    static ulong RequestLineRb()
     {
         ReadableBuffer buffer = ReadableBuffer.Create(s_plaintextTechEmpowerRequestBytes);
         var parser = new HttpParser();
         var request = new Request();
+        ReadCursor consumed = default(ReadCursor);
+        ReadCursor read;
 
-        ulong acumulator = 0;
         foreach (var iteration in Benchmark.Iterations)
         {
             using (iteration.StartMeasurement())
             {
                 for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                 {
-                    parser.ParseRequestLine(request, buffer, out var consumed, out var read);
-                    acumulator += (ulong)request.Method;
+                    parser.ParseRequestLine(request, buffer, out consumed, out read);
+                    parser.ParseRequestLine(request, buffer, out consumed, out read);
+                    parser.ParseRequestLine(request, buffer, out consumed, out read);
+                    parser.ParseRequestLine(request, buffer, out consumed, out read);
+                    parser.ParseRequestLine(request, buffer, out consumed, out read);
+                    parser.ParseRequestLine(request, buffer, out consumed, out read);
+                    parser.ParseRequestLine(request, buffer, out consumed, out read);
+                    parser.ParseRequestLine(request, buffer, out consumed, out read);
+                    parser.ParseRequestLine(request, buffer, out consumed, out read);
+                    parser.ParseRequestLine(request, buffer, out consumed, out read);
+
+                }
+            }
+        }
+
+        return (ulong)buffer.Slice(buffer.Start, consumed).Length;
+    }
+
+    [Benchmark(InnerIterationCount = Itterations)]
+    static int RequestLineRob()
+    {
+        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
+        var parser = new HttpParser();
+        var request = new Request();
+        int consumed = 0;
+
+        foreach (var iteration in Benchmark.Iterations)
+        {
+            using (iteration.StartMeasurement())
+            {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                {
+                    parser.ParseRequestLine(request, buffer, out consumed);
+                    parser.ParseRequestLine(request, buffer, out consumed);
+                    parser.ParseRequestLine(request, buffer, out consumed);
+                    parser.ParseRequestLine(request, buffer, out consumed);
+                    parser.ParseRequestLine(request, buffer, out consumed);
+                    parser.ParseRequestLine(request, buffer, out consumed);
+                    parser.ParseRequestLine(request, buffer, out consumed);
+                    parser.ParseRequestLine(request, buffer, out consumed);
+                    parser.ParseRequestLine(request, buffer, out consumed);
+                    parser.ParseRequestLine(request, buffer, out consumed);
+                }
+            }
+        }
+
+        return consumed;
+    }
+
+    [Benchmark(InnerIterationCount = Itterations)]
+    static ulong HeadersRb()
+    {
+        ReadableBuffer buffer = ReadableBuffer.Create(s_plaintextTechEmpowerHeadersBytes);
+        var parser = new HttpParser();
+        var request = new Request();
+        ReadCursor consumed;
+        ReadCursor examined;
+        int consumedBytes;
+
+        ulong acumulator = 0;
+        foreach (var iteration in Benchmark.Iterations) {
+            using (iteration.StartMeasurement()) {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
+                    parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                    acumulator += (ulong)consumedBytes;
+                    parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                    acumulator += (ulong)consumedBytes;
+                    parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                    acumulator += (ulong)consumedBytes;
+                    parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                    acumulator += (ulong)consumedBytes;
+                    parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                    acumulator += (ulong)consumedBytes;
+                    parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                    acumulator += (ulong)consumedBytes;
+                    parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                    acumulator += (ulong)consumedBytes;
+                    parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                    acumulator += (ulong)consumedBytes;
+                    parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                    acumulator += (ulong)consumedBytes;
+                    parser.ParseHeaders(request, buffer, out consumed, out examined, out consumedBytes);
+                    acumulator += (ulong)consumedBytes;
                 }
             }
         }
@@ -48,20 +138,37 @@ public class HttpParserBench
     }
 
     [Benchmark(InnerIterationCount = Itterations)]
-    static ulong HttpParserReadableBytes()
+    static ulong HeadersRob()
     {
-        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
+        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerHeadersBytes);
         var parser = new HttpParser();
         var request = new Request();
 
+        int consumed;
         ulong acumulator = 0;
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                {
-                    parser.ParseRequestLine(request, buffer, out var consumed);
+
+        foreach (var iteration in Benchmark.Iterations) {
+            using (iteration.StartMeasurement()) {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
+                    parser.ParseHeaders(request, buffer, out consumed);
+                    acumulator += (ulong)consumed;
+                    parser.ParseHeaders(request, buffer, out consumed);
+                    acumulator += (ulong)consumed;
+                    parser.ParseHeaders(request, buffer, out consumed);
+                    acumulator += (ulong)consumed;
+                    parser.ParseHeaders(request, buffer, out consumed);
+                    acumulator += (ulong)consumed;
+                    parser.ParseHeaders(request, buffer, out consumed);
+                    acumulator += (ulong)consumed;
+                    parser.ParseHeaders(request, buffer, out consumed);
+                    acumulator += (ulong)consumed;
+                    parser.ParseHeaders(request, buffer, out consumed);
+                    acumulator += (ulong)consumed;
+                    parser.ParseHeaders(request, buffer, out consumed);
+                    acumulator += (ulong)consumed;
+                    parser.ParseHeaders(request, buffer, out consumed);
+                    acumulator += (ulong)consumed;
+                    parser.ParseHeaders(request, buffer, out consumed);
                     acumulator += (ulong)consumed;
                 }
             }
@@ -71,24 +178,82 @@ public class HttpParserBench
     }
 
     [Benchmark(InnerIterationCount = Itterations)]
-    static ulong HttpRequestParser()
+    static int FullRequestRb()
     {
-        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
+        ReadableBuffer buffer = ReadableBuffer.Create(s_plaintextTechEmpowerRequestBytes);
+        var parser = new HttpParser();
+        var request = new Request();
+        int consumedBytes  = 0;
+        ReadCursor examined;
+        ReadCursor consumed;
 
-        ulong acumulator = 0;
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                {
-                    var request = HttpRequest.Parse(buffer);
-                    acumulator += (ulong)request.BodyIndex;
+        foreach (var iteration in Benchmark.Iterations) {
+            using (iteration.StartMeasurement()) {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
+                    parser.ParseRequestLine(request, buffer, out consumed, out examined);
+                    parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
+                    parser.ParseRequestLine(request, buffer, out consumed, out examined);
+                    parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
+                    parser.ParseRequestLine(request, buffer, out consumed, out examined);
+                    parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
+                    parser.ParseRequestLine(request, buffer, out consumed, out examined);
+                    parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
+                    parser.ParseRequestLine(request, buffer, out consumed, out examined);
+                    parser.ParseHeaders(request, buffer.Slice(consumed), out consumed, out examined, out consumedBytes);
                 }
             }
         }
 
-        return acumulator;
+        return consumedBytes;
+    }
+
+    [Benchmark(InnerIterationCount = Itterations)]
+    static int FullRequestRob()
+    {
+        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
+        var parser = new HttpParser();
+        var request = new Request();
+        int consumedBytes = 0;
+
+        foreach (var iteration in Benchmark.Iterations) {
+            using (iteration.StartMeasurement()) {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
+                    parser.ParseRequestLine(request, buffer, out consumedBytes);
+                    parser.ParseHeaders(request, buffer.Slice(consumedBytes), out consumedBytes);
+                    parser.ParseRequestLine(request, buffer, out consumedBytes);
+                    parser.ParseHeaders(request, buffer.Slice(consumedBytes), out consumedBytes);
+                    parser.ParseRequestLine(request, buffer, out consumedBytes);
+                    parser.ParseHeaders(request, buffer.Slice(consumedBytes), out consumedBytes);
+                    parser.ParseRequestLine(request, buffer, out consumedBytes);
+                    parser.ParseHeaders(request, buffer.Slice(consumedBytes), out consumedBytes);
+                    parser.ParseRequestLine(request, buffer, out consumedBytes);
+                    parser.ParseHeaders(request, buffer.Slice(consumedBytes), out consumedBytes);
+                }
+            }
+        }
+
+        return consumedBytes;
+    }
+
+    [Benchmark(InnerIterationCount = Itterations)]
+    static int FullRequestLegacy()
+    {
+        var buffer = new ReadOnlyBytes(s_plaintextTechEmpowerRequestBytes);
+        HttpRequest request = default(HttpRequest);
+
+        foreach (var iteration in Benchmark.Iterations) {
+            using (iteration.StartMeasurement()) {
+                for (int i = 0; i < Benchmark.InnerIterationCount; i++) {
+                    request = HttpRequest.Parse(buffer);
+                    request = HttpRequest.Parse(buffer);
+                    request = HttpRequest.Parse(buffer);
+                    request = HttpRequest.Parse(buffer);
+                    request = HttpRequest.Parse(buffer);
+                }
+            }
+        }
+
+        return request.BodyIndex;
     }
 }
 
@@ -102,14 +267,14 @@ class Request : IHttpHeadersHandler, IHttpRequestLineHandler
 
     public Dictionary<string, string> Headers = new Dictionary<string, string>();
 
-    public void OnHeader(Span<byte> name, Span<byte> value)
+    public void OnHeader(ReadOnlySpan<byte> name, ReadOnlySpan<byte> value)
     {
         //var nameString = PrimitiveEncoder.DecodeAscii(name);
         //var valueString = PrimitiveEncoder.DecodeAscii(value);
         //Headers.Add(nameString, valueString);
     }
 
-    public void OnStartLine(Http.Method method, Http.Version version, Span<byte> target, Span<byte> path, Span<byte> query, Span<byte> customMethod, bool pathEncoded)
+    public void OnStartLine(Http.Method method, Http.Version version, ReadOnlySpan<byte> target, ReadOnlySpan<byte> path, ReadOnlySpan<byte> query, ReadOnlySpan<byte> customMethod, bool pathEncoded)
     {
         //Method = method;
         //Version = version;
