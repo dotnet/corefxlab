@@ -354,7 +354,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
         public async Task ReadTWorksAgainstSimpleBuffers()
         {
             byte[] chunk = { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -381,7 +381,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
         public async Task ReadTWorksAgainstMultipleBuffers()
         {
             using (var factory = new PipeFactory())
