@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <CoreFxVerson>4.3.0</CoreFxVerson>
+    <CoreFxVersion>4.3.0</CoreFxVersion>
     <SystemMemoryVersion>4.4.0-*</SystemMemoryVersion>
     <SystemCompilerServicesUnsafeVersion>4.4.0-*</SystemCompilerServicesUnsafeVersion>
     <LibuvVersion>1.9.1</LibuvVersion>
