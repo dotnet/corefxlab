@@ -3,7 +3,6 @@
   <PropertyGroup>
     <Description>Non-allocating HTTP parser</Description>
     <TargetFrameworks>netcoreapp2.0;netstandard1.1</TargetFrameworks>
-    <RuntimeFrameworkVersion>2.0.0-beta-001834-00</RuntimeFrameworkVersion>
     <PackageTags>HTTP parser parsing .NET non-allocating corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>

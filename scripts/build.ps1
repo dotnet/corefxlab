@@ -1,8 +1,8 @@
 ﻿Param(
     [string]$Configuration="Debug",
     [string]$Restore="true",
-    [string]$Channel="future",
-    [string]$Version="master",
+    [string]$Channel="preview",
+    [string]$Version="2.0.0-preview1-005418",
     [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1')
 )
 

@@ -3,7 +3,6 @@
   <PropertyGroup>
     <Description>Pool of unmanaged Span&lt;byte&gt; values</Description>
     <TargetFrameworks>netcoreapp2.0;netstandard1.1</TargetFrameworks>
-    <RuntimeFrameworkVersion>2.0.0-beta-001834-00</RuntimeFrameworkVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>Span Spans Pool corefxlab</PackageTags>
   </PropertyGroup>
@@ -13,7 +12,7 @@
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Buffers" Version="4.3.0" />
+    <PackageReference Include="System.Buffers" Version="$(CoreFxVersion)" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
   </ItemGroup>
 </Project>

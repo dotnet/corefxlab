@@ -1,9 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>CLI commandline command parsing</Description>
     <TargetFrameworks>netcoreapp2.0;netstandard1.5;net45</TargetFrameworks>
-    <RuntimeFrameworkVersion>2.0.0-beta-001834-00</RuntimeFrameworkVersion>
     <PackageTags>Command line parsing support corefxlab</PackageTags>
     <RootNamespace />
   </PropertyGroup>

@@ -253,7 +253,6 @@ nuget.exe
 
 # VS Code Files
 .vscode
-*.props
 
 #xunit and BenchmarkDotNet artifacts
 scripts/PerfHarness/*.csv

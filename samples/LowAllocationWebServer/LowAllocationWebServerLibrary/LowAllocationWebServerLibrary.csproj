@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;netstandard1.4</TargetFrameworks>
-    <RuntimeFrameworkVersion>2.0.0-beta-001834-00</RuntimeFrameworkVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>

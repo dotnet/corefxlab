@@ -1,4 +1,5 @@
 <Project>
+  <Import Project="dependencies.props" />
   <PropertyGroup>
     <VersionSuffix Condition="$(VersionSuffix) == ''">$([System.DateTime]::Now.ToString(eyyMMdd-1))</VersionSuffix>
     <Copyright>Microsoft Corporation, All rights reserved</Copyright>
@@ -12,6 +13,5 @@
     <SignAssembly>true</SignAssembly>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Key.snk</AssemblyOriginatorKeyFile>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
 </Project>

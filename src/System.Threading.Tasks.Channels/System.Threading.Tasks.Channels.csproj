@@ -3,7 +3,6 @@
   <PropertyGroup>
     <Description>Provides synchronization data structures for passing data between producers and consumers.</Description>
     <TargetFrameworks>netcoreapp2.0;netstandard1.3</TargetFrameworks>
-    <RuntimeFrameworkVersion>2.0.0-beta-001834-00</RuntimeFrameworkVersion>
     <PackageTags>tasks channels threading asynchrony async corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>

@@ -228,7 +228,7 @@ function Get-Download-Links([string]$AzureFeed, [string]$AzureChannel, [string]$
         $PayloadURL = "$AzureFeed/$AzureChannel/Binaries/$SpecificVersion/dotnet-win-$CLIArchitecture.$SpecificVersion.zip"
     }
     else {
-        $PayloadURL = "$AzureFeed/Sdk/$SpecificVersion/dotnet-dev-win-$CLIArchitecture.latest.zip"
+        $PayloadURL = "$AzureFeed/Sdk/$SpecificVersion/dotnet-dev-win-$CLIArchitecture.$SpecificVersion.zip"
     }
 
     Say-Verbose "Constructed payload URL: $PayloadURL"

@@ -3,7 +3,6 @@
   <PropertyGroup>
     <Description>Non-allocating ninary reader and writer</Description>
     <TargetFrameworks>netcoreapp2.0;netstandard1.1</TargetFrameworks>
-    <RuntimeFrameworkVersion>2.0.0-beta-001834-00</RuntimeFrameworkVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageTags>.NET non-allocating binary readers and writers</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>

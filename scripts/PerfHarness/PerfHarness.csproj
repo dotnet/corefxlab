@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;</TargetFrameworks>
-    <RuntimeFrameworkVersion>2.0.0-beta-001834-00</RuntimeFrameworkVersion>
     <DebugType>portable</DebugType>
     <AssemblyName>PerfHarness</AssemblyName>
     <OutputType>Exe</OutputType>

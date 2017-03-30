@@ -3,7 +3,6 @@
   <PropertyGroup>
     <Description>Provides types for encoding and escaping strings for use in JavaScript, HyperText Markup Language (HTML), and uniform resource locators (URL).</Description>
     <TargetFrameworks>netcoreapp2.0;netstandard1.1</TargetFrameworks>
-    <RuntimeFrameworkVersion>2.0.0-beta-001834-00</RuntimeFrameworkVersion>
     <PackageTags>Encoding;Decoding</PackageTags>
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
   </PropertyGroup>
