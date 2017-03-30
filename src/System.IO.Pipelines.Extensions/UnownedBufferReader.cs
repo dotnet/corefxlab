@@ -394,6 +394,12 @@ namespace System.IO.Pipelines
             return previous;
         }
 
+        public bool TryRead(out ReadResult result)
+        {
+            result = default(ReadResult);
+            return false;
+        }
+
         private static class CancelledState
         {
             public static int NotCancelled = 0;

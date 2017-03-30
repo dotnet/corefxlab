@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,6 +21,7 @@ namespace System.IO.Pipelines
             _state = completed ? _awaitableIsCompleted : _awaitableIsNotCompleted;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Action Complete()
         {
             var awaitableState = _state;
@@ -33,9 +35,10 @@ namespace System.IO.Pipelines
             return null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reset()
         {
-            if (_state == _awaitableIsCompleted &&
+            if (ReferenceEquals(_state, _awaitableIsCompleted) &&
                 _cancelledState != CancelledState.CancellationRequested)
             {
                 _state = _awaitableIsNotCompleted;
@@ -53,7 +56,7 @@ namespace System.IO.Pipelines
         public Action OnCompleted(Action continuation, ref PipeCompletion completion)
         {
             var awaitableState = _state;
-            if (_state == _awaitableIsNotCompleted)
+            if (ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
             {
                 _state = continuation;
             }
@@ -81,6 +84,7 @@ namespace System.IO.Pipelines
             return Complete();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ObserveCancelation()
         {
             if (_cancelledState == CancelledState.CancellationRequested)

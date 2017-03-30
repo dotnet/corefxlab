@@ -21,7 +21,7 @@ namespace System.Buffers
         public BytesReader(ReadOnlyBytes bytes, TextEncoder encoder)
         {
             _unreadSegments = bytes;
-            _currentSegment = _unreadSegments.First;
+            _currentSegment = bytes.First;
             _encoder = encoder;
             _currentSegmentIndex = 0;
             _index = 0;

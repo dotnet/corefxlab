@@ -25,12 +25,17 @@ namespace System.IO.Pipelines
             Interlocked.CompareExchange(ref _exception, exception ?? _completedNoException, null);
         }
 
-        public void ThrowIfFailed()
+        public bool IsCompletedOrThrow()
         {
-            if (_exception != null && _exception != _completedNoException)
+            if (_exception != null)
             {
-                ThrowFailed();
+                if (_exception != _completedNoException)
+                {
+                    ThrowFailed();
+                }
+                return true;
             }
+            return false;
         }
 
         private void ThrowFailed()

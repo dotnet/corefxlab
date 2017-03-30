@@ -9,6 +9,14 @@ namespace System.IO.Pipelines
     public interface IPipeReader
     {
         /// <summary>
+        /// Attempt to synchronously read data the <see cref="IPipeReader"/>.
+        /// </summary>
+        /// <param name="result">The <see cref="ReadResult"/></param>
+        /// <returns>True if data was available, or if the call was cancelled or the writer completed with an error.</returns>
+        /// <remarks>If the pipe returns false, there's no need to call Advance.</remarks>
+        bool TryRead(out ReadResult result);
+
+        /// <summary>
         /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
