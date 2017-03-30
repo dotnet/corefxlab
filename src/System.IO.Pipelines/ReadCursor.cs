@@ -181,6 +181,57 @@ namespace System.IO.Pipelines
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal ReadCursor Seek(int bytes)
+        {
+            if (bytes == 0)
+            {
+                return this;
+            }
+
+            ReadCursor cursor;
+            if (Segment.End - Index >= bytes)
+            {
+                cursor = new ReadCursor(Segment, Index + bytes);
+            }
+            else
+            {
+                cursor = SeekMultiSegment(bytes);
+            }
+
+            return cursor;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private ReadCursor SeekMultiSegment(int bytes)
+        {
+            ReadCursor result = default(ReadCursor);
+            var segment = Segment;
+            var remaining = bytes - (segment.End - Index);
+
+            while (remaining > 0 && segment.Next != null)
+            {
+                segment = segment.Next;
+                var segmentLength = segment.End - segment.Start;
+                if (segmentLength >= remaining)
+                {
+                    result.Segment = segment;
+                    result.Index = segment.Start + remaining;
+                    remaining = 0;
+                    break;
+                }
+
+                remaining -= segmentLength;
+            }
+
+            if (remaining > 0)
+            {
+                ThrowOutOfBoundsException();
+            }
+
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void BoundsCheck(ReadCursor newCursor)
         {
             if (!this.GreaterOrEqual(newCursor))

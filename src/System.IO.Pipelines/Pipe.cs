@@ -595,12 +595,9 @@ namespace System.IO.Pipelines
             if (head != null)
             {
                 // Reading commit head shared with writer
-                result.ResultBuffer.BufferEnd.Segment = _commitHead;
-                result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
-                result.ResultBuffer.BufferLength = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
-
-                result.ResultBuffer.BufferStart.Segment = head;
-                result.ResultBuffer.BufferStart.Index = head.Start;
+                result.Segment = head;
+                result.Index = head.Start;
+                result.Length = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
             }
 
             _readingState.Begin(ExceptionResource.AlreadyReading);

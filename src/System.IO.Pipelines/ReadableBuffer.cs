@@ -57,6 +57,13 @@ namespace System.IO.Pipelines
             BufferLength = start.GetLength(end);
         }
 
+        internal ReadableBuffer(BufferSegment segment, int index, int length)
+        {
+            BufferStart = new ReadCursor(segment, index);
+            BufferLength = length;
+            BufferEnd = BufferStart.Seek(length);
+        }
+
         private ReadableBuffer(ref ReadableBuffer buffer)
         {
             var begin = buffer.BufferStart;
