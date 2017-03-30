@@ -10,7 +10,7 @@ namespace System.Slices.Tests
 {
     public partial class ReadOnlyBytesTests
     {
-        [Fact]
+        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
         public void SingleSegmentBytesReader()
         {
             ReadOnlyBytes bytes = Create("AB CD#EF&&");
@@ -63,7 +63,7 @@ namespace System.Slices.Tests
             //Assert.True(reader.IsEmpty);
         }
 
-        [Fact]
+        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
         public void MultiSegmentBytesReader()
         {
             ReadOnlyBytes bytes = Parse("A|B |CD|#EF&|&");

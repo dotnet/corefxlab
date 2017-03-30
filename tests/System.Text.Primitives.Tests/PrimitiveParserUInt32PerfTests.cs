@@ -279,7 +279,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark]
+        [Benchmark(Skip = "The generic type 'System.Collections.Generic.List`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         private unsafe static void PrimitiveParserByteSpanToUInt32_VariableLength()
         {
             List<ReadOnlySpan<byte>> byteSpanList = new List<ReadOnlySpan<byte>>();
@@ -327,7 +327,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark]
+        [Benchmark(Skip = "The generic type 'System.Collections.Generic.List`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         private unsafe static void PrimitiveParserByteSpanToUInt32_BytesConsumed_VariableLength()
         {
             List<ReadOnlySpan<byte>> byteSpanList = new List<ReadOnlySpan<byte>>();
@@ -481,7 +481,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark]
+        [Benchmark(Skip = "The generic type 'System.Collections.Generic.List`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         private unsafe static void PrimitiveParserByteSpanToUInt32Hex_VariableLength()
         {
             List<ReadOnlySpan<byte>> byteSpanList = new List<ReadOnlySpan<byte>>();
@@ -529,7 +529,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark]
+        [Benchmark(Skip = "The generic type 'System.Collections.Generic.List`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         private unsafe static void PrimitiveParserByteSpanToUInt32Hex_BytesConsumed_VariableLength()
         {
             List<ReadOnlySpan<byte>> byteSpanList = new List<ReadOnlySpan<byte>>();

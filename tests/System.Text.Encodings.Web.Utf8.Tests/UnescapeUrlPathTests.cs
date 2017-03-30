@@ -32,10 +32,15 @@ namespace System.Text.Encodings.Web.Utf8.Tests
             var input = GetBytes("/test%20test");
             var destination = new Span<byte>(new byte[input.Length - 1]);
 
-            Assert.Throws<ArgumentException>(() =>
+            try
             {
                 UrlEncoder.Decode(input, destination);
-            });
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArgumentException);
+            }
         }
     }
 }

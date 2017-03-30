@@ -58,27 +58,39 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(new byte[] { 1, 2, 3 }, Read());
         }
 
-        [Fact]
-        public void ThrowsForInvalidParameters()
+        [Theory]
+        [InlineData(3, -1, 0)]
+        [InlineData(3, 0, -1)]
+        [InlineData(3, 0, 4)]
+        [InlineData(3, 4, 0)]
+        [InlineData(3, -1, -1)]
+        [InlineData(3, 4, 4)]
+        public void ThrowsForInvalidParameters(int arrayLength, int offset, int length)
         {
             _buffer = _pipe.Writer.Alloc(1);
             var initialLength = _buffer.Buffer.Length;
 
             var writer = new WritableBufferWriter(_buffer);
-            var array = new byte[] { 1, 2, 3 };
+            var array = new byte[arrayLength];
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = (byte)(i + 1);
+            }
 
             writer.Write(array, 0, 0);
             writer.Write(array, array.Length, 0);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, -1, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, 0, -1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, 0, array.Length + 1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, array.Length + 1, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, -1, -1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => writer.Write(array, array.Length + 1, array.Length + 1));
+            try
+            {
+                writer.Write(array, offset, length);
+                Assert.True(false);
+            }
+            catch(Exception ex)
+            {
+                Assert.True(ex is ArgumentOutOfRangeException);
+            }
 
             writer.Write(array, 0, array.Length);
-
             Assert.Equal(array, Read());
         }
 

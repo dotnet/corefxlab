@@ -1,14 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Networking implementation of pipelines based on System.Net.Socket using the SocketAsyncEventArgs API</Description>
-    <TargetFrameworks>net451;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.IO.Pipelines\System.IO.Pipelines.csproj" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-    <PackageReference Include="System.Threading.ThreadPool" Version="4.3.0" />
+  <ItemGroup>
+    <PackageReference Include="System.Threading.ThreadPool" Version="$(CoreFxVersion)" />
   </ItemGroup>
 </Project>
