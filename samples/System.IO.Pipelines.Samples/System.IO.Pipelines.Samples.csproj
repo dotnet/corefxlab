@@ -1,10 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\System.IO.Pipelines.Networking.Sockets\System.IO.Pipelines.Networking.Sockets.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines\System.IO.Pipelines.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Extensions\System.IO.Pipelines.Extensions.csproj" />
     <ProjectReference Include="..\..\src\System.IO.Pipelines.Text.Primitives\System.IO.Pipelines.Text.Primitives.csproj" />

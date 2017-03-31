@@ -9,39 +9,35 @@ namespace System.IO.Pipelines
 {
     public struct ReadCursor : IEquatable<ReadCursor>
     {
-        private BufferSegment _segment;
-        private int _index;
+        internal BufferSegment Segment;
+        internal int Index;
 
         internal ReadCursor(BufferSegment segment)
         {
-            _segment = segment;
-            _index = segment?.Start ?? 0;
+            Segment = segment;
+            Index = segment?.Start ?? 0;
         }
 
         internal ReadCursor(BufferSegment segment, int index)
         {
-            _segment = segment;
-            _index = index;
+            Segment = segment;
+            Index = index;
         }
 
-        internal BufferSegment Segment => _segment;
-
-        internal int Index => _index;
-
-        internal bool IsDefault => _segment == null;
+        internal bool IsDefault => Segment == null;
 
         internal bool IsEnd
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var segment = _segment;
+                var segment = Segment;
 
                 if (segment == null)
                 {
                     return true;
                 }
-                else if (_index < segment.End)
+                else if (Index < segment.End)
                 {
                     return false;
                 }
@@ -59,7 +55,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.NoInlining)]
         private bool IsEndMultiSegment()
         {
-            var segment = _segment.Next;
+            var segment = Segment.Next;
             while (segment != null)
             {
                 if (segment.Start < segment.End)
@@ -78,28 +74,40 @@ namespace System.IO.Pipelines
             {
                 return 0;
             }
+            return GetLength(Segment, Index, end.Segment, end.Index);
+        }
 
-            if (_segment == end._segment)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int GetLength(
+            BufferSegment start,
+            int startIndex,
+            BufferSegment endSegment,
+            int endIndex)
+        {
+            if (start == endSegment)
             {
-                return end.Index - _index;
+                return endIndex - startIndex;
             }
 
-            return GetLengthMultiSegment(end);
+            return GetLengthMultiSegment(start, startIndex, endSegment, endIndex);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private int GetLengthMultiSegment(ReadCursor end)
+        private static int GetLengthMultiSegment(BufferSegment start,
+            int startIndex,
+            BufferSegment endSegment,
+            int endIndex)
         {
-            var segment = _segment;
-            var index = _index;
+            var segment = start;
+            var index = startIndex;
             var length = 0;
             checked
             {
                 while (true)
                 {
-                    if (segment == end._segment)
+                    if (segment == endSegment)
                     {
-                        return length + end._index - index;
+                        return length + endIndex - index;
                     }
                     else if (segment.Next == null)
                     {
@@ -124,9 +132,9 @@ namespace System.IO.Pipelines
             }
 
             ReadCursor cursor;
-            if (_segment == end._segment && end._index - _index >= bytes)
+            if (Segment == end.Segment && end.Index - Index >= bytes)
             {
-                cursor = new ReadCursor(Segment, _index + bytes);
+                cursor = new ReadCursor(Segment, Index + bytes);
             }
             else
             {
@@ -195,8 +203,8 @@ namespace System.IO.Pipelines
                 return false;
             }
 
-            var segment = _segment;
-            var index = _index;
+            var segment = Segment;
+            var index = Index;
 
             if (end.Segment == segment)
             {
@@ -219,8 +227,8 @@ namespace System.IO.Pipelines
 
         private bool TryGetBufferMultiBlock(ReadCursor end, out Buffer<byte> data)
         {
-            var segment = _segment;
-            var index = _index;
+            var segment = Segment;
+            var index = Index;
 
             // Determine if we might attempt to copy data from segment.Next before
             // calculating "following" so we don't risk skipping data that could
@@ -288,7 +296,7 @@ namespace System.IO.Pipelines
 
         public bool Equals(ReadCursor other)
         {
-            return other._segment == _segment && other._index == _index;
+            return other.Segment == Segment && other.Index == Index;
         }
 
         public override bool Equals(object obj)
@@ -298,8 +306,8 @@ namespace System.IO.Pipelines
 
         public override int GetHashCode()
         {
-            var h1 = _segment?.GetHashCode() ?? 0;
-            var h2 = _index.GetHashCode();
+            var h1 = Segment?.GetHashCode() ?? 0;
+            var h2 = Index.GetHashCode();
 
             var shift5 = ((uint)h1 << 5) | ((uint)h1 >> 27);
             return ((int)shift5 + h1) ^ h2;
@@ -307,19 +315,19 @@ namespace System.IO.Pipelines
 
         internal bool GreaterOrEqual(ReadCursor other)
         {
-            if (other._segment == _segment)
+            if (other.Segment == Segment)
             {
-                return other._index <= _index;
+                return other.Index <= Index;
             }
             return IsReachable(other);
         }
 
         internal bool IsReachable(ReadCursor other)
         {
-            var current = other._segment;
+            var current = other.Segment;
             while (current != null)
             {
-                if (current == _segment)
+                if (current == Segment)
                 {
                     return true;
                 }

@@ -1,12 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Pipelines.Networking.Windows.RIO.Internal.Winsock;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.IO.Pipelines.Networking.Windows.RIO.Internal.Winsock;
 
 namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 {
@@ -92,7 +92,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             }
         }
 
-        public IntPtr GetBufferId(IntPtr address, out long startAddress)
+        private IntPtr GetBufferId(IntPtr address, out long startAddress)
         {
             var id = IntPtr.Zero;
             startAddress = 0;
@@ -114,6 +114,25 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             }
 
             return id;
+        }
+
+        public unsafe RioBufferSegment GetSegmentFromMemory(Buffer<byte> memory)
+        {
+            // It's ok to unpin the handle here because the memory is from the pool
+            // we created, which is already pinned.
+            var pin = memory.Pin();
+            var spanPtr = (IntPtr)pin.PinnedPointer;
+            pin.Free();
+
+            long startAddress;
+            long spanAddress = spanPtr.ToInt64();
+            var bufferId = GetBufferId(spanPtr, out startAddress);
+            
+            checked
+            {
+                var offset = (uint)(spanAddress - startAddress);
+                return new RioBufferSegment(bufferId, offset, (uint)memory.Length);
+            }
         }
 
         private void OnSlabAllocated(MemoryPoolSlab slab)

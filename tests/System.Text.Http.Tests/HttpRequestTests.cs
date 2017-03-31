@@ -13,7 +13,7 @@ namespace System.Slices.Tests
 {
     public partial class HttpRequestTests
     {
-        [Fact]
+        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
         public void HttpReaderSingleSegment()
         {
             var bytes = new ReadOnlyBytes(s_requestBytes);
@@ -37,7 +37,7 @@ namespace System.Slices.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
         public void HttpReaderMultipleSegments()
         {
             ReadOnlyBytes bytes = s_segmentedRequest;

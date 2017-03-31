@@ -2,11 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Collections.Generic;
 using System.IO.Pipelines.Testing;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests
@@ -106,7 +102,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ByteByByteTest()
         {
-            WritableBuffer writableBuffer;
+            WritableBuffer writableBuffer = default(WritableBuffer);
             for (int i = 1; i <= 1024 * 1024; i++)
             {
                 writableBuffer = _pipe.Writer.Alloc(100);
@@ -115,6 +111,7 @@ namespace System.IO.Pipelines.Tests
 
                 Assert.Equal(i, _pipe.Length);
             }
+
             writableBuffer.FlushAsync();
 
             for (int i = 1024 * 1024 - 1; i >= 0; i--)

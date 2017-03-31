@@ -81,7 +81,15 @@ namespace System.IO.Pipelines.Tests
         public void SkippingPastLengthThrows()
         {
             var reader = new ReadableBufferReader(ReadableBuffer.Create(new byte[] { 1, 2, 3, 4, 5 }, 0, 5));
-            Assert.Throws<ArgumentOutOfRangeException>(() => reader.Skip(6));
+            try
+            {
+                reader.Skip(6);
+                Assert.True(false);
+            }
+            catch(Exception ex)
+            {
+                Assert.True(ex is ArgumentOutOfRangeException);
+            }
         }
 
         [Fact]
@@ -133,7 +141,15 @@ namespace System.IO.Pipelines.Tests
             var buffer = BufferUtilities.CreateBuffer(new[] { new byte[] { 1 }, new byte[] { 2 }, new byte[] { 3 } });
             var reader = new ReadableBufferReader(buffer);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => reader.Skip(4));
+            try
+            {
+                reader.Skip(4);
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArgumentOutOfRangeException);
+            }
         }
 
         [Fact]
