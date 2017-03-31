@@ -41,7 +41,7 @@ namespace System.Text.Primitives.Tests
         public void EncodingPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.AsSpan();
+            ReadOnlySpan<char> characters = unicodeString.AsSpanTemp();
 
             int consumed;
             int encodedBytes;
