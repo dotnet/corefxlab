@@ -38,7 +38,7 @@ namespace System.IO.Pipelines
                 var segment = segmentPart.Segment;
                 var span = segment.Buffer.Span.Slice(segmentPart.Start, segmentPart.Length);
 
-                int index = span.IndexOfAny(byte0, byte1);
+                int index = System.SpanExtensions.IndexOfAny(span, byte0, byte1);
 
                 if (index != -1)
                 {
@@ -60,7 +60,7 @@ namespace System.IO.Pipelines
                 var segment = segmentPart.Segment;
                 var span = segment.Buffer.Span.Slice(segmentPart.Start, segmentPart.Length);
 
-                int index = span.IndexOfAny(byte0, byte1, byte2);
+                int index = System.SpanExtensions.IndexOfAny(span, byte0, byte1, byte2);
 
                 if (index != -1)
                 {
