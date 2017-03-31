@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Globalization;
 using System.Text.Utf8;
 using Xunit;
@@ -73,7 +74,7 @@ namespace System.Text.Formatting.Tests
 
             var sb = new ArrayFormatter(100, TextEncoder.Utf8);
             sb.Append(time, 'R');
-            var result = sb.Formatted.Slice().ToArray();
+            var result = sb.Formatted.AsSpan().ToArray();
             var resultString = Encoding.UTF8.GetString(result);
 
             Assert.Equal(expected, resultString);

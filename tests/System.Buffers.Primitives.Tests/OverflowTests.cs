@@ -144,7 +144,7 @@ namespace System.Buffers.Tests
         {
             var arr = new Guid[20];
 
-            var slice = arr.Slice(2);
+            var slice = arr.AsSpan().Slice(2);
             Guid guid = Guid.NewGuid();
             slice[1] = guid;
 
@@ -159,7 +159,7 @@ namespace System.Buffers.Tests
         {
             var arr = new Guid[20];
 
-            var slice = arr.Slice(2, 2);
+            var slice = arr.AsSpan().Slice(2, 2);
             Guid guid = Guid.NewGuid();
             slice[1] = guid;
 

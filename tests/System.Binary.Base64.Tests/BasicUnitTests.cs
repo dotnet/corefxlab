@@ -20,8 +20,8 @@ namespace System.Binary.Tests
 
             for (int value = 0; value < 256; value++) {
 
-                var sourceBytes = testBytes.Slice(0, value + 1);
-                var encodedBytes = new byte[Base64.ComputeEncodedLength(sourceBytes.Length)].Slice();
+                var sourceBytes = testBytes.AsSpan().Slice(0, value + 1);
+                var encodedBytes = new byte[Base64.ComputeEncodedLength(sourceBytes.Length)].AsSpan();
                 var encodedBytesCount = Base64.Encode(sourceBytes, encodedBytes);
                 Assert.Equal(encodedBytes.Length, encodedBytesCount);
 
@@ -30,7 +30,7 @@ namespace System.Binary.Tests
                 Assert.Equal(expectedText, encodedText);
 
                 var decodedBytes = new byte[sourceBytes.Length];
-                var decodedByteCount = Base64.Decode(encodedBytes, decodedBytes.Slice());
+                var decodedByteCount = Base64.Decode(encodedBytes, decodedBytes.AsSpan());
                 Assert.Equal(sourceBytes.Length, decodedByteCount);
 
                 for (int i=0; i<decodedBytes.Length; i++) {
@@ -49,9 +49,9 @@ namespace System.Binary.Tests
             var testBytes = list.ToArray();
 
             for (int value = 0; value < 256; value++) {
-                var sourceBytes = testBytes.Slice(0, value + 1);
+                var sourceBytes = testBytes.AsSpan().Slice(0, value + 1);
                 var buffer = new byte[Base64.ComputeEncodedLength(sourceBytes.Length)];
-                var bufferSlice = buffer.Slice();
+                var bufferSlice = buffer.AsSpan();
 
                 Base64.Encode(sourceBytes, bufferSlice);
 

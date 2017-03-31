@@ -12,7 +12,7 @@ namespace System.Slices.Tests
         public static void StringSliceNullary()
         {
             string s = "Hello";
-            ReadOnlySpan<char> span = s.Slice();
+            ReadOnlySpan<char> span = s.AsSpanTemp();
             char[] expected = s.ToCharArray();
             span.Validate(expected);
         }
@@ -21,7 +21,7 @@ namespace System.Slices.Tests
         public static void StringSliceInt()
         {
             string s = "Goodbye";
-            ReadOnlySpan<char> span = s.Slice(2);
+            ReadOnlySpan<char> span = s.AsSpanTemp().Slice(2);
             char[] expected = s.Substring(2).ToCharArray();
             span.Validate(expected);
         }
@@ -30,7 +30,7 @@ namespace System.Slices.Tests
         public static void StringSliceIntPastEnd()
         {
             string s = "Hello";
-            ReadOnlySpan<char> span = s.Slice(s.Length);
+            ReadOnlySpan<char> span = s.AsSpanTemp().Slice(s.Length);
             Assert.Equal(0, span.Length);
         }
 
@@ -38,7 +38,7 @@ namespace System.Slices.Tests
         public static void StringSliceIntInt()
         {
             string s = "Goodbye";
-            ReadOnlySpan<char> span = s.Slice(2, 4);
+            ReadOnlySpan<char> span = s.AsSpanTemp().Slice(2, 4);
             char[] expected = s.Substring(2, 4).ToCharArray();
             span.Validate(expected);
         }
@@ -47,7 +47,7 @@ namespace System.Slices.Tests
         public static void StringSliceIntIntUpToEnd()
         {
             string s = "Goodbye";
-            ReadOnlySpan<char> span = s.Slice(2, s.Length - 2);
+            ReadOnlySpan<char> span = s.AsSpanTemp().Slice(2, s.Length - 2);
             char[] expected = s.Substring(2).ToCharArray();
             span.Validate(expected);
         }
@@ -56,7 +56,7 @@ namespace System.Slices.Tests
         public static void StringSliceIntIntPastEnd()
         {
             string s = "Hello";
-            ReadOnlySpan<char> span = s.Slice(s.Length, 0);
+            ReadOnlySpan<char> span = s.AsSpanTemp().Slice(s.Length, 0);
             Assert.Equal(0, span.Length);
         }
 
@@ -64,22 +64,22 @@ namespace System.Slices.Tests
         public static void StringSliceNullChecked()
         {
             string s = null;
-            Assert.Throws<ArgumentNullException>(() => s.Slice().DontBox());
-            Assert.Throws<ArgumentNullException>(() => s.Slice(0).DontBox());
-            Assert.Throws<ArgumentNullException>(() => s.Slice(0, 0).DontBox());
+            Assert.Throws<ArgumentNullException>(() => s.AsSpanTemp().DontBox());
+            Assert.Throws<ArgumentNullException>(() => s.AsSpanTemp().Slice(0).DontBox());
+            Assert.Throws<ArgumentNullException>(() => s.AsSpanTemp().Slice(0, 0).DontBox());
         }
 
         [Fact]
         public static void StringSliceIntRangeChecked()
         {
             string s = "Hello";
-            Assert.Throws<ArgumentOutOfRangeException>(() => s.Slice(-1).DontBox());
-            Assert.Throws<ArgumentOutOfRangeException>(() => s.Slice(s.Length + 1).DontBox());
-            Assert.Throws<ArgumentOutOfRangeException>(() => s.Slice(-1, 0).DontBox());
-            Assert.Throws<ArgumentOutOfRangeException>(() => s.Slice(0, s.Length + 1).DontBox());
-            Assert.Throws<ArgumentOutOfRangeException>(() => s.Slice(2, s.Length + 1 - 2).DontBox());
-            Assert.Throws<ArgumentOutOfRangeException>(() => s.Slice(s.Length + 1, 0).DontBox());
-            Assert.Throws<ArgumentOutOfRangeException>(() => s.Slice(s.Length, 1).DontBox());
+            Assert.Throws<ArgumentOutOfRangeException>(() => s.AsSpanTemp().Slice(-1).DontBox());
+            Assert.Throws<ArgumentOutOfRangeException>(() => s.AsSpanTemp().Slice(s.Length + 1).DontBox());
+            Assert.Throws<ArgumentOutOfRangeException>(() => s.AsSpanTemp().Slice(-1, 0).DontBox());
+            Assert.Throws<ArgumentOutOfRangeException>(() => s.AsSpanTemp().Slice(0, s.Length + 1).DontBox());
+            Assert.Throws<ArgumentOutOfRangeException>(() => s.AsSpanTemp().Slice(2, s.Length + 1 - 2).DontBox());
+            Assert.Throws<ArgumentOutOfRangeException>(() => s.AsSpanTemp().Slice(s.Length + 1, 0).DontBox());
+            Assert.Throws<ArgumentOutOfRangeException>(() => s.AsSpanTemp().Slice(s.Length, 1).DontBox());
         }
     }
 }

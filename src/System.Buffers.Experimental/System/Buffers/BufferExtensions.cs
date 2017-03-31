@@ -23,6 +23,65 @@ namespace System.Buffers
             return array.Items.Slice(0, array.Count);
         }
 
+        // span creation helpers:
+
+        /// <summary>
+        /// Creates a new slice over the portion of the target array segment.
+        /// </summary>
+        /// <param name="arraySegment">The target array segment.</param>
+        /// </exception>
+        public static Span<T> Slice<T>(this ArraySegment<T> arraySegment)
+        {
+            return new Span<T>(arraySegment.Array, arraySegment.Offset, arraySegment.Count);
+        }
+
+        /// <summary>
+        /// Creates a new slice over the portion of the target array.
+        /// </summary>
+        /// <param name="array">The target array.</param>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if the 'array' parameter is null.
+        /// </exception>
+        public static Span<T> Slice<T>(this T[] array)
+        {
+            return new Span<T>(array);
+        }
+
+        /// <summary>
+        /// Creates a new slice over the portion of the target array beginning
+        /// at 'start' index.
+        /// </summary>
+        /// <param name="array">The target array.</param>
+        /// <param name="start">The index at which to begin the slice.</param>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if the 'array' parameter is null.
+        /// </exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// Thrown when the specified start index is not in range (&lt;0 or &gt;&eq;length).
+        /// </exception>
+        public static Span<T> Slice<T>(this T[] array, int start)
+        {
+            return new Span<T>(array, start);
+        }
+
+        /// <summary>
+        /// Creates a new slice over the portion of the target array beginning
+        /// at 'start' index and with 'length' items.
+        /// </summary>
+        /// <param name="array">The target array.</param>
+        /// <param name="start">The index at which to begin the slice.</param>
+        /// <param name="length">The number of items in the new slice.</param>
+        /// <exception cref="System.ArgumentException">
+        /// Thrown if the 'array' parameter is null.
+        /// </exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// Thrown when the specified start or end index is not in range (&lt;0 or &gt;&eq;length).
+        /// </exception>
+        public static Span<T> Slice<T>(this T[] array, int start, int length)
+        {
+            return new Span<T>(array, start, length);
+        }
+
         /// <summary>
         /// Creates a new readonly span over the portion of the target string.
         /// </summary>
@@ -467,7 +526,7 @@ namespace System.Buffers
                                                        0x03ul << 32 |
                                                        0x02ul << 40 |
                                                        0x01ul << 48) + 1;
-        private const ulong byteBroadcastToUlong = ~0UL / byte.MaxValue;
+        private const ulong byteBroadcastToUlong = ~0UL / Byte.MaxValue;
         private const ulong filterByteHighBitsInUlong = (byteBroadcastToUlong >> 1) | (byteBroadcastToUlong << (sizeof(ulong) * 8 - 1));
     }
 }

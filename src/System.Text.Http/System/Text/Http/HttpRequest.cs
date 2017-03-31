@@ -203,7 +203,7 @@ namespace System.Text.Http
             {
                 throw new NotImplementedException();
             }
-            return new Utf8String(sb.Formatted.Slice());
+            return new Utf8String(sb.Formatted.AsSpan());
         }
     }
 }

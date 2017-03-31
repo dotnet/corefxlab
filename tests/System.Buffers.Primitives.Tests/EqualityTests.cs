@@ -189,13 +189,13 @@ namespace System.Buffers.Tests
         [Fact]
         public void EmptySpansAreSequentiallyAndStructurallyEqual()
         {
-            var emptySpan = Array.Empty<int>().Slice();
-            var otherEmptySpan = Array.Empty<int>().Slice();
+            var emptySpan = Array.Empty<int>().AsSpan();
+            var otherEmptySpan = Array.Empty<int>().AsSpan();
 
             Assert.True(emptySpan.SequenceEqual(otherEmptySpan));
             Assert.True(otherEmptySpan.SequenceEqual(emptySpan));
 
-            var spanFromNonEmptyArrayButWithZeroLength = new int[1] { 123 }.Slice(0, 0);
+            var spanFromNonEmptyArrayButWithZeroLength = new int[1] { 123 }.AsSpan().Slice(0, 0);
 
             Assert.True(emptySpan.SequenceEqual(spanFromNonEmptyArrayButWithZeroLength));
             Assert.True(spanFromNonEmptyArrayButWithZeroLength.SequenceEqual(emptySpan));
@@ -422,19 +422,19 @@ namespace System.Buffers.Tests
             where T : struct, IEquatable<T>
         {
             const int elementsCountThatNormallyWouldInvolveMemCmp = 1000;
-            var negativeInfinities = Enumerable.Repeat(negativeInfinity, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().Slice();
-            var positiveInfinities = Enumerable.Repeat(positiveInfinity, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().Slice();
+            var negativeInfinities = Enumerable.Repeat(negativeInfinity, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().AsSpan();
+            var positiveInfinities = Enumerable.Repeat(positiveInfinity, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().AsSpan();
 
             Assert.Equal(positiveInfinity.Equals(negativeInfinity), positiveInfinities.SequenceEqual(negativeInfinities));
             Assert.False(negativeInfinities.SequenceEqual(positiveInfinities));
 
-            var negativeZeroes = Enumerable.Repeat(negativeZero, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().Slice();
-            var positiveZeroes = Enumerable.Repeat(positiveZero, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().Slice();
+            var negativeZeroes = Enumerable.Repeat(negativeZero, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().AsSpan();
+            var positiveZeroes = Enumerable.Repeat(positiveZero, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().AsSpan();
 
             Assert.Equal(negativeZero.Equals(positiveZero), negativeZeroes.SequenceEqual(positiveZeroes));
             Assert.False(positiveInfinities.SequenceEqual(negativeInfinities));
 
-            var nans = Enumerable.Repeat(NaN, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().Slice();
+            var nans = Enumerable.Repeat(NaN, elementsCountThatNormallyWouldInvolveMemCmp).ToArray().AsSpan();
 
             Assert.Equal(NaN.Equals(NaN), nans.SequenceEqual(nans));
             Assert.True(nans.SequenceEqual(nans));
@@ -448,8 +448,8 @@ namespace System.Buffers.Tests
         [InlineData(20 * 100)]
         public void AllBytesAreTakenUnderConsideration(int bytesCount)
         {
-            var slice = Enumerable.Range(0, bytesCount).Select(index => (byte)index).ToArray().Slice();
-            var copy = slice.ToArray().Slice();
+            var slice = Enumerable.Range(0, bytesCount).Select(index => (byte)index).ToArray().AsSpan();
+            var copy = slice.ToArray().AsSpan();
 
             for (int i = 0; i < bytesCount; i++)
             {
