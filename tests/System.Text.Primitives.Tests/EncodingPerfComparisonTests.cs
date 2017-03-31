@@ -16,7 +16,7 @@ namespace System.Text.Primitives.Tests
         public void EncodingPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.AsSpan();
+            ReadOnlySpan<char> characters = unicodeString.AsSpanTemp();
 
             Encoding utf8 = Encoding.UTF8;
 
