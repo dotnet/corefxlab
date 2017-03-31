@@ -148,7 +148,7 @@ namespace System.Text.Utf16
                 return false;
             }
 
-            text.AsSpan().AsBytes().CopyTo(encodedBytes);
+            text.AsSpanTemp().AsBytes().CopyTo(encodedBytes);
             return true;
         }
 
