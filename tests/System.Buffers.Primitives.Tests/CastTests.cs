@@ -57,7 +57,7 @@ namespace System.Buffers.Tests
             var ints = new int[100000];
             Random r = new Random(42324232);
             for (int i = 0; i < ints.Length; i++) { ints[i] = r.Next(); }
-            var bytes = ints.Slice().NonPortableCast<int, byte>();
+            var bytes = ints.AsSpan().NonPortableCast<int, byte>();
             Assert.Equal(bytes.Length, ints.Length * sizeof(int));
             for (int i = 0; i < ints.Length; i++)
             {
@@ -74,7 +74,7 @@ namespace System.Buffers.Tests
             var bytes = new byte[100000];
             Random r = new Random(541345);
             for (int i = 0; i < bytes.Length; i++) { bytes[i] = (byte)r.Next(256); }
-            var ints = bytes.Slice().NonPortableCast<byte, int>();
+            var ints = bytes.AsSpan().NonPortableCast<byte, int>();
             Assert.Equal(ints.Length, bytes.Length / sizeof(int));
             for (int i = 0; i < ints.Length; i++)
             {
@@ -90,7 +90,7 @@ namespace System.Buffers.Tests
         [InlineData(4)]
         public void SourceTypeLargerThanTargetOneCorrectlyCalcsTargetsLength(int sourceLength)
         {
-            var sourceSlice = new SevenBytesStruct[sourceLength].Slice();
+            var sourceSlice = new SevenBytesStruct[sourceLength].AsSpan();
 
             var targetSlice = sourceSlice.NonPortableCast<SevenBytesStruct, short>();
 
@@ -104,7 +104,7 @@ namespace System.Buffers.Tests
         [InlineData(3)]
         public void WhenSourceDoesntFitIntoTargetLengthIsZero(int sourceLength)
         {
-            var sourceSlice = new short[sourceLength].Slice();
+            var sourceSlice = new short[sourceLength].AsSpan();
 
             var targetSlice = sourceSlice.NonPortableCast<short, SevenBytesStruct>();
 
@@ -116,7 +116,7 @@ namespace System.Buffers.Tests
         [InlineData(6)]
         public void WhenSourceFitsIntoTargetOnceLengthIsOne(int sourceLength)
         {
-            var sourceSlice = new short[sourceLength].Slice();
+            var sourceSlice = new short[sourceLength].AsSpan();
 
             var targetSlice = sourceSlice.NonPortableCast<short, SevenBytesStruct>();
 
@@ -132,10 +132,15 @@ namespace System.Buffers.Tests
                 int sourceLength = 620000000;
                 var sourceSlice = new Span<SevenBytesStruct>(&dummy, sourceLength);
 
-                Assert.Throws<OverflowException>(() =>
+                try
                 {
                     var targetSlice = sourceSlice.NonPortableCast<SevenBytesStruct, short>();
-                });
+                    Assert.True(false);
+                }
+                catch (Exception ex)
+                {
+                    Assert.True(ex is OverflowException);
+                }
             }
         }
     }

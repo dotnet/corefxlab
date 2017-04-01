@@ -121,13 +121,29 @@ namespace System.Buffers.Tests
         [Fact]
         public void ByteSpanCtorWithRangeThrowsArgumentExceptionOnNull()
         {
-            Assert.Throws<ArgumentNullException>(() => { Span<byte> span = new Span<byte>(null, 0, 0); });
+            try
+            {
+                Span<byte> span = new Span<byte>(null, 0, 0);
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArgumentNullException);
+            }
         }
 
         [Fact]
         public void ByteReadOnlySpanCtorWithRangeThrowsArgumentExceptionOnNull()
         {
-            Assert.Throws<ArgumentNullException>(() => { ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(null, 0, 0); });
+            try
+            {
+                ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(null, 0, 0);
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArgumentNullException);
+            }
         }
 
         [Theory]
@@ -153,7 +169,15 @@ namespace System.Buffers.Tests
         [InlineData(new byte[3] { 0, 0, 0 }, 15, 0)]
         public void ByteSpanCtorWithRangeThrowsArgumentOutOfRangeException(byte[] bytes, int start, int length)
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => { Span<byte> span = new Span<byte>(bytes, start, length); });
+            try
+            {
+                Span<byte> span = new Span<byte>(bytes, start, length);
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArgumentOutOfRangeException);
+            }
         }
 
         [Theory]
@@ -197,10 +221,16 @@ namespace System.Buffers.Tests
         public void ByteSpanSliceWithRangeThrowsArgumentOutOfRangeException1(byte[] bytes, int start, int length)
         {
             var span = new Span<byte>(bytes);
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
+
+            try
             {
                 Span<byte> slice = span.Slice(start, length);
-            });
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArgumentOutOfRangeException);
+            }
         }
 
         [Theory]
@@ -235,15 +265,29 @@ namespace System.Buffers.Tests
         public void ByteSpanSliceWithStartRangeThrowsArgumentOutOfRangeException(byte[] bytes, int start)
         {
             var span = new Span<byte>(bytes);
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
+
+            try
             {
                 Span<byte> slice = span.Slice(start);
-            });
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArgumentOutOfRangeException);
+            }
         }
 
         public void ByteReadOnlySpanCtorWithRangeThrowsArgumentOutOfRangeException(byte[] bytes, int start, int length)
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => { ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(bytes, start, length); });
+            try
+            {
+                ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(bytes, start, length);
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArgumentOutOfRangeException);
+            }
         }
 
         [Fact]
@@ -274,21 +318,48 @@ namespace System.Buffers.Tests
         public void CovariantSlicesNotSupported1()
         {
             object[] array = new string[10];
-            Assert.Throws<ArrayTypeMismatchException>(() => { var slice = new Span<object>(array); });
+
+            try
+            {
+                var slice = new Span<object>(array);
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArrayTypeMismatchException);
+            }
         }
 
         [Fact]
         public void CovariantSlicesNotSupported2()
         {
             object[] array = new string[10];
-            Assert.Throws<ArrayTypeMismatchException>(() => { var slice = array.Slice(0); });
+
+            try
+            {
+                var slice = array.AsSpan().Slice(0);
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArrayTypeMismatchException);
+            }
         }
 
         [Fact]
         public void CovariantSlicesNotSupported3()
         {
             object[] array = new string[10];
-            Assert.Throws<ArrayTypeMismatchException>(() => { var slice = new Span<object>(array, 0, 10); });
+
+            try
+            {
+                var slice = new Span<object>(array, 0, 10);
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ArrayTypeMismatchException);
+            }
         }
     }
 }

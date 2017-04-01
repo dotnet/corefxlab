@@ -11,16 +11,15 @@ namespace System.Text.Http.Parser.Tests
 {
     public class HttpParserBasicTests
     {
-        byte[] _simpleRequestBytes = Encoding.ASCII.GetBytes("GET /plaintext HTTP/1.1\r\nN: V\r\n\r\n");
-
-        [Fact]
-        public void HttpParserBasicsRobSimple()
+        [Theory]
+        [InlineData("GET /plaintext HTTP/1.1\r\nN: V\r\n\r\n")]
+        public void HttpParserBasicsRob(string requestText)
         {
             var parser = new HttpParser();
             var request = new Request();
-            ReadOnlyBytes buffer = new ReadOnlyBytes(_simpleRequestBytes);
+            ReadOnlyBytes buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestText));
 
-            Assert.True(parser.ParseRequestLine(request, buffer, out var consumed));
+            Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
             Assert.Equal(25, consumed);
 
             Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed));
@@ -33,18 +32,58 @@ namespace System.Text.Http.Parser.Tests
 
             // headers
             Assert.Equal(1, request.Headers.Count);
-            Assert.True(request.Headers.ContainsKey("N"));       
+            Assert.True(request.Headers.ContainsKey("N"));
             Assert.Equal("V", request.Headers["N"]);
         }
 
+        [Theory]
+        [InlineData("GET /plaintext HTTP/1.1\r\nN: V\r\n\r\n")]
+        public void HttpParserSegmentedRob(string requestText)
+        {
+            var parser = new HttpParser();
+
+            for (int pivot = 0; pivot < requestText.Length; pivot++) {
+                var front = requestText.Substring(0, pivot);
+                var back = requestText.Substring(pivot);
+
+                var frontBytes = Encoding.ASCII.GetBytes(front);
+                var endBytes = Encoding.ASCII.GetBytes(back);
+
+                ReadOnlyBytes buffer = ReadOnlyBytes.Create(frontBytes, endBytes);
+
+                var request = new Request();
+
+                try {
+                    Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
+                    Assert.Equal(25, consumed);
+
+                    Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed));
+                    Assert.Equal(8, consumed);
+                }
+                catch {
+                    throw;
+                }
+
+                // request line
+                Assert.Equal(Http.Method.Get, request.Method);
+                Assert.Equal(Http.Version.Http11, request.Version);
+                Assert.Equal("/plaintext", request.Path);
+
+                // headers
+                Assert.Equal(1, request.Headers.Count);
+                Assert.True(request.Headers.ContainsKey("N"));
+                Assert.Equal("V", request.Headers["N"]);              
+            }
+        }
+
         [Fact]
-        public void HttpParserBasicsRob()
+        public void TechEmpowerRob()
         {
             var parser = new HttpParser();
             var request = new Request();
             ReadOnlyBytes buffer = new ReadOnlyBytes(_plaintextTechEmpowerRequestBytes);
 
-            Assert.True(parser.ParseRequestLine(request, buffer, out var consumed));
+            Assert.True(parser.ParseRequestLine(ref request, buffer, out var consumed));
             Assert.Equal(25, consumed);
 
             Assert.True(parser.ParseHeaders(request, buffer.Slice(consumed), out consumed));
@@ -66,7 +105,7 @@ namespace System.Text.Http.Parser.Tests
         }
 
         [Fact]
-        public void HttpParserBasics()
+        public void TechEmpowerRobRb()
         {
             var parser = new HttpParser();
             var request = new Request();

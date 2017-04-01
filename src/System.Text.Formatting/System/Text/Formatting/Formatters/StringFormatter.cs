@@ -60,7 +60,7 @@ namespace System.Text.Formatting
             return text;
         }
 
-        Span<byte> IOutput.Buffer => _buffer.Free.Slice();
+        Span<byte> IOutput.Buffer => _buffer.Free.AsSpan();
 
         void IOutput.Enlarge(int desiredBufferLength)
         {

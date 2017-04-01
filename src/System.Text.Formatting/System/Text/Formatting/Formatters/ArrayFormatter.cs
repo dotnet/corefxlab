@@ -31,7 +31,7 @@ namespace System.Text.Formatting
 
         public TextEncoder Encoder => _encoder;
 
-        public Span<byte> Buffer => Free.Slice();
+        public Span<byte> Buffer => Free.AsSpan();
 
         void IOutput.Enlarge(int desiredBufferLength)
         {

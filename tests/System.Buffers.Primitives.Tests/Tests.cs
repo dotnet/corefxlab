@@ -29,7 +29,7 @@ public class Tests
             }
             else
             {
-                slice = ints.Slice();
+                slice = ints.AsSpan();
             }
             Assert.Equal(ints.Length, slice.Length);
             for (int j = 0; j < ints.Length; j++)
@@ -54,7 +54,7 @@ public class Tests
             }
             else
             {
-                slice = ints.Slice();
+                slice = ints.AsSpan();
             }
             Assert.Equal(ints.Length, slice.Length);
             for (int j = 0; j < ints.Length; j++)
@@ -68,7 +68,7 @@ public class Tests
     public void TwoSpansCreatedOverSameStringsAreEqual()
     {
         var str = "Hello, Slice!";
-        ReadOnlySpan<char> slice = str.Slice();
+        ReadOnlySpan<char> slice = str.AsSpanTemp();
         Assert.Equal(str.Length, slice.Length);
 
         for (int j = 0; j < str.Length; j++)
@@ -114,7 +114,7 @@ public class Tests
     [Fact]
     public void TwoSpansCreatedOverSameIntSubarrayAreEqual()
     {
-        var slice = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }.Slice();
+        var slice = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }.AsSpan();
 
         // First a simple subslice over the whole array, using start.
         {
@@ -183,7 +183,7 @@ public class Tests
 
         Tester.CleanUpMemory();
 
-        var slice = ints.Slice();
+        var slice = ints.AsSpan();
         sw.Reset();
         sw.Start();
         int y = 0;

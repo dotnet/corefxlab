@@ -53,7 +53,7 @@ namespace System.Text.Http.Parser
         }
 
         static readonly byte[] s_Eol = Encoding.UTF8.GetBytes("\r\n");
-        public unsafe bool ParseRequestLine<T>(T handler, ReadOnlyBytes buffer, out int consumed) where T : IHttpRequestLineHandler
+        public unsafe bool ParseRequestLine<T>(ref T handler, ReadOnlyBytes buffer, out int consumed) where T : IHttpRequestLineHandler
         {
             // Prepare the first span
             var span = buffer.First.Span;
@@ -72,7 +72,7 @@ namespace System.Text.Http.Parser
                     return false;
                 }
 
-                span = buffer.Slice(eol + s_Eol.Length).ToSpan();
+                span = buffer.Slice(0, eol + s_Eol.Length).ToSpan();
             }
 
             // Fix and parse the span
@@ -340,99 +340,124 @@ namespace System.Text.Http.Parser
             }
         }
 
-        public unsafe bool ParseHeaders<T>(T handler, ReadOnlyBytes buffer, out int consumedBytes) where T : IHttpHeadersHandler
+        public unsafe bool ParseHeaders<T>(T handler, ReadOnlyBytes buffer, out int consumedBytes) where T : class, IHttpHeadersHandler
         {
-            var span = buffer.First.Span;
+            return ParseHeaders(ref handler, buffer, out consumedBytes);
+        }
+
+        public unsafe bool ParseHeaders<T>(ref T handler, ReadOnlyBytes buffer, out int consumedBytes) where T : IHttpHeadersHandler
+        {
+            var index = 0;        
             var rest = buffer.Rest;
-            var length = span.Length;
-            int index = -1;
-            State state = State.ParsingName;
-            int nameStart = 0, nameEnd = 0, valueStart = 0, valueEnd = 0;
-            bool sawCRLF = false;
-            bool straddling = false;
-            fixed (byte* pBuffer = &span.DangerousGetPinnableReference()) {
-                while (true) {
-                    index++;
-                    // get next byte 
-                    while (length <= index) {
-                        if (rest == null) {
-                            consumedBytes = 0;
-                            return false;
-                        }
-                        span = rest.First.Span;
-                        length = span.Length;
-                        rest = rest.Rest;
-                        index = 0;
-                        straddling = true;
-                        throw new NotImplementedException("call to OnHeader below needs to account for straddling spans");
-                    }
-                    var next = pBuffer[index];
+            var span = buffer.First.Span;
+            var remaining = span.Length;
+            consumedBytes = 0;
+            while (true) {
+                fixed (byte* pBuffer = &span.DangerousGetPinnableReference()) {
+                    while (remaining > 0) {
 
-                    if (state == State.ParsingValue) {
-                        if (next == ByteCR) {
-                            valueEnd = index;
-                            state = State.ArferCR;
-                        }
-                        // TODO: why only these are rejected?
-                        if (next == ByteLF) {
-                            RejectRequest(RequestRejectionReason.InvalidCharactersInHeaderName);
-                        }
-                        // TODO: should whitespace after all values (i.e. right before CRLF) be removed here?
-                        // else just keep advancing chracters in name
-                    }
-                    else if (state == State.ParsingName) {
-                        if (next == ByteColon) {
-                            state = State.BeforValue;
-                            nameEnd = index;
-                        }
-                        if (next == ByteCR) state = State.ArferCR;
+                        int ch1;
+                        int ch2;
 
-                        // TODO: why only these are rejected?
-                        if (next == ByteSpace || next == ByteTab || next == ByteLF) {
-                            RejectRequest(RequestRejectionReason.InvalidCharactersInHeaderName);
+                        // Fast path, we're still looking at the same span
+                        if (remaining >= 2) {
+                            ch1 = pBuffer[index];
+                            ch2 = pBuffer[index + 1];
                         }
-                        
-                        // else just keep advancing chracters in name
-                    }
-                    else if (state == State.BeforValue) {
-                        if (next != ByteSpace && next != ByteTab) {
-                            state = State.ParsingValue;
-                            valueStart = index;
-                        }
-                        else if (next == ByteCR) RejectRequest(RequestRejectionReason.InvalidCharactersInHeaderName);
-                        // else skip whitespace
-                    }
-                    else if (state == State.ArferCR) {
-                        if (next == ByteLF) {
-                            sawCRLF = true;
-                            if (nameEnd != 0) {
-                                if (!straddling) {
-                                    ReadOnlySpan<byte> nameBuffer = new ReadOnlySpan<byte>(pBuffer + nameStart, nameEnd - nameStart);
-                                    ReadOnlySpan<byte> valueBuffer = new ReadOnlySpan<byte>(pBuffer + valueStart, valueEnd - valueStart);
-                                    handler.OnHeader(nameBuffer, valueBuffer);
-                                    nameEnd = 0;
-                                    state = State.ParsingName;
-                                    nameStart = index + 1;
-                                    straddling = false;
-                                }
-                                else {
-                                    throw new NotImplementedException("header is straddling spans");
-                                }
-                            }
-                            else {
-                                if (sawCRLF) {
-                                    consumedBytes = index + 1;
-                                    return true;
-                                }
-                                RejectRequest(RequestRejectionReason.InvalidRequestHeadersNoCRLF);
-                            }
-                        }
+                        // Slow Path
                         else {
+                            ReadNextTwoChars(pBuffer, remaining, index, out ch1, out ch2, rest);
+                        }
+
+                        if (ch1 == ByteCR) {
+                            if (ch2 == ByteLF) {
+                                consumedBytes += 2;
+                                return true;
+                            }
+
+                            if (ch2 == -1) {
+                                consumedBytes = 0;
+                                return false;
+                            }
+
+                            // Headers don't end in CRLF line.
                             RejectRequest(RequestRejectionReason.InvalidRequestHeadersNoCRLF);
                         }
-                    }                    
-                    else { 
-                        throw new Exception("bug in parser: unknown state");
+
+                        var endIndex = new ReadOnlySpan<byte>(pBuffer + index, remaining).IndexOf(ByteLF);
+                        var length = 0;
+
+                        if (endIndex != -1) {
+                            length = endIndex + 1;
+                            var pHeader = pBuffer + index;
+
+                            TakeSingleHeader(pHeader, length, handler);
+                        }
+                        else {
+                            // Split buffers
+                            var end = buffer.Slice(index).IndexOf(ByteLF);
+                            if (end == -1) {
+                                // Not there
+                                consumedBytes = 0;
+                                return false;
+                            }
+
+                            var headerSpan = buffer.Slice(index, end - index + 1).ToSpan();
+                            length = headerSpan.Length;
+
+                            fixed (byte* pHeader = &headerSpan.DangerousGetPinnableReference()) {
+                                TakeSingleHeader(pHeader, length, handler);
+                            }
+                        }
+
+                        // Skip the reader forward past the header line
+                        index += length;
+                        consumedBytes += length;
+                        remaining -= length;
+                    }
+                }
+
+                if (rest != null) {
+                    span = rest.First.Span;
+                    rest = rest.Rest;
+                    remaining = span.Length + remaining;
+                    index = span.Length - remaining;
+                }
+                else {
+                    consumedBytes = 0;
+                    return false;
+                }
+            }
+        }
+
+        private static unsafe void ReadNextTwoChars(byte* pBuffer, int remaining, int index, out int ch1, out int ch2, IReadOnlyBufferList<byte> rest)
+        {
+            if (remaining == 1) {
+                ch1 = pBuffer[index];
+                if (rest == null) {
+                    ch2 = -1;
+                }
+                else {
+                    ch2 = rest.First.Span[0];
+                }
+            }
+            else {
+                ch1 = -1;
+                ch2 = -1;
+                if (rest != null) {
+                    var nextSpan = rest.First.Span;
+                    if (nextSpan.Length > 0) {
+                        ch1 = nextSpan[0];
+
+                        if (nextSpan.Length > 1) {
+                            ch2 = nextSpan[1];
+                        }
+                        else {
+                            ch2 = -1;
+                        }
+                    }
+                    else {
+                        ch2 = -1;
                     }
                 }
             }

@@ -130,7 +130,7 @@ namespace System.Text.Utf8
         public override bool TryEncode(string text, Span<byte> data, out int bytesWritten)
         {
             int consumed;
-            var utf16 = text.Slice();
+            var utf16 = text.AsSpanTemp();
 
             return Utf8Encoder.TryEncode(utf16, data, out consumed, out bytesWritten);
         }

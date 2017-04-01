@@ -28,7 +28,7 @@ namespace System.Text.Http.Parser.Tests
             var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestLine));
             var requestHandler = new RequestHandler();
 
-            Assert.True(parser.ParseRequestLine(requestHandler, buffer, out var consumed));
+            Assert.True(parser.ParseRequestLine(ref requestHandler, buffer, out var consumed));
 
             Assert.Equal(requestHandler.Method, expectedMethod);
             Assert.Equal(requestHandler.Version, expectedVersion);
@@ -45,7 +45,7 @@ namespace System.Text.Http.Parser.Tests
             var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestLine));
             var requestHandler = new RequestHandler();
 
-            Assert.False(parser.ParseRequestLine(requestHandler, buffer, out var consumed));
+            Assert.False(parser.ParseRequestLine(ref requestHandler, buffer, out var consumed));
         }
 
         [Theory]
@@ -56,7 +56,7 @@ namespace System.Text.Http.Parser.Tests
             var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(requestLine));
             var requestHandler = new RequestHandler();
 
-            Assert.False(parser.ParseRequestLine(requestHandler, buffer, out var consumed));
+            Assert.False(parser.ParseRequestLine(ref requestHandler, buffer, out var consumed));
         }
 
         [Theory]
@@ -68,7 +68,7 @@ namespace System.Text.Http.Parser.Tests
             var requestHandler = new RequestHandler();
 
             var exception = Assert.Throws<BadHttpRequestException>(() =>
-                parser.ParseRequestLine(requestHandler, buffer, out var consumed));
+                parser.ParseRequestLine(ref requestHandler, buffer, out var consumed));
 
             //Assert.Equal($"Invalid request line: '{requestLine.EscapeNonPrintable()}'", exception.Message);
             //Assert.Equal(StatusCodes.Status400BadRequest, (exception as BadHttpRequestException).StatusCode);
@@ -85,7 +85,7 @@ namespace System.Text.Http.Parser.Tests
             var requestHandler = new RequestHandler();
 
             var exception = Assert.Throws<BadHttpRequestException>(() =>
-                parser.ParseRequestLine(requestHandler, buffer, out var consumed));
+                parser.ParseRequestLine(ref requestHandler, buffer, out var consumed));
 
             //Assert.Equal($"Invalid request line: '{method.EscapeNonPrintable()} / HTTP/1.1\\x0D\\x0A'", exception.Message);
             //Assert.Equal(StatusCodes.Status400BadRequest, (exception as BadHttpRequestException).StatusCode);
@@ -102,7 +102,7 @@ namespace System.Text.Http.Parser.Tests
             var requestHandler = new RequestHandler();
 
             var exception = Assert.Throws<BadHttpRequestException>(() =>
-                parser.ParseRequestLine(requestHandler, buffer, out var consumed));
+                parser.ParseRequestLine(ref requestHandler, buffer, out var consumed));
 
             //Assert.Equal($"Unrecognized HTTP version: '{httpVersion}'", exception.Message);
             //Assert.Equal(StatusCodes.Status505HttpVersionNotsupported, (exception as BadHttpRequestException).StatusCode);
@@ -256,23 +256,38 @@ namespace System.Text.Http.Parser.Tests
             VerifyHeader("Header", headerValue, headerValue);
         }
 
-        //[Fact]
-        //public void ParseHeadersConsumesBytesCorrectlyAtEnd()
-        //{
-        //    var parser = new HttpParser();
+        [Fact(Skip = "Why would parser return false and non-zero consumed?")]
+        public void ParseHeadersConsumesBytesCorrectlyAtEnd()
+        {
+            var parser = new HttpParser();
 
-        //    const string headerLine = "Header: value\r\n\r";
-        //    var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(headerLine));
-        //    var requestHandler = new RequestHandler();
-        //    Assert.False(parser.ParseHeaders(requestHandler, buffer, out var consumed));
+            const string headerLine = "Header: value\r\n\r";
+            var buffer = new ReadOnlyBytes(Encoding.ASCII.GetBytes(headerLine));
+            var requestHandler = new RequestHandler();
+            Assert.False(parser.ParseHeaders(requestHandler, buffer, out var consumed));
 
-        //    Assert.Equal(headerLine.Length - 1, consumed);
+            Assert.Equal(headerLine.Length - 1, consumed);
 
-        //    var buffer2 = new ReadOnlyBytes(Encoding.ASCII.GetBytes("\r\n"));
-        //    Assert.True(parser.ParseHeaders(requestHandler, buffer2, out consumed));
+            var buffer2 = new ReadOnlyBytes(Encoding.ASCII.GetBytes("\r\n"));
+            Assert.True(parser.ParseHeaders(requestHandler, buffer2, out consumed));
 
-        //    Assert.Equal(2, consumed);
-        //}
+            Assert.Equal(2, consumed);
+        }
+
+        [Theory]
+        [MemberData(nameof(RequestHeaderInvalidData))]
+        public void ParseHeadersThrowsOnInvalidRequestHeadersRb(string rawHeaders, string expectedExceptionMessage)
+        {
+            var parser = new HttpParser();
+            var buffer = ReadableBuffer.Create(Encoding.ASCII.GetBytes(rawHeaders));
+            var requestHandler = new RequestHandler();
+
+            var exception = Assert.Throws<BadHttpRequestException>(() =>
+                parser.ParseHeaders(requestHandler, buffer, out var consumed, out var examined, out var consumedBytes));
+
+            //Assert.Equal(expectedExceptionMessage, exception.Message);
+            //Assert.Equal(StatusCodes.Status400BadRequest, exception.StatusCode);
+        }
 
         [Theory]
         [MemberData(nameof(RequestHeaderInvalidData))]
