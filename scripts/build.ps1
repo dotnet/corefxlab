@@ -7,13 +7,12 @@
 )
 
 $file = "corefxlab.sln"
-$root = "$PSScriptRoot\.."
 
 Write-Host "Commencing full build for Configuration=$Configuration."
 
 if (!(Test-Path "dotnet\dotnet.exe")) {
     Write-Host "dotnet.exe not installed, downloading and installing."
-    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel $Channel -Version $Version -InstallDir $root\..\dotnet"
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel $Channel -Version $Version -InstallDir $PSScriptRoot\..\dotnet"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
         Write-Error "Failed to install dotnet.exe, exit code [$lastexitcode], aborting build."
         exit -1
@@ -22,7 +21,7 @@ if (!(Test-Path "dotnet\dotnet.exe")) {
 
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
 
-$dotnetExePath="$root\dotnet\dotnet.exe"
+$dotnetExePath="$PSScriptRoot\..\dotnet\dotnet.exe"
 
 if ($Restore -eq "true") {
     Write-Host "Restoring all packages"
