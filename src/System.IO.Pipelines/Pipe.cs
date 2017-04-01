@@ -509,7 +509,7 @@ namespace System.IO.Pipelines
                 }
 
                 result = new ReadResult();
-                if (!_readerAwaitable.IsCompleted)
+                if (_length == 0)
                 {
                     return false;
                 }

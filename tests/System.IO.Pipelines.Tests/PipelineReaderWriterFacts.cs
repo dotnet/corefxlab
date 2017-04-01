@@ -645,6 +645,68 @@ namespace System.IO.Pipelines.Tests
             Assert.True(flushTask.IsCompleted);
         }
 
+        [Fact]
+        public void TryRead_ShouldReturnTrueOnCommit()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(1);
+            writableBuffer.Advance(1);
+            writableBuffer.Commit();
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+            if(hasReader)
+            {
+                _pipe.Reader.Advance(result.Buffer.End);
+            }
+            Assert.True(hasReader);
+        }
+
+        [Fact]
+        public async Task TryRead_ShouldReturnTrueOnFlush()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(1);
+            writableBuffer.Advance(1);
+            await writableBuffer.FlushAsync();
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+            if (hasReader)
+            {
+                _pipe.Reader.Advance(result.Buffer.End);
+            }
+            Assert.True(hasReader);
+        }
+
+        [Fact]
+        public void TryRead_ShouldReturnFalseOnSecondCallWithNoNewData()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(1);
+            writableBuffer.Advance(1);
+            writableBuffer.Commit();
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+            if(hasReader)
+            {
+                _pipe.Reader.Advance(result.Buffer.End);
+            }
+            hasReader = _pipe.Reader.TryRead(out result);
+            Assert.False(hasReader);
+        }
+
+        [Fact]
+        public void TryRead_ShouldReturnTrueOnSecondCallWithUnconsumedData()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(1);
+            writableBuffer.Advance(1);
+            writableBuffer.Commit();
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+            if (hasReader)
+            {
+                _pipe.Reader.Advance(result.Buffer.Start);
+            }
+            hasReader = _pipe.Reader.TryRead(out result);
+            if(hasReader)
+            {
+                _pipe.Reader.Advance(result.Buffer.End);
+            }
+            Assert.True(hasReader);
+        }
+
         private class DisposeTrackingBufferPool : BufferPool
         {
             private DisposeTrackingOwnedMemory _memory = new DisposeTrackingOwnedMemory(new byte[1]);
