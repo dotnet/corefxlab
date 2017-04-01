@@ -33,22 +33,21 @@ if ($Restore -eq "true") {
 $errorsEncountered = 0
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
-$source = @("src\", "samples\")
-$test = @("tests\")
+$sources = @("src\", "samples\")
+$tests = @("tests\")
 $root = "$PSScriptRoot\..\"
 
 $reader = [System.IO.File]::OpenText("corefxlab.sln")
 while($null -ne ($line = $reader.ReadLine())) {
+    
     $pos = $line.IndexOf('.csproj')
+    
     if ($pos -ne -1)
     {
-        Write-Host $line
-        Write-Host $pos
         $projectLinesSplitUp = $line.Split(',',[System.StringSplitOptions]::RemoveEmptyEntries)
-        $projectLinesSplitUp | Select-String -Pattern $source -SimpleMatch | ForEach {
-                Write-Host "FOR AHSON 2: $_..."
+
+        $projectLinesSplitUp | Select-String -Pattern $sources -SimpleMatch | ForEach {
                 $fileName = $_ -replace ' "', "" -replace '"', ""
-                Write-Host "FOR AHSON 3: $fileName..."
                 $file = -join ($root, $fileName)
 
                 Write-Host "Building $file..."
@@ -61,10 +60,8 @@ while($null -ne ($line = $reader.ReadLine())) {
                 }
         }
 
-        $projectLinesSplitUp | Select-String -Pattern $test -SimpleMatch | ForEach {
-                Write-Host "FOR AHSON 4: $_..."
+        $projectLinesSplitUp | Select-String -Pattern $tests -SimpleMatch | ForEach {
                 $fileName = $_ -replace ' "', "" -replace '"', ""
-                Write-Host "FOR AHSON 5: $fileName..."
                 $file = -join ($root, $fileName)
 
                 Write-Host "Building and running tests for project $file..."
@@ -77,6 +74,7 @@ while($null -ne ($line = $reader.ReadLine())) {
                 }
         }
     }
+
 }
 
 if ($errorsEncountered -eq 0) {
