@@ -38,10 +38,13 @@ $source = @("src\", "samples\")
 $test = @("tests\")
 $root = "$PSScriptRoot\..\"
 $projectsInSolution = Get-Content 'corefxlab.sln' | Select-String -Pattern $csproj -SimpleMatch | Out-String
+Write-Host "FOR AHSON 1: $projectsInSolution..."
 $projectLinesSplitUp = $projectsInSolution.Split(',',[System.StringSplitOptions]::RemoveEmptyEntries)
 
 $projectLinesSplitUp | Select-String -Pattern $source -SimpleMatch | ForEach-Object {
+    Write-Host "FOR AHSON 2: $_..."
     $fileName = $_ -replace ' "', "" -replace '"', ""
+    Write-Host "FOR AHSON 3: $fileName..."
     $file = -join ($root, $fileName)
 
     Write-Host "Building $file..."
