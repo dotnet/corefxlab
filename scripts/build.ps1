@@ -33,41 +33,49 @@ if ($Restore -eq "true") {
 $errorsEncountered = 0
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
-$csproj = @(".csproj")
 $source = @("src\", "samples\")
 $test = @("tests\")
 $root = "$PSScriptRoot\..\"
-$projectsInSolution = Get-Content 'corefxlab.sln' | Select-String -Pattern $csproj -SimpleMatch | Out-String
-Write-Host "FOR AHSON 1: $projectsInSolution..."
-$projectLinesSplitUp = $projectsInSolution.Split(',',[System.StringSplitOptions]::RemoveEmptyEntries)
 
-$projectLinesSplitUp | Select-String -Pattern $source -SimpleMatch | ForEach-Object {
-    Write-Host "FOR AHSON 2: $_..."
-    $fileName = $_ -replace ' "', "" -replace '"', ""
-    Write-Host "FOR AHSON 3: $fileName..."
-    $file = -join ($root, $fileName)
+$reader = [System.IO.File]::OpenText("corefxlab.sln")
+while($null -ne ($line = $reader.ReadLine())) {
+    $pos = $line.IndexOf('.csproj')
+    if ($pos -ne -1)
+    {
+        Write-Host $line
+        Write-Host $pos
+        $projectLinesSplitUp = $line.Split(',',[System.StringSplitOptions]::RemoveEmptyEntries)
+        $projectLinesSplitUp | Select-String -Pattern $source -SimpleMatch | ForEach {
+                Write-Host "FOR AHSON 2: $_..."
+                $fileName = $_ -replace ' "', "" -replace '"', ""
+                Write-Host "FOR AHSON 3: $fileName..."
+                $file = -join ($root, $fileName)
 
-    Write-Host "Building $file..."
-    Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
+                Write-Host "Building $file..."
+                Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
 
-    if ($lastexitcode -ne 0) {
-        Write-Error "Failed to build project $file"
-        $projectsFailed.Add($file)
-        $errorsEncountered++
-    }
-}
+                if ($lastexitcode -ne 0) {
+                    Write-Error "Failed to build project $file"
+                    $projectsFailed.Add($file)
+                    $errorsEncountered++
+                }
+        }
 
-$projectLinesSplitUp | Select-String -Pattern $test -SimpleMatch | ForEach-Object {
-    $fileName = $_ -replace ' "', "" -replace '"', ""
-    $file = -join ($root, $fileName)
+        $projectLinesSplitUp | Select-String -Pattern $test -SimpleMatch | ForEach {
+                Write-Host "FOR AHSON 4: $_..."
+                $fileName = $_ -replace ' "', "" -replace '"', ""
+                Write-Host "FOR AHSON 5: $fileName..."
+                $file = -join ($root, $fileName)
 
-    Write-Host "Building and running tests for project $file..."
-    Invoke-Expression "$dotnetExePath test $file -c $Configuration -- -notrait category=performance -notrait category=outerloop"
+                Write-Host "Building and running tests for project $file..."
+                Invoke-Expression "$dotnetExePath test $file -c $Configuration -- -notrait category=performance -notrait category=outerloop"
 
-    if ($lastexitcode -ne 0) {
-        Write-Error "Some tests failed in project $file"
-        $projectsFailed.Add($file)
-        $errorsEncountered++
+                if ($lastexitcode -ne 0) {
+                    Write-Error "Some tests failed in project $file"
+                    $projectsFailed.Add($file)
+                    $errorsEncountered++
+                }
+        }
     }
 }
 
