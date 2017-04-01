@@ -16,17 +16,15 @@ namespace System.Buffers
         {
             void* pointer;
             GCHandle handle;
-            if (owner.TryGetPointerInternal(out pointer))
-            {
-                pointer = Buffer<T>.Add(pointer, index);
-            }
+            if (owner.TryGetPointerInternal(index, out pointer))
+            {}
             else
             {
                 ArraySegment<T> buffer;
                 if (owner.TryGetArrayInternal(out buffer))
                 {
                     handle = GCHandle.Alloc(buffer.Array, GCHandleType.Pinned);
-                    pointer = Buffer<T>.Add((void*)handle.AddrOfPinnedObject(), buffer.Offset + index);
+                    pointer = OwnedBuffer<T>.Add((void*)handle.AddrOfPinnedObject(), buffer.Offset + index);
                 }
                 else
                 {
