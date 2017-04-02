@@ -652,7 +652,7 @@ namespace System.IO.Pipelines.Tests
             writableBuffer.Advance(1);
             writableBuffer.Commit();
             var hasReader = _pipe.Reader.TryRead(out ReadResult result);
-            if(hasReader)
+            if (hasReader)
             {
                 _pipe.Reader.Advance(result.Buffer.End);
             }
@@ -680,10 +680,11 @@ namespace System.IO.Pipelines.Tests
             writableBuffer.Advance(1);
             writableBuffer.Commit();
             var hasReader = _pipe.Reader.TryRead(out ReadResult result);
-            if(hasReader)
+            if (hasReader)
             {
                 _pipe.Reader.Advance(result.Buffer.End);
             }
+            Assert.True(hasReader);
             hasReader = _pipe.Reader.TryRead(out result);
             Assert.False(hasReader);
         }
@@ -699,8 +700,9 @@ namespace System.IO.Pipelines.Tests
             {
                 _pipe.Reader.Advance(result.Buffer.Start);
             }
+            Assert.True(hasReader);
             hasReader = _pipe.Reader.TryRead(out result);
-            if(hasReader)
+            if (hasReader)
             {
                 _pipe.Reader.Advance(result.Buffer.End);
             }
