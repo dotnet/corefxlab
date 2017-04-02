@@ -12,11 +12,6 @@ namespace System
     /// </summary>
     public static partial class SpanExtensionsLabs
     {
-        public static void CopyTo<T>(this T[] array, Span<T> span)
-        {
-            array.AsSpan().CopyTo(span);
-        }
-
         /// <summary>
         /// Creates a new readonly span over the portion of the target string.
         /// </summary>

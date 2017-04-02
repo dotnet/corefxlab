@@ -314,11 +314,11 @@ namespace System.Slices.Tests
         {
             IntPtr pa = Marshal.AllocHGlobal(a.Length);
             Span<byte> na = new Span<byte>(pa.ToPointer(), a.Length);
-            a.CopyTo(na);
+            a.AsSpan().CopyTo(na);
 
             IntPtr pb = Marshal.AllocHGlobal(b.Length);
             Span<byte> nb = new Span<byte>(pb.ToPointer(), b.Length);
-            b.CopyTo(nb);
+            b.AsSpan().CopyTo(nb);
 
             ReadOnlySpan<byte> spanA = na.Slice(aidx, acount);
             Span<byte> spanB = nb.Slice(bidx, bcount);
