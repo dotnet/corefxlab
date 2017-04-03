@@ -41,19 +41,27 @@ if ($lastexitcode -ne 0) {
     $errorsEncountered++
 }
 
-Write-Host "Building and running tests for solution $file..."
-Invoke-Expression "$dotnetExePath test $file -c $Configuration -- -notrait category=performance -notrait category=outerloop"
+$projectsFailed = New-Object System.Collections.Generic.List[String]
 
-if ($lastexitcode -ne 0) {
-    Write-Error "Some tests failed in solution $file"
-    $errorsEncountered++
+foreach ($testFile in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
+    Write-Host "Building and running tests for project $testFile..."
+    Invoke-Expression "$dotnetExePath test $testFile -c $Configuration -- -notrait category=performance -notrait category=outerloop"
+
+    if ($lastexitcode -ne 0) {
+        Write-Error "Some tests failed in project $testFile"
+        $projectsFailed.Add($testFile)
+        $errorsEncountered++
+    }
 }
 
 if ($errorsEncountered -eq 0) {
     Write-Host "** Build succeeded. **" -foreground "green"
 }
 else {
-    Write-Host "** Build failed. **" -foreground "red"
+    Write-Host "** Build failed. $errorsEncountered projects failed to build or test. **" -foreground "red"
+    foreach ($projectFile in $projectsFailed) {
+        Write-Host "    $projectFile" -foreground "red"
+    }
 }
 
 exit $errorsEncountered
