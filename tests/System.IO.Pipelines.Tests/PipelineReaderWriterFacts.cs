@@ -659,6 +659,30 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void TryRead_ShouldReturnOnlyCommittedData()
+        {
+            var someData = Enumerable.Repeat<byte>(77, 50).ToArray();
+            var writableBuffer = _pipe.Writer.Alloc();
+            writableBuffer.Write(someData);
+            writableBuffer.Commit();
+            writableBuffer = _pipe.Writer.Alloc();
+            writableBuffer.Write(someData);
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+
+            Assert.True(hasReader);
+            Assert.Equal(someData, result.Buffer.ToArray());
+
+            _pipe.Reader.Advance(result.Buffer.End);
+            writableBuffer.Commit();
+            hasReader = _pipe.Reader.TryRead(out result);
+
+            Assert.True(hasReader);
+            Assert.Equal(someData, result.Buffer.ToArray());
+
+            _pipe.Reader.Advance(result.Buffer.End);
+        }
+
+        [Fact]
         public async Task TryRead_ShouldReturnTrueOnFlush()
         {
             var writableBuffer = _pipe.Writer.Alloc(1);
