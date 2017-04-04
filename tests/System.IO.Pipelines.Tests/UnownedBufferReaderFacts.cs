@@ -646,12 +646,12 @@ namespace System.IO.Pipelines.Tests
 
             public override void Write(byte[] buffer, int offset, int count)
             {
-                _pipe.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                _pipe.WriteAsync(new ArraySegment<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
-                return _pipe.WriteAsync(new Span<byte>(buffer, offset, count));
+                return _pipe.WriteAsync(new ArraySegment<byte>(buffer, offset, count));
             }
 
             public void FinishWriting() => _pipe.Writer.Complete();

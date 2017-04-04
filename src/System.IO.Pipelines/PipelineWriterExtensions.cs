@@ -9,7 +9,12 @@ namespace System.IO.Pipelines
     {
         private readonly static Task _completedTask = Task.FromResult(0);
 
-        public static Task WriteAsync(this IPipeWriter output, Span<byte> source)
+        public static Task WriteAsync(this IPipeWriter output, byte[] source)
+        {
+            return WriteAsync(output, new ArraySegment<byte>(source));
+        }
+
+        public static Task WriteAsync(this IPipeWriter output, ArraySegment<byte> source)
         {
             var writeBuffer = output.Alloc();
             writeBuffer.Write(source);
