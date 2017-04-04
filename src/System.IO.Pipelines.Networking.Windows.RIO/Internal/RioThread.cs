@@ -441,7 +441,9 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                         }
 
                         Complete(results, count, connectionsToSignal);
-                        
+
+                        Notify(connectionsToSignal, count);
+
                         if (!activatedNotify)
                         {
                             activatedNotify = true;
