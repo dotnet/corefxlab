@@ -41,7 +41,7 @@ if (!(Test-Path "dotnet\dotnet.exe")) {
 # Restore the app
 Write-Host "Restoring App $ProjectPath..."
 Invoke-Expression "$DotNetExePath restore `"$ProjectPath`""
-if($LASTEXITCODE -ne 0) { throw "Build failed" }
+if($LASTEXITCODE -ne 0) { throw "Restore failed" }
 
 # Run the app
 Write-Host "Invoking App $ProjectPath..."
