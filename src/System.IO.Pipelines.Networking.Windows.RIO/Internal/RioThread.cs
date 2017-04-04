@@ -269,11 +269,30 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                 var count = batch.Count;
                 var connectionsToSignal = batch.ConnectionsToSignal;
 
-                // REVIEW: Would it be better to process the whole ReceiveComplete here?
-                
+                Notify(connectionsToSignal, count);
+
                 lock (_processedBatches)
                 {
                     _processedBatches.Enqueue(batch);
+                }
+            }
+        }
+
+        private static void Notify(RioTcpConnection[] connectionsToSignal, uint count)
+        {
+            for (var i = 0; i<connectionsToSignal.Length; i++)
+            {
+                if (i >= count)
+                {
+                    break;
+                }
+
+                var connection = connectionsToSignal[i];
+
+                if (connection != null)
+                {
+                    // REVIEW: Would it be better to call connection.ReceiveComplete() here?
+                    connectionsToSignal[i] = null;
                 }
             }
         }
@@ -330,6 +349,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                         var connectionsToSignal = batch.ConnectionsToSignal;
 
                         Complete(results, count, connectionsToSignal);
+
+                        Notify(connectionsToSignal, count);
 
                         lock (_notify)
                         {
