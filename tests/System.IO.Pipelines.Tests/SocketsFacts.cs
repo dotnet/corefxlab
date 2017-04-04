@@ -175,8 +175,8 @@ namespace System.IO.Pipelines.Tests
 
         static async Task<Tuple<int, int, int>> PingClient(IPipeConnection connection, int messagesToSend)
         {
-            Span<byte> _ping = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
-            Span<byte> _pong = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
+            ArraySegment<byte> _ping = new ArraySegment<byte>(Encoding.ASCII.GetBytes("PING"));
+            ArraySegment<byte> _pong = new ArraySegment<byte>(Encoding.ASCII.GetBytes("PING"));
 
             int count = 0;
             var watch = Stopwatch.StartNew();
@@ -233,8 +233,8 @@ namespace System.IO.Pipelines.Tests
 
         private static async Task PongServer(IPipeConnection connection)
         {
-            Span<byte> _ping = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
-            Span<byte> _pong = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
+            ArraySegment<byte> _ping = new ArraySegment<byte>(Encoding.ASCII.GetBytes("PING"));
+            ArraySegment<byte> _pong = new ArraySegment<byte>(Encoding.ASCII.GetBytes("PING"));
 
             while (true)
             {

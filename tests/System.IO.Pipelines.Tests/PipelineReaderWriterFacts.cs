@@ -276,7 +276,7 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.Advance(buffer.End);
 
             // Now write 0 and advance 0
-            await _pipe.Writer.WriteAsync(Span<byte>.Empty);
+            await _pipe.Writer.WriteAsync(Array.Empty<byte>());
             result = await _pipe.Reader.ReadAsync();
             _pipe.Reader.Advance(result.Buffer.End);
 
