@@ -514,6 +514,11 @@ namespace System.IO.Pipelines
                     GetResult(ref result);
                     return true;
                 }
+
+                if(_readerAwaitable.IsAwaited)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyReading);
+                }
                 return false;
             }
         }

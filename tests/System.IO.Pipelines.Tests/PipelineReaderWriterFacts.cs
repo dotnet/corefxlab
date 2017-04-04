@@ -727,6 +727,16 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.Advance(result.Buffer.End);
         }
 
+        [Fact]
+        public void TryRead_ThrowsIfAlreadyWaitingForAsyncRead()
+        {
+            var reader = _pipe.Reader.ReadAsync();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                _pipe.Reader.TryRead(out ReadResult result);
+            });
+        }
+
         private class DisposeTrackingBufferPool : BufferPool
         {
             private DisposeTrackingOwnedMemory _memory = new DisposeTrackingOwnedMemory(new byte[1]);
