@@ -269,35 +269,15 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                 var count = batch.Count;
                 var connectionsToSignal = batch.ConnectionsToSignal;
 
-                Notify(connectionsToSignal, count);
-
+                // REVIEW: Would it be better to process the whole ReceiveComplete here?
+                
                 lock (_processedBatches)
                 {
                     _processedBatches.Enqueue(batch);
                 }
             }
         }
-
-        private static void Notify(RioTcpConnection[] connectionsToSignal, uint count)
-        {
-            for (var i = 0; i < connectionsToSignal.Length; i++)
-            {
-                if (i >= count)
-                {
-                    break;
-                }
-
-                var connection = connectionsToSignal[i];
-
-                if (connection != null)
-                {
-                    connection.ReceiveEndComplete();
-                    connectionsToSignal[i] = null;
-                }
-            }
-        }
-
-
+        
         private void ProcessLogicalCompletions()
         {
             RioRequestResult* results = stackalloc RioRequestResult[maxResults];
@@ -394,7 +374,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                 {
                     if (result.RequestCorrelation >= 0)
                     {
-                        connection.ReceiveBeginComplete(result.BytesTransferred);
+                        connection.ReceiveComplete(result.BytesTransferred);
                         connectionsToSignal[i] = connection;
                     }
                     else
@@ -440,9 +420,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                         }
 
                         Complete(results, count, connectionsToSignal);
-
-                        Notify(connectionsToSignal, count);
-
+                        
                         if (!activatedNotify)
                         {
                             activatedNotify = true;

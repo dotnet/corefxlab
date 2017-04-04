@@ -198,26 +198,19 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             }
         }
 
-        public void ReceiveBeginComplete(uint bytesTransferred)
+        public void ReceiveComplete(uint bytesTransferred)
         {
-            if (bytesTransferred == 0)
-            {
-                _input.Writer.Complete();
-            }
-            else
+            // REVIEW: Why was there special behaviour for bytesTransferred = 0?
+            if (bytesTransferred > 0)
             {
                 _buffer.Advance((int)bytesTransferred);
                 _buffer.Commit();
+                _buffer.FlushAsync();
 
                 ProcessReceives();
             }
         }
-
-        public void ReceiveEndComplete()
-        {
-            _buffer.FlushAsync();
-        }
-
+       
         private static void ThrowError(ErrorType type)
         {
             var errorNo = RioImports.WSAGetLastError();
