@@ -7,20 +7,17 @@ using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Samples
 {
-    public class LibuvHttpClientSample
+    public class RioHttpClientSample : ISample
     {
-        public static async Task Run()
+        public async Task Run()
         {
-            var client = new HttpClient(new LibuvHttpClientHandler());
+            var client = new HttpClient(new RioHttpClientHandler());
 
             while (true)
             {
                 var response = await client.GetAsync("http://localhost:5000");
-
                 Console.WriteLine(response);
-
                 Console.WriteLine(await response.Content.ReadAsStringAsync());
-
                 await Task.Delay(1000);
             }
         }
