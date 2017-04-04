@@ -280,7 +280,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 
         private static void Notify(RioTcpConnection[] connectionsToSignal, uint count)
         {
-            for (var i = 0; i<connectionsToSignal.Length; i++)
+            for (var i = 0; i < connectionsToSignal.Length; i++)
             {
                 if (i >= count)
                 {
