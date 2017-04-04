@@ -349,9 +349,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                         var connectionsToSignal = batch.ConnectionsToSignal;
 
                         Complete(results, count, connectionsToSignal);
-
-                        Notify(connectionsToSignal, count);
-
+                        
                         lock (_notify)
                         {
                             _notifyBatches.Enqueue(batch);
