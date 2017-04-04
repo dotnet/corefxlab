@@ -110,7 +110,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
+        [Fact]
         public async Task RunStressPingPongTest_Libuv()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5040);
@@ -142,7 +142,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
+        [Fact]
         public async Task RunStressPingPongTest_Socket()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5050);
@@ -173,7 +173,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
+        [Fact]
         public async Task RunStressPingPongTest_RioServer_LibuvClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5060);
@@ -218,8 +218,8 @@ namespace System.IO.Pipelines.Tests
 
         static async Task<Tuple<int, int, int>> PingClient(IPipeConnection connection, int messagesToSend)
         {
-            Span<byte> _ping = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
-            Span<byte> _pong = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
+            byte[] _ping = Encoding.ASCII.GetBytes("PING");
+            byte[] _pong = Encoding.ASCII.GetBytes("PING");
 
             int count = 0;
             var watch = Stopwatch.StartNew();
@@ -276,8 +276,8 @@ namespace System.IO.Pipelines.Tests
 
         private static async Task PongServer(IPipeConnection connection)
         {
-            Span<byte> _ping = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
-            Span<byte> _pong = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
+            byte[] _ping = Encoding.ASCII.GetBytes("PING");
+            byte[] _pong = Encoding.ASCII.GetBytes("PING");
 
             while (true)
             {
