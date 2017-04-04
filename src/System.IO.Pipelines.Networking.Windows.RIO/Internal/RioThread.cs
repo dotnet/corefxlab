@@ -291,7 +291,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 
                 if (connection != null)
                 {
-                    // REVIEW: Would it be better to call connection.ReceiveComplete() here?
+                    connection.ReceiveEndComplete();
                     connectionsToSignal[i] = null;
                 }
             }
@@ -395,7 +395,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                 {
                     if (result.RequestCorrelation >= 0)
                     {
-                        connection.ReceiveComplete(result.BytesTransferred);
+                        connection.ReceiveBeginComplete(result.BytesTransferred);
                         connectionsToSignal[i] = connection;
                     }
                     else
