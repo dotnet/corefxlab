@@ -5,6 +5,8 @@
     [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1')
 )
 
+$file = "corefxlab.sln"
+
 if ($Version -eq "<default>") {
     $Version = (Get-Content "$PSScriptRoot\..\DotnetCLIVersion.txt" -Raw).Trim()
 }
@@ -26,7 +28,7 @@ $dotnetExePath="$PSScriptRoot\..\dotnet\dotnet.exe"
 
 if ($Restore -eq "true") {
     Write-Host "Restoring all packages"
-    Invoke-Expression "$dotnetExePath restore corefxlab.sln /p:VersionSuffix=$BuildVersion"
+    Invoke-Expression "$dotnetExePath restore $file /p:VersionSuffix=$BuildVersion"
     if ($lastexitcode -ne 0) {
         Write-Error "Failed to restore packages."
         exit -1
@@ -34,26 +36,23 @@ if ($Restore -eq "true") {
 }
 
 $errorsEncountered = 0
-$projectsFailed = New-Object System.Collections.Generic.List[String]
 
-foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\src", "System*.csproj", "AllDirectories")) {
-    Write-Host "Building $file..."
-    Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
-
-    if ($lastexitcode -ne 0) {
-        Write-Error "Failed to build project $file"
-        $projectsFailed.Add($file)
-        $errorsEncountered++
-    }
+Write-Host "Building solution $file..."
+Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
+if ($lastexitcode -ne 0) {
+    Write-Error "Failed to build solution $file"
+    $errorsEncountered++
 }
 
-foreach ($file in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
-    Write-Host "Building and running tests for project $file..."
-    Invoke-Expression "$dotnetExePath test $file -c $Configuration -- -notrait category=performance -notrait category=outerloop"
+$projectsFailed = New-Object System.Collections.Generic.List[String]
+
+foreach ($testFile in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
+    Write-Host "Building and running tests for project $testFile..."
+    Invoke-Expression "$dotnetExePath test $testFile -c $Configuration -- -notrait category=performance -notrait category=outerloop"
 
     if ($lastexitcode -ne 0) {
-        Write-Error "Some tests failed in project $file"
-        $projectsFailed.Add($file)
+        Write-Error "Some tests failed in project $testFile"
+        $projectsFailed.Add($testFile)
         $errorsEncountered++
     }
 }
@@ -63,8 +62,8 @@ if ($errorsEncountered -eq 0) {
 }
 else {
     Write-Host "** Build failed. $errorsEncountered projects failed to build or test. **" -foreground "red"
-    foreach ($file in $projectsFailed) {
-        Write-Host "    $file" -foreground "red"
+    foreach ($projectFile in $projectsFailed) {
+        Write-Host "    $projectFile" -foreground "red"
     }
 }
 
