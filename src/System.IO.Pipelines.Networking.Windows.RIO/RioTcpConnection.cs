@@ -53,6 +53,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
             rioThread.AddConnection(connectionId, this);
 
+            _buffer = _input.Writer.Alloc(2048);
             ProcessReceives();
             _sendTask = ProcessSends();
         }
@@ -62,7 +63,6 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         private void ProcessReceives()
         {
-            _buffer = _input.Writer.Alloc(2048);
             var receiveBufferSeg = _rioThread.GetSegmentFromMemory(_buffer.Buffer);
 
             if (!_rio.RioReceive(_requestQueue, ref receiveBufferSeg, 1, RioReceiveFlags.None, 0))
@@ -97,7 +97,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
                         current = next;
                     }
 
-                    await PreviousSendingComplete;
+                    await PreviousSendingComplete();
 
                     _sendingBuffer = buffer.Preserve();
 
@@ -112,7 +112,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         private Task SendAsync(Buffer<byte> memory, bool endOfMessage)
         {
-            if (!IsReadyToSend)
+            if (!IsReadyToSend())
             {
                 return SendAsyncAwaited(memory, endOfMessage);
             }
@@ -131,7 +131,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
         private async Task SendAsyncAwaited(Buffer<byte> memory, bool endOfMessage)
         {
-            await ReadyToSend;
+            await ReadyToSend();
 
             var flushSends = endOfMessage || MaxOutstandingSendsReached;
 
@@ -139,13 +139,13 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
 
             if (flushSends && !endOfMessage)
             {
-                await ReadyToSend;
+                await ReadyToSend();
             }
         }
 
         private async Task AwaitReadyToSend()
         {
-            await ReadyToSend;
+            await ReadyToSend();
         }
 
         private void Send(RioBufferSegment segment, bool flushSends)
@@ -159,11 +159,11 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             }
         }
 
-        private Task PreviousSendingComplete => _previousSendsComplete.WaitAsync();
+        private Task PreviousSendingComplete() => _previousSendsComplete.WaitAsync();
 
-        private Task ReadyToSend => _outgoingSends.WaitAsync();
+        private Task ReadyToSend() => _outgoingSends.WaitAsync();
 
-        private bool IsReadyToSend => _outgoingSends.Wait(0);
+        private bool IsReadyToSend() => _outgoingSends.Wait(0);
 
         private bool MaxOutstandingSendsReached => _outgoingSends.CurrentCount == 0;
 
@@ -206,6 +206,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             }
             else
             {
+                _buffer = _input.Writer.Alloc(2048);
                 _buffer.Advance((int)bytesTransferred);
                 _buffer.Commit();
 
@@ -217,7 +218,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         {
             _buffer.FlushAsync();
         }
-
+       
         private static void ThrowError(ErrorType type)
         {
             var errorNo = RioImports.WSAGetLastError();

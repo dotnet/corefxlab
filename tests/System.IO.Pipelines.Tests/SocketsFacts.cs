@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using System.Text.Formatting;
+using System.IO.Pipelines.Networking.Windows.RIO;
 
 namespace System.IO.Pipelines.Tests
 {
@@ -109,7 +110,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
+        [Fact]
         public async Task RunStressPingPongTest_Libuv()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5040);
@@ -141,8 +142,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
+        [Fact]
         public async Task RunStressPingPongTest_Socket()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5050);
@@ -173,10 +173,53 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
+        [Fact]
+        public async Task RunStressPingPongTest_RioServer_LibuvClient()
+        {
+            var endpoint = new IPEndPoint(IPAddress.Loopback, 5060);
+            const int SendCount = 500, ClientCount = 5;
+
+            var runServerTask = Task.Factory.StartNew(() =>
+            {
+                var endpointBytes = endpoint.Address.GetAddressBytes();
+
+                var server = new RioTcpServer((ushort)endpoint.Port, endpointBytes[0], endpointBytes[1], endpointBytes[2], endpointBytes[3]);
+
+                for (int loop = 0; loop < ClientCount; loop++)
+                {
+                    var connection = server.Accept();
+                    var task = PongServer(connection);
+                }
+
+                server.Stop();
+            });
+
+            for (int loop = 0; loop < ClientCount; loop++)
+            {
+                using (var thread = new UvThread())
+                using (var connection = await new UvTcpClient(thread, endpoint).ConnectAsync())
+                {
+                    try
+                    {
+                        var tuple = await PingClient(connection, SendCount);
+                        Assert.Equal(SendCount, tuple.Item1);
+                        Assert.Equal(SendCount, tuple.Item2);
+                        Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
+                    }
+                    finally
+                    {
+                        await connection.DisposeAsync();
+                    }
+                }
+            }
+
+            await runServerTask;
+        }
+
         static async Task<Tuple<int, int, int>> PingClient(IPipeConnection connection, int messagesToSend)
         {
-            Span<byte> _ping = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
-            Span<byte> _pong = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
+            byte[] _ping = Encoding.ASCII.GetBytes("PING");
+            byte[] _pong = Encoding.ASCII.GetBytes("PING");
 
             int count = 0;
             var watch = Stopwatch.StartNew();
@@ -233,8 +276,8 @@ namespace System.IO.Pipelines.Tests
 
         private static async Task PongServer(IPipeConnection connection)
         {
-            Span<byte> _ping = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
-            Span<byte> _pong = new Span<byte>(Encoding.ASCII.GetBytes("PING"));
+            byte[] _ping = Encoding.ASCII.GetBytes("PING");
+            byte[] _pong = Encoding.ASCII.GetBytes("PING");
 
             while (true)
             {

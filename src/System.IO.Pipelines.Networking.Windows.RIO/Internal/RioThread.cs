@@ -296,8 +296,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                 }
             }
         }
-
-
+        
         private void ProcessLogicalCompletions()
         {
             RioRequestResult* results = stackalloc RioRequestResult[maxResults];
@@ -350,7 +349,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                         var connectionsToSignal = batch.ConnectionsToSignal;
 
                         Complete(results, count, connectionsToSignal);
-
+                        
                         lock (_notify)
                         {
                             _notifyBatches.Enqueue(batch);
