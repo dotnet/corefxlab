@@ -52,7 +52,7 @@ namespace System.IO.Pipelines
         }
 
         public bool IsCompleted => ReferenceEquals(_state, _awaitableIsCompleted);
-        internal bool IsAwaited => !(IsCompleted || ReferenceEquals(_state, _awaitableIsNotCompleted));
+        internal bool WasAwaited => !ReferenceEquals(_state, _awaitableIsNotCompleted);
 
         public Action OnCompleted(Action continuation, ref PipeCompletion completion)
         {

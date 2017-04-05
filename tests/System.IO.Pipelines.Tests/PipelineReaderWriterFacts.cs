@@ -728,13 +728,49 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void TryRead_ThrowsIfAlreadyWaitingForAsyncRead()
+        public void TryRead_ThrowsIfAlreadyAwaitingForAsyncRead()
         {
-            var reader = _pipe.Reader.ReadAsync();
+            _pipe.Reader.ReadAsync().OnCompleted(() =>
+            {
+                //We just have a continuation to make sure
+                //that the await is actually awaited
+            });
             Assert.Throws<InvalidOperationException>(() =>
             {
                 _pipe.Reader.TryRead(out ReadResult result);
             });
+        }
+
+        [Fact]
+        public void TryRead_WhileReadAsyncWithoutAwaiting()
+        {
+            // Without actually scheduling a continuation
+            // either directly or via await the tryread will not throw
+            var reader = _pipe.Reader.ReadAsync();
+            var couldRead = _pipe.Reader.TryRead(out ReadResult result);
+            Assert.False(couldRead);
+        }
+
+        [Fact]
+        public async Task TryRead_AfterReadAsync()
+        {
+            var bytes = Encoding.UTF8.GetBytes("Hello World");
+            var writer = _pipe.Writer.Alloc(bytes.Length);
+            writer.Write(bytes);
+            await writer.FlushAsync();
+
+            var reader = await _pipe.Reader.ReadAsync();
+            Assert.Equal(bytes, reader.Buffer.ToArray());
+            _pipe.Reader.Advance(reader.Buffer.End);
+
+            writer = _pipe.Writer.Alloc(bytes.Length);
+            writer.Write(bytes);
+            writer.Commit();
+
+            var couldRead = _pipe.Reader.TryRead(out ReadResult result);
+            Assert.True(couldRead);
+            Assert.Equal(bytes, result.Buffer.ToArray());
+            _pipe.Reader.Advance(result.Buffer.End);
         }
 
         private class DisposeTrackingBufferPool : BufferPool
