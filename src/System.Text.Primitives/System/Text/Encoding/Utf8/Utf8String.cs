@@ -569,7 +569,7 @@ namespace System.Text.Utf8
         // TODO: This should return Utf16CodeUnits which should wrap byte[]/Span<byte>, same for other encoders
         private static byte[] GetUtf8BytesFromString(string str)
         {
-            var utf16 = str.AsSpanTemp();
+            var utf16 = str.AsSpan();
 
             int needed;
             if (!Utf8Encoder.TryComputeEncodedBytes(utf16, out needed))

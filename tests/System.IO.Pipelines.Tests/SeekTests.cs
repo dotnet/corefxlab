@@ -129,7 +129,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory(Skip = "Assert.Equal() Failure")]
+        [Theory]
         [MemberData(nameof(SeekIteratorLimitData))]
         public void TestSeekIteratorLimitWithinSameBlock(string input, char seek, char limitAfter, int expectedReturnValue)
         {
