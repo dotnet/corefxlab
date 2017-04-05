@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
     <CoreFxVersion>4.3.0</CoreFxVersion>
-    <SystemMemoryVersion>4.4.0-preview1-25204-02</SystemMemoryVersion>
-    <SystemCompilerServicesUnsafeVersion>4.4.0-preview1-25204-02</SystemCompilerServicesUnsafeVersion>
+    <SystemMemoryVersion>4.4.0-preview1-25205-01</SystemMemoryVersion>
+    <SystemCompilerServicesUnsafeVersion>4.4.0-preview1-25205-01</SystemCompilerServicesUnsafeVersion>
     <LibuvVersion>1.9.1</LibuvVersion>
     <TestSdkVersion>15.0.0</TestSdkVersion>
     <XunitVersion>2.2.0</XunitVersion>
