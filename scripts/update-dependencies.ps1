@@ -4,6 +4,7 @@
 #
 
 param(
+    [string[]]$EnvVars=@(),
     [switch]$Help,
     [switch]$Update)
 
@@ -12,8 +13,9 @@ if($Help)
     Write-Host "Usage: .\update-dependencies.ps1"
     Write-Host ""
     Write-Host "Options:"
-    Write-Host "  -Help                 Display this help message"
-    Write-Host "  -Update               Update dependencies (but don't open a PR)"
+    Write-Host "  -EnvVars <'V1=val1','V2=val2'...>  Comma separated list of environment variable name-value pairs"
+    Write-Host "  -Update                            Update dependencies (but don't open a PR)"
+    Write-Host "  -Help                              Display this help message"
     exit 0
 }
 
@@ -45,5 +47,5 @@ if($LASTEXITCODE -ne 0) { throw "Restore failed" }
 
 # Run the app
 Write-Host "Invoking App $ProjectPath..."
-Invoke-Expression "$DotNetExePath run -p `"$ProjectPath`" `"$ProjectArgs`""
+Invoke-Expression "$DotNetExePath run -p `"$ProjectPath`" $ProjectArgs" @EnvVars
 if($LASTEXITCODE -ne 0) { throw "Build failed" }

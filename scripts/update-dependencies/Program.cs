@@ -18,22 +18,50 @@ namespace Microsoft.Dotnet.Scripts
     {
         private static readonly Config config = Config.Instance;
 
-
         public static void Main(string[] args)
         {
             Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
-            bool onlyUpdate = args.Length > 0 && string.Equals("--update", args[0], StringComparison.OrdinalIgnoreCase);
+            if (!ParseArgs(args, out bool updateOnly))
+                return;
 
             IEnumerable<IDependencyUpdater> updaters = GetUpdaters();
             IEnumerable<DependencyBuildInfo> buildInfoDependencies = GetBuildInfoDependencies();
 
             DependencyUpdateResults updateResults = DependencyUpdateUtils.Update(updaters, buildInfoDependencies);
 
-            if (!onlyUpdate && updateResults.ChangesDetected())
+            if (!updateOnly && updateResults.ChangesDetected())
             {
                 CreatePullRequest(updateResults);
             }
+        }
+
+        private static bool ParseArgs(string[] args, out bool updateOnly)
+        {
+            updateOnly = false;
+
+            foreach (string arg in args)
+            {
+                if (string.Equals(arg, "--update", StringComparison.OrdinalIgnoreCase))
+                {
+                    updateOnly = true;
+                }
+                else
+                {
+                    int idx = arg.IndexOf('=');
+                    if (idx < 0)
+                    {
+                        Console.Error.WriteLine($"Unrecognized argument '{arg}'");
+                        return false;
+                    }
+
+                    string name = arg.Substring(0, idx);
+                    string value = arg.Substring(idx + 1);
+                    Environment.SetEnvironmentVariable(name, value);
+                }
+            }
+
+            return true;
         }
 
         private static void CreatePullRequest(DependencyUpdateResults updateResults)
