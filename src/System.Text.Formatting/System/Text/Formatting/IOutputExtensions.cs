@@ -33,7 +33,7 @@ namespace System.Text.Formatting
                 }
             }
             else { // slice the string and write piece by piece, otherwise enlarge might fail
-                var leftToWrite = value.AsSpanTemp();
+                var leftToWrite = value.AsSpan();
                 while (leftToWrite.Length > 0) {
                     var nextChunkLength = leftToWrite.Length < 256 ? leftToWrite.Length : 256;
                     if (char.IsHighSurrogate(leftToWrite[nextChunkLength - 1])) {

@@ -312,7 +312,7 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Theory(Skip= " System.NullReferenceException : Object reference not set to an instance of an object.")]
+        [Theory]
         [InlineData("abc,def,ghi", ',')]
         [InlineData("a;b;c;d", ';')]
         [InlineData("a;b;c;d", ',')]

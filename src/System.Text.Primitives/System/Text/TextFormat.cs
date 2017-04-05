@@ -66,7 +66,7 @@ namespace System.Text
         public static TextFormat Parse(string format)
         {
             if (format == null) return default(TextFormat);
-            return Parse(format.AsSpanTemp());
+            return Parse(format.AsSpan());
         }
          
         public bool IsHexadecimal => Symbol == 'X' || Symbol == 'x';
