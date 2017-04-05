@@ -279,23 +279,28 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(Skip = "The generic type 'System.Collections.Generic.List`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
-        private unsafe static void PrimitiveParserByteSpanToUInt32_VariableLength()
+        [Benchmark]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        private unsafe static void PrimitiveParserByteSpanToUInt32_VariableLength(int index)
         {
-            List<ReadOnlySpan<byte>> byteSpanList = new List<ReadOnlySpan<byte>>();
-            foreach (string text in s_UInt32TextArray)
-            {
-                byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
-                ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
-                byteSpanList.Add(utf8ByteSpan);
-            }
+            string text = s_UInt32TextArray[index];
+            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LoadIterations; i++)
                     {
-                        ReadOnlySpan<byte> utf8ByteSpan = byteSpanList[i % 10];
                         uint value;
                         PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteSpan, out value);
                         DoNotIgnore(value, 0);
@@ -327,23 +332,28 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(Skip = "The generic type 'System.Collections.Generic.List`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
-        private unsafe static void PrimitiveParserByteSpanToUInt32_BytesConsumed_VariableLength()
+        [Benchmark]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        private unsafe static void PrimitiveParserByteSpanToUInt32_BytesConsumed_VariableLength(int index)
         {
-            List<ReadOnlySpan<byte>> byteSpanList = new List<ReadOnlySpan<byte>>();
-            foreach (string text in s_UInt32TextArray)
-            {
-                byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
-                ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
-                byteSpanList.Add(utf8ByteSpan);
-            }
+            string text = s_UInt32TextArray[index];
+            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LoadIterations; i++)
                     {
-                        ReadOnlySpan<byte> utf8ByteSpan = byteSpanList[i % 10];
                         uint value;
                         int bytesConsumed;
                         PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
@@ -481,23 +491,26 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(Skip = "The generic type 'System.Collections.Generic.List`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
-        private unsafe static void PrimitiveParserByteSpanToUInt32Hex_VariableLength()
+        [Benchmark]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        private unsafe static void PrimitiveParserByteSpanToUInt32Hex_VariableLength(int index)
         {
-            List<ReadOnlySpan<byte>> byteSpanList = new List<ReadOnlySpan<byte>>();
-            foreach (string text in s_UInt32TextArrayHex)
-            {
-                byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
-                ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
-                byteSpanList.Add(utf8ByteSpan);
-            }
+            string text = s_UInt32TextArrayHex[index];
+            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LoadIterations; i++)
                     {
-                        ReadOnlySpan<byte> utf8ByteSpan = byteSpanList[i % 8];
                         uint value;
                         PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(utf8ByteSpan, out value);
                         DoNotIgnore(value, 0);
@@ -529,23 +542,26 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(Skip = "The generic type 'System.Collections.Generic.List`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
-        private unsafe static void PrimitiveParserByteSpanToUInt32Hex_BytesConsumed_VariableLength()
+        [Benchmark]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        private unsafe static void PrimitiveParserByteSpanToUInt32Hex_BytesConsumed_VariableLength(int index)
         {
-            List<ReadOnlySpan<byte>> byteSpanList = new List<ReadOnlySpan<byte>>();
-            foreach (string text in s_UInt32TextArrayHex)
-            {
-                byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
-                ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
-                byteSpanList.Add(utf8ByteSpan);
-            }
+            string text = s_UInt32TextArrayHex[index];
+            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < LoadIterations; i++)
                     {
-                        ReadOnlySpan<byte> utf8ByteSpan = byteSpanList[i % 8];
                         uint value;
                         int bytesConsumed;
                         PrimitiveParser.InvariantUtf8.Hex.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
