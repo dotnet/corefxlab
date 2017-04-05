@@ -109,8 +109,8 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
-        public async Task RunStressPingPongTest_Libuv()
+        [Fact]
+        public void RunStressPingPongTest_Libuv()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5040);
 
@@ -118,23 +118,23 @@ namespace System.IO.Pipelines.Tests
             using (var server = new UvTcpListener(thread, endpoint))
             {
                 server.OnConnection(PongServer);
-                await server.StartAsync();
+                server.StartAsync().Wait();
 
                 const int SendCount = 500, ClientCount = 5;
                 for (int loop = 0; loop < ClientCount; loop++)
                 {
-                    using (var connection = await new UvTcpClient(thread, endpoint).ConnectAsync())
+                    using (var connection = new UvTcpClient(thread, endpoint).ConnectAsync().GetResultSync())
                     {
                         try
                         {
-                            var tuple = await PingClient(connection, SendCount);
+                            var tuple = PingClient(connection, SendCount).GetResultSync();
                             Assert.Equal(SendCount, tuple.Item1);
                             Assert.Equal(SendCount, tuple.Item2);
                             Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
                         }
                         finally
                         {
-                            await connection.DisposeAsync();
+                            connection.DisposeAsync().Wait();
                         }
                     }
                 }
@@ -142,8 +142,8 @@ namespace System.IO.Pipelines.Tests
         }
 
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
-        public async Task RunStressPingPongTest_Socket()
+        [Fact]
+        public void RunStressPingPongTest_Socket()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5050);
 
@@ -155,18 +155,18 @@ namespace System.IO.Pipelines.Tests
                 const int SendCount = 500, ClientCount = 5;
                 for (int loop = 0; loop < ClientCount; loop++)
                 {
-                    using (var connection = await SocketConnection.ConnectAsync(endpoint))
+                    using (var connection = SocketConnection.ConnectAsync(endpoint).GetResultSync())
                     {
                         try
                         {
-                            var tuple = await PingClient(connection, SendCount);
+                            var tuple = PingClient(connection, SendCount).GetResultSync();
                             Assert.Equal(SendCount, tuple.Item1);
                             Assert.Equal(SendCount, tuple.Item2);
                             Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
                         }
                         finally
                         {
-                            await connection.DisposeAsync();
+                            connection.DisposeAsync().Wait();
                         }
                     }
                 }

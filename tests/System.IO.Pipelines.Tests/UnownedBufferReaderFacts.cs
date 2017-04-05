@@ -4,6 +4,7 @@
 
 using System;
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -256,7 +257,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(message.Length, index);
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
+        [Fact]
         public async Task AccessingUnownedMemoryThrowsIfUsedAfterAdvance()
         {
             var stream = new CallbackStream(async (s, token) =>
@@ -283,19 +284,11 @@ namespace System.IO.Pipelines.Tests
                 data = buffer.First;
                 reader.Advance(buffer.End);
             }
-            
-            try
-            {
-                var temp = data.Span;
-                Assert.True(false);
-            }
-            catch (Exception ex)
-            {
-                Assert.True(ex is ObjectDisposedException);
-            }
+
+            EnsureSpanDisposed(data);
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
+        [Fact]
         public async Task PreservingUnownedBufferCopies()
         {
             var stream = new CallbackStream(async (s, token) =>
@@ -323,7 +316,7 @@ namespace System.IO.Pipelines.Tests
                 preserved = buffer.Preserve();
 
                 // Make sure we can acccess the span
-                var span = buffer.First.Span;
+                EnsureSpanValid(buffer.First);
 
                 reader.Advance(buffer.End);
             }
@@ -333,9 +326,21 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal("Hello ", Encoding.UTF8.GetString(preserved.Buffer.ToArray()));
             }
 
+            EnsureSpanDisposed(preserved.Buffer.First);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        static Span<byte> EnsureSpanValid(Buffer<byte> buffer)
+        {
+            return buffer.Span;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        static void EnsureSpanDisposed(Buffer<byte> buffer)
+        {
             try
             {
-                var temp = preserved.Buffer.First.Span;
+                var temp = buffer.Span;
                 Assert.True(false);
             }
             catch (Exception ex)

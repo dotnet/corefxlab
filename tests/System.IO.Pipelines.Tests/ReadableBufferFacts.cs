@@ -354,8 +354,8 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
-        public async Task ReadTWorksAgainstSimpleBuffers()
+        [Fact]
+        public void ReadTWorksAgainstSimpleBuffers()
         {
             byte[] chunk = { 0, 1, 2, 3, 4, 5, 6, 7 };
             var span = new Span<byte>(chunk);
@@ -377,12 +377,12 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(span.Read<ulong>(), readable.ReadLittleEndian<ulong>());
                 Assert.Equal(span.Read<float>(), readable.ReadLittleEndian<float>());
                 Assert.Equal(span.Read<double>(), readable.ReadLittleEndian<double>());
-                await output.FlushAsync();
+                output.FlushAsync().GetResultSync();
             }
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
-        public async Task ReadTWorksAgainstMultipleBuffers()
+        [Fact]
+        public void ReadTWorksAgainstMultipleBuffers()
         {
             using (var factory = new PipeFactory())
             {
@@ -420,7 +420,7 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(span.Read<ulong>(), readable.ReadLittleEndian<ulong>());
                 Assert.Equal(span.Read<float>(), readable.ReadLittleEndian<float>());
                 Assert.Equal(span.Read<double>(), readable.ReadLittleEndian<double>());
-                await output.FlushAsync();
+                output.FlushAsync().GetResultSync();
             }
         }
 
