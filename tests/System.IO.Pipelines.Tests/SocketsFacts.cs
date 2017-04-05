@@ -118,7 +118,7 @@ namespace System.IO.Pipelines.Tests
             using (var server = new UvTcpListener(thread, endpoint))
             {
                 server.OnConnection(PongServer);
-                server.StartAsync().Wait();
+                await server.StartAsync();
 
                 const int SendCount = 500, ClientCount = 5;
                 for (int loop = 0; loop < ClientCount; loop++)
