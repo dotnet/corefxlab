@@ -355,7 +355,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void ReadTWorksAgainstSimpleBuffers()
+        public async Task ReadTWorksAgainstSimpleBuffers()
         {
             byte[] chunk = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
@@ -376,12 +376,12 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(SpanRead<ulong>(chunk), readable.ReadLittleEndian<ulong>());
                 Assert.Equal(SpanRead<float>(chunk), readable.ReadLittleEndian<float>());
                 Assert.Equal(SpanRead<double>(chunk), readable.ReadLittleEndian<double>());
-                output.FlushAsync();
+                await output.FlushAsync();
             }
         }
 
         [Fact]
-        public async void ReadTWorksAgainstMultipleBuffers()
+        public async Task ReadTWorksAgainstMultipleBuffers()
         {
             using (var factory = new PipeFactory())
             {
