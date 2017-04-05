@@ -110,7 +110,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void RunStressPingPongTest_Libuv()
+        public async Task RunStressPingPongTest_Libuv()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5040);
 
@@ -123,18 +123,18 @@ namespace System.IO.Pipelines.Tests
                 const int SendCount = 500, ClientCount = 5;
                 for (int loop = 0; loop < ClientCount; loop++)
                 {
-                    using (var connection = new UvTcpClient(thread, endpoint).ConnectAsync().GetResultSync())
+                    using (var connection = await new UvTcpClient(thread, endpoint).ConnectAsync())
                     {
                         try
                         {
-                            var tuple = PingClient(connection, SendCount).GetResultSync();
+                            var tuple = await PingClient(connection, SendCount);
                             Assert.Equal(SendCount, tuple.Item1);
                             Assert.Equal(SendCount, tuple.Item2);
                             Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
                         }
                         finally
                         {
-                            connection.DisposeAsync().Wait();
+                            await connection.DisposeAsync();
                         }
                     }
                 }
@@ -143,7 +143,7 @@ namespace System.IO.Pipelines.Tests
 
 
         [Fact]
-        public void RunStressPingPongTest_Socket()
+        public async Task RunStressPingPongTest_Socket()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5050);
 
@@ -155,18 +155,18 @@ namespace System.IO.Pipelines.Tests
                 const int SendCount = 500, ClientCount = 5;
                 for (int loop = 0; loop < ClientCount; loop++)
                 {
-                    using (var connection = SocketConnection.ConnectAsync(endpoint).GetResultSync())
+                    using (var connection = await SocketConnection.ConnectAsync(endpoint))
                     {
                         try
                         {
-                            var tuple = PingClient(connection, SendCount).GetResultSync();
+                            var tuple = await PingClient(connection, SendCount);
                             Assert.Equal(SendCount, tuple.Item1);
                             Assert.Equal(SendCount, tuple.Item2);
                             Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
                         }
                         finally
                         {
-                            connection.DisposeAsync().Wait();
+                            await connection.DisposeAsync();
                         }
                     }
                 }
