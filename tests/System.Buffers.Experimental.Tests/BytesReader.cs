@@ -10,13 +10,14 @@ namespace System.Slices.Tests
 {
     public partial class ReadOnlyBytesTests
     {
-        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
+        [Fact]
         public void SingleSegmentBytesReader()
         {
             ReadOnlyBytes bytes = Create("AB CD#EF&&");
             var reader = new BytesReader(bytes);
 
             var ab = reader.ReadBytesUntil((byte)' ');
+            Assert.True(ab.HasValue);
             Assert.Equal("AB", ab.ToString(TextEncoder.Utf8));
 
             reader.Advance(1);
@@ -63,7 +64,7 @@ namespace System.Slices.Tests
             //Assert.True(reader.IsEmpty);
         }
 
-        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
+        [Fact]
         public void MultiSegmentBytesReader()
         {
             ReadOnlyBytes bytes = Parse("A|B |CD|#EF&|&");
@@ -163,7 +164,7 @@ namespace System.Slices.Tests
 
         public static string ToString(this ReadOnlyBytes? bytes, TextEncoder encoder)
         {
-            if (bytes == null) return "";
+            if (!bytes.HasValue) return string.Empty;
             return ToString(bytes.Value, encoder);
         }
 
@@ -173,10 +174,9 @@ namespace System.Slices.Tests
             if (encoder.Encoding == TextEncoder.EncodingName.Utf8)
             {
                 var position = Position.First;
-                ReadOnlyBuffer<byte> segment;
-                while (bytes.TryGet(ref position, out segment))
+                while (bytes.TryGet(ref position, out ReadOnlyBuffer<byte> segment))
                 {
-                    sb.Append(new Utf8String(segment.Span));
+                    sb.Append(new Utf8String(segment.Span).ToString());
                 }
             }
             else
