@@ -742,6 +742,40 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void TryRead_ThrowsWhenTwiceWithoutAdvancing()
+        {
+            var writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            writer.Commit();
+            var canRead1 = _pipe.Reader.TryRead(out ReadResult result1);
+            writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            writer.Commit();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var canRead2 = _pipe.Reader.TryRead(out ReadResult result2);
+            });
+            _pipe.Reader.Advance(result1.Buffer.End);
+        }
+
+        [Fact]
+        public async Task TryRead_ThrowsWhenReadAsyncWithoutAdvancing()
+        {
+            var writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            await writer.FlushAsync();
+            var result1 = await _pipe.Reader.ReadAsync();
+            writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            writer.Commit();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var canRead2 = _pipe.Reader.TryRead(out ReadResult result2);
+            });
+            _pipe.Reader.Advance(result1.Buffer.End);
+        }
+
+        [Fact]
         public void TryRead_WhileReadAsyncWithoutAwaiting()
         {
             // Without actually scheduling a continuation
