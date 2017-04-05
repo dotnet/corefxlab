@@ -515,7 +515,7 @@ namespace System.IO.Pipelines
                     return true;
                 }
 
-                if(_readerAwaitable.WasAwaited)
+                if(_readerAwaitable.HasContinuation)
                 {
                     ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyReading);
                 }
