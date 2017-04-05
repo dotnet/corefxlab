@@ -336,20 +336,17 @@ namespace System.Text.Primitives.Tests
             {
                 utf8ByteArray[i] = Encoding.UTF8.GetBytes(s_UInt32TextArray[i]);
             }
-            for (int j = 0; j < 10; j++)
+            foreach (var iteration in Benchmark.Iterations)
             {
-                foreach (var iteration in Benchmark.Iterations)
+                using (iteration.StartMeasurement())
                 {
-                    using (iteration.StartMeasurement())
+                    for (int i = 0; i < LoadIterations; i++)
                     {
-                        for (int i = 0; i < LoadIterations; i++)
-                        {
-                            ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
-                            uint value;
-                            int bytesConsumed;
-                            PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
-                            DoNotIgnore(value, bytesConsumed);
-                        }
+                        ReadOnlySpan<byte> utf8ByteSpan = utf8ByteArray[i % textLength];
+                        uint value;
+                        int bytesConsumed;
+                        PrimitiveParser.InvariantUtf8.TryParseUInt32(utf8ByteSpan, out value, out bytesConsumed);
+                        DoNotIgnore(value, bytesConsumed);
                     }
                 }
             }
