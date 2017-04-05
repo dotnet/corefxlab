@@ -47,5 +47,5 @@ if($LASTEXITCODE -ne 0) { throw "Restore failed" }
 
 # Run the app
 Write-Host "Invoking App $ProjectPath..."
-Invoke-Expression "$DotNetExePath run -p `"$ProjectPath`" $ProjectArgs" @EnvVars
+Invoke-Expression "$DotNetExePath run -p `"$ProjectPath`" $ProjectArgs @EnvVars"
 if($LASTEXITCODE -ne 0) { throw "Build failed" }
