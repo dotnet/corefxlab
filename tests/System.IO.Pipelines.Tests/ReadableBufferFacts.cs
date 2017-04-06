@@ -229,7 +229,7 @@ namespace System.IO.Pipelines.Tests
             var found = readBuffer.TrySliceTo(huntValue, out slice, out cursor);
             Assert.False(found);
 
-            // correctness test all values 
+            // correctness test all values
             for (int i = 0; i < readBuffer.Length; i++)
             {
                 *addresses[i] = huntValue;
@@ -358,7 +358,7 @@ namespace System.IO.Pipelines.Tests
         public void ReadTWorksAgainstSimpleBuffers()
         {
             var readable = BufferUtilities.CreateBuffer(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 });
-            var span = readable.ToSpan();
+            var span = readable.First.Span;
             Assert.True(readable.IsSingleSpan);
             Assert.Equal(span.Read<byte>(), readable.ReadLittleEndian<byte>());
             Assert.Equal(span.Read<sbyte>(), readable.ReadLittleEndian<sbyte>());
@@ -385,7 +385,8 @@ namespace System.IO.Pipelines.Tests
             }
             Assert.Equal(3, spanCount);
 
-            var span = readable.ToSpan();
+            Assert.False(readable.IsSingleSpan);
+            Span<byte> span = readable.ToArray();
 
             Assert.Equal(span.Read<byte>(), readable.ReadLittleEndian<byte>());
             Assert.Equal(span.Read<sbyte>(), readable.ReadLittleEndian<sbyte>());
