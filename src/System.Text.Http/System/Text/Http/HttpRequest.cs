@@ -171,7 +171,7 @@ namespace System.Text.Http
                 ReadOnlyBuffer<byte> segment;
                 while (bytes.TryGet(ref position, out segment, true))
                 {
-                    sb.Append(new Utf8String(segment.Span));
+                    sb.Append(new Utf8String(segment.Span).ToString());
                 }
             }
             else

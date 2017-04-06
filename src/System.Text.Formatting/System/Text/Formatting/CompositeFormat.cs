@@ -213,11 +213,6 @@ namespace System.Text.Formatting {
                 formatter.Append(str);
                 return;
             }
-            var utf8 = value as Utf8String?;
-            if (utf8 != null) {
-                formatter.Append(utf8.Value);
-                return;
-            }
             var dt = value as DateTime?;
             if (dt != null)
             {

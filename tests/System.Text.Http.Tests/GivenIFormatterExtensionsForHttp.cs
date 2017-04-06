@@ -34,7 +34,7 @@ namespace System.Text.Http.Tests
             _formatter = new ArrayFormatter(124, TextEncoder.Utf8, ArrayPool<byte>.Shared);
         }
 
-        [Fact(Skip= "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a static field.")]
+        [Fact]
         public void It_has_an_extension_method_to_write_status_line()
         {            
             _formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));
@@ -45,7 +45,7 @@ namespace System.Text.Http.Tests
             _formatter.Clear();
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a static field.")]
+        [Fact]
         public void The_http_extension_methods_can_be_composed_to_generate_the_http_message()
         {
             _formatter.AppendHttpStatusLine(HttpVersion.V1_1, 200, new Utf8String("OK"));

@@ -4,7 +4,6 @@
 using FluentAssertions;
 using Xunit;
 using System.Text.Utf8;
-using System.Text.Http;
 using System.Text.Http.SingleSegment;
 
 namespace System.Text.Http.Tests
@@ -25,28 +24,28 @@ namespace System.Text.Http.Tests
 
         private const string HeaderWithoutCrlf = "Host: localhost:8080";
 
-        [Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void It_counts_the_number_of_headers_correctly()
         {
             var httpHeader = new HttpHeadersSingleSegment(new Span<byte>(new UTF8Encoding().GetBytes(HeadersString)));
             Assert.Equal(httpHeader.Count, 8);
         }
 
-        [Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void It_can_get_the_value_of_a_particular_header()
         {
             var httpHeader = new HttpHeadersSingleSegment(new Span<byte>(new UTF8Encoding().GetBytes(HeadersString)));
             Assert.Equal(httpHeader["Host"].ToString(), " localhost:8080");
         }
 
-        [Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void It_returns_empty_string_when_header_is_not_present()
         {
             var httpHeader = new HttpHeadersSingleSegment(new Span<byte>(new UTF8Encoding().GetBytes(HeadersString)));
             httpHeader["Content-Length"].Length.Should().Be(0);
         }
 
-        [Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void Its_enumerator_Current_returns_the_same_item_until_MoveNext_gets_called()
         {
             var httpHeader = new HttpHeadersSingleSegment(new Span<byte>(new UTF8Encoding().GetBytes(HeadersString)));
@@ -62,7 +61,7 @@ namespace System.Text.Http.Tests
             current.Should().NotBe(enumerator.Current);
         }
 
-        [Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void Its_Enumerator_iterates_through_all_headers()
         {
             var httpHeaders = new HttpHeadersSingleSegment(new Span<byte>(new UTF8Encoding().GetBytes(HeadersString)));
@@ -75,7 +74,7 @@ namespace System.Text.Http.Tests
             count.Should().Be(8);
         }
 
-        [Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void It_parsers_Utf8String_as_well()
         {
             var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeadersString)));
@@ -83,7 +82,7 @@ namespace System.Text.Http.Tests
             httpHeader.Count.Should().Be(8);
         }
 
-        [Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void String_without_column_throws_ArgumentException()
         {
             var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeaderWithoutColumn)));
@@ -99,7 +98,7 @@ namespace System.Text.Http.Tests
             }
         }
 
-        [Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void String_without_carriage_return_and_line_feed_throws_ArgumentException()
         {
             var httpHeader = new HttpHeadersSingleSegment(new Utf8String(new UTF8Encoding().GetBytes(HeaderWithoutCrlf)));
@@ -115,7 +114,7 @@ namespace System.Text.Http.Tests
             }
         }
 
-        [Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void CanParseBodylessRequest()
         {
             var request = new Utf8String("GET / HTTP/1.1\r\nConnection: close\r\n\r\n").CopyBytes().AsSpan();
