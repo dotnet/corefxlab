@@ -109,7 +109,7 @@ namespace System.IO.Pipelines.Tests
             Assert.Equal(MessageToSend, reply);
         }
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
+        [Fact]
         public async Task RunStressPingPongTest_Libuv()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5040);
@@ -142,7 +142,7 @@ namespace System.IO.Pipelines.Tests
         }
 
 
-        [Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
+        [Fact]
         public async Task RunStressPingPongTest_Socket()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5050);
