@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\System.Buffers.Experimental\System.Buffers.Experimental.csproj" />
     <ProjectReference Include="..\..\src\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
     <ProjectReference Include="..\..\src\System.Collections.Sequences\System.Collections.Sequences.csproj" />
+    <ProjectReference Include="..\..\src\System.IO.Pipelines\System.IO.Pipelines.csproj" />
     <ProjectReference Include="..\..\src\System.Text.Primitives\System.Text.Primitives.csproj" />
   </ItemGroup>
   <!-- register for test discovery in Visual Studio -->
