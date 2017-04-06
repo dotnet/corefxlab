@@ -85,8 +85,15 @@ namespace System.IO.Pipelines
             _maximumSizeLow = options.MaximumSizeLow;
             _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
             _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
+            ResetState();
+        }
+
+        private void ResetState()
+        {
             _readerAwaitable = new PipeAwaitable(completed: false);
             _writerAwaitable = new PipeAwaitable(completed: true);
+            _readerCompletion = default(PipeCompletion);
+            _writerCompletion = default(PipeCompletion);
         }
 
         internal Buffer<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
@@ -650,5 +657,16 @@ namespace System.IO.Pipelines
 
         public IPipeReader Reader => this;
         public IPipeWriter Writer => this;
+
+        public void Reset()
+        {
+            if (!_disposed)
+            {
+                throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
+            }
+
+            _disposed = false;
+            ResetState();
+        }
     }
 }
