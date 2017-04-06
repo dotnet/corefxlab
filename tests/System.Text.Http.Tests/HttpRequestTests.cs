@@ -6,14 +6,13 @@ using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Text;
 using System.Text.Http;
-using System.Text.Utf8;
 using Xunit;
 
 namespace System.Slices.Tests
 {
     public partial class HttpRequestTests
     {
-        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
+        [Fact]
         public void HttpReaderSingleSegment()
         {
             var bytes = new ReadOnlyBytes(s_requestBytes);
@@ -37,7 +36,7 @@ namespace System.Slices.Tests
             }
         }
 
-        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
+        [Fact]
         public void HttpReaderMultipleSegments()
         {
             ReadOnlyBytes bytes = s_segmentedRequest;
