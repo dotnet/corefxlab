@@ -288,6 +288,10 @@ namespace System.IO.Pipelines
                     else
                     {
                         position.ObjectPosition = BufferStart.Segment.Next;
+                        if (position.ObjectPosition == null)
+                        {
+                            position = Position.AfterLast;
+                        }
                     }
                 }
                 return true;
