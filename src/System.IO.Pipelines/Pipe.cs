@@ -509,13 +509,17 @@ namespace System.IO.Pipelines
                 }
 
                 result = new ReadResult();
-                if (!_readerAwaitable.IsCompleted)
+                if (_length > 0 || _readerAwaitable.IsCompleted)
                 {
-                    return false;
+                    GetResult(ref result);
+                    return true;
                 }
 
-                GetResult(ref result);
-                return true;
+                if(_readerAwaitable.HasContinuation)
+                {
+                    ThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyReading);
+                }
+                return false;
             }
         }
 
