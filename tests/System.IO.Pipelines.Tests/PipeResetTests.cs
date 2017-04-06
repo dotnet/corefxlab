@@ -15,11 +15,7 @@ namespace System.IO.Pipelines.Tests
         public PipeResetTests()
         {
             _pipeFactory = new PipeFactory();
-            _pipe = _pipeFactory.Create(new PipeOptions
-            {
-                MaximumSizeLow = 32,
-                MaximumSizeHigh = 64
-            });
+            _pipe = _pipeFactory.Create();
         }
 
         public void Dispose()
