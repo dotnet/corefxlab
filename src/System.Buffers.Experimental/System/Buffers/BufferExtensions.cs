@@ -528,5 +528,53 @@ namespace System.Buffers
                                                        0x01ul << 48) + 1;
         private const ulong byteBroadcastToUlong = ~0UL / Byte.MaxValue;
         private const ulong filterByteHighBitsInUlong = (byteBroadcastToUlong >> 1) | (byteBroadcastToUlong << (sizeof(ulong) * 8 - 1));
+
+
+        /// <summary>
+        /// Determines whether the current span is a slice of the supplied span
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsSliceOf<T>(this Span<T> childSpan, Span<T> parentSpan) where T : struct
+        {
+            int ignored;
+            return childSpan.Length <= parentSpan.Length // avoid pointer work if trivially false
+                && IsSliceOf(ref childSpan.DangerousGetPinnableReference(), childSpan.Length,
+                ref parentSpan.DangerousGetPinnableReference(), parentSpan.Length, out ignored);
+        }
+
+        /// <summary>
+        /// Determines whether the current span is a slice of the supplied span
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsSliceOf<T>(this Span<T> childSpan, Span<T> parentSpan, out int start) where T : struct
+        {
+            start = -1;
+            return childSpan.Length <= parentSpan.Length // avoid pointer work if trivially false
+                && IsSliceOf(ref childSpan.DangerousGetPinnableReference(), childSpan.Length,
+                ref parentSpan.DangerousGetPinnableReference(), parentSpan.Length, out start);
+        }
+
+        private static unsafe bool IsSliceOf<T>(ref T child, int childCount, ref T parent, int parentCount, out int start) where T : struct
+        {
+            // compare the byte addresses for validity
+            var childStart = Unsafe.AsPointer(ref child);
+            var childEnd = Unsafe.AsPointer(ref Unsafe.Add(ref child, childCount));
+            var parentStart = Unsafe.AsPointer(ref parent);
+            var parentEnd = Unsafe.AsPointer(ref Unsafe.Add(ref parent, parentCount));
+
+            if (parentStart <= childStart // parent must start earlier (or equal start)
+                && parentEnd >= childEnd) // parent must  end later (or equal end)
+            {
+                long deltaBytes = (byte*)childStart - (byte*)parentStart;
+                if (deltaBytes % Unsafe.SizeOf<T>() == 0)// pointer spans must have equal alignment
+                {
+                    start = (int)(deltaBytes / Unsafe.SizeOf<T>());
+                    return true;
+                }
+            }
+
+            start = -1;
+            return false;
+        }
     }
 }
