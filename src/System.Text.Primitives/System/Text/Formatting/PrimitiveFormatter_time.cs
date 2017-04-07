@@ -12,9 +12,11 @@ namespace System.Text
 
         public static bool TryFormat(this DateTimeOffset value, Span<byte> buffer, out int bytesWritten, TextFormat format = default(TextFormat), TextEncoder encoder = null)
         {
+            TimeSpan offset = NullOffset;
             if (format.IsDefault)
             {
                 format.Symbol = 'G';
+                offset = value.Offset;
             }
 
             Precondition.Require(format.Symbol == 'R' || format.Symbol == 'O' || format.Symbol == 'G');
@@ -30,7 +32,7 @@ namespace System.Text
                     return TryFormatDateTimeFormatO(value.DateTime, value.Offset, buffer, out bytesWritten, encoder);
 
                 case 'G':
-                    return TryFormatDateTimeFormatG(value.DateTime, buffer, out bytesWritten, encoder);
+                    return TryFormatDateTimeFormatG(value.DateTime, offset, buffer, out bytesWritten, encoder);
 
                 default:
                     throw new NotImplementedException();
@@ -57,7 +59,7 @@ namespace System.Text
                     return TryFormatDateTimeFormatO(value, NullOffset, buffer, out bytesWritten, encoder);
 
                 case 'G':
-                    return TryFormatDateTimeFormatG(value, buffer, out bytesWritten, encoder);
+                    return TryFormatDateTimeFormatG(value, NullOffset, buffer, out bytesWritten, encoder);
 
                 default:
                     throw new NotImplementedException();
@@ -79,13 +81,13 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static bool TryFormatDateTimeFormatG(DateTime value, Span<byte> buffer, out int bytesWritten, TextEncoder encoder)
+        static bool TryFormatDateTimeFormatG(DateTime value, TimeSpan offset, Span<byte> buffer, out int bytesWritten, TextEncoder encoder)
         {
             // for now it only works for invariant culture
             if (encoder.IsInvariantUtf8)
-                return InvariantUtf8TimeFormatter.TryFormatG(value, buffer, out bytesWritten);
+                return InvariantUtf8TimeFormatter.TryFormatG(value, offset, buffer, out bytesWritten);
             else if (encoder.IsInvariantUtf16)
-                return InvariantUtf16TimeFormatter.TryFormatG(value, buffer, out bytesWritten);
+                return InvariantUtf16TimeFormatter.TryFormatG(value, offset, buffer, out bytesWritten);
             else
                 throw new NotImplementedException();
         }

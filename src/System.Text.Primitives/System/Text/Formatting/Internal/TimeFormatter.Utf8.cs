@@ -55,11 +55,17 @@ namespace System.Text
 
         #endregion Constants
 
-        public static bool TryFormatG(DateTime value, Span<byte> buffer, out int bytesWritten)
+        public static bool TryFormatG(DateTime value, TimeSpan offset, Span<byte> buffer, out int bytesWritten)
         {
-            const int BytesNeeded = 19;
+            const int MinimumBytesNeeded = 19;
 
-            if (buffer.Length < BytesNeeded)
+            bytesWritten = MinimumBytesNeeded;
+            if (offset != PrimitiveFormatter.NullOffset)
+            {
+                bytesWritten += 7; // Space['+'|'-']hh:ss
+            }
+
+            if (buffer.Length < bytesWritten)
             {
                 bytesWritten = 0;
                 return false;
@@ -84,7 +90,26 @@ namespace System.Text
 
             FormattingHelpers.WriteDigits(value.Second, 2, ref utf8Bytes, 17);
 
-            bytesWritten = BytesNeeded;
+            if (offset != PrimitiveFormatter.NullOffset)
+            {
+                Unsafe.Add(ref utf8Bytes, 19) = Space;
+
+                long ticks = value.Ticks;
+                if (ticks < 0)
+                {
+                    Unsafe.Add(ref utf8Bytes, 20) = Minus;
+                    ticks = -ticks;
+                }
+                else
+                {
+                    Unsafe.Add(ref utf8Bytes, 20) = Plus;
+                }
+
+                FormattingHelpers.WriteDigits(offset.Hours, 2, ref utf8Bytes, 21);
+                Unsafe.Add(ref utf8Bytes, 23) = Colon;
+                FormattingHelpers.WriteDigits(offset.Minutes, 2, ref utf8Bytes, 24);
+            }
+
             return true;
         }
 
