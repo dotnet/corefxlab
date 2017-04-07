@@ -38,7 +38,7 @@ if ($Restore -eq "true") {
 $errorsEncountered = 0
 
 Write-Host "Building solution $file..."
-Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
+Invoke-Expression "$dotnetExePath msbuild $file /p:Configuration=$Configuration /p:VersionSuffix=$BuildVersion"
 if ($lastexitcode -ne 0) {
     Write-Error "Failed to build solution $file"
     $errorsEncountered++
@@ -48,7 +48,7 @@ $projectsFailed = New-Object System.Collections.Generic.List[String]
 
 foreach ($testFile in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
     Write-Host "Building and running tests for project $testFile..."
-    Invoke-Expression "$dotnetExePath test $testFile -c $Configuration -- -notrait category=performance -notrait category=outerloop"
+    Invoke-Expression "$dotnetExePath test $testFile -c $Configuration --no-build -- -notrait category=performance -notrait category=outerloop"
 
     if ($lastexitcode -ne 0) {
         Write-Error "Some tests failed in project $testFile"
