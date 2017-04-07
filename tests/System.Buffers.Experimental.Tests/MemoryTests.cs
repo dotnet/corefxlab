@@ -92,7 +92,7 @@ namespace System.Slices.Tests
         }
 
         [Fact]
-        public unsafe void IsSliceOf_PointerVersusArraySpansNeverMatch()
+        public unsafe void IsSliceOf_PointerVersusArraySpansMatch()
         {
             ulong[] data = new ulong[8];
             fixed (ulong* ptr = data)
@@ -100,14 +100,16 @@ namespace System.Slices.Tests
                 Span<ulong> arrayBased = data;
                 Span<ulong> pointerBased = new Span<ulong>(ptr, 8);
 
-                // comparing array to pointer says "no"
-                Assert.False(arrayBased.IsSliceOf(pointerBased));
-                Assert.False(pointerBased.IsSliceOf(arrayBased));
+                // justification for match: Span<T> treats as equivalent:
+                Assert.True(arrayBased == pointerBased);
+
+                // comparing array to pointer says yes (despite being different internals)
+                Assert.True(arrayBased.IsSliceOf(pointerBased));
+                Assert.True(pointerBased.IsSliceOf(arrayBased));
 
                 // comparing to self says yes
                 Assert.True(arrayBased.IsSliceOf(arrayBased));
                 Assert.True(pointerBased.IsSliceOf(pointerBased));
-
             }
         }
 
