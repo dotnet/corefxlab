@@ -41,8 +41,8 @@ namespace System.Buffers.Tests
             var pointingToSameMemory = new Span<byte>(bytes, start, length);
             var structCopy = span;
 
-            SpansReferencingSameMemoryAreEqualInEveryAspect(ref span, ref pointingToSameMemory);
-            SpansReferencingSameMemoryAreEqualInEveryAspect(ref span, ref structCopy);
+            SpansReferencingSameMemoryAreEqualInEveryAspect(span, pointingToSameMemory);
+            SpansReferencingSameMemoryAreEqualInEveryAspect(span, structCopy);
         }
 
         [Theory]
@@ -158,9 +158,7 @@ namespace System.Buffers.Tests
             Assert.False(readOnlySpan != impReadOnlySpan);
         }
 
-        // ref is used just for the structCopy scenario, otherwise it would always be copy
-
-        private static void SpansReferencingSameMemoryAreEqualInEveryAspect(ref Span<byte> span, ref Span<byte> pointingToSameMemory)
+        private static void SpansReferencingSameMemoryAreEqualInEveryAspect(Span<byte> span, Span<byte> pointingToSameMemory)
         {
             Assert.True(span == pointingToSameMemory);
             Assert.True(pointingToSameMemory == span);
