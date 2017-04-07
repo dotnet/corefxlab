@@ -26,7 +26,7 @@ namespace System.Text
             bool dash = format.Symbol != 'N';
             bool bookEnds = (format.Symbol == 'B') || (format.Symbol == 'P');
 
-            bytesWritten = GuidChars + (dash ? 4 : 0) + (bookEnds ? 2 : 0);
+            bytesWritten = (GuidChars + (dash ? 4 : 0) + (bookEnds ? 2 : 0)) * sizeof(char);
             if (buffer.Length < bytesWritten)
             {
                 bytesWritten = 0;
