@@ -250,14 +250,16 @@ namespace System.Text
             bool constant = (format == 't' || format == 'T' || format == 'c');
 
             long ticks = value.Ticks;
+            int days = (int)FormattingHelpers.DivMod(ticks, TimeSpan.TicksPerDay, out long timeLeft);
+
             bool showSign = false;
             if (ticks < 0)
             {
                 showSign = true;
-                ticks = -ticks;
+                days = -days;
+                timeLeft = -timeLeft;
             }
 
-            int days = (int)FormattingHelpers.DivMod(ticks, TimeSpan.TicksPerDay, out long timeLeft);
             int hours = (int)FormattingHelpers.DivMod(timeLeft, TimeSpan.TicksPerHour, out timeLeft);
             int minutes = (int)FormattingHelpers.DivMod(timeLeft, TimeSpan.TicksPerMinute, out timeLeft);
             int seconds = (int)FormattingHelpers.DivMod(timeLeft, TimeSpan.TicksPerSecond, out long fraction);
