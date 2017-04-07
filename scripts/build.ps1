@@ -2,15 +2,13 @@
     [string]$Configuration="Debug",
     [string]$Restore="true",
     [string]$Version="<default>",
-    [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1'),
-    [string]$Compiler="<default>"
+    [string]$BuildVersion=[System.DateTime]::Now.ToString('eyyMMdd-1')
 )
 
 Write-Host "Configuration=$Configuration."
 Write-Host "Restore=$Restore."
 Write-Host "Version=$Version."
 Write-Host "BuildVersion=$BuildVersion."
-Write-Host "Compiler=$Compiler."
 
 if (!(Test-Path "dotnet\dotnet.exe")) {
     Write-Host "dotnet.exe not installed, downloading and installing."
@@ -42,12 +40,7 @@ if ($Restore -eq "true") {
 $errorsEncountered = 0
 
 Write-Host "Building solution $file..."
-if ($Compiler -eq "<default>") {
-    Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
-}
-else {
-    Invoke-Expression "$dotnetExePath msbuild $file /p:Configuration=$Configuration /p:VersionSuffix=$BuildVersion"
-}
+Invoke-Expression "$dotnetExePath build $file -c $Configuration /p:VersionSuffix=$BuildVersion"
 
 if ($lastexitcode -ne 0) {
     Write-Error "Failed to build solution $file"
