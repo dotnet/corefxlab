@@ -6,6 +6,9 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
+    // All the helper methods in this class assume that the by-ref is valid and that there is
+    // enough space to fit the items that will be written into the underlying memory. The calling
+    // code must have already done all the necessary validation.
     internal static class FormattingHelpers
     {
         private const int FractionDigits = 7;
@@ -13,7 +16,6 @@ namespace System.Text
 
         #region UTF-8 Helper methods
 
-        // This method assumes the buffer passed starting at index has space for at least 2 more chars.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void WriteHexByte(byte value, ref byte buffer, int index)
         {
