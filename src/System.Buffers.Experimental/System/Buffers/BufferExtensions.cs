@@ -537,7 +537,9 @@ namespace System.Buffers
         public static bool IsSliceOf<T>(this Span<T> child, Span<T> parent) where T : struct
         {
             int start; // ignored
-            return IsSliceOf<T>(child, parent, out start);
+            return child.Length <= parent.Length && IsSliceOf(
+                ref child.DangerousGetPinnableReference(), child.Length,
+                ref parent.DangerousGetPinnableReference(), parent.Length, out start);
         }
 
         /// <summary>
@@ -545,22 +547,24 @@ namespace System.Buffers
         /// </summary>
         public static bool IsSliceOf<T>(this Span<T> child, Span<T> parent, out int start) where T : struct
         {
-            if (child.Length <= parent.Length) // avoid work if trivially false
-            {
-                var parentRef = parent.DangerousGetPinnableReference();
-                var childRef = child.DangerousGetPinnableReference();
-                long startBytesOffset = Unsafe.ByteOffset(ref parentRef, ref childRef).ToInt64();
-                long endBytesOffset = Unsafe.ByteOffset(
-                        ref Unsafe.Add(ref parentRef, parent.Length), ref Unsafe.Add(ref childRef, child.Length)
-                    ).ToInt64();
+            start = -1;
+            return child.Length <= parent.Length && IsSliceOf(
+                ref child.DangerousGetPinnableReference(), child.Length,
+                ref parent.DangerousGetPinnableReference(), parent.Length, out start);
+        }
+        private static bool IsSliceOf<T>(ref T childRef, int childLength, ref T parentRef, int parentLength, out int start) where T : struct
+        {
+            long startBytesOffset = Unsafe.ByteOffset(ref parentRef, ref childRef).ToInt64();
+            long endBytesOffset = Unsafe.ByteOffset(
+                    ref Unsafe.Add(ref parentRef, parentLength), ref Unsafe.Add(ref childRef, childLength)
+                ).ToInt64();
 
-                if (startBytesOffset >= 0 // parent must start earlier (or equal start)
-                    && endBytesOffset <= 0 // parent must end later (or equal end)
-                    && startBytesOffset % Unsafe.SizeOf<T>() == 0) // must have equal alignment re T
-                {
-                    start = (int)(startBytesOffset / Unsafe.SizeOf<T>());
-                    return true;
-                }
+            if (startBytesOffset >= 0 // parent must start earlier (or equal start)
+                && endBytesOffset <= 0 // parent must end later (or equal end)
+                && startBytesOffset % Unsafe.SizeOf<T>() == 0) // must have equal alignment re T
+            {
+                start = (int)(startBytesOffset / Unsafe.SizeOf<T>());
+                return true;
             }
             start = -1;
             return false;
