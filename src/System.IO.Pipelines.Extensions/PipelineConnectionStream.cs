@@ -73,12 +73,12 @@ namespace System.IO.Pipelines
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            _connection.Output.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+            _connection.Output.WriteAsync(new ArraySegment<byte>(buffer, offset, count)).GetAwaiter().GetResult();
         }
 
         public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken token)
         {
-            return _connection.Output.WriteAsync(new Span<byte>(buffer, offset, count));
+            return _connection.Output.WriteAsync(new ArraySegment<byte>(buffer, offset, count));
         }
 
         public override void Flush()

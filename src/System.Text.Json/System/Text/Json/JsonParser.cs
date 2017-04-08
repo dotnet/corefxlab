@@ -138,9 +138,9 @@ namespace System.Text.Json
             Value = 6
         };
 
-        private static ReadOnlySpan<byte> s_false = new Utf8String("false").Bytes;
-        private static ReadOnlySpan<byte> s_true = new Utf8String("true").Bytes;
-        private static ReadOnlySpan<byte> s_null = new Utf8String("null").Bytes;
+        private static readonly byte[] s_false = new Utf8String("false").Bytes.ToArray();
+        private static readonly byte[] s_true = new Utf8String("true").Bytes.ToArray();
+        private static readonly byte[] s_null = new Utf8String("null").Bytes.ToArray();
 
         public JsonObject Parse(ReadOnlySpan<byte> utf8Json, BufferPool pool = null)
         {

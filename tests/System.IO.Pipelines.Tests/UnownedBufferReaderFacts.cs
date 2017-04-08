@@ -4,6 +4,7 @@
 
 using System;
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -284,7 +285,7 @@ namespace System.IO.Pipelines.Tests
                 reader.Advance(buffer.End);
             }
 
-            Assert.Throws<ObjectDisposedException>(() => data.Span);
+            EnsureSpanDisposed(data);
         }
 
         [Fact]
@@ -315,7 +316,7 @@ namespace System.IO.Pipelines.Tests
                 preserved = buffer.Preserve();
 
                 // Make sure we can acccess the span
-                var span = buffer.First.Span;
+                EnsureSpanValid(buffer.First);
 
                 reader.Advance(buffer.End);
             }
@@ -325,7 +326,27 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal("Hello ", Encoding.UTF8.GetString(preserved.Buffer.ToArray()));
             }
 
-            Assert.Throws<ObjectDisposedException>(() => preserved.Buffer.First.Span);
+            EnsureSpanDisposed(preserved.Buffer.First);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        static Span<byte> EnsureSpanValid(Buffer<byte> buffer)
+        {
+            return buffer.Span;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        static void EnsureSpanDisposed(Buffer<byte> buffer)
+        {
+            try
+            {
+                var temp = buffer.Span;
+                Assert.True(false);
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is ObjectDisposedException);
+            }
         }
 
         [Fact]
@@ -630,12 +651,12 @@ namespace System.IO.Pipelines.Tests
 
             public override void Write(byte[] buffer, int offset, int count)
             {
-                _pipe.WriteAsync(new Span<byte>(buffer, offset, count)).GetAwaiter().GetResult();
+                _pipe.WriteAsync(new ArraySegment<byte>(buffer, offset, count)).GetAwaiter().GetResult();
             }
 
             public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             {
-                return _pipe.WriteAsync(new Span<byte>(buffer, offset, count));
+                return _pipe.WriteAsync(new ArraySegment<byte>(buffer, offset, count));
             }
 
             public void FinishWriting() => _pipe.Writer.Complete();

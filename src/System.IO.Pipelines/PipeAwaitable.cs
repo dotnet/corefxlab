@@ -52,6 +52,7 @@ namespace System.IO.Pipelines
         }
 
         public bool IsCompleted => ReferenceEquals(_state, _awaitableIsCompleted);
+        internal bool HasContinuation => !ReferenceEquals(_state, _awaitableIsNotCompleted);
 
         public Action OnCompleted(Action continuation, ref PipeCompletion completion)
         {

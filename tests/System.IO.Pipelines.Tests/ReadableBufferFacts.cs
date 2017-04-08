@@ -229,7 +229,7 @@ namespace System.IO.Pipelines.Tests
             var found = readBuffer.TrySliceTo(huntValue, out slice, out cursor);
             Assert.False(found);
 
-            // correctness test all values 
+            // correctness test all values
             for (int i = 0; i < readBuffer.Length; i++)
             {
                 *addresses[i] = huntValue;
@@ -355,73 +355,49 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task ReadTWorksAgainstSimpleBuffers()
+        public void ReadTWorksAgainstSimpleBuffers()
         {
-            byte[] chunk = { 0, 1, 2, 3, 4, 5, 6, 7 };
-            var span = new Span<byte>(chunk);
-
-            using (var factory = new PipeFactory())
-            {
-                var readerWriter = factory.Create();
-                var output = readerWriter.Writer.Alloc();
-                output.Write(span);
-                var readable = output.AsReadableBuffer();
-                Assert.True(readable.IsSingleSpan);
-                Assert.Equal(span.Read<byte>(), readable.ReadLittleEndian<byte>());
-                Assert.Equal(span.Read<sbyte>(), readable.ReadLittleEndian<sbyte>());
-                Assert.Equal(span.Read<short>(), readable.ReadLittleEndian<short>());
-                Assert.Equal(span.Read<ushort>(), readable.ReadLittleEndian<ushort>());
-                Assert.Equal(span.Read<int>(), readable.ReadLittleEndian<int>());
-                Assert.Equal(span.Read<uint>(), readable.ReadLittleEndian<uint>());
-                Assert.Equal(span.Read<long>(), readable.ReadLittleEndian<long>());
-                Assert.Equal(span.Read<ulong>(), readable.ReadLittleEndian<ulong>());
-                Assert.Equal(span.Read<float>(), readable.ReadLittleEndian<float>());
-                Assert.Equal(span.Read<double>(), readable.ReadLittleEndian<double>());
-                await output.FlushAsync();
-            }
+            var readable = BufferUtilities.CreateBuffer(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 });
+            var span = readable.First.Span;
+            Assert.True(readable.IsSingleSpan);
+            Assert.Equal(span.Read<byte>(), readable.ReadLittleEndian<byte>());
+            Assert.Equal(span.Read<sbyte>(), readable.ReadLittleEndian<sbyte>());
+            Assert.Equal(span.Read<short>(), readable.ReadLittleEndian<short>());
+            Assert.Equal(span.Read<ushort>(), readable.ReadLittleEndian<ushort>());
+            Assert.Equal(span.Read<int>(), readable.ReadLittleEndian<int>());
+            Assert.Equal(span.Read<uint>(), readable.ReadLittleEndian<uint>());
+            Assert.Equal(span.Read<long>(), readable.ReadLittleEndian<long>());
+            Assert.Equal(span.Read<ulong>(), readable.ReadLittleEndian<ulong>());
+            Assert.Equal(span.Read<float>(), readable.ReadLittleEndian<float>());
+            Assert.Equal(span.Read<double>(), readable.ReadLittleEndian<double>());
         }
 
         [Fact]
-        public async Task ReadTWorksAgainstMultipleBuffers()
+        public void ReadTWorksAgainstMultipleBuffers()
         {
-            using (var factory = new PipeFactory())
+            var readable = BufferUtilities.CreateBuffer(new byte[] { 0, 1, 2 }, new byte[] { 3, 4, 5 }, new byte[] { 6, 7, 9 });
+            Assert.Equal(9, readable.Length);
+
+            int spanCount = 0;
+            foreach (var _ in readable)
             {
-                var readerWriter = factory.Create();
-                var output = readerWriter.Writer.Alloc();
-
-                // we're going to try to force 3 buffers for 8 bytes
-                output.Write(new byte[] { 0, 1, 2 });
-                output.Ensure(4031);
-                output.Write(new byte[] { 3, 4, 5 });
-                output.Ensure(4031);
-                output.Write(new byte[] { 6, 7, 9 });
-
-                var readable = output.AsReadableBuffer();
-                Assert.Equal(9, readable.Length);
-
-                int spanCount = 0;
-                foreach (var _ in readable)
-                {
-                    spanCount++;
-                }
-                Assert.Equal(3, spanCount);
-
-                byte[] local = new byte[9];
-                readable.CopyTo(local);
-                var span = new Span<byte>(local);
-
-                Assert.Equal(span.Read<byte>(), readable.ReadLittleEndian<byte>());
-                Assert.Equal(span.Read<sbyte>(), readable.ReadLittleEndian<sbyte>());
-                Assert.Equal(span.Read<short>(), readable.ReadLittleEndian<short>());
-                Assert.Equal(span.Read<ushort>(), readable.ReadLittleEndian<ushort>());
-                Assert.Equal(span.Read<int>(), readable.ReadLittleEndian<int>());
-                Assert.Equal(span.Read<uint>(), readable.ReadLittleEndian<uint>());
-                Assert.Equal(span.Read<long>(), readable.ReadLittleEndian<long>());
-                Assert.Equal(span.Read<ulong>(), readable.ReadLittleEndian<ulong>());
-                Assert.Equal(span.Read<float>(), readable.ReadLittleEndian<float>());
-                Assert.Equal(span.Read<double>(), readable.ReadLittleEndian<double>());
-                await output.FlushAsync();
+                spanCount++;
             }
+            Assert.Equal(3, spanCount);
+
+            Assert.False(readable.IsSingleSpan);
+            Span<byte> span = readable.ToArray();
+
+            Assert.Equal(span.Read<byte>(), readable.ReadLittleEndian<byte>());
+            Assert.Equal(span.Read<sbyte>(), readable.ReadLittleEndian<sbyte>());
+            Assert.Equal(span.Read<short>(), readable.ReadLittleEndian<short>());
+            Assert.Equal(span.Read<ushort>(), readable.ReadLittleEndian<ushort>());
+            Assert.Equal(span.Read<int>(), readable.ReadLittleEndian<int>());
+            Assert.Equal(span.Read<uint>(), readable.ReadLittleEndian<uint>());
+            Assert.Equal(span.Read<long>(), readable.ReadLittleEndian<long>());
+            Assert.Equal(span.Read<ulong>(), readable.ReadLittleEndian<ulong>());
+            Assert.Equal(span.Read<float>(), readable.ReadLittleEndian<float>());
+            Assert.Equal(span.Read<double>(), readable.ReadLittleEndian<double>());
         }
 
         [Fact]

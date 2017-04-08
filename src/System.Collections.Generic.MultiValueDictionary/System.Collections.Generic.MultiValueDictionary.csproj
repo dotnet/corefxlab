@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Dictionary allowing multiple values per key</Description>
@@ -12,9 +12,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Collections" Version="4.3.0" />
-    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
-    <PackageReference Include="System.Diagnostics.Tools" Version="4.3.0" />
-    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
+    <PackageReference Include="System.Collections" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Diagnostics.Tools" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Resources.ResourceManager" Version="$(CoreFxVersion)" />
   </ItemGroup>
 </Project>

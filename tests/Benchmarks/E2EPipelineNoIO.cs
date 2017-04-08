@@ -50,7 +50,7 @@ public partial class E2EPipelineTests
         }
     }
 
-    [Benchmark]
+    //[Benchmark(Skip = "The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
     [InlineData(1000, 256)]
     [InlineData(1000, 1024)]
     [InlineData(1000, 4096)]

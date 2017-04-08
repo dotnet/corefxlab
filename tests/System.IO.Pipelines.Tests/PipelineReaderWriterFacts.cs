@@ -276,7 +276,7 @@ namespace System.IO.Pipelines.Tests
             _pipe.Reader.Advance(buffer.End);
 
             // Now write 0 and advance 0
-            await _pipe.Writer.WriteAsync(Span<byte>.Empty);
+            await _pipe.Writer.WriteAsync(Array.Empty<byte>());
             result = await _pipe.Reader.ReadAsync();
             _pipe.Reader.Advance(result.Buffer.End);
 
@@ -643,6 +643,168 @@ namespace System.IO.Pipelines.Tests
             writableBuffer.Advance(1);
             flushTask = writableBuffer.FlushAsync();
             Assert.True(flushTask.IsCompleted);
+        }
+
+        [Fact]
+        public void TryRead_ShouldReturnTrueOnCommit()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(1);
+            writableBuffer.Advance(1);
+            writableBuffer.Commit();
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+
+            Assert.True(hasReader);
+
+            _pipe.Reader.Advance(result.Buffer.End);
+        }
+
+        [Fact]
+        public void TryRead_ShouldReturnOnlyCommittedData()
+        {
+            var someData = Enumerable.Repeat<byte>(77, 50).ToArray();
+            var writableBuffer = _pipe.Writer.Alloc();
+            writableBuffer.Write(someData);
+            writableBuffer.Commit();
+            writableBuffer = _pipe.Writer.Alloc();
+            writableBuffer.Write(someData);
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+
+            Assert.True(hasReader);
+            Assert.Equal(someData, result.Buffer.ToArray());
+
+            _pipe.Reader.Advance(result.Buffer.End);
+            writableBuffer.Commit();
+            hasReader = _pipe.Reader.TryRead(out result);
+
+            Assert.True(hasReader);
+            Assert.Equal(someData, result.Buffer.ToArray());
+
+            _pipe.Reader.Advance(result.Buffer.End);
+        }
+
+        [Fact]
+        public async Task TryRead_ShouldReturnTrueOnFlush()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(1);
+            writableBuffer.Advance(1);
+            await writableBuffer.FlushAsync();
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+
+            Assert.True(hasReader);
+
+            _pipe.Reader.Advance(result.Buffer.End);
+        }
+
+        [Fact]
+        public void TryRead_ShouldReturnFalseOnSecondCallWithNoNewData()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(1);
+            writableBuffer.Advance(1);
+            writableBuffer.Commit();
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+
+            Assert.True(hasReader);
+
+            _pipe.Reader.Advance(result.Buffer.End);
+            hasReader = _pipe.Reader.TryRead(out result);
+
+            Assert.False(hasReader);
+        }
+
+        [Fact]
+        public void TryRead_ShouldReturnTrueOnSecondCallWithUnconsumedData()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(1);
+            writableBuffer.Advance(1);
+            writableBuffer.Commit();
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+            Assert.True(hasReader);
+            _pipe.Reader.Advance(result.Buffer.Start);
+            hasReader = _pipe.Reader.TryRead(out result);
+
+            Assert.True(hasReader);
+
+            _pipe.Reader.Advance(result.Buffer.End);
+        }
+
+        [Fact]
+        public void TryRead_ThrowsIfAlreadyAwaitingForAsyncRead()
+        {
+            _pipe.Reader.ReadAsync().OnCompleted(() =>
+            {
+                //We just have a continuation to make sure
+                //that the await is actually awaited
+            });
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                _pipe.Reader.TryRead(out ReadResult result);
+            });
+        }
+
+        [Fact]
+        public void TryRead_ThrowsWhenTwiceWithoutAdvancing()
+        {
+            var writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            writer.Commit();
+            var canRead1 = _pipe.Reader.TryRead(out ReadResult result1);
+            writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            writer.Commit();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var canRead2 = _pipe.Reader.TryRead(out ReadResult result2);
+            });
+            _pipe.Reader.Advance(result1.Buffer.End);
+        }
+
+        [Fact]
+        public async Task TryRead_ThrowsWhenReadAsyncWithoutAdvancing()
+        {
+            var writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            await writer.FlushAsync();
+            var result1 = await _pipe.Reader.ReadAsync();
+            writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            writer.Commit();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var canRead2 = _pipe.Reader.TryRead(out ReadResult result2);
+            });
+            _pipe.Reader.Advance(result1.Buffer.End);
+        }
+
+        [Fact]
+        public void TryRead_WhileReadAsyncWithoutAwaiting()
+        {
+            // Without actually scheduling a continuation
+            // either directly or via await the tryread will not throw
+            var reader = _pipe.Reader.ReadAsync();
+            var couldRead = _pipe.Reader.TryRead(out ReadResult result);
+            Assert.False(couldRead);
+        }
+
+        [Fact]
+        public async Task TryRead_AfterReadAsync()
+        {
+            var bytes = Encoding.UTF8.GetBytes("Hello World");
+            var writer = _pipe.Writer.Alloc(bytes.Length);
+            writer.Write(bytes);
+            await writer.FlushAsync();
+
+            var reader = await _pipe.Reader.ReadAsync();
+            Assert.Equal(bytes, reader.Buffer.ToArray());
+            _pipe.Reader.Advance(reader.Buffer.End);
+
+            writer = _pipe.Writer.Alloc(bytes.Length);
+            writer.Write(bytes);
+            writer.Commit();
+
+            var couldRead = _pipe.Reader.TryRead(out ReadResult result);
+            Assert.True(couldRead);
+            Assert.Equal(bytes, result.Buffer.ToArray());
+            _pipe.Reader.Advance(result.Buffer.End);
         }
 
         private class DisposeTrackingBufferPool : BufferPool

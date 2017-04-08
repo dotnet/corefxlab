@@ -15,7 +15,7 @@ namespace System.Buffers
         internal static BufferHandle Create<T>(OwnedBuffer<T> owner, int index)
         {
             void* pointer;
-            GCHandle handle;
+            GCHandle handle = default(GCHandle);
             if (owner.TryGetPointerInternal(out pointer))
             {
                 pointer = Buffer<T>.Add(pointer, index);

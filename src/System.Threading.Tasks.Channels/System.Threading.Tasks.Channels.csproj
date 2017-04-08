@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Provides synchronization data structures for passing data between producers and consumers.</Description>
@@ -6,8 +6,8 @@
     <PackageTags>tasks channels threading asynchrony async corefxlab</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Threading" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
+    <PackageReference Include="System.Threading" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Threading.Tasks" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="$(CoreFxVersion)" />
   </ItemGroup>
 </Project>

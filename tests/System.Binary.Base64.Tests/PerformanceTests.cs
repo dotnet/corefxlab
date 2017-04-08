@@ -30,9 +30,9 @@ namespace System.Binary.Tests
         [InlineData(1000 * 1000 * 50)]
         private static void Base64Encode(int numberOfBytes)
         {
-            var source = new byte[numberOfBytes].Slice();
+            var source = new byte[numberOfBytes].AsSpan();
             InitalizeBytes(source);
-            var destination = new byte[Base64.ComputeEncodedLength(numberOfBytes)].Slice();
+            var destination = new byte[Base64.ComputeEncodedLength(numberOfBytes)].AsSpan();
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
@@ -51,7 +51,7 @@ namespace System.Binary.Tests
         private static void Base64EncodeBaseline(int numberOfBytes)
         {
             var source = new byte[numberOfBytes];
-            InitalizeBytes(source.Slice());
+            InitalizeBytes(source.AsSpan());
             var destination = new char[Base64.ComputeEncodedLength(numberOfBytes)];
 
             foreach (var iteration in Benchmark.Iterations) {
@@ -70,9 +70,9 @@ namespace System.Binary.Tests
         [InlineData(1000 * 1000 * 50)]
         private static void Base64Decode(int numberOfBytes)
         {
-            var source = new byte[numberOfBytes].Slice();
+            var source = new byte[numberOfBytes].AsSpan();
             InitalizeBytes(source);
-            var encoded = new byte[Base64.ComputeEncodedLength(numberOfBytes)].Slice();
+            var encoded = new byte[Base64.ComputeEncodedLength(numberOfBytes)].AsSpan();
             var encodedBytesCount = Base64.Encode(source, encoded);
 
             foreach (var iteration in Benchmark.Iterations) {
@@ -92,7 +92,7 @@ namespace System.Binary.Tests
         private static void Base64DecodeBaseline(int numberOfBytes)
         {
             var source = new byte[numberOfBytes];
-            InitalizeBytes(source.Slice());
+            InitalizeBytes(source.AsSpan());
             var encoded = Convert.ToBase64String(source).ToCharArray();
 
             foreach (var iteration in Benchmark.Iterations) {

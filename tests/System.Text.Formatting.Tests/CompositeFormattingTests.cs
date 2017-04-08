@@ -35,16 +35,6 @@ namespace System.Text.Formatting.Tests
         }
 
         [Fact]
-        public void CompositeFormattingUtf8String()
-        {
-            var value = new Utf8String("hello world!");
-            using (var formatter = new StringFormatter()) {
-                formatter.Format("{0}#{1}", value, value);
-                Assert.Equal("hello world!#hello world!", formatter.ToString());
-            }
-        }
-
-        [Fact]
         public void CompositeFormattingDateTimeOffset()
         {
             var value = new DateTimeOffset(2016, 9, 23, 10, 53, 1, 1, TimeSpan.FromHours(1));

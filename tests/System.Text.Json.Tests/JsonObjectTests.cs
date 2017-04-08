@@ -10,21 +10,11 @@ namespace System.Text.Json.Tests
 {
     public class JsonObjectTests
     {
-
-        [Fact]
-        public void DynamicArrayLazy()
-        {
-            using (dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("[true, false]"))) {
-                Assert.Equal(true, json[0]);
-                Assert.Equal(false, json[1]);
-            }
-        }
-
         [Fact]
         public void ParseArray()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson, 60);
-            using (var parsedObject = JsonObject.Parse(buffer.Slice())) {
+            using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
                 var phoneNumber = (string)parsedObject[0];
                 var age = (int)parsedObject[1];
 
@@ -37,7 +27,7 @@ namespace System.Text.Json.Tests
         public void ParseSimpleObject()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleObjectJson);
-            using (var parsedObject = JsonObject.Parse(buffer.Slice())) {
+            using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
                 var age = (int)parsedObject["age"];
                 var ageStrring = (string)parsedObject["age"];
                 var first = (string)parsedObject["first"];
@@ -66,7 +56,7 @@ namespace System.Text.Json.Tests
         public void ParseNestedJson()
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.ParseJson);
-            using (var parsedObject = JsonObject.Parse(buffer.Slice())) {
+            using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
 
                 var person = parsedObject[0];
                 var age = (double)person["age"];
@@ -107,7 +97,7 @@ namespace System.Text.Json.Tests
         public void ParseBoolean()
         {
             var buffer = StringToUtf8BufferWithEmptySpace("[true,false]", 60);
-            using (var parsedObject = JsonObject.Parse(buffer.Slice())) {
+            using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
                 var first = (bool)parsedObject[0];
                 var second = (bool)parsedObject[1];
                 Assert.Equal(true, first);

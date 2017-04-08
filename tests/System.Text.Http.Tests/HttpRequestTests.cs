@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.Sequences;
 using System.Text;
 using System.Text.Http;
-using System.Text.Utf8;
 using Xunit;
 
 namespace System.Slices.Tests

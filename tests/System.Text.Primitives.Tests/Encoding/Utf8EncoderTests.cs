@@ -23,7 +23,7 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingInputBufferEmpty()
         {
             string unicodeString = "";
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int expectedBytesWritten = GetByteCount(characters);
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
@@ -43,7 +43,7 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingOutputBufferEmpty()
         {
             string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
 
@@ -62,7 +62,7 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingOutputBufferTooSmall()
         {
             string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int expectedBytesWritten = GetByteCount(characters);
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
@@ -98,7 +98,7 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingInputBufferContainsOnlyInvalidData()
         {
             string unicodeString = GenerateOnlyInvalidString(CharLength);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int expectedBytesWritten = GetByteCount(characters);
             byte[] utf8Buffer = new byte[expectedBytesWritten];
             Span<byte> span = new Span<byte>(utf8Buffer);
@@ -114,7 +114,7 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingInputBufferContainsSomeInvalidData()
         {
             string unicodeString = GenerateStringWithInvalidChars(CharLength);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int expectedBytesWritten = GetByteCount(characters);
             byte[] utf8Buffer = new byte[expectedBytesWritten + 100];
             Span<byte> span = new Span<byte>(utf8Buffer);
@@ -130,14 +130,14 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingOutputBufferTooLarge()
         {
             string unicodeString = GenerateValidString(CharLength, 0, Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
 
             Encoding.UTF8.GetBytes(charArray, 0, characters.Length, utf8BufferExpected, 0);
 
             string unicodeString2 = GenerateValidString(CharLength, 0x0800, Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> characters2 = unicodeString2.Slice();
+            ReadOnlySpan<char> characters2 = unicodeString2.AsSpan();
             char[] charArray2 = characters2.ToArray();
             byte[] utf8BufferExpected2 = new byte[Encoding.UTF8.GetByteCount(charArray2)];
 
@@ -173,10 +173,10 @@ namespace System.Text.Utf8.Tests
         public void TestEncodingEndOnHighSurrogateAndRestart()
         {
             string unicodeString = GenerateValidStringEndsWithHighStartsWithLow(CharLength, false, 0, Utf8OneByteLastCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
 
             string unicodeString2 = unicodeString + GenerateValidStringEndsWithHighStartsWithLow(CharLength, true, 0, Utf8OneByteLastCodePoint);
-            ReadOnlySpan<char> characters2 = unicodeString2.Slice();
+            ReadOnlySpan<char> characters2 = unicodeString2.AsSpan();
 
             int expectedBytesWritten = GetByteCount(characters2);
             byte[] utf8Buffer = new byte[expectedBytesWritten];
@@ -216,7 +216,7 @@ namespace System.Text.Utf8.Tests
             charLengthOfAllCharacters += 2 * ((Utf16HighSurrogateLastCodePoint - Utf16HighSurrogateFirstCodePoint) + 1) * ((Utf16LowSurrogateLastCodePoint - Utf16LowSurrogateFirstCodePoint) + 1);  //double char
             Assert.Equal(unicodeString.Length, charLengthOfAllCharacters);  // should be equal to 2160640
 
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
 
@@ -245,7 +245,7 @@ namespace System.Text.Utf8.Tests
         private bool Validate(int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateValidString(CharLength, minCodePoint, maxCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             char[] charArray = characters.ToArray();
             byte[] utf8BufferExpected = new byte[Encoding.UTF8.GetByteCount(charArray)];
 
@@ -479,15 +479,16 @@ namespace System.Text.Utf8.Tests
 
         public static object[][] TryEncodeFromUTF16ToUTF8TestData = {
             // empty
-            new object[] { TextEncoder.Utf8, new byte[] { }, new ReadOnlySpan<char>(new char[]{ (char)0x0050 } ), false },
+            new object[] { TextEncoder.Utf8, new byte[] { }, new char[]{ (char)0x0050 }, false },
             // multiple bytes
             new object[] { TextEncoder.Utf8, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
-                new ReadOnlySpan<char>(new char[]{ (char)0x0050, (char)0x03E8, (char)0xAFC8, (char)0xD852, (char)0xDDF0 } ), true },
+                new char[]{ (char)0x0050, (char)0x03E8, (char)0xAFC8, (char)0xD852, (char)0xDDF0 }, true },
         };
 
         [Theory, MemberData("TryEncodeFromUTF16ToUTF8TestData")]
-        public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar(TextEncoder encoder, byte[] expectedBytes, ReadOnlySpan<char> characters, bool expectedReturnVal)
+        public void UTF16ToUTF8EncodingTestForReadOnlySpanOfChar(TextEncoder encoder, byte[] expectedBytes, char[] chars, bool expectedReturnVal)
         {
+            ReadOnlySpan<char> characters = new ReadOnlySpan<char>(chars);
             Span<byte> buffer = new Span<byte>(new byte[expectedBytes.Length]);
             int bytesWritten;
             int consumed;
@@ -503,40 +504,25 @@ namespace System.Text.Utf8.Tests
         }
 
         public static object[][] TryEncodeFromUnicodeMultipleCodePointsTestData = {
-            // empty
-            new object[] { TextEncoder.Utf8, new byte[] { }, new ReadOnlySpan<uint>(new uint[] { 0x50 }), false },
-            new object[] { TextEncoder.Utf16, new byte[] { }, new ReadOnlySpan<uint>(new uint[] { 0x50 }), false },
+             // empty
+            new object[] { TextEncoder.Utf8, new byte[] { }, new uint[] { 0x50 }, false },
+            new object[] { TextEncoder.Utf16, new byte[] { }, new uint[] { 0x50 }, false },
             // multiple bytes
-            new object[] { TextEncoder.Utf8, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 }, new ReadOnlySpan<uint>(
-                new uint[] {
-                    0x50,
-                    0x3E8,
-                    0xAFC8,
-                    0x249F0 } ), true },
-            new object[] { TextEncoder.Utf16, new byte[] { 0x50, 0x00, 0xE8,  0x03, 0xC8, 0xAF, 0x52, 0xD8, 0xF0, 0xDD }, new ReadOnlySpan<uint>(
-                new uint[] {
-                    0x50,
-                    0x3E8,
-                    0xAFC8,
-                    0x249F0 } ), true },
+            new object[] { TextEncoder.Utf8, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 },
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , true },
+            new object[] { TextEncoder.Utf16, new byte[] { 0x50, 0x00, 0xE8,  0x03, 0xC8, 0xAF, 0x52, 0xD8, 0xF0, 0xDD },
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , true },
             // multiple bytes - buffer too small
-            new object[] { TextEncoder.Utf8, new byte[] { 0x50 }, new ReadOnlySpan<uint>(
-                new uint[] {
-                    0x50,
-                    0x3E8,
-                    0xAFC8,
-                    0x249F0 } ), false },
-            new object[] { TextEncoder.Utf16, new byte[] { 0x50, 0x00 }, new ReadOnlySpan<uint>(
-                new uint[] {
-                    0x50,
-                    0x3E8,
-                    0xAFC8,
-                    0x249F0 } ), false },
+            new object[] { TextEncoder.Utf8, new byte[] { 0x50 },
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , false },
+            new object[] { TextEncoder.Utf16, new byte[] { 0x50, 0x00 },
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 } , false },
         };
 
         [Theory, MemberData("TryEncodeFromUnicodeMultipleCodePointsTestData")]
-        public void TryEncodeFromUnicodeMultipleCodePoints(TextEncoder encoder, byte[] expectedBytes, ReadOnlySpan<uint> codePoints, bool expectedReturnVal)
+        public void TryEncodeFromUnicodeMultipleCodePoints(TextEncoder encoder, byte[] expectedBytes, uint[] codePointsArray, bool expectedReturnVal)
         {
+            ReadOnlySpan<uint> codePoints = new ReadOnlySpan<uint>(codePointsArray);
             Span<byte> buffer = new Span<byte>(new byte[expectedBytes.Length]);
             int bytesWritten;
             int consumed;
@@ -553,26 +539,20 @@ namespace System.Text.Utf8.Tests
 
         public static object[][] TryDecodeToUnicodeMultipleCodePointsTestData = {
             //empty
-            new object[] { TextEncoder.Utf8, new Span<uint>(new uint[] {}), new Span<byte> (new byte[] {}), true },
-            new object[] { TextEncoder.Utf16, new Span<uint>(new uint[] {}), new Span<byte> (new byte[] {}), true },
+            new object[] { TextEncoder.Utf8, new uint[] {}, new byte[] {}, true },
+            new object[] { TextEncoder.Utf16, new uint[] {}, new byte[] {}, true },
             // multiple bytes
-            new object[] { TextEncoder.Utf8, new Span<uint>(
-                new uint[] {
-                    0x50,
-                    0x3E8,
-                    0xAFC8,
-                    0x249F0 } ), new Span<byte> (new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 }), true },
-            new object[] { TextEncoder.Utf16, new Span<uint>(
-                new uint[] {
-                    0x50,
-                    0x3E8,
-                    0xAFC8,
-                    0x249F0 } ), new Span<byte> (new byte[] {  0x50, 0x00, 0xE8,  0x03, 0xC8, 0xAF, 0x52, 0xD8, 0xF0, 0xDD }), true },
+            new object[] { TextEncoder.Utf8,
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 }, new byte[] { 0x50, 0xCF, 0xA8,  0xEA, 0xBF, 0x88, 0xF0, 0xA4, 0xA7, 0xB0 }, true },
+            new object[] { TextEncoder.Utf16,
+                new uint[] { 0x50, 0x3E8, 0xAFC8, 0x249F0 }, new byte[] {  0x50, 0x00, 0xE8,  0x03, 0xC8, 0xAF, 0x52, 0xD8, 0xF0, 0xDD }, true },
         };
 
         [Theory, MemberData("TryDecodeToUnicodeMultipleCodePointsTestData")]
-        public void TryDecodeToUnicodeMultipleCodePoints(TextEncoder encoder, Span<uint> expectedCodePoints, Span<byte> inputBytes, bool expectedReturnVal)
+        public void TryDecodeToUnicodeMultipleCodePoints(TextEncoder encoder, uint[] expectedCodePointsArray, byte[] inputBytesArray, bool expectedReturnVal)
         {
+            Span<uint> expectedCodePoints = new Span<uint>(expectedCodePointsArray);
+            Span<byte> inputBytes = new Span<byte>(inputBytesArray);
             Span<uint> codePoints = new Span<uint>(new uint[expectedCodePoints.Length]);
             int bytesWritten;
             int consumed;
@@ -586,7 +566,7 @@ namespace System.Text.Utf8.Tests
             }
 
         }
-        
+
         public static object[][] Encoders = { new object[] { TextEncoder.Utf8 }, new object[] { TextEncoder.Utf16 } };
 
         [Theory, MemberData("Encoders")]
@@ -666,7 +646,7 @@ namespace System.Text.Utf8.Tests
             Assert.True(encoder.TryEncode(codePointsSpan, buffer, out consumed, out bytesWritten));
 
             string unicodeString = plainText.ToString();
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
             int byteCount = systemEncoder.GetByteCount(unicodeString);
             byte[] buff = new byte[byteCount];
             Span<byte> expectedBuffer;
@@ -709,45 +689,44 @@ namespace System.Text.Utf8.Tests
 
         public static object[][] EnsureCodeUnitsOfStringTestCases = {
             // empty
-            new object[] { new byte[0], default(Utf8String) },
-            new object[] { new byte[0], Utf8String.Empty },
-            new object[] { new byte[0], new Utf8String("")},
+            new object[] { new byte[0],""},
             // ascii
-            new object[] { new byte[] { 0x61 }, new Utf8String("a")},
-            new object[] { new byte[] { 0x61, 0x62, 0x63 }, new Utf8String("abc")},
-            new object[] { new byte[] { 0x41, 0x42, 0x43, 0x44 }, new Utf8String("ABCD")},
-            new object[] { new byte[] { 0x30, 0x31, 0x32, 0x33, 0x34 }, new Utf8String("01234")},
-            new object[] { new byte[] { 0x20, 0x2c, 0x2e, 0x0d, 0x0a, 0x5b, 0x5d, 0x3c, 0x3e, 0x28, 0x29 },  new Utf8String(" ,.\r\n[]<>()")},
+            new object[] { new byte[] { 0x61 }, "a"},
+            new object[] { new byte[] { 0x61, 0x62, 0x63 }, "abc"},
+            new object[] { new byte[] { 0x41, 0x42, 0x43, 0x44 }, "ABCD"},
+            new object[] { new byte[] { 0x30, 0x31, 0x32, 0x33, 0x34 }, "01234"},
+            new object[] { new byte[] { 0x20, 0x2c, 0x2e, 0x0d, 0x0a, 0x5b, 0x5d, 0x3c, 0x3e, 0x28, 0x29 },  " ,.\r\n[]<>()"},
             // edge cases for multibyte characters
-            new object[] { new byte[] { 0x7f }, new Utf8String("\u007f")},
-            new object[] { new byte[] { 0xc2, 0x80 }, new Utf8String("\u0080")},
-            new object[] { new byte[] { 0xdf, 0xbf }, new Utf8String("\u07ff")},
-            new object[] { new byte[] { 0xe0, 0xa0, 0x80 }, new Utf8String("\u0800")},
-            new object[] { new byte[] { 0xef, 0xbf, 0xbf }, new Utf8String("\uffff")},
+            new object[] { new byte[] { 0x7f }, "\u007f"},
+            new object[] { new byte[] { 0xc2, 0x80 }, "\u0080"},
+            new object[] { new byte[] { 0xdf, 0xbf }, "\u07ff"},
+            new object[] { new byte[] { 0xe0, 0xa0, 0x80 }, "\u0800"},
+            new object[] { new byte[] { 0xef, 0xbf, 0xbf }, "\uffff"},
             // ascii mixed with multibyte characters
             // 1 code unit + 2 code units
-            new object[] { new byte[] { 0x61, 0xc2, 0x80 }, new Utf8String("a\u0080")},
+            new object[] { new byte[] { 0x61, 0xc2, 0x80 }, "a\u0080"},
             // 2 code units + 1 code unit
-            new object[] { new byte[] { 0xc2, 0x80, 0x61 }, new Utf8String("\u0080a")},
+            new object[] { new byte[] { 0xc2, 0x80, 0x61 }, "\u0080a"},
             // 1 code unit + 2 code units + 1 code unit
-            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61 }, new Utf8String("a\u0080a")},
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61 }, "a\u0080a"},
             // 3 code units + 2 code units
-            new object[] { new byte[] { 0xe0, 0xa0, 0x80, 0xc2, 0x80 }, new Utf8String("\u0800\u0080")},
+            new object[] { new byte[] { 0xe0, 0xa0, 0x80, 0xc2, 0x80 }, "\u0800\u0080"},
             // 2 code units + 3 code units
-            new object[] { new byte[] { 0xc2, 0x80, 0xe0, 0xa0, 0x80 }, new Utf8String("\u0080\u0800")},
+            new object[] { new byte[] { 0xc2, 0x80, 0xe0, 0xa0, 0x80 }, "\u0080\u0800"},
             // 2 code units + 3 code units
-            new object[] { new byte[] { 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf }, new Utf8String("\u0080a\uffff")},
+            new object[] { new byte[] { 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf }, "\u0080a\uffff"},
             // 1 code unit + 2 code units + 3 code units
-            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0xef, 0xbf, 0xbf }, new Utf8String("a\u0080\uffff")},
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0xef, 0xbf, 0xbf }, "a\u0080\uffff"},
             // 2 code units + 3 code units + 1 code unit
-            new object[] { new byte[] { 0xc2, 0x80, 0xef, 0xbf, 0xbf, 0x61 }, new Utf8String("\u0080\uffffa")},
+            new object[] { new byte[] { 0xc2, 0x80, 0xef, 0xbf, 0xbf, 0x61 }, "\u0080\uffffa"},
             // 1 code unit + 2 code units + 3 code units
-            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf, 0x61 }, new Utf8String("a\u0080a\uffffa")}
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf, 0x61 }, "a\u0080a\uffffa"}
             // TODO: Add case with 4 byte character - it is impossible to do using string literals, need to create it using code point
         };
         [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
-        public void EnsureCodeUnitsOfStringByEnumeratingBytes(byte[] expectedBytes, Utf8String utf8String)
+        public void EnsureCodeUnitsOfStringByEnumeratingBytes(byte[] expectedBytes, string str)
         {
+            var utf8String = new Utf8String(str);
             Assert.Equal(expectedBytes.Length, utf8String.Length);
             Utf8String.Enumerator e = utf8String.GetEnumerator();
 
@@ -762,8 +741,9 @@ namespace System.Text.Utf8.Tests
         }
 
         [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
-        public void EnsureCodeUnitsOfStringByIndexingBytes(byte[] expectedBytes, Utf8String utf8String)
+        public void EnsureCodeUnitsOfStringByIndexingBytes(byte[] expectedBytes, string str)
         {
+            var utf8String = new Utf8String(str);
             Assert.Equal(expectedBytes.Length, utf8String.Length);
 
             for (int i = 0; i < utf8String.Length; i++)

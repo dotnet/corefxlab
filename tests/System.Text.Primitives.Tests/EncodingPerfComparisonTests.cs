@@ -16,7 +16,7 @@ namespace System.Text.Primitives.Tests
         public void EncodingPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
 
             Encoding utf8 = Encoding.UTF8;
 
@@ -41,7 +41,7 @@ namespace System.Text.Primitives.Tests
         public void EncodingPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.Slice();
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
 
             int consumed;
             int encodedBytes;
