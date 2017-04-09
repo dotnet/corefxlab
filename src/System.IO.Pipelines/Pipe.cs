@@ -322,7 +322,7 @@ namespace System.IO.Pipelines
             } // and if zero, just do nothing; don't need to validate tail etc
         }
 
-        internal WritableBufferAwaitable FlushAsync()
+        public WritableBufferAwaitable FlushAsync()
         {
             Action awaitable;
             lock (_sync)

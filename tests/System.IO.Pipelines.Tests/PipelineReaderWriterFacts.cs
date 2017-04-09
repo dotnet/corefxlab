@@ -683,6 +683,30 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void TryRead_ShouldReturnOnlyCommittedData()
+        {
+            var someData = Enumerable.Repeat<byte>(77, 50).ToArray();
+            var writableBuffer = _pipe.Writer.Alloc();
+            writableBuffer.Write(someData);
+            writableBuffer.Commit();
+            writableBuffer = _pipe.Writer.Alloc();
+            writableBuffer.Write(someData);
+            var hasReader = _pipe.Reader.TryRead(out ReadResult result);
+
+            Assert.True(hasReader);
+            Assert.Equal(someData, result.Buffer.ToArray());
+
+            _pipe.Reader.Advance(result.Buffer.End);
+            writableBuffer.Commit();
+            hasReader = _pipe.Reader.TryRead(out result);
+
+            Assert.True(hasReader);
+            Assert.Equal(someData, result.Buffer.ToArray());
+
+            _pipe.Reader.Advance(result.Buffer.End);
+        }
+
+        [Fact]
         public async Task TryRead_ShouldReturnTrueOnFlush()
         {
             var writableBuffer = _pipe.Writer.Alloc(1);
@@ -739,6 +763,40 @@ namespace System.IO.Pipelines.Tests
             {
                 _pipe.Reader.TryRead(out ReadResult result);
             });
+        }
+
+        [Fact]
+        public void TryRead_ThrowsWhenTwiceWithoutAdvancing()
+        {
+            var writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            writer.Commit();
+            var canRead1 = _pipe.Reader.TryRead(out ReadResult result1);
+            writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            writer.Commit();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var canRead2 = _pipe.Reader.TryRead(out ReadResult result2);
+            });
+            _pipe.Reader.Advance(result1.Buffer.End);
+        }
+
+        [Fact]
+        public async Task TryRead_ThrowsWhenReadAsyncWithoutAdvancing()
+        {
+            var writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            await writer.FlushAsync();
+            var result1 = await _pipe.Reader.ReadAsync();
+            writer = _pipe.Writer.Alloc(1);
+            writer.Advance(1);
+            writer.Commit();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var canRead2 = _pipe.Reader.TryRead(out ReadResult result2);
+            });
+            _pipe.Reader.Advance(result1.Buffer.End);
         }
 
         [Fact]
