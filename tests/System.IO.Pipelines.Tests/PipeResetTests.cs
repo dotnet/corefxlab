@@ -10,12 +10,12 @@ namespace System.IO.Pipelines.Tests
     {
         private PipeFactory _pipeFactory;
 
-        private IPipe _pipe;
+        private Pipe _pipe;
 
         public PipeResetTests()
         {
             _pipeFactory = new PipeFactory();
-            _pipe = _pipeFactory.Create();
+            _pipe = (Pipe) _pipeFactory.Create();
         }
 
         public void Dispose()
@@ -47,6 +47,21 @@ namespace System.IO.Pipelines.Tests
 
             Assert.Equal(source, result.Buffer.ToArray());
             _pipe.Reader.Advance(result.Buffer.End);
+        }
+
+        [Fact]
+        public async Task LengthIsReseted()
+        {
+            var source = new byte[] { 1, 2, 3 };
+
+            await _pipe.Writer.WriteAsync(source);
+
+            _pipe.Reader.Complete();
+            _pipe.Writer.Complete();
+
+            _pipe.Reset();
+
+            Assert.Equal(0, _pipe.Length);
         }
 
         [Fact]

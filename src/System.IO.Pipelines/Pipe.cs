@@ -94,6 +94,9 @@ namespace System.IO.Pipelines
             _writerAwaitable = new PipeAwaitable(completed: true);
             _readerCompletion = default(PipeCompletion);
             _writerCompletion = default(PipeCompletion);
+            _commitHeadIndex = 0;
+            _currentWriteLength = 0;
+            _length = 0;
         }
 
         internal Buffer<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
