@@ -10,7 +10,7 @@ namespace System.Text.Json.Dynamic.Tests
 {
     public class JsonDynamicObjectTests
     {
-        [Fact(Skip = "A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a static field.")]
+        //[Fact(Skip= "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
         public void DynamicArrayLazy()
         {
             using (dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("[true, false]"))) {
@@ -19,7 +19,7 @@ namespace System.Text.Json.Dynamic.Tests
             }
         }
 
-        [Fact(Skip = "A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a static field.")]
+        //[Fact(Skip = "System.TypeLoadException : A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a class instance field.")]
         public void NestedEagerReadLazy()
         {
             using(dynamic json = JsonLazyDynamicObject.Parse(new Utf8String("{ \"FirstName\": \"John\", \"LastName\": \"Smith\", \"Address\": { \"Street\": \"21 2nd Street\", \"City\": \"New York\", \"State\": \"NY\", \"Zip\": \"10021-3100\" }, \"IsAlive\": true, \"Age\": 25, \"Spouse\":null }"))){
@@ -37,26 +37,26 @@ namespace System.Text.Json.Dynamic.Tests
             }
         }
 
-        [Fact(Skip = "System.TypeLoadException : The generic type 'System.Action`4' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.IEquatable`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void NestedEagerRead()
         {
             dynamic json = JsonDynamicObject.Parse(new Utf8String("{ \"FirstName\": \"John\", \"LastName\": \"Smith\", \"Address\": { \"Street\": \"21 2nd Street\", \"City\": \"New York\", \"State\": \"NY\", \"Zip\": \"10021-3100\" }, \"IsAlive\": true, \"Age\": 25, \"Spouse\":null }"));
-            Assert.Equal(new Utf8String("John"), json.FirstName);
-            Assert.Equal(new Utf8String("Smith"), json.LastName);
+            Assert.Equal("John", json.FirstName);
+            Assert.Equal("Smith", json.LastName);
             Assert.Equal(true, json.IsAlive);
             Assert.Equal(25, json.Age);
             Assert.Equal(null, json.Spouse);
             Assert.Equal(6, json.Count);
 
             dynamic address = json.Address;
-            Assert.Equal(new Utf8String("21 2nd Street"), address.Street);
-            Assert.Equal(new Utf8String("New York"), address.City);
-            Assert.Equal(new Utf8String("NY"), address.State);
-            Assert.Equal(new Utf8String("10021-3100"), address.Zip);
+            Assert.Equal("21 2nd Street", address.Street);
+            Assert.Equal("New York", address.City);
+            Assert.Equal("NY", address.State);
+            Assert.Equal("10021-3100", address.Zip);
             Assert.Equal(4, address.Count);
         }
 
-        [Fact(Skip = "System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.IEquatable`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void NestedEagerWrite()
         {
             var jsonText = new Utf8String("{\"FirstName\":\"John\",\"LastName\":\"Smith\",\"Address\":{\"Street\":\"21 2nd Street\",\"City\":\"New York\",\"State\":\"NY\",\"Zip\":\"10021-3100\"},\"IsAlive\":true,\"Age\":25,\"Spouse\":null}");
@@ -67,10 +67,10 @@ namespace System.Text.Json.Dynamic.Tests
 
             // The follwoing check only works given the current implmentation of Dictionary.
             // If the implementation changes, the properties might round trip to different places in the JSON text.
-            Assert.Equal(jsonText, formattedText); 
+            Assert.Equal(jsonText.ToString(), formattedText.ToString()); 
         }
 
-        [Fact(Skip= "System.BadImageFormatException : An attempt was made to load a program with an incorrect format.")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.IEquatable`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void EagerWrite()
         {
             dynamic json = new JsonDynamicObject();
@@ -78,30 +78,28 @@ namespace System.Text.Json.Dynamic.Tests
 
             var formatter = new ArrayFormatter(1024, TextEncoder.Utf8);
             formatter.Append((JsonDynamicObject)json);
-            var formattedText = new Utf8String(formatter.Formatted);
-            Assert.Equal(new Utf8String("{\"First\":\"John\"}"), formattedText);
+            Assert.Equal("{\"First\":\"John\"}", formatter.Formatted.ToString());
         }
 
-        [Fact(Skip= "A value type containing a by-ref instance field, such as Span<T>, cannot be used as the type for a static field.")]
+        //[Fact(Skip = "System.TypeLoadException : The generic type 'System.IEquatable`1' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
         public void NonAllocatingRead()
         {
-            var jsonText = new Utf8String("{\"First\":\"John\",\"Age\":25}");
-            JsonDynamicObject json = JsonDynamicObject.Parse(jsonText);
+            JsonDynamicObject json = JsonDynamicObject.Parse(new Utf8String("{\"First\":\"John\",\"Age\":25}"));
 
-            Assert.Equal(new Utf8String("John"), json.First());
+            Assert.Equal("John", json.First().ToString());
             Assert.Equal(25U, json.Age());
         }
     }
 
     static class SchemaExtensions
     {
-        static readonly Utf8String s_first = new Utf8String("First");
-        static readonly Utf8String s_age = new Utf8String("Age");
+        static readonly string s_first = "First";
+        static readonly string s_age = "Age";
 
         public static Utf8String First(this JsonDynamicObject json)
         {
             Utf8String value;
-            if(json.TryGetString(s_first, out value)) {
+            if(json.TryGetString(new Utf8String(s_first), out value)) {
                 return value;
             }
             throw new InvalidOperationException();
@@ -110,7 +108,7 @@ namespace System.Text.Json.Dynamic.Tests
         public static uint Age(this JsonDynamicObject json)
         {
             uint value;
-            if (json.TryGetUInt32(s_age, out value)) {
+            if (json.TryGetUInt32(new Utf8String(s_age), out value)) {
                 return value;
             }
             throw new InvalidOperationException();

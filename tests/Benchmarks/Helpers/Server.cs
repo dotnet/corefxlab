@@ -35,14 +35,14 @@ namespace System.IO.Pipelines.Samples
                             break;
                         }
 
-                        var requestBytes = input.First.Span;
+                        var requestBuffer = input.First;
 
-                        if (requestBytes.Length != 492)
+                        if (requestBuffer.Length != 492)
                         {
                             continue;
                         }
                         // Parse the input http request
-                        HttpRequestSingleSegment parsedRequest = HttpRequestSingleSegment.Parse(requestBytes);
+                        HttpRequestSingleSegment parsedRequest = HttpRequestSingleSegment.Parse(requestBuffer.Span);
 
                         // Writing directly to pooled buffers
                         var output = connection.Output.Alloc();

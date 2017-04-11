@@ -83,7 +83,7 @@ namespace System.Text.Utf8.Tests
             new object[] { 4, "a\uABEE\uABCDa"}
         };
 
-        [Theory(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program."), MemberData("LengthInCodePointsTestCases")]
+        //[Theory(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program."), MemberData("LengthInCodePointsTestCases")]
         public void LengthInCodePoints(int expectedLength, string str)
         {
             Utf8String s = new Utf8String(str);

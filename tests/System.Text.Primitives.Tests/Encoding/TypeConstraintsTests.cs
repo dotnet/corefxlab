@@ -9,42 +9,34 @@ namespace System.Text.Utf8.Tests
 {
     public class TypeConstraintsTests
     {
-        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
+        [Fact]
         public void Utf8StringIsAStruct()
         {
-            Utf8String _anyUtf8String = new Utf8String("anyString");
-            Assert.True(_anyUtf8String.GetType().GetTypeInfo().IsValueType);
+            Assert.True(typeof(Utf8String).GetTypeInfo().IsValueType);
         }
 
-        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
+        [Fact]
         public void Utf8StringCodeUnitsEnumeratorIsAStruct()
         {
-            Utf8String _anyUtf8String = new Utf8String("anyString");
-            var utf8CodeUnitsEnumerator = _anyUtf8String.GetEnumerator();
-            Assert.True(_anyUtf8String.GetType().GetTypeInfo().IsValueType);
+            Assert.True(typeof(Utf8String.Enumerator).GetTypeInfo().IsValueType);
         }
 
-        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
+        [Fact]
         public void Utf8StringCodePointEnumerableIsAStruct()
         {
-            Utf8String _anyUtf8String = new Utf8String("anyString");
-            Assert.True(_anyUtf8String.CodePoints.GetType().GetTypeInfo().IsValueType);
+            Assert.True(typeof(Utf8String.CodePointEnumerable).GetTypeInfo().IsValueType);
         }
 
-        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
+        [Fact]
         public void Utf8StringCodePointEnumeratorIsAStruct()
         {
-            Utf8String _anyUtf8String = new Utf8String("anyString");
-            var utf8CodePointEnumerator = _anyUtf8String.CodePoints.GetEnumerator();
-            Assert.True(utf8CodePointEnumerator.GetType().GetTypeInfo().IsValueType);
+            Assert.True(typeof(Utf8String.CodePointEnumerator).GetTypeInfo().IsValueType);
         }
 
-        [Fact(Skip = "System.InvalidProgramException : Common Language Runtime detected an invalid program.")]
+        [Fact]
         public void Utf8StringReverseCodePointEnumeratorIsAStruct()
         {
-            Utf8String _anyUtf8String = new Utf8String("anyString");
-            var utf8CodePointEnumerator = _anyUtf8String.CodePoints.GetReverseEnumerator();
-            Assert.True(utf8CodePointEnumerator.GetType().GetTypeInfo().IsValueType);
+            Assert.True(typeof(Utf8String.CodePointReverseEnumerator).GetTypeInfo().IsValueType);
         }
     }
 }

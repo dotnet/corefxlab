@@ -36,10 +36,18 @@ namespace System.Text.Http.Parser
                 consumed = buffer.Move(consumed, lineIndex + 1);
                 span = span.Slice(0, lineIndex + 1);
             }
-            else if (buffer.IsSingleSpan || !TryGetNewLineSpan(ref buffer, ref span, out consumed))
+            else if (buffer.IsSingleSpan)
             {
-                // No request line end
                 return false;
+            }
+            else
+            {
+                span = TryGetNewLineSpan(ref buffer, out consumed);
+                if (span.Length == 0)
+                {
+                    // No request line end
+                    return false;
+                }
             }
 
             // Fix and parse the span
@@ -581,17 +589,17 @@ namespace System.Text.Http.Parser
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool TryGetNewLineSpan(ref ReadableBuffer buffer, ref Span<byte> span, out ReadCursor end)
+        private static Span<byte> TryGetNewLineSpan(ref ReadableBuffer buffer, out ReadCursor end)
         {
             var start = buffer.Start;
             if (ReadCursorOperations.Seek(start, buffer.End, out end, ByteLF) != -1)
             {
                 // Move 1 byte past the \n
                 end = buffer.Move(end, 1);
-                span = buffer.Slice(start, end).ToSpan();
-                return true;
+                return buffer.Slice(start, end).ToSpan();
             }
-            return false;
+
+            return default(Span<byte>);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
