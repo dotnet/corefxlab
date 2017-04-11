@@ -152,8 +152,7 @@ namespace System.IO.Pipelines.Samples
                             break;
                         }
 
-                        var first = responseBuffer.First.Span;
-                        int ch = first[0];
+                        int ch = responseBuffer.First.Span[0];
 
                         if (ch == '\r')
                         {

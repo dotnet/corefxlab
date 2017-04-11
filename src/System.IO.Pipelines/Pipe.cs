@@ -85,8 +85,18 @@ namespace System.IO.Pipelines
             _maximumSizeLow = options.MaximumSizeLow;
             _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
             _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
+            ResetState();
+        }
+
+        private void ResetState()
+        {
             _readerAwaitable = new PipeAwaitable(completed: false);
             _writerAwaitable = new PipeAwaitable(completed: true);
+            _readerCompletion = default(PipeCompletion);
+            _writerCompletion = default(PipeCompletion);
+            _commitHeadIndex = 0;
+            _currentWriteLength = 0;
+            _length = 0;
         }
 
         internal Buffer<byte> Buffer => _writingHead?.Buffer.Slice(_writingHead.End, _writingHead.WritableBytes) ?? Buffer<byte>.Empty;
@@ -589,13 +599,15 @@ namespace System.IO.Pipelines
                 result.ResultFlags |= ResultFlags.Completed;
             }
 
-            if (_readerAwaitable.ObserveCancelation())
+            var isCancelled = _readerAwaitable.ObserveCancelation();
+            if (isCancelled)
             {
                 result.ResultFlags |= ResultFlags.Cancelled;
             }
 
             // No need to read end if there is no head
             var head = _readHead;
+
             if (head != null)
             {
                 // Reading commit head shared with writer
@@ -607,7 +619,14 @@ namespace System.IO.Pipelines
                 result.ResultBuffer.BufferStart.Index = head.Start;
             }
 
-            _readingState.Begin(ExceptionResource.AlreadyReading);
+            if (isCancelled)
+            {
+                _readingState.BeginTentative(ExceptionResource.AlreadyReading);
+            }
+            else
+            {
+                _readingState.Begin(ExceptionResource.AlreadyReading);
+            }
         }
 
         // IWritableBufferAwaiter members
@@ -650,5 +669,16 @@ namespace System.IO.Pipelines
 
         public IPipeReader Reader => this;
         public IPipeWriter Writer => this;
+
+        public void Reset()
+        {
+            if (!_disposed)
+            {
+                throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
+            }
+
+            _disposed = false;
+            ResetState();
+        }
     }
 }

@@ -171,7 +171,7 @@ namespace System.IO.Pipelines.Samples.Http
             _path = null;
         }
 
-        public async Task WriteAsync(Span<byte> data)
+        public Task WriteAsync(Span<byte> data)
         {
             var buffer = _output.Alloc();
 
@@ -192,6 +192,11 @@ namespace System.IO.Pipelines.Samples.Http
                 buffer.Write(data);
             }
 
+            return FlushAsync(buffer);
+        }
+
+        public async Task FlushAsync(WritableBuffer buffer)
+        {
             await buffer.FlushAsync();
         }
 

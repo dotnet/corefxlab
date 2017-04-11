@@ -8,5 +8,6 @@ namespace System.IO.Pipelines
     {
         IPipeReader Reader { get; }
         IPipeWriter Writer { get; }
+        void Reset();
     }
 }
