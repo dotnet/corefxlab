@@ -6,7 +6,7 @@ using Xunit;
 
 namespace System.Text.Primitives.Tests
 {
-    public class UuidTests
+    public class GuidTests
     {
         const int NumberOfRandomSamples = 1000;
 
@@ -25,15 +25,15 @@ namespace System.Text.Primitives.Tests
         {
             foreach (var encoder in Encoders)
             {
-                TestUuidFormat(Guid.Empty, format, encoder);
-                TestUuidFormat(Guid.Parse("{00000000-0000-0000-0000-000000000001}"), format, encoder);
-                TestUuidFormat(Guid.Parse("{10000000-0000-0000-0000-000000000000}"), format, encoder);
-                TestUuidFormat(Guid.Parse("{11111111-1111-1111-1111-111111111111}"), format, encoder);
-                TestUuidFormat(Guid.Parse("{99999999-9999-9999-9999-999999999999}"), format, encoder);
-                TestUuidFormat(Guid.Parse("{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}"), format, encoder);
-                TestUuidFormat(Guid.Parse("{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}"), format, encoder);
-                TestUuidFormat(Guid.Parse("{aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa}"), format, encoder);
-                TestUuidFormat(Guid.Parse("{ffffffff-ffff-ffff-ffff-ffffffffffff}"), format, encoder);
+                TestGuidFormat(Guid.Empty, format, encoder);
+                TestGuidFormat(Guid.Parse("{00000000-0000-0000-0000-000000000001}"), format, encoder);
+                TestGuidFormat(Guid.Parse("{10000000-0000-0000-0000-000000000000}"), format, encoder);
+                TestGuidFormat(Guid.Parse("{11111111-1111-1111-1111-111111111111}"), format, encoder);
+                TestGuidFormat(Guid.Parse("{99999999-9999-9999-9999-999999999999}"), format, encoder);
+                TestGuidFormat(Guid.Parse("{AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA}"), format, encoder);
+                TestGuidFormat(Guid.Parse("{FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF}"), format, encoder);
+                TestGuidFormat(Guid.Parse("{aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa}"), format, encoder);
+                TestGuidFormat(Guid.Parse("{ffffffff-ffff-ffff-ffff-ffffffffffff}"), format, encoder);
             }
         }
 
@@ -49,12 +49,12 @@ namespace System.Text.Primitives.Tests
                 Guid guid = Guid.NewGuid();
                 foreach (var encoder in Encoders)
                 {
-                    TestUuidFormat(guid, format, encoder);
+                    TestGuidFormat(guid, format, encoder);
                 }
             }
         }
 
-        static void TestUuidFormat(Guid guid, char format, TextEncoder encoder)
+        static void TestGuidFormat(Guid guid, char format, TextEncoder encoder)
         {
             var expected = guid.ToString(format.ToString(), CultureInfo.InvariantCulture);
 
