@@ -2,10 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Text.Utf8;
 using System.Text.Utf16;
 using Xunit;
 
-namespace System.Text.Utf8.Tests
+namespace System.Text.Primitives.Tests
 {
     public class Utf8Utf16ConversionTests
     {
@@ -26,7 +27,7 @@ namespace System.Text.Utf8.Tests
             Utf8String utf8String = new Utf8String(utf16String);
             Assert.Equal(utf16String, utf8String.ToString());
         }
-        
+
         [Theory]
         [InlineData("abcdefghijklmnopqrstuvwxyz")]
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ")]

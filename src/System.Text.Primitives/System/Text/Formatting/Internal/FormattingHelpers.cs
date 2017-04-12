@@ -1,0 +1,154 @@
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+
+namespace System.Text
+{
+    // All the helper methods in this class assume that the by-ref is valid and that there is
+    // enough space to fit the items that will be written into the underlying memory. The calling
+    // code must have already done all the necessary validation.
+    internal static class FormattingHelpers
+    {
+        // For the purpose of formatting time, the format specifier contains room for
+        // exactly 7 digits in the fraction portion. See "Round-trip format specifier"
+        // at the following URL for more information.
+        // https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx#Roundtrip
+        private const int FractionDigits = 7;
+
+        // A simple lookup table for converting numbers to hex.
+        private const string HexTable = "0123456789abcdef";
+
+        #region UTF-8 Helper methods
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void WriteHexByte(byte value, ref byte buffer, int index)
+        {
+            Unsafe.Add(ref buffer, index) = (byte)HexTable[value >> 4];
+            Unsafe.Add(ref buffer, index + 1) = (byte)HexTable[value & 0xF];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int WriteFractionDigits(long value, int digitCount, ref byte buffer, int index)
+        {
+            for (var i = FractionDigits; i > digitCount; i--)
+                value /= 10;
+
+            return WriteDigits(value, digitCount, ref buffer, index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int WriteDigits(long value, ref byte buffer, int index)
+        {
+            return WriteDigits(value, CountDigits(value), ref buffer, index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int WriteDigits(long value, int digitCount, ref byte buffer, int index)
+        {
+            long left = value;
+
+            for (var i = digitCount - 1; i >= 0; i--)
+            {
+                left = DivMod(left, 10, out long num);
+                Unsafe.Add(ref buffer, index + i) = (byte)('0' + num);
+            }
+
+            return digitCount;
+        }
+
+        #endregion UTF-8 Helper methods
+
+        #region UTF-16 Helper methods
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void WriteHexByte(byte value, ref char buffer, int index)
+        {
+            Unsafe.Add(ref buffer, index) = HexTable[value >> 4];
+            Unsafe.Add(ref buffer, index + 1) = HexTable[value & 0xF];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int WriteFractionDigits(long value, int digitCount, ref char buffer, int index)
+        {
+            for (var i = FractionDigits; i > digitCount; i--)
+                value /= 10;
+
+            return WriteDigits(value, digitCount, ref buffer, index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int WriteDigits(long value, ref char buffer, int index)
+        {
+            return WriteDigits(value, CountDigits(value), ref buffer, index);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int WriteDigits(long value, int digitCount, ref char buffer, int index)
+        {
+            long left = value;
+
+            for (var i = digitCount - 1; i >= 0; i--)
+            {
+                left = DivMod(left, 10, out long num);
+                Unsafe.Add(ref buffer, index + i) = (char)('0' + num);
+            }
+
+            return digitCount;
+        }
+
+        #endregion UTF-16 Helper methods
+
+        #region Math Helper methods
+
+        /// <summary>
+        /// We don't have access to Math.DivRem, so this is a copy of the implementation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long DivMod(long numerator, long denominator, out long modulo)
+        {
+            long div = numerator / denominator;
+            modulo = numerator - (div * denominator);
+            return div;
+        }
+
+        #endregion Math Helper methods
+
+        #region Character counting helper methods
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountDigits(long n)
+        {
+            Precondition.Require(n >= 0);
+
+            // NOTE: It might be worth re-visiting this to use a while loop or unrolled
+            //       branch checks to calculate the digit count. My simple tests showed
+            //       this to be performant, but it might depend on the characteristics /
+            //       features of the hardware given a specific input number.
+            if (n == 0) return 1;
+            return (int)Math.Floor(Math.Log10(n)) + 1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountFractionDigits(long n)
+        {
+            Precondition.Require(n >= 0);
+
+            long left = n;
+            long m = 0;
+            int count = FractionDigits;
+
+            // Remove all the 0 (zero) values from the right.
+            while (left > 0 && m == 0 && count > 0)
+            {
+                left = DivMod(left, 10, out m);
+                count--;
+            }
+
+            return count + 1;
+        }
+
+        #endregion Character counting helper methods
+    }
+}

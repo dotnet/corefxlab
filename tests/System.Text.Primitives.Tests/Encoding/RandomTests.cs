@@ -4,11 +4,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Utf8;
 using System.Text.Utf16;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace System.Text.Utf8.Tests
+namespace System.Text.Primitives.Tests
 {
     public class Utf8StringTests
     {
@@ -437,7 +438,7 @@ namespace System.Text.Utf8.Tests
             string trimmed = u8trimmed.ToString();
             Assert.Equal(expected, trimmed);
         }
-		
+
         [Theory]
         [InlineData("")]
         [InlineData("test124")]
@@ -455,7 +456,7 @@ namespace System.Text.Utf8.Tests
                 TestHelper.Validate(strFromArray, strFromPointer);
 
                 Array.Clear(buffer, 0, buffer.Length);
-                strFromArray.CopyTo(byteSpan);         
+                strFromArray.CopyTo(byteSpan);
                 Assert.Equal(textArray, buffer);
 
                 Array.Clear(buffer, 0, buffer.Length);
