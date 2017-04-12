@@ -29,15 +29,4 @@ namespace System.Buffers.Internal
         public OwnedArray(ArraySegment<T> segment) : base(segment.Array, segment.Offset, segment.Count)
         { }
     }
-
-    internal class OwnerEmptyMemory<T> : OwnedBuffer<T>
-    {
-        readonly static T[] s_empty = new T[0];
-        public readonly static OwnedBuffer<T> Shared = new OwnerEmptyMemory<T>();
-
-        public OwnerEmptyMemory() : base(s_empty, 0, 0) { }
-
-        protected override void Dispose(bool disposing)
-        {}
-    }
 }
