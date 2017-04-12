@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers.Pools
 {
-    public unsafe sealed patial class NativeBufferPool : BufferPool
+    public unsafe sealed partial class NativeBufferPool : BufferPool
     {
         static NativeBufferPool s_shared = new NativeBufferPool(4096);
         object _lock = new object();
