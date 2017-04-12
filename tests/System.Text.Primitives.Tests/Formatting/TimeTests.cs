@@ -143,7 +143,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expected, actual);
         }
 
-        static readonly Random Rnd = new Random();
+        static readonly Random Rnd = new Random(32098);
 
         static DateTime CreateRandomDate()
         {
