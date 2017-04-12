@@ -11,7 +11,13 @@ namespace System.Text
     // code must have already done all the necessary validation.
     internal static class FormattingHelpers
     {
+        // For the purpose of formatting time, the format specifier contains room for
+        // exactly 7 digits in the fraction portion. See "Round-trip format specifier"
+        // at the following URL for more information.
+        // https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx#Roundtrip
         private const int FractionDigits = 7;
+
+        // A simple lookup table for converting numbers to hex.
         private const string HexTable = "0123456789abcdef";
 
         #region UTF-8 Helper methods
@@ -27,7 +33,7 @@ namespace System.Text
         public static int WriteFractionDigits(long value, int digitCount, ref byte buffer, int index)
         {
             for (var i = FractionDigits; i > digitCount; i--)
-                value = DivMod(value, 10, out long m);
+                value /= 10;
 
             return WriteDigits(value, digitCount, ref buffer, index);
         }
@@ -67,7 +73,7 @@ namespace System.Text
         public static int WriteFractionDigits(long value, int digitCount, ref char buffer, int index)
         {
             for (var i = FractionDigits; i > digitCount; i--)
-                value = DivMod(value, 10, out long m);
+                value /= 10;
 
             return WriteDigits(value, digitCount, ref buffer, index);
         }
@@ -116,6 +122,10 @@ namespace System.Text
         {
             Precondition.Require(n >= 0);
 
+            // NOTE: It might be worth re-visiting this to use a while loop or unrolled
+            //       branch checks to calculate the digit count. My simple tests showed
+            //       this to be performant, but it might depend on the characteristics /
+            //       features of the hardware given a specific input number.
             if (n == 0) return 1;
             return (int)Math.Floor(Math.Log10(n)) + 1;
         }

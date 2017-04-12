@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
-    internal static class InvariantUtf8UuidFormatter
+    internal static class InvariantUtf8GuidFormatter
     {
         #region Constants
 

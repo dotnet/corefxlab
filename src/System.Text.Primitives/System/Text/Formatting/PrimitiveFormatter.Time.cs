@@ -4,7 +4,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Text 
+namespace System.Text
 {
     public static partial class PrimitiveFormatter
     {

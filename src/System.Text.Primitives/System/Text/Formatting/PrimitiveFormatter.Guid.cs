@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Runtime.CompilerServices;
-
-namespace System.Text 
+namespace System.Text
 {
     public static partial class PrimitiveFormatter
     {
@@ -12,9 +10,9 @@ namespace System.Text
             encoder = encoder == null ? TextEncoder.Utf8 : encoder;
 
             if (encoder.IsInvariantUtf8)
-                return InvariantUtf8UuidFormatter.TryFormat(value, buffer, out bytesWritten, format);
+                return InvariantUtf8GuidFormatter.TryFormat(value, buffer, out bytesWritten, format);
             else if (encoder.IsInvariantUtf16)
-                return InvariantUtf16UuidFormatter.TryFormat(value, buffer, out bytesWritten, format);
+                return InvariantUtf16GuidFormatter.TryFormat(value, buffer, out bytesWritten, format);
             else
                 throw new NotImplementedException();
         }
