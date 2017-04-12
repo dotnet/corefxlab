@@ -12,10 +12,9 @@ namespace System.Buffers
         GCHandle _handle;
         void* _pointer;
 
-        internal static BufferHandle Create<T>(OwnedBuffer<T> owner, int index)
+        internal static BufferHandle Create<T>(OwnedBuffer<T> owner, int index, GCHandle handle = default(GCHandle))
         {
             void* pointer;
-            GCHandle handle = default(GCHandle);
             if (owner.TryGetPointerInternal(out pointer))
             {
                 pointer = Buffer<T>.Add(pointer, index);

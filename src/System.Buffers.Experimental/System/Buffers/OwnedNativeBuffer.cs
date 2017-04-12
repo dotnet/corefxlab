@@ -10,14 +10,15 @@ namespace System.Buffers
         public OwnedNativeBuffer(int length) : this(length, Marshal.AllocHGlobal(length))
         { }
 
-        public OwnedNativeBuffer(int length, IntPtr address) : base(null, 0, length, address) { }
+        public OwnedNativeBuffer(int length, IntPtr address)
+        {
+            _length = length;
+            _pointer = address;
+        }
 
         public static implicit operator IntPtr(OwnedNativeBuffer owner)
         {
-            unsafe
-            {
-                return new IntPtr(owner.Pointer);
-            }
+            return owner._pointer;
         }
 
         ~OwnedNativeBuffer()
@@ -27,13 +28,45 @@ namespace System.Buffers
 
         protected override void Dispose(bool disposing)
         {
-            if (base.Pointer != IntPtr.Zero)
+            if (_pointer != null)
             {
-                Marshal.FreeHGlobal(base.Pointer);
+                Marshal.FreeHGlobal(_pointer);
             }
             base.Dispose(disposing);
+            _pointer = IntPtr.Zero;
         }
 
-        public new unsafe byte* Pointer => (byte*)base.Pointer.ToPointer();
+        public unsafe override Span<byte> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            if (index > _length || length > (_length - index)) throw new IndexOutOfRangeException();
+            return new Span<byte>((byte*)_pointer.ToPointer() + index, length);
+        }
+
+        public override BufferHandle Pin(int index = 0)
+        {
+            return BufferHandle.Create(this, index);
+        }
+
+        protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        {
+            buffer = default(ArraySegment<byte>);
+            return false;
+        }
+
+        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = _pointer.ToPointer();
+            return true;
+        }
+
+        public unsafe byte* Pointer => (byte*)_pointer.ToPointer();
+
+        public override int Length => _length;
+
+        public unsafe override Span<byte> Span => new Span<byte>(_pointer.ToPointer(), _length);
+
+        int _length;
+        IntPtr _pointer;
     }
 }

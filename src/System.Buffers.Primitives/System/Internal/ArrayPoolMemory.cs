@@ -16,16 +16,45 @@ namespace System.Buffers.Internal
 
         private class ArrayPoolMemory : OwnedBuffer<byte>
         {
-            public ArrayPoolMemory(int size) : base(ArrayPool<byte>.Shared.Rent(size))
+            public ArrayPoolMemory(int size)
             {
+                _array = ArrayPool<byte>.Shared.Rent(size);
+            }
+
+            public override int Length => _array.Length;
+
+            public override Span<byte> Span => _array;
+
+            public override Span<byte> GetSpan(int index, int length)
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+                return new Span<byte>(_array, index, length);
+            }
+
+            public override BufferHandle Pin(int index = 0)
+            {
+                return BufferHandle.Create(this, index);
             }
 
             protected override void Dispose(bool disposing)
             {
-                ArrayPool<byte>.Shared.Return(Array);
-
+                ArrayPool<byte>.Shared.Return(_array);
                 base.Dispose(disposing);
             }
+
+            protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+            {
+                buffer = new ArraySegment<byte>(_array);
+                return true;
+            }
+
+            protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+            {
+                pointer = null;
+                return false;
+            }
+
+            byte[] _array;
         }
     }
 }
