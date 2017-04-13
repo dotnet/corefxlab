@@ -11,11 +11,11 @@ namespace Microsoft.Net.Http
     class OwnedBuffer : OwnedBuffer<byte>, IBufferList<byte>, IReadOnlyBufferList<byte>
     {
         public const int DefaultBufferSize = 1024;
-        internal OwnedBuffer _next;
-        int _written;
 
-        public OwnedBuffer(int desiredSize = DefaultBufferSize) : base(Allocate(desiredSize))
-        { }
+        public OwnedBuffer(int desiredSize = DefaultBufferSize)
+        {
+            _array = Allocate(desiredSize);
+        }
 
         static byte[] Allocate(int size)
         {
@@ -34,6 +34,10 @@ namespace Microsoft.Net.Http
         ReadOnlyBuffer<byte> IReadOnlyBufferList<byte>.First => Buffer;
 
         IReadOnlyBufferList<byte> IReadOnlyBufferList<byte>.Rest => _next;
+
+        public override int Length => _array.Length;
+
+        public override Span<byte> Span => _array;
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -105,7 +109,7 @@ namespace Microsoft.Net.Http
 
         protected override void Dispose(bool disposing)
         {
-            var array = Array;
+            var array = _array;
             base.Dispose(disposing);
             Free(array);
             if (_next != null) {
@@ -113,5 +117,32 @@ namespace Microsoft.Net.Http
             }
             _next = null;
         }
+
+        public override Span<byte> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            return Span.Slice(index, length);
+        }
+
+        public override BufferHandle Pin(int index = 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        {
+            buffer = new ArraySegment<byte>(_array);
+            return true;
+        }
+
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
+
+        internal OwnedBuffer _next;
+        int _written;
+        byte[] _array;
     }
 }

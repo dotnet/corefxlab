@@ -103,15 +103,15 @@ namespace System.IO.Pipelines
             return BufferHandle.Create(this, index);
         }
 
-        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
-            pointer = (Slab.NativePointer + _offset).ToPointer();
+            buffer = new ArraySegment<byte>(Slab.Array, _offset, _length);
             return true;
         }
 
-        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
         {
-            buffer = new ArraySegment<byte>(Slab.Array, _offset, _length);
+            pointer = (Slab.NativePointer + _offset).ToPointer();
             return true;
         }
     }

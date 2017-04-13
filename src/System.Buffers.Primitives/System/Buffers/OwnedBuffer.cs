@@ -66,7 +66,6 @@ namespace System.Buffers
         public abstract BufferHandle Pin(int index = 0);
         #endregion
 
-        #region Used by Buffer<T>
         internal protected abstract bool TryGetArrayInternal(out ArraySegment<T> buffer);
 
         internal protected abstract unsafe bool TryGetPointerInternal(out void* pointer);
@@ -80,7 +79,6 @@ namespace System.Buffers
         {
             throw new ArgumentOutOfRangeException();
         }
-        #endregion
 
         bool _disposed;
         int _referenceCount;

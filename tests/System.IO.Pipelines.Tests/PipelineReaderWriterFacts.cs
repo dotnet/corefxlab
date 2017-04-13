@@ -493,8 +493,9 @@ namespace System.IO.Pipelines.Tests
 
             private class DisposeTrackingOwnedMemory : OwnedBuffer<byte>
             {
-                public DisposeTrackingOwnedMemory(byte[] array) : base(array)
+                public DisposeTrackingOwnedMemory(byte[] array)
                 {
+                    _array = array;
                 }
 
                 protected override void Dispose(bool disposing)
@@ -503,8 +504,36 @@ namespace System.IO.Pipelines.Tests
                     base.Dispose(disposing);
                 }
 
+                public override Span<byte> GetSpan(int index, int length)
+                {
+                    if (IsDisposed) ThrowObjectDisposed();
+                    return Span.Slice(index, length);
+                }
+
+                public override BufferHandle Pin(int index = 0)
+                {
+                    return BufferHandle.Create(this, index);
+                }
+
+                protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+                {
+                    buffer = new ArraySegment<byte>(_array);
+                    return true;
+                }
+
+                protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+                {
+                    pointer = null;
+                    return false;
+                }
+
                 public int Disposed { get; set; }
 
+                public override int Length => _array.Length;
+
+                public override Span<byte> Span => _array;
+
+                byte[] _array;
             }
         }
     }

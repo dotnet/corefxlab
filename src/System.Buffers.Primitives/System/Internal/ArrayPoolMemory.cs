@@ -28,7 +28,7 @@ namespace System.Buffers.Internal
             public override Span<byte> GetSpan(int index, int length)
             {
                 if (IsDisposed) ThrowObjectDisposed();
-                return new Span<byte>(_array, index, length);
+                return Span.Slice(index, length);
             }
 
             public override BufferHandle Pin(int index = 0)
