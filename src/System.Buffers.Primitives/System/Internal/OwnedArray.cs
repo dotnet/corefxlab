@@ -41,7 +41,6 @@ namespace System.Buffers.Internal
 
         public override Span<T> GetSpan(int index, int length)
         {
-            //throw new Exception("hi");
             if (IsDisposed) ThrowObjectDisposed();
             return Span.Slice(index, length);
         }
