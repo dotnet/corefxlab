@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers.Pools
 {
-    public unsafe sealed class NativeBufferPool : BufferPool
+    public unsafe sealed partial class NativeBufferPool : BufferPool
     {
         static NativeBufferPool s_shared = new NativeBufferPool(4096);
         object _lock = new object();
@@ -74,25 +74,6 @@ namespace System.Buffers.Pools
             lock (_lock)
             {
                 _rented[index] = false;
-            }
-        }
-
-        internal sealed class BufferManager : OwnedBuffer<byte>
-        {
-            private readonly NativeBufferPool _pool;
-
-            public BufferManager(NativeBufferPool pool, IntPtr memory, int length) : base(null, 0, length, memory)
-            {
-                _pool = pool;
-            }
-
-            public new IntPtr Pointer => base.Pointer;
-
-            protected override void Dispose(bool disposing)
-            {
-                _pool.Return(this);
-
-                base.Dispose(disposing);
             }
         }
     }
