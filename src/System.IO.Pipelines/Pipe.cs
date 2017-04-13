@@ -426,11 +426,15 @@ namespace System.IO.Pipelines
                     continuation = _writerAwaitable.Complete();
                 }
 
-                // We reset the awaitable to not completed if we've consumed everything the producer produced so far
+                // We reset the awaitable to not completed if we've examined everything the producer produced so far
                 if (examined.Segment == _commitHead &&
                     examined.Index == _commitHeadIndex &&
                     !_writerCompletion.IsCompleted)
                 {
+                    if (!_writerAwaitable.IsCompleted && _writerAwaitable.HasContinuation)
+                    {
+                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.PipeLock);
+                    }
                     _readerAwaitable.Reset();
                 }
 
