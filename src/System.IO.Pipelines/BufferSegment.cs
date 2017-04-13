@@ -35,13 +35,19 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The buffer being tracked
         /// </summary>
-        private OwnedBuffer<byte> _owned;
+        private readonly OwnedBuffer<byte> _owned;
+
+        /// <summary>
+        /// Length of the OwnedMemory
+        /// </summary>
+        private readonly int _length;
 
         private Buffer<byte> _buffer;
 
         public BufferSegment(OwnedBuffer<byte> buffer)
         {
             _owned = buffer;
+            _length = buffer.Length;
             Start = 0;
             End = 0;
 
@@ -52,6 +58,7 @@ namespace System.IO.Pipelines
         public BufferSegment(OwnedBuffer<byte> buffer, int start, int end)
         {
             _owned = buffer;
+            _length = buffer.Length;
             Start = start;
             End = end;
             ReadOnly = true;
@@ -70,6 +77,15 @@ namespace System.IO.Pipelines
 
         public Buffer<byte> Buffer => _buffer;
 
+        public Buffer<byte> AvailableBuffer
+        {
+            get
+            {
+                var end = End;
+                return _buffer.Slice(end, _length - end);
+            }
+        }
+
         /// <summary>
         /// If true, data should not be written into the backing block after the End offset. Data between start and end should never be modified
         /// since this would break cloning.
@@ -84,7 +100,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// The amount of writable bytes in this segment. It is the amount of bytes between Length and End
         /// </summary>
-        public int WritableBytes => _buffer.Length - End;
+        public int WritableBytes => _length - End;
 
         public void Dispose()
         {
