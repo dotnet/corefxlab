@@ -234,6 +234,14 @@ namespace System.Text
         }
 
         /// <summary>
+        /// Computes the number of bytes necessary to encode a given UTF-8 sequence.
+        /// </summary>
+        /// <param name="utf8">A span containing a sequence of UTF-8 characters to encode.</param>
+        /// <param name="bytesNeeded">An output parameter to hold the number of bytes needed for encoding.</param>
+        /// <returns>Returns true is the span is capable of being fully encoded, else false.</returns>
+        public abstract bool TryComputeEncodedBytes(ReadOnlySpan<byte> utf8, out int bytesNeeded);
+
+        /// <summary>
         /// Computes the number of bytes necessary to encode a given UTF-16 sequence.
         /// </summary>
         /// <param name="utf16">A span containing a sequence of UTF-16 characters to encode.</param>
