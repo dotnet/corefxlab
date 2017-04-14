@@ -431,7 +431,7 @@ namespace System.IO.Pipelines
                     examined.Index == _commitHeadIndex &&
                     !_writerCompletion.IsCompleted)
                 {
-                    if (!_writerAwaitable.IsCompleted && _writerAwaitable.HasContinuation)
+                    if (!_writerAwaitable.IsCompleted)
                     {
                         ThrowHelper.ThrowInvalidOperationException(ExceptionResource.PipeLock);
                     }

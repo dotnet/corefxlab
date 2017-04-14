@@ -174,12 +174,12 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void AdvanceThrowsIfFlushActiveAndNotConsumedPastThreshold()
         {
-
             var writableBuffer = _pipe.Writer.Alloc(64);
             writableBuffer.Advance(64);
             var flushAsync = writableBuffer.FlushAsync();
             Assert.False(flushAsync.IsCompleted);
-
+            // Have to do this to know that someone is listening
+            flushAsync.OnCompleted(() => { });
 
             var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
             var consumed = result.Buffer.Move(result.Buffer.Start, 31);
