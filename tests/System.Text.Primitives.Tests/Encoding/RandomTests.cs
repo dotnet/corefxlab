@@ -725,5 +725,59 @@ namespace System.Text.Primitives.Tests
             Assert.True((new Utf8String("")).ReferenceEquals(Utf8String.Empty));
             Assert.True((new Utf8String(string.Empty)).ReferenceEquals(Utf8String.Empty));
         }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("a")]
+        [InlineData("a")]
+        [InlineData("\uABCD")]
+        [InlineData("\uABCD")]
+        [InlineData("abc")]
+        [InlineData("abc")]
+        [InlineData("abc")]
+        [InlineData("abc")]
+        [InlineData("\uABC0\uABC1\uABC2")]
+        [InlineData("\uABC0\uABC1\uABC2")]
+        [InlineData("\uABC0\uABC1\uABC2")]
+        [InlineData("\uABC0\uABC1\uABC2")]
+        [InlineData("\uABC0bc")]
+        [InlineData("a\uABC1c")]
+        [InlineData("ab\uABC2")]
+        [InlineData("\uABC0\uABC1\uABC2")]
+        public void TryTryComputeEncodedBytesShouldMatchEncoding_Utf8(string value)
+        {
+            int actual;
+            Assert.True(TextEncoder.Utf8.TryComputeEncodedBytes(value, out actual));
+
+            int expected = Encoding.UTF8.GetByteCount(value);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("a")]
+        [InlineData("a")]
+        [InlineData("\uABCD")]
+        [InlineData("\uABCD")]
+        [InlineData("abc")]
+        [InlineData("abc")]
+        [InlineData("abc")]
+        [InlineData("abc")]
+        [InlineData("\uABC0\uABC1\uABC2")]
+        [InlineData("\uABC0\uABC1\uABC2")]
+        [InlineData("\uABC0\uABC1\uABC2")]
+        [InlineData("\uABC0\uABC1\uABC2")]
+        [InlineData("\uABC0bc")]
+        [InlineData("a\uABC1c")]
+        [InlineData("ab\uABC2")]
+        [InlineData("\uABC0\uABC1\uABC2")]
+        public void TryTryComputeEncodedBytesShouldMatchEncoding_Utf16(string value)
+        {
+            int actual;
+            Assert.True(TextEncoder.Utf16.TryComputeEncodedBytes(value, out actual));
+
+            int expected = Encoding.Unicode.GetByteCount(value);
+            Assert.Equal(expected, actual);
+        }
     }
 }

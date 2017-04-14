@@ -135,6 +135,12 @@ namespace System.Text.Utf8
             return Utf8Encoder.TryEncode(utf16, data, out consumed, out bytesWritten);
         }
 
+        public override bool TryComputeEncodedBytes(ReadOnlySpan<char> utf16, out int bytesNeeded)
+            => Utf8Encoder.TryComputeEncodedBytes(utf16, out bytesNeeded);
+
+        public override bool TryComputeEncodedBytes(ReadOnlySpan<uint> utf32, out int bytesNeeded)
+            => Utf8Encoder.TryComputeEncodedBytes(utf32, out bytesNeeded);
+
         #endregion Encoding implementation
     }
 }

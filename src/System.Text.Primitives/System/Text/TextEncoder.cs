@@ -219,6 +219,36 @@ namespace System.Text
         /// </returns>
         public abstract bool TryEncode(string text, Span<byte> encodedBytes, out int bytesWritten);
 
+        /// <summary>
+        /// Computes the number of bytes necessary to encode a given string.
+        /// </summary>
+        /// <param name="text">A string containing the characters to encode.</param>
+        /// <param name="bytesNeeded">An output parameter to hold the number of bytes needed for encoding.</param>
+        /// <returns>Returns true is the span is capable of being fully encoded, else false.</returns>
+        public virtual unsafe bool TryComputeEncodedBytes(string text, out int bytesNeeded)
+        {
+            fixed(char* c = text)
+            {
+                return TryComputeEncodedBytes(new ReadOnlySpan<char>(c, text.Length), out bytesNeeded);
+            }
+        }
+
+        /// <summary>
+        /// Computes the number of bytes necessary to encode a given UTF-16 sequence.
+        /// </summary>
+        /// <param name="utf16">A span containing a sequence of UTF-16 characters to encode.</param>
+        /// <param name="bytesNeeded">An output parameter to hold the number of bytes needed for encoding.</param>
+        /// <returns>Returns true is the span is capable of being fully encoded, else false.</returns>
+        public abstract bool TryComputeEncodedBytes(ReadOnlySpan<char> utf16, out int bytesNeeded);
+
+        /// <summary>
+        /// Computes the number of bytes necessary to encode a given UTF-32 character sequence.
+        /// </summary>
+        /// <param name="utf32">A span containing a sequence of UTF-32 characters to encode.</param>
+        /// <param name="bytesNeeded">An output parameter to hold the number of bytes needed for encoding.</param>
+        /// <returns>Returns true is the span is capable of being fully encoded , else false.</returns>
+        public abstract bool TryComputeEncodedBytes(ReadOnlySpan<uint> utf32, out int bytesNeeded);
+
         #endregion Encode Methods
 
         #region Symbol Parsing / Formatting

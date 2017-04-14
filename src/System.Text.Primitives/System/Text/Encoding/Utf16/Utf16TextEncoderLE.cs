@@ -152,6 +152,15 @@ namespace System.Text.Utf16
             return true;
         }
 
+        public override bool TryComputeEncodedBytes(ReadOnlySpan<char> utf16, out int bytesNeeded)
+        {
+            bytesNeeded = utf16.Length * sizeof(char);
+            return true;
+        }
+
+        public override bool TryComputeEncodedBytes(ReadOnlySpan<uint> utf32, out int bytesNeeded)
+            => Utf16LittleEndianEncoder.TryComputeEncodedBytes(utf32, out bytesNeeded);
+
         #endregion Encoding implementation
     }
 }
