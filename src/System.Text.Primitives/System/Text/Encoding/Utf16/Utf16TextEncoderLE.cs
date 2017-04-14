@@ -156,7 +156,7 @@ namespace System.Text.Utf16
         {
             int characters;
             var result = Utf8Encoder.TryComputeStringLength(utf8, out characters);
-            bytesNeeded = characters * 2;
+            bytesNeeded = characters * sizeof(char);
             return result;
         }
 
