@@ -38,7 +38,7 @@ namespace System.Text.Formatting.Tests
             var sb = new StringFormatter();
 
             sb.Append(time, 'G');
-            Assert.Equal(time.ToString("G"), sb.ToString());
+            Assert.Equal(time.ToString("G", CultureInfo.InvariantCulture), sb.ToString());
             sb.Clear();
         }
 
@@ -88,7 +88,7 @@ namespace System.Text.Formatting.Tests
             var sb = new StringFormatter();
 
             sb.Append(time, 'G');
-            Assert.Equal(time.ToString("G"), sb.ToString());
+            Assert.Equal(time.ToString("G", CultureInfo.InvariantCulture), sb.ToString());
             sb.Clear();
         }
 
