@@ -355,6 +355,7 @@ namespace System.IO.Pipelines.Tests
                     cancelled = true;
                     var result = await Pipe.Reader.ReadAsync();
                     Assert.Equal(new byte[] { 1, 2, 3 }, result.Buffer.ToArray());
+                    Pipe.Reader.Advance(result.Buffer.End);
                 }
             };
 
