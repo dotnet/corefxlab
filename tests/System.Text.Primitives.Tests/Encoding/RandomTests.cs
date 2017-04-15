@@ -789,5 +789,14 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(expectedBytes, actual);
             }
         }
+
+        [Fact]
+        public void TryComputeEncodedBytesIllegal_Utf8()
+        {
+            string text = Utf8.Tests.Utf8EncoderTests.GenerateOnlyInvalidString(20);
+
+            int bytes;
+            Assert.False(TextEncoder.Utf8.TryComputeEncodedBytes(text, out bytes));
+        }
     }
 }

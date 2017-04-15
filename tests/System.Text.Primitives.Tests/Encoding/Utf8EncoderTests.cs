@@ -321,7 +321,7 @@ namespace System.Text.Utf8.Tests
             return plainText.ToString();
         }
 
-        private string GenerateOnlyInvalidString(int charLength)
+        internal static string GenerateOnlyInvalidString(int charLength)
         {
             Random rand = new Random(42);
             var plainText = new StringBuilder();
