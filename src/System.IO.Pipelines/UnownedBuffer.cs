@@ -38,16 +38,16 @@ namespace System.IO.Pipelines
 
         public override BufferHandle Pin(int index = 0)
         {
-            return BufferHandle.Create(this, index);
+            throw new NotImplementedException();
         }
 
-        protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
             buffer = _buffer;
             return true;
         }
 
-        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
             pointer = null;
             return false;
