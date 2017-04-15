@@ -30,7 +30,7 @@ namespace System.IO.Pipelines
         {
             // Copy to a new Owned Buffer.
             var buffer = new byte[length];
-            System.Buffer.BlockCopy(_buffer.Array, _buffer.Offset + offset, buffer, 0, length);
+            global::System.Buffer.BlockCopy(_buffer.Array, _buffer.Offset + offset, buffer, 0, length);
             newStart = 0;
             newEnd = length;
             return buffer;
