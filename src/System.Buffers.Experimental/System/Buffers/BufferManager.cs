@@ -30,7 +30,7 @@ namespace System.Buffers.Pools
 
             public override BufferHandle Pin(int index = 0)
             {
-                throw new NotImplementedException();
+                return BufferHandle.Create(this, index);
             }
 
             protected override void Dispose(bool disposing)
@@ -39,13 +39,13 @@ namespace System.Buffers.Pools
                 base.Dispose(disposing);
             }
 
-            protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+            protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
             {
                 buffer = default(ArraySegment<byte>);
                 return false;
             }
 
-            protected override unsafe bool TryGetPointerInternal(out void* pointer)
+            protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
             {
                 pointer = _pointer.ToPointer();
                 return true;

@@ -69,16 +69,16 @@ namespace System.Buffers
 
         public override BufferHandle Pin(int index = 0)
         {
-            throw new NotImplementedException();
+            return BufferHandle.Create(this, index, _handle);
         }
 
-        protected override bool TryGetArrayInternal(out ArraySegment<T> buffer)
+        protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
             buffer = new ArraySegment<T>(_array);
             return true;
         }
 
-        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
         {
             pointer = _pointer.ToPointer();
             return true;

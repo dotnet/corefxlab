@@ -512,16 +512,16 @@ namespace System.IO.Pipelines.Tests
 
                 public override BufferHandle Pin(int index = 0)
                 {
-                    throw new NotImplementedException();
+                    return BufferHandle.Create(this, index);
                 }
 
-                protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+                protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
                 {
                     buffer = new ArraySegment<byte>(_array);
                     return true;
                 }
 
-                protected override unsafe bool TryGetPointerInternal(out void* pointer)
+                protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
                 {
                     pointer = null;
                     return false;
