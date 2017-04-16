@@ -154,8 +154,7 @@ namespace System.Text.Utf16
 
         public override bool TryComputeEncodedBytes(ReadOnlySpan<byte> utf8, out int bytesNeeded)
         {
-            int characters;
-            var result = Utf8Encoder.TryComputeStringLength(utf8, out characters);
+            var result = Utf8Encoder.TryComputeStringLength(utf8, out int characters);
             bytesNeeded = characters * sizeof(char);
             return result;
         }
