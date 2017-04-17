@@ -139,8 +139,8 @@ namespace System.IO.Pipelines
                 case ExceptionResource.AdvancingWithNoBuffer:
                     resourceString = "Can't advance without buffer allocated";
                     break;
-                case ExceptionResource.PipeLock:
-                    resourceString = "Advancing examined to the end would cause pipe to get into 'deadlock' mode because FlushAsync is awaiting";
+                case ExceptionResource.BackpressureDeadlock:
+                    resourceString = "Advancing examined to the end would cause pipe to deadlock mode because FlushAsync is waiting";
                     break;
             }
 
@@ -182,6 +182,6 @@ namespace System.IO.Pipelines
         CompleteReaderActiveReader,
         AdvancingPastBufferSize,
         AdvancingWithNoBuffer,
-        PipeLock
+        BackpressureDeadlock
     }
 }
