@@ -558,24 +558,27 @@ namespace System.IO.Pipelines
 
         private void Dispose()
         {
-            if (_disposed)
+            lock (_sync)
             {
-                return;
+                if (_disposed)
+                {
+                    return;
+                }
+
+                _disposed = true;
+                // Return all segments
+                var segment = _readHead;
+                while (segment != null)
+                {
+                    var returnSegment = segment;
+                    segment = segment.Next;
+
+                    returnSegment.Dispose();
+                }
+
+                _readHead = null;
+                _commitHead = null;
             }
-
-            _disposed = true;
-            // Return all segments
-            var segment = _readHead;
-            while (segment != null)
-            {
-                var returnSegment = segment;
-                segment = segment.Next;
-
-                returnSegment.Dispose();
-            }
-
-            _readHead = null;
-            _commitHead = null;
         }
 
         // IReadableBufferAwaiter members
