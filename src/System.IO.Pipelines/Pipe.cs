@@ -433,7 +433,7 @@ namespace System.IO.Pipelines
                 {
                     if (!_writerAwaitable.IsCompleted)
                     {
-                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.PipeLock);
+                        ThrowHelper.ThrowInvalidOperationException(ExceptionResource.BackpressureDeadlock);
                     }
                     _readerAwaitable.Reset();
                 }
