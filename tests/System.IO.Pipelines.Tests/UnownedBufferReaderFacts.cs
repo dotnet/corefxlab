@@ -634,7 +634,7 @@ namespace System.IO.Pipelines.Tests
                 return await _pipe.ReadAsync(new ArraySegment<byte>(buffer, offset, count));
             }
 
-            public ReadableBufferAwaitable ReadAsync()
+            public ReadableBufferAwaitable ReadAsync(CancellationToken cancellationToken = default(CancellationToken))
             {
                 return _pipe.Reader.ReadAsync();
             }

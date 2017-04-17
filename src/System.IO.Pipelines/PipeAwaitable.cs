@@ -14,11 +14,30 @@ namespace System.IO.Pipelines
 
         private CancelledState _cancelledState;
         private Action _state;
+        private CancellationToken _cancellationToken;
+        private CancellationTokenRegistration _cancellationTokenRegistration;
 
         public PipeAwaitable(bool completed)
         {
             _cancelledState = CancelledState.NotCancelled;
             _state = completed ? _awaitableIsCompleted : _awaitableIsNotCompleted;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public CancellationTokenRegistration AttachToken(CancellationToken cancellationToken, Action<object> callback, object state)
+        {
+            CancellationTokenRegistration oldRegistration;
+            if (!cancellationToken.Equals(_cancellationToken))
+            {
+                oldRegistration = _cancellationTokenRegistration;
+                _cancellationToken = cancellationToken;
+                if (_cancellationToken.CanBeCanceled)
+                {
+                    _cancellationToken.ThrowIfCancellationRequested();
+                    _cancellationTokenRegistration = _cancellationToken.Register(callback, state);
+                }
+            }
+            return oldRegistration;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -109,6 +128,8 @@ namespace System.IO.Pipelines
                 {
                     Reset();
                 }
+
+                _cancellationToken.ThrowIfCancellationRequested();
 
                 return true;
             }

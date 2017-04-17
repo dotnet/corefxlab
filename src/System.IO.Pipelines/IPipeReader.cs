@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Threading;
+
 namespace System.IO.Pipelines
 {
     /// <summary>
@@ -20,7 +22,7 @@ namespace System.IO.Pipelines
         /// Asynchronously reads a sequence of bytes from the current <see cref="IPipeReader"/>.
         /// </summary>
         /// <returns>A <see cref="ReadableBufferAwaitable"/> representing the asynchronous read operation.</returns>
-        ReadableBufferAwaitable ReadAsync();
+        ReadableBufferAwaitable ReadAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Moves forward the pipeline's read cursor to after the consumed data.

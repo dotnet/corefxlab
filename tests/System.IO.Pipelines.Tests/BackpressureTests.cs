@@ -117,37 +117,6 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void FlushAsyncReturnsCanceledIfFlushCancelled()
-        {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
-            var flushAsync = writableBuffer.FlushAsync();
-
-            Assert.False(flushAsync.IsCompleted);
-
-            _pipe.Writer.CancelPendingFlush();
-
-            Assert.True(flushAsync.IsCompleted);
-            var flushResult = flushAsync.GetResult();
-            Assert.True(flushResult.IsCancelled);
-        }
-
-        [Fact]
-        public void FlushAsyncReturnsCanceledIfCancelledBeforeFlush()
-        {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
-
-            _pipe.Writer.CancelPendingFlush();
-
-            var flushAsync = writableBuffer.FlushAsync();
-
-            Assert.True(flushAsync.IsCompleted);
-            var flushResult = flushAsync.GetResult();
-            Assert.True(flushResult.IsCancelled);
-        }
-
-        [Fact]
         public void FlushAsyncAwaitableResetsOnCommit()
         {
             var writableBuffer = _pipe.Writer.Alloc(64);
