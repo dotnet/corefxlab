@@ -140,7 +140,7 @@ namespace System.IO.Pipelines
                     resourceString = "Can't advance without buffer allocated";
                     break;
                 case ExceptionResource.BackpressureDeadlock:
-                    resourceString = "Advancing examined to the end would cause pipe to deadlock mode because FlushAsync is waiting";
+                    resourceString = "Advancing examined to the end would cause pipe to deadlock because FlushAsync is waiting";
                     break;
             }
 
