@@ -139,5 +139,20 @@ namespace System.IO.Pipelines.Tests
 
             Assert.False(flushAsync.IsCompleted);
         }
+
+        [Fact]
+        public void AdvanceThrowsIfFlushActiveAndNotConsumedPastThreshold()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(64);
+            writableBuffer.Advance(64);
+            var flushAsync = writableBuffer.FlushAsync();
+            Assert.False(flushAsync.IsCompleted);
+
+            var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
+            var consumed = result.Buffer.Move(result.Buffer.Start, 31);
+            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Advance(consumed, result.Buffer.End));
+
+            _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
+        }
     }
 }

@@ -139,6 +139,9 @@ namespace System.IO.Pipelines
                 case ExceptionResource.AdvancingWithNoBuffer:
                     resourceString = "Can't advance without buffer allocated";
                     break;
+                case ExceptionResource.BackpressureDeadlock:
+                    resourceString = "Advancing examined to the end would cause pipe to deadlock because FlushAsync is waiting";
+                    break;
             }
 
             resourceString = resourceString ?? $"Error ResourceKey not defined {argument}.";
@@ -178,6 +181,7 @@ namespace System.IO.Pipelines
         CompleteWriterActiveWriter,
         CompleteReaderActiveReader,
         AdvancingPastBufferSize,
-        AdvancingWithNoBuffer
+        AdvancingWithNoBuffer,
+        BackpressureDeadlock
     }
 }
