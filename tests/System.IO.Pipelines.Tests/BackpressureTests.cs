@@ -178,12 +178,12 @@ namespace System.IO.Pipelines.Tests
             writableBuffer.Advance(64);
             var flushAsync = writableBuffer.FlushAsync();
             Assert.False(flushAsync.IsCompleted);
-            // Have to do this to know that someone is listening
-            flushAsync.OnCompleted(() => { });
 
             var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
             var consumed = result.Buffer.Move(result.Buffer.Start, 31);
             Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Advance(consumed, result.Buffer.End));
+
+            _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
         }
     }
 }
