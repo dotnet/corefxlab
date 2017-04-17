@@ -63,7 +63,10 @@ namespace System.Buffers
         protected virtual void OnZeroReferences()
         { }
         
-        public abstract BufferHandle Pin(int index = 0);
+        public virtual BufferHandle Pin(int index = 0)
+        {
+            return BufferHandle.Create(this, index);
+        }
         #endregion
 
         internal protected abstract bool TryGetArrayInternal(out ArraySegment<T> buffer);

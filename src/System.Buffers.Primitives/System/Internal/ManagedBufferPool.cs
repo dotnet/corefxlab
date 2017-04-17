@@ -41,11 +41,6 @@ namespace System.Buffers.Internal
                 return Span.Slice(index, length);
             }
 
-            public override BufferHandle Pin(int index = 0)
-            {
-                return BufferHandle.Create(this, index);
-            }
-
             protected override void Dispose(bool disposing)
             {
                 ArrayPool<byte>.Shared.Return(_array);

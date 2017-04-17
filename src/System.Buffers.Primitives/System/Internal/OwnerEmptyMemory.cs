@@ -22,11 +22,6 @@ namespace System.Buffers.Internal
             return Span;
         }
 
-        public override BufferHandle Pin(int index = 0)
-        {
-            return BufferHandle.Create(this, index);
-        }
-
         protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
             buffer = new ArraySegment<T>(s_empty);

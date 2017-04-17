@@ -72,13 +72,13 @@ namespace System.Buffers
             return BufferHandle.Create(this, index, _handle);
         }
 
-        protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
+        protected override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
             buffer = new ArraySegment<T>(_array);
             return true;
         }
 
-        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
             pointer = _pointer.ToPointer();
             return true;

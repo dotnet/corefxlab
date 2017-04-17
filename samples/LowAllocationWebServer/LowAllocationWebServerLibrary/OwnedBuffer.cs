@@ -124,11 +124,6 @@ namespace Microsoft.Net.Http
             return Span.Slice(index, length);
         }
 
-        public override BufferHandle Pin(int index = 0)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
             buffer = new ArraySegment<byte>(_array);

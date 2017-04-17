@@ -320,23 +320,18 @@ namespace System.Buffers.Tests
             return Span.Slice(index, length);
         }
 
-        public override BufferHandle Pin(int index = 0)
-        {
-            return BufferHandle.Create(this, index);
-        }
-
         protected override void OnZeroReferences()
         {
             _onZeroRefencesCount++;
         }
 
-        protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
             buffer = new ArraySegment<byte>(_array);
             return true;
         }
 
-        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
             pointer = null;
             return false;
@@ -364,11 +359,6 @@ namespace System.Buffers.Tests
             return Span.Slice(index, length);
         }
 
-        public override BufferHandle Pin(int index = 0)
-        {
-            return BufferHandle.Create(this, index);
-        }
-
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -379,13 +369,13 @@ namespace System.Buffers.Tests
             Dispose();
         }
 
-        protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
+        protected override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
             buffer = new ArraySegment<T>(_array);
             return true;
         }
 
-        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
             pointer = null;
             return false;

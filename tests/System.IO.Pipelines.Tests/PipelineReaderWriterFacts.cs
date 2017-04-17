@@ -510,18 +510,13 @@ namespace System.IO.Pipelines.Tests
                     return Span.Slice(index, length);
                 }
 
-                public override BufferHandle Pin(int index = 0)
-                {
-                    return BufferHandle.Create(this, index);
-                }
-
-                protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+                protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
                 {
                     buffer = new ArraySegment<byte>(_array);
                     return true;
                 }
 
-                protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+                protected override unsafe bool TryGetPointerInternal(out void* pointer)
                 {
                     pointer = null;
                     return false;

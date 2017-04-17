@@ -98,18 +98,13 @@ namespace System.IO.Pipelines
             return new Span<byte>(Slab.Array, _offset + index, length);
         }
 
-        public override BufferHandle Pin(int index = 0)
-        {
-            return BufferHandle.Create(this, index);
-        }
-
-        protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
             buffer = new ArraySegment<byte>(Slab.Array, _offset, _length);
             return true;
         }
 
-        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
             pointer = (Slab.NativePointer + _offset).ToPointer();
             return true;
