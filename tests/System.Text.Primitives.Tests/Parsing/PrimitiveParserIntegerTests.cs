@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -24,8 +24,8 @@ namespace System.Text.Primitives.Tests
                 return Encoding.Unicode.GetBytes(s);
             else
                 return Encoding.UTF8.GetBytes(s);
-        }       
-         
+        }
+
         static Tuple<byte, int>[] s_utf8ParsingTrie = new Tuple<byte, int>[] {
             Tuple.Create((byte)17, 0x3004390D),
             Tuple.Create((byte)43, 18),
@@ -141,7 +141,7 @@ namespace System.Text.Primitives.Tests
                 0x83, 0xE0, 0xB8, 0x8A, 0xE0, 0xB9, 0x88, 0xE0, 0xB8, 0x95, 0xE0, 0xB8, 0xB1, 0xE0, 0xB8, 0xA7, 0xE0, 0xB9, 0x80, 0xE0, 0xB8, 0xA5, 0xE0, 0xB8, 0x82 },
             new byte[] { 69 }, new byte[] { 101 },
         };
-            
+
         static TextEncoder s_thaiEncoder = TextEncoder.CreateUtf8Encoder(s_thaiUtf8DigitsAndSymbols);
 
         static TextEncoder s_utf8Encoder = TextEncoder.CreateUtf8Encoder(s_utf8digitsAndSymbols);

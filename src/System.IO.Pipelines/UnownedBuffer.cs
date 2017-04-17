@@ -11,11 +11,19 @@ namespace System.IO.Pipelines
     /// </summary>
     public class UnownedBuffer : OwnedBuffer<byte>
     {
-        private ArraySegment<byte> _buffer;
-
-        public UnownedBuffer(ArraySegment<byte> buffer) : base(buffer.Array, buffer.Offset, buffer.Count)
+        public UnownedBuffer(ArraySegment<byte> buffer)
         {
             _buffer = buffer;
+        }
+
+        public override int Length => _buffer.Count;
+
+        public override Span<byte> Span => new Span<byte>(_buffer.Array, _buffer.Offset, _buffer.Count);
+
+        public override Span<byte> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            return Span.Slice(index, length);
         }
 
         public OwnedBuffer<byte> MakeCopy(int offset, int length, out int newStart, out int newEnd)
@@ -27,5 +35,19 @@ namespace System.IO.Pipelines
             newEnd = length;
             return buffer;
         }
+
+        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        {
+            buffer = _buffer;
+            return true;
+        }
+
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
+
+        private ArraySegment<byte> _buffer;
     }
 }

@@ -5,13 +5,28 @@ namespace System.Buffers.Internal
 {
     internal sealed class OwnedArray<T> : OwnedBuffer<T>
     {
-        public new T[] Array => base.Array;
-
-        public static implicit operator T[](OwnedArray<T> owner) {
-            return owner.Array;
+        public OwnedArray(int length)
+        {
+            _array = new T[length];
         }
 
-        public static implicit operator OwnedArray<T>(T[] array) {
+        public OwnedArray(T[] array)
+        {
+            _array = array;
+        }
+
+        public OwnedArray(ArraySegment<T> segment)
+        {
+            _array = segment.AsSpan().ToArray();
+        }
+
+        public static implicit operator T[] (OwnedArray<T> owner)
+        {
+            return owner._array;
+        }
+
+        public static implicit operator OwnedArray<T>(T[] array)
+        {
             return new OwnedArray<T>(array);
         }
 
@@ -20,13 +35,28 @@ namespace System.Buffers.Internal
             return new OwnedArray<T>(segment);
         }
 
-        public OwnedArray(int length) : base(new T[length], 0, length)
-        {}
+        public override int Length => _array.Length;
 
-        public OwnedArray(T[] array) : base(array, 0, array.Length)
-        {}
+        public override Span<T> Span => _array;
 
-        public OwnedArray(ArraySegment<T> segment) : base(segment.Array, segment.Offset, segment.Count)
-        { }
+        public override Span<T> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            return Span.Slice(index, length);
+        }
+
+        protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
+        {
+            buffer = new ArraySegment<T>(_array);
+            return true;
+        }
+
+        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
+
+        T[] _array;
     }
 }

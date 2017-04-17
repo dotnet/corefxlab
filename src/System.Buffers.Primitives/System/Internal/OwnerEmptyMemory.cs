@@ -8,9 +8,30 @@ namespace System.Buffers.Internal
         readonly static T[] s_empty = new T[0];
         public readonly static OwnedBuffer<T> Shared = new OwnerEmptyMemory<T>();
 
-        public OwnerEmptyMemory() : base(s_empty, 0, 0) { }
+        public override int Length => s_empty.Length;
+
+        public override Span<T> Span => s_empty;
 
         protected override void Dispose(bool disposing)
         {}
+
+        public override Span<T> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            if (index > 0 || length > 0) ThrowIndexOutOfRange();
+            return Span;
+        }
+
+        protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
+        {
+            buffer = new ArraySegment<T>(s_empty);
+            return true;
+        }
+
+        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
     }
 }

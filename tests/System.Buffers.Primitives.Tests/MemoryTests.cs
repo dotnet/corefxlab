@@ -54,11 +54,6 @@ namespace System.Buffers.Tests
                     Assert.Throws<InvalidOperationException>(() => { // memory is reserved; premature dispose check fires
                         owned.Dispose();
                     });
-                    Assert.Throws<ObjectDisposedException>(() => {
-                        // memory is disposed
-                        Span<byte> span = memorySlice.Span;
-                        span[0] = 255;
-                    });
                 }
                 finally
                 {
@@ -308,22 +303,60 @@ namespace System.Buffers.Tests
 
     class CustomMemory : OwnedBuffer<byte>
     {
-        int _onZeroRefencesCount;
-
-        public CustomMemory() : base(new byte[256], 0, 256) { }
+        public CustomMemory()
+        {
+            _array = new byte[255];
+        }
 
         public int OnZeroRefencesCount => _onZeroRefencesCount;
+
+        public override int Length => _array.Length;
+
+        public override Span<byte> Span => _array;
+
+        public override Span<byte> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            return Span.Slice(index, length);
+        }
 
         protected override void OnZeroReferences()
         {
             _onZeroRefencesCount++;
         }
+
+        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        {
+            buffer = new ArraySegment<byte>(_array);
+            return true;
+        }
+
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
+
+        int _onZeroRefencesCount;
+        byte[] _array;
     }
 
     class AutoDisposeMemory<T> : OwnedBuffer<T>
     {
-        public AutoDisposeMemory(T[] array) : base(array, 0, array.Length) {
+        public AutoDisposeMemory(T[] array)
+        {
+            _array = array;
             AddReference();
+        }
+
+        public override int Length => _array.Length;
+
+        public override Span<T> Span => _array;
+
+        public override Span<T> GetSpan(int index, int length)
+        {
+            if (IsDisposed) ThrowObjectDisposed();
+            return Span.Slice(index, length);
         }
 
         protected override void Dispose(bool disposing)
@@ -335,6 +368,20 @@ namespace System.Buffers.Tests
         {
             Dispose();
         }
+
+        protected override bool TryGetArrayInternal(out ArraySegment<T> buffer)
+        {
+            buffer = new ArraySegment<T>(_array);
+            return true;
+        }
+
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
+
+        protected T[] _array;
     }
 
     class AutoPooledMemory : AutoDisposeMemory<byte>
@@ -344,7 +391,8 @@ namespace System.Buffers.Tests
 
         protected override void Dispose(bool disposing)
         {
-            ArrayPool<byte>.Shared.Return(Array);
+            ArrayPool<byte>.Shared.Return(_array);
+            _array = null;
             base.Dispose(disposing);
         }
     }
