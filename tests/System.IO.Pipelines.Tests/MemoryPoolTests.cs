@@ -28,7 +28,6 @@ namespace System.IO.Pipelines.Tests
                 block2 = pool.Rent(1);
             } while (block != block2);
 
-            Assert.True(block2.GetSpan(0, 1).Length > 0);
             Assert.True(block2.Span.Length > 0);
         }
     }
