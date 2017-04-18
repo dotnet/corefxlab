@@ -71,6 +71,24 @@ namespace System.Buffers.Tests
         }
 
 
+        [Fact]
+        public void TestThrowOnAccessAfterDipose()
+        {
+            var array = new byte[1024];
+            OwnedBuffer<byte> owned = array;
+            var span = owned.Span;
+            var slicedSpan = owned.GetSpan(100, 10);
+
+            owned.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() => {
+                var spanDisposed = owned.Span;
+            });
+            Assert.Throws<ObjectDisposedException>(() => {
+                var slicedSpanDisposed = owned.GetSpan(100, 10);
+            });
+        }
+
         [Fact(Skip = "This needs to be fixed and re-enabled or removed.")]
         public void RacyAccess()
         {
