@@ -77,7 +77,9 @@ namespace System.Buffers.Tests
             var array = new byte[1024];
             OwnedBuffer<byte> owned = array;
             var span = owned.Span;
+            Assert.Equal(array.Length, span.Length);
             var slicedSpan = owned.GetSpan(100, 10);
+            Assert.Equal(10, slicedSpan.Length);
 
             owned.Dispose();
 
