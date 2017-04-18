@@ -1,4 +1,4 @@
-# Native -Sized Number Types
+# Native-Sized Number Types
 
 ## Summary
 The .NET platform has two native size  primitive types: IntPtr and UIntPtr. 
@@ -41,7 +41,7 @@ IntPtr, not being a real integer, makes such processing often tedious and error 
 1.	[Pri 1] Provide native size signed and unsigned integer types
 2.	[Pri 1] Provide native size floating point type
 3.	[Pri 1] Semantics and APIs of these types match corresponding integer and floating point types
-4.	[Pri 1] Support down-level platforms (e.g. .NET 4.5) via nugget adaptive package
+4.	[Pri 1] Support down-level platforms (e.g. .NET 4.5) via nuget adaptive package
 5.	[Pri 1] P/Invoke support
 6.	[Pri 1] Language support for checked operations
 7.	[Pri 2] Codegen on par with integers
@@ -154,7 +154,7 @@ checked { value++; }
 ### Operators
 The native-size types need to support all operators their corresponding fixed-size types support. 
 The operators cannot be implemented as simple operator overloads in UIntN, IntN, and FloatN types, 
-because such overloads could not respect ```c#checked { … }``` blocks and compile time switches.
+because such overloads could not respect `checked { … }` blocks and compile time switches.
 
 ## Design Considerations
 1.	Should the types implement non-generic IComparable?
