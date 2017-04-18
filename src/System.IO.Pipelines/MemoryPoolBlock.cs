@@ -98,12 +98,22 @@ namespace System.IO.Pipelines
             return new Span<byte>(Slab.Array, _offset + index, length);
         }
 
+// In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
+// this method access modifiers need to be `protected internal`
+#if KESTREL_BY_SOURCE
+        internal
+#endif
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
             buffer = new ArraySegment<byte>(Slab.Array, _offset, _length);
             return true;
         }
 
+// In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
+// this method access modifiers need to be `protected internal`
+#if KESTREL_BY_SOURCE
+        internal
+#endif
         protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
             pointer = (Slab.NativePointer + _offset).ToPointer();

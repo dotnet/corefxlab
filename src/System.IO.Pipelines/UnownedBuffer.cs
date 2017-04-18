@@ -36,12 +36,22 @@ namespace System.IO.Pipelines
             return buffer;
         }
 
+// In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
+// this method access modifiers need to be `protected internal`
+#if KESTREL_BY_SOURCE
+        internal
+#endif
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
             buffer = _buffer;
             return true;
         }
 
+// In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
+// this method access modifiers need to be `protected internal`
+#if KESTREL_BY_SOURCE
+        internal
+#endif
         protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
             pointer = null;
