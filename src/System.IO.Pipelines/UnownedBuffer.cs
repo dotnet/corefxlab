@@ -18,11 +18,17 @@ namespace System.IO.Pipelines
 
         public override int Length => _buffer.Count;
 
-        public override Span<byte> Span => new Span<byte>(_buffer.Array, _buffer.Offset, _buffer.Count);
+        public override Span<byte> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+                return new Span<byte>(_buffer.Array, _buffer.Offset, _buffer.Count);
+            }
+        }
 
         public override Span<byte> GetSpan(int index, int length)
         {
-            if (IsDisposed) ThrowObjectDisposed();
             return Span.Slice(index, length);
         }
 
@@ -43,6 +49,7 @@ namespace System.IO.Pipelines
 #endif
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
+            if (IsDisposed) ThrowObjectDisposed();
             buffer = _buffer;
             return true;
         }

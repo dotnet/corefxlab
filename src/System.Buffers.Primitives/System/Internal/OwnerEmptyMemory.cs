@@ -10,14 +10,20 @@ namespace System.Buffers.Internal
 
         public override int Length => s_empty.Length;
 
-        public override Span<T> Span => s_empty;
+        public override Span<T> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+                return s_empty;
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {}
 
         public override Span<T> GetSpan(int index, int length)
         {
-            if (IsDisposed) ThrowObjectDisposed();
             if (index > 0 || length > 0) ThrowIndexOutOfRange();
             return Span;
         }

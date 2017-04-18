@@ -38,9 +38,8 @@ namespace System.Buffers
 
         public unsafe override Span<byte> GetSpan(int index, int length)
         {
-            if (IsDisposed) ThrowObjectDisposed();
-            if (index > _length || length > (_length - index)) throw new IndexOutOfRangeException();
-            return new Span<byte>((byte*)_pointer.ToPointer() + index, length);
+            if (index > _length || length > (_length - index)) ThrowIndexOutOfRange();
+            return Span.Slice(index, length);
         }
 
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
@@ -51,6 +50,7 @@ namespace System.Buffers
 
         protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
+            if (IsDisposed) ThrowObjectDisposed();
             pointer = _pointer.ToPointer();
             return true;
         }
@@ -58,8 +58,15 @@ namespace System.Buffers
         public unsafe byte* Pointer => (byte*)_pointer.ToPointer();
 
         public override int Length => _length;
-
-        public unsafe override Span<byte> Span => new Span<byte>(_pointer.ToPointer(), _length);
+        
+        public unsafe override Span<byte> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+                return new Span<byte>(_pointer.ToPointer(), _length);
+            }
+        }
 
         int _length;
         IntPtr _pointer;

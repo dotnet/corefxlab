@@ -39,7 +39,14 @@ namespace System.IO.Pipelines
 
         public override int Length => _length;
 
-        public override Span<byte> Span => new Span<byte>(Slab.Array, _offset, _length);
+        public override Span<byte> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+                return new Span<byte>(Slab.Array, _offset, _length);
+            }
+        }
 
 #if BLOCK_LEASE_TRACKING
         public bool IsLeased { get; set; }
@@ -100,8 +107,7 @@ namespace System.IO.Pipelines
 
         public override Span<byte> GetSpan(int index, int length)
         {
-            if (IsDisposed) ThrowObjectDisposed();
-            return new Span<byte>(Slab.Array, _offset + index, length);
+            return Span.Slice(index, length);
         }
 
 // In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
@@ -111,6 +117,7 @@ namespace System.IO.Pipelines
 #endif
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
+            if (IsDisposed) ThrowObjectDisposed();
             buffer = new ArraySegment<byte>(Slab.Array, _offset, _length);
             return true;
         }
@@ -122,6 +129,7 @@ namespace System.IO.Pipelines
 #endif
         protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
+            if (IsDisposed) ThrowObjectDisposed();
             pointer = (Slab.NativePointer + _offset).ToPointer();
             return true;
         }

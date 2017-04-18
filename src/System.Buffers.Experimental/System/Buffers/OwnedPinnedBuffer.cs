@@ -34,7 +34,14 @@ namespace System.Buffers
 
         public override int Length => _array.Length;
 
-        public override Span<T> Span => _array;
+        public override Span<T> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+                return _array;
+            }
+        }
 
         public unsafe byte* Pointer => (byte*)_pointer.ToPointer();
 
@@ -63,7 +70,6 @@ namespace System.Buffers
 
         public override Span<T> GetSpan(int index, int length)
         {
-            if (IsDisposed) ThrowObjectDisposed();
             return Span.Slice(index, length);
         }
 

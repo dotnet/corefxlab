@@ -312,11 +312,17 @@ namespace System.Buffers.Tests
 
         public override int Length => _array.Length;
 
-        public override Span<byte> Span => _array;
+        public override Span<byte> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+                return _array;
+            }
+        }
 
         public override Span<byte> GetSpan(int index, int length)
         {
-            if (IsDisposed) ThrowObjectDisposed();
             return Span.Slice(index, length);
         }
 
@@ -327,6 +333,7 @@ namespace System.Buffers.Tests
 
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
+            if (IsDisposed) ThrowObjectDisposed();
             buffer = new ArraySegment<byte>(_array);
             return true;
         }
@@ -351,11 +358,17 @@ namespace System.Buffers.Tests
 
         public override int Length => _array.Length;
 
-        public override Span<T> Span => _array;
+        public override Span<T> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowObjectDisposed();
+                return _array;
+            }
+        }
 
         public override Span<T> GetSpan(int index, int length)
         {
-            if (IsDisposed) ThrowObjectDisposed();
             return Span.Slice(index, length);
         }
 
