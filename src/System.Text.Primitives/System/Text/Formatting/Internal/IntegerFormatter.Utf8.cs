@@ -11,12 +11,14 @@ namespace System.Text
         private const byte Period = (byte)'.';
         private const byte Seperator = (byte)',';
 
+        // Invariant formatting uses groups of 3 for each number group seperated by commas.
+        //   ex. 1,234,567,890
         private const int GroupSize = 3;
 
         public static bool TryFormatDecimalInt64(long value, byte precision, Span<byte> buffer, out int bytesWritten)
         {
             int digitCount = FormattingHelpers.CountDigits(value);
-            int bytesNeeded = digitCount + ((value < 0) ? 1 : 0);
+            int bytesNeeded = digitCount + (int)((value >> 63) & 1);
 
             if (buffer.Length < bytesNeeded)
             {
@@ -66,7 +68,7 @@ namespace System.Text
             // Then we call the faster long version and follow-up with writing the last
             // digit. This ends up being faster by a factor of 2 than to just do the entire
             // operation using the unsigned versions.
-            value = FormattingHelpers.DivMod(value, 10, out ulong m);
+            value = FormattingHelpers.DivMod(value, 10, out ulong lastDigit);
 
             if (precision != TextFormat.NoPrecision && precision > 0)
                 precision -= 1;
@@ -81,7 +83,7 @@ namespace System.Text
             }
 
             ref byte utf8Bytes = ref buffer.DangerousGetPinnableReference();
-            bytesWritten += FormattingHelpers.WriteDigits(m, 1, ref utf8Bytes, bytesWritten);
+            bytesWritten += FormattingHelpers.WriteDigits(lastDigit, 1, ref utf8Bytes, bytesWritten);
             return true;
         }
 
@@ -96,7 +98,7 @@ namespace System.Text
             }
 
             int trailingZeros = (precision == TextFormat.NoPrecision) ? 2 : precision;
-            int idx = ((value < 0) ? 1 : 0) + digitCount + groupSeperators;
+            int idx = (int)((value >> 63) & 1) + digitCount + groupSeperators;
 
             bytesWritten = idx;
             if (trailingZeros > 0)
@@ -158,7 +160,7 @@ namespace System.Text
 
             // The ulong path is much slower than the long path here, so we are doing the last group
             // inside this method plus the zero padding but routing to the long version for the rest.
-            value = FormattingHelpers.DivMod(value, 1000, out ulong m);
+            value = FormattingHelpers.DivMod(value, 1000, out ulong lastGroup);
 
             if (!TryFormatNumericInt64((long)value, 0, buffer, out bytesWritten))
                 return false;
@@ -186,7 +188,7 @@ namespace System.Text
 
             // Write the last group
             Unsafe.Add(ref utf8Bytes, idx++) = Seperator;
-            idx += FormattingHelpers.WriteDigits(m, 3, ref utf8Bytes, idx);
+            idx += FormattingHelpers.WriteDigits(lastGroup, 3, ref utf8Bytes, idx);
 
             // Write out the trailing zeros
             if (precision > 0)
