@@ -64,7 +64,7 @@ namespace System.Text
             else if (encoder.IsInvariantUtf16)
                 return TryFormatInvariantUtf16(value, mask, buffer, out bytesWritten, format);
             else
-                throw new NotImplementedException();
+                return IntegerFormatter.TryFormatInt64(value, mask, buffer, out bytesWritten, format, encoder);
         }
 
         static bool TryFormatCore(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
@@ -76,7 +76,7 @@ namespace System.Text
             else if (encoder.IsInvariantUtf16)
                 return TryFormatInvariantUtf16(value, buffer, out bytesWritten, format);
             else
-                throw new NotImplementedException();
+                return IntegerFormatter.TryFormatUInt64(value, buffer, out bytesWritten, format, encoder);
         }
 
         static bool TryFormatInvariantUtf8(long value, ulong mask, Span<byte> buffer, out int bytesWritten, TextFormat format)
