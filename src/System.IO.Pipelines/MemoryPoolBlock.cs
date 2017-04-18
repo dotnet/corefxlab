@@ -84,6 +84,12 @@ namespace System.IO.Pipelines
             return builder.ToString();
         }
 
+        internal void Initialize()
+        {
+            // This is VERY bad, but is required while there is no re-initialization support
+            base.Dispose(false);
+        }
+
         protected override void Dispose(bool disposing)
         {
             // Dispose before returning to pool to prevent race between Lease and Dispose
