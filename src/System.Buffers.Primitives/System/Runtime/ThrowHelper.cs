@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Runtime
 {
-    internal static class ThrowHelper
+    public static class ThrowHelper
     {
         public static void ThrowArgumentNullException(ExceptionArgument argument)
         {
@@ -42,6 +42,11 @@ namespace System.Runtime
         public static void ThrowInvalidOperationException_ForBoxingSpans()
         {
             throw GetInvalidOperationException_ForBoxingSpans();
+        }
+
+        public static void ThrowObjectDisposedException(string objectName)
+        {
+            throw GetObjectDisposedException(objectName);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -86,6 +91,12 @@ namespace System.Runtime
             return new InvalidOperationException("Spans must not be boxed");
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ObjectDisposedException GetObjectDisposedException(string objectName)
+        {
+            return new ObjectDisposedException(objectName);
+        }
+
         private static string GetArgumentName(ExceptionArgument argument)
         {
             Debug.Assert(Enum.IsDefined(typeof(ExceptionArgument), argument),
@@ -95,7 +106,7 @@ namespace System.Runtime
         }
     }
 
-    internal enum ExceptionArgument
+    public enum ExceptionArgument
     {
         pointer,
         array

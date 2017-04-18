@@ -24,14 +24,9 @@ namespace System.Buffers.Pools
             {
                 get
                 {
-                    if (IsDisposed) ThrowObjectDisposed();
+                    if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
                     return new Span<byte>(_pointer.ToPointer(), _length);
                 }
-            }
-
-            public override Span<byte> GetSpan(int index, int length)
-            {
-                return Span.Slice(index, length);
             }
 
             protected override void Dispose(bool disposing)
@@ -48,7 +43,7 @@ namespace System.Buffers.Pools
 
             protected override unsafe bool TryGetPointerInternal(out void* pointer)
             {
-                if (IsDisposed) ThrowObjectDisposed();
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
                 pointer = _pointer.ToPointer();
                 return true;
             }

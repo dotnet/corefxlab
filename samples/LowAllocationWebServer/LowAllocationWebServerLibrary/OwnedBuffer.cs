@@ -5,6 +5,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Sequences;
+using System.Runtime;
 
 namespace Microsoft.Net.Http
 {
@@ -41,7 +42,7 @@ namespace Microsoft.Net.Http
         {
             get
             {
-                if (IsDisposed) ThrowObjectDisposed();
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
                 return _array;
             }
         }
@@ -125,14 +126,9 @@ namespace Microsoft.Net.Http
             _next = null;
         }
 
-        public override Span<byte> GetSpan(int index, int length)
-        {
-            return Span.Slice(index, length);
-        }
-
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
-            if (IsDisposed) ThrowObjectDisposed();
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
             buffer = new ArraySegment<byte>(_array);
             return true;
         }

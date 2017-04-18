@@ -545,14 +545,9 @@ namespace System.IO.Pipelines.Tests
                     base.Dispose(disposing);
                 }
 
-                public override Span<byte> GetSpan(int index, int length)
-                {
-                    return Span.Slice(index, length);
-                }
-
                 protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
                 {
-                    if (IsDisposed) ThrowObjectDisposed();
+                    if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
                     buffer = new ArraySegment<byte>(_array);
                     return true;
                 }
@@ -571,7 +566,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     get
                     {
-                        if (IsDisposed) ThrowObjectDisposed();
+                        if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
                         return _array;
                     }
                 }

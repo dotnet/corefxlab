@@ -48,7 +48,7 @@ namespace System.Buffers
             return new ReadOnlyBuffer<T>(_owner, _index + index, length);
         }
 
-        public ReadOnlySpan<T> Span => _owner.GetSpan(_index, _length);
+        public ReadOnlySpan<T> Span => _owner.Span.Slice(_index, _length);
 
         public DisposableReservation<T> Reserve()
         {

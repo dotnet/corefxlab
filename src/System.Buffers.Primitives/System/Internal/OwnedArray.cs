@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime;
+
 namespace System.Buffers.Internal
 {
     internal sealed class OwnedArray<T> : OwnedBuffer<T>
@@ -41,18 +43,14 @@ namespace System.Buffers.Internal
         {
             get
             {
-                if (IsDisposed) ThrowObjectDisposed();
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
                 return _array;
             }
         }
 
-        public override Span<T> GetSpan(int index, int length)
-        {
-            return Span.Slice(index, length);
-        }
-
         protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
             buffer = new ArraySegment<T>(_array);
             return true;
         }

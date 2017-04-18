@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime;
+
 namespace System.Buffers.Internal
 {
     internal sealed class ManagedBufferPool : BufferPool
@@ -37,14 +39,9 @@ namespace System.Buffers.Internal
             {
                 get
                 {
-                    if (IsDisposed) ThrowObjectDisposed();
+                    if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
                     return _array;
                 }
-            }
-
-            public override Span<byte> GetSpan(int index, int length)
-            {
-                return Span.Slice(index, length);
             }
 
             protected override void Dispose(bool disposing)
@@ -55,7 +52,7 @@ namespace System.Buffers.Internal
 
             protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
             {
-                if (IsDisposed) ThrowObjectDisposed();
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
                 buffer = new ArraySegment<byte>(_array);
                 return true;
             }

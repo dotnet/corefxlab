@@ -44,6 +44,11 @@ namespace System
             throw GetInvalidOperationException_ForBoxingSpans();
         }
 
+        public static void ThrowObjectDisposedException(string objectName)
+        {
+            throw GetObjectDisposedException(objectName);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentNullException GetArgumentNullException(ExceptionArgument argument)
         {
@@ -84,6 +89,12 @@ namespace System
         private static InvalidOperationException GetInvalidOperationException_ForBoxingSpans()
         {
             return new InvalidOperationException("Spans must not be boxed");
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ObjectDisposedException GetObjectDisposedException(string objectName)
+        {
+            return new ObjectDisposedException(objectName);
         }
 
         private static string GetArgumentName(ExceptionArgument argument)
