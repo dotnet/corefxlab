@@ -528,18 +528,16 @@ namespace System.Buffers
                                                        0x01ul << 48) + 1;
         private const ulong byteBroadcastToUlong = ~0UL / Byte.MaxValue;
         private const ulong filterByteHighBitsInUlong = (byteBroadcastToUlong >> 1) | (byteBroadcastToUlong << (sizeof(ulong) * 8 - 1));
-
-
+        
         /// <summary>
         /// Determines whether the current span is a slice of the supplied span
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsSliceOf<T>(this Span<T> child, Span<T> parent) where T : struct
         {
-            int start; // ignored
             return child.Length <= parent.Length && IsSliceOf(
                 ref child.DangerousGetPinnableReference(), child.Length,
-                ref parent.DangerousGetPinnableReference(), parent.Length, out start);
+                ref parent.DangerousGetPinnableReference(), parent.Length, out int ignored);
         }
 
         /// <summary>
@@ -552,6 +550,7 @@ namespace System.Buffers
                 ref child.DangerousGetPinnableReference(), child.Length,
                 ref parent.DangerousGetPinnableReference(), parent.Length, out start);
         }
+
         private static bool IsSliceOf<T>(ref T childRef, int childLength, ref T parentRef, int parentLength, out int start) where T : struct
         {
             long startBytesOffset = Unsafe.ByteOffset(ref parentRef, ref childRef).ToInt64();
