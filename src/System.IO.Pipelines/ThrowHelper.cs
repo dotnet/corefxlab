@@ -52,6 +52,11 @@ namespace System.IO.Pipelines
             throw GetArgumentOutOfRangeException_BufferRequestTooLarge(maxSize);
         }
 
+        public static void ThrowObjectDisposedException(string objectName)
+        {
+            throw GetObjectDisposedException(objectName);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(ExceptionArgument argument)
         {
@@ -81,6 +86,12 @@ namespace System.IO.Pipelines
         {
             return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.size),
                 $"Cannot allocate more than {maxSize} bytes in a single buffer");
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ObjectDisposedException GetObjectDisposedException(string objectName)
+        {
+            return new ObjectDisposedException(objectName);
         }
 
         private static string GetArgumentName(ExceptionArgument argument)

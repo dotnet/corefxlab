@@ -18,12 +18,13 @@ namespace System.IO.Pipelines
 
         public override int Length => _buffer.Count;
 
-        public override Span<byte> Span => new Span<byte>(_buffer.Array, _buffer.Offset, _buffer.Count);
-
-        public override Span<byte> GetSpan(int index, int length)
+        public override Span<byte> Span
         {
-            if (IsDisposed) ThrowObjectDisposed();
-            return Span.Slice(index, length);
+            get
+            {
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
+                return new Span<byte>(_buffer.Array, _buffer.Offset, _buffer.Count);
+            }
         }
 
         public OwnedBuffer<byte> MakeCopy(int offset, int length, out int newStart, out int newEnd)
@@ -43,6 +44,7 @@ namespace System.IO.Pipelines
 #endif
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
             buffer = _buffer;
             return true;
         }

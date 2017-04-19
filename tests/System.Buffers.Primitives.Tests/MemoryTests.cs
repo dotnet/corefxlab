@@ -71,6 +71,21 @@ namespace System.Buffers.Tests
         }
 
 
+        [Fact]
+        public void TestThrowOnAccessAfterDipose()
+        {
+            var array = new byte[1024];
+            OwnedBuffer<byte> owned = array;
+            var span = owned.Span;
+            Assert.Equal(array.Length, span.Length);
+
+            owned.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() => {
+                var spanDisposed = owned.Span;
+            });
+        }
+
         [Fact(Skip = "This needs to be fixed and re-enabled or removed.")]
         public void RacyAccess()
         {
@@ -312,12 +327,13 @@ namespace System.Buffers.Tests
 
         public override int Length => _array.Length;
 
-        public override Span<byte> Span => _array;
-
-        public override Span<byte> GetSpan(int index, int length)
+        public override Span<byte> Span
         {
-            if (IsDisposed) ThrowObjectDisposed();
-            return Span.Slice(index, length);
+            get
+            {
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(CustomMemory));
+                return _array;
+            }
         }
 
         protected override void OnZeroReferences()
@@ -327,6 +343,7 @@ namespace System.Buffers.Tests
 
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(CustomMemory));
             buffer = new ArraySegment<byte>(_array);
             return true;
         }
@@ -351,12 +368,13 @@ namespace System.Buffers.Tests
 
         public override int Length => _array.Length;
 
-        public override Span<T> Span => _array;
-
-        public override Span<T> GetSpan(int index, int length)
+        public override Span<T> Span
         {
-            if (IsDisposed) ThrowObjectDisposed();
-            return Span.Slice(index, length);
+            get
+            {
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(AutoDisposeMemory<T>));
+                return _array;
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -371,6 +389,7 @@ namespace System.Buffers.Tests
 
         protected override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(AutoDisposeMemory<T>));
             buffer = new ArraySegment<T>(_array);
             return true;
         }

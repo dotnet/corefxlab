@@ -17,8 +17,6 @@ namespace System.Buffers
 
         public abstract Span<T> Span { get; }
 
-        public abstract Span<T> GetSpan(int index, int length);
-
         public Buffer<T> Buffer => new Buffer<T>(this, 0, Length);
 
         public ReadOnlyBuffer<T> ReadOnlyBuffer => new ReadOnlyBuffer<T>(this, 0, Length);
@@ -72,16 +70,6 @@ namespace System.Buffers
         internal protected abstract bool TryGetArrayInternal(out ArraySegment<T> buffer);
 
         internal protected abstract unsafe bool TryGetPointerInternal(out void* pointer);
-
-        protected void ThrowObjectDisposed()
-        {
-            throw new ObjectDisposedException(nameof(Buffer<T>));
-        }
-
-        protected void ThrowIndexOutOfRange()
-        {
-            throw new ArgumentOutOfRangeException();
-        }
 
         bool _disposed;
         int _referenceCount;

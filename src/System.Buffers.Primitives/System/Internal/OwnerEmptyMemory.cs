@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Runtime;
+
 namespace System.Buffers.Internal
 {
     internal class OwnerEmptyMemory<T> : OwnedBuffer<T>
@@ -10,20 +12,21 @@ namespace System.Buffers.Internal
 
         public override int Length => s_empty.Length;
 
-        public override Span<T> Span => s_empty;
+        public override Span<T> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnerEmptyMemory<T>));
+                return s_empty;
+            }
+        }
 
         protected override void Dispose(bool disposing)
         {}
 
-        public override Span<T> GetSpan(int index, int length)
-        {
-            if (IsDisposed) ThrowObjectDisposed();
-            if (index > 0 || length > 0) ThrowIndexOutOfRange();
-            return Span;
-        }
-
         protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnerEmptyMemory<T>));
             buffer = new ArraySegment<T>(s_empty);
             return true;
         }

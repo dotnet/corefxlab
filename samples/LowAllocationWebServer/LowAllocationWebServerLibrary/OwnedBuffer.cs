@@ -5,6 +5,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Sequences;
+using System.Runtime;
 
 namespace Microsoft.Net.Http
 {
@@ -37,7 +38,14 @@ namespace Microsoft.Net.Http
 
         public override int Length => _array.Length;
 
-        public override Span<byte> Span => _array;
+        public override Span<byte> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
+                return _array;
+            }
+        }
 
         public int CopyTo(Span<byte> buffer)
         {
@@ -118,14 +126,9 @@ namespace Microsoft.Net.Http
             _next = null;
         }
 
-        public override Span<byte> GetSpan(int index, int length)
-        {
-            if (IsDisposed) ThrowObjectDisposed();
-            return Span.Slice(index, length);
-        }
-
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
             buffer = new ArraySegment<byte>(_array);
             return true;
         }

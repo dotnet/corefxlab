@@ -34,7 +34,14 @@ namespace System.Buffers
 
         public override int Length => _array.Length;
 
-        public override Span<T> Span => _array;
+        public override Span<T> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
+                return _array;
+            }
+        }
 
         public unsafe byte* Pointer => (byte*)_pointer.ToPointer();
 
@@ -61,12 +68,6 @@ namespace System.Buffers
             base.Dispose(disposing);
         }
 
-        public override Span<T> GetSpan(int index, int length)
-        {
-            if (IsDisposed) ThrowObjectDisposed();
-            return Span.Slice(index, length);
-        }
-
         public override BufferHandle Pin(int index = 0)
         {
             return BufferHandle.Create(this, index, _handle);
@@ -74,12 +75,14 @@ namespace System.Buffers
 
         protected override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
             buffer = new ArraySegment<T>(_array);
             return true;
         }
 
         protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
             pointer = _pointer.ToPointer();
             return true;
         }
