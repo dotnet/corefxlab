@@ -236,27 +236,38 @@ namespace System.Text.Utf8
         /// <returns>Returns true is the span is capable of being fully encoded to UTF-8, else false.</returns>
         internal static bool TryComputeEncodedBytes(ReadOnlySpan<char> utf16, out int bytesNeeded)
         {
-            bytesNeeded = 0;
-
-            for (int i = 0; i < utf16.Length; i++)
+            // try? because Convert.ConvertToUtf32 can throw
+            // if the high/low surrogates aren't valid; no point
+            // running all the tests twice per code-point
+            try
             {
-                var ch = utf16[i];
+                bytesNeeded = 0;
 
-                if ((ushort)ch <= 0x7f) // Fast path for ASCII
-                    bytesNeeded++;
-                else if (!char.IsSurrogate(ch))
-                    bytesNeeded += GetNumberOfEncodedBytes((uint)ch);
-                else
+                for (int i = 0; i < utf16.Length; i++)
                 {
-                    if (++i >= utf16.Length)
-                        return false;
+                    var ch = utf16[i];
 
-                    uint codePoint = (uint)char.ConvertToUtf32(ch, utf16[i]);
-                    bytesNeeded += GetNumberOfEncodedBytes(codePoint);
+                    if ((ushort)ch <= 0x7f) // Fast path for ASCII
+                        bytesNeeded++;
+                    else if (!char.IsSurrogate(ch))
+                        bytesNeeded += GetNumberOfEncodedBytes((uint)ch);
+                    else
+                    {
+                        if (++i >= utf16.Length)
+                            return false;
+
+                        uint codePoint = (uint)char.ConvertToUtf32(ch, utf16[i]);
+                        bytesNeeded += GetNumberOfEncodedBytes(codePoint);
+                    }
                 }
-            }
 
-            return true;
+                return true;
+            }
+            catch(ArgumentOutOfRangeException)
+            {
+                bytesNeeded = 0;
+                return false;
+            }
         }
 
         /// <summary>
