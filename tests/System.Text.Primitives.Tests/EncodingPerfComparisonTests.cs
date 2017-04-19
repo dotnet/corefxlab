@@ -75,7 +75,7 @@ namespace System.Text.Primitives.Tests
             return plainText.ToString();
         }
 
-        [Benchmark]
+        [Benchmark(InnerIterationCount = 250)]
         [InlineData(1000, 0x0000, 0x007F)]
         [InlineData(1000, 0x0080, 0x07FF)]
         [InlineData(1000, 0x0800, 0xFFFF)]
@@ -85,17 +85,23 @@ namespace System.Text.Primitives.Tests
             var bytes = Encoding.UTF8.GetBytes(unicodeString);
 
             var decoder = Encoding.UTF8;
+            if(decoder.GetString(bytes) != unicodeString)
+            {
+                throw new Exception(); // this should not happen
+            }
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    if (decoder.GetString(bytes) != unicodeString)
+                {
+                    for (int i=0; i<Benchmark.InnerIterationCount; i++)
                     {
-                        throw new Exception(); // this should not happen
+                        decoder.GetString(bytes);
                     }
+                }
             }
         }
 
-        [Benchmark]
+        [Benchmark(InnerIterationCount = 250)]
         [InlineData(1000, 0x0000, 0x007F)]
         [InlineData(1000, 0x0080, 0x07FF)]
         [InlineData(1000, 0x0800, 0xFFFF)]
@@ -105,14 +111,20 @@ namespace System.Text.Primitives.Tests
             var bytes = Encoding.UTF8.GetBytes(unicodeString);
 
             var decoder = TextEncoder.Utf8;
+            if (!decoder.TryDecode(bytes, out string text, out int bytesConsumed) || bytesConsumed != bytes.Length
+                        || text != unicodeString)
+            {
+                throw new Exception(); // this should not happen
+            }
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    if (!decoder.TryDecode(bytes, out string text, out int bytesConsumed) || bytesConsumed != bytes.Length
-                        || text != unicodeString)
+                {
+                    for (int i=0; i<Benchmark.InnerIterationCount; i++)
                     {
-                        throw new Exception(); // this should not happen
+                        decoder.TryDecode(bytes, out text, out bytesConsumed);
                     }
+                }
             }
         }
 
