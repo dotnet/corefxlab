@@ -54,23 +54,11 @@ namespace System.Buffers
             return new Buffer<T>(_owner, _index + index, length);
         }
 
-        public Span<T> Span {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _owner.GetSpanInternal(_index, _length); }
-        }
+        public Span<T> Span => _owner.Span.Slice(_index, _length);
 
         public DisposableReservation<T> Reserve() => new DisposableReservation<T>(_owner);
 
-        public unsafe BufferHandle Pin() => BufferHandle.Create(_owner, _index);
-
-        public unsafe bool TryGetPointer(out void* pointer)
-        {
-            if (!_owner.TryGetPointerInternal(out pointer)) {
-                return false;
-            }
-            pointer = Add(pointer, _index);
-            return true;
-        }
+        public BufferHandle Pin() => _owner.Pin(_index);
 
         public bool TryGetArray(out ArraySegment<T> buffer)
         {
@@ -78,6 +66,16 @@ namespace System.Buffers
                 return false;
             }
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
+            return true;
+        }
+
+        public unsafe bool TryGetPointer(out void* pointer)
+        {
+            if (!_owner.TryGetPointerInternal(out pointer))
+            {
+                return false;
+            }
+            pointer = Add(pointer, _index);
             return true;
         }
 
@@ -134,6 +132,30 @@ namespace System.Buffers
         public override int GetHashCode()
         {
             return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
+        }
+
+        // TODO: this is taken from SpanHelpers. If we move this type to System.Memory, we should remove this helper
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static IntPtr Add(IntPtr start, int index)
+        {
+            Debug.Assert(start.ToInt64() >= 0);
+            Debug.Assert(index >= 0);
+
+            unsafe
+            {
+                if (sizeof(IntPtr) == sizeof(int))
+                {
+                    // 32-bit path.
+                    uint byteLength = (uint)index * (uint)Unsafe.SizeOf<T>();
+                    return (IntPtr)(((byte*)start) + byteLength);
+                }
+                else
+                {
+                    // 64-bit path.
+                    ulong byteLength = (ulong)index * (ulong)Unsafe.SizeOf<T>();
+                    return (IntPtr)(((byte*)start) + byteLength);
+                }
+            }
         }
     }
 }

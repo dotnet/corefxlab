@@ -284,6 +284,47 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public async Task AdvanceShouldResetStateIfReadCancelled()
+        {
+            _pipe.Reader.CancelPendingRead();
+
+            var result = await _pipe.Reader.ReadAsync();
+            var buffer = result.Buffer;
+            _pipe.Reader.Advance(buffer.End);
+
+            Assert.False(result.IsCompleted);
+            Assert.True(result.IsCancelled);
+            Assert.True(buffer.IsEmpty);
+
+            var awaitable = _pipe.Reader.ReadAsync();
+            Assert.False(awaitable.IsCompleted);
+        }
+
+
+
+        [Fact]
+        public async Task ReadingCanBeCancelled()
+        {
+            var cts = new CancellationTokenSource();
+            cts.Token.Register(() =>
+            {
+                _pipe.Writer.Complete(new OperationCanceledException(cts.Token));
+            });
+
+            var ignore = Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                cts.Cancel();
+            });
+
+            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            {
+                var result = await _pipe.Reader.ReadAsync();
+                var buffer = result.Buffer;
+            });
+        }
+
+        [Fact]
         public async Task HelloWorldAcrossTwoBlocks()
         {
             const int blockSize = 4032;
@@ -493,8 +534,9 @@ namespace System.IO.Pipelines.Tests
 
             private class DisposeTrackingOwnedMemory : OwnedBuffer<byte>
             {
-                public DisposeTrackingOwnedMemory(byte[] array) : base(array)
+                public DisposeTrackingOwnedMemory(byte[] array)
                 {
+                    _array = array;
                 }
 
                 protected override void Dispose(bool disposing)
@@ -503,8 +545,33 @@ namespace System.IO.Pipelines.Tests
                     base.Dispose(disposing);
                 }
 
+                protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+                {
+                    if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                    buffer = new ArraySegment<byte>(_array);
+                    return true;
+                }
+
+                protected override unsafe bool TryGetPointerInternal(out void* pointer)
+                {
+                    pointer = null;
+                    return false;
+                }
+
                 public int Disposed { get; set; }
 
+                public override int Length => _array.Length;
+
+                public override Span<byte> Span
+                {
+                    get
+                    {
+                        if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                        return _array;
+                    }
+                }
+
+                byte[] _array;
             }
         }
     }

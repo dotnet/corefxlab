@@ -72,11 +72,6 @@ namespace System.Slices.Tests
                     Assert.Throws<InvalidOperationException>(() => { // memory is reserved; premature dispose check fires
                         owned.Dispose();
                     });
-                    Assert.Throws<ObjectDisposedException>(() => {
-                        // memory is disposed
-                        Span<byte> span = memorySlice.Span;
-                        span[0] = 255;
-                    });
                 }
                 finally {
                     r.Dispose(); // release reservation

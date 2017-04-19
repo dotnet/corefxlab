@@ -173,6 +173,29 @@ namespace System.Text.Utf16
             return true;
         }
 
+        /// <summary>
+        /// Computes the number of bytes necessary to encode a given UTF-32 character sequence.
+        /// </summary>
+        /// <param name="utf32">A span containing a sequence of UTF-32 characters to encode.</param>
+        /// <param name="bytesNeeded">An output parameter to hold the number of bytes needed for encoding.</param>
+        /// <returns>Returns true is the span is capable of being fully encoded to UTF-16, else false.</returns>
+        public static bool TryComputeEncodedBytes(ReadOnlySpan<uint> utf32, out int bytesNeeded)
+        {
+            int charactersWritten = 0;
+            for (int i = 0; i < utf32.Length; i++)
+            {
+                var codePoint = utf32[i];
+                if (!UnicodeHelpers.IsSupportedCodePoint(codePoint))
+                {
+                    bytesNeeded = 0;
+                    return false;
+                }
+                charactersWritten += UnicodeHelpers.IsBmp(codePoint) ? 1 : 2;
+            }
+            bytesNeeded = charactersWritten * sizeof(char);
+            return true;
+        }
+
         #endregion Encoding implementation
 
         #region Surrogate helpers

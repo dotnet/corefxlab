@@ -117,37 +117,6 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void FlushAsyncReturnsCanceledIfFlushCancelled()
-        {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
-            var flushAsync = writableBuffer.FlushAsync();
-
-            Assert.False(flushAsync.IsCompleted);
-
-            _pipe.Writer.CancelPendingFlush();
-
-            Assert.True(flushAsync.IsCompleted);
-            var flushResult = flushAsync.GetResult();
-            Assert.True(flushResult.IsCancelled);
-        }
-
-        [Fact]
-        public void FlushAsyncReturnsCanceledIfCancelledBeforeFlush()
-        {
-            var writableBuffer = _pipe.Writer.Alloc(64);
-            writableBuffer.Advance(64);
-
-            _pipe.Writer.CancelPendingFlush();
-
-            var flushAsync = writableBuffer.FlushAsync();
-
-            Assert.True(flushAsync.IsCompleted);
-            var flushResult = flushAsync.GetResult();
-            Assert.True(flushResult.IsCancelled);
-        }
-
-        [Fact]
         public void FlushAsyncAwaitableResetsOnCommit()
         {
             var writableBuffer = _pipe.Writer.Alloc(64);
@@ -169,6 +138,21 @@ namespace System.IO.Pipelines.Tests
             flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
+        }
+
+        [Fact]
+        public void AdvanceThrowsIfFlushActiveAndNotConsumedPastThreshold()
+        {
+            var writableBuffer = _pipe.Writer.Alloc(64);
+            writableBuffer.Advance(64);
+            var flushAsync = writableBuffer.FlushAsync();
+            Assert.False(flushAsync.IsCompleted);
+
+            var result = _pipe.Reader.ReadAsync().GetAwaiter().GetResult();
+            var consumed = result.Buffer.Move(result.Buffer.Start, 31);
+            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Advance(consumed, result.Buffer.End));
+
+            _pipe.Reader.Advance(result.Buffer.End, result.Buffer.End);
         }
     }
 }

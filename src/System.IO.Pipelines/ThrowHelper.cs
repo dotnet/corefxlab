@@ -52,6 +52,11 @@ namespace System.IO.Pipelines
             throw GetArgumentOutOfRangeException_BufferRequestTooLarge(maxSize);
         }
 
+        public static void ThrowObjectDisposedException(string objectName)
+        {
+            throw GetObjectDisposedException(objectName);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(ExceptionArgument argument)
         {
@@ -81,6 +86,12 @@ namespace System.IO.Pipelines
         {
             return new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.size),
                 $"Cannot allocate more than {maxSize} bytes in a single buffer");
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ObjectDisposedException GetObjectDisposedException(string objectName)
+        {
+            return new ObjectDisposedException(objectName);
         }
 
         private static string GetArgumentName(ExceptionArgument argument)
@@ -139,6 +150,9 @@ namespace System.IO.Pipelines
                 case ExceptionResource.AdvancingWithNoBuffer:
                     resourceString = "Can't advance without buffer allocated";
                     break;
+                case ExceptionResource.BackpressureDeadlock:
+                    resourceString = "Advancing examined to the end would cause pipe to deadlock because FlushAsync is waiting";
+                    break;
             }
 
             resourceString = resourceString ?? $"Error ResourceKey not defined {argument}.";
@@ -178,6 +192,7 @@ namespace System.IO.Pipelines
         CompleteWriterActiveWriter,
         CompleteReaderActiveReader,
         AdvancingPastBufferSize,
-        AdvancingWithNoBuffer
+        AdvancingWithNoBuffer,
+        BackpressureDeadlock
     }
 }

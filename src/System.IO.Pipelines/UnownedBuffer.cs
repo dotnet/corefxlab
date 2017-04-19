@@ -11,11 +11,20 @@ namespace System.IO.Pipelines
     /// </summary>
     public class UnownedBuffer : OwnedBuffer<byte>
     {
-        private ArraySegment<byte> _buffer;
-
-        public UnownedBuffer(ArraySegment<byte> buffer) : base(buffer.Array, buffer.Offset, buffer.Count)
+        public UnownedBuffer(ArraySegment<byte> buffer)
         {
             _buffer = buffer;
+        }
+
+        public override int Length => _buffer.Count;
+
+        public override Span<byte> Span
+        {
+            get
+            {
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
+                return new Span<byte>(_buffer.Array, _buffer.Offset, _buffer.Count);
+            }
         }
 
         public OwnedBuffer<byte> MakeCopy(int offset, int length, out int newStart, out int newEnd)
@@ -27,5 +36,30 @@ namespace System.IO.Pipelines
             newEnd = length;
             return buffer;
         }
+
+// In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
+// this method access modifiers need to be `protected internal`
+#if KESTREL_BY_SOURCE
+        internal
+#endif
+        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        {
+            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
+            buffer = _buffer;
+            return true;
+        }
+
+// In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
+// this method access modifiers need to be `protected internal`
+#if KESTREL_BY_SOURCE
+        internal
+#endif
+        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        {
+            pointer = null;
+            return false;
+        }
+
+        private ArraySegment<byte> _buffer;
     }
 }

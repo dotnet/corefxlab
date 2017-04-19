@@ -75,7 +75,6 @@ namespace System.IO.Pipelines
             }
 
             var block = Lease();
-            block.Initialize();
             return block;
         }
 
@@ -110,6 +109,7 @@ namespace System.IO.Pipelines
                 block.Leaser = Environment.StackTrace;
                 block.IsLeased = true;
 #endif
+                block.Initialize();
                 return block;
             }
             // no blocks available - grow the pool

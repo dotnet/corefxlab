@@ -9,21 +9,48 @@ namespace System.Buffers.Pools
     {
         internal sealed class BufferManager : OwnedBuffer<byte>
         {
-            private readonly NativeBufferPool _pool;
-
-            public BufferManager(NativeBufferPool pool, IntPtr memory, int length) : base(null, 0, length, memory)
+            public BufferManager(NativeBufferPool pool, IntPtr memory, int length)
             {
                 _pool = pool;
+                _pointer = memory;
+                _length = length;
             }
 
-            public new IntPtr Pointer => base.Pointer;
+            public IntPtr Pointer => _pointer;
+
+            public override int Length => _length;
+
+            public override Span<byte> Span
+            {
+                get
+                {
+                    if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
+                    return new Span<byte>(_pointer.ToPointer(), _length);
+                }
+            }
 
             protected override void Dispose(bool disposing)
             {
                 _pool.Return(this);
-
                 base.Dispose(disposing);
             }
+
+            protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+            {
+                buffer = default(ArraySegment<byte>);
+                return false;
+            }
+
+            protected override unsafe bool TryGetPointerInternal(out void* pointer)
+            {
+                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
+                pointer = _pointer.ToPointer();
+                return true;
+            }
+
+            private readonly NativeBufferPool _pool;
+            IntPtr _pointer;
+            int _length;
         }
     }
 }
