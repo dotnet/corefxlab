@@ -25,9 +25,6 @@ There are cases where native OS APIs are defined in terms of the natural size of
 Mono uses a poor man's approach to solve this problem:  
 it introduced structures System.nint, System.nuint and System.nfloat that get converted to corresponding integer types by the runtime.
 
-For example, System.Runtime.InteropServices.AllocHGlobal(IntPtr) has IntPtr argument, 
-even though it has nothing to do with pointers. It should have been native int instead.
-
 Interop with a broad variety of programming environments is an important scenario for us, 
 and so we should have a first class support for these native-sized number types.
 
@@ -35,6 +32,11 @@ and so we should have a first class support for these native-sized number types.
 
 There are performance sensitive scenarios where programs want to process memory buffers in native integer chunks. 
 IntPtr, not being a real integer, makes such processing often tedious and error prone.
+
+### Representing Sizes
+
+System.Runtime.InteropServices.AllocHGlobal(IntPtr) has IntPtr argument, 
+even though it has nothing to do with pointers. It should have been native int instead.
 
 ## Requirements
 
@@ -49,7 +51,7 @@ IntPtr, not being a real integer, makes such processing often tedious and error 
 9.	[Pri 2] The ability to use IntN and UIntN as array indexers
 10.	[Pri 3] Provide C# language aliases for these types
 
-## Design
+## API Design
 We are going to introduce three types: IntN, UIntN, and FloatN. 
 These three types will have APIs and semantics same as the existing integer and floating point types, 
 with the exceptions noted in comments below, and adjusted to take the appropriate type, i.e IntN.Equals has an IntN parameter.
@@ -89,6 +91,7 @@ namespace System {
     }
 }
 ```
+
 ### Conversions
 Conversion operators will be provided for converting between these new native types and existing integral and floating point types. 
 These operators, except the ones marked with *, will be implemented in the compiler (not as library operator overloads) 
@@ -128,7 +131,7 @@ The operators that never overflow or underflow are implicit. Those that do are e
 | Double	| implicit	 | implicit  |
 
 \* this conversion will be implemented as an overloaded operator. The conversion never fails, so the checked and unchecked 
-behavior is the same, but we need those to convert the new native-size ints to IL uint type.
+behavior is the same, but we need those to convert between these new native-size ints to IL nint type (indirectly thhough [U]IntPtr).
 
 ## Language Support
 Details of language support work are tracked at https://github.com/dotnet/csharplang/issues/435.
@@ -166,6 +169,7 @@ because such overloads could not respect `checked { … }` blocks and compile ti
 7.	Are we going to allow default parameters types as native ints and float?
 
 ## Design Details
+
 This is how UIntN will look in full detail. 
 IntN and FloatN will be very similar.
 Note a quite large list of operators is supported through the compiler.
@@ -194,13 +198,25 @@ namespace System {
         public static UIntN Parse(string text, NumberStyles style, IFormatProvider provider);
         
         public static implicit operator UIntN (UIntPtr value);
+        public static implicit operator UIntPtr (UIntN value);
     }
 }
 ```
 
+## Details of IntPtr and UIntPtr Incompatibilities
+
+TODO
+
+## Details of IL native int and native uint mapping to IntN and UIntN
+
+TODO
+
 ## References
+discussion of this proposal: https://github.com/dotnet/corefxlab/issues/1471
 
 coreclr repo issue: https://github.com/dotnet/coreclr/issues/963
 
 CGFloat: https://developer.apple.com/reference/coregraphics/cgfloat 
+
+
 
