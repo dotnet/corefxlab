@@ -74,6 +74,48 @@ namespace System.Text.Primitives.Tests
             }
             return plainText.ToString();
         }
+
+        [Benchmark]
+        [InlineData(1000, 0x0000, 0x007F)]
+        [InlineData(1000, 0x0080, 0x07FF)]
+        [InlineData(1000, 0x0800, 0xFFFF)]
+        public void DecodingPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
+        {
+            string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
+            var bytes = Encoding.UTF8.GetBytes(unicodeString);
+
+            var decoder = Encoding.UTF8;
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                    if (decoder.GetString(bytes) != unicodeString)
+                    {
+                        throw new Exception(); // this should not happen
+                    }
+            }
+        }
+
+        [Benchmark]
+        [InlineData(1000, 0x0000, 0x007F)]
+        [InlineData(1000, 0x0080, 0x07FF)]
+        [InlineData(1000, 0x0800, 0xFFFF)]
+        public void DecodingPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
+        {
+            string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
+            var bytes = Encoding.UTF8.GetBytes(unicodeString);
+
+            var decoder = TextEncoder.Utf8;
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                    if (!decoder.TryDecode(bytes, out string text, out int bytesConsumed) || bytesConsumed != bytes.Length
+                        || text != unicodeString)
+                    {
+                        throw new Exception(); // this should not happen
+                    }
+            }
+        }
+
     }
 }
 
