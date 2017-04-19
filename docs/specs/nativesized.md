@@ -131,7 +131,7 @@ The operators that never overflow or underflow are implicit. Those that do are e
 | Double	| implicit	 | implicit  |
 
 \* this conversion will be implemented as an overloaded operator. The conversion never fails, so the checked and unchecked 
-behavior is the same, but we need those to convert between these new native-size ints to IL nint type (indirectly thhough [U]IntPtr).
+behavior is the same, but we need those to convert between these new native-size ints to IL nint type (indirectly through [U]IntPtr).
 
 ## Language Support
 Details of language support work are tracked at https://github.com/dotnet/csharplang/issues/435.
