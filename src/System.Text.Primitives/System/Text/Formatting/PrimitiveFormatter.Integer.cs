@@ -95,11 +95,13 @@ namespace System.Text
                     return InvariantUtf8IntegerFormatter.TryFormatNumericInt64(value, format.Precision, buffer, out bytesWritten);
 
                 case 'x':
+                    return InvariantUtf8IntegerFormatter.TryFormatHexUInt64((ulong)value & mask, format.Precision, true, buffer, out bytesWritten);
+
                 case 'X':
-                    return InvariantUtf8IntegerFormatter.TryFormatHexUInt64((ulong)value & mask, format.Precision, format.Symbol == 'x', buffer, out bytesWritten);
+                    return InvariantUtf8IntegerFormatter.TryFormatHexUInt64((ulong)value & mask, format.Precision, false, buffer, out bytesWritten);
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
 
@@ -119,11 +121,13 @@ namespace System.Text
                     return InvariantUtf8IntegerFormatter.TryFormatNumericUInt64(value, format.Precision, buffer, out bytesWritten);
 
                 case 'x':
+                    return InvariantUtf8IntegerFormatter.TryFormatHexUInt64(value, format.Precision, true, buffer, out bytesWritten);
+
                 case 'X':
-                    return InvariantUtf8IntegerFormatter.TryFormatHexUInt64(value, format.Precision, format.Symbol == 'x', buffer, out bytesWritten);
+                    return InvariantUtf8IntegerFormatter.TryFormatHexUInt64(value, format.Precision, false, buffer, out bytesWritten);
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
 
@@ -143,11 +147,13 @@ namespace System.Text
                     return InvariantUtf16IntegerFormatter.TryFormatNumericInt64(value, format.Precision, buffer, out bytesWritten);
 
                 case 'x':
+                    return InvariantUtf16IntegerFormatter.TryFormatHexUInt64((ulong)value & mask, format.Precision, true, buffer, out bytesWritten);
+
                 case 'X':
-                    return InvariantUtf16IntegerFormatter.TryFormatHexUInt64((ulong)value & mask, format.Precision, format.Symbol == 'x', buffer, out bytesWritten);
+                    return InvariantUtf16IntegerFormatter.TryFormatHexUInt64((ulong)value & mask, format.Precision, false, buffer, out bytesWritten);
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
 
@@ -167,11 +173,13 @@ namespace System.Text
                     return InvariantUtf16IntegerFormatter.TryFormatNumericUInt64(value, format.Precision, buffer, out bytesWritten);
 
                 case 'x':
+                    return InvariantUtf16IntegerFormatter.TryFormatHexUInt64(value, format.Precision, true, buffer, out bytesWritten);
+
                 case 'X':
-                    return InvariantUtf16IntegerFormatter.TryFormatHexUInt64(value, format.Precision, format.Symbol == 'x', buffer, out bytesWritten);
+                    return InvariantUtf16IntegerFormatter.TryFormatHexUInt64(value, format.Precision, false, buffer, out bytesWritten);
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
     }
