@@ -219,7 +219,6 @@ namespace System.IO.Pipelines.Tests
         {
             var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
             writableBuffer.Advance(MaximumSizeHigh);
-
             var flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);

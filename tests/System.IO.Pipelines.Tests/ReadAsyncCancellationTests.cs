@@ -341,6 +341,7 @@ namespace System.IO.Pipelines.Tests
         public void ReadAsyncReturnsIsCancelOnCancelPendingReadBeforeGetResult()
         {
             var awaitable = Pipe.Reader.ReadAsync();
+
             Assert.False(awaitable.IsCompleted);
             awaitable.OnCompleted(() => {});
 
