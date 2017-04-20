@@ -23,7 +23,7 @@ namespace System.Text
         #region UTF-8 Helper methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void WriteHexByte(byte value, ref byte buffer, int index)
+        public static void WriteHexByte(byte value, ref byte buffer, int index)
         {
             Unsafe.Add(ref buffer, index) = (byte)HexTable[value >> 4];
             Unsafe.Add(ref buffer, index + 1) = (byte)HexTable[value & 0xF];
@@ -36,12 +36,6 @@ namespace System.Text
                 value /= 10;
 
             return WriteDigits(value, digitCount, ref buffer, index);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int WriteDigits(long value, ref byte buffer, int index)
-        {
-            return WriteDigits(value, CountDigits(value), ref buffer, index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -58,12 +52,31 @@ namespace System.Text
             return digitCount;
         }
 
+        /// <summary>
+        /// The unsigned long implementation of this method is much slower than the signed version above
+        /// due to optimization tricks that happen at the IL to ASM stage. Use the signed version unless
+        /// you definitely need to deal with numbers larger than long.MaxValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int WriteDigits(ulong value, int digitCount, ref byte buffer, int index)
+        {
+            ulong left = value;
+
+            for (var i = digitCount - 1; i >= 0; i--)
+            {
+                left = DivMod(left, 10, out ulong num);
+                Unsafe.Add(ref buffer, index + i) = (byte)('0' + num);
+            }
+
+            return digitCount;
+        }
+
         #endregion UTF-8 Helper methods
 
         #region UTF-16 Helper methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void WriteHexByte(byte value, ref char buffer, int index)
+        public static void WriteHexByte(byte value, ref char buffer, int index)
         {
             Unsafe.Add(ref buffer, index) = HexTable[value >> 4];
             Unsafe.Add(ref buffer, index + 1) = HexTable[value & 0xF];
@@ -79,12 +92,6 @@ namespace System.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int WriteDigits(long value, ref char buffer, int index)
-        {
-            return WriteDigits(value, CountDigits(value), ref buffer, index);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int WriteDigits(long value, int digitCount, ref char buffer, int index)
         {
             long left = value;
@@ -92,6 +99,25 @@ namespace System.Text
             for (var i = digitCount - 1; i >= 0; i--)
             {
                 left = DivMod(left, 10, out long num);
+                Unsafe.Add(ref buffer, index + i) = (char)('0' + num);
+            }
+
+            return digitCount;
+        }
+
+        /// <summary>
+        /// The unsigned long implementation of this method is much slower than the signed version above
+        /// due to optimization tricks that happen at the IL to ASM stage. Use the signed version unless
+        /// you definitely need to deal with numbers larger than long.MaxValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int WriteDigits(ulong value, int digitCount, ref char buffer, int index)
+        {
+            ulong left = value;
+
+            for (var i = digitCount - 1; i >= 0; i--)
+            {
+                left = DivMod(left, 10, out ulong num);
                 Unsafe.Add(ref buffer, index + i) = (char)('0' + num);
             }
 
@@ -113,6 +139,17 @@ namespace System.Text
             return div;
         }
 
+        /// <summary>
+        /// We don't have access to Math.DivRem, so this is a copy of the implementation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong DivMod(ulong numerator, ulong denominator, out ulong modulo)
+        {
+            ulong div = numerator / denominator;
+            modulo = numerator - (div * denominator);
+            return div;
+        }
+
         #endregion Math Helper methods
 
         #region Character counting helper methods
@@ -120,14 +157,31 @@ namespace System.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CountDigits(long n)
         {
-            Precondition.Require(n >= 0);
-
-            // NOTE: It might be worth re-visiting this to use a while loop or unrolled
-            //       branch checks to calculate the digit count. My simple tests showed
-            //       this to be performant, but it might depend on the characteristics /
-            //       features of the hardware given a specific input number.
             if (n == 0) return 1;
-            return (int)Math.Floor(Math.Log10(n)) + 1;
+
+            int digits = 0;
+            while (n != 0)
+            {
+                n /= 10;
+                digits++;
+            }
+
+            return digits;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CountDigits(ulong n)
+        {
+            if (n == 0) return 1;
+
+            int digits = 0;
+            while (n != 0)
+            {
+                n /= 10;
+                digits++;
+            }
+
+            return digits;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
