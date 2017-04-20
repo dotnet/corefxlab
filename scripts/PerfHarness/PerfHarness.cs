@@ -9,28 +9,41 @@ using Microsoft.Xunit.Performance.Api;
 
 public class PerfHarness
 {
-    public static void Main(string[] args)
+    public static int Main(string[] args)
     {
-        string[] assemblies = GetTestAssemblies();
-
-        int pos =  Array.IndexOf(args, "--assembly");
-
-        using (XunitPerformanceHarness harness = new XunitPerformanceHarness(args))
+        try
         {
-            if (pos > -1 && args.Length > pos + 1)
+            string[] assemblies = GetTestAssemblies();
+
+            int pos =  Array.IndexOf(args, "--assembly");
+
+            using (XunitPerformanceHarness harness = new XunitPerformanceHarness(args))
             {
-                pos = Array.IndexOf(assemblies, args[pos + 1]);
-                if (pos > -1)
+                if (pos > -1 && args.Length > pos + 1)
                 {
-                    harness.RunBenchmarks(GetTestAssembly(assemblies[pos]));
-                    return;
+                    pos = Array.IndexOf(assemblies, args[pos + 1]);
+                    if (pos > -1)
+                    {
+                        harness.RunBenchmarks(GetTestAssembly(assemblies[pos]));
+                        return 0;
+                    }
+                }
+
+                foreach(var testName in assemblies)
+                {
+                    harness.RunBenchmarks(GetTestAssembly(testName));
                 }
             }
-
-            foreach(var testName in assemblies)
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex.ToString());
+            if(ex is System.Runtime.InteropServices.COMException)
             {
-                harness.RunBenchmarks(GetTestAssembly(testName));
+                Console.Error.WriteLine("Please check you have admin privileges");
             }
+            return -1;
         }
     }
 
