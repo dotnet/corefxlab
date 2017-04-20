@@ -183,7 +183,7 @@ namespace System.IO.Pipelines.Tests
             var endpointBytes = endpoint.Address.GetAddressBytes();
             var server = new RioTcpServer((ushort)endpoint.Port, endpointBytes[0], endpointBytes[1], endpointBytes[2], endpointBytes[3]);
 
-            var runServerTask = Task.Factory.StartNew(async () =>
+            var runServerTask = Task.Factory.StartNew(() =>
             {
                 var pongTasks = new Task[ClientCount];
                 
@@ -192,8 +192,8 @@ namespace System.IO.Pipelines.Tests
                     var connection = server.Accept();
                     pongTasks[loop] = PongServer(connection);
                 }
-                
-                await Task.WhenAll(pongTasks);
+
+                return Task.WhenAll(pongTasks);
             });
 
             for (int loop = 0; loop < ClientCount; loop++)
