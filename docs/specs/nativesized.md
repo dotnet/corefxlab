@@ -50,6 +50,7 @@ even though it has nothing to do with pointers. It should have been native int i
 8.	[Pri 2] The types will be added to future runtimes and .NET Standard.
 9.	[Pri 2] The ability to use IntN and UIntN as array indexers
 10.	[Pri 3] Provide C# language aliases for these types
+11.	[Pri 3] Provide F# language aliases for these types
 
 ## API Design
 We are going to introduce three types: IntN, UIntN, and FloatN. 
@@ -211,6 +212,8 @@ TODO
 
 TODO
 
+
+
 ## References
 discussion of this proposal: https://github.com/dotnet/corefxlab/issues/1471
 
@@ -218,5 +221,6 @@ coreclr repo issue: https://github.com/dotnet/coreclr/issues/963
 
 CGFloat: https://developer.apple.com/reference/coregraphics/cgfloat 
 
+F# language suggestion related to these types: https://github.com/fsharp/fslang-suggestions/issues/562
 
 
