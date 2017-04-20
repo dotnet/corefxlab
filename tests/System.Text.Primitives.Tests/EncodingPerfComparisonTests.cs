@@ -9,7 +9,7 @@ namespace System.Text.Primitives.Tests
 {
     public class EncodingPerfComparisonTests
     {
-        [Benchmark]
+        [Benchmark(InnerIterationCount = 250)]
         [InlineData(1000, 0x0000, 0x007F)]
         [InlineData(1000, 0x0080, 0x07FF)]
         [InlineData(1000, 0x0800, 0xFFFF)]
@@ -29,12 +29,17 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    utf8.GetBytes(charArray, 0, characters.Length, utf8Buffer, 0);
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        utf8.GetBytes(charArray, 0, characters.Length, utf8Buffer, 0);
+                    }
+                }
                 span = new Span<byte>(utf8Buffer);
             }
         }
 
-        [Benchmark]
+        [Benchmark(InnerIterationCount = 250)]
         [InlineData(1000, 0x0000, 0x007F)]
         [InlineData(1000, 0x0080, 0x07FF)]
         [InlineData(1000, 0x0800, 0xFFFF)]
@@ -52,10 +57,63 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    if (!Utf8Encoder.TryEncode(characters, span, out consumed, out encodedBytes))
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        throw new Exception(); // this should not happen
+                        if (!Utf8Encoder.TryEncode(characters, span, out consumed, out encodedBytes))
+                        {
+                            throw new Exception(); // this should not happen
+                        }
                     }
+                }
+            }
+        }
+
+        [Benchmark(InnerIterationCount = 250)]
+        [InlineData(1000, 0x0000, 0x007F)]
+        [InlineData(1000, 0x0080, 0x07FF)]
+        [InlineData(1000, 0x0800, 0xFFFF)]
+        public void EncodingLenPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
+        {
+            string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
+            ReadOnlySpan<char> characters = unicodeString.AsSpan();
+            int bytesNeeded;
+            Assert.True(Utf8Encoder.TryComputeEncodedBytes(characters, out bytesNeeded));
+            Assert.Equal(Encoding.UTF8.GetByteCount(unicodeString), bytesNeeded);
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        if (!Utf8Encoder.TryComputeEncodedBytes(characters, out bytesNeeded))
+                        {
+                            throw new Exception(); // this should not happen
+                        }
+                    }
+                }
+            }
+        }
+
+        [Benchmark(InnerIterationCount = 250)]
+        [InlineData(1000, 0x0000, 0x007F)]
+        [InlineData(1000, 0x0080, 0x07FF)]
+        [InlineData(1000, 0x0800, 0xFFFF)]
+        public void EncodingLenPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
+        {
+            string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
+            int bytesNeeded = Encoding.UTF8.GetByteCount(unicodeString);
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        bytesNeeded = Encoding.UTF8.GetByteCount(unicodeString);
+                    }
+                }
             }
         }
 

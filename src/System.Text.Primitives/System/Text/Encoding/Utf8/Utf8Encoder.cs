@@ -300,22 +300,50 @@ namespace System.Text.Utf8
 
         #region Encoding implementation
 
+        static readonly Vector<ushort> _nonAscii = new Vector<ushort>((ushort)0xFF80); // i.e. 11111111 10000000
+
         /// <summary>
         /// Computes the number of bytes necessary to encode a given UTF-16 sequence.
         /// </summary>
         /// <param name="utf16">A span containing a sequence of UTF-16 characters to encode.</param>
         /// <param name="bytesNeeded">An output parameter to hold the number of bytes needed for encoding.</param>
         /// <returns>Returns true is the span is capable of being fully encoded to UTF-8, else false.</returns>
-        internal static bool TryComputeEncodedBytes(ReadOnlySpan<char> utf16, out int bytesNeeded)
+        internal static unsafe bool TryComputeEncodedBytes(ReadOnlySpan<char> utf16, out int bytesNeeded)
         {
+            int i = 0;
+            bytesNeeded = 0;
+            if (Vector.IsHardwareAccelerated)
+            {
+                int remaining = utf16.Length;
+                fixed (char* outerPtr = &utf16.DangerousGetPinnableReference())
+                {
+                    char* ptr = outerPtr;
+                    // note that .Count is detected as const by the JIT - not expensive to repeat
+                    while (remaining >= Vector<ushort>.Count)
+                    {
+                        var vec = Unsafe.Read<Vector<ushort>>(ptr);
+                        if ((vec & _nonAscii) == Vector<ushort>.Zero)
+                        {
+                            // no high bits set - nice simple ASCII
+                            i += Vector<ushort>.Count;
+                            ptr += Vector<ushort>.Count;
+                            remaining -= Vector<ushort>.Count;
+                            bytesNeeded += Vector<ushort>.Count;
+                        }
+                        else // TODO: add logic for "all 2-byte"?
+                        {
+                            break; // if we start seeing non-trivial mixed content, we're probably going to see more; give up
+                        }
+                    }
+                }
+            }
+
             // try? because Convert.ConvertToUtf32 can throw
             // if the high/low surrogates aren't valid; no point
             // running all the tests twice per code-point
             try
             {
-                bytesNeeded = 0;
-
-                for (int i = 0; i < utf16.Length; i++)
+                for (; i < utf16.Length; i++)
                 {
                     var ch = utf16[i];
 
