@@ -65,7 +65,8 @@ namespace System.Text.Utf8
                     byte* utf8Ptr = outerUtf8Ptr;
                     char* utf16Ptr = outerUtf16Ptr;
 
-                    while (remaining >= Vector<byte>.Count)
+                    int maxLoops = Math.Min(remaining, utf16.Length) / Vector<byte>.Count;
+                    while (maxLoops != 0)
                     {
                         var vec = Unsafe.Read<Vector<byte>>(utf8Ptr);
                         if ((vec & _highBit) == Vector<byte>.Zero)
@@ -78,7 +79,7 @@ namespace System.Text.Utf8
                                 // note: would also need to think about CPU endianness (is it 00AA ? or AA00 ?)
                                 *utf16Ptr++ = (char)*utf8Ptr++;
                             }
-                            remaining -= Vector<byte>.Count;
+                            maxLoops--;
                             bytesConsumed += Vector<byte>.Count;
                             charactersWritten += Vector<byte>.Count;
                         }
@@ -87,6 +88,7 @@ namespace System.Text.Utf8
                             break; // if we start seeing non-trivial mixed content, we're probably going to see more; give up
                         }
                     }
+                    remaining -= bytesConsumed; // we know this was zero, thankfully
                 }
             }
             while (bytesConsumed < utf8.Length)

@@ -48,11 +48,14 @@ namespace System.Text.Primitives.Tests
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
             ReadOnlySpan<char> characters = unicodeString.AsSpan();
 
-            int consumed;
-            int encodedBytes;
-            Assert.True(Utf8Encoder.TryComputeEncodedBytes(characters, out encodedBytes));
+            Assert.True(Utf8Encoder.TryComputeEncodedBytes(characters, out int encodedBytes));
+            Assert.Equal(Encoding.UTF8.GetByteCount(unicodeString), encodedBytes);
             byte[] utf8Buffer = new byte[encodedBytes];
             Span<byte> span = new Span<byte>(utf8Buffer);
+
+            Assert.True(Utf8Encoder.TryEncode(characters, span, out int consumed, out encodedBytes));
+            Assert.Equal(characters.Length, consumed);
+            Assert.Equal(utf8Buffer.Length, encodedBytes);
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -62,7 +65,7 @@ namespace System.Text.Primitives.Tests
                     {
                         if (!Utf8Encoder.TryEncode(characters, span, out consumed, out encodedBytes))
                         {
-                            throw new Exception(); // this should not happen
+                            throw new Exception($"{nameof(Utf8Encoder.TryEncode)} returned false; {nameof(consumed)}={consumed}, {nameof(encodedBytes)}={encodedBytes}"); // this should not happen
                         }
                     }
                 }
@@ -89,7 +92,7 @@ namespace System.Text.Primitives.Tests
                     {
                         if (!Utf8Encoder.TryComputeEncodedBytes(characters, out bytesNeeded))
                         {
-                            throw new Exception(); // this should not happen
+                            throw new Exception($"{nameof(Utf8Encoder.TryComputeEncodedBytes)} returned false; {nameof(bytesNeeded)}={bytesNeeded}"); // this should not happen
                         }
                     }
                 }
@@ -143,10 +146,7 @@ namespace System.Text.Primitives.Tests
             var bytes = Encoding.UTF8.GetBytes(unicodeString);
 
             var decoder = Encoding.UTF8;
-            if(decoder.GetString(bytes) != unicodeString)
-            {
-                throw new Exception(); // this should not happen
-            }
+            Assert.Equal(unicodeString, decoder.GetString(bytes));
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
@@ -169,18 +169,20 @@ namespace System.Text.Primitives.Tests
             var bytes = Encoding.UTF8.GetBytes(unicodeString);
 
             var decoder = TextEncoder.Utf8;
-            if (!decoder.TryDecode(bytes, out string text, out int bytesConsumed) || bytesConsumed != bytes.Length
-                        || text != unicodeString)
-            {
-                throw new Exception(); // this should not happen
-            }
+            Assert.True(decoder.TryDecode(bytes, out string text, out int bytesConsumed));
+            Assert.Equal(bytes.Length, bytesConsumed);
+            Assert.Equal(unicodeString, text);
+
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
                     for (int i=0; i<Benchmark.InnerIterationCount; i++)
                     {
-                        decoder.TryDecode(bytes, out text, out bytesConsumed);
+                        if(!decoder.TryDecode(bytes, out text, out bytesConsumed))
+                        {
+                            throw new Exception($"{nameof(decoder.TryDecode)} returned false; {nameof(bytesConsumed)}={bytesConsumed}"); // this should not happen
+                        }
                     }
                 }
             }
