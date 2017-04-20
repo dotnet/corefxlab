@@ -343,9 +343,26 @@ namespace System.IO.Pipelines.Tests
             var awaitable = Pipe.Reader.ReadAsync();
 
             Assert.False(awaitable.IsCompleted);
-            awaitable.OnCompleted(() => {});
+            awaitable.OnCompleted(() => { });
 
-            Pipe.Writer.WriteAsync(new byte[] {});
+            Pipe.Writer.WriteAsync(new byte[] { });
+            Pipe.Reader.CancelPendingRead();
+
+            Assert.True(awaitable.IsCompleted);
+
+            var result = awaitable.GetResult();
+            Assert.True(result.IsCancelled);
+        }
+
+        [Fact]
+        public void ReadAsyncReturnsIsCancelOnCancelPendingReadAfterGetResult()
+        {
+            var awaitable = Pipe.Reader.ReadAsync();
+
+            Assert.False(awaitable.IsCompleted);
+            awaitable.OnCompleted(() => { });
+
+            Pipe.Writer.WriteAsync(new byte[] { });
             Pipe.Reader.CancelPendingRead();
 
             Assert.True(awaitable.IsCompleted);
