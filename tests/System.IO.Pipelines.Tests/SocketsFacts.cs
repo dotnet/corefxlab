@@ -4,6 +4,7 @@
 
 using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Networking.Sockets;
+using System.IO.Pipelines.Networking.Windows.RIO;
 using System.IO.Pipelines.Text.Primitives;
 using System;
 using System.Diagnostics;
@@ -171,6 +172,51 @@ namespace System.IO.Pipelines.Tests
                     }
                 }
             }
+        }
+
+        [Fact]
+        public async Task RunStressPingPongTest_RioServer_LibuvClient()
+        {
+            var endpoint = new IPEndPoint(IPAddress.Loopback, 5060);
+            const int SendCount = 500, ClientCount = 5;
+
+            var endpointBytes = endpoint.Address.GetAddressBytes();
+            var server = new RioTcpServer((ushort)endpoint.Port, endpointBytes[0], endpointBytes[1], endpointBytes[2], endpointBytes[3]);
+
+            var runServerTask = Task.Factory.StartNew(async () =>
+            {
+                var pongTasks = new Task[ClientCount];
+                
+                for (int loop = 0; loop < ClientCount; loop++)
+                {
+                    var connection = server.Accept();
+                    pongTasks[loop] = PongServer(connection);
+                }
+                
+                await Task.WhenAll(pongTasks);
+            });
+
+            for (int loop = 0; loop < ClientCount; loop++)
+            {
+                using (var thread = new UvThread())
+                using (var connection = await new UvTcpClient(thread, endpoint).ConnectAsync())
+                {
+                    try
+                    {
+                        var tuple = await PingClient(connection, SendCount);
+                        Assert.Equal(SendCount, tuple.Item1);
+                        Assert.Equal(SendCount, tuple.Item2);
+                        Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
+                    }
+                    finally
+                    {
+                        await connection.DisposeAsync();
+                    }
+                }
+            }
+
+            await runServerTask;
+            server.Stop();
         }
 
         static async Task<Tuple<int, int, int>> PingClient(IPipeConnection connection, int messagesToSend)

@@ -291,7 +291,6 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 
                 if (connection != null)
                 {
-                    connection.ReceiveEndComplete();
                     connectionsToSignal[i] = null;
                 }
             }
@@ -394,7 +393,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                 {
                     if (result.RequestCorrelation >= 0)
                     {
-                        connection.ReceiveBeginComplete(result.BytesTransferred);
+                        connection.ReceiveComplete(result.BytesTransferred);
                         connectionsToSignal[i] = connection;
                     }
                     else
