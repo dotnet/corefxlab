@@ -52,7 +52,7 @@ namespace System.IO.Pipelines
             if ((uint)offset > (uint)source.Length || (uint)length > (uint)(source.Length - offset))
             {
                 // Only need to pass in array length and offset for ThrowHelper to determine which test failed
-                ThrowHelper.ThrowArgumentOutOfRangeException(source.Length, offset);
+                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(source.Length, offset);
             }
 
             if (length > 0 && _span.Length >= length)

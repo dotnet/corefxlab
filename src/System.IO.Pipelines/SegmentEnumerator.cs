@@ -91,7 +91,7 @@ namespace System.IO.Pipelines
 
         public void Reset()
         {
-            ThrowHelper.ThrowNotSupportedException();
+            PipelinesThrowHelper.ThrowNotSupportedException();
         }
 
         internal struct SegmentPart

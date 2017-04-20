@@ -49,7 +49,7 @@ namespace System.IO.Pipelines
         /// </summary>
         public void Reset()
         {
-            ThrowHelper.ThrowNotSupportedException();
+            PipelinesThrowHelper.ThrowNotSupportedException();
         }
     }
 }

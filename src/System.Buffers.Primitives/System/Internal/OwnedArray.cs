@@ -43,14 +43,14 @@ namespace System.Buffers.Internal
         {
             get
             {
-                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
                 return _array;
             }
         }
 
         protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
             buffer = new ArraySegment<T>(_array);
             return true;
         }

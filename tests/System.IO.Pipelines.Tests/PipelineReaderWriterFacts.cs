@@ -547,7 +547,7 @@ namespace System.IO.Pipelines.Tests
 
                 protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
                 {
-                    if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                    if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
                     buffer = new ArraySegment<byte>(_array);
                     return true;
                 }
@@ -566,7 +566,7 @@ namespace System.IO.Pipelines.Tests
                 {
                     get
                     {
-                        if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                        if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
                         return _array;
                     }
                 }

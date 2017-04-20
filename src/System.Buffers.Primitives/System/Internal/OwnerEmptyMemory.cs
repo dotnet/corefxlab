@@ -16,7 +16,7 @@ namespace System.Buffers.Internal
         {
             get
             {
-                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnerEmptyMemory<T>));
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnerEmptyMemory<T>));
                 return s_empty;
             }
         }
@@ -26,7 +26,7 @@ namespace System.Buffers.Internal
 
         protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnerEmptyMemory<T>));
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnerEmptyMemory<T>));
             buffer = new ArraySegment<T>(s_empty);
             return true;
         }

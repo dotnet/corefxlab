@@ -43,7 +43,7 @@ namespace System.IO.Pipelines
         {
             get
             {
-                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+                if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
                 return new Span<byte>(Slab.Array, _offset, _length);
             }
         }
@@ -112,7 +112,7 @@ namespace System.IO.Pipelines
 #endif
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
             buffer = new ArraySegment<byte>(Slab.Array, _offset, _length);
             return true;
         }
@@ -124,7 +124,7 @@ namespace System.IO.Pipelines
 #endif
         protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
             pointer = (Slab.NativePointer + _offset).ToPointer();
             return true;
         }

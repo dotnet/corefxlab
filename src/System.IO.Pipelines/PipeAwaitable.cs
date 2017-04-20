@@ -89,7 +89,7 @@ namespace System.IO.Pipelines
 
             if (!ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
             {
-                completion.TryComplete(ThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
+                completion.TryComplete(PipelinesThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
 
                 _state = _awaitableIsCompleted;
 

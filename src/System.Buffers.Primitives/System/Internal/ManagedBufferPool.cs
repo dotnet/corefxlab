@@ -39,7 +39,7 @@ namespace System.Buffers.Internal
             {
                 get
                 {
-                    if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
+                    if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
                     return _array;
                 }
             }
@@ -52,7 +52,7 @@ namespace System.Buffers.Internal
 
             protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
             {
-                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
                 buffer = new ArraySegment<byte>(_array);
                 return true;
             }

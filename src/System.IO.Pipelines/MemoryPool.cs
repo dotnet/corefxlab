@@ -71,7 +71,7 @@ namespace System.IO.Pipelines
         {
             if (size > _blockLength)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockLength);
+                PipelinesThrowHelper.ThrowArgumentOutOfRangeException_BufferRequestTooLarge(_blockLength);
             }
 
             var block = Lease();
