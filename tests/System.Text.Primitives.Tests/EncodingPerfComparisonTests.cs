@@ -74,6 +74,60 @@ namespace System.Text.Primitives.Tests
             }
             return plainText.ToString();
         }
+
+        [Benchmark(InnerIterationCount = 250)]
+        [InlineData(1000, 0x0000, 0x007F)]
+        [InlineData(1000, 0x0080, 0x07FF)]
+        [InlineData(1000, 0x0800, 0xFFFF)]
+        public void DecodingPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
+        {
+            string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
+            var bytes = Encoding.UTF8.GetBytes(unicodeString);
+
+            var decoder = Encoding.UTF8;
+            if(decoder.GetString(bytes) != unicodeString)
+            {
+                throw new Exception(); // this should not happen
+            }
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i=0; i<Benchmark.InnerIterationCount; i++)
+                    {
+                        decoder.GetString(bytes);
+                    }
+                }
+            }
+        }
+
+        [Benchmark(InnerIterationCount = 250)]
+        [InlineData(1000, 0x0000, 0x007F)]
+        [InlineData(1000, 0x0080, 0x07FF)]
+        [InlineData(1000, 0x0800, 0xFFFF)]
+        public void DecodingPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
+        {
+            string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
+            var bytes = Encoding.UTF8.GetBytes(unicodeString);
+
+            var decoder = TextEncoder.Utf8;
+            if (!decoder.TryDecode(bytes, out string text, out int bytesConsumed) || bytesConsumed != bytes.Length
+                        || text != unicodeString)
+            {
+                throw new Exception(); // this should not happen
+            }
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i=0; i<Benchmark.InnerIterationCount; i++)
+                    {
+                        decoder.TryDecode(bytes, out text, out bytesConsumed);
+                    }
+                }
+            }
+        }
+
     }
 }
 
