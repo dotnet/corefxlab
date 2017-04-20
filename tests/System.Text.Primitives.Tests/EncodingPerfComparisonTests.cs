@@ -4,15 +4,24 @@
 using System.Text.Utf8;
 using Xunit;
 using Microsoft.Xunit.Performance;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace System.Text.Primitives.Tests
 {
     public class EncodingPerfComparisonTests
     {
+        public static IEnumerable<object[]> TestCases()
+        {
+            int[] lengths = { 1000, 8, 16, 32, 64, 128 };
+            (int,int)[] ranges = { (0x0000, 0x007F), (0x0080, 0x07FF), (0x0800, 0xFFFF) };
+            return from len in lengths
+                   from range in ranges
+                   select new object[] { len, range.Item1, range.Item2 };
+        }
+
         [Benchmark(InnerIterationCount = 250)]
-        [InlineData(1000, 0x0000, 0x007F)]
-        [InlineData(1000, 0x0080, 0x07FF)]
-        [InlineData(1000, 0x0800, 0xFFFF)]
+        [MemberData(nameof(TestCases))]
         public void EncodingPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
@@ -26,11 +35,12 @@ namespace System.Text.Primitives.Tests
 
             char[] charArray = characters.ToArray();
 
+            int limit = GetIterationCount(charLength, Benchmark.InnerIterationCount);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    for (int i = 0; i < limit; i++)
                     {
                         utf8.GetBytes(charArray, 0, characters.Length, utf8Buffer, 0);
                     }
@@ -40,9 +50,7 @@ namespace System.Text.Primitives.Tests
         }
 
         [Benchmark(InnerIterationCount = 250)]
-        [InlineData(1000, 0x0000, 0x007F)]
-        [InlineData(1000, 0x0080, 0x07FF)]
-        [InlineData(1000, 0x0800, 0xFFFF)]
+        [MemberData(nameof(TestCases))]
         public void EncodingPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
@@ -61,11 +69,12 @@ namespace System.Text.Primitives.Tests
                 Convert.ToBase64String(Encoding.UTF8.GetBytes(unicodeString)),
                 Convert.ToBase64String(utf8Buffer));
 
+            int limit = GetIterationCount(charLength, Benchmark.InnerIterationCount);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    for (int i = 0; i < limit; i++)
                     {
                         if (!Utf8Encoder.TryEncode(characters, span, out consumed, out encodedBytes))
                         {
@@ -77,9 +86,7 @@ namespace System.Text.Primitives.Tests
         }
 
         [Benchmark(InnerIterationCount = 250)]
-        [InlineData(1000, 0x0000, 0x007F)]
-        [InlineData(1000, 0x0080, 0x07FF)]
-        [InlineData(1000, 0x0800, 0xFFFF)]
+        [MemberData(nameof(TestCases))]
         public void EncodingLenPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
@@ -88,11 +95,12 @@ namespace System.Text.Primitives.Tests
             Assert.True(Utf8Encoder.TryComputeEncodedBytes(characters, out bytesNeeded));
             Assert.Equal(Encoding.UTF8.GetByteCount(unicodeString), bytesNeeded);
 
+            int limit = GetIterationCount(charLength, Benchmark.InnerIterationCount);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    for (int i = 0; i < limit; i++)
                     {
                         if (!Utf8Encoder.TryComputeEncodedBytes(characters, out bytesNeeded))
                         {
@@ -104,19 +112,18 @@ namespace System.Text.Primitives.Tests
         }
 
         [Benchmark(InnerIterationCount = 250)]
-        [InlineData(1000, 0x0000, 0x007F)]
-        [InlineData(1000, 0x0080, 0x07FF)]
-        [InlineData(1000, 0x0800, 0xFFFF)]
+        [MemberData(nameof(TestCases))]
         public void EncodingLenPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
             int bytesNeeded = Encoding.UTF8.GetByteCount(unicodeString);
 
+            int limit = GetIterationCount(charLength, Benchmark.InnerIterationCount);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    for (int i = 0; i < limit; i++)
                     {
                         bytesNeeded = Encoding.UTF8.GetByteCount(unicodeString);
                     }
@@ -141,9 +148,7 @@ namespace System.Text.Primitives.Tests
         }
 
         [Benchmark(InnerIterationCount = 250)]
-        [InlineData(1000, 0x0000, 0x007F)]
-        [InlineData(1000, 0x0080, 0x07FF)]
-        [InlineData(1000, 0x0800, 0xFFFF)]
+        [MemberData(nameof(TestCases))]
         public void DecodingPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
@@ -151,11 +156,12 @@ namespace System.Text.Primitives.Tests
 
             var decoder = Encoding.UTF8;
             Assert.Equal(unicodeString, decoder.GetString(bytes));
+            int limit = GetIterationCount(charLength, Benchmark.InnerIterationCount);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i=0; i<Benchmark.InnerIterationCount; i++)
+                    for (int i=0; i<limit; i++)
                     {
                         decoder.GetString(bytes);
                     }
@@ -164,9 +170,7 @@ namespace System.Text.Primitives.Tests
         }
 
         [Benchmark(InnerIterationCount = 250)]
-        [InlineData(1000, 0x0000, 0x007F)]
-        [InlineData(1000, 0x0080, 0x07FF)]
-        [InlineData(1000, 0x0800, 0xFFFF)]
+        [MemberData(nameof(TestCases))]
         public void DecodingPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
         {
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
@@ -177,11 +181,12 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(bytes.Length, bytesConsumed);
             Assert.Equal(unicodeString, text);
 
+            int limit = GetIterationCount(charLength, Benchmark.InnerIterationCount);
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
-                    for (int i=0; i<Benchmark.InnerIterationCount; i++)
+                    for (int i=0; i<limit; i++)
                     {
                         if(!decoder.TryDecode(bytes, out text, out bytesConsumed))
                         {
@@ -192,6 +197,11 @@ namespace System.Text.Primitives.Tests
             }
         }
 
+        static int GetIterationCount(int charLength, long innerIterationCount)
+        {
+            int multiplier = 1000 / charLength;
+            return (int)(innerIterationCount * multiplier);
+        }
     }
 }
 
