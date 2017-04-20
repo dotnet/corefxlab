@@ -215,6 +215,24 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void FlushAsyncReturnsIsCancelOnCancelPendingFlushBeforeGetResult()
+        {
+            var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
+            writableBuffer.Advance(MaximumSizeHigh);
+
+            var flushAsync = writableBuffer.FlushAsync();
+
+            Assert.False(flushAsync.IsCompleted);
+            flushAsync.OnCompleted(() => {});
+
+            Pipe.Reader.Advance(Pipe.Reader.ReadAsync().GetResult().Buffer.End);
+            Pipe.Writer.CancelPendingFlush();
+
+            var result = flushAsync.GetResult();
+            Assert.True(result.IsCancelled);
+        }
+
+        [Fact]
         public async Task FlushAsyncCancellationE2E()
         {
             var cts = new CancellationTokenSource();

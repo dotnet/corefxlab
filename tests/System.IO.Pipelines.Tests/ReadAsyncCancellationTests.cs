@@ -338,6 +338,22 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void ReadAsyncReturnsIsCancelOnCancelPendingReadBeforeGetResult()
+        {
+            var awaitable = Pipe.Reader.ReadAsync();
+            Assert.False(awaitable.IsCompleted);
+            awaitable.OnCompleted(() => {});
+
+            Pipe.Writer.WriteAsync(new byte[] {});
+            Pipe.Reader.CancelPendingRead();
+
+            Assert.True(awaitable.IsCompleted);
+
+            var result = awaitable.GetResult();
+            Assert.True(result.IsCancelled);
+        }
+
+        [Fact]
         public async Task ReadAsyncCancellationE2E()
         {
             var cts = new CancellationTokenSource();
