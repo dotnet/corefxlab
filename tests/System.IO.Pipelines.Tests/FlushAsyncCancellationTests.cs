@@ -219,15 +219,17 @@ namespace System.IO.Pipelines.Tests
         {
             var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
             writableBuffer.Advance(MaximumSizeHigh);
-            var flushAsync = writableBuffer.FlushAsync();
+            var awaitable = writableBuffer.FlushAsync();
 
-            Assert.False(flushAsync.IsCompleted);
-            flushAsync.OnCompleted(() => {});
+            Assert.False(awaitable.IsCompleted);
+            awaitable.OnCompleted(() => {});
 
             Pipe.Reader.Advance(Pipe.Reader.ReadAsync().GetResult().Buffer.End);
             Pipe.Writer.CancelPendingFlush();
 
-            var result = flushAsync.GetResult();
+            Assert.True(awaitable.IsCompleted);
+
+            var result = awaitable.GetResult();
             Assert.True(result.IsCancelled);
         }
 
