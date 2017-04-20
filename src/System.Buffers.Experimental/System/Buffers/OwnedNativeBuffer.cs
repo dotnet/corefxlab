@@ -44,7 +44,7 @@ namespace System.Buffers
 
         protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
+            if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
             pointer = _pointer.ToPointer();
             return true;
         }
@@ -57,7 +57,7 @@ namespace System.Buffers
         {
             get
             {
-                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
+                if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
                 return new Span<byte>(_pointer.ToPointer(), _length);
             }
         }

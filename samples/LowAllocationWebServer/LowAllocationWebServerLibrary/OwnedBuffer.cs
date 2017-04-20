@@ -42,7 +42,7 @@ namespace Microsoft.Net.Http
         {
             get
             {
-                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
                 return _array;
             }
         }
@@ -128,7 +128,7 @@ namespace Microsoft.Net.Http
 
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
             buffer = new ArraySegment<byte>(_array);
             return true;
         }

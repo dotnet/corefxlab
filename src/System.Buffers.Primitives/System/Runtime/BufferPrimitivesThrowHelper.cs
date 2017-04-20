@@ -5,9 +5,9 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System
+namespace System.Runtime
 {
-    internal static class ThrowHelper
+    public static class BufferPrimitivesThrowHelper
     {
         public static void ThrowArgumentNullException(ExceptionArgument argument)
         {
@@ -106,7 +106,7 @@ namespace System
         }
     }
 
-    internal enum ExceptionArgument
+    public enum ExceptionArgument
     {
         pointer,
         array

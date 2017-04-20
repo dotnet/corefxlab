@@ -38,7 +38,7 @@ namespace System.Buffers
         {
             get
             {
-                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
+                if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
                 return _array;
             }
         }
@@ -75,14 +75,14 @@ namespace System.Buffers
 
         protected override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
+            if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
             buffer = new ArraySegment<T>(_array);
             return true;
         }
 
         protected override unsafe bool TryGetPointerInternal(out void* pointer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
+            if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
             pointer = _pointer.ToPointer();
             return true;
         }
