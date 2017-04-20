@@ -22,7 +22,7 @@ namespace System.IO.Pipelines
         {
             get
             {
-                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
+                if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
                 return new Span<byte>(_buffer.Array, _buffer.Offset, _buffer.Count);
             }
         }
@@ -44,7 +44,7 @@ namespace System.IO.Pipelines
 #endif
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
+            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
             buffer = _buffer;
             return true;
         }

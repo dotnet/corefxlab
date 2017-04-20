@@ -1,26 +1,21 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
-namespace System.Text 
+namespace System.Text
 {
     internal static class IntegerFormatter
     {
-        internal static bool TryFormatInt64(long value, byte numberOfBytes, Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
+        internal static bool TryFormatInt64(long value, ulong mask, Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
         {
-            Precondition.Require(numberOfBytes <= sizeof(long));
-
             if (value >= 0)
             {
-                return TryFormatUInt64(unchecked((ulong)value), numberOfBytes, buffer, out bytesWritten, format, encoder);
+                return TryFormatUInt64(unchecked((ulong)value), buffer, out bytesWritten, format, encoder);
             }
             else if (format.IsHexadecimal)
             {
-                ulong bitMask = GetBitMask(numberOfBytes);
-                return TryFormatUInt64(unchecked((ulong)value) & bitMask, numberOfBytes, buffer, out bytesWritten, format, encoder);
+                return TryFormatUInt64(unchecked((ulong)value) & mask, buffer, out bytesWritten, format, encoder);
             }
             else
             {
@@ -32,7 +27,7 @@ namespace System.Text
                 }
 
                 int digitBytes = 0;
-                if(!TryFormatUInt64(unchecked((ulong)-value), numberOfBytes, buffer.Slice(minusSignBytes), out digitBytes, format, encoder))
+                if(!TryFormatUInt64(unchecked((ulong)-value), buffer.Slice(minusSignBytes), out digitBytes, format, encoder))
                 {
                     bytesWritten = 0;
                     return false;
@@ -42,7 +37,7 @@ namespace System.Text
             }
         }
 
-        internal static bool TryFormatUInt64(ulong value, byte numberOfBytes, Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
+        internal static bool TryFormatUInt64(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format, TextEncoder encoder)
         {
             if(format.Symbol == 'g')
             {
@@ -65,7 +60,7 @@ namespace System.Text
                 return TryFormatDecimalInvariantCultureUtf8(value, buffer, out bytesWritten, format);
             }
 
-            return TryFormatDecimal(value, buffer, out bytesWritten, format, encoder);     
+            return TryFormatDecimal(value, buffer, out bytesWritten, format, encoder);
         }
 
         private static bool TryFormatDecimalInvariantCultureUtf16(ulong value, Span<byte> buffer, out int bytesWritten, TextFormat format)
@@ -110,7 +105,7 @@ namespace System.Text
                 ulong digit = value % 10UL;
                 value /= 10UL;
                 buffer[--index] = 0;
-                buffer[--index] = (byte)(digit + (ulong)'0'); 
+                buffer[--index] = (byte)(digit + (ulong)'0');
             }
 
             bytesWritten = bytesCount;
@@ -194,7 +189,7 @@ namespace System.Text
                 hexDigitsCount += 2;
                 valueToCount >>= 0x8;
             }
-            if (valueToCount > 0xF) { 
+            if (valueToCount > 0xF) {
                 hexDigitsCount++;
             }
 
@@ -478,25 +473,6 @@ namespace System.Text
             }
 
             return true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static ulong GetBitMask(byte numberOfBytes)
-        {
-            Precondition.Require(numberOfBytes == 1 || numberOfBytes == 2 || numberOfBytes == 4 || numberOfBytes == 8);
-
-            switch (numberOfBytes) {
-                case 1:
-                    return 0xFF;
-                case 2:
-                    return 0xFFFF;
-                case 4:
-                    return 0xFFFFFFFF;
-                case 8:
-                    return 0xFFFFFFFFFFFFFFFF;
-                default:
-                    throw new Exception(); // I would like this to fail fast.
-            }
         }
     }
 }

@@ -166,7 +166,7 @@ namespace System.IO.Pipelines
         {
             if (Length > destination.Length)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.destination);
+                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.destination);
             }
 
             foreach (var buffer in this)
@@ -221,7 +221,7 @@ namespace System.IO.Pipelines
         {
             if (data == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
             OwnedBuffer<byte> buffer = data;
@@ -235,7 +235,7 @@ namespace System.IO.Pipelines
         {
             if (data == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
             OwnedBuffer<byte> buffer = data;
@@ -249,17 +249,17 @@ namespace System.IO.Pipelines
         {
             if (data == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
+                PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
             if (offset < 0)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
+                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.offset);
             }
 
             if (length < 0 || length > data.Length - offset)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
             return CreateInternal(data, offset, length);

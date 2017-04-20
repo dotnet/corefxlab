@@ -331,7 +331,7 @@ namespace System.Buffers.Tests
         {
             get
             {
-                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(CustomMemory));
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(CustomMemory));
                 return _array;
             }
         }
@@ -343,7 +343,7 @@ namespace System.Buffers.Tests
 
         protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(CustomMemory));
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(CustomMemory));
             buffer = new ArraySegment<byte>(_array);
             return true;
         }
@@ -372,7 +372,7 @@ namespace System.Buffers.Tests
         {
             get
             {
-                if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(AutoDisposeMemory<T>));
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(AutoDisposeMemory<T>));
                 return _array;
             }
         }
@@ -389,7 +389,7 @@ namespace System.Buffers.Tests
 
         protected override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
-            if (IsDisposed) ThrowHelper.ThrowObjectDisposedException(nameof(AutoDisposeMemory<T>));
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(AutoDisposeMemory<T>));
             buffer = new ArraySegment<T>(_array);
             return true;
         }

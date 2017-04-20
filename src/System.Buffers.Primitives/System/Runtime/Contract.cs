@@ -12,7 +12,7 @@ namespace System.Runtime
         {
             if (!condition)
             {
-                ThrowHelper.ThrowArgumentException();
+                BufferPrimitivesThrowHelper.ThrowArgumentException();
             }
         }
 
@@ -21,7 +21,7 @@ namespace System.Runtime
         {
             if (obj == null)
             {
-                ThrowHelper.ThrowArgumentNullException(argument);
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(argument);
             }
         }
 
@@ -30,7 +30,7 @@ namespace System.Runtime
         {
             if (ptr == null)
             {
-                ThrowHelper.ThrowArgumentNullException(argument);
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(argument);
             }
         }
 
@@ -39,7 +39,7 @@ namespace System.Runtime
         {
             if (ptr0 != ptr1)
             {
-                ThrowHelper.ThrowArgumentException(ExceptionArgument.pointer);
+                BufferPrimitivesThrowHelper.ThrowArgumentException(ExceptionArgument.pointer);
             }
         }
 
@@ -48,7 +48,7 @@ namespace System.Runtime
         {
             if (n < 0)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException();
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
 
@@ -57,7 +57,7 @@ namespace System.Runtime
         {
             if ((uint)start >= length)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException();
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
         
@@ -66,7 +66,7 @@ namespace System.Runtime
         {
             if (start >= length)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException();
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
 
@@ -75,7 +75,7 @@ namespace System.Runtime
         {
             if ((uint)start > length)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException();
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
 
@@ -84,7 +84,7 @@ namespace System.Runtime
         {
             if (array == null && pointer == null)
             {
-                ThrowHelper.ThrowArgumentException();
+                BufferPrimitivesThrowHelper.ThrowArgumentException();
             }
         }
 
@@ -93,7 +93,7 @@ namespace System.Runtime
         {
             if (start > length)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException();
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
 
@@ -104,7 +104,7 @@ namespace System.Runtime
                 || length < 0
                 || (uint)(start + length) > existingLength)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException();
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
         
@@ -114,7 +114,7 @@ namespace System.Runtime
             if (start > existingLength
                 || (start + length) > existingLength)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException();
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException();
             }
         }
     }

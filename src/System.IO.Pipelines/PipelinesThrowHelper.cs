@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    internal class ThrowHelper
+    internal class PipelinesThrowHelper
     {
         public static void ThrowArgumentOutOfRangeException(int sourceLength, int offset)
         {
