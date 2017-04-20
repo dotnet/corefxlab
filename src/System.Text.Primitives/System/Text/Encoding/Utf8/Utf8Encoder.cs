@@ -51,43 +51,31 @@ namespace System.Text.Utf8
         /// <param name="bytesConsumed">On exit, contains the number of code points that were consumed from the UTF-16 character span.</param>
         /// <param name="charactersWritten">An output parameter to store the number of characters written to <paramref name="utf16"/></param>
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
-        public static unsafe bool TryDecode(ReadOnlySpan<byte> utf8, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
+        public static bool TryDecode(ReadOnlySpan<byte> utf8, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
         {
             bytesConsumed = 0;
             charactersWritten = 0;
 
             if (Vector.IsHardwareAccelerated)
             {
-                fixed (byte* outerUtf8Ptr = &utf8.DangerousGetPinnableReference())
-                fixed (char* outerUtf16Ptr = &utf16.DangerousGetPinnableReference())
-                {
-                    byte* utf8Ptr = outerUtf8Ptr;
-                    char* utf16Ptr = outerUtf16Ptr;
+                var utf8Vectors = utf8.NonPortableCast<byte, Vector<byte>>();
+                var utf16Vectors = utf16.NonPortableCast<char, Vector<char>>();
 
-                    int maxLoops = Math.Min(utf8.Length, utf16.Length) / Vector<byte>.Count;
-                    while (maxLoops != 0)
+                int asciiLoops = Math.Min(utf8.Length, utf16.Length) / Vector<byte>.Count, asciiLoop = 0, charOffset = 0;
+                Vector<byte> vec;
+                while (asciiLoops-- != 0 && ((vec = utf8Vectors[asciiLoop]) & _highBit) == Vector<byte>.Zero)
+                {
+                    // no high bits set - nice simple ASCII
+                    for(int i = 0; i < Vector<byte>.Count; i++)
                     {
-                        var vec = Unsafe.Read<Vector<byte>>(utf8Ptr);
-                        if ((vec & _highBit) == Vector<byte>.Zero)
-                        {
-                            // no high bits set - nice simple ASCII
-                            for(int i = 0; i < Vector<byte>.Count; i++)
-                            {
-                                // TODO: is there a nicer way to do this? perhaps load 4 bytes at a time into a ulong
-                                // and multiply by some magic number that does `AABBCCDD********` => `00AA00BB00CC00DD` ?
-                                // note: would also need to think about CPU endianness (is it 00AA ? or AA00 ?)
-                                *utf16Ptr++ = (char)*utf8Ptr++;
-                            }
-                            maxLoops--;
-                            bytesConsumed += Vector<byte>.Count;
-                            charactersWritten += Vector<byte>.Count;
-                        }
-                        else // TODO: add logic for "all 2-byte"? i.e. 110***** ********, etc?
-                        {
-                            break; // if we start seeing non-trivial mixed content, we're probably going to see more; give up
-                        }
+                        // TODO: replace with Widen when available
+                        utf16[charOffset] = (char)utf8[charOffset++];
                     }
+                    asciiLoop++;
                 }
+                int totalBytes = asciiLoop * Vector<byte>.Count;
+                bytesConsumed += totalBytes;
+                charactersWritten += totalBytes;
             }
             while (bytesConsumed < utf8.Length)
             {
@@ -234,41 +222,27 @@ namespace System.Text.Utf8
         /// <param name="utf8">The UTF-8 span to process.</param>
         /// <param name="length">An output parameter to capture the string length in UTF-16 characters.</param>
         /// <returns>True is successful in processing the entire UTF-8 sequence, else false.</returns>
-        internal static unsafe bool TryComputeStringLength(ReadOnlySpan<byte> utf8, out int length)
+        internal static bool TryComputeStringLength(ReadOnlySpan<byte> utf8, out int length)
         {
             length = 0;
             int i = 0;
             if(Vector.IsHardwareAccelerated)
             {
-                int remaining = utf8.Length;
-                fixed (byte* outerPtr = &utf8.DangerousGetPinnableReference())
+                var utf8Vectors = utf8.NonPortableCast<byte, Vector<byte>>();                
+                int asciiLoops = utf8.Length / Vector<byte>.Count, asciiLoop = 0;
+                Vector<byte> vec;
+                // note that .Count is detected as const by the JIT - not expensive to repeat
+                while (asciiLoops-- != 0 && ((vec = utf8Vectors[asciiLoop]) & _highBit) == Vector<byte>.Zero)
                 {
-                    byte* ptr = outerPtr;
-                    // note that .Count is detected as const by the JIT - not expensive to repeat
-                    while (remaining >= Vector<byte>.Count)
-                    {
-                        var vec = Unsafe.Read<Vector<byte>>(ptr);
-                        if((vec & _highBit) == Vector<byte>.Zero)
-                        {
-                            // no high bits set - nice simple ASCII
-                            i += Vector<byte>.Count;
-                            ptr += Vector<byte>.Count;
-                            remaining -= Vector<byte>.Count;
-                            length += Vector<byte>.Count;
-                        }
-                        else // TODO: add logic for "all 2-byte"? i.e. 110***** ********, etc?
-                        {
-                            break; // if we start seeing non-trivial mixed content, we're probably going to see more; give up
-                        }
-                    }
-                }                
+                    asciiLoop++;
+                }
+                int totalBytes = asciiLoop * Vector<byte>.Count;
+                i += totalBytes;
+                length += totalBytes;
             }
             for (; i < utf8.Length; /* Increment is based on consumed below */)
             {
-                uint codePoint;
-                int consumed;
-
-                if (!TryDecodeCodePoint(utf8, i, out codePoint, out consumed))
+                if (!TryDecodeCodePoint(utf8, i, out uint codePoint, out int consumed))
                     return false;
 
                 length += UnicodeHelpers.IsBmp(codePoint) ? 1 : 2;
@@ -308,34 +282,22 @@ namespace System.Text.Utf8
         /// <param name="utf16">A span containing a sequence of UTF-16 characters to encode.</param>
         /// <param name="bytesNeeded">An output parameter to hold the number of bytes needed for encoding.</param>
         /// <returns>Returns true is the span is capable of being fully encoded to UTF-8, else false.</returns>
-        internal static unsafe bool TryComputeEncodedBytes(ReadOnlySpan<char> utf16, out int bytesNeeded)
+        internal static bool TryComputeEncodedBytes(ReadOnlySpan<char> utf16, out int bytesNeeded)
         {
             int i = 0;
             bytesNeeded = 0;
             if (Vector.IsHardwareAccelerated)
             {
-                int remaining = utf16.Length;
-                fixed (char* outerPtr = &utf16.DangerousGetPinnableReference())
+                var utf16Vectors = utf16.NonPortableCast<char, Vector<ushort>>();
+                int asciiLoops = utf16.Length / Vector<ushort>.Count, asciiLoop = 0;
+                Vector<ushort> vec;
+                while(asciiLoops-- != 0 && ((vec = utf16Vectors[asciiLoop]) & _nonAscii) == Vector<ushort>.Zero)
                 {
-                    char* ptr = outerPtr;
-                    // note that .Count is detected as const by the JIT - not expensive to repeat
-                    while (remaining >= Vector<ushort>.Count)
-                    {
-                        var vec = Unsafe.Read<Vector<ushort>>(ptr);
-                        if ((vec & _nonAscii) == Vector<ushort>.Zero)
-                        {
-                            // no high bits set - nice simple ASCII
-                            i += Vector<ushort>.Count;
-                            ptr += Vector<ushort>.Count;
-                            remaining -= Vector<ushort>.Count;
-                            bytesNeeded += Vector<ushort>.Count;
-                        }
-                        else // TODO: add logic for "all 2-byte"?
-                        {
-                            break; // if we start seeing non-trivial mixed content, we're probably going to see more; give up
-                        }
-                    }
+                    asciiLoop++;
                 }
+                int totalBytes = asciiLoop * Vector<ushort>.Count;
+                bytesNeeded += totalBytes;
+                i += totalBytes;
             }
 
             // try? because Convert.ConvertToUtf32 can throw
