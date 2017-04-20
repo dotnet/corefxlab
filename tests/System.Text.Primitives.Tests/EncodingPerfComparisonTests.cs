@@ -57,6 +57,10 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(characters.Length, consumed);
             Assert.Equal(utf8Buffer.Length, encodedBytes);
 
+            Assert.Equal(
+                Convert.ToBase64String(Encoding.UTF8.GetBytes(unicodeString)),
+                Convert.ToBase64String(utf8Buffer));
+
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())

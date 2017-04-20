@@ -59,11 +59,9 @@ namespace System.Text.Utf8
             if (Vector.IsHardwareAccelerated)
             {
                 var utf8Vectors = utf8.NonPortableCast<byte, Vector<byte>>();
-                var utf16Vectors = utf16.NonPortableCast<char, Vector<char>>();
-
+                
                 int asciiLoops = Math.Min(utf8.Length, utf16.Length) / Vector<byte>.Count, asciiLoop = 0, charOffset = 0;
-                Vector<byte> vec;
-                while (asciiLoops-- != 0 && ((vec = utf8Vectors[asciiLoop]) & _highBit) == Vector<byte>.Zero)
+                while (asciiLoops-- != 0 && (utf8Vectors[asciiLoop] & _highBit) == Vector<byte>.Zero)
                 {
                     // no high bits set - nice simple ASCII
                     for(int i = 0; i < Vector<byte>.Count; i++)
@@ -226,13 +224,13 @@ namespace System.Text.Utf8
         {
             length = 0;
             int i = 0;
-            if(Vector.IsHardwareAccelerated)
+            if (Vector.IsHardwareAccelerated)
             {
                 var utf8Vectors = utf8.NonPortableCast<byte, Vector<byte>>();                
                 int asciiLoops = utf8.Length / Vector<byte>.Count, asciiLoop = 0;
-                Vector<byte> vec;
+                
                 // note that .Count is detected as const by the JIT - not expensive to repeat
-                while (asciiLoops-- != 0 && ((vec = utf8Vectors[asciiLoop]) & _highBit) == Vector<byte>.Zero)
+                while (asciiLoops-- != 0 && (utf8Vectors[asciiLoop] & _highBit) == Vector<byte>.Zero)
                 {
                     asciiLoop++;
                 }
@@ -290,8 +288,8 @@ namespace System.Text.Utf8
             {
                 var utf16Vectors = utf16.NonPortableCast<char, Vector<ushort>>();
                 int asciiLoops = utf16.Length / Vector<ushort>.Count, asciiLoop = 0;
-                Vector<ushort> vec;
-                while(asciiLoops-- != 0 && ((vec = utf16Vectors[asciiLoop]) & _nonAscii) == Vector<ushort>.Zero)
+                
+                while(asciiLoops-- != 0 && (utf16Vectors[asciiLoop] & _nonAscii) == Vector<ushort>.Zero)
                 {
                     asciiLoop++;
                 }
