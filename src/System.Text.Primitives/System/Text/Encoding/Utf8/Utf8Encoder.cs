@@ -58,14 +58,13 @@ namespace System.Text.Utf8
 
             if (Vector.IsHardwareAccelerated)
             {
-                int remaining = utf8.Length;
                 fixed (byte* outerUtf8Ptr = &utf8.DangerousGetPinnableReference())
                 fixed (char* outerUtf16Ptr = &utf16.DangerousGetPinnableReference())
                 {
                     byte* utf8Ptr = outerUtf8Ptr;
                     char* utf16Ptr = outerUtf16Ptr;
 
-                    int maxLoops = Math.Min(remaining, utf16.Length) / Vector<byte>.Count;
+                    int maxLoops = Math.Min(utf8.Length, utf16.Length) / Vector<byte>.Count;
                     while (maxLoops != 0)
                     {
                         var vec = Unsafe.Read<Vector<byte>>(utf8Ptr);
@@ -88,7 +87,6 @@ namespace System.Text.Utf8
                             break; // if we start seeing non-trivial mixed content, we're probably going to see more; give up
                         }
                     }
-                    remaining -= bytesConsumed; // we know this was zero, thankfully
                 }
             }
             while (bytesConsumed < utf8.Length)
