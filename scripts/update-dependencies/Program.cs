@@ -98,6 +98,7 @@ namespace Microsoft.Dotnet.Scripts
         {
             yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemCompilerServicesUnsafeVersion", "System.Runtime.CompilerServices.Unsafe");
             yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemMemoryVersion", "System.Memory");
+            yield return CreateRegexPropertyUpdater(config.DependencyFilePath, "SystemNumericsVectorsVersion", "System.Numerics.Vectors");
             yield return CreateFileUpdater(config.CLIVersionFilePath, "Microsoft.DotNet.Cli.Utils");
         }
 
