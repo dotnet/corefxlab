@@ -26,6 +26,9 @@ namespace System.IO.Pipelines
         /// </summary>
         void CancelPendingFlush();
 
+        /// <summary>
+        /// Registers callback that gets executed when reader side of pipe completes.
+        /// </summary>
         void OnReaderCompleted(Action<Exception> callback);
     }
 }

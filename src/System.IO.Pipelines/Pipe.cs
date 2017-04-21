@@ -491,6 +491,7 @@ namespace System.IO.Pipelines
                 Dispose();
             }
         }
+
         void IPipeReader.OnWriterCompleted(Action<Exception> callback)
         {
             lock (_sync)
