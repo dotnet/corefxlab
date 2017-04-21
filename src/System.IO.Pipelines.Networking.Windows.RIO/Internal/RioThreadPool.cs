@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 
         private IntPtr _socket;
         private RioThread[] _rioThreads;
-        
+
         public unsafe RioThreadPool(RegisteredIO rio, IntPtr socket, CancellationToken token)
         {
             _socket = socket;

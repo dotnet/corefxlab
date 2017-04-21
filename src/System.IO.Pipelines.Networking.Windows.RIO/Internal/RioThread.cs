@@ -35,7 +35,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
         public IntPtr CompletionPort => _completionPort;
 
         public PipeFactory PipeFactory => _factory;
-        
+
         public RioThread(int id, CancellationToken token, IntPtr completionPort, IntPtr completionQueue, RegisteredIO rio)
         {
             _id = id;
@@ -250,7 +250,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                 }
             }
         }
-        
+
         [DllImport(Kernel_32, SetLastError = true)]
         private static extern bool GetQueuedCompletionStatus(IntPtr CompletionPort, out uint lpNumberOfBytes, out uint lpCompletionKey, out NativeOverlapped* lpOverlapped, int dwMilliseconds);
 
