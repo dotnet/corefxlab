@@ -4,7 +4,7 @@
 using System.Runtime.CompilerServices;
 using System.Text.Utf16;
 using System.Diagnostics;
-
+using System.Numerics;
 namespace System.Text.Utf8
 {
     internal static class Utf8Encoder
@@ -56,6 +56,29 @@ namespace System.Text.Utf8
             bytesConsumed = 0;
             charactersWritten = 0;
 
+            if (Vector.IsHardwareAccelerated)
+            {
+                ref var utf8Vectors = ref utf8.NonPortableCast<byte, Vector<byte>>().DangerousGetPinnableReference();
+                ref var utf16Vectors = ref utf16.NonPortableCast<char, Vector<ushort>>().DangerousGetPinnableReference();
+
+                int asciiLoops = Math.Min(utf8.Length, utf16.Length) / Vector<byte>.Count, asciiLoop = 0, outputOffset = 0;
+                
+                while (asciiLoops-- != 0)
+                {
+                    ref Vector<byte> bytes = ref Unsafe.Add(ref utf8Vectors, asciiLoop);
+                    if((bytes & _highBit) != Vector<byte>.Zero)
+                    {
+                        break; // non-ASCII detected
+                    }
+                    //Vector.Widen(bytes, out Vector<ushort> left, out Vector<ushort> right);
+                    // widen directly into the character buffer
+                    Vector.Widen(bytes, out Unsafe.Add(ref utf16Vectors, outputOffset++), out Unsafe.Add(ref utf16Vectors, outputOffset++));
+                    asciiLoop++;
+                }
+                int totalBytes = asciiLoop * Vector<byte>.Count;
+                bytesConsumed += totalBytes;
+                charactersWritten += totalBytes;
+            }
             while (bytesConsumed < utf8.Length)
             {
                 uint codePoint;
@@ -181,6 +204,20 @@ namespace System.Text.Utf8
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Vector<byte> GetVector(byte vectorByte)
+        {
+#if !NETCOREAPP
+            // Vector<byte> .ctor doesn't become an intrinsic due to detection issue
+            // However this does cause it to become an intrinsic (with additional multiply and reg->reg copy)
+            // https://github.com/dotnet/coreclr/issues/7459#issuecomment-253965670
+            return Vector.AsVectorByte(new Vector<uint>(vectorByte * 0x01010101u));
+#else
+            return new Vector<byte>(vectorByte);
+#endif
+        }
+        static readonly Vector<byte> _highBit = GetVector(0x80);
+
         /// <summary>
         /// Compute the length of a string in UTF-16 characters for a given UTF-8 byte stream.
         /// </summary>
@@ -190,13 +227,24 @@ namespace System.Text.Utf8
         internal static bool TryComputeStringLength(ReadOnlySpan<byte> utf8, out int length)
         {
             length = 0;
-
-            for (int i = 0; i < utf8.Length; /* Increment is based on consumed below */)
+            int i = 0;
+            if (Vector.IsHardwareAccelerated)
             {
-                uint codePoint;
-                int consumed;
-
-                if (!TryDecodeCodePoint(utf8, i, out codePoint, out consumed))
+                ref var utf8Vectors = ref utf8.NonPortableCast<byte, Vector<byte>>().DangerousGetPinnableReference();
+                int asciiLoops = utf8.Length / Vector<byte>.Count, asciiLoop = 0;
+                
+                // note that .Count is detected as const by the JIT - not expensive to repeat
+                while (asciiLoops-- != 0 && (Unsafe.Add(ref utf8Vectors, asciiLoop) & _highBit) == Vector<byte>.Zero)
+                {
+                    asciiLoop++;
+                }
+                int totalBytes = asciiLoop * Vector<byte>.Count;
+                i += totalBytes;
+                length += totalBytes;
+            }
+            for (; i < utf8.Length; /* Increment is based on consumed below */)
+            {
+                if (!TryDecodeCodePoint(utf8, i, out uint codePoint, out int consumed))
                     return false;
 
                 length += UnicodeHelpers.IsBmp(codePoint) ? 1 : 2;
@@ -228,6 +276,8 @@ namespace System.Text.Utf8
 
         #region Encoding implementation
 
+        static readonly Vector<ushort> _nonAscii = new Vector<ushort>((ushort)0xFF80); // i.e. 11111111 10000000
+
         /// <summary>
         /// Computes the number of bytes necessary to encode a given UTF-16 sequence.
         /// </summary>
@@ -236,14 +286,28 @@ namespace System.Text.Utf8
         /// <returns>Returns true is the span is capable of being fully encoded to UTF-8, else false.</returns>
         internal static bool TryComputeEncodedBytes(ReadOnlySpan<char> utf16, out int bytesNeeded)
         {
+            int i = 0;
+            bytesNeeded = 0;
+            if (Vector.IsHardwareAccelerated)
+            {
+                ref var utf16Vectors = ref utf16.NonPortableCast<char, Vector<ushort>>().DangerousGetPinnableReference();
+
+                int asciiLoops = utf16.Length / Vector<ushort>.Count, asciiLoop = 0;
+                while(asciiLoops-- != 0 && (Unsafe.Add(ref utf16Vectors, asciiLoop) & _nonAscii) == Vector<ushort>.Zero)
+                {
+                    asciiLoop++;
+                }
+                int totalBytes = asciiLoop * Vector<ushort>.Count;
+                bytesNeeded += totalBytes;
+                i += totalBytes;
+            }
+
             // try? because Convert.ConvertToUtf32 can throw
             // if the high/low surrogates aren't valid; no point
             // running all the tests twice per code-point
             try
             {
-                bytesNeeded = 0;
-
-                for (int i = 0; i < utf16.Length; i++)
+                for (; i < utf16.Length; i++)
                 {
                     var ch = utf16[i];
 
