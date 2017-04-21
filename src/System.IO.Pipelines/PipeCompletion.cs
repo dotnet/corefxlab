@@ -22,16 +22,19 @@ namespace System.IO.Pipelines
 #if COMPLETION_LOCATION_TRACKING
             _completionLocation = Environment.StackTrace;
 #endif
-            if (_exception != null)
+            if (_exception == null)
             {
                 // Set the exception object to the exception passed in or a sentinel value
                 _exception = exception ?? _completedNoException;
 
                 var callback = _callback;
-                _callback = null;
+                if (callback != null)
+                {
+                    _callback = null;
 
-                // TODO: Allocation
-                return () => callback(exception);
+                    // TODO: Allocation
+                    return () => callback(exception);
+                }
             }
 
             return null;

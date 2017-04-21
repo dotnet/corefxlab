@@ -42,6 +42,7 @@ namespace System.IO.Pipelines.Tests
             {
                 callbackRan = true;
             });
+            pipe.Writer.Complete();
 
             Assert.True(callbackRan);
             Assert.Equal(1, scheduler.CallCount);
@@ -101,6 +102,33 @@ namespace System.IO.Pipelines.Tests
                 continuationRan = true;
             });
             pipe.Writer.Complete();
+
+            Assert.True(callbackRan);
+        }
+
+        [Fact]
+        public void OnReaderCompletedRanBeforeFlushContinuation()
+        {
+            var callbackRan = false;
+            var continuationRan = false;
+            var pipe = _pipeFactory.Create(new PipeOptions() { MaximumSizeHigh = 5});
+
+            pipe.Writer.OnReaderCompleted(exception =>
+            {
+                callbackRan = true;
+                Assert.False(continuationRan);
+            });
+
+            var buffer = pipe.Writer.Alloc(10);
+            buffer.Advance(10);
+            var awaiter = buffer.FlushAsync();
+
+            Assert.False(awaiter.IsCompleted);
+            awaiter.OnCompleted(() =>
+            {
+                continuationRan = true;
+            });
+            pipe.Reader.Complete();
 
             Assert.True(callbackRan);
         }
