@@ -378,8 +378,6 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task FastPathIndexOfAcrossBlocks()
         {
-            var vecUpperR = new Vector<byte>((byte)'R');
-
             const int blockSize = 4032;
             //     block 1       ->    block2
             // [padding..hello]  ->  [  world   ]

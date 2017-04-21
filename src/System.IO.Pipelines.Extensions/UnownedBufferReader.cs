@@ -243,6 +243,11 @@ namespace System.IO.Pipelines
             }
         }
 
+        public void OnWriterCompleted(Action<Exception> callback)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>

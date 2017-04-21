@@ -13,16 +13,45 @@ namespace System.IO.Pipelines
 #if COMPLETION_LOCATION_TRACKING
         private string _completionLocation;
 #endif
+        private Action<Exception> _callback;
 
         public bool IsCompleted => _exception != null;
 
-        public void TryComplete(Exception exception = null)
+        public Action TryComplete(Exception exception = null)
         {
 #if COMPLETION_LOCATION_TRACKING
             _completionLocation = Environment.StackTrace;
 #endif
-            // Set the exception object to the exception passed in or a sentinel value
-            Interlocked.CompareExchange(ref _exception, exception ?? _completedNoException, null);
+            if (_exception != null)
+            {
+                // Set the exception object to the exception passed in or a sentinel value
+                _exception = exception ?? _completedNoException;
+
+                var callback = _callback;
+                _callback = null;
+
+                // TODO: Allocation
+                return () => callback(exception);
+            }
+
+            return null;
+        }
+
+        public void AttachCallback(Action<Exception> callback)
+        {
+            if (_callback == null)
+            {
+                _callback = callback;
+            }
+            else
+            {
+                var oldCallback = _callback;
+                _callback = exception =>
+                {
+                    oldCallback(exception);
+                    callback(exception);
+                };
+            }
         }
 
         public bool IsCompletedOrThrow()

@@ -619,6 +619,11 @@ namespace System.IO.Pipelines.Tests
                 _pipe.Reader.Complete(exception);
             }
 
+            public void OnWriterCompleted(Action<Exception> callback)
+            {
+                throw new NotImplementedException();
+            }
+
             public override void Flush()
             {
 

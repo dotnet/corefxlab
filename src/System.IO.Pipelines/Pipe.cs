@@ -388,15 +388,17 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter, _writingState.Location);
             }
 
-            _writerCompletion.TryComplete(exception);
 
             Action awaitable;
+            Action callback;
 
             lock (_sync)
             {
+                callback = _writerCompletion.TryComplete(exception);
                 awaitable = _readerAwaitable.Complete();
             }
 
+            TrySchedule(_readerScheduler, callback);
             TrySchedule(_readerScheduler, awaitable);
 
             if (_readerCompletion.IsCompleted)
@@ -472,18 +474,28 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveReader, _readingState.Location);
             }
 
-            _readerCompletion.TryComplete(exception);
-
             Action awaitable;
+            Action callback;
+
             lock (_sync)
             {
+                callback = _readerCompletion.TryComplete(exception);
                 awaitable = _writerAwaitable.Complete();
             }
+
+            TrySchedule(_writerScheduler, callback);
             TrySchedule(_writerScheduler, awaitable);
 
             if (_writerCompletion.IsCompleted)
             {
                 Dispose();
+            }
+        }
+        void IPipeReader.OnWriterCompleted(Action<Exception> callback)
+        {
+            lock (_sync)
+            {
+                _writerCompletion.AttachCallback(callback);
             }
         }
 
@@ -511,6 +523,11 @@ namespace System.IO.Pipelines
                 awaitable = _writerAwaitable.Cancel();
             }
             TrySchedule(_writerScheduler, awaitable);
+        }
+
+        void IPipeWriter.OnReaderCompleted(Action<Exception> callback)
+        {
+            _readerCompletion.AttachCallback(callback);
         }
 
         ReadableBufferAwaitable IPipeReader.ReadAsync(CancellationToken token)

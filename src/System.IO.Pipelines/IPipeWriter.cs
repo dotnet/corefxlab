@@ -25,5 +25,7 @@ namespace System.IO.Pipelines
         /// Cancel to currently pending or next call to <see cref="ReadAsync"/> if none is pending, without completing the <see cref="IPipeReader"/>.
         /// </summary>
         void CancelPendingFlush();
+
+        void OnReaderCompleted(Action<Exception> callback);
     }
 }
