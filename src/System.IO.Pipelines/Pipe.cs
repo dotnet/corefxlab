@@ -527,7 +527,10 @@ namespace System.IO.Pipelines
 
         void IPipeWriter.OnReaderCompleted(Action<Exception> callback)
         {
-            _readerCompletion.AttachCallback(callback);
+            lock (_sync)
+            {
+                _readerCompletion.AttachCallback(callback);
+            }
         }
 
         ReadableBufferAwaitable IPipeReader.ReadAsync(CancellationToken token)
@@ -539,7 +542,7 @@ namespace System.IO.Pipelines
             }
             lock (_sync)
             {
-                cancellationTokenRegistration= _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
+                cancellationTokenRegistration = _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
             }
             cancellationTokenRegistration.Dispose();
             return new ReadableBufferAwaitable(this);
