@@ -5,6 +5,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.IO.Pipelines.Networking.Windows.RIO.Internal.Winsock;
+using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 {
@@ -19,7 +20,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
 
         private IntPtr _socket;
         private RioThread[] _rioThreads;
-
+        
         public unsafe RioThreadPool(RegisteredIO rio, IntPtr socket, CancellationToken token)
         {
             _socket = socket;
@@ -72,6 +73,8 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             {
                 var thread = _rioThreads[i];
                 thread.Start();
+                
+                thread.Ready.Wait();
             }
         }
 

@@ -45,14 +45,14 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
             _connectionId = connectionId;
             _rio = rio;
             _rioThread = rioThread;
-
+            
             _input = rioThread.PipeFactory.Create();
             _output = rioThread.PipeFactory.Create();
 
             _requestQueue = requestQueue;
-
+            
             rioThread.AddConnection(connectionId, this);
-
+            
             ProcessReceives();
             _sendTask = ProcessSends();
         }
@@ -64,7 +64,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         {
             _buffer = _input.Writer.Alloc(2048);
             var receiveBufferSeg = _rioThread.GetSegmentFromMemory(_buffer.Buffer);
-
+            
             if (!_rio.RioReceive(_requestQueue, ref receiveBufferSeg, 1, RioReceiveFlags.None, 0))
             {
                 ThrowError(ErrorType.Receive);
@@ -152,7 +152,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO
         {
             var sendCorrelation = flushSends ? CompleteSendCorrelation() : PartialSendCorrelation;
             var sendFlags = flushSends ? MessageEnd : MessagePart;
-
+            
             if (!_rio.Send(_requestQueue, ref segment, 1, sendFlags, sendCorrelation))
             {
                 ThrowError(ErrorType.Send);
