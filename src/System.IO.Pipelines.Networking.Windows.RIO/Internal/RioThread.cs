@@ -48,17 +48,16 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             var memoryPool = new MemoryPool();
             memoryPool.RegisterSlabAllocationCallback((slab) => OnSlabAllocated(slab));
             memoryPool.RegisterSlabDeallocationCallback((slab) => OnSlabDeallocated(slab));
-
             _factory = new PipeFactory(memoryPool);
+
+            _completionPort = completionPort;
+            _completionQueue = completionQueue;
 
             _completionThread = new Thread(RunCompletions)
             {
                 Name = $"RIO Completion Thread {id:00}",
                 IsBackground = true
             };
-
-            _completionPort = completionPort;
-            _completionQueue = completionQueue;
         }
 
         public void AddConnection(long key, RioTcpConnection value)
