@@ -20,7 +20,7 @@ namespace System.Text.Primitives.Tests
                    select new object[] { len, range.Item1, range.Item2 };
         }
 
-        [Benchmark(InnerIterationCount = 250)]
+        [Benchmark(InnerIterationCount = 1000)]
         [MemberData(nameof(TestCases))]
         public void EncodingPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
         {
@@ -49,7 +49,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 250)]
+        [Benchmark(InnerIterationCount = 1000)]
         [MemberData(nameof(TestCases))]
         public void EncodingPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
         {
@@ -85,7 +85,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 250)]
+        [Benchmark(InnerIterationCount = 1000)]
         [MemberData(nameof(TestCases))]
         public void EncodingLenPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
         {
@@ -111,7 +111,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 250)]
+        [Benchmark(InnerIterationCount = 1000)]
         [MemberData(nameof(TestCases))]
         public void EncodingLenPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
         {
@@ -147,7 +147,7 @@ namespace System.Text.Primitives.Tests
             return plainText.ToString();
         }
 
-        [Benchmark(InnerIterationCount = 250)]
+        [Benchmark(InnerIterationCount = 1000)]
         [MemberData(nameof(TestCases))]
         public void DecodingPerformanceTestUsingCoreCLR(int charLength, int minCodePoint, int maxCodePoint)
         {
@@ -169,7 +169,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 250)]
+        [Benchmark(InnerIterationCount = 1000)]
         [MemberData(nameof(TestCases))]
         public void DecodingPerformanceTestUsingCorefxlab(int charLength, int minCodePoint, int maxCodePoint)
         {
