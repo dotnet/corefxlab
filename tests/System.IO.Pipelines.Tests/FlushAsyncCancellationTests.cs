@@ -215,6 +215,44 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void FlushAsyncReturnsIsCancelOnCancelPendingFlushBeforeGetResult()
+        {
+            var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
+            writableBuffer.Advance(MaximumSizeHigh);
+            var awaitable = writableBuffer.FlushAsync();
+
+            Assert.False(awaitable.IsCompleted);
+            awaitable.OnCompleted(() => { });
+
+            Pipe.Reader.Advance(Pipe.Reader.ReadAsync().GetResult().Buffer.End);
+            Pipe.Writer.CancelPendingFlush();
+
+            Assert.True(awaitable.IsCompleted);
+
+            var result = awaitable.GetResult();
+            Assert.True(result.IsCancelled);
+        }
+
+        [Fact]
+        public void FlushAsyncReturnsIsCancelOnCancelPendingFlushAfterGetResult()
+        {
+            var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
+            writableBuffer.Advance(MaximumSizeHigh);
+            var awaitable = writableBuffer.FlushAsync();
+
+            Assert.False(awaitable.IsCompleted);
+            awaitable.OnCompleted(() => { });
+
+            Pipe.Writer.CancelPendingFlush();
+            Pipe.Reader.Advance(Pipe.Reader.ReadAsync().GetResult().Buffer.End);
+
+            Assert.True(awaitable.IsCompleted);
+
+            var result = awaitable.GetResult();
+            Assert.True(result.IsCancelled);
+        }
+
+        [Fact]
         public async Task FlushAsyncCancellationE2E()
         {
             var cts = new CancellationTokenSource();
