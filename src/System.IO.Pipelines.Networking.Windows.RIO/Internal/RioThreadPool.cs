@@ -73,8 +73,6 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             {
                 var thread = _rioThreads[i];
                 thread.Start();
-                
-                thread.Ready.Wait();
             }
         }
 

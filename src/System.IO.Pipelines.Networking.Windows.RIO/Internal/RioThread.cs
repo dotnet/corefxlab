@@ -23,7 +23,6 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
         private readonly IntPtr _completionQueue;
         private readonly Thread _completionThread;
         private readonly CancellationToken _token;
-        private TaskCompletionSource<object> _ready;
 
         private PipeFactory _factory;
         private Dictionary<long, RioTcpConnection> _connections;
@@ -36,32 +35,27 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
         public IntPtr CompletionPort => _completionPort;
 
         public PipeFactory PipeFactory => _factory;
-
-        public Task Ready => _ready.Task;
-
+        
         public RioThread(int id, CancellationToken token, IntPtr completionPort, IntPtr completionQueue, RegisteredIO rio)
         {
             _id = id;
             _rio = rio;
             _token = token;
-            _ready = new TaskCompletionSource<object>();
 
-            if (CpuInfo.LogicalProcessorCount > CpuInfo.PhysicalCoreCount)
+            _connections = new Dictionary<long, RioTcpConnection>();
+            _bufferIdMappings = new List<BufferMapping>();
+
+            var memoryPool = new MemoryPool();
+            memoryPool.RegisterSlabAllocationCallback((slab) => OnSlabAllocated(slab));
+            memoryPool.RegisterSlabDeallocationCallback((slab) => OnSlabDeallocated(slab));
+
+            _factory = new PipeFactory(memoryPool);
+
+            _completionThread = new Thread(RunCompletions)
             {
-                _completionThread = new Thread(RunLogicalCompletions)
-                {
-                    Name = $"RIO Completion Thread {id:00}",
-                    IsBackground = true
-                };
-            }
-            else
-            {
-                _completionThread = new Thread(RunPhysicalCompletions)
-                {
-                    Name = $"RIO Completion Thread {id:00}",
-                    IsBackground = true
-                };
-            }
+                Name = $"RIO Completion Thread {id:00}",
+                IsBackground = true
+            };
 
             _completionPort = completionPort;
             _completionQueue = completionQueue;
@@ -166,7 +160,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             _completionThread.Start(this);
         }
 
-        private static void RunLogicalCompletions(object state)
+        private static void RunCompletions(object state)
         {
             var thread = ((RioThread)state);
 #if NET451
@@ -175,54 +169,15 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             var nativeThread = GetCurrentThread();
             var affinity = GetAffinity(thread._id);
             nativeThread.ProcessorAffinity = new IntPtr((long)affinity);
-
-            thread._connections = new Dictionary<long, RioTcpConnection>();
-            thread._bufferIdMappings = new List<BufferMapping>();
-
-            var memoryPool = new MemoryPool();
-            memoryPool.RegisterSlabAllocationCallback((slab) => thread.OnSlabAllocated(slab));
-            memoryPool.RegisterSlabDeallocationCallback((slab) => thread.OnSlabDeallocated(slab));
             
-            thread._factory = new PipeFactory(memoryPool);
-
-            thread._ready.TrySetResult(null);
-
-            thread.ProcessLogicalCompletions();
-
-#if NET451
-            Thread.EndThreadAffinity();
-#endif
-        }
-
-        private static void RunPhysicalCompletions(object state)
-        {
-
-            var thread = ((RioThread)state);
-#if NET451
-            Thread.BeginThreadAffinity();
-#endif
-            var nativeThread = GetCurrentThread();
-            var affinity = GetAffinity(thread._id);
-            nativeThread.ProcessorAffinity = new IntPtr((long)affinity);
-
-            thread._connections = new Dictionary<long, RioTcpConnection>();
-            thread._bufferIdMappings = new List<BufferMapping>();
-
-            var memoryPool = new MemoryPool();
-            memoryPool.RegisterSlabAllocationCallback((slab) => thread.OnSlabAllocated(slab));
-            memoryPool.RegisterSlabDeallocationCallback((slab) => thread.OnSlabDeallocated(slab));
-            thread._factory = new PipeFactory(memoryPool);
-
-            thread._ready.TrySetResult(null);
-
-            thread.ProcessPhysicalCompletions();
+            thread.ProcessCompletions();
 
 #if NET451
             Thread.EndThreadAffinity();
 #endif
         }
         
-        private void ProcessLogicalCompletions()
+        private void ProcessCompletions()
         {
             RioRequestResult* results = stackalloc RioRequestResult[maxResults];
 
@@ -296,56 +251,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
                 }
             }
         }
-
-        private void ProcessPhysicalCompletions()
-        {
-            RioRequestResult* results = stackalloc RioRequestResult[maxResults];
-            var connectionsToSignal = new RioTcpConnection[maxResults];
-
-            _rio.Notify(ReceiveCompletionQueue);
-            while (!_token.IsCancellationRequested)
-            {
-                NativeOverlapped* overlapped;
-                uint bytes, key;
-                var success = GetQueuedCompletionStatus(CompletionPort, out bytes, out key, out overlapped, -1);
-                if (success)
-                {
-                    var activatedNotify = false;
-                    while (true)
-                    {
-                        var count = _rio.DequeueCompletion(ReceiveCompletionQueue, (IntPtr)results, maxResults);
-                        if (count == 0)
-                        {
-                            if (!activatedNotify)
-                            {
-                                activatedNotify = true;
-                                _rio.Notify(ReceiveCompletionQueue);
-                                continue;
-                            }
-
-                            break;
-                        }
-
-                        Complete(results, count);
-                        
-                        if (!activatedNotify)
-                        {
-                            activatedNotify = true;
-                            _rio.Notify(ReceiveCompletionQueue);
-                        }
-                    }
-                }
-                else
-                {
-                    var error = GetLastError();
-                    if (error != 258)
-                    {
-                        throw new Exception($"ERROR: GetQueuedCompletionStatusEx returned {error}");
-                    }
-                }
-            }
-        }
-
+        
         [DllImport(Kernel_32, SetLastError = true)]
         private static extern bool GetQueuedCompletionStatus(IntPtr CompletionPort, out uint lpNumberOfBytes, out uint lpCompletionKey, out NativeOverlapped* lpOverlapped, int dwMilliseconds);
 
