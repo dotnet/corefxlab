@@ -41,7 +41,7 @@ public class PerfHarness
             Console.Error.WriteLine(ex.ToString());
             if(ex is System.Runtime.InteropServices.COMException)
             {
-                Console.Error.WriteLine("Please check you have admin privileges");
+                Console.Error.WriteLine("Please check if you have admin privileges");
             }
             return -1;
         }
