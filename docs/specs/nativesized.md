@@ -36,7 +36,7 @@ IntPtr, not being a real integer, makes such processing often tedious and error 
 ### Representing Sizes
 
 System.Runtime.InteropServices.AllocHGlobal(IntPtr) has IntPtr argument, 
-even though it has nothing to do with pointers. It should have been native int instead.
+even though it has nothing to do with pointers. It should have been nint instead.
 
 ## Requirements
 
