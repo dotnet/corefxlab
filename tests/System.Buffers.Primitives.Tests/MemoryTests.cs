@@ -316,7 +316,7 @@ namespace System.Buffers.Tests
         }
     }
 
-    class CustomMemory : OwnedBuffer<byte>
+    class CustomMemory : ReferenceCountedBuffer<byte>
     {
         public CustomMemory()
         {
@@ -358,7 +358,7 @@ namespace System.Buffers.Tests
         byte[] _array;
     }
 
-    class AutoDisposeMemory<T> : OwnedBuffer<T>
+    class AutoDisposeMemory<T> : ReferenceCountedBuffer<T>
     {
         public AutoDisposeMemory(T[] array)
         {

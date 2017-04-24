@@ -7,7 +7,7 @@ namespace System.Buffers.Pools
 {
     public unsafe sealed partial class NativeBufferPool : BufferPool
     {
-        internal sealed class BufferManager : OwnedBuffer<byte>
+        internal sealed class BufferManager : ReferenceCountedBuffer<byte>
         {
             public BufferManager(NativeBufferPool pool, IntPtr memory, int length)
             {

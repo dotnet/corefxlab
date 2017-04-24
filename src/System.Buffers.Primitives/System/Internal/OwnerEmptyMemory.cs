@@ -12,21 +12,13 @@ namespace System.Buffers.Internal
 
         public override int Length => s_empty.Length;
 
-        public override Span<T> Span
-        {
-            get
-            {
-                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnerEmptyMemory<T>));
-                return s_empty;
-            }
-        }
+        public override Span<T> Span => s_empty;
 
         protected override void Dispose(bool disposing)
         {}
 
         protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
-            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnerEmptyMemory<T>));
             buffer = new ArraySegment<T>(s_empty);
             return true;
         }
@@ -36,5 +28,9 @@ namespace System.Buffers.Internal
             pointer = null;
             return false;
         }
+
+        public override void AddReference() { }
+        public override void Release() { }
+        public override bool HasOutstandingReferences => false;
     }
 }
