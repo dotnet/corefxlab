@@ -9,6 +9,7 @@ namespace System.Buffers
     public abstract class ReferenceCountedBuffer<T> : OwnedBuffer<T>
     {
         int _referenceCount;
+        bool _disposed;
 
         public override void AddReference()
         {
@@ -23,5 +24,16 @@ namespace System.Buffers
         }
 
         public override bool HasOutstandingReferences => _referenceCount > 0;
+
+        protected virtual void OnZeroReferences()
+        {
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _disposed = disposing;
+        }
+
+        public override bool IsDisposed => _disposed;
     }
 }

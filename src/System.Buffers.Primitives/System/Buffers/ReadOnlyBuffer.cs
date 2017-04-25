@@ -30,7 +30,7 @@ namespace System.Buffers
             return owner.Buffer;
         }
 
-        public static ReadOnlyBuffer<T> Empty { get; } = Internal.OwnerEmptyMemory<T>.Shared.Buffer;
+        public static ReadOnlyBuffer<T> Empty { get; } = Internal.OwnedEmptyBuffer<T>.Shared.Buffer;
 
         public int Length => _length;
 
