@@ -9,7 +9,7 @@ namespace System.IO.Pipelines
     /// <summary>
     /// Represents a buffer that is owned by an external component.
     /// </summary>
-    public class UnownedBuffer : OwnedBuffer<byte>
+    public class UnownedBuffer : ReferenceCountedBuffer<byte>
     {
         public UnownedBuffer(ArraySegment<byte> buffer)
         {

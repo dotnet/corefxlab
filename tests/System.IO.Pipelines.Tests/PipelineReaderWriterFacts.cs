@@ -532,7 +532,7 @@ namespace System.IO.Pipelines.Tests
 
             }
 
-            private class DisposeTrackingOwnedMemory : OwnedBuffer<byte>
+            private class DisposeTrackingOwnedMemory : ReferenceCountedBuffer<byte>
             {
                 public DisposeTrackingOwnedMemory(byte[] array)
                 {
