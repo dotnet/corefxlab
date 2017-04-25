@@ -243,7 +243,7 @@ namespace System.IO.Pipelines
             }
         }
 
-        public void OnWriterCompleted(Action<Exception> callback)
+        public void OnWriterCompleted(Action<Exception, object> callback, object state)
         {
             throw new NotImplementedException();
         }

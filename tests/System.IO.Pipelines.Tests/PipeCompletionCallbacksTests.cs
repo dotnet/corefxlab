@@ -25,10 +25,10 @@ namespace System.IO.Pipelines.Tests
             var callbackRan = false;
             var scheduler = new CallCountScheduler();
             var pipe = _pipeFactory.Create(new PipeOptions() { WriterScheduler = scheduler });
-            pipe.Writer.OnReaderCompleted(exception =>
+            pipe.Writer.OnReaderCompleted((exception, state) =>
             {
                 callbackRan = true;
-            });
+            }, null);
             pipe.Reader.Complete();
 
             Assert.True(callbackRan);
@@ -41,10 +41,10 @@ namespace System.IO.Pipelines.Tests
             var callbackRan = false;
             var scheduler = new CallCountScheduler();
             var pipe = _pipeFactory.Create(new PipeOptions() { ReaderScheduler = scheduler });
-            pipe.Reader.OnWriterCompleted(exception =>
+            pipe.Reader.OnWriterCompleted((exception, state) =>
             {
                 callbackRan = true;
-            });
+            }, null);
             pipe.Writer.Complete();
 
             Assert.True(callbackRan);
@@ -58,11 +58,11 @@ namespace System.IO.Pipelines.Tests
             var pipe = _pipeFactory.Create();
             var readerException = new Exception();
 
-            pipe.Reader.OnWriterCompleted(exception =>
+            pipe.Reader.OnWriterCompleted((exception, state) =>
             {
                 callbackRan = true;
                 Assert.Same(readerException, exception);
-            });
+            }, null);
             pipe.Writer.Complete(readerException);
 
             Assert.True(callbackRan);
@@ -75,11 +75,11 @@ namespace System.IO.Pipelines.Tests
             var pipe = _pipeFactory.Create();
             var readerException = new Exception();
 
-            pipe.Writer.OnReaderCompleted(exception =>
+            pipe.Writer.OnReaderCompleted((exception, state) =>
             {
                 callbackRan = true;
                 Assert.Same(readerException, exception);
-            });
+            }, null);
             pipe.Reader.Complete(readerException);
 
             Assert.True(callbackRan);
@@ -92,11 +92,11 @@ namespace System.IO.Pipelines.Tests
             var continuationRan = false;
             var pipe = _pipeFactory.Create();
 
-            pipe.Reader.OnWriterCompleted(exception =>
+            pipe.Reader.OnWriterCompleted((exception, state) =>
             {
                 callbackRan = true;
                 Assert.False(continuationRan);
-            });
+            }, null);
 
             var awaiter = pipe.Reader.ReadAsync();
             Assert.False(awaiter.IsCompleted);
@@ -116,11 +116,11 @@ namespace System.IO.Pipelines.Tests
             var continuationRan = false;
             var pipe = _pipeFactory.Create(new PipeOptions() { MaximumSizeHigh = 5});
 
-            pipe.Writer.OnReaderCompleted(exception =>
+            pipe.Writer.OnReaderCompleted((exception, state) =>
             {
                 callbackRan = true;
                 Assert.False(continuationRan);
-            });
+            }, null);
 
             var buffer = pipe.Writer.Alloc(10);
             buffer.Advance(10);
@@ -141,13 +141,11 @@ namespace System.IO.Pipelines.Tests
         {
             public int CallCount { get; set; }
 
-            public void Schedule(Action action)
+            public void Schedule(Action<object> action, object state)
             {
                 CallCount++;
-                action();
+                action(state);
             }
-
-
         }
     }
 }

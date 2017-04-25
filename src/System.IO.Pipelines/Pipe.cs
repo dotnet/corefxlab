@@ -16,6 +16,9 @@ namespace System.IO.Pipelines
     {
         private static readonly Action<object> _signalReaderAwaitable = state => ((Pipe)state).ReaderCancellationRequested();
         private static readonly Action<object> _signalWriterAwaitable = state => ((Pipe)state).WriterCancellationRequested();
+        private static readonly Action<object> _callReaderCompletedCallbacks = state => ((Pipe)state)._readerCompletion.InvokeCallbacks();
+        private static readonly Action<object> _callWriterCompletedCallbacks = state => ((Pipe)state)._writerCompletion.InvokeCallbacks();
+        private static readonly Action<object> _scheduleContinuation = o => ((Action)o)();
 
         // This sync objects protects the following state:
         // 1. _commitHead & _commitHeadIndex
@@ -90,15 +93,14 @@ namespace System.IO.Pipelines
             _maximumSizeLow = options.MaximumSizeLow;
             _readerScheduler = options.ReaderScheduler ?? InlineScheduler.Default;
             _writerScheduler = options.WriterScheduler ?? InlineScheduler.Default;
-            ResetState();
+            _readerAwaitable = new PipeAwaitable(completed: false);
+            _writerAwaitable = new PipeAwaitable(completed: true);
         }
 
         private void ResetState()
         {
-            _readerAwaitable = new PipeAwaitable(completed: false);
-            _writerAwaitable = new PipeAwaitable(completed: true);
-            _readerCompletion = default(PipeCompletion);
-            _writerCompletion = default(PipeCompletion);
+            _readerCompletion.Reset();
+            _writerCompletion.Reset();
             _commitHeadIndex = 0;
             _currentWriteLength = 0;
             _length = 0;
@@ -388,17 +390,15 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteWriterActiveWriter, _writingState.Location);
             }
 
-
             Action awaitable;
-            Action callback;
 
             lock (_sync)
             {
-                callback = _writerCompletion.TryComplete(exception);
+                _writerCompletion.TryComplete(exception);
                 awaitable = _readerAwaitable.Complete();
             }
 
-            TrySchedule(_readerScheduler, callback);
+            TrySchedule(_readerScheduler, _callWriterCompletedCallbacks, this);
             TrySchedule(_readerScheduler, awaitable);
 
             if (_readerCompletion.IsCompleted)
@@ -406,6 +406,7 @@ namespace System.IO.Pipelines
                 Dispose();
             }
         }
+
 
         // Reading
 
@@ -475,15 +476,14 @@ namespace System.IO.Pipelines
             }
 
             Action awaitable;
-            Action callback;
 
             lock (_sync)
             {
-                callback = _readerCompletion.TryComplete(exception);
+                _readerCompletion.TryComplete(exception);
                 awaitable = _writerAwaitable.Complete();
             }
 
-            TrySchedule(_writerScheduler, callback);
+            TrySchedule(_writerScheduler, _callReaderCompletedCallbacks, this);
             TrySchedule(_writerScheduler, awaitable);
 
             if (_writerCompletion.IsCompleted)
@@ -492,11 +492,11 @@ namespace System.IO.Pipelines
             }
         }
 
-        void IPipeReader.OnWriterCompleted(Action<Exception> callback)
+        void IPipeReader.OnWriterCompleted(Action<Exception, object> callback, object state)
         {
             lock (_sync)
             {
-                _writerCompletion.AttachCallback(callback);
+                _writerCompletion.AttachCallback(callback, state);
             }
         }
 
@@ -526,11 +526,11 @@ namespace System.IO.Pipelines
             TrySchedule(_writerScheduler, awaitable);
         }
 
-        void IPipeWriter.OnReaderCompleted(Action<Exception> callback)
+        void IPipeWriter.OnReaderCompleted(Action<Exception, object> callback, object state)
         {
             lock (_sync)
             {
-                _readerCompletion.AttachCallback(callback);
+                _readerCompletion.AttachCallback(callback, state);
             }
         }
 
@@ -577,8 +577,18 @@ namespace System.IO.Pipelines
         {
             if (action != null)
             {
-                scheduler.Schedule(action);
+                scheduler.Schedule(_scheduleContinuation, action);
             }
+        }
+
+        private static void TrySchedule(IScheduler scheduler, Action<object> action, object state)
+        {
+            if (action == null)
+            {
+                return;
+            }
+
+            scheduler.Schedule(action, state);
         }
 
         private void Dispose()

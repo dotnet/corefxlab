@@ -10,9 +10,9 @@ namespace System.IO.Pipelines
     {
         public static TaskRunScheduler Default = new TaskRunScheduler();
 
-        public void Schedule(Action action)
+        public void Schedule(Action<object> action, object state)
         {
-            Task.Run(action);
+            Task.Factory.StartNew(action, state);
         }
     }
 }

@@ -29,6 +29,6 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Registers callback that gets executed when reader side of pipe completes.
         /// </summary>
-        void OnReaderCompleted(Action<Exception> callback);
+        void OnReaderCompleted(Action<Exception, object> callback, object state);
     }
 }

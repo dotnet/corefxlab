@@ -49,6 +49,6 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Registers callback that gets executed when writer side of pipe completes.
         /// </summary>
-        void OnWriterCompleted(Action<Exception> callback);
+        void OnWriterCompleted(Action<Exception, object> callback, object state);
     }
 }

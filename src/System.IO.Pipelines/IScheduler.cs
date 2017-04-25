@@ -5,6 +5,6 @@ namespace System.IO.Pipelines
 {
     public interface IScheduler
     {
-        void Schedule(Action action);
+        void Schedule(Action<object> action, object state);
     }
 }
