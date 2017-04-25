@@ -167,59 +167,6 @@ namespace System.Buffers.Tests
         }
         #endregion
 
-        public static IEnumerable<object[]> ReservationPerformanceData =>
-            MakePermutations(MakeArray(1,4,10),
-                             MakeArray(100,1000),
-                             MakeArray(1,2,4,8,12),
-                             MakeArray(ReferenceCountingMethod.None,
-                                       ReferenceCountingMethod.Interlocked,
-                                       ReferenceCountingMethod.ReferenceCounter));
-
-
-        [MemberData(nameof(ReservationPerformanceData))]
-        [Benchmark]
-        public void ReservationPerformance(int number, int size, int threads, ReferenceCountingMethod m)
-        {
-            var iterations = 1000000;
-
-            var o = ReferenceCountingSettings.OwnedMemory;
-            ReferenceCountingSettings.OwnedMemory = m;
-
-            Benchmark.Iterate( () => {
-                var owners   = new OwnedBuffer<byte>[number];
-                var memories = new Buffer<byte>[owners.Length];
-
-                for (int i = 0; i < owners.Length; i++) {
-                    owners[i] = new AutoPooledMemory(size);
-                    memories[i] = owners[i].Buffer;
-                }
-
-                var tasks = new List<Task>(threads);
-                for (int t = 0; t < threads; t++) {
-                    tasks.Add(Task.Run(() => {
-                        for (int k = 0; k < iterations / owners.Length; k++) {
-                            for (int i = 0; i < owners.Length; i++) {
-                                using (var reserve = memories[i].Reserve()) {
-                                    var s = reserve.Span;
-                                    for (int j = 0; j < owners.Length; j++) {
-                                        s[j] = (byte)1;
-                                    }
-                                }
-                            }
-                        }
-                    }));
-                }
-
-                Task.WaitAll(tasks.ToArray());
-
-                for (int i = 0; i < owners.Length; i++) {
-                    owners[i].Release();
-                }
-            });
-
-            ReferenceCountingSettings.OwnedMemory = o;
-        }
-
         [Fact]
         public unsafe void ReferenceCounting()
         {
