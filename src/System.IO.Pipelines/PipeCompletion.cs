@@ -6,12 +6,6 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    internal struct PipeCompletionCallback
-    {
-        public Action<Exception, object> Callback;
-        public object State;
-    }
-
     internal struct PipeCompletion
     {
         private const int InitialCallbacksSize = 4;
