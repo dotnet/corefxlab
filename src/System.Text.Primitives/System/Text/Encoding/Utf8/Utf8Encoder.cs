@@ -79,9 +79,10 @@ namespace System.Text.Utf8
 
             int utf8Length = utf8.Length;
             int consumed = 0;
+            ref byte utf8Bytes = ref utf8.DangerousGetPinnableReference();
             while (consumed < utf8Length)
             {
-                var currByte = utf8[consumed];
+                var currByte = Unsafe.Add(ref utf8Bytes, consumed);
                 //if (utf8Length - bytesConsumed < GetEncodedBytes(currByte)) return false;
                 consumed += 1;
                 TryDecodeCodePoint(currByte, ref codePoint, ref state);
@@ -96,8 +97,7 @@ namespace System.Text.Utf8
                     charactersWritten += written;
                 }
             }
-            if (state != 0) return false;
-            return true;
+            return state == 0;
         }
 
         /// <summary>
@@ -129,9 +129,10 @@ namespace System.Text.Utf8
 
             int utf8Length = utf8.Length;
             int consumed = 0;
+            ref byte utf8Bytes = ref utf8.DangerousGetPinnableReference();
             while (consumed < utf8Length)
             {
-                var currByte = utf8[consumed];
+                var currByte = Unsafe.Add(ref utf8Bytes, consumed);
                 //if (utf8Length - consumed < GetEncodedBytes(currByte)) return false;
                 consumed += 1;
                 TryDecodeCodePoint(currByte, ref codePoint, ref state);
@@ -142,8 +143,7 @@ namespace System.Text.Utf8
                     bytesConsumed = consumed;
                 }
             }
-            if (state != 0) return false;
-            return true;
+            return state == 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
