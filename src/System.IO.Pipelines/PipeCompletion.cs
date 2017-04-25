@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Pipelines
 {
-    internal struct CompletionCallback
+    internal struct PipeCompletionCallback
     {
         public Action<Exception, object> Callback;
         public object State;
@@ -21,7 +21,7 @@ namespace System.IO.Pipelines
         private string _completionLocation;
 #endif
         private Exception _exception;
-        private CompletionCallback[] _callbacks;
+        private PipeCompletionCallback[] _callbacks;
         private int _callbackCount;
 
         public string Location
@@ -59,7 +59,7 @@ namespace System.IO.Pipelines
             }
             if (_callbacks == null)
             {
-                _callbacks = new CompletionCallback[InitialCallbacksSize];
+                _callbacks = new PipeCompletionCallback[InitialCallbacksSize];
             }
 
             var newIndex = _callbackCount;
@@ -67,7 +67,7 @@ namespace System.IO.Pipelines
 
             if (_callbackCount == _callbacks.Length)
             {
-                var newArray = new CompletionCallback[_callbacks.Length * 2];
+                var newArray = new PipeCompletionCallback[_callbacks.Length * 2];
                 Array.Copy(_callbacks, newArray, _callbacks.Length);
                 _callbacks = newArray;
             }
@@ -119,7 +119,7 @@ namespace System.IO.Pipelines
             {
                 for (int i = 0; i < _callbacks.Length; i++)
                 {
-                    _callbacks[i] = default(CompletionCallback);
+                    _callbacks[i] = default(PipeCompletionCallback);
                 }
             }
 
