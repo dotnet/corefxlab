@@ -143,6 +143,7 @@ namespace System.IO.Pipelines
                         throw;
                     }
                 }
+
                 _currentWriteLength = 0;
                 return new WritableBuffer(this);
             }
@@ -391,14 +392,19 @@ namespace System.IO.Pipelines
             }
 
             Action awaitable;
+            bool runCompletionCallbacks;
 
             lock (_sync)
             {
-                _writerCompletion.TryComplete(exception);
+                runCompletionCallbacks = _writerCompletion.TryComplete(exception);
                 awaitable = _readerAwaitable.Complete();
             }
 
-            TrySchedule(_readerScheduler, _callWriterCompletedCallbacks, this);
+            if (runCompletionCallbacks)
+            {
+                TrySchedule(_readerScheduler, _callWriterCompletedCallbacks, this);
+            }
+
             TrySchedule(_readerScheduler, awaitable);
 
             if (_readerCompletion.IsCompleted)
@@ -475,15 +481,19 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.CompleteReaderActiveReader, _readingState.Location);
             }
 
+            bool runCompletionCallbacks;
             Action awaitable;
 
             lock (_sync)
             {
-                _readerCompletion.TryComplete(exception);
+                runCompletionCallbacks = _readerCompletion.TryComplete(exception);
                 awaitable = _writerAwaitable.Complete();
             }
 
-            TrySchedule(_writerScheduler, _callReaderCompletedCallbacks, this);
+            if (runCompletionCallbacks)
+            {
+                TrySchedule(_writerScheduler, _callReaderCompletedCallbacks, this);
+            }
             TrySchedule(_writerScheduler, awaitable);
 
             if (_writerCompletion.IsCompleted)
@@ -494,6 +504,11 @@ namespace System.IO.Pipelines
 
         void IPipeReader.OnWriterCompleted(Action<Exception, object> callback, object state)
         {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
             lock (_sync)
             {
                 _writerCompletion.AttachCallback(callback, state);
@@ -528,6 +543,11 @@ namespace System.IO.Pipelines
 
         void IPipeWriter.OnReaderCompleted(Action<Exception, object> callback, object state)
         {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
             lock (_sync)
             {
                 _readerCompletion.AttachCallback(callback, state);

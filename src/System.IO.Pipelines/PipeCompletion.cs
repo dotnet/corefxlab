@@ -22,6 +22,7 @@ namespace System.IO.Pipelines
 #endif
         private Exception _exception;
         private CompletionCallback[] _callbacks;
+        private int _callbackCount;
 
         public string Location
         {
@@ -37,7 +38,7 @@ namespace System.IO.Pipelines
 
         public bool IsCompleted => _exception != null;
 
-        public void TryComplete(Exception exception = null)
+        public bool TryComplete(Exception exception = null)
         {
 #if COMPLETION_LOCATION_TRACKING
             _completionLocation = Environment.StackTrace;
@@ -47,6 +48,7 @@ namespace System.IO.Pipelines
                 // Set the exception object to the exception passed in or a sentinel value
                 _exception = exception ?? _completedNoException;
             }
+            return _callbackCount > 0;
         }
 
         public void AttachCallback(Action<Exception, object> callback, object state)
@@ -60,25 +62,17 @@ namespace System.IO.Pipelines
                 _callbacks = new CompletionCallback[InitialCallbacksSize];
             }
 
-            int i;
-            for (i = 0; i < _callbacks.Length; i++)
-            {
-                if (_callbacks[i].Callback != null)
-                {
-                    break;
-                }
-            }
+            var newIndex = _callbackCount;
+            _callbackCount++;
 
-            if (i == _callbacks.Length)
+            if (_callbackCount == _callbacks.Length)
             {
                 var newArray = new CompletionCallback[_callbacks.Length * 2];
                 Array.Copy(_callbacks, newArray, _callbacks.Length);
                 _callbacks = newArray;
-
             }
-
-            _callbacks[i].Callback = callback;
-            _callbacks[i].State = callback;
+            _callbacks[newIndex].Callback = callback;
+            _callbacks[newIndex].State = state;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -106,6 +100,12 @@ namespace System.IO.Pipelines
 
             foreach (var completionCallback in _callbacks)
             {
+                if (completionCallback.Callback == null)
+                {
+                    // we do not allow registering null callbacks
+                    // safe to assume we reached end of callback list
+                    break;
+                }
                 completionCallback.Callback.Invoke(_exception, completionCallback.State);
             }
         }
@@ -113,11 +113,16 @@ namespace System.IO.Pipelines
         public void Reset()
         {
             Debug.Assert(IsCompleted);
+            _callbackCount = 0;
             _exception = null;
-            for (int i = 0; i < _callbacks.Length; i++)
+            if (_callbacks != null)
             {
-                _callbacks[i] = default(CompletionCallback);
+                for (int i = 0; i < _callbacks.Length; i++)
+                {
+                    _callbacks[i] = default(CompletionCallback);
+                }
             }
+
 #if COMPLETION_LOCATION_TRACKING
             _completionLocation = null;
 #endif
