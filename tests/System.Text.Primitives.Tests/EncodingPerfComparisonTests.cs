@@ -9,6 +9,8 @@ using System.Linq;
 
 namespace System.Text.Primitives.Tests
 {
+    // to run *just* these tests from the \scripts\PerfHarness folder:
+    // ..\..\dotnet\dotnet run -c Release --assembly System.Text.Primitives.Tests --perf:typenames System.Text.Primitives.Tests.EncodingPerfComparisonTests
     public class EncodingPerfComparisonTests
     {
         public static IEnumerable<object[]> TestCases()

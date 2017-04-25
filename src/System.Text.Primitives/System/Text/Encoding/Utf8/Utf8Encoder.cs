@@ -58,24 +58,27 @@ namespace System.Text.Utf8
 
             if (Vector.IsHardwareAccelerated)
             {
-                ref var utf8Vectors = ref utf8.NonPortableCast<byte, Vector<byte>>().DangerousGetPinnableReference();
-                ref var utf16Vectors = ref utf16.NonPortableCast<char, Vector<ushort>>().DangerousGetPinnableReference();
+                var utf8Vectors = utf8.NonPortableCast<byte, Vector<byte>>();
+                var utf16Vectors = utf16.NonPortableCast<char, Vector<ushort>>();
 
-                int asciiLoops = Math.Min(utf8.Length, utf16.Length) / Vector<byte>.Count, asciiLoop = 0, outputOffset = 0;
-                
-                while (asciiLoops-- != 0)
+                // note: might not have enough space in utf16 for everything
+                if (utf16Vectors.Length < utf8Vectors.Length * 2)
                 {
-                    ref Vector<byte> bytes = ref Unsafe.Add(ref utf8Vectors, asciiLoop);
-                    if((bytes & _highBit) != Vector<byte>.Zero)
+                    utf8Vectors = utf8Vectors.Slice(0, utf16Vectors.Length / 2);
+                }
+
+                int utf16index = 0;
+                for (int i = 0; i < utf8Vectors.Length; i++)
+                {
+                    var bytes = utf8Vectors[i];
+                    if ((bytes & _highBit) != Vector<byte>.Zero)
                     {
                         break; // non-ASCII detected
                     }
-                    //Vector.Widen(bytes, out Vector<ushort> left, out Vector<ushort> right);
-                    // widen directly into the character buffer
-                    Vector.Widen(bytes, out Unsafe.Add(ref utf16Vectors, outputOffset++), out Unsafe.Add(ref utf16Vectors, outputOffset++));
-                    asciiLoop++;
+                    // widen from ASCII to char
+                    Vector.Widen(bytes, out utf16Vectors[utf16index++], out utf16Vectors[utf16index++]);
                 }
-                int totalBytes = asciiLoop * Vector<byte>.Count;
+                int totalBytes = utf16index * Vector<ushort>.Count;
                 bytesConsumed += totalBytes;
                 charactersWritten += totalBytes;
             }
@@ -163,7 +166,7 @@ namespace System.Text.Utf8
                 codePoint = default(uint);
                 return false;
             }
-            
+
             switch (bytesConsumed)
             {
                 case 1:
@@ -230,15 +233,18 @@ namespace System.Text.Utf8
             int i = 0;
             if (Vector.IsHardwareAccelerated)
             {
-                ref var utf8Vectors = ref utf8.NonPortableCast<byte, Vector<byte>>().DangerousGetPinnableReference();
-                int asciiLoops = utf8.Length / Vector<byte>.Count, asciiLoop = 0;
-                
-                // note that .Count is detected as const by the JIT - not expensive to repeat
-                while (asciiLoops-- != 0 && (Unsafe.Add(ref utf8Vectors, asciiLoop) & _highBit) == Vector<byte>.Zero)
+                var utf8Vectors = utf8.NonPortableCast<byte, Vector<byte>>();
+
+                int asciiChunks = 0; // track how many full ASCII vectors we see
+                for (int vecIndex = 0; vecIndex < utf8Vectors.Length; vecIndex++)
                 {
-                    asciiLoop++;
+                    if ((utf8Vectors[vecIndex] & _highBit) != Vector<byte>.Zero)
+                    {
+                        break;
+                    }
+                    asciiChunks++;
                 }
-                int totalBytes = asciiLoop * Vector<byte>.Count;
+                int totalBytes = asciiChunks * Vector<byte>.Count;
                 i += totalBytes;
                 length += totalBytes;
             }
@@ -290,14 +296,17 @@ namespace System.Text.Utf8
             bytesNeeded = 0;
             if (Vector.IsHardwareAccelerated)
             {
-                ref var utf16Vectors = ref utf16.NonPortableCast<char, Vector<ushort>>().DangerousGetPinnableReference();
-
-                int asciiLoops = utf16.Length / Vector<ushort>.Count, asciiLoop = 0;
-                while(asciiLoops-- != 0 && (Unsafe.Add(ref utf16Vectors, asciiLoop) & _nonAscii) == Vector<ushort>.Zero)
+                var utf16Vectors = utf16.NonPortableCast<char, Vector<ushort>>();
+                int asciiChunks = 0;
+                for (int vecIndex = 0; vecIndex < utf16Vectors.Length; vecIndex++)
                 {
-                    asciiLoop++;
+                    if ((utf16Vectors[vecIndex] & _nonAscii) != Vector<ushort>.Zero)
+                    {
+                        break; // non-ASCII detected
+                    }
+                    asciiChunks++;
                 }
-                int totalBytes = asciiLoop * Vector<ushort>.Count;
+                int totalBytes = asciiChunks * Vector<ushort>.Count;
                 bytesNeeded += totalBytes;
                 i += totalBytes;
             }
@@ -327,7 +336,7 @@ namespace System.Text.Utf8
 
                 return true;
             }
-            catch(ArgumentOutOfRangeException)
+            catch (ArgumentOutOfRangeException)
             {
                 bytesNeeded = 0;
                 return false;
@@ -662,7 +671,7 @@ namespace System.Text.Utf8
                 bytesWritten = (int)(pTarget - bytes);
                 return true;
 
-            NeedMore:
+                NeedMore:
                 charactersConsumed = (int)((pSrc - 1) - chars);
                 bytesWritten = (int)(pTarget - bytes);
                 return false;
