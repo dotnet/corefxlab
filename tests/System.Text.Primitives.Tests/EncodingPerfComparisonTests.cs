@@ -87,7 +87,7 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    uint32Buffer = Encoding.Convert(utf8, utf32, utf8Buffer);
+                    utf32.GetBytes(charSpanToArray, 0, charSpanToArray.Length, uint32Buffer, 0);
             }
         }
 
@@ -151,7 +151,7 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    utf16Buffer = Encoding.Convert(utf8, utf16, utf8Buffer);
+                    utf16.GetBytes(charSpanToArray, 0, charSpanToArray.Length, utf16Buffer, 0);
             }
         }
 
