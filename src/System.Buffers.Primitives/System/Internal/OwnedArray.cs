@@ -55,5 +55,11 @@ namespace System.Buffers.Internal
             pointer = null;
             return false;
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            _array = null;
+        }
     }
 }

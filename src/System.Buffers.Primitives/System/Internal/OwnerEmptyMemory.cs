@@ -5,21 +5,21 @@ using System.Runtime;
 
 namespace System.Buffers.Internal
 {
-    internal class OwnerEmptyMemory<T> : OwnedBuffer<T>
+    internal class OwnedEmptyBuffer<T> : OwnedBuffer<T>
     {
-        readonly static T[] s_empty = new T[0];
-        public readonly static OwnedBuffer<T> Shared = new OwnerEmptyMemory<T>();
+        T[] s_empty = new T[0];
+        public readonly static OwnedBuffer<T> Shared = new OwnedEmptyBuffer<T>();
 
-        public override int Length => s_empty.Length;
+        public override int Length => 0;
 
-        public override Span<T> Span => s_empty;
+        public override Span<T> Span => Span<T>.Empty;
 
         protected override void Dispose(bool disposing)
         {}
 
         protected internal override bool TryGetArrayInternal(out ArraySegment<T> buffer)
         {
-            buffer = new ArraySegment<T>(s_empty);
+            buffer = new ArraySegment<T>(s_empty, 0, 0);
             return true;
         }
 
@@ -32,5 +32,7 @@ namespace System.Buffers.Internal
         public override void AddReference() { }
         public override void Release() { }
         public override bool HasOutstandingReferences => false;
+
+        public override bool IsDisposed => false;
     }
 }

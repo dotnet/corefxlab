@@ -2,11 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics;
-using System.Runtime;
-using System.Runtime.CompilerServices;
-using System.Threading;
-
 namespace System.Buffers
 {
     public abstract class OwnedBuffer<T> : IDisposable, IKnown
@@ -33,7 +28,7 @@ namespace System.Buffers
         internal protected abstract unsafe bool TryGetPointerInternal(out void* pointer);
 
         #region Lifetime Management
-        public bool IsDisposed => _disposed;
+        public abstract bool IsDisposed { get; }
 
         public void Dispose()
         {
@@ -41,10 +36,7 @@ namespace System.Buffers
             Dispose(true);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            _disposed = disposing;
-        }
+        protected abstract void Dispose(bool disposing);
 
         public abstract bool HasOutstandingReferences { get; }
 
@@ -52,10 +44,6 @@ namespace System.Buffers
 
         public abstract void Release();
 
-        protected virtual void OnZeroReferences()
-        { }
-
-        bool _disposed;
         #endregion
     }
 }
