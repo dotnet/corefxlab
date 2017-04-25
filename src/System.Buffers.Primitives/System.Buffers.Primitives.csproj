@@ -12,6 +12,6 @@
     <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
     <PackageReference Include="System.Diagnostics.Tools" Version="$(CoreFxVersion)" />
-    <PackageReference Include="System.Numerics.Vectors" Version="$(CoreFxVersion)" />
+    <PackageReference Include="System.Numerics.Vectors" Version="$(SystemNumericsVectorsVersion)" />
   </ItemGroup>
 </Project>

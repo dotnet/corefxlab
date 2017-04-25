@@ -26,7 +26,7 @@ namespace System.Buffers.Internal
         {
         }
 
-        private class ArrayPoolMemory : OwnedBuffer<byte>
+        private class ArrayPoolMemory : ReferenceCountedBuffer<byte>
         {
             public ArrayPoolMemory(int size)
             {

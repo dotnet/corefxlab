@@ -2,11 +2,15 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime;
+using System.Threading;
+using System.Buffers;
 
 namespace System.Buffers.Internal
 {
-    internal sealed class OwnedArray<T> : OwnedBuffer<T>
+    internal sealed class OwnedArray<T> : ReferenceCountedBuffer<T>
     {
+        T[] _array;
+
         public OwnedArray(int length)
         {
             _array = new T[length];
@@ -22,20 +26,11 @@ namespace System.Buffers.Internal
             _array = segment.AsSpan().ToArray();
         }
 
-        public static implicit operator T[] (OwnedArray<T> owner)
-        {
-            return owner._array;
-        }
+        public static implicit operator T[] (OwnedArray<T> owner) => owner._array;
 
-        public static implicit operator OwnedArray<T>(T[] array)
-        {
-            return new OwnedArray<T>(array);
-        }
+        public static implicit operator OwnedArray<T>(T[] array) => new OwnedArray<T>(array);
 
-        public static implicit operator OwnedArray<T>(ArraySegment<T> segment)
-        {
-            return new OwnedArray<T>(segment);
-        }
+        public static implicit operator OwnedArray<T>(ArraySegment<T> segment) => new OwnedArray<T>(segment);
 
         public override int Length => _array.Length;
 
@@ -60,7 +55,5 @@ namespace System.Buffers.Internal
             pointer = null;
             return false;
         }
-
-        T[] _array;
     }
 }

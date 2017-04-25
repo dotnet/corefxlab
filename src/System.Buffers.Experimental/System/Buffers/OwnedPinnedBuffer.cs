@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 namespace System.Buffers
 {
     // This is to support secnarios today covered by Buffer<T> in corefxlab
-    public class OwnedPinnedBuffer<T> : OwnedBuffer<T>
+    public class OwnedPinnedBuffer<T> : ReferenceCountedBuffer<T>
     {
         public unsafe OwnedPinnedBuffer(T[] array, void* pointer, GCHandle handle = default(GCHandle))
         {

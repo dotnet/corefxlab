@@ -56,7 +56,7 @@ namespace System.Text.Primitives.Tests
 
         static void TestGuidFormat(Guid guid, char format, TextEncoder encoder)
         {
-            var expected = guid.ToString(format.ToString(), CultureInfo.InvariantCulture);
+            var expected = guid.ToString(format.ToString());
 
             var span = new Span<byte>(new byte[128]);
             Assert.True(PrimitiveFormatter.TryFormat(guid, span, out int written, format, encoder));

@@ -13,34 +13,14 @@ namespace System.Buffers
         internal DisposableReservation(OwnedBuffer<T> owner)
         {
             _owner = owner;
-            switch (ReferenceCountingSettings.OwnedMemory)
-            {
-                case ReferenceCountingMethod.Interlocked:
-                    ((IKnown)_owner).AddReference();
-                    break;
-                case ReferenceCountingMethod.ReferenceCounter:
-                    ReferenceCounter.AddReference(_owner);
-                    break;
-                case ReferenceCountingMethod.None:
-                    break;
-            }
+            _owner.AddReference();
         }
 
         public Span<T> Span => _owner.Span;
 
         public void Dispose()
         {
-            switch (ReferenceCountingSettings.OwnedMemory)
-            {
-                case ReferenceCountingMethod.Interlocked:
-                    ((IKnown)_owner).Release();
-                    break;
-                case ReferenceCountingMethod.ReferenceCounter:
-                    ReferenceCounter.Release(_owner);
-                    break;
-                case ReferenceCountingMethod.None:
-                    break;
-            }
+            _owner.Release();
             _owner = null;
         }
     }

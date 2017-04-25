@@ -23,6 +23,15 @@ namespace System.Buffers
 
         public static implicit operator OwnedBuffer<T>(T[] array) => new Internal.OwnedArray<T>(array);
 
+        public virtual BufferHandle Pin(int index = 0)
+        {
+            return BufferHandle.Create(this, index);
+        }
+
+        internal protected abstract bool TryGetArrayInternal(out ArraySegment<T> buffer);
+
+        internal protected abstract unsafe bool TryGetPointerInternal(out void* pointer);
+
         #region Lifetime Management
         public bool IsDisposed => _disposed;
 
@@ -37,41 +46,35 @@ namespace System.Buffers
             _disposed = disposing;
         }
 
-        public bool HasOutstandingReferences
-        {
-            get
-            {
-                return _referenceCount > 0
-                        || (ReferenceCountingSettings.OwnedMemory == ReferenceCountingMethod.ReferenceCounter
-                            && ReferenceCounter.HasReference(this));
-            }
-        }
+        public abstract bool HasOutstandingReferences { get; }
 
-        public void AddReference()
+        public abstract void AddReference();
+
+        public abstract void Release();
+
+        protected virtual void OnZeroReferences()
+        { }
+
+        bool _disposed;
+        #endregion
+    }
+
+    public abstract class ReferenceCountedBuffer<T> : OwnedBuffer<T>
+    {
+        int _referenceCount;
+
+        public override void AddReference()
         {
             Interlocked.Increment(ref _referenceCount);
         }
 
-        public void Release()
+        public override void Release()
         {
-            if(Interlocked.Decrement(ref _referenceCount) == 0)
+            if (Interlocked.Decrement(ref _referenceCount) == 0) {
                 OnZeroReferences();
+            }
         }
 
-        protected virtual void OnZeroReferences()
-        { }
-        
-        public virtual BufferHandle Pin(int index = 0)
-        {
-            return BufferHandle.Create(this, index);
-        }
-        #endregion
-
-        internal protected abstract bool TryGetArrayInternal(out ArraySegment<T> buffer);
-
-        internal protected abstract unsafe bool TryGetPointerInternal(out void* pointer);
-
-        bool _disposed;
-        int _referenceCount;
+        public override bool HasOutstandingReferences => _referenceCount > 0;
     }
 }

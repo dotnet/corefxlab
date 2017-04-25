@@ -9,7 +9,7 @@ using System.Runtime;
 
 namespace Microsoft.Net.Http
 {
-    class OwnedBuffer : OwnedBuffer<byte>, IBufferList<byte>, IReadOnlyBufferList<byte>
+    class OwnedBuffer : ReferenceCountedBuffer<byte>, IBufferList<byte>, IReadOnlyBufferList<byte>
     {
         public const int DefaultBufferSize = 1024;
 

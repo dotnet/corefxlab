@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
-    public class OwnedNativeBuffer : OwnedBuffer<byte>
+    public class OwnedNativeBuffer : ReferenceCountedBuffer<byte>
     {
         public OwnedNativeBuffer(int length) : this(length, Marshal.AllocHGlobal(length))
         { }
