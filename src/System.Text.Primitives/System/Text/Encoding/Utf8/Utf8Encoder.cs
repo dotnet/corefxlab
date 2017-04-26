@@ -77,23 +77,19 @@ namespace System.Text.Utf8
             uint codePoint = 0;
             uint state = 0;
 
-            int utf8Length = utf8.Length;
-            int consumed = 0;
             ref byte utf8Bytes = ref utf8.DangerousGetPinnableReference();
-            while (consumed < utf8Length)
+            int i = 0;
+            while (i < utf8.Length)
             {
-                var currByte = Unsafe.Add(ref utf8Bytes, consumed);
-                //if (utf8Length - bytesConsumed < GetEncodedBytes(currByte)) return false;
-                consumed += 1;
-                TryDecodeCodePoint(currByte, ref codePoint, ref state);
-                //if (state == 1) return false;
+                TryDecodeCodePoint(Unsafe.Add(ref utf8Bytes, i), ref codePoint, ref state);
+                i += 1;
                 if (state == 0)
                 {
                     int written;
                     if (!Utf16LittleEndianEncoder.TryEncode(codePoint, utf16, charactersWritten, out written))
                         return false;
 
-                    bytesConsumed = consumed;
+                    bytesConsumed = i;
                     charactersWritten += written;
                 }
             }
@@ -127,22 +123,19 @@ namespace System.Text.Utf8
             uint codePoint = 0;
             uint state = 0;
 
-            int utf8Length = utf8.Length;
-            int consumed = 0;
             ref byte utf8Bytes = ref utf8.DangerousGetPinnableReference();
             ref uint utf32Pointer = ref utf32.DangerousGetPinnableReference();
-            while (consumed < utf8Length)
+            int i = 0;
+            while (i < utf8.Length)
             {
-                var currByte = Unsafe.Add(ref utf8Bytes, consumed);
-                //if (utf8Length - consumed < GetEncodedBytes(currByte)) return false;
-                consumed += 1;
-                TryDecodeCodePoint(currByte, ref codePoint, ref state);
-                //if (state == 1) return false;
+                TryDecodeCodePoint(Unsafe.Add(ref utf8Bytes, i), ref codePoint, ref state);
+                i++;
                 if (state == 0)
                 {
+                    if (charactersWritten >= utf32.Length) return false;
                     Unsafe.Add(ref utf32Pointer, charactersWritten) = codePoint;
                     charactersWritten++;
-                    bytesConsumed = consumed;
+                    bytesConsumed = i;
                 }
             }
             return state == 0;
