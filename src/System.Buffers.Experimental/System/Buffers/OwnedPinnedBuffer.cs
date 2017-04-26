@@ -27,10 +27,11 @@ namespace System.Buffers
         private unsafe OwnedPinnedBuffer(T[] array, GCHandle handle) : this(array, handle.AddrOfPinnedObject().ToPointer(), handle)
         { }
 
-        public static implicit operator OwnedPinnedBuffer<T>(T[] array)
-        {
-            return new OwnedPinnedBuffer<T>(array);
-        }
+        public static implicit operator OwnedPinnedBuffer<T>(T[] array) => new OwnedPinnedBuffer<T>(array);
+
+        public unsafe static implicit operator IntPtr(OwnedPinnedBuffer<T> owner) => new IntPtr(owner.Pointer);
+
+        public static implicit operator T[] (OwnedPinnedBuffer<T> owner) => owner.Array;
 
         public override int Length => _array.Length;
 
@@ -47,16 +48,6 @@ namespace System.Buffers
 
         public T[] Array => _array;
 
-        public unsafe static implicit operator IntPtr(OwnedPinnedBuffer<T> owner)
-        {
-            return new IntPtr(owner.Pointer);
-        }
-
-        public static implicit operator T[] (OwnedPinnedBuffer<T> owner)
-        {
-            return owner.Array;
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (_handle.IsAllocated)
@@ -68,9 +59,9 @@ namespace System.Buffers
             base.Dispose(disposing);
         }
 
-        public override BufferHandle Pin(int index = 0)
+        public unsafe override BufferHandle Pin(int index = 0)
         {
-            return BufferHandle.Create(this, index, _handle);
+            return new BufferHandle(this, Add(_pointer.ToPointer(), index));
         }
 
         protected override bool TryGetArrayInternal(out ArraySegment<T> buffer)
@@ -80,10 +71,10 @@ namespace System.Buffers
             return true;
         }
 
-        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
         {
             if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
-            pointer = _pointer.ToPointer();
+            pointer = Add(_pointer.ToPointer(), index);
             return true;
         }
 

@@ -41,10 +41,10 @@ namespace System.Buffers.Pools
                 return false;
             }
 
-            protected override unsafe bool TryGetPointerInternal(out void* pointer)
+            protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
             {
                 if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
-                pointer = _pointer.ToPointer();
+                pointer = Add(_pointer.ToPointer(), index);
                 return true;
             }
 

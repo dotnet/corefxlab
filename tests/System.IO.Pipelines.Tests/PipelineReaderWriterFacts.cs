@@ -552,7 +552,7 @@ namespace System.IO.Pipelines.Tests
                     return true;
                 }
 
-                protected override unsafe bool TryGetPointerInternal(out void* pointer)
+                protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
                 {
                     pointer = null;
                     return false;

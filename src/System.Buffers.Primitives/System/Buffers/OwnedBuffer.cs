@@ -2,9 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
 namespace System.Buffers
 {
-    public abstract class OwnedBuffer<T> : IDisposable, IKnown
+    public abstract class OwnedBuffer<T> : IDisposable, IRetainable
     {
         protected OwnedBuffer() { }
 
@@ -20,27 +24,50 @@ namespace System.Buffers
 
         public virtual BufferHandle Pin(int index = 0)
         {
-            return BufferHandle.Create(this, index);
+            unsafe
+            {
+                void* pointer;
+                var handle = default(GCHandle);
+
+                if (!TryGetPointerAt(index, out pointer)) {
+                    ArraySegment<T> buffer;
+                    if (TryGetArrayInternal(out buffer)) {
+                        handle = GCHandle.Alloc(buffer.Array, GCHandleType.Pinned);
+                        pointer = Add((void*)handle.AddrOfPinnedObject(), buffer.Offset + index);
+                    }
+                    else {
+                        throw new InvalidOperationException("Memory cannot be pinned");
+                    }
+                }
+
+                Retain();
+                return new BufferHandle(this, pointer, handle);
+            }
+        }
+
+        protected static unsafe void* Add(void* pointer, int offset)
+        {
+            return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }
 
         internal protected abstract bool TryGetArrayInternal(out ArraySegment<T> buffer);
 
-        internal protected abstract unsafe bool TryGetPointerInternal(out void* pointer);
+        internal protected abstract unsafe bool TryGetPointerAt(int index, out void* pointer);
 
         #region Lifetime Management
         public abstract bool IsDisposed { get; }
 
         public void Dispose()
         {
-            if (HasOutstandingReferences) throw new InvalidOperationException("outstanding references detected.");
+            if (IsRetained) throw new InvalidOperationException("outstanding references detected.");
             Dispose(true);
         }
 
         protected abstract void Dispose(bool disposing);
 
-        public abstract bool HasOutstandingReferences { get; }
+        public abstract bool IsRetained { get; }
 
-        public abstract void AddReference();
+        public abstract void Retain();
 
         public abstract void Release();
 

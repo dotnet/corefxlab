@@ -3,9 +3,10 @@
 
 namespace System.Buffers
 {
-    internal interface IKnown
+    public interface IRetainable
     {
-        void AddReference();
+        void Retain();
         void Release();
+        bool IsRetained { get; }
     }
 }

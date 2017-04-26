@@ -13,7 +13,7 @@ namespace System.Buffers
         internal DisposableReservation(OwnedBuffer<T> owner)
         {
             _owner = owner;
-            _owner.AddReference();
+            _owner.Retain();
         }
 
         public Span<T> Span => _owner.Span;

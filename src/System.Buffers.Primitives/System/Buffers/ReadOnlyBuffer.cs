@@ -59,10 +59,9 @@ namespace System.Buffers
    
         public unsafe bool TryGetPointer(out void* pointer)
         {
-            if (!_owner.TryGetPointerInternal(out pointer)) {
+            if (!_owner.TryGetPointerAt(_index, out pointer)) {
                 return false;
             }
-            pointer = Buffer<T>.Add(pointer, _index);
             return true;
         }
 

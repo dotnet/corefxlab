@@ -54,7 +54,7 @@ namespace System.IO.Pipelines
 #if KESTREL_BY_SOURCE
         internal
 #endif
-        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
         {
             pointer = null;
             return false;

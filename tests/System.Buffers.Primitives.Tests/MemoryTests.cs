@@ -173,13 +173,13 @@ namespace System.Buffers.Tests
             var owned = new CustomMemory();
             var memory = owned.Buffer;
             Assert.Equal(0, owned.OnZeroRefencesCount);
-            Assert.False(owned.HasOutstandingReferences);
+            Assert.False(owned.IsRetained);
             using (memory.Reserve()) {
                 Assert.Equal(0, owned.OnZeroRefencesCount);
-                Assert.True(owned.HasOutstandingReferences);
+                Assert.True(owned.IsRetained);
             }
             Assert.Equal(1, owned.OnZeroRefencesCount);
-            Assert.False(owned.HasOutstandingReferences);
+            Assert.False(owned.IsRetained);
         }
 
         [Fact]
@@ -202,11 +202,11 @@ namespace System.Buffers.Tests
             var array = new byte[1024];
             OwnedBuffer<byte> owned = array;
             var memory = owned.Buffer;
-            Assert.False(owned.HasOutstandingReferences);
+            Assert.False(owned.IsRetained);
             var h = memory.Pin();
-            Assert.True(owned.HasOutstandingReferences);
+            Assert.True(owned.IsRetained);
             h.Free();
-            Assert.False(owned.HasOutstandingReferences);
+            Assert.False(owned.IsRetained);
         }
 
         [Fact]
@@ -223,15 +223,15 @@ namespace System.Buffers.Tests
             OwnedBuffer<byte> owned = array;
             var memory = owned.Buffer;
             var h = memory.Pin();
-            Assert.True(owned.HasOutstandingReferences);
-            owned.AddReference();
-            Assert.True(owned.HasOutstandingReferences);
+            Assert.True(owned.IsRetained);
+            owned.Retain();
+            Assert.True(owned.IsRetained);
             h.Free();
-            Assert.True(owned.HasOutstandingReferences);
+            Assert.True(owned.IsRetained);
             h.Free();
-            Assert.True(owned.HasOutstandingReferences);
+            Assert.True(owned.IsRetained);
             owned.Release();
-            Assert.False(owned.HasOutstandingReferences);
+            Assert.False(owned.IsRetained);
         }
 
 
@@ -295,7 +295,7 @@ namespace System.Buffers.Tests
             return true;
         }
 
-        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
         {
             pointer = null;
             return false;
@@ -310,7 +310,7 @@ namespace System.Buffers.Tests
         public AutoDisposeMemory(T[] array)
         {
             _array = array;
-            AddReference();
+            Retain();
         }
 
         public override int Length => _array.Length;
@@ -341,7 +341,7 @@ namespace System.Buffers.Tests
             return true;
         }
 
-        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
         {
             pointer = null;
             return false;
