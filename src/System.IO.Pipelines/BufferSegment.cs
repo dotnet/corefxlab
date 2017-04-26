@@ -45,7 +45,7 @@ namespace System.IO.Pipelines
             Start = 0;
             End = 0;
 
-            _owned.AddReference();
+            _owned.Retain();
             _buffer = _owned.Buffer;
         }
 
@@ -64,7 +64,7 @@ namespace System.IO.Pipelines
                 _owned = unowned.MakeCopy(start, end - start, out Start, out End);
             }
 
-            _owned.AddReference();
+            _owned.Retain();
             _buffer = _owned.Buffer;
         }
 
@@ -88,11 +88,11 @@ namespace System.IO.Pipelines
 
         public void Dispose()
         {
-            Debug.Assert(_owned.HasOutstandingReferences);
+            Debug.Assert(_owned.IsRetained);
 
             _owned.Release();
 
-            if (!_owned.HasOutstandingReferences)
+            if (!_owned.IsRetained)
             {
                 _owned.Dispose();
             }

@@ -11,7 +11,7 @@ namespace System.Buffers
         int _referenceCount;
         bool _disposed;
 
-        public override void AddReference()
+        public override void Retain()
         {
             Interlocked.Increment(ref _referenceCount);
         }
@@ -23,7 +23,7 @@ namespace System.Buffers
             }
         }
 
-        public override bool HasOutstandingReferences => _referenceCount > 0;
+        public override bool IsRetained => _referenceCount > 0;
 
         protected virtual void OnZeroReferences()
         {

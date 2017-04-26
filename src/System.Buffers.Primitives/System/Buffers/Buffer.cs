@@ -71,17 +71,11 @@ namespace System.Buffers
 
         public unsafe bool TryGetPointer(out void* pointer)
         {
-            if (!_owner.TryGetPointerInternal(out pointer))
+            if (!_owner.TryGetPointerAt(_index, out pointer))
             {
                 return false;
             }
-            pointer = Add(pointer, _index);
             return true;
-        }
-
-        internal static unsafe void* Add(void* pointer, int offset)
-        {
-            return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }
 
         public T[] ToArray() => Span.ToArray();
@@ -132,30 +126,6 @@ namespace System.Buffers
         public override int GetHashCode()
         {
             return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
-        }
-
-        // TODO: this is taken from SpanHelpers. If we move this type to System.Memory, we should remove this helper
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static IntPtr Add(IntPtr start, int index)
-        {
-            Debug.Assert(start.ToInt64() >= 0);
-            Debug.Assert(index >= 0);
-
-            unsafe
-            {
-                if (sizeof(IntPtr) == sizeof(int))
-                {
-                    // 32-bit path.
-                    uint byteLength = (uint)index * (uint)Unsafe.SizeOf<T>();
-                    return (IntPtr)(((byte*)start) + byteLength);
-                }
-                else
-                {
-                    // 64-bit path.
-                    ulong byteLength = (ulong)index * (ulong)Unsafe.SizeOf<T>();
-                    return (IntPtr)(((byte*)start) + byteLength);
-                }
-            }
         }
     }
 }

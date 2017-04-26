@@ -23,15 +23,15 @@ namespace System.Buffers.Internal
             return true;
         }
 
-        protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected internal override unsafe bool TryGetPointerAt(int index, out void* pointer)
         {
             pointer = null;
             return false;
         }
 
-        public override void AddReference() { }
+        public override void Retain() { }
         public override void Release() { }
-        public override bool HasOutstandingReferences => false;
+        public override bool IsRetained => false;
 
         public override bool IsDisposed => false;
     }

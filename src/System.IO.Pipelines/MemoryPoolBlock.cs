@@ -122,10 +122,10 @@ namespace System.IO.Pipelines
 #if KESTREL_BY_SOURCE
         internal
 #endif
-        protected override unsafe bool TryGetPointerInternal(out void* pointer)
+        protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
         {
             if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
-            pointer = (Slab.NativePointer + _offset).ToPointer();
+            pointer = (Slab.NativePointer + _offset + index).ToPointer();
             return true;
         }
     }

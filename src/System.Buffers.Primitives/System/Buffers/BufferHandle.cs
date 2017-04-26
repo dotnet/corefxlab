@@ -8,57 +8,26 @@ namespace System.Buffers
 {
     public unsafe struct BufferHandle
     {
-        IKnown _owner;
-        GCHandle _handle;
+        IRetainable _owner;
         void* _pointer;
+        GCHandle _handle;
 
-        public static BufferHandle Create<T>(OwnedBuffer<T> owner, int index, GCHandle handle = default(GCHandle))
+        public BufferHandle(IRetainable owner, void* pinnedPointer, GCHandle handle = default(GCHandle))
         {
-            void* pointer;
-            if (owner.TryGetPointerInternal(out pointer))
-            {
-                pointer = Buffer<T>.Add(pointer, index);
-            }
-            else
-            {
-                ArraySegment<T> buffer;
-                if (owner.TryGetArrayInternal(out buffer))
-                {
-                    handle = GCHandle.Alloc(buffer.Array, GCHandleType.Pinned);
-                    pointer = Buffer<T>.Add((void*)handle.AddrOfPinnedObject(), buffer.Offset + index);
-                }
-                else
-                {
-                    throw new InvalidOperationException("Memory cannot be pinned");
-                }
-            }
-
-            owner.AddReference();
-
-            return new BufferHandle {
-                _owner = owner,
-                _handle = handle,
-                _pointer = pointer
-            };
+            _pointer = pinnedPointer;
+            _handle = handle;
+            _owner = owner;
         }
 
-        public void* PinnedPointer
-        {
-            get
-            {
-                return _pointer;
-            }
-        }
+        public void* PinnedPointer => _pointer;
 
         public void Free()
         {
-            if (_owner != null)
-            {
-                if (_handle.IsAllocated)
-                {
-                    _handle.Free();
-                }
+            if (_handle.IsAllocated) {
+                _handle.Free();
+            }
 
+            if (_owner != null) {
                 _owner.Release();
                 _owner = null;
             }

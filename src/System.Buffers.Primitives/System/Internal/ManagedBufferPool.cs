@@ -57,7 +57,7 @@ namespace System.Buffers.Internal
                 return true;
             }
 
-            protected internal override unsafe bool TryGetPointerInternal(out void* pointer)
+            protected internal override unsafe bool TryGetPointerAt(int index, out void* pointer)
             {
                 pointer = null;
                 return false;
