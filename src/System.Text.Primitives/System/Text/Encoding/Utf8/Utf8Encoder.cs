@@ -130,6 +130,7 @@ namespace System.Text.Utf8
             int utf8Length = utf8.Length;
             int consumed = 0;
             ref byte utf8Bytes = ref utf8.DangerousGetPinnableReference();
+            ref uint utf32Pointer = ref utf32.DangerousGetPinnableReference();
             while (consumed < utf8Length)
             {
                 var currByte = Unsafe.Add(ref utf8Bytes, consumed);
@@ -139,7 +140,8 @@ namespace System.Text.Utf8
                 //if (state == 1) return false;
                 if (state == 0)
                 {
-                    utf32[charactersWritten++] = codePoint;
+                    Unsafe.Add(ref utf32Pointer, charactersWritten) = codePoint;
+                    charactersWritten++;
                     bytesConsumed = consumed;
                 }
             }

@@ -159,14 +159,15 @@ namespace System.Text.Utf16
                 return false;
             }
 
+            ref char utf16Chars = ref utf16.DangerousGetPinnableReference();
             unchecked
             {
                 if (charactersWritten == 1)
-                    utf16[index] = (char)codePoint;
+                    Unsafe.Add(ref utf16Chars, index) = (char)codePoint;
                 else
                 {
-                    utf16[index] = (char)(((codePoint - 0x010000u) >> 10) + Utf16HighSurrogateFirstCodePoint);
-                    utf16[index + 1] = (char)((codePoint & 0x3FF) + Utf16LowSurrogateFirstCodePoint);
+                    Unsafe.Add(ref utf16Chars, index) = (char)(((codePoint - 0x010000u) >> 10) + Utf16HighSurrogateFirstCodePoint);
+                    Unsafe.Add(ref utf16Chars, index + 1) = (char)((codePoint & 0x3FF) + Utf16LowSurrogateFirstCodePoint);
                 }
             }
 
