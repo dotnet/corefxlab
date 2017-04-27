@@ -77,5 +77,67 @@ namespace System.Text.Primitives.Tests
                 Assert.Equal(utf16CodePointEnumerator.Current, utf8CodePointEnumerator.Current);
             }
         }
+
+        [Theory]
+        [InlineData(0, 0x7f)]
+        [InlineData(0x80, 0x7ff)]
+        [InlineData(0x800, 0x7fff)]
+        [InlineData(0, 0xffff)]
+        [InlineData(0x10000, 0x10ffff)]
+        [InlineData(0, 0x10ffff)]
+        public void RandomUtf8ToUtf16DecodingTests(int minCodePoint, int maxCodePoint)
+        {
+            const int RandomSampleIterations = 100;
+
+            for (var i = 0; i < RandomSampleIterations; i++)
+            {
+                int charCount = Rnd.Next(50, 1000);
+                VerifyUtf8ToUtf16(charCount, minCodePoint, maxCodePoint);
+            }
+        }
+
+        static void VerifyUtf8ToUtf16(int count, int minCodePoint, int maxCodePoint)
+        {
+            byte[] data = GenerateUtf8String(count, minCodePoint, maxCodePoint);
+
+            Span<byte> encodedData = data;
+            Assert.True(TextEncoder.Utf16.TryComputeEncodedBytes(encodedData, out int needed));
+
+            // TextEncoder version
+            Span<byte> dst = new Span<byte>(new byte[needed]);
+            Span<char> actual = dst.NonPortableCast<byte, char>();
+            Assert.True(TextEncoder.Utf8.TryDecode(encodedData, actual, out int consumed, out int written));
+
+            // System version
+            int neededChars = Encoding.UTF8.GetCharCount(data);
+            char[] expected = new char[neededChars];
+            Encoding.UTF8.GetChars(data, 0, data.Length, expected, 0);
+
+            // Compare
+            Assert.True(actual.SequenceEqual(expected));
+        }
+
+        static byte[] GenerateUtf32String(int length, int minCodePoint, int maxCodePoint)
+        {
+            int[] codePoints = new int[length];
+            for (var idx = 0; idx < length; idx++)
+                codePoints[idx] = Rnd.Next(minCodePoint, maxCodePoint + 1);
+
+            return codePoints.AsSpan().AsBytes().ToArray();
+        }
+
+        static char[] GenerateUtf16String(int length, int minCodePoint, int maxCodePoint)
+        {
+            byte[] utf32 = GenerateUtf32String(length, minCodePoint, maxCodePoint);
+            return Encoding.UTF32.GetChars(utf32);
+        }
+
+        static byte[] GenerateUtf8String(int length, int minCodePoint, int maxCodePoint)
+        {
+            char[] strChars = GenerateUtf16String(length, minCodePoint, maxCodePoint);
+            return Encoding.UTF8.GetBytes(strChars);
+        }
+
+        static readonly Random Rnd = new Random(23098423);
     }
 }
