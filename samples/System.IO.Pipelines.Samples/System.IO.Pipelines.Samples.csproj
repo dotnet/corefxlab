@@ -21,5 +21,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.0" />
+    <PackageReference Include="System.Net.NameResolution" Version="4.4.0-beta-24913-02" />
   </ItemGroup>
 </Project>

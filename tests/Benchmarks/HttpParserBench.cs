@@ -271,11 +271,11 @@ public class HttpParserBench
 
 class Request : IHttpHeadersHandler, IHttpRequestLineHandler
 {
-    public Http.Method Method;
-    public Http.Version Version;
-    public string Path;
-    public string Query;
-    public string Target;
+    //public Http.Method Method;
+    //public Http.Version Version;
+    //public string Path;
+    //public string Query;
+    //public string Target;
 
     public Dictionary<string, string> Headers = new Dictionary<string, string>();
 
@@ -297,11 +297,11 @@ class Request : IHttpHeadersHandler, IHttpRequestLineHandler
 }
 
 struct RequestStruct : IHttpHeadersHandler, IHttpRequestLineHandler {
-    public Http.Method Method;
-    public Http.Version Version;
-    public string Path;
-    public string Query;
-    public string Target;
+    //public Http.Method Method;
+    //public Http.Version Version;
+    //public string Path;
+    //public string Query;
+    //public string Target;
 
     //public Dictionary<string, string> Headers = new Dictionary<string, string>();
 

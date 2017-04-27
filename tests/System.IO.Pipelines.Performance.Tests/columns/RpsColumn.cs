@@ -21,10 +21,22 @@ namespace System.IO.Pipelines.Performance.Tests
 
         public bool IsDefault(Summary summary, Benchmark benchmark) => false;
         public bool IsAvailable(Summary summary) => true;
+
+        public string GetValue(Summary summary, Benchmark benchmark, ISummaryStyle style)
+        {
+            throw new NotImplementedException();
+        }
+
         public string Id => "RPS-Column";
         public string ColumnName => "RPS";
         public bool AlwaysShow => true;
         public ColumnCategory Category => ColumnCategory.Custom;
         public int PriorityInCategory => 1;
+
+        public bool IsNumeric => throw new NotImplementedException();
+
+        public UnitType UnitType => throw new NotImplementedException();
+
+        public string Legend => throw new NotImplementedException();
     }
 }
