@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Globalization;
-using System.Text.Utf8;
 using Xunit;
 
 namespace System.Text.Formatting.Tests

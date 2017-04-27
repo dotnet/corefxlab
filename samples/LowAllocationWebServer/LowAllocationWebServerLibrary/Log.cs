@@ -2,10 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Sequences;
-using System.IO;
 using System.Text;
 using System.Text.Http;
-using System.Text.Http.SingleSegment;
 
 namespace System.Diagnostics
 {

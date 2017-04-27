@@ -3,7 +3,6 @@
 
 using System.Buffers;
 using System.Collections.Sequences;
-using System.Text.Utf8;
 
 namespace System.Text.Parsing
 {

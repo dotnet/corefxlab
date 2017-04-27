@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Buffers.Pools;
-using System.Collections.Generic;
 using Xunit;
 
 namespace System.Buffers.Tests

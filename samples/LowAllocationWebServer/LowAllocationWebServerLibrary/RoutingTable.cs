@@ -4,7 +4,6 @@
 using System;
 using System.Text;
 using System.Text.Http;
-using System.Text.Http.SingleSegment;
 using System.Text.Utf8;
 
 namespace Microsoft.Net.Http

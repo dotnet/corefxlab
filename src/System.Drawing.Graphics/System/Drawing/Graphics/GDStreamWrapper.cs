@@ -1,12 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved. 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
 
-using System; 
- using System.Collections.Generic; 
- using System.IO; 
- using System.Runtime.InteropServices; 
- using System.Text; 
- using System.Threading.Tasks;
+using System.IO;
+using System.Runtime.InteropServices;
 
 
 namespace System.Drawing.Graphics

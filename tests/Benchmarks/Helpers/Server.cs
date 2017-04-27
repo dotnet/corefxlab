@@ -3,8 +3,6 @@
 
 using System.Buffers;
 using System.Diagnostics;
-using System.Text;
-using System.Text.Formatting;
 using System.Text.Http;
 using System.Text.Http.SingleSegment;
 using System.Text.Utf8;

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Cil.Decoder;
 using System.Reflection.Metadata.Cil.Visitor;
-using System.Reflection.Metadata.Decoding;
 using System.Reflection.Metadata.Ecma335;
 
 namespace System.Reflection.Metadata.Cil

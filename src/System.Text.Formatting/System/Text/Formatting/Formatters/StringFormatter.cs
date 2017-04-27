@@ -3,7 +3,6 @@
 
 using System.Buffers;
 using System.Collections.Sequences;
-using System.Text;
 
 namespace System.Text.Formatting
 {

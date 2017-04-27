@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Xunit;
-using System.Text.Http.Parser;
 using System.IO.Pipelines;
 using System.Collections.Generic;
 using System.Buffers;
