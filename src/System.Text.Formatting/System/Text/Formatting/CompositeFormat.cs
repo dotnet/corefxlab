@@ -3,10 +3,9 @@
 
 using System.Buffers;
 using System.Diagnostics;
-using System.Text;
-using System.Text.Utf8;
 
-namespace System.Text.Formatting {
+namespace System.Text.Formatting
+{
 
     // This whole API is very speculative, i.e. I am not sure I am happy with the design
     // This API is trying to do composite formatting without boxing (or any other allocations).

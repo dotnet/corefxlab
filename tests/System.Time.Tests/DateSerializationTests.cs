@@ -5,7 +5,6 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
-using System.Xml.Schema;
 using System.Xml.Serialization;
 using Xunit;
 using Xunit.Abstractions;

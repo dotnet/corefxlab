@@ -4,11 +4,8 @@
 
 using System.Buffers;
 using System.Text.Formatting;
-using System.Text;
 using System.Text.Utf8;
-using FluentAssertions;
 using Xunit;
-using System.Text.Http.SingleSegment;
 
 namespace System.Text.Http.Tests
 {

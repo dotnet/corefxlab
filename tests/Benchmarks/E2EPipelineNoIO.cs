@@ -3,12 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 using Xunit;
 using Microsoft.Xunit.Performance;
 using System.Text;
 using System.IO.Pipelines.Samples;
-using System.Text.Http;
 using System.IO.Pipelines;
 using System.Text.Formatting;
 using System.Text.Json;
