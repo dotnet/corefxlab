@@ -28,11 +28,6 @@ namespace System.Text.Utf8
         private const byte b1111_0000U = 0xF0; //240
         private const byte b1111_1000U = 0xF8; //248
 
-        // bits 30 & 31 are used for pending bits fixup
-        private const int FinalByte = 1 << 29;
-        private const int SupplimentarySeq = 1 << 28;
-        private const int ThreeByteSeq = 1 << 27;
-
         #endregion Constants
 
         #region Decoding implementation
@@ -58,358 +53,149 @@ namespace System.Text.Utf8
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
         public static unsafe bool TryDecode(ReadOnlySpan<byte> utf8, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
         {
-            fixed (byte* pBytes = &utf8.DangerousGetPinnableReference())
-            fixed (char* pChars = &utf16.DangerousGetPinnableReference())
+            fixed (byte* pUtf8 = &utf8.DangerousGetPinnableReference())
+            fixed (char* pUtf16 = &utf16.DangerousGetPinnableReference())
             {
-                byte* pSrc = pBytes;
-                char* pTarget = pChars;
-
-                byte* pEnd = pSrc + utf8.Length;
-                char* pAllocatedBufferEnd = pTarget + utf16.Length;
+                byte* pSrc = pUtf8;
+                byte* pSrcEnd = pSrc + utf8.Length;
+                char* pDst = pUtf16;
+                char* pDstEnd = pDst + utf16.Length;
 
                 int ch = 0;
-                for (;;)
+                while (pSrc < pSrcEnd && pDst < pDstEnd)
                 {
-                    // SLOWLOOP: does all range checks, handles all special cases, but it is slow
+                    // we may need as many as 1 character per byte, so reduce the byte count if necessary.
+                    // If availableChars is too small, pStop will be before pTarget and we won't do fast loop.
+                    int availableChars = PtrDiff(pDstEnd, pDst);
+                    int availableBytes = PtrDiff(pSrcEnd, pSrc);
 
-                    if (pSrc >= pEnd)
-                    {
-                        break;
-                    }
-
-                    if (ch == 0)
-                    {
-                        // no pending bits
-                        goto ReadChar;
-                    }
-
-                    // read next byte. The JIT optimization seems to be getting confused when
-                    // compiling "ch = *pSrc++;", so rather use "ch = *pSrc; pSrc++;" instead
-                    int cha = *pSrc;
-                    pSrc++;
-
-                    // we are expecting to see trailing bytes like 10vvvvvv
-                    if ((cha & unchecked((sbyte)0xC0)) != 0x80)
-                    {
-                        // This can be a valid starting byte for another UTF8 byte sequence, so let's put
-                        // the current byte back, and try to see if this is a valid byte for another UTF8 byte sequence
-                        pSrc--;
-                        goto InvalidByteSequence;
-                    }
-
-                    // fold in the new byte
-                    ch = (ch << 6) | (cha & 0x3F);
-
-                    if ((ch & FinalByte) == 0)
-                    {
-                        // Not at last byte yet
-                        Debug.Assert((ch & (SupplimentarySeq | ThreeByteSeq)) != 0,
-                            "[UTF8Encoding.GetChars]Invariant volation");
-
-                        if ((ch & SupplimentarySeq) != 0)
-                        {
-                            // Its a 4-byte supplimentary sequence
-                            if ((ch & (FinalByte >> 6)) != 0)
-                            {
-                                // this is 3rd byte of 4 byte sequence - nothing to do
-                                continue;
-                            }
-
-                            // 2nd byte of 4 bytes
-                            // check for non-shortest form of surrogate and the valid surrogate
-                            // range 0x000000 - 0x10FFFF at the same time
-                            if (!InRange(ch & 0x1F0, 0x10, 0x100))
-                            {
-                                goto InvalidByteSequence;
-                            }
-                        }
-                        else
-                        {
-                            // Must be 2nd byte of a 3-byte sequence
-                            // check for non-shortest form of 3 byte seq
-                            if ((ch & (0x1F << 5)) == 0 ||                  // non-shortest form
-                                (ch & (0xF800 >> 6)) == (0xD800 >> 6))     // illegal individually encoded surrogate
-                            {
-                                goto InvalidByteSequence;
-                            }
-                        }
-                        continue;
-                    }
-
-                    // ready to punch
-
-                    // surrogate in shortest form?
-                    // Might be possible to get rid of this?  Already did non-shortest check for 4-byte sequence when reading 2nd byte?
-                    if ((ch & (SupplimentarySeq | 0x1F0000)) > SupplimentarySeq)
-                    {
-                        // let the range check for the second char throw the exception
-                        if (pTarget < pAllocatedBufferEnd)
-                        {
-                            *pTarget = (char)(((ch >> 10) & 0x7FF) +
-                                unchecked((short)((HIGH_SURROGATE_START - (0x10000 >> 10)))));
-                            pTarget++;
-
-                            ch = (ch & 0x3FF) +
-                                unchecked((int)(LOW_SURROGATE_START));
-                        }
-                    }
-
-                    goto EncodeChar;
-
-                InvalidByteSequence:
-                    // this code fragment should be close to the gotos referencing it
-                    // We hit a bad byte sequence, so we halt and return.
-                    Debug.Assert(pSrc >= pBytes,
-                        "[UTF8Encoding.GetChars]Expected invalid byte sequence to have remained within the byte array");
-                    break;
-
-                ReadChar:
-                    ch = *pSrc;
-                    pSrc++;
-
-                ProcessChar:
-                    if (ch > 0x7F)
-                    {
-                        // If its > 0x7F, its start of a new multi-byte sequence
-
-                        // bit 6 has to be non-zero
-                        if ((ch & 0x40) == 0)
-                        {
-                            goto InvalidByteSequence;
-                        }
-
-                        // start a new long code
-                        if ((ch & 0x20) != 0)
-                        {
-                            if ((ch & 0x10) != 0)
-                            {
-                                // 4 byte encoding - supplimentary character (2 surrogates)
-
-                                ch &= 0x0F;
-
-                                // check that bit 4 is zero and the valid supplimentary character
-                                // range 0x000000 - 0x10FFFF at the same time
-                                if (ch > 0x04)
-                                {
-                                    ch |= 0xf0;
-                                    goto InvalidByteSequence;
-                                }
-
-                                ch |= (FinalByte >> 3 * 6) | (1 << 30) | (3 << (30 - 2 * 6)) |
-                                    (SupplimentarySeq) | (SupplimentarySeq >> 6) |
-                                    (SupplimentarySeq >> 2 * 6) | (SupplimentarySeq >> 3 * 6);
-                            }
-                            else
-                            {
-                                // 3 byte encoding
-                                ch = (ch & 0x0F) | ((FinalByte >> 2 * 6) | (1 << 30) |
-                                    (ThreeByteSeq) | (ThreeByteSeq >> 6) | (ThreeByteSeq >> 2 * 6));
-                            }
-                        }
-                        else
-                        {
-                            // 2 byte encoding
-
-                            ch &= 0x1F;
-
-                            // check for non-shortest form
-                            if (ch <= 1)
-                            {
-                                ch |= 0xc0;
-                                goto InvalidByteSequence;
-                            }
-
-                            ch |= (FinalByte >> 6);
-                        }
-                        continue;
-                    }
-
-                EncodeChar:
-                    // write the pending character
-                    if (pTarget >= pAllocatedBufferEnd)
-                    {
-                        // Fix chars so we make sure to throw if we didn't output anything
-                        ch &= 0x1fffff;
-                        if (ch > 0x7f)
-                        {
-                            if (ch > 0x7ff)
-                            {
-                                if (ch >= LOW_SURROGATE_START &&
-                                    ch <= LOW_SURROGATE_END)
-                                {
-                                    pSrc--;     // It was 4 bytes
-                                    pTarget--;  // 1 was stored already, but we can't remember 1/2, so back up
-                                }
-                                else if (ch > 0xffff)
-                                {
-                                    pSrc--;     // It was 4 bytes, nothing was stored
-                                }
-                                pSrc--;         // It was at least 3 bytes
-                            }
-                            pSrc--;             // It was at least 2 bytes
-                        }
-                        pSrc--;
-
-                        // Throw that we don't have enough room (pSrc could be < chars if we had started to process
-                        // a 4 byte sequence alredy)
-                        Debug.Assert(pSrc >= pBytes || pTarget == pChars,
-                            "[UTF8Encoding.GetChars]Expected pSrc to be within input buffer or throw due to no output]");
-
-                        // Didn't throw, just use this buffer size.
-                        break;
-                    }
-                    *pTarget = (char)ch;
-                    pTarget++;
-
-                    // Start of fast loop section. This is optimized for ascii chars. If we go outside the ascii range,
-                    // we will end up back in the slow loop.
-
-                    int availableChars = PtrDiff(pAllocatedBufferEnd, pTarget);
-                    int availableBytes = PtrDiff(pEnd, pSrc);
+                    if (availableChars < availableBytes)
+                        availableBytes = availableChars;
 
                     // don't fall into the fast decoding loop if we don't have enough bytes
-                    // Test for availableChars is done because pStop would be <= pTarget.
                     if (availableBytes <= 13)
                     {
-                        // we may need as many as 1 character per byte
-                        if (availableChars < availableBytes)
-                        {
-                            // not enough output room.  no pending bits at this point
-                            ch = 0;
-                            continue;
-                        }
-
                         // try to get over the remainder of the ascii characters fast though
-                        byte* pLocalEnd = pEnd; // hint to get pLocalEnd enregistered
+                        byte* pLocalEnd = pSrc + availableBytes;
                         while (pSrc < pLocalEnd)
                         {
                             ch = *pSrc;
                             pSrc++;
 
                             if (ch > 0x7F)
-                                goto ProcessChar;
+                                goto LongCodeSlow;
 
-                            *pTarget = (char)ch;
-                            pTarget++;
+                            *pDst = (char)ch;
+                            pDst++;
                         }
-                        // we are done
-                        ch = 0;
-                        break;
-                    }
 
-                    // we may need as many as 1 character per byte, so reduce the byte count if necessary.
-                    // If availableChars is too small, pStop will be before pTarget and we won't do fast loop.
-                    if (availableChars < availableBytes)
-                    {
-                        availableBytes = availableChars;
+                        // we are done
+                        break;
                     }
 
                     // To compute the upper bound, assume that all characters are ASCII characters at this point,
                     //  the boundary will be decreased for every non-ASCII character we encounter
                     // Also, we need 7 chars reserve for the unrolled ansi decoding loop and for decoding of multibyte sequences
-                    char* pStop = pTarget + availableBytes - 7;
+                    char* pStop = pDst + availableBytes - 7;
 
-                    while (pTarget < pStop)
+                    // Fast loop
+                    while (pDst < pStop)
                     {
                         ch = *pSrc;
                         pSrc++;
 
                         if (ch > 0x7F)
-                        {
                             goto LongCode;
-                        }
-                        *pTarget = (char)ch;
-                        pTarget++;
 
-                        // get pSrc to be 2-byte aligned
+                        *pDst = (char)ch;
+                        pDst++;
+
+                        // 2-byte align
                         if ((unchecked((int)pSrc) & 0x1) != 0)
                         {
                             ch = *pSrc;
                             pSrc++;
+
                             if (ch > 0x7F)
-                            {
                                 goto LongCode;
-                            }
-                            *pTarget = (char)ch;
-                            pTarget++;
+
+                            *pDst = (char)ch;
+                            pDst++;
                         }
 
-                        // get pSrc to be 4-byte aligned
+                        // 4-byte align
                         if ((unchecked((int)pSrc) & 0x2) != 0)
                         {
                             ch = *(ushort*)pSrc;
                             if ((ch & 0x8080) != 0)
-                            {
                                 goto LongCodeWithMask16;
-                            }
 
-                            // Unfortunately, this is endianess sensitive
-    #if BIGENDIAN
-                            *pTarget = (char)((ch >> 8) & 0x7F);
+                            // Unfortunately, endianness sensitive
+#if BIGENDIAN
+                            *pDst = (char)((ch >> 8) & 0x7F);
                             pSrc += 2;
-                            *(pTarget+1) = (char)(ch & 0x7F);
-                            pTarget += 2;
-    #else // BIGENDIAN
-                            *pTarget = (char)(ch & 0x7F);
+                            *(pDst + 1) = (char)(ch & 0x7F);
+                            pDst += 2;
+#else // BIGENDIAN
+                            *pDst = (char)(ch & 0x7F);
                             pSrc += 2;
-                            *(pTarget + 1) = (char)((ch >> 8) & 0x7F);
-                            pTarget += 2;
-    #endif // BIGENDIAN
+                            *(pDst + 1) = (char)((ch >> 8) & 0x7F);
+                            pDst += 2;
+#endif // BIGENDIAN
                         }
 
                         // Run 8 characters at a time!
-                        while (pTarget < pStop)
+                        while (pDst < pStop)
                         {
                             ch = *(int*)pSrc;
                             int chb = *(int*)(pSrc + 4);
                             if (((ch | chb) & unchecked((int)0x80808080)) != 0)
-                            {
                                 goto LongCodeWithMask32;
-                            }
 
-                            // Unfortunately, this is endianess sensitive
-    #if BIGENDIAN
-                            *pTarget = (char)((ch >> 24) & 0x7F);
-                            *(pTarget+1) = (char)((ch >> 16) & 0x7F);
-                            *(pTarget+2) = (char)((ch >> 8) & 0x7F);
-                            *(pTarget+3) = (char)(ch & 0x7F);
+                            // Unfortunately, endianness sensitive
+#if BIGENDIAN
+                            *pDst = (char)((ch >> 24) & 0x7F);
+                            *(pDst+1) = (char)((ch >> 16) & 0x7F);
+                            *(pDst+2) = (char)((ch >> 8) & 0x7F);
+                            *(pDst+3) = (char)(ch & 0x7F);
                             pSrc += 8;
-                            *(pTarget+4) = (char)((chb >> 24) & 0x7F);
-                            *(pTarget+5) = (char)((chb >> 16) & 0x7F);
-                            *(pTarget+6) = (char)((chb >> 8) & 0x7F);
-                            *(pTarget+7) = (char)(chb & 0x7F);
-                            pTarget += 8;
-    #else // BIGENDIAN
-                            *pTarget = (char)(ch & 0x7F);
-                            *(pTarget + 1) = (char)((ch >> 8) & 0x7F);
-                            *(pTarget + 2) = (char)((ch >> 16) & 0x7F);
-                            *(pTarget + 3) = (char)((ch >> 24) & 0x7F);
+                            *(pDst+4) = (char)((chb >> 24) & 0x7F);
+                            *(pDst+5) = (char)((chb >> 16) & 0x7F);
+                            *(pDst+6) = (char)((chb >> 8) & 0x7F);
+                            *(pDst+7) = (char)(chb & 0x7F);
+                            pDst += 8;
+#else // BIGENDIAN
+                            *pDst = (char)(ch & 0x7F);
+                            *(pDst + 1) = (char)((ch >> 8) & 0x7F);
+                            *(pDst + 2) = (char)((ch >> 16) & 0x7F);
+                            *(pDst + 3) = (char)((ch >> 24) & 0x7F);
                             pSrc += 8;
-                            *(pTarget + 4) = (char)(chb & 0x7F);
-                            *(pTarget + 5) = (char)((chb >> 8) & 0x7F);
-                            *(pTarget + 6) = (char)((chb >> 16) & 0x7F);
-                            *(pTarget + 7) = (char)((chb >> 24) & 0x7F);
-                            pTarget += 8;
-    #endif // BIGENDIAN
+                            *(pDst + 4) = (char)(chb & 0x7F);
+                            *(pDst + 5) = (char)((chb >> 8) & 0x7F);
+                            *(pDst + 6) = (char)((chb >> 16) & 0x7F);
+                            *(pDst + 7) = (char)((chb >> 24) & 0x7F);
+                            pDst += 8;
+#endif // BIGENDIAN
                         }
+
                         break;
 
-    #if BIGENDIAN
+#if BIGENDIAN
                     LongCodeWithMask32:
                         // be careful about the sign extension
                         ch = (int)(((uint)ch) >> 16);
                     LongCodeWithMask16:
                         ch = (int)(((uint)ch) >> 8);
-    #else // BIGENDIAN
+#else // BIGENDIAN
                     LongCodeWithMask32:
                     LongCodeWithMask16:
                         ch &= 0xFF;
-    #endif // BIGENDIAN
+#endif // BIGENDIAN
                         pSrc++;
                         if (ch <= 0x7F)
                         {
-                            *pTarget = (char)ch;
-                            pTarget++;
+                            *pDst = (char)ch;
+                            pDst++;
                             continue;
                         }
 
@@ -417,103 +203,82 @@ namespace System.Text.Utf8
                         int chc = *pSrc;
                         pSrc++;
 
-                        if (
-                            // bit 6 has to be zero
-                            (ch & 0x40) == 0 ||
-                            // we are expecting to see trailing bytes like 10vvvvvv
-                            (chc & unchecked((sbyte)0xC0)) != 0x80)
-                        {
-                            goto BadLongCode;
-                        }
+                        // Bit 6 should be 0, and trailing byte should be 10vvvvvv
+                        if ((ch & 0x40) == 0 || (chc & unchecked((sbyte)0xC0)) != 0x80)
+                            goto ErrorExit;
 
                         chc &= 0x3F;
 
-                        // start a new long code
                         if ((ch & 0x20) != 0)
                         {
-                            // fold the first two bytes together
+                            // Handle 3 or 4 byte encoding.
+
+                            // Fold the first 2 bytes together
                             chc |= (ch & 0x0F) << 6;
 
                             if ((ch & 0x10) != 0)
                             {
-                                // 4 byte encoding - surrogate
+                                // 4 byte - surrogate pair
                                 ch = *pSrc;
-                                if (
-                                    // check that bit 4 is zero, the non-shortest form of surrogate
-                                    // and the valid surrogate range 0x000000 - 0x10FFFF at the same time
-                                    !InRange(chc >> 4, 0x01, 0x10) ||
-                                    // we are expecting to see trailing bytes like 10vvvvvv
-                                    (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                {
-                                    goto BadLongCode;
-                                }
 
+                                // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
+                                // and the trailing byte should be 10vvvvvv
+                                if (!InRange(chc >> 4, 0x01, 0x10) || (ch & unchecked((sbyte)0xC0)) != 0x80)
+                                    goto ErrorExit;
+
+                                // Merge 3rd byte then read the last byte
                                 chc = (chc << 6) | (ch & 0x3F);
-
                                 ch = *(pSrc + 1);
-                                // we are expecting to see trailing bytes like 10vvvvvv
-                                if ((ch & unchecked((sbyte)0xC0)) != 0x80)
-                                {
-                                    goto BadLongCode;
-                                }
-                                pSrc += 2;
 
+                                // The last trailing byte still holds the form 10vvvvvv
+                                if ((ch & unchecked((sbyte)0xC0)) != 0x80)
+                                    goto ErrorExit;
+
+                                pSrc += 2;
                                 ch = (chc << 6) | (ch & 0x3F);
 
-                                *pTarget = (char)(((ch >> 10) & 0x7FF) +
-                                    unchecked((short)(HIGH_SURROGATE_START - (0x10000 >> 10))));
-                                pTarget++;
+                                *pDst = (char)(((ch >> 10) & 0x7FF) + unchecked((short)(HIGH_SURROGATE_START - (0x10000 >> 10))));
+                                pDst++;
 
-                                ch = (ch & 0x3FF) +
-                                    unchecked((short)(LOW_SURROGATE_START));
-
-                                // extra byte, we're already planning 2 chars for 2 of these bytes,
-                                // but the big loop is testing the target against pStop, so we need
-                                // to subtract 2 more or we risk overrunning the input.  Subtract
-                                // one here and one below.
-                                pStop--;
+                                ch = (ch & 0x3FF) + unchecked((short)(LOW_SURROGATE_START));
                             }
                             else
                             {
                                 // 3 byte encoding
                                 ch = *pSrc;
-                                if (
-                                    // check for non-shortest form of 3 byte seq
-                                    (chc & (0x1F << 5)) == 0 ||
-                                    // Can't have surrogates here.
+
+                                // Check for non-shortest form of 3 byte sequence
+                                // No surrogates
+                                // Trailing byte must be in the form 10vvvvvv
+                                if ((chc & (0x1F << 5)) == 0 ||
                                     (chc & (0xF800 >> 6)) == (0xD800 >> 6) ||
-                                    // we are expecting to see trailing bytes like 10vvvvvv
                                     (ch & unchecked((sbyte)0xC0)) != 0x80)
-                                {
-                                    goto BadLongCode;
-                                }
+                                    goto ErrorExit;
+
                                 pSrc++;
-
                                 ch = (chc << 6) | (ch & 0x3F);
-
-                                // extra byte, we're only expecting 1 char for each of these 3 bytes,
-                                // but the loop is testing the target (not source) against pStop, so
-                                // we need to subtract 2 more or we risk overrunning the input.
-                                // Subtract 1 here and one more below
-                                pStop--;
                             }
+
+                            // extra byte, we're already planning 2 chars for 2 of these bytes,
+                            // but the big loop is testing the target against pStop, so we need
+                            // to subtract 2 more or we risk overrunning the input.  Subtract
+                            // one here and one below.
+                            pStop--;
                         }
                         else
                         {
                             // 2 byte encoding
-
                             ch &= 0x1F;
 
-                            // check for non-shortest form
+                            // Check for non-shortest form
                             if (ch <= 1)
-                            {
-                                goto BadLongCode;
-                            }
+                                goto ErrorExit;
+
                             ch = (ch << 6) | chc;
                         }
 
-                        *pTarget = (char)ch;
-                        pTarget++;
+                        *pDst = (char)ch;
+                        pDst++;
 
                         // extra byte, we're only expecting 1 char for each of these 2 bytes,
                         // but the loop is testing the target (not source) against pStop.
@@ -521,20 +286,95 @@ namespace System.Text.Utf8
                         pStop--;
                     }
 
-                    Debug.Assert(pTarget <= pAllocatedBufferEnd, "[UTF8Encoding.GetChars]pTarget <= pAllocatedBufferEnd");
-
-                    // no pending bits at this point
-                    ch = 0;
                     continue;
 
-                BadLongCode:
-                    pSrc -= 2;
-                    break;
+                LongCodeSlow:
+                    int chd = *pSrc;
+                    pSrc++;
+
+                    // Bit 6 should be 0, and trailing byte should be 10vvvvvv
+                    if ((ch & 0x40) == 0 || (chd & unchecked((sbyte)0xC0)) != 0x80)
+                        goto ErrorExit;
+
+                    chd &= 0x3F;
+
+                    if ((ch & 0x20) != 0)
+                    {
+                        // Handle 3 or 4 byte encoding.
+
+                        // Fold the first 2 bytes together
+                        chd |= (ch & 0x0F) << 6;
+
+                        if ((ch & 0x10) != 0)
+                        {
+                            // 4 byte - surrogate pair
+                            ch = *pSrc;
+
+                            // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
+                            // and the trailing byte should be 10vvvvvv
+                            if (!InRange(chd >> 4, 0x01, 0x10) || (ch & unchecked((sbyte)0xC0)) != 0x80)
+                                goto ErrorExit;
+
+                            // Merge 3rd byte then read the last byte
+                            chd = (chd << 6) | (ch & 0x3F);
+                            ch = *(pSrc + 1);
+
+                            // The last trailing byte still holds the form 10vvvvvv
+                            if ((ch & unchecked((sbyte)0xC0)) != 0x80)
+                                goto ErrorExit;
+
+                            if (PtrDiff(pDstEnd, pDst) < 2)
+                                goto ErrorExit;
+
+                            pSrc += 2;
+                            ch = (chd << 6) | (ch & 0x3F);
+
+                            *pDst = (char)(((ch >> 10) & 0x7FF) + unchecked((short)(HIGH_SURROGATE_START - (0x10000 >> 10))));
+                            pDst++;
+
+                            ch = (ch & 0x3FF) + unchecked((short)(LOW_SURROGATE_START));
+                        }
+                        else
+                        {
+                            // 3 byte encoding
+                            ch = *pSrc;
+
+                            // Check for non-shortest form of 3 byte sequence
+                            // No surrogates
+                            // Trailing byte must be in the form 10vvvvvv
+                            if ((chd & (0x1F << 5)) == 0 ||
+                                (chd & (0xF800 >> 6)) == (0xD800 >> 6) ||
+                                (ch & unchecked((sbyte)0xC0)) != 0x80)
+                                goto ErrorExit;
+
+                            pSrc++;
+                            ch = (chd << 6) | (ch & 0x3F);
+                        }
+                    }
+                    else
+                    {
+                        // 2 byte encoding
+                        ch &= 0x1F;
+
+                        // Check for non-shortest form
+                        if (ch <= 1)
+                            goto ErrorExit;
+
+                        ch = (ch << 6) | chd;
+                    }
+
+                    *pDst = (char)ch;
+                    pDst++;
                 }
 
-                bytesConsumed = (int)(pSrc - pBytes);
-                charactersWritten = (int)(pTarget - pChars);
-                return PtrDiff(pEnd, pSrc) == 0;
+                bytesConsumed = PtrDiff(pSrc, pUtf8);
+                charactersWritten = PtrDiff(pDst, pUtf16);
+                return PtrDiff(pSrcEnd, pSrc) == 0;
+
+            ErrorExit:
+                bytesConsumed = PtrDiff(pSrc - 2, pUtf8);
+                charactersWritten = PtrDiff(pDst, pUtf16);
+                return false;
             }
         }
 
