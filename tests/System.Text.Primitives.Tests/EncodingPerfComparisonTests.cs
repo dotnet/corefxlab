@@ -18,7 +18,7 @@ namespace System.Text.Primitives.Tests
             string unicodeString = GenerateString(charLength, minCodePoint, maxCodePoint);
             ReadOnlySpan<char> characters = unicodeString.AsSpan();
 
-            Encoding utf8 = Encoding.UTF8;
+            Text.Encoding utf8 = Text.Encoding.UTF8;
 
             int utf8Length = utf8.GetByteCount(unicodeString);
             byte[] utf8Buffer = new byte[utf8Length];

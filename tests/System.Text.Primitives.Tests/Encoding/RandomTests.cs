@@ -443,7 +443,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("test124")]
         public unsafe void StringEquals(string text)
         {
-            byte[] textArray = Encoding.UTF8.GetBytes(text);
+            byte[] textArray = Text.Encoding.UTF8.GetBytes(text);
             byte[] buffer = new byte[textArray.Length];
 
             fixed (byte* p = textArray)
@@ -737,21 +737,21 @@ namespace System.Text.Primitives.Tests
                 "a\uABC1c",
                 "ab\uABC2",
                 "\uABC0\uABC1\uABC2",
-                Encoding.UTF8.GetString(new byte[] { 0xF0, 0x9F, 0x92, 0xA9})
+                Text.Encoding.UTF8.GetString(new byte[] { 0xF0, 0x9F, 0x92, 0xA9})
             };
             return data.Select(s => new object[] { s });
         }
         [Theory]
         [MemberData("TryComputeEncodedBytesShouldMatchEncoding_Strings")]
         public void TryComputeEncodedBytesShouldMatchEncoding_Utf8(string value)
-            => TryTryComputeEncodedBytesShouldMatchEncoding(value, TextEncoder.Utf8, Encoding.UTF8);
+            => TryTryComputeEncodedBytesShouldMatchEncoding(value, TextEncoder.Utf8, Text.Encoding.UTF8);
 
         [Theory]
         [MemberData("TryComputeEncodedBytesShouldMatchEncoding_Strings")]
         public void TryComputeEncodedBytesShouldMatchEncoding_Utf16(string value)
-            => TryTryComputeEncodedBytesShouldMatchEncoding(value, TextEncoder.Utf16, Encoding.Unicode);
+            => TryTryComputeEncodedBytesShouldMatchEncoding(value, TextEncoder.Utf16, Text.Encoding.Unicode);
 
-        static unsafe void TryTryComputeEncodedBytesShouldMatchEncoding(string value, TextEncoder encoder, Encoding encoding)
+        static unsafe void TryTryComputeEncodedBytesShouldMatchEncoding(string value, TextEncoder encoder, Text.Encoding encoding)
         {
             int expectedBytes = encoding.GetByteCount(value);
 
@@ -761,7 +761,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedBytes, actual);
 
             // test via utf8 input
-            var bytes = Encoding.UTF8.GetBytes(value);
+            var bytes = Text.Encoding.UTF8.GetBytes(value);
             fixed (byte* ptr = bytes)
             {
                 var utf8 = new Span<byte>(ptr, bytes.Length);
@@ -770,7 +770,7 @@ namespace System.Text.Primitives.Tests
             }
 
             // test via utf16 input
-            bytes = Encoding.Unicode.GetBytes(value);
+            bytes = Text.Encoding.Unicode.GetBytes(value);
             fixed (byte* ptr = bytes)
             {
                 var utf16 = new Span<char>(ptr, bytes.Length / 2);
@@ -779,7 +779,7 @@ namespace System.Text.Primitives.Tests
             }
 
             // test via utf32 input
-            bytes = Encoding.UTF32.GetBytes(value);
+            bytes = Text.Encoding.UTF32.GetBytes(value);
             fixed (byte* ptr = bytes)
             {
                 var utf32 = new Span<uint>(ptr, bytes.Length / 4);
