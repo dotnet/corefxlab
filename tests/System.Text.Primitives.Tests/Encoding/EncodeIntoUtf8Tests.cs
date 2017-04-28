@@ -16,16 +16,17 @@ namespace System.Text.Primitives.Tests.Encoding
         [Fact]
         public void InputBufferEmpty()
         {
-            ReadOnlySpan<char> utf16 = ReadOnlySpan<char>.Empty;
+            string inputString = TextEncoderTestHelper.GenerateValidString(0, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
+            ReadOnlySpan <char> utf16 = inputString.AsSpan();
             byte[] expectedBytes = testEncoder.GetBytes(utf16.ToArray());
-            var encodedBytes = Span<byte>.Empty;    // Output buffer is size 0
+            var encodedBytes = new Span<byte>(new byte[0]);    // Output buffer is size 0
 
             Assert.True(utf8.TryEncode(utf16, encodedBytes, out int charactersConsumed, out int bytesWritten));
             Assert.Equal(utf16.Length, charactersConsumed);
             Assert.Equal(expectedBytes.Length, bytesWritten);
             Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes));
 
-            encodedBytes = new Span<byte>(new byte[100]); // Output buffer is not size 0
+            encodedBytes = new Span<byte>(new byte[1]); // Output buffer is not size 0
 
             Assert.True(utf8.TryEncode(utf16, encodedBytes, out charactersConsumed, out bytesWritten));
             Assert.Equal(utf16.Length, charactersConsumed);
@@ -38,7 +39,7 @@ namespace System.Text.Primitives.Tests.Encoding
         {
             string inputString = TextEncoderTestHelper.GenerateValidString(CharLength, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
             ReadOnlySpan<char> utf16 = inputString.AsSpan();
-            var encodedBytes = Span<byte>.Empty;
+            var encodedBytes = new Span<byte>(new byte[0]);
 
             Assert.False(utf8.TryEncode(utf16, encodedBytes, out int charactersConsumed, out int bytesWritten));
             Assert.Equal(0, charactersConsumed);
@@ -55,15 +56,13 @@ namespace System.Text.Primitives.Tests.Encoding
             int expectedBytesWritten = expectedBytes.Length;
             var encodedBytes1 = new Span<byte>(new byte[expectedBytesWritten / 2]);
 
-            Assert.False(utf8.TryEncode(utf16, encodedBytes1, out int charactersConsumed, out int bytesWritten));
-            Assert.Equal(utf16.Length / 2, charactersConsumed);
-            Assert.Equal(expectedBytesWritten / 2, bytesWritten);
+            Assert.False(utf8.TryEncode(utf16, encodedBytes1, out int charactersConsumed1, out int bytesWritten1));
 
-            var encodedBytes2 = new Span<byte>(new byte[expectedBytesWritten / 2]);
+            var encodedBytes2 = new Span<byte>(new byte[expectedBytesWritten - bytesWritten1]);
 
-            Assert.True(utf8.TryEncode(utf16.Slice(charactersConsumed), encodedBytes2, out charactersConsumed, out bytesWritten));
-            Assert.Equal(utf16.Length / 2, charactersConsumed);
-            Assert.Equal(expectedBytesWritten / 2, bytesWritten);
+            Assert.True(utf8.TryEncode(utf16.Slice(charactersConsumed1), encodedBytes2, out int charactersConsumed2, out int bytesWritten2));
+            Assert.Equal(utf16.Length, charactersConsumed1 + charactersConsumed2);
+            Assert.Equal(expectedBytesWritten, bytesWritten1 + bytesWritten2);
 
             var encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
             encodedBytes1.CopyTo(encodedBytes);
@@ -121,12 +120,13 @@ namespace System.Text.Primitives.Tests.Encoding
             string inputString = TextEncoderTestHelper.GenerateStringWithInvalidChars(CharLength);
             ReadOnlySpan<char> utf16 = inputString.AsSpan();
             byte[] expectedBytes = testEncoder.GetBytes(utf16.ToArray());
-            int expectedBytesWritten = expectedBytes.Length;
+            int expectedBytesWritten = GetByteCount(utf16);
             var encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
 
             Assert.False(utf8.TryEncode(utf16, encodedBytes, out int charactersConsumed, out int bytesWritten));
             Assert.True(charactersConsumed < inputString.Length);
             Assert.Equal(expectedBytesWritten, bytesWritten);
+            Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes.AsSpan().Slice(0, expectedBytesWritten), encodedBytes));
         }
 
         [Fact]
@@ -164,6 +164,49 @@ namespace System.Text.Primitives.Tests.Encoding
             Assert.Equal(utf16.Length, charactersConsumed);
             Assert.Equal(expectedBytesWritten, bytesWritten);
             Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes));
+        }
+
+        private int GetByteCount(ReadOnlySpan<char> utf16)
+        {
+            var inputLength = utf16.Length;
+
+            int temp = 0;
+            for (int i = 0; i < inputLength; i++)
+            {
+                char codePoint = utf16[i];
+                if (codePoint <= TextEncoderConstants.Utf8OneByteLastCodePoint)
+                {
+                    temp += 1;
+                }
+                else if (codePoint <= TextEncoderConstants.Utf8TwoBytesLastCodePoint)
+                {
+                    temp += 2;
+                }
+                else if (codePoint >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && codePoint <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
+                {
+                    i++;
+                    if (i >= inputLength)
+                    {
+                        return temp;
+                    }
+                    char lowSurrogate = utf16[i];
+
+                    if (lowSurrogate < TextEncoderConstants.Utf16LowSurrogateFirstCodePoint || lowSurrogate > TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
+                    {
+                        return temp;    // invalid char
+                    }
+                    temp += 4;
+                }
+                else if (codePoint >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && codePoint <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
+                {
+                    return temp;        // invalid char
+                }
+                else
+                {
+                    temp += 3;
+                }
+            }
+            return temp;
         }
     }
 }

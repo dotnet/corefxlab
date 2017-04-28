@@ -27,7 +27,6 @@ namespace System.Text.Primitives.Tests.Encoding
             switch(subset)
             {
                 case CodePointSubset.ASCII:
-                    minCodePoint = 0;
                     maxCodePoint = TextEncoderConstants.Utf8OneByteLastCodePoint;
                     break;
                 case CodePointSubset.TwoBytes:
@@ -44,7 +43,6 @@ namespace System.Text.Primitives.Tests.Encoding
                     maxCodePoint = TextEncoderConstants.Utf16LowSurrogateLastCodePoint;
                     break;
                 case CodePointSubset.Mixed:
-                    minCodePoint = 0;
                     maxCodePoint = TextEncoderConstants.Utf8ThreeBytesLastCodePoint;
                     break;
                 default:
@@ -102,7 +100,7 @@ namespace System.Text.Primitives.Tests.Encoding
                 {
                     while (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(minCodePoint, maxCodePoint); // skip surrogate characters if they can't be paired
+                        val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint); // skip surrogate characters if they can't be paired
                     }
                 }
                 plainText.Append((char)val);
