@@ -289,6 +289,9 @@ namespace System.Text.Utf8
                     continue;
 
                 LongCodeSlow:
+                    if (pSrc >= pSrcEnd)
+                        goto ErrorExit;
+
                     int chd = *pSrc;
                     pSrc++;
 
@@ -308,6 +311,10 @@ namespace System.Text.Utf8
                         if ((ch & 0x10) != 0)
                         {
                             // 4 byte - surrogate pair
+                            // We need 2 more bytes
+                            if (pSrc >= pSrcEnd - 1)
+                                goto ErrorExit;
+
                             ch = *pSrc;
 
                             // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
@@ -323,6 +330,7 @@ namespace System.Text.Utf8
                             if ((ch & unchecked((sbyte)0xC0)) != 0x80)
                                 goto ErrorExit;
 
+                            // We only for for sure we have room for one more char, but we need an extra now.
                             if (PtrDiff(pDstEnd, pDst) < 2)
                                 goto ErrorExit;
 
@@ -337,6 +345,9 @@ namespace System.Text.Utf8
                         else
                         {
                             // 3 byte encoding
+                            if (pSrc >= pSrcEnd)
+                                goto ErrorExit;
+
                             ch = *pSrc;
 
                             // Check for non-shortest form of 3 byte sequence
@@ -371,7 +382,7 @@ namespace System.Text.Utf8
                 charactersWritten = PtrDiff(pDst, pUtf16);
                 return PtrDiff(pSrcEnd, pSrc) == 0;
 
-            ErrorExit:
+                ErrorExit:
                 bytesConsumed = PtrDiff(pSrc - 2, pUtf8);
                 charactersWritten = PtrDiff(pDst, pUtf16);
                 return false;
