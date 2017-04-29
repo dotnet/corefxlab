@@ -9,48 +9,64 @@ namespace System.Text.Primitives.Tests.Encoding
     public class EncodeIntoUtf16Tests : ITextEncoderTest
     {
         private static TextEncoder utf16 = TextEncoder.Utf16;
+        private static Text.Encoding testEncoder = Text.Encoding.Unicode;
 
-        public void InputBufferContainsAllCodePoints()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void InputBufferContainsNonASCII()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void InputBufferContainsOnlyASCII()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void InputBufferContainsOnlyInvalidData()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void InputBufferContainsSomeInvalidData()
-        {
-            throw new NotImplementedException();
-        }
-
+        //[Fact]
         public void InputBufferEmpty()
         {
             throw new NotImplementedException();
         }
 
-        public void InputBufferLargerThanOutputBuffer()
-        {
-            throw new NotImplementedException();
-        }
-
+        //[Fact]
         public void OutputBufferEmpty()
         {
             throw new NotImplementedException();
         }
 
+        //[Fact]
+        public void InputBufferLargerThanOutputBuffer()
+        {
+            throw new NotImplementedException();
+        }
+
+        //[Fact]
         public void OutputBufferLargerThanInputBuffer()
+        {
+            throw new NotImplementedException();
+        }
+
+        //[Fact]
+        public void InputBufferContainsOnlyInvalidData()
+        {
+            throw new NotImplementedException();
+        }
+
+        //[Fact]
+        public void InputBufferContainsSomeInvalidData()
+        {
+            throw new NotImplementedException();
+        }
+
+        //[Fact]
+        public void InputBufferEndsOnHighSurrogateAndRestart()
+        {
+            throw new NotImplementedException();
+        }
+
+        //[Fact]
+        public void InputBufferContainsOnlyASCII()
+        {
+            throw new NotImplementedException();
+        }
+
+        //[Fact]
+        public void InputBufferContainsNonASCII()
+        {
+            throw new NotImplementedException();
+        }
+
+        //[Fact]
+        public void InputBufferContainsAllCodePoints()
         {
             throw new NotImplementedException();
         }

@@ -791,10 +791,76 @@ namespace System.Text.Primitives.Tests
         [Fact]
         public void TryComputeEncodedBytesIllegal_Utf8()
         {
-            string text = Utf8.Tests.Utf8EncoderTests.GenerateOnlyInvalidString(20);
+            string text = Encoding.TextEncoderTestHelper.GenerateOnlyInvalidString(20);
 
             int bytes;
             Assert.False(TextEncoder.Utf8.TryComputeEncodedBytes(text, out bytes));
+        }
+
+
+        public static object[][] EnsureCodeUnitsOfStringTestCases = {
+            // empty
+            new object[] { new byte[0],""},
+            // ascii
+            new object[] { new byte[] { 0x61 }, "a"},
+            new object[] { new byte[] { 0x61, 0x62, 0x63 }, "abc"},
+            new object[] { new byte[] { 0x41, 0x42, 0x43, 0x44 }, "ABCD"},
+            new object[] { new byte[] { 0x30, 0x31, 0x32, 0x33, 0x34 }, "01234"},
+            new object[] { new byte[] { 0x20, 0x2c, 0x2e, 0x0d, 0x0a, 0x5b, 0x5d, 0x3c, 0x3e, 0x28, 0x29 },  " ,.\r\n[]<>()"},
+            // edge cases for multibyte characters
+            new object[] { new byte[] { 0x7f }, "\u007f"},
+            new object[] { new byte[] { 0xc2, 0x80 }, "\u0080"},
+            new object[] { new byte[] { 0xdf, 0xbf }, "\u07ff"},
+            new object[] { new byte[] { 0xe0, 0xa0, 0x80 }, "\u0800"},
+            new object[] { new byte[] { 0xef, 0xbf, 0xbf }, "\uffff"},
+            // ascii mixed with multibyte characters
+            // 1 code unit + 2 code units
+            new object[] { new byte[] { 0x61, 0xc2, 0x80 }, "a\u0080"},
+            // 2 code units + 1 code unit
+            new object[] { new byte[] { 0xc2, 0x80, 0x61 }, "\u0080a"},
+            // 1 code unit + 2 code units + 1 code unit
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61 }, "a\u0080a"},
+            // 3 code units + 2 code units
+            new object[] { new byte[] { 0xe0, 0xa0, 0x80, 0xc2, 0x80 }, "\u0800\u0080"},
+            // 2 code units + 3 code units
+            new object[] { new byte[] { 0xc2, 0x80, 0xe0, 0xa0, 0x80 }, "\u0080\u0800"},
+            // 2 code units + 3 code units
+            new object[] { new byte[] { 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf }, "\u0080a\uffff"},
+            // 1 code unit + 2 code units + 3 code units
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0xef, 0xbf, 0xbf }, "a\u0080\uffff"},
+            // 2 code units + 3 code units + 1 code unit
+            new object[] { new byte[] { 0xc2, 0x80, 0xef, 0xbf, 0xbf, 0x61 }, "\u0080\uffffa"},
+            // 1 code unit + 2 code units + 3 code units
+            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf, 0x61 }, "a\u0080a\uffffa"}
+            // TODO: Add case with 4 byte character - it is impossible to do using string literals, need to create it using code point
+        };
+        [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
+        public void EnsureCodeUnitsOfStringByEnumeratingBytes(byte[] expectedBytes, string str)
+        {
+            var utf8String = new Utf8String(str);
+            Assert.Equal(expectedBytes.Length, utf8String.Length);
+            Utf8String.Enumerator e = utf8String.GetEnumerator();
+
+            int i = 0;
+            while (e.MoveNext())
+            {
+                Assert.True(i < expectedBytes.Length);
+                Assert.Equal(expectedBytes[i], (byte)e.Current);
+                i++;
+            }
+            Assert.Equal(expectedBytes.Length, i);
+        }
+
+        [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
+        public void EnsureCodeUnitsOfStringByIndexingBytes(byte[] expectedBytes, string str)
+        {
+            var utf8String = new Utf8String(str);
+            Assert.Equal(expectedBytes.Length, utf8String.Length);
+
+            for (int i = 0; i < utf8String.Length; i++)
+            {
+                Assert.Equal(expectedBytes[i], (byte)utf8String[i]);
+            }
         }
     }
 }

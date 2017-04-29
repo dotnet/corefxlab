@@ -179,6 +179,51 @@ namespace System.Text.Primitives.Tests.Encoding
             return plainText.ToString();
         }
 
+        public static string GenerateValidStringEndsWithHighStartsWithLow(int charLength, bool startsWithLow)
+        {
+            Random rand = new Random(42);
+            var plainText = new StringBuilder();
+
+            int val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
+            if (charLength > 0)
+            {
+                if (startsWithLow)
+                {
+                    // first character must be low surrogate
+                    val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);
+                }
+                plainText.Append((char)val);
+            }
+
+            for (int j = 1; j < charLength; j++)
+            {
+                val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
+
+                if (j < charLength - 1)
+                {
+                    while (val >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
+                    {
+                        val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint); // skip surrogate characters if they can't be paired
+                    }
+
+                    if (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
+                    {
+                        plainText.Append((char)val);    // high surrogate
+                        j++;
+                        val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);  // low surrogate
+                    }
+                }
+                else
+                {
+                    // if first char is valid, last char should be high surrogate (no low surrogate after, invalid)
+                    val = startsWithLow ? rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint) : rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint);
+                }
+
+                plainText.Append((char)val);
+            }
+            return plainText.ToString();
+        }
+
         public enum CodePointSubset
         {
             ASCII, TwoBytes, ThreeBytes, Surrogates, Mixed

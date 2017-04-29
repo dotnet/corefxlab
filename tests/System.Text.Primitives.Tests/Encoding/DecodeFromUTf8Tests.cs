@@ -48,6 +48,12 @@ namespace System.Text.Primitives.Tests.Encoding
         }
 
         //[Fact]
+        public void InputBufferEndsOnHighSurrogateAndRestart()
+        {
+            throw new NotImplementedException();
+        }
+
+        //[Fact]
         public void InputBufferContainsOnlyASCII()
         {
             throw new NotImplementedException();

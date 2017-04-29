@@ -4,129 +4,10 @@
 
 using Xunit;
 
-namespace System.Text.Utf8.Tests
+namespace System.Text.Primitives.Tests.Encoding
 {
     public class Utf8EncoderTests
     {
-        private const ushort Utf16HighSurrogateFirstCodePoint = 0xD800;
-        private const ushort Utf16HighSurrogateLastCodePoint = 0xDBFF;
-        private const ushort Utf16LowSurrogateFirstCodePoint = 0xDC00;
-        private const ushort Utf16LowSurrogateLastCodePoint = 0xDFFF;
-
-        private const byte Utf8OneByteLastCodePoint = 0x7F;
-        private const ushort Utf8TwoBytesLastCodePoint = 0x7FF;
-        private const ushort Utf8ThreeBytesLastCodePoint = 0xFFFF;
-
-        private const int CharLength = 999;
-
-        [Fact]
-        public void TestEncodingEndOnHighSurrogateAndRestart()
-        {
-            string unicodeString = GenerateValidStringEndsWithHighStartsWithLow(CharLength, false, 0, Utf8OneByteLastCodePoint);
-            ReadOnlySpan<char> characters = unicodeString.AsSpan();
-
-            string unicodeString2 = unicodeString + GenerateValidStringEndsWithHighStartsWithLow(CharLength, true, 0, Utf8OneByteLastCodePoint);
-            ReadOnlySpan<char> characters2 = unicodeString2.AsSpan();
-
-            int expectedBytesWritten = GetByteCount(characters2);
-            byte[] utf8Buffer = new byte[expectedBytesWritten];
-            Span<byte> span = new Span<byte>(utf8Buffer);
-            int charactersConsumed;
-            int bytesWritten;
-            int charactersConsumed2;
-            int bytesWritten2;
-            Assert.False(TextEncoder.Utf8.TryEncode(characters, span, out charactersConsumed, out bytesWritten));
-            Assert.True(TextEncoder.Utf8.TryEncode(characters2.Slice(charactersConsumed), span.Slice(bytesWritten), out charactersConsumed2, out bytesWritten2));
-
-            Assert.Equal(unicodeString2.Length, charactersConsumed + charactersConsumed2);
-            Assert.Equal(expectedBytesWritten, bytesWritten + bytesWritten2);
-        }
-
-        private string GenerateValidStringEndsWithHighStartsWithLow(int charLength, bool startsWithLow, int minCodePoint, int maxCodePoint)
-        {
-            Random rand = new Random(42);
-            var plainText = new StringBuilder();
-            bool alreadyDone = false;
-            for (int j = 0; j < charLength; j++)
-            {
-                var val = rand.Next(minCodePoint, maxCodePoint);
-
-                if (startsWithLow && !alreadyDone)
-                {
-                    // first character must be low surrogate
-                    val = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint);
-                    alreadyDone = true;
-                }
-                else
-                {
-                    if (j < charLength - 1)
-                    {
-                        while (val >= Utf16LowSurrogateFirstCodePoint && val <= Utf16LowSurrogateLastCodePoint)
-                        {
-                            val = rand.Next(minCodePoint, maxCodePoint); // skip surrogate characters if they can't be paired
-                        }
-
-                        if (val >= Utf16HighSurrogateFirstCodePoint && val <= Utf16HighSurrogateLastCodePoint)
-                        {
-                            plainText.Append((char)val);    // high surrogate
-                            j++;
-                            val = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint);  // low surrogate
-                        }
-                    }
-                    else
-                    {
-                        // if first char is valid, last char should be high surrogate (no low surrogate after, invalid)
-                        val = startsWithLow ? rand.Next(0, Utf8OneByteLastCodePoint) : rand.Next(Utf16HighSurrogateFirstCodePoint, Utf16HighSurrogateLastCodePoint);
-                    }
-                }
-                plainText.Append((char)val);
-            }
-            return plainText.ToString();
-        }
-
-        private int GetByteCount(ReadOnlySpan<char> utf16)
-        {
-            var inputLength = utf16.Length;
-
-            int temp = 0;
-            for (int i = 0; i < inputLength; i++)
-            {
-                char codePoint = utf16[i];
-                if (codePoint <= Utf8OneByteLastCodePoint)
-                {
-                    temp += 1;
-                }
-                else if (codePoint <= Utf8TwoBytesLastCodePoint)
-                {
-                    temp += 2;
-                }
-                else if (codePoint >= Utf16HighSurrogateFirstCodePoint && codePoint <= Utf16HighSurrogateLastCodePoint)
-                {
-                    i++;
-                    if (i >= inputLength)
-                    {
-                        return temp;
-                    }
-                    char lowSurrogate = utf16[i];
-
-                    if (lowSurrogate < Utf16LowSurrogateFirstCodePoint || lowSurrogate > Utf16LowSurrogateLastCodePoint)
-                    {
-                        return temp;
-                    }
-                    temp += 4;
-                }
-                else if (codePoint >= Utf16LowSurrogateFirstCodePoint && codePoint <= Utf16LowSurrogateLastCodePoint)
-                {
-                    return temp;
-                }
-                else
-                {
-                    temp += 3;
-                }
-            }
-            return temp;
-        }
-
         public static object[][] TryEncodeFromUTF16ToUTF8TestData = {
             // empty
             new object[] { true, new byte[] { }, new char[]{ (char)0x0050 }, false },
@@ -267,7 +148,7 @@ namespace System.Text.Utf8.Tests
         public void EncodeAllUnicodeCodePoints(bool useUtf8Encoder)
         {
             TextEncoder encoder = useUtf8Encoder ? TextEncoder.Utf8 : TextEncoder.Utf16;
-            Encoding systemEncoder = useUtf8Encoder ? Encoding.UTF8 : Encoding.Unicode;
+            Text.Encoding systemEncoder = useUtf8Encoder ? Text.Encoding.UTF8 : Text.Encoding.Unicode;
             const uint maximumValidCodePoint = 0x10FFFF;
             uint[] codePoints = new uint[maximumValidCodePoint + 1];
 
@@ -341,71 +222,6 @@ namespace System.Text.Utf8.Tests
             }
 
             return true;
-        }
-
-        public static object[][] EnsureCodeUnitsOfStringTestCases = {
-            // empty
-            new object[] { new byte[0],""},
-            // ascii
-            new object[] { new byte[] { 0x61 }, "a"},
-            new object[] { new byte[] { 0x61, 0x62, 0x63 }, "abc"},
-            new object[] { new byte[] { 0x41, 0x42, 0x43, 0x44 }, "ABCD"},
-            new object[] { new byte[] { 0x30, 0x31, 0x32, 0x33, 0x34 }, "01234"},
-            new object[] { new byte[] { 0x20, 0x2c, 0x2e, 0x0d, 0x0a, 0x5b, 0x5d, 0x3c, 0x3e, 0x28, 0x29 },  " ,.\r\n[]<>()"},
-            // edge cases for multibyte characters
-            new object[] { new byte[] { 0x7f }, "\u007f"},
-            new object[] { new byte[] { 0xc2, 0x80 }, "\u0080"},
-            new object[] { new byte[] { 0xdf, 0xbf }, "\u07ff"},
-            new object[] { new byte[] { 0xe0, 0xa0, 0x80 }, "\u0800"},
-            new object[] { new byte[] { 0xef, 0xbf, 0xbf }, "\uffff"},
-            // ascii mixed with multibyte characters
-            // 1 code unit + 2 code units
-            new object[] { new byte[] { 0x61, 0xc2, 0x80 }, "a\u0080"},
-            // 2 code units + 1 code unit
-            new object[] { new byte[] { 0xc2, 0x80, 0x61 }, "\u0080a"},
-            // 1 code unit + 2 code units + 1 code unit
-            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61 }, "a\u0080a"},
-            // 3 code units + 2 code units
-            new object[] { new byte[] { 0xe0, 0xa0, 0x80, 0xc2, 0x80 }, "\u0800\u0080"},
-            // 2 code units + 3 code units
-            new object[] { new byte[] { 0xc2, 0x80, 0xe0, 0xa0, 0x80 }, "\u0080\u0800"},
-            // 2 code units + 3 code units
-            new object[] { new byte[] { 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf }, "\u0080a\uffff"},
-            // 1 code unit + 2 code units + 3 code units
-            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0xef, 0xbf, 0xbf }, "a\u0080\uffff"},
-            // 2 code units + 3 code units + 1 code unit
-            new object[] { new byte[] { 0xc2, 0x80, 0xef, 0xbf, 0xbf, 0x61 }, "\u0080\uffffa"},
-            // 1 code unit + 2 code units + 3 code units
-            new object[] { new byte[] { 0x61, 0xc2, 0x80, 0x61, 0xef, 0xbf, 0xbf, 0x61 }, "a\u0080a\uffffa"}
-            // TODO: Add case with 4 byte character - it is impossible to do using string literals, need to create it using code point
-        };
-        [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
-        public void EnsureCodeUnitsOfStringByEnumeratingBytes(byte[] expectedBytes, string str)
-        {
-            var utf8String = new Utf8String(str);
-            Assert.Equal(expectedBytes.Length, utf8String.Length);
-            Utf8String.Enumerator e = utf8String.GetEnumerator();
-
-            int i = 0;
-            while (e.MoveNext())
-            {
-                Assert.True(i < expectedBytes.Length);
-                Assert.Equal(expectedBytes[i], (byte)e.Current);
-                i++;
-            }
-            Assert.Equal(expectedBytes.Length, i);
-        }
-
-        [Theory, MemberData("EnsureCodeUnitsOfStringTestCases")]
-        public void EnsureCodeUnitsOfStringByIndexingBytes(byte[] expectedBytes, string str)
-        {
-            var utf8String = new Utf8String(str);
-            Assert.Equal(expectedBytes.Length, utf8String.Length);
-
-            for (int i = 0; i < utf8String.Length; i++)
-            {
-                Assert.Equal(expectedBytes[i], (byte)utf8String[i]);
-            }
         }
 
         public static object[] PartialEncodeDecodeUtf8ToUtf16TestCases = new object[]

@@ -12,6 +12,7 @@ namespace System.Text.Primitives.Tests.Encoding
         void OutputBufferLargerThanInputBuffer();
         void InputBufferContainsOnlyInvalidData();
         void InputBufferContainsSomeInvalidData();
+        void InputBufferEndsOnHighSurrogateAndRestart();
         void InputBufferContainsOnlyASCII();
         void InputBufferContainsNonASCII();
         void InputBufferContainsAllCodePoints();

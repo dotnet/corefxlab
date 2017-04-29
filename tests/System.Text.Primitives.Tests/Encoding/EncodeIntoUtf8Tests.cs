@@ -130,6 +130,27 @@ namespace System.Text.Primitives.Tests.Encoding
         }
 
         [Fact]
+        public void InputBufferEndsOnHighSurrogateAndRestart()
+        {
+            string inputString1 = TextEncoderTestHelper.GenerateValidStringEndsWithHighStartsWithLow(CharLength, false);
+            ReadOnlySpan<char> firstUtf16 = inputString1.AsSpan();
+
+            string inputString2 = inputString1 + TextEncoderTestHelper.GenerateValidStringEndsWithHighStartsWithLow(CharLength, true);
+            ReadOnlySpan<char> secondUtf16 = inputString2.AsSpan();
+            byte[] expectedBytes = testEncoder.GetBytes(secondUtf16.ToArray());
+
+            int expectedBytesWritten = GetByteCount(secondUtf16);
+            var encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+
+            Assert.False(utf8.TryEncode(firstUtf16, encodedBytes, out int charactersConsumed1, out int bytesWritten1));
+            Assert.True(utf8.TryEncode(secondUtf16.Slice(charactersConsumed1), encodedBytes.Slice(bytesWritten1), out int charactersConsumed2, out int bytesWritten2));
+            Assert.Equal(inputString2.Length, charactersConsumed1 + charactersConsumed2);
+            Assert.Equal(expectedBytes.Length, expectedBytesWritten);
+            Assert.Equal(expectedBytesWritten, bytesWritten1 + bytesWritten2);
+            Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes));
+        }
+
+        [Fact]
         public void InputBufferContainsOnlyASCII()
         {
             Assert.True(TextEncoderTestHelper.Validate(utf8, testEncoder, TextEncoderTestHelper.CodePointSubset.ASCII));  // 1 byte
