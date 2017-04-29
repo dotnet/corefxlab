@@ -6,15 +6,15 @@ namespace System.Text.Primitives.Tests.Encoding
 {
     public interface ITextEncoderTest
     {
-        void InputBufferEmpty();
-        void OutputBufferEmpty();
-        void InputBufferLargerThanOutputBuffer();
-        void OutputBufferLargerThanInputBuffer();
-        void InputBufferContainsOnlyInvalidData();
-        void InputBufferContainsSomeInvalidData();
-        void InputBufferEndsOnHighSurrogateAndRestart();
-        void InputBufferContainsOnlyASCII();
-        void InputBufferContainsNonASCII();
-        void InputBufferContainsAllCodePoints();
+        void InputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from);
+        void OutputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from);
+        void InputBufferLargerThanOutputBuffer(TextEncoderTestHelper.SupportedEncoding from);
+        void OutputBufferLargerThanInputBuffer(TextEncoderTestHelper.SupportedEncoding from);
+        void InputBufferContainsOnlyInvalidData(TextEncoderTestHelper.SupportedEncoding from);
+        void InputBufferContainsSomeInvalidData(TextEncoderTestHelper.SupportedEncoding from);
+        void InputBufferEndsOnHighSurrogateAndRestart(TextEncoderTestHelper.SupportedEncoding from);
+        void InputBufferContainsOnlyASCII(TextEncoderTestHelper.SupportedEncoding from);
+        void InputBufferContainsNonASCII(TextEncoderTestHelper.SupportedEncoding from);
+        void InputBufferContainsAllCodePoints(TextEncoderTestHelper.SupportedEncoding from);
     }
 }

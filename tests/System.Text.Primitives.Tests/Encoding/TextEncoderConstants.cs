@@ -11,8 +11,14 @@ namespace System.Text.Primitives.Tests.Encoding
         public const ushort Utf16LowSurrogateFirstCodePoint = 0xDC00;
         public const ushort Utf16LowSurrogateLastCodePoint = 0xDFFF;
 
+        public const uint LastValidCodePoint = 0x10FFFF;
+
         public const byte Utf8OneByteLastCodePoint = 0x7F;
         public const ushort Utf8TwoBytesLastCodePoint = 0x7FF;
         public const ushort Utf8ThreeBytesLastCodePoint = 0xFFFF;
+
+        public const int CharLength = 999;
+
+        public const int RandomSeed = 42;
     }
 }

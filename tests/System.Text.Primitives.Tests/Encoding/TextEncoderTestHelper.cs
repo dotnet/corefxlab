@@ -6,25 +6,86 @@ namespace System.Text.Primitives.Tests.Encoding
 {
     public static class TextEncoderTestHelper
     {
-        private const int CharLength = 999;
-
         public static bool BuffersAreEqual<T>(ReadOnlySpan<T> expected, ReadOnlySpan<T> actual)
         {
             if (expected.Length != actual.Length) return false;
             for (int i = 0; i < expected.Length; i++)
             {
-                if (!expected[i].Equals(actual[i])) return false;
+                if (!expected[i].Equals(actual[i]))
+                {
+                    Console.WriteLine(expected[i] + " : " + actual[i]);
+                    return false;
+                }
             }
             return true;
         }
 
-        public static bool Validate(TextEncoder encoder, Text.Encoding testEncoder, CodePointSubset subset)
+        public static bool Validate(SupportedEncoding from, TextEncoder utf8, Text.Encoding testEncoder, CodePointSubset subset)
+        {
+            string inputString = GenerateValidString(TextEncoderConstants.CharLength, subset);
+            Text.Encoding testEncoderUtf8 = Text.Encoding.UTF8;
+            Text.Encoding testEncoderUnicode = Text.Encoding.Unicode;
+            Text.Encoding testEncoderUtf32 = Text.Encoding.UTF32;
+
+            byte[] expectedBytes;
+            Span<byte> encodedBytes;
+
+            int bytesWritten;
+            bool retVal = true;
+
+            switch (from)
+            {
+                case SupportedEncoding.FromUtf8:
+                    byte[] temp = testEncoderUtf8.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUtf8, testEncoder, temp);
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    ReadOnlySpan<byte> inputUtf8 = temp;
+                    retVal &= utf8.TryEncode(inputUtf8, encodedBytes, out int charactersConsumed, out bytesWritten);
+                    retVal &= inputUtf8.Length == charactersConsumed;
+                    break;
+
+                case SupportedEncoding.FromUtf16:
+                    temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    ReadOnlySpan<char> inputUtf16 = temp.AsSpan().NonPortableCast<byte, char>();
+                    retVal &= utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten);
+                    retVal &= inputUtf16.Length == charactersConsumed;
+                    break;
+
+                case SupportedEncoding.FromString:
+                    temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    string inputStr = inputString;
+                    retVal &= utf8.TryEncode(inputStr, encodedBytes, /*out charactersConsumed,*/ out bytesWritten);
+                    //retVal &= inputString.Length == charactersConsumed;
+                    break;
+
+                case SupportedEncoding.FromUtf32:
+                default:
+                    temp = testEncoderUtf32.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUtf32, testEncoder, temp);
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    ReadOnlySpan<uint> input = temp.AsSpan().NonPortableCast<byte, uint>();
+                    retVal &= utf8.TryEncode(input, encodedBytes, out charactersConsumed, out bytesWritten);
+                    retVal &= input.Length == charactersConsumed;
+                    break;
+            }
+
+            retVal &= expectedBytes.Length == bytesWritten;
+            retVal &= BuffersAreEqual<byte>(expectedBytes, encodedBytes);
+
+            return retVal;
+        }
+
+        public static string GenerateValidString(int length, CodePointSubset subset)
         {
             int minCodePoint = 0;
             int maxCodePoint = 0;
             bool ignoreSurrogates = false;
 
-            switch(subset)
+            switch (subset)
             {
                 case CodePointSubset.ASCII:
                     maxCodePoint = TextEncoderConstants.Utf8OneByteLastCodePoint;
@@ -49,24 +110,12 @@ namespace System.Text.Primitives.Tests.Encoding
                     break;
             }
 
-            string inputString = GenerateValidString(CharLength, minCodePoint, maxCodePoint, ignoreSurrogates);
-            ReadOnlySpan<char> utf16 = inputString.AsSpan();
-            byte[] expectedBytes = testEncoder.GetBytes(utf16.ToArray());
-            int expectedBytesWritten = expectedBytes.Length;
-            var encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
-
-            bool retVal = true;
-            retVal &= encoder.TryEncode(utf16, encodedBytes, out int charactersConsumed, out int bytesWritten);
-            retVal &= utf16.Length == charactersConsumed;
-            retVal &= expectedBytesWritten == bytesWritten;
-            retVal &= BuffersAreEqual<byte>(expectedBytes, encodedBytes);
-
-            return retVal;
+            return GenerateValidString(TextEncoderConstants.CharLength, minCodePoint, maxCodePoint, ignoreSurrogates);
         }
 
         public static string GenerateValidString(int length, int minCodePoint, int maxCodePoint, bool ignoreSurrogates = false)
         {
-            Random rand = new Random(42);
+            Random rand = new Random(TextEncoderConstants.RandomSeed);
             var plainText = new StringBuilder();
             for (int j = 0; j < length; j++)
             {
@@ -122,7 +171,7 @@ namespace System.Text.Primitives.Tests.Encoding
                         plainText.Append((char)i);
                     }
                 }
-                else if (j >= 0xDC00 && j <= 0xDFFF)
+                else if (j >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && j <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                 {
                     continue;   // don't want unpaird low surrogates
                 }
@@ -137,7 +186,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static string GenerateOnlyInvalidString(int length)
         {
-            Random rand = new Random(42);
+            Random rand = new Random(TextEncoderConstants.RandomSeed);
             var plainText = new StringBuilder();
             for (int j = 0; j < length; j++)
             {
@@ -149,7 +198,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static string GenerateStringWithInvalidChars(int length)
         {
-            Random rand = new Random(42);
+            Random rand = new Random(TextEncoderConstants.RandomSeed);
             var plainText = new StringBuilder();
             for (int j = 0; j < length; j++)
             {
@@ -181,7 +230,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static string GenerateValidStringEndsWithHighStartsWithLow(int charLength, bool startsWithLow)
         {
-            Random rand = new Random(42);
+            Random rand = new Random(TextEncoderConstants.RandomSeed);
             var plainText = new StringBuilder();
 
             int val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
@@ -227,6 +276,11 @@ namespace System.Text.Primitives.Tests.Encoding
         public enum CodePointSubset
         {
             ASCII, TwoBytes, ThreeBytes, Surrogates, Mixed
+        }
+
+        public enum SupportedEncoding
+        {
+            FromUtf8, FromUtf16, FromString, FromUtf32
         }
     }
 }

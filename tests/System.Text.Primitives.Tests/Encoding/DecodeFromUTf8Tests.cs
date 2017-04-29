@@ -12,61 +12,61 @@ namespace System.Text.Primitives.Tests.Encoding
         private static Text.Encoding testEncoder = Text.Encoding.UTF8;
 
         //[Fact]
-        public void InputBufferEmpty()
+        public void InputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }
 
         //[Fact]
-        public void OutputBufferEmpty()
+        public void OutputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }
 
         //[Fact]
-        public void InputBufferLargerThanOutputBuffer()
+        public void InputBufferLargerThanOutputBuffer(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }
 
         //[Fact]
-        public void OutputBufferLargerThanInputBuffer()
+        public void OutputBufferLargerThanInputBuffer(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }
 
         //[Fact]
-        public void InputBufferContainsOnlyInvalidData()
+        public void InputBufferContainsOnlyInvalidData(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }
 
         //[Fact]
-        public void InputBufferContainsSomeInvalidData()
+        public void InputBufferContainsSomeInvalidData(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }
 
         //[Fact]
-        public void InputBufferEndsOnHighSurrogateAndRestart()
+        public void InputBufferEndsOnHighSurrogateAndRestart(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }
 
         //[Fact]
-        public void InputBufferContainsOnlyASCII()
+        public void InputBufferContainsOnlyASCII(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }
 
         //[Fact]
-        public void InputBufferContainsNonASCII()
+        public void InputBufferContainsNonASCII(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }
 
         //[Fact]
-        public void InputBufferContainsAllCodePoints()
+        public void InputBufferContainsAllCodePoints(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }
