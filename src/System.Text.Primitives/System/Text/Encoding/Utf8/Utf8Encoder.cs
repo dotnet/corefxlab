@@ -290,7 +290,13 @@ namespace System.Text.Utf8
 
                 LongCodeSlow:
                     if (pSrc >= pSrcEnd)
+                    {
+                        // This is a special case where hit the end of the buffer but are in the middle
+                        // of decoding a long code. The error exit thinks we have read 2 extra bytes already,
+                        // so we add +1 to pSrc to get the count correct for the bytes consumed value.
+                        pSrc++;
                         goto ErrorExit;
+                    }
 
                     int chd = *pSrc;
                     pSrc++;
@@ -327,11 +333,8 @@ namespace System.Text.Utf8
                             ch = *(pSrc + 1);
 
                             // The last trailing byte still holds the form 10vvvvvv
-                            if ((ch & unchecked((sbyte)0xC0)) != 0x80)
-                                goto ErrorExit;
-
-                            // We only for for sure we have room for one more char, but we need an extra now.
-                            if (PtrDiff(pDstEnd, pDst) < 2)
+                            // We only know for sure we have room for one more char, but we need an extra now.
+                            if ((ch & unchecked((sbyte)0xC0)) != 0x80 || PtrDiff(pDstEnd, pDst) < 2)
                                 goto ErrorExit;
 
                             pSrc += 2;
@@ -382,7 +385,7 @@ namespace System.Text.Utf8
                 charactersWritten = PtrDiff(pDst, pUtf16);
                 return PtrDiff(pSrcEnd, pSrc) == 0;
 
-                ErrorExit:
+            ErrorExit:
                 bytesConsumed = PtrDiff(pSrc - 2, pUtf8);
                 charactersWritten = PtrDiff(pDst, pUtf16);
                 return false;

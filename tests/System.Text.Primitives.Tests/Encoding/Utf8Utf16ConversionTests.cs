@@ -78,6 +78,127 @@ namespace System.Text.Primitives.Tests
             }
         }
 
+        public static object[][] InvalidUtf8ToUtf16SequenceData = {
+            // new object[] {
+            //     consumed,
+            //     new byte[] { 0x00, 0x00, ... }, // Input
+            //     new char[] { 0x00, 0x00, ... }, // Expected output
+            // },
+            new object[] {  // short; slow loop only; starts with invalid first byte
+                0,
+                new byte[] { 0x80, 0x41, 0x42 },
+                new char[] { },
+            },
+            new object[] { // short; slow loop only; starts with invalid first byte
+                0,
+                new byte[] { 0xA0, 0x41, 0x42 },
+                new char[] { },
+            },
+            new object[] {  // short; slow loop only; invalid long code after first byte
+                0,
+                new byte[] { 0xC0, 0x00 },
+                new char[] {},
+            },
+            new object[] {  // short; slow loop only; invalid long code started after consuming a byte
+                1,
+                new byte[] { 0x41, 0xC0, 0x00 },
+                new char[] { 'A' },
+            },
+            new object[] { // short; slow loop only; incomplete 2-byte long code at end of buffer
+                2,
+                new byte[] { 0x41, 0x42, 0xC0 },
+                new char[] { 'A', 'B' },
+            },
+            new object[] { // short; slow loop only; incomplete 3-byte long code at end of buffer
+                2,
+                new byte[] { 0x41, 0x42, 0xE0, 0x83 },
+                new char[] { 'A', 'B' },
+            },
+            new object[] { // short; slow loop only; incomplete 4-byte long code at end of buffer
+                2,
+                new byte[] { 0x41, 0x42, 0xF0, 0x83, 0x84 },
+                new char[] { 'A', 'B' },
+            },
+            new object[] {  // long; fast loop only; starts with invalid first byte
+                0,
+                new byte[] { 0x80, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x50, 0x51, 0x52, 0x53, 0x54 },
+                new char[] { },
+            },
+            new object[] { // long; fast loop only; starts with invalid first byte
+                0,
+                new byte[] { 0xA0, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x50, 0x51, 0x52, 0x53, 0x54 },
+                new char[] { },
+            },
+            new object[] {  // long; fast loop only; invalid long code after first byte
+                0,
+                new byte[] { 0xC0, 0x00, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x50, 0x51, 0x52, 0x53, 0x54 },
+                new char[] {},
+            },
+            new object[] {  // long; fast loop only; invalid long code started after consuming a byte
+                1,
+                new byte[] { 0x41, 0xC0, 0x00, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x50, 0x51, 0x52, 0x53, 0x54 },
+                new char[] { 'A' },
+            },
+            new object[] { // long; incomplete 2-byte long code at end of buffer
+                15,
+                new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0xC0 },
+                new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O' },
+            },
+            new object[] { // long; incomplete 3-byte long code at end of buffer
+                15,
+                new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0xE0, 0x83 },
+                new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O' },
+            },
+            new object[] { // long; incomplete 4-byte long code at end of buffer
+                15,
+                new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0xF0, 0x83, 0x84 },
+                new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O' },
+            },
+            new object[] { // long; fast loop only; incomplete 2-byte long code inside buffer
+                3,
+                new byte[] { 0x41, 0x42, 0x43, 0xC0, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F },
+                new char[] { 'A', 'B', 'C' },
+            },
+            new object[] { // long; fast loop only; incomplete 2-byte long code inside buffer
+                3,
+                new byte[] { 0x41, 0x42, 0x43, 0xE0, 0x83, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F },
+                new char[] { 'A', 'B', 'C' },
+            },
+            new object[] { // long; fast loop only; incomplete 2-byte long code inside buffer
+                3,
+                new byte[] { 0x41, 0x42, 0x43, 0xF0, 0x83, 0x84, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F },
+                new char[] { 'A', 'B', 'C' },
+            },
+            new object[] { // long; fast loop only; incomplete long code inside unrolled loop
+                9,
+                new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0xF0, 0x83, 0x84, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F },
+                new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' },
+            },
+            new object[] { // long; fast loop only; bad long code starting byte inside unrolled loop
+                9,
+                new byte[] { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x85, 0x84, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F },
+                new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I' },
+            },
+        };
+
+        [Theory]
+        [MemberData("InvalidUtf8ToUtf16SequenceData")]
+        public void InvalidUtf8ToUtf16SequenceTests(int expectedConsumed, byte[] input, char[] expectedOutput)
+        {
+            // Allocate a buffer large enough to hold expected output plus a bit of room to see what happens.
+            Span<char> actualOutput = new Span<char>(new char[expectedOutput.Length + 10]);
+            Assert.False(TextEncoder.Utf8.TryDecode(input, actualOutput, out int consumed, out int written));
+            Assert.Equal(expectedConsumed, consumed);
+            Assert.Equal(expectedOutput.Length, written);
+
+            actualOutput = actualOutput.Slice(0, written);
+            //Assert.True(actualOutput.SequenceEqual(expectedOutput));
+
+            Assert.Equal(expectedOutput.Length, actualOutput.Length);
+            for (var i = 0; i < Math.Min(expectedOutput.Length, actualOutput.Length); i++)
+                Assert.Equal(expectedOutput[i], actualOutput[i]);
+        }
+
         [Theory]
         [InlineData(0, 0x7f)]
         [InlineData(0x80, 0x7ff)]
