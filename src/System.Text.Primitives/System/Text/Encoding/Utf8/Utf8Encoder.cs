@@ -34,13 +34,13 @@ namespace System.Text.Utf8
 
         /// <summary>
         /// Decodes a span of UTF-8 characters into UTF-16.
-        /// 
+        ///
         /// This method will consume as many of the input characters as possible.
         ///
         /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
         /// equal to the length of the <paramref name="utf8"/> and <paramref name="charactersWritten"/> will equal the total number of bytes written to
         /// the <paramref name="utf16"/>.
-        /// 
+        ///
         /// On unsuccessful exit, the following conditions can exist.
         ///  1) If the output buffer has been filled and no more input characters can be encoded, another call to this method with the input sliced to
         ///     exclude the already encoded characters (using <paramref name="bytesConsumed"/>) and a new output buffer will continue the encoding.
@@ -51,39 +51,353 @@ namespace System.Text.Utf8
         /// <param name="bytesConsumed">On exit, contains the number of code points that were consumed from the UTF-16 character span.</param>
         /// <param name="charactersWritten">An output parameter to store the number of characters written to <paramref name="utf16"/></param>
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
-        public static bool TryDecode(ReadOnlySpan<byte> utf8, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
+        public static unsafe bool TryDecode(ReadOnlySpan<byte> utf8, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
         {
-            bytesConsumed = 0;
-            charactersWritten = 0;
-
-            while (bytesConsumed < utf8.Length)
+            fixed (byte* pUtf8 = &utf8.DangerousGetPinnableReference())
+            fixed (char* pUtf16 = &utf16.DangerousGetPinnableReference())
             {
-                uint codePoint;
-                int consumed;
+                byte* pSrc = pUtf8;
+                byte* pSrcEnd = pSrc + utf8.Length;
+                char* pDst = pUtf16;
+                char* pDstEnd = pDst + utf16.Length;
 
-                if (!TryDecodeCodePoint(utf8, bytesConsumed, out codePoint, out consumed))
-                    return false;
+                int ch = 0;
+                while (pSrc < pSrcEnd && pDst < pDstEnd)
+                {
+                    // we may need as many as 1 character per byte, so reduce the byte count if necessary.
+                    // If availableChars is too small, pStop will be before pTarget and we won't do fast loop.
+                    int availableChars = PtrDiff(pDstEnd, pDst);
+                    int availableBytes = PtrDiff(pSrcEnd, pSrc);
 
-                int written;
-                if (!Utf16LittleEndianEncoder.TryEncode(codePoint, utf16, charactersWritten, out written))
-                    return false;
+                    if (availableChars < availableBytes)
+                        availableBytes = availableChars;
 
-                charactersWritten += written;
-                bytesConsumed += consumed;
+                    // don't fall into the fast decoding loop if we don't have enough bytes
+                    if (availableBytes <= 13)
+                    {
+                        // try to get over the remainder of the ascii characters fast though
+                        byte* pLocalEnd = pSrc + availableBytes;
+                        while (pSrc < pLocalEnd)
+                        {
+                            ch = *pSrc;
+                            pSrc++;
+
+                            if (ch > 0x7F)
+                                goto LongCodeSlow;
+
+                            *pDst = (char)ch;
+                            pDst++;
+                        }
+
+                        // we are done
+                        break;
+                    }
+
+                    // To compute the upper bound, assume that all characters are ASCII characters at this point,
+                    //  the boundary will be decreased for every non-ASCII character we encounter
+                    // Also, we need 7 chars reserve for the unrolled ansi decoding loop and for decoding of multibyte sequences
+                    char* pStop = pDst + availableBytes - 7;
+
+                    // Fast loop
+                    while (pDst < pStop)
+                    {
+                        ch = *pSrc;
+                        pSrc++;
+
+                        if (ch > 0x7F)
+                            goto LongCode;
+
+                        *pDst = (char)ch;
+                        pDst++;
+
+                        // 2-byte align
+                        if ((unchecked((int)pSrc) & 0x1) != 0)
+                        {
+                            ch = *pSrc;
+                            pSrc++;
+
+                            if (ch > 0x7F)
+                                goto LongCode;
+
+                            *pDst = (char)ch;
+                            pDst++;
+                        }
+
+                        // 4-byte align
+                        if ((unchecked((int)pSrc) & 0x2) != 0)
+                        {
+                            ch = *(ushort*)pSrc;
+                            if ((ch & 0x8080) != 0)
+                                goto LongCodeWithMask16;
+
+                            // Unfortunately, endianness sensitive
+#if BIGENDIAN
+                            *pDst = (char)((ch >> 8) & 0x7F);
+                            pSrc += 2;
+                            *(pDst + 1) = (char)(ch & 0x7F);
+                            pDst += 2;
+#else // BIGENDIAN
+                            *pDst = (char)(ch & 0x7F);
+                            pSrc += 2;
+                            *(pDst + 1) = (char)((ch >> 8) & 0x7F);
+                            pDst += 2;
+#endif // BIGENDIAN
+                        }
+
+                        // Run 8 characters at a time!
+                        while (pDst < pStop)
+                        {
+                            ch = *(int*)pSrc;
+                            int chb = *(int*)(pSrc + 4);
+                            if (((ch | chb) & unchecked((int)0x80808080)) != 0)
+                                goto LongCodeWithMask32;
+
+                            // Unfortunately, endianness sensitive
+#if BIGENDIAN
+                            *pDst = (char)((ch >> 24) & 0x7F);
+                            *(pDst+1) = (char)((ch >> 16) & 0x7F);
+                            *(pDst+2) = (char)((ch >> 8) & 0x7F);
+                            *(pDst+3) = (char)(ch & 0x7F);
+                            pSrc += 8;
+                            *(pDst+4) = (char)((chb >> 24) & 0x7F);
+                            *(pDst+5) = (char)((chb >> 16) & 0x7F);
+                            *(pDst+6) = (char)((chb >> 8) & 0x7F);
+                            *(pDst+7) = (char)(chb & 0x7F);
+                            pDst += 8;
+#else // BIGENDIAN
+                            *pDst = (char)(ch & 0x7F);
+                            *(pDst + 1) = (char)((ch >> 8) & 0x7F);
+                            *(pDst + 2) = (char)((ch >> 16) & 0x7F);
+                            *(pDst + 3) = (char)((ch >> 24) & 0x7F);
+                            pSrc += 8;
+                            *(pDst + 4) = (char)(chb & 0x7F);
+                            *(pDst + 5) = (char)((chb >> 8) & 0x7F);
+                            *(pDst + 6) = (char)((chb >> 16) & 0x7F);
+                            *(pDst + 7) = (char)((chb >> 24) & 0x7F);
+                            pDst += 8;
+#endif // BIGENDIAN
+                        }
+
+                        break;
+
+#if BIGENDIAN
+                    LongCodeWithMask32:
+                        // be careful about the sign extension
+                        ch = (int)(((uint)ch) >> 16);
+                    LongCodeWithMask16:
+                        ch = (int)(((uint)ch) >> 8);
+#else // BIGENDIAN
+                    LongCodeWithMask32:
+                    LongCodeWithMask16:
+                        ch &= 0xFF;
+#endif // BIGENDIAN
+                        pSrc++;
+                        if (ch <= 0x7F)
+                        {
+                            *pDst = (char)ch;
+                            pDst++;
+                            continue;
+                        }
+
+                    LongCode:
+                        int chc = *pSrc;
+                        pSrc++;
+
+                        // Bit 6 should be 0, and trailing byte should be 10vvvvvv
+                        if ((ch & 0x40) == 0 || (chc & unchecked((sbyte)0xC0)) != 0x80)
+                            goto ErrorExit;
+
+                        chc &= 0x3F;
+
+                        if ((ch & 0x20) != 0)
+                        {
+                            // Handle 3 or 4 byte encoding.
+
+                            // Fold the first 2 bytes together
+                            chc |= (ch & 0x0F) << 6;
+
+                            if ((ch & 0x10) != 0)
+                            {
+                                // 4 byte - surrogate pair
+                                ch = *pSrc;
+
+                                // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
+                                // and the trailing byte should be 10vvvvvv
+                                if (!InRange(chc >> 4, 0x01, 0x10) || (ch & unchecked((sbyte)0xC0)) != 0x80)
+                                    goto ErrorExit;
+
+                                // Merge 3rd byte then read the last byte
+                                chc = (chc << 6) | (ch & 0x3F);
+                                ch = *(pSrc + 1);
+
+                                // The last trailing byte still holds the form 10vvvvvv
+                                if ((ch & unchecked((sbyte)0xC0)) != 0x80)
+                                    goto ErrorExit;
+
+                                pSrc += 2;
+                                ch = (chc << 6) | (ch & 0x3F);
+
+                                *pDst = (char)(((ch >> 10) & 0x7FF) + unchecked((short)(HIGH_SURROGATE_START - (0x10000 >> 10))));
+                                pDst++;
+
+                                ch = (ch & 0x3FF) + unchecked((short)(LOW_SURROGATE_START));
+                            }
+                            else
+                            {
+                                // 3 byte encoding
+                                ch = *pSrc;
+
+                                // Check for non-shortest form of 3 byte sequence
+                                // No surrogates
+                                // Trailing byte must be in the form 10vvvvvv
+                                if ((chc & (0x1F << 5)) == 0 ||
+                                    (chc & (0xF800 >> 6)) == (0xD800 >> 6) ||
+                                    (ch & unchecked((sbyte)0xC0)) != 0x80)
+                                    goto ErrorExit;
+
+                                pSrc++;
+                                ch = (chc << 6) | (ch & 0x3F);
+                            }
+
+                            // extra byte, we're already planning 2 chars for 2 of these bytes,
+                            // but the big loop is testing the target against pStop, so we need
+                            // to subtract 2 more or we risk overrunning the input.  Subtract
+                            // one here and one below.
+                            pStop--;
+                        }
+                        else
+                        {
+                            // 2 byte encoding
+                            ch &= 0x1F;
+
+                            // Check for non-shortest form
+                            if (ch <= 1)
+                                goto ErrorExit;
+
+                            ch = (ch << 6) | chc;
+                        }
+
+                        *pDst = (char)ch;
+                        pDst++;
+
+                        // extra byte, we're only expecting 1 char for each of these 2 bytes,
+                        // but the loop is testing the target (not source) against pStop.
+                        // subtract an extra count from pStop so that we don't overrun the input.
+                        pStop--;
+                    }
+
+                    continue;
+
+                LongCodeSlow:
+                    if (pSrc >= pSrcEnd)
+                        goto ErrorExit;
+
+                    int chd = *pSrc;
+                    pSrc++;
+
+                    // Bit 6 should be 0, and trailing byte should be 10vvvvvv
+                    if ((ch & 0x40) == 0 || (chd & unchecked((sbyte)0xC0)) != 0x80)
+                        goto ErrorExit;
+
+                    chd &= 0x3F;
+
+                    if ((ch & 0x20) != 0)
+                    {
+                        // Handle 3 or 4 byte encoding.
+
+                        // Fold the first 2 bytes together
+                        chd |= (ch & 0x0F) << 6;
+
+                        if ((ch & 0x10) != 0)
+                        {
+                            // 4 byte - surrogate pair
+                            // We need 2 more bytes
+                            if (pSrc >= pSrcEnd - 1)
+                                goto ErrorExit;
+
+                            ch = *pSrc;
+
+                            // Bit 4 should be zero + the surrogate should be in the range 0x000000 - 0x10FFFF
+                            // and the trailing byte should be 10vvvvvv
+                            if (!InRange(chd >> 4, 0x01, 0x10) || (ch & unchecked((sbyte)0xC0)) != 0x80)
+                                goto ErrorExit;
+
+                            // Merge 3rd byte then read the last byte
+                            chd = (chd << 6) | (ch & 0x3F);
+                            ch = *(pSrc + 1);
+
+                            // The last trailing byte still holds the form 10vvvvvv
+                            if ((ch & unchecked((sbyte)0xC0)) != 0x80)
+                                goto ErrorExit;
+
+                            // We only for for sure we have room for one more char, but we need an extra now.
+                            if (PtrDiff(pDstEnd, pDst) < 2)
+                                goto ErrorExit;
+
+                            pSrc += 2;
+                            ch = (chd << 6) | (ch & 0x3F);
+
+                            *pDst = (char)(((ch >> 10) & 0x7FF) + unchecked((short)(HIGH_SURROGATE_START - (0x10000 >> 10))));
+                            pDst++;
+
+                            ch = (ch & 0x3FF) + unchecked((short)(LOW_SURROGATE_START));
+                        }
+                        else
+                        {
+                            // 3 byte encoding
+                            if (pSrc >= pSrcEnd)
+                                goto ErrorExit;
+
+                            ch = *pSrc;
+
+                            // Check for non-shortest form of 3 byte sequence
+                            // No surrogates
+                            // Trailing byte must be in the form 10vvvvvv
+                            if ((chd & (0x1F << 5)) == 0 ||
+                                (chd & (0xF800 >> 6)) == (0xD800 >> 6) ||
+                                (ch & unchecked((sbyte)0xC0)) != 0x80)
+                                goto ErrorExit;
+
+                            pSrc++;
+                            ch = (chd << 6) | (ch & 0x3F);
+                        }
+                    }
+                    else
+                    {
+                        // 2 byte encoding
+                        ch &= 0x1F;
+
+                        // Check for non-shortest form
+                        if (ch <= 1)
+                            goto ErrorExit;
+
+                        ch = (ch << 6) | chd;
+                    }
+
+                    *pDst = (char)ch;
+                    pDst++;
+                }
+
+                bytesConsumed = PtrDiff(pSrc, pUtf8);
+                charactersWritten = PtrDiff(pDst, pUtf16);
+                return PtrDiff(pSrcEnd, pSrc) == 0;
+
+                ErrorExit:
+                bytesConsumed = PtrDiff(pSrc - 2, pUtf8);
+                charactersWritten = PtrDiff(pDst, pUtf16);
+                return false;
             }
-
-            return true;
         }
 
         /// <summary>
         /// Decodes a span of UTF-8 characters into UTF-32.
-        /// 
+        ///
         /// This method will consume as many of the input characters as possible.
         ///
         /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
         /// equal to the length of the <paramref name="utf8"/> and <paramref name="charactersWritten"/> will equal the total number of bytes written to
         /// the <paramref name="utf32"/>.
-        /// 
+        ///
         /// On unsuccessful exit, the following conditions can exist.
         ///  1) If the output buffer has been filled and no more input characters can be encoded, another call to this method with the input sliced to
         ///     exclude the already encoded characters (using <paramref name="bytesConsumed"/>) and a new output buffer will continue the encoding.
@@ -140,7 +454,7 @@ namespace System.Text.Utf8
                 codePoint = default(uint);
                 return false;
             }
-            
+
             switch (bytesConsumed)
             {
                 case 1:
@@ -309,13 +623,13 @@ namespace System.Text.Utf8
 
         /// <summary>
         /// Encodes a UTF-16 span of characters into UTF-8.
-        /// 
+        ///
         /// This method will consume as many of the input characters as possible.
         ///
         /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="charactersConsumed"/> will be
         /// equal to the length of the <paramref name="utf16"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
         /// the <paramref name="utf8"/>.
-        /// 
+        ///
         /// On unsuccessful exit, the following conditions can exist.
         ///  1) If the output buffer has been filled and no more input characters can be encoded, another call to this method with the input sliced to
         ///     exclude the already encoded characters (using <paramref name="charactersConsumed"/>) and a new output buffer will continue the encoding.
@@ -344,10 +658,10 @@ namespace System.Text.Utf8
 
                 // assume that JIT will enregister pSrc, pTarget and ch
 
-                // Entering the fast encoding loop incurs some overhead that does not get amortized for small 
+                // Entering the fast encoding loop incurs some overhead that does not get amortized for small
                 // number of characters, and the slow encoding loop typically ends up running for the last few
                 // characters anyway since the fast encoding loop needs 5 characters on input at least.
-                // Thus don't use the fast decoding loop at all if we don't have enough characters. The threashold 
+                // Thus don't use the fast decoding loop at all if we don't have enough characters. The threashold
                 // was choosen based on performance testing.
                 // Note that if we don't have enough bytes, pStop will prevent us from entering the fast loop.
                 while (pSrc < pEnd - 13)
@@ -607,13 +921,13 @@ namespace System.Text.Utf8
 
         /// <summary>
         /// Encodes a span of UTF-32 characters into UTF-8.
-        /// 
+        ///
         /// This method will consume as many of the input characters as possible.
         ///
         /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="charactersConsumed"/> will be
         /// equal to the length of the <paramref name="utf32"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
         /// the <paramref name="utf8"/>.
-        /// 
+        ///
         /// On unsuccessful exit, the following conditions can exist.
         ///  1) If the output buffer has been filled and no more input characters can be encoded, another call to this method with the input sliced to
         ///     exclude the already encoded characters (using <paramref name="charactersConsumed"/>) and a new output buffer will continue the encoding.
