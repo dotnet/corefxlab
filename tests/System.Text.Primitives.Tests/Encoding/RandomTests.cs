@@ -109,8 +109,6 @@ namespace System.Text.Primitives.Tests
 
         public static object[][] StringEqualsTestCases_EmptyStrings = new object[][] {
             new object[] { true, "", ""},
-            new object[] { true, "", "" },
-            new object[] { true, "", "" },
 
             new object[] { false, "", " "},
             new object[] { false, "", "a"},
@@ -150,6 +148,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expected, s2.Equals(s1));
         }
 
+        [Theory]
         [MemberData("StringEqualsTestCases_EmptyStrings")]
         [MemberData("StringEqualsTestCases_SimpleStrings")]
         public unsafe void StringEqualsConvertedToUtf16String(bool expected, string str1, string str2)
@@ -734,7 +733,6 @@ namespace System.Text.Primitives.Tests
                 "abc",
                 "def",
                 "\uABCD",
-                "\uABC0\uABC1\uABC2",
                 "\uABC0bc",
                 "a\uABC1c",
                 "ab\uABC2",

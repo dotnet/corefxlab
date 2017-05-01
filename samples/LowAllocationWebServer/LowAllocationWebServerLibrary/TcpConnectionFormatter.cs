@@ -5,8 +5,6 @@
 using Microsoft.Net.Sockets;
 using System;
 using System.Buffers;
-using System.Collections.Sequences;
-using System.Diagnostics;
 using System.Text;
 using System.Text.Formatting;
 using System.Text.Http;

@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.Utf8;
-using System.Text;
 
 namespace System.Text.Formatting
 {

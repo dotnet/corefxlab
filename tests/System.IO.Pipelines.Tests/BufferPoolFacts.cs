@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.IO.Pipelines.Networking.Sockets.Internal;
-using System;
 using Xunit;
 
 namespace System.IO.Pipelines.Tests

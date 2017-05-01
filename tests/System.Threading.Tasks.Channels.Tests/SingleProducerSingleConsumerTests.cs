@@ -3,10 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-using System.Threading.Tasks.Channels.Tests;
 using Xunit;
 
-namespace System.Collections.Concurrent.Tests
+namespace System.Threading.Tasks.Channels.Tests
 {
     public class SingleProducerSingleConsumertests : TestBase
     {

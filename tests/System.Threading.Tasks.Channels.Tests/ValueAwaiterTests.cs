@@ -3,11 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using Xunit;
 
-namespace System.Runtime.CompilerServices.Tests
+namespace System.Threading.Tasks.Channels.Tests
 {
     public class ValueAwaiterTests
     {

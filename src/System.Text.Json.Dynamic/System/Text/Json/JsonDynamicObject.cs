@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Text.Formatting;
 using System.Text.Utf8;
 
 namespace System.Text.Json
