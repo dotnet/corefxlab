@@ -192,11 +192,7 @@ namespace System.Text.Primitives.Tests
             Assert.Equal(expectedOutput.Length, written);
 
             actualOutput = actualOutput.Slice(0, written);
-            //Assert.True(actualOutput.SequenceEqual(expectedOutput));
-
-            Assert.Equal(expectedOutput.Length, actualOutput.Length);
-            for (var i = 0; i < Math.Min(expectedOutput.Length, actualOutput.Length); i++)
-                Assert.Equal(expectedOutput[i], actualOutput[i]);
+            Assert.True(actualOutput.SequenceEqual(expectedOutput));
         }
 
         [Theory]
