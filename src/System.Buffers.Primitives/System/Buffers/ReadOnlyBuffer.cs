@@ -50,10 +50,7 @@ namespace System.Buffers
 
         public ReadOnlySpan<T> Span => _owner.Span.Slice(_index, _length);
 
-        public DisposableReservation<T> Reserve()
-        {
-            return _owner.Buffer.Reserve();
-        }
+        public DisposableReservation Retain() => new DisposableReservation(_owner);
 
         public BufferHandle Pin() => _owner.Pin(_index);
    
