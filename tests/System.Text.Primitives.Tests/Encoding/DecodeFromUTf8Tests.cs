@@ -11,6 +11,7 @@ namespace System.Text.Primitives.Tests.Encoding
         private static TextEncoder utf8 = TextEncoder.Utf8;
         private static Text.Encoding testEncoder = Text.Encoding.UTF8;
 
+        // Open issue: https://github.com/dotnet/corefxlab/issues/1512
         //[Fact]
         public void InputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from)
         {

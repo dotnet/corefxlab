@@ -138,7 +138,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         [Theory]
         //[MemberData(nameof(SupportedEncodingTestData))]
-        // [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] System.ArgumentException : Destination is too short because of use of CopyTo
+        // [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] // Open issue: https://github.com/dotnet/corefxlab/issues/1514
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
@@ -181,7 +181,7 @@ namespace System.Text.Primitives.Tests.Encoding
                     Assert.Equal(inputUtf16.Length, charactersConsumed1 + charactersConsumed2);
                     break;
 
-                case TextEncoderTestHelper.SupportedEncoding.FromString:    // Do not have out charactersConsumed
+                case TextEncoderTestHelper.SupportedEncoding.FromString:    // Open issue: https://github.com/dotnet/corefxlab/issues/1515
                     /*temp = testEncoderUnicode.GetBytes(inputString);
                     expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
                     expectedBytesWritten = expectedBytes.Length;
@@ -317,10 +317,10 @@ namespace System.Text.Primitives.Tests.Encoding
 
         [Theory]
         //[MemberData(nameof(SupportedEncodingTestData))]
-        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] TODO: Validate that the input stream contains valid sequences as they are consumed.
+        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] // Open issue: https://github.com/dotnet/corefxlab/issues/1514
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
+        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)] // Open issue: https://github.com/dotnet/corefxlab/issues/1513
         public void InputBufferContainsOnlyInvalidData(TextEncoderTestHelper.SupportedEncoding from)
         {
             string inputString = TextEncoderTestHelper.GenerateOnlyInvalidString(TextEncoderConstants.DataLength);
@@ -370,10 +370,10 @@ namespace System.Text.Primitives.Tests.Encoding
 
         [Theory]
         //[MemberData(nameof(SupportedEncodingTestData))]
-        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] TODO: Validate that the input stream contains valid sequences as they are consumed.
+        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] // Open issue: https://github.com/dotnet/corefxlab/issues/1514
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
+        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)] // Open issue: https://github.com/dotnet/corefxlab/issues/1513
         public void InputBufferContainsSomeInvalidData(TextEncoderTestHelper.SupportedEncoding from)
         {
             string inputString = TextEncoderTestHelper.GenerateStringWithInvalidChars(TextEncoderConstants.DataLength);
@@ -431,10 +431,10 @@ namespace System.Text.Primitives.Tests.Encoding
         }
 
         [Theory]
-        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] TODO: Validate that the input stream contains valid sequences as they are consumed.
+        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] // Open issue: https://github.com/dotnet/corefxlab/issues/1514
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)] TODO: Validate that the input stream contains valid codepoints
+        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)] // Open issue: https://github.com/dotnet/corefxlab/issues/1513
         public void InputBufferEndsTooEarlyAndRestart(TextEncoderTestHelper.SupportedEncoding from)
         {
             string inputString1 = TextEncoderTestHelper.GenerateValidStringEndsWithHighStartsWithLow(TextEncoderConstants.DataLength, false);
@@ -488,7 +488,7 @@ namespace System.Text.Primitives.Tests.Encoding
                     Assert.True(utf8.TryEncode(secondUtf16.Slice(charactersConsumed1), encodedBytes.Slice(bytesWritten1), out charactersConsumed2, out bytesWritten2));
                     break;
 
-                case TextEncoderTestHelper.SupportedEncoding.FromString:     // Do not have out charactersConsumed
+                case TextEncoderTestHelper.SupportedEncoding.FromString:     // Open issue: https://github.com/dotnet/corefxlab/issues/1515
                     /*temp = testEncoderUnicode.GetBytes(inputString2);
                     expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
                     string firstInputStr = inputString1;

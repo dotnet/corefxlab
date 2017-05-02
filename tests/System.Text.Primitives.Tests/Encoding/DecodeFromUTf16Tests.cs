@@ -11,6 +11,7 @@ namespace System.Text.Primitives.Tests.Encoding
         private static TextEncoder utf16 = TextEncoder.Utf16;
         private static Text.Encoding testEncoder = Text.Encoding.Unicode;
 
+        // Open issue: https://github.com/dotnet/corefxlab/issues/1512
         //[Fact]
         public void InputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from)
         {
