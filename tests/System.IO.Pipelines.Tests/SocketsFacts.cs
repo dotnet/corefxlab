@@ -196,17 +196,19 @@ namespace System.IO.Pipelines.Tests
 
             for (int loop = 0; loop < ClientCount; loop++)
             {
-                var connection = await SocketConnection.ConnectAsync(endpoint);
-                try
+                using (var connection = await SocketConnection.ConnectAsync(endpoint))
                 {
-                    var tuple = await PingClient(connection, SendCount);
-                    Assert.Equal(SendCount, tuple.Item1);
-                    Assert.Equal(SendCount, tuple.Item2);
-                    Console.WriteLine($"RIO: Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
-                }
-                finally
-                {
-                    await connection.DisposeAsync();
+                    try
+                    {
+                        var tuple = await PingClient(connection, SendCount);
+                        Assert.Equal(SendCount, tuple.Item1);
+                        Assert.Equal(SendCount, tuple.Item2);
+                        Console.WriteLine($"RIO: Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
+                    }
+                    finally
+                    {
+                        await connection.DisposeAsync();
+                    }
                 }
             }
 
