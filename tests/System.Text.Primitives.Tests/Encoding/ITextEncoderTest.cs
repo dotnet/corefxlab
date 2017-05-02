@@ -12,7 +12,7 @@ namespace System.Text.Primitives.Tests.Encoding
         void OutputBufferLargerThanInputBuffer(TextEncoderTestHelper.SupportedEncoding from);
         void InputBufferContainsOnlyInvalidData(TextEncoderTestHelper.SupportedEncoding from);
         void InputBufferContainsSomeInvalidData(TextEncoderTestHelper.SupportedEncoding from);
-        void InputBufferEndsOnHighSurrogateAndRestart(TextEncoderTestHelper.SupportedEncoding from);
+        void InputBufferEndsTooEarlyAndRestart(TextEncoderTestHelper.SupportedEncoding from);
         void InputBufferContainsOnlyASCII(TextEncoderTestHelper.SupportedEncoding from);
         void InputBufferContainsNonASCII(TextEncoderTestHelper.SupportedEncoding from);
         void InputBufferContainsAllCodePoints(TextEncoderTestHelper.SupportedEncoding from);

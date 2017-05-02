@@ -13,7 +13,6 @@ namespace System.Text.Primitives.Tests.Encoding
             {
                 if (!expected[i].Equals(actual[i]))
                 {
-                    Console.WriteLine(expected[i] + " : " + actual[i]);
                     return false;
                 }
             }
@@ -22,7 +21,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static bool Validate(SupportedEncoding from, TextEncoder utf8, Text.Encoding testEncoder, CodePointSubset subset)
         {
-            string inputString = GenerateValidString(TextEncoderConstants.CharLength, subset);
+            string inputString = GenerateValidString(TextEncoderConstants.DataLength, subset);
             Text.Encoding testEncoderUtf8 = Text.Encoding.UTF8;
             Text.Encoding testEncoderUnicode = Text.Encoding.Unicode;
             Text.Encoding testEncoderUtf32 = Text.Encoding.UTF32;
@@ -110,7 +109,7 @@ namespace System.Text.Primitives.Tests.Encoding
                     break;
             }
 
-            return GenerateValidString(TextEncoderConstants.CharLength, minCodePoint, maxCodePoint, ignoreSurrogates);
+            return GenerateValidString(TextEncoderConstants.DataLength, minCodePoint, maxCodePoint, ignoreSurrogates);
         }
 
         public static string GenerateValidString(int length, int minCodePoint, int maxCodePoint, bool ignoreSurrogates = false)
@@ -196,6 +195,18 @@ namespace System.Text.Primitives.Tests.Encoding
             return plainText.ToString();
         }
 
+        public static byte[] GenerateOnlyInvalidUtf8Bytes(int length)
+        {
+            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            var utf8Byte = new byte[length];
+            for (int j = 0; j < length; j++)
+            {
+                var val = rand.Next(0x60, 0xFF); // Each byte starts with 11xx xxxx with no bytes that start with 10xx xxxx following it.
+                utf8Byte[j] = (byte)val;
+            }
+            return utf8Byte;
+        }
+
         public static string GenerateStringWithInvalidChars(int length)
         {
             Random rand = new Random(TextEncoderConstants.RandomSeed);
@@ -228,13 +239,34 @@ namespace System.Text.Primitives.Tests.Encoding
             return plainText.ToString();
         }
 
-        public static string GenerateValidStringEndsWithHighStartsWithLow(int charLength, bool startsWithLow)
+        public static byte[] GenerateUtf8BytesWithInvalidBytes(int length)
+        {
+            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            var utf8Byte = new byte[length];
+            for (int j = 0; j < length; j++)
+            {
+                // High probability of invalid utf8 bytes since there is no gaurantee that bytes following a byte within 0x60 and 0xFF 
+                // will be of the required form 10xx xxxx (and that there will be the correct number of such bytes).
+                var val = rand.Next(0, 0xFF);
+                if (j < length - 1)
+                {
+                    utf8Byte[j] = (byte)val;
+                }
+                else
+                {
+                    utf8Byte[j] = 0xFF; // Only possible for codepoints larger than 0x10FFFF, hence invalid
+                }
+            }
+            return utf8Byte;
+        }
+
+        public static string GenerateValidStringEndsWithHighStartsWithLow(int length, bool startsWithLow)
         {
             Random rand = new Random(TextEncoderConstants.RandomSeed);
             var plainText = new StringBuilder();
 
             int val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
-            if (charLength > 0)
+            if (length > 0)
             {
                 if (startsWithLow)
                 {
@@ -244,11 +276,11 @@ namespace System.Text.Primitives.Tests.Encoding
                 plainText.Append((char)val);
             }
 
-            for (int j = 1; j < charLength; j++)
+            for (int j = 1; j < length; j++)
             {
                 val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
 
-                if (j < charLength - 1)
+                if (j < length - 1)
                 {
                     while (val >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                     {
@@ -271,6 +303,112 @@ namespace System.Text.Primitives.Tests.Encoding
                 plainText.Append((char)val);
             }
             return plainText.ToString();
+        }
+
+        public static byte[] GenerateValidUtf8BytesEndsWithHighStartsWithLow(int length, bool startsWithLow)
+        {
+            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            var utf8Byte = new byte[length];
+
+            int val = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint);
+
+            if (length > 0)
+            {
+                if (startsWithLow)
+                {
+                    utf8Byte[length - 1] = (byte)val;
+                    // first byte must be of the form 10xx xxxx
+                    val = rand.Next(0x40, 0xBF);
+                    utf8Byte[0] = (byte)val;
+                }
+                else
+                {
+                    utf8Byte[0] = (byte)val;
+                    // if first byte is valid, last byte should be such that multiple bytes must follow (no byte of the form 10xx xxxx after, invalid)
+                    val = rand.Next(0xC0, 0xDF);
+                    utf8Byte[length - 1] = (byte)val;
+                }
+            }
+
+            for (int j = 1; j < length - 1; j++)
+            {
+                val = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint);
+                utf8Byte[j] = (byte)val;
+            }
+            return utf8Byte;
+        }
+
+        public static int GetByteCount(ReadOnlySpan<byte> utf8)
+        {
+            return utf8.Length;
+        }
+
+        public static int GetByteCount(ReadOnlySpan<char> utf16)
+        {
+            var inputLength = utf16.Length;
+
+            int byteCount = 0;
+            for (int i = 0; i < inputLength; i++)
+            {
+                char codePoint = utf16[i];
+                if (codePoint <= TextEncoderConstants.Utf8OneByteLastCodePoint)
+                {
+                    byteCount += 1;
+                }
+                else if (codePoint <= TextEncoderConstants.Utf8TwoBytesLastCodePoint)
+                {
+                    byteCount += 2;
+                }
+                else if (codePoint >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && codePoint <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
+                {
+                    i++;
+                    if (i >= inputLength)
+                    {
+                        return byteCount;
+                    }
+                    char lowSurrogate = utf16[i];
+
+                    if (lowSurrogate < TextEncoderConstants.Utf16LowSurrogateFirstCodePoint || lowSurrogate > TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
+                    {
+                        return byteCount;    // invalid char
+                    }
+                    byteCount += 4;
+                }
+                else if (codePoint >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && codePoint <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
+                {
+                    return byteCount;        // invalid char
+                }
+                else
+                {
+                    byteCount += 3;
+                }
+            }
+            return byteCount;
+        }
+
+        public static int GetByteCount(string utf16String)
+        {
+            return GetByteCount(utf16String.AsSpan());
+        }
+
+        public static int GetByteCount(ReadOnlySpan<uint> utf32)
+        {
+            int byteCount = 0;
+            for (int i = 0; i < utf32.Length; i++)
+            {
+                uint codePoint = utf32[i];
+                if (codePoint > TextEncoderConstants.LastValidCodePoint)
+                    return byteCount;
+                else if (codePoint > TextEncoderConstants.Utf8ThreeBytesLastCodePoint)
+                    byteCount += 4;
+                else if (codePoint > TextEncoderConstants.Utf8TwoBytesLastCodePoint)
+                    byteCount += 3;
+                else if (codePoint > TextEncoderConstants.Utf8OneByteLastCodePoint)
+                    byteCount += 2;
+                else
+                    byteCount += 1;
+            }
+            return byteCount;
         }
 
         public enum CodePointSubset

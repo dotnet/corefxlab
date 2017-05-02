@@ -48,7 +48,7 @@ namespace System.Text.Primitives.Tests.Encoding
         }
 
         //[Fact]
-        public void InputBufferEndsOnHighSurrogateAndRestart(TextEncoderTestHelper.SupportedEncoding from)
+        public void InputBufferEndsTooEarlyAndRestart(TextEncoderTestHelper.SupportedEncoding from)
         {
             throw new NotImplementedException();
         }

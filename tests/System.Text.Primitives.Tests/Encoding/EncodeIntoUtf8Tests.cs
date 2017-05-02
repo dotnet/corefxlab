@@ -13,67 +13,199 @@ namespace System.Text.Primitives.Tests.Encoding
         private static Text.Encoding testEncoderUnicode = Text.Encoding.Unicode;
         private static Text.Encoding testEncoderUtf32 = Text.Encoding.UTF32;
 
+        public static object[] SupportedEncodingTestData =
+        {
+            new object[] { TextEncoderTestHelper.SupportedEncoding.FromUtf8 },
+            new object[] { TextEncoderTestHelper.SupportedEncoding.FromUtf16 },
+            new object[] { TextEncoderTestHelper.SupportedEncoding.FromString },
+            new object[] { TextEncoderTestHelper.SupportedEncoding.FromUtf32 },
+        };
+
         [Theory]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
+        [MemberData(nameof(SupportedEncodingTestData))]
         public void InputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from)
         {
             string inputString = TextEncoderTestHelper.GenerateValidString(0, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan <char> utf16 = inputString.AsSpan();
-            byte[] expectedBytes = testEncoder.GetBytes(utf16.ToArray());
-            var encodedBytes = new Span<byte>(new byte[0]);    // Output buffer is size 0
+            
+            byte[] expectedBytes;
+            Span<byte> encodedBytes;
 
-            Assert.True(utf8.TryEncode(utf16, encodedBytes, out int charactersConsumed, out int bytesWritten));
-            Assert.Equal(utf16.Length, charactersConsumed);
-            Assert.Equal(expectedBytes.Length, bytesWritten);
-            Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes));
+            int bytesWritten;
 
-            encodedBytes = new Span<byte>(new byte[1]); // Output buffer is not size 0
+            switch (from)
+            {
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf8:
+                    byte[] temp = testEncoder.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoder, testEncoder, temp);
+                    encodedBytes = new Span<byte>(new byte[0]);    // Output buffer is size 0
+                    ReadOnlySpan<byte> inputUtf8 = temp;
+                    Assert.True(utf8.TryEncode(inputUtf8, encodedBytes, out int charactersConsumed, out bytesWritten));
+                    Assert.Equal(inputUtf8.Length, charactersConsumed);
+                    encodedBytes = new Span<byte>(new byte[1]);    // Output buffer is not size 0
+                    Assert.True(utf8.TryEncode(inputUtf8, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(inputUtf8.Length, charactersConsumed);
+                    break;
 
-            Assert.True(utf8.TryEncode(utf16, encodedBytes, out charactersConsumed, out bytesWritten));
-            Assert.Equal(utf16.Length, charactersConsumed);
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf16:
+                    temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    encodedBytes = new Span<byte>(new byte[0]);
+                    ReadOnlySpan<char> inputUtf16 = temp.AsSpan().NonPortableCast<byte, char>();
+                    Assert.True(utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(inputUtf16.Length, charactersConsumed);
+                    encodedBytes = new Span<byte>(new byte[1]);
+                    Assert.True(utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(inputUtf16.Length, charactersConsumed);
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromString:
+                    temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    encodedBytes = new Span<byte>(new byte[0]);
+                    string inputStr = inputString;
+                    Assert.True(utf8.TryEncode(inputStr, encodedBytes, out bytesWritten));
+                    encodedBytes = new Span<byte>(new byte[1]);
+                    Assert.True(utf8.TryEncode(inputStr, encodedBytes, out bytesWritten));
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf32:
+                default:
+                    temp = testEncoderUtf32.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUtf32, testEncoder, temp);
+                    encodedBytes = new Span<byte>(new byte[0]);
+                    ReadOnlySpan<uint> input = temp.AsSpan().NonPortableCast<byte, uint>();
+                    Assert.True(utf8.TryEncode(input, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(input.Length, charactersConsumed);
+                    encodedBytes = new Span<byte>(new byte[1]);
+                    Assert.True(utf8.TryEncode(input, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(input.Length, charactersConsumed);
+                    break;
+            }
+
             Assert.Equal(expectedBytes.Length, bytesWritten);
             Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes.Slice(0, bytesWritten)));
         }
 
         [Theory]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
+        [MemberData(nameof(SupportedEncodingTestData))]
         public void OutputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from)
         {
-            string inputString = TextEncoderTestHelper.GenerateValidString(TextEncoderConstants.CharLength, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> utf16 = inputString.AsSpan();
-            var encodedBytes = new Span<byte>(new byte[0]);
+            string inputString = TextEncoderTestHelper.GenerateValidString(TextEncoderConstants.DataLength, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
 
-            Assert.False(utf8.TryEncode(utf16, encodedBytes, out int charactersConsumed, out int bytesWritten));
+            byte[] expectedBytes;
+            Span<byte> encodedBytes = new Span<byte>(new byte[0]);
+
+            int bytesWritten;
+            int charactersConsumed;
+
+            switch (from)
+            {
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf8:
+                    byte[] temp = testEncoder.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoder, testEncoder, temp);
+                    ReadOnlySpan<byte> inputUtf8 = temp;
+                    Assert.False(utf8.TryEncode(inputUtf8, encodedBytes, out charactersConsumed, out bytesWritten));
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf16:
+                    temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    ReadOnlySpan<char> inputUtf16 = temp.AsSpan().NonPortableCast<byte, char>();
+                    Assert.False(utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten));
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromString:
+                    temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    string inputStr = inputString;
+                    Assert.False(utf8.TryEncode(inputStr, encodedBytes, out bytesWritten));
+                    charactersConsumed = 0;
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf32:
+                default:
+                    temp = testEncoderUtf32.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUtf32, testEncoder, temp);
+                    ReadOnlySpan<uint> input = temp.AsSpan().NonPortableCast<byte, uint>();
+                    Assert.False(utf8.TryEncode(input, encodedBytes, out charactersConsumed, out bytesWritten));
+                    break;
+            }
+
             Assert.Equal(0, charactersConsumed);
             Assert.Equal(0, bytesWritten);
             Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(Span<byte>.Empty, encodedBytes));
         }
 
         [Theory]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
+        //[MemberData(nameof(SupportedEncodingTestData))]
+        // [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] System.ArgumentException : Destination is too short because of use of CopyTo
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
         public void InputBufferLargerThanOutputBuffer(TextEncoderTestHelper.SupportedEncoding from)
         {
-            string inputString = TextEncoderTestHelper.GenerateValidString(TextEncoderConstants.CharLength, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> utf16 = inputString.AsSpan();
-            byte[] expectedBytes = testEncoder.GetBytes(utf16.ToArray());
-            int expectedBytesWritten = expectedBytes.Length;
-            var encodedBytes1 = new Span<byte>(new byte[expectedBytesWritten / 2]);
+            string inputString = TextEncoderTestHelper.GenerateValidString(TextEncoderConstants.DataLength, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
 
-            Assert.False(utf8.TryEncode(utf16, encodedBytes1, out int charactersConsumed1, out int bytesWritten1));
+            byte[] expectedBytes;
+            Span<byte> encodedBytes1;
+            Span<byte> encodedBytes2;
 
-            var encodedBytes2 = new Span<byte>(new byte[expectedBytesWritten - bytesWritten1]);
+            int expectedBytesWritten;
 
-            Assert.True(utf8.TryEncode(utf16.Slice(charactersConsumed1), encodedBytes2, out int charactersConsumed2, out int bytesWritten2));
-            Assert.Equal(utf16.Length, charactersConsumed1 + charactersConsumed2);
+            int bytesWritten1;
+            int bytesWritten2;
+
+            switch (from)
+            {
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf8:
+                    byte[] temp = testEncoder.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoder, testEncoder, temp);
+                    expectedBytesWritten = expectedBytes.Length;
+                    encodedBytes1 = new Span<byte>(new byte[expectedBytesWritten / 2]);
+                    ReadOnlySpan<byte> inputUtf8 = temp;
+                    Assert.False(utf8.TryEncode(inputUtf8, encodedBytes1, out int charactersConsumed1, out bytesWritten1));
+                    encodedBytes2 = new Span<byte>(new byte[expectedBytesWritten - bytesWritten1]);
+                    Assert.True(utf8.TryEncode(inputUtf8.Slice(charactersConsumed1), encodedBytes2, out int charactersConsumed2, out bytesWritten2));
+                    Assert.Equal(inputUtf8.Length, charactersConsumed1 + charactersConsumed2);
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf16:
+                    temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    expectedBytesWritten = expectedBytes.Length;
+                    encodedBytes1 = new Span<byte>(new byte[expectedBytesWritten / 2]);
+                    ReadOnlySpan<char> inputUtf16 = temp.AsSpan().NonPortableCast<byte, char>();
+                    Assert.False(utf8.TryEncode(inputUtf16, encodedBytes1, out charactersConsumed1, out bytesWritten1));
+                    encodedBytes2 = new Span<byte>(new byte[expectedBytesWritten - bytesWritten1]);
+                    Assert.True(utf8.TryEncode(inputUtf16.Slice(charactersConsumed1), encodedBytes2, out charactersConsumed2, out bytesWritten2));
+                    Assert.Equal(inputUtf16.Length, charactersConsumed1 + charactersConsumed2);
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromString:    // Do not have out charactersConsumed
+                    /*temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    expectedBytesWritten = expectedBytes.Length;
+                    encodedBytes1 = new Span<byte>(new byte[expectedBytesWritten / 2]);
+                    string inputStr = inputString;
+                    Assert.False(utf8.TryEncode(inputStr, encodedBytes1, out bytesWritten1));
+                    encodedBytes2 = new Span<byte>(new byte[expectedBytesWritten - bytesWritten1]);
+                    Assert.True(utf8.TryEncode(inputStr.Substring(charactersConsumed1), encodedBytes2, out bytesWritten2));*/
+                    return;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf32:
+                default:
+                    temp = testEncoderUtf32.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUtf32, testEncoder, temp);
+                    expectedBytesWritten = expectedBytes.Length;
+                    encodedBytes1 = new Span<byte>(new byte[expectedBytesWritten / 2]);
+                    ReadOnlySpan<uint> input = temp.AsSpan().NonPortableCast<byte, uint>();
+                    Assert.False(utf8.TryEncode(input, encodedBytes1, out charactersConsumed1, out bytesWritten1));
+                    encodedBytes2 = new Span<byte>(new byte[expectedBytesWritten - bytesWritten1]);
+                    Assert.True(utf8.TryEncode(input.Slice(charactersConsumed1), encodedBytes2, out charactersConsumed2, out bytesWritten2));
+                    Assert.Equal(input.Length, charactersConsumed1 + charactersConsumed2);
+                    break;
+            }
+
             Assert.Equal(expectedBytesWritten, bytesWritten1 + bytesWritten2);
 
             var encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
@@ -84,30 +216,97 @@ namespace System.Text.Primitives.Tests.Encoding
         }
 
         [Theory]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
+        [MemberData(nameof(SupportedEncodingTestData))]
         public void OutputBufferLargerThanInputBuffer(TextEncoderTestHelper.SupportedEncoding from)
         {
-            string inputString = TextEncoderTestHelper.GenerateValidString(TextEncoderConstants.CharLength, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> firstUtf16 = inputString.AsSpan();
-            byte[] expectedBytes1 = testEncoder.GetBytes(firstUtf16.ToArray());
+            string inputString1 = TextEncoderTestHelper.GenerateValidString(TextEncoderConstants.DataLength, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
+            string inputString2 = TextEncoderTestHelper.GenerateValidString(TextEncoderConstants.DataLength, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
 
-            inputString = TextEncoderTestHelper.GenerateValidString(TextEncoderConstants.CharLength, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
-            ReadOnlySpan<char> secondUtf16 = inputString.AsSpan();
-            byte[] expectedBytes2 = testEncoder.GetBytes(secondUtf16.ToArray());
+            byte[] expectedBytes1;
+            byte[] expectedBytes2;
+            Span<byte> encodedBytes;
 
-            int expectedBytesWritten = expectedBytes1.Length + expectedBytes2.Length;
-            var encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+            int expectedBytesWritten;
 
-            Assert.True(utf8.TryEncode(firstUtf16, encodedBytes, out int charactersConsumed, out int bytesWritten));
-            Assert.Equal(firstUtf16.Length, charactersConsumed);
-            Assert.Equal(expectedBytes1.Length, bytesWritten);
+            int bytesWritten;
 
-            Assert.True(utf8.TryEncode(secondUtf16, encodedBytes.Slice(bytesWritten), out charactersConsumed, out bytesWritten));
-            Assert.Equal(secondUtf16.Length, charactersConsumed);
-            Assert.Equal(expectedBytes2.Length, bytesWritten);
+            switch (from)
+            {
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf8:
+                    byte[] temp1 = testEncoder.GetBytes(inputString1);
+                    byte[] temp2 = testEncoder.GetBytes(inputString2);
+                    expectedBytes1 = Text.Encoding.Convert(testEncoder, testEncoder, temp1);
+                    expectedBytes2 = Text.Encoding.Convert(testEncoder, testEncoder, temp2);
+                    expectedBytesWritten = expectedBytes1.Length + expectedBytes2.Length;
+                    encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+                    ReadOnlySpan<byte> firstUtf8 = temp1;
+                    ReadOnlySpan<byte> secondUtf8 = temp2;
+
+                    Assert.True(utf8.TryEncode(firstUtf8, encodedBytes, out int charactersConsumed, out bytesWritten));
+                    Assert.Equal(firstUtf8.Length, charactersConsumed);
+                    Assert.Equal(expectedBytes1.Length, bytesWritten);
+
+                    Assert.True(utf8.TryEncode(secondUtf8, encodedBytes.Slice(bytesWritten), out charactersConsumed, out bytesWritten));
+                    Assert.Equal(secondUtf8.Length, charactersConsumed);
+                    Assert.Equal(expectedBytes2.Length, bytesWritten);
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf16:
+                    temp1 = testEncoderUnicode.GetBytes(inputString1);
+                    temp2 = testEncoderUnicode.GetBytes(inputString2);
+                    expectedBytes1 = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp1);
+                    expectedBytes2 = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp2);
+                    expectedBytesWritten = expectedBytes1.Length + expectedBytes2.Length;
+                    encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+                    string firstInputStr = inputString1;
+                    string secondInputStr = inputString2;
+
+                    Assert.True(utf8.TryEncode(firstInputStr, encodedBytes, out bytesWritten));
+                    Assert.Equal(expectedBytes1.Length, bytesWritten);
+
+                    Assert.True(utf8.TryEncode(secondInputStr, encodedBytes.Slice(bytesWritten), out bytesWritten));
+                    Assert.Equal(expectedBytes2.Length, bytesWritten);
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromString:
+                    temp1 = testEncoderUnicode.GetBytes(inputString1);
+                    temp2 = testEncoderUnicode.GetBytes(inputString2);
+                    expectedBytes1 = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp1);
+                    expectedBytes2 = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp2);
+                    expectedBytesWritten = expectedBytes1.Length + expectedBytes2.Length;
+                    encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+                    ReadOnlySpan<char> firstUtf16 = temp1.AsSpan().NonPortableCast<byte, char>();
+                    ReadOnlySpan<char> secondUtf16 = temp2.AsSpan().NonPortableCast<byte, char>();
+
+                    Assert.True(utf8.TryEncode(firstUtf16, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(firstUtf16.Length, charactersConsumed);
+                    Assert.Equal(expectedBytes1.Length, bytesWritten);
+
+                    Assert.True(utf8.TryEncode(secondUtf16, encodedBytes.Slice(bytesWritten), out charactersConsumed, out bytesWritten));
+                    Assert.Equal(secondUtf16.Length, charactersConsumed);
+                    Assert.Equal(expectedBytes2.Length, bytesWritten);
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf32:
+                default:
+                    temp1 = testEncoderUtf32.GetBytes(inputString1);
+                    temp2 = testEncoderUtf32.GetBytes(inputString2);
+                    expectedBytes1 = Text.Encoding.Convert(testEncoderUtf32, testEncoder, temp1);
+                    expectedBytes2 = Text.Encoding.Convert(testEncoderUtf32, testEncoder, temp2);
+                    expectedBytesWritten = expectedBytes1.Length + expectedBytes2.Length;
+                    encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+                    ReadOnlySpan<uint> firstInput = temp1.AsSpan().NonPortableCast<byte, uint>();
+                    ReadOnlySpan<uint> secondInput = temp2.AsSpan().NonPortableCast<byte, uint>();
+
+                    Assert.True(utf8.TryEncode(firstInput, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(firstInput.Length, charactersConsumed);
+                    Assert.Equal(expectedBytes1.Length, bytesWritten);
+
+                    Assert.True(utf8.TryEncode(secondInput, encodedBytes.Slice(bytesWritten), out charactersConsumed, out bytesWritten));
+                    Assert.Equal(secondInput.Length, charactersConsumed);
+                    Assert.Equal(expectedBytes2.Length, bytesWritten);
+                    break;
+            }
 
             var expectedBytes = new byte[expectedBytesWritten];
             Array.Copy(expectedBytes1, expectedBytes, expectedBytes1.Length);
@@ -117,79 +316,194 @@ namespace System.Text.Primitives.Tests.Encoding
         }
 
         [Theory]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
+        //[MemberData(nameof(SupportedEncodingTestData))]
+        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] TODO: Validate that the input stream contains valid sequences as they are consumed.
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
         public void InputBufferContainsOnlyInvalidData(TextEncoderTestHelper.SupportedEncoding from)
         {
-            string inputString = TextEncoderTestHelper.GenerateOnlyInvalidString(TextEncoderConstants.CharLength);
-            ReadOnlySpan<char> utf16 = inputString.AsSpan();
-            byte[] expectedBytes = testEncoder.GetBytes(utf16.ToArray());
-            int expectedBytesWritten = expectedBytes.Length;
-            var encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+            string inputString = TextEncoderTestHelper.GenerateOnlyInvalidString(TextEncoderConstants.DataLength);
+            byte[] inputUtf8Bytes = TextEncoderTestHelper.GenerateOnlyInvalidUtf8Bytes(TextEncoderConstants.DataLength);
 
-            Assert.False(utf8.TryEncode(utf16, encodedBytes, out int charactersConsumed, out int bytesWritten));
-            Assert.Equal(0, charactersConsumed);
+            int bytesWritten;
+
+            switch (from)
+            {
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf8:
+                    byte[] expectedBytes = Text.Encoding.Convert(testEncoder, testEncoder, inputUtf8Bytes);
+                    Span<byte> encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    ReadOnlySpan<byte> inputUtf8 = inputUtf8Bytes;
+                    Assert.False(utf8.TryEncode(inputUtf8, encodedBytes, out int charactersConsumed, out bytesWritten));
+                    Assert.Equal(0, charactersConsumed);
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf16:
+                    byte[] temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    ReadOnlySpan<char> inputUtf16 = inputString.AsSpan();
+                    Assert.False(utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(0, charactersConsumed);
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromString:
+                    temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    string inputStr = inputString;
+                    Assert.False(utf8.TryEncode(inputStr, encodedBytes, out bytesWritten));
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf32: // Invalid if codePoint > 0x10FFFF
+                default:
+                    expectedBytes = Text.Encoding.Convert(testEncoderUtf32, testEncoder, inputUtf8Bytes);
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    ReadOnlySpan<uint> input = inputUtf8Bytes.AsSpan().NonPortableCast<byte, uint>();
+                    Assert.False(utf8.TryEncode(input, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(0, charactersConsumed);
+                    break;
+            }
+
             Assert.Equal(0, bytesWritten);
         }
 
         [Theory]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
+        //[MemberData(nameof(SupportedEncodingTestData))]
+        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] TODO: Validate that the input stream contains valid sequences as they are consumed.
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
         public void InputBufferContainsSomeInvalidData(TextEncoderTestHelper.SupportedEncoding from)
         {
-            string inputString = TextEncoderTestHelper.GenerateStringWithInvalidChars(TextEncoderConstants.CharLength);
-            ReadOnlySpan<char> utf16 = inputString.AsSpan();
-            byte[] expectedBytes = testEncoder.GetBytes(utf16.ToArray());
-            int expectedBytesWritten = GetByteCount(utf16);
-            var encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+            string inputString = TextEncoderTestHelper.GenerateStringWithInvalidChars(TextEncoderConstants.DataLength);
+            byte[] inputUtf8Bytes = TextEncoderTestHelper.GenerateUtf8BytesWithInvalidBytes(TextEncoderConstants.DataLength);
 
-            Assert.False(utf8.TryEncode(utf16, encodedBytes, out int charactersConsumed, out int bytesWritten));
-            Assert.True(charactersConsumed < inputString.Length);
+            byte[] expectedBytes;
+            Span<byte> encodedBytes;
+
+            int expectedBytesWritten;
+            int bytesWritten;
+
+            switch (from)
+            {
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf8:
+                    expectedBytes = Text.Encoding.Convert(testEncoder, testEncoder, inputUtf8Bytes);
+                    ReadOnlySpan<byte> inputUtf8 = inputUtf8Bytes;
+                    expectedBytesWritten = TextEncoderTestHelper.GetByteCount(inputUtf8);
+                    encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+                    Assert.False(utf8.TryEncode(inputUtf8, encodedBytes, out int charactersConsumed, out bytesWritten));
+                    Assert.True(charactersConsumed < inputString.Length);
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf16:
+                    byte[] temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    ReadOnlySpan<char> inputUtf16 = inputString.AsSpan();
+                    expectedBytesWritten = TextEncoderTestHelper.GetByteCount(inputUtf16);
+                    encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+                    Assert.False(utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.True(charactersConsumed < inputString.Length);
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromString:
+                    temp = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    string inputStr = inputString;
+                    expectedBytesWritten = TextEncoderTestHelper.GetByteCount(inputStr);
+                    encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+                    Assert.False(utf8.TryEncode(inputStr, encodedBytes, out bytesWritten));
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf32:  // Invalid if codePoint > 0x10FFFF
+                default:
+                    expectedBytes = Text.Encoding.Convert(testEncoderUtf32, testEncoder, inputUtf8Bytes);
+                    ReadOnlySpan<uint> input = inputUtf8Bytes.AsSpan().NonPortableCast<byte, uint>();
+                    expectedBytesWritten = TextEncoderTestHelper.GetByteCount(input);
+                    encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
+                    Assert.False(utf8.TryEncode(input, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(0, charactersConsumed);
+                    break;
+            }
+
             Assert.Equal(expectedBytesWritten, bytesWritten);
             Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes.AsSpan().Slice(0, expectedBytesWritten), encodedBytes));
         }
 
         [Theory]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
+        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] TODO: Validate that the input stream contains valid sequences as they are consumed.
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
-        public void InputBufferEndsOnHighSurrogateAndRestart(TextEncoderTestHelper.SupportedEncoding from)
+        public void InputBufferEndsTooEarlyAndRestart(TextEncoderTestHelper.SupportedEncoding from)
         {
-            string inputString1 = TextEncoderTestHelper.GenerateValidStringEndsWithHighStartsWithLow(TextEncoderConstants.CharLength, false);
-            string inputString2 = inputString1 + TextEncoderTestHelper.GenerateValidStringEndsWithHighStartsWithLow(TextEncoderConstants.CharLength, true);
+            string inputString1 = TextEncoderTestHelper.GenerateValidStringEndsWithHighStartsWithLow(TextEncoderConstants.DataLength, false);
+            string inputString2 = inputString1 + TextEncoderTestHelper.GenerateValidStringEndsWithHighStartsWithLow(TextEncoderConstants.DataLength, true);
 
-            ReadOnlySpan<char> firstUtf16 = inputString1.AsSpan();
-            ReadOnlySpan<char> secondUtf16 = inputString2.AsSpan();
-            byte[] expectedBytes = testEncoder.GetBytes(secondUtf16.ToArray());
-            var encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+            byte[] inputUtf8Bytes1 = TextEncoderTestHelper.GenerateValidUtf8BytesEndsWithHighStartsWithLow(TextEncoderConstants.DataLength, false);
+            byte[] tempForUtf8Bytes2 = TextEncoderTestHelper.GenerateValidUtf8BytesEndsWithHighStartsWithLow(TextEncoderConstants.DataLength, true);
+            byte[] inputUtf8Bytes2 = new byte[inputUtf8Bytes1.Length + tempForUtf8Bytes2.Length];
+            Array.Copy(inputUtf8Bytes1, inputUtf8Bytes2, inputUtf8Bytes1.Length);
+            Array.Copy(tempForUtf8Bytes2, 0, inputUtf8Bytes2, inputUtf8Bytes1.Length, tempForUtf8Bytes2.Length);
 
-            Assert.False(utf8.TryEncode(firstUtf16, encodedBytes, out int charactersConsumed1, out int bytesWritten1));
-            Assert.True(utf8.TryEncode(secondUtf16.Slice(charactersConsumed1), encodedBytes.Slice(bytesWritten1), out int charactersConsumed2, out int bytesWritten2));
-            Assert.Equal(inputString2.Length, charactersConsumed1 + charactersConsumed2);
+            byte[] expectedBytes;
+            Span<byte> encodedBytes;
+
+            int charactersConsumed1;
+            int charactersConsumed2;
+
+            int bytesWritten1;
+            int bytesWritten2;
+
+            switch (from)
+            {
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf8:
+                    expectedBytes = Text.Encoding.Convert(testEncoder, testEncoder, inputUtf8Bytes2);
+                    ReadOnlySpan<byte> firstUtf8 = inputUtf8Bytes1;
+                    ReadOnlySpan<byte> secondUtf8 = inputUtf8Bytes2;
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    Assert.False(utf8.TryEncode(firstUtf8, encodedBytes, out charactersConsumed1, out bytesWritten1));
+                    Assert.True(utf8.TryEncode(secondUtf8.Slice(charactersConsumed1), encodedBytes.Slice(bytesWritten1), out charactersConsumed2, out bytesWritten2));
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf16:
+                    byte[] temp = testEncoderUnicode.GetBytes(inputString2);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    ReadOnlySpan<char> firstUtf16 = inputString1.AsSpan();
+                    ReadOnlySpan<char> secondUtf16 = inputString2.AsSpan();
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    Assert.False(utf8.TryEncode(firstUtf16, encodedBytes, out charactersConsumed1, out bytesWritten1));
+                    Assert.True(utf8.TryEncode(secondUtf16.Slice(charactersConsumed1), encodedBytes.Slice(bytesWritten1), out charactersConsumed2, out bytesWritten2));
+                    break;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromString:     // Do not have out charactersConsumed
+                    /*temp = testEncoderUnicode.GetBytes(inputString2);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    string firstInputStr = inputString1;
+                    string secondInputStr = inputString2;
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    Assert.False(utf8.TryEncode(firstInputStr, encodedBytes, out bytesWritten1));
+                    Assert.True(utf8.TryEncode(secondInputStr.Substring(charactersConsumed1), encodedBytes.Slice(bytesWritten1), out bytesWritten1));*/
+                    return;
+
+                case TextEncoderTestHelper.SupportedEncoding.FromUtf32:
+                default:
+                    return;
+            }
+
+            Assert.Equal(TextEncoderConstants.DataLength * 2, charactersConsumed1 + charactersConsumed2);
             Assert.Equal(expectedBytes.Length, bytesWritten1 + bytesWritten2);
             Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes));
         }
 
         [Theory]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
+        [MemberData(nameof(SupportedEncodingTestData))]
         public void InputBufferContainsOnlyASCII(TextEncoderTestHelper.SupportedEncoding from)
         {
             Assert.True(TextEncoderTestHelper.Validate(from, utf8, testEncoder, TextEncoderTestHelper.CodePointSubset.ASCII));  // 1 byte
         }
 
         [Theory]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
+        [MemberData(nameof(SupportedEncodingTestData))]
         public void InputBufferContainsNonASCII(TextEncoderTestHelper.SupportedEncoding from)
         {
             Assert.True(TextEncoderTestHelper.Validate(from, utf8, testEncoder, TextEncoderTestHelper.CodePointSubset.TwoBytes));  // 2 bytes
@@ -199,10 +513,7 @@ namespace System.Text.Primitives.Tests.Encoding
         }
 
         [Theory]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
+        [MemberData(nameof(SupportedEncodingTestData))]
         public void InputBufferContainsAllCodePoints(TextEncoderTestHelper.SupportedEncoding from)
         {
             string inputString = TextEncoderTestHelper.GenerateAllCharacters();
@@ -237,8 +548,7 @@ namespace System.Text.Primitives.Tests.Encoding
                     expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
                     encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
                     string inputStr = inputString;
-                    Assert.True(utf8.TryEncode(inputStr, encodedBytes, /*out charactersConsumed,*/ out bytesWritten));
-                    //Assert.Equal(inputString.Length, charactersConsumed);
+                    Assert.True(utf8.TryEncode(inputStr, encodedBytes, out bytesWritten));
                     break;
 
                 case TextEncoderTestHelper.SupportedEncoding.FromUtf32:
@@ -254,77 +564,6 @@ namespace System.Text.Primitives.Tests.Encoding
 
             Assert.Equal(expectedBytes.Length, bytesWritten);
             Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes));
-        }
-
-        private int GetByteCount(ReadOnlySpan<byte> utf8)
-        {
-            return utf8.Length;
-        }
-
-        private int GetByteCount(ReadOnlySpan<char> utf16)
-        {
-            var inputLength = utf16.Length;
-
-            int byteCount = 0;
-            for (int i = 0; i < inputLength; i++)
-            {
-                char codePoint = utf16[i];
-                if (codePoint <= TextEncoderConstants.Utf8OneByteLastCodePoint)
-                {
-                    byteCount += 1;
-                }
-                else if (codePoint <= TextEncoderConstants.Utf8TwoBytesLastCodePoint)
-                {
-                    byteCount += 2;
-                }
-                else if (codePoint >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && codePoint <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
-                {
-                    i++;
-                    if (i >= inputLength)
-                    {
-                        return byteCount;
-                    }
-                    char lowSurrogate = utf16[i];
-
-                    if (lowSurrogate < TextEncoderConstants.Utf16LowSurrogateFirstCodePoint || lowSurrogate > TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
-                    {
-                        return byteCount;    // invalid char
-                    }
-                    byteCount += 4;
-                }
-                else if (codePoint >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && codePoint <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
-                {
-                    return byteCount;        // invalid char
-                }
-                else
-                {
-                    byteCount += 3;
-                }
-            }
-            return byteCount;
-        }
-
-        private int GetByteCount(string utf16String)
-        {
-            return GetByteCount(utf16String.AsSpan());
-        }
-
-        private int GetByteCount(ReadOnlySpan<uint> utf32)
-        {
-            int byteCount = 0;
-            for (int i = 0; i < utf32.Length; i++)
-            {
-                uint codePoint = utf32[i];
-                if (codePoint > TextEncoderConstants.Utf8ThreeBytesLastCodePoint)
-                    byteCount += 4;
-                else if (codePoint > TextEncoderConstants.Utf8TwoBytesLastCodePoint)
-                    byteCount += 3;
-                else if (codePoint > TextEncoderConstants.Utf8OneByteLastCodePoint)
-                    byteCount += 2;
-                else
-                    byteCount += 1;
-            }
-            return byteCount;
         }
     }
 }
