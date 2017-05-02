@@ -434,6 +434,7 @@ namespace System.Text.Primitives.Tests.Encoding
         //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] TODO: Validate that the input stream contains valid sequences as they are consumed.
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
+        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)] TODO: Validate that the input stream contains valid codepoints
         public void InputBufferEndsTooEarlyAndRestart(TextEncoderTestHelper.SupportedEncoding from)
         {
             string inputString1 = TextEncoderTestHelper.GenerateValidStringEndsWithHighStartsWithLow(TextEncoderConstants.DataLength, false);
@@ -444,6 +445,18 @@ namespace System.Text.Primitives.Tests.Encoding
             byte[] inputUtf8Bytes2 = new byte[inputUtf8Bytes1.Length + tempForUtf8Bytes2.Length];
             Array.Copy(inputUtf8Bytes1, inputUtf8Bytes2, inputUtf8Bytes1.Length);
             Array.Copy(tempForUtf8Bytes2, 0, inputUtf8Bytes2, inputUtf8Bytes1.Length, tempForUtf8Bytes2.Length);
+
+            uint[] inputUtf32Bytes1 = TextEncoderTestHelper.GenerateValidUtf32EndsWithHighStartsWithLow(TextEncoderConstants.DataLength, false);
+            uint[] tempForUtf32Bytes2 = TextEncoderTestHelper.GenerateValidUtf32EndsWithHighStartsWithLow(TextEncoderConstants.DataLength, true);
+            uint[] inputUtf32Bytes2 = new uint[inputUtf32Bytes1.Length + tempForUtf32Bytes2.Length];
+            Array.Copy(inputUtf32Bytes1, inputUtf32Bytes2, inputUtf32Bytes1.Length);
+            Array.Copy(tempForUtf32Bytes2, 0, inputUtf32Bytes2, inputUtf32Bytes1.Length, tempForUtf32Bytes2.Length);
+
+            byte[] uint32Bytes1 = TextEncoderTestHelper.GenerateValidBytesUtf32EndsWithHighStartsWithLow(TextEncoderConstants.DataLength, false);
+            byte[] tempUint32Bytes = TextEncoderTestHelper.GenerateValidBytesUtf32EndsWithHighStartsWithLow(TextEncoderConstants.DataLength, true);
+            byte[] uint32Bytes2 = new byte[uint32Bytes1.Length + tempUint32Bytes.Length];
+            Array.Copy(uint32Bytes1, uint32Bytes2, uint32Bytes1.Length);
+            Array.Copy(tempUint32Bytes, 0, uint32Bytes2, uint32Bytes1.Length, tempUint32Bytes.Length);
 
             byte[] expectedBytes;
             Span<byte> encodedBytes;
@@ -487,7 +500,13 @@ namespace System.Text.Primitives.Tests.Encoding
 
                 case TextEncoderTestHelper.SupportedEncoding.FromUtf32:
                 default:
-                    return;
+                    expectedBytes = Text.Encoding.Convert(testEncoderUtf32, testEncoder, uint32Bytes2);
+                    ReadOnlySpan<uint> firstInput = inputUtf32Bytes1.AsSpan();
+                    ReadOnlySpan<uint> secondInput = inputUtf32Bytes2.AsSpan();
+                    encodedBytes = new Span<byte>(new byte[TextEncoderTestHelper.GetByteCount(inputUtf32Bytes2)]);
+                    Assert.False(utf8.TryEncode(firstInput, encodedBytes, out charactersConsumed1, out bytesWritten1));
+                    Assert.True(utf8.TryEncode(secondInput.Slice(charactersConsumed1), encodedBytes.Slice(bytesWritten1), out charactersConsumed2, out bytesWritten2));
+                    break;
             }
 
             Assert.Equal(TextEncoderConstants.DataLength * 2, charactersConsumed1 + charactersConsumed2);
