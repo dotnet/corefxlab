@@ -131,7 +131,7 @@ namespace System.IO.Pipelines.Tests
                             var tuple = await PingClient(connection, SendCount);
                             Assert.Equal(SendCount, tuple.Item1);
                             Assert.Equal(SendCount, tuple.Item2);
-                            Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
+                            Console.WriteLine($"Libuv: Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
                         }
                         finally
                         {
@@ -163,7 +163,7 @@ namespace System.IO.Pipelines.Tests
                             var tuple = await PingClient(connection, SendCount);
                             Assert.Equal(SendCount, tuple.Item1);
                             Assert.Equal(SendCount, tuple.Item2);
-                            Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
+                            Console.WriteLine($"Socket: Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
                         }
                         finally
                         {
@@ -174,8 +174,8 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-        [Fact(Skip = "Sometimes hangs on the build server.")]
-        public async Task RunStressPingPongTest_RioServer_LibuvClient()
+        [Fact]
+        public async Task RunStressPingPongTest_RioServer_SocketClient()
         {
             var endpoint = new IPEndPoint(IPAddress.Loopback, 5060);
             const int SendCount = 500, ClientCount = 5;
@@ -183,35 +183,30 @@ namespace System.IO.Pipelines.Tests
             var endpointBytes = endpoint.Address.GetAddressBytes();
             var server = new RioTcpServer((ushort)endpoint.Port, endpointBytes[0], endpointBytes[1], endpointBytes[2], endpointBytes[3]);
 
-            var runServerTask = Task.Factory.StartNew(() =>
+            var runServerTask = Task.Run(async () =>
             {
-                var pongTasks = new Task[ClientCount];
-                
-                for (int loop = 0; loop < ClientCount; loop++)
+                for (var i = 0; i < ClientCount; i++)
                 {
-                    var connection = server.Accept();
-                    pongTasks[loop] = PongServer(connection);
+                    using (var connection = server.Accept())
+                    {
+                        await PongServer(connection);
+                    }
                 }
-
-                return Task.WhenAll(pongTasks);
             });
 
             for (int loop = 0; loop < ClientCount; loop++)
             {
-                using (var thread = new UvThread())
-                using (var connection = await new UvTcpClient(thread, endpoint).ConnectAsync())
+                var connection = await SocketConnection.ConnectAsync(endpoint);
+                try
                 {
-                    try
-                    {
-                        var tuple = await PingClient(connection, SendCount);
-                        Assert.Equal(SendCount, tuple.Item1);
-                        Assert.Equal(SendCount, tuple.Item2);
-                        Console.WriteLine($"Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
-                    }
-                    finally
-                    {
-                        await connection.DisposeAsync();
-                    }
+                    var tuple = await PingClient(connection, SendCount);
+                    Assert.Equal(SendCount, tuple.Item1);
+                    Assert.Equal(SendCount, tuple.Item2);
+                    Console.WriteLine($"RIO: Ping: {tuple.Item1}; Pong: {tuple.Item2}; Time: {tuple.Item3}ms");
+                }
+                finally
+                {
+                    await connection.DisposeAsync();
                 }
             }
 
