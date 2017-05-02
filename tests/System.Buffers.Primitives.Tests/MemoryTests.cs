@@ -46,7 +46,7 @@ namespace System.Buffers.Tests
                 Buffer<byte> memory = owned.Buffer;
                 Buffer<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
-                var r = memorySlice.Reserve();
+                var r = memorySlice.Retain();
                 try
                 {
                     Assert.Throws<InvalidOperationException>(() => { // memory is reserved; premature dispose check fires
@@ -90,7 +90,7 @@ namespace System.Buffers.Tests
             for(int k = 0; k < 1000; k++) {
                 var owners   = new OwnedBuffer<byte>[128];
                 var memories = new Buffer<byte>[owners.Length];
-                var reserves = new DisposableReservation<byte>[owners.Length];
+                var reserves = new DisposableReservation[owners.Length];
                 var disposeSuccesses = new bool[owners.Length];
                 var reserveSuccesses = new bool[owners.Length];
 
@@ -114,7 +114,7 @@ namespace System.Buffers.Tests
                 var reserve_task = Task.Run(() => {
                     for (int i = owners.Length - 1; i >= 0; i--) {
                         try {
-                            reserves[i] = memories[i].Reserve();
+                            reserves[i] = memories[i].Retain();
                             reserveSuccesses[i] = true;
                         } catch (ObjectDisposedException) {
                             reserveSuccesses[i] = false;
@@ -172,7 +172,7 @@ namespace System.Buffers.Tests
             var memory = owned.Buffer;
             Assert.Equal(0, owned.OnZeroRefencesCount);
             Assert.False(owned.IsRetained);
-            using (memory.Reserve()) {
+            using (memory.Retain()) {
                 Assert.Equal(0, owned.OnZeroRefencesCount);
                 Assert.True(owned.IsRetained);
             }
@@ -186,7 +186,7 @@ namespace System.Buffers.Tests
             OwnedBuffer<byte> owned = new AutoPooledMemory(1000);
             var memory = owned.Buffer;
             Assert.Equal(false, owned.IsDisposed);
-            var reservation = memory.Reserve();
+            var reservation = memory.Retain();
             Assert.Equal(false, owned.IsDisposed);
             owned.Release();
             Assert.Equal(false, owned.IsDisposed);

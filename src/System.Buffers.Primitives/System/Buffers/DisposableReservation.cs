@@ -5,17 +5,15 @@
 
 namespace System.Buffers
 {
-    public struct DisposableReservation<T> : IDisposable
+    public struct DisposableReservation : IDisposable
     {
-        OwnedBuffer<T> _owner;
+        IRetainable _owner;
 
-        internal DisposableReservation(OwnedBuffer<T> owner)
+        internal DisposableReservation(IRetainable owner)
         {
             _owner = owner;
             _owner.Retain();
         }
-
-        public Span<T> Span => _owner.Span;
 
         public void Dispose()
         {

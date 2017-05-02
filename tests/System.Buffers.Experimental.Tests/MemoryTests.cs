@@ -67,7 +67,7 @@ namespace System.Slices.Tests
                 Buffer<byte> memory = owned.Buffer;
                 Buffer<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
-                var r = memorySlice.Reserve();
+                var r = memorySlice.Retain();
                 try {
                     Assert.Throws<InvalidOperationException>(() => { // memory is reserved; premature dispose check fires
                         owned.Dispose();
