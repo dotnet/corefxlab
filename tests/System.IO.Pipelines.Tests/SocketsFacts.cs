@@ -185,7 +185,7 @@ namespace System.IO.Pipelines.Tests
 
             var runServerTask = Task.Run(async () =>
             {
-                for (var i = 0; i < ClientCount; i++)
+                for (int loop = 0; loop < ClientCount; loop++)
                 {
                     using (var connection = server.Accept())
                     {
