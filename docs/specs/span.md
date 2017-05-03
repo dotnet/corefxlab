@@ -177,7 +177,7 @@ Similarly, formatting (the reverse of parsing) can be very elegantly and efficie
 public static bool TryFormat(this int value, Span<byte> buffer, out int bytesWritten)
 ```
 
-###Buffer Pooling
+### Buffer Pooling
 `Span<T>` can be used to pool memory from a large single buffer allocated on the native heap. This decreases [pointless] work the GC needs to perform to manage pooled buffers, which never get collected anyway, but often need to be permanently pinned, which is bad for the system. Also, the fact that native memory does not move lowers the cost of interop and the cost of pool related error checking (e.g. checking if a buffer is already returned to the pool).
 
 Separatelly, the stack-only nature of `Span<T>` makes lifetime management of pooled memory more relaible; it helps in avoiding use-after-free errors with pooled memory. Without `Span<T>`, it’s often not clear when a pooled buffer that was passed to a separate module can be returned to the pool, as the module could be holding to the buffer for later use. With `Span<T>`, the server pipeline can be sure that there are no more references to the buffer after the stack pops to the frame that first allocated the span and passed it down to other modules.
@@ -331,7 +331,7 @@ Separately from this document, we are exploring language features to better supp
     { ... }
     ```
     
-#Open Issues
+# Open Issues
 
 1. Detailed design of `Memory<T>`
     - Representation
