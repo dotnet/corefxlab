@@ -17,7 +17,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf8toUtf8CoreCLR(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf8toUtf8Encoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -26,12 +26,13 @@ namespace System.Text.Primitives.Tests
             var utf8Buffer = new byte[utf8Length];
             utf8.GetBytes(characters, 0, characters.Length, utf8Buffer, 0);
 
-            var output = new byte[utf8Length];
+            var temp = utf8.GetChars(utf8Buffer);
+            byte[] output = Encoding.Convert(utf8, utf8, utf8Buffer);
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    output = Encoding.Convert(utf8, utf8, utf8Buffer);
+                    utf8.GetBytes(utf8.GetChars(utf8Buffer), 0, temp.Length, output, 0);
             }
         }
 
@@ -43,7 +44,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf16toUtf8CoreCLR(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf16toUtf8Encoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -66,7 +67,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf32toUtf8CoreCLR(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf32toUtf8Encoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -77,12 +78,14 @@ namespace System.Text.Primitives.Tests
             utf32.GetBytes(characters, 0, characters.Length, utf32Buffer, 0);
 
             int utf8Length = utf8.GetByteCount(characters);
-            var output = new byte[utf8Length];
+
+            var temp = utf32.GetChars(utf32Buffer);
+            byte[] output = Encoding.Convert(utf32, utf8, utf32Buffer);
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    output = Encoding.Convert(utf32, utf8, utf32Buffer);
+                    utf8.GetBytes(utf32.GetChars(utf32Buffer), 0, temp.Length, output, 0);
             }
         }
 
@@ -94,7 +97,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf8toUtf16CoreCLR(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf8toUtf16Encoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -122,7 +125,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf16toUtf16CoreCLR(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf16toUtf16Encoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -131,12 +134,13 @@ namespace System.Text.Primitives.Tests
             var utf16Buffer = new byte[utf16Length];
             utf16.GetBytes(characters, 0, characters.Length, utf16Buffer, 0);
 
-            var output = new byte[utf16Length];
+            var temp = utf16.GetChars(utf16Buffer);
+            byte[] output = Encoding.Convert(utf16, utf16, utf16Buffer);
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    output = Encoding.Convert(utf16, utf16, utf16Buffer);
+                    utf16.GetBytes(utf16.GetChars(utf16Buffer), 0, temp.Length, output, 0);
             }
         }
 
@@ -148,7 +152,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf32toUtf16CoreCLR(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf32toUtf16Encoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -158,23 +162,15 @@ namespace System.Text.Primitives.Tests
             var utf32Buffer = new byte[utf32Length];
             utf32.GetBytes(characters, 0, characters.Length, utf32Buffer, 0);
 
-            int utf16Length = utf16.GetByteCount(characters);
-            var output = new byte[utf16Length];
+            var temp = utf32.GetChars(utf32Buffer);
+            byte[] output = Encoding.Convert(utf32, utf16, utf32Buffer);
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    output = Encoding.Convert(utf32, utf16, utf32Buffer);
+                    utf16.GetBytes(utf32.GetChars(utf32Buffer), 0, temp.Length, output, 0);
             }
         }
-
-        // TODO
-        public void DecodeFromUtf8toUtf8CoreCLR() { }
-        public void DecodeFromUtf8toUtf16CoreCLR() { }
-        public void DecodeFromUtf8toUtf32CoreCLR() { }
-        public void DecodeFromUtf16toUtf8CoreCLR() { }
-        public void DecodeFromUtf16toUtf16CoreCLR() { }
-        public void DecodeFromUtf16toUtf32CoreCLR() { }
     }
 }
 

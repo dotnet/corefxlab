@@ -32,7 +32,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf8toUtf8Corefxlab(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf8toUtf8TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -64,7 +64,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf16toUtf8Corefxlab(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf16toUtf8TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             ReadOnlySpan<char> characters = inputString.AsSpan();
@@ -91,7 +91,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf32toUtf8Corefxlab(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf32toUtf8TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -125,7 +125,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf8toUtf16Corefxlab(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf8toUtf16TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -158,7 +158,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf16toUtf16Corefxlab(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf16toUtf16TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             ReadOnlySpan<char> characters = inputString.AsSpan();
@@ -185,7 +185,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf32toUtf16Corefxlab(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf32toUtf16TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -211,15 +211,7 @@ namespace System.Text.Primitives.Tests
             }
         }
 
-        // TODO
-        public void DecodeFromUtf8toUtf8Corefxlab() { }
-        public void DecodeFromUtf8toUtf16Corefxlab() { }
-        public void DecodeFromUtf8toUtf32Corefxlab() { }
-        public void DecodeFromUtf16toUtf8Corefxlab() { }
-        public void DecodeFromUtf16toUtf16Corefxlab() { }
-        public void DecodeFromUtf16toUtf32Corefxlab() { }
-
-        public static string GenerateStringData(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        private static string GenerateStringData(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             if (special != SpecialTestCases.None)
             {
@@ -232,7 +224,8 @@ namespace System.Text.Primitives.Tests
                 return GenerateValidString(length, minCodePoint, maxCodePoint);
             }
         }
-        public static string GenerateValidString(int length, int minCodePoint, int maxCodePoint, bool ignoreSurrogates = false)
+
+        private static string GenerateValidString(int length, int minCodePoint, int maxCodePoint, bool ignoreSurrogates = false)
         {
             Random rand = new Random(RandomSeed);
             var plainText = new StringBuilder();
@@ -277,7 +270,7 @@ namespace System.Text.Primitives.Tests
         }
 
 
-        public static string GenerateStringAlternatingASCIIAndNonASCII(int charLength)
+        private static string GenerateStringAlternatingASCIIAndNonASCII(int charLength)
         {
             Random rand = new Random(RandomSeed * 2);
             var plainText = new StringBuilder();
@@ -301,7 +294,7 @@ namespace System.Text.Primitives.Tests
             return plainText.ToString();
         }
 
-        public static string GenerateStringWithMostlyASCIIAndSomeNonASCII(int charLength)
+        private static string GenerateStringWithMostlyASCIIAndSomeNonASCII(int charLength)
         {
             Random rand = new Random(RandomSeed * 3);
             var plainText = new StringBuilder();
