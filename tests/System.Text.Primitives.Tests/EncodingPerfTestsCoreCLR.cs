@@ -20,14 +20,17 @@ namespace System.Text.Primitives.Tests
             var utf8Buffer = new byte[utf8Length];
             utf8.GetBytes(characters, 0, characters.Length, utf8Buffer, 0);
 
-            var temp = utf8.GetChars(utf8Buffer);
-            byte[] output = Encoding.Convert(utf8, utf8, utf8Buffer);
+            var utf8Bytes = new byte[utf8Length];
+            var utf8Chars = new char[characters.Length];
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        utf8.GetBytes(utf8.GetChars(utf8Buffer), 0, temp.Length, output, 0);
+                    {
+                        utf8.GetChars(utf8Buffer, 0, utf8Buffer.Length, utf8Chars, 0);
+                        utf8.GetBytes(utf8Chars, 0, utf8Chars.Length, utf8Bytes, 0);
+                    }
             }
         }
 
@@ -62,15 +65,17 @@ namespace System.Text.Primitives.Tests
             utf32.GetBytes(characters, 0, characters.Length, utf32Buffer, 0);
 
             int utf8Length = utf8.GetByteCount(characters);
-
-            var temp = utf32.GetChars(utf32Buffer);
-            byte[] output = Encoding.Convert(utf32, utf8, utf32Buffer);
+            var utf8Bytes = new byte[utf8Length];
+            var utf16Chars = new char[characters.Length];
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        utf8.GetBytes(utf32.GetChars(utf32Buffer), 0, temp.Length, output, 0);
+                    {
+                        utf32.GetChars(utf32Buffer, 0, utf32Buffer.Length, utf16Chars, 0);
+                        utf8.GetBytes(utf16Chars, 0, utf16Chars.Length, utf8Bytes, 0);
+                    }
             }
         }
 
@@ -108,14 +113,17 @@ namespace System.Text.Primitives.Tests
             var utf16Buffer = new byte[utf16Length];
             utf16.GetBytes(characters, 0, characters.Length, utf16Buffer, 0);
 
-            var temp = utf16.GetChars(utf16Buffer);
-            byte[] output = Encoding.Convert(utf16, utf16, utf16Buffer);
+            var utf16Bytes = new byte[utf16Length];
+            var utf16Chars = new char[characters.Length];
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        utf16.GetBytes(utf16.GetChars(utf16Buffer), 0, temp.Length, output, 0);
+                    {
+                        utf16.GetChars(utf16Buffer, 0, utf16Buffer.Length, utf16Chars, 0);
+                        utf16.GetBytes(utf16Chars, 0, utf16Chars.Length, utf16Bytes, 0);
+                    }
             }
         }
 
@@ -131,14 +139,18 @@ namespace System.Text.Primitives.Tests
             var utf32Buffer = new byte[utf32Length];
             utf32.GetBytes(characters, 0, characters.Length, utf32Buffer, 0);
 
-            var temp = utf32.GetChars(utf32Buffer);
-            byte[] output = Encoding.Convert(utf32, utf16, utf32Buffer);
+            int utf16Length = utf16.GetByteCount(characters);
+            var utf16Bytes = new byte[utf16Length];
+            var utf16Chars = new char[characters.Length];
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        utf16.GetBytes(utf32.GetChars(utf32Buffer), 0, temp.Length, output, 0);
+                    {
+                        utf32.GetChars(utf32Buffer, 0, utf32Buffer.Length, utf16Chars, 0);
+                        utf16.GetBytes(utf16Chars, 0, utf16Chars.Length, utf16Bytes, 0);
+                    }
             }
         }
     }
