@@ -9,35 +9,8 @@ namespace System.Text.Primitives.Tests
 {
     public partial class EncodingPerfComparisonTests
     {
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf8toUtf8UsingEncoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -53,39 +26,13 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    utf8.GetBytes(utf8.GetChars(utf8Buffer), 0, temp.Length, output, 0);
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        utf8.GetBytes(utf8.GetChars(utf8Buffer), 0, temp.Length, output, 0);
             }
         }
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf16toUtf8UsingEncoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -97,39 +44,13 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    utf8.GetBytes(characters, 0, characters.Length, utf8Buffer, 0);
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        utf8.GetBytes(characters, 0, characters.Length, utf8Buffer, 0);
             }
         }
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf32toUtf8UsingEncoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -148,39 +69,13 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    utf8.GetBytes(utf32.GetChars(utf32Buffer), 0, temp.Length, output, 0);
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        utf8.GetBytes(utf32.GetChars(utf32Buffer), 0, temp.Length, output, 0);
             }
         }
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf8toUtf16UsingEncoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -197,39 +92,13 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    utf16.GetChars(utf8Buffer, 0, utf8Buffer.Length, utf16Buffer, 0);
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        utf16.GetChars(utf8Buffer, 0, utf8Buffer.Length, utf16Buffer, 0);
             }
         }
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf16toUtf16UsingEncoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -245,39 +114,13 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    utf16.GetBytes(utf16.GetChars(utf16Buffer), 0, temp.Length, output, 0);
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        utf16.GetBytes(utf16.GetChars(utf16Buffer), 0, temp.Length, output, 0);
             }
         }
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf32toUtf16UsingEncoding(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -294,7 +137,8 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    utf16.GetBytes(utf32.GetChars(utf32Buffer), 0, temp.Length, output, 0);
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        utf16.GetBytes(utf32.GetChars(utf32Buffer), 0, temp.Length, output, 0);
             }
         }
     }

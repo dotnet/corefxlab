@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Text.Utf8;
 using Xunit;
 using Microsoft.Xunit.Performance;
@@ -24,35 +25,37 @@ namespace System.Text.Primitives.Tests
 
         public const int RandomSeed = 42;
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        private const int InnerCount = 1000;
+
+        private static IEnumerable<object[]> GetEncodingPerformanceTestData()
+        {
+            var data = new List<object[]>();
+            data.Add(new object[] { 99, 0x0, Utf8OneByteLastCodePoint });
+            data.Add(new object[] { 99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint });
+            data.Add(new object[] { 99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint });
+            data.Add(new object[] { 99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint });
+            data.Add(new object[] { 99, 0x0, Utf8ThreeBytesLastCodePoint });
+            data.Add(new object[] { 99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII });
+            data.Add(new object[] { 99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII });
+            data.Add(new object[] { 999, 0x0, Utf8OneByteLastCodePoint });
+            data.Add(new object[] { 999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint });
+            data.Add(new object[] { 999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint });
+            data.Add(new object[] { 999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint });
+            data.Add(new object[] { 999, 0x0, Utf8ThreeBytesLastCodePoint });
+            data.Add(new object[] { 999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII });
+            data.Add(new object[] { 999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII });
+            data.Add(new object[] { 9999, 0x0, Utf8OneByteLastCodePoint });
+            data.Add(new object[] { 9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint });
+            data.Add(new object[] { 9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint });
+            data.Add(new object[] { 9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint });
+            data.Add(new object[] { 9999, 0x0, Utf8ThreeBytesLastCodePoint });
+            data.Add(new object[] { 9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII });
+            data.Add(new object[] { 9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII });
+            return data;
+        }
+
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf8toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -70,42 +73,13 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    if (!utf8.TryEncode(utf8Span, span, out int consumed, out int written))
-                    {
-                        throw new Exception(); // this should not happen
-                    }
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        if (!utf8.TryEncode(utf8Span, span, out int consumed, out int written)) { throw new Exception(); }
             }
         }
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf16toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -118,42 +92,13 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    if (!utf8.TryEncode(characters, span, out int consumed, out int written))
-                    {
-                        throw new Exception(); // this should not happen
-                    }
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        if (!utf8.TryEncode(characters, span, out int consumed, out int written)) { throw new Exception(); }
             }
         }
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf32toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -173,42 +118,13 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    if (!utf8.TryEncode(utf32Span, span, out int consumed, out int written))
-                    {
-                        throw new Exception(); // this should not happen
-                    }
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        if (!utf8.TryEncode(utf32Span, span, out int consumed, out int written)) { throw new Exception(); }
             }
         }
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf8toUtf16UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -227,42 +143,13 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    if (!utf16.TryEncode(utf8Span, span, out int consumed, out int written))
-                    {
-                        throw new Exception(); // this should not happen
-                    }
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        if (!utf16.TryEncode(utf8Span, span, out int consumed, out int written)) { throw new Exception(); }
             }
         }
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf16toUtf16UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -275,42 +162,13 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    if (!utf16.TryEncode(characters, span, out int consumed, out int written))
-                    {
-                        throw new Exception(); // this should not happen
-                    }
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        if (!utf16.TryEncode(characters, span, out int consumed, out int written)) { throw new Exception(); }
             }
         }
 
-        [Benchmark]
-        [InlineData(99, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(9999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(9999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(9999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(9999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(9999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(9999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        [InlineData(99999, 0x0, Utf8OneByteLastCodePoint)]
-        [InlineData(99999, Utf8OneByteLastCodePoint + 1, Utf8TwoBytesLastCodePoint)]
-        [InlineData(99999, Utf8TwoBytesLastCodePoint + 1, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, Utf16HighSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint)]
-        [InlineData(99999, 0x0, Utf8ThreeBytesLastCodePoint)]
-        [InlineData(99999, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
-        [InlineData(99999, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [MemberData(nameof(GetEncodingPerformanceTestData))]
         public void EncodeFromUtf32toUtf16UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
@@ -330,10 +188,8 @@ namespace System.Text.Primitives.Tests
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
-                    if (!utf16.TryEncode(utf32Span, span, out int consumed, out int written))
-                    {
-                        throw new Exception(); // this should not happen
-                    }
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        if (!utf16.TryEncode(utf32Span, span, out int consumed, out int written)) { throw new Exception(); }
             }
         }
 
