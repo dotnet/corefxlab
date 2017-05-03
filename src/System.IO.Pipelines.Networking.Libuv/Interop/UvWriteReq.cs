@@ -123,7 +123,7 @@ namespace System.IO.Pipelines.Networking.Libuv.Interop
 
             foreach (var handle in req._handles)
             {
-                handle.Free();
+                handle.Dispose();
             }
             req._handles.Clear();
         }

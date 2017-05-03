@@ -122,7 +122,7 @@ namespace System.IO.Pipelines.Networking.Windows.RIO.Internal
             // we created, which is already pinned.
             var pin = memory.Pin();
             var spanPtr = (IntPtr)pin.PinnedPointer;
-            pin.Free();
+            pin.Dispose();
 
             long startAddress;
             long spanAddress = spanPtr.ToInt64();

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
-    public unsafe struct BufferHandle
+    public unsafe struct BufferHandle : IDisposable
     {
         IRetainable _owner;
         void* _pointer;
@@ -19,9 +19,11 @@ namespace System.Buffers
             _owner = owner;
         }
 
+        public BufferHandle(IRetainable owner) : this(owner, null) { }
+
         public void* PinnedPointer => _pointer;
 
-        public void Free()
+        public void Dispose()
         {
             if (_handle.IsAllocated) {
                 _handle.Free();
@@ -31,6 +33,8 @@ namespace System.Buffers
                 _owner.Release();
                 _owner = null;
             }
+
+            _pointer = null;
         }
     }
 }

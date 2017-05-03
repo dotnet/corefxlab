@@ -200,7 +200,7 @@ namespace System.IO.Pipelines.Compression
 
                 foreach (var handle in handles)
                 {
-                    handle.Free();
+                    handle.Dispose();
                 }
             }
         }
@@ -269,7 +269,7 @@ namespace System.IO.Pipelines.Compression
 
                 foreach (var handle in handles)
                 {
-                    handle.Free();
+                    handle.Dispose();
                 }
             }
         }
