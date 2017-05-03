@@ -32,7 +32,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf8toUtf8TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf8toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -64,7 +64,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf16toUtf8TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf16toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             ReadOnlySpan<char> characters = inputString.AsSpan();
@@ -91,7 +91,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf32toUtf8TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf32toUtf8UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -125,7 +125,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf8toUtf16TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf8toUtf16UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
@@ -158,7 +158,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf16toUtf16TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf16toUtf16UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             ReadOnlySpan<char> characters = inputString.AsSpan();
@@ -185,7 +185,7 @@ namespace System.Text.Primitives.Tests
         [InlineData(DataLength, 0x0, Utf8ThreeBytesLastCodePoint)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.AlternatingASCIIAndNonASCII)]
         [InlineData(DataLength, 0, 0, SpecialTestCases.MostlyASCIIAndSomeNonASCII)]
-        public void EncodeFromUtf32toUtf16TextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
+        public void EncodeFromUtf32toUtf16UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
