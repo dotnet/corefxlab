@@ -239,13 +239,13 @@ namespace System.IO.Pipelines.Tests
                 var handle = remaining.First.Pin();
                 Assert.True(handle.PinnedPointer != null);
                 Assert.True((byte*)handle.PinnedPointer == addresses[i]);
-                handle.Free();
+                handle.Dispose();
             }
 
             // free up memory handles
             foreach (var handle in handles)
             {
-                handle.Free();
+                handle.Dispose();
             }
             handles.Clear();
         }

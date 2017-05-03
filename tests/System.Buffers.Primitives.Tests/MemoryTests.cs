@@ -90,7 +90,7 @@ namespace System.Buffers.Tests
             for(int k = 0; k < 1000; k++) {
                 var owners   = new OwnedBuffer<byte>[128];
                 var memories = new Buffer<byte>[owners.Length];
-                var reserves = new DisposableReservation[owners.Length];
+                var reserves = new BufferHandle[owners.Length];
                 var disposeSuccesses = new bool[owners.Length];
                 var reserveSuccesses = new bool[owners.Length];
 
@@ -203,7 +203,7 @@ namespace System.Buffers.Tests
             Assert.False(owned.IsRetained);
             var h = memory.Pin();
             Assert.True(owned.IsRetained);
-            h.Free();
+            h.Dispose();
             Assert.False(owned.IsRetained);
         }
 
@@ -211,7 +211,7 @@ namespace System.Buffers.Tests
         public void MemoryHandleFreeUninitialized()
         {
             var h = default(BufferHandle);
-            h.Free();
+            h.Dispose();
         }
 
         [Fact]
@@ -224,9 +224,9 @@ namespace System.Buffers.Tests
             Assert.True(owned.IsRetained);
             owned.Retain();
             Assert.True(owned.IsRetained);
-            h.Free();
+            h.Dispose();
             Assert.True(owned.IsRetained);
-            h.Free();
+            h.Dispose();
             Assert.True(owned.IsRetained);
             owned.Release();
             Assert.False(owned.IsRetained);
