@@ -6,6 +6,7 @@ using System;
 using System.Buffers;
 using System.Collections.Sequences;
 using System.Runtime;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.Net.Http
 {
@@ -38,13 +39,10 @@ namespace Microsoft.Net.Http
 
         public override int Length => _array.Length;
 
-        public override Span<byte> Span
+        public override Span<byte> AsSpan(int index, int length)
         {
-            get
-            {
-                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
-                return _array;
-            }
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
+            return _array.Slice(index, length);
         }
 
         public int CopyTo(Span<byte> buffer)
@@ -126,17 +124,22 @@ namespace Microsoft.Net.Http
             _next = null;
         }
 
-        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        protected override bool TryGetArray(out ArraySegment<byte> buffer)
         {
             if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
             buffer = new ArraySegment<byte>(_array);
             return true;
         }
 
-        protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
+        public override BufferHandle Pin(int index = 0)
         {
-            pointer = null;
-            return false;
+            unsafe
+            {
+                Retain();
+                var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
+                var pointer = Add((void*)handle.AddrOfPinnedObject(), index);
+                return new BufferHandle(this, pointer, handle);
+            }
         }
 
         internal OwnedBuffer _next;

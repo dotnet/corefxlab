@@ -19,13 +19,10 @@ namespace System.Buffers.Pools
 
             public override int Length => _length;
 
-            public override Span<byte> Span
+            public override Span<byte> AsSpan(int index, int length)
             {
-                get
-                {
-                    if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
-                    return new Span<byte>(_pointer.ToPointer(), _length);
-                }
+                if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
+                return new Span<byte>(_pointer.ToPointer(), _length).Slice(index, length);
             }
 
             protected override void Dispose(bool disposing)
@@ -34,17 +31,16 @@ namespace System.Buffers.Pools
                 base.Dispose(disposing);
             }
 
-            protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+            protected override bool TryGetArray(out ArraySegment<byte> buffer)
             {
                 buffer = default(ArraySegment<byte>);
                 return false;
             }
 
-            protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
+            public override BufferHandle Pin(int index = 0)
             {
-                if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(BufferManager));
-                pointer = Add(_pointer.ToPointer(), index);
-                return true;
+                Retain();
+                return new BufferHandle(this, Add(_pointer.ToPointer(), index));
             }
 
             private readonly NativeBufferPool _pool;

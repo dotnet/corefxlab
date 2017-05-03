@@ -36,30 +36,28 @@ namespace System.Buffers
             _pointer = IntPtr.Zero;
         }
 
-        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        public override BufferHandle Pin(int index = 0)
+        {
+            Retain();
+            unsafe
+            {
+                return new BufferHandle(this, Add(_pointer.ToPointer(), index));
+            }
+        }
+        protected override bool TryGetArray(out ArraySegment<byte> buffer)
         {
             buffer = default(ArraySegment<byte>);
             return false;
-        }
-
-        protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
-        {
-            if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
-            pointer = Add(_pointer.ToPointer(), index);
-            return true;
         }
 
         public unsafe byte* Pointer => (byte*)_pointer.ToPointer();
 
         public override int Length => _length;
         
-        public unsafe override Span<byte> Span
+        public unsafe override Span<byte> AsSpan(int index, int length)
         {
-            get
-            {
-                if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
-                return new Span<byte>(_pointer.ToPointer(), _length);
-            }
+            if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedNativeBuffer));
+            return new Span<byte>(_pointer.ToPointer(), _length).Slice(index, length);
         }
 
         int _length;

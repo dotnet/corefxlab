@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers.Internal
 {
@@ -35,32 +36,38 @@ namespace System.Buffers.Internal
 
             public override int Length => _array.Length;
 
-            public override Span<byte> Span
+            public override Span<byte> AsSpan(int index, int length)
             {
-                get
-                {
-                    if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
-                    return _array;
-                }
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
+                return new Span<byte>(_array, index, length);
             }
 
             protected override void Dispose(bool disposing)
             {
-                ArrayPool<byte>.Shared.Return(_array);
+                if (_array != null)
+                {
+                    ArrayPool<byte>.Shared.Return(_array);
+                    _array = null;
+                }
                 base.Dispose(disposing);
             }
 
-            protected internal override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+            protected internal override bool TryGetArray(out ArraySegment<byte> buffer)
             {
                 if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
                 buffer = new ArraySegment<byte>(_array);
                 return true;
             }
 
-            protected internal override unsafe bool TryGetPointerAt(int index, out void* pointer)
+            public override BufferHandle Pin(int index = 0)
             {
-                pointer = null;
-                return false;
+                unsafe
+                {
+                    Retain(); // this checks IsDisposed
+                    var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
+                    var pointer = Add((void*)handle.AddrOfPinnedObject(), index);
+                    return new BufferHandle(this, pointer, handle);
+                }
             }
 
             byte[] _array;

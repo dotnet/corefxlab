@@ -483,7 +483,7 @@ namespace System.IO.Pipelines.Tests
         public void CanUseOwnedBufferBasedReadableBuffers()
         {
             var data = Encoding.ASCII.GetBytes("***abc|def|ghijk****"); // note sthe padding here - verifying that it is omitted correctly
-            OwnedBuffer<byte> owned = data;
+            OwnedBuffer<byte> owned = new OwnedArray<byte>(data);
             var buffer = ReadableBuffer.Create(owned, 3, data.Length - 7);
             Assert.Equal(13, buffer.Length);
             var split = buffer.Split((byte)'|');

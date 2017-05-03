@@ -21,7 +21,12 @@ namespace System.Buffers
 
         public BufferHandle(IRetainable owner) : this(owner, null) { }
 
-        public void* PinnedPointer => _pointer;
+        public void* PinnedPointer {
+            get {
+                if (_pointer == null) throw new InvalidOperationException();
+                return _pointer;
+            }
+        }
 
         public void Dispose()
         {
