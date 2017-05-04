@@ -2,9 +2,9 @@
   <PropertyGroup>
     <CoreFxVersion>4.3.0</CoreFxVersion>
     <RoslynVersion>2.3.0-rdonly-ref-61607-04</RoslynVersion>
-    <SystemMemoryVersion>4.4.0-preview2-25302-03</SystemMemoryVersion>
-    <SystemCompilerServicesUnsafeVersion>4.4.0-preview2-25302-03</SystemCompilerServicesUnsafeVersion>
-    <SystemNumericsVectorsVersion>4.4.0-preview2-25302-03</SystemNumericsVectorsVersion>
+    <SystemMemoryVersion>4.4.0-preview2-25304-02</SystemMemoryVersion>
+    <SystemCompilerServicesUnsafeVersion>4.4.0-preview2-25304-02</SystemCompilerServicesUnsafeVersion>
+    <SystemNumericsVectorsVersion>4.4.0-preview2-25304-02</SystemNumericsVectorsVersion>
     <LibuvVersion>1.9.1</LibuvVersion>
     <TestSdkVersion>15.0.0</TestSdkVersion>
     <XunitVersion>2.2.0</XunitVersion>
