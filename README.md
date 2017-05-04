@@ -2,6 +2,12 @@
 
 This repo is for experimentation and exploring new ideas that may or may not make it into the main corefx repo.
 
+### Build & Test Status
+
+|    | x64 Debug | x64 Release |
+|:---|----------------:|------------------:|
+|**Windows Server 2012**|[![x64-debug](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Debug/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Debug/lastCompletedBuild/testReport)|[![x64-release](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Release/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Release/lastCompletedBuild/testReport)
+
 ## Roadmap
 
 While this repo is meant for experimentation, we still want to focus our efforts
@@ -103,6 +109,11 @@ This project is a part of the [.NET Foundation].
 
 [.NET Foundation]: http://www.dotnetfoundation.org/projects
 [.NET Foundation forums]: http://forums.dotnetfoundation.org/
+
+There are many .NET related projects on GitHub.
+
+- [.NET home repo](https://github.com/Microsoft/dotnet) - links to 100s of .NET projects, from Microsoft and the community.
+- [ASP.NET Core home](https://github.com/aspnet/home) - the best place to start learning about ASP.NET Core.
 
 ## Building and Testing
 
