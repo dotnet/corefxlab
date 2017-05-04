@@ -295,6 +295,8 @@ namespace System.Text.Primitives.Tests
                     var highSurrogate = rand.Next(Utf16HighSurrogateFirstCodePoint, Utf16HighSurrogateLastCodePoint);
                     var lowSurrogate = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint);
                     j += 2;
+                    plainText.Append((char)highSurrogate);
+                    plainText.Append((char)lowSurrogate);
                 }
             }
 
