@@ -130,41 +130,6 @@ namespace System.Buffers.Tests
             }
         }
 
-
-        #region helpers
-        private static object[] MakeArray(params object[] args)
-        {
-            return args;
-        }
-
-        /// Generate the ith permutation of the argss array of arrays.
-        private static object[] MakeIthPermutation(int i, object[][] argss) {
-            var res = new object[argss.Length];
-            for (int j = 0; j < argss.Length; j++) {
-                var arg = argss[j];
-                res[j] = arg[i % arg.Length];
-                i /= arg.Length;
-            }
-            return res;
-        }
-        private static IEnumerable<object[]> MakePermutations(params object[][] argss)
-        {
-            if (argss.Length != 0) {
-                var size = 1;
-                // Calculate number of permutations.
-                foreach (var args in argss) {
-                    size *= args.Length;
-                }
-                object[][] ress = new object[size][];
-                for (int i = 0; i < size; i++) {
-                    ress[i] = MakeIthPermutation(i, argss);
-                }
-                return ress;
-            }
-            return null;
-        }
-        #endregion
-
         [Fact]
         public unsafe void ReferenceCounting()
         {
