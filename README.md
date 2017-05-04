@@ -119,7 +119,7 @@ There are many .NET related projects on GitHub.
 
 To build the projects in this repo, you have a few options:
 
-* Download or install a new version of the .NET CLI from here for your operating system. Then, simply invoke the tool to build individual projects (dotnet restore and then dotnet build).
+* Download or install a [new version of the .NET CLI](https://github.com/dotnet/cli#installers-and-binaries) for your operating system. Then, simply invoke the tool to build individual projects (dotnet restore and then dotnet build).
 * (On Windows) Invoke build.cmd. This will download an acceptable version of the .NET CLI automatically and use it to build the entire repository. NOTE: Don't invoke `scripts/build.ps1` directly. It requires that some environment be set in order for it to work correctly. `build.cmd` does this.
 * (On Windows) Open the solution file in Visual Studio 2015. NOTE: This requires unreleased plugins to work at this point in time.
 Using VS Code, see https://aka.ms/vscclrdogfood.
