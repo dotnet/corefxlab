@@ -118,13 +118,13 @@ namespace System.Text.Primitives.Tests.Encoding
             var plainText = new StringBuilder();
             for (int j = 0; j < length; j++)
             {
-                var val = rand.Next(minCodePoint, maxCodePoint);
+                var val = rand.Next(minCodePoint, maxCodePoint + 1);
 
                 if (ignoreSurrogates)
                 {
                     while (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(minCodePoint, maxCodePoint); // skip surrogate characters
+                        val = rand.Next(minCodePoint, maxCodePoint + 1); // skip surrogate characters
                     }
                     plainText.Append((char)val);
                     continue;
@@ -134,21 +134,21 @@ namespace System.Text.Primitives.Tests.Encoding
                 {
                     while (val >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(minCodePoint, maxCodePoint); // skip surrogate characters if they can't be paired
+                        val = rand.Next(minCodePoint, maxCodePoint + 1); // skip surrogate characters if they can't be paired
                     }
 
                     if (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
                     {
                         plainText.Append((char)val);    // high surrogate
                         j++;
-                        val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint); // low surrogate
+                        val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1); // low surrogate
                     }
                 }
                 else
                 {
                     while (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint); // skip surrogate characters if they can't be paired
+                        val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint + 1); // skip surrogate characters if they can't be paired
                     }
                 }
                 plainText.Append((char)val);
@@ -189,7 +189,7 @@ namespace System.Text.Primitives.Tests.Encoding
             var plainText = new StringBuilder();
             for (int j = 0; j < length; j++)
             {
-                var val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);
+                var val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);
                 plainText.Append((char)val);
             }
             return plainText.ToString();
@@ -201,7 +201,7 @@ namespace System.Text.Primitives.Tests.Encoding
             var utf8Byte = new byte[length];
             for (int j = 0; j < length; j++)
             {
-                var val = rand.Next(0x60, 0xFF); // Each byte starts with 11xx xxxx with no bytes that start with 10xx xxxx following it.
+                var val = rand.Next(0x60, 0xFF + 1); // Each byte starts with 11xx xxxx with no bytes that start with 10xx xxxx following it.
                 utf8Byte[j] = (byte)val;
             }
             return utf8Byte;
@@ -213,26 +213,26 @@ namespace System.Text.Primitives.Tests.Encoding
             var plainText = new StringBuilder();
             for (int j = 0; j < length; j++)
             {
-                var val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
+                var val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint + 1);
 
                 if (j < length - 1)
                 {
                     while (val >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint); // skip surrogate characters if they can't be paired
+                        val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint + 1); // skip surrogate characters if they can't be paired
                     }
 
                     if (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
                     {
                         plainText.Append((char)val);    // high surrogate
                         j++;
-                        val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint); // high surrogate may not be paired with a low surrogate (invalid)
+                        val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint + 1); // high surrogate may not be paired with a low surrogate (invalid)
                     }
                 }
                 else
                 {
                     // last char should be high surrogate (no low surrogate after, invalid)
-                    val = rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint);
+                    val = rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint + 1);
                 }
                 plainText.Append((char)val);
             }
@@ -247,7 +247,7 @@ namespace System.Text.Primitives.Tests.Encoding
             {
                 // High probability of invalid utf8 bytes since there is no gaurantee that bytes following a byte within 0x60 and 0xFF 
                 // will be of the required form 10xx xxxx (and that there will be the correct number of such bytes).
-                var val = rand.Next(0, 0xFF);
+                var val = rand.Next(0, 0xFF + 1);
                 if (j < length - 1)
                 {
                     utf8Byte[j] = (byte)val;
@@ -265,39 +265,39 @@ namespace System.Text.Primitives.Tests.Encoding
             Random rand = new Random(TextEncoderConstants.RandomSeed);
             var plainText = new StringBuilder();
 
-            int val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint);
+            int val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint + 1);
             if (length > 0)
             {
                 if (startsWithLow)
                 {
                     // first character must be low surrogate
-                    val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);
+                    val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);
                 }
                 plainText.Append((char)val);
             }
 
             for (int j = 1; j < length; j++)
             {
-                val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
+                val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint + 1);
 
                 if (j < length - 1)
                 {
                     while (val >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint); // skip surrogate characters if they can't be paired
+                        val = rand.Next(0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint + 1); // skip surrogate characters if they can't be paired
                     }
 
                     if (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
                     {
                         plainText.Append((char)val);    // high surrogate
                         j++;
-                        val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);  // low surrogate
+                        val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);  // low surrogate
                     }
                 }
                 else
                 {
                     // if first char is valid, last char should be high surrogate (no low surrogate after, invalid)
-                    val = startsWithLow ? rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint) : rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint);
+                    val = startsWithLow ? rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1) : rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint + 1);
                 }
 
                 plainText.Append((char)val);
@@ -310,7 +310,7 @@ namespace System.Text.Primitives.Tests.Encoding
             Random rand = new Random(TextEncoderConstants.RandomSeed);
             var utf8Byte = new byte[length];
 
-            int val = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint);
+            int val = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1);
 
             if (length > 0)
             {
@@ -318,21 +318,21 @@ namespace System.Text.Primitives.Tests.Encoding
                 {
                     utf8Byte[length - 1] = (byte)val;
                     // first byte must be of the form 10xx xxxx
-                    val = rand.Next(0x40, 0xBF);
+                    val = rand.Next(0x40, 0xBF + 1);
                     utf8Byte[0] = (byte)val;
                 }
                 else
                 {
                     utf8Byte[0] = (byte)val;
                     // if first byte is valid, last byte should be such that multiple bytes must follow (no byte of the form 10xx xxxx after, invalid)
-                    val = rand.Next(0xC0, 0xDF);
+                    val = rand.Next(0xC0, 0xDF + 1);
                     utf8Byte[length - 1] = (byte)val;
                 }
             }
 
             for (int j = 1; j < length - 1; j++)
             {
-                val = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint);
+                val = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1);
                 utf8Byte[j] = (byte)val;
             }
             return utf8Byte;
@@ -343,39 +343,39 @@ namespace System.Text.Primitives.Tests.Encoding
             Random rand = new Random(TextEncoderConstants.RandomSeed);
             var utf32 = new uint[length];
 
-            int val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint);
+            int val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint + 1);
 
             if (length > 0)
             {
                 if (startsWithLow)
                 {
-                    val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);
+                    val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);
                 }
                 utf32[0] = (uint)val;
             }
 
             for (int j = 1; j < length - 1; j++)
             {
-                val = rand.Next(0, (int)TextEncoderConstants.LastValidCodePoint);
+                val = rand.Next(0, (int)TextEncoderConstants.LastValidCodePoint + 1);
 
                 if (j < length - 1)
                 {
                     while (val >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(0, (int)TextEncoderConstants.LastValidCodePoint); // skip surrogate characters if they can't be paired
+                        val = rand.Next(0, (int)TextEncoderConstants.LastValidCodePoint + 1); // skip surrogate characters if they can't be paired
                     }
 
                     if (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
                     {
                         utf32[j] = (uint)val;       // high surrogate
                         j++;
-                        val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);  // low surrogate
+                        val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);  // low surrogate
                     }
                 }
                 else
                 {
                     // if first char is valid, last char should be high surrogate (no low surrogate after, invalid)
-                    val = startsWithLow ? rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint) : rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint);
+                    val = startsWithLow ? rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1) : rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint + 1);
                 }
 
                 utf32[j] = (uint)val;
@@ -388,39 +388,39 @@ namespace System.Text.Primitives.Tests.Encoding
             Random rand = new Random(TextEncoderConstants.RandomSeed);
             var utf32 = new byte[length*4];
 
-            int val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint);
+            int val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint + 1);
 
             if (length > 0)
             {
                 if (startsWithLow)
                 {
-                    val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);
+                    val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);
                 }
                 WriteToArray(ref utf32, 0, val);
             }
 
             for (int j = 1; j < length - 1; j++)
             {
-                val = rand.Next(0, (int)TextEncoderConstants.LastValidCodePoint);
+                val = rand.Next(0, (int)TextEncoderConstants.LastValidCodePoint + 1);
 
                 if (j < length - 1)
                 {
                     while (val >= TextEncoderConstants.Utf16LowSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(0, (int)TextEncoderConstants.LastValidCodePoint); // skip surrogate characters if they can't be paired
+                        val = rand.Next(0, (int)TextEncoderConstants.LastValidCodePoint + 1); // skip surrogate characters if they can't be paired
                     }
 
                     if (val >= TextEncoderConstants.Utf16HighSurrogateFirstCodePoint && val <= TextEncoderConstants.Utf16HighSurrogateLastCodePoint)
                     { 
                         WriteToArray(ref utf32, j*4, val);  // high surrogate
                         j++;
-                        val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint);  // low surrogate
+                        val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);  // low surrogate
                     }
                 }
                 else
                 {
                     // if first char is valid, last char should be high surrogate (no low surrogate after, invalid)
-                    val = startsWithLow ? rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint) : rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint);
+                    val = startsWithLow ? rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1) : rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint + 1);
                 }
 
                 WriteToArray(ref utf32, j * 4, val);
