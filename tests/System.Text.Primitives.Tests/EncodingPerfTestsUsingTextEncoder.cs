@@ -213,13 +213,13 @@ namespace System.Text.Primitives.Tests
             var plainText = new StringBuilder();
             for (int j = 0; j < length; j++)
             {
-                var val = rand.Next(minCodePoint, maxCodePoint);
+                var val = rand.Next(minCodePoint, maxCodePoint + 1);
 
                 if (ignoreSurrogates)
                 {
                     while (val >= Utf16HighSurrogateFirstCodePoint && val <= Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(minCodePoint, maxCodePoint); // skip surrogate characters
+                        val = rand.Next(minCodePoint, maxCodePoint + 1); // skip surrogate characters
                     }
                     plainText.Append((char)val);
                     continue;
@@ -229,21 +229,21 @@ namespace System.Text.Primitives.Tests
                 {
                     while (val >= Utf16LowSurrogateFirstCodePoint && val <= Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(minCodePoint, maxCodePoint); // skip surrogate characters if they can't be paired
+                        val = rand.Next(minCodePoint, maxCodePoint + 1); // skip surrogate characters if they can't be paired
                     }
 
                     if (val >= Utf16HighSurrogateFirstCodePoint && val <= Utf16HighSurrogateLastCodePoint)
                     {
                         plainText.Append((char)val);    // high surrogate
                         j++;
-                        val = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint); // low surrogate
+                        val = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint + 1); // low surrogate
                     }
                 }
                 else
                 {
                     while (val >= Utf16HighSurrogateFirstCodePoint && val <= Utf16LowSurrogateLastCodePoint)
                     {
-                        val = rand.Next(0, Utf8ThreeBytesLastCodePoint); // skip surrogate characters if they can't be paired
+                        val = rand.Next(0, Utf8ThreeBytesLastCodePoint + 1); // skip surrogate characters if they can't be paired
                     }
                 }
                 plainText.Append((char)val);
@@ -259,9 +259,9 @@ namespace System.Text.Primitives.Tests
 
             for (int j = 0; j < charLength/3; j++)
             {
-                var ascii = rand.Next(0, Utf8OneByteLastCodePoint);
-                var highSurrogate = rand.Next(Utf16HighSurrogateFirstCodePoint, Utf16HighSurrogateLastCodePoint);
-                var lowSurrogate = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint);
+                var ascii = rand.Next(0, Utf8OneByteLastCodePoint + 1);
+                var highSurrogate = rand.Next(Utf16HighSurrogateFirstCodePoint, Utf16HighSurrogateLastCodePoint + 1);
+                var lowSurrogate = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint + 1);
 
                 plainText.Append((char)ascii);
                 plainText.Append((char)highSurrogate);
@@ -270,7 +270,7 @@ namespace System.Text.Primitives.Tests
 
             for (int j = 0; j < charLength % 3; j++)
             {
-                plainText.Append((char)rand.Next(0, 0x7F));
+                plainText.Append((char)rand.Next(0, Utf8OneByteLastCodePoint + 1));
             }
 
             return plainText.ToString();
@@ -284,16 +284,16 @@ namespace System.Text.Primitives.Tests
             int j = 0;
             while (j < charLength - 70)
             {
-                for (int i = 0; i < rand.Next(20, 50); i++)
+                for (int i = 0; i < rand.Next(20, 51); i++)
                 {
-                    var ascii = rand.Next(0, Utf8OneByteLastCodePoint);
+                    var ascii = rand.Next(0, Utf8OneByteLastCodePoint + 1);
                     plainText.Append((char)ascii);
                     j++;
                 }
-                for (int i = 0; i < rand.Next(5, 10); i++)
+                for (int i = 0; i < rand.Next(5, 11); i++)
                 {
-                    var highSurrogate = rand.Next(Utf16HighSurrogateFirstCodePoint, Utf16HighSurrogateLastCodePoint);
-                    var lowSurrogate = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint);
+                    var highSurrogate = rand.Next(Utf16HighSurrogateFirstCodePoint, Utf16HighSurrogateLastCodePoint + 1);
+                    var lowSurrogate = rand.Next(Utf16LowSurrogateFirstCodePoint, Utf16LowSurrogateLastCodePoint + 1);
                     j += 2;
                     plainText.Append((char)highSurrogate);
                     plainText.Append((char)lowSurrogate);
@@ -302,7 +302,7 @@ namespace System.Text.Primitives.Tests
 
             while (j < charLength)
             {
-                plainText.Append((char)rand.Next(0, 0x7F));
+                plainText.Append((char)rand.Next(0, Utf8OneByteLastCodePoint + 1));
                 j++;
             }
 
