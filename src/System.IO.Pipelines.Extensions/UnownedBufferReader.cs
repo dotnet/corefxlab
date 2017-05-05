@@ -144,6 +144,11 @@ namespace System.IO.Pipelines
                         // We need to preserve any buffers that haven't been consumed
                         _head = BufferSegment.Clone(new ReadCursor(_head), new ReadCursor(_tail, _tail?.End ?? 0), out _tail);
                     }
+                    else
+                    {
+                        // Drop segement references before Dispose gets called on the segment
+                        _head = _tail = null;
+                    }
                 }
 
                 // Cancel this task if this write is cancelled
