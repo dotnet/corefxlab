@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+using System.Runtime;
 using System.Threading;
 
 namespace System.Buffers
@@ -14,7 +15,7 @@ namespace System.Buffers
 
         public override void Retain()
         {
-            if (IsDisposed) throw new InvalidOperationException();
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
             Interlocked.Increment(ref _referenceCount);
         }
 

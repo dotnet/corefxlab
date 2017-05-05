@@ -132,7 +132,7 @@ namespace System.IO.Pipelines
         public override BufferHandle Pin(int index = 0)
         {
             if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
-            if (index > _length) throw new ArgumentException(nameof(index));
+            if (index > _length) PipelinesThrowHelper.ThrowArgumentOutOfRangeException(_length, index);
             Retain();
             unsafe
             {

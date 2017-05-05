@@ -20,7 +20,7 @@ namespace System.Buffers
 
         public OwnedArray(T[] array)
         {
-            if (array == null) throw new ArgumentNullException(nameof(array));
+            if (array == null) BufferPrimitivesThrowHelper.ThrowArgumentNullException(nameof(array)); 
             _array = array;
         }
 

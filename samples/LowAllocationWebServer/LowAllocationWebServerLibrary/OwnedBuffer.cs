@@ -42,7 +42,7 @@ namespace Microsoft.Net.Http
         public override Span<byte> AsSpan(int index, int length)
         {
             if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer));
-            return _array.Slice(index, length);
+            return _array.AsSpan().Slice(index, length);
         }
 
         public int CopyTo(Span<byte> buffer)

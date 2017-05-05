@@ -58,7 +58,7 @@ namespace System.Buffers
 
         public BufferHandle Pin() => _owner.Pin(_index);
 
-        public unsafe bool TryGetArray(out ArraySegment<T> buffer)
+        public bool TryGetArray(out ArraySegment<T> buffer)
         {
             if (!_owner.TryGetArray(out buffer))
             {
