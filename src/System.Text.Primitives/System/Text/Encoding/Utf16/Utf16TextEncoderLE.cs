@@ -85,11 +85,11 @@ namespace System.Text.Utf16
             return true;
         }
 
-        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<uint> utf32, out int bytesConsumed, out int codePointsWritten)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<uint> utf32, out int bytesConsumed, out int codeUnitsWritten)
         {
             int consumed;
             var utf16 = encodedBytes.NonPortableCast<byte, char>();
-            var result = Utf16LittleEndianEncoder.TryDecode(utf16, utf32, out consumed, out codePointsWritten);
+            var result = Utf16LittleEndianEncoder.TryDecode(utf16, utf32, out consumed, out codeUnitsWritten);
 
             bytesConsumed = consumed * sizeof(char);
             return result;
@@ -129,11 +129,11 @@ namespace System.Text.Utf16
             return true;
         }
 
-        public override bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> encodedBytes, out int codePointsConsumed, out int bytesWritten)
+        public override bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> encodedBytes, out int codeUnitsConsumed, out int bytesWritten)
         {
             int written;
             var utf16 = encodedBytes.NonPortableCast<byte, char>();
-            var result = Utf16LittleEndianEncoder.TryEncode(utf32, utf16, out codePointsConsumed, out written);
+            var result = Utf16LittleEndianEncoder.TryEncode(utf32, utf16, out codeUnitsConsumed, out written);
 
             bytesWritten = written * sizeof(char);
             return result;

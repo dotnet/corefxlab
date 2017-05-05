@@ -90,9 +90,9 @@ namespace System.Text.Utf8
             return Utf8Encoder.TryDecode(encodedBytes, utf16, out bytesConsumed, out charactersWritten);
         }
 
-        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<uint> utf32, out int bytesConsumed, out int codePointsWritten)
+        public override bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<uint> utf32, out int bytesConsumed, out int codeUnitsWritten)
         {
-            return Utf8Encoder.TryDecode(encodedBytes, utf32, out bytesConsumed, out codePointsWritten);
+            return Utf8Encoder.TryDecode(encodedBytes, utf32, out bytesConsumed, out codeUnitsWritten);
         }
 
         #endregion Decoding implementation
@@ -122,9 +122,9 @@ namespace System.Text.Utf8
             return Utf8Encoder.TryEncode(utf16, data, out charactersConsumed, out bytesWritten);
         }
 
-        public override bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> data, out int codePointsConsumed, out int bytesWritten)
+        public override bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> data, out int codeUnitsConsumed, out int bytesWritten)
         {
-            return Utf8Encoder.TryEncode(utf32, data, out codePointsConsumed, out bytesWritten);
+            return Utf8Encoder.TryEncode(utf32, data, out codeUnitsConsumed, out bytesWritten);
         }
 
         public override bool TryEncode(string text, Span<byte> data, out int bytesWritten)

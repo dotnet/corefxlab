@@ -398,7 +398,7 @@ namespace System.Text.Utf8
         /// This method will consume as many of the input characters as possible.
         ///
         /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
-        /// equal to the length of the <paramref name="utf8"/> and <paramref name="charactersWritten"/> will equal the total number of bytes written to
+        /// equal to the length of the <paramref name="utf8"/> and <paramref name="codeUnitsWritten"/> will equal the total number of code units written to
         /// the <paramref name="utf32"/>.
         ///
         /// On unsuccessful exit, the following conditions can exist.
@@ -409,12 +409,12 @@ namespace System.Text.Utf8
         /// <param name="utf8">A span containing a sequence of UTF-8 bytes.</param>
         /// <param name="utf32">A span to write the UTF-32 data into.</param>
         /// <param name="bytesConsumed">On exit, contains the number of code points that were consumed from the UTF-8 byte span.</param>
-        /// <param name="charactersWritten">An output parameter to store the number of characters written to <paramref name="utf32"/></param>
+        /// <param name="codeUnitsWritten">An output parameter to store the number of code units written to <paramref name="utf32"/></param>
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
-        public static bool TryDecode(ReadOnlySpan<byte> utf8, Span<uint> utf32, out int bytesConsumed, out int charactersWritten)
+        public static bool TryDecode(ReadOnlySpan<byte> utf8, Span<uint> utf32, out int bytesConsumed, out int codeUnitsWritten)
         {
             bytesConsumed = 0;
-            charactersWritten = 0;
+            codeUnitsWritten = 0;
 
             while (bytesConsumed < utf8.Length)
             {
@@ -424,7 +424,7 @@ namespace System.Text.Utf8
                 if (!TryDecodeCodePoint(utf8, bytesConsumed, out codePoint, out consumed))
                     return false;
 
-                utf32[charactersWritten++] = codePoint;
+                utf32[codeUnitsWritten++] = codePoint;
                 bytesConsumed += consumed;
             }
 
@@ -927,23 +927,23 @@ namespace System.Text.Utf8
         ///
         /// This method will consume as many of the input characters as possible.
         ///
-        /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="codePointsConsumed"/> will be
+        /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="codeUnitsConsumed"/> will be
         /// equal to the length of the <paramref name="utf32"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
         /// the <paramref name="utf8"/>.
         ///
         /// On unsuccessful exit, the following conditions can exist.
-        ///  1) If the output buffer has been filled and no more input code points can be encoded, another call to this method with the input sliced to
-        ///     exclude the already encoded code points (using <paramref name="codePointsConsumed"/>) and a new output buffer will continue the encoding.
+        ///  1) If the output buffer has been filled and no more input code units can be encoded, another call to this method with the input sliced to
+        ///     exclude the already encoded code units (using <paramref name="codeUnitsConsumed"/>) and a new output buffer will continue the encoding.
         ///  2) Encoding may have also stopped because the input buffer contains an invalid sequence.
         /// </summary>
         /// <param name="utf32">A span containing a sequence of UTF-32 characters.</param>
         /// <param name="utf8">A span to write the UTF-8 encoded data into.</param>
-        /// <param name="codePointsConsumed">On exit, contains the number of code points that were consumed from the UTF-32 character span.</param>
+        /// <param name="codeUnitsConsumed">On exit, contains the number of code points that were consumed from the UTF-32 character span.</param>
         /// <param name="bytesWritten">An output parameter to store the number of bytes written to <paramref name="utf8"/></param>
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
-        public static bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> utf8, out int codePointsConsumed, out int bytesWritten)
+        public static bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> utf8, out int codeUnitsConsumed, out int bytesWritten)
         {
-            codePointsConsumed = 0;
+            codeUnitsConsumed = 0;
             bytesWritten = 0;
 
             for (int i = 0; i < utf32.Length; i++)
@@ -952,7 +952,7 @@ namespace System.Text.Utf8
                 if (!TryEncodeCodePoint(utf32[i], utf8, bytesWritten, out written))
                     return false;
 
-                codePointsConsumed++;
+                codeUnitsConsumed++;
                 bytesWritten += written;
             }
 
