@@ -12,6 +12,10 @@ namespace System.IO.Pipelines
     /// </summary>
     public class UnownedBuffer : OwnedBuffer<byte>
     {
+        private ArraySegment<byte> _buffer;
+        private int _referenceCount;
+        private bool _disposed;
+
         public UnownedBuffer(ArraySegment<byte> buffer)
         {
             _buffer = buffer;
@@ -63,10 +67,6 @@ namespace System.IO.Pipelines
                 return new BufferHandle(this, pointer, handle);
             }
         }
-
-        private ArraySegment<byte> _buffer;
-        int _referenceCount;
-        bool _disposed;
 
         public override void Retain()
         {
