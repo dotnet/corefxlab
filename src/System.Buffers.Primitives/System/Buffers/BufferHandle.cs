@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Runtime;
 using System.Runtime.InteropServices;
 
 namespace System.Buffers
@@ -21,7 +22,12 @@ namespace System.Buffers
 
         public BufferHandle(IRetainable owner) : this(owner, null) { }
 
-        public void* PinnedPointer => _pointer;
+        public void* PinnedPointer {
+            get {
+                if (_pointer == null) BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
+                return _pointer;
+            }
+        }
 
         public void Dispose()
         {

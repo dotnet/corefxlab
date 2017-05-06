@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Text;
+using System.Threading;
 
 namespace System.IO.Pipelines
 {
@@ -10,10 +11,12 @@ namespace System.IO.Pipelines
     /// Block tracking object used by the byte buffer memory pool. A slab is a large allocation which is divided into smaller blocks. The
     /// individual blocks are then treated as independent array segments.
     /// </summary>
-    public class MemoryPoolBlock : ReferenceCountedBuffer<byte>
+    public class MemoryPoolBlock : OwnedBuffer<byte>
     {
         private readonly int _offset;
         private readonly int _length;
+        private int _referenceCount;
+        private bool _disposed;
 
         /// <summary>
         /// This object cannot be instantiated outside of the static Create method
@@ -39,13 +42,11 @@ namespace System.IO.Pipelines
 
         public override int Length => _length;
 
-        public override Span<byte> Span
+        public override Span<byte> AsSpan(int index, int length)
         {
-            get
-            {
-                if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
-                return new Span<byte>(Slab.Array, _offset, _length);
-            }
+            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
+            if (length > _length - index) throw new ArgumentOutOfRangeException();
+            return new Span<byte>(Slab.Array, _offset + index, length);
         }
 
 #if BLOCK_LEASE_TRACKING
@@ -94,39 +95,49 @@ namespace System.IO.Pipelines
         internal void Initialize()
         {
             // This is VERY bad, but is required while there is no re-initialization support
-            base.Dispose(false);
+            _disposed = false;
         }
 
         protected override void Dispose(bool disposing)
         {
-            // Dispose before returning to pool to prevent race between Lease and Dispose
-            base.Dispose(disposing);
-
+            _disposed = true;
             Pool.Return(this);
         }
 
-// In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
-// this method access modifiers need to be `protected internal`
+        public override void Retain()
+        {
+            Interlocked.Increment(ref _referenceCount);
+        }
+
+        public override void Release()
+        {
+            Interlocked.Decrement(ref _referenceCount);
+        }
+
+        public override bool IsRetained => _referenceCount > 0;
+        public override bool IsDisposed => _disposed;
+
+        // In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
+        // this method access modifiers need to be `protected internal`
 #if KESTREL_BY_SOURCE
         internal
 #endif
-        protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+        protected override bool TryGetArray(out ArraySegment<byte> buffer)
         {
             if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
             buffer = new ArraySegment<byte>(Slab.Array, _offset, _length);
             return true;
         }
 
-// In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so
-// this method access modifiers need to be `protected internal`
-#if KESTREL_BY_SOURCE
-        internal
-#endif
-        protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
+        public override BufferHandle Pin(int index = 0)
         {
             if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
-            pointer = (Slab.NativePointer + _offset + index).ToPointer();
-            return true;
+            if (index > _length) PipelinesThrowHelper.ThrowArgumentOutOfRangeException(_length, index);
+            Retain();
+            unsafe
+            {
+                return new BufferHandle(this, (Slab.NativePointer + _offset + index).ToPointer());
+            }
         }
     }
 }
