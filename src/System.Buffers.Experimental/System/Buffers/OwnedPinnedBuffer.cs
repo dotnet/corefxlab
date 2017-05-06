@@ -35,13 +35,10 @@ namespace System.Buffers
 
         public override int Length => _array.Length;
 
-        public override Span<T> Span
+        public override Span<T> AsSpan(int index, int length)
         {
-            get
-            {
                 if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
-                return _array;
-            }
+                return new Span<T>(_array, index, length);
         }
 
         public unsafe byte* Pointer => (byte*)_pointer.ToPointer();
@@ -64,17 +61,10 @@ namespace System.Buffers
             return new BufferHandle(this, Add(_pointer.ToPointer(), index));
         }
 
-        protected override bool TryGetArrayInternal(out ArraySegment<T> buffer)
+        protected override bool TryGetArray(out ArraySegment<T> buffer)
         {
             if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
             buffer = new ArraySegment<T>(_array);
-            return true;
-        }
-
-        protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
-        {
-            if (IsDisposed) BuffersExperimentalThrowHelper.ThrowObjectDisposedException(nameof(OwnedPinnedBuffer<T>));
-            pointer = Add(_pointer.ToPointer(), index);
             return true;
         }
 
