@@ -9,7 +9,6 @@ def branch = GithubBranchName
 [true, false].each { isPR -> // Defines a closure over true and false, value assigned to isPR
     ['Debug', 'Release'].each { configuration ->
         ['Windows_NT', 'Ubuntu16.04', 'OSX10.12'].each { osName ->   
-             def osForMachineAffinity = osName
             // Determine the name for the new job.  The first parameter is the project,
             // the second parameter is the base name for the job, and the last parameter
             // is a boolean indicating whether the job will be a PR job.  If true, the
@@ -32,11 +31,11 @@ def branch = GithubBranchName
                 }
             }
             
-            Utilities.setMachineAffinity(newJob, osForMachineAffinity, 'latest-or-auto')
+            Utilities.setMachineAffinity(newJob, osName, 'latest-or-auto')
             Utilities.standardJobSetup(newJob, project, isPR, "*/${branch}")
             // Archive only on commit builds.
             if (isPR) {
-                 // Set PR trigger, we run Windows_NT, Ubuntu 16.04, and OSX on every PR.
+                // Set PR trigger, we run Windows_NT, Ubuntu 16.04, and OSX on every PR.
                 Utilities.addGithubPRTriggerForBranch(newJob, branch, "Innerloop ${osName} ${configuration} Build and Test")
             }
             else {
