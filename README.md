@@ -2,6 +2,12 @@
 
 This repo is for experimentation and exploring new ideas that may or may not make it into the main corefx repo.
 
+### Build & Test Status
+
+|    | x64 Debug | x64 Release |
+|:---|----------------:|------------------:|
+|**Windows Server 2012**|[![x64-debug](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Debug/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Debug/lastCompletedBuild/testReport)|[![x64-release](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Release/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Release/lastCompletedBuild/testReport)
+
 ## Roadmap
 
 While this repo is meant for experimentation, we still want to focus our efforts
@@ -104,11 +110,16 @@ This project is a part of the [.NET Foundation].
 [.NET Foundation]: http://www.dotnetfoundation.org/projects
 [.NET Foundation forums]: http://forums.dotnetfoundation.org/
 
+There are many .NET related projects on GitHub.
+
+- [.NET home repo](https://github.com/Microsoft/dotnet) - links to 100s of .NET projects, from Microsoft and the community.
+- [ASP.NET Core home](https://github.com/aspnet/home) - the best place to start learning about ASP.NET Core.
+
 ## Building and Testing
 
 To build the projects in this repo, you have a few options:
 
-* Download or install a new version of the .NET CLI from here for your operating system. Then, simply invoke the tool to build individual projects (dotnet restore and then dotnet build).
+* Download or install a [new version of the .NET CLI](https://github.com/dotnet/cli#installers-and-binaries) for your operating system. Then, simply invoke the tool to build individual projects (dotnet restore and then dotnet build).
 * (On Windows) Invoke build.cmd. This will download an acceptable version of the .NET CLI automatically and use it to build the entire repository. NOTE: Don't invoke `scripts/build.ps1` directly. It requires that some environment be set in order for it to work correctly. `build.cmd` does this.
 * (On Windows) Open the solution file in Visual Studio 2015. NOTE: This requires unreleased plugins to work at this point in time.
 Using VS Code, see https://aka.ms/vscclrdogfood.

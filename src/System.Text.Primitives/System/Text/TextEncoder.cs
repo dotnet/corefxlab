@@ -140,7 +140,7 @@ namespace System.Text
         /// <param name="encodedBytes">The data span to consume for decoding. The encoded data should be relative to the concrete instance of the class used.</param>
         /// <param name="utf32">A span buffer to capture the decoded UTF-32 characters.</param>
         /// <param name="bytesConsumed">An output parameter to capture the number of bytes successfully consumed during decoding from <paramref name="encodedBytes"/></param>
-        /// <param name="charactersWritten">A output parameter to capture the number of bytes written to <paramref name="utf32"/></param>
+        /// <param name="codeUnitsWritten">A output parameter to capture the number of code units written to <paramref name="utf32"/></param>
         /// <returns>
         /// True if successfully able to consume the entire data span in the decoding process.
         /// False if decoding failed. <paramref name="utf32"/> will contain as much of the data as possible to decode with
@@ -149,7 +149,7 @@ namespace System.Text
         /// It is possible to continue decoding from the stop point by slicing off the processed part of <paramref name="encodedBytes"/>, fixing
         /// errors (reading more data, patching encoded bytes, etc.) and calling this method again.
         /// </returns>
-        public abstract bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<uint> utf32, out int bytesConsumed, out int charactersWritten);
+        public abstract bool TryDecode(ReadOnlySpan<byte> encodedBytes, Span<uint> utf32, out int bytesConsumed, out int codeUnitsWritten);
 
         #endregion Decode Methods
 
@@ -194,17 +194,17 @@ namespace System.Text
         /// </summary>
         /// <param name="utf32">The data span to consume for encoding.</param>
         /// <param name="encodedBytes">A span buffer to write the encoded bytes.</param>
-        /// <param name="charactersConsumed">An output parameter to capture the number of characters successfully consumed during encoding from <paramref name="utf8"/></param>
+        /// <param name="codeUnitsConsumed">An output parameter to capture the number of code units successfully consumed during encoding from <paramref name="utf8"/></param>
         /// <param name="bytesWritten">A output parameter to capture the number of bytes written to <paramref name="encodedBytes"/></param>
         /// <returns>
         /// True if successfully able to consume the entire data span in the encoding process.
         /// False if encoding failed. <paramref name="encodedBytes"/> will contain as much of the data as possible to encode with
-        /// <paramref name="charactersConsumed"> set to the number of characters used.
+        /// <paramref name="codeUnitsConsumed"> set to the number of code units used.
         /// 
         /// It is possible to continue encoding from the stop point by slicing off the processed part of <paramref name="utf32"/>, fixing
         /// errors (reading more data, new output buffer, etc.) and calling this method again.
         /// </returns>
-        public abstract bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> encodedBytes, out int charactersConsumed, out int bytesWritten);
+        public abstract bool TryEncode(ReadOnlySpan<uint> utf32, Span<byte> encodedBytes, out int codeUnitsConsumed, out int bytesWritten);
 
         /// <summary>
         /// Encodes a UTF-16 string. The target encoding is relative to the concrete class being executed.

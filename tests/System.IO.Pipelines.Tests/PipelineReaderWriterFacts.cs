@@ -544,30 +544,26 @@ namespace System.IO.Pipelines.Tests
                     base.Dispose(disposing);
                 }
 
-                protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
+                protected override bool TryGetArray(out ArraySegment<byte> buffer)
                 {
                     if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
                     buffer = new ArraySegment<byte>(_array);
                     return true;
                 }
 
-                protected override unsafe bool TryGetPointerAt(int index, out void* pointer)
-                {
-                    pointer = null;
-                    return false;
-                }
-
                 public int Disposed { get; set; }
 
                 public override int Length => _array.Length;
 
-                public override Span<byte> Span
+                public override Span<byte> AsSpan(int index, int length)
                 {
-                    get
-                    {
-                        if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
-                        return _array;
-                    }
+                    if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
+                    return _array.Slice(index, length);
+                }
+
+                public override BufferHandle Pin(int index = 0)
+                {
+                    throw new NotImplementedException();
                 }
 
                 byte[] _array;

@@ -224,7 +224,7 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            OwnedBuffer<byte> buffer = data;
+            OwnedArray<byte> buffer = data;
             return CreateInternal(buffer, 0, data.Length);
         }
 
@@ -238,8 +238,7 @@ namespace System.IO.Pipelines
                 PipelinesThrowHelper.ThrowArgumentNullException(ExceptionArgument.data);
             }
 
-            OwnedBuffer<byte> buffer = data;
-            return Create(buffer, offset, length);
+            return Create(new OwnedArray<byte>(data), offset, length);
         }
 
         /// <summary>
