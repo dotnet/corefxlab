@@ -60,7 +60,7 @@ namespace System.Text.Primitives.Tests
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
-            Encoding utf8Encoder = Encoding.UTF8;
+            Text.Encoding utf8Encoder = Text.Encoding.UTF8;
             int utf8Length = utf8Encoder.GetByteCount(characters);
             var utf8TempBuffer = new byte[utf8Length];
             utf8Encoder.GetBytes(characters, 0, characters.Length, utf8TempBuffer, 0);
@@ -103,7 +103,7 @@ namespace System.Text.Primitives.Tests
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
-            Encoding utf32 = Encoding.UTF32;
+            Text.Encoding utf32 = Text.Encoding.UTF32;
             int utf32Length = utf32.GetByteCount(characters);
             var utf32Buffer = new byte[utf32Length];
             utf32.GetBytes(characters, 0, characters.Length, utf32Buffer, 0);
@@ -129,7 +129,7 @@ namespace System.Text.Primitives.Tests
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
-            Encoding utf8Encoder = Encoding.UTF8;
+            Text.Encoding utf8Encoder = Text.Encoding.UTF8;
             int utf8Length = utf8Encoder.GetByteCount(characters);
             var utf8TempBuffer = new byte[utf8Length];
             utf8Encoder.GetBytes(characters, 0, characters.Length, utf8TempBuffer, 0);
@@ -173,7 +173,7 @@ namespace System.Text.Primitives.Tests
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
-            Encoding utf32 = Encoding.UTF32;
+            Text.Encoding utf32 = Text.Encoding.UTF32;
             int utf32Length = utf32.GetByteCount(characters);
             var utf32Buffer = new byte[utf32Length];
             utf32.GetBytes(characters, 0, characters.Length, utf32Buffer, 0);

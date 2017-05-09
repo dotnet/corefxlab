@@ -6,20 +6,9 @@ namespace System.Text.Primitives.Tests.Encoding
 {
     public static class TextEncoderTestHelper
     {
-        public static bool BuffersAreEqual<T>(ReadOnlySpan<T> expected, ReadOnlySpan<T> actual)
-        {
-            if (expected.Length != actual.Length) return false;
-            for (int i = 0; i < expected.Length; i++)
-            {
-                if (!expected[i].Equals(actual[i]))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public static bool Validate(SupportedEncoding from, TextEncoder utf8, Text.Encoding testEncoder, CodePointSubset subset)
+        // Checks if the string that gets genereted from the subset of the valid vode points gets encoded correctly
+        // by comparing TextEncoder output to the output from Encoding for any of the encodings that TextEncoder supports.
+        public static bool Validate(SupportedEncoding from, TextEncoder textEncoder, Text.Encoding testEncoder, CodePointSubset subset)
         {
             string inputString = GenerateValidString(TextEncoderConstants.DataLength, subset);
             Text.Encoding testEncoderUtf8 = Text.Encoding.UTF8;
@@ -35,45 +24,45 @@ namespace System.Text.Primitives.Tests.Encoding
             switch (from)
             {
                 case SupportedEncoding.FromUtf8:
-                    byte[] temp = testEncoderUtf8.GetBytes(inputString);
-                    expectedBytes = Text.Encoding.Convert(testEncoderUtf8, testEncoder, temp);
+                    byte[] inputStringUtf8 = testEncoderUtf8.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUtf8, testEncoder, inputStringUtf8);
                     encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
-                    ReadOnlySpan<byte> inputUtf8 = temp;
-                    retVal &= utf8.TryEncode(inputUtf8, encodedBytes, out int charactersConsumed, out bytesWritten);
+                    ReadOnlySpan<byte> inputUtf8 = inputStringUtf8;
+                    retVal &= textEncoder.TryEncode(inputUtf8, encodedBytes, out int charactersConsumed, out bytesWritten);
                     retVal &= inputUtf8.Length == charactersConsumed;
                     break;
 
                 case SupportedEncoding.FromUtf16:
-                    temp = testEncoderUnicode.GetBytes(inputString);
-                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    byte[] inputStringUtf16 = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
                     encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
-                    ReadOnlySpan<char> inputUtf16 = temp.AsSpan().NonPortableCast<byte, char>();
-                    retVal &= utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten);
+                    ReadOnlySpan<char> inputUtf16 = inputStringUtf16.AsSpan().NonPortableCast<byte, char>();
+                    retVal &= textEncoder.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten);
                     retVal &= inputUtf16.Length == charactersConsumed;
                     break;
 
                 case SupportedEncoding.FromString:
-                    temp = testEncoderUnicode.GetBytes(inputString);
-                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, temp);
+                    inputStringUtf16 = testEncoderUnicode.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
                     encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
                     string inputStr = inputString;
-                    retVal &= utf8.TryEncode(inputStr, encodedBytes, /*out charactersConsumed,*/ out bytesWritten);
+                    retVal &= textEncoder.TryEncode(inputStr, encodedBytes, /*out charactersConsumed,*/ out bytesWritten);
                     //retVal &= inputString.Length == charactersConsumed;
                     break;
 
                 case SupportedEncoding.FromUtf32:
                 default:
-                    temp = testEncoderUtf32.GetBytes(inputString);
-                    expectedBytes = Text.Encoding.Convert(testEncoderUtf32, testEncoder, temp);
+                    byte[] inputStringUtf32 = testEncoderUtf32.GetBytes(inputString);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUtf32, testEncoder, inputStringUtf32);
                     encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
-                    ReadOnlySpan<uint> input = temp.AsSpan().NonPortableCast<byte, uint>();
-                    retVal &= utf8.TryEncode(input, encodedBytes, out charactersConsumed, out bytesWritten);
+                    ReadOnlySpan<uint> input = inputStringUtf32.AsSpan().NonPortableCast<byte, uint>();
+                    retVal &= textEncoder.TryEncode(input, encodedBytes, out charactersConsumed, out bytesWritten);
                     retVal &= input.Length == charactersConsumed;
                     break;
             }
 
             retVal &= expectedBytes.Length == bytesWritten;
-            retVal &= BuffersAreEqual<byte>(expectedBytes, encodedBytes);
+            retVal &= expectedBytes.AsSpan().SequenceEqual(encodedBytes);
 
             return retVal;
         }
@@ -185,7 +174,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static string GenerateOnlyInvalidString(int length)
         {
-            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 2);
             var plainText = new StringBuilder();
             for (int j = 0; j < length; j++)
             {
@@ -197,7 +186,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static byte[] GenerateOnlyInvalidUtf8Bytes(int length)
         {
-            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 2);
             var utf8Byte = new byte[length];
             for (int j = 0; j < length; j++)
             {
@@ -209,7 +198,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static string GenerateStringWithInvalidChars(int length)
         {
-            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 3);
             var plainText = new StringBuilder();
             for (int j = 0; j < length; j++)
             {
@@ -241,7 +230,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static byte[] GenerateUtf8BytesWithInvalidBytes(int length)
         {
-            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 3);
             var utf8Byte = new byte[length];
             for (int j = 0; j < length; j++)
             {
@@ -262,7 +251,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static string GenerateValidStringEndsWithHighStartsWithLow(int length, bool startsWithLow)
         {
-            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 4);
             var plainText = new StringBuilder();
 
             int val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint + 1);
@@ -307,7 +296,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static byte[] GenerateValidUtf8BytesEndsWithHighStartsWithLow(int length, bool startsWithLow)
         {
-            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 4);
             var utf8Byte = new byte[length];
 
             int val = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1);
@@ -340,7 +329,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static uint[] GenerateValidUtf32EndsWithHighStartsWithLow(int length, bool startsWithLow)
         {
-            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 4);
             var utf32 = new uint[length];
 
             int val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint + 1);
@@ -385,7 +374,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
         public static byte[] GenerateValidBytesUtf32EndsWithHighStartsWithLow(int length, bool startsWithLow)
         {
-            Random rand = new Random(TextEncoderConstants.RandomSeed);
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 4);
             var utf32 = new byte[length*4];
 
             int val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint + 1);

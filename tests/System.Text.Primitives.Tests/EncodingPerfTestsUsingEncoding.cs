@@ -15,7 +15,7 @@ namespace System.Text.Primitives.Tests
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
-            Encoding utf8 = Encoding.UTF8;
+            Text.Encoding utf8 = Text.Encoding.UTF8;
             int utf8Length = utf8.GetByteCount(characters);
             var utf8Buffer = new byte[utf8Length];
             utf8.GetBytes(characters, 0, characters.Length, utf8Buffer, 0);
@@ -40,7 +40,7 @@ namespace System.Text.Primitives.Tests
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
-            Encoding utf8 = Encoding.UTF8;
+            Text.Encoding utf8 = Text.Encoding.UTF8;
             int utf8Length = utf8.GetByteCount(characters);
             var utf8Buffer = new byte[utf8Length];
 
@@ -58,8 +58,8 @@ namespace System.Text.Primitives.Tests
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
-            Encoding utf32 = Encoding.UTF32;
-            Encoding utf8 = Encoding.UTF8;
+            Text.Encoding utf32 = Text.Encoding.UTF32;
+            Text.Encoding utf8 = Text.Encoding.UTF8;
             int utf32Length = utf32.GetByteCount(characters);
             var utf32Buffer = new byte[utf32Length];
             utf32.GetBytes(characters, 0, characters.Length, utf32Buffer, 0);
@@ -85,7 +85,7 @@ namespace System.Text.Primitives.Tests
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
-            Encoding utf8 = Encoding.UTF8;
+            Text.Encoding utf8 = Text.Encoding.UTF8;
             int utf8Length = utf8.GetByteCount(characters);
             var utf8Buffer = new byte[utf8Length];
             utf8.GetBytes(characters, 0, characters.Length, utf8Buffer, 0);
@@ -106,7 +106,7 @@ namespace System.Text.Primitives.Tests
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
-            Encoding utf16 = Encoding.Unicode;
+            Text.Encoding utf16 = Text.Encoding.Unicode;
             int utf16Length = utf16.GetByteCount(characters);
             var utf16Buffer = new byte[utf16Length];
             utf16.GetBytes(characters, 0, characters.Length, utf16Buffer, 0);
@@ -127,7 +127,7 @@ namespace System.Text.Primitives.Tests
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
             char[] characters = inputString.AsSpan().ToArray();
-            Encoding utf32 = Encoding.UTF32;
+            Text.Encoding utf32 = Text.Encoding.UTF32;
             int utf32Length = utf32.GetByteCount(characters);
             var utf32Buffer = new byte[utf32Length];
             utf32.GetBytes(characters, 0, characters.Length, utf32Buffer, 0);

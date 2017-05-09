@@ -17,7 +17,7 @@ namespace System.Text.Primitives.Tests.Encoding
         public const ushort Utf8TwoBytesLastCodePoint = 0x7FF;
         public const ushort Utf8ThreeBytesLastCodePoint = 0xFFFF;
 
-        public const int DataLength = 999;
+        public const int DataLength = 999;  // Used as length of input string generated for encoding tests
 
         public const int RandomSeed = 42;
     }

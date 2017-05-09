@@ -83,7 +83,7 @@ namespace System.Text.Primitives.Tests.Encoding
             }
 
             Assert.Equal(expectedBytes.Length, bytesWritten);
-            Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes.Slice(0, bytesWritten)));
+            Assert.True(expectedBytes.AsSpan().SequenceEqual(encodedBytes.Slice(0, bytesWritten)));
         }
 
         [Theory]
@@ -137,7 +137,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
             Assert.Equal(0, charactersConsumed);
             Assert.Equal(0, bytesWritten);
-            Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(Span<byte>.Empty, encodedBytes));
+            Assert.True(Span<byte>.Empty.SequenceEqual(encodedBytes));
         }
 
         [Theory]
@@ -216,7 +216,7 @@ namespace System.Text.Primitives.Tests.Encoding
             encodedBytes1.CopyTo(encodedBytes);
             encodedBytes2.CopyTo(encodedBytes.Slice(encodedBytes1.Length));
 
-            Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes));
+            Assert.True(expectedBytes.AsSpan().SequenceEqual(encodedBytes));
         }
 
         [Theory]
@@ -316,7 +316,7 @@ namespace System.Text.Primitives.Tests.Encoding
             Array.Copy(expectedBytes1, expectedBytes, expectedBytes1.Length);
             Array.Copy(expectedBytes2, 0, expectedBytes, expectedBytes1.Length, expectedBytes2.Length);
 
-            Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes));
+            Assert.True(expectedBytes.AsSpan().SequenceEqual(encodedBytes));
         }
 
         [Theory]
@@ -431,7 +431,7 @@ namespace System.Text.Primitives.Tests.Encoding
             }
 
             Assert.Equal(expectedBytesWritten, bytesWritten);
-            Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes.AsSpan().Slice(0, expectedBytesWritten), encodedBytes));
+            Assert.True(expectedBytes.AsSpan().Slice(0, expectedBytesWritten).SequenceEqual(encodedBytes));
         }
 
         [Theory]
@@ -515,7 +515,7 @@ namespace System.Text.Primitives.Tests.Encoding
 
             Assert.Equal(TextEncoderConstants.DataLength * 2, charactersConsumed1 + charactersConsumed2);
             Assert.Equal(expectedBytes.Length, bytesWritten1 + bytesWritten2);
-            Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes));
+            Assert.True(expectedBytes.AsSpan().SequenceEqual(encodedBytes));
         }
 
         [Theory]
@@ -586,7 +586,7 @@ namespace System.Text.Primitives.Tests.Encoding
             }
 
             Assert.Equal(expectedBytes.Length, bytesWritten);
-            Assert.True(TextEncoderTestHelper.BuffersAreEqual<byte>(expectedBytes, encodedBytes));
+            Assert.True(expectedBytes.AsSpan().SequenceEqual(encodedBytes));
         }
     }
 }
