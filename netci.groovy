@@ -43,6 +43,7 @@ def branch = GithubBranchName
             else {
                 Utilities.addGithubPushTrigger(newJob)
             }
+        }
     }
 }
 
