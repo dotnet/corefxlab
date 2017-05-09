@@ -22,8 +22,14 @@ namespace System.Text.Http
 
     public struct HttpRequest
     {
+
+#if Windows
         internal static readonly byte[] Cr = new byte[] { (byte)'\r', (byte)'\n' };
         internal static readonly byte[] Cr2 = new byte[] { (byte)'\r', (byte)'\n', (byte)'\r', (byte)'\n' };
+#else
+        internal static readonly byte[] Cr = new byte[] { (byte)'\n' };
+        internal static readonly byte[] Cr2 = new byte[] { (byte)'\n', (byte)'\n' };
+#endif
 
         internal ReadOnlyBytes Bytes;
         internal Range _verb;
@@ -47,21 +53,28 @@ namespace System.Text.Http
 
             var reader = new BytesReader(bytes);
             Range? verb = reader.ReadRangeUntil((byte)' ');
-            request._verb = verb.Value;
+            if (verb.HasValue) request._verb = verb.Value;
             reader.Advance(1);
 
             Range? path = reader.ReadRangeUntil((byte)' ');
-            request._path = path.Value;
+            if (path.HasValue) request._path = path.Value;
             reader.Advance(1);
 
             Range? version = reader.ReadRangeUntil(Cr);
-            request._version = version.Value;
+            if (version.HasValue) request._version = version.Value;
             reader.Advance(2);
 
-            var headers = reader.ReadRangeUntil(Cr2).Value;
-            request._headers = new HttpHeaders() { _headers = bytes.Slice(headers.Index, headers.Length + 2) };
-
-            request._bodyIndex = headers.Index + headers.Length + 4;
+            Range? header = reader.ReadRangeUntil(Cr2);
+            if (header.HasValue) {
+                var headers = header.Value;
+#if Windows
+                request._headers = new HttpHeaders() { _headers = bytes.Slice(headers.Index, headers.Length + 2) };
+                request._bodyIndex = headers.Index + headers.Length + 4;
+#else
+                request._headers = new HttpHeaders() { _headers = bytes.Slice(headers.Index, headers.Length + 1) };
+                request._bodyIndex = headers.Index + headers.Length + 2;
+#endif
+            }
             return request;
         }
     }

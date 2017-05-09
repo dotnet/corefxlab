@@ -2,7 +2,7 @@
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>CLI commandline command parsing</Description>
-    <TargetFrameworks>netstandard1.5;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.5</TargetFrameworks>
     <PackageTags>Command line parsing support corefxlab</PackageTags>
     <RootNamespace />
   </PropertyGroup>

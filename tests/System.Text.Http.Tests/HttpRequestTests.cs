@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.Http;
 using Xunit;
 
-namespace System.Slices.Tests
+namespace System.Text.Http.Tests
 {
     public partial class HttpRequestTests
     {
