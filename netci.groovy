@@ -12,7 +12,7 @@ def osGroupMap = ['Ubuntu16.04':'Linux',
 
 // Generate the builds for debug and release, commit and PRJob
 [true, false].each { isPR -> // Defines a closure over true and false, value assigned to isPR
-    ['Debug', 'Release'].each { configurationGroup ->
+    ['Debug', 'Release'].each { configuration ->
         ['Windows_NT', 'Ubuntu16.04', 'OSX10.12'].each { osName ->   
              def osGroup = osGroupMap[osName]
              def osForMachineAffinity = osName
