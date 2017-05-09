@@ -5,16 +5,10 @@ import jobs.generation.JobReport;
 def project = GithubProject
 def branch = GithubBranchName
 
-// Map of osName -> osGroup.
-def osGroupMap = ['Ubuntu16.04':'Linux',
-                  'OSX10.12':'OSX',
-                  'Windows_NT':'Windows_NT']
-
 // Generate the builds for debug and release, commit and PRJob
 [true, false].each { isPR -> // Defines a closure over true and false, value assigned to isPR
     ['Debug', 'Release'].each { configuration ->
         ['Windows_NT', 'Ubuntu16.04', 'OSX10.12'].each { osName ->   
-             def osGroup = osGroupMap[osName]
              def osForMachineAffinity = osName
             // Determine the name for the new job.  The first parameter is the project,
             // the second parameter is the base name for the job, and the last parameter
