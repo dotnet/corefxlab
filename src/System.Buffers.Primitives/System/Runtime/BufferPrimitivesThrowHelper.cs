@@ -9,6 +9,11 @@ namespace System.Runtime
 {
     public static class BufferPrimitivesThrowHelper
     {
+        public static void ThrowArgumentNullException(string argument)
+        {
+            throw new ArgumentNullException(argument);
+        }
+
         public static void ThrowArgumentNullException(ExceptionArgument argument)
         {
             throw GetArgumentNullException(argument);

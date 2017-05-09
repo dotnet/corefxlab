@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
@@ -13,45 +12,17 @@ namespace System.Buffers
 
         public abstract int Length { get; }
 
-        public abstract Span<T> Span { get; }
+        public abstract Span<T> AsSpan(int index, int length);
+
+        public virtual Span<T> AsSpan() => AsSpan(0, Length);
 
         public Buffer<T> Buffer => new Buffer<T>(this, 0, Length);
 
         public ReadOnlyBuffer<T> ReadOnlyBuffer => new ReadOnlyBuffer<T>(this, 0, Length);
 
-        public static implicit operator OwnedBuffer<T>(T[] array) => new Internal.OwnedArray<T>(array);
+        public abstract BufferHandle Pin(int index = 0);
 
-        public virtual BufferHandle Pin(int index = 0)
-        {
-            unsafe
-            {
-                void* pointer;
-                var handle = default(GCHandle);
-
-                if (!TryGetPointerAt(index, out pointer)) {
-                    ArraySegment<T> buffer;
-                    if (TryGetArrayInternal(out buffer)) {
-                        handle = GCHandle.Alloc(buffer.Array, GCHandleType.Pinned);
-                        pointer = Add((void*)handle.AddrOfPinnedObject(), buffer.Offset + index);
-                    }
-                    else {
-                        throw new InvalidOperationException("Memory cannot be pinned");
-                    }
-                }
-
-                Retain();
-                return new BufferHandle(this, pointer, handle);
-            }
-        }
-
-        protected static unsafe void* Add(void* pointer, int offset)
-        {
-            return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
-        }
-
-        internal protected abstract bool TryGetArrayInternal(out ArraySegment<T> buffer);
-
-        internal protected abstract unsafe bool TryGetPointerAt(int index, out void* pointer);
+        internal protected abstract bool TryGetArray(out ArraySegment<T> buffer);
 
         #region Lifetime Management
         public abstract bool IsDisposed { get; }
@@ -69,7 +40,11 @@ namespace System.Buffers
         public abstract void Retain();
 
         public abstract void Release();
-
         #endregion
+
+        protected static unsafe void* Add(void* pointer, int offset)
+        {
+            return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
+        }
     }
 }

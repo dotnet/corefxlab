@@ -23,9 +23,7 @@ public partial class E2EPipelineTests
         "\r\n";
 
     [Benchmark]
-    [InlineData(1000, 256)]
-    [InlineData(1000, 1024)]
-    [InlineData(1000, 4096)]
+    [InlineData(10000, 256)]
     private static void TechEmpowerHelloWorldNoIO(int numberOfRequests, int concurrentConnections)
     {
         foreach (var iteration in Benchmark.Iterations)
@@ -48,36 +46,8 @@ public partial class E2EPipelineTests
         }
     }
 
-    //[Benchmark(Skip = "The generic type 'System.Collections.Generic.KeyValuePair`2' was used with an invalid instantiation in assembly 'System.Private.CoreLib")]
-    [InlineData(1000, 256)]
-    [InlineData(1000, 1024)]
-    [InlineData(1000, 4096)]
-    private static void TechEmpowerHelloWorldNoIOSingleSegmentParser(int numberOfRequests, int concurrentConnections)
-    {
-        foreach (var iteration in Benchmark.Iterations)
-        {
-            using (iteration.StartMeasurement())
-            {
-                RawInMemoryHttpServer.RunSingleSegmentParser(numberOfRequests, concurrentConnections, s_genericRequest, (request, response)=> {
-                    var formatter = new OutputFormatter<WritableBuffer>(response, TextEncoder.Utf8);
-                    formatter.Append("HTTP/1.1 200 OK");
-                    formatter.Append("\r\nContent-Length: 13");
-                    formatter.Append("\r\nContent-Type: text/plain");
-                    formatter.Format("\r\nDate: {0:R}", DateTime.UtcNow);
-                    formatter.Append("Server: System.IO.Pipelines");
-                    formatter.Append("\r\n\r\n");
-
-                    // write body
-                    formatter.Append("Hello, World!");
-                });
-            }
-        }
-    }
-
     [Benchmark]
-    [InlineData(1000, 256)]
-    [InlineData(1000, 1024)]
-    [InlineData(1000, 4096)]
+    [InlineData(10000, 256)]
     private static void TechEmpowerJsonNoIO(int numberOfRequests, int concurrentConnections)
     {
         foreach (var iteration in Benchmark.Iterations)

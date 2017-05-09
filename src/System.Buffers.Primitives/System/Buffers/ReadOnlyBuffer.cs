@@ -26,7 +26,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ReadOnlyBuffer<T>(T[] array)
         {
-            var owner = new Internal.OwnedArray<T>(array);
+            var owner = new OwnedArray<T>(array);
             return owner.Buffer;
         }
 
@@ -48,26 +48,20 @@ namespace System.Buffers
             return new ReadOnlyBuffer<T>(_owner, _index + index, length);
         }
 
-        public ReadOnlySpan<T> Span => _owner.Span.Slice(_index, _length);
+        public ReadOnlySpan<T> Span => _owner.AsSpan(_index, _length);
 
-        public DisposableReservation<T> Reserve()
+        public BufferHandle Retain()
         {
-            return _owner.Buffer.Reserve();
+            _owner.Retain();
+            return new BufferHandle(_owner);
         }
 
         public BufferHandle Pin() => _owner.Pin(_index);
-   
-        public unsafe bool TryGetPointer(out void* pointer)
-        {
-            if (!_owner.TryGetPointerAt(_index, out pointer)) {
-                return false;
-            }
-            return true;
-        }
 
-        public unsafe bool TryGetArray(out ArraySegment<T> buffer)
+        public bool TryGetArray(out ArraySegment<T> buffer)
         {
-            if (!_owner.TryGetArrayInternal(out buffer)) {
+            if (!_owner.TryGetArray(out buffer))
+            {
                 return false;
             }
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);

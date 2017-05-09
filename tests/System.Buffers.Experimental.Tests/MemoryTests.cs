@@ -11,7 +11,7 @@ namespace System.Slices.Tests
         public void SimpleTestS()
         {            
             using(var owned = new OwnedNativeBuffer(1024)) {
-                var span = owned.Span;
+                var span = owned.AsSpan();
                 span[10] = 10;
                 unsafe { Assert.Equal(10, owned.Pointer[10]); }
 
@@ -26,7 +26,7 @@ namespace System.Slices.Tests
             }
 
             using (OwnedPinnedBuffer<byte> owned = new byte[1024]) {
-                var span = owned.Span;
+                var span = owned.AsSpan();
                 span[10] = 10;
                 Assert.Equal(10, owned.Array[10]);
 
@@ -67,7 +67,7 @@ namespace System.Slices.Tests
                 Buffer<byte> memory = owned.Buffer;
                 Buffer<byte> memorySlice = memory.Slice(10);
                 copyStoredForLater = memorySlice;
-                var r = memorySlice.Reserve();
+                var r = memorySlice.Retain();
                 try {
                     Assert.Throws<InvalidOperationException>(() => { // memory is reserved; premature dispose check fires
                         owned.Dispose();

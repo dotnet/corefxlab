@@ -229,7 +229,7 @@ namespace System.IO.Pipelines.Networking.Libuv
 
         private void UnpinInputBuffer()
         {
-            _inputBufferPin.Free();
+            _inputBufferPin.Dispose();
         }
 
         private static Uv.uv_buf_t AllocCallback(UvStreamHandle handle, int status, object state)
