@@ -26,13 +26,12 @@ def branch = GithubBranchName
                 
                 // This opens the set of build steps that will be run.
                 steps {
-                    // Indicates that a batch script should be run with the build string (see above)
-                    // Also available is:
-                    // shell (for unix scripting)
                     if (osName == 'Windows_NT') {
+                        // Indicates that a batch script should be run with the build string
                         batchFile("call build.cmd ${configuration}")
                     }
                     else {
+                        // shell (for unix scripting)
                         shell("./build.sh ${configuration}")
                     }
                 }
