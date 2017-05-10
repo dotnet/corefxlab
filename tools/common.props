@@ -14,7 +14,4 @@
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <PackageReference Include="Microsoft.NETCore.Compilers" Version="$(RoslynVersion)" PrivateAssets="All" />
-  </ItemGroup>
 </Project>
