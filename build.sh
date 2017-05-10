@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# adding dotnet to the path. it is needed to run toolset csc. 
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+dotnet_path=$parent_path/dotnet
+export PATH=$PATH:$dotnet_path
+
 usage()
 {
     echo "build.sh [ Debug(default) | Release ]"
