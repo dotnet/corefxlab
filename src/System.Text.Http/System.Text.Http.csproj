@@ -4,7 +4,6 @@
     <Description>Non-allocating HTTP parser</Description>
     <TargetFramework>netstandard1.1</TargetFramework>
     <PackageTags>HTTP parser parsing .NET non-allocating corefxlab</PackageTags>
-    <DefineConstants Condition=" '$(OS)' == 'Windows_NT' ">$(DefineConstants);Windows</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\System.Text.Formatting\System.Text.Formatting.csproj" />

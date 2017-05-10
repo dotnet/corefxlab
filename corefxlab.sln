@@ -92,7 +92,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Threading.Tasks.Chan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Primitives.Tests", "tests\System.Text.Primitives.Tests\System.Text.Primitives.Tests.csproj", "{67B42C20-D98A-420B-82C0-04AFD963E650}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Binary.Base64.tests", "tests\System.Binary.Base64.Tests\System.Binary.Base64.Tests.csproj", "{481F242E-57E0-4904-89E2-345677D98C55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Binary.Base64.Tests", "tests\System.Binary.Base64.Tests\System.Binary.Base64.Tests.csproj", "{481F242E-57E0-4904-89E2-345677D98C55}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Time.Tests", "tests\System.Time.Tests\System.Time.Tests.csproj", "{872C74A2-97BD-4672-9674-BC361419AF32}"
 EndProject
