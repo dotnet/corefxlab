@@ -226,9 +226,9 @@ namespace System.Text.Primitives.Tests
             Assert.True(TextEncoder.Utf8.TryDecode(encodedData, actual, out int consumed, out int written));
 
             // System version
-            int neededChars = Encoding.UTF8.GetCharCount(data);
+            int neededChars = Text.Encoding.UTF8.GetCharCount(data);
             char[] expected = new char[neededChars];
-            Encoding.UTF8.GetChars(data, 0, data.Length, expected, 0);
+            Text.Encoding.UTF8.GetChars(data, 0, data.Length, expected, 0);
 
             // Compare
             Assert.True(actual.SequenceEqual(expected));
@@ -246,13 +246,13 @@ namespace System.Text.Primitives.Tests
         static char[] GenerateUtf16String(int length, int minCodePoint, int maxCodePoint)
         {
             byte[] utf32 = GenerateUtf32String(length, minCodePoint, maxCodePoint);
-            return Encoding.UTF32.GetChars(utf32);
+            return Text.Encoding.UTF32.GetChars(utf32);
         }
 
         static byte[] GenerateUtf8String(int length, int minCodePoint, int maxCodePoint)
         {
             char[] strChars = GenerateUtf16String(length, minCodePoint, maxCodePoint);
-            return Encoding.UTF8.GetBytes(strChars);
+            return Text.Encoding.UTF8.GetBytes(strChars);
         }
 
         static readonly Random Rnd = new Random(23098423);
