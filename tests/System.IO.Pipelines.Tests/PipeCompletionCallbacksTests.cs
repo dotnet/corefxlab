@@ -334,7 +334,6 @@ namespace System.IO.Pipelines.Tests
             Assert.True(callbackRan);
         }
 
-
         private class CallCountScheduler : IScheduler
         {
             public int CallCount { get; set; }

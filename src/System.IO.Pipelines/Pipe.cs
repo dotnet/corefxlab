@@ -657,7 +657,7 @@ namespace System.IO.Pipelines
             Action awaitable;
             lock (_sync)
             {
-                awaitable = _readerAwaitable.OnCompleted(continuation, ref _writerCompletion);
+                awaitable = _readerAwaitable.OnCompleted(continuation);
             }
             TrySchedule(_readerScheduler, awaitable);
         }
@@ -747,7 +747,7 @@ namespace System.IO.Pipelines
             Action awaitable;
             lock (_sync)
             {
-                awaitable = _writerAwaitable.OnCompleted(continuation, ref _readerCompletion);
+                awaitable = _writerAwaitable.OnCompleted(continuation);
             }
             TrySchedule(_writerScheduler, awaitable);
         }

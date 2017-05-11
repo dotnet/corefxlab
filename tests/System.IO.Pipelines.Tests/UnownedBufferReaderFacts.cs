@@ -621,7 +621,7 @@ namespace System.IO.Pipelines.Tests
 
             public void OnWriterCompleted(Action<Exception, object> callback, object state)
             {
-                throw new NotImplementedException();
+                _pipe.Reader.OnWriterCompleted(callback, state);
             }
 
             public override void Flush()
