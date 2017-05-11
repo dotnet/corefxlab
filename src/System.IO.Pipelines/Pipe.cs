@@ -509,9 +509,15 @@ namespace System.IO.Pipelines
                 throw new ArgumentNullException(nameof(callback));
             }
 
+            bool completeInline;
             lock (_sync)
             {
-                _writerCompletion.AttachCallback(callback, state);
+                completeInline = _writerCompletion.AddCallback(callback, state);
+            }
+
+            if (completeInline)
+            {
+                callback(_writerCompletion.Exception, state);
             }
         }
 
@@ -548,9 +554,15 @@ namespace System.IO.Pipelines
                 throw new ArgumentNullException(nameof(callback));
             }
 
+            bool completeInline;
             lock (_sync)
             {
-                _readerCompletion.AttachCallback(callback, state);
+                completeInline = _readerCompletion.AddCallback(callback, state);
+            }
+
+            if (completeInline)
+            {
+                callback(_writerCompletion.Exception, state);
             }
         }
 
@@ -765,13 +777,16 @@ namespace System.IO.Pipelines
 
         public void Reset()
         {
-            if (!_disposed)
+            lock (_sync)
             {
-                throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
-            }
+                if (!_disposed)
+                {
+                    throw new InvalidOperationException("Both reader and writer need to be completed to be able to reset ");
+                }
 
-            _disposed = false;
-            ResetState();
+                _disposed = false;
+                ResetState();
+            }
         }
     }
 }

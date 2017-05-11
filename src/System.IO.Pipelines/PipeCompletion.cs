@@ -8,13 +8,14 @@ namespace System.IO.Pipelines
 {
     internal struct PipeCompletion
     {
-        private const int InitialCallbacksSize = 4;
+        private const int InitialCallbacksSize = 1;
         private static readonly Exception _completedNoException = new Exception();
 
 #if COMPLETION_LOCATION_TRACKING
         private string _completionLocation;
 #endif
-        private Exception _exception;
+        public Exception Exception { get; set; }
+
         private PipeCompletionCallback[] _callbacks;
         private int _callbackCount;
 
@@ -30,27 +31,28 @@ namespace System.IO.Pipelines
             }
         }
 
-        public bool IsCompleted => _exception != null;
+        public bool IsCompleted => Exception != null;
 
         public bool TryComplete(Exception exception = null)
         {
 #if COMPLETION_LOCATION_TRACKING
             _completionLocation = Environment.StackTrace;
 #endif
-            if (_exception == null)
+            if (Exception == null)
             {
                 // Set the exception object to the exception passed in or a sentinel value
-                _exception = exception ?? _completedNoException;
+                Exception = exception ?? _completedNoException;
             }
             return _callbackCount > 0;
         }
 
-        public void AttachCallback(Action<Exception, object> callback, object state)
+        public bool AddCallback(Action<Exception, object> callback, object state)
         {
             if (IsCompleted)
             {
-                PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AttachingToCompletedPipe);
+                return true;
             }
+
             if (_callbacks == null)
             {
                 _callbacks = new PipeCompletionCallback[InitialCallbacksSize];
@@ -67,20 +69,23 @@ namespace System.IO.Pipelines
             }
             _callbacks[newIndex].Callback = callback;
             _callbacks[newIndex].State = state;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsCompletedOrThrow()
         {
-            if (_exception != null)
+            if (Exception == null)
             {
-                if (_exception != _completedNoException)
-                {
-                    ThrowFailed();
-                }
-                return true;
+                return false;
             }
-            return false;
+
+            if (Exception != _completedNoException)
+            {
+                ThrowFailed();
+            }
+
+            return true;
         }
 
         public void InvokeCallbacks()
@@ -100,7 +105,8 @@ namespace System.IO.Pipelines
                     // safe to assume we reached end of callback list
                     break;
                 }
-                completionCallback.Callback.Invoke(_exception, completionCallback.State);
+
+                completionCallback.Callback.Invoke(Exception, completionCallback.State);
             }
         }
 
@@ -108,7 +114,7 @@ namespace System.IO.Pipelines
         {
             Debug.Assert(IsCompleted);
             _callbackCount = 0;
-            _exception = null;
+            Exception = null;
             if (_callbacks != null)
             {
                 for (int i = 0; i < _callbacks.Length; i++)
@@ -125,7 +131,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void ThrowFailed()
         {
-            throw _exception;
+            throw Exception;
         }
 
         public override string ToString()

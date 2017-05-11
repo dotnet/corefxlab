@@ -20,21 +20,37 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void OnReaderCompletedThrowsAfterComplete()
+        public void OnReaderCompletedExecutedInlineIfCompleted()
         {
-            var pipe = _pipeFactory.Create();
+            var callbackRan = false;
+            var scheduler = new CallCountScheduler();
+            var pipe = _pipeFactory.Create(new PipeOptions() { WriterScheduler = scheduler });
             pipe.Reader.Complete();
 
-            Assert.Throws<InvalidOperationException>(() => pipe.Writer.OnReaderCompleted((exception, state) => { }, null));
+            pipe.Writer.OnReaderCompleted((exception, state) =>
+            {
+                callbackRan = true;
+            }, null);
+
+            Assert.True(callbackRan);
+            Assert.Equal(0, scheduler.CallCount);
         }
 
         [Fact]
-        public void OnWriterCompletedThrowsAfterComplete()
+        public void OnWriterCompletedExecutedInlineIfCompleted()
         {
-            var pipe = _pipeFactory.Create();
+            var callbackRan = false;
+            var scheduler = new CallCountScheduler();
+            var pipe = _pipeFactory.Create(new PipeOptions() { ReaderScheduler = scheduler });
             pipe.Writer.Complete();
 
-            Assert.Throws<InvalidOperationException>(() => pipe.Reader.OnWriterCompleted((exception, state) => { }, null));
+            pipe.Reader.OnWriterCompleted((exception, state) =>
+            {
+                callbackRan = true;
+            }, null);
+
+            Assert.True(callbackRan);
+            Assert.Equal(0, scheduler.CallCount);
         }
 
         [Fact]
@@ -319,7 +335,7 @@ namespace System.IO.Pipelines.Tests
         }
 
 
-        private class CallCountScheduler:IScheduler
+        private class CallCountScheduler : IScheduler
         {
             public int CallCount { get; set; }
 
