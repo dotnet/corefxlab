@@ -10,18 +10,21 @@ namespace System.IO.Pipelines.Tests
     {
         public async Task AwaitingFlushAsyncAwaitableTwiceThrows()
         {
+            async Task Await(WritableBufferAwaitable a) => await a;
+
             var writeBuffer = Pipe.Writer.Alloc();
             writeBuffer.Write(new byte[MaximumSizeHigh]);
             var awaitable = writeBuffer.FlushAsync();
 
             var task1 = Await(awaitable);
 
-            async Task Await(WritableBufferAwaitable a) => await a;
-
             var exception = Assert.Throws<InvalidOperationException>(() =>
             {
                 _ = Await(awaitable);
             });
+
+            var result = await Pipe.Reader.ReadAsync();
+            Pipe.Reader.Advance(result.Buffer.End);
 
             Assert.Equal("Concurrent reads or writes are not supported.", exception.Message);
             Assert.Equal(true, task1.IsCompleted);

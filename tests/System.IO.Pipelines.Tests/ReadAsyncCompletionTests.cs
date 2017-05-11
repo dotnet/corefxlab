@@ -10,10 +10,10 @@ namespace System.IO.Pipelines.Tests
     {
         public async Task AwaitingReadAsyncAwaitableTwiceThrows()
         {
+            async Task Await(ReadableBufferAwaitable a) => await a;
+
             var awaitable = Pipe.Reader.ReadAsync();
             var task1 = Await(awaitable);
-
-            async Task Await(ReadableBufferAwaitable a) => await a;
 
             var exception = Assert.Throws<InvalidOperationException>(() =>
             {
