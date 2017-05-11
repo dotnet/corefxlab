@@ -30,6 +30,9 @@ def branch = GithubBranchName
                         // Indicates that a batch script should be run with the build string
                         batchFile("call build.cmd ${configuration}")
                     }
+                    else if (osName == 'OSX10.12') {
+                        shell("HOME=\$WORKSPACE/tempHome ./build.sh ${configuration}")
+                    }
                     else {
                         // shell (for unix scripting)
                         shell("./build.sh ${configuration}")
