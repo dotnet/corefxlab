@@ -423,12 +423,54 @@ namespace System.Text.Primitives.Tests.Encoding
             Array.Copy(intBytes, 0, utf32, index, intBytes.Length);
         }
 
-        public static int GetByteCount(ReadOnlySpan<byte> utf8)
+        public static int GetUtf8ByteCount(ReadOnlySpan<byte> utf8)
         {
-            return utf8.Length;
+            var inputLength = utf8.Length;
+
+            int byteCount = 0;
+            while (byteCount < inputLength)
+            {
+                byte byte1 = utf8[byteCount];
+                if ((byte1 & 0x80) == 0)
+                {
+                    byteCount += 1;
+                }
+                else if ((byte1 & 0xE0) == 0xC0)
+                {
+                    if (byteCount + 1 >= inputLength) return byteCount; //not enough bytes follow
+                    byte byte2 = utf8[byteCount + 1];
+                    if ((byte2 & 0x60) != 0x40) return byteCount;       // invalid byte sequence. Expect 10xx xxxx
+                    byteCount += 2;
+                }
+                else if ((byte1 & 0xF0) == 0xE0)
+                {
+                    if (byteCount + 2 >= inputLength) return byteCount; //not enough bytes follow
+                    byte byte2 = utf8[byteCount + 1];
+                    byte byte3 = utf8[byteCount + 2];
+                    if ((byte2 & 0x60) != 0x40) return byteCount;       // invalid byte sequence. Expect 10xx xxxx
+                    if ((byte3 & 0x60) != 0x40) return byteCount;
+                    byteCount += 3;
+                }
+                else if ((byte1 & 0xF8) == 0xF0)
+                {
+                    if (byteCount + 3 >= inputLength) return byteCount; //not enough bytes follow
+                    byte byte2 = utf8[byteCount + 1];
+                    byte byte3 = utf8[byteCount + 2];
+                    byte byte4 = utf8[byteCount + 3];
+                    if ((byte2 & 0x60) != 0x40) return byteCount;       // invalid byte sequence. Expect 10xx xxxx
+                    if ((byte3 & 0x60) != 0x40) return byteCount;
+                    if ((byte4 & 0x60) != 0x40) return byteCount;
+                    byteCount += 4;
+                }
+                else
+                {
+                    return byteCount;   // invalid first byte
+                }
+            }
+            return byteCount;
         }
 
-        public static int GetByteCount(ReadOnlySpan<char> utf16)
+        public static int GetUtf8ByteCount(ReadOnlySpan<char> utf16)
         {
             var inputLength = utf16.Length;
 
@@ -471,12 +513,12 @@ namespace System.Text.Primitives.Tests.Encoding
             return byteCount;
         }
 
-        public static int GetByteCount(string utf16String)
+        public static int GetUtf8ByteCount(string utf16String)
         {
-            return GetByteCount(utf16String.AsSpan());
+            return GetUtf8ByteCount(utf16String.AsSpan());
         }
 
-        public static int GetByteCount(ReadOnlySpan<uint> utf32)
+        public static int GetUtf8ByteCount(ReadOnlySpan<uint> utf32)
         {
             int byteCount = 0;
             for (int i = 0; i < utf32.Length; i++)
