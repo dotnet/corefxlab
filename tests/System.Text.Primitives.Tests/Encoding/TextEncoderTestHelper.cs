@@ -145,6 +145,63 @@ namespace System.Text.Primitives.Tests.Encoding
             return plainText.ToString();
         }
 
+        public static string GenerateStringAlternatingASCIIAndNonASCII(int charLength)
+        {
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 5);
+            var plainText = new StringBuilder();
+
+            for (int j = 0; j < charLength / 3; j++)
+            {
+                var ascii = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1);
+                var highSurrogate = rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint + 1);
+                var lowSurrogate = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);
+
+                plainText.Append((char)ascii);
+                plainText.Append((char)highSurrogate);
+                plainText.Append((char)lowSurrogate);
+            }
+
+            for (int j = 0; j < charLength % 3; j++)
+            {
+                plainText.Append((char)rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1));
+            }
+
+            return plainText.ToString();
+        }
+
+        public static string GenerateStringWithMostlyASCIIAndSomeNonASCII(int charLength)
+        {
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 6);
+            var plainText = new StringBuilder();
+
+            int j = 0;
+            while (j < charLength - 70)
+            {
+                for (int i = 0; i < rand.Next(20, 51); i++)
+                {
+                    var ascii = rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1);
+                    plainText.Append((char)ascii);
+                    j++;
+                }
+                for (int i = 0; i < rand.Next(5, 11); i++)
+                {
+                    var highSurrogate = rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint + 1);
+                    var lowSurrogate = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);
+                    j += 2;
+                    plainText.Append((char)highSurrogate);
+                    plainText.Append((char)lowSurrogate);
+                }
+            }
+
+            while (j < charLength)
+            {
+                plainText.Append((char)rand.Next(0, TextEncoderConstants.Utf8OneByteLastCodePoint + 1));
+                j++;
+            }
+
+            return plainText.ToString();
+        }
+
         public static string GenerateAllCharacters()
         {
             var plainText = new StringBuilder();
