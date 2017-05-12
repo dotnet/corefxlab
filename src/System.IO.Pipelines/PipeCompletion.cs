@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -8,6 +9,8 @@ namespace System.IO.Pipelines
 {
     internal struct PipeCompletion
     {
+        private static readonly ArrayPool<PipeCompletionCallback> CompletionCallbackPool = ArrayPool<PipeCompletionCallback>.Shared;
+
         private const int InitialCallbacksSize = 1;
         private static readonly Exception _completedNoException = new Exception();
 
@@ -55,16 +58,17 @@ namespace System.IO.Pipelines
 
             if (_callbacks == null)
             {
-                _callbacks = new PipeCompletionCallback[InitialCallbacksSize];
+                _callbacks = CompletionCallbackPool.Rent(InitialCallbacksSize);
             }
 
             var newIndex = _callbackCount;
             _callbackCount++;
 
-            if (_callbackCount == _callbacks.Length)
+            if (newIndex == _callbacks.Length)
             {
                 var newArray = new PipeCompletionCallback[_callbacks.Length * 2];
                 Array.Copy(_callbacks, newArray, _callbacks.Length);
+                CompletionCallbackPool.Return(_callbacks);
                 _callbacks = newArray;
             }
             _callbacks[newIndex].Callback = callback;
@@ -88,41 +92,21 @@ namespace System.IO.Pipelines
             return true;
         }
 
-        public void InvokeCallbacks()
+        public PipeCompletionCallbacks GetCallbacks()
         {
             Debug.Assert(IsCompleted);
 
-            if (_callbacks == null)
-            {
-                return;
-            }
+            var callbacks = new PipeCompletionCallbacks(CompletionCallbackPool, _callbackCount, Exception, _callbacks);
+            _callbacks = null;
+            _callbackCount = 0;
 
-            foreach (var completionCallback in _callbacks)
-            {
-                if (completionCallback.Callback == null)
-                {
-                    // we do not allow registering null callbacks
-                    // safe to assume we reached end of callback list
-                    break;
-                }
-
-                completionCallback.Callback.Invoke(Exception, completionCallback.State);
-            }
+            return callbacks;
         }
 
         public void Reset()
         {
             Debug.Assert(IsCompleted);
-            _callbackCount = 0;
             Exception = null;
-            if (_callbacks != null)
-            {
-                for (int i = 0; i < _callbacks.Length; i++)
-                {
-                    _callbacks[i] = default(PipeCompletionCallback);
-                }
-            }
-
 #if COMPLETION_LOCATION_TRACKING
             _completionLocation = null;
 #endif

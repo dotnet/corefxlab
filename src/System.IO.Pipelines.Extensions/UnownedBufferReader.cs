@@ -245,7 +245,7 @@ namespace System.IO.Pipelines
 
         public void OnWriterCompleted(Action<Exception, object> callback, object state)
         {
-            _readingTcs.Task.ContinueWith(task => callback(task.Exception, state));
+            _readingTcs.Task.ContinueWith((task, o) => callback(task.Exception, o), state);
         }
 
         /// <summary>

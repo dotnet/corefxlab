@@ -48,10 +48,4 @@ namespace System.IO.Pipelines
             }
         }
     }
-
-    internal struct PipeCompletionCallback
-    {
-        public Action<Exception, object> Callback;
-        public object State;
-    }
 }

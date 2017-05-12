@@ -16,8 +16,8 @@ namespace System.IO.Pipelines
     {
         private static readonly Action<object> _signalReaderAwaitable = state => ((Pipe)state).ReaderCancellationRequested();
         private static readonly Action<object> _signalWriterAwaitable = state => ((Pipe)state).WriterCancellationRequested();
-        private static readonly Action<object> _callReaderCompletedCallbacks = state => ((Pipe)state)._readerCompletion.InvokeCallbacks();
-        private static readonly Action<object> _callWriterCompletedCallbacks = state => ((Pipe)state)._writerCompletion.InvokeCallbacks();
+        private static readonly Action<object> _callReaderCompletedCallbacks = state => ((Pipe)state).InvokeReaderCompletionCallbacks();
+        private static readonly Action<object> _callWriterCompletedCallbacks = state => ((Pipe)state).InvokeWriterCompletionCallbacks();
         private static readonly Action<object> _scheduleContinuation = o => ((Action)o)();
 
         // This sync objects protects the following state:
@@ -393,11 +393,13 @@ namespace System.IO.Pipelines
 
             Action awaitable;
             bool runCompletionCallbacks;
+            bool readerCompleted;
 
             lock (_sync)
             {
                 runCompletionCallbacks = _writerCompletion.TryComplete(exception);
                 awaitable = _readerAwaitable.Complete();
+                readerCompleted = _readerCompletion.IsCompleted;
             }
 
             if (runCompletionCallbacks)
@@ -407,7 +409,7 @@ namespace System.IO.Pipelines
 
             TrySchedule(_readerScheduler, awaitable);
 
-            if (_readerCompletion.IsCompleted)
+            if (readerCompleted)
             {
                 Dispose();
             }
@@ -446,9 +448,7 @@ namespace System.IO.Pipelines
                 }
 
                 // We reset the awaitable to not completed if we've examined everything the producer produced so far
-                if (examined.Segment == _commitHead &&
-                    examined.Index == _commitHeadIndex &&
-                    !_writerCompletion.IsCompleted)
+                if (IsEverythingExamined(examined) && !_writerCompletion.IsCompleted)
                 {
                     if (!_writerAwaitable.IsCompleted)
                     {
@@ -470,6 +470,11 @@ namespace System.IO.Pipelines
             TrySchedule(_writerScheduler, continuation);
         }
 
+        private bool IsEverythingExamined(ReadCursor examined)
+        {
+            return examined.Segment == _commitHead && examined.Index == _commitHeadIndex;
+        }
+
         /// <summary>
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
@@ -483,11 +488,13 @@ namespace System.IO.Pipelines
 
             bool runCompletionCallbacks;
             Action awaitable;
+            bool writerCompleted;
 
             lock (_sync)
             {
                 runCompletionCallbacks = _readerCompletion.TryComplete(exception);
                 awaitable = _writerAwaitable.Complete();
+                writerCompleted = _writerCompletion.IsCompleted;
             }
 
             if (runCompletionCallbacks)
@@ -496,7 +503,7 @@ namespace System.IO.Pipelines
             }
             TrySchedule(_writerScheduler, awaitable);
 
-            if (_writerCompletion.IsCompleted)
+            if (writerCompleted)
             {
                 Dispose();
             }
@@ -770,6 +777,26 @@ namespace System.IO.Pipelines
                 action = _writerAwaitable.Cancel();
             }
             TrySchedule(_writerScheduler, action);
+        }
+
+        private void InvokeReaderCompletionCallbacks()
+        {
+            PipeCompletionCallbacks action;
+            lock (_sync)
+            {
+                action = _readerCompletion.GetCallbacks();
+            }
+            action.Execute();
+        }
+
+        private void InvokeWriterCompletionCallbacks()
+        {
+            PipeCompletionCallbacks action;
+            lock (_sync)
+            {
+                action = _writerCompletion.GetCallbacks();
+            }
+            action.Execute();
         }
 
         public IPipeReader Reader => this;
