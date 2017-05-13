@@ -22,11 +22,7 @@ namespace System.Text.Primitives.Tests.Encoding
         };
 
         [Theory]
-        //[MemberData(nameof(SupportedEncodingTestData))]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
-        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]  // Open issue: https://github.com/dotnet/corefxlab/issues/1524
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
+        [MemberData(nameof(SupportedEncodingTestData))]
         public void InputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from)
         {
             string inputString = TextEncoderTestHelper.GenerateValidString(0, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);
@@ -87,11 +83,7 @@ namespace System.Text.Primitives.Tests.Encoding
         }
 
         [Theory]
-        //[MemberData(nameof(SupportedEncodingTestData))]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)]
-        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]  // Open issue: https://github.com/dotnet/corefxlab/issues/1525
-        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]  // Open issue: https://github.com/dotnet/corefxlab/issues/1525
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)]
+        [MemberData(nameof(SupportedEncodingTestData))]
         public void OutputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from)
         {
             string inputString = TextEncoderTestHelper.GenerateValidString(TextEncoderConstants.DataLength, 0, TextEncoderConstants.Utf8ThreeBytesLastCodePoint);

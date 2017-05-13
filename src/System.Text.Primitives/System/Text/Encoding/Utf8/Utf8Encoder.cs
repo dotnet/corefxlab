@@ -52,6 +52,19 @@ namespace System.Text.Utf8
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
         public static unsafe bool TryDecode(ReadOnlySpan<byte> utf8, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
         {
+            if (utf8.IsEmpty)
+            {
+                bytesConsumed = 0;
+                charactersWritten = 0;
+                return true;
+            }
+            if (utf16.IsEmpty)
+            {
+                bytesConsumed = 0;
+                charactersWritten = 0;
+                return false;
+            }
+
             fixed (byte* pUtf8 = &utf8.DangerousGetPinnableReference())
             fixed (char* pUtf16 = &utf16.DangerousGetPinnableReference())
             {
@@ -644,6 +657,18 @@ namespace System.Text.Utf8
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
         public static unsafe bool TryEncode(ReadOnlySpan<char> utf16, Span<byte> utf8, out int charactersConsumed, out int bytesWritten)
         {
+            if (utf16.IsEmpty)
+            {
+                charactersConsumed = 0;
+                bytesWritten = 0;
+                return true;
+            }
+            if (utf8.IsEmpty)
+            {
+                charactersConsumed = 0;
+                bytesWritten = 0;
+                return false;
+            }
             //
             //
             // KEEP THIS IMPLEMENTATION IN SYNC WITH https://github.com/dotnet/corert/blob/master/src/System.Private.CoreLib/src/System/Text/UTF8Encoding.cs
