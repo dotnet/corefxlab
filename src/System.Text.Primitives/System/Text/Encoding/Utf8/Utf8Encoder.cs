@@ -644,12 +644,6 @@ namespace System.Text.Utf8
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
         public static unsafe bool TryEncode(ReadOnlySpan<char> utf16, Span<byte> utf8, out int charactersConsumed, out int bytesWritten)
         {
-            if (utf8.IsEmpty)
-            {
-                charactersConsumed = 0;
-                bytesWritten = 0;
-                return utf16.IsEmpty;
-            }
             //
             //
             // KEEP THIS IMPLEMENTATION IN SYNC WITH https://github.com/dotnet/corert/blob/master/src/System.Private.CoreLib/src/System/Text/UTF8Encoding.cs
@@ -842,7 +836,7 @@ namespace System.Text.Utf8
 
                     if (ch <= 0x7F)
                     {
-                        if (pTarget >= pAllocatedBufferEnd)
+                        if (pAllocatedBufferEnd - pTarget <= 0)
                             goto NeedMore;
 
                         *pTarget = (byte)ch;
@@ -853,7 +847,7 @@ namespace System.Text.Utf8
                     int chd;
                     if (ch <= 0x7FF)
                     {
-                        if (pTarget >= pAllocatedBufferEnd - 1)
+                        if (pAllocatedBufferEnd - pTarget <= 1)
                             goto NeedMore;
 
                         // 2 byte encoding
@@ -864,7 +858,7 @@ namespace System.Text.Utf8
                         // if (!IsLowSurrogate(ch) && !IsHighSurrogate(ch))
                         if (!InRange(ch, HIGH_SURROGATE_START, LOW_SURROGATE_END))
                         {
-                            if (pTarget >= pAllocatedBufferEnd - 2)
+                            if (pAllocatedBufferEnd - pTarget <= 2)
                                 goto NeedMore;
 
                             // 3 byte encoding
@@ -872,7 +866,7 @@ namespace System.Text.Utf8
                         }
                         else
                         {
-                            if (pTarget >= pAllocatedBufferEnd - 3)
+                            if (pAllocatedBufferEnd - pTarget <= 3)
                                 goto NeedMore;
 
                             // 4 byte encoding - high surrogate + low surrogate
