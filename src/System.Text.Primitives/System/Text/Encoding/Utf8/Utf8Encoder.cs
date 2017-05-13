@@ -648,7 +648,7 @@ namespace System.Text.Utf8
             {
                 charactersConsumed = 0;
                 bytesWritten = 0;
-                return false;
+                return utf16.IsEmpty;
             }
             //
             //
