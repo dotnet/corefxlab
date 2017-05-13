@@ -52,19 +52,6 @@ namespace System.Text.Utf8
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
         public static unsafe bool TryDecode(ReadOnlySpan<byte> utf8, Span<char> utf16, out int bytesConsumed, out int charactersWritten)
         {
-            if (utf8.IsEmpty)
-            {
-                bytesConsumed = 0;
-                charactersWritten = 0;
-                return true;
-            }
-            if (utf16.IsEmpty)
-            {
-                bytesConsumed = 0;
-                charactersWritten = 0;
-                return false;
-            }
-
             fixed (byte* pUtf8 = &utf8.DangerousGetPinnableReference())
             fixed (char* pUtf16 = &utf16.DangerousGetPinnableReference())
             {
@@ -657,12 +644,6 @@ namespace System.Text.Utf8
         /// <returns>True if the input buffer was fully encoded into the output buffer, otherwise false.</returns>
         public static unsafe bool TryEncode(ReadOnlySpan<char> utf16, Span<byte> utf8, out int charactersConsumed, out int bytesWritten)
         {
-            if (utf16.IsEmpty)
-            {
-                charactersConsumed = 0;
-                bytesWritten = 0;
-                return true;
-            }
             if (utf8.IsEmpty)
             {
                 charactersConsumed = 0;
@@ -691,7 +672,7 @@ namespace System.Text.Utf8
                 // Thus don't use the fast decoding loop at all if we don't have enough characters. The threashold
                 // was choosen based on performance testing.
                 // Note that if we don't have enough bytes, pStop will prevent us from entering the fast loop.
-                while (pSrc < pEnd - 13)
+                while (pEnd - pSrc > 13)
                 {
                     // we need at least 1 byte per character, but Convert might allow us to convert
                     // only part of the input, so try as much as we can.  Reduce charCount if necessary
