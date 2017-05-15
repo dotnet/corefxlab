@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -334,6 +335,15 @@ namespace System.IO.Pipelines
                 current = current.Next;
             }
             return false;
+        }
+
+        [Conditional("Debug")]
+        internal void Validate()
+        {
+            if (Index == Segment.End && Segment.Next != null)
+            {
+                Debug.Assert(false, "Fail");
+            }
         }
     }
 }

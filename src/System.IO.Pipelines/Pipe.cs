@@ -451,12 +451,20 @@ namespace System.IO.Pipelines
                 _readingState.End(ExceptionResource.NoReadToComplete);
             }
 
-            while (returnStart != null && returnStart != returnEnd)
+
+            do
             {
-                var returnSegment = returnStart;
+                if (returnStart == returnEnd && consumed.Index != returnStart.End)
+                {
+                }
+                else
+                {
+                    returnStart.Dispose();
+                }
+
                 returnStart = returnStart.Next;
-                returnSegment.Dispose();
-            }
+
+            } while (returnStart != returnEnd);
 
             TrySchedule(_writerScheduler, continuation);
         }

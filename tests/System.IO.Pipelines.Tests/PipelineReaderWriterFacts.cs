@@ -450,26 +450,6 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task MultipleCompleteReaderWriterCauseDisposeOnlyOnce()
-        {
-            var pool = new DisposeTrackingBufferPool();
-
-            using (var factory = new PipeFactory(pool))
-            {
-                var readerWriter = factory.Create();
-                await readerWriter.Writer.WriteAsync(new byte[] { 1 });
-
-                readerWriter.Writer.Complete();
-                readerWriter.Reader.Complete();
-                Assert.Equal(1, pool.Disposed);
-
-                readerWriter.Writer.Complete();
-                readerWriter.Reader.Complete();
-                Assert.Equal(1, pool.Disposed);
-            }
-        }
-
-        [Fact]
         public async Task CompleteReaderThrowsIfReadInProgress()
         {
             await _pipe.Writer.WriteAsync(new byte[1]);

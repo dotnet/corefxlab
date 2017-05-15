@@ -15,8 +15,8 @@ namespace System.IO.Pipelines.Tests
         {
             var onCompletedCalled = false;
             var cancellationTokenSource = new CancellationTokenSource();
-            var buffer = Pipe.Writer.Alloc(PipeTest.MaximumSizeHigh);
-            buffer.Advance(PipeTest.MaximumSizeHigh);
+            var buffer = Pipe.Writer.Alloc(PipeTest.DefaultMaximumSizeHigh);
+            buffer.Advance(PipeTest.DefaultMaximumSizeHigh);
 
             var awaiter = buffer.FlushAsync(cancellationTokenSource.Token);
 
@@ -39,8 +39,8 @@ namespace System.IO.Pipelines.Tests
         {
             var onCompletedCalled = false;
             var cancellationTokenSource = new CancellationTokenSource();
-            var buffer = Pipe.Writer.Alloc(PipeTest.MaximumSizeHigh);
-            buffer.Advance(MaximumSizeHigh);
+            var buffer = Pipe.Writer.Alloc(PipeTest.DefaultMaximumSizeHigh);
+            buffer.Advance(DefaultMaximumSizeHigh);
 
             var awaiter = buffer.FlushAsync(cancellationTokenSource.Token);
             var awaiterIsCompleted = awaiter.IsCompleted;
@@ -62,8 +62,8 @@ namespace System.IO.Pipelines.Tests
         {
             var onCompletedCalled = false;
             var cancellationTokenSource = new CancellationTokenSource();
-            var buffer = Pipe.Writer.Alloc(PipeTest.MaximumSizeHigh);
-            buffer.Advance(MaximumSizeHigh);
+            var buffer = Pipe.Writer.Alloc(PipeTest.DefaultMaximumSizeHigh);
+            buffer.Advance(DefaultMaximumSizeHigh);
 
             var awaiter = buffer.FlushAsync(cancellationTokenSource.Token);
             var awaiterIsCompleted = awaiter.IsCompleted;
@@ -112,8 +112,8 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncReturnsCanceledIfFlushCancelled()
         {
-            var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
-            writableBuffer.Advance(MaximumSizeHigh);
+            var writableBuffer = Pipe.Writer.Alloc(DefaultMaximumSizeHigh);
+            writableBuffer.Advance(DefaultMaximumSizeHigh);
             var flushAsync = writableBuffer.FlushAsync();
 
             Assert.False(flushAsync.IsCompleted);
@@ -128,8 +128,8 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncReturnsCanceledIfCancelledBeforeFlush()
         {
-            var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
-            writableBuffer.Advance(MaximumSizeHigh);
+            var writableBuffer = Pipe.Writer.Alloc(DefaultMaximumSizeHigh);
+            writableBuffer.Advance(DefaultMaximumSizeHigh);
 
             Pipe.Writer.CancelPendingFlush();
 
@@ -144,8 +144,8 @@ namespace System.IO.Pipelines.Tests
         public void FlushAsyncNotCompletedAfterCancellation()
         {
             bool onCompletedCalled = false;
-            var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
-            writableBuffer.Advance(MaximumSizeHigh);
+            var writableBuffer = Pipe.Writer.Alloc(DefaultMaximumSizeHigh);
+            writableBuffer.Advance(DefaultMaximumSizeHigh);
 
             var awaitable = writableBuffer.FlushAsync();
 
@@ -172,8 +172,8 @@ namespace System.IO.Pipelines.Tests
         {
             bool onCompletedCalled = false;
             var cts = new CancellationTokenSource();
-            var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
-            writableBuffer.Advance(MaximumSizeHigh);
+            var writableBuffer = Pipe.Writer.Alloc(DefaultMaximumSizeHigh);
+            writableBuffer.Advance(DefaultMaximumSizeHigh);
 
             var awaitable = writableBuffer.FlushAsync(cts.Token);
 
@@ -217,8 +217,8 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncReturnsIsCancelOnCancelPendingFlushBeforeGetResult()
         {
-            var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
-            writableBuffer.Advance(MaximumSizeHigh);
+            var writableBuffer = Pipe.Writer.Alloc(DefaultMaximumSizeHigh);
+            writableBuffer.Advance(DefaultMaximumSizeHigh);
             var awaitable = writableBuffer.FlushAsync();
 
             Assert.False(awaitable.IsCompleted);
@@ -236,8 +236,8 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void FlushAsyncReturnsIsCancelOnCancelPendingFlushAfterGetResult()
         {
-            var writableBuffer = Pipe.Writer.Alloc(MaximumSizeHigh);
-            writableBuffer.Advance(MaximumSizeHigh);
+            var writableBuffer = Pipe.Writer.Alloc(DefaultMaximumSizeHigh);
+            writableBuffer.Advance(DefaultMaximumSizeHigh);
             var awaitable = writableBuffer.FlushAsync();
 
             Assert.False(awaitable.IsCompleted);
@@ -263,8 +263,8 @@ namespace System.IO.Pipelines.Tests
                 WritableBuffer buffer;
                 try
                 {
-                    buffer = Pipe.Writer.Alloc(MaximumSizeHigh);
-                    buffer.Advance(MaximumSizeHigh);
+                    buffer = Pipe.Writer.Alloc(DefaultMaximumSizeHigh);
+                    buffer.Advance(DefaultMaximumSizeHigh);
                     await buffer.FlushAsync(cts.Token);
                 }
                 catch (OperationCanceledException)
@@ -279,7 +279,7 @@ namespace System.IO.Pipelines.Tests
             cts.Cancel();
 
             var result = await Pipe.Reader.ReadAsync();
-            Assert.Equal(new byte[MaximumSizeHigh], result.Buffer.ToArray());
+            Assert.Equal(new byte[DefaultMaximumSizeHigh], result.Buffer.ToArray());
             Pipe.Reader.Advance(result.Buffer.End);
             await task;
             Assert.True(cancelled);
@@ -291,9 +291,9 @@ namespace System.IO.Pipelines.Tests
             var cts = new CancellationTokenSource();
             var cts2 = new CancellationTokenSource();
 
-            var buffer = Pipe.Writer.Alloc(MaximumSizeHigh);
+            var buffer = Pipe.Writer.Alloc(DefaultMaximumSizeHigh);
 
-            buffer.Advance(MaximumSizeHigh);
+            buffer.Advance(DefaultMaximumSizeHigh);
 
             var e = new ManualResetEventSlim();
 
