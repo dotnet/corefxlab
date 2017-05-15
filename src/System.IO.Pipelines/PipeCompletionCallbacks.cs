@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Collections.Generic;
 
 namespace System.IO.Pipelines
 {
@@ -29,6 +30,8 @@ namespace System.IO.Pipelines
 
             try
             {
+                List<Exception> exceptions = null;
+
                 for (int i = 0; i < _count; i++)
                 {
                     var callback = _callbacks[i];
@@ -36,10 +39,19 @@ namespace System.IO.Pipelines
                     {
                         callback.Callback(_exception, callback.State);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // ignored
+                        if (exceptions == null)
+                        {
+                            exceptions = new List<Exception>();
+                        }
+                        exceptions.Add(ex);
                     }
+                }
+
+                if (exceptions != null)
+                {
+                    throw new AggregateException(exceptions);
                 }
             }
             finally

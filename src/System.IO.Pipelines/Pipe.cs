@@ -662,9 +662,14 @@ namespace System.IO.Pipelines
         void IReadableBufferAwaiter.OnCompleted(Action continuation)
         {
             Action awaitable;
+            bool doubleCompletion;
             lock (_sync)
             {
-                awaitable = _readerAwaitable.OnCompleted(continuation);
+                awaitable = _readerAwaitable.OnCompleted(continuation, out doubleCompletion);
+            }
+            if (doubleCompletion)
+            {
+                Writer.Complete(PipelinesThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
             }
             TrySchedule(_readerScheduler, awaitable);
         }
@@ -752,9 +757,14 @@ namespace System.IO.Pipelines
         void IWritableBufferAwaiter.OnCompleted(Action continuation)
         {
             Action awaitable;
+            bool doubleCompletion;
             lock (_sync)
             {
-                awaitable = _writerAwaitable.OnCompleted(continuation);
+                awaitable = _writerAwaitable.OnCompleted(continuation, out doubleCompletion);
+            }
+            if (doubleCompletion)
+            {
+                Reader.Complete(PipelinesThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
             }
             TrySchedule(_writerScheduler, awaitable);
         }

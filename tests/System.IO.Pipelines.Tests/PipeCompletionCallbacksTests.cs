@@ -23,7 +23,7 @@ namespace System.IO.Pipelines.Tests
         public void OnReaderCompletedExecutedInlineIfCompleted()
         {
             var callbackRan = false;
-            var scheduler = new CallCountScheduler();
+            var scheduler = new TestScheduler();
             var pipe = _pipeFactory.Create(new PipeOptions() { WriterScheduler = scheduler });
             pipe.Reader.Complete();
 
@@ -40,7 +40,7 @@ namespace System.IO.Pipelines.Tests
         public void OnWriterCompletedExecutedInlineIfCompleted()
         {
             var callbackRan = false;
-            var scheduler = new CallCountScheduler();
+            var scheduler = new TestScheduler();
             var pipe = _pipeFactory.Create(new PipeOptions() { ReaderScheduler = scheduler });
             pipe.Writer.Complete();
 
@@ -73,7 +73,7 @@ namespace System.IO.Pipelines.Tests
         public void OnReaderCompletedUsingWriterScheduler()
         {
             var callbackRan = false;
-            var scheduler = new CallCountScheduler();
+            var scheduler = new TestScheduler();
             var pipe = _pipeFactory.Create(new PipeOptions() { WriterScheduler = scheduler });
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
@@ -89,7 +89,7 @@ namespace System.IO.Pipelines.Tests
         public void OnWriterCompletedUsingReaderScheduler()
         {
             var callbackRan = false;
-            var scheduler = new CallCountScheduler();
+            var scheduler = new TestScheduler();
             var pipe = _pipeFactory.Create(new PipeOptions() { ReaderScheduler = scheduler });
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
@@ -100,11 +100,40 @@ namespace System.IO.Pipelines.Tests
             Assert.True(callbackRan);
             Assert.Equal(1, scheduler.CallCount);
         }
+
+        [Fact]
+        public void OnReaderCompletedExceptionSurfacesToWriterScheduler()
+        {
+            var exception = new Exception();
+            var scheduler = new TestScheduler();
+            var pipe = _pipeFactory.Create(new PipeOptions() { WriterScheduler = scheduler });
+            pipe.Writer.OnReaderCompleted((e, state) => throw exception, null);
+            pipe.Reader.Complete();
+
+            Assert.Equal(1, scheduler.CallCount);
+            var aggregateException = Assert.IsType<AggregateException>(scheduler.LastException);
+            Assert.Equal(aggregateException.InnerExceptions[0], exception);
+        }
+
+        [Fact]
+        public void OnWriterCompletedExceptionSurfacesToReaderScheduler()
+        {
+            var exception = new Exception();
+            var scheduler = new TestScheduler();
+            var pipe = _pipeFactory.Create(new PipeOptions() { ReaderScheduler = scheduler });
+            pipe.Reader.OnWriterCompleted((e, state) => throw exception, null);
+            pipe.Writer.Complete();
+
+            Assert.Equal(1, scheduler.CallCount);
+            var aggregateException = Assert.IsType<AggregateException>(scheduler.LastException);
+            Assert.Equal(aggregateException.InnerExceptions[0], exception);
+        }
+
         [Fact]
         public void OnReaderCompletedIsDetachedDuringReset()
         {
             var callbackRan = false;
-            var scheduler = new CallCountScheduler();
+            var scheduler = new TestScheduler();
             var pipe = _pipeFactory.Create(new PipeOptions() { WriterScheduler = scheduler });
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
@@ -128,7 +157,7 @@ namespace System.IO.Pipelines.Tests
         public void OnWriterCompletedIsDetachedDuringReset()
         {
             var callbackRan = false;
-            var scheduler = new CallCountScheduler();
+            var scheduler = new TestScheduler();
             var pipe = _pipeFactory.Create(new PipeOptions() { ReaderScheduler = scheduler });
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
@@ -250,6 +279,72 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
+        public void OnReaderCompletedContinuesOnException()
+        {
+            var callbackState1 = new object();
+            var callbackState2 = new object();
+            var exception1 = new Exception();
+            var exception2 = new Exception();
+
+            var counter = 0;
+
+            var pipe = _pipeFactory.Create();
+            pipe.Writer.OnReaderCompleted((exception, state) =>
+            {
+                Assert.Equal(callbackState1, state);
+                Assert.Equal(0, counter);
+                counter++;
+                throw exception1;
+            }, callbackState1);
+
+            pipe.Writer.OnReaderCompleted((exception, state) =>
+            {
+                Assert.Equal(callbackState2, state);
+                Assert.Equal(1, counter);
+                counter++;
+                throw exception2;
+            }, callbackState2);
+
+            var aggregateException = Assert.Throws<AggregateException>(() => pipe.Reader.Complete());
+            Assert.Equal(exception1, aggregateException.InnerExceptions[0]);
+            Assert.Equal(exception2, aggregateException.InnerExceptions[1]);
+            Assert.Equal(2, counter);
+        }
+
+        [Fact]
+        public void OnWriterCompletedContinuesOnException()
+        {
+            var callbackState1 = new object();
+            var callbackState2 = new object();
+            var exception1 = new Exception();
+            var exception2 = new Exception();
+
+            var counter = 0;
+
+            var pipe = _pipeFactory.Create();
+            pipe.Reader.OnWriterCompleted((exception, state) =>
+            {
+                Assert.Equal(callbackState1, state);
+                Assert.Equal(0, counter);
+                counter++;
+                throw exception1;
+            }, callbackState1);
+
+            pipe.Reader.OnWriterCompleted((exception, state) =>
+            {
+                Assert.Equal(callbackState2, state);
+                Assert.Equal(1, counter);
+                counter++;
+                throw exception2;
+            }, callbackState2);
+
+            var aggregateException = Assert.Throws<AggregateException>(() => pipe.Writer.Complete());
+            Assert.Equal(exception1, aggregateException.InnerExceptions[0]);
+            Assert.Equal(exception2, aggregateException.InnerExceptions[1]);
+            Assert.Equal(2, counter);
+        }
+
+        [Fact]
         public void OnWriterCompletedPassesException()
         {
             var callbackRan = false;
@@ -334,15 +429,25 @@ namespace System.IO.Pipelines.Tests
             Assert.True(callbackRan);
         }
 
-        private class CallCountScheduler : IScheduler
+        private class TestScheduler : IScheduler
         {
             public int CallCount { get; set; }
+
+            public Exception LastException { get; set; }
 
             public void Schedule(Action<object> action, object state)
             {
                 CallCount++;
-                action(state);
+                try
+                {
+                    action(state);
+                }
+                catch (Exception e)
+                {
+                    LastException = e;
+                }
             }
+
         }
     }
 }

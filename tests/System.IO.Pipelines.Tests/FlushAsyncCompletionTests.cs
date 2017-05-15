@@ -8,7 +8,8 @@ namespace System.IO.Pipelines.Tests
 {
     public class FlushAsyncCompletionTests: PipeTest
     {
-        public async Task AwaitingFlushAsyncAwaitableTwiceThrows()
+        [Fact]
+        public void AwaitingFlushAsyncAwaitableTwiceCompletesReaderWithException()
         {
             async Task Await(WritableBufferAwaitable a) => await a;
 
@@ -17,18 +18,15 @@ namespace System.IO.Pipelines.Tests
             var awaitable = writeBuffer.FlushAsync();
 
             var task1 = Await(awaitable);
+            var task2 = Await(awaitable);
 
-            var exception = Assert.Throws<InvalidOperationException>(() =>
-            {
-                _ = Await(awaitable);
-            });
-
-            var result = await Pipe.Reader.ReadAsync();
-            Pipe.Reader.Advance(result.Buffer.End);
-
-            Assert.Equal("Concurrent reads or writes are not supported.", exception.Message);
             Assert.Equal(true, task1.IsCompleted);
-            Assert.Equal(false, task1.IsFaulted);
+            Assert.Equal(true, task1.IsFaulted);
+            Assert.Equal("Concurrent reads or writes are not supported.", task1.Exception.InnerExceptions[0].Message);
+
+            Assert.Equal(true, task2.IsCompleted);
+            Assert.Equal(true, task2.IsFaulted);
+            Assert.Equal("Concurrent reads or writes are not supported.", task2.Exception.InnerExceptions[0].Message);
         }
     }
 }
