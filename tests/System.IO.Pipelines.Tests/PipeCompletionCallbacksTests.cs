@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void OnReaderCompletedExecutedInlineIfCompleted()
+        public void OnReaderCompletedExecutesOnSchedulerIfCompleted()
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
@@ -33,11 +33,11 @@ namespace System.IO.Pipelines.Tests
             }, null);
 
             Assert.True(callbackRan);
-            Assert.Equal(0, scheduler.CallCount);
+            Assert.Equal(1, scheduler.CallCount);
         }
 
         [Fact]
-        public void OnWriterCompletedExecutedInlineIfCompleted()
+        public void OnWriterCompletedExecutedSchedulerIfCompleted()
         {
             var callbackRan = false;
             var scheduler = new TestScheduler();
@@ -50,7 +50,7 @@ namespace System.IO.Pipelines.Tests
             }, null);
 
             Assert.True(callbackRan);
-            Assert.Equal(0, scheduler.CallCount);
+            Assert.Equal(1, scheduler.CallCount);
         }
 
         [Fact]

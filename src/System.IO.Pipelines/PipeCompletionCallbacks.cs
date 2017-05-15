@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace System.IO.Pipelines
 {
-    internal struct PipeCompletionCallbacks
+    internal class PipeCompletionCallbacks
     {
         private readonly ArrayPool<PipeCompletionCallback> _pool;
         private readonly int _count;

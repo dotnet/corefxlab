@@ -36,7 +36,7 @@ namespace System.IO.Pipelines
 
         public bool IsCompleted => Exception != null;
 
-        public bool TryComplete(Exception exception = null)
+        public PipeCompletionCallbacks TryComplete(Exception exception = null)
         {
 #if COMPLETION_LOCATION_TRACKING
             _completionLocation = Environment.StackTrace;
@@ -46,16 +46,11 @@ namespace System.IO.Pipelines
                 // Set the exception object to the exception passed in or a sentinel value
                 Exception = exception ?? _completedNoException;
             }
-            return _callbackCount > 0;
+            return GetCallbacks();
         }
 
-        public bool AddCallback(Action<Exception, object> callback, object state)
+        public PipeCompletionCallbacks AddCallback(Action<Exception, object> callback, object state)
         {
-            if (IsCompleted)
-            {
-                return true;
-            }
-
             if (_callbacks == null)
             {
                 _callbacks = CompletionCallbackPool.Rent(InitialCallbacksSize);
@@ -73,7 +68,13 @@ namespace System.IO.Pipelines
             }
             _callbacks[newIndex].Callback = callback;
             _callbacks[newIndex].State = state;
-            return false;
+
+            if (IsCompleted)
+            {
+                return GetCallbacks();
+            }
+
+            return null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -92,20 +93,24 @@ namespace System.IO.Pipelines
             return true;
         }
 
-        public PipeCompletionCallbacks GetCallbacks()
+        private PipeCompletionCallbacks GetCallbacks()
         {
             Debug.Assert(IsCompleted);
+            if (_callbackCount == 0)
+            {
+                return null;
+            }
 
             var callbacks = new PipeCompletionCallbacks(CompletionCallbackPool, _callbackCount, Exception, _callbacks);
             _callbacks = null;
             _callbackCount = 0;
-
             return callbacks;
         }
 
         public void Reset()
         {
             Debug.Assert(IsCompleted);
+            Debug.Assert(_callbacks == null);
             Exception = null;
 #if COMPLETION_LOCATION_TRACKING
             _completionLocation = null;
