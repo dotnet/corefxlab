@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Runtime;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -14,7 +15,11 @@ namespace System.Buffers
 
         public abstract Span<T> AsSpan(int index, int length);
 
-        public virtual Span<T> AsSpan() => AsSpan(0, Length);
+        public virtual Span<T> AsSpan()
+        {
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer<T>));
+            return AsSpan(0, Length);
+        }
 
         public Buffer<T> Buffer => new Buffer<T>(this, 0, Length);
 

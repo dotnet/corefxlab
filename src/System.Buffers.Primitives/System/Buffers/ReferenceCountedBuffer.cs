@@ -22,14 +22,14 @@ namespace System.Buffers
         public override void Release()
         {
             Debug.Assert(!IsDisposed);
-            if (Interlocked.Decrement(ref _referenceCount) == 0) {
-                OnZeroReferences();
+            if (Interlocked.Decrement(ref _referenceCount) <= 0) {
+                OnNoReferences();
             }
         }
 
         public override bool IsRetained => _referenceCount > 0;
 
-        protected virtual void OnZeroReferences()
+        protected virtual void OnNoReferences()
         {
         }
 
