@@ -452,10 +452,11 @@ namespace System.Text.Primitives.Tests.Encoding
         //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] // Open issue: https://github.com/dotnet/corefxlab/issues/1514
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)] // Open issue: https://github.com/dotnet/corefxlab/issues/1513
+        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)] // Open issue: https://github.com/dotnet/corefxlab/issues/1513
         public void InputBufferContainsOnlyInvalidData(TextEncoderTestHelper.SupportedEncoding from)
         {
-            string inputString = TextEncoderTestHelper.GenerateOnlyInvalidString(TextEncoderConstants.DataLength);
+            string inputStringLow = TextEncoderTestHelper.GenerateOnlyInvalidString(TextEncoderConstants.DataLength);
+            string inputStringHigh = TextEncoderTestHelper.GenerateOnlyInvalidString(TextEncoderConstants.DataLength, true);
             byte[] inputUtf8Bytes = TextEncoderTestHelper.GenerateOnlyInvalidUtf8Bytes(TextEncoderConstants.DataLength);
 
             int bytesWritten;
@@ -471,19 +472,30 @@ namespace System.Text.Primitives.Tests.Encoding
                     break;
 
                 case TextEncoderTestHelper.SupportedEncoding.FromUtf16:
-                    byte[] inputStringUtf16 = testEncoderUnicode.GetBytes(inputString);
+                    byte[] inputStringUtf16 = testEncoderUnicode.GetBytes(inputStringLow);
                     expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
                     encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
-                    ReadOnlySpan<char> inputUtf16 = inputString.AsSpan();
+                    ReadOnlySpan<char> inputUtf16 = inputStringLow.AsSpan();
+                    Assert.False(utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.Equal(0, charactersConsumed);
+                    inputStringUtf16 = testEncoderUnicode.GetBytes(inputStringHigh);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    inputUtf16 = inputStringHigh.AsSpan();
                     Assert.False(utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten));
                     Assert.Equal(0, charactersConsumed);
                     break;
 
                 case TextEncoderTestHelper.SupportedEncoding.FromString:
-                    inputStringUtf16 = testEncoderUnicode.GetBytes(inputString);
+                    inputStringUtf16 = testEncoderUnicode.GetBytes(inputStringLow);
                     expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
                     encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
-                    string inputStr = inputString;
+                    string inputStr = inputStringLow;
+                    Assert.False(utf8.TryEncode(inputStr, encodedBytes, out bytesWritten));
+                    inputStringUtf16 = testEncoderUnicode.GetBytes(inputStringHigh);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
+                    encodedBytes = new Span<byte>(new byte[expectedBytes.Length]);
+                    inputStr = inputStringHigh;
                     Assert.False(utf8.TryEncode(inputStr, encodedBytes, out bytesWritten));
                     break;
 
@@ -505,10 +517,11 @@ namespace System.Text.Primitives.Tests.Encoding
         //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf8)] // Open issue: https://github.com/dotnet/corefxlab/issues/1514
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf16)]
         [InlineData(TextEncoderTestHelper.SupportedEncoding.FromString)]
-        [InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)] // Open issue: https://github.com/dotnet/corefxlab/issues/1513
+        //[InlineData(TextEncoderTestHelper.SupportedEncoding.FromUtf32)] // Open issue: https://github.com/dotnet/corefxlab/issues/1513
         public void InputBufferContainsSomeInvalidData(TextEncoderTestHelper.SupportedEncoding from)
         {
-            string inputString = TextEncoderTestHelper.GenerateStringWithInvalidChars(TextEncoderConstants.DataLength);
+            string inputStringEndsWithLow = TextEncoderTestHelper.GenerateInvalidStringEndsWithLow(TextEncoderConstants.DataLength);
+            string inputStringInvalid = TextEncoderTestHelper.GenerateStringWithInvalidChars(TextEncoderConstants.DataLength);
             byte[] inputUtf8Bytes = TextEncoderTestHelper.GenerateUtf8BytesWithInvalidBytes(TextEncoderConstants.DataLength);
 
             byte[] expectedBytes;
@@ -525,23 +538,36 @@ namespace System.Text.Primitives.Tests.Encoding
                     expectedBytesWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputUtf8);
                     encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
                     Assert.False(utf8.TryEncode(inputUtf8, encodedBytes, out int charactersConsumed, out bytesWritten));
-                    Assert.True(charactersConsumed < inputString.Length);
+                    Assert.True(charactersConsumed < inputUtf8Bytes.Length);
                     break;
 
                 case TextEncoderTestHelper.SupportedEncoding.FromUtf16:
-                    byte[] inputStringUtf16 = testEncoderUnicode.GetBytes(inputString);
+                    byte[] inputStringUtf16 = testEncoderUnicode.GetBytes(inputStringEndsWithLow);
                     expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
-                    ReadOnlySpan<char> inputUtf16 = inputString.AsSpan();
+                    ReadOnlySpan<char> inputUtf16 = inputStringEndsWithLow.AsSpan();
+                    expectedBytesWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputUtf16);
+                    encodedBytes = new Span<byte>(new byte[expectedBytesWritten + 10]);
+                    Assert.False(utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten));
+                    Assert.True(charactersConsumed < inputStringEndsWithLow.Length);
+                    inputStringUtf16 = testEncoderUnicode.GetBytes(inputStringInvalid);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
+                    inputUtf16 = inputStringInvalid.AsSpan();
                     expectedBytesWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputUtf16);
                     encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
                     Assert.False(utf8.TryEncode(inputUtf16, encodedBytes, out charactersConsumed, out bytesWritten));
-                    Assert.True(charactersConsumed < inputString.Length);
+                    Assert.True(charactersConsumed < inputStringInvalid.Length);
                     break;
 
                 case TextEncoderTestHelper.SupportedEncoding.FromString:
-                    inputStringUtf16 = testEncoderUnicode.GetBytes(inputString);
+                    inputStringUtf16 = testEncoderUnicode.GetBytes(inputStringEndsWithLow);
                     expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
-                    string inputStr = inputString;
+                    string inputStr = inputStringEndsWithLow;
+                    expectedBytesWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputStr);
+                    encodedBytes = new Span<byte>(new byte[expectedBytesWritten + 10]);
+                    Assert.False(utf8.TryEncode(inputStr, encodedBytes, out bytesWritten));
+                    inputStringUtf16 = testEncoderUnicode.GetBytes(inputStringInvalid);
+                    expectedBytes = Text.Encoding.Convert(testEncoderUnicode, testEncoder, inputStringUtf16);
+                    inputStr = inputStringInvalid;
                     expectedBytesWritten = TextEncoderTestHelper.GetUtf8ByteCount(inputStr);
                     encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
                     Assert.False(utf8.TryEncode(inputStr, encodedBytes, out bytesWritten));
@@ -554,7 +580,7 @@ namespace System.Text.Primitives.Tests.Encoding
                     expectedBytesWritten = TextEncoderTestHelper.GetUtf8ByteCount(input);
                     encodedBytes = new Span<byte>(new byte[expectedBytesWritten]);
                     Assert.False(utf8.TryEncode(input, encodedBytes, out charactersConsumed, out bytesWritten));
-                    Assert.Equal(0, charactersConsumed);
+                    Assert.True(charactersConsumed < inputUtf8Bytes.Length);
                     break;
             }
 

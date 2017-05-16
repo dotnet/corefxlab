@@ -229,13 +229,15 @@ namespace System.Text.Primitives.Tests.Encoding
             return plainText.ToString();    // Length should be 0x10FFFF characters (1114112 in decimal)
         }
 
-        public static string GenerateOnlyInvalidString(int length)
+        public static string GenerateOnlyInvalidString(int length, bool highSurrogateOnly = false)
         {
             Random rand = new Random(TextEncoderConstants.RandomSeed * 2);
             var plainText = new StringBuilder();
             for (int j = 0; j < length; j++)
             {
-                var val = rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);
+                var val = highSurrogateOnly ?
+                    rand.Next(TextEncoderConstants.Utf16HighSurrogateFirstCodePoint, TextEncoderConstants.Utf16HighSurrogateLastCodePoint + 1) : 
+                    rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1);
                 plainText.Append((char)val);
             }
             return plainText.ToString();
@@ -251,6 +253,20 @@ namespace System.Text.Primitives.Tests.Encoding
                 utf8Byte[j] = (byte)val;
             }
             return utf8Byte;
+        }
+
+        public static string GenerateInvalidStringEndsWithLow(int length)
+        {
+            Random rand = new Random(TextEncoderConstants.RandomSeed * 3);
+            var plainText = new StringBuilder();
+            for (int j = 0; j < length - 1; j++)
+            {
+                var val = rand.Next(0, TextEncoderConstants.Utf8TwoBytesLastCodePoint + 1);
+                plainText.Append((char)val);
+            }
+            // last char should be low surrogate (no high surrogate before, invalid)
+            plainText.Append((char)rand.Next(TextEncoderConstants.Utf16LowSurrogateFirstCodePoint, TextEncoderConstants.Utf16LowSurrogateLastCodePoint + 1));
+            return plainText.ToString();
         }
 
         public static string GenerateStringWithInvalidChars(int length)
