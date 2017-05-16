@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Diagnostics;
 using System.IO.Pipelines.Testing;
 using Xunit;
 
@@ -120,6 +121,7 @@ namespace System.IO.Pipelines.Tests
                 var consumed = result.Buffer.Slice(1).Start;
                 _pipe.Reader.Advance(consumed, consumed);
 
+                Assert.Equal(i + 1, result.Buffer.Length);
                 Assert.Equal(i, _pipe.Length);
             }
         }

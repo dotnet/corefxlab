@@ -412,35 +412,59 @@ namespace System.IO.Pipelines
             BufferSegment returnStart = null;
             BufferSegment returnEnd = null;
 
-            int consumedBytes = 0;
-            if (!consumed.IsDefault)
-            {
-                returnStart = _readHead;
-                consumedBytes = ReadCursor.GetLength(returnStart, returnStart.Start, consumed.Segment, consumed.Index);
-
-                returnEnd = consumed.Segment;
-                _readHead = consumed.Segment;
-                _readHead.Start = consumed.Index;
-            }
-
             // Reading commit head shared with writer
             Action continuation = null;
             lock (_sync)
             {
-                var oldLength = _length;
-                _length -= consumedBytes;
+                var examinedEverything = examined.Segment == _commitHead && examined.Index == _commitHeadIndex;
 
-                if (oldLength >= _maximumSizeLow &&
-                    _length < _maximumSizeLow)
+                if (!consumed.IsDefault)
                 {
-                    continuation = _writerAwaitable.Complete();
+                    if (_readHead == null)
+                    {
+                        PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvanceToInvalidCursor);
+                    }
+
+                    returnStart = _readHead;
+                    returnEnd = consumed.Segment;
+
+                    // Check if we crossed _maximumSizeLow and complete backpressure
+                    var consumedBytes = ReadCursor.GetLength(returnStart, returnStart.Start, consumed.Segment, consumed.Index);
+                    var oldLength = _length;
+                    _length -= consumedBytes;
+
+                    if (oldLength >= _maximumSizeLow &&
+                        _length < _maximumSizeLow)
+                    {
+                        continuation = _writerAwaitable.Complete();
+                    }
+
+                    // Check if we consumed entire last segment
+                    // if we are going to return commit head
+                    // we need to check that there is no writing operation that
+                    // might be using tailspace
+                    if (consumed.Index == returnEnd.End &&
+                        !(_commitHead == returnEnd && _writingState.IsActive))
+                    {
+                        returnEnd = returnEnd.Next;
+                        if (_commitHead == _readHead)
+                        {
+                            _commitHead = returnEnd;
+                        }
+                        _readHead = returnEnd;
+                    }
+                    else
+                    {
+                        _readHead = consumed.Segment;
+                        _readHead.Start = consumed.Index;
+                    }
                 }
 
                 // We reset the awaitable to not completed if we've examined everything the producer produced so far
-                if (examined.Segment == _commitHead &&
-                    examined.Index == _commitHeadIndex &&
-                    !_writerCompletion.IsCompleted)
+                // but only if writer is not completed yet
+                if (examinedEverything && !_writerCompletion.IsCompleted)
                 {
+                    // Prevent deadlock where reader awaits new data and writer await backpressure
                     if (!_writerAwaitable.IsCompleted)
                     {
                         PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.BackpressureDeadlock);
@@ -451,20 +475,11 @@ namespace System.IO.Pipelines
                 _readingState.End(ExceptionResource.NoReadToComplete);
             }
 
-
-            do
+            while (returnStart != null && returnStart != returnEnd)
             {
-                if (returnStart == returnEnd && consumed.Index != returnStart.End)
-                {
-                }
-                else
-                {
-                    returnStart.Dispose();
-                }
-
+                returnStart.Dispose();
                 returnStart = returnStart.Next;
-
-            } while (returnStart != returnEnd);
+            }
 
             TrySchedule(_writerScheduler, continuation);
         }
@@ -530,7 +545,7 @@ namespace System.IO.Pipelines
             }
             lock (_sync)
             {
-                cancellationTokenRegistration= _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
+                cancellationTokenRegistration = _readerAwaitable.AttachToken(token, _signalReaderAwaitable, this);
             }
             cancellationTokenRegistration.Dispose();
             return new ReadableBufferAwaitable(this);
@@ -552,7 +567,7 @@ namespace System.IO.Pipelines
                     return true;
                 }
 
-                if(_readerAwaitable.HasContinuation)
+                if (_readerAwaitable.HasContinuation)
                 {
                     PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AlreadyReading);
                 }

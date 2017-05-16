@@ -153,6 +153,9 @@ namespace System.IO.Pipelines
                 case ExceptionResource.BackpressureDeadlock:
                     resourceString = "Advancing examined to the end would cause pipe to deadlock because FlushAsync is waiting";
                     break;
+                case ExceptionResource.AdvanceToInvalidCursor:
+                    resourceString = "Trying to advance to and invalid cursor";
+                    break;
             }
 
             resourceString = resourceString ?? $"Error ResourceKey not defined {argument}.";
@@ -193,6 +196,7 @@ namespace System.IO.Pipelines
         CompleteReaderActiveReader,
         AdvancingPastBufferSize,
         AdvancingWithNoBuffer,
-        BackpressureDeadlock
+        BackpressureDeadlock,
+        AdvanceToInvalidCursor
     }
 }

@@ -5,6 +5,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -300,8 +301,6 @@ namespace System.IO.Pipelines.Tests
             Assert.False(awaitable.IsCompleted);
         }
 
-
-
         [Fact]
         public async Task ReadingCanBeCancelled()
         {
@@ -496,63 +495,51 @@ namespace System.IO.Pipelines.Tests
             Assert.True(flushTask.IsCompleted);
         }
 
-        private class DisposeTrackingBufferPool : BufferPool
+        [Fact]
+        public async Task AdvanceToInvalidCursorThrows()
         {
-            private DisposeTrackingOwnedMemory _memory = new DisposeTrackingOwnedMemory(new byte[1]);
+            await _pipe.Writer.WriteAsync(new byte[100]);
 
-            public override OwnedBuffer<byte> Rent(int size)
-            {
-                return _memory;
-            }
+            var result = await _pipe.Reader.ReadAsync();
+            var buffer = result.Buffer;
 
-            public int Disposed => _memory.Disposed;
+            _pipe.Reader.Advance(buffer.End);
 
-            protected override void Dispose(bool disposing)
-            {
+            _pipe.Reader.CancelPendingRead();
+            result = await _pipe.Reader.ReadAsync();
 
-            }
+            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Advance(buffer.End));
+            _pipe.Reader.Advance(result.Buffer.End);
+        }
 
-            private class DisposeTrackingOwnedMemory : OwnedBuffer<byte>
-            {
-                public DisposeTrackingOwnedMemory(byte[] array)
-                {
-                    _array = array;
-                }
+        [Fact]
+        public async Task EmptyBufferStartCrossingSegmentBoundaryIsTreatedLikeAndEnd()
+        {
+            // Append one full segment to a pipe
+            var buffer = _pipe.Writer.Alloc(1);
+            buffer.Advance(buffer.Buffer.Length);
+            buffer.Commit();
+            await buffer.FlushAsync();
 
-                protected override void Dispose(bool disposing)
-                {
-                    Disposed++;
-                    base.Dispose(disposing);
-                }
+            // Consume entire segment
+            var result = await _pipe.Reader.ReadAsync();
+            _pipe.Reader.Advance(result.Buffer.End);
 
-                protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)
-                {
-                    if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
-                    buffer = new ArraySegment<byte>(_array);
-                    return true;
-                }
+            // Append empty segment
+            buffer = _pipe.Writer.Alloc(1);
+            buffer.Commit();
+            await buffer.FlushAsync();
 
-                protected override unsafe bool TryGetPointerInternal(out void* pointer)
-                {
-                    pointer = null;
-                    return false;
-                }
+            result = await _pipe.Reader.ReadAsync();
 
-                public int Disposed { get; set; }
+            Assert.True(result.Buffer.IsEmpty);
+            Assert.Equal(result.Buffer.Start, result.Buffer.End);
 
-                public override int Length => _array.Length;
-
-                public override Span<byte> Span
-                {
-                    get
-                    {
-                        if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
-                        return _array;
-                    }
-                }
-
-                byte[] _array;
-            }
+            buffer = _pipe.Writer.Alloc();
+            _pipe.Reader.Advance(result.Buffer.Start);
+            var awaitable = _pipe.Reader.ReadAsync();
+            Assert.False(awaitable.IsCompleted);
+            buffer.Commit();
         }
     }
 }
