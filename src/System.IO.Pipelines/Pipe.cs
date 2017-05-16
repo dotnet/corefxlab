@@ -423,6 +423,7 @@ namespace System.IO.Pipelines
                     if (_readHead == null)
                     {
                         PipelinesThrowHelper.ThrowInvalidOperationException(ExceptionResource.AdvanceToInvalidCursor);
+                        return;
                     }
 
                     returnStart = _readHead;

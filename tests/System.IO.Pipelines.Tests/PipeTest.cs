@@ -5,19 +5,18 @@ namespace System.IO.Pipelines.Tests
 {
     public class PipeTest: IDisposable
     {
-        protected const int DefaultMaximumSizeHigh = 65;
-        protected const int DefaultMaximumSizeLow = 6;
+        protected const int MaximumSizeHigh = 65;
 
         protected IPipe Pipe;
         private readonly PipeFactory _pipeFactory;
 
-        public PipeTest(long maximumSizeHigh = DefaultMaximumSizeHigh, long maximumSizeLow = DefaultMaximumSizeLow)
+        public PipeTest()
         {
             _pipeFactory = new PipeFactory();
             Pipe = _pipeFactory.Create(new PipeOptions()
             {
-                MaximumSizeHigh = maximumSizeHigh,
-                MaximumSizeLow = maximumSizeLow
+                MaximumSizeHigh = 65,
+                MaximumSizeLow = 6
             });
         }
 
