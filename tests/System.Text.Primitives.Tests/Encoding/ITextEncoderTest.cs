@@ -8,6 +8,7 @@ namespace System.Text.Primitives.Tests.Encoding
     {
         void InputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from);
         void OutputBufferEmpty(TextEncoderTestHelper.SupportedEncoding from);
+        void InputOutputBufferSizeCombinations(TextEncoderTestHelper.SupportedEncoding from);
         void InputBufferLargerThanOutputBuffer(TextEncoderTestHelper.SupportedEncoding from);
         void OutputBufferLargerThanInputBuffer(TextEncoderTestHelper.SupportedEncoding from);
         void InputBufferContainsOnlyInvalidData(TextEncoderTestHelper.SupportedEncoding from);
