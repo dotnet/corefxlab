@@ -1,9 +1,13 @@
-﻿using System;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+
 namespace System.IO.Compression
 {
     /// <summary>
@@ -12,74 +16,56 @@ namespace System.IO.Compression
     /// </summary>
    internal static partial class BrotliNative
     {
-        public enum BrotliDecoderResult : int
-        {
-            /// <summary>
-            /// Decoding error, e.g. corrupt input or memory allocation problem
-            /// </summary>
-            Error = 0,
-            /// <summary>
-            /// Decoding successfully completed
-            /// </summary>
-            Success = 1,
-            /// <summary>
-            /// Partially done; should be called again with more input
-            /// </summary>
-            NeedsMoreInput = 2,
-            /// <summary>
-            /// Partially done; should be called again with more output
-            /// </summary>
-            NeedsMoreOutput = 3
-        };
-        public enum BrotliEncoderOperation : int
+        /// <summary>
+        /// 0 - Process input. Encoder may postpone producing output, until it has processed enough input.
+        /// 1 - Produce output for all processed input.  Actual flush is performed when input stream is depleted and there is enoughspace in output stream.
+        /// 2 - Finalize the stream. Adding more input data to finalized stream is impossible.
+        /// 3 - Emit metadata block to stream.Stream is soft-flushed before metadata block is emitted. Metadata bloc MUST be no longer than than 16MiB.
+        /// </summary>
+        public enum BrotliEncoderOperation
         {
             Process = 0,
-            /// <summary>
-            /// Request output stream to flush. Performed when input stream is depleted
-            /// and there is enough space in output stream.
-            /// </summary>
             Flush = 1,
-            /// <summary>
-            /// Request output stream to finish. Performed when input stream is depleted
-            /// and there is enough space in output stream.
-            /// </summary>
             Finish = 2,
-
-            /// <summary>
-            /// Emits metadata block to stream. Stream is soft-flushed before metadata
-            /// block is emitted. CAUTION: when operation is started, length of the input
-            /// buffer is interpreted as length of a metadata block; changing operation,
-            /// expanding or truncating input before metadata block is completely emitted
-            /// will cause an error; metadata block must not be greater than 16MiB.
-            /// </summary>
             EmitMetadata = 3
         };
-
-        public enum BrotliEncoderParameter : int
+        /// <summary>
+        /// 0 - BrotliEncoderMode enumerates all available values.
+        /// 1 - The main compression speed-density lever. The higher the quality, the slower the compression.Range is from ::BROTLI_MIN_QUALITY to::BROTLI_MAX_QUALITY.
+        /// 2 - Recommended sliding LZ77 window size(1<<value) -16) .  Encoder may reduce this value, e.g. if input is much smaller than window size.
+        /// 3 -  Recommended input block size. --//--
+        /// 4-  Flag that affects usage of "literal context modeling" format feature. This flag is a "decoding-speed vs compression ratio" trade-off.
+        /// 5 - Estimated total input size for all ::BrotliEncoderCompressStream calls. The default value is 0, which means that the total input size is unknown.
+        /// </summary>
+        public enum BrotliEncoderParameter
         {
-            Mode = 0,
-            /// <summary>
-            ///  Controls the compression-speed vs compression-density tradeoffs. The higher
-            ///  the quality, the slower the compression. Range is 0 to 11.
-            /// </summary>
-            Quality = 1,
-            /// <summary>
-            /// Base 2 logarithm of the sliding window size. Range is 10 to 24. 
-            /// </summary>
-            LGWin = 2,
 
-            /// <summary>
-            /// Base 2 logarithm of the maximum input block size. Range is 16 to 24.
-            /// If set to 0, the value will be set based on the quality.
-            /// </summary>
-            LGBlock = 3
+            Mode = 0,
+            Quality = 1,
+            LGWin = 2,
+            LGBlock = 3,
+            LCModeling = 4,
+            SizeHint = 5
+        };
+        /// <summary>
+        /// 0 - Decoding error, e.g. corrupted input or memory allocation problem.
+        /// 1 - Decoding successfully completed
+        /// 2 - Partially done; should be called again with more input
+        /// 3 - Partially done; should be called again with more output
+        /// </summary>
+        public enum BrotliDecoderResult
+        {
+            Error = 0,
+            Success = 1,
+            NeedsMoreInput = 2,
+            NeedsMoreOutput = 3
         };
 
-        static bool UseX86 = IntPtr.Size == 4;
+        static bool X86 = IntPtr.Size == 4;
         #region Encoder
         public static IntPtr BrotliEncoderCreateInstance()
         {
-            if (UseX86)
+            if (X86)
             {
                 return Interop.Brotli86.BrotliEncoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
             }
@@ -89,24 +75,21 @@ namespace System.IO.Compression
             }
         }
 
-
-
-
-        public static bool BrotliEncoderSetParameter(IntPtr state, BrotliEncoderParameter parameter, UInt32 value)
+        public static bool BrotliEncoderSetParameter(IntPtr state, BrotliEncoderParameter param, UInt32 value)
         {
-            if (UseX86)
+            if (X86)
             {
-                return Interop.Brotli86.BrotliEncoderSetParameter(state, parameter, value);
+                return Interop.Brotli86.BrotliEncoderSetParameter(state, param, value);
             }
             else
             {
-                return Interop.Brotli64.BrotliEncoderSetParameter(state, parameter, value);
+                return Interop.Brotli64.BrotliEncoderSetParameter(state, param, value);
             }
         }
 
         public static void BrotliEncoderSetCustomDictionary(IntPtr state, UInt32 size, IntPtr dict)
         {
-            if (UseX86)
+            if (X86)
             {
                 Interop.Brotli86.BrotliEncoderSetCustomDictionary(state, size, dict);
             }
@@ -120,26 +103,26 @@ namespace System.IO.Compression
             IntPtr state, BrotliEncoderOperation op, ref UInt32 availableIn,
             ref IntPtr nextIn, ref UInt32 availableOut, ref IntPtr nextOut, out UInt32 totalOut)
         {
-            if (UseX86)
+            if (X86)
             {
                 return Interop.Brotli86.BrotliEncoderCompressStream(state, op, ref availableIn, ref nextIn, ref availableOut, ref nextOut, out totalOut);
             }
             else
             {
-                UInt64 availableInL = availableIn;
-                UInt64 availableOutL = availableOut;
+                UInt64 availableIn64 = availableIn;
+                UInt64 availableOut64 = availableOut;
                 UInt64 totalOutL = 0;
-                var r = Interop.Brotli64.BrotliEncoderCompressStream(state, op, ref availableInL, ref nextIn, ref availableOutL, ref nextOut, out totalOutL);
-                availableIn = (UInt32)availableInL;
-                availableOut = (UInt32)availableOutL;
+                var result = Interop.Brotli64.BrotliEncoderCompressStream(state, op, ref availableIn64, ref nextIn, ref availableOut64, ref nextOut, out totalOutL);
+                availableIn = (UInt32)availableIn64;
+                availableOut = (UInt32)availableOut64;
                 totalOut = (UInt32)totalOutL;
-                return r;
+                return result;
             }
         }
 
         public static bool BrotliEncoderIsFinished(IntPtr state)
         {
-            if (UseX86)
+            if (X86)
             {
                 return Interop.Brotli86.BrotliEncoderIsFinished(state);
             }
@@ -151,7 +134,7 @@ namespace System.IO.Compression
 
         public static void BrotliEncoderDestroyInstance(IntPtr state)
         {
-            if (UseX86)
+            if (X86)
             {
                 Interop.Brotli86.BrotliEncoderDestroyInstance(state);
             }
@@ -163,7 +146,7 @@ namespace System.IO.Compression
 
         public static UInt32 BrotliEncoderVersion()
         {
-            if (UseX86)
+            if (X86)
             {
                 return Interop.Brotli86.BrotliEncoderVersion();
             }
@@ -172,13 +155,11 @@ namespace System.IO.Compression
                 return Interop.Brotli64.BrotliEncoderVersion();
             }
         }
-
-
         #endregion
         #region Decoder
         public static IntPtr BrotliDecoderCreateInstance()
         {
-            if (UseX86)
+            if (X86)
             {
                 return Interop.Brotli86.BrotliDecoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
             }
@@ -190,7 +171,7 @@ namespace System.IO.Compression
 
         public static void BrotliDecoderSetCustomDictionary(IntPtr state, UInt32 size, IntPtr dict)
         {
-            if (UseX86)
+            if (X86)
             {
                 Interop.Brotli86.BrotliDecoderSetCustomDictionary(state, size, dict);
             }
@@ -204,26 +185,26 @@ namespace System.IO.Compression
             IntPtr state, ref UInt32 availableIn,
             ref IntPtr nextIn, ref UInt32 availableOut, ref IntPtr nextOut, out UInt32 totalOut)
         {
-            if (UseX86)
+            if (X86)
             {
                 return Interop.Brotli86.BrotliDecoderDecompressStream(state, ref availableIn, ref nextIn, ref availableOut, ref nextOut, out totalOut);
             }
             else
             {
-                UInt64 availableInL = availableIn;
-                UInt64 availableOutL = availableOut;
+                UInt64 availableIn64 = availableIn;
+                UInt64 availableOut64 = availableOut;
                 UInt64 totalOutL = 0;
-                var r = Interop.Brotli64.BrotliDecoderDecompressStream(state, ref availableInL, ref nextIn, ref availableOutL, ref nextOut, out totalOutL);
-                availableIn = (UInt32)availableInL;
-                availableOut = (UInt32)availableOutL;
+                var result = Interop.Brotli64.BrotliDecoderDecompressStream(state, ref availableIn64, ref nextIn, ref availableOut64, ref nextOut, out totalOutL);
+                availableIn = (UInt32)availableIn64;
+                availableOut = (UInt32)availableOut64;
                 totalOut = (UInt32)totalOutL;
-                return r;
+                return result;
             }
         }
 
         public static void BrotliDecoderDestroyInstance(IntPtr state)
         {
-            if (UseX86)
+            if (X86)
             {
                 Interop.Brotli86.BrotliDecoderDestroyInstance(state);
             }
@@ -235,7 +216,7 @@ namespace System.IO.Compression
 
         public static UInt32 BrotliDecoderVersion()
         {
-            if (UseX86)
+            if (X86)
             {
                 return Interop.Brotli86.BrotliDecoderVersion();
             }
@@ -247,7 +228,7 @@ namespace System.IO.Compression
 
         public static bool BrotliDecoderIsUsed(IntPtr state)
         {
-            if (UseX86)
+            if (X86)
             {
                 return Interop.Brotli86.BrotliDecoderIsUsed(state);
             }
@@ -258,7 +239,7 @@ namespace System.IO.Compression
         }
         public static bool BrotliDecoderIsFinished(IntPtr state)
         {
-            if (UseX86)
+            if (X86)
             {
                 return Interop.Brotli86.BrotliDecoderIsFinished(state);
             }
@@ -270,7 +251,7 @@ namespace System.IO.Compression
         }
         public static Int32 BrotliDecoderGetErrorCode(IntPtr state)
         {
-            if (UseX86)
+            if (X86)
             {
                 return Interop.Brotli86.BrotliDecoderGetErrorCode(state);
             }
@@ -283,7 +264,7 @@ namespace System.IO.Compression
         public static String BrotliDecoderErrorString(Int32 code)
         {
             IntPtr r = IntPtr.Zero;
-            if (UseX86)
+            if (X86)
             {
                 r = Interop.Brotli86.BrotliDecoderErrorString(code);
             }
