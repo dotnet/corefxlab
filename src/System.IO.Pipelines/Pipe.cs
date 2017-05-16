@@ -447,7 +447,9 @@ namespace System.IO.Pipelines
                 }
 
                 // We reset the awaitable to not completed if we've examined everything the producer produced so far
-                if (IsEverythingExamined(examined) && !_writerCompletion.IsCompleted)
+                if (examined.Segment == _commitHead &&
+                    examined.Index == _commitHeadIndex &&
+                    !_writerCompletion.IsCompleted)
                 {
                     if (!_writerAwaitable.IsCompleted)
                     {
@@ -467,11 +469,6 @@ namespace System.IO.Pipelines
             }
 
             TrySchedule(_writerScheduler, continuation);
-        }
-
-        private bool IsEverythingExamined(ReadCursor examined)
-        {
-            return examined.Segment == _commitHead && examined.Index == _commitHeadIndex;
         }
 
         /// <summary>
