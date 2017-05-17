@@ -161,14 +161,14 @@ namespace System.Text.Primitives.Tests.Encoding
                             retVal = utf8.TryEncode(inputUtf8, encodedBytes, out int charactersConsumed, out bytesWritten);
                             if (expectedBytesWritten > j)   // output buffer is too small
                             {
-                                Assert.Equal(false, retVal);
+                                Assert.False(retVal);
                                 Assert.True(charactersConsumed < inputUtf8.Length);
                                 Assert.True(expectedBytesWritten > bytesWritten);
                                 Assert.True(expectedBytes.AsSpan().Slice(0, bytesWritten).SequenceEqual(encodedBytes.Slice(0, bytesWritten)));
                             }
                             else
                             {
-                                Assert.Equal(true, retVal);
+                                Assert.True(retVal);
                                 Assert.Equal(charactersConsumed, inputUtf8.Length);
                                 Assert.Equal(expectedBytesWritten, bytesWritten);
                                 Assert.True(expectedBytes.AsSpan().SequenceEqual(encodedBytes.Slice(0, bytesWritten)));
@@ -191,14 +191,14 @@ namespace System.Text.Primitives.Tests.Encoding
                             retVal = utf8.TryEncode(inputUtf16, encodedBytes, out int charactersConsumed, out bytesWritten);
                             if (expectedBytesWritten > j)   // output buffer is too small
                             {
-                                Assert.Equal(false, retVal);
+                                Assert.False(retVal);
                                 Assert.True(charactersConsumed < inputUtf16.Length);
                                 Assert.True(expectedBytesWritten > bytesWritten);
                                 Assert.True(expectedBytes.AsSpan().Slice(0, bytesWritten).SequenceEqual(encodedBytes.Slice(0, bytesWritten)));
                             }
                             else
                             {
-                                Assert.Equal(true, retVal);
+                                Assert.True(retVal);
                                 Assert.Equal(charactersConsumed, inputUtf16.Length);
                                 Assert.Equal(expectedBytesWritten, bytesWritten);
                                 Assert.True(expectedBytes.AsSpan().SequenceEqual(encodedBytes.Slice(0, bytesWritten)));
@@ -221,13 +221,13 @@ namespace System.Text.Primitives.Tests.Encoding
                             retVal = utf8.TryEncode(inputStr, encodedBytes, out bytesWritten);
                             if (expectedBytesWritten > j)   // output buffer is too small
                             {
-                                Assert.Equal(false, retVal);
+                                Assert.False(retVal);
                                 Assert.True(expectedBytesWritten > bytesWritten);
                                 Assert.True(expectedBytes.AsSpan().Slice(0, bytesWritten).SequenceEqual(encodedBytes.Slice(0, bytesWritten)));
                             }
                             else
                             {
-                                Assert.Equal(true, retVal);
+                                Assert.True(retVal);
                                 Assert.Equal(expectedBytesWritten, bytesWritten);
                                 Assert.True(expectedBytes.AsSpan().SequenceEqual(encodedBytes.Slice(0, bytesWritten)));
                             }
@@ -250,14 +250,14 @@ namespace System.Text.Primitives.Tests.Encoding
                             retVal = utf8.TryEncode(input, encodedBytes, out int charactersConsumed, out bytesWritten);
                             if (expectedBytesWritten > j)   // output buffer is too small
                             {
-                                Assert.Equal(false, retVal);
+                                Assert.False(retVal);
                                 Assert.True(charactersConsumed < input.Length);
                                 Assert.True(expectedBytesWritten > bytesWritten);
                                 Assert.True(expectedBytes.AsSpan().Slice(0, bytesWritten).SequenceEqual(encodedBytes.Slice(0, bytesWritten)));
                             }
                             else
                             {
-                                Assert.Equal(true, retVal);
+                                Assert.True(retVal);
                                 Assert.Equal(charactersConsumed, input.Length);
                                 Assert.Equal(expectedBytesWritten, bytesWritten);
                                 Assert.True(expectedBytes.AsSpan().SequenceEqual(encodedBytes.Slice(0, bytesWritten)));
