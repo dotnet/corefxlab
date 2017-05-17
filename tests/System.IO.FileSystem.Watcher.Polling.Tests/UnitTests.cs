@@ -9,6 +9,7 @@ using Xunit;
 
 public partial class PollingWatcherUnitTests
 {
+#if Windows
     [Fact]
     public static void FileSystemWatcher_Created_File()
     {
@@ -89,4 +90,5 @@ public partial class PollingWatcherUnitTests
             Thread.Sleep(200);
         }
     }
+#endif
 }

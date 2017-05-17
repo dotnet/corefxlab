@@ -13,7 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\tests\Benchmarks\Benchmarks.csproj" />
     <ProjectReference Include="..\..\tests\System.Binary.Base64.Tests\System.Binary.Base64.Tests.csproj" />
-    <ProjectReference Include="..\..\tests\System.Buffers.Primitives.Tests\System.Buffers.Primitives.Tests.csproj" />
     <ProjectReference Include="..\..\tests\System.Text.Primitives.Tests\System.Text.Primitives.Tests.csproj" />
   </ItemGroup>
 

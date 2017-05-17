@@ -4,11 +4,9 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.Sequences;
-using System.Text;
-using System.Text.Http;
 using Xunit;
 
-namespace System.Slices.Tests
+namespace System.Text.Http.Tests
 {
     public partial class HttpRequestTests
     {
@@ -73,23 +71,25 @@ namespace System.Slices.Tests
             return ReadOnlyBytes.Create(buffers.ToArray());
         }
 
-        static byte[] s_requestBytes = Encoding.UTF8.GetBytes(@"GET /developer/documentation/data-insertion/r-sample-http-get HTTP/1.1
-Host: marketing.adobe.com
-Connection: keep-alive
-Cache-Control: max-age=0
-Upgrade-Insecure-Requests: 1
-User-Agent: corfxlab_pipleline
+        static string s_requestString = "GET /developer/documentation/data-insertion/r-sample-http-get HTTP/1.1" + 
+        "\r\nHost: marketing.adobe.com" +
+        "\r\nConnection: keep-alive" +
+        "\r\nCache-Control: max-age=0" +
+        "\r\nUpgrade-Insecure-Requests: 1" +
+        "\r\nUser-Agent: corfxlab_pipleline" +
+        "\r\n" +
+        "\r\nHello World";
 
-Hello World");
+        static string s_requestStringSegmented = "GE|T /developer/documen|tation/data-insertion/r-sample-http-get HT|TP/1.1" +
+        "\r\nHost: marketing.adobe.com" +
+        "\r\nConnection: keep-alive" +
+        "\r\nCache-Control: max-age=0" +
+        "\r\nUpgrade-Insecure-Requests: 1" +
+        "\r\nUser-Agent: corfxlab_pipleline" +
+        "\r\n" +
+        "\r\nHello World";
 
-        static string s_requestStringSegmented = @"GE|T /developer/documen|tation/data-insertion/r-sample-http-get HT|TP/1.1
-Host: marketing.adobe.com
-Connection: keep-alive
-Cache-Control: max-age=0
-Upgrade-Insecure-Requests: 1
-User-Agent: corfxlab_pipleline
-
-Hello World";
+        static byte[] s_requestBytes = Encoding.UTF8.GetBytes(s_requestString);
         #endregion
     }
 }
