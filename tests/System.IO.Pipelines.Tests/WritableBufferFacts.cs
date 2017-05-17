@@ -350,5 +350,16 @@ namespace System.IO.Pipelines.Tests
                 Assert.Equal(hex, buffer.AsReadableBuffer().GetAsciiString());
             }
         }
+
+        [Fact]
+        public void EmptyWriteDoesNotThrow()
+        {
+            using (var factory = new PipeFactory())
+            {
+                var pipe = factory.Create();
+                var buffer = pipe.Writer.Alloc();
+                buffer.Write(new byte[0], 0, 0);
+            }
+        }
     }
 }
