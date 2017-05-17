@@ -17,7 +17,7 @@ namespace System.IO.Pipelines
 #if COMPLETION_LOCATION_TRACKING
         private string _completionLocation;
 #endif
-        public Exception Exception { get; set; }
+        private Exception _exception;
 
         private PipeCompletionCallback[] _callbacks;
         private int _callbackCount;
@@ -34,17 +34,17 @@ namespace System.IO.Pipelines
             }
         }
 
-        public bool IsCompleted => Exception != null;
+        public bool IsCompleted => _exception != null;
 
         public PipeCompletionCallbacks TryComplete(Exception exception = null)
         {
 #if COMPLETION_LOCATION_TRACKING
             _completionLocation = Environment.StackTrace;
 #endif
-            if (Exception == null)
+            if (_exception == null)
             {
                 // Set the exception object to the exception passed in or a sentinel value
-                Exception = exception ?? _completedNoException;
+                _exception = exception ?? _completedNoException;
             }
             return GetCallbacks();
         }
@@ -80,12 +80,12 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsCompletedOrThrow()
         {
-            if (Exception == null)
+            if (_exception == null)
             {
                 return false;
             }
 
-            if (Exception != _completedNoException)
+            if (_exception != _completedNoException)
             {
                 ThrowFailed();
             }
@@ -101,7 +101,11 @@ namespace System.IO.Pipelines
                 return null;
             }
 
-            var callbacks = new PipeCompletionCallbacks(CompletionCallbackPool, _callbackCount, Exception, _callbacks);
+            var callbacks = new PipeCompletionCallbacks(CompletionCallbackPool,
+                _callbackCount,
+                _exception == _completedNoException ? null : _exception,
+                _callbacks);
+
             _callbacks = null;
             _callbackCount = 0;
             return callbacks;
@@ -111,7 +115,7 @@ namespace System.IO.Pipelines
         {
             Debug.Assert(IsCompleted);
             Debug.Assert(_callbacks == null);
-            Exception = null;
+            _exception = null;
 #if COMPLETION_LOCATION_TRACKING
             _completionLocation = null;
 #endif
@@ -120,7 +124,7 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void ThrowFailed()
         {
-            throw Exception;
+            throw _exception;
         }
 
         public override string ToString()

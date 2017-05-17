@@ -29,6 +29,7 @@ namespace System.IO.Pipelines.Tests
 
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
+                Assert.Null(exception);
                 callbackRan = true;
             }, null);
 
@@ -46,6 +47,7 @@ namespace System.IO.Pipelines.Tests
 
             pipe.Reader.OnWriterCompleted((exception, state) =>
             {
+                Assert.Null(exception);
                 callbackRan = true;
             }, null);
 
@@ -151,6 +153,7 @@ namespace System.IO.Pipelines.Tests
             pipe.Writer.Complete();
 
             Assert.Equal(1, scheduler.CallCount);
+            Assert.False(callbackRan);
         }
 
         [Fact]
@@ -174,6 +177,7 @@ namespace System.IO.Pipelines.Tests
             pipe.Writer.Complete();
 
             Assert.Equal(1, scheduler.CallCount);
+            Assert.False(callbackRan);
         }
 
         [Fact]
@@ -426,6 +430,46 @@ namespace System.IO.Pipelines.Tests
             });
             pipe.Reader.Complete();
 
+            Assert.True(callbackRan);
+        }
+
+        [Fact]
+        public void CompletingReaderFromWriterCallbackWorks()
+        {
+            var callbackRan = false;
+            var pipe = _pipeFactory.Create(new PipeOptions() { MaximumSizeHigh = 5 });
+
+            pipe.Writer.OnReaderCompleted((exception, state) =>
+            {
+                pipe.Writer.Complete();
+            }, null);
+
+            pipe.Reader.OnWriterCompleted((exception, state) =>
+            {
+                callbackRan = true;
+            }, null);
+
+            pipe.Reader.Complete();
+            Assert.True(callbackRan);
+        }
+
+        [Fact]
+        public void CompletingWriterFromReaderCallbackWorks()
+        {
+            var callbackRan = false;
+            var pipe = _pipeFactory.Create(new PipeOptions() { MaximumSizeHigh = 5 });
+
+            pipe.Reader.OnWriterCompleted((exception, state) =>
+            {
+                pipe.Reader.Complete();
+            }, null);
+
+            pipe.Writer.OnReaderCompleted((exception, state) =>
+            {
+                callbackRan = true;
+            }, null);
+
+            pipe.Writer.Complete();
             Assert.True(callbackRan);
         }
 
