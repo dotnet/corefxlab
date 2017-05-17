@@ -299,8 +299,6 @@ namespace System.IO.Pipelines.Tests
             Assert.False(awaitable.IsCompleted);
         }
 
-
-
         [Fact]
         public async Task ReadingCanBeCancelled()
         {
@@ -449,26 +447,6 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public async Task MultipleCompleteReaderWriterCauseDisposeOnlyOnce()
-        {
-            var pool = new DisposeTrackingBufferPool();
-
-            using (var factory = new PipeFactory(pool))
-            {
-                var readerWriter = factory.Create();
-                await readerWriter.Writer.WriteAsync(new byte[] { 1 });
-
-                readerWriter.Writer.Complete();
-                readerWriter.Reader.Complete();
-                Assert.Equal(1, pool.Disposed);
-
-                readerWriter.Writer.Complete();
-                readerWriter.Reader.Complete();
-                Assert.Equal(1, pool.Disposed);
-            }
-        }
-
-        [Fact]
         public async Task CompleteReaderThrowsIfReadInProgress()
         {
             await _pipe.Writer.WriteAsync(new byte[1]);
@@ -515,59 +493,51 @@ namespace System.IO.Pipelines.Tests
             Assert.True(flushTask.IsCompleted);
         }
 
-        private class DisposeTrackingBufferPool : BufferPool
+        [Fact]
+        public async Task AdvanceToInvalidCursorThrows()
         {
-            private DisposeTrackingOwnedMemory _memory = new DisposeTrackingOwnedMemory(new byte[1]);
+            await _pipe.Writer.WriteAsync(new byte[100]);
 
-            public override OwnedBuffer<byte> Rent(int size)
-            {
-                return _memory;
-            }
+            var result = await _pipe.Reader.ReadAsync();
+            var buffer = result.Buffer;
 
-            public int Disposed => _memory.Disposed;
+            _pipe.Reader.Advance(buffer.End);
 
-            protected override void Dispose(bool disposing)
-            {
+            _pipe.Reader.CancelPendingRead();
+            result = await _pipe.Reader.ReadAsync();
 
-            }
+            Assert.Throws<InvalidOperationException>(() => _pipe.Reader.Advance(buffer.End));
+            _pipe.Reader.Advance(result.Buffer.End);
+        }
 
-            private class DisposeTrackingOwnedMemory : ReferenceCountedBuffer<byte>
-            {
-                public DisposeTrackingOwnedMemory(byte[] array)
-                {
-                    _array = array;
-                }
+        [Fact]
+        public async Task EmptyBufferStartCrossingSegmentBoundaryIsTreatedLikeAndEnd()
+        {
+            // Append one full segment to a pipe
+            var buffer = _pipe.Writer.Alloc(1);
+            buffer.Advance(buffer.Buffer.Length);
+            buffer.Commit();
+            await buffer.FlushAsync();
 
-                protected override void Dispose(bool disposing)
-                {
-                    Disposed++;
-                    base.Dispose(disposing);
-                }
+            // Consume entire segment
+            var result = await _pipe.Reader.ReadAsync();
+            _pipe.Reader.Advance(result.Buffer.End);
 
-                protected override bool TryGetArray(out ArraySegment<byte> arraySegment)
-                {
-                    if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
-                    arraySegment = new ArraySegment<byte>(_array);
-                    return true;
-                }
+            // Append empty segment
+            buffer = _pipe.Writer.Alloc(1);
+            buffer.Commit();
+            await buffer.FlushAsync();
 
-                public int Disposed { get; set; }
+            result = await _pipe.Reader.ReadAsync();
 
-                public override int Length => _array.Length;
+            Assert.True(result.Buffer.IsEmpty);
+            Assert.Equal(result.Buffer.Start, result.Buffer.End);
 
-                public override Span<byte> AsSpan(int index, int length)
-                {
-                    if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(DisposeTrackingBufferPool));
-                    return _array.Slice(index, length);
-                }
-
-                public override BufferHandle Pin(int index = 0)
-                {
-                    throw new NotImplementedException();
-                }
-
-                byte[] _array;
-            }
+            buffer = _pipe.Writer.Alloc();
+            _pipe.Reader.Advance(result.Buffer.Start);
+            var awaitable = _pipe.Reader.ReadAsync();
+            Assert.False(awaitable.IsCompleted);
+            buffer.Commit();
         }
     }
 }
