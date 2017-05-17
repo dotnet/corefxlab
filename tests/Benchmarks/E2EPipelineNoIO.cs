@@ -64,10 +64,10 @@ public partial class E2EPipelineTests
                     formatter.Append("\r\n\r\n");
 
                     // write body
-                    var writer = new JsonWriter<OutputFormatter<WritableBuffer>>(formatter);
+                    var writer = new JsonWriter(formatter);
                     writer.WriteObjectStart();
                     writer.WriteAttribute("message", "Hello, World!");
-                    writer.WriteObjectEnd();                  
+                    writer.WriteObjectEnd();
                 });
             }
         }
