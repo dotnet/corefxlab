@@ -13,19 +13,19 @@ namespace System.Text.Json.Tests
         public void WriteJsonUtf8()
         {
             var formatter = new ArrayFormatter(1024, TextEncoder.Utf8);
-            var json = new JsonWriter<ArrayFormatter>(formatter, prettyPrint: true);
+            var json = new JsonWriter(formatter, prettyPrint: true);
             Write(ref json);
 
             var formatted = formatter.Formatted;
             var str = Encoding.UTF8.GetString(formatted.Array, formatted.Offset, formatted.Count);
-            Assert.Equal(expected, str.Replace("\n", "").Replace(" ", ""));
+            Assert.Equal(expected, str.Replace("\r\n", "").Replace(" ", ""));
         }
 
         [Fact]
         public void WriteJsonUtf16()
         {
             var formatter = new ArrayFormatter(1024, TextEncoder.Utf16);
-            var json = new JsonWriter<ArrayFormatter>(formatter, prettyPrint: false);
+            var json = new JsonWriter(formatter, prettyPrint: false);
             Write(ref json);
 
             var formatted = formatter.Formatted;
@@ -34,19 +34,17 @@ namespace System.Text.Json.Tests
         }
 
         static string expected = "{\"age\":30,\"first\":\"John\",\"last\":\"Smith\",\"phoneNumbers\":[\"425-000-1212\",\"425-000-1213\"],\"address\":{\"street\":\"1MicrosoftWay\",\"city\":\"Redmond\",\"zip\":98052}}";
-        static void Write(ref JsonWriter<ArrayFormatter> json)
+        static void Write(ref JsonWriter json)
         {
             json.WriteObjectStart();
             json.WriteAttribute("age", 30);
             json.WriteAttribute("first", "John");
             json.WriteAttribute("last", "Smith");
-            json.WriteMember("phoneNumbers");
-            json.WriteArrayStart();
-            json.WriteString("425-000-1212");
-            json.WriteString("425-000-1213");
+            json.WriteArrayStart("phoneNumbers");
+            json.WriteValue("425-000-1212");
+            json.WriteValue("425-000-1213");
             json.WriteArrayEnd();
-            json.WriteMember("address");
-            json.WriteObjectStart();
+            json.WriteObjectStart("address");
             json.WriteAttribute("street", "1 Microsoft Way");
             json.WriteAttribute("city", "Redmond");
             json.WriteAttribute("zip", 98052);
