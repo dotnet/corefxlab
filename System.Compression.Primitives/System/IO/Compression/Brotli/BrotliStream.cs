@@ -6,7 +6,7 @@ using System.IO;
 
 namespace System.IO.Compression
 {
-    public class BrotliStream : Stream
+    public partial class BrotliStream : Stream
     {
         private const int DefaultBufferSize = 8192;
         private Stream _stream;
