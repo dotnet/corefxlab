@@ -15,8 +15,8 @@ namespace System.IO.Pipelines.Tests
         {
             var onCompletedCalled = false;
             var cancellationTokenSource = new CancellationTokenSource();
-            var buffer = Pipe.Writer.Alloc(PipeTest.MaximumSizeHigh);
-            buffer.Advance(PipeTest.MaximumSizeHigh);
+            var buffer = Pipe.Writer.Alloc(MaximumSizeHigh);
+            buffer.Advance(MaximumSizeHigh);
 
             var awaiter = buffer.FlushAsync(cancellationTokenSource.Token);
 
@@ -39,7 +39,7 @@ namespace System.IO.Pipelines.Tests
         {
             var onCompletedCalled = false;
             var cancellationTokenSource = new CancellationTokenSource();
-            var buffer = Pipe.Writer.Alloc(PipeTest.MaximumSizeHigh);
+            var buffer = Pipe.Writer.Alloc(MaximumSizeHigh);
             buffer.Advance(MaximumSizeHigh);
 
             var awaiter = buffer.FlushAsync(cancellationTokenSource.Token);
@@ -62,7 +62,7 @@ namespace System.IO.Pipelines.Tests
         {
             var onCompletedCalled = false;
             var cancellationTokenSource = new CancellationTokenSource();
-            var buffer = Pipe.Writer.Alloc(PipeTest.MaximumSizeHigh);
+            var buffer = Pipe.Writer.Alloc(MaximumSizeHigh);
             buffer.Advance(MaximumSizeHigh);
 
             var awaiter = buffer.FlushAsync(cancellationTokenSource.Token);
