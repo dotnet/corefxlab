@@ -107,7 +107,7 @@ namespace System.IO.Pipelines
             Debug.Assert(Enum.IsDefined(typeof(ExceptionResource), argument),
                 "The enum value is not defined, please check the ExceptionResource Enum.");
 
-            // Should be look up with enviorment resources
+            // Should be look up with environment resources
             string resourceString = null;
             switch (argument)
             {

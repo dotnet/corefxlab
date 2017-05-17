@@ -619,6 +619,11 @@ namespace System.IO.Pipelines.Tests
                 _pipe.Reader.Complete(exception);
             }
 
+            public void OnWriterCompleted(Action<Exception, object> callback, object state)
+            {
+                _pipe.Reader.OnWriterCompleted(callback, state);
+            }
+
             public override void Flush()
             {
 

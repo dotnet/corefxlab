@@ -243,6 +243,11 @@ namespace System.IO.Pipelines
             }
         }
 
+        public void OnWriterCompleted(Action<Exception, object> callback, object state)
+        {
+            _readingTcs.Task.ContinueWith((task, o) => callback(task.Exception, o), state);
+        }
+
         /// <summary>
         /// Marks the pipeline as being complete, meaning no more items will be written to it.
         /// </summary>
