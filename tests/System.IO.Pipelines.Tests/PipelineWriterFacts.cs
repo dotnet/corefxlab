@@ -153,6 +153,11 @@ namespace System.IO.Pipelines.Tests
 
             }
 
+            public void OnReaderCompleted(Action<Exception, object> callback, object state)
+            {
+
+            }
+
             public override void Flush()
             {
 

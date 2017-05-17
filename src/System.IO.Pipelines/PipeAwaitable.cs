@@ -74,8 +74,9 @@ namespace System.IO.Pipelines
         public bool IsCompleted => ReferenceEquals(_state, _awaitableIsCompleted);
         internal bool HasContinuation => !ReferenceEquals(_state, _awaitableIsNotCompleted);
 
-        public Action OnCompleted(Action continuation, ref PipeCompletion completion)
+        public Action OnCompleted(Action continuation, out bool doubleCompletion)
         {
+            doubleCompletion = false;
             var awaitableState = _state;
             if (ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
             {
@@ -89,12 +90,8 @@ namespace System.IO.Pipelines
 
             if (!ReferenceEquals(awaitableState, _awaitableIsNotCompleted))
             {
-                completion.TryComplete(PipelinesThrowHelper.GetInvalidOperationException(ExceptionResource.NoConcurrentOperation));
-
-                _state = _awaitableIsCompleted;
-
-                Task.Run(continuation);
-                Task.Run(awaitableState);
+                doubleCompletion = true;
+                return continuation;
             }
 
             return null;
