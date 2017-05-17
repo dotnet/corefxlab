@@ -10,16 +10,46 @@ namespace System.IO.Compression
     {
         private const int DefaultBufferSize = 8192;
         private Stream _stream;
+        private CompressionMode _mode;
 
-        public override bool CanRead => throw new NotImplementedException();
+        public override bool CanRead
+        {
+            get
+            {
+                if (_stream == null)
+                {
+                    return false;
+                }
 
-        public override bool CanSeek => throw new NotImplementedException();
+                return (_mode == CompressionMode.Decompress && _stream.CanRead);
+            }
+        }
 
-        public override bool CanWrite => throw new NotImplementedException();
+        public override bool CanWrite
+        {
+            get
+            {
+                if (_stream == null)
+                {
+                    return false;
+                }
 
-        public override long Length => throw new NotImplementedException();
+                return (_mode == CompressionMode.Compress && _stream.CanWrite);
+            }
+        }
 
-        public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override bool CanSeek => false;
+
+        public override long Length
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        public override long Position
+        {
+            get { throw new NotSupportedException(); }
+            set { throw new NotSupportedException(); }
+        }
 
         public override void Flush()
         {

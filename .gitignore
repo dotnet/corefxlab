@@ -263,6 +263,4 @@ scripts/PerfHarness/results/
 BenchmarkDotNet.Artifacts/
 BDN.Generated/
 binaries/
-/MyTest/MyTest.csproj
-/MyTest/input.txt
-/MyTest/Program.cs
+
