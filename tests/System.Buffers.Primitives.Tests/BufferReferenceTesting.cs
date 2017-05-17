@@ -9,9 +9,12 @@ namespace System.Buffers.Tests
         public static void Run(Func<OwnedBuffer<byte>> create)
         {
             BufferLifetimeBasics(create());
-            ThrowOnAccessAfterDispose(create());
-            PinAddReferenceRelease(create());
             MemoryHandleDoubleFree(create());
+
+            AsSpan(create());
+            Buffer(create());
+            Pin(create());
+            Dispose(create());
         }
 
         static void MemoryAccessBasics(OwnedBuffer<byte> buffer)
@@ -33,6 +36,96 @@ namespace System.Buffers.Tests
             Span<byte> copy = new byte[20];
             memory.Slice(10, 20).CopyTo(copy);
             Assert.Equal(10, copy[0]);
+        }
+
+        // tests OwnedBuffer.AsSpan overloads
+        static void AsSpan(OwnedBuffer<byte> buffer)
+        {
+            var span = buffer.AsSpan();
+            var fullSlice = buffer.AsSpan(0, buffer.Length);
+            for (int i = 0; i < span.Length; i++) {
+                span[i] = (byte)(i%254+1);
+                Assert.Equal(span[i], fullSlice[i]);
+            }
+
+            var slice = buffer.AsSpan(5, buffer.Length - 5);
+            Assert.Equal(span.Length - 5, slice.Length);
+
+            for (int i = 0; i < slice.Length; i++)
+            {
+                Assert.Equal(span[i + 5], slice[i]);
+            }
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => {
+                buffer.AsSpan(buffer.Length, 1);
+            });
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => {
+                buffer.AsSpan(1, buffer.Length);
+            });
+        }
+
+        // tests that OwnedBuffer.Buffer and OwnedBuffer.ReadOnlyBuffer point to the same memory
+        static void Buffer(OwnedBuffer<byte> buffer)
+        {
+            var rwBuffer = buffer.Buffer;
+            var rwSpan = rwBuffer.Span;
+
+            var roBuffer = buffer.ReadOnlyBuffer;
+            var roSpan = roBuffer.Span;
+
+            Assert.Equal(roSpan.Length, rwSpan.Length);
+
+            for (int i = 0; i < roSpan.Length; i++)
+            {
+                var value = roSpan[i];
+                byte newValue = (byte)(value + 1);
+                rwSpan[i] = newValue;
+                Assert.Equal(newValue, roSpan[i]);
+            }
+        }
+
+        static void Pin(OwnedBuffer<byte> buffer)
+        {
+            var memory = buffer.Buffer;
+            Assert.False(buffer.IsRetained);
+            var handle = memory.Pin();
+            unsafe
+            {
+                Assert.NotEqual(0L, new IntPtr(handle.PinnedPointer).ToInt64());
+            }
+            Assert.True(buffer.IsRetained);
+            handle.Dispose();
+            Assert.False(buffer.IsRetained);
+        }
+
+        static void Dispose(OwnedBuffer<byte> buffer)
+        {
+            var length = buffer.Length;
+
+            buffer.Dispose();
+            Assert.True(buffer.IsDisposed);
+            Assert.False(buffer.IsRetained);
+
+            Assert.ThrowsAny<Exception>(() => {
+                buffer.AsSpan();
+            });
+
+            Assert.ThrowsAny<Exception>(() => {
+                buffer.AsSpan(0, length);
+            });
+
+            Assert.ThrowsAny<Exception>(() => {
+                buffer.Pin();
+            });
+
+            Assert.ThrowsAny<Exception>(() => {
+                var rwBuffer = buffer.Buffer;
+            });
+
+            Assert.ThrowsAny<Exception>(() => {
+                var roBuffer = buffer.ReadOnlyBuffer;
+            });
         }
 
         static void BufferLifetimeBasics(OwnedBuffer<byte> buffer)
@@ -60,38 +153,11 @@ namespace System.Buffers.Tests
             {
                 buffer.Dispose(); // can finish dispose with no exception
             }
-            Assert.Throws<ObjectDisposedException>(() =>
+            Assert.ThrowsAny<Exception>(() =>
             {
                 // memory is disposed; cannot use copy stored for later
                 var span = copyStoredForLater.Span;
             });
-        }
-
-        static void ThrowOnAccessAfterDispose(OwnedBuffer<byte> buffer)
-        {
-            var length = buffer.Length;
-            var span = buffer.AsSpan();
-            Assert.Equal(length, span.Length);
-            buffer.Release();
-            buffer.Dispose();
-
-            Assert.Throws<ObjectDisposedException>(() => {
-                var spanDisposed = buffer.AsSpan();
-            });
-
-            Assert.Throws<ObjectDisposedException>(() => {
-                var spanDisposed = buffer.AsSpan(0, length);
-            });
-        }
-
-        static void PinAddReferenceRelease(OwnedBuffer<byte> buffer)
-        {
-            var memory = buffer.Buffer;
-            Assert.False(buffer.IsRetained);
-            var h = memory.Pin();
-            Assert.True(buffer.IsRetained);
-            h.Dispose();
-            Assert.False(buffer.IsRetained);
         }
 
         static void MemoryHandleDoubleFree(OwnedBuffer<byte> buffer)
