@@ -39,8 +39,8 @@ namespace System.IO.Compression
         /// <summary>
         /// 0 - BrotliEncoderMode enumerates all available values.
         /// 1 - The main compression speed-density lever. The higher the quality, the slower the compression.Range is from ::BROTLI_MIN_QUALITY to::BROTLI_MAX_QUALITY.
-        /// 2 - Recommended sliding LZ77 window size(1<<value) -16) .  Encoder may reduce this value, e.g. if input is much smaller than window size.
-        /// 3 -  Recommended input block size. --//--
+        /// 2 - Recommended sliding LZ77 window size  2^value -16 .  Encoder may reduce this value, e.g. if input is much smaller than window size.
+        /// 3 - Recommended input block size. 
         /// 4-  Flag that affects usage of "literal context modeling" format feature. This flag is a "decoding-speed vs compression ratio" trade-off.
         /// 5 - Estimated total input size for all ::BrotliEncoderCompressStream calls. The default value is 0, which means that the total input size is unknown.
         /// </summary>
@@ -68,6 +68,8 @@ namespace System.IO.Compression
             NeedsMoreOutput = 3
         };
 
+        [SecurityCrititcal]
+        public sealed class BrotliStreamHandle : SafeHandleMinusOneIsInvalid
         static bool X86 = IntPtr.Size == 4;
         #region Encoder
         public static IntPtr BrotliEncoderCreateInstance()
