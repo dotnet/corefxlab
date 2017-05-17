@@ -5,7 +5,7 @@
 using Xunit;
 using Microsoft.Xunit.Performance;
 
-namespace System.Binary.Tests
+namespace System.Binary.Base64.Tests
 {
     public class Base64PerformanceTests
     {

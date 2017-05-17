@@ -4,7 +4,7 @@ using Xunit;
 using System.Collections.Generic;
 using System.Text.Utf8;
 
-namespace System.Binary.Tests
+namespace System.Binary.Base64.Tests
 {
     public class Base64Tests
     {

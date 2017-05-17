@@ -1,26 +1,36 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Text.Utf8;
 using System.Runtime.CompilerServices;
 
-namespace System.Binary
+namespace System.Binary.Base64
 {
     public static class Base64
     {
         static string s_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        static byte[] s_encodingMap = new Utf8String(s_characters).CopyBytes();
-        static byte[] s_decodingMap = new byte[123];
-
-        static Base64()
-        {
-            for(int i=0; i< s_characters.Length; i++) {
-                var nextChar = s_characters[i];
-                var indexOfChar = s_characters.IndexOf(nextChar);
-                s_decodingMap[nextChar] = (byte)indexOfChar;
-            }
-        }
+        static byte[] s_encodingMap = GetEncodingMap(s_characters);
+        static byte[] s_decodingMap = GetDecodingMap(s_characters);
         
+        private static byte[] GetEncodingMap(string str)
+        {
+            var data = new byte[str.Length];
+            var buffer = new Span<byte>(data);
+            if (!Text.TextEncoder.Utf8.TryEncode(str, buffer, out int written))
+                // This shouldn't happen...
+                return null;
+            return data;
+        }
+
+        private static byte[] GetDecodingMap(string str)
+        {
+            var data = new byte[123];
+            for (int i = 0; i < str.Length; i++)
+            {
+                data[str[i]] = (byte)i;
+            }
+            return data;
+        }
+
         public static int ComputeEncodedLength(int inputLength)
         {
             var third = inputLength / 3;
