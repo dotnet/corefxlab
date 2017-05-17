@@ -154,7 +154,7 @@ namespace System.IO.Pipelines
                     resourceString = "Advancing examined to the end would cause pipe to deadlock because FlushAsync is waiting";
                     break;
                 case ExceptionResource.AdvanceToInvalidCursor:
-                    resourceString = "Trying to advance to and invalid cursor";
+                    resourceString = "Pipe is already advanced past provided cursor";
                     break;
             }
 
