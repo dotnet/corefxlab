@@ -9,37 +9,37 @@ namespace System.Binary.Base64.Tests
 {
     public class Base64PerformanceTests
     {
-        private static int LOAD_ITERATIONS = 1;
+        private const int InnerCount = 10;
 
         static void InitalizeBytes(Span<byte> bytes, int seed = 100)
         {
-            var r = new Random(seed);
-            for(int i=0; i<bytes.Length; i++) {
-                bytes[i] = (byte)r.Next();
+            var rnd = new Random(seed);
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = (byte)rnd.Next(0, byte.MaxValue + 1);
             }
         }
 
-        [Benchmark]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
         [InlineData(1000 * 1000 * 50)]
         private static void Base64Encode(int numberOfBytes)
         {
-            var source = new byte[numberOfBytes].AsSpan();
+            Span<byte> source = new byte[numberOfBytes].AsSpan();
             InitalizeBytes(source);
-            var destination = new byte[Base64.ComputeEncodedLength(numberOfBytes)].AsSpan();
+            Span<byte> destination = new byte[Base64.ComputeEncodedLength(numberOfBytes)].AsSpan();
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
-                    for (int i = 0; i < LOAD_ITERATIONS; i++) {
-                        var encodedBytesCount = Base64.Encode(source, destination);
-                    }
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        Base64.Encode(source, destination);
                 }
             }
         }
 
-        [Benchmark]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
@@ -52,35 +52,33 @@ namespace System.Binary.Base64.Tests
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
-                    for (int i = 0; i < LOAD_ITERATIONS; i++) {
-                        var count = Convert.ToBase64CharArray(source, 0, source.Length, destination, 0);
-                    }
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                        Convert.ToBase64CharArray(source, 0, source.Length, destination, 0);
                 }
             }
         }
 
-        [Benchmark]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
         [InlineData(1000 * 1000 * 50)]
         private static void Base64Decode(int numberOfBytes)
         {
-            var source = new byte[numberOfBytes].AsSpan();
+            Span<byte> source = new byte[numberOfBytes].AsSpan();
             InitalizeBytes(source);
-            var encoded = new byte[Base64.ComputeEncodedLength(numberOfBytes)].AsSpan();
+            Span<byte> encoded = new byte[Base64.ComputeEncodedLength(numberOfBytes)].AsSpan();
             var encodedBytesCount = Base64.Encode(source, encoded);
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
-                    for (int i = 0; i < LOAD_ITERATIONS; i++) {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                         Base64.Decode(encoded, source);
-                    }
                 }
             }
         }
 
-        [Benchmark]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
@@ -89,13 +87,12 @@ namespace System.Binary.Base64.Tests
         {
             var source = new byte[numberOfBytes];
             InitalizeBytes(source.AsSpan());
-            var encoded = Convert.ToBase64String(source).ToCharArray();
+            char[] encoded = Convert.ToBase64String(source).ToCharArray();
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
-                    for (int i = 0; i < LOAD_ITERATIONS; i++) {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                         Convert.FromBase64CharArray(encoded, 0, encoded.Length);
-                    }
                 }
             }
         }
