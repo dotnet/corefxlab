@@ -8,22 +8,20 @@ namespace System.Binary.Base64
     public static class Base64
     {
         static string s_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        static byte[] s_encodingMap = GetEncodingMap(s_characters);
-        static byte[] s_decodingMap = GetDecodingMap(s_characters);
+        static readonly byte[] s_encodingMap = GetEncodingMap(s_characters);
+        static readonly byte[] s_decodingMap = GetDecodingMap(s_characters);
         
         private static byte[] GetEncodingMap(string str)
         {
             var data = new byte[str.Length];
-            var buffer = new Span<byte>(data);
-            if (!Text.TextEncoder.Utf8.TryEncode(str, buffer, out int written))
-                // This shouldn't happen...
-                return null;
+            if (!Text.TextEncoder.Utf8.TryEncode(str, data, out int written))
+                return null;    // This shouldn't happen...
             return data;
         }
 
         private static byte[] GetDecodingMap(string str)
         {
-            var data = new byte[123];
+            var data = new byte[123]; // 'z' = 123
             for (int i = 0; i < str.Length; i++)
             {
                 data[str[i]] = (byte)i;
@@ -33,8 +31,8 @@ namespace System.Binary.Base64
 
         public static int ComputeEncodedLength(int inputLength)
         {
-            var third = inputLength / 3;
-            var thirdTimes3 = third * 3;
+            int third = inputLength / 3;
+            int thirdTimes3 = third * 3;
             if(thirdTimes3 == inputLength) return third * 4;
             return third * 4 + 4;
         }
@@ -56,28 +54,54 @@ namespace System.Binary.Base64
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int Encode(ReadOnlySpan<byte> threeBytes)
+        private static int Encode(ref byte srcBytes)
         {
-            Diagnostics.Debug.Assert(threeBytes.Length > 2);
+            byte b0 = srcBytes;
+            byte b1 = Unsafe.Add(ref srcBytes, 1);
+            byte b2 = Unsafe.Add(ref srcBytes, 2);
 
-            byte b0 = threeBytes[0];
-            byte b1 = threeBytes[1];
-            byte b2 = threeBytes[2];
+            Encode(b0, b1, b2, out byte r0, out byte r1, out byte r2, out byte r3);
 
-            int i3 = b2 & 0x3F;
-            int result = s_encodingMap[i3];
-            result <<= 8;
+            int result = r3 << 24 | r2 << 16 | r1 << 8 | r0;
+            return result;
+        }
 
-            int i2 = (b1 & 0xF) << 2 | (b2 >> 6);
-            result |=  s_encodingMap[i2];
-            result <<= 8;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Encode(byte b0, byte b1, byte b2, out byte r0, out byte r1, out byte r2)
+        {
+            int i0 = b0 >> 2;
+            r0 = s_encodingMap[i0];
 
             int i1 = (b0 & 0x3) << 4 | (b1 >> 4);
-            result |= s_encodingMap[i1];
-            result <<= 8;
+            r1 = s_encodingMap[i1];
 
+            int i2 = (b1 & 0xF) << 2 | (b2 >> 6);
+            r2 = s_encodingMap[i2];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int EncodePadByOne(ref byte srcBytes)
+        {
+            Encode(srcBytes, Unsafe.Add(ref srcBytes, 1), 0, out byte r0, out byte r1, out byte r2);
+            int result = s_encodingMap[64] << 24 | r2 << 16 | r1 << 8 | r0;
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Encode(byte b0, byte b1, out byte r0, out byte r1)
+        {
             int i0 = b0 >> 2;
-            result |= s_encodingMap[i0];
+            r0 = s_encodingMap[i0];
+
+            int i1 = (b0 & 0x3) << 4 | (b1 >> 4);
+            r1 = s_encodingMap[i1];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int EncodePadByTwo(ref byte srcBytes)
+        {
+            Encode(srcBytes, 0, out byte r0, out byte r1);
+            int result = s_encodingMap[64] << 24 | s_encodingMap[64] << 16 | r1 << 8 | r0;
             return result;
         }
 
@@ -89,32 +113,39 @@ namespace System.Binary.Base64
         /// <returns>Number of bytes written to the destination.</returns>
         public static int Encode(ReadOnlySpan<byte> source, Span<byte> destination)
         {
-            int di = 0;
-            int si = 0;
-            byte b0, b1, b2, b3;
-            for (; si<source.Length - 2;) {
-                var result = Encode(source.Slice(si));
-                si += 3;
-                destination.Slice(di).Write(result);
-                di += 4;
+            Diagnostics.Debug.Assert(destination.Length >= ComputeEncodedLength(source.Length));
+
+            ref byte srcBytes = ref source.DangerousGetPinnableReference();
+            ref byte destBytes = ref destination.DangerousGetPinnableReference();
+
+            int srcLength = source.Length;
+
+            int sourceIndex = 0;
+            int destIndex = 0;
+            int result = 0;
+
+            while (sourceIndex < srcLength - 2)
+            {
+                result = Encode(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
+                sourceIndex += 3;
+                destIndex += 4;
             }
 
-            if (si == source.Length - 1) {
-                Encode(source[si], 0, 0, out b0, out b1, out b2, out b3);
-                destination[di++] = b0;
-                destination[di++] = b1;
-                destination[di++] = s_encodingMap[64];
-                destination[di++] = s_encodingMap[64];
+            if (sourceIndex == srcLength - 1)
+            {
+                result = EncodePadByTwo(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
+                destIndex += 4;
             }
-            else if(si == source.Length - 2) {
-                Encode(source[si++], source[si], 0, out b0, out b1, out b2, out b3);
-                destination[di++] = b0;
-                destination[di++] = b1;
-                destination[di++] = b2;
-                destination[di++] = s_encodingMap[64];
+            else if (sourceIndex == srcLength - 2)
+            {
+                result = EncodePadByOne(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
+                destIndex += 4;
             }
 
-            return di; 
+            return destIndex;
         }
 
         /// <summary>
