@@ -119,8 +119,15 @@ namespace System.Text.Json
                     break;
 
                 case JsonTokenType.StartArray:
+                    if (ch == JsonConstants.CloseBracket)
+                        EndArray();
+                    else
+                        step = ConsumeValue(ch, step, ref next, count);
+                    break;
+
                 case JsonTokenType.PropertyName:
                     step = ConsumeValue(ch, step, ref next, count);
+                    if (step == 0) return false;
                     break;
 
                 case JsonTokenType.EndArray:
@@ -236,10 +243,12 @@ namespace System.Text.Json
 
                 case JsonConstants.OpenBrace:
                     StartObject();
+                    ValueType = JsonValueType.Object;
                     return markerBytes;
 
                 case JsonConstants.OpenBracket:
                     StartArray();
+                    ValueType = JsonValueType.Array;
                     return markerBytes;
 
                 case '0':
@@ -296,10 +305,12 @@ namespace System.Text.Json
                 {
                     fixed (byte* pSrc = &src)
                     {
-                        if (!PrimitiveParser.InvariantUtf8.TryParseInt64(pSrc, count, out long value, out int consumed))
+                        if (!PrimitiveParser.InvariantUtf8.TryParseDecimal(pSrc, count, out decimal value, out int consumed))
                             throw new JsonReaderException();
 
-                        // TODO: We need to do something with the value here.
+                        // NOTE: For now, we are throwing away the resulting value. It was only used to consume all the
+                        //       numbers and discover the slice of the buffer we needed. We may want to figure out how
+                        //       to retain this value for the cases where the caller actually wants the parsed value.
 
                         // Calculate the real start of the number based on our current buffer location.
                         int startIndex = (int)Unsafe.ByteOffset(ref _buffer.DangerousGetPinnableReference(), ref src);
@@ -317,10 +328,12 @@ namespace System.Text.Json
                     fixed (byte* pSrc = &src)
                     {
                         char* pChars = (char*)pSrc;
-                        if (!PrimitiveParser.InvariantUtf16.TryParseInt64(pChars, count >> 1, out long value, out int consumed))
+                        if (!PrimitiveParser.InvariantUtf16.TryParseDecimal(pChars, count >> 1, out decimal value, out int consumed))
                             throw new JsonReaderException();
 
-                        // TODO: We need to do something with the value here.
+                        // NOTE: For now, we are throwing away the resulting value. It was only used to consume all the
+                        //       numbers and discover the slice of the buffer we needed. We may want to figure out how
+                        //       to retain this value for the cases where the caller actually wants the parsed value.
 
                         // Calculate the real start of the number based on our current buffer location.
                         int startIndex = (int)Unsafe.ByteOffset(ref _buffer.DangerousGetPinnableReference(), ref src);
