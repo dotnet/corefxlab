@@ -197,7 +197,7 @@ namespace System.Text.Json
 
             switch (marker)
             {
-                case JsonConstants.ListSeperator:
+                case (char)JsonConstants.ListSeperator:
                     {
                         skip += SkipWhiteSpace(ref Unsafe.Add(ref src, markerBytes), count - markerBytes);
                         count -= skip;
@@ -214,11 +214,11 @@ namespace System.Text.Json
                             throw new JsonReaderException();
                     }
 
-                case JsonConstants.CloseBrace:
+                case (char)JsonConstants.CloseBrace:
                     EndObject();
                     return skip;
 
-                case JsonConstants.CloseBracket:
+                case (char)JsonConstants.CloseBracket:
                     EndArray();
                     return skip;
 
@@ -238,15 +238,15 @@ namespace System.Text.Json
 
             switch (marker)
             {
-                case JsonConstants.Quote:
+                case (char)JsonConstants.Quote:
                     return ConsumeString(ref src, count);
 
-                case JsonConstants.OpenBrace:
+                case (char)JsonConstants.OpenBrace:
                     StartObject();
                     ValueType = JsonValueType.Object;
                     return markerBytes;
 
-                case JsonConstants.OpenBracket:
+                case (char)JsonConstants.OpenBracket:
                     StartArray();
                     ValueType = JsonValueType.Array;
                     return markerBytes;
@@ -760,9 +760,9 @@ namespace System.Text.Json
             {
                 switch (Unsafe.Add(ref chars, idx))
                 {
-                    case JsonConstants.Space:
-                    case JsonConstants.CarriageReturn:
-                    case JsonConstants.LineFeed:
+                    case (char)JsonConstants.Space:
+                    case (char)JsonConstants.CarriageReturn:
+                    case (char)JsonConstants.LineFeed:
                     case '\t':
                         idx++;
                         break;
@@ -787,9 +787,9 @@ namespace System.Text.Json
 
                 switch (ch)
                 {
-                    case JsonConstants.Space:
-                    case JsonConstants.CarriageReturn:
-                    case JsonConstants.LineFeed:
+                    case (char)JsonConstants.Space:
+                    case (char)JsonConstants.CarriageReturn:
+                    case (char)JsonConstants.LineFeed:
                     case '\t':
                         idx += skip;
                         break;
