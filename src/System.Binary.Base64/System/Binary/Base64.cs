@@ -10,12 +10,13 @@ namespace System.Binary.Base64
         static string s_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         static readonly byte[] s_encodingMap = GetEncodingMap(s_characters);
         static readonly byte[] s_decodingMap = GetDecodingMap(s_characters);
-        
+        static readonly byte s_encodingPad = s_encodingMap[64];
+
+
         private static byte[] GetEncodingMap(string str)
         {
             var data = new byte[str.Length];
-            if (!Text.TextEncoder.Utf8.TryEncode(str, data, out int written))
-                return null;    // This shouldn't happen...
+            Text.TextEncoder.Utf8.TryEncode(str, data, out int written);
             return data;
         }
 
@@ -83,7 +84,7 @@ namespace System.Binary.Base64
         private static int EncodePadByOne(ref byte srcBytes)
         {
             Encode(srcBytes, Unsafe.Add(ref srcBytes, 1), 0, out byte r0, out byte r1, out byte r2);
-            int result = s_encodingMap[64] << 24 | r2 << 16 | r1 << 8 | r0;
+            int result = s_encodingPad << 24 | r2 << 16 | r1 << 8 | r0;
             return result;
         }
 
@@ -101,7 +102,7 @@ namespace System.Binary.Base64
         private static int EncodePadByTwo(ref byte srcBytes)
         {
             Encode(srcBytes, 0, out byte r0, out byte r1);
-            int result = s_encodingMap[64] << 24 | s_encodingMap[64] << 16 | r1 << 8 | r0;
+            int result = s_encodingPad << 24 | s_encodingPad << 16 | r1 << 8 | r0;
             return result;
         }
 
@@ -190,9 +191,124 @@ namespace System.Binary.Base64
             byte i2 = s_decodingMap[b2];
             byte i3 = s_decodingMap[b3];
 
-            r0 = (byte)(i0<<2 | i1 >> 4);
-            r1 = (byte)(i1<<4 | i2>>2);
-            r2 = (byte)(i2<<6 | i3);
+            r0 = (byte)(i0 << 2 | i1 >> 4);
+            r1 = (byte)(i1 << 4 | i2 >> 2);
+            r2 = (byte)(i2 << 6 | i3);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int Decode(ref byte srcBytes)
+        {
+            byte b0 = srcBytes;
+            byte b1 = Unsafe.Add(ref srcBytes, 1);
+            byte b2 = Unsafe.Add(ref srcBytes, 2);
+            byte b3 = Unsafe.Add(ref srcBytes, 3);
+
+            Decode(b0, b1, b2, b3, out byte r0, out byte r1, out byte r2);
+
+            int result = r2 << 16 | r1 << 8 | r0;
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Decode(byte b0, byte b1, byte b2, out byte r0, out byte r1)
+        {
+            byte i0 = s_decodingMap[b0];
+            byte i1 = s_decodingMap[b1];
+            byte i2 = s_decodingMap[b2];
+
+            r0 = (byte)(i0 << 2 | i1 >> 4);
+            r1 = (byte)(i1 << 4 | i2 >> 2);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int DecodePadByOne(ref byte srcBytes)
+        {
+            byte b0 = srcBytes;
+            byte b1 = Unsafe.Add(ref srcBytes, 1);
+            byte b2 = Unsafe.Add(ref srcBytes, 2);
+
+            Decode(b0, b1, b2, out byte r0, out byte r1);
+
+            int result = r1 << 8 | r0;
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Decode(byte b0, byte b1, out byte r0)
+        {
+            byte i0 = s_decodingMap[b0];
+            byte i1 = s_decodingMap[b1];
+
+            r0 = (byte)(i0 << 2 | i1 >> 4);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int DecodePadByTwo(ref byte srcBytes)
+        {
+            byte b0 = srcBytes;
+            byte b1 = Unsafe.Add(ref srcBytes, 1);
+
+            Decode(b0, b1, out byte r0);
+
+            int result = r0;
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
+        /// <returns>Number of bytes written to the destination.</returns>
+        public static int Decode(ReadOnlySpan<byte> source, Span<byte> destination)
+        {
+            //Diagnostics.Debug.Assert(destination.Length >= ComputeDecodedLength(source.Length));
+
+            ref byte srcBytes = ref source.DangerousGetPinnableReference();
+            ref byte destBytes = ref destination.DangerousGetPinnableReference();
+
+            int srcLength = source.Length;
+
+            int sourceIndex = 0;
+            int destIndex = 0;
+
+            int result = 0;
+            int padding = 0;
+
+            if (Unsafe.Add(ref srcBytes, srcLength - 1) == s_encodingPad)
+            {
+                padding = (Unsafe.Add(ref srcBytes, srcLength - 2) == s_encodingPad) ? 2 : 1;
+            }
+
+            while (sourceIndex < srcLength - 4)
+            {
+                result = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
+                sourceIndex += 4;
+                destIndex += 3;
+            }
+
+            if (padding == 1)
+            {
+                result = DecodePadByOne(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
+                destIndex += 2;
+            }
+            else if (padding == 2)
+            {
+                result = DecodePadByTwo(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
+                destIndex += 1;
+            }
+            else
+            {
+                result = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
+                destIndex += 3;
+            }
+
+            return destIndex;
         }
 
         /// <summary>
@@ -207,9 +323,9 @@ namespace System.Binary.Base64
             byte r0, r1, r2;
             int padding = 0;
 
-            if (buffer[buffer.Length - 1] == s_encodingMap[64]) {
+            if (buffer[buffer.Length - 1] == s_encodingPad) {
                 padding = 1;
-                if (buffer[buffer.Length - 2] == s_encodingMap[64]) padding = 2;
+                if (buffer[buffer.Length - 2] == s_encodingPad) padding = 2;
             }
 
             for (; si < buffer.Length - (padding!=0?4:0);) {
@@ -225,43 +341,6 @@ namespace System.Binary.Base64
 
                 if (padding == 1) {
                     buffer[di++] = r1;
-                }
-            }
-
-            return di;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
-        /// <returns>Number of bytes written to the destination.</returns>
-        public static int Decode(ReadOnlySpan<byte> source, Span<byte> destination)
-        {
-            int di = 0;
-            int si = 0;
-            byte r0, r1, r2;
-            int padding = 0;
-
-            if (source[source.Length - 1] == s_encodingMap[64]) {
-                padding = 1;
-                if (source[source.Length - 2] == s_encodingMap[64]) padding = 2;
-            }
-
-            for (; si < source.Length - (padding!=0?4:0);) {
-                Decode(source[si++], source[si++], source[si++], source[si++], out r0, out r1, out r2);
-                destination[di++] = r0;
-                destination[di++] = r1;
-                destination[di++] = r2;
-            }
-
-            if (padding != 0) {
-                Decode(source[si++], source[si++], source[si++], source[si++], out r0, out r1, out r2);
-                destination[di++] = r0;
-
-                if (padding == 1) {
-                    destination[di++] = r1;
                 }
             }
 
