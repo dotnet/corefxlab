@@ -76,6 +76,36 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
+
+        [Fact]
+        public async Task CanWriteAfterReturningMultipleBlocks()
+        {
+            var pool = new DisposeTrackingBufferPool();
+
+            var writeSize = 512;
+
+            using (var factory = new PipeFactory(pool))
+            {
+                var pipe = factory.Create();
+
+                // Write two blocks
+                var buffer = pipe.Writer.Alloc(writeSize);
+                buffer.Advance(buffer.Buffer.Length);
+                buffer.Ensure(buffer.Buffer.Length);
+                buffer.Advance(writeSize);
+                buffer.FlushAsync();
+
+                Assert.Equal(2, pool.RentedBlocks);
+
+                // Read everything
+                var readResult = await pipe.Reader.ReadAsync();
+                pipe.Reader.Advance(readResult.Buffer.End);
+
+                // Try writing more
+                await pipe.Writer.WriteAsync(new byte[writeSize]);
+            }
+        }
+
         private class DisposeTrackingBufferPool : BufferPool
         {
             public override OwnedBuffer<byte> Rent(int size)
