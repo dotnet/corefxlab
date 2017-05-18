@@ -182,6 +182,19 @@ namespace System.Text.Json
             }
         }
 
+        public int Length
+        {
+            get
+            {
+                var record = Record;
+                if (record.Type != JsonValueType.Array)
+                {
+                    throw new NullReferenceException();
+                }
+                return record.Length; 
+            }
+        }
+
         public static explicit operator string(JsonObject json)
         {
             var utf8 = (Utf8String)json;

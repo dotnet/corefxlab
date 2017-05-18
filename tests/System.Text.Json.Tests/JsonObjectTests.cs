@@ -20,6 +20,7 @@ namespace System.Text.Json.Tests
 
                 Assert.Equal(phoneNumber, "425-214-3151");
                 Assert.Equal(age, 25);
+                Assert.Equal(parsedObject.Length, 2);
             }
         }
 
@@ -70,14 +71,34 @@ namespace System.Text.Json.Tests
                 var city = (string)address["city"];
                 var zipCode = (double)address["zip"];
 
-                Assert.Equal(age, 30);
-                Assert.Equal(first, "John");
-                Assert.Equal(last, "Smith");
-                Assert.Equal(phoneNum1, "425-000-1212");
-                Assert.Equal(phoneNum2, "425-000-1213");
-                Assert.Equal(street, "1 Microsoft Way");
-                Assert.Equal(city, "Redmond");
-                Assert.Equal(zipCode, 98052);
+                Assert.Equal(1, parsedObject.Length);
+                Assert.Equal(30, age);
+                Assert.Equal("John", first);
+                Assert.Equal("Smith", last);
+                Assert.Equal(2, phoneNums.Length);
+                Assert.Equal("425-000-1212", phoneNum1);
+                Assert.Equal("425-000-1213", phoneNum2);
+                Assert.Equal("1 Microsoft Way", street);
+                Assert.Equal("Redmond", city);
+                Assert.Equal(98052, zipCode);
+                try
+                {
+                    var _ = person.Length;
+                    throw new Exception("Never get here");
+                }
+                catch (Exception ex)
+                {
+                    Assert.IsType<NullReferenceException>(ex);
+                }
+                try
+                {
+                    var _ = phoneNums[2];
+                    throw new Exception("Never get here");
+                }
+                catch(Exception ex)
+                {
+                    Assert.IsType<IndexOutOfRangeException>(ex);
+                }
             }
 
             // Exceptional use case
