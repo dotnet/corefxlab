@@ -91,13 +91,13 @@ namespace System.Text.Json
         public bool Read()
         {
             ref byte bytes = ref _buffer.DangerousGetPinnableReference();
-            int count = _buffer.Length;
-            int skip = SkipWhiteSpace(ref bytes, count);
+            int length = _buffer.Length;
+            int skip = SkipWhiteSpace(ref bytes, length);
 
             ref byte next = ref Unsafe.Add(ref bytes, skip);
-            count -= skip;
+            length -= skip;
 
-            int step = GetNextCharAscii(ref next, count, out char ch);
+            int step = GetNextCharAscii(ref next, length, out char ch);
             if (step == 0) return false;
 
             switch (TokenType)
@@ -115,25 +115,25 @@ namespace System.Text.Json
                     if (ch == JsonConstants.CloseBrace)
                         EndObject();
                     else
-                        step = ConsumePropertyName(ref next, count);
+                        step = ConsumePropertyName(ref next, length);
                     break;
 
                 case JsonTokenType.StartArray:
                     if (ch == JsonConstants.CloseBracket)
                         EndArray();
                     else
-                        step = ConsumeValue(ch, step, ref next, count);
+                        step = ConsumeValue(ch, step, ref next, length);
                     break;
 
                 case JsonTokenType.PropertyName:
-                    step = ConsumeValue(ch, step, ref next, count);
+                    step = ConsumeValue(ch, step, ref next, length);
                     if (step == 0) return false;
                     break;
 
                 case JsonTokenType.EndArray:
                 case JsonTokenType.EndObject:
                 case JsonTokenType.Value:
-                    step = ConsumeNext(ch, step, ref next, count);
+                    step = ConsumeNext(ch, step, ref next, length);
                     if (step == 0) return false;
                     break;
             }
@@ -191,7 +191,7 @@ namespace System.Text.Json
         /// For an object, it reads the next property name token. For an array, it just reads the next value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeNext(char marker, int markerBytes, ref byte src, int count)
+        private int ConsumeNext(char marker, int markerBytes, ref byte src, int length)
         {
             int skip = markerBytes;
 
@@ -199,16 +199,16 @@ namespace System.Text.Json
             {
                 case (char)JsonConstants.ListSeperator:
                     {
-                        skip += SkipWhiteSpace(ref Unsafe.Add(ref src, markerBytes), count - markerBytes);
-                        count -= skip;
+                        skip += SkipWhiteSpace(ref Unsafe.Add(ref src, markerBytes), length - markerBytes);
+                        length -= skip;
                         ref byte next = ref Unsafe.Add(ref src, skip);
                         if (InObject)
-                            return skip + ConsumePropertyName(ref next, count);
+                            return skip + ConsumePropertyName(ref next, length);
                         else if (InArray)
                         {
-                            int step = GetNextCharAscii(ref next, count, out char ch);
+                            int step = GetNextCharAscii(ref next, length, out char ch);
                             if (step == 0) return 0;
-                            return skip + ConsumeValue(ch, step, ref next, count);
+                            return skip + ConsumeValue(ch, step, ref next, length);
                         }
                         else
                             throw new JsonReaderException();
@@ -232,14 +232,14 @@ namespace System.Text.Json
         /// what type of data it is.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeValue(char marker, int markerBytes, ref byte src, int count)
+        private int ConsumeValue(char marker, int markerBytes, ref byte src, int length)
         {
             TokenType = JsonTokenType.Value;
 
             switch (marker)
             {
                 case (char)JsonConstants.Quote:
-                    return ConsumeString(ref src, count);
+                    return ConsumeString(ref src, length);
 
                 case (char)JsonConstants.OpenBrace:
                     StartObject();
@@ -261,32 +261,32 @@ namespace System.Text.Json
                 case '7':
                 case '8':
                 case '9':
-                    return ConsumeNumber(ref src, count, false);
+                    return ConsumeNumber(ref src, length, false);
 
                 case '-':
-                    int step = GetNextCharAscii(ref src, count, out char ch);
+                    int step = GetNextCharAscii(ref src, length, out char ch);
                     if (step == 0) throw new JsonReaderException();
                     return (ch == 'I')
-                        ? ConsumeInfinity(ref src, count, true)
-                        : ConsumeNumber(ref src, count, true);
+                        ? ConsumeInfinity(ref src, length, true)
+                        : ConsumeNumber(ref src, length, true);
 
                 case 'f':
-                    return ConsumeFalse(ref src, count);
+                    return ConsumeFalse(ref src, length);
 
                 case 't':
-                    return ConsumeTrue(ref src, count);
+                    return ConsumeTrue(ref src, length);
 
                 case 'n':
-                    return ConsumeNull(ref src, count);
+                    return ConsumeNull(ref src, length);
 
                 case 'u':
-                    return ConsumeUndefined(ref src, count);
+                    return ConsumeUndefined(ref src, length);
 
                 case 'N':
-                    return ConsumeNaN(ref src, count);
+                    return ConsumeNaN(ref src, length);
 
                 case 'I':
-                    return ConsumeInfinity(ref src, count, false);
+                    return ConsumeInfinity(ref src, length, false);
 
                 case '/':
                     // TODO: Comments?
@@ -297,7 +297,7 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeNumber(ref byte src, int count, bool negative)
+        private int ConsumeNumber(ref byte src, int length, bool negative)
         {
             if (UseFastUtf8)
             {
@@ -305,7 +305,7 @@ namespace System.Text.Json
                 {
                     fixed (byte* pSrc = &src)
                     {
-                        if (!PrimitiveParser.InvariantUtf8.TryParseDecimal(pSrc, count, out decimal value, out int consumed))
+                        if (!PrimitiveParser.InvariantUtf8.TryParseDecimal(pSrc, length, out decimal value, out int consumed))
                             throw new JsonReaderException();
 
                         // NOTE: For now, we are throwing away the resulting value. It was only used to consume all the
@@ -328,7 +328,7 @@ namespace System.Text.Json
                     fixed (byte* pSrc = &src)
                     {
                         char* pChars = (char*)pSrc;
-                        if (!PrimitiveParser.InvariantUtf16.TryParseDecimal(pChars, count >> 1, out decimal value, out int consumed))
+                        if (!PrimitiveParser.InvariantUtf16.TryParseDecimal(pChars, length >> 1, out decimal value, out int consumed))
                             throw new JsonReaderException();
 
                         // NOTE: For now, we are throwing away the resulting value. It was only used to consume all the
@@ -352,14 +352,14 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeNaN(ref byte src, int count)
+        private int ConsumeNaN(ref byte src, int length)
         {
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.NaN;
 
             if (UseFastUtf8)
             {
-                if (count < 3
+                if (length < 3
                     || Unsafe.Add(ref src, 0) != 'N'
                     || Unsafe.Add(ref src, 1) != 'a'
                     || Unsafe.Add(ref src, 2) != 'N')
@@ -372,7 +372,7 @@ namespace System.Text.Json
             else if (UseFastUtf16)
             {
                 ref char chars = ref Unsafe.As<byte, char>(ref src);
-                if (count < 6
+                if (length < 6
                     || Unsafe.Add(ref chars, 0) != 'N'
                     || Unsafe.Add(ref chars, 1) != 'a'
                     || Unsafe.Add(ref chars, 2) != 'N')
@@ -387,14 +387,14 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeNull(ref byte src, int count)
+        private int ConsumeNull(ref byte src, int length)
         {
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Null;
 
             if (UseFastUtf8)
             {
-                if (count < 4
+                if (length < 4
                     || Unsafe.Add(ref src, 0) != 'n'
                     || Unsafe.Add(ref src, 1) != 'u'
                     || Unsafe.Add(ref src, 2) != 'l'
@@ -408,7 +408,7 @@ namespace System.Text.Json
             else if (UseFastUtf16)
             {
                 ref char chars = ref Unsafe.As<byte, char>(ref src);
-                if (count < 8
+                if (length < 8
                     || Unsafe.Add(ref chars, 0) != 'n'
                     || Unsafe.Add(ref chars, 1) != 'u'
                     || Unsafe.Add(ref chars, 2) != 'l'
@@ -424,7 +424,7 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeInfinity(ref byte src, int count, bool negative)
+        private int ConsumeInfinity(ref byte src, int length, bool negative)
         {
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = !negative ? JsonValueType.Infinity : JsonValueType.NegativeInfinity;
@@ -432,7 +432,7 @@ namespace System.Text.Json
             int idx = negative ? 1 : 0;
             if (UseFastUtf8)
             {
-                if (count < 8 + idx
+                if (length < 8 + idx
                     || Unsafe.Add(ref src, idx++) != 'I'
                     || Unsafe.Add(ref src, idx++) != 'n'
                     || Unsafe.Add(ref src, idx++) != 'f'
@@ -450,7 +450,7 @@ namespace System.Text.Json
             else if (UseFastUtf16)
             {
                 ref char chars = ref Unsafe.As<byte, char>(ref src);
-                if (count < 16 + idx
+                if (length < 16 + idx
                     || Unsafe.Add(ref chars, idx++) != 'I'
                     || Unsafe.Add(ref chars, idx++) != 'n'
                     || Unsafe.Add(ref chars, idx++) != 'f'
@@ -470,14 +470,14 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeUndefined(ref byte src, int count)
+        private int ConsumeUndefined(ref byte src, int length)
         {
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.Undefined;
 
             if (UseFastUtf8)
             {
-                if (count < 9
+                if (length < 9
                     || Unsafe.Add(ref src, 0) != 'u'
                     || Unsafe.Add(ref src, 1) != 'n'
                     || Unsafe.Add(ref src, 2) != 'd'
@@ -496,7 +496,7 @@ namespace System.Text.Json
             else if (UseFastUtf16)
             {
                 ref char chars = ref Unsafe.As<byte, char>(ref src);
-                if (count < 18
+                if (length < 18
                     || Unsafe.Add(ref chars, 0) != 'u'
                     || Unsafe.Add(ref chars, 1) != 'n'
                     || Unsafe.Add(ref chars, 2) != 'd'
@@ -517,14 +517,14 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeFalse(ref byte src, int count)
+        private int ConsumeFalse(ref byte src, int length)
         {
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.False;
 
             if (UseFastUtf8)
             {
-                if (count < 5
+                if (length < 5
                     || Unsafe.Add(ref src, 0) != 'f'
                     || Unsafe.Add(ref src, 1) != 'a'
                     || Unsafe.Add(ref src, 2) != 'l'
@@ -539,7 +539,7 @@ namespace System.Text.Json
             else if (UseFastUtf16)
             {
                 ref char chars = ref Unsafe.As<byte, char>(ref src);
-                if (count < 10
+                if (length < 10
                     || Unsafe.Add(ref chars, 0) != 'f'
                     || Unsafe.Add(ref chars, 1) != 'a'
                     || Unsafe.Add(ref chars, 2) != 'l'
@@ -556,14 +556,14 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeTrue(ref byte src, int count)
+        private int ConsumeTrue(ref byte src, int length)
         {
             Value = ReadOnlySpan<byte>.Empty;
             ValueType = JsonValueType.True;
 
             if (UseFastUtf8)
             {
-                if (count < 4
+                if (length < 4
                     || Unsafe.Add(ref src, 0) != 't'
                     || Unsafe.Add(ref src, 1) != 'r'
                     || Unsafe.Add(ref src, 2) != 'u'
@@ -577,7 +577,7 @@ namespace System.Text.Json
             else if (UseFastUtf16)
             {
                 ref char chars = ref Unsafe.As<byte, char>(ref src);
-                if (count < 8
+                if (length < 8
                     || Unsafe.Add(ref chars, 0) != 't'
                     || Unsafe.Add(ref chars, 1) != 'r'
                     || Unsafe.Add(ref chars, 2) != 'u'
@@ -593,24 +593,24 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumePropertyName(ref byte src, int count)
+        private int ConsumePropertyName(ref byte src, int length)
         {
             if (UseFastUtf8)
-                return ConsumePropertyNameUtf8(ref src, count);
+                return ConsumePropertyNameUtf8(ref src, length);
             else if (UseFastUtf16)
-                return ConsumePropertyNameUtf16(ref src, count);
+                return ConsumePropertyNameUtf16(ref src, length);
             else
-                return ConsumePropertyNameSlow(ref src, count);
+                return ConsumePropertyNameSlow(ref src, length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumePropertyNameUtf8(ref byte src, int count)
+        private int ConsumePropertyNameUtf8(ref byte src, int length)
         {
-            int consumed = ConsumeStringUtf8(ref src, count);
+            int consumed = ConsumeStringUtf8(ref src, length);
             if (consumed == 0) throw new JsonReaderException();
 
-            consumed += SkipWhiteSpaceUtf8(ref Unsafe.Add(ref src, consumed), count - consumed);
-            if (consumed >= count) throw new JsonReaderException();
+            consumed += SkipWhiteSpaceUtf8(ref Unsafe.Add(ref src, consumed), length - consumed);
+            if (consumed >= length) throw new JsonReaderException();
 
             // The next character must be a key / value seperator. Validate and skip.
             if (Unsafe.Add(ref src, consumed++) != JsonConstants.KeyValueSeperator)
@@ -621,13 +621,13 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumePropertyNameUtf16(ref byte src, int count)
+        private int ConsumePropertyNameUtf16(ref byte src, int length)
         {
-            int consumed = ConsumeStringUtf16(ref src, count);
+            int consumed = ConsumeStringUtf16(ref src, length);
             if (consumed == 0) throw new JsonReaderException();
 
-            consumed += SkipWhiteSpaceUtf16(ref Unsafe.Add(ref src, consumed), count - consumed);
-            if (consumed >= count) throw new JsonReaderException();
+            consumed += SkipWhiteSpaceUtf16(ref Unsafe.Add(ref src, consumed), length - consumed);
+            if (consumed >= length) throw new JsonReaderException();
 
             // The next character must be a key / value seperator
             if (Unsafe.As<byte, char>(ref Unsafe.Add(ref src, consumed)) != JsonConstants.KeyValueSeperator)
@@ -639,24 +639,24 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumePropertyNameSlow(ref byte src, int count)
+        private int ConsumePropertyNameSlow(ref byte src, int length)
         {
             throw new NotImplementedException();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeString(ref byte src, int count)
+        private int ConsumeString(ref byte src, int length)
         {
             if (UseFastUtf8)
-                return ConsumeStringUtf8(ref src, count);
+                return ConsumeStringUtf8(ref src, length);
             else if (UseFastUtf16)
-                return ConsumeStringUtf16(ref src, count);
+                return ConsumeStringUtf16(ref src, length);
             else
-                return ConsumeStringSlow(ref src, count);
+                return ConsumeStringSlow(ref src, length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeStringUtf8(ref byte src, int count)
+        private int ConsumeStringUtf8(ref byte src, int length)
         {
             // The first character MUST be a JSON string quote
             if (src != JsonConstants.Quote) throw new JsonReaderException();
@@ -664,10 +664,10 @@ namespace System.Text.Json
             // If we are in this method, the first char is already known to be a JSON quote character.
             // Skip through the bytes until we find the closing JSON quote character.
             int idx = 1;
-            while (idx < count && Unsafe.Add(ref src, idx++) != JsonConstants.Quote) ;
+            while (idx < length && Unsafe.Add(ref src, idx++) != JsonConstants.Quote) ;
 
             // If we hit the end of the source and never saw an ending quote, then fail.
-            if (idx == count && Unsafe.Add(ref src, idx - 1) != JsonConstants.Quote)
+            if (idx == length && Unsafe.Add(ref src, idx - 1) != JsonConstants.Quote)
                 throw new JsonReaderException();
 
             // Calculate the real start of the property name based on our current buffer location.
@@ -680,20 +680,20 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeStringUtf16(ref byte src, int count)
+        private int ConsumeStringUtf16(ref byte src, int length)
         {
             ref char chars = ref Unsafe.As<byte, char>(ref src);
-            count >>= 1; // sizeof(char) is 2, so we have half as many characters as count.
+            length >>= 1; // sizeof(char) is 2, so we have half as many characters as count.
 
             // The first character MUST be a JSON string quote
             if (chars != JsonConstants.Quote) throw new JsonReaderException();
 
             // Skip through the bytes until we find the closing JSON quote character.
             int idx = 1;
-            while (idx < count && Unsafe.Add(ref chars, idx++) != JsonConstants.Quote) ;
+            while (idx < length && Unsafe.Add(ref chars, idx++) != JsonConstants.Quote) ;
 
             // If we hit the end of the source and never saw an ending quote, then fail.
-            if (idx == count && Unsafe.Add(ref chars, idx - 1) != JsonConstants.Quote)
+            if (idx == length && Unsafe.Add(ref chars, idx - 1) != JsonConstants.Quote)
                 throw new JsonReaderException();
 
             // Calculate the real start of the property name based on our current buffer location.
@@ -710,27 +710,27 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeStringSlow(ref byte src, int count)
+        private int ConsumeStringSlow(ref byte src, int length)
         {
             throw new NotImplementedException();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int SkipWhiteSpace(ref byte src, int count)
+        private int SkipWhiteSpace(ref byte src, int length)
         {
             if (UseFastUtf8)
-                return SkipWhiteSpaceUtf8(ref src, count);
+                return SkipWhiteSpaceUtf8(ref src, length);
             else if (UseFastUtf16)
-                return SkipWhiteSpaceUtf16(ref src, count);
+                return SkipWhiteSpaceUtf16(ref src, length);
             else
-                return SkipWhiteSpaceSlow(ref src, count);
+                return SkipWhiteSpaceSlow(ref src, length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int SkipWhiteSpaceUtf8(ref byte src, int count)
+        private int SkipWhiteSpaceUtf8(ref byte src, int length)
         {
             int idx = 0;
-            while (idx < count)
+            while (idx < length)
             {
                 switch (Unsafe.Add(ref src, idx))
                 {
@@ -750,13 +750,13 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int SkipWhiteSpaceUtf16(ref byte src, int count)
+        private int SkipWhiteSpaceUtf16(ref byte src, int length)
         {
             ref char chars = ref Unsafe.As<byte, char>(ref src);
-            count >>= 1;
+            length >>= 1;
 
             int idx = 0;
-            while (idx < count)
+            while (idx < length)
             {
                 switch (Unsafe.Add(ref chars, idx))
                 {
@@ -776,12 +776,12 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int SkipWhiteSpaceSlow(ref byte src, int count)
+        private int SkipWhiteSpaceSlow(ref byte src, int length)
         {
             int idx = 0;
-            while (idx < count)
+            while (idx < length)
             {
-                int skip = GetNextCharAscii(ref Unsafe.Add(ref src, idx), count, out char ch);
+                int skip = GetNextCharAscii(ref Unsafe.Add(ref src, idx), length, out char ch);
                 if (skip == 0)
                     break;
 
@@ -803,11 +803,11 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetNextCharAscii(ref byte src, int count, out char ch)
+        private int GetNextCharAscii(ref byte src, int length, out char ch)
         {
             if (UseFastUtf8)
             {
-                if (count < 1)
+                if (length < 1)
                 {
                     ch = default(char);
                     return 0;
@@ -818,7 +818,7 @@ namespace System.Text.Json
             }
             else if (UseFastUtf16)
             {
-                if (count < 2)
+                if (length < 2)
                 {
                     ch = default(char);
                     return 0;
