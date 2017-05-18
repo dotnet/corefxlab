@@ -45,7 +45,7 @@ namespace System.Text.Json
                 throw new KeyNotFoundException();
             }
             if (record.Type != JsonValueType.Object) {
-                throw new NullReferenceException();
+                throw new InvalidOperationException();
             }
 
             for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size) {
@@ -89,7 +89,7 @@ namespace System.Text.Json
             }
 
             if (record.Type != JsonValueType.Object) {
-                throw new NullReferenceException();
+                throw new InvalidOperationException();
             }
 
             for (int i = DbRow.Size; i <= _db.Length; i += DbRow.Size) {
@@ -154,7 +154,7 @@ namespace System.Text.Json
                 }
 
                 if (record.Type != JsonValueType.Array) {
-                    throw new NullReferenceException();
+                    throw new InvalidOperationException();
                 }
 
                 int counter = 0;
@@ -182,14 +182,14 @@ namespace System.Text.Json
             }
         }
 
-        public int Length
+        public int ArrayLength
         {
             get
             {
                 var record = Record;
                 if (record.Type != JsonValueType.Array)
                 {
-                    throw new NullReferenceException();
+                    throw new InvalidOperationException();
                 }
                 return record.Length; 
             }

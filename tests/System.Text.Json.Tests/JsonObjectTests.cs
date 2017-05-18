@@ -15,12 +15,13 @@ namespace System.Text.Json.Tests
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson, 60);
             using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
+                Assert.Equal(2, parsedObject.ArrayLength);
+
                 var phoneNumber = (string)parsedObject[0];
                 var age = (int)parsedObject[1];
 
-                Assert.Equal(phoneNumber, "425-214-3151");
-                Assert.Equal(age, 25);
-                Assert.Equal(parsedObject.Length, 2);
+                Assert.Equal("425-214-3151", phoneNumber);
+                Assert.Equal(25, age);
             }
         }
 
@@ -59,11 +60,13 @@ namespace System.Text.Json.Tests
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.ParseJson);
             using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
 
+                Assert.Equal(1, parsedObject.ArrayLength);
                 var person = parsedObject[0];
                 var age = (double)person["age"];
                 var first = (string)person["first"];
                 var last = (string)person["last"];
                 var phoneNums = person["phoneNumbers"];
+                Assert.Equal(2, phoneNums.ArrayLength);
                 var phoneNum1 = (string)phoneNums[0];
                 var phoneNum2 = (string)phoneNums[1];
                 var address = person["address"];
@@ -71,11 +74,9 @@ namespace System.Text.Json.Tests
                 var city = (string)address["city"];
                 var zipCode = (double)address["zip"];
 
-                Assert.Equal(1, parsedObject.Length);
                 Assert.Equal(30, age);
                 Assert.Equal("John", first);
                 Assert.Equal("Smith", last);
-                Assert.Equal(2, phoneNums.Length);
                 Assert.Equal("425-000-1212", phoneNum1);
                 Assert.Equal("425-000-1213", phoneNum2);
                 Assert.Equal("1 Microsoft Way", street);
@@ -83,12 +84,12 @@ namespace System.Text.Json.Tests
                 Assert.Equal(98052, zipCode);
                 try
                 {
-                    var _ = person.Length;
+                    var _ = person.ArrayLength;
                     throw new Exception("Never get here");
                 }
                 catch (Exception ex)
                 {
-                    Assert.IsType<NullReferenceException>(ex);
+                    Assert.IsType<InvalidOperationException>(ex);
                 }
                 try
                 {
