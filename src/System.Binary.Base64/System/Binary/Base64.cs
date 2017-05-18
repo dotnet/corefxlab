@@ -7,28 +7,32 @@ namespace System.Binary.Base64
 {
     public static class Base64
     {
-        static string s_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        static readonly byte[] s_encodingMap = GetEncodingMap(s_characters);
-        static readonly byte[] s_decodingMap = GetDecodingMap(s_characters);
-        static readonly byte s_encodingPad = s_encodingMap[64];
+        // Pre-computing this table using a custom string(s_characters) and GenerateEncodingMapAndVerify (found in tests)
+        static readonly byte[] s_encodingMap = {
+            65, 66, 67, 68, 69, 70, 71, 72,         //A..H
+            73, 74, 75, 76, 77, 78, 79, 80,         //I..P
+            81, 82, 83, 84, 85, 86, 87, 88,         //Q..X
+            89, 90, 97, 98, 99, 100, 101, 102,      //Y..Z, a..f
+            103, 104, 105, 106, 107, 108, 109, 110, //g..n
+            111, 112, 113, 114, 115, 116, 117, 118, //o..v
+            119, 120, 121, 122, 48, 49, 50, 51,     //w..z, 0..3
+            52, 53, 54, 55, 56, 57, 43, 47,         //4..9, +, /
+            61                                      // =
+        };
 
+        // Pre-computing this table using a custom string(s_characters) and GenerateDecodingMapAndVerify (found in tests)
+        static readonly byte[] s_decodingMap = {
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 0, 63,           //62 is placed at index 43 (for +), 63 at index 47 (for /)
+            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0, 0, 0, 64, 0, 0,  //52-61 are placed at index 48-57 (for 0-9), 64 at index 61 (for =)
+            0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,        
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0, 0, 0, 0, 0,  //0-25 are placed at index 65-90 (for A-Z)
+            0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,  
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51                  //26-51 are placed at index 97-122 (for a-z)
+        };
 
-        private static byte[] GetEncodingMap(string str)
-        {
-            var data = new byte[str.Length];
-            Text.TextEncoder.Utf8.TryEncode(str, data, out int written);
-            return data;
-        }
-
-        private static byte[] GetDecodingMap(string str)
-        {
-            var data = new byte[123]; // 'z' = 123
-            for (int i = 0; i < str.Length; i++)
-            {
-                data[str[i]] = (byte)i;
-            }
-            return data;
-        }
+        static readonly byte s_encodingPad = s_encodingMap[64];     // s_encodingMap[64] is '=', for padding
 
         public static int ComputeEncodedLength(int inputLength)
         {
