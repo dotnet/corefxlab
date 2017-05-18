@@ -702,7 +702,7 @@ namespace System.Text.Json
 
             // idx is in characters, but our buffer is in bytes, so we need to double it for buffer slicing.
             // Also, remove the quote characters as well.
-            int length = (idx - 2) << 1;
+            length = (idx - 2) << 1;
 
             Value = _buffer.Slice(startIndex, length);
             ValueType = JsonValueType.String;
