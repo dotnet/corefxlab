@@ -457,12 +457,14 @@ namespace System.IO.Pipelines
                     if (consumed.Index == returnEnd.End &&
                         !(_commitHead == returnEnd && _writingState.IsActive))
                     {
-                        returnEnd = returnEnd.Next;
-                        if (_commitHead == _readHead)
+                        var nextBlock = returnEnd.Next;
+                        if (_commitHead == returnEnd)
                         {
-                            _commitHead = returnEnd;
+                            _commitHead = nextBlock;
                         }
-                        _readHead = returnEnd;
+
+                        _readHead = nextBlock;
+                        returnEnd = nextBlock;
                     }
                     else
                     {
