@@ -7,7 +7,6 @@
     <PackageIconUrl>http://go.microsoft.com/fwlink/?linkid=833199</PackageIconUrl>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System.Binary\System.Binary.csproj" />
     <ProjectReference Include="..\System.Text.Primitives\System.Text.Primitives.csproj" />
   </ItemGroup>
 </Project>
