@@ -118,7 +118,10 @@ namespace System.Binary.Base64
         /// <returns>Number of bytes written to the destination.</returns>
         public static int Encode(ReadOnlySpan<byte> source, Span<byte> destination)
         {
-            Diagnostics.Debug.Assert(destination.Length >= ComputeEncodedLength(source.Length));
+            if (destination.Length < ComputeEncodedLength(source.Length))
+            {
+                return -1;
+            }
 
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
@@ -267,7 +270,10 @@ namespace System.Binary.Base64
         /// <returns>Number of bytes written to the destination.</returns>
         public static int Decode(ReadOnlySpan<byte> source, Span<byte> destination)
         {
-            //Diagnostics.Debug.Assert(destination.Length >= ComputeDecodedLength(source.Length));
+            /*if (destination.Length < ComputeDecodedLength(source.Length))
+            {
+                return -1;
+            }*/
 
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();

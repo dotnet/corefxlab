@@ -27,9 +27,9 @@ namespace System.Binary.Base64.Tests
         [InlineData(1000 * 1000 * 50)]
         private static void Base64Encode(int numberOfBytes)
         {
-            Span<byte> source = new byte[numberOfBytes].AsSpan();
+            Span<byte> source = new byte[numberOfBytes];
             InitalizeBytes(source);
-            Span<byte> destination = new byte[Base64.ComputeEncodedLength(numberOfBytes)].AsSpan();
+            Span<byte> destination = new byte[Base64.ComputeEncodedLength(numberOfBytes)];
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
@@ -65,9 +65,9 @@ namespace System.Binary.Base64.Tests
         [InlineData(1000 * 1000 * 50)]
         private static void Base64Decode(int numberOfBytes)
         {
-            Span<byte> source = new byte[numberOfBytes].AsSpan();
+            Span<byte> source = new byte[numberOfBytes];
             InitalizeBytes(source);
-            Span<byte> encoded = new byte[Base64.ComputeEncodedLength(numberOfBytes)].AsSpan();
+            Span<byte> encoded = new byte[Base64.ComputeEncodedLength(numberOfBytes)];
             var encodedBytesCount = Base64.Encode(source, encoded);
 
             foreach (var iteration in Benchmark.Iterations) {
