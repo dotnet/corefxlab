@@ -52,7 +52,7 @@ namespace System.Text.Json
         {
             WriteItemSeperator();
             WriteSpacing(false);
-            WriteChar(JsonConstants.OpenBrace);
+            WriteControl(JsonConstants.OpenBrace);
 
             _firstItem = true;
             _indent++;
@@ -67,7 +67,7 @@ namespace System.Text.Json
         public void WriteObjectStart(string name)
         {
             WriteStartAttribute(name);
-            WriteChar(JsonConstants.OpenBrace);
+            WriteControl(JsonConstants.OpenBrace);
 
             _firstItem = true;
             _indent++;
@@ -81,7 +81,7 @@ namespace System.Text.Json
             _firstItem = false;
             _indent--;
             WriteSpacing();
-            WriteChar(JsonConstants.CloseBrace);
+            WriteControl(JsonConstants.CloseBrace);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace System.Text.Json
         {
             WriteItemSeperator();
             WriteSpacing();
-            WriteChar(JsonConstants.OpenBracket);
+            WriteControl(JsonConstants.OpenBracket);
 
             _firstItem = true;
             _indent++;
@@ -108,7 +108,7 @@ namespace System.Text.Json
         public void WriteArrayStart(string name)
         {
             WriteStartAttribute(name);
-            WriteChar(JsonConstants.OpenBracket);
+            WriteControl(JsonConstants.OpenBracket);
 
             _firstItem = true;
             _indent++;
@@ -122,7 +122,7 @@ namespace System.Text.Json
             _firstItem = false;
             _indent--;
             WriteSpacing();
-            WriteChar(JsonConstants.CloseBracket);
+            WriteControl(JsonConstants.CloseBracket);
         }
 
         /// <summary>
@@ -167,9 +167,9 @@ namespace System.Text.Json
         {
             WriteStartAttribute(name);
             if (value)
-                WriteAscii(JsonConstants.TrueValue);
+                WriteJsonValue(JsonConstants.TrueValue);
             else
-                WriteAscii(JsonConstants.FalseValue);
+                WriteJsonValue(JsonConstants.FalseValue);
         }
 
         /// <summary>
@@ -212,17 +212,7 @@ namespace System.Text.Json
         public void WriteAttributeNull(string name)
         {
             WriteStartAttribute(name);
-            WriteAscii(JsonConstants.NullValue);
-        }
-
-        /// <summary>
-        /// Write an undefined value along with a property name into the current object.
-        /// </summary>
-        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
-        public void WriteAttributeUndefined(string name)
-        {
-            WriteStartAttribute(name);
-            WriteAscii(JsonConstants.UndefinedValue);
+            WriteJsonValue(JsonConstants.NullValue);
         }
 
         /// <summary>
@@ -271,9 +261,9 @@ namespace System.Text.Json
             _firstItem = false;
             WriteSpacing();
             if (value)
-                WriteAscii(JsonConstants.TrueValue);
+                WriteJsonValue(JsonConstants.TrueValue);
             else
-                WriteAscii(JsonConstants.FalseValue);
+                WriteJsonValue(JsonConstants.FalseValue);
         }
 
         /// <summary>
@@ -320,18 +310,7 @@ namespace System.Text.Json
             WriteItemSeperator();
             _firstItem = false;
             WriteSpacing();
-            WriteAscii(JsonConstants.NullValue);
-        }
-
-        /// <summary>
-        /// Write an undefined value into the current array.
-        /// </summary>
-        public void WriteUndefined()
-        {
-            WriteItemSeperator();
-            _firstItem = false;
-            WriteSpacing();
-            WriteAscii(JsonConstants.UndefinedValue);
+            WriteJsonValue(JsonConstants.NullValue);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -342,42 +321,36 @@ namespace System.Text.Json
 
             WriteSpacing();
             WriteQuotedString(name);
-            WriteChar(JsonConstants.KeyValueSeperator);
+            WriteControl(JsonConstants.KeyValueSeperator);
 
             if (_prettyPrint)
-                WriteChar(JsonConstants.Space);
+                WriteControl(JsonConstants.Space);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteChar(char value)
+        private void WriteControl(byte value)
         {
-            var output = _output;
             if (UseFastUtf8)
             {
-                if (output.Buffer.Length < 1)
-                    output.Enlarge();
-
-                output.Buffer.DangerousGetPinnableReference() = (byte)value;
-                output.Advance(1);
+                EnsureBuffer(1).DangerousGetPinnableReference() = value;
+                _output.Advance(1);
             }
             else if (UseFastUtf16)
             {
-                if (output.Buffer.Length < 2)
-                    output.Enlarge(2);
-
                 unsafe
                 {
-                    Unsafe.AsRef<char>(Unsafe.AsPointer<byte>(ref output.Buffer.DangerousGetPinnableReference())) = value;
+                    var buffer = EnsureBuffer(2);
+                    Unsafe.AsRef<char>(Unsafe.AsPointer<byte>(ref buffer.DangerousGetPinnableReference())) = (char)value;
+                    _output.Advance(2);
                 }
-
-                output.Advance(2);
             }
             else
             {
                 unsafe
                 {
                     // Slow path, if we are dealing with non-invariant.
-                    ReadOnlySpan<char> chSpan = new ReadOnlySpan<char>(&value, 1);
+                    char ch = (char)value;
+                    ReadOnlySpan<char> chSpan = new ReadOnlySpan<char>(&ch, 1);
                     Write(chSpan);
                 }
             }
@@ -386,18 +359,19 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteQuotedString(string value)
         {
-            WriteChar(JsonConstants.Quote);
+            WriteControl(JsonConstants.Quote);
             // TODO: We need to handle escaping.
             Write(value.AsSpan());
-            WriteChar(JsonConstants.Quote);
+            WriteControl(JsonConstants.Quote);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteNumber(long value)
         {
+            var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(_output.Buffer, out written, JsonConstants.NumberFormat, _output.Encoder))
-                _output.Enlarge();
+            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.Encoder))
+                buffer = EnsureBuffer();
 
             _output.Advance(written);
         }
@@ -405,9 +379,10 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteNumber(ulong value)
         {
+            var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(_output.Buffer, out written, JsonConstants.NumberFormat, _output.Encoder))
-                _output.Enlarge();
+            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.Encoder))
+                buffer = EnsureBuffer();
 
             _output.Advance(written);
         }
@@ -415,9 +390,10 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteDateTime(DateTime value)
         {
+            var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(_output.Buffer, out written, JsonConstants.DateTimeFormat, _output.Encoder))
-                _output.Enlarge();
+            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.Encoder))
+                buffer = EnsureBuffer();
 
             _output.Advance(written);
         }
@@ -425,9 +401,10 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteDateTimeOffset(DateTimeOffset value)
         {
+            var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(_output.Buffer, out written, JsonConstants.DateTimeFormat, _output.Encoder))
-                _output.Enlarge();
+            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.Encoder))
+                buffer = EnsureBuffer();
 
             _output.Advance(written);
         }
@@ -435,9 +412,10 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void WriteGuid(Guid value)
         {
+            var buffer = _output.Buffer;
             int written;
-            while (!value.TryFormat(_output.Buffer, out written, JsonConstants.GuidFormat, _output.Encoder))
-                _output.Enlarge();
+            while (!value.TryFormat(buffer, out written, JsonConstants.GuidFormat, _output.Encoder))
+                buffer = EnsureBuffer();
 
             _output.Advance(written);
         }
@@ -445,25 +423,21 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Write(ReadOnlySpan<char> value)
         {
+            var buffer = _output.Buffer;
             int written;
-            while (!_output.Encoder.TryEncode(value, _output.Buffer, out int consumed, out written))
-                _output.Enlarge();
+            while (!_output.Encoder.TryEncode(value, buffer, out int consumed, out written))
+                buffer = EnsureBuffer();
 
             _output.Advance(written);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteAscii(ReadOnlySpan<char> values)
+        private void WriteJsonValue(ReadOnlySpan<char> values)
         {
             if (UseFastUtf8)
             {
                 int len = values.Length;
-                Span<byte> buffer = _output.Buffer;
-                if (buffer.Length < len)
-                {
-                    _output.Enlarge(len);
-                    buffer = _output.Buffer;
-                }
+                var buffer = EnsureBuffer(len);
 
                 ref byte utf8Bytes = ref buffer.DangerousGetPinnableReference();
                 ref char chars = ref values.DangerousGetPinnableReference();
@@ -473,12 +447,7 @@ namespace System.Text.Json
             else if (UseFastUtf16)
             {
                 int needed = values.Length * sizeof(char);
-                Span<byte> buffer = _output.Buffer;
-                if (buffer.Length < needed)
-                {
-                    _output.Enlarge(needed);
-                    buffer = _output.Buffer;
-                }
+                var buffer = EnsureBuffer(needed);
 
                 Span<char> span = buffer.NonPortableCast<byte, char>();
                 values.CopyTo(span);
@@ -494,7 +463,7 @@ namespace System.Text.Json
         {
             if (_firstItem) return;
 
-            WriteChar(JsonConstants.ListSeperator);
+            WriteControl(JsonConstants.ListSeperator);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -515,15 +484,15 @@ namespace System.Text.Json
         {
             if (newLine)
             {
-                WriteChar(JsonConstants.CarriageReturn);
-                WriteChar(JsonConstants.LineFeed);
+                WriteControl(JsonConstants.CarriageReturn);
+                WriteControl(JsonConstants.LineFeed);
             }
 
             int indent = _indent;
             while (indent-- >= 0)
             {
-                WriteChar(JsonConstants.Space);
-                WriteChar(JsonConstants.Space);
+                WriteControl(JsonConstants.Space);
+                WriteControl(JsonConstants.Space);
             }
         }
 
@@ -534,26 +503,20 @@ namespace System.Text.Json
             var bytesNeeded = newline ? 2 : 0;
             bytesNeeded += (indent + 1) * 2;
 
-            var buffer = _output.Buffer;
-            if (buffer.Length < bytesNeeded)
-            {
-                _output.Enlarge(bytesNeeded);
-                buffer = _output.Buffer;
-            }
-
+            var buffer = EnsureBuffer(bytesNeeded);
             ref byte utf8Bytes = ref buffer.DangerousGetPinnableReference();
             int idx = 0;
 
             if (newline)
             {
-                Unsafe.Add(ref utf8Bytes, idx++) = (byte)JsonConstants.CarriageReturn;
-                Unsafe.Add(ref utf8Bytes, idx++) = (byte)JsonConstants.LineFeed;
+                Unsafe.Add(ref utf8Bytes, idx++) = JsonConstants.CarriageReturn;
+                Unsafe.Add(ref utf8Bytes, idx++) = JsonConstants.LineFeed;
             }
 
             while (indent-- >= 0)
             {
-                Unsafe.Add(ref utf8Bytes, idx++) = (byte)JsonConstants.Space;
-                Unsafe.Add(ref utf8Bytes, idx++) = (byte)JsonConstants.Space;
+                Unsafe.Add(ref utf8Bytes, idx++) = JsonConstants.Space;
+                Unsafe.Add(ref utf8Bytes, idx++) = JsonConstants.Space;
             }
 
             _output.Advance(bytesNeeded);
@@ -567,31 +530,46 @@ namespace System.Text.Json
             bytesNeeded += (indent + 1) * 2;
             bytesNeeded *= sizeof(char);
 
-            var buffer = _output.Buffer;
-            if (buffer.Length < bytesNeeded)
-            {
-                _output.Enlarge(bytesNeeded);
-                buffer = _output.Buffer;
-            }
-
-
+            var buffer = EnsureBuffer(bytesNeeded);
             var span = buffer.NonPortableCast<byte, char>();
             ref char utf16Bytes = ref span.DangerousGetPinnableReference();
             int idx = 0;
 
             if (newline)
             {
-                Unsafe.Add(ref utf16Bytes, idx++) = JsonConstants.CarriageReturn;
-                Unsafe.Add(ref utf16Bytes, idx++) = JsonConstants.LineFeed;
+                Unsafe.Add(ref utf16Bytes, idx++) = (char)JsonConstants.CarriageReturn;
+                Unsafe.Add(ref utf16Bytes, idx++) = (char)JsonConstants.LineFeed;
             }
 
             while (indent-- >= 0)
             {
-                Unsafe.Add(ref utf16Bytes, idx++) = JsonConstants.Space;
-                Unsafe.Add(ref utf16Bytes, idx++) = JsonConstants.Space;
+                Unsafe.Add(ref utf16Bytes, idx++) = (char)JsonConstants.Space;
+                Unsafe.Add(ref utf16Bytes, idx++) = (char)JsonConstants.Space;
             }
 
             _output.Advance(bytesNeeded);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private Span<byte> EnsureBuffer(int needed = 0)
+        {
+            // Anytime we need to request an enlarge for the buffer, we may as well ask for something
+            // larger than we are likely to need.
+            const int BufferEnlargeCount = 1024;
+
+            var buffer = _output.Buffer;
+            var currentSize = buffer.Length;
+            if (currentSize >= needed)
+                return buffer;
+
+            _output.Enlarge(BufferEnlargeCount);
+            buffer = _output.Buffer;
+
+            int newSize = buffer.Length;
+            if (newSize < needed || newSize <= currentSize)
+                throw new OutOfMemoryException();
+
+            return buffer;
         }
     }
 }

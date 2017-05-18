@@ -15,16 +15,16 @@ namespace System.Text.Json
 
         #region Control characters
 
-        public const char OpenBrace = '{';
-        public const char CloseBrace = '}';
-        public const char OpenBracket = '[';
-        public const char CloseBracket = ']';
-        public const char Space = ' ';
-        public const char CarriageReturn = '\r';
-        public const char LineFeed = '\n';
-        public const char ListSeperator = ',';
-        public const char KeyValueSeperator = ':';
-        public const char Quote = '"';
+        public const byte OpenBrace = (byte)'{';
+        public const byte CloseBrace = (byte)'}';
+        public const byte OpenBracket = (byte)'[';
+        public const byte CloseBracket = (byte)']';
+        public const byte Space = (byte)' ';
+        public const byte CarriageReturn = (byte)'\r';
+        public const byte LineFeed = (byte)'\n';
+        public const byte ListSeperator = (byte)',';
+        public const byte KeyValueSeperator = (byte)':';
+        public const byte Quote = (byte)'"';
 
         #endregion Control characters
 
@@ -33,7 +33,6 @@ namespace System.Text.Json
         public static readonly char[] TrueValue = { 't', 'r', 'u', 'e' };
         public static readonly char[] FalseValue = { 'f', 'a', 'l', 's', 'e' };
         public static readonly char[] NullValue = { 'n', 'u', 'l', 'l' };
-        public static readonly char[] UndefinedValue = { 'u', 'n', 'd', 'e', 'f', 'i', 'n', 'e', 'd' };
 
         #endregion Common values
     }
