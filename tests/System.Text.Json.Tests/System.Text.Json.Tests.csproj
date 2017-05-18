@@ -20,6 +20,8 @@
     <PackageReference Include="xunit.netcore.extensions" Version="1.0.0-prerelease-*" />
     <PackageReference Include="xunit" Version="$(XunitVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
+    <PackageReference Include="xunit.performance.core" Version="$(XunitPerformanceVersion)" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
   </ItemGroup>
   <!-- Project references -->
   <ItemGroup>
