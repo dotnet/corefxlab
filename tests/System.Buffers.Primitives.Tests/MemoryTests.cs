@@ -136,6 +136,7 @@ namespace System.Buffers.Tests
 
         protected override void Dispose(bool disposing)
         {
+            _array = null;
             base.Dispose(disposing);
         }
 

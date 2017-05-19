@@ -37,5 +37,13 @@ namespace System.Buffers.Tests
                 return new CustomBuffer();
             });
         }
+
+        [Fact]
+        public void PooledBufferReferenceTests()
+        {
+            BufferReferenceTests.Run(() => {
+                return BufferPool.Default.Rent(1000);
+            });
+        }
     }
 }

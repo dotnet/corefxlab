@@ -15,7 +15,7 @@ namespace System.Buffers
 
         public override void Retain()
         {
-            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ReferenceCountedBuffer<T>));
             Interlocked.Increment(ref _referenceCount);
         }
 

@@ -65,7 +65,7 @@ namespace System.Buffers
 
         public override void Retain()
         {
-            if (IsDisposed) throw new InvalidOperationException();
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
             Interlocked.Increment(ref _referenceCount);
         }
 
