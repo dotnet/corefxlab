@@ -31,11 +31,12 @@ namespace System.IO.Compression
         /// </summary>
         public enum BrotliEncoderOperation
         {
-            Process = 0,
-            Flush = 1,
-            Finish = 2,
-            EmitMetadata = 3
+            Process,
+            Flush,
+            Finish,
+            EmitMetadata
         };
+
         /// <summary>
         /// 0 - BrotliEncoderMode enumerates all available values.
         /// 1 - The main compression speed-density lever. The higher the quality, the slower the compression.Range is from ::BROTLI_MIN_QUALITY to::BROTLI_MAX_QUALITY.
@@ -46,14 +47,14 @@ namespace System.IO.Compression
         /// </summary>
         public enum BrotliEncoderParameter
         {
-
-            Mode = 0,
-            Quality = 1,
-            LGWin = 2,
-            LGBlock = 3,
-            LCModeling = 4,
-            SizeHint = 5
+            Mode,
+            Quality,
+            LGWin,
+            LGBlock,
+            LCModeling,
+            SizeHint
         };
+
         /// <summary>
         /// 0 - Decoding error, e.g. corrupted input or memory allocation problem.
         /// 1 - Decoding successfully completed
@@ -62,20 +63,17 @@ namespace System.IO.Compression
         /// </summary>
         public enum BrotliDecoderResult
         {
-            Error = 0,
-            Success = 1,
-            NeedsMoreInput = 2,
-            NeedsMoreOutput = 3
+            Error,
+            Success,
+            NeedsMoreInput,
+            NeedsMoreOutput
         };
 
-        [SecurityCrititcal]
-        public sealed class BrotliStreamHandle : SafeHandleMinusOneIsInvalid
         static bool X86 = IntPtr.Size == 4;
         #region Encoder
         public static IntPtr BrotliEncoderCreateInstance()
         {
            return Interop.Brotli.BrotliEncoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-            
         }
 
         public static bool BrotliEncoderSetParameter(IntPtr state, BrotliEncoderParameter param, UInt32 value)
@@ -89,8 +87,8 @@ namespace System.IO.Compression
         }
 
         public static bool BrotliEncoderCompressStream(
-            IntPtr state, BrotliEncoderOperation op, ref nuint availableIn,
-            ref IntPtr nextIn, ref nuint availableOut, ref IntPtr nextOut, out nuint totalOut)
+            IntPtr state, BrotliEncoderOperation op, ref IntPtr availableIn,
+            ref IntPtr nextIn, ref IntPtr availableOut, ref IntPtr nextOut, out nuint totalOut)
         {
             return Interop.Brotli.BrotliEncoderCompressStream(state, op, ref availableIn, ref nextIn, ref availableOut, ref nextOut, out totalOut);
         }
@@ -123,8 +121,8 @@ namespace System.IO.Compression
         }
 
         public static BrotliDecoderResult BrotliDecoderDecompressStream(
-            IntPtr state, ref nuint availableIn,
-            ref IntPtr nextIn, ref nuint availableOut, ref IntPtr nextOut, out nuint totalOut)
+            IntPtr state, ref IntPtr availableIn,
+            ref IntPtr nextIn, ref IntPtr availableOut, ref IntPtr nextOut, out nuint totalOut)
         {
             return Interop.Brotli.BrotliDecoderDecompressStream(state, ref availableIn, ref nextIn, ref availableOut, ref nextOut, out totalOut);
         }

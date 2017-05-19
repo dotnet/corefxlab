@@ -7,7 +7,6 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.IO.Compression;
 
-
 #if BIT64
     using nuint = System.UInt64;
 #else 
@@ -33,8 +32,8 @@ namespace System.IO.Compression
 
             [DllImport(LibName, CallingConvention = CallingConvention.Cdecl)]
             internal static extern bool BrotliEncoderCompressStream(
-                IntPtr state, BrotliNative.BrotliEncoderOperation op, ref nuint availableIn,
-                ref IntPtr nextIn, ref nuint availableOut, ref IntPtr nextOut, out nuint totalOut);
+                IntPtr state, BrotliNative.BrotliEncoderOperation op, ref IntPtr availableIn,
+                ref IntPtr nextIn, ref IntPtr availableOut, ref IntPtr nextOut, out nuint totalOut);
 
             [DllImport(LibName, CallingConvention = CallingConvention.Cdecl)]
             internal static extern bool BrotliEncoderIsFinished(IntPtr state);
@@ -54,8 +53,8 @@ namespace System.IO.Compression
 
             [DllImport(LibName, CallingConvention = CallingConvention.Cdecl)]
             internal static extern BrotliNative.BrotliDecoderResult BrotliDecoderDecompressStream(
-                IntPtr state, ref nuint availableIn, ref IntPtr nextIn,
-                ref nuint availableOut, ref IntPtr nextOut, out nuint totalOut);
+                IntPtr state, ref IntPtr availableIn, ref IntPtr nextIn,
+                ref IntPtr availableOut, ref IntPtr nextOut, out nuint totalOut);
 
             [DllImport(LibName, CallingConvention = CallingConvention.Cdecl)]
             internal static extern void BrotliDecoderDestroyInstance(IntPtr state);
