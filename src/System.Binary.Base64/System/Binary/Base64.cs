@@ -34,12 +34,12 @@ namespace System.Binary.Base64
 
         static readonly byte s_encodingPad = s_encodingMap[64];     // s_encodingMap[64] is '=', for padding
 
+        #region Encode
+
         public static int ComputeEncodedLength(int inputLength)
         {
-            int third = inputLength / 3;
-            int thirdTimes3 = third * 3;
-            if(thirdTimes3 == inputLength) return third * 4;
-            return third * 4 + 4;
+            if (inputLength <= 0) return 0;
+            return ((inputLength + 2) / 3) << 2; 
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -190,6 +190,34 @@ namespace System.Binary.Base64
             return encodedLength;
         }
 
+        #endregion
+
+        #region Decode
+
+        public static int ComputeDecodedLength(ReadOnlySpan<byte> source)
+        {
+            ref byte srcBytes = ref source.DangerousGetPinnableReference();
+
+            int srcLength = source.Length;
+
+            if ((srcLength & 0x3) != 0) return 0;   // Length of source is not a multiple of 4.
+
+            int baseLength = (srcLength >> 2) * 3;
+
+            if (srcLength > 1 && Unsafe.Add(ref srcBytes, srcLength - 2) == s_encodingPad)
+            {
+                return baseLength - 2;
+            }
+            else if (srcLength > 0 && Unsafe.Add(ref srcBytes, srcLength - 1) == s_encodingPad)
+            {
+                return baseLength - 1;
+            }
+            else
+            {
+                return baseLength;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Decode(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
         {
@@ -270,10 +298,11 @@ namespace System.Binary.Base64
         /// <returns>Number of bytes written to the destination.</returns>
         public static int Decode(ReadOnlySpan<byte> source, Span<byte> destination)
         {
-            /*if (destination.Length < ComputeDecodedLength(source.Length))
+            int requiredLength = ComputeDecodedLength(source);
+            if (destination.Length < requiredLength)
             {
                 return -1;
-            }*/
+            }
 
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
@@ -284,12 +313,6 @@ namespace System.Binary.Base64
             int destIndex = 0;
 
             int result = 0;
-            int padding = 0;
-
-            if (Unsafe.Add(ref srcBytes, srcLength - 1) == s_encodingPad)
-            {
-                padding = (Unsafe.Add(ref srcBytes, srcLength - 2) == s_encodingPad) ? 2 : 1;
-            }
 
             while (sourceIndex < srcLength - 4)
             {
@@ -299,17 +322,18 @@ namespace System.Binary.Base64
                 destIndex += 3;
             }
 
-            if (padding == 1)
-            {
-                result = DecodePadByOne(ref Unsafe.Add(ref srcBytes, sourceIndex));
-                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
-                destIndex += 2;
-            }
-            else if (padding == 2)
+            int lengthWithoutPadding = ((srcLength >> 2) * 3);
+            if ((lengthWithoutPadding - requiredLength) == 2)
             {
                 result = DecodePadByTwo(ref Unsafe.Add(ref srcBytes, sourceIndex));
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 1;
+            }
+            else if ((lengthWithoutPadding - requiredLength) == 1)
+            {
+                result = DecodePadByOne(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
+                destIndex += 2;
             }
             else
             {
@@ -356,5 +380,7 @@ namespace System.Binary.Base64
 
             return di;
         }
+
+        #endregion
     }
 }
