@@ -13,7 +13,7 @@ using System.Threading;
 namespace LowAllocationWebServer
 {
     class SampleRestServer : RoutingServer<SampleRestServer.Api>
-    {   
+    {
         public enum Api
         {
             HelloWorld,
@@ -27,10 +27,10 @@ namespace LowAllocationWebServer
             Apis.Add(HttpMethod.Get, "/plaintext", Api.HelloWorld, WriteResponseForHelloWorld);
             Apis.Add(HttpMethod.Get, "/time", Api.GetTime, WriteResponseForGetTime);
             Apis.Add(HttpMethod.Get, "/json", Api.GetJson, WriteResponseForGetJson);
-            Apis.Add(HttpMethod.Post, "/jsonpost", Api.PostJson, WriteResponseForPostJson); // post body along the lines of: "{ "Count" = 3 }" 
+            Apis.Add(HttpMethod.Post, "/jsonpost", Api.PostJson, WriteResponseForPostJson); // post body along the lines of: "{ "Count" = 3 }"
         }
 
-        public SampleRestServer(CancellationToken cancellation, Log log, ushort port, byte address1, byte address2, byte address3, byte address4) 
+        public SampleRestServer(CancellationToken cancellation, Log log, ushort port, byte address1, byte address2, byte address3, byte address4)
             : base(cancellation, log, port, address1, address2, address3, address4)
         { }
 
@@ -62,12 +62,12 @@ namespace LowAllocationWebServer
             response.AppendEoh();
 
             // write response JSON
-            var jsonWriter = new JsonWriter<TcpConnectionFormatter>(response, prettyPrint: false);
+            var jsonWriter = new JsonWriter(response, prettyPrint: false);
             jsonWriter.WriteObjectStart();
-            jsonWriter.WriteArrayStart();
+            jsonWriter.WriteArrayStart("values");
             for (int i = 0; i < 5; i++)
             {
-                jsonWriter.WriteString("hello!");
+                jsonWriter.WriteValue("hello!");
             }
             jsonWriter.WriteArrayEnd();
             jsonWriter.WriteObjectEnd();
@@ -88,16 +88,15 @@ namespace LowAllocationWebServer
             response.AppendEoh();
 
             // write response JSON
-            var jsonWriter = new JsonWriter<TcpConnectionFormatter>(response, prettyPrint: false);
+            var jsonWriter = new JsonWriter(response, prettyPrint: false);
             jsonWriter.WriteObjectStart();
-            jsonWriter.WriteArrayStart();
+            jsonWriter.WriteArrayStart("values");
             for (int i = 0; i < requestedCount; i++)
             {
-                jsonWriter.WriteString("hello!");
+                jsonWriter.WriteValue("hello!");
             }
             jsonWriter.WriteArrayEnd();
-            jsonWriter.WriteObjectEnd();      
+            jsonWriter.WriteObjectEnd();
         }
-
     }
 }
