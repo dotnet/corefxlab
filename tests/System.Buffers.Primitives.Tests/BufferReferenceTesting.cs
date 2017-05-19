@@ -107,23 +107,23 @@ namespace System.Buffers.Tests
             Assert.True(buffer.IsDisposed);
             Assert.False(buffer.IsRetained);
 
-            Assert.ThrowsAny<Exception>(() => {
+            Assert.ThrowsAny<ObjectDisposedException>(() => {
                 buffer.AsSpan();
             });
 
-            Assert.ThrowsAny<Exception>(() => {
+            Assert.ThrowsAny<ObjectDisposedException>(() => {
                 buffer.AsSpan(0, length);
             });
 
-            Assert.ThrowsAny<Exception>(() => {
+            Assert.ThrowsAny<ObjectDisposedException>(() => {
                 buffer.Pin();
             });
 
-            Assert.ThrowsAny<Exception>(() => {
+            Assert.ThrowsAny<ObjectDisposedException>(() => {
                 var rwBuffer = buffer.Buffer;
             });
 
-            Assert.ThrowsAny<Exception>(() => {
+            Assert.ThrowsAny<ObjectDisposedException>(() => {
                 var roBuffer = buffer.ReadOnlyBuffer;
             });
         }
@@ -153,7 +153,7 @@ namespace System.Buffers.Tests
             {
                 buffer.Dispose(); // can finish dispose with no exception
             }
-            Assert.ThrowsAny<Exception>(() =>
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
             {
                 // memory is disposed; cannot use copy stored for later
                 var span = copyStoredForLater.Span;
