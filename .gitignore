@@ -263,3 +263,4 @@ scripts/PerfHarness/results/
 BenchmarkDotNet.Artifacts/
 BDN.Generated/
 binaries/
+
