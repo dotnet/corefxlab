@@ -261,14 +261,14 @@ namespace System.Text.Json
                 case '7':
                 case '8':
                 case '9':
-                    return ConsumeNumber(ref src, length, false);
+                    return ConsumeNumber(ref src, length);
 
                 case '-':
                     int step = GetNextCharAscii(ref src, length, out char ch);
                     if (step == 0) throw new JsonReaderException();
                     return (ch == 'I')
                         ? ConsumeInfinity(ref src, length, true)
-                        : ConsumeNumber(ref src, length, true);
+                        : ConsumeNumber(ref src, length);
 
                 case 'f':
                     return ConsumeFalse(ref src, length);
@@ -297,55 +297,51 @@ namespace System.Text.Json
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int ConsumeNumber(ref byte src, int length, bool negative)
+        private int ConsumeNumber(ref byte src, int length)
         {
             if (UseFastUtf8)
             {
-                unsafe
+                int idx = 0;
+                // Scan until we find a list separator, array end, or object end.
+                while (idx < length)
                 {
-                    fixed (byte* pSrc = &src)
-                    {
-                        if (!PrimitiveParser.InvariantUtf8.TryParseDecimal(pSrc, length, out decimal value, out int consumed))
-                            throw new JsonReaderException();
-
-                        // NOTE: For now, we are throwing away the resulting value. It was only used to consume all the
-                        //       numbers and discover the slice of the buffer we needed. We may want to figure out how
-                        //       to retain this value for the cases where the caller actually wants the parsed value.
-
-                        // Calculate the real start of the number based on our current buffer location.
-                        int startIndex = (int)Unsafe.ByteOffset(ref _buffer.DangerousGetPinnableReference(), ref src);
-
-                        Value = _buffer.Slice(startIndex, consumed);
-                        ValueType = JsonValueType.Number;
-                        return consumed;
-                    }
+                    ref byte b = ref Unsafe.Add(ref src, idx);
+                    if (b == JsonConstants.ListSeperator || b == JsonConstants.CloseBrace || b == JsonConstants.CloseBracket)
+                        break;
+                    idx++;
                 }
+
+                // Calculate the real start of the number based on our current buffer location.
+                int startIndex = (int)Unsafe.ByteOffset(ref _buffer.DangerousGetPinnableReference(), ref src);
+
+                Value = _buffer.Slice(startIndex, idx);
+                ValueType = JsonValueType.Number;
+                return idx;
             }
             else if (UseFastUtf16)
             {
-                unsafe
+                ref char chars = ref Unsafe.As<byte, char>(ref src);
+                int idx = 0;
+                length >>= 1; // Each char is 2 bytes.
+
+                // Scan until we find a list separator, array end, or object end.
+                while (idx < length)
                 {
-                    fixed (byte* pSrc = &src)
-                    {
-                        char* pChars = (char*)pSrc;
-                        if (!PrimitiveParser.InvariantUtf16.TryParseDecimal(pChars, length >> 1, out decimal value, out int consumed))
-                            throw new JsonReaderException();
-
-                        // NOTE: For now, we are throwing away the resulting value. It was only used to consume all the
-                        //       numbers and discover the slice of the buffer we needed. We may want to figure out how
-                        //       to retain this value for the cases where the caller actually wants the parsed value.
-
-                        // Calculate the real start of the number based on our current buffer location.
-                        int startIndex = (int)Unsafe.ByteOffset(ref _buffer.DangerousGetPinnableReference(), ref src);
-
-                        // consumed is in characters, but our buffer is in bytes, so we need to double it for buffer slicing.
-                        int bytesConsumed = consumed << 1;
-
-                        Value = _buffer.Slice(startIndex, bytesConsumed);
-                        ValueType = JsonValueType.Number;
-                        return bytesConsumed;
-                    }
+                    ref char b = ref Unsafe.Add(ref chars, idx);
+                    if (b == JsonConstants.ListSeperator || b == JsonConstants.CloseBrace || b == JsonConstants.CloseBracket)
+                        break;
+                    idx++;
                 }
+
+                // Calculate the real start of the number based on our current buffer location.
+                int startIndex = (int)Unsafe.ByteOffset(ref _buffer.DangerousGetPinnableReference(), ref src);
+
+                // consumed is in characters, but our buffer is in bytes, so we need to double it for buffer slicing.
+                int bytesConsumed = idx << 1;
+
+                Value = _buffer.Slice(startIndex, bytesConsumed);
+                ValueType = JsonValueType.Number;
+                return bytesConsumed;
             }
             else
                 throw new NotImplementedException();
