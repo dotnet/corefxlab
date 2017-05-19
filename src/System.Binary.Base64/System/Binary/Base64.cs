@@ -19,26 +19,28 @@ namespace System.Binary.Base64
             52, 53, 54, 55, 56, 57, 43, 47,         //4..9, +, /
             61                                      // =
         };
-
+        
         // Pre-computing this table using a custom string(s_characters) and GenerateDecodingMapAndVerify (found in tests)
         static readonly byte[] s_decodingMap = {
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 0, 63,           //62 is placed at index 43 (for +), 63 at index 47 (for /)
-            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0, 0, 0, 64, 0, 0,  //52-61 are placed at index 48-57 (for 0-9), 64 at index 61 (for =)
-            0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,        
-            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0, 0, 0, 0, 0,  //0-25 are placed at index 65-90 (for A-Z)
-            0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,  
-            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51                  //26-51 are placed at index 97-122 (for a-z)
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 62, 255, 255, 255, 63,   //62 is placed at index 43 (for +), 63 at index 47 (for /)
+            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 255, 255, 255, 64, 255, 255,            //52-61 are placed at index 48-57 (for 0-9), 64 at index 61 (for =)
+            255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 255, 255, 255, 255, 255,            //0-25 are placed at index 65-90 (for A-Z)
+            255, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51                                      //26-51 are placed at index 97-122 (for a-z)
         };
 
         static readonly byte s_encodingPad = s_encodingMap[64];     // s_encodingMap[64] is '=', for padding
+
+        static readonly byte s_invalidByte = byte.MaxValue;         // Designating 255 for invalid bytes in the decoding map
 
         #region Encode
 
         public static int ComputeEncodedLength(int inputLength)
         {
-            if (inputLength <= 0) return 0;
+            if (inputLength < 0) return -1;
             return ((inputLength + 2) / 3) << 2; 
         }
         
@@ -200,7 +202,7 @@ namespace System.Binary.Base64
 
             int srcLength = source.Length;
 
-            if ((srcLength & 0x3) != 0) return 0;   // Length of source is not a multiple of 4.
+            if ((srcLength & 0x3) != 0) return -1;   // Length of source is not a multiple of 4.
 
             int baseLength = (srcLength >> 2) * 3;
 
@@ -219,16 +221,49 @@ namespace System.Binary.Base64
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Decode(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
+        public static bool Decode(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
         {
+            if (b0 > 122 || b1 > 122 || b2 > 122 || b3 > 122 
+                || b0 == s_encodingPad || b1 == s_encodingPad) goto False;
+
+            byte i0 = s_decodingMap[b0];
+            byte i1 = s_decodingMap[b1];
+            byte i2 = s_decodingMap[b2];
+            byte i3 = s_decodingMap[b3];
+            
+            if (i0 == s_invalidByte || i1 == s_invalidByte || i2 == s_invalidByte || i3 == s_invalidByte) goto False;
+
+            r0 = (byte)(i0 << 2 | i1 >> 4);
+            r1 = (byte)(i1 << 4 | i2 >> 2);
+            r2 = (byte)(i2 << 6 | i3);
+            return true;
+
+            False:
+            r0 = r1 = r2 = 0;
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool DecodeNoPad(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
+        {
+            if (b0 > 122 || b1 > 122 || b2 > 122 || b3 > 122 
+                || b0 == s_encodingPad || b1 == s_encodingPad || b2 == s_encodingPad || b3 == s_encodingPad) goto False;
+
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
             byte i2 = s_decodingMap[b2];
             byte i3 = s_decodingMap[b3];
 
+            if (i0 == s_invalidByte || i1 == s_invalidByte || i2 == s_invalidByte || i3 == s_invalidByte) goto False;
+
             r0 = (byte)(i0 << 2 | i1 >> 4);
             r1 = (byte)(i1 << 4 | i2 >> 2);
             r2 = (byte)(i2 << 6 | i3);
+            return true;
+
+            False:
+            r0 = r1 = r2 = 0;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -239,21 +274,31 @@ namespace System.Binary.Base64
             byte b2 = Unsafe.Add(ref srcBytes, 2);
             byte b3 = Unsafe.Add(ref srcBytes, 3);
 
-            Decode(b0, b1, b2, b3, out byte r0, out byte r1, out byte r2);
+            if (!DecodeNoPad(b0, b1, b2, b3, out byte r0, out byte r1, out byte r2)) return -1;
 
             int result = r2 << 16 | r1 << 8 | r0;
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Decode(byte b0, byte b1, byte b2, out byte r0, out byte r1)
+        private static bool Decode(byte b0, byte b1, byte b2, out byte r0, out byte r1)
         {
+            if (b0 > 122 || b1 > 122 || b2 > 122 
+                || b0 == s_encodingPad || b1 == s_encodingPad) goto False;
+
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
             byte i2 = s_decodingMap[b2];
 
+            if (i0 == s_invalidByte || i1 == s_invalidByte || i2 == s_invalidByte) goto False;
+
             r0 = (byte)(i0 << 2 | i1 >> 4);
             r1 = (byte)(i1 << 4 | i2 >> 2);
+            return true;
+
+            False:
+            r0 = r1 = 0;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -263,19 +308,29 @@ namespace System.Binary.Base64
             byte b1 = Unsafe.Add(ref srcBytes, 1);
             byte b2 = Unsafe.Add(ref srcBytes, 2);
 
-            Decode(b0, b1, b2, out byte r0, out byte r1);
+            if (!Decode(b0, b1, b2, out byte r0, out byte r1)) return -1;
 
             int result = r1 << 8 | r0;
             return result;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Decode(byte b0, byte b1, out byte r0)
+        private static bool Decode(byte b0, byte b1, out byte r0)
         {
+            if (b0 > 122 || b1 > 122 
+                || b0 == s_encodingPad || b1 == s_encodingPad) goto False;
+
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
 
+            if (i0 == s_invalidByte || i1 == s_invalidByte) goto False;
+
             r0 = (byte)(i0 << 2 | i1 >> 4);
+            return true;
+
+            False:
+            r0 = 0;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -284,7 +339,7 @@ namespace System.Binary.Base64
             byte b0 = srcBytes;
             byte b1 = Unsafe.Add(ref srcBytes, 1);
 
-            Decode(b0, b1, out byte r0);
+            if (!Decode(b0, b1, out byte r0)) return -1;
 
             int result = r0;
             return result;
@@ -299,6 +354,7 @@ namespace System.Binary.Base64
         public static int Decode(ReadOnlySpan<byte> source, Span<byte> destination)
         {
             int requiredLength = ComputeDecodedLength(source);
+            if (requiredLength == -1) return -1;
             if (destination.Length < requiredLength)
             {
                 return -1;
@@ -317,6 +373,7 @@ namespace System.Binary.Base64
             while (sourceIndex < srcLength - 4)
             {
                 result = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                if (result == -1) return -1;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 sourceIndex += 4;
                 destIndex += 3;
@@ -326,18 +383,21 @@ namespace System.Binary.Base64
             if ((lengthWithoutPadding - requiredLength) == 2)
             {
                 result = DecodePadByTwo(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                if (result == -1) return -1;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 1;
             }
             else if ((lengthWithoutPadding - requiredLength) == 1)
             {
                 result = DecodePadByOne(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                if (result == -1) return -1;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 2;
             }
             else
             {
                 result = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                if (result == -1) return -1;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 3;
             }

@@ -9,61 +9,125 @@ namespace System.Binary.Base64.Tests
     {
         static string s_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
+        // Pre-computing this table using a custom string(s_characters) and GenerateEncodingMapAndVerify (found in tests)
         static readonly byte[] s_encodingMap = {
-            65, 66, 67, 68, 69, 70, 71, 72,
-            73, 74, 75, 76, 77, 78, 79, 80,
-            81, 82, 83, 84, 85, 86, 87, 88,
-            89, 90, 97, 98, 99, 100, 101, 102,
-            103, 104, 105, 106, 107, 108, 109, 110,
-            111, 112, 113, 114, 115, 116, 117, 118,
-            119, 120, 121, 122, 48, 49, 50, 51,
-            52, 53, 54, 55, 56, 57, 43, 47,
-            61
+            65, 66, 67, 68, 69, 70, 71, 72,         //A..H
+            73, 74, 75, 76, 77, 78, 79, 80,         //I..P
+            81, 82, 83, 84, 85, 86, 87, 88,         //Q..X
+            89, 90, 97, 98, 99, 100, 101, 102,      //Y..Z, a..f
+            103, 104, 105, 106, 107, 108, 109, 110, //g..n
+            111, 112, 113, 114, 115, 116, 117, 118, //o..v
+            119, 120, 121, 122, 48, 49, 50, 51,     //w..z, 0..3
+            52, 53, 54, 55, 56, 57, 43, 47,         //4..9, +, /
+            61                                      // =
         };
 
+        // Pre-computing this table using a custom string(s_characters) and GenerateDecodingMapAndVerify (found in tests)
         static readonly byte[] s_decodingMap = {
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 0, 63,
-            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0, 0, 0, 64, 0, 0,
-            0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0, 0, 0, 0, 0,
-            0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 62, 255, 255, 255, 63,   //62 is placed at index 43 (for +), 63 at index 47 (for /)
+            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 255, 255, 255, 64, 255, 255,            //52-61 are placed at index 48-57 (for 0-9), 64 at index 61 (for =)
+            255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 255, 255, 255, 255, 255,            //0-25 are placed at index 65-90 (for A-Z)
+            255, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51                                      //26-51 are placed at index 97-122 (for a-z)
         };
 
-        static readonly byte s_encodingPad = 61;    // s_encodingMap[64] is '=', for padding
+        static readonly byte s_encodingPad = 61;                    // s_encodingMap[64] is '=', for padding
+
+        static readonly byte s_invalidByte = byte.MaxValue;         // Designating 255 for invalid bytes in the decoding map
+
+        static void InitalizeBytes(Span<byte> bytes, int seed = 100)
+        {
+            var rnd = new Random(seed);
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = (byte)rnd.Next(0, byte.MaxValue + 1);
+            }
+        }
+
+        static void InitalizeDecodableBytes(Span<byte> bytes, int seed = 100)
+        {
+            var rnd = new Random(seed);
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                int index = (byte)rnd.Next(0, s_encodingMap.Length - 1);    // Do not pick '='
+                bytes[i] = s_encodingMap[index];
+            }
+        }
 
         [Fact]
         public void BasicEncodingDecoding()
         {
-            var list = new List<byte>();
-            for (int value = 0; value < 256; value++)
+            var bytes = new byte[byte.MaxValue + 1];
+            for (int i = 0; i < byte.MaxValue + 1; i++)
             {
-                list.Add((byte)value);
+                bytes[i] = (byte)i;
             }
-            var testBytes = list.ToArray();
 
             for (int value = 0; value < 256; value++)
             {
-
-                var sourceBytes = testBytes.AsSpan().Slice(0, value + 1);
-                var encodedBytes = new byte[Base64.ComputeEncodedLength(sourceBytes.Length)].AsSpan();
-                var encodedBytesCount = Base64.Encode(sourceBytes, encodedBytes);
+                Span<byte> sourceBytes = bytes.AsSpan().Slice(0, value + 1);
+                Span<byte> encodedBytes = new byte[Base64.ComputeEncodedLength(sourceBytes.Length)];
+                int encodedBytesCount = Base64.Encode(sourceBytes, encodedBytes);
                 Assert.Equal(encodedBytes.Length, encodedBytesCount);
 
-                var encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
-                var expectedText = Convert.ToBase64String(testBytes, 0, value + 1);
+                string encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
+                string expectedText = Convert.ToBase64String(bytes, 0, value + 1);
                 Assert.Equal(expectedText, encodedText);
 
-                var decodedBytes = new byte[sourceBytes.Length];
-                var decodedByteCount = Base64.Decode(encodedBytes, decodedBytes.AsSpan());
-                Assert.Equal(sourceBytes.Length, decodedByteCount);
-
-                for (int i = 0; i < decodedBytes.Length; i++)
+                if (encodedBytes.Length % 4 == 0)
                 {
-                    Assert.Equal(sourceBytes[i], decodedBytes[i]);
+                    Span<byte> decodedBytes = new byte[Base64.ComputeDecodedLength(encodedBytes)];
+                    int decodedByteCount = Base64.Decode(encodedBytes, decodedBytes);
+                    Assert.Equal(sourceBytes.Length, decodedByteCount);
+                    Assert.True(sourceBytes.SequenceEqual(decodedBytes));
                 }
+            }
+        }
+
+        [Fact]
+        public void BasicEncoding()
+        {
+            var rnd = new Random(42);
+            for (int i = 0; i < 10; i++)
+            {
+                int numBytes = rnd.Next(100, 1000 * 1000);
+                Span<byte> source = new byte[numBytes];
+                InitalizeBytes(source, numBytes);
+
+                Span<byte> encodedBytes = new byte[Base64.ComputeEncodedLength(source.Length)];
+                int encodedBytesCount = Base64.Encode(source, encodedBytes);
+                Assert.Equal(encodedBytes.Length, encodedBytesCount);
+
+                string encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
+                string expectedText = Convert.ToBase64String(source.ToArray());
+                Assert.Equal(expectedText, encodedText);
+            }
+        }
+
+        [Fact]
+        public void BasicDecoding()
+        {
+            var rnd = new Random(42);
+            for (int i = 0; i < 10; i++)
+            {
+                int numBytes = rnd.Next(100, 1000 * 1000);
+                while (numBytes % 4 != 0)
+                {
+                    numBytes = rnd.Next(100, 1000 * 1000);
+                }
+                Span<byte> source = new byte[numBytes];
+                InitalizeDecodableBytes(source, numBytes);
+
+                Span<byte> decodedBytes = new byte[Base64.ComputeDecodedLength(source)];
+                int decodedByteCount = Base64.Decode(source, decodedBytes);
+                Assert.Equal(decodedBytes.Length, decodedByteCount);
+                
+                string expectedStr = Text.Encoding.ASCII.GetString(source.ToArray());
+                byte[] expectedText = Convert.FromBase64String(expectedStr);
+                Assert.True(expectedText.AsSpan().SequenceEqual(decodedBytes));
             }
         }
 
@@ -72,7 +136,7 @@ namespace System.Binary.Base64.Tests
         {
             // (int.MaxValue - 4)/(4/3) => 1610612733, otherwise integer overflow
             int[] input = { int.MinValue, -50, -1, 0, 1, 2, 3, 4, 5, 6, 1610612728, 1610612729, 1610612730, 1610612731, 1610612732, 1610612733 };
-            int[] expected = { 0, 0, 0, 0, 4, 4, 4, 8, 8, 8, 2147483640, 2147483640, 2147483640, 2147483644, 2147483644, 2147483644 };
+            int[] expected = { -1, -1, -1, 0, 4, 4, 4, 8, 8, 8, 2147483640, 2147483640, 2147483640, 2147483644, 2147483644, 2147483644 };
             for (int i = 0; i < input.Length; i++)
             {
                 Assert.Equal(expected[i], Base64.ComputeEncodedLength(input[i]));
@@ -110,13 +174,13 @@ namespace System.Binary.Base64.Tests
             {
                 int sourceLength = invalidInput[i];
                 Span<byte> source = new byte[sourceLength];
-                Assert.Equal(0, Base64.ComputeDecodedLength(source));
+                Assert.Equal(-1, Base64.ComputeDecodedLength(source));
                 source[sourceLength - 1] = s_encodingPad;
-                Assert.Equal(0, Base64.ComputeDecodedLength(source));
+                Assert.Equal(-1, Base64.ComputeDecodedLength(source));
                 if (sourceLength > 1)
                 {
                     source[sourceLength - 2] = s_encodingPad;
-                    Assert.Equal(0, Base64.ComputeDecodedLength(source));
+                    Assert.Equal(-1, Base64.ComputeDecodedLength(source));
                 }
             }
         }
@@ -199,6 +263,10 @@ namespace System.Binary.Base64.Tests
         public void GenerateDecodingMapAndVerify()
         {
             var data = new byte[123]; // 'z' = 123
+            for(int i = 0; i < data.Length; i++)
+            {
+                data[i] = s_invalidByte;
+            }
             for (int i = 0; i < s_characters.Length; i++)
             {
                 data[s_characters[i]] = (byte)i;
