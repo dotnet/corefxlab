@@ -337,12 +337,9 @@ namespace System.Text.Json
             }
             else if (UseFastUtf16)
             {
-                unsafe
-                {
-                    var buffer = EnsureBuffer(2);
-                    Unsafe.AsRef<char>(Unsafe.AsPointer<byte>(ref buffer.DangerousGetPinnableReference())) = (char)value;
-                    _output.Advance(2);
-                }
+                var buffer = EnsureBuffer(2);
+                Unsafe.As<byte, char>(ref buffer.DangerousGetPinnableReference()) = (char)value;
+                _output.Advance(2);
             }
             else
             {
