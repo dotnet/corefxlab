@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26507.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5E7EB061-B9BC-4DA2-B5E5-859AA7C67695}"
 	ProjectSection(SolutionItems) = preProject
@@ -135,6 +135,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Http.Parser", "src\System.Text.Http.Parser\System.Text.Http.Parser.csproj", "{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Http.Parser.Tests", "tests\System.Text.Http.Parser.Tests\System.Text.Http.Parser.Tests.csproj", "{793E4C5F-33B9-44AA-BE44-54EE624E79CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.IO.Compression.Brotli", "System.Compression.Primitives\System.IO.Compression.Brotli.csproj", "{994E5101-2E48-4818-9E32-4F68B2361198}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -878,6 +880,18 @@ Global
 		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Release|x64.Build.0 = Release|Any CPU
 		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Release|x86.ActiveCfg = Release|Any CPU
 		{793E4C5F-33B9-44AA-BE44-54EE624E79CB}.Release|x86.Build.0 = Release|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Debug|x64.Build.0 = Debug|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Debug|x86.Build.0 = Debug|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Release|Any CPU.Build.0 = Release|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Release|x64.ActiveCfg = Release|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Release|x64.Build.0 = Release|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Release|x86.ActiveCfg = Release|Any CPU
+		{994E5101-2E48-4818-9E32-4F68B2361198}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -944,5 +958,6 @@ Global
 		{5E04C824-5961-445E-85E2-8AC27C9AA761} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
 		{C5BFA7A3-A2BC-42A9-BCDF-0CD16D5903AA} = {4B000021-5278-4F2A-B734-DE49F55D4024}
 		{793E4C5F-33B9-44AA-BE44-54EE624E79CB} = {3079E458-D0E6-4F99-8CAB-80011D35C7DA}
+		{994E5101-2E48-4818-9E32-4F68B2361198} = {4B000021-5278-4F2A-B734-DE49F55D4024}
 	EndGlobalSection
 EndGlobal
