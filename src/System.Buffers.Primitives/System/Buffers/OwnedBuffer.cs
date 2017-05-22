@@ -21,9 +21,21 @@ namespace System.Buffers
             return AsSpan(0, Length);
         }
 
-        public Buffer<T> Buffer => new Buffer<T>(this, 0, Length);
+        public Buffer<T> Buffer
+        {
+            get {
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer<T>));
+                return new Buffer<T>(this, 0, Length);
+            }
+        }
 
-        public ReadOnlyBuffer<T> ReadOnlyBuffer => new ReadOnlyBuffer<T>(this, 0, Length);
+        public ReadOnlyBuffer<T> ReadOnlyBuffer
+        {
+            get {
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer<T>));
+                return new ReadOnlyBuffer<T>(this, 0, Length);
+            }
+        }
 
         public abstract BufferHandle Pin(int index = 0);
 
