@@ -60,7 +60,7 @@ namespace System.IO.Compression
             internal static extern void BrotliDecoderDestroyInstance(IntPtr state);
 
             [DllImport(LibName, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern UInt32 BrotliDecoderVersion();
+            internal static extern nuint BrotliDecoderVersion();
 
             [DllImport(LibName, CallingConvention = CallingConvention.Cdecl)]
             internal static extern bool BrotliDecoderIsUsed(IntPtr state);
