@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
 {
-    public static class Base64
+    public static class Base64Encoder
     {
         // Pre-computing this table using a custom string(s_characters) and GenerateEncodingMapAndVerify (found in tests)
         static readonly byte[] s_encodingMap = {
@@ -38,14 +38,15 @@ namespace System.Binary.Base64
 
         #region Encode
 
-        public static int ComputeEncodedLength(int inputLength)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int ComputeEncodedLength(int sourceLength)
         {
-            if (inputLength < 0) return -1;
-            return ((inputLength + 2) / 3) << 2; 
+            Diagnostics.Debug.Assert(sourceLength >= 0);
+            return ((sourceLength + 2) / 3) << 2; 
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Encode(byte b0, byte b1, byte b2, out byte r0, out byte r1, out byte r2, out byte r3)
+        private static void Encode(byte b0, byte b1, byte b2, out byte r0, out byte r1, out byte r2, out byte r3)
         {
             int i0 = b0 >> 2;
             r0 = s_encodingMap[i0];
@@ -118,17 +119,13 @@ namespace System.Binary.Base64
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <returns>Number of bytes written to the destination.</returns>
-        public static int Encode(ReadOnlySpan<byte> source, Span<byte> destination)
+        public static bool TryEncode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
-            if (destination.Length < ComputeEncodedLength(source.Length))
-            {
-                return -1;
-            }
-
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
 
             int srcLength = source.Length;
+            int destLength = destination.Length;
 
             int sourceIndex = 0;
             int destIndex = 0;
@@ -137,25 +134,37 @@ namespace System.Binary.Base64
             while (sourceIndex < srcLength - 2)
             {
                 result = Encode(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                if (destIndex + 4 > destLength) goto False;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
-                sourceIndex += 3;
                 destIndex += 4;
+                sourceIndex += 3;
             }
 
             if (sourceIndex == srcLength - 1)
             {
                 result = EncodePadByTwo(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                if (destIndex + 4 > destLength) goto False;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 4;
+                sourceIndex += 1;
             }
             else if (sourceIndex == srcLength - 2)
             {
                 result = EncodePadByOne(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                if (destIndex + 4 > destLength) goto False;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 4;
+                sourceIndex += 2;
             }
 
-            return destIndex;
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return true;
+
+            False:
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return false;
         }
 
         /// <summary>
@@ -179,14 +188,14 @@ namespace System.Binary.Base64
                 var sourceSlice = buffer.Slice(sourceIndex, leftover);
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
-                Encode(sourceSlice, desitnationSlice);
+                TryEncode(sourceSlice, desitnationSlice, out int consumed, out int written);
             }
 
             for (int index = sourceIndex - 3; index>=0; index -= 3) {
                 var sourceSlice = buffer.Slice(index, 3);
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
-                Encode(sourceSlice, desitnationSlice);
+                TryEncode(sourceSlice, desitnationSlice, out int consumed, out int written);
             }
 
             return encodedLength;
@@ -196,21 +205,21 @@ namespace System.Binary.Base64
 
         #region Decode
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ComputeDecodedLength(ReadOnlySpan<byte> source)
         {
-            ref byte srcBytes = ref source.DangerousGetPinnableReference();
-
             int srcLength = source.Length;
-
-            if ((srcLength & 0x3) != 0) return -1;   // Length of source is not a multiple of 4.
 
             int baseLength = (srcLength >> 2) * 3;
 
-            if (srcLength > 1 && Unsafe.Add(ref srcBytes, srcLength - 2) == s_encodingPad)
+            if ((srcLength & 0x3) != 0) return baseLength;   // Length of source is not a multiple of 4, assume more bytes will follow
+
+            // Only check for padding if source is multiple of 4 and we know we are at the end of the input.
+            if (srcLength > 1 && source[srcLength - 2] == s_encodingPad)
             {
                 return baseLength - 2;
             }
-            else if (srcLength > 0 && Unsafe.Add(ref srcBytes, srcLength - 1) == s_encodingPad)
+            else if (srcLength > 0 && source[srcLength - 1] == s_encodingPad)
             {
                 return baseLength - 1;
             }
@@ -221,7 +230,7 @@ namespace System.Binary.Base64
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Decode(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
+        private static bool Decode(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
         {
             if (b0 > 122 || b1 > 122 || b2 > 122 || b3 > 122 
                 || b0 == s_encodingPad || b1 == s_encodingPad) goto False;
@@ -351,19 +360,13 @@ namespace System.Binary.Base64
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <returns>Number of bytes written to the destination.</returns>
-        public static int Decode(ReadOnlySpan<byte> source, Span<byte> destination)
+        public static bool TryDecode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
-            int requiredLength = ComputeDecodedLength(source);
-            if (requiredLength == -1) return -1;
-            if (destination.Length < requiredLength)
-            {
-                return -1;
-            }
-
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
 
             int srcLength = source.Length;
+            int destLength = destination.Length;
 
             int sourceIndex = 0;
             int destIndex = 0;
@@ -373,36 +376,56 @@ namespace System.Binary.Base64
             while (sourceIndex < srcLength - 4)
             {
                 result = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex));
-                if (result == -1) return -1;
+                if (result == -1) throw new FormatException();  // invalid bytes
+                if (destIndex + 3 > destLength) goto False;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
-                sourceIndex += 4;
                 destIndex += 3;
+                sourceIndex += 4;
             }
 
-            int lengthWithoutPadding = ((srcLength >> 2) * 3);
-            if ((lengthWithoutPadding - requiredLength) == 2)
+            int padding = 0;
+
+            if (Unsafe.Add(ref srcBytes, srcLength - 1) == s_encodingPad)
             {
-                result = DecodePadByTwo(ref Unsafe.Add(ref srcBytes, sourceIndex));
-                if (result == -1) return -1;
-                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
-                destIndex += 1;
+                padding = (Unsafe.Add(ref srcBytes, srcLength - 2) == s_encodingPad) ? 2 : 1;
             }
-            else if ((lengthWithoutPadding - requiredLength) == 1)
+
+            if (padding == 1)
             {
                 result = DecodePadByOne(ref Unsafe.Add(ref srcBytes, sourceIndex));
-                if (result == -1) return -1;
+                if (result == -1) throw new FormatException();  // invalid bytes
+                if (destIndex + 2 > destLength) goto False;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 2;
+                sourceIndex += 4;
+            }
+            else if (padding == 2)
+            {
+                result = DecodePadByTwo(ref Unsafe.Add(ref srcBytes, sourceIndex));
+                if (result == -1) throw new FormatException();  // invalid bytes
+                if (destIndex + 1 > destLength) goto False;
+                Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
+                destIndex += 1;
+                sourceIndex += 4;
             }
             else
             {
                 result = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex));
-                if (result == -1) return -1;
+                if (result == -1) throw new FormatException();  // invalid bytes
+                if (destIndex + 3 > destLength) goto False;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 3;
+                sourceIndex += 4;
             }
 
-            return destIndex;
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return true;
+
+            False:
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return false;
         }
 
         /// <summary>

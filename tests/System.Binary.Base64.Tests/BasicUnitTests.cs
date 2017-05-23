@@ -69,8 +69,8 @@ namespace System.Binary.Base64.Tests
             for (int value = 0; value < 256; value++)
             {
                 Span<byte> sourceBytes = bytes.AsSpan().Slice(0, value + 1);
-                Span<byte> encodedBytes = new byte[Base64.ComputeEncodedLength(sourceBytes.Length)];
-                int encodedBytesCount = Base64.Encode(sourceBytes, encodedBytes);
+                Span<byte> encodedBytes = new byte[Base64Encoder.ComputeEncodedLength(sourceBytes.Length)];
+                Assert.True(Base64Encoder.TryEncode(sourceBytes, encodedBytes, out int consumed, out int encodedBytesCount));
                 Assert.Equal(encodedBytes.Length, encodedBytesCount);
 
                 string encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
@@ -79,8 +79,8 @@ namespace System.Binary.Base64.Tests
 
                 if (encodedBytes.Length % 4 == 0)
                 {
-                    Span<byte> decodedBytes = new byte[Base64.ComputeDecodedLength(encodedBytes)];
-                    int decodedByteCount = Base64.Decode(encodedBytes, decodedBytes);
+                    Span<byte> decodedBytes = new byte[Base64Encoder.ComputeDecodedLength(encodedBytes)];
+                    Assert.True(Base64Encoder.TryDecode(encodedBytes, decodedBytes, out consumed, out int decodedByteCount));
                     Assert.Equal(sourceBytes.Length, decodedByteCount);
                     Assert.True(sourceBytes.SequenceEqual(decodedBytes));
                 }
@@ -97,8 +97,8 @@ namespace System.Binary.Base64.Tests
                 Span<byte> source = new byte[numBytes];
                 InitalizeBytes(source, numBytes);
 
-                Span<byte> encodedBytes = new byte[Base64.ComputeEncodedLength(source.Length)];
-                int encodedBytesCount = Base64.Encode(source, encodedBytes);
+                Span<byte> encodedBytes = new byte[Base64Encoder.ComputeEncodedLength(source.Length)];
+                Assert.True(Base64Encoder.TryEncode(source, encodedBytes, out int consumed, out int encodedBytesCount));
                 Assert.Equal(encodedBytes.Length, encodedBytesCount);
 
                 string encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
@@ -121,8 +121,8 @@ namespace System.Binary.Base64.Tests
                 Span<byte> source = new byte[numBytes];
                 InitalizeDecodableBytes(source, numBytes);
 
-                Span<byte> decodedBytes = new byte[Base64.ComputeDecodedLength(source)];
-                int decodedByteCount = Base64.Decode(source, decodedBytes);
+                Span<byte> decodedBytes = new byte[Base64Encoder.ComputeDecodedLength(source)];
+                Assert.True(Base64Encoder.TryDecode(source, decodedBytes, out int consumed, out int decodedByteCount));
                 Assert.Equal(decodedBytes.Length, decodedByteCount);
                 
                 string expectedStr = Text.Encoding.ASCII.GetString(source.ToArray());
@@ -139,17 +139,17 @@ namespace System.Binary.Base64.Tests
             int[] expected = { -1, -1, -1, 0, 4, 4, 4, 8, 8, 8, 2147483640, 2147483640, 2147483640, 2147483644, 2147483644, 2147483644 };
             for (int i = 0; i < input.Length; i++)
             {
-                Assert.Equal(expected[i], Base64.ComputeEncodedLength(input[i]));
+                Assert.Equal(expected[i], Base64Encoder.ComputeEncodedLength(input[i]));
             }
 
-            Assert.True(Base64.ComputeEncodedLength(1610612734) < 0);   // integer overflow
+            Assert.True(Base64Encoder.ComputeEncodedLength(1610612734) < 0);   // integer overflow
         }
 
         [Fact]
         public void ComputeDecodedLength()
         {
             Span<byte> sourceEmpty = Span<byte>.Empty;
-            Assert.Equal(0, Base64.ComputeDecodedLength(sourceEmpty));
+            Assert.Equal(0, Base64Encoder.ComputeDecodedLength(sourceEmpty));
 
             // int.MaxValue - (int.MaxValue % 4) => 2147483644, largest multiple of 4 less than int.MaxValue
             // CLR default limit of 2 gigabytes (GB).
@@ -160,27 +160,27 @@ namespace System.Binary.Base64.Tests
             {
                 int sourceLength = input[i];
                 Span<byte> source = new byte[sourceLength];
-                Assert.Equal(expected[i], Base64.ComputeDecodedLength(source));
+                Assert.Equal(expected[i], Base64Encoder.ComputeDecodedLength(source));
                 source[sourceLength - 1] = s_encodingPad;                          // single character padding
-                Assert.Equal(expected[i] - 1, Base64.ComputeDecodedLength(source));
+                Assert.Equal(expected[i] - 1, Base64Encoder.ComputeDecodedLength(source));
                 source[sourceLength - 2] = s_encodingPad;                          // two characters padding
-                Assert.Equal(expected[i] - 2, Base64.ComputeDecodedLength(source));
+                Assert.Equal(expected[i] - 2, Base64Encoder.ComputeDecodedLength(source));
             }
 
             // Lengths that are not a multiple of 4.
-            int[] invalidInput = { 1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 1001, 1002, 1003};
-
-            for (int i = 0; i < invalidInput.Length; i++)
+            int[] lengthsNotMultipleOfFour = { 1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 1001, 1002, 1003};
+            int[] expectedOutput = { 0, 3, 6, 9, 750 };
+            for (int i = 0; i < lengthsNotMultipleOfFour.Length; i++)
             {
-                int sourceLength = invalidInput[i];
+                int sourceLength = lengthsNotMultipleOfFour[i];
                 Span<byte> source = new byte[sourceLength];
-                Assert.Equal(-1, Base64.ComputeDecodedLength(source));
+                Assert.Equal(expectedOutput[i], Base64Encoder.ComputeDecodedLength(source));
                 source[sourceLength - 1] = s_encodingPad;
-                Assert.Equal(-1, Base64.ComputeDecodedLength(source));
+                Assert.Equal(expectedOutput[i], Base64Encoder.ComputeDecodedLength(source));
                 if (sourceLength > 1)
                 {
                     source[sourceLength - 2] = s_encodingPad;
-                    Assert.Equal(-1, Base64.ComputeDecodedLength(source));
+                    Assert.Equal(expectedOutput[i], Base64Encoder.ComputeDecodedLength(source));
                 }
             }
         }
@@ -198,16 +198,16 @@ namespace System.Binary.Base64.Tests
             for (int value = 0; value < 256; value++)
             {
                 var sourceBytes = testBytes.AsSpan().Slice(0, value + 1);
-                var buffer = new byte[Base64.ComputeEncodedLength(sourceBytes.Length)];
+                var buffer = new byte[Base64Encoder.ComputeEncodedLength(sourceBytes.Length)];
                 var bufferSlice = buffer.AsSpan();
 
-                Base64.Encode(sourceBytes, bufferSlice);
+                Base64Encoder.TryEncode(sourceBytes, bufferSlice, out int consumed, out int written);
 
                 var encodedText = Text.Encoding.ASCII.GetString(bufferSlice.ToArray());
                 var expectedText = Convert.ToBase64String(testBytes, 0, value + 1);
                 Assert.Equal(expectedText, encodedText);
 
-                var decodedByteCount = Base64.DecodeInPlace(bufferSlice);
+                var decodedByteCount = Base64Encoder.DecodeInPlace(bufferSlice);
                 Assert.Equal(sourceBytes.Length, decodedByteCount);
 
                 for (int i = 0; i < decodedByteCount; i++)
@@ -240,7 +240,7 @@ namespace System.Binary.Base64.Tests
                 var copy = testBytes.Clone();
                 var expectedText = Convert.ToBase64String(testBytes, 0, numberOfBytesToTest);
 
-                var encoded = Base64.EncodeInPlace(testBytes, numberOfBytesToTest);
+                var encoded = Base64Encoder.EncodeInPlace(testBytes, numberOfBytesToTest);
                 var encodedText = Text.Encoding.ASCII.GetString(testBytes, 0, encoded);
 
                 Assert.Equal(expectedText, encodedText);
