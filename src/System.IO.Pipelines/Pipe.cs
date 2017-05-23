@@ -461,6 +461,7 @@ namespace System.IO.Pipelines
                         if (_commitHead == returnEnd)
                         {
                             _commitHead = nextBlock;
+                            _commitHeadIndex = nextBlock?.Start ?? 0;
                         }
 
                         _readHead = nextBlock;
