@@ -54,7 +54,7 @@ namespace System.Buffers
             return new Buffer<T>(array, 0, array.Length);
         }
 
-        public static Buffer<T> Empty { get; } = Internal.OwnedEmptyBuffer<T>.Shared.Buffer;
+        public static Buffer<T> Empty { get; } = OwnedBuffer<T>.EmptyArray;
 
         public int Length => _length;
 
@@ -106,14 +106,20 @@ namespace System.Buffers
 
         public bool TryGetArray(out ArraySegment<T> buffer)
         {
-            if (!_owner.TryGetArray(out buffer))
+            if (_owner != null && _owner.TryGetArray(out var segment))
             {
-                if (_array == null) return false;
+                buffer = new ArraySegment<T>(segment.Array, segment.Offset + _index, _length);
+                return true;
+            }
+
+            if (_array != null)
+            {
                 buffer = new ArraySegment<T>(_array, _index, _length);
                 return true;
             }
-            buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
-            return true;
+
+            buffer = default(ArraySegment<T>);
+            return false;
         }
 
         public T[] ToArray() => Span.ToArray();

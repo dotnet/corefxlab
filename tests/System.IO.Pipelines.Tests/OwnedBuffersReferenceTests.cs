@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Tests
         {
             var pool = new MemoryPool();
 
-            BufferReferenceTests.Run(() => {
+            BufferReferenceTests.TestOwnedBuffer(() => {
                 return pool.Rent(1024);
             });
         }
@@ -23,7 +23,7 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void UnownedBufferReferenceTests()
         {
-            BufferReferenceTests.Run(() => {
+            BufferReferenceTests.TestOwnedBuffer(() => {
                 return new UnownedBuffer(new ArraySegment<byte>(new byte[1024]));
             });
         }

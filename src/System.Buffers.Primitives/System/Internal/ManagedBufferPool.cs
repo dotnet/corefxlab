@@ -1,8 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace System.Buffers.Internal
 {
@@ -20,36 +22,44 @@ namespace System.Buffers.Internal
 
         public override OwnedBuffer<byte> Rent(int minimumBufferSize)
         {
-            return new ArrayPoolMemory(minimumBufferSize);
+            return new ArrayPoolBuffer(minimumBufferSize);
         }
 
         protected override void Dispose(bool disposing)
         {
         }
 
-        private class ArrayPoolMemory : ReferenceCountedBuffer<byte>
+        private sealed class ArrayPoolBuffer : OwnedBuffer<byte>
         {
-            public ArrayPoolMemory(int size)
+            byte[] _array;
+            bool _disposed;
+            int _referenceCount;
+            
+            public ArrayPoolBuffer(int size)
             {
                 _array = ArrayPool<byte>.Shared.Rent(size);
             }
 
             public override int Length => _array.Length;
 
+            public override bool IsDisposed => _disposed;
+
+            public override bool IsRetained => _referenceCount > 0;
+
             public override Span<byte> AsSpan(int index, int length)
             {
-                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ManagedBufferPool));
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ArrayPoolBuffer));
                 return new Span<byte>(_array, index, length);
             }
 
             protected override void Dispose(bool disposing)
             {
+                _disposed = true;
                 if (_array != null)
                 {
                     ArrayPool<byte>.Shared.Return(_array);
                     _array = null;
                 }
-                base.Dispose(disposing);
             }
 
             protected internal override bool TryGetArray(out ArraySegment<byte> buffer)
@@ -70,7 +80,17 @@ namespace System.Buffers.Internal
                 }
             }
 
-            byte[] _array;
+            public override void Retain()
+            {
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(ArrayPoolBuffer));
+                Interlocked.Increment(ref _referenceCount);
+            }
+
+            public override void Release()
+            {
+                Debug.Assert(!IsDisposed);
+                Interlocked.Decrement(ref _referenceCount);
+            }
         }
     }
 }

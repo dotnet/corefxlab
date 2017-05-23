@@ -7,26 +7,26 @@ namespace System.Buffers.Tests
     public class BufferReferenceUnitTests
     {
         [Fact]
-        public void OwnedArrayReferenceTests()
+        public void AutoDisposeBufferReferenceTests()
         {
             BufferReferenceTests.TestOwnedBuffer(() => {
-                return (OwnedBuffer<byte>)new byte[1024];
+                return new AutoDisposeBuffer<byte>(new byte[1024]);
             });
         }
 
         [Fact]
-        public void PooledBufferReferenceTests()
+        public void AutoPooledBufferReferenceTests()
         {
             BufferReferenceTests.TestOwnedBuffer(() => {
-                return BufferPool.Default.Rent(1000);
+                return new AutoPooledBuffer(1024);
             });
         }
 
         [Fact]
-        public void ArrayBufferReferenceTests()
+        public void CustomBufferReferenceTests()
         {
-            BufferReferenceTests.TestBuffer(() => {
-                return (Buffer<byte>)new byte[1024];
+            BufferReferenceTests.TestOwnedBuffer(() => {
+                return new CustomBuffer<byte>(512);
             });
         }
     }

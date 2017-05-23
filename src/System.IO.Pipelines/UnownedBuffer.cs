@@ -37,7 +37,7 @@ namespace System.IO.Pipelines
             global::System.Buffer.BlockCopy(_buffer.Array, _buffer.Offset + offset, buffer, 0, length);
             newStart = 0;
             newEnd = length;
-            return (OwnedArray<byte>)buffer;
+            return (OwnedBuffer<byte>)buffer;
         }
 
 // In kestrel both MemoryPoolBlock and OwnedBuffer end up in the same assembly so

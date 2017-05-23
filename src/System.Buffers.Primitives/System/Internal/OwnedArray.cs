@@ -6,9 +6,9 @@ using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace System.Buffers
+namespace System.Buffers.Internal
 {
-    public class OwnedArray<T> : OwnedBuffer<T>
+    internal class OwnedArray<T> : OwnedBuffer<T>
     {
         T[] _array;
         int _referenceCount;
