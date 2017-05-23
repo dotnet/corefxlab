@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.IO.Compression.Brotli
+namespace System.IO.Compression
 {
     internal sealed class Decoder
     {

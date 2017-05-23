@@ -10,14 +10,14 @@ using System.Runtime.InteropServices;
 #else
 using nuint = System.UInt32;
 #endif 
-namespace System.IO.Compression.Brotli
+namespace System.IO.Compression
 {
     public partial class BrotliStream : Stream
     {
 
         private const int DefaultBufferSize = 64 * 1024;
         private int BufferSize;
-        private Stream _stream;
+        public Stream _stream;
         private CompressionMode _mode;
         private nuint TotalOut { get; }
         private IntPtr AvailOut;
@@ -128,19 +128,43 @@ namespace System.IO.Compression.Brotli
         }
         protected override void Dispose(bool disposing)
         {
-            if (_mode == CompressionMode.Compress)
+            if (disposing && _stream!=null && _mode == CompressionMode.Compress)
             {
                 FlushEncoder(true);
             }
+            try
+            {
+                if (BufferIn != IntPtr.Zero) Marshal.FreeHGlobal(BufferIn);
+                if (BufferOut != IntPtr.Zero) Marshal.FreeHGlobal(BufferOut);
+                BufferIn = IntPtr.Zero;
+                BufferOut = IntPtr.Zero;
+            }
+            finally {
+                try
+                {
+                    if (disposing && !LeaveOpen) _stream?.Dispose();
+                }
+                finally
+                {
+                    _stream = null;
+                    try
+                    {
+                        _decoder?.Dispose();
+                        _encoder?.Dispose();
+                    }
+                    finally
+                    {
+                        _encoder = null;
+                        _decoder = null;
+                        base.Dispose(disposing);
+                    }
+                }
+
+                
+            }
             base.Dispose(disposing);
-            if (!LeaveOpen) _stream.Dispose();
-            if (BufferIn != IntPtr.Zero) Marshal.FreeHGlobal(BufferIn);
-            if (BufferOut != IntPtr.Zero) Marshal.FreeHGlobal(BufferOut);
-            BufferIn = IntPtr.Zero;
-            BufferOut = IntPtr.Zero;
-            _encoder.Dispose();
-            _decoder.Dispose();
         }
+ 
         public override void Flush()
         {
             if (_stream==null)
