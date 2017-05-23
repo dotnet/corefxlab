@@ -135,8 +135,8 @@ namespace System.Binary.Base64.Tests
         public void ComputeEncodedLength()
         {
             // (int.MaxValue - 4)/(4/3) => 1610612733, otherwise integer overflow
-            int[] input = { int.MinValue, -50, -1, 0, 1, 2, 3, 4, 5, 6, 1610612728, 1610612729, 1610612730, 1610612731, 1610612732, 1610612733 };
-            int[] expected = { -1, -1, -1, 0, 4, 4, 4, 8, 8, 8, 2147483640, 2147483640, 2147483640, 2147483644, 2147483644, 2147483644 };
+            int[] input = { 0, 1, 2, 3, 4, 5, 6, 1610612728, 1610612729, 1610612730, 1610612731, 1610612732, 1610612733 };
+            int[] expected = { 0, 4, 4, 4, 8, 8, 8, 2147483640, 2147483640, 2147483640, 2147483644, 2147483644, 2147483644 };
             for (int i = 0; i < input.Length; i++)
             {
                 Assert.Equal(expected[i], Base64Encoder.ComputeEncodedLength(input[i]));
@@ -169,7 +169,7 @@ namespace System.Binary.Base64.Tests
 
             // Lengths that are not a multiple of 4.
             int[] lengthsNotMultipleOfFour = { 1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 1001, 1002, 1003};
-            int[] expectedOutput = { 0, 3, 6, 9, 750 };
+            int[] expectedOutput = { 0, 0, 0, 3, 3, 3, 6, 6, 6, 9, 9, 9, 750, 750, 750 };
             for (int i = 0; i < lengthsNotMultipleOfFour.Length; i++)
             {
                 int sourceLength = lengthsNotMultipleOfFour[i];
