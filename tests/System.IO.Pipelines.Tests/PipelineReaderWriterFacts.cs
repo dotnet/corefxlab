@@ -537,5 +537,35 @@ namespace System.IO.Pipelines.Tests
             Assert.False(awaitable.IsCompleted);
             buffer.Commit();
         }
+
+        [Fact]
+        public async Task AdvanceResetsCommitHeadIndex()
+        {
+            var buffer = _pipe.Writer.Alloc(1);
+            buffer.Advance(100);
+            await buffer.FlushAsync();
+
+            // Advance to the end
+            var readResult = await _pipe.Reader.ReadAsync();
+            _pipe.Reader.Advance(readResult.Buffer.End);
+
+            // Try reading, it should block
+            var awaitable = _pipe.Reader.ReadAsync();
+            Assert.False(awaitable.IsCompleted);
+
+            // Unblock without writing anything
+            buffer = _pipe.Writer.Alloc();
+            await buffer.FlushAsync();
+
+            Assert.True(awaitable.IsCompleted);
+
+            // Advance to the end should reset awaitable
+            readResult = await awaitable;
+            _pipe.Reader.Advance(readResult.Buffer.End);
+
+            // Try reading, it should block
+            awaitable = _pipe.Reader.ReadAsync();
+            Assert.False(awaitable.IsCompleted);
+        }
     }
 }

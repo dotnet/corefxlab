@@ -76,7 +76,6 @@ namespace System.IO.Pipelines.Tests
             }
         }
 
-
         [Fact]
         public async Task CanWriteAfterReturningMultipleBlocks()
         {
@@ -93,7 +92,7 @@ namespace System.IO.Pipelines.Tests
                 buffer.Advance(buffer.Buffer.Length);
                 buffer.Ensure(buffer.Buffer.Length);
                 buffer.Advance(writeSize);
-                buffer.FlushAsync();
+                await buffer.FlushAsync();
 
                 Assert.Equal(2, pool.RentedBlocks);
 
