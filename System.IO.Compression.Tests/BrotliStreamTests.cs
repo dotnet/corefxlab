@@ -164,17 +164,7 @@ namespace System.IO.Compression.Tests
                 Assert.Throws<ArgumentException>(() => ds.Write(new byte[1], 1, 1));
                 Assert.Throws<InvalidOperationException>(() => ds.Read(new byte[1], 0, 1));
                 ds.Write(new byte[1], 0, 0);
-            }
-            using (var ds = new BrotliStream(new MemoryStream(), CompressionMode.Compress))
-            {
-                Assert.Throws<ArgumentNullException>(() => { ds.WriteAsync(null, 0, 0); });
-                Assert.Throws<ArgumentOutOfRangeException>(() => { ds.WriteAsync(new byte[1], -1, 0); });
-                Assert.Throws<ArgumentOutOfRangeException>(() => { ds.WriteAsync(new byte[1], 0, -1); });
-                Assert.Throws<ArgumentException>(() => { ds.WriteAsync(new byte[1], 0, 2); });
-                Assert.Throws<ArgumentException>(() => { ds.WriteAsync(new byte[1], 1, 1); });
-                Assert.Throws<InvalidOperationException>(() => { ds.Read(new byte[1], 0, 1); });
-            }
-
+            }         
             using (var ds = new BrotliStream(new MemoryStream(), CompressionMode.Decompress))
             {
                 Assert.Throws<ArgumentNullException>(() => ds.Read(null, 0, 0));
@@ -187,16 +177,7 @@ namespace System.IO.Compression.Tests
                 var data = new byte[1] { 42 };
                 Assert.Equal(0, ds.Read(data, 0, 0));
                 Assert.Equal(42, data[0]);
-            }
-            using (var ds = new BrotliStream(new MemoryStream(), CompressionMode.Decompress))
-            {
-                Assert.Throws<ArgumentNullException>(() => { ds.ReadAsync(null, 0, 0); });
-                Assert.Throws<ArgumentOutOfRangeException>(() => { ds.ReadAsync(new byte[1], -1, 0); });
-                Assert.Throws<ArgumentOutOfRangeException>(() => { ds.ReadAsync(new byte[1], 0, -1); });
-                Assert.Throws<ArgumentException>(() => { ds.ReadAsync(new byte[1], 0, 2); });
-                Assert.Throws<ArgumentException>(() => { ds.ReadAsync(new byte[1], 1, 1); });
-                Assert.Throws<InvalidOperationException>(() => { ds.Write(new byte[1], 0, 1); });
-            }
+            }         
         }
         public static IEnumerable<object[]> RoundtripCompressDecompressOuterData
         {
