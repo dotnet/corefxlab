@@ -59,7 +59,7 @@ namespace System.Buffers
         public abstract void Release();
         #endregion
 
-        protected static unsafe void* Add(void* pointer, int offset)
+        protected internal static unsafe void* Add(void* pointer, int offset)
         {
             return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }
