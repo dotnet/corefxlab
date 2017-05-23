@@ -108,6 +108,29 @@ namespace System.Binary.Base64.Tests
         }
 
         [Fact]
+        public void EncodingOutputTooSmall()
+        {
+            Span<byte> source = new byte[750];
+            InitalizeBytes(source);
+
+            int outputSize = 320;
+            int requiredSize = Base64Encoder.ComputeEncodedLength(source.Length);
+
+            Span<byte> encodedBytes = new byte[outputSize];
+            Assert.False(Base64Encoder.TryEncode(source, encodedBytes, out int consumed, out int written));
+            Assert.Equal(encodedBytes.Length, written);
+            Assert.Equal(encodedBytes.Length / 4 * 3, consumed);
+            encodedBytes = new byte[requiredSize - outputSize];
+            Assert.True(Base64Encoder.TryEncode(source.Slice(consumed), encodedBytes, out consumed, out written));
+            Assert.Equal(encodedBytes.Length, written);
+            Assert.Equal(encodedBytes.Length / 4 * 3, consumed);
+
+            string encodedText = Text.Encoding.ASCII.GetString(encodedBytes.ToArray());
+            string expectedText = Convert.ToBase64String(source.ToArray()).Substring(outputSize);
+            Assert.Equal(expectedText, encodedText);
+        }
+
+        [Fact]
         public void BasicDecoding()
         {
             var rnd = new Random(42);
@@ -129,6 +152,29 @@ namespace System.Binary.Base64.Tests
                 byte[] expectedText = Convert.FromBase64String(expectedStr);
                 Assert.True(expectedText.AsSpan().SequenceEqual(decodedBytes));
             }
+        }
+
+        [Fact]
+        public void DecodingOutputTooSmall()
+        {
+            Span<byte> source = new byte[1000];
+            InitalizeDecodableBytes(source);
+
+            int outputSize = 240;
+            int requiredSize = Base64Encoder.ComputeDecodedLength(source);
+
+            Span<byte> decodedBytes = new byte[outputSize];
+            Assert.False(Base64Encoder.TryDecode(source, decodedBytes, out int consumed, out int decodedByteCount));
+            Assert.Equal(decodedBytes.Length, decodedByteCount);
+            Assert.Equal(decodedBytes.Length / 3 * 4, consumed);
+            decodedBytes = new byte[requiredSize - outputSize];
+            Assert.True(Base64Encoder.TryDecode(source.Slice(consumed), decodedBytes, out consumed, out decodedByteCount));
+            Assert.Equal(decodedBytes.Length, decodedByteCount);
+            Assert.Equal(decodedBytes.Length / 3 * 4, consumed);
+
+            string expectedStr = Text.Encoding.ASCII.GetString(source.ToArray());
+            byte[] expectedText = Convert.FromBase64String(expectedStr);
+            Assert.True(expectedText.AsSpan().Slice(outputSize).SequenceEqual(decodedBytes));
         }
 
         [Fact]
