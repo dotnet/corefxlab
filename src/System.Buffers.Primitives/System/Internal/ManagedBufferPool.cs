@@ -88,7 +88,7 @@ namespace System.Buffers.Internal
 
             public override void Release()
             {
-                Debug.Assert(!IsDisposed);
+                if (!IsRetained) BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
                 Interlocked.Decrement(ref _referenceCount);
             }
         }

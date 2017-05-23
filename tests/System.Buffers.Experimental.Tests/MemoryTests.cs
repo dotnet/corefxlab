@@ -105,8 +105,6 @@ namespace System.Buffers.Tests
             Assert.Equal(true, owned.IsDisposed);
         }
 
-
-
         [Fact]
         public void OnNoReferencesTest()
         {
@@ -181,7 +179,6 @@ namespace System.Buffers.Tests
         }
     }
 
-
     class CustomBuffer<T> : OwnedBuffer<T>
     {
         bool _disposed;
@@ -246,7 +243,8 @@ namespace System.Buffers.Tests
 
         public override void Release()
         {
-            Debug.Assert(!IsDisposed);
+            if (!IsRetained) throw new InvalidOperationException();
+
             if (Interlocked.Decrement(ref _referenceCount) == 0)
             {
                 _noReferencesCalledCount++;

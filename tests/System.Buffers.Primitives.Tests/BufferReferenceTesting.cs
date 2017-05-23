@@ -15,6 +15,7 @@ namespace System.Buffers.Tests
             Buffer(create());
             Pin(create());
             Dispose(create());
+            // OverRelease(create()); // TODO: corfxlab #1571 
             TestBuffer(() => { return create().Buffer; });
         }
 
@@ -127,6 +128,13 @@ namespace System.Buffers.Tests
 
             Assert.ThrowsAny<ObjectDisposedException>(() => {
                 var roBuffer = buffer.ReadOnlyBuffer;
+            });
+        }
+
+        static void OverRelease(OwnedBuffer<byte> buffer)
+        {
+            Assert.ThrowsAny<InvalidOperationException>(() => {
+                buffer.Release();
             });
         }
 

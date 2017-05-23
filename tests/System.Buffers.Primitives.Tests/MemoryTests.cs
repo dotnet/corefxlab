@@ -7,13 +7,13 @@ using Xunit;
 
 namespace System.Buffers.Tests
 {
-    public class MemoryTests
+    public class BufferHandleTests
     {
         [Fact]
         public void MemoryHandleFreeUninitialized()
         {
-            var h = default(BufferHandle);
-            h.Dispose();
+            var handle = default(BufferHandle);
+            handle.Dispose();
         }
     }
 }

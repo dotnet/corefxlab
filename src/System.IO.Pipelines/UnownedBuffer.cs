@@ -76,6 +76,7 @@ namespace System.IO.Pipelines
 
         public override void Release()
         {
+            // TODO: should it check IsRetained?
             Interlocked.Decrement(ref _referenceCount);
         }
 
