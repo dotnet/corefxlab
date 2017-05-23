@@ -134,7 +134,7 @@ namespace System.Binary.Base64
             while (sourceIndex < srcLength - 2)
             {
                 result = Encode(ref Unsafe.Add(ref srcBytes, sourceIndex));
-                if (destIndex + 4 > destLength) goto False;
+                if (destIndex > destLength - 4) goto FalseExit;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 4;
                 sourceIndex += 3;
@@ -143,7 +143,7 @@ namespace System.Binary.Base64
             if (sourceIndex == srcLength - 1)
             {
                 result = EncodePadByTwo(ref Unsafe.Add(ref srcBytes, sourceIndex));
-                if (destIndex + 4 > destLength) goto False;
+                if (destIndex > destLength - 4) goto FalseExit;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 4;
                 sourceIndex += 1;
@@ -151,7 +151,7 @@ namespace System.Binary.Base64
             else if (sourceIndex == srcLength - 2)
             {
                 result = EncodePadByOne(ref Unsafe.Add(ref srcBytes, sourceIndex));
-                if (destIndex + 4 > destLength) goto False;
+                if (destIndex > destLength - 4) goto FalseExit;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 4;
                 sourceIndex += 2;
@@ -161,7 +161,7 @@ namespace System.Binary.Base64
             bytesWritten = destIndex;
             return true;
 
-            False:
+            FalseExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
             return false;
@@ -233,21 +233,21 @@ namespace System.Binary.Base64
         private static bool Decode(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
         {
             if (b0 > 122 || b1 > 122 || b2 > 122 || b3 > 122 
-                || b0 == s_encodingPad || b1 == s_encodingPad) goto False;
+                || b0 == s_encodingPad || b1 == s_encodingPad) goto ErrorExit;
 
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
             byte i2 = s_decodingMap[b2];
             byte i3 = s_decodingMap[b3];
             
-            if (i0 == s_invalidByte || i1 == s_invalidByte || i2 == s_invalidByte || i3 == s_invalidByte) goto False;
+            if (i0 == s_invalidByte || i1 == s_invalidByte || i2 == s_invalidByte || i3 == s_invalidByte) goto ErrorExit;
 
             r0 = (byte)(i0 << 2 | i1 >> 4);
             r1 = (byte)(i1 << 4 | i2 >> 2);
             r2 = (byte)(i2 << 6 | i3);
             return true;
 
-            False:
+            ErrorExit:
             r0 = r1 = r2 = 0;
             return false;
         }
@@ -256,21 +256,21 @@ namespace System.Binary.Base64
         private static bool DecodeNoPad(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
         {
             if (b0 > 122 || b1 > 122 || b2 > 122 || b3 > 122 
-                || b0 == s_encodingPad || b1 == s_encodingPad || b2 == s_encodingPad || b3 == s_encodingPad) goto False;
+                || b0 == s_encodingPad || b1 == s_encodingPad || b2 == s_encodingPad || b3 == s_encodingPad) goto ErrorExit;
 
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
             byte i2 = s_decodingMap[b2];
             byte i3 = s_decodingMap[b3];
 
-            if (i0 == s_invalidByte || i1 == s_invalidByte || i2 == s_invalidByte || i3 == s_invalidByte) goto False;
+            if (i0 == s_invalidByte || i1 == s_invalidByte || i2 == s_invalidByte || i3 == s_invalidByte) goto ErrorExit;
 
             r0 = (byte)(i0 << 2 | i1 >> 4);
             r1 = (byte)(i1 << 4 | i2 >> 2);
             r2 = (byte)(i2 << 6 | i3);
             return true;
 
-            False:
+            ErrorExit:
             r0 = r1 = r2 = 0;
             return false;
         }
@@ -293,19 +293,19 @@ namespace System.Binary.Base64
         private static bool Decode(byte b0, byte b1, byte b2, out byte r0, out byte r1)
         {
             if (b0 > 122 || b1 > 122 || b2 > 122 
-                || b0 == s_encodingPad || b1 == s_encodingPad) goto False;
+                || b0 == s_encodingPad || b1 == s_encodingPad) goto ErrorExit;
 
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
             byte i2 = s_decodingMap[b2];
 
-            if (i0 == s_invalidByte || i1 == s_invalidByte || i2 == s_invalidByte) goto False;
+            if (i0 == s_invalidByte || i1 == s_invalidByte || i2 == s_invalidByte) goto ErrorExit;
 
             r0 = (byte)(i0 << 2 | i1 >> 4);
             r1 = (byte)(i1 << 4 | i2 >> 2);
             return true;
 
-            False:
+            ErrorExit:
             r0 = r1 = 0;
             return false;
         }
@@ -327,17 +327,17 @@ namespace System.Binary.Base64
         private static bool Decode(byte b0, byte b1, out byte r0)
         {
             if (b0 > 122 || b1 > 122 
-                || b0 == s_encodingPad || b1 == s_encodingPad) goto False;
+                || b0 == s_encodingPad || b1 == s_encodingPad) goto ErrorExit;
 
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
 
-            if (i0 == s_invalidByte || i1 == s_invalidByte) goto False;
+            if (i0 == s_invalidByte || i1 == s_invalidByte) goto ErrorExit;
 
             r0 = (byte)(i0 << 2 | i1 >> 4);
             return true;
 
-            False:
+            ErrorExit:
             r0 = 0;
             return false;
         }
@@ -377,7 +377,7 @@ namespace System.Binary.Base64
             {
                 result = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex));
                 if (result == -1) throw new FormatException();  // invalid bytes
-                if (destIndex + 3 > destLength) goto False;
+                if (destIndex > destLength - 3) goto FalseExit;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 3;
                 sourceIndex += 4;
@@ -394,7 +394,7 @@ namespace System.Binary.Base64
             {
                 result = DecodePadByOne(ref Unsafe.Add(ref srcBytes, sourceIndex));
                 if (result == -1) throw new FormatException();  // invalid bytes
-                if (destIndex + 2 > destLength) goto False;
+                if (destIndex > destLength - 2) goto FalseExit;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 2;
                 sourceIndex += 4;
@@ -403,7 +403,7 @@ namespace System.Binary.Base64
             {
                 result = DecodePadByTwo(ref Unsafe.Add(ref srcBytes, sourceIndex));
                 if (result == -1) throw new FormatException();  // invalid bytes
-                if (destIndex + 1 > destLength) goto False;
+                if (destIndex > destLength - 1) goto FalseExit;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 1;
                 sourceIndex += 4;
@@ -412,7 +412,7 @@ namespace System.Binary.Base64
             {
                 result = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex));
                 if (result == -1) throw new FormatException();  // invalid bytes
-                if (destIndex + 3 > destLength) goto False;
+                if (destIndex > destLength - 3) goto FalseExit;
                 Unsafe.WriteUnaligned(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 3;
                 sourceIndex += 4;
@@ -422,7 +422,7 @@ namespace System.Binary.Base64
             bytesWritten = destIndex;
             return true;
 
-            False:
+            FalseExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
             return false;
