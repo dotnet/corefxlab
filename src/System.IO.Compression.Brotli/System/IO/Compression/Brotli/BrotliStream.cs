@@ -32,20 +32,20 @@ namespace System.IO.Compression
         private int _readOffset = 0;
         Decoder _decoder;
         Encoder _encoder;
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leave_open, int BuffSize, uint windowsize, uint quality) : this(baseStream, mode, leave_open, BuffSize) {
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize, uint windowSize, uint quality) : this(baseStream, mode, leaveOpen, BuffSize) {
             if (_mode == CompressionMode.Decompress) throw new System.IO.IOException("quality and windowsize is ambitious for Decompress mode");
             else
             {
                 _encoder.SetQuality(quality);
-                _encoder.SetWindow(windowsize);
+                _encoder.SetWindow(windowSize);
             }
         }
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leave_open, int BuffSize)
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize)
         {
             if (baseStream == null) throw new ArgumentNullException("baseStream");
             _mode = mode;
             _stream = baseStream;
-            LeaveOpen = leave_open;
+            LeaveOpen = leaveOpen;
             if (_mode == CompressionMode.Compress)
             {
                 _encoder = new Encoder();
@@ -63,7 +63,7 @@ namespace System.IO.Compression
             NextOut = BufferOut;
             AvailOut = new IntPtr((uint)BuffSize);
         }
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leave_open) : this(baseStream, mode, leave_open, DefaultBufferSize) { }
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen) : this(baseStream, mode, leaveOpen, DefaultBufferSize) { }
 
         public BrotliStream(Stream baseStream, CompressionMode mode) : this(baseStream, mode, false) { }
 
@@ -90,6 +90,7 @@ namespace System.IO.Compression
                 return (_mode == CompressionMode.Compress && _stream.CanWrite);
             }
         }
+
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotSupportedException();
@@ -106,6 +107,7 @@ namespace System.IO.Compression
             get { throw new NotSupportedException(); }
             set { throw new NotSupportedException(); }
         }
+
         protected virtual void FlushEncoder(Boolean finished)
         {
             if (_encoder.State == IntPtr.Zero) return;
@@ -129,6 +131,7 @@ namespace System.IO.Compression
                 if (!extraData) break;
             }
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && _stream != null && _mode == CompressionMode.Compress)
@@ -159,10 +162,8 @@ namespace System.IO.Compression
                 base.Dispose(disposing);
             }
             
-        }
-        
+        }     
     
- 
         public override void Flush()
         {
             EnsureNotDisposed();
@@ -171,6 +172,7 @@ namespace System.IO.Compression
                 FlushEncoder(false);
             }
         }
+
         private void ValidateParameters(byte[] array, int offset, int count)
         {
             if (array == null)
@@ -185,10 +187,11 @@ namespace System.IO.Compression
             if (array.Length - offset < count)
                 throw new ArgumentException("InvalidArgument","OffsetCount");
         }
+
         private void EnsureDecompressionMode()
         {
             if (_mode != CompressionMode.Decompress)
-                throw new System.InvalidOperationException("Wrong stream mode");
+                throw new System.InvalidOperationException("Wrong stream mode. Expect: Deccompress");
         }
 
         private void EnsureNotDisposed()
@@ -196,6 +199,7 @@ namespace System.IO.Compression
             if (_stream == null)
                 throw new ObjectDisposedException("Stream");
         }
+
         public override int Read(byte[] buffer, int offset, int count)
         {
             EnsureDecompressionMode();
@@ -284,7 +288,7 @@ namespace System.IO.Compression
         private void EnsureCompressionMode()
         {
             if (_mode != CompressionMode.Compress)
-                throw new System.InvalidOperationException("Wrong stream mode");
+                throw new System.InvalidOperationException("Wrong stream mode. Expect: Compress");
         }
         public override void Write(byte[] buffer, int offset, int count)
         {
