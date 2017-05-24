@@ -3,7 +3,7 @@
 
 using Xunit;
 
-namespace System.Slices.Tests
+namespace System.Buffers.Tests
 {
     public partial class StringSliceTests
     {

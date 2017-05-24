@@ -11,6 +11,12 @@ namespace System.Buffers
     {
         protected OwnedBuffer() { }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator OwnedBuffer<T>(T[] array)
+        {
+            return new Internal.OwnedArray<T>(array);
+        }
+
         public abstract int Length { get; }
 
         public abstract Span<T> AsSpan(int index, int length);
@@ -39,7 +45,7 @@ namespace System.Buffers
 
         public abstract BufferHandle Pin(int index = 0);
 
-        internal protected abstract bool TryGetArray(out ArraySegment<T> buffer);
+        protected internal abstract bool TryGetArray(out ArraySegment<T> buffer);
 
         #region Lifetime Management
         public abstract bool IsDisposed { get; }
@@ -63,5 +69,7 @@ namespace System.Buffers
         {
             return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }
+
+        internal static readonly T[] EmptyArray = new T[0];
     }
 }

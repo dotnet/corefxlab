@@ -5,7 +5,7 @@
 using Xunit;
 using System.Runtime.InteropServices;
 
-namespace System.Slices.Tests
+namespace System.Buffers.Tests
 {
     public static partial class StringSliceTests
     {
