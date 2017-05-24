@@ -15,6 +15,8 @@
     <ProjectReference Include="..\..\tests\System.Binary.Base64.Tests\System.Binary.Base64.Tests.csproj" />
     <ProjectReference Include="..\..\tests\System.Text.Primitives.Tests\System.Text.Primitives.Tests.csproj" />
     <ProjectReference Include="..\..\tests\System.Text.Json.Tests\System.Text.Json.Tests.csproj" />
+    <ProjectReference Include="..\..\tests\System.IO.Compression.Tests\System.IO.Compression.Tests.csproj" />
+    
   </ItemGroup>
 
   <ItemGroup>
