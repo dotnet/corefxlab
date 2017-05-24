@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\tools\common.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Description>Brotli compression APIs</Description>
+    <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationIcon />
+    <OutputTypeEx>library</OutputTypeEx>
+    <StartupObject />
+  </PropertyGroup>
+  <!-- Platform specific properties -->
+  <PropertyGroup Condition="'$(Platform)' == 'amd64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <BaseAddress>0x180000000</BaseAddress>
+    <DefineConstants>BIT64;AMD64;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <BaseAddress>0x10000000</BaseAddress>
+    <DefineConstants>BIT32;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'arm'">
+    <PlatformTarget>arm</PlatformTarget>
+    <DefineConstants>BIT32;ARM;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'arm64'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DefineConstants>BIT64;ARM64;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+</Project>
