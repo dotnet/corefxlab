@@ -308,7 +308,7 @@ namespace System.Binary.Base64.Tests
         [Fact]
         public void GenerateDecodingMapAndVerify()
         {
-            var data = new byte[123]; // 'z' = 123
+            var data = new byte[123]; // 'z' = 122
             for(int i = 0; i < data.Length; i++)
             {
                 data[i] = s_invalidByte;

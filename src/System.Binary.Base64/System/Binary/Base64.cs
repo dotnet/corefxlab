@@ -21,7 +21,7 @@ namespace System.Binary.Base64
         };
         
         // Pre-computing this table using a custom string(s_characters) and GenerateDecodingMapAndVerify (found in tests)
-        static readonly byte[] s_decodingMap = {
+        /*static readonly byte[] s_decodingMap = {
             255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
             255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
             255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 62, 255, 255, 255, 63,   //62 is placed at index 43 (for +), 63 at index 47 (for /)
@@ -30,6 +30,26 @@ namespace System.Binary.Base64
             15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 255, 255, 255, 255, 255,            //0-25 are placed at index 65-90 (for A-Z)
             255, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
             41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51                                      //26-51 are placed at index 97-122 (for a-z)
+        };*/
+
+        // Pre-computing this table using a custom string(s_characters) and GenerateDecodingMapAndVerify (found in tests)
+        static readonly byte[] s_decodingMap = {
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 62, 255, 255, 255, 63,   //62 is placed at index 43 (for +), 63 at index 47 (for /)
+            52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 255, 255, 255, 64, 255, 255,            //52-61 are placed at index 48-57 (for 0-9), 64 at index 61 (for =)
+            255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 255, 255, 255, 255, 255,            //0-25 are placed at index 65-90 (for A-Z)
+            255, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 255, 255, 255, 255, 255,            //26-51 are placed at index 97-122 (for a-z)
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // Bytes over 122 ('z') are invalid and cannot be decoded
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // Hence, padding the map with 255, which indicates invalid input
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
         };
 
         static readonly byte s_encodingPad = s_encodingMap[64];     // s_encodingMap[64] is '=', for padding
@@ -232,8 +252,7 @@ namespace System.Binary.Base64
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool Decode(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
         {
-            if (b0 > 122 || b1 > 122 || b2 > 122 || b3 > 122 
-                || b0 == s_encodingPad || b1 == s_encodingPad) goto ErrorExit;
+            if (b0 == s_encodingPad || b1 == s_encodingPad) goto ErrorExit;
 
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
@@ -255,8 +274,7 @@ namespace System.Binary.Base64
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool DecodeNoPad(byte b0, byte b1, byte b2, byte b3, out byte r0, out byte r1, out byte r2)
         {
-            if (b0 > 122 || b1 > 122 || b2 > 122 || b3 > 122 
-                || b0 == s_encodingPad || b1 == s_encodingPad || b2 == s_encodingPad || b3 == s_encodingPad) goto ErrorExit;
+            if (b0 == s_encodingPad || b1 == s_encodingPad || b2 == s_encodingPad || b3 == s_encodingPad) goto ErrorExit;
 
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
@@ -292,8 +310,7 @@ namespace System.Binary.Base64
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool Decode(byte b0, byte b1, byte b2, out byte r0, out byte r1)
         {
-            if (b0 > 122 || b1 > 122 || b2 > 122 
-                || b0 == s_encodingPad || b1 == s_encodingPad) goto ErrorExit;
+            if (b0 == s_encodingPad || b1 == s_encodingPad) goto ErrorExit;
 
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
@@ -326,8 +343,7 @@ namespace System.Binary.Base64
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool Decode(byte b0, byte b1, out byte r0)
         {
-            if (b0 > 122 || b1 > 122 
-                || b0 == s_encodingPad || b1 == s_encodingPad) goto ErrorExit;
+            if (b0 == s_encodingPad || b1 == s_encodingPad) goto ErrorExit;
 
             byte i0 = s_decodingMap[b0];
             byte i1 = s_decodingMap[b1];
