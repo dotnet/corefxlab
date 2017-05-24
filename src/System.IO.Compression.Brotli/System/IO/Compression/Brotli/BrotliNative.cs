@@ -69,7 +69,7 @@ namespace System.IO.Compression
             NeedsMoreOutput
         };
 
-              #region Encoder
+        #region Encoder
         public static IntPtr BrotliEncoderCreateInstance()
         {
            return Interop.Brotli.BrotliEncoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
