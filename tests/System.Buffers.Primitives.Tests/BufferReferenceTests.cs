@@ -29,5 +29,21 @@ namespace System.Buffers.Tests
                 return (Buffer<byte>)new byte[1024];
             });
         }
+
+        [Fact]
+        public void EmptyBufferReferenceTests()
+        {
+            BufferReferenceTests.TestBuffer(() => {
+                return Buffer<byte>.Empty;
+            });
+        }
+
+        [Fact]
+        public void EmptyReadOnlyBufferReferenceTests()
+        {
+            BufferReferenceTests.TestBuffer(() => {
+                return ReadOnlyBuffer<byte>.Empty;
+            });
+        }
     }
 }

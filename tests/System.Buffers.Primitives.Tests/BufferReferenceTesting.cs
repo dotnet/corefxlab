@@ -190,6 +190,12 @@ namespace System.Buffers.Tests
             BufferBasics(create());
             BufferLifetime(create());
         }
+        
+        public static void TestBuffer(Func<ReadOnlyBuffer<byte>> create)
+        {
+            BufferBasics(create());
+            BufferLifetime(create());
+        }
 
         static void BufferBasics(Buffer<byte> buffer)
         {
@@ -236,6 +242,38 @@ namespace System.Buffers.Tests
             //using(var handle = buffer.Retain())
             //{
             //}
+        }
+
+        static void BufferBasics(ReadOnlyBuffer<byte> buffer)
+        {
+            var span = buffer.Span;
+            Assert.Equal(buffer.Length, span.Length);
+            Assert.True(buffer.IsEmpty || buffer.Length != 0);
+
+            var slice = buffer.Slice(1);
+
+            for (int i = 0; i < slice.Length; i++) Assert.Equal(slice.Span[i], span[i+1]);
+
+            var array = buffer.ToArray();
+            for (int i = 0; i < array.Length; i++) Assert.Equal(array[i], span[i]);
+        }
+
+        static void BufferLifetime(ReadOnlyBuffer<byte> buffer)
+        {
+            var array = buffer.ToArray();
+            using(var handle = buffer.Retain())
+            using (var pinned = buffer.Pin())
+            {
+                unsafe
+                {
+                    var p = (byte*)pinned.PinnedPointer;
+                    Assert.True(null != p);
+                    for(int i=0; i<buffer.Length; i++)
+                    {
+                        Assert.Equal(array[i], p[i]);
+                    }
+                }
+            }
         }
     }
 }
