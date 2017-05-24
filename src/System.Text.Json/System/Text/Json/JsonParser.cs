@@ -190,7 +190,7 @@ namespace System.Text.Json
                         break;
                     case JsonTokenType.ArrayEnd:
                         _db.Span.Slice(FindLocation(_stack.ArrayStackCount - 1, false)).Write<int>(arrayItemsCount);
-                        arrayItemsCount += _stack.PopArray();
+                        arrayItemsCount = _stack.PopArray();
                         break;
                     case JsonTokenType.Property:
                         ParsePropertyName();

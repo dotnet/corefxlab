@@ -34,7 +34,7 @@ namespace System.Text.Primitives.Tests
         {
             bool value;
             int bytesConsumed;
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
             ReadOnlySpan<byte> utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -55,7 +55,7 @@ namespace System.Text.Primitives.Tests
         {
             bool value;
             int bytesConsumed;
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 fixed (byte* utf8ByteStar = utf8ByteArray)

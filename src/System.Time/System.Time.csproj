@@ -2,7 +2,7 @@
   <Import Project="..\..\tools\common.props" />
   <PropertyGroup>
     <Description>Date and Time helper classes</Description>
-    <TargetFrameworks>netstandard1.3;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <PackageTags>Date TimeOfDay Time corefxlab</PackageTags>
     <RootNamespace />
   </PropertyGroup>
@@ -12,8 +12,5 @@
     <PackageReference Include="System.Resources.ResourceManager" Version="$(CoreFxVersion)" />
     <PackageReference Include="System.Text.RegularExpressions" Version="$(CoreFxVersion)" />
     <PackageReference Include="System.Xml.ReaderWriter" Version="$(CoreFxVersion)" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System.Xml" />
   </ItemGroup>
 </Project>

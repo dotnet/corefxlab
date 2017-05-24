@@ -34,6 +34,12 @@ namespace System.Buffers
             return new Span<T>(_array, index, length);
         }
 
+        public override Span<T> AsSpan()
+        {
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
+            return new Span<T>(_array, 0, _array.Length);
+        }
+
         public override BufferHandle Pin(int index = 0)
         {
             unsafe
@@ -59,7 +65,7 @@ namespace System.Buffers
 
         public override void Retain()
         {
-            if (IsDisposed) throw new InvalidOperationException();
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedArray<T>));
             Interlocked.Increment(ref _referenceCount);
         }
 
@@ -68,11 +74,11 @@ namespace System.Buffers
             Debug.Assert(!IsDisposed);
             if (Interlocked.Decrement(ref _referenceCount) == 0)
             {
-                OnZeroReferences();
+                OnNoReferences();
             }
         }
 
-        protected virtual void OnZeroReferences()
+        protected virtual void OnNoReferences()
         {
         }
 

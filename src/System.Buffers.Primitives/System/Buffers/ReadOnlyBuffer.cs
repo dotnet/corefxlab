@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Buffers
 {
@@ -13,11 +14,29 @@ namespace System.Buffers
     public struct ReadOnlyBuffer<T> : IEquatable<ReadOnlyBuffer<T>>, IEquatable<Buffer<T>>
     {
         readonly OwnedBuffer<T> _owner;
+        readonly T[] _array;
         readonly int _index;
         readonly int _length;
 
         internal ReadOnlyBuffer(OwnedBuffer<T> owner,int index, int length)
         {
+            _array = null;
+            _owner = owner;
+            _index = index;
+            _length = length;
+        }
+
+        internal ReadOnlyBuffer(T[] array, int index, int length)
+        {
+            _array = array;
+            _owner = null;
+            _index = index;
+            _length = length;
+        }
+
+        private ReadOnlyBuffer(OwnedBuffer<T> owner, T[] array, int index, int length)
+        {
+            _array = array;
             _owner = owner;
             _index = index;
             _length = length;
@@ -26,8 +45,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ReadOnlyBuffer<T>(T[] array)
         {
-            var owner = new OwnedArray<T>(array);
-            return owner.Buffer;
+            return new ReadOnlyBuffer<T>(array, 0, array.Length);
         }
 
         public static ReadOnlyBuffer<T> Empty { get; } = Internal.OwnedEmptyBuffer<T>.Shared.Buffer;
@@ -39,30 +57,54 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBuffer<T> Slice(int index)
         {
-            return new ReadOnlyBuffer<T>(_owner, _index + index, _length - index);
+            return new ReadOnlyBuffer<T>(_owner, _array, _index + index, _length - index);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyBuffer<T> Slice(int index, int length)
         {
-            return new ReadOnlyBuffer<T>(_owner, _index + index, length);
+            return new ReadOnlyBuffer<T>(_owner, _array, _index + index, length);
         }
 
-        public ReadOnlySpan<T> Span => _owner.AsSpan(_index, _length);
+        public ReadOnlySpan<T> Span
+        {
+            get {
+                if (_array != null) return new ReadOnlySpan<T>(_array, _index, _length);
+                return _owner.AsSpan(_index, _length);
+            }
+        }
 
         public BufferHandle Retain()
         {
-            _owner.Retain();
-            return new BufferHandle(_owner);
+            if (_owner != null)
+            {
+                _owner.Retain();
+                return new BufferHandle(_owner);
+            }
+            return new BufferHandle();
         }
 
-        public BufferHandle Pin() => _owner.Pin(_index);
+        public BufferHandle Pin()
+        {
+            if (_owner != null)
+            {
+                return _owner.Pin(_index);
+            }
+            var handle = GCHandle.Alloc(_array, GCHandleType.Pinned);
+            unsafe
+            {
+                var pointer = OwnedBuffer<T>.Add((void*)handle.AddrOfPinnedObject(), _index);
+                return new BufferHandle(null, pointer, handle);
+            }
+        }
 
         public bool TryGetArray(out ArraySegment<T> buffer)
         {
             if (!_owner.TryGetArray(out buffer))
             {
-                return false;
+                if (_array == null) return false;
+                buffer = new ArraySegment<T>(_array, _index, _length);
+                return true;
             }
             buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
             return true;
@@ -93,6 +135,7 @@ namespace System.Buffers
         public bool Equals(ReadOnlyBuffer<T> other)
         {
             return
+                _array == other._array &&
                 _owner == other._owner &&
                 _index == other._index &&
                 _length == other._length;
@@ -119,7 +162,11 @@ namespace System.Buffers
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode()
         {
-            return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
+            if (_owner != null)
+            {
+                return HashingHelper.CombineHashCodes(_owner.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
+            }
+            return HashingHelper.CombineHashCodes(_array.GetHashCode(), _index.GetHashCode(), _length.GetHashCode());
         }
     }
 }
