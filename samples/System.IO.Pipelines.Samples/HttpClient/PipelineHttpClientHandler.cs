@@ -10,20 +10,18 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO.Pipelines.Networking.Libuv;
 using System.IO.Pipelines.Text.Primitives;
 using System.Text;
 using System.Text.Formatting;
 
 namespace System.IO.Pipelines.Samples
 {
-    public class LibuvHttpClientHandler : HttpClientHandler
+    public abstract class PipelineHttpClientHandler : HttpClientHandler
     {
-        private readonly UvThread _thread = new UvThread();
 
         private ConcurrentDictionary<string, ConnectionState> _connectionPool = new ConcurrentDictionary<string, ConnectionState>();
 
-        public LibuvHttpClientHandler()
+        public PipelineHttpClientHandler()
         {
 
         }
@@ -70,7 +68,7 @@ namespace System.IO.Pipelines.Samples
             return response;
         }
 
-        private static async Task ProduceResponse(ConnectionState state, UvTcpConnection connection, HttpResponseMessage response)
+        private static async Task ProduceResponse(ConnectionState state, IPipeConnection connection, HttpResponseMessage response)
         {
             // TODO: pipelining support!
             while (true)
@@ -149,7 +147,7 @@ namespace System.IO.Pipelines.Samples
                         {
                             break;
                         }
-
+                        
                         int ch = responseBuffer.First.Span[0];
 
                         if (ch == '\r')
@@ -270,15 +268,15 @@ namespace System.IO.Pipelines.Samples
             return state;
         }
 
-        private async Task<UvTcpConnection> ConnectAsync(HttpRequestMessage request)
+        private async Task<IPipeConnection> ConnectAsync(HttpRequestMessage request)
         {
             var addresses = await Dns.GetHostAddressesAsync(request.RequestUri.Host);
             var port = request.RequestUri.Port;
-
-            var address = addresses.First(a => a.AddressFamily == AddressFamily.InterNetwork);
-            var connection = new UvTcpClient(_thread, new IPEndPoint(address, port));
-            return await connection.ConnectAsync();
+            var address = addresses.First(a => a.AddressFamily == AddressFamily.InterNetwork);           
+            return await ConnectAsync(new IPEndPoint(address, port));
         }
+
+        protected abstract Task<IPipeConnection> ConnectAsync(IPEndPoint ipEndpoint);
 
         protected override void Dispose(bool disposing)
         {
@@ -287,17 +285,13 @@ namespace System.IO.Pipelines.Samples
                 state.Value.ConnectionTask.GetAwaiter().GetResult().Output.Complete();
             }
 
-            _thread.Dispose();
-
             base.Dispose(disposing);
         }
 
         private class ConnectionState
         {
-            public Task<UvTcpConnection> ConnectionTask { get; set; }
-
+            public Task<IPipeConnection> ConnectionTask { get; set; }
             public int PreviousContentLength { get; set; }
-
             public ReadCursor Consumed { get; set; }
         }
     }

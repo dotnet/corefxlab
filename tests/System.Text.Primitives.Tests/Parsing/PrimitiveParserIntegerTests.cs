@@ -21,9 +21,9 @@ namespace System.Text.Primitives.Tests
         private byte[] UtfEncode(string s, bool utf16)
         {
             if (utf16)
-                return Encoding.Unicode.GetBytes(s);
+                return Text.Encoding.Unicode.GetBytes(s);
             else
-                return Encoding.UTF8.GetBytes(s);
+                return Text.Encoding.UTF8.GetBytes(s);
         }
 
         static Tuple<byte, int>[] s_utf8ParsingTrie = new Tuple<byte, int>[] {

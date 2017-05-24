@@ -7,6 +7,13 @@ namespace System.Time.Tests
 {
     public class DateTimeTests
     {
+
+#if Windows
+    string TimeZoneId = "Pacific Standard Time";
+#else
+    string TimeZoneId = "America/Los_Angeles";
+#endif
+
         [Fact]
         public void CanAssignDateTimeTodayToDate()
         {
@@ -22,7 +29,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddYearsAcrossDstTransition()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2014, 3, 9, 0, 0, 0);
             var result = dt.AddYears(1, tz);
 
@@ -34,7 +41,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddMonthsAcrossDstTransition()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 2, 9, 0, 0, 0);
             var result = dt.AddMonths(1, tz);
 
@@ -46,7 +53,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddDaysAcrossDstTransition()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 3, 8, 0, 0, 0);
             var result = dt.AddDays(1, tz);
 
@@ -58,7 +65,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddDaysAcrossDstTransition_LandInGap()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 3, 7, 2, 30, 0);
             var result = dt.AddDays(1, tz);
 
@@ -70,7 +77,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddDaysAcrossDstTransition_LandInOverlap()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 10, 31, 1, 30, 0);
             var result = dt.AddDays(1, tz);
 
@@ -82,7 +89,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddDaysAcrossDstTransition_StartWithMismatchedKind()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 3, 8, 8, 0, 0, DateTimeKind.Utc);
             var result = dt.AddDays(1, tz);
 
@@ -95,7 +102,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddHoursAcrossDstTransition()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 3, 8, 1, 0, 0);
             var result = dt.AddHours(1, tz);
 
@@ -107,7 +114,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddHoursAcrossDstTransition_StartWithMismatchedKind()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 3, 8, 9, 0, 0, DateTimeKind.Utc);
             var result = dt.AddHours(1, tz);
 
@@ -119,7 +126,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddMinutesAcrossDstTransition()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 3, 8, 1, 59, 0);
             var result = dt.AddMinutes(1, tz);
 
@@ -131,7 +138,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddSecondsAcrossDstTransition()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 3, 8, 1, 59, 59);
             var result = dt.AddSeconds(1, tz);
 
@@ -143,7 +150,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddMillisecondsAcrossDstTransition()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 3, 8, 1, 59, 59, 999);
             var result = dt.AddMilliseconds(1, tz);
 
@@ -155,7 +162,7 @@ namespace System.Time.Tests
         [Fact]
         public void CanAddTicksAcrossDstTransition()
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
             var dt = new DateTime(2015, 3, 8, 1, 59, 59, 999).AddTicks(9999);
             var result = dt.AddTicks(1, tz);
 

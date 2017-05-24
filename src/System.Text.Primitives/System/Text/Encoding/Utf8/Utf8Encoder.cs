@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
-using System.Text.Utf16;
 using System.Diagnostics;
 
 namespace System.Text.Utf8
@@ -667,7 +666,7 @@ namespace System.Text.Utf8
                 // Thus don't use the fast decoding loop at all if we don't have enough characters. The threashold
                 // was choosen based on performance testing.
                 // Note that if we don't have enough bytes, pStop will prevent us from entering the fast loop.
-                while (pSrc < pEnd - 13)
+                while (pEnd - pSrc > 13)
                 {
                     // we need at least 1 byte per character, but Convert might allow us to convert
                     // only part of the input, so try as much as we can.  Reduce charCount if necessary
@@ -837,7 +836,7 @@ namespace System.Text.Utf8
 
                     if (ch <= 0x7F)
                     {
-                        if (pTarget >= pAllocatedBufferEnd)
+                        if (pAllocatedBufferEnd - pTarget <= 0)
                             goto NeedMore;
 
                         *pTarget = (byte)ch;
@@ -848,7 +847,7 @@ namespace System.Text.Utf8
                     int chd;
                     if (ch <= 0x7FF)
                     {
-                        if (pTarget >= pAllocatedBufferEnd - 1)
+                        if (pAllocatedBufferEnd - pTarget <= 1)
                             goto NeedMore;
 
                         // 2 byte encoding
@@ -859,7 +858,7 @@ namespace System.Text.Utf8
                         // if (!IsLowSurrogate(ch) && !IsHighSurrogate(ch))
                         if (!InRange(ch, HIGH_SURROGATE_START, LOW_SURROGATE_END))
                         {
-                            if (pTarget >= pAllocatedBufferEnd - 2)
+                            if (pAllocatedBufferEnd - pTarget <= 2)
                                 goto NeedMore;
 
                             // 3 byte encoding
@@ -867,7 +866,7 @@ namespace System.Text.Utf8
                         }
                         else
                         {
-                            if (pTarget >= pAllocatedBufferEnd - 3)
+                            if (pAllocatedBufferEnd - pTarget <= 3)
                                 goto NeedMore;
 
                             // 4 byte encoding - high surrogate + low surrogate

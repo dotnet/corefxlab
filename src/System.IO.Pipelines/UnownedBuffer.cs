@@ -70,6 +70,7 @@ namespace System.IO.Pipelines
 
         public override void Retain()
         {
+            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(UnownedBuffer));
             Interlocked.Increment(ref _referenceCount);
         }
 

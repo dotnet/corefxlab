@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Runtime;
 using System.Runtime.CompilerServices;
 
 namespace System.Buffers
@@ -14,11 +15,27 @@ namespace System.Buffers
 
         public abstract Span<T> AsSpan(int index, int length);
 
-        public virtual Span<T> AsSpan() => AsSpan(0, Length);
+        public virtual Span<T> AsSpan()
+        {
+            if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer<T>));
+            return AsSpan(0, Length);
+        }
 
-        public Buffer<T> Buffer => new Buffer<T>(this, 0, Length);
+        public Buffer<T> Buffer
+        {
+            get {
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer<T>));
+                return new Buffer<T>(this, 0, Length);
+            }
+        }
 
-        public ReadOnlyBuffer<T> ReadOnlyBuffer => new ReadOnlyBuffer<T>(this, 0, Length);
+        public ReadOnlyBuffer<T> ReadOnlyBuffer
+        {
+            get {
+                if (IsDisposed) BufferPrimitivesThrowHelper.ThrowObjectDisposedException(nameof(OwnedBuffer<T>));
+                return new ReadOnlyBuffer<T>(this, 0, Length);
+            }
+        }
 
         public abstract BufferHandle Pin(int index = 0);
 
@@ -42,7 +59,7 @@ namespace System.Buffers
         public abstract void Release();
         #endregion
 
-        protected static unsafe void* Add(void* pointer, int offset)
+        protected internal static unsafe void* Add(void* pointer, int offset)
         {
             return (byte*)pointer + ((ulong)Unsafe.SizeOf<T>() * (ulong)offset);
         }

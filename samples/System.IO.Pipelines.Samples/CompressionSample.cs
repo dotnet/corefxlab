@@ -5,12 +5,13 @@
 using System.IO.Compression;
 using System.IO.Pipelines.Compression;
 using System.IO.Pipelines.File;
+using System.Threading.Tasks;
 
 namespace System.IO.Pipelines.Samples
 {
-    public class CompressionSample
+    public class CompressionSample : ISample
     {
-        public static void Run()
+        public Task Run()
         {
             using (var factory = new PipeFactory())
             {
@@ -39,6 +40,8 @@ namespace System.IO.Pipelines.Samples
                 input.Complete();
 
                 outputPipe.Writer.Complete();
+
+                return Task.CompletedTask;
             }
         }
     }

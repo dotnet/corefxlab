@@ -25,54 +25,54 @@ namespace System.Text.Json
             var properties = new Dictionary<JsonProperty, JsonValue>(expectedNumberOfProperties);
             stack.Push(new JsonDynamicObject(properties));
 
-            var reader = new JsonReader(new Utf8String(utf8));
+            var reader = new JsonReader(utf8, TextEncoder.Utf8);
             while (reader.Read())
             {
                 switch (reader.TokenType)
                 {
-                    case JsonReader.JsonTokenType.Property:
-                        var name = reader.GetName();
-                        var type = reader.GetJsonValueType();
-                        var value = reader.GetValue();
+                    case JsonTokenType.PropertyName:
+                        var name = new Utf8String(reader.Value);
+                        reader.Read(); // Move to the value token
+                        var type = reader.ValueType;
                         var current = stack.Peek();
                         var property = new JsonProperty(current, name);
-                        switch (type)
-                        {
-                            case JsonReader.JsonValueType.String:
-                                current._properties[property] = new JsonValue(value);
+                            switch (type)
+                            {
+                            case JsonValueType.String:
+                                current._properties[property] = new JsonValue(new Utf8String(reader.Value));
                                 break;
-                            case JsonReader.JsonValueType.Object: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
+                            case JsonValueType.Object: // TODO: could this be lazy? Could this reuse the root JsonObject (which would store non-allocating JsonDom)?
                                 var newObj = new JsonDynamicObject(properties);
                                 current._properties[property] = new JsonValue(newObj);
                                 stack.Push(newObj);
-                                break;
-                            case JsonReader.JsonValueType.True:
-                                current._properties[property] = new JsonValue(type);
-                                break;
-                            case JsonReader.JsonValueType.False:
-                                current._properties[property] = new JsonValue(type);
-                                break;
-                            case JsonReader.JsonValueType.Null:
-                                current._properties[property] = new JsonValue(type);
-                                break;
-                            case JsonReader.JsonValueType.Number:
-                                current._properties[property] = new JsonValue(value, type);
-                                break;
-                            case JsonReader.JsonValueType.Array:
+                                    break;
+                            case JsonValueType.True:
+                                    current._properties[property] = new JsonValue(type);
+                                    break;
+                            case JsonValueType.False:
+                                    current._properties[property] = new JsonValue(type);
+                                    break;
+                            case JsonValueType.Null:
+                                    current._properties[property] = new JsonValue(type);
+                                    break;
+                            case JsonValueType.Number:
+                                current._properties[property] = new JsonValue(new Utf8String(reader.Value), type);
+                                    break;
+                            case JsonValueType.Array:
                                 throw new NotImplementedException("array support not implemented yet.");
-                            default:
-                                throw new NotSupportedException();
-                        }
+                                default:
+                                    throw new NotSupportedException();
+                            }
                         break;
-                    case JsonReader.JsonTokenType.ObjectStart:
+                    case JsonTokenType.StartObject:
                         break;
-                    case JsonReader.JsonTokenType.ObjectEnd:
+                    case JsonTokenType.EndObject:
                         if (stack.Count != 1) { stack.Pop(); }
                         break;
-                    case JsonReader.JsonTokenType.ArrayStart:
+                    case JsonTokenType.StartArray:
                         throw new NotImplementedException("array support not implemented yet.");
-                    case JsonReader.JsonTokenType.ArrayEnd:
-                    case JsonReader.JsonTokenType.Value:
+                    case JsonTokenType.EndArray:
+                    case JsonTokenType.Value:
                         break;
                     default:
                         throw new NotSupportedException();
@@ -92,7 +92,7 @@ namespace System.Text.Json
                 return false;
             }
 
-            if(jsonValue.Type != JsonReader.JsonValueType.Number)
+            if(jsonValue.Type != JsonValueType.Number)
             {
                 throw new InvalidOperationException();
             }
@@ -109,7 +109,7 @@ namespace System.Text.Json
                 return false;
             }
 
-            if (jsonValue.Type != JsonReader.JsonValueType.String)
+            if (jsonValue.Type != JsonValueType.String)
             {
                 throw new InvalidOperationException();
             }
@@ -152,7 +152,7 @@ namespace System.Text.Json
             var property = new JsonProperty(this, name);
             if(value == null)
             {
-                _properties[property] = new JsonValue(JsonReader.JsonValueType.Null);
+                _properties[property] = new JsonValue(JsonValueType.Null);
                 return true;
             }
             if(value is string)
@@ -227,9 +227,9 @@ namespace System.Text.Json
         {
             JsonDynamicObject _object;
             Utf8String _value;
-            JsonReader.JsonValueType _type;
+            JsonValueType _type;
 
-            public JsonValue(Utf8String value, JsonReader.JsonValueType type = JsonReader.JsonValueType.String)
+            public JsonValue(Utf8String value, JsonValueType type = JsonValueType.String)
             {
                 _value = value;
                 _object = null;
@@ -239,10 +239,10 @@ namespace System.Text.Json
             {
                 _value = default(Utf8String);
                 _object = obj;
-                _type = JsonReader.JsonValueType.Object;
+                _type = JsonValueType.Object;
             }
 
-            public JsonValue(JsonReader.JsonValueType type)
+            public JsonValue(JsonValueType type)
             {
                 _type = type;
                 _value = default(Utf8String);
@@ -251,16 +251,16 @@ namespace System.Text.Json
 
             public JsonDynamicObject Object { get { return _object; } }
             public Utf8String Value { get { return _value; } }
-            public JsonReader.JsonValueType Type { get { return _type; } }
+            public JsonValueType Type { get { return _type; } }
 
             public object ToObject()
             {
                 if (_object != null) return _object;
-                if (_type == JsonReader.JsonValueType.Null) return null;
-                if (_type == JsonReader.JsonValueType.True) return true;
-                if (_type == JsonReader.JsonValueType.False) return false;
-                if (_type == JsonReader.JsonValueType.String) return _value;
-                if (_type == JsonReader.JsonValueType.Number)
+                if (_type == JsonValueType.Null) return null;
+                if (_type == JsonValueType.True) return true;
+                if (_type == JsonValueType.False) return false;
+                if (_type == JsonValueType.String) return _value;
+                if (_type == JsonValueType.Number)
                 {
                     return double.Parse(_value.ToString());
                 }
@@ -271,17 +271,17 @@ namespace System.Text.Json
             {
                 switch (_type)
                 {
-                    case JsonReader.JsonValueType.String:
+                    case JsonValueType.String:
                         return _value.TryFormatQuotedString(buffer, out written, format, encoder: encoder);
-                    case JsonReader.JsonValueType.Number:
+                    case JsonValueType.Number:
                         return _value.TryFormat(buffer, out written, format, encoder: encoder);
-                    case JsonReader.JsonValueType.Object:
+                    case JsonValueType.Object:
                         return _object.TryFormat(buffer, out written, format, encoder);
-                    case JsonReader.JsonValueType.Null:
+                    case JsonValueType.Null:
                         return encoder.TryEncode("null", buffer, out written);
-                    case JsonReader.JsonValueType.True:
+                    case JsonValueType.True:
                         return encoder.TryEncode("true", buffer, out written);
-                    case JsonReader.JsonValueType.False:
+                    case JsonValueType.False:
                         return encoder.TryEncode("false", buffer, out written);
                     default:
                         throw new NotImplementedException();

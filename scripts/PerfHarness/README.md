@@ -22,7 +22,9 @@ results.
    
 3c. To run specific tests found in a specific assembly only, pass in the assembly name and type names to the harness:
    
-   (`..\..\dotnet\dotnet.exe run -c Release -- --assembly Benchmarks --perf:typenames name1 [name2] [...]`)
+   (`..\..\dotnet\dotnet.exe run -c Release -- --assembly <name> --perf:typenames name1 [name2] [...]`)
+   
+   Example: `..\..\dotnet\dotnet.exe run -c Release -- --assembly System.Text.Primitives.Tests --perf:typenames System.Text.Primitives.Tests.EncodingPerfComparisonTests`
 
 ## Add a New Performance Test
 

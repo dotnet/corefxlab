@@ -6,193 +6,567 @@ using System.Text.Formatting;
 
 namespace System.Text.Json
 {
-    public struct JsonWriter<TFormatter> where TFormatter: ITextOutput
+    public struct JsonWriter
     {
-        TFormatter _formatter;
-        bool _wroteListItem;
-        bool _prettyPrint;
-        int _indent;
+        readonly bool _prettyPrint;
+        readonly ITextOutput _output;
+        readonly JsonEncoderState _encoderState;
 
-        public JsonWriter(TFormatter formatter, bool prettyPrint = false)
+        int _indent;
+        bool _firstItem;
+
+        // These next 2 properties are used to check for whether we can take the fast path
+        // for invariant UTF-8 or UTF-16 processing. Otherwise, we need to go through the
+        // slow path which makes use of the (possibly generic) encoder.
+        private bool UseFastUtf8 => _encoderState == JsonEncoderState.UseFastUtf8;
+        private bool UseFastUtf16 => _encoderState == JsonEncoderState.UseFastUtf16;
+
+        /// <summary>
+        /// Constructs a JSON writer with a specified <paramref name="output"/>.
+        /// </summary>
+        /// <param name="output">An instance of <see cref="ITextOutput" /> used for writing bytes to an output channel.</param>
+        /// <param name="prettyPrint">Specifies whether to add whitespace to the output text for user readability.</param>
+        public JsonWriter(ITextOutput output, bool prettyPrint = false)
         {
-            _wroteListItem = false;
+            _output = output;
             _prettyPrint = prettyPrint;
-            _indent = 0;
-            _formatter = formatter;
+
+            _indent = -1;
+            _firstItem = true;
+
+            var encoder = output.Encoder;
+            if (encoder.IsInvariantUtf8)
+                _encoderState = JsonEncoderState.UseFastUtf8;
+            else if (encoder.IsInvariantUtf16)
+                _encoderState = JsonEncoderState.UseFastUtf16;
+            else
+                _encoderState = JsonEncoderState.UseFullEncoder;
         }
 
-        public bool PrettyPrint { get { return _prettyPrint; } set { _prettyPrint = value; } }
-
+        /// <summary>
+        /// Write the starting tag of an object. This is used for adding an object to an 
+        /// array of other items. If this is used while inside a nested object, the property
+        /// name will be missing and result in invalid JSON.
+        /// </summary>
         public void WriteObjectStart()
         {
-            _wroteListItem = false;
-            _formatter.Append('{');
-            WriteNewline();
+            WriteItemSeperator();
+            WriteSpacing(false);
+            WriteControl(JsonConstants.OpenBrace);
+
+            _firstItem = true;
             _indent++;
         }
 
+        /// <summary>
+        /// Write the starting tag of an object. This is used for adding an object to a
+        /// nested object. If this is used while inside a nested array, the property
+        /// name will be written and result in invalid JSON.
+        /// </summary>
+        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
+        public void WriteObjectStart(string name)
+        {
+            WriteStartAttribute(name);
+            WriteControl(JsonConstants.OpenBrace);
+
+            _firstItem = true;
+            _indent++;
+        }
+
+        /// <summary>
+        /// Writes the end tag for an object.
+        /// </summary>
         public void WriteObjectEnd()
         {
+            _firstItem = false;
             _indent--;
-            WriteNewline();
-            WriteIndent();
-            _formatter.Append('}');
-            _wroteListItem = true;
+            WriteSpacing();
+            WriteControl(JsonConstants.CloseBrace);
         }
 
+        /// <summary>
+        /// Write the starting tag of an array. This is used for adding an array to a nested
+        /// array of other items. If this is used while inside a nested object, the property
+        /// name will be missing and result in invalid JSON.
+        /// </summary>
         public void WriteArrayStart()
         {
-            _wroteListItem = false;
-            _formatter.Append('[');
-            WriteNewline();
+            WriteItemSeperator();
+            WriteSpacing();
+            WriteControl(JsonConstants.OpenBracket);
+
+            _firstItem = true;
             _indent++;
         }
 
+        /// <summary>
+        /// Write the starting tag of an array. This is used for adding an array to a
+        /// nested object. If this is used while inside a nested array, the property
+        /// name will be written and result in invalid JSON.
+        /// </summary>
+        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
+        public void WriteArrayStart(string name)
+        {
+            WriteStartAttribute(name);
+            WriteControl(JsonConstants.OpenBracket);
+
+            _firstItem = true;
+            _indent++;
+        }
+
+        /// <summary>
+        /// Writes the end tag for an array.
+        /// </summary>
         public void WriteArrayEnd()
         {
+            _firstItem = false;
             _indent--;
-            WriteNewline();
-            WriteIndent();
-            _formatter.Append(']');
-            _wroteListItem = true;
+            WriteSpacing();
+            WriteControl(JsonConstants.CloseBracket);
         }
 
-        public void WriteAttribute(string name, byte value)
-        {
-            WriteMember(name);
-            _formatter.Append(value);
-            WriteAttributeEnd();
-        }
-
-        public void WriteAttribute(string name, sbyte value)
-        {
-            WriteMember(name);
-            _formatter.Append(value);
-            WriteAttributeEnd();
-        }
-
-        public void WriteAttribute(string name, long value)
-        {
-            WriteMember(name);
-            _formatter.Append(value);
-            WriteAttributeEnd();
-        }
-
-        public void WriteAttribute(string name, ulong value)
-        {
-            WriteMember(name);
-            _formatter.Append(value);
-            WriteAttributeEnd();
-        }
-
-        public void WriteAttribute(string name, uint value)
-        {
-            WriteMember(name);
-            _formatter.Append(value);
-            WriteAttributeEnd();
-        }
-
-        public void WriteAttribute(string name, int value)
-        {
-            WriteMember(name);
-            _formatter.Append(value);
-            WriteAttributeEnd();
-        }
-
-        public void WriteAttribute(string name, ushort value)
-        {
-            WriteMember(name);
-            _formatter.Append(value);
-            WriteAttributeEnd();
-        }
-
-        public void WriteAttribute(string name, short value)
-        {
-            WriteMember(name);
-            _formatter.Append(value);
-            WriteAttributeEnd();
-        }
-
-        public void WriteAttribute(string name, char value)
-        {
-            WriteMember(name);
-            _formatter.Append('"');
-            _formatter.Append(value);
-            _formatter.Append('"');
-            WriteAttributeEnd();
-        }
-
+        /// <summary>
+        /// Write a quoted string value along with a property name into the current object.
+        /// </summary>
+        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
+        /// <param name="value">The string value that will be quoted within the JSON data.</param>
         public void WriteAttribute(string name, string value)
         {
-            WriteMember(name);
-            _formatter.Append('"');
-            _formatter.Append(value);
-            _formatter.Append('"');
-            WriteAttributeEnd();
+            WriteStartAttribute(name);
+            WriteQuotedString(value);
         }
 
+        /// <summary>
+        /// Write a signed integer value along with a property name into the current object.
+        /// </summary>
+        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
+        /// <param name="value">The signed integer value to be written to JSON data.</param>
+        public void WriteAttribute(string name, long value)
+        {
+            WriteStartAttribute(name);
+            WriteNumber(value);
+        }
+
+        /// <summary>
+        /// Write an unsigned integer value along with a property name into the current object.
+        /// </summary>
+        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
+        /// <param name="value">The unsigned integer value to be written to JSON data.</param>
+        public void WriteAttribute(string name, ulong value)
+        {
+            WriteStartAttribute(name);
+            WriteNumber(value);
+        }
+
+        /// <summary>
+        /// Write a boolean value along with a property name into the current object.
+        /// </summary>
+        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
+        /// <param name="value">The boolean value to be written to JSON data.</param>
         public void WriteAttribute(string name, bool value)
         {
-            WriteMember(name);
-            _formatter.Append(value ? "true" : "false");
-            WriteAttributeEnd();
+            WriteStartAttribute(name);
+            if (value)
+                WriteJsonValue(JsonConstants.TrueValue);
+            else
+                WriteJsonValue(JsonConstants.FalseValue);
         }
 
+        /// <summary>
+        /// Write a <see cref="DateTime"/> value along with a property name into the current object.
+        /// </summary>
+        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
+        /// <param name="value">The <see cref="DateTime"/> value to be written to JSON data.</param>
+        public void WriteAttribute(string name, DateTime value)
+        {
+            WriteStartAttribute(name);
+            WriteDateTime(value);
+        }
+
+        /// <summary>
+        /// Write a <see cref="DateTimeOffset"/> value along with a property name into the current object.
+        /// </summary>
+        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
+        /// <param name="value">The <see cref="DateTimeOffset"/> value to be written to JSON data.</param>
+        public void WriteAttribute(string name, DateTimeOffset value)
+        {
+            WriteStartAttribute(name);
+            WriteDateTimeOffset(value);
+        }
+
+        /// <summary>
+        /// Write a <see cref="Guid"/> value along with a property name into the current object.
+        /// </summary>
+        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
+        /// <param name="value">The <see cref="Guid"/> value to be written to JSON data.</param>
+        public void WriteAttribute(string name, Guid value)
+        {
+            WriteStartAttribute(name);
+            WriteGuid(value);
+        }
+
+        /// <summary>
+        /// Write a null value along with a property name into the current object.
+        /// </summary>
+        /// <param name="name">The name of the property (i.e. key) within the containing object.</param>
         public void WriteAttributeNull(string name)
         {
-            WriteMember(name);
-            _formatter.Append("null");
-            WriteAttributeEnd();
+            WriteStartAttribute(name);
+            WriteJsonValue(JsonConstants.NullValue);
         }
 
-        public void WriteString(string value)
+        /// <summary>
+        /// Writes a quoted string value into the current array.
+        /// </summary>
+        /// <param name="value">The string value that will be quoted within the JSON data.</param>
+        public void WriteValue(string value)
         {
-            ConsideComma();
-            WriteIndent();
-            _formatter.Append('"');
-            _formatter.Append(value);
-            _formatter.Append('"');
-            _wroteListItem = true;
+            WriteItemSeperator();
+            _firstItem = false;
+            WriteSpacing();
+            WriteQuotedString(value);
         }
 
-        private void WriteAttributeEnd()
+        /// <summary>
+        /// Write a signed integer value into the current array.
+        /// </summary>
+        /// <param name="value">The signed integer value to be written to JSON data.</param>
+        public void WriteValue(long value)
         {
-            _wroteListItem = true;
-
-        }
-        public void WriteMember(string name)
-        {
-            ConsideComma();
-            WriteIndent();
-            _formatter.Append('"');
-            _formatter.Append(name);
-            _formatter.Append("\":");
+            WriteItemSeperator();
+            _firstItem = false;
+            WriteSpacing();
+            WriteNumber(value);
         }
 
-        private void ConsideComma()
+        /// <summary>
+        /// Write a unsigned integer value into the current array.
+        /// </summary>
+        /// <param name="value">The unsigned integer value to be written to JSON data.</param>
+        public void WriteValue(ulong value)
         {
-            if (_wroteListItem) {
-                _formatter.Append(',');
-                WriteNewline();
+            WriteItemSeperator();
+            _firstItem = false;
+            WriteSpacing();
+            WriteNumber(value);
+        }
+
+        /// <summary>
+        /// Write a boolean value into the current array.
+        /// </summary>
+        /// <param name="value">The boolean value to be written to JSON data.</param>
+        public void WriteValue(bool value)
+        {
+            WriteItemSeperator();
+            _firstItem = false;
+            WriteSpacing();
+            if (value)
+                WriteJsonValue(JsonConstants.TrueValue);
+            else
+                WriteJsonValue(JsonConstants.FalseValue);
+        }
+
+        /// <summary>
+        /// Write a <see cref="DateTime"/> value into the current array.
+        /// </summary>
+        /// <param name="value">The <see cref="DateTime"/> value to be written to JSON data.</param>
+        public void WriteValue(DateTime value)
+        {
+            WriteItemSeperator();
+            _firstItem = false;
+            WriteSpacing();
+            WriteDateTime(value);
+        }
+
+        /// <summary>
+        /// Write a <see cref="DateTimeOffset"/> value into the current array.
+        /// </summary>
+        /// <param name="value">The <see cref="DateTimeOffset"/> value to be written to JSON data.</param>
+        public void WriteValue(DateTimeOffset value)
+        {
+            WriteItemSeperator();
+            _firstItem = false;
+            WriteSpacing();
+            WriteDateTimeOffset(value);
+        }
+
+        /// <summary>
+        /// Write a <see cref="Guid"/> value into the current array.
+        /// </summary>
+        /// <param name="value">The <see cref="Guid"/> value to be written to JSON data.</param>
+        public void WriteValue(Guid value)
+        {
+            WriteItemSeperator();
+            _firstItem = false;
+            WriteSpacing();
+            WriteGuid(value);
+        }
+
+        /// <summary>
+        /// Write a null value into the current array.
+        /// </summary>
+        public void WriteNull()
+        {
+            WriteItemSeperator();
+            _firstItem = false;
+            WriteSpacing();
+            WriteJsonValue(JsonConstants.NullValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteStartAttribute(string name)
+        {
+            WriteItemSeperator();
+            _firstItem = false;
+
+            WriteSpacing();
+            WriteQuotedString(name);
+            WriteControl(JsonConstants.KeyValueSeperator);
+
+            if (_prettyPrint)
+                WriteControl(JsonConstants.Space);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteControl(byte value)
+        {
+            if (UseFastUtf8)
+            {
+                EnsureBuffer(1).DangerousGetPinnableReference() = value;
+                _output.Advance(1);
+            }
+            else if (UseFastUtf16)
+            {
+                var buffer = EnsureBuffer(2);
+                Unsafe.As<byte, char>(ref buffer.DangerousGetPinnableReference()) = (char)value;
+                _output.Advance(2);
+            }
+            else
+            {
+                unsafe
+                {
+                    // Slow path, if we are dealing with non-invariant.
+                    char ch = (char)value;
+                    ReadOnlySpan<char> chSpan = new ReadOnlySpan<char>(&ch, 1);
+                    Write(chSpan);
+                }
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void WriteNewline()
+        private void WriteQuotedString(string value)
         {
-            if (PrettyPrint) {
-                _formatter.Append('\n');
+            WriteControl(JsonConstants.Quote);
+            // TODO: We need to handle escaping.
+            Write(value.AsSpan());
+            WriteControl(JsonConstants.Quote);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteNumber(long value)
+        {
+            var buffer = _output.Buffer;
+            int written;
+            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.Encoder))
+                buffer = EnsureBuffer();
+
+            _output.Advance(written);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteNumber(ulong value)
+        {
+            var buffer = _output.Buffer;
+            int written;
+            while (!value.TryFormat(buffer, out written, JsonConstants.NumberFormat, _output.Encoder))
+                buffer = EnsureBuffer();
+
+            _output.Advance(written);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteDateTime(DateTime value)
+        {
+            var buffer = _output.Buffer;
+            int written;
+            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.Encoder))
+                buffer = EnsureBuffer();
+
+            _output.Advance(written);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteDateTimeOffset(DateTimeOffset value)
+        {
+            var buffer = _output.Buffer;
+            int written;
+            while (!value.TryFormat(buffer, out written, JsonConstants.DateTimeFormat, _output.Encoder))
+                buffer = EnsureBuffer();
+
+            _output.Advance(written);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteGuid(Guid value)
+        {
+            var buffer = _output.Buffer;
+            int written;
+            while (!value.TryFormat(buffer, out written, JsonConstants.GuidFormat, _output.Encoder))
+                buffer = EnsureBuffer();
+
+            _output.Advance(written);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Write(ReadOnlySpan<char> value)
+        {
+            var buffer = _output.Buffer;
+            int written;
+            while (!_output.Encoder.TryEncode(value, buffer, out int consumed, out written))
+                buffer = EnsureBuffer();
+
+            _output.Advance(written);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteJsonValue(ReadOnlySpan<char> values)
+        {
+            if (UseFastUtf8)
+            {
+                int len = values.Length;
+                var buffer = EnsureBuffer(len);
+
+                ref byte utf8Bytes = ref buffer.DangerousGetPinnableReference();
+                ref char chars = ref values.DangerousGetPinnableReference();
+                for (var i = 0; i < len; i++)
+                    Unsafe.Add(ref utf8Bytes, i) = (byte)Unsafe.Add(ref chars, i);
+            }
+            else if (UseFastUtf16)
+            {
+                int needed = values.Length * sizeof(char);
+                var buffer = EnsureBuffer(needed);
+
+                Span<char> span = buffer.NonPortableCast<byte, char>();
+                values.CopyTo(span);
+            }
+            else
+            {
+                Write(values);
             }
         }
 
-        private void WriteIndent()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteItemSeperator()
         {
-            if (_prettyPrint) {
-                for (int i = 0; i < _indent; i++) {
-                    _formatter.Append("    ");
-                }
+            if (_firstItem) return;
+
+            WriteControl(JsonConstants.ListSeperator);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteSpacing(bool newLine = true)
+        {
+            if (!_prettyPrint) return;
+
+            if (UseFastUtf8)
+                WriteSpacingUtf8(newLine);
+            else if (UseFastUtf16)
+                WriteSpacingUtf16(newLine);
+            else
+                WriteSpacingSlow(newLine);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteSpacingSlow(bool newLine)
+        {
+            if (newLine)
+            {
+                WriteControl(JsonConstants.CarriageReturn);
+                WriteControl(JsonConstants.LineFeed);
             }
+
+            int indent = _indent;
+            while (indent-- >= 0)
+            {
+                WriteControl(JsonConstants.Space);
+                WriteControl(JsonConstants.Space);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteSpacingUtf8(bool newline)
+        {
+            var indent = _indent;
+            var bytesNeeded = newline ? 2 : 0;
+            bytesNeeded += (indent + 1) * 2;
+
+            var buffer = EnsureBuffer(bytesNeeded);
+            ref byte utf8Bytes = ref buffer.DangerousGetPinnableReference();
+            int idx = 0;
+
+            if (newline)
+            {
+                Unsafe.Add(ref utf8Bytes, idx++) = JsonConstants.CarriageReturn;
+                Unsafe.Add(ref utf8Bytes, idx++) = JsonConstants.LineFeed;
+            }
+
+            while (indent-- >= 0)
+            {
+                Unsafe.Add(ref utf8Bytes, idx++) = JsonConstants.Space;
+                Unsafe.Add(ref utf8Bytes, idx++) = JsonConstants.Space;
+            }
+
+            _output.Advance(bytesNeeded);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void WriteSpacingUtf16(bool newline)
+        {
+            var indent = _indent;
+            var bytesNeeded = newline ? 2 : 0;
+            bytesNeeded += (indent + 1) * 2;
+            bytesNeeded *= sizeof(char);
+
+            var buffer = EnsureBuffer(bytesNeeded);
+            var span = buffer.NonPortableCast<byte, char>();
+            ref char utf16Bytes = ref span.DangerousGetPinnableReference();
+            int idx = 0;
+
+            if (newline)
+            {
+                Unsafe.Add(ref utf16Bytes, idx++) = (char)JsonConstants.CarriageReturn;
+                Unsafe.Add(ref utf16Bytes, idx++) = (char)JsonConstants.LineFeed;
+            }
+
+            while (indent-- >= 0)
+            {
+                Unsafe.Add(ref utf16Bytes, idx++) = (char)JsonConstants.Space;
+                Unsafe.Add(ref utf16Bytes, idx++) = (char)JsonConstants.Space;
+            }
+
+            _output.Advance(bytesNeeded);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private Span<byte> EnsureBuffer(int needed = 0)
+        {
+            // Anytime we need to request an enlarge for the buffer, we may as well ask for something
+            // larger than we are likely to need.
+            const int BufferEnlargeCount = 1024;
+
+            var buffer = _output.Buffer;
+            var currentSize = buffer.Length;
+            if (currentSize >= needed)
+                return buffer;
+
+            _output.Enlarge(BufferEnlargeCount);
+            buffer = _output.Buffer;
+
+            int newSize = buffer.Length;
+            if (newSize < needed || newSize <= currentSize)
+                throw new OutOfMemoryException();
+
+            return buffer;
         }
     }
 }
-

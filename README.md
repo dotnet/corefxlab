@@ -6,7 +6,9 @@ This repo is for experimentation and exploring new ideas that may or may not mak
 
 |    | x64 Debug | x64 Release |
 |:---|----------------:|------------------:|
-|**Windows Server 2012**|[![x64-debug](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Debug/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Debug/lastCompletedBuild/testReport)|[![x64-release](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Release/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/Release/lastCompletedBuild/testReport)
+|**Windows NT**|[![x64-debug](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/windows_nt_debug/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/windows_nt_debug/lastCompletedBuild/testReport)|[![x64-release](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/windows_nt_release/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/windows_nt_release/lastCompletedBuild/testReport)
+|**Ubuntu 16.04**|[![x64-debug](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/ubuntu16.04_debug/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/ubuntu16.04_debug/lastCompletedBuild/testReport)|[![x64-release](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/ubuntu16.04_release/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/ubuntu16.04_release/lastCompletedBuild/testReport)
+|**OSX 10.12**|[![x64-debug](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/osx10.12_debug/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/osx10.12_debug/lastCompletedBuild/testReport)|[![x64-release](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/osx10.12_release/badge/icon)](https://ci.dot.net/job/dotnet_corefxlab/job/master/job/osx10.12_release/lastCompletedBuild/testReport)
 
 ## Roadmap
 

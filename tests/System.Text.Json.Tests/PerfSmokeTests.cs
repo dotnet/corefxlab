@@ -76,24 +76,20 @@ namespace System.Text.Json.Tests
 
         private static void ReadJsonHelper(string jsonStr)
         {
-            var reader = new JsonReader(jsonStr);
+            var reader = new JsonReader(jsonStr.AsSpan().AsBytes(), TextEncoder.Utf16);
             while (reader.Read())
             {
                 var tokenType = reader.TokenType;
                 switch (tokenType)
                 {
-                    case JsonReader.JsonTokenType.ObjectStart:
-                    case JsonReader.JsonTokenType.ObjectEnd:
-                    case JsonReader.JsonTokenType.ArrayStart:
-                    case JsonReader.JsonTokenType.ArrayEnd:
+                    case JsonTokenType.StartObject:
+                    case JsonTokenType.EndObject:
+                    case JsonTokenType.StartArray:
+                    case JsonTokenType.EndArray:
                         break;
-                    case JsonReader.JsonTokenType.Property:
-                        // ReSharper disable once UnusedVariable
-                        var name = reader.GetName();
-                        var value = reader.GetValue();
+                    case JsonTokenType.PropertyName:
                         break;
-                    case JsonReader.JsonTokenType.Value:
-                        value = reader.GetValue();
+                    case JsonTokenType.Value:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
