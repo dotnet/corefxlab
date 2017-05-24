@@ -31,7 +31,15 @@ namespace System.Binary.Base64.Tests
             255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
             15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 255, 255, 255, 255, 255,            //0-25 are placed at index 65-90 (for A-Z)
             255, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51                                      //26-51 are placed at index 97-122 (for a-z)
+            41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 255, 255, 255, 255, 255,            //26-51 are placed at index 97-122 (for a-z)
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // Bytes over 122 ('z') are invalid and cannot be decoded
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, // Hence, padding the map with 255, which indicates invalid input
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+            255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
         };
 
         static readonly byte s_encodingPad = 61;                    // s_encodingMap[64] is '=', for padding
@@ -308,8 +316,8 @@ namespace System.Binary.Base64.Tests
         [Fact]
         public void GenerateDecodingMapAndVerify()
         {
-            var data = new byte[123]; // 'z' = 122
-            for(int i = 0; i < data.Length; i++)
+            var data = new byte[256]; // 0 to byte.MaxValue (255)
+            for (int i = 0; i < data.Length; i++)
             {
                 data[i] = s_invalidByte;
             }
