@@ -143,7 +143,7 @@ namespace System.Binary.Base64.Tests
             ReadOnlySpan<byte> source1 = source.Slice(0, alignedBoundary);
             ReadOnlySpan<byte> source2 = source.Slice(alignedBoundary, inputBufferSize - alignedBoundary);
 
-            Span<byte> destination = new byte[1000]; // Plenty of space
+            Span<byte> destination = new byte[inputBufferSize]; // Plenty of space
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -201,7 +201,7 @@ namespace System.Binary.Base64.Tests
             ReadOnlySpan<byte> source1 = source.Slice(0, misalignedBoundary);
             ReadOnlySpan<byte> source2 = source.Slice(misalignedBoundary, inputBufferSize - misalignedBoundary);
 
-            Span<byte> destination = new byte[1000]; // Plenty of space
+            Span<byte> destination = new byte[inputBufferSize]; // Plenty of space
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -249,7 +249,7 @@ namespace System.Binary.Base64.Tests
             ReadOnlySpan<byte> source1 = source.Slice(0, misalignedBoundary);
             ReadOnlySpan<byte> source2 = source.Slice(misalignedBoundary, inputBufferSize - misalignedBoundary);
 
-            Span<byte> destination = new byte[1000]; // Plenty of space
+            Span<byte> destination = new byte[inputBufferSize]; // Plenty of space
 
             foreach (var iteration in Benchmark.Iterations)
             {

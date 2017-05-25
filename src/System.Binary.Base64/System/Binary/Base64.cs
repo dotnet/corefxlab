@@ -473,5 +473,10 @@ namespace System.Binary.Base64
         }
 
         #endregion
+
+        public enum ReturnState
+        {
+            SUCCESS, OUTPUT_TOO_SMALL, NEED_MORE_INPUT, INPUT_INVALID
+        }
     }
 }
