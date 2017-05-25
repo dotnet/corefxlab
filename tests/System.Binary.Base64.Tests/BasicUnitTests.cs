@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using Xunit;
 using System.Collections.Generic;
+using System.Buffers;
 
 namespace System.Binary.Base64.Tests
 {
@@ -62,6 +63,117 @@ namespace System.Binary.Base64.Tests
             {
                 int index = (byte)rnd.Next(0, s_encodingMap.Length - 1);    // Do not pick '='
                 bytes[i] = s_encodingMap[index];
+            }
+        }
+
+        [Fact]
+        public void StichingTestNoStichingNeeded()
+        {
+            Span<byte> source = new byte[1000];
+            InitalizeDecodableBytes(source);
+
+            int stackSize = 32;
+
+            ReadOnlySpan<byte> source1 = source.Slice(0, 400);
+            ReadOnlySpan<byte> source2 = source.Slice(400, 600);
+
+            Span<byte> destination = new byte[1000]; // Plenty of space
+
+            int afterMergeSlice = 0;
+            if (!Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
+            {
+                int leftOverBytes = source1.Length - bytesConsumed;
+                if (leftOverBytes < 4)
+                {
+                    Span<byte> stackSpan;
+
+                    unsafe
+                    {
+                        byte* stackBytes = stackalloc byte[stackSize];
+                        stackSpan = new Span<byte>(stackBytes, stackSize);
+                    }
+
+                    source1.Slice(bytesConsumed).CopyTo(stackSpan);
+                    int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
+                    source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
+
+                    Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+                    afterMergeSlice = bytesConsumed - leftOverBytes;
+                }
+            }
+            Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+        }
+
+
+        [Fact]
+        public void StichingTestStichingRequired()
+        {
+            Span<byte> source = new byte[1000];
+            InitalizeDecodableBytes(source);
+
+            int stackSize = 32;
+
+            ReadOnlySpan<byte> source1 = source.Slice(0, 402);
+            ReadOnlySpan<byte> source2 = source.Slice(402, 598);
+
+            Span<byte> destination = new byte[1000]; // Plenty of space
+
+            int afterMergeSlice = 0;
+            if (!Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
+            {
+                int leftOverBytes = source1.Length - bytesConsumed;
+                if (leftOverBytes < 4)
+                {
+                    Span<byte> stackSpan;
+
+                    unsafe
+                    {
+                        byte* stackBytes = stackalloc byte[stackSize];
+                        stackSpan = new Span<byte>(stackBytes, stackSize);
+                    }
+
+                    source1.Slice(bytesConsumed).CopyTo(stackSpan);
+                    int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
+                    source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
+
+                    Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+                    afterMergeSlice = bytesConsumed - leftOverBytes;
+                }
+            }
+            Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+        }
+
+
+        [Fact]
+        public void StichingTestNoThirdCall()
+        {
+            Span<byte> source = new byte[1000];
+            InitalizeDecodableBytes(source);
+
+            ReadOnlySpan<byte> source1 = source.Slice(0, 400);
+            ReadOnlySpan<byte> source2 = source.Slice(400, 600);
+
+            Span<byte> destination = new byte[1000]; // Plenty of space
+
+            if (Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
+            {
+                int leftOverBytes = source1.Length - bytesConsumed;
+                if (leftOverBytes < 4)
+                {
+                    Span<byte> stackSpan;
+
+                    unsafe
+                    {
+                        byte* stackBytes = stackalloc byte[600];
+                        stackSpan = new Span<byte>(stackBytes, 600);
+                    }
+
+                    source1.Slice(bytesConsumed).CopyTo(stackSpan);
+                    int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
+                    source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
+
+                    Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+                }
             }
         }
 
@@ -155,7 +267,7 @@ namespace System.Binary.Base64.Tests
                 Span<byte> decodedBytes = new byte[Base64Encoder.ComputeDecodedLength(source)];
                 Assert.True(Base64Encoder.TryDecode(source, decodedBytes, out int consumed, out int decodedByteCount));
                 Assert.Equal(decodedBytes.Length, decodedByteCount);
-                
+
                 string expectedStr = Text.Encoding.ASCII.GetString(source.ToArray());
                 byte[] expectedText = Convert.FromBase64String(expectedStr);
                 Assert.True(expectedText.AsSpan().SequenceEqual(decodedBytes));
@@ -186,6 +298,256 @@ namespace System.Binary.Base64.Tests
         }
 
         [Fact]
+        public void SampleUsage1()
+        {
+            Span<byte> source = new byte[1000];
+            InitalizeDecodableBytes(source);
+
+            Span<byte> decodedBytes = new byte[Base64Encoder.ComputeDecodedLength(source)];
+
+            Assert.True(Base64Encoder.TryDecode(source, decodedBytes, out int consumed, out int written));
+            Assert.Equal(source.Length, consumed);
+            Assert.Equal(decodedBytes.Length, written);
+        }
+
+        [Fact]
+        public void SampleUsage2()
+        {
+            var rnd = new Random(42);
+            Span<byte> source = new byte[1000];
+            InitalizeDecodableBytes(source);
+
+            int numBytes = rnd.Next(100, 251);
+            Span<byte> decodedBytes = new byte[numBytes];
+
+            int bytesConsumed = 0;
+            int bytesWritten = 0;
+
+            bool success = false;
+            do
+            {
+                success = Base64Encoder.TryDecode(source.Slice(bytesConsumed), decodedBytes, out int consumed, out int written);
+                bytesConsumed += consumed;
+                bytesWritten += written;
+                numBytes = rnd.Next(100, 251);
+                decodedBytes = new byte[numBytes];
+            } while (!success);
+
+            Assert.Equal(source.Length, bytesConsumed);
+            Assert.Equal(Base64Encoder.ComputeDecodedLength(source), bytesWritten);
+        }
+
+        [Fact]
+        public void SampleUsage3()
+        {
+            Span<byte> inputBuffer = new byte[] { 84, 85, 49, 78, 89, 87, 70, 104, 80, 81, 61, 61 };
+            Span<byte> outputBuffer = new byte[7];
+            Span<byte> expectedBuffer = new byte[] { 77, 77, 77, 97, 97, 97, 61 };
+
+            // 77 77 77 97 97 97 61 <=> T U 1 N Y W F h P Q = =
+
+            // T U 1 N Y W F h P Q = = => 84 85 49 78 89 87 70 104 80 81 61 61 
+            // T U 1 N => 77 77 77
+            // Y W => null => .
+            // Y W F h P Q => Y W F h => 97 97 97
+            // P Q = = => 61
+
+            Span<byte> span1 = inputBuffer.Slice(0, 4);
+            Span<byte> span2 = inputBuffer.Slice(4, 2);
+            Span<byte> span3 = inputBuffer.Slice(6, 4);
+            Span<byte> span4 = inputBuffer.Slice(8, 4);
+
+            int[] sourceSegment = { 4, 2, 6, 4 };
+            int[] destinationSegment = { 3, 3, 4, 1 };
+
+            int counter = 0;
+            int bytesConsumed = 0;
+            int bytesWritten = 0;
+            bool successfulDecode = false;
+            do
+            {
+                ReadOnlySpan<byte> source = inputBuffer.Slice(bytesConsumed, sourceSegment[counter]);
+                Span<byte> decodedBytes = outputBuffer.Slice(bytesWritten, destinationSegment[counter]);
+                successfulDecode = Base64Encoder.TryDecode(source, decodedBytes, out int consumed, out int written);
+                bytesConsumed += consumed;
+                bytesWritten += written;
+                counter++;
+            } while (!successfulDecode || bytesConsumed != inputBuffer.Length);
+
+            Assert.True(expectedBuffer.SequenceEqual(outputBuffer));
+        }
+
+        public void SampleUsage4()
+        {
+            // Assume this is the entire multi-span buffer.
+            Span<byte> inputBuffer = new byte[] { 84, 85, 49, 78, 89, 87, 70, 104, 80, 81, 61, 61 };
+            Span<byte> outputBuffer = new byte[7];
+            Span<byte> expectedBuffer = new byte[] { 77, 77, 77, 97, 97, 97, 61 };
+
+            // 77 77 77 97 97 97 61 <=> T U 1 N Y W F h P Q = =
+
+            // T U 1 N Y W F h P Q = = => 84 85 49 78 89 87 70 104 80 81 61 61 
+            // T U 1 N => 77 77 77
+            // Y W => null => .
+            // Y W F h P Q => Y W F h => 97 97 97
+            // P Q = = => 61
+
+            Span<byte> firstSegment = inputBuffer.Slice(0, 4);  // T U 1 N => 77 77 77
+            Span<byte> span2 = inputBuffer.Slice(4, 2);         // Y W => null => .
+            Span<byte> span3 = inputBuffer.Slice(6, 4);         // F h P Q => Y W F h P Q => Y W F h => 97 97 97
+            Span<byte> span4 = inputBuffer.Slice(8, 4);         // P Q = = => 61
+
+            bool successfulDecode = false;
+
+            ReadOnlySpan<byte> source = firstSegment;
+            Span<byte> decodedBytes = outputBuffer.Slice(0, 3);
+
+            int consumedFromMerge = 0;
+            do
+            {
+                successfulDecode = Base64Encoder.TryDecode(source.Slice(consumedFromMerge), decodedBytes, out int consumed, out int written);
+
+                if (successfulDecode)
+                {
+                    source = GetNextInputSpan();
+                    if (source.IsEmpty)
+                    {
+                        break;  // no more input
+                    }
+                    decodedBytes = decodedBytes.Slice(written);
+                }
+                else
+                {
+                    if (decodedBytes.Length - written < 3)   // output buffer is too small
+                    {
+                        var temp = decodedBytes.Slice(written); // + GetNextOutputSpan, i.e. patch it together, not enough output
+                        Span<byte> stackSpan;
+
+                        unsafe
+                        {
+                            byte* stackBytes = stackalloc byte[stackLength];
+                            stackSpan = new Span<byte>(stackBytes, stackLength);
+                        }
+
+                        temp.CopyTo(stackSpan);
+                        decodedBytes = GetNextOutputSpan();
+                        if (decodedBytes.IsEmpty)
+                        {
+                            break;  // no more output space available
+                        }
+                        // decodedBytes + temp
+
+                        source = source.Slice(consumed);
+                    }
+                    else    // not enough input, or invalid input
+                    {
+                        if ((source.Length - consumed) >= 4)
+                        {
+                            break;  // input is invalid! do something
+                        }
+
+                        var temp = source.Slice(consumed);
+                        Span<byte> stackSpan;
+
+                        unsafe
+                        {
+                            byte* stackBytes = stackalloc byte[stackLength];
+                            stackSpan = new Span<byte>(stackBytes, stackLength);
+                        }
+
+                        temp.CopyTo(stackSpan);
+                        source = GetNextInputSpan();
+
+                        if (source.IsEmpty)
+                        {
+                            break;  // no more input, left over is invalid
+                        }
+
+                        source.Slice(0, source.Length - temp.Length).CopyTo(stackSpan.Slice(temp.Length));
+                        Base64Encoder.TryDecode(stackSpan, decodedBytes, out consumed, out written);
+                        // What next?
+                        decodedBytes = decodedBytes.Slice(written);
+                    }
+                }
+
+            } while (!successfulDecode);
+
+            Assert.True(expectedBuffer.SequenceEqual(outputBuffer));
+        }
+
+        const int stackLength = 32;
+
+        void Decode(IEnumerable<Buffer<byte>> source, IOutput destination)
+        {
+            IEnumerator<Buffer<byte>> enumerator = source.GetEnumerator();
+            int afterMergeSlice = 0;
+            while(true)
+            {
+                Buffer<byte> sourceBuffer = enumerator.Current;
+                Span<byte> outputSpan = destination.Buffer;
+                Span<byte> sourceSpan = sourceBuffer.Span;
+                bool result = Base64Encoder.TryDecode(sourceSpan.Slice(afterMergeSlice), outputSpan, out int consumed, out int written);
+                afterMergeSlice = 0;
+                destination.Advance(written);
+
+                if (result)
+                {
+                    if (!enumerator.MoveNext()) break;
+                    continue;
+                }
+
+                if (outputSpan.Length - written < 3)
+                {
+                    destination.Enlarge();  // output buffer is too small
+                }
+                else
+                {
+                    int leftOverBytes = sourceSpan.Length - consumed;
+                    if (leftOverBytes >= 4)
+                    {
+                        if (!enumerator.MoveNext()) break;
+                        continue; // source buffer contains invalid bytes
+                    }
+
+                    // left over bytes in source span
+                    Span<byte> stackSpan;
+
+                    unsafe
+                    {
+                        byte* stackBytes = stackalloc byte[stackLength];
+                        stackSpan = new Span<byte>(stackBytes, stackLength);
+                    }
+
+                    sourceSpan.Slice(consumed).CopyTo(stackSpan);
+                    
+                    // Copy some bytes from next sourceBuffer into stackSpan
+                    if (!enumerator.MoveNext()) break;
+
+                    Buffer<byte> nextSourceBuffer = enumerator.Current;
+                    int amountToCopy = Math.Min(nextSourceBuffer.Length, stackSpan.Length - leftOverBytes);
+                    nextSourceBuffer.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
+
+                    if (!Base64Encoder.TryDecode(stackSpan, outputSpan, out consumed, out written))
+                    {
+                        if (!enumerator.MoveNext()) break;
+                        continue;   // invalid state?
+                    }
+
+                    afterMergeSlice = consumed - leftOverBytes;
+                    continue;
+                }
+                if (!enumerator.MoveNext()) break;
+            }
+        }
+
+
+
+
+
+        public Span<byte> GetNextInputSpan() { return default(Span<byte>); }
+        public Span<byte> GetNextOutputSpan() { return default(Span<byte>); }
+
+        [Fact]
         public void ComputeEncodedLength()
         {
             // (int.MaxValue - 4)/(4/3) => 1610612733, otherwise integer overflow
@@ -209,7 +571,7 @@ namespace System.Binary.Base64.Tests
             // CLR default limit of 2 gigabytes (GB).
             int[] input = { 4, 8, 12, 16, 20, 2000000000 };
             int[] expected = { 3, 6, 9, 12, 15, 1500000000 };
-            
+
             for (int i = 0; i < input.Length; i++)
             {
                 int sourceLength = input[i];
@@ -222,7 +584,7 @@ namespace System.Binary.Base64.Tests
             }
 
             // Lengths that are not a multiple of 4.
-            int[] lengthsNotMultipleOfFour = { 1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 1001, 1002, 1003};
+            int[] lengthsNotMultipleOfFour = { 1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 1001, 1002, 1003 };
             int[] expectedOutput = { 0, 0, 0, 3, 3, 3, 6, 6, 6, 9, 9, 9, 750, 750, 750 };
             for (int i = 0; i < lengthsNotMultipleOfFour.Length; i++)
             {
