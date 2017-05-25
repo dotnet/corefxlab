@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-
 namespace System.IO.Compression.Tests
 {
     public class BrotliStreamTests
@@ -17,6 +16,7 @@ namespace System.IO.Compression.Tests
         [Fact]
         public void BaseStreamCompress()
         {
+           
             var writeStream = new MemoryStream();
             var bro = new BrotliStream(writeStream, CompressionMode.Compress);
            Assert.Same(bro._stream, writeStream);

@@ -4,7 +4,8 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-
+using System.Diagnostics;
+using System.ComponentModel;
 #if BIT64
     using nuint = System.UInt64;
 #else
@@ -42,6 +43,9 @@ namespace System.IO.Compression
         }
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize)
         {
+            /*Process currentProcess = Process.GetCurrentProcess();
+            Console.WriteLine(currentProcess);*/
+            Console.ReadKey();
             if (baseStream == null) throw new ArgumentNullException("baseStream");
             _mode = mode;
             _stream = baseStream;
