@@ -41,7 +41,7 @@ namespace Microsoft.Net.Http
 
         public override Span<byte> AsSpan(int index, int length)
         {
-            if (IsDisposed) new ObjectDisposedException(nameof(OwnedBuffer));
+            if (IsDisposed) throw new ObjectDisposedException(nameof(OwnedBuffer));
             return _array.AsSpan().Slice(index, length);
         }
 
@@ -126,7 +126,7 @@ namespace Microsoft.Net.Http
 
         protected override bool TryGetArray(out ArraySegment<byte> buffer)
         {
-            if (IsDisposed) new ObjectDisposedException(nameof(OwnedBuffer));
+            if (IsDisposed) throw new ObjectDisposedException(nameof(OwnedBuffer));
             buffer = new ArraySegment<byte>(_array);
             return true;
         }
