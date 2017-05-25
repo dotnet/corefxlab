@@ -369,7 +369,7 @@ namespace System.Binary.Base64
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
 
-            int srcLength = source.Length;
+            int srcLength = source.Length / 4 * 4;  // only decode input up to the closest multiple of 4.
             int destLength = destination.Length;
 
             int sourceIndex = 0;
@@ -386,6 +386,8 @@ namespace System.Binary.Base64
                 destIndex += 3;
                 sourceIndex += 4;
             }
+
+            if (sourceIndex >= srcLength) goto FalseExit;
 
             int padding = 0;
 
@@ -421,6 +423,8 @@ namespace System.Binary.Base64
                 destIndex += 3;
                 sourceIndex += 4;
             }
+
+            if (srcLength != source.Length) goto FalseExit;
 
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
