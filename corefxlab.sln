@@ -136,13 +136,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Http.Parser", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.Text.Http.Parser.Tests", "tests\System.Text.Http.Parser.Tests\System.Text.Http.Parser.Tests.csproj", "{793E4C5F-33B9-44AA-BE44-54EE624E79CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.IO.Compression.Brotli", "src\System.IO.Compression.Brotli\System.IO.Compression.Brotli.csproj", "{994E5101-2E48-4818-9E32-4F68B2361198}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.IO.Compression.Tests", "tests\System.IO.Compression.Tests\System.IO.Compression.Tests.csproj", "{0D6FEFB6-CBFC-4FA5-9525-9AB49DDE903E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{994E5101-2E48-4818-9E32-4F68B2361198} = {994E5101-2E48-4818-9E32-4F68B2361198}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
