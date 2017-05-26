@@ -19,10 +19,10 @@ namespace System.IO.Compression
     {
         internal static partial class Brotli
         {
-            internal const String LibNameEncoder = @"..\lib\brotlienc.dll";
-            internal const String LibNameDecoder = @"..\lib\brotlidec.dll";
+            internal const String LibNameEncoder = @"C:\Users\t-detsom\Source\Repos\corefxlab\lib\brotlienc.dll";
+            internal const String LibNameDecoder = @"C:\Users\t-detsom\Source\Repos\corefxlab\lib\brotlidec.dll";
             #region Encoder
-            [DllImport(LibNameEncoder,CallingConvention = CallingConvention.Cdecl, EntryPoint = "BrotliEncoderCreateInstance ")]
+            [DllImport(LibNameEncoder,CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliEncoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);
 
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
