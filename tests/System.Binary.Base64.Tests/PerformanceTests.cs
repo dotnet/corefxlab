@@ -9,7 +9,7 @@ namespace System.Binary.Base64.Tests
 {
     public class Base64PerformanceTests
     {
-        private const int InnerCount = 10;
+        private const int InnerCount = 1000;
 
         // Pre-computing this table using a custom string(s_characters) and GenerateEncodingMapAndVerify (found in tests)
         static readonly byte[] s_encodingMap = {
@@ -122,19 +122,12 @@ namespace System.Binary.Base64.Tests
 
 
         [Benchmark(InnerIterationCount = InnerCount)]
-        [InlineData(10, 1000)]
-        [InlineData(32, 1000)]
-        [InlineData(50, 1000)]
-        [InlineData(64, 1000)]
-        [InlineData(100, 1000)]
-        [InlineData(500, 1000)]
-        [InlineData(10, 10000)]
-        [InlineData(32, 10000)]
-        [InlineData(50, 10000)]
-        [InlineData(64, 10000)]
-        [InlineData(100, 10000)]
-        [InlineData(500, 10000)]
-        private static void StichingTestNoStichingNeeded(int stackSize, int inputBufferSize)
+        [InlineData(1000)]
+        [InlineData(5000)]
+        [InlineData(10000)]
+        [InlineData(20000)]
+        [InlineData(50000)]
+        private static void StichingTestNoStichingNeeded(int inputBufferSize)
         {
             Span<byte> source = new byte[inputBufferSize];
             InitalizeDecodableBytes(source);
@@ -151,29 +144,11 @@ namespace System.Binary.Base64.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        int afterMergeSlice = 0;
                         if (!Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
                         {
-                            int leftOverBytes = source1.Length - bytesConsumed;
-                            if (leftOverBytes < 4)
-                            {
-                                Span<byte> stackSpan;
-
-                                unsafe
-                                {
-                                    byte* stackBytes = stackalloc byte[stackSize];
-                                    stackSpan = new Span<byte>(stackBytes, stackSize);
-                                }
-
-                                source1.Slice(bytesConsumed).CopyTo(stackSpan);
-                                int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
-                                source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
-
-                                Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
-                                afterMergeSlice = bytesConsumed - leftOverBytes;
-                            }
+                            // this shouldn't happen!
                         }
-                        Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+                        Base64Encoder.TryDecode(source2, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
                     }
                 }
             }
@@ -186,12 +161,35 @@ namespace System.Binary.Base64.Tests
         [InlineData(64, 1000)]
         [InlineData(100, 1000)]
         [InlineData(500, 1000)]
+        [InlineData(600, 1000)]
+        [InlineData(10, 5000)]
+        [InlineData(32, 5000)]
+        [InlineData(50, 5000)]
+        [InlineData(64, 5000)]
+        [InlineData(100, 5000)]
+        [InlineData(500, 5000)]
+        [InlineData(3000, 5000)]
         [InlineData(10, 10000)]
         [InlineData(32, 10000)]
         [InlineData(50, 10000)]
         [InlineData(64, 10000)]
         [InlineData(100, 10000)]
         [InlineData(500, 10000)]
+        [InlineData(6000, 10000)]
+        [InlineData(10, 20000)]
+        [InlineData(32, 20000)]
+        [InlineData(50, 20000)]
+        [InlineData(64, 20000)]
+        [InlineData(100, 20000)]
+        [InlineData(500, 20000)]
+        [InlineData(12000, 20000)]
+        [InlineData(10, 50000)]
+        [InlineData(32, 50000)]
+        [InlineData(50, 50000)]
+        [InlineData(64, 50000)]
+        [InlineData(100, 50000)]
+        [InlineData(500, 50000)]
+        [InlineData(30000, 50000)]
         private static void StichingTestStichingRequired(int stackSize, int inputBufferSize)
         {
             Span<byte> source = new byte[inputBufferSize];
@@ -200,6 +198,14 @@ namespace System.Binary.Base64.Tests
             int misalignedBoundary = inputBufferSize / 5 * 2 + 2;  // 1000 -> 402
             ReadOnlySpan<byte> source1 = source.Slice(0, misalignedBoundary);
             ReadOnlySpan<byte> source2 = source.Slice(misalignedBoundary, inputBufferSize - misalignedBoundary);
+
+            Span<byte> stackSpan;
+
+            unsafe
+            {
+                byte* stackBytes = stackalloc byte[stackSize];
+                stackSpan = new Span<byte>(stackBytes, stackSize);
+            }
 
             Span<byte> destination = new byte[inputBufferSize]; // Plenty of space
 
@@ -215,14 +221,6 @@ namespace System.Binary.Base64.Tests
                             int leftOverBytes = source1.Length - bytesConsumed;
                             if (leftOverBytes < 4)
                             {
-                                Span<byte> stackSpan;
-
-                                unsafe
-                                {
-                                    byte* stackBytes = stackalloc byte[stackSize];
-                                    stackSpan = new Span<byte>(stackBytes, stackSize);
-                                }
-
                                 source1.Slice(bytesConsumed).CopyTo(stackSpan);
                                 int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
                                 source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
@@ -238,9 +236,12 @@ namespace System.Binary.Base64.Tests
         }
 
         [Benchmark(InnerIterationCount = InnerCount)]
-        [InlineData(1000)]
-        [InlineData(10000)]
-        private static void StichingTestNoThirdCall(int inputBufferSize)
+        [InlineData(600, 1000)]
+        [InlineData(3000, 5000)]
+        [InlineData(6000, 10000)]
+        [InlineData(12000, 20000)]
+        [InlineData(30000, 50000)]
+        private static void StichingTestNoThirdCall(int stackSize, int inputBufferSize)
         {
             Span<byte> source = new byte[inputBufferSize];
             InitalizeDecodableBytes(source);
@@ -248,6 +249,14 @@ namespace System.Binary.Base64.Tests
             int misalignedBoundary = inputBufferSize / 5 * 2 + 2;  // 1000 -> 402
             ReadOnlySpan<byte> source1 = source.Slice(0, misalignedBoundary);
             ReadOnlySpan<byte> source2 = source.Slice(misalignedBoundary, inputBufferSize - misalignedBoundary);
+
+            Span<byte> stackSpan;
+
+            unsafe
+            {
+                byte* stackBytes = stackalloc byte[stackSize];
+                stackSpan = new Span<byte>(stackBytes, stackSize);
+            }
 
             Span<byte> destination = new byte[inputBufferSize]; // Plenty of space
 
@@ -262,15 +271,6 @@ namespace System.Binary.Base64.Tests
                             int leftOverBytes = source1.Length - bytesConsumed;
                             if (leftOverBytes < 4)
                             {
-                                Span<byte> stackSpan;
-
-                                unsafe
-                                {
-                                    int completeSecondBufferSize = inputBufferSize / 5 * 3; // 1000 -> 600;
-                                    byte* stackBytes = stackalloc byte[completeSecondBufferSize];
-                                    stackSpan = new Span<byte>(stackBytes, completeSecondBufferSize);
-                                }
-
                                 source1.Slice(bytesConsumed).CopyTo(stackSpan);
                                 int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
                                 source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));

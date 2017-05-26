@@ -72,8 +72,6 @@ namespace System.Binary.Base64.Tests
             Span<byte> source = new byte[1000];
             InitalizeDecodableBytes(source);
 
-            int stackSize = 32;
-
             ReadOnlySpan<byte> source1 = source.Slice(0, 400);
             ReadOnlySpan<byte> source2 = source.Slice(400, 600);
 
@@ -82,24 +80,7 @@ namespace System.Binary.Base64.Tests
             int afterMergeSlice = 0;
             if (!Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
             {
-                int leftOverBytes = source1.Length - bytesConsumed;
-                if (leftOverBytes < 4)
-                {
-                    Span<byte> stackSpan;
-
-                    unsafe
-                    {
-                        byte* stackBytes = stackalloc byte[stackSize];
-                        stackSpan = new Span<byte>(stackBytes, stackSize);
-                    }
-
-                    source1.Slice(bytesConsumed).CopyTo(stackSpan);
-                    int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
-                    source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
-
-                    Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
-                    afterMergeSlice = bytesConsumed - leftOverBytes;
-                }
+                // this shouldn't happen!
             }
             Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
         }
@@ -116,6 +97,14 @@ namespace System.Binary.Base64.Tests
             ReadOnlySpan<byte> source1 = source.Slice(0, 402);
             ReadOnlySpan<byte> source2 = source.Slice(402, 598);
 
+            Span<byte> stackSpan;
+
+            unsafe
+            {
+                byte* stackBytes = stackalloc byte[stackSize];
+                stackSpan = new Span<byte>(stackBytes, stackSize);
+            }
+
             Span<byte> destination = new byte[1000]; // Plenty of space
 
             int afterMergeSlice = 0;
@@ -124,14 +113,6 @@ namespace System.Binary.Base64.Tests
                 int leftOverBytes = source1.Length - bytesConsumed;
                 if (leftOverBytes < 4)
                 {
-                    Span<byte> stackSpan;
-
-                    unsafe
-                    {
-                        byte* stackBytes = stackalloc byte[stackSize];
-                        stackSpan = new Span<byte>(stackBytes, stackSize);
-                    }
-
                     source1.Slice(bytesConsumed).CopyTo(stackSpan);
                     int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
                     source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
@@ -153,6 +134,14 @@ namespace System.Binary.Base64.Tests
             ReadOnlySpan<byte> source1 = source.Slice(0, 400);
             ReadOnlySpan<byte> source2 = source.Slice(400, 600);
 
+            Span<byte> stackSpan;
+
+            unsafe
+            {
+                byte* stackBytes = stackalloc byte[600];
+                stackSpan = new Span<byte>(stackBytes, 600);
+            }
+
             Span<byte> destination = new byte[1000]; // Plenty of space
 
             if (Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
@@ -160,14 +149,6 @@ namespace System.Binary.Base64.Tests
                 int leftOverBytes = source1.Length - bytesConsumed;
                 if (leftOverBytes < 4)
                 {
-                    Span<byte> stackSpan;
-
-                    unsafe
-                    {
-                        byte* stackBytes = stackalloc byte[600];
-                        stackSpan = new Span<byte>(stackBytes, 600);
-                    }
-
                     source1.Slice(bytesConsumed).CopyTo(stackSpan);
                     int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
                     source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
