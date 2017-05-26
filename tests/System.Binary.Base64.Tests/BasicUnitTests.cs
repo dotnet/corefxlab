@@ -71,18 +71,25 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[1000];
             InitalizeDecodableBytes(source);
+            Span<byte> expected = new byte[1000];
+            Base64Encoder.TryDecode(source, expected, out int expectedConsumed, out int expectedWritten);
 
             ReadOnlySpan<byte> source1 = source.Slice(0, 400);
             ReadOnlySpan<byte> source2 = source.Slice(400, 600);
 
             Span<byte> destination = new byte[1000]; // Plenty of space
 
-            int afterMergeSlice = 0;
             if (!Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
             {
                 // this shouldn't happen!
             }
-            Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+            Base64Encoder.TryDecode(source2, destination.Slice(bytesWritten), out int consumed, out int written);
+            bytesConsumed += consumed;
+            bytesWritten += written;
+
+            Assert.Equal(expectedConsumed, bytesConsumed);
+            Assert.Equal(expectedWritten, bytesWritten);
+            Assert.True(expected.SequenceEqual(destination));
         }
 
 
@@ -91,6 +98,8 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[1000];
             InitalizeDecodableBytes(source);
+            Span<byte> expected = new byte[1000];
+            Base64Encoder.TryDecode(source, expected, out int expectedConsumed, out int expectedWritten);
 
             int stackSize = 32;
 
@@ -117,11 +126,19 @@ namespace System.Binary.Base64.Tests
                     int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
                     source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
 
-                    Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
-                    afterMergeSlice = bytesConsumed - leftOverBytes;
+                    Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out int consumed, out int written);
+                    afterMergeSlice = consumed - leftOverBytes;
+                    bytesConsumed += consumed;
+                    bytesWritten += written;
                 }
             }
-            Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+            Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out int consumed3, out int written3);
+            bytesConsumed += consumed3;
+            bytesWritten += written3;
+
+            Assert.Equal(expectedConsumed, bytesConsumed);
+            Assert.Equal(expectedWritten, bytesWritten);
+            Assert.True(expected.SequenceEqual(destination));
         }
 
 
@@ -130,6 +147,8 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[1000];
             InitalizeDecodableBytes(source);
+            Span<byte> expected = new byte[1000];
+            Base64Encoder.TryDecode(source, expected, out int expectedConsumed, out int expectedWritten);
 
             ReadOnlySpan<byte> source1 = source.Slice(0, 400);
             ReadOnlySpan<byte> source2 = source.Slice(400, 600);
@@ -153,9 +172,15 @@ namespace System.Binary.Base64.Tests
                     int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
                     source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
 
-                    Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+                    Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out int consumed, out int written);
+                    bytesConsumed += consumed;
+                    bytesWritten += written;
                 }
             }
+
+            Assert.Equal(expectedConsumed, bytesConsumed);
+            Assert.Equal(expectedWritten, bytesWritten);
+            Assert.True(expected.SequenceEqual(destination));
         }
 
         [Fact]

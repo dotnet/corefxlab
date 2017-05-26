@@ -148,7 +148,9 @@ namespace System.Binary.Base64.Tests
                         {
                             // this shouldn't happen!
                         }
-                        Base64Encoder.TryDecode(source2, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+                        Base64Encoder.TryDecode(source2, destination.Slice(bytesWritten), out int consumed, out int written);
+                        bytesConsumed += consumed;
+                        bytesWritten += written;
                     }
                 }
             }
@@ -225,11 +227,15 @@ namespace System.Binary.Base64.Tests
                                 int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
                                 source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
 
-                                Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
-                                afterMergeSlice = bytesConsumed - leftOverBytes;
+                                Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out int consumed, out int written);
+                                afterMergeSlice = consumed - leftOverBytes;
+                                bytesConsumed += consumed;
+                                bytesWritten += written;
                             }
                         }
-                        Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+                        Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out int consumed3, out int written3);
+                        bytesConsumed += consumed3;
+                        bytesWritten += written3;
                     }
                 }
             }
@@ -275,7 +281,9 @@ namespace System.Binary.Base64.Tests
                                 int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
                                 source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
 
-                                Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out bytesConsumed, out bytesWritten);
+                                Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out int consumed, out int written);
+                                bytesConsumed += consumed;
+                                bytesWritten += written;
                             }
                         }
                     }
