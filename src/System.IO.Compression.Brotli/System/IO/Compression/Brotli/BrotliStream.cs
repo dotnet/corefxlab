@@ -245,7 +245,7 @@ namespace System.IO.Compression
                         ref AvailOut, ref NextOut, out totalCount);
                     if (bytesRead >= count) break;
                 }
-                if (endOfStream /*&& !BrotliNative.BrotliDecoderIsFinished(_decoder.State)*/)
+                if (endOfStream && !BrotliNative.BrotliDecoderIsFinished(_decoder.State))
                 {
                     errorDetected = true;
                 }
@@ -255,7 +255,7 @@ namespace System.IO.Compression
                     var text = BrotliNative.BrotliDecoderErrorString(error);
                     throw new System.IO.IOException(text+"- unable to decode stream");
                 }
-                if (endOfStream && /*!BrotliNative.BrotliDecoderIsFinished(_decoder.State) &&*/ _decoder.LastDecoderResult == BrotliNative.BrotliDecoderResult.NeedsMoreInput)
+                if (endOfStream && !BrotliNative.BrotliDecoderIsFinished(_decoder.State) && _decoder.LastDecoderResult == BrotliNative.BrotliDecoderResult.NeedsMoreInput)
                 {
                     throw new System.IO.IOException("Bad finish");
                 }
