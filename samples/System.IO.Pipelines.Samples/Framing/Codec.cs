@@ -11,9 +11,9 @@ using System.IO.Pipelines.Text.Primitives;
 
 namespace System.IO.Pipelines.Samples.Framing
 {
-    public static class ProtocolHandling
+    public  class ProtocolHandling
     {
-        public static void Run()
+        public async Task Run()
         {
             var ip = IPAddress.Any;
             int port = 5000;

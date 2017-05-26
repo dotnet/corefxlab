@@ -4,7 +4,7 @@
 
 using Xunit;
 
-namespace System.Text.Ascii.Tests
+namespace System.Text.Primitives.Tests
 {
     public class PrimitiveEncoderTestsAscii
     {
@@ -13,7 +13,7 @@ namespace System.Text.Ascii.Tests
         [InlineData("Hello World")]
         public void DecodeAsciiToStringBasics(string original)
         {
-            var encoded = (Span<byte>)System.Text.Encoding.ASCII.GetBytes(original);
+            var encoded = (Span<byte>)Text.Encoding.ASCII.GetBytes(original);
             var decoded = encoded.DecodeAscii();
             Assert.Equal(original, decoded);
         }

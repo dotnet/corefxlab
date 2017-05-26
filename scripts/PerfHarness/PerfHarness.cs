@@ -9,29 +9,42 @@ using Microsoft.Xunit.Performance.Api;
 
 public class PerfHarness
 {
-    public static void Main(string[] args)
+    public static int Main(string[] args)
     {
-        string[] assemblies = GetTestAssemblies();
-
-        int pos =  Array.IndexOf(args, "--assembly");
-
-        using (XunitPerformanceHarness harness = new XunitPerformanceHarness(args))
+        try
         {
-            if (pos > -1 && args.Length > pos + 1)
+            string[] assemblies = GetTestAssemblies();
+
+            int pos =  Array.IndexOf(args, "--assembly");
+
+            using (XunitPerformanceHarness harness = new XunitPerformanceHarness(args))
             {
-                pos = Array.IndexOf(assemblies, args[pos + 1]);
-                if (pos > -1)
+                if (pos > -1 && args.Length > pos + 1)
                 {
-                    harness.RunBenchmarks(GetTestAssembly(assemblies[pos]));
-                    return;
+                    pos = Array.IndexOf(assemblies, args[pos + 1]);
+                    if (pos > -1)
+                    {
+                        harness.RunBenchmarks(GetTestAssembly(assemblies[pos]));
+                        return 0;
+                    }
+                }
+
+                foreach(var testName in assemblies)
+                {
+                    harness.RunBenchmarks(GetTestAssembly(testName));
                 }
             }
-
-            foreach(var testName in assemblies)
-            {
-                harness.RunBenchmarks(GetTestAssembly(testName));
-            }
         }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex.ToString());
+            if(ex is System.InvalidOperationException)
+            {
+                Console.Error.WriteLine("Please check if you have admin privileges");
+            }
+            return -1;
+        }
+        return 0;
     }
 
     private static string GetTestAssembly(string testName)
@@ -49,7 +62,7 @@ public class PerfHarness
             "Benchmarks",
             "System.Binary.Base64.Tests",
             "System.Text.Primitives.Tests",
-            "System.Buffers.Primitives.Tests"
+            "System.Text.Json.Tests"
         };
     }
 }

@@ -17,7 +17,12 @@ if (!(Test-Path "dotnet\dotnet.exe")) {
     }
     Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version $Version -InstallDir $PSScriptRoot\..\dotnet"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
-        Write-Error "Failed to install dotnet.exe, exit code [$lastexitcode], aborting build."
+        Write-Error "Failed to install latest dotnet.exe, exit code [$lastexitcode], aborting build."
+        exit -1
+    }
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version 1.0.0 -InstallDir $PSScriptRoot\..\dotnet"
+    if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
+        Write-Error "Failed to install framework version 1.0.0, exit code [$lastexitcode], aborting build."
         exit -1
     }
 }

@@ -15,11 +15,13 @@ namespace System.Text.Json.Tests
         {
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.SimpleArrayJson, 60);
             using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
+                Assert.Equal(2, parsedObject.ArrayLength);
+
                 var phoneNumber = (string)parsedObject[0];
                 var age = (int)parsedObject[1];
 
-                Assert.Equal(phoneNumber, "425-214-3151");
-                Assert.Equal(age, 25);
+                Assert.Equal("425-214-3151", phoneNumber);
+                Assert.Equal(25, age);
             }
         }
 
@@ -58,11 +60,13 @@ namespace System.Text.Json.Tests
             var buffer = StringToUtf8BufferWithEmptySpace(TestJson.ParseJson);
             using (var parsedObject = JsonObject.Parse(buffer.AsSpan())) {
 
+                Assert.Equal(1, parsedObject.ArrayLength);
                 var person = parsedObject[0];
                 var age = (double)person["age"];
                 var first = (string)person["first"];
                 var last = (string)person["last"];
                 var phoneNums = person["phoneNumbers"];
+                Assert.Equal(2, phoneNums.ArrayLength);
                 var phoneNum1 = (string)phoneNums[0];
                 var phoneNum2 = (string)phoneNums[1];
                 var address = person["address"];
@@ -70,14 +74,32 @@ namespace System.Text.Json.Tests
                 var city = (string)address["city"];
                 var zipCode = (double)address["zip"];
 
-                Assert.Equal(age, 30);
-                Assert.Equal(first, "John");
-                Assert.Equal(last, "Smith");
-                Assert.Equal(phoneNum1, "425-000-1212");
-                Assert.Equal(phoneNum2, "425-000-1213");
-                Assert.Equal(street, "1 Microsoft Way");
-                Assert.Equal(city, "Redmond");
-                Assert.Equal(zipCode, 98052);
+                Assert.Equal(30, age);
+                Assert.Equal("John", first);
+                Assert.Equal("Smith", last);
+                Assert.Equal("425-000-1212", phoneNum1);
+                Assert.Equal("425-000-1213", phoneNum2);
+                Assert.Equal("1 Microsoft Way", street);
+                Assert.Equal("Redmond", city);
+                Assert.Equal(98052, zipCode);
+                try
+                {
+                    var _ = person.ArrayLength;
+                    throw new Exception("Never get here");
+                }
+                catch (Exception ex)
+                {
+                    Assert.IsType<InvalidOperationException>(ex);
+                }
+                try
+                {
+                    var _ = phoneNums[2];
+                    throw new Exception("Never get here");
+                }
+                catch(Exception ex)
+                {
+                    Assert.IsType<IndexOutOfRangeException>(ex);
+                }
             }
 
             // Exceptional use case

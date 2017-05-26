@@ -155,7 +155,7 @@ namespace System.Text.Primitives.Tests
         private unsafe static void PrimitiveParserByteStarToUInt32(string text)
         {
             int length = text.Length;
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 fixed (byte* utf8ByteStar = utf8ByteArray)
@@ -179,7 +179,7 @@ namespace System.Text.Primitives.Tests
             List<byte[]> byteArrayList = new List<byte[]>();
             foreach (string text in s_UInt32TextArray)
             {
-                byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+                byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
                 byteArrayList.Add(utf8ByteArray);
             }
             foreach (var iteration in Benchmark.Iterations)
@@ -207,7 +207,7 @@ namespace System.Text.Primitives.Tests
         private unsafe static void PrimitiveParserByteStarToUInt32_BytesConsumed(string text)
         {
             int length = text.Length;
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 fixed (byte* utf8ByteStar = utf8ByteArray)
@@ -232,7 +232,7 @@ namespace System.Text.Primitives.Tests
             List<byte[]> byteArrayList = new List<byte[]>();
             foreach (string text in s_UInt32TextArray)
             {
-                byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+                byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
                 byteArrayList.Add(utf8ByteArray);
             }
             foreach (var iteration in Benchmark.Iterations)
@@ -260,7 +260,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private unsafe static void PrimitiveParserByteSpanToUInt32(string text)
         {
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
             var utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -283,7 +283,7 @@ namespace System.Text.Primitives.Tests
             byte[][] utf8ByteArray = (byte[][])Array.CreateInstance(typeof(byte[]), textLength);
             for (var i = 0; i < textLength; i++)
             {
-                utf8ByteArray[i] = Encoding.UTF8.GetBytes(s_UInt32TextArray[i]);
+                utf8ByteArray[i] = Text.Encoding.UTF8.GetBytes(s_UInt32TextArray[i]);
             }
 
             foreach (var iteration in Benchmark.Iterations)
@@ -307,7 +307,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private unsafe static void PrimitiveParserByteSpanToUInt32_BytesConsumed(string text)
         {
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
             var utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -331,7 +331,7 @@ namespace System.Text.Primitives.Tests
             byte[][] utf8ByteArray = (byte[][])Array.CreateInstance(typeof(byte[]), textLength);
             for (var i = 0; i < textLength; i++)
             {
-                utf8ByteArray[i] = Encoding.UTF8.GetBytes(s_UInt32TextArray[i]);
+                utf8ByteArray[i] = Text.Encoding.UTF8.GetBytes(s_UInt32TextArray[i]);
             }
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -356,7 +356,7 @@ namespace System.Text.Primitives.Tests
         private unsafe static void PrimitiveParserByteStarToUInt32Hex(string text)
         {
             int length = text.Length;
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 fixed (byte* utf8ByteStar = utf8ByteArray)
@@ -380,7 +380,7 @@ namespace System.Text.Primitives.Tests
             List<byte[]> byteArrayList = new List<byte[]>();
             foreach (string text in s_UInt32TextArrayHex)
             {
-                byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+                byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
                 byteArrayList.Add(utf8ByteArray);
             }
             foreach (var iteration in Benchmark.Iterations)
@@ -408,7 +408,7 @@ namespace System.Text.Primitives.Tests
         private unsafe static void PrimitiveParserByteStarToUInt32Hex_BytesConsumed(string text)
         {
             int length = text.Length;
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
             foreach (var iteration in Benchmark.Iterations)
             {
                 fixed (byte* utf8ByteStar = utf8ByteArray)
@@ -433,7 +433,7 @@ namespace System.Text.Primitives.Tests
             List<byte[]> byteArrayList = new List<byte[]>();
             foreach (string text in s_UInt32TextArrayHex)
             {
-                byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+                byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
                 byteArrayList.Add(utf8ByteArray);
             }
             foreach (var iteration in Benchmark.Iterations)
@@ -461,7 +461,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private unsafe static void PrimitiveParserByteSpanToUInt32Hex(string text)
         {
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
             var utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -484,7 +484,7 @@ namespace System.Text.Primitives.Tests
             byte[][] utf8ByteArray = (byte[][])Array.CreateInstance(typeof(byte[]), textLength);
             for (var i = 0; i < textLength; i++)
             {
-                utf8ByteArray[i] = Encoding.UTF8.GetBytes(s_UInt32TextArrayHex[i]);
+                utf8ByteArray[i] = Text.Encoding.UTF8.GetBytes(s_UInt32TextArrayHex[i]);
             }
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -507,7 +507,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("0")] // min value
         private unsafe static void PrimitiveParserByteSpanToUInt32Hex_BytesConsumed(string text)
         {
-            byte[] utf8ByteArray = Encoding.UTF8.GetBytes(text);
+            byte[] utf8ByteArray = Text.Encoding.UTF8.GetBytes(text);
             var utf8ByteSpan = new ReadOnlySpan<byte>(utf8ByteArray);
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -531,7 +531,7 @@ namespace System.Text.Primitives.Tests
             byte[][] utf8ByteArray = (byte[][])Array.CreateInstance(typeof(byte[]), textLength);
             for (var i = 0; i < textLength; i++)
             {
-                utf8ByteArray[i] = Encoding.UTF8.GetBytes(s_UInt32TextArrayHex[i]);
+                utf8ByteArray[i] = Text.Encoding.UTF8.GetBytes(s_UInt32TextArrayHex[i]);
             }
             foreach (var iteration in Benchmark.Iterations)
             {
