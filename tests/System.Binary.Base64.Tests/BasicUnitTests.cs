@@ -150,8 +150,8 @@ namespace System.Binary.Base64.Tests
             Span<byte> expected = new byte[1000];
             Base64Encoder.TryDecode(source, expected, out int expectedConsumed, out int expectedWritten);
 
-            ReadOnlySpan<byte> source1 = source.Slice(0, 400);
-            ReadOnlySpan<byte> source2 = source.Slice(400, 600);
+            ReadOnlySpan<byte> source1 = source.Slice(0, 402);
+            ReadOnlySpan<byte> source2 = source.Slice(402, 598);
 
             Span<byte> stackSpan;
 
@@ -163,7 +163,7 @@ namespace System.Binary.Base64.Tests
 
             Span<byte> destination = new byte[1000]; // Plenty of space
 
-            if (Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
+            if (!Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
             {
                 int leftOverBytes = source1.Length - bytesConsumed;
                 if (leftOverBytes < 4)

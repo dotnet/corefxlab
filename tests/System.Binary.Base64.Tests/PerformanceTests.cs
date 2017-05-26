@@ -272,7 +272,7 @@ namespace System.Binary.Base64.Tests
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        if (Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
+                        if (!Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
                         {
                             int leftOverBytes = source1.Length - bytesConsumed;
                             if (leftOverBytes < 4)
