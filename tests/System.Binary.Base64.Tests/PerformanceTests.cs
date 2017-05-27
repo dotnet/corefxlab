@@ -11,39 +11,7 @@ namespace System.Binary.Base64.Tests
     {
         private const int InnerCount = 1000;
 
-        // Pre-computing this table using a custom string(s_characters) and GenerateEncodingMapAndVerify (found in tests)
-        static readonly byte[] s_encodingMap = {
-            65, 66, 67, 68, 69, 70, 71, 72,         //A..H
-            73, 74, 75, 76, 77, 78, 79, 80,         //I..P
-            81, 82, 83, 84, 85, 86, 87, 88,         //Q..X
-            89, 90, 97, 98, 99, 100, 101, 102,      //Y..Z, a..f
-            103, 104, 105, 106, 107, 108, 109, 110, //g..n
-            111, 112, 113, 114, 115, 116, 117, 118, //o..v
-            119, 120, 121, 122, 48, 49, 50, 51,     //w..z, 0..3
-            52, 53, 54, 55, 56, 57, 43, 47,         //4..9, +, /
-            61                                      // =
-        };
-
-        static void InitalizeBytes(Span<byte> bytes, int seed = 100)
-        {
-            var rnd = new Random(seed);
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                bytes[i] = (byte)rnd.Next(0, byte.MaxValue + 1);
-            }
-        }
-
-        static void InitalizeDecodableBytes(Span<byte> bytes, int seed = 100)
-        {
-            var rnd = new Random(seed);
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                int index = (byte)rnd.Next(0, s_encodingMap.Length - 1);    // Do not pick '='
-                bytes[i] = s_encodingMap[index];
-            }
-        }
-
-        //[Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
@@ -51,7 +19,7 @@ namespace System.Binary.Base64.Tests
         private static void Base64Encode(int numberOfBytes)
         {
             Span<byte> source = new byte[numberOfBytes];
-            InitalizeBytes(source);
+            Base64TestHelper.InitalizeBytes(source);
             Span<byte> destination = new byte[Base64Encoder.ComputeEncodedLength(numberOfBytes)];
 
             foreach (var iteration in Benchmark.Iterations) {
@@ -62,7 +30,7 @@ namespace System.Binary.Base64.Tests
             }
         }
 
-        //[Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
@@ -70,7 +38,7 @@ namespace System.Binary.Base64.Tests
         private static void Base64EncodeBaseline(int numberOfBytes)
         {
             var source = new byte[numberOfBytes];
-            InitalizeBytes(source.AsSpan());
+            Base64TestHelper.InitalizeBytes(source.AsSpan());
             var destination = new char[Base64Encoder.ComputeEncodedLength(numberOfBytes)];
 
             foreach (var iteration in Benchmark.Iterations) {
@@ -81,7 +49,7 @@ namespace System.Binary.Base64.Tests
             }
         }
 
-        //[Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
@@ -89,7 +57,7 @@ namespace System.Binary.Base64.Tests
         private static void Base64Decode(int numberOfBytes)
         {
             Span<byte> source = new byte[numberOfBytes];
-            InitalizeBytes(source);
+            Base64TestHelper.InitalizeBytes(source);
             Span<byte> encoded = new byte[Base64Encoder.ComputeEncodedLength(numberOfBytes)];
             Base64Encoder.TryEncode(source, encoded, out int consumed, out int written);
 
@@ -101,7 +69,7 @@ namespace System.Binary.Base64.Tests
             }
         }
 
-        //[Benchmark(InnerIterationCount = InnerCount)]
+        [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
@@ -109,7 +77,7 @@ namespace System.Binary.Base64.Tests
         private static void Base64DecodeBaseline(int numberOfBytes)
         {
             var source = new byte[numberOfBytes];
-            InitalizeBytes(source.AsSpan());
+            Base64TestHelper.InitalizeBytes(source.AsSpan());
             char[] encoded = Convert.ToBase64String(source).ToCharArray();
 
             foreach (var iteration in Benchmark.Iterations) {
@@ -120,7 +88,6 @@ namespace System.Binary.Base64.Tests
             }
         }
 
-
         [Benchmark(InnerIterationCount = InnerCount)]
         [InlineData(1000)]
         [InlineData(5000)]
@@ -130,30 +97,30 @@ namespace System.Binary.Base64.Tests
         private static void StichingTestNoStichingNeeded(int inputBufferSize)
         {
             Span<byte> source = new byte[inputBufferSize];
-            InitalizeDecodableBytes(source);
+            Base64TestHelper.InitalizeDecodableBytes(source);
+            Span<byte> expected = new byte[inputBufferSize];
+            Base64Encoder.TryDecode(source, expected, out int expectedConsumed, out int expectedWritten);
 
-            int alignedBoundary = inputBufferSize / 5 * 2;  // 1000 -> 400
-            ReadOnlySpan<byte> source1 = source.Slice(0, alignedBoundary);
-            ReadOnlySpan<byte> source2 = source.Slice(alignedBoundary, inputBufferSize - alignedBoundary);
+            Base64TestHelper.SplitSourceIntoSpans(source, false, out ReadOnlySpan<byte> source1, out ReadOnlySpan<byte> source2);
 
             Span<byte> destination = new byte[inputBufferSize]; // Plenty of space
 
+            int bytesConsumed = 0;
+            int bytesWritten = 0;
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        if (!Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
-                        {
-                            // this shouldn't happen!
-                        }
-                        Base64Encoder.TryDecode(source2, destination.Slice(bytesWritten), out int consumed, out int written);
-                        bytesConsumed += consumed;
-                        bytesWritten += written;
+                        Base64TestHelper.DecodeNoNeedToStich(source1, source2, destination, out bytesConsumed, out bytesWritten);
                     }
                 }
             }
+
+            Assert.Equal(expectedConsumed, bytesConsumed);
+            Assert.Equal(expectedWritten, bytesWritten);
+            Assert.True(expected.SequenceEqual(destination));
         }
 
         [Benchmark(InnerIterationCount = InnerCount)]
@@ -163,132 +130,69 @@ namespace System.Binary.Base64.Tests
         [InlineData(64, 1000)]
         [InlineData(100, 1000)]
         [InlineData(500, 1000)]
-        [InlineData(600, 1000)]
+        [InlineData(600, 1000)]  // No Third Call
         [InlineData(10, 5000)]
         [InlineData(32, 5000)]
         [InlineData(50, 5000)]
         [InlineData(64, 5000)]
         [InlineData(100, 5000)]
         [InlineData(500, 5000)]
-        [InlineData(3000, 5000)]
+        [InlineData(3000, 5000)]  // No Third Call
         [InlineData(10, 10000)]
         [InlineData(32, 10000)]
         [InlineData(50, 10000)]
         [InlineData(64, 10000)]
         [InlineData(100, 10000)]
         [InlineData(500, 10000)]
-        [InlineData(6000, 10000)]
+        [InlineData(6000, 10000)]  // No Third Call
         [InlineData(10, 20000)]
         [InlineData(32, 20000)]
         [InlineData(50, 20000)]
         [InlineData(64, 20000)]
         [InlineData(100, 20000)]
         [InlineData(500, 20000)]
-        [InlineData(12000, 20000)]
+        [InlineData(12000, 20000)]  // No Third Call
         [InlineData(10, 50000)]
         [InlineData(32, 50000)]
         [InlineData(50, 50000)]
         [InlineData(64, 50000)]
         [InlineData(100, 50000)]
         [InlineData(500, 50000)]
-        [InlineData(30000, 50000)]
+        [InlineData(30000, 50000)]  // No Third Call
         private static void StichingTestStichingRequired(int stackSize, int inputBufferSize)
         {
             Span<byte> source = new byte[inputBufferSize];
-            InitalizeDecodableBytes(source);
+            Base64TestHelper.InitalizeDecodableBytes(source);
+            Span<byte> expected = new byte[inputBufferSize];
+            Base64Encoder.TryDecode(source, expected, out int expectedConsumed, out int expectedWritten);
 
-            int misalignedBoundary = inputBufferSize / 5 * 2 + 2;  // 1000 -> 402
-            ReadOnlySpan<byte> source1 = source.Slice(0, misalignedBoundary);
-            ReadOnlySpan<byte> source2 = source.Slice(misalignedBoundary, inputBufferSize - misalignedBoundary);
+            Base64TestHelper.SplitSourceIntoSpans(source, true, out ReadOnlySpan<byte> source1, out ReadOnlySpan<byte> source2);
+
+            Span<byte> destination = new byte[inputBufferSize]; // Plenty of space
 
             Span<byte> stackSpan;
-
             unsafe
             {
                 byte* stackBytes = stackalloc byte[stackSize];
                 stackSpan = new Span<byte>(stackBytes, stackSize);
             }
 
-            Span<byte> destination = new byte[inputBufferSize]; // Plenty of space
-
+            int bytesConsumed = 0;
+            int bytesWritten = 0;
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
                 {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                     {
-                        int afterMergeSlice = 0;
-                        if (!Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
-                        {
-                            int leftOverBytes = source1.Length - bytesConsumed;
-                            if (leftOverBytes < 4)
-                            {
-                                source1.Slice(bytesConsumed).CopyTo(stackSpan);
-                                int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
-                                source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
-
-                                Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out int consumed, out int written);
-                                afterMergeSlice = consumed - leftOverBytes;
-                                bytesConsumed += consumed;
-                                bytesWritten += written;
-                            }
-                        }
-                        Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out int consumed3, out int written3);
-                        bytesConsumed += consumed3;
-                        bytesWritten += written3;
+                        Base64TestHelper.DecodeStichUsingStack(source1, source2, destination, stackSpan, out bytesConsumed, out bytesWritten);
                     }
                 }
             }
-        }
 
-        [Benchmark(InnerIterationCount = InnerCount)]
-        [InlineData(600, 1000)]
-        [InlineData(3000, 5000)]
-        [InlineData(6000, 10000)]
-        [InlineData(12000, 20000)]
-        [InlineData(30000, 50000)]
-        private static void StichingTestNoThirdCall(int stackSize, int inputBufferSize)
-        {
-            Span<byte> source = new byte[inputBufferSize];
-            InitalizeDecodableBytes(source);
-
-            int misalignedBoundary = inputBufferSize / 5 * 2 + 2;  // 1000 -> 402
-            ReadOnlySpan<byte> source1 = source.Slice(0, misalignedBoundary);
-            ReadOnlySpan<byte> source2 = source.Slice(misalignedBoundary, inputBufferSize - misalignedBoundary);
-
-            Span<byte> stackSpan;
-
-            unsafe
-            {
-                byte* stackBytes = stackalloc byte[stackSize];
-                stackSpan = new Span<byte>(stackBytes, stackSize);
-            }
-
-            Span<byte> destination = new byte[inputBufferSize]; // Plenty of space
-
-            foreach (var iteration in Benchmark.Iterations)
-            {
-                using (iteration.StartMeasurement())
-                {
-                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                    {
-                        if (!Base64Encoder.TryDecode(source1, destination, out int bytesConsumed, out int bytesWritten))
-                        {
-                            int leftOverBytes = source1.Length - bytesConsumed;
-                            if (leftOverBytes < 4)
-                            {
-                                source1.Slice(bytesConsumed).CopyTo(stackSpan);
-                                int amountToCopy = Math.Min(source2.Length, stackSpan.Length - leftOverBytes);
-                                source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
-
-                                Base64Encoder.TryDecode(stackSpan, destination.Slice(bytesWritten), out int consumed, out int written);
-                                bytesConsumed += consumed;
-                                bytesWritten += written;
-                            }
-                        }
-                    }
-                }
-            }
+            Assert.Equal(expectedConsumed, bytesConsumed);
+            Assert.Equal(expectedWritten, bytesWritten);
+            Assert.True(expected.SequenceEqual(destination));
         }
     }
 }
