@@ -100,10 +100,10 @@ public class BrotliPerfomanceTests
 
         public enum CompressionType
         {
-            CryptoRandom = 1,
-            RepeatedSegments = 2,
-            VeryRepetitive = 3,
-            NormalData = 4
+            CryptoRandom,
+            RepeatedSegments,
+            VeryRepetitive,
+            NormalData
         }
 
         [Benchmark]
