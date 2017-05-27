@@ -461,6 +461,62 @@ namespace System.IO.Pipelines
             TrySchedule(_writerScheduler, continuation);
         }
 
+        void IPipeReader.Advance(int consumedBytes, int examinedBytes)
+        {
+            BufferSegment returnStart = null;
+            BufferSegment returnEnd = null;
+
+            ReadCursor cursor = new ReadCursor(_readHead, _readHead.Start);
+            if (consumedBytes > 0)
+            {
+                returnStart = cursor.Segment;
+
+                cursor = cursor.Seek(consumedBytes);
+
+                returnEnd = cursor.Segment;
+                _readHead = cursor.Segment;
+                _readHead.Start = cursor.Index;
+            }
+
+            if (examinedBytes > consumedBytes)
+            {
+                cursor = cursor.Seek(consumedBytes - examinedBytes);
+            }
+
+            // Reading commit head shared with writer
+            Action continuation = null;
+            lock (_sync)
+            {
+                var oldLength = _length;
+                _length -= consumedBytes;
+
+                if (oldLength >= _maximumSizeLow &&
+                    _length < _maximumSizeLow)
+                {
+                    continuation = _writerAwaitable.Complete();
+                }
+
+                // We reset the awaitable to not completed if we've consumed everything the producer produced so far
+                if (cursor.Segment == _commitHead &&
+                    cursor.Index == _commitHeadIndex &&
+                    !_writerCompletion.IsCompleted)
+                {
+                    _readerAwaitable.Reset();
+                }
+
+                _readingState.End(ExceptionResource.NoReadToComplete);
+            }
+
+            while (returnStart != null && returnStart != returnEnd)
+            {
+                var returnSegment = returnStart;
+                returnStart = returnStart.Next;
+                returnSegment.Dispose();
+            }
+
+            TrySchedule(_writerScheduler, continuation);
+        }
+
         /// <summary>
         /// Signal to the producer that the consumer is done reading.
         /// </summary>
@@ -633,12 +689,9 @@ namespace System.IO.Pipelines
             if (head != null)
             {
                 // Reading commit head shared with writer
-                result.ResultBuffer.BufferEnd.Segment = _commitHead;
-                result.ResultBuffer.BufferEnd.Index = _commitHeadIndex;
-                result.ResultBuffer.BufferLength = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
-
-                result.ResultBuffer.BufferStart.Segment = head;
-                result.ResultBuffer.BufferStart.Index = head.Start;
+                result.Segment = head;
+                result.Index = head.Start;
+                result.Length = ReadCursor.GetLength(head, head.Start, _commitHead, _commitHeadIndex);
             }
 
             if (isCancelled)

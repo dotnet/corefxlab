@@ -12,8 +12,8 @@ namespace System.IO.Pipelines
     /// </summary>
     public struct ReadableBuffer : ISequence<ReadOnlyBuffer<byte>>
     {
-        internal ReadCursor BufferStart;
-        internal ReadCursor BufferEnd;
+        internal BufferSegment StartSegment;
+        internal int StartIndex;
         internal int BufferLength;
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace System.IO.Pipelines
         /// <summary>
         /// Determins if the <see cref="ReadableBuffer"/> is a single <see cref="Buffer{Byte}"/>.
         /// </summary>
-        public bool IsSingleSpan => BufferStart.Segment == BufferEnd.Segment;
+        public bool IsSingleSpan => StartSegment.End - StartIndex >= BufferLength;
 
         public Buffer<byte> First
         {
@@ -45,33 +45,36 @@ namespace System.IO.Pipelines
         /// </summary>
         public ReadCursor Start => BufferStart;
 
+        private ReadCursor BufferStart => new ReadCursor(StartSegment, StartIndex);
+
         /// <summary>
         /// A cursor to the end of the <see cref="ReadableBuffer"/>
         /// </summary>
         public ReadCursor End => BufferEnd;
 
+        private ReadCursor BufferEnd => BufferStart.Seek(BufferLength);
+
         internal ReadableBuffer(ReadCursor start, ReadCursor end)
         {
-            BufferStart = start;
-            BufferEnd = end;
+            StartSegment = start.Segment;
+            StartIndex = start.Index;
             BufferLength = start.GetLength(end);
+        }
+
+        internal ReadableBuffer(BufferSegment segment, int index, int length)
+        {
+            StartSegment = segment;
+            StartIndex = index;
+            BufferLength = length;
         }
 
         private ReadableBuffer(ref ReadableBuffer buffer)
         {
             var begin = buffer.BufferStart;
-            var end = buffer.BufferEnd;
-
-            BufferSegment segmentTail;
-            var segmentHead = BufferSegment.Clone(begin, end, out segmentTail);
-
-            begin = new ReadCursor(segmentHead);
-            end = new ReadCursor(segmentTail, segmentTail.End);
-
-            BufferStart = begin;
-            BufferEnd = end;
 
             BufferLength = buffer.BufferLength;
+            StartSegment = BufferSegment.Clone(buffer.StartSegment, buffer.StartIndex, BufferLength);
+            StartIndex = 0;
         }
 
         /// <summary>
@@ -210,8 +213,7 @@ namespace System.IO.Pipelines
 
         internal void ClearCursors()
         {
-            BufferStart = default(ReadCursor);
-            BufferEnd = default(ReadCursor);
+            StartSegment = null;
         }
 
         /// <summary>
