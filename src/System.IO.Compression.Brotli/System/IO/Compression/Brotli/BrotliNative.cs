@@ -69,19 +69,18 @@ namespace System.IO.Compression
             NeedsMoreOutput
         };
 
-        static bool X86 = IntPtr.Size == 4;
         #region Encoder
         public static IntPtr BrotliEncoderCreateInstance()
         {
            return Interop.Brotli.BrotliEncoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
         }
 
-        public static bool BrotliEncoderSetParameter(IntPtr state, BrotliEncoderParameter param, UInt32 value)
+        public static bool BrotliEncoderSetParameter(IntPtr state, BrotliEncoderParameter param, nuint value)
         {
             return Interop.Brotli.BrotliEncoderSetParameter(state, param, value);
         }
 
-        public static void BrotliEncoderSetCustomDictionary(IntPtr state, UInt32 size, IntPtr dict)
+        public static void BrotliEncoderSetCustomDictionary(IntPtr state, nuint size, IntPtr dict)
         {
             Interop.Brotli.BrotliEncoderSetCustomDictionary(state, size, dict);
         }
@@ -115,7 +114,7 @@ namespace System.IO.Compression
             return Interop.Brotli.BrotliDecoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
         }
 
-        public static void BrotliDecoderSetCustomDictionary(IntPtr state, UInt32 size, IntPtr dict)
+        public static void BrotliDecoderSetCustomDictionary(IntPtr state, nuint size, IntPtr dict)
         {
             Interop.Brotli.BrotliDecoderSetCustomDictionary(state, size, dict);
         }
@@ -132,7 +131,7 @@ namespace System.IO.Compression
            Interop.Brotli.BrotliDecoderDestroyInstance(state);
         }
 
-        public static UInt32 BrotliDecoderVersion()
+        public static nuint BrotliDecoderVersion()
         {
             return Interop.Brotli.BrotliDecoderVersion();
         }
