@@ -20,7 +20,7 @@ namespace System.IO.Pipelines.Samples
             factory = new PipeFactory();
         }
 
-        protected override async Task<IPipeConnection> GetConnection()
+        protected override Task<IPipeConnection> GetConnection()
         {
             //var client = new RioTcpClientPool();
             //return client.Connect(new IPEndPoint(IPAddress.Loopback, 5000));
