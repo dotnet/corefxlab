@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+using System.Buffers;
 using Xunit;
 
 namespace System.Binary.Base64.Tests
@@ -101,11 +102,12 @@ namespace System.Binary.Base64.Tests
 
         public static void DecodeNoNeedToStich(ReadOnlySpan<byte> source1, ReadOnlySpan<byte> source2, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
+            Base64Decoder decoder = new Base64Decoder();
             bytesConsumed = 0;
             bytesWritten = 0;
-            if (Base64Encoder.TryDecode(source1, destination, out int consumed1, out int written1))
+            if (decoder.Transform(source1, destination, out int consumed1, out int written1) == TransformationStatus.Done)
             {
-                Base64Encoder.TryDecode(source2, destination.Slice(written1), out int consumed2, out int written2);
+                decoder.Transform(source2, destination.Slice(written1), out int consumed2, out int written2);
                 bytesConsumed = consumed2;
                 bytesWritten = written2;
             }
@@ -115,10 +117,11 @@ namespace System.Binary.Base64.Tests
 
         public static void DecodeStichUsingStack(ReadOnlySpan<byte> source1, ReadOnlySpan<byte> source2, Span<byte> destination, Span<byte> stackSpan, out int bytesConsumed, out int bytesWritten)
         {
+            Base64Decoder decoder = new Base64Decoder();
             bytesConsumed = 0;
             bytesWritten = 0;
             int afterMergeSlice = 0;
-            if (!Base64Encoder.TryDecode(source1, destination, out int consumed1, out int written1))
+            if (decoder.Transform(source1, destination, out int consumed1, out int written1) != TransformationStatus.Done)
             {
                 int leftOverBytes = source1.Length - consumed1;
                 if (leftOverBytes < 4)
@@ -130,7 +133,7 @@ namespace System.Binary.Base64.Tests
                     source2.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
                     amountOfData += amountToCopy;
 
-                    Base64Encoder.TryDecode(stackSpan.Slice(0, amountOfData), destination.Slice(written1), out int consumed2, out int written2);
+                    decoder.Transform(stackSpan.Slice(0, amountOfData), destination.Slice(written1), out int consumed2, out int written2);
                     bytesConsumed = consumed2;
                     bytesWritten = written2;
 
@@ -143,7 +146,7 @@ namespace System.Binary.Base64.Tests
             {
                 return;
             }
-            Base64Encoder.TryDecode(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out int consumed3, out int written3);
+            decoder.Transform(source2.Slice(afterMergeSlice), destination.Slice(bytesWritten), out int consumed3, out int written3);
             bytesConsumed += consumed3;
             bytesWritten += written3;
         }
