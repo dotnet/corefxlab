@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using Xunit;
 using System.Collections.Generic;
+using System.Buffers;
 
 namespace System.Binary.Base64.Tests
 {
@@ -214,6 +215,163 @@ namespace System.Binary.Base64.Tests
         }
 
         [Fact]
+        public void ValidInputOnlyMultiByte()
+        {
+            Span<byte> inputSpan = new byte[1000];
+            Base64TestHelper.InitalizeDecodableBytes(inputSpan);
+            Buffer<byte> source = inputSpan.ToArray();
+            byte[] initialSource = source.ToArray();
+            List<Buffer<byte>> inputSource = new List<Buffer<byte>>();
+
+
+            int[] split = { 100, 102, 98, 101, 2, 97, 101, 1, 2, 396 };
+
+            int sum = 0;
+            for (int i = 0; i < split.Length; i++)
+            {
+                int splitter = split[i];
+                Buffer<byte> temp = source.Slice(sum, splitter);
+                byte[] x = temp.ToArray();
+
+                inputSource.Add(temp);
+                sum += splitter;
+            }
+            Assert.Equal(1000, sum);
+
+            Assert.Equal(split.Length, inputSource.Count);
+            for (int i = 0; i < split.Length; i++)
+            {
+                Assert.Equal(split[i], inputSource[i].Length);
+            }
+
+            byte[] passedArray = new byte[1000];
+            int mySum = 0;
+            for (int i = 0; i < inputSource.Count; i++)
+            {
+                var tempArr = inputSource[i].ToArray();
+                Array.Copy(tempArr, 0, passedArray, mySum, tempArr.Length);
+                mySum += tempArr.Length;
+            }
+
+            Assert.Equal(initialSource, passedArray);
+
+            var output = new TestOutput();
+            Assert.True(Decode(inputSource, output));
+
+
+        }
+
+        const int stackLength = 32;
+
+        private bool Decode(IEnumerable<Buffer<byte>> source, IOutput destination)
+        {
+            int afterMergeSlice = 0;
+            Span<byte> remainder;
+            Span<byte> stackSpan;
+
+            unsafe
+            {
+                byte* stackBytes = stackalloc byte[stackLength];
+                stackSpan = new Span<byte>(stackBytes, stackLength);
+            }
+
+            foreach (var sourceBuffer in source)
+            {
+                Span<byte> outputSpan = destination.Buffer;
+                Span<byte> sourceSpan = sourceBuffer.Span;
+
+                if (!remainder.IsEmpty)
+                {
+                    int leftOverBytes = remainder.Length;
+                    remainder.CopyTo(stackSpan);
+                    int amountToCopy = Math.Min(sourceSpan.Length, stackSpan.Length - leftOverBytes);
+                    sourceSpan.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
+                    int amountOfData = leftOverBytes + amountToCopy;
+
+                    Span<byte> spanToDecode = stackSpan.Slice(0, amountOfData);
+
+                    TryDecodeWithRemainder:
+                    if (!Base64Encoder.TryDecode(spanToDecode, outputSpan, out int bytesConsumed, out int bytesWritten))
+                    {
+                        destination.Advance(bytesWritten);
+                        spanToDecode = spanToDecode.Slice(bytesConsumed);
+                        // Not successful
+                        if (outputSpan.Length - bytesWritten < 3)
+                        {
+                            destination.Enlarge();  // output buffer is too small
+                            outputSpan = destination.Buffer;
+
+                            if (outputSpan.Length - bytesWritten < 3)
+                            {
+                                return false; // no more output space, user decides what to do.
+                            }
+                            goto TryDecodeWithRemainder;
+                        }
+                        else
+                        {
+                            if (spanToDecode.Length >= 4)
+                            {
+                                continue; // source buffer contains invalid bytes, user decides what to do for fallback
+                            }
+
+                            // left over bytes in stack span
+                            remainder = spanToDecode;
+                        }
+                        continue;
+                    }
+                    else    // success
+                    {
+                        afterMergeSlice = bytesConsumed - remainder.Length;
+                        remainder = Span<byte>.Empty;
+                        destination.Advance(bytesWritten);
+                        outputSpan = destination.Buffer;
+                    }
+                }
+
+                TryDecode:
+                bool result = Base64Encoder.TryDecode(sourceSpan.Slice(afterMergeSlice), outputSpan, out int consumed, out int written);
+                afterMergeSlice = 0;
+                destination.Advance(written);
+                sourceSpan = sourceSpan.Slice(consumed);
+
+                if (result) continue;
+
+                // Not successful
+                if (outputSpan.Length - written < 3)
+                {
+                    destination.Enlarge();  // output buffer is too small
+                    outputSpan = destination.Buffer;
+                    if (outputSpan.Length - written < 3)
+                    {
+                        return false; // no more output space, user decides what to do.
+                    }
+                    goto TryDecode;
+                }
+                else
+                {
+                    if (sourceSpan.Length >= 4)
+                    {
+                        continue; // source buffer contains invalid bytes, user decides what to do for fallback
+                    }
+
+                    // left over bytes in source span
+                    remainder = sourceSpan;
+                }
+            }
+            return true;
+        }
+
+        // BasicUnitTests.cs(318,54,318,76): error CS1601: Cannot make reference to variable of type 'Span<byte>'
+        /*private int Stitch(ref Span<byte> remainder, ref Span<byte> segment, Span<byte> stackSpan)
+        {
+            int leftOverBytes = remainder.Length;
+            remainder.CopyTo(stackSpan);
+            int amountToCopy = Math.Min(segment.Length, stackSpan.Length - leftOverBytes);
+            segment.Slice(0, amountToCopy).CopyTo(stackSpan.Slice(leftOverBytes));
+            return leftOverBytes + amountToCopy;
+        }*/
+
+        [Fact]
         public void EncodeInPlace()
         {
             const int numberOfBytes = 15;
@@ -243,4 +401,20 @@ namespace System.Binary.Base64.Tests
             }
         }
     }
+
+    class TestOutput : IOutput
+    {
+        byte[] _buffer = new byte[1000];
+
+        public Span<byte> Buffer => _buffer;
+
+        public void Advance(int bytes)
+        {
+        }
+
+        public void Enlarge(int desiredBufferLength = 0)
+        {
+        }
+    }
+
 }

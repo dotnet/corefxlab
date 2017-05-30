@@ -375,6 +375,8 @@ namespace System.Binary.Base64
             int sourceIndex = 0;
             int destIndex = 0;
 
+            if (source.Length == 0) goto TrueExit;
+
             int result = 0;
 
             while (sourceIndex < srcLength - 4)
@@ -426,6 +428,7 @@ namespace System.Binary.Base64
 
             if (srcLength != source.Length) goto FalseExit;
 
+            TrueExit:
             bytesConsumed = sourceIndex;
             bytesWritten = destIndex;
             return true;
