@@ -22,6 +22,9 @@ namespace System.IO.Compression
             internal const String LibNameEncoder = "/home/corefxlab/corefxlab/lib/brotlienc.dll";
             internal const String LibNameDecoder = "/home/corefxlab/corefxlab/lib/brotlidec.dll";
             #region Encoder
+            [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
+            internal static extern bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, IntPtr input_size,
+                IntPtr input_buffer, IntPtr encoded_size, IntPtr encoded_buffer);
             [DllImport(LibNameEncoder,CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliEncoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);
 

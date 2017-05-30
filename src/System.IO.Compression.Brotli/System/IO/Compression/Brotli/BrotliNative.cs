@@ -69,7 +69,24 @@ namespace System.IO.Compression
             NeedsMoreOutput
         };
 
+        /// <summary>
+        /// 0 - Default (Compressor does not know anything in advance properties of the input)
+        /// 1 - For UTF-8 formatted text input
+        /// 2 - Mode used in WOFF 2.0
+        /// </summary>
+        public enum BrotliEncoderMode
+        {
+            Generic,
+            Text,
+            Font
+        };
         #region Encoder
+        public static bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, IntPtr input_size,
+                IntPtr input_buffer, IntPtr encoded_size, IntPtr encoded_buffer)
+        {
+            return Interop.Brotli.BrotliEncoderCompress(quality, lgwin, mode, input_size, input_buffer, encoded_size, encoded_buffer);
+        }
+        
         public static IntPtr BrotliEncoderCreateInstance()
         {
            return Interop.Brotli.BrotliEncoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
