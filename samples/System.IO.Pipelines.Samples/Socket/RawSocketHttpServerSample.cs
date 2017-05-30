@@ -15,7 +15,7 @@ namespace System.IO.Pipelines.Samples
     {
         public SocketListener listener { get; private set; }
 
-        protected override async Task Start(IPEndPoint ipEndpoint)
+        protected override Task Start(IPEndPoint ipEndpoint)
         {
             listener = new SocketListener();
             listener.OnConnection(async connection => { await ProcessConnection(connection); });
@@ -23,6 +23,7 @@ namespace System.IO.Pipelines.Samples
             var ip = IPAddress.Any;
             int port = 5000;
             listener.Start(new IPEndPoint(ip, port));
+            return Task.CompletedTask;
         }
 
         protected override Task Stop()

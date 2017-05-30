@@ -16,7 +16,7 @@ namespace System.IO.Pipelines.Samples
         private static readonly byte[] _helloWorldPayload = Encoding.UTF8.GetBytes("Hello, World!");
         private static readonly string _helloWorldLength = _helloWorldPayload.Length.ToString();
 
-        public async Task Run()
+        public Task Run()
         {
             using (var httpServer = new TServer())
             {
@@ -40,6 +40,7 @@ namespace System.IO.Pipelines.Samples
             }
 
             Console.ReadLine();
+            return Task.CompletedTask;
         }
     }
 }
