@@ -123,8 +123,8 @@ namespace System.Threading.Tasks.Channels
             // We also know that only one thread (this one) will ever get here, as only that thread
             // will be the one to transition from _doneWriting false to true.  As such, we can
             // freely manipulate _blockedReaders and _waitingReaders without any concurrency concerns.
-            ChannelUtilities.FailInteractors<ReaderInteractor<T>,T>(_blockedReaders, error);
-            ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: false);
+            ChannelUtilities.FailInteractors<ReaderInteractor<T>,T>(_blockedReaders, ChannelUtilities.CreateInvalidCompletionException(error));
+            ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: false, error: error);
 
             // Successfully transitioned to completed.
             return true;
@@ -166,7 +166,7 @@ namespace System.Threading.Tasks.Channels
                 // There are no items, so if we're done writing, fail.
                 if (_doneWriting != null)
                 {
-                    return ChannelUtilities.GetErrorValueTask<T>(_doneWriting);
+                    return ChannelUtilities.GetInvalidCompletionValueTask<T>(_doneWriting);
                 }
 
                 // Otherwise, queue the reader.
@@ -197,7 +197,9 @@ namespace System.Threading.Tasks.Channels
                 // There are no items, so if we're done writing, there's never going to be data available.
                 if (_doneWriting != null)
                 {
-                    return ChannelUtilities.FalseTask;
+                    return _doneWriting != ChannelUtilities.DoneWritingSentinel ?
+                        Task.FromException<bool>(_doneWriting) :
+                        ChannelUtilities.FalseTask;
                 }
 
                 // Queue the waiter
@@ -284,12 +286,13 @@ namespace System.Threading.Tasks.Channels
         private Task<bool> WaitToWriteAsync(CancellationToken cancellationToken = default(CancellationToken)) =>
             cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
             _doneWriting == null ? ChannelUtilities.TrueTask : // unbounded writing can always be done if we haven't completed
+            _doneWriting != ChannelUtilities.DoneWritingSentinel ? Task.FromException<bool>(_doneWriting) :
             ChannelUtilities.FalseTask;
 
         private Task WriteAsync(T item, CancellationToken cancellationToken = default(CancellationToken)) =>
             cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
             TryWrite(item) ? Task.CompletedTask :
-            Task.FromException(ChannelUtilities.CreateInvalidCompletionException());
+            Task.FromException(ChannelUtilities.CreateInvalidCompletionException(_doneWriting));
 
         /// <summary>Gets the number of items in the channel.  This should only be used by the debugger.</summary>
         private int ItemsCountForDebugger => _items.Count;

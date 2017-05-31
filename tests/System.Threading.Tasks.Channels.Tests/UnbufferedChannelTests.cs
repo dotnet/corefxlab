@@ -8,10 +8,8 @@ namespace System.Threading.Tasks.Channels.Tests
 {
     public class UnbufferedChannelTests : ChannelTestBase
     {
-        protected override Channel<int> CreateChannel()
-        {
-            return Channel.CreateUnbuffered<int>();
-        }
+        protected override Channel<int> CreateChannel() => Channel.CreateUnbuffered<int>();
+        protected override Channel<int> CreateFullChannel() => CreateChannel();
 
         [Fact]
         public async Task Complete_BeforeEmpty_WaitingWriters_TriggersCompletion()

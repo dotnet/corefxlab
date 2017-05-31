@@ -10,6 +10,7 @@ namespace System.Threading.Tasks.Channels.Tests
     public abstract class ChannelTestBase : TestBase
     {
         protected abstract Channel<int> CreateChannel();
+        protected abstract Channel<int> CreateFullChannel();
 
         protected virtual bool RequiresSingleReader => false;
         protected virtual bool RequiresSingleWriter => false;
@@ -438,7 +439,20 @@ namespace System.Threading.Tasks.Channels.Tests
             Task<int> read = c.In.ReadAsync().AsTask();
             FormatException exc = new FormatException();
             c.Out.Complete(exc);
-            Assert.Same(exc, await Assert.ThrowsAsync<FormatException>(() => read));
+            Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => read)).InnerException);
+        }
+
+        [Fact]
+        public async Task Complete_WithException_PropagatesToExistingWriter()
+        {
+            Channel<int> c = CreateFullChannel();
+            if (c != null)
+            {
+                Task write = c.Out.WriteAsync(42);
+                FormatException exc = new FormatException();
+                c.Out.Complete(exc);
+                Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => write)).InnerException);
+            }
         }
 
         [Fact]
@@ -448,7 +462,60 @@ namespace System.Threading.Tasks.Channels.Tests
             FormatException exc = new FormatException();
             c.Out.Complete(exc);
             Task<int> read = c.In.ReadAsync().AsTask();
-            Assert.Same(exc, await Assert.ThrowsAsync<FormatException>(() => read));
+            Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => read)).InnerException);
+        }
+
+        [Fact]
+        public async Task Complete_WithException_PropagatesToNewWriter()
+        {
+            Channel<int> c = CreateChannel();
+            FormatException exc = new FormatException();
+            c.Out.Complete(exc);
+            Task write = c.Out.WriteAsync(42);
+            Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => write)).InnerException);
+        }
+
+        [Fact]
+        public async Task Complete_WithException_PropagatesToExistingWaitingReader()
+        {
+            Channel<int> c = CreateChannel();
+            Task<bool> read = c.In.WaitToReadAsync();
+            FormatException exc = new FormatException();
+            c.Out.Complete(exc);
+            await Assert.ThrowsAsync<FormatException>(() => read);
+        }
+
+        [Fact]
+        public async Task Complete_WithException_PropagatesToExistingWaitingWriter()
+        {
+            Channel<int> c = CreateFullChannel();
+            if (c != null)
+            {
+                Task<bool> write = c.Out.WaitToWriteAsync();
+                FormatException exc = new FormatException();
+                c.Out.Complete(exc);
+                await Assert.ThrowsAsync<FormatException>(() => write);
+            }
+        }
+
+        [Fact]
+        public async Task Complete_WithException_PropagatesToNewWaitingReader()
+        {
+            Channel<int> c = CreateChannel();
+            FormatException exc = new FormatException();
+            c.Out.Complete(exc);
+            Task<bool> read = c.In.WaitToReadAsync();
+            await Assert.ThrowsAsync<FormatException>(() => read);
+        }
+
+        [Fact]
+        public async Task Complete_WithException_PropagatesToNewWaitingWriter()
+        {
+            Channel<int> c = CreateChannel();
+            FormatException exc = new FormatException();
+            c.Out.Complete(exc);
+            Task<bool> write = c.Out.WaitToWriteAsync();
+            await Assert.ThrowsAsync<FormatException>(() => write);
         }
 
         [Theory]
@@ -737,8 +804,9 @@ namespace System.Threading.Tasks.Channels.Tests
                     await reader;
                     break;
                 case TaskStatus.Faulted:
-                    o.OnError(new FormatException());
-                    await Assert.ThrowsAsync<FormatException>(() => reader);
+                    var exc = new FormatException();
+                    o.OnError(exc);
+                    Assert.Same(exc, (await Assert.ThrowsAsync<ClosedChannelException>(() => reader)).InnerException);
                     break;
                 case TaskStatus.Canceled:
                     o.OnError(new OperationCanceledException());

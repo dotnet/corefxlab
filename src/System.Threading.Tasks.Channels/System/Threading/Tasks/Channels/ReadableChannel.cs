@@ -92,6 +92,7 @@ namespace System.Threading.Tasks.Channels
 
             private async void ForwardLoopAsync()
             {
+                Exception error = null;
                 try
                 {
                     while (await _channel.WaitToReadAsync().ConfigureAwait(false))
@@ -114,6 +115,14 @@ namespace System.Threading.Tasks.Channels
                         }
                     }
                 }
+                catch (ClosedChannelException exc)
+                {
+                    error = exc.InnerException;
+                }
+                catch (Exception exc)
+                {
+                    error = exc;
+                }
                 finally
                 {
                     lock (_observers)
@@ -121,7 +130,6 @@ namespace System.Threading.Tasks.Channels
                         _active = false;
                         if (_channel.Completion.IsCompleted)
                         {
-                            Exception error = null;
                             if (_channel.Completion.IsFaulted)
                             {
                                 error = _channel.Completion.Exception.InnerException;
@@ -222,7 +230,7 @@ namespace System.Threading.Tasks.Channels
                 return result.AsTask().ContinueWith((t, s) =>
                 {
                     var thisRef = (AsyncEnumerator)s;
-                    if (t.IsFaulted && t.Exception.InnerException is ClosedChannelException)
+                    if (t.IsFaulted && t.Exception.InnerException is ClosedChannelException cce && cce.InnerException == null)
                     {
                         return false;
                     }
