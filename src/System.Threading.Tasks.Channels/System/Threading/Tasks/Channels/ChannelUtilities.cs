@@ -46,7 +46,7 @@ namespace System.Threading.Tasks.Channels
         /// <typeparam name="T">Specifies the type of the value that would have been returned.</typeparam>
         /// <param name="error">The error.  This may be <see cref="DoneWritingSentinel"/>.</param>
         /// <returns>The failed task.</returns>
-        internal static ValueTask<T> GetErrorValueTask<T>(Exception error)
+        internal static ValueTask<T> GetInvalidCompletionValueTask<T>(Exception error)
         {
             Debug.Assert(error != null);
 
@@ -61,7 +61,7 @@ namespace System.Threading.Tasks.Channels
                 OperationCanceledException oce = error as OperationCanceledException;
                 t = oce != null ?
                     Task.FromCanceled<T>(oce.CancellationToken.IsCancellationRequested ? oce.CancellationToken : new CancellationToken(true)) :
-                    Task.FromException<T>(error);
+                    Task.FromException<T>(CreateInvalidCompletionException(error));
             }
 
             return new ValueTask<T>(t);
@@ -76,6 +76,27 @@ namespace System.Threading.Tasks.Channels
             if (w != null)
             {
                 w.Success(result);
+                waiters = null;
+            }
+        }
+
+        /// <summary>Wake up all of the waiters and null out the field.</summary>
+        /// <param name="waiters">The waiters.</param>
+        /// <param name="result">The success value with which to complete each waiter if <paramref name="error">error</paramref> is null.</param>
+        /// <param name="error">The failure with which to cmplete each waiter, if non-null.</param>
+        internal static void WakeUpWaiters(ref ReaderInteractor<bool> waiters, bool result, Exception error = null)
+        {
+            ReaderInteractor<bool> w = waiters;
+            if (w != null)
+            {
+                if (error != null)
+                {
+                    w.Fail(error);
+                }
+                else
+                {
+                    w.Success(result);
+                }
                 waiters = null;
             }
         }
@@ -116,6 +137,9 @@ namespace System.Threading.Tasks.Channels
         }
 
         /// <summary>Creates and returns an exception object to indicate that a channel has been closed.</summary>
-        internal static Exception CreateInvalidCompletionException() => new ClosedChannelException();
+        internal static Exception CreateInvalidCompletionException(Exception inner = null) =>
+            inner is OperationCanceledException ? inner :
+            inner != null && inner != DoneWritingSentinel ? new ClosedChannelException(inner) :
+            new ClosedChannelException();
     }
 }

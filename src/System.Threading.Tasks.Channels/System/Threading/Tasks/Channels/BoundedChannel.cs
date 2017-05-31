@@ -142,10 +142,10 @@ namespace System.Threading.Tasks.Channels
             // We also know that only one thread (this one) will ever get here, as only that thread
             // will be the one to transition from _doneWriting false to true.  As such, we can
             // freely manipulate _blockedReaders and _waitingReaders without any concurrency concerns.
-            ChannelUtilities.FailInteractors<ReaderInteractor<T>, T>(_blockedReaders, error);
-            ChannelUtilities.FailInteractors<WriterInteractor<T>, VoidResult>(_blockedWriters, error);
-            ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: false);
-            ChannelUtilities.WakeUpWaiters(ref _waitingWriters, result: false);
+            ChannelUtilities.FailInteractors<ReaderInteractor<T>, T>(_blockedReaders, ChannelUtilities.CreateInvalidCompletionException(error));
+            ChannelUtilities.FailInteractors<WriterInteractor<T>, VoidResult>(_blockedWriters, ChannelUtilities.CreateInvalidCompletionException(error));
+            ChannelUtilities.WakeUpWaiters(ref _waitingReaders, result: false, error: error);
+            ChannelUtilities.WakeUpWaiters(ref _waitingWriters, result: false, error: error);
 
             // Successfully transitioned to completed.
             return true;
@@ -173,7 +173,7 @@ namespace System.Threading.Tasks.Channels
                 // will never be more items, fail.
                 if (_doneWriting != null)
                 {
-                    return ChannelUtilities.GetErrorValueTask<T>(_doneWriting);
+                    return ChannelUtilities.GetInvalidCompletionValueTask<T>(_doneWriting);
                 }
 
                 // Otherwise, queue the reader.
@@ -203,7 +203,9 @@ namespace System.Threading.Tasks.Channels
                 // There were no items available, so if we're done writing, a read will never be possible.
                 if (_doneWriting != null)
                 {
-                    return ChannelUtilities.FalseTask;
+                    return _doneWriting != ChannelUtilities.DoneWritingSentinel ?
+                        Task.FromException<bool>(_doneWriting) :
+                        ChannelUtilities.FalseTask;
                 }
 
                 // There were no items available, but there could be in the future, so ensure
@@ -375,7 +377,9 @@ namespace System.Threading.Tasks.Channels
                 // If we're done writing, no writes will ever succeed.
                 if (_doneWriting != null)
                 {
-                    return ChannelUtilities.FalseTask;
+                    return _doneWriting != ChannelUtilities.DoneWritingSentinel ?
+                        Task.FromException<bool>(_doneWriting) :
+                        ChannelUtilities.FalseTask;
                 }
 
                 // If there's space to write, a write is possible.
@@ -408,7 +412,7 @@ namespace System.Threading.Tasks.Channels
                 // If we're done writing, trying to write is an error.
                 if (_doneWriting != null)
                 {
-                    return Task.FromException(ChannelUtilities.CreateInvalidCompletionException());
+                    return Task.FromException(ChannelUtilities.CreateInvalidCompletionException(_doneWriting));
                 }
 
                 // Get the number of items in the channel currently.

@@ -126,10 +126,7 @@ namespace System.Threading.Tasks.Channels
             // Complete a blocked reader if necessary
             if (blockedReader != null)
             {
-                if (error == null)
-                {
-                    error = ChannelUtilities.CreateInvalidCompletionException();
-                }
+                error = ChannelUtilities.CreateInvalidCompletionException(error);
 
                 ReaderInteractor<T> interactor = blockedReader as ReaderInteractor<T>;
                 if (interactor != null)
@@ -144,7 +141,17 @@ namespace System.Threading.Tasks.Channels
 
             // Complete a waiting reader if necessary.  (We really shouldn't have both a blockedReader
             // and a waitingReader, but it's more expensive to prevent it than to just tolerate it.)
-            waitingReader?.Success(false);
+            if (waitingReader != null)
+            {
+                if (error != null)
+                {
+                    waitingReader.Fail(error);
+                }
+                else
+                {
+                    waitingReader.Success(false);
+                }
+            }
 
             // Successfully completed the channel
             return true;
@@ -172,7 +179,7 @@ namespace System.Threading.Tasks.Channels
                 // If no more items will be written, fail the read.
                 if (_doneWriting != null)
                 {
-                    return new ValueAwaiter<T>(ChannelUtilities.GetErrorValueTask<T>(_doneWriting));
+                    return new ValueAwaiter<T>(ChannelUtilities.GetInvalidCompletionValueTask<T>(_doneWriting));
                 }
 
                 Debug.Assert(_blockedReader == null || ((_blockedReader as ReaderInteractor<T>)?.Task.IsCanceled ?? false),
@@ -211,7 +218,7 @@ namespace System.Threading.Tasks.Channels
                 // If no more items will be written, fail the read.
                 if (_doneWriting != null)
                 {
-                    return ChannelUtilities.GetErrorValueTask<T>(_doneWriting);
+                    return ChannelUtilities.GetInvalidCompletionValueTask<T>(_doneWriting);
                 }
 
                 Debug.Assert(_blockedReader == null || ((_blockedReader as ReaderInteractor<T>)?.Task.IsCanceled ?? false),
@@ -330,7 +337,9 @@ namespace System.Threading.Tasks.Channels
                 // There aren't any items; if we're done writing, there never will be more items.
                 if (_doneWriting != null)
                 {
-                    return ChannelUtilities.FalseTask;
+                    return _doneWriting != ChannelUtilities.DoneWritingSentinel ?
+                        Task.FromException<bool>(_doneWriting) :
+                        ChannelUtilities.FalseTask;
                 }
 
                 // Create the new waiter.  We're a bit more tolerant of a stray waiting reader
@@ -349,6 +358,7 @@ namespace System.Threading.Tasks.Channels
             return
                 cancellationToken.IsCancellationRequested ? Task.FromCanceled<bool>(cancellationToken) :
                 _doneWriting == null ? ChannelUtilities.TrueTask :
+                _doneWriting != ChannelUtilities.DoneWritingSentinel ? Task.FromException<bool>(_doneWriting) :
                 ChannelUtilities.FalseTask;
         }
 
@@ -359,7 +369,7 @@ namespace System.Threading.Tasks.Channels
             return
                 cancellationToken.IsCancellationRequested ? Task.FromCanceled(cancellationToken) :
                 TryWrite(item) ? Task.CompletedTask :
-                Task.FromException(ChannelUtilities.CreateInvalidCompletionException());
+                Task.FromException(ChannelUtilities.CreateInvalidCompletionException(_doneWriting));
         }
 
         /// <summary>Gets the number of items in the channel.  This should only be used by the debugger.</summary>
