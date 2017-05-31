@@ -5,7 +5,7 @@ namespace System.Binary.Base64
 {
     public sealed class Base64
     {
-        public static readonly Base64Encoder Encoder = Base64Encoder.Encoder;
-        public static readonly Base64Decoder Decoder = Base64Decoder.Decoder;
+        public static readonly Base64Encoder Encoder = Base64Encoder.Instance;
+        public static readonly Base64Decoder Decoder = Base64Decoder.Instance;
     }
 }

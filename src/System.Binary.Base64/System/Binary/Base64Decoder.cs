@@ -8,13 +8,13 @@ namespace System.Binary.Base64
 {
     public sealed class Base64Decoder : ITransformation
     {
-        private static readonly Base64Decoder s_decoder = new Base64Decoder();
+        private static readonly Base64Decoder s_instance = new Base64Decoder();
 
-        public static Base64Decoder Decoder
+        public static Base64Decoder Instance
         {
             get
             {
-                return s_decoder;
+                return s_instance;
             }
         }
 

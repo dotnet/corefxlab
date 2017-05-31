@@ -8,13 +8,13 @@ namespace System.Binary.Base64
 {
     public sealed class Base64Encoder : ITransformation
     {
-        private static readonly Base64Encoder s_encoder = new Base64Encoder();
+        private static readonly Base64Encoder s_instance = new Base64Encoder();
 
-        public static Base64Encoder Encoder
+        public static Base64Encoder Instance
         {
             get
             {
-                return s_encoder;
+                return s_instance;
             }
         }
 
@@ -185,14 +185,14 @@ namespace System.Binary.Base64
                 var sourceSlice = buffer.Slice(sourceIndex, leftover);
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
-                s_encoder.Transform(sourceSlice, desitnationSlice, out int consumed, out int written);
+                s_instance.Transform(sourceSlice, desitnationSlice, out int consumed, out int written);
             }
 
             for (int index = sourceIndex - 3; index>=0; index -= 3) {
                 var sourceSlice = buffer.Slice(index, 3);
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
-                s_encoder.Transform(sourceSlice, desitnationSlice, out int consumed, out int written);
+                s_instance.Transform(sourceSlice, desitnationSlice, out int consumed, out int written);
             }
 
             return encodedLength;
