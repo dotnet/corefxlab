@@ -48,7 +48,7 @@ namespace System.Buffers
             return new ReadOnlyBuffer<T>(array, 0, array.Length);
         }
 
-        public static ReadOnlyBuffer<T> Empty { get; } = Internal.OwnedEmptyBuffer<T>.Shared.Buffer;
+        public static ReadOnlyBuffer<T> Empty { get; } = OwnedBuffer<T>.EmptyArray;
 
         public int Length => _length;
 
@@ -96,18 +96,6 @@ namespace System.Buffers
                 var pointer = OwnedBuffer<T>.Add((void*)handle.AddrOfPinnedObject(), _index);
                 return new BufferHandle(null, pointer, handle);
             }
-        }
-
-        public bool TryGetArray(out ArraySegment<T> buffer)
-        {
-            if (!_owner.TryGetArray(out buffer))
-            {
-                if (_array == null) return false;
-                buffer = new ArraySegment<T>(_array, _index, _length);
-                return true;
-            }
-            buffer = new ArraySegment<T>(buffer.Array, buffer.Offset + _index, _length);
-            return true;
         }
 
         public T[] ToArray() => Span.ToArray();

@@ -20,11 +20,11 @@ namespace System.IO.Pipelines.Samples
             factory = new PipeFactory();
         }
 
-        protected override async Task<IPipeConnection> GetConnection()
+        protected override Task<IPipeConnection> GetConnection()
         {
             Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp);
             s.Connect(new IPEndPoint(IPAddress.Loopback, 5000));
-            return factory.CreateConnection(new NetworkStream(s));
+            return Task.FromResult(factory.CreateConnection(new NetworkStream(s)));
         }
 
         protected override PipeFactory GetPipeFactory()

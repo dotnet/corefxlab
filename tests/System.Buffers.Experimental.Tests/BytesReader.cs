@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Utf8;
 using Xunit;
 
-namespace System.Slices.Tests
+namespace System.Buffers.Tests
 {
     public partial class ReadOnlyBytesTests
     {

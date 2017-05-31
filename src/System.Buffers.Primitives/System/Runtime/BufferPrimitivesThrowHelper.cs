@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Runtime
 {
-    public static class BufferPrimitivesThrowHelper
+    internal static class BufferPrimitivesThrowHelper
     {
         public static void ThrowArgumentNullException(string argument)
         {
@@ -111,7 +111,7 @@ namespace System.Runtime
         }
     }
 
-    public enum ExceptionArgument
+    internal enum ExceptionArgument
     {
         pointer,
         array

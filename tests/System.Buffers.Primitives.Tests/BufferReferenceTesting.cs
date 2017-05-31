@@ -6,7 +6,7 @@ namespace System.Buffers.Tests
 {
     public class BufferReferenceTests
     {
-        public static void Run(Func<OwnedBuffer<byte>> create)
+        public static void TestOwnedBuffer(Func<OwnedBuffer<byte>> create)
         {
             BufferLifetimeBasics(create());
             MemoryHandleDoubleFree(create());
@@ -15,6 +15,8 @@ namespace System.Buffers.Tests
             Buffer(create());
             Pin(create());
             Dispose(create());
+            // OverRelease(create()); // TODO: corfxlab #1571 
+            TestBuffer(() => { return create().Buffer; });
         }
 
         static void MemoryAccessBasics(OwnedBuffer<byte> buffer)
@@ -24,7 +26,7 @@ namespace System.Buffers.Tests
 
             Assert.Equal(buffer.Length, span.Length);
             Assert.Equal(10, span[10]);
-            
+
             var memory = buffer.Buffer;
             Assert.Equal(buffer.Length, memory.Length);
             Assert.Equal(10, memory.Span[10]);
@@ -43,8 +45,9 @@ namespace System.Buffers.Tests
         {
             var span = buffer.AsSpan();
             var fullSlice = buffer.AsSpan(0, buffer.Length);
-            for (int i = 0; i < span.Length; i++) {
-                span[i] = (byte)(i%254+1);
+            for (int i = 0; i < span.Length; i++)
+            {
+                span[i] = (byte)(i % 254 + 1);
                 Assert.Equal(span[i], fullSlice[i]);
             }
 
@@ -56,11 +59,13 @@ namespace System.Buffers.Tests
                 Assert.Equal(span[i + 5], slice[i]);
             }
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
                 buffer.AsSpan(buffer.Length, 1);
             });
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
                 buffer.AsSpan(1, buffer.Length);
             });
         }
@@ -107,24 +112,37 @@ namespace System.Buffers.Tests
             Assert.True(buffer.IsDisposed);
             Assert.False(buffer.IsRetained);
 
-            Assert.ThrowsAny<ObjectDisposedException>(() => {
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            {
                 buffer.AsSpan();
             });
 
-            Assert.ThrowsAny<ObjectDisposedException>(() => {
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            {
                 buffer.AsSpan(0, length);
             });
 
-            Assert.ThrowsAny<ObjectDisposedException>(() => {
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            {
                 buffer.Pin();
             });
 
-            Assert.ThrowsAny<ObjectDisposedException>(() => {
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            {
                 var rwBuffer = buffer.Buffer;
             });
 
-            Assert.ThrowsAny<ObjectDisposedException>(() => {
+            Assert.ThrowsAny<ObjectDisposedException>(() =>
+            {
                 var roBuffer = buffer.ReadOnlyBuffer;
+            });
+        }
+
+        static void OverRelease(OwnedBuffer<byte> buffer)
+        {
+            Assert.ThrowsAny<InvalidOperationException>(() =>
+            {
+                buffer.Release();
             });
         }
 
@@ -163,16 +181,114 @@ namespace System.Buffers.Tests
         static void MemoryHandleDoubleFree(OwnedBuffer<byte> buffer)
         {
             var memory = buffer.Buffer;
-            var h = memory.Pin();
+            var handle = memory.Pin();
             Assert.True(buffer.IsRetained);
             buffer.Retain();
             Assert.True(buffer.IsRetained);
-            h.Dispose();
+            handle.Dispose();
             Assert.True(buffer.IsRetained);
-            h.Dispose();
+            handle.Dispose();
             Assert.True(buffer.IsRetained);
             buffer.Release();
             Assert.False(buffer.IsRetained);
+        }
+
+        public static void TestBuffer(Func<Buffer<byte>> create)
+        {
+            BufferBasics(create());
+            BufferLifetime(create());
+        }
+
+        public static void TestBuffer(Func<ReadOnlyBuffer<byte>> create)
+        {
+            BufferBasics(create());
+            BufferLifetime(create());
+        }
+
+        static void BufferBasics(Buffer<byte> buffer)
+        {
+            var span = buffer.Span;
+            Assert.Equal(buffer.Length, span.Length);
+            Assert.True(buffer.IsEmpty || buffer.Length != 0);
+            Assert.True(!buffer.IsEmpty || buffer.Length == 0);
+
+            for (int i = 0; i < span.Length; i++) span[i] = 100;
+
+            var array = buffer.ToArray();
+            for (int i = 0; i < array.Length; i++) Assert.Equal(array[i], span[i]);
+
+            if (buffer.TryGetArray(out var segment))
+            {
+                Assert.Equal(segment.Count, array.Length);
+                for (int i = 0; i < array.Length; i++) Assert.Equal(array[i], segment.Array[i + segment.Offset]);
+            }
+
+            if (buffer.Length > 0)
+            {
+                var slice = buffer.Slice(1);
+                for (int i = 0; i < slice.Length; i++) slice.Span[i] = 101;
+
+                for (int i = 0; i < slice.Length; i++) Assert.Equal(slice.Span[i], span[i + 1]);
+            }
+        }
+
+        static void BufferLifetime(Buffer<byte> buffer)
+        {
+            var array = buffer.ToArray();
+            using (var handle = buffer.Retain())
+            using (var pinned = buffer.Pin())
+            {
+                unsafe
+                {
+                    var p = (byte*)pinned.PinnedPointer;
+                    Assert.True(null != p);
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        Assert.Equal(array[i], p[i]);
+                    }
+                }
+            }
+
+            // TODO: the following using statement does not work ...
+            // AutoDisposeBuffer is getting disposed above. Are we ok with this?
+            //using(var handle = buffer.Retain())
+            //{
+            //}
+        }
+
+        static void BufferBasics(ReadOnlyBuffer<byte> buffer)
+        {
+            var span = buffer.Span;
+            Assert.Equal(buffer.Length, span.Length);
+            Assert.True(buffer.IsEmpty || buffer.Length != 0);
+            Assert.True(!buffer.IsEmpty || buffer.Length == 0);
+
+            var array = buffer.ToArray();
+            for (int i = 0; i < array.Length; i++) Assert.Equal(array[i], span[i]);
+
+            if (buffer.Length > 0)
+            {
+                var slice = buffer.Slice(1);
+                for (int i = 0; i < slice.Length; i++) Assert.Equal(slice.Span[i], span[i + 1]);
+            }
+        }
+
+        static void BufferLifetime(ReadOnlyBuffer<byte> buffer)
+        {
+            var array = buffer.ToArray();
+            using (var handle = buffer.Retain())
+            using (var pinned = buffer.Pin())
+            {
+                unsafe
+                {
+                    var p = (byte*)pinned.PinnedPointer;
+                    Assert.True(null != p);
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        Assert.Equal(array[i], p[i]);
+                    }
+                }
+            }
         }
     }
 }

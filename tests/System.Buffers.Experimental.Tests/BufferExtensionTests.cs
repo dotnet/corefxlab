@@ -1,7 +1,7 @@
 ﻿using System.IO.Pipelines.Testing;
 using Xunit;
 
-namespace System.Buffers.Experimental.Tests
+namespace System.Buffers.Tests
 {
     public class BufferExtensionTests
     {

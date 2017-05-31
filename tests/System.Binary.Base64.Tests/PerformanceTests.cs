@@ -29,12 +29,12 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[numberOfBytes];
             InitalizeBytes(source);
-            Span<byte> destination = new byte[Base64.ComputeEncodedLength(numberOfBytes)];
+            Span<byte> destination = new byte[Base64Encoder.ComputeEncodedLength(numberOfBytes)];
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        Base64.Encode(source, destination);
+                        Base64Encoder.TryEncode(source, destination, out int consumed, out int written);
                 }
             }
         }
@@ -48,7 +48,7 @@ namespace System.Binary.Base64.Tests
         {
             var source = new byte[numberOfBytes];
             InitalizeBytes(source.AsSpan());
-            var destination = new char[Base64.ComputeEncodedLength(numberOfBytes)];
+            var destination = new char[Base64Encoder.ComputeEncodedLength(numberOfBytes)];
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
@@ -67,13 +67,13 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[numberOfBytes];
             InitalizeBytes(source);
-            Span<byte> encoded = new byte[Base64.ComputeEncodedLength(numberOfBytes)];
-            var encodedBytesCount = Base64.Encode(source, encoded);
+            Span<byte> encoded = new byte[Base64Encoder.ComputeEncodedLength(numberOfBytes)];
+            Base64Encoder.TryEncode(source, encoded, out int consumed, out int written);
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        Base64.Decode(encoded, source);
+                        Base64Encoder.TryDecode(encoded, source, out int bytesConsumed, out int bytesWritten);
                 }
             }
         }

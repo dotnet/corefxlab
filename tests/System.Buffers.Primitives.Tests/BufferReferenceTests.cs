@@ -9,40 +9,40 @@ namespace System.Buffers.Tests
         [Fact]
         public void OwnedArrayReferenceTests()
         {
-            BufferReferenceTests.Run(() => { 
-                return new OwnedArray<byte>(1024);
-            });
-        }
-
-        [Fact]
-        public void AutoDisposeBufferReferenceTests()
-        {
-            BufferReferenceTests.Run(() => {
-                return new AutoDisposeBuffer<byte>(new byte[1024]);
-            });
-        }
-
-        [Fact]
-        public void AutoPooledBufferReferenceTests()
-        {
-            BufferReferenceTests.Run(() => {
-                return new AutoPooledBuffer(1024);
-            });
-        }
-
-        [Fact]
-        public void CustomBufferReferenceTests()
-        {
-            BufferReferenceTests.Run(() => {
-                return new CustomBuffer();
+            BufferReferenceTests.TestOwnedBuffer(() => {
+                return (OwnedBuffer<byte>)new byte[1024];
             });
         }
 
         [Fact]
         public void PooledBufferReferenceTests()
         {
-            BufferReferenceTests.Run(() => {
+            BufferReferenceTests.TestOwnedBuffer(() => {
                 return BufferPool.Default.Rent(1000);
+            });
+        }
+
+        [Fact]
+        public void ArrayBufferReferenceTests()
+        {
+            BufferReferenceTests.TestBuffer(() => {
+                return (Buffer<byte>)new byte[1024];
+            });
+        }
+
+        [Fact]
+        public void EmptyBufferReferenceTests()
+        {
+            BufferReferenceTests.TestBuffer(() => {
+                return Buffer<byte>.Empty;
+            });
+        }
+
+        [Fact]
+        public void EmptyReadOnlyBufferReferenceTests()
+        {
+            BufferReferenceTests.TestBuffer(() => {
+                return ReadOnlyBuffer<byte>.Empty;
             });
         }
     }

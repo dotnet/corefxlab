@@ -106,11 +106,13 @@ namespace System.IO.Pipelines
 
         public override void Retain()
         {
+            if (IsDisposed) PipelinesThrowHelper.ThrowObjectDisposedException(nameof(MemoryPoolBlock));
             Interlocked.Increment(ref _referenceCount);
         }
 
         public override void Release()
         {
+            // TODO: should it check IsRetained?
             Interlocked.Decrement(ref _referenceCount);
         }
 
