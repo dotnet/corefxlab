@@ -6,8 +6,20 @@ using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
 {
-    public class Base64Decoder : ITransformation
+    public sealed class Base64Decoder : ITransformation
     {
+        private static readonly Base64Decoder s_decoder = new Base64Decoder();
+
+        public static Base64Decoder Decoder
+        {
+            get
+            {
+                return s_decoder;
+            }
+        }
+
+        private Base64Decoder() { }
+
         // Pre-computing this table using a custom string(s_characters) and GenerateEncodingMapAndVerify (found in tests)
         static readonly byte[] s_encodingMap = {
             65, 66, 67, 68, 69, 70, 71, 72,         //A..H

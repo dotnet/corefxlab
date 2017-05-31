@@ -6,8 +6,20 @@ using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
 {
-    public class Base64Encoder : ITransformation
+    public sealed class Base64Encoder : ITransformation
     {
+        private static readonly Base64Encoder s_encoder = new Base64Encoder();
+
+        public static Base64Encoder Encoder
+        {
+            get
+            {
+                return s_encoder;
+            }
+        }
+
+        private Base64Encoder() { }
+
         // Pre-computing this table using a custom string(s_characters) and GenerateEncodingMapAndVerify (found in tests)
         static readonly byte[] s_encodingMap = {
             65, 66, 67, 68, 69, 70, 71, 72,         //A..H
@@ -158,7 +170,7 @@ namespace System.Binary.Base64
         /// <param name="buffer">Buffer containing source bytes and empty space for the encoded bytes</param>
         /// <param name="sourceLength">Number of bytes to encode.</param>
         /// <returns>Number of bytes written to the buffer.</returns>
-        public int EncodeInPlace(Span<byte> buffer, int sourceLength)
+        public static int EncodeInPlace(Span<byte> buffer, int sourceLength)
         {
             var encodedLength = ComputeEncodedLength(sourceLength);
             if (buffer.Length < encodedLength) throw new ArgumentException("buffer too small.");
@@ -173,14 +185,14 @@ namespace System.Binary.Base64
                 var sourceSlice = buffer.Slice(sourceIndex, leftover);
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
-                Transform(sourceSlice, desitnationSlice, out int consumed, out int written);
+                s_encoder.Transform(sourceSlice, desitnationSlice, out int consumed, out int written);
             }
 
             for (int index = sourceIndex - 3; index>=0; index -= 3) {
                 var sourceSlice = buffer.Slice(index, 3);
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
-                Transform(sourceSlice, desitnationSlice, out int consumed, out int written);
+                s_encoder.Transform(sourceSlice, desitnationSlice, out int consumed, out int written);
             }
 
             return encodedLength;
