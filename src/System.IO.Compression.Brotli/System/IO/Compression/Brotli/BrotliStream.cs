@@ -21,9 +21,9 @@ namespace System.IO.Compression
         public Stream _stream;
         private CompressionMode _mode;
         private nuint TotalOut { get; }
-        private IntPtr AvailOut;
+        private nuint AvailOut;
         private IntPtr NextOut = IntPtr.Zero;
-        private IntPtr AvailIn = IntPtr.Zero;
+        private nuint AvailIn;
         private IntPtr NextIn = IntPtr.Zero;
         private IntPtr BufferIn { get; set; }
         private IntPtr BufferOut { get; set; }
@@ -62,7 +62,7 @@ namespace System.IO.Compression
             BufferOut = Marshal.AllocHGlobal(BufferSize);
             NextIn = BufferIn;
             NextOut = BufferOut;
-            AvailOut = new IntPtr((uint)BuffSize);
+            AvailOut = (nuint)BuffSize;
         }
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen) : this(baseStream, mode, leaveOpen, DefaultBufferSize) { }
 
@@ -114,18 +114,18 @@ namespace System.IO.Compression
             if (_encoder.State == IntPtr.Zero) return;
             if (BrotliNative.BrotliEncoderIsFinished(_encoder.State)) return;
             BrotliNative.BrotliEncoderOperation op = finished ? BrotliNative.BrotliEncoderOperation.Finish : BrotliNative.BrotliEncoderOperation.Flush;
-            UInt32 totalOut = 0;
+            nuint totalOut = 0;
             while (true)
             {
                 if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, op, ref AvailIn, ref NextIn, ref AvailOut, ref NextOut, out totalOut)) throw new Exception();// unable encode
-                var extraData = (nuint)AvailOut != BufferSize;
+                var extraData = (nuint)AvailOut != (nuint)BufferSize;
                 if (extraData)
                 {
-                    var bytesWrote = (int)(BufferSize - (nuint)AvailOut);
+                    var bytesWrote = (int)((nuint)BufferSize - (nuint)AvailOut);
                     Byte[] buf = new Byte[bytesWrote];
                     Marshal.Copy(BufferOut, buf, 0, bytesWrote);
                     _stream.Write(buf, 0, bytesWrote);
-                    AvailOut = (IntPtr)BufferSize;
+                    AvailOut = (nuint)BufferSize;
                     NextOut = BufferOut;
                 }
                 if (BrotliNative.BrotliEncoderIsFinished(_encoder.State)) break;
@@ -208,7 +208,7 @@ namespace System.IO.Compression
             EnsureNotDisposed();
             
             int bytesRead = (int)(_decoder.BufferStream.Length - _readOffset);
-            uint totalCount = 0;
+            nuint totalCount = 0;
             Boolean endOfStream = false;
             Boolean errorDetected = false;
             Byte[] buf = new Byte[BufferSize];
@@ -218,7 +218,7 @@ namespace System.IO.Compression
                 {
                     if (_decoder.LastDecoderResult == BrotliNative.BrotliDecoderResult.NeedsMoreInput)
                     {
-                        AvailIn = (IntPtr)_stream.Read(buf, 0, (int)BufferSize);
+                        AvailIn = (nuint)_stream.Read(buf, 0, (int)BufferSize);
                         NextIn = BufferIn;
                         if ((int)AvailIn <= 0)
                         {
@@ -232,7 +232,7 @@ namespace System.IO.Compression
                         Marshal.Copy(BufferOut, buf, 0, BufferSize);
                         _decoder.BufferStream.Write(buf, 0, BufferSize);
                         bytesRead += BufferSize;
-                        AvailOut = new IntPtr((uint)BufferSize);
+                        AvailOut = (nuint)BufferSize;
                         NextOut = BufferOut;
                     }
                     else
@@ -308,19 +308,19 @@ namespace System.IO.Compression
                 Marshal.Copy(buffer, currentOffset, BufferIn, copyLen);
                 bytesRemain -= copyLen;
                 currentOffset += copyLen;
-                AvailIn = (IntPtr)copyLen;
+                AvailIn = (nuint)copyLen;
                 NextIn = BufferIn;
                 while ((int)AvailIn > 0)
                 {
                     if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, BrotliNative.BrotliEncoderOperation.Process, ref AvailIn, ref NextIn, ref AvailOut,
                         ref NextOut, out totalOut)) throw new System.IO.IOException("Unable compress stream"); 
-                    if ((nuint)AvailOut != BufferSize)
+                    if (AvailOut != (nuint)BufferSize)
                     {
-                        var bytesWrote = (int)(BufferSize - (nuint)AvailOut);
+                        var bytesWrote = (int)((nuint)BufferSize - AvailOut);
                         Byte[] buf = new Byte[bytesWrote];
                         Marshal.Copy(BufferOut, buf, 0, bytesWrote);
                         _stream.Write(buf, 0, bytesWrote);
-                        AvailOut = new IntPtr((uint)BufferSize);
+                        AvailOut = (nuint)BufferSize;
                         NextOut = BufferOut;
                     }
                 }

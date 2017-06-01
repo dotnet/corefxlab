@@ -12,25 +12,51 @@
     <OutputTypeEx>library</OutputTypeEx>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x64'">
+    <SourceArch>x64</SourceArch>
+    <DefineConstants>BIT64;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86'">
+    <SourceArch>x86</SourceArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT'">
+    <SourceSystem>windows</SourceSystem>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' == 'Unix'">
+    <SourceSystem>linux</SourceSystem>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' == 'OSX'">
+    <SourceSystem>osx</SourceSystem>
+  </PropertyGroup>
+  <PropertyGroup>
+    <BrotliPath>..\..\external\Brotli\lib\$(SourceSystem)\$(SourceArch)</BrotliPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <BrotliLibraries Include="$(BrotliPath)\*.*" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
+    <Compile Include="System\IO\Compression\Interop\Library.Unix.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetsWindows)' == 'true'">
+    <Compile Include="System\IO\Compression\Interop\Library.Windows.cs" />
+  </ItemGroup>
+  <Target Name="CopyBrotliLibraries" AfterTargets="Build">
+    <Message Text="Arch: $(SourceArch)" />
+    <Message Text="System: $(SourceSystem)" />
+    <Message Text="Output Path: $(OutputPath)" />
+    <Copy 
+      SourceFiles="@(BrotliLibraries)"    
+
+       DestinationFolder="$(OutputPath)"
+    />
+  </Target>
+       <!--DestinationFolder="@(SourceFiles->'..\$(OutputPath)\%(Filename)%(Extension)')" -->
   <!-- Platform specific properties -->
-  <PropertyGroup Condition="'$(Platform)' == 'amd64'">
+  <PropertyGroup Condition="'$(Platform)' == 'x64'">
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <BaseAddress>0x180000000</BaseAddress>
     <DefineConstants>BIT64;AMD64;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'x86'">
-    <PlatformTarget>x86</PlatformTarget>
-    <BaseAddress>0x10000000</BaseAddress>
-    <DefineConstants>BIT32;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'arm'">
-    <PlatformTarget>arm</PlatformTarget>
-    <DefineConstants>BIT32;ARM;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'arm64'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DefineConstants>BIT64;ARM64;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
@@ -39,4 +65,5 @@
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
+
 </Project>

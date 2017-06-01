@@ -81,10 +81,10 @@ namespace System.IO.Compression
             Font
         };
         #region Encoder
-        public static bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, IntPtr input_size,
-                IntPtr input_buffer, IntPtr encoded_size, IntPtr encoded_buffer)
+        public static bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, nuint input_size,
+                IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer)
         {
-            return Interop.Brotli.BrotliEncoderCompress(quality, lgwin, mode, input_size, input_buffer, encoded_size, encoded_buffer);
+            return Interop.Brotli.BrotliEncoderCompress(quality, lgwin, mode, input_size, input_buffer, ref encoded_size, encoded_buffer);
         }
         
         public static IntPtr BrotliEncoderCreateInstance()
@@ -92,7 +92,7 @@ namespace System.IO.Compression
            return Interop.Brotli.BrotliEncoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
         }
 
-        public static bool BrotliEncoderSetParameter(IntPtr state, BrotliEncoderParameter param, nuint value)
+        public static bool BrotliEncoderSetParameter(IntPtr state, BrotliEncoderParameter param, UInt32 value)
         {
             return Interop.Brotli.BrotliEncoderSetParameter(state, param, value);
         }
@@ -103,8 +103,8 @@ namespace System.IO.Compression
         }
 
         public static bool BrotliEncoderCompressStream(
-            IntPtr state, BrotliEncoderOperation op, ref IntPtr availableIn,
-            ref IntPtr nextIn, ref IntPtr availableOut, ref IntPtr nextOut, out nuint totalOut)
+            IntPtr state, BrotliEncoderOperation op, ref nuint availableIn,
+            ref IntPtr nextIn, ref nuint availableOut, ref IntPtr nextOut, out nuint totalOut)
         {
             return Interop.Brotli.BrotliEncoderCompressStream(state, op, ref availableIn, ref nextIn, ref availableOut, ref nextOut, out totalOut);
         }
@@ -126,6 +126,11 @@ namespace System.IO.Compression
         }
         #endregion
         #region Decoder
+        public static BrotliDecoderResult BrotliDecoderDecompress(ref nuint availableIn, IntPtr nextIn, ref nuint availableOut, IntPtr nextOut)
+        {
+            return Interop.Brotli.BrotliDecoderDecompress(ref availableIn,  nextIn, ref availableOut, nextOut);
+        }
+
         public static IntPtr BrotliDecoderCreateInstance()
         {
             return Interop.Brotli.BrotliDecoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
@@ -137,8 +142,8 @@ namespace System.IO.Compression
         }
 
         public static BrotliDecoderResult BrotliDecoderDecompressStream(
-            IntPtr state, ref IntPtr availableIn,
-            ref IntPtr nextIn, ref IntPtr availableOut, ref IntPtr nextOut, out nuint totalOut)
+            IntPtr state, ref nuint availableIn,
+            ref IntPtr nextIn, ref nuint availableOut, ref IntPtr nextOut, out nuint totalOut)
         {
             return Interop.Brotli.BrotliDecoderDecompressStream(state, ref availableIn, ref nextIn, ref availableOut, ref nextOut, out totalOut);
         }

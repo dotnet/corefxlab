@@ -19,12 +19,13 @@ namespace System.IO.Compression
     {
         internal static partial class Brotli
         {
-            internal const String LibNameEncoder = "/home/corefxlab/corefxlab/lib/brotlienc.dll";
-            internal const String LibNameDecoder = "/home/corefxlab/corefxlab/lib/brotlidec.dll";
+            internal const String path = "/external/Brotli/lib/";
+            internal const String LibNameEncoder = Library.BrotliEnc;
+            internal const String LibNameDecoder = Library.BrotliDec;
             #region Encoder
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, IntPtr input_size,
-                IntPtr input_buffer, IntPtr encoded_size, IntPtr encoded_buffer);
+            internal static extern bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, nuint input_size,
+                IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer);
             [DllImport(LibNameEncoder,CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliEncoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);
 
@@ -32,12 +33,12 @@ namespace System.IO.Compression
             internal static extern bool BrotliEncoderSetParameter(IntPtr state, BrotliNative.BrotliEncoderParameter parameter, UInt32 value);
 
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
-            internal static extern void BrotliEncoderSetCustomDictionary(IntPtr state, UInt32 size, IntPtr dict);
+            internal static extern void BrotliEncoderSetCustomDictionary(IntPtr state, nuint size, IntPtr dict);
 
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern bool BrotliEncoderCompressStream(
-                IntPtr state, BrotliNative.BrotliEncoderOperation op, ref IntPtr availableIn,
-                ref IntPtr nextIn, ref IntPtr availableOut, ref IntPtr nextOut, out nuint totalOut);
+                IntPtr state, BrotliNative.BrotliEncoderOperation op, ref nuint availableIn,
+                ref IntPtr nextIn, ref nuint availableOut, ref IntPtr nextOut, out nuint totalOut);
 
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern bool BrotliEncoderIsFinished(IntPtr state);
@@ -50,6 +51,9 @@ namespace System.IO.Compression
             #endregion
             #region Decoder
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
+            internal static extern BrotliNative.BrotliDecoderResult BrotliDecoderDecompress(ref nuint availableIn, IntPtr nextIn,
+                ref nuint availableOut, IntPtr nextOut);
+            [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliDecoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);
 
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
@@ -57,8 +61,8 @@ namespace System.IO.Compression
 
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern BrotliNative.BrotliDecoderResult BrotliDecoderDecompressStream(
-                IntPtr state, ref IntPtr availableIn, ref IntPtr nextIn,
-                ref IntPtr availableOut, ref IntPtr nextOut, out nuint totalOut);
+                IntPtr state, ref nuint availableIn, ref IntPtr nextIn,
+                ref nuint availableOut, ref IntPtr nextOut, out nuint totalOut);
 
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern void BrotliDecoderDestroyInstance(IntPtr state);
