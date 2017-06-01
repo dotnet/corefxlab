@@ -140,8 +140,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.IO.Compression.Brotl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.IO.Compression.Tests", "tests\System.IO.Compression.Tests\System.IO.Compression.Tests.csproj", "{74EEC686-FB85-43D5-95EA-10048C4A4567}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{471208DC-89D2-4B72-878A-D7994E1C0213}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -908,18 +906,6 @@ Global
 		{74EEC686-FB85-43D5-95EA-10048C4A4567}.Release|x64.Build.0 = Release|Any CPU
 		{74EEC686-FB85-43D5-95EA-10048C4A4567}.Release|x86.ActiveCfg = Release|Any CPU
 		{74EEC686-FB85-43D5-95EA-10048C4A4567}.Release|x86.Build.0 = Release|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Debug|x64.Build.0 = Debug|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Debug|x86.Build.0 = Debug|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Release|Any CPU.Build.0 = Release|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Release|x64.ActiveCfg = Release|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Release|x64.Build.0 = Release|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Release|x86.ActiveCfg = Release|Any CPU
-		{471208DC-89D2-4B72-878A-D7994E1C0213}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
