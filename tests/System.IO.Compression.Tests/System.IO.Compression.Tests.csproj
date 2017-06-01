@@ -7,7 +7,6 @@
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <Description></Description>
     <Copyright>Microsoft Corporation, All rights reserved</Copyright>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

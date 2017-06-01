@@ -191,7 +191,7 @@ namespace System.IO.Compression
         private void EnsureDecompressionMode()
         {
             if (_mode != CompressionMode.Decompress)
-                throw new System.InvalidOperationException("Wrong stream mode. Expect: Deccompress");
+                throw new System.InvalidOperationException("Wrong stream mode. Expect: Decompress");
         }
 
         private void EnsureNotDisposed()
