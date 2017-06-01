@@ -12,7 +12,7 @@ namespace System.IO.Compression.Tests
 {
     public class BrotliStreamTests
     {
-        static string brTestFile(string fileName) => Path.Combine("..//..//..//BrotliTestData", fileName);
+        static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
         [Fact]
         public void BaseStreamCompress()
         {

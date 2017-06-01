@@ -4,6 +4,9 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <PropertyGroup>
+  <BuildPlatform>x64,x86</BuildPlatform>
+</PropertyGroup>
+  <PropertyGroup>
     <Description>Brotli compression APIs</Description>
     <Copyright>Microsoft Corporation, All rights reserved.</Copyright>
     <TargetFramework>netstandard1.4</TargetFramework>
@@ -17,6 +20,7 @@
     <DefineConstants>BIT64;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86'">
+    
     <SourceArch>x86</SourceArch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT'">
@@ -40,24 +44,23 @@
   <ItemGroup Condition=" '$(TargetsWindows)' == 'true'">
     <Compile Include="System\IO\Compression\Interop\Library.Windows.cs" />
   </ItemGroup>
-  <Target Name="CopyBrotliLibraries" AfterTargets="Build">
-    <Message Text="Arch: $(SourceArch)" />
-    <Message Text="System: $(SourceSystem)" />
-    <Message Text="Output Path: $(OutputPath)" />
-    <Copy 
-      SourceFiles="@(BrotliLibraries)"    
-
-       DestinationFolder="$(OutputPath)"
-    />
-  </Target>
-       <!--DestinationFolder="@(SourceFiles->'..\$(OutputPath)\%(Filename)%(Extension)')" -->
-  <!-- Platform specific properties -->
+  <ItemGroup>
+    <Content Include="$(BrotliPath)\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <PropertyGroup Condition="'$(Platform)' == 'x64'">
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <BaseAddress>0x180000000</BaseAddress>
     <DefineConstants>BIT64;AMD64;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
+  <Target Name="DisplayMessages">
+    <Message Text="Platform: $(Platform)" />
+     <Message Text="Build Platform $(BuildPlatform) " />
+      <Message Text="OS is $(OS) " />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
     <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />

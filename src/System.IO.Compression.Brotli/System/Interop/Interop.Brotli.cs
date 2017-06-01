@@ -19,10 +19,20 @@ namespace System.IO.Compression
     {
         internal static partial class Brotli
         {
-            internal const String path = "/external/Brotli/lib/";
-            internal const String LibNameEncoder = Library.BrotliEnc;
-            internal const String LibNameDecoder = Library.BrotliDec;
-            #region Encoder
+//#if BIT64
+//            internal const string Arch="x64";
+//#else
+//            internal const string Arch = "x86";
+//#endif
+//#if WIN
+//            internal const string OS="windows";
+//#else
+//            internal const string OS = "linux";
+//#endif
+           // internal const string path = @"..\..\..\..\external\Brotli\lib\"+OS+@"\"+Arch+@"\";
+            internal const string LibNameEncoder = Library.BrotliEnc;
+            internal const string LibNameDecoder = Library.BrotliDec;
+#region Encoder
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, nuint input_size,
                 IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer);
@@ -48,8 +58,8 @@ namespace System.IO.Compression
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern UInt32 BrotliEncoderVersion();
 
-            #endregion
-            #region Decoder
+#endregion
+#region Decoder
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern BrotliNative.BrotliDecoderResult BrotliDecoderDecompress(ref nuint availableIn, IntPtr nextIn,
                 ref nuint availableOut, IntPtr nextOut);
@@ -78,7 +88,7 @@ namespace System.IO.Compression
             internal static extern Int32 BrotliDecoderGetErrorCode(IntPtr state);
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
             internal static extern IntPtr BrotliDecoderErrorString(Int32 code);
-            #endregion
+#endregion
 
         }
     }
