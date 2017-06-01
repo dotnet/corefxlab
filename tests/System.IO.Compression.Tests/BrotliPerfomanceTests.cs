@@ -14,13 +14,13 @@ namespace System.IO.Compression.Tests
 {
 public class BrotliPerfomanceTests
     {
-        public static string GetTestFilePath(int? index = null, string memberName = null, int lineNumber = 0)
-        {
-            return Path.Combine(Path.GetTempPath(), string.Format(
-                index.HasValue ? "{0}_{1}_{2}_{3}" : "{0}_{1}_{2}",
-                memberName ?? "TestBase", lineNumber, Path.GetRandomFileName(),
-                index.GetValueOrDefault()));
-        }
+    public static string GetTestFilePath(int? index = null, string memberName = null, int lineNumber = 0)
+    {
+        return Path.Combine(Path.GetTempPath(), string.Format(
+            index.HasValue ? "{0}_{1}_{2}_{3}" : "{0}_{1}_{2}",
+            memberName ?? "TestBase", lineNumber, Path.GetRandomFileName(),
+            index.GetValueOrDefault()));
+    }
     
     private static string CreateCompressedFile(CompressionType type)
         {

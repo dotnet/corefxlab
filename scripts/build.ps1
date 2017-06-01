@@ -55,7 +55,7 @@ if ($lastexitcode -ne 0) {
 $projectsFailed = New-Object System.Collections.Generic.List[String]
 
 foreach ($testFile in [System.IO.Directory]::EnumerateFiles("$PSScriptRoot\..\tests", "*.csproj", "AllDirectories")) {
-    IF ($testFile -match ("System.IO.Compression.Tests")) {
+    if ($testFile -match ("System.IO.Compression.Tests")) {
         Write-Warning "Skipping tests in $file. Cannot build the brotli dll yet."
         continue
     }
