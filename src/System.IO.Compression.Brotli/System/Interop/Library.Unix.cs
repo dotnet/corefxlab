@@ -6,7 +6,7 @@ namespace System.IO.Compression.Brotli.System.Interop
 {
     internal static class Library
     {
-        internal const string BrotliEnc = "linux/libbrotlienc.so.1.0.0";
-        internal const string BrotliDec = "linux/libbrotlidec.so.1.0.0";
+        internal const string BrotliEnc = "libbrotlienc.so.1.0.0";
+        internal const string BrotliDec = "libbrotlidec.so.1.0.0";
     }
 }

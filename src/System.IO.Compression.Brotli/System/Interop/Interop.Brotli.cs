@@ -19,17 +19,6 @@ namespace System.IO.Compression
     {
         internal static partial class Brotli
         {
-//#if BIT64
-//            internal const string Arch="x64";
-//#else
-//            internal const string Arch = "x86";
-//#endif
-//#if WIN
-//            internal const string OS="windows";
-//#else
-//            internal const string OS = "linux";
-//#endif
-           // internal const string path = @"..\..\..\..\external\Brotli\lib\"+OS+@"\"+Arch+@"\";
             internal const string LibNameEncoder = Library.BrotliEnc;
             internal const string LibNameDecoder = Library.BrotliDec;
 #region Encoder
