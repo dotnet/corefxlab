@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression.Brotli.Resources;
 using System.Runtime.InteropServices;
 
 
@@ -36,7 +37,7 @@ namespace System.IO.Compression
         Decoder _decoder;
         Encoder _encoder;
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize, uint windowSize, uint quality) : this(baseStream, mode, leaveOpen, BuffSize) {
-            if (_mode == CompressionMode.Decompress) throw new System.IO.IOException("quality and windowsize is ambitious for Decompress mode");
+            if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
             else
             {
                 _encoder.SetQuality(quality);
@@ -45,7 +46,7 @@ namespace System.IO.Compression
         }
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize)
         {
-            if (baseStream == null) throw new ArgumentNullException("baseStream");
+            if (baseStream == null) throw new ArgumentNullException(BrotliEx.baseStream);
             _mode = mode;
             _stream = baseStream;
             LeaveOpen = leaveOpen;
@@ -119,7 +120,8 @@ namespace System.IO.Compression
             nuint totalOut = 0;
             while (true)
             {
-                if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, op, ref AvailIn, ref NextIn, ref AvailOut, ref NextOut, out totalOut)) throw new Exception();// unable encode
+                if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, op, ref AvailIn, ref NextIn, ref AvailOut, ref NextOut, out totalOut))
+                    throw new System.IO.IOException(BrotliEx.unableEncode);
                 var extraData = (nuint)AvailOut != (nuint)BufferSize;
                 if (extraData)
                 {
@@ -188,19 +190,19 @@ namespace System.IO.Compression
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             if (array.Length - offset < count)
-                throw new ArgumentException("InvalidArgument","OffsetCount");
+                throw new ArgumentException(BrotliEx.InvalidArgument,BrotliEx.OffsetCount);
         }
 
         private void EnsureDecompressionMode()
         {
             if (_mode != CompressionMode.Decompress)
-                throw new System.InvalidOperationException("Wrong stream mode. Expect: Deccompress");
+                throw new System.InvalidOperationException(BrotliEx.WrongModeDecompress);
         }
 
         private void EnsureNotDisposed()
         {
             if (_stream == null)
-                throw new ObjectDisposedException("Stream");
+                throw new ObjectDisposedException(BrotliEx.StreamDisposed);
         }
 
         public override int Read(byte[] buffer, int offset, int count)
@@ -255,11 +257,11 @@ namespace System.IO.Compression
                 {
                     var error = BrotliNative.BrotliDecoderGetErrorCode(_decoder.State);
                     var text = BrotliNative.BrotliDecoderErrorString(error);
-                    throw new System.IO.IOException(text+"- unable to decode stream");
+                    throw new System.IO.IOException(text+BrotliEx.unableDecode);
                 }
                 if (endOfStream && !BrotliNative.BrotliDecoderIsFinished(_decoder.State) && _decoder.LastDecoderResult == BrotliNative.BrotliDecoderResult.NeedsMoreInput)
                 {
-                    throw new System.IO.IOException("Bad finish");
+                    throw new System.IO.IOException(BrotliEx.FinishDecompress);
                 }
                 if (endOfStream && NextOut != BufferOut)
                 {
@@ -291,7 +293,7 @@ namespace System.IO.Compression
         private void EnsureCompressionMode()
         {
             if (_mode != CompressionMode.Compress)
-                throw new System.InvalidOperationException("Wrong stream mode. Expect: Compress");
+                throw new System.InvalidOperationException(BrotliEx.WrongModeCompress);
         }
         public override void Write(byte[] buffer, int offset, int count)
         {
@@ -315,7 +317,7 @@ namespace System.IO.Compression
                 while ((int)AvailIn > 0)
                 {
                     if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, BrotliNative.BrotliEncoderOperation.Process, ref AvailIn, ref NextIn, ref AvailOut,
-                        ref NextOut, out totalOut)) throw new System.IO.IOException("Unable compress stream"); 
+                        ref NextOut, out totalOut)) throw new System.IO.IOException(BrotliEx.unableEncode); 
                     if (AvailOut != (nuint)BufferSize)
                     {
                         var bytesWrote = (int)((nuint)BufferSize - AvailOut);

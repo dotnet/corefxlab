@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 using System;
 using System.Collections.Generic;
+using System.IO.Compression.Brotli.Resources;
 using System.Text;
 
 namespace System.IO.Compression
@@ -23,7 +24,7 @@ namespace System.IO.Compression
             State = BrotliNative.BrotliDecoderCreateInstance();
             if (State == IntPtr.Zero)
             {
-                throw new Exception();//TODO Create exception
+                throw new System.IO.IOException(BrotliEx.DecoderInstanceCreate);//TODO Create exception
             }
             BufferStream = new MemoryStream();
         }

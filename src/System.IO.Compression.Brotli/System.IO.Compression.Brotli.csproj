@@ -56,7 +56,17 @@
     <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <Compile Update="Resources\BrotliEx.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BrotliEx.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\BrotliEx.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BrotliEx.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
