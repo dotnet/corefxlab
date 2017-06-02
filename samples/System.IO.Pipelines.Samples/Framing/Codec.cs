@@ -11,9 +11,9 @@ using System.IO.Pipelines.Text.Primitives;
 
 namespace System.IO.Pipelines.Samples.Framing
 {
-    public  class ProtocolHandling
+    public class ProtocolHandling
     {
-        public async Task Run()
+        public Task Run()
         {
             var ip = IPAddress.Any;
             int port = 5000;
@@ -81,6 +81,7 @@ namespace System.IO.Pipelines.Samples.Framing
 
             listener.Dispose();
             thread.Dispose();
+            return Task.CompletedTask;
         }
 
         public static IPipeConnection MakePipeline(IPipeConnection connection)

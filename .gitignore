@@ -264,3 +264,5 @@ BenchmarkDotNet.Artifacts/
 BDN.Generated/
 binaries/
 
+# Do not exclude any external files
+!external/**/*
