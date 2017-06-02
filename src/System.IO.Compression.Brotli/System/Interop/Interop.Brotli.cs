@@ -47,6 +47,7 @@ namespace System.IO.Compression
 
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern void BrotliEncoderDestroyInstance(IntPtr state);
+
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern UInt32 BrotliEncoderVersion();
 
