@@ -136,6 +136,8 @@ namespace System.Binary.Base64
             i0 <<= 18;
             i1 <<= 12;
 
+            i0 |= i1;
+
             if (i3 != s_encodingPad)
             {
                 i2 = Unsafe.Add(ref decodingMap, i2);
@@ -144,9 +146,7 @@ namespace System.Binary.Base64
                 i2 <<= 6;
 
                 i0 |= i3;
-                i1 |= i2;
-
-                i0 |= i1;
+                i0 |= i2;
 
                 if (i0 < 0) goto InvalidExit;
                 if (destIndex > destLength - 3) goto DestinationSmallExit;
@@ -159,9 +159,7 @@ namespace System.Binary.Base64
 
                 i2 <<= 6;
 
-                i1 |= i2;
-
-                i0 |= i1;
+                i0 |= i2;
 
                 if (i0 < 0) goto InvalidExit;
                 if (destIndex > destLength - 2) goto DestinationSmallExit;
@@ -171,8 +169,6 @@ namespace System.Binary.Base64
             }
             else
             {
-                i0 |= i1;
-
                 if (i0 < 0) goto InvalidExit;
                 if (destIndex > destLength - 1) goto DestinationSmallExit;
                 Unsafe.Add(ref destBytes, destIndex) = (byte)(i0 >> 16);
