@@ -20,7 +20,6 @@ namespace System.IO.Compression
     /// This class provides declaration for constants and PInvokes as well as some basic tools for exposing the
     /// native Brotli library to managed code.
     /// </summary>
-    //internal static partial class BrotliNative
     public class BrotliNative
     {
         /// <summary>
@@ -80,7 +79,9 @@ namespace System.IO.Compression
             Text,
             Font
         };
+
         #region Encoder
+
         public static bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, nuint input_size,
                 IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer)
         {
@@ -124,8 +125,11 @@ namespace System.IO.Compression
             return Interop.Brotli.BrotliEncoderVersion();
             
         }
+
         #endregion
+
         #region Decoder
+
         public static BrotliDecoderResult BrotliDecoderDecompress(ref nuint availableIn, IntPtr nextIn, ref nuint availableOut, IntPtr nextOut)
         {
             return Interop.Brotli.BrotliDecoderDecompress(ref availableIn,  nextIn, ref availableOut, nextOut);
@@ -184,7 +188,9 @@ namespace System.IO.Compression
             }
             return String.Empty;
         }
+
         #endregion
+
     }
 }
 

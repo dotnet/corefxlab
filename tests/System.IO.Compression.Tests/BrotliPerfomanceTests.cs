@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.IO.Compression.Tests
 {
-public class BrotliPerfomanceTests
+    public class BrotliPerfomanceTests
     {
         public static string GetTestFilePath(int? index = null, string memberName = null, int lineNumber = 0)
         {
@@ -22,7 +22,7 @@ public class BrotliPerfomanceTests
                 index.GetValueOrDefault()));
         }
     
-    private static string CreateCompressedFile(CompressionType type)
+        private static string CreateCompressedFile(CompressionType type)
         {
             const int fileSize = 1000000;
             string filePath = GetTestFilePath() + ".br";
@@ -114,19 +114,19 @@ public class BrotliPerfomanceTests
         {
             string testFilePath = CreateCompressedFile(type);
 
-            int _bufferSize = 1024*32;
+            int bufferSize = 1024*32;
             int retCount = -1;
-            var bytes = new byte[_bufferSize];
+            var bytes = new byte[bufferSize];
             using (MemoryStream brStream = new MemoryStream(File.ReadAllBytes(testFilePath)))
                 foreach (var iteration in Benchmark.Iterations)
                     using (iteration.StartMeasurement())
                         for (int i = 0; i < 10000; i++)
                         {
-                            using (BrotliStream zip = new BrotliStream(brStream, CompressionMode.Decompress, true,_bufferSize))
+                            using (BrotliStream zip = new BrotliStream(brStream, CompressionMode.Decompress, true,bufferSize))
                             {
                                 while (retCount != 0)
                                 {
-                                    retCount = zip.Read(bytes, 0, _bufferSize);
+                                    retCount = zip.Read(bytes, 0, bufferSize);
                                 }
                             }
                             brStream.Seek(0, SeekOrigin.Begin);

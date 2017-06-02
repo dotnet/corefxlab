@@ -12,14 +12,14 @@ namespace System.IO.Compression.Tests
 {
     public class BrotliStreamTests
     {
-        static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
+        static string brTestFile(string fileName) => Path.Combine("BrotliTestData" , fileName);
+
         [Fact]
         public void BaseStreamCompress()
         {
-           
             var writeStream = new MemoryStream();
             var bro = new BrotliStream(writeStream, CompressionMode.Compress);
-           Assert.Same(bro._stream, writeStream);
+            Assert.Same(bro._stream, writeStream);
             writeStream.Dispose();
         }
               
@@ -75,6 +75,7 @@ namespace System.IO.Compression.Tests
 
             bro.Dispose(); // Should be a no-op
         }
+
         [Fact]
         public void Flush()
         {
@@ -115,9 +116,7 @@ namespace System.IO.Compression.Tests
         {
             var ms = new MemoryStream();
             var bro = new BrotliStream(ms, CompressionMode.Decompress);
-
             Assert.False(bro.CanSeek, "CanSeek should be false");
-
             Assert.Throws<NotSupportedException>(delegate { long value = bro.Length; });
             Assert.Throws<NotSupportedException>(delegate { long value = bro.Position; });
             Assert.Throws<NotSupportedException>(delegate { bro.Position = 100L; });
@@ -130,9 +129,7 @@ namespace System.IO.Compression.Tests
         {
             var ms = new MemoryStream();
             var bro = new BrotliStream(ms, CompressionMode.Compress);
-
             Assert.False(bro.CanSeek, "CanSeek should be false");
-
             Assert.Throws<NotSupportedException>(delegate { long value = bro.Length; });
             Assert.Throws<NotSupportedException>(delegate { long value = bro.Position; });
             Assert.Throws<NotSupportedException>(delegate { bro.Position = 100L; });
@@ -173,12 +170,12 @@ namespace System.IO.Compression.Tests
                 Assert.Throws<ArgumentException>(() => ds.Read(new byte[1], 0, 2));
                 Assert.Throws<ArgumentException>(() => ds.Read(new byte[1], 1, 1));
                 Assert.Throws<InvalidOperationException>(() => ds.Write(new byte[1], 0, 1));
-
                 var data = new byte[1] { 42 };
                 Assert.Equal(0, ds.Read(data, 0, 0));
                 Assert.Equal(42, data[0]);
             }         
         }
+
         public static IEnumerable<object[]> RoundtripCompressDecompressOuterData
         {
             get
@@ -189,8 +186,6 @@ namespace System.IO.Compression.Tests
                     yield return new object[] {1023, 1023 * 10}; // overflowing internal buffer
                     yield return new object[] { 1024 * 1024, 1024 * 1024}; // large single write
                 }
-                    
-                
             }
         }
 
@@ -200,7 +195,6 @@ namespace System.IO.Compression.Tests
         {
             byte[] data = new byte[totalSize];
             new Random(42).NextBytes(data);
-
             var compressed = new MemoryStream();
             using (var compressor = new BrotliStream(compressed, CompressionMode.Compress, true))
             {
@@ -210,8 +204,7 @@ namespace System.IO.Compression.Tests
                 }
             }
             compressed.Position = 0;
-            
-           ValidateCompressedData(chunkSize, compressed, data);
+            ValidateCompressedData(chunkSize, compressed, data);
             compressed.Dispose();
         }
 

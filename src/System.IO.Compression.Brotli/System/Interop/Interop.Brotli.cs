@@ -21,10 +21,13 @@ namespace System.IO.Compression
         {
             internal const string LibNameEncoder = Library.BrotliEnc;
             internal const string LibNameDecoder = Library.BrotliDec;
-#region Encoder
+
+            #region Encoder
+            
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, nuint input_size,
                 IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer);
+
             [DllImport(LibNameEncoder,CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliEncoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);
 
@@ -47,11 +50,14 @@ namespace System.IO.Compression
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern UInt32 BrotliEncoderVersion();
 
-#endregion
-#region Decoder
+            #endregion
+
+            #region Decoder
+
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern BrotliNative.BrotliDecoderResult BrotliDecoderDecompress(ref nuint availableIn, IntPtr nextIn,
                 ref nuint availableOut, IntPtr nextOut);
+
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliDecoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);
 
@@ -71,13 +77,17 @@ namespace System.IO.Compression
 
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern bool BrotliDecoderIsUsed(IntPtr state);
+
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern bool BrotliDecoderIsFinished(IntPtr state);
+
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern Int32 BrotliDecoderGetErrorCode(IntPtr state);
+
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
             internal static extern IntPtr BrotliDecoderErrorString(Int32 code);
-#endregion
+            
+            #endregion
 
         }
     }

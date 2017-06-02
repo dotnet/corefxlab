@@ -20,7 +20,6 @@
     <DefineConstants>BIT64;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86'">
-    
     <SourceArch>x86</SourceArch>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT'">
@@ -38,11 +37,14 @@
   <ItemGroup>
     <BrotliLibraries Include="$(BrotliPath)\*.*" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
-    <Compile Include="System\IO\Compression\Interop\Library.Unix.cs" />
+  <ItemGroup Condition=" '$(OS)' != 'Windows_NT'">
+    <Compile Remove="System\Interop\Library.Windows.cs" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetsWindows)' == 'true'">
-    <Compile Include="System\IO\Compression\Interop\Library.Windows.cs" />
+  <ItemGroup Condition=" '$(OS)' != 'Unix'">
+    <Compile Remove="System\Interop\Library.Unix.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(OS)' != 'OSX'">
+    <Compile Remove="System\Interop\Library.OSX.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(BrotliPath)\**">
@@ -55,12 +57,6 @@
     <BaseAddress>0x180000000</BaseAddress>
     <DefineConstants>BIT64;AMD64;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
-  <Target Name="DisplayMessages">
-    <Message Text="Platform: $(Platform)" />
-     <Message Text="Build Platform $(BuildPlatform) " />
-      <Message Text="OS is $(OS) " />
-  </Target>
-
   <ItemGroup>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
     <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
