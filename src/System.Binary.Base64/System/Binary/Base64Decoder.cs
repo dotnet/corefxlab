@@ -40,7 +40,7 @@ namespace System.Binary.Base64
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         };
 
-        static readonly byte s_encodingPad = (byte)'=';              // '=', for padding
+        const byte s_encodingPad = (byte)'=';              // '=', for padding
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ComputeDecodedLength(ReadOnlySpan<byte> source)
@@ -91,43 +91,6 @@ namespace System.Binary.Base64
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int DecodePadByOne(ref byte srcBytes, ref sbyte decodingMap)
-        {
-            int i0 = srcBytes;
-            int i1 = Unsafe.Add(ref srcBytes, 1);
-            int i2 = Unsafe.Add(ref srcBytes, 2);
-
-            i0 = Unsafe.Add(ref decodingMap, i0);
-            i1 = Unsafe.Add(ref decodingMap, i1);
-            i2 = Unsafe.Add(ref decodingMap, i2);
-
-            i0 <<= 18;
-            i1 <<= 12;
-            i2 <<= 6;
-            
-            i1 |= i2;
-
-            i0 |= i1;
-            return i0;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int DecodePadByTwo(ref byte srcBytes, ref sbyte decodingMap)
-        {
-            int i0 = srcBytes;
-            int i1 = Unsafe.Add(ref srcBytes, 1);
-
-            i0 = Unsafe.Add(ref decodingMap, i0);
-            i1 = Unsafe.Add(ref decodingMap, i1);
-
-            i0 <<= 18;
-            i1 <<= 12;
-
-            i0 |= i1;
-            return i0;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void WriteThreeBytes(ref byte destBytes, int i0)
         {
             destBytes = (byte)(i0 >> 16);
@@ -140,7 +103,7 @@ namespace System.Binary.Base64
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
 
-            int srcLength = source.Length / 4 * 4;  // only decode input up to the closest multiple of 4.
+            int srcLength = source.Length & ~0x3;  // only decode input up to the closest multiple of 4.
             int destLength = destination.Length;
 
             int sourceIndex = 0;
@@ -150,53 +113,73 @@ namespace System.Binary.Base64
 
             ref sbyte decodingMap = ref s_decodingMap[0];
 
-            while (sourceIndex < srcLength - 4) // TODO: you can make this more efficient by using unsafe pointer as the loop limit
+            while (sourceIndex < srcLength - 4)
             {
-                int i0 = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex), ref decodingMap);
-                if (i0 < 0) goto InvalidExit;
-                if (destIndex > destLength - 3) goto DestinationSmallExit; // TODO: you can get rid off this line by including it in loop limit
-                WriteThreeBytes(ref Unsafe.Add(ref destBytes, destIndex), i0);
+                int result = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex), ref decodingMap);
+                if (result < 0) goto InvalidExit;
+                if (destIndex > destLength - 3) goto DestinationSmallExit;
+                WriteThreeBytes(ref Unsafe.Add(ref destBytes, destIndex), result);
                 destIndex += 3;
                 sourceIndex += 4;
             }
 
             if (sourceIndex >= srcLength) goto NeedMoreExit;
 
-            int padding = 0;
+            int i0 = Unsafe.Add(ref srcBytes, srcLength - 4);
+            int i1 = Unsafe.Add(ref srcBytes, srcLength - 3);
+            int i2 = Unsafe.Add(ref srcBytes, srcLength - 2);
+            int i3 = Unsafe.Add(ref srcBytes, srcLength - 1);
 
-            if (Unsafe.Add(ref srcBytes, srcLength - 1) == s_encodingPad)
+            i0 = Unsafe.Add(ref decodingMap, i0);
+            i1 = Unsafe.Add(ref decodingMap, i1);
+
+            i0 <<= 18;
+            i1 <<= 12;
+
+            if (i3 != s_encodingPad)
             {
-                padding = (Unsafe.Add(ref srcBytes, srcLength - 2) == s_encodingPad) ? 2 : 1;
+                i2 = Unsafe.Add(ref decodingMap, i2);
+                i3 = Unsafe.Add(ref decodingMap, i3);
+
+                i2 <<= 6;
+
+                i0 |= i3;
+                i1 |= i2;
+
+                i0 |= i1;
+
+                if (i0 < 0) goto InvalidExit;
+                if (destIndex > destLength - 3) goto DestinationSmallExit;
+                WriteThreeBytes(ref Unsafe.Add(ref destBytes, destIndex), i0);
+                destIndex += 3;
             }
-
-            if (padding == 1)
+            else if (i2 != s_encodingPad)
             {
-                int i0 = DecodePadByOne(ref Unsafe.Add(ref srcBytes, sourceIndex), ref decodingMap);
+                i2 = Unsafe.Add(ref decodingMap, i2);
+
+                i2 <<= 6;
+
+                i1 |= i2;
+
+                i0 |= i1;
+
                 if (i0 < 0) goto InvalidExit;
                 if (destIndex > destLength - 2) goto DestinationSmallExit;
                 Unsafe.Add(ref destBytes, destIndex) = (byte)(i0 >> 16);
                 Unsafe.Add(ref destBytes, destIndex + 1) = (byte)(i0 >> 8);
                 destIndex += 2;
-                sourceIndex += 4;
             }
-            else if (padding == 2)
+            else
             {
-                int i0 = DecodePadByTwo(ref Unsafe.Add(ref srcBytes, sourceIndex), ref decodingMap);
+                i0 |= i1;
+
                 if (i0 < 0) goto InvalidExit;
                 if (destIndex > destLength - 1) goto DestinationSmallExit;
                 Unsafe.Add(ref destBytes, destIndex) = (byte)(i0 >> 16);
                 destIndex += 1;
-                sourceIndex += 4;
             }
-            else
-            {
-                int i0 = Decode(ref Unsafe.Add(ref srcBytes, sourceIndex), ref decodingMap);
-                if (i0 < 0) goto InvalidExit;
-                if (destIndex > destLength - 3) goto DestinationSmallExit;
-                WriteThreeBytes(ref Unsafe.Add(ref destBytes, destIndex), i0);
-                destIndex += 3;
-                sourceIndex += 4;
-            }
+
+            sourceIndex += 4;
 
             if (srcLength != source.Length) goto NeedMoreExit;
 

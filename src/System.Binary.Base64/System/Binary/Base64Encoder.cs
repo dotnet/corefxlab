@@ -32,7 +32,7 @@ namespace System.Binary.Base64
             52, 53, 54, 55, 56, 57, 43, 47          //4..9, +, /
         };
 
-        static readonly byte s_encodingPad = (byte)'=';              // '=', for padding
+        const byte s_encodingPad = (byte)'=';              // '=', for padding
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ComputeEncodedLength(int sourceLength)
