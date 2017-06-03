@@ -238,7 +238,7 @@ namespace System.Binary.Base64.Tests
             }
         }
 
-        [Fact(Skip ="Implementation of DecodeInPlace needs to be fixed.")]
+        [Fact]
         public void DecodeInPlace()
         {
             var list = new List<byte>();

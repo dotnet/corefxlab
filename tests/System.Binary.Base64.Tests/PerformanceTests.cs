@@ -16,7 +16,6 @@ namespace System.Binary.Base64.Tests
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
-        [InlineData(1000 * 1000 * 50)]
         private static void Base64Encode(int numberOfBytes)
         {
             Span<byte> source = new byte[numberOfBytes];
@@ -36,7 +35,6 @@ namespace System.Binary.Base64.Tests
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
-        [InlineData(1000 * 1000 * 50)]
         private static void Base64EncodeBaseline(int numberOfBytes)
         {
             var source = new byte[numberOfBytes];
@@ -56,7 +54,6 @@ namespace System.Binary.Base64.Tests
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
-        [InlineData(1000 * 1000 * 50)]
         private static void Base64Decode(int numberOfBytes)
         {
             Span<byte> source = new byte[numberOfBytes];
@@ -77,7 +74,6 @@ namespace System.Binary.Base64.Tests
         [InlineData(100)]
         [InlineData(1000)]
         [InlineData(1000 * 1000)]
-        [InlineData(1000 * 1000 * 50)]
         private static void Base64DecodeBaseline(int numberOfBytes)
         {
             var source = new byte[numberOfBytes];
@@ -88,6 +84,31 @@ namespace System.Binary.Base64.Tests
                 using (iteration.StartMeasurement()) {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                         Convert.FromBase64CharArray(encoded, 0, encoded.Length);
+                }
+            }
+        }
+
+        [Benchmark(InnerIterationCount = InnerCount)]
+        [InlineData(10)]
+        [InlineData(100)]
+        [InlineData(1000)]
+        [InlineData(1000 * 1000)]
+        private static void Base64DecodeInPlace(int numberOfBytes)
+        {
+            Span<byte> source = new byte[numberOfBytes];
+            Base64TestHelper.InitalizeBytes(source);
+            int length = Base64Encoder.ComputeEncodedLength(numberOfBytes);
+
+            foreach (var iteration in Benchmark.Iterations)
+            {
+                using (iteration.StartMeasurement())
+                {
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        Span<byte> encodedSpan = new byte[length];
+                        Base64.Encoder.Transform(source, encodedSpan, out int consumed, out int written);
+                        Base64Decoder.DecodeInPlace(encodedSpan);
+                    }
                 }
             }
         }
