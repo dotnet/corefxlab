@@ -29,11 +29,10 @@ namespace System.Binary.Base64
             103, 104, 105, 106, 107, 108, 109, 110, //g..n
             111, 112, 113, 114, 115, 116, 117, 118, //o..v
             119, 120, 121, 122, 48, 49, 50, 51,     //w..z, 0..3
-            52, 53, 54, 55, 56, 57, 43, 47,         //4..9, +, /
-            61                                      // =
+            52, 53, 54, 55, 56, 57, 43, 47          //4..9, +, /
         };
 
-        static readonly byte s_encodingPad = s_encodingMap[64];     // s_encodingMap[64] is '=', for padding
+        const byte s_encodingPad = (byte)'=';              // '=', for padding
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ComputeEncodedLength(int sourceLength)

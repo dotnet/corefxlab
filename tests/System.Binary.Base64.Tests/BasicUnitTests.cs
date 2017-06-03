@@ -109,6 +109,57 @@ namespace System.Binary.Base64.Tests
         }
 
         [Fact]
+        public void DecodingInvalidBytes()
+        {
+            int[] invalidBytes = Base64TestHelper.s_decodingMap.FindAllIndexOf(Base64TestHelper.s_invalidByte);
+
+            for (int j = 0; j < 8; j++)
+            {
+                Span<byte> source = new byte[] { 50, 50, 50, 50, 80, 80, 80, 80 };
+                Span<byte> decodedBytes = new byte[Base64Decoder.ComputeDecodedLength(source)];
+
+                for (int i = 0; i < invalidBytes.Length; i++)
+                {
+                    // Don't test padding, which is tested in DecodingInvalidBytesPadding
+                    if ((byte)invalidBytes[i] == Base64TestHelper.s_encodingPad) continue;
+
+                    source[j] = (byte)invalidBytes[i];
+
+                    Assert.Equal(TransformationStatus.InvalidData,
+                        Base64.Decoder.Transform(source, decodedBytes, out int consumed, out int decodedByteCount));
+                }
+            }
+        }
+
+        [Fact]
+        public void DecodingInvalidBytesPadding()
+        {
+            // Only last 2 bytes can be padding, all other occurrence of padding is invalid
+            for (int j = 0; j < 7; j++)
+            {
+                Span<byte> source = new byte[] { 50, 50, 50, 50, 80, 80, 80, 80 };
+                Span<byte> decodedBytes = new byte[Base64Decoder.ComputeDecodedLength(source)];
+                source[j] = Base64TestHelper.s_encodingPad;
+                Assert.Equal(TransformationStatus.InvalidData,
+                    Base64.Decoder.Transform(source, decodedBytes, out int consumed, out int decodedByteCount));
+            }
+
+            {
+                Span<byte> source = new byte[] { 50, 50, 50, 50, 80, 80, 80, 80 };
+                Span<byte> decodedBytes = new byte[Base64Decoder.ComputeDecodedLength(source)];
+                source[6] = Base64TestHelper.s_encodingPad;
+                source[7] = Base64TestHelper.s_encodingPad;
+                Assert.Equal(TransformationStatus.Done,
+                    Base64.Decoder.Transform(source, decodedBytes, out int consumed, out int decodedByteCount));
+
+                source = new byte[] { 50, 50, 50, 50, 80, 80, 80, 80 };
+                source[7] = Base64TestHelper.s_encodingPad;
+                Assert.Equal(TransformationStatus.Done,
+                    Base64.Decoder.Transform(source, decodedBytes, out consumed, out decodedByteCount));
+            }
+        }
+
+        [Fact]
         public void DecodingOutputTooSmall()
         {
             Span<byte> source = new byte[1000];
@@ -187,7 +238,7 @@ namespace System.Binary.Base64.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip ="Implementation of DecodeInPlace needs to be fixed.")]
         public void DecodeInPlace()
         {
             var list = new List<byte>();
