@@ -47,7 +47,7 @@ namespace System.IO.Compression
         }
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize)
         {
-            if (baseStream == null) throw new ArgumentNullException(BrotliEx.baseStream);
+            if (baseStream == null) throw new ArgumentNullException("baseStream");
             _mode = mode;
             _stream = baseStream;
             LeaveOpen = leaveOpen;
@@ -191,7 +191,7 @@ namespace System.IO.Compression
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             if (array.Length - offset < count)
-                throw new ArgumentException(BrotliEx.InvalidArgument, BrotliEx.OffsetCount);
+                throw new ArgumentOutOfRangeException("Offset and Count aren't consistent", BrotliEx.InvalidArgument);
         }
 
         private void EnsureDecompressionMode()

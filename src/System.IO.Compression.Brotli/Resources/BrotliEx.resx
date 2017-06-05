@@ -120,17 +120,11 @@
   <data name="QualityAndWinSize" xml:space="preserve">
     <value>Quality and WindowSize is ambitious for Decompress mode</value>
   </data>
-  <data name="baseStream" xml:space="preserve">
-    <value>Base Stream shouldn't be null</value>
-  </data>
   <data name="unableEncode" xml:space="preserve">
     <value>unable to compress stream</value>
   </data>
   <data name="InvalidArgument" xml:space="preserve">
-    <value>Argument is invalid:</value>
-  </data>
-  <data name="OffsetCount" xml:space="preserve">
-    <value>Offset and Count aren't' consistent</value>
+    <value>Argument is invalid</value>
   </data>
   <data name="WrongModeDecompress" xml:space="preserve">
     <value>Wrong stream mode. Expect: Decompress</value>

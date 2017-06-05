@@ -62,15 +62,6 @@ namespace System.IO.Compression.Brotli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Base Stream shouldn&apos;t be null.
-        /// </summary>
-        internal static string baseStream {
-            get {
-                return ResourceManager.GetString("baseStream", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Decoder instance create fail.
         /// </summary>
         internal static string DecoderInstanceCreate {
@@ -98,20 +89,11 @@ namespace System.IO.Compression.Brotli.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Argument is invalid:.
+        ///   Looks up a localized string similar to Argument is invalid.
         /// </summary>
         internal static string InvalidArgument {
             get {
                 return ResourceManager.GetString("InvalidArgument", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Offset and Count aren&apos;t&apos; consistent.
-        /// </summary>
-        internal static string OffsetCount {
-            get {
-                return ResourceManager.GetString("OffsetCount", resourceCulture);
             }
         }
         
