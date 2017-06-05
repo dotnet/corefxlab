@@ -157,8 +157,8 @@ namespace System.IO.Compression.Tests
                 Assert.Throws<ArgumentNullException>(() => ds.Write(null, 0, 0));
                 Assert.Throws<ArgumentOutOfRangeException>(() => ds.Write(new byte[1], -1, 0));
                 Assert.Throws<ArgumentOutOfRangeException>(() => ds.Write(new byte[1], 0, -1));
-                Assert.Throws<ArgumentException>(() => ds.Write(new byte[1], 0, 2));
-                Assert.Throws<ArgumentException>(() => ds.Write(new byte[1], 1, 1));
+                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Write(new byte[1], 0, 2));
+                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Write(new byte[1], 1, 1));
                 Assert.Throws<InvalidOperationException>(() => ds.Read(new byte[1], 0, 1));
                 ds.Write(new byte[1], 0, 0);
             }         
@@ -167,8 +167,8 @@ namespace System.IO.Compression.Tests
                 Assert.Throws<ArgumentNullException>(() => ds.Read(null, 0, 0));
                 Assert.Throws<ArgumentOutOfRangeException>(() => ds.Read(new byte[1], -1, 0));
                 Assert.Throws<ArgumentOutOfRangeException>(() => ds.Read(new byte[1], 0, -1));
-                Assert.Throws<ArgumentException>(() => ds.Read(new byte[1], 0, 2));
-                Assert.Throws<ArgumentException>(() => ds.Read(new byte[1], 1, 1));
+                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Read(new byte[1], 0, 2));
+                Assert.Throws<ArgumentOutOfRangeException>(() => ds.Read(new byte[1], 1, 1));
                 Assert.Throws<InvalidOperationException>(() => ds.Write(new byte[1], 0, 1));
                 var data = new byte[1] { 42 };
                 Assert.Equal(0, ds.Read(data, 0, 0));

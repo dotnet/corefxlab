@@ -26,7 +26,7 @@ namespace System.IO.Compression
             unsafe
             {
                 bytesConsumed = (nuint)source.Length;
-                bytesWritten = (nuint)destination.Length;
+                bytesWritten = (nuint)0;
                 IntPtr bufIn, bufOut;
                 fixed (byte* inBytes = &source.DangerousGetPinnableReference())
                 fixed (byte* outBytes = &destination.DangerousGetPinnableReference())
@@ -43,7 +43,7 @@ namespace System.IO.Compression
             unsafe
             {
                 bytesConsumed = (nuint)source.Length;
-                bytesWritten = (nuint)destination.Length;
+                bytesWritten = (nuint)0;
                 IntPtr bufIn, bufOut;
                 fixed (byte* inBytes = &source.DangerousGetPinnableReference())
                 fixed (byte* outBytes = &destination.DangerousGetPinnableReference())
