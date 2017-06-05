@@ -11,23 +11,24 @@ namespace System.IO.Pipelines
         private int _index;
         private SegmentEnumerator _enumerator;
         private int _consumedBytes;
-        private bool _end;
+        private bool _hasData;
 
         public ReadableBufferReader(ReadableBuffer buffer) : this(buffer.Start, buffer.End)
         {
         }
 
-        public ReadableBufferReader(ReadCursor start, ReadCursor end) : this()
+        public ReadableBufferReader(ReadCursor start, ReadCursor end)
         {
-            _end = false;
+            _hasData = true;
             _index = 0;
             _consumedBytes = 0;
-            _enumerator = new SegmentEnumerator(start, end);
             _currentSpan = default(Span<byte>);
-            MoveNext();
+            _enumerator = new SegmentEnumerator(start, end);
+
+            AdvanceSegmentInlined();
         }
 
-        public bool End => _end;
+        public bool End => !_hasData;
 
         public int Index => _index;
 
@@ -36,13 +37,13 @@ namespace System.IO.Pipelines
             get
             {
                 var part = _enumerator.Current;
+                var index = _hasData ? _index : _currentSpan.Length;
 
-                if (_end)
+                return new ReadCursor()
                 {
-                    return new ReadCursor(part.Segment, part.Start + _currentSpan.Length);
-                }
-
-                return new ReadCursor(part.Segment, part.Start + _index);
+                    Segment = part.Segment,
+                    Index = part.Start + index
+                };
             }
         }
 
@@ -53,36 +54,93 @@ namespace System.IO.Pipelines
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Peek()
         {
-            if (_end)
+            if (_hasData)
             {
-                return -1;
+                return _currentSpan[_index];
             }
-            return _currentSpan[_index];
+
+            return -1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Take()
         {
-            if (_end)
+            if (_hasData)
             {
-                return -1;
+                var index = _index;
+                var value = _currentSpan[index];
+
+                _index = index + 1;
+                _consumedBytes++;
+
+                if (index + 1 >= _currentSpan.Length)
+                {
+                    AdvanceSegmentNoInline();
+                }
+
+                return value;
             }
 
-            var value = _currentSpan[_index];
+            return -1;
+        }
 
-            _index++;
-            _consumedBytes++;
-
-            if (_index >= _currentSpan.Length)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Skip(int length)
+        {
+            if (length < 0 || !_hasData)
             {
-                MoveNext();
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
             }
 
-            return value;
+            _consumedBytes += length;
+
+            var remaining = _currentSpan.Length - _index;
+            if (length < remaining)
+            {
+                _index += length;
+            }
+            else
+            {
+                SkipMultiSegment(length - remaining);
+            }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private void MoveNext()
+        public void SkipMultiSegment(int length)
+        {
+            AdvanceSegmentInlined();
+            if (length > 0 && !_hasData)
+            {
+                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+            }
+
+            do
+            {
+                var remaining = _currentSpan.Length - _index;
+                if (length < remaining)
+                {
+                    _index += length;
+                    return;
+                }
+
+                length -= remaining;
+                AdvanceSegmentNoInline();
+            } while (length > 0 && _hasData);
+
+            if (length > 0)
+            {
+                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void AdvanceSegmentNoInline()
+        {
+            AdvanceSegmentInlined();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void AdvanceSegmentInlined()
         {
             while (_enumerator.MoveNext())
             {
@@ -96,35 +154,7 @@ namespace System.IO.Pipelines
                 }
             }
 
-            _end = true;
-        }
-
-        public void Skip(int length)
-        {
-            if (length < 0)
-            {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
-            }
-
-            _consumedBytes += length;
-
-            while (!_end && length > 0)
-            {
-                if ((_index + length) < _currentSpan.Length)
-                {
-                    _index += length;
-                    length = 0;
-                    break;
-                }
-
-                length -= (_currentSpan.Length - _index);
-                MoveNext();
-            }
-
-            if (length > 0)
-            {
-                PipelinesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
-            }
+            _hasData = false;
         }
     }
 }
