@@ -100,10 +100,10 @@ namespace System.IO.Compression.Tests
 
         public enum CompressionType
         {
-            CryptoRandom = 1,
-            RepeatedSegments = 2,
-            VeryRepetitive = 3,
-            NormalData = 4
+            CryptoRandom,
+            RepeatedSegments,
+            VeryRepetitive,
+            NormalData
         }
 
         [Benchmark]
@@ -113,7 +113,6 @@ namespace System.IO.Compression.Tests
         public void Decompress(CompressionType type)
         {
             string testFilePath = CreateCompressedFile(type);
-
             int bufferSize = 1024*32;
             int retCount = -1;
             var bytes = new byte[bufferSize];
