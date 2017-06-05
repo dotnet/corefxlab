@@ -22,7 +22,8 @@ namespace System.Buffers.Internal
 
         public override OwnedBuffer<byte> Rent(int minimumBufferSize)
         {
-            return new ArrayPoolBuffer(minimumBufferSize);
+            var buffer = new ArrayPoolBuffer(minimumBufferSize);
+            return buffer;
         }
 
         protected override void Dispose(bool disposing)
@@ -89,7 +90,10 @@ namespace System.Buffers.Internal
             public override void Release()
             {
                 if (!IsRetained) BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
-                Interlocked.Decrement(ref _referenceCount);
+                if(Interlocked.Decrement(ref _referenceCount) <= 0)
+                {
+                    Dispose();
+                }
             }
         }
     }
