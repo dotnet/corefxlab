@@ -87,10 +87,10 @@ namespace System.IO.Compression
         {
             return Interop.Brotli.BrotliEncoderCompress(quality, lgwin, mode, input_size, input_buffer, ref encoded_size, encoded_buffer);
         }
-        
+
         public static IntPtr BrotliEncoderCreateInstance()
         {
-           return Interop.Brotli.BrotliEncoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+            return Interop.Brotli.BrotliEncoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
         }
 
         public static bool BrotliEncoderSetParameter(IntPtr state, BrotliEncoderParameter param, UInt32 value)
@@ -123,7 +123,7 @@ namespace System.IO.Compression
         public static UInt32 BrotliEncoderVersion()
         {
             return Interop.Brotli.BrotliEncoderVersion();
-            
+
         }
 
         #endregion
@@ -132,7 +132,7 @@ namespace System.IO.Compression
 
         public static BrotliDecoderResult BrotliDecoderDecompress(ref nuint availableIn, IntPtr nextIn, ref nuint availableOut, IntPtr nextOut)
         {
-            return Interop.Brotli.BrotliDecoderDecompress(ref availableIn,  nextIn, ref availableOut, nextOut);
+            return Interop.Brotli.BrotliDecoderDecompress(ref availableIn, nextIn, ref availableOut, nextOut);
         }
 
         public static IntPtr BrotliDecoderCreateInstance()
@@ -154,7 +154,7 @@ namespace System.IO.Compression
 
         public static void BrotliDecoderDestroyInstance(IntPtr state)
         {
-           Interop.Brotli.BrotliDecoderDestroyInstance(state);
+            Interop.Brotli.BrotliDecoderDestroyInstance(state);
         }
 
         public static nuint BrotliDecoderVersion()
@@ -174,8 +174,8 @@ namespace System.IO.Compression
 
         public static Int32 BrotliDecoderGetErrorCode(IntPtr state)
         {
-           return Interop.Brotli.BrotliDecoderGetErrorCode(state);
-           
+            return Interop.Brotli.BrotliDecoderGetErrorCode(state);
+
         }
 
         public static String BrotliDecoderErrorString(Int32 code)

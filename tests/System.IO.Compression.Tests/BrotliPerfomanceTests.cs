@@ -21,7 +21,7 @@ namespace System.IO.Compression.Tests
                 memberName ?? "TestBase", lineNumber, Path.GetRandomFileName(),
                 index.GetValueOrDefault()));
         }
-    
+
         private static string CreateCompressedFile(CompressionType type)
         {
             const int fileSize = 1000000;
@@ -113,7 +113,7 @@ namespace System.IO.Compression.Tests
         public void Decompress(CompressionType type)
         {
             string testFilePath = CreateCompressedFile(type);
-            int bufferSize = 1024*32;
+            int bufferSize = 1024 * 32;
             int retCount = -1;
             var bytes = new byte[bufferSize];
             using (MemoryStream brStream = new MemoryStream(File.ReadAllBytes(testFilePath)))
@@ -121,7 +121,7 @@ namespace System.IO.Compression.Tests
                     using (iteration.StartMeasurement())
                         for (int i = 0; i < 10000; i++)
                         {
-                            using (BrotliStream zip = new BrotliStream(brStream, CompressionMode.Decompress, true,bufferSize))
+                            using (BrotliStream zip = new BrotliStream(brStream, CompressionMode.Decompress, true, bufferSize))
                             {
                                 while (retCount != 0)
                                 {

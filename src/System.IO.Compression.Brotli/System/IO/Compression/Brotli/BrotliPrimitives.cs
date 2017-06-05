@@ -6,7 +6,7 @@ using System.Text;
 #if BIT64
     using nuint = System.UInt64;
 #else
-    using nuint = System.UInt32;
+using nuint = System.UInt32;
 #endif 
 
 namespace System.IO.Compression
@@ -50,7 +50,7 @@ namespace System.IO.Compression
                 {
                     bufIn = new IntPtr(inBytes);
                     bufOut = new IntPtr(outBytes);
-                    return BrotliNative.BrotliDecoderDecompress(ref bytesConsumed, bufIn,ref bytesWritten, bufOut);
+                    return BrotliNative.BrotliDecoderDecompress(ref bytesConsumed, bufIn, ref bytesWritten, bufOut);
                 }
             }
         }

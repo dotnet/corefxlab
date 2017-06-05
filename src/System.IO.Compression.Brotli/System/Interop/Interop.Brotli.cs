@@ -9,8 +9,8 @@ using System.IO.Compression;
 
 #if BIT64
     using nuint = System.UInt64;
-#else 
-    using nuint = System.UInt32;
+#else
+using nuint = System.UInt32;
 #endif 
 
 namespace System.IO.Compression
@@ -23,12 +23,12 @@ namespace System.IO.Compression
             internal const string LibNameDecoder = Library.BrotliDec;
 
             #region Encoder
-            
+
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, nuint input_size,
                 IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer);
 
-            [DllImport(LibNameEncoder,CallingConvention = CallingConvention.Cdecl)]
+            [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
             internal static extern IntPtr BrotliEncoderCreateInstance(IntPtr allocFunc, IntPtr freeFunc, IntPtr opaque);
 
             [DllImport(LibNameEncoder, CallingConvention = CallingConvention.Cdecl)]
@@ -87,7 +87,7 @@ namespace System.IO.Compression
 
             [DllImport(LibNameDecoder, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
             internal static extern IntPtr BrotliDecoderErrorString(Int32 code);
-            
+
             #endregion
 
         }

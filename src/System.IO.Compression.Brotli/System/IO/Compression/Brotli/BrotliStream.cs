@@ -36,7 +36,8 @@ namespace System.IO.Compression
         private int _readOffset = 0;
         Decoder _decoder;
         Encoder _encoder;
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize, uint windowSize, uint quality) : this(baseStream, mode, leaveOpen, BuffSize) {
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize, uint windowSize, uint quality) : this(baseStream, mode, leaveOpen, BuffSize)
+        {
             if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
             else
             {
@@ -166,9 +167,9 @@ namespace System.IO.Compression
                 }
                 base.Dispose(disposing);
             }
-            
-        }     
-    
+
+        }
+
         public override void Flush()
         {
             EnsureNotDisposed();
@@ -190,7 +191,7 @@ namespace System.IO.Compression
                 throw new ArgumentOutOfRangeException(nameof(count));
 
             if (array.Length - offset < count)
-                throw new ArgumentException(BrotliEx.InvalidArgument,BrotliEx.OffsetCount);
+                throw new ArgumentException(BrotliEx.InvalidArgument, BrotliEx.OffsetCount);
         }
 
         private void EnsureDecompressionMode()
@@ -210,7 +211,7 @@ namespace System.IO.Compression
             EnsureDecompressionMode();
             ValidateParameters(buffer, offset, count);
             EnsureNotDisposed();
-            
+
             int bytesRead = (int)(_decoder.BufferStream.Length - _readOffset);
             nuint totalCount = 0;
             Boolean endOfStream = false;
@@ -257,7 +258,7 @@ namespace System.IO.Compression
                 {
                     var error = BrotliNative.BrotliDecoderGetErrorCode(_decoder.State);
                     var text = BrotliNative.BrotliDecoderErrorString(error);
-                    throw new System.IO.IOException(text+BrotliEx.unableDecode);
+                    throw new System.IO.IOException(text + BrotliEx.unableDecode);
                 }
                 if (endOfStream && !BrotliNative.BrotliDecoderIsFinished(_decoder.State) && _decoder.LastDecoderResult == BrotliNative.BrotliDecoderResult.NeedsMoreInput)
                 {
@@ -285,7 +286,7 @@ namespace System.IO.Compression
             }
             return 0;
         }
-       
+
         public override void SetLength(long value)
         {
             throw new NotSupportedException();
@@ -300,8 +301,8 @@ namespace System.IO.Compression
             EnsureCompressionMode();
             ValidateParameters(buffer, offset, count);
             EnsureNotDisposed();
-            if (_mode != CompressionMode.Compress) 
-            totalWrote += count;
+            if (_mode != CompressionMode.Compress)
+                totalWrote += count;
             nuint totalOut = 0;
             int bytesRemain = count;
             int currentOffset = offset;
@@ -317,7 +318,7 @@ namespace System.IO.Compression
                 while ((int)AvailIn > 0)
                 {
                     if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, BrotliNative.BrotliEncoderOperation.Process, ref AvailIn, ref NextIn, ref AvailOut,
-                        ref NextOut, out totalOut)) throw new System.IO.IOException(BrotliEx.unableEncode); 
+                        ref NextOut, out totalOut)) throw new System.IO.IOException(BrotliEx.unableEncode);
                     if (AvailOut != (nuint)BufferSize)
                     {
                         var bytesWrote = (int)((nuint)BufferSize - AvailOut);
@@ -332,5 +333,5 @@ namespace System.IO.Compression
             }
         }
     }
-    
+
 }

@@ -14,8 +14,8 @@ namespace System.IO.Compression
         private const int MaxWindowBits = 24;
         private const int MinQuality = 0;
         private const int MaxQuality = 11;
-        private bool _isDisposed=false;
-        internal IntPtr State=IntPtr.Zero;
+        private bool _isDisposed = false;
+        internal IntPtr State = IntPtr.Zero;
 
         internal Encoder()
         {

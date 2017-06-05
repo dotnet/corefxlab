@@ -10,10 +10,10 @@ namespace System.IO.Compression
 {
     internal sealed class Decoder
     {
-        internal IntPtr State=IntPtr.Zero;
-        internal BrotliNative.BrotliDecoderResult LastDecoderResult=BrotliNative.BrotliDecoderResult.NeedsMoreInput;
+        internal IntPtr State = IntPtr.Zero;
+        internal BrotliNative.BrotliDecoderResult LastDecoderResult = BrotliNative.BrotliDecoderResult.NeedsMoreInput;
         internal MemoryStream BufferStream;
-        private bool _isDisposed=false;
+        private bool _isDisposed = false;
         internal Decoder()
         {
             _isDisposed = false;
