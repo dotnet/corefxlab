@@ -55,11 +55,10 @@ namespace System.Buffers.Internal
 
             protected override void Dispose(bool disposing)
             {
-                _disposed = true;
-                if (_array != null)
-                {
-                    ArrayPool<byte>.Shared.Return(_array);
-                    _array = null;
+                var array = Interlocked.Exchange(ref _array, null);
+                if (array != null)  {
+                    _disposed = true;
+                    ArrayPool<byte>.Shared.Return(array);
                 }
             }
 
@@ -89,10 +88,13 @@ namespace System.Buffers.Internal
 
             public override void Release()
             {
-                if (!IsRetained) BufferPrimitivesThrowHelper.ThrowInvalidOperationException();
-                if(Interlocked.Decrement(ref _referenceCount) <= 0)
-                {
+                var newRefCount = Interlocked.Decrement(ref _referenceCount);
+                if (newRefCount == 0) {
                     Dispose();
+                    return;
+                }
+                if(newRefCount < 0) {
+                    throw new InvalidOperationException();
                 }
             }
         }
