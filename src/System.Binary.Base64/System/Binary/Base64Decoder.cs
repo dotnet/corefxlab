@@ -207,39 +207,79 @@ namespace System.Binary.Base64
         /// <returns>Number of bytes written to the buffer.</returns>
         public static int DecodeInPlace(Span<byte> buffer)
         {
-            // TODO: Fix
-            int di = 0;
-            int si = 0;
-            //byte r0, r1, r2;
-            int padding = 0;
+            ref byte bufferBytes = ref buffer.DangerousGetPinnableReference();
 
-            if (buffer[buffer.Length - 1] == s_encodingPad)
+            int bufferLength = buffer.Length & ~0x3;  // only decode input up to the closest multiple of 4.
+
+            int sourceIndex = 0;
+            int destIndex = 0;
+
+            if (buffer.Length < 4) return 0;
+
+            ref sbyte decodingMap = ref s_decodingMap[0];
+
+            while (sourceIndex < bufferLength - 4)
             {
-                padding = 1;
-                if (buffer[buffer.Length - 2] == s_encodingPad) padding = 2;
+                int result = Decode(ref Unsafe.Add(ref bufferBytes, sourceIndex), ref decodingMap);
+                if (result < 0) goto InvalidExit;
+                WriteThreeBytes(ref Unsafe.Add(ref bufferBytes, destIndex), result);
+                destIndex += 3;
+                sourceIndex += 4;
             }
 
-            for (; si < buffer.Length - (padding != 0 ? 4 : 0);)
+            if (sourceIndex >= bufferLength) return destIndex;
+
+            int i0 = Unsafe.Add(ref bufferBytes, bufferLength - 4);
+            int i1 = Unsafe.Add(ref bufferBytes, bufferLength - 3);
+            int i2 = Unsafe.Add(ref bufferBytes, bufferLength - 2);
+            int i3 = Unsafe.Add(ref bufferBytes, bufferLength - 1);
+
+            i0 = Unsafe.Add(ref decodingMap, i0);
+            i1 = Unsafe.Add(ref decodingMap, i1);
+
+            i0 <<= 18;
+            i1 <<= 12;
+
+            i0 |= i1;
+
+            if (i3 != s_encodingPad)
             {
-                /*Decode(buffer[si++], buffer[si++], buffer[si++], buffer[si++], out r0, out r1, out r2);
-                buffer[di++] = r0;
-                buffer[di++] = r1;
-                buffer[di++] = r2;*/
+                i2 = Unsafe.Add(ref decodingMap, i2);
+                i3 = Unsafe.Add(ref decodingMap, i3);
+
+                i2 <<= 6;
+
+                i0 |= i3;
+                i0 |= i2;
+
+                if (i0 < 0) goto InvalidExit;
+                WriteThreeBytes(ref Unsafe.Add(ref bufferBytes, destIndex), i0);
+                destIndex += 3;
+            }
+            else if (i2 != s_encodingPad)
+            {
+                i2 = Unsafe.Add(ref decodingMap, i2);
+
+                i2 <<= 6;
+
+                i0 |= i2;
+
+                if (i0 < 0) goto InvalidExit;
+                Unsafe.Add(ref bufferBytes, destIndex) = (byte)(i0 >> 16);
+                Unsafe.Add(ref bufferBytes, destIndex + 1) = (byte)(i0 >> 8);
+                destIndex += 2;
+            }
+            else
+            {
+                if (i0 < 0) goto InvalidExit;
+                Unsafe.Add(ref bufferBytes, destIndex) = (byte)(i0 >> 16);
+                destIndex += 1;
             }
 
-            if (padding != 0)
-            {
-                /*Decode(buffer[si++], buffer[si++], buffer[si++], buffer[si++], out r0, out r1, out r2);
-                buffer[di++] = r0;
-
-                if (padding == 1)
-                {
-                    buffer[di++] = r1;
-                }*/
-            }
-
-            return di;
+            return destIndex;
+            
+            InvalidExit:
+            return -1;
         }
-
     }
 }
