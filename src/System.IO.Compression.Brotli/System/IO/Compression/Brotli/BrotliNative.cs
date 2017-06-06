@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 #if BIT64
     using nuint = System.UInt64;
 #else // BIT64
-using nuint = System.UInt32;
+    using nuint = System.UInt32;
 #endif // BIT64
 
 namespace System.IO.Compression
