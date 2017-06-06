@@ -32,7 +32,7 @@ namespace System.Binary.Base64.Tests
                 {
                     Span<byte> decodedBytes = new byte[Base64Decoder.ComputeDecodedLength(encodedBytes)];
                     Assert.Equal(TransformationStatus.Done, Base64.Decoder.Transform(encodedBytes, decodedBytes, out consumed, out int decodedByteCount));
-                    Assert.Equal(sourceBytes.Length + 1, decodedByteCount);
+                    Assert.Equal(sourceBytes.Length, decodedByteCount);
                     Assert.True(sourceBytes.SequenceEqual(decodedBytes));
                 }
             }
