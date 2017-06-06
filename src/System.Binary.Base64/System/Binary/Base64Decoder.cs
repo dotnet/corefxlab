@@ -6,20 +6,8 @@ using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
 {
-    public sealed class Base64Decoder : ITransformation
+    public static partial class Base64
     {
-        private static readonly Base64Decoder s_instance = new Base64Decoder();
-
-        public static Base64Decoder Instance
-        {
-            get
-            {
-                return s_instance;
-            }
-        }
-
-        private Base64Decoder() { }
-
         // Pre-computing this table using a custom string(s_characters) and GenerateDecodingMapAndVerify (found in tests)
         static readonly sbyte[] s_decodingMap = {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -39,8 +27,6 @@ namespace System.Binary.Base64
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         };
-
-        const byte s_encodingPad = (byte)'=';              // '=', for padding
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ComputeDecodedLength(ReadOnlySpan<byte> source)
@@ -98,7 +84,7 @@ namespace System.Binary.Base64
             Unsafe.Add(ref destBytes, 2) = (byte)i0;
         }
 
-        public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        public static TransformationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
@@ -205,41 +191,101 @@ namespace System.Binary.Base64
         /// </summary>
         /// <param name="buffer"></param>
         /// <returns>Number of bytes written to the buffer.</returns>
-        public static int DecodeInPlace(Span<byte> buffer)
+        public static TransformationStatus DecodeInPlace(Span<byte> buffer, out int bytesConsumed, out int bytesWritten)
         {
-            // TODO: Fix
-            int di = 0;
-            int si = 0;
-            //byte r0, r1, r2;
-            int padding = 0;
+            ref byte bufferBytes = ref buffer.DangerousGetPinnableReference();
 
-            if (buffer[buffer.Length - 1] == s_encodingPad)
+            int bufferLength = buffer.Length & ~0x3;  // only decode input up to the closest multiple of 4.
+
+            int sourceIndex = 0;
+            int destIndex = 0;
+
+            if (buffer.Length == 0) goto DoneExit;
+
+            ref sbyte decodingMap = ref s_decodingMap[0];
+
+            while (sourceIndex < bufferLength - 4)
             {
-                padding = 1;
-                if (buffer[buffer.Length - 2] == s_encodingPad) padding = 2;
+                int result = Decode(ref Unsafe.Add(ref bufferBytes, sourceIndex), ref decodingMap);
+                if (result < 0) goto InvalidExit;
+                WriteThreeBytes(ref Unsafe.Add(ref bufferBytes, destIndex), result);
+                destIndex += 3;
+                sourceIndex += 4;
             }
 
-            for (; si < buffer.Length - (padding != 0 ? 4 : 0);)
+            if (sourceIndex >= bufferLength) goto NeedMoreExit;
+
+            int i0 = Unsafe.Add(ref bufferBytes, bufferLength - 4);
+            int i1 = Unsafe.Add(ref bufferBytes, bufferLength - 3);
+            int i2 = Unsafe.Add(ref bufferBytes, bufferLength - 2);
+            int i3 = Unsafe.Add(ref bufferBytes, bufferLength - 1);
+
+            i0 = Unsafe.Add(ref decodingMap, i0);
+            i1 = Unsafe.Add(ref decodingMap, i1);
+
+            i0 <<= 18;
+            i1 <<= 12;
+
+            i0 |= i1;
+
+            if (i3 != s_encodingPad)
             {
-                /*Decode(buffer[si++], buffer[si++], buffer[si++], buffer[si++], out r0, out r1, out r2);
-                buffer[di++] = r0;
-                buffer[di++] = r1;
-                buffer[di++] = r2;*/
+                i2 = Unsafe.Add(ref decodingMap, i2);
+                i3 = Unsafe.Add(ref decodingMap, i3);
+
+                i2 <<= 6;
+
+                i0 |= i3;
+                i0 |= i2;
+
+                if (i0 < 0) goto InvalidExit;
+                WriteThreeBytes(ref Unsafe.Add(ref bufferBytes, destIndex), i0);
+                destIndex += 3;
+            }
+            else if (i2 != s_encodingPad)
+            {
+                i2 = Unsafe.Add(ref decodingMap, i2);
+
+                i2 <<= 6;
+
+                i0 |= i2;
+
+                if (i0 < 0) goto InvalidExit;
+                Unsafe.Add(ref bufferBytes, destIndex) = (byte)(i0 >> 16);
+                Unsafe.Add(ref bufferBytes, destIndex + 1) = (byte)(i0 >> 8);
+                destIndex += 2;
+            }
+            else
+            {
+                if (i0 < 0) goto InvalidExit;
+                Unsafe.Add(ref bufferBytes, destIndex) = (byte)(i0 >> 16);
+                destIndex += 1;
             }
 
-            if (padding != 0)
-            {
-                /*Decode(buffer[si++], buffer[si++], buffer[si++], buffer[si++], out r0, out r1, out r2);
-                buffer[di++] = r0;
+            sourceIndex += 4;
 
-                if (padding == 1)
-                {
-                    buffer[di++] = r1;
-                }*/
-            }
+            if (bufferLength != buffer.Length) goto NeedMoreExit;
 
-            return di;
+            DoneExit:
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return TransformationStatus.Done;
+
+            NeedMoreExit:
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return TransformationStatus.NeedMoreSourceData;
+
+            InvalidExit:
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return TransformationStatus.InvalidData;
         }
 
+        class FromBase64 : ITransformation
+        {
+            public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                => Decode(source, destination, out bytesConsumed, out bytesWritten);
+        }
     }
 }

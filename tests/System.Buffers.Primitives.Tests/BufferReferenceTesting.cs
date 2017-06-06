@@ -176,6 +176,8 @@ namespace System.Buffers.Tests
                 // memory is disposed; cannot use copy stored for later
                 var span = copyStoredForLater.Span;
             });
+
+            Assert.True(buffer.IsDisposed);
         }
 
         static void MemoryHandleDoubleFree(OwnedBuffer<byte> buffer)
