@@ -6,20 +6,8 @@ using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
 {
-    public sealed class Base64Encoder : ITransformation
+    public static partial class Base64
     {
-        private static readonly Base64Encoder s_instance = new Base64Encoder();
-
-        public static Base64Encoder Instance
-        {
-            get
-            {
-                return s_instance;
-            }
-        }
-
-        private Base64Encoder() { }
-
         // Pre-computing this table using a custom string(s_characters) and GenerateEncodingMapAndVerify (found in tests)
         static readonly byte[] s_encodingMap = {
             65, 66, 67, 68, 69, 70, 71, 72,         //A..H
@@ -38,9 +26,9 @@ namespace System.Binary.Base64
         public static int ComputeEncodedLength(int sourceLength)
         {
             Diagnostics.Debug.Assert(sourceLength >= 0);
-            return ((sourceLength + 2) / 3) << 2; 
+            return ((sourceLength + 2) / 3) << 2;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Encode(byte b0, byte b1, byte b2, out byte r0, out byte r1, out byte r2, out byte r3)
         {
@@ -115,7 +103,7 @@ namespace System.Binary.Base64
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <returns>Number of bytes written to the destination.</returns>
-        public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        public static TransformationStatus Encode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
@@ -180,22 +168,29 @@ namespace System.Binary.Base64
             var sourceIndex = sourceLength - leftover;
 
             // encode last pack to avoid conditional in the main loop
-            if (leftover != 0) {
+            if (leftover != 0)
+            {
                 var sourceSlice = buffer.Slice(sourceIndex, leftover);
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
-                s_instance.Transform(sourceSlice, desitnationSlice, out int consumed, out int written);
+                Encode(sourceSlice, desitnationSlice, out int consumed, out int written);
             }
 
-            for (int index = sourceIndex - 3; index>=0; index -= 3) {
+            for (int index = sourceIndex - 3; index >= 0; index -= 3)
+            {
                 var sourceSlice = buffer.Slice(index, 3);
                 var desitnationSlice = buffer.Slice(destinationIndex, 4);
                 destinationIndex -= 4;
-                s_instance.Transform(sourceSlice, desitnationSlice, out int consumed, out int written);
+                Encode(sourceSlice, desitnationSlice, out int consumed, out int written);
             }
 
             return encodedLength;
         }
 
+        class ToBase64 : ITransformation
+        {
+            public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                => Encode(source, destination, out bytesConsumed, out bytesWritten);
+        }
     }
 }

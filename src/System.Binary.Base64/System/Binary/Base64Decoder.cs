@@ -6,20 +6,8 @@ using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
 {
-    public sealed class Base64Decoder : ITransformation
+    public static partial class Base64
     {
-        private static readonly Base64Decoder s_instance = new Base64Decoder();
-
-        public static Base64Decoder Instance
-        {
-            get
-            {
-                return s_instance;
-            }
-        }
-
-        private Base64Decoder() { }
-
         // Pre-computing this table using a custom string(s_characters) and GenerateDecodingMapAndVerify (found in tests)
         static readonly sbyte[] s_decodingMap = {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -39,8 +27,6 @@ namespace System.Binary.Base64
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         };
-
-        const byte s_encodingPad = (byte)'=';              // '=', for padding
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ComputeDecodedLength(ReadOnlySpan<byte> source)
@@ -98,7 +84,7 @@ namespace System.Binary.Base64
             Unsafe.Add(ref destBytes, 2) = (byte)i0;
         }
 
-        public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        public static TransformationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
@@ -277,9 +263,15 @@ namespace System.Binary.Base64
             }
 
             return destIndex;
-            
+
             InvalidExit:
             return -1;
+        }
+
+        class FromBase64 : ITransformation
+        {
+            public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                => Decode(source, destination, out bytesConsumed, out bytesWritten);
         }
     }
 }

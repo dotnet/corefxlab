@@ -20,7 +20,7 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source);
-            Span<byte> destination = new byte[Base64Encoder.ComputeEncodedLength(numberOfBytes)];
+            Span<byte> destination = new byte[Base64.ComputeEncodedLength(numberOfBytes)];
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
@@ -39,7 +39,7 @@ namespace System.Binary.Base64.Tests
         {
             var source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source.AsSpan());
-            var destination = new char[Base64Encoder.ComputeEncodedLength(numberOfBytes)];
+            var destination = new char[Base64.ComputeEncodedLength(numberOfBytes)];
 
             foreach (var iteration in Benchmark.Iterations) {
                 using (iteration.StartMeasurement()) {
@@ -58,7 +58,7 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source);
-            Span<byte> encoded = new byte[Base64Encoder.ComputeEncodedLength(numberOfBytes)];
+            Span<byte> encoded = new byte[Base64.ComputeEncodedLength(numberOfBytes)];
             Base64.Encoder.Transform(source, encoded, out int consumed, out int written);
 
             foreach (var iteration in Benchmark.Iterations) {
@@ -97,7 +97,7 @@ namespace System.Binary.Base64.Tests
         {
             Span<byte> source = new byte[numberOfBytes];
             Base64TestHelper.InitalizeBytes(source);
-            int length = Base64Encoder.ComputeEncodedLength(numberOfBytes);
+            int length = Base64.ComputeEncodedLength(numberOfBytes);
 
             foreach (var iteration in Benchmark.Iterations)
             {
@@ -107,7 +107,7 @@ namespace System.Binary.Base64.Tests
                     {
                         Span<byte> encodedSpan = new byte[length];
                         Base64.Encoder.Transform(source, encodedSpan, out int consumed, out int written);
-                        Base64Decoder.DecodeInPlace(encodedSpan);
+                        Base64.DecodeInPlace(encodedSpan);
                     }
                 }
             }
