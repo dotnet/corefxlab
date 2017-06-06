@@ -157,10 +157,10 @@ namespace System.Binary.Base64
         /// <param name="buffer">Buffer containing source bytes and empty space for the encoded bytes</param>
         /// <param name="sourceLength">Number of bytes to encode.</param>
         /// <returns>Number of bytes written to the buffer.</returns>
-        public static int EncodeInPlace(Span<byte> buffer, int sourceLength)
+        public static bool EncodeInPlace(Span<byte> buffer, int sourceLength, out int bytesWritten)
         {
             var encodedLength = ComputeEncodedLength(sourceLength);
-            if (buffer.Length < encodedLength) throw new ArgumentException("buffer too small.");
+            if (buffer.Length < encodedLength) goto FalseExit;
 
             var leftover = sourceLength - sourceLength / 3 * 3; // how many bytes after packs of 3
 
@@ -183,8 +183,13 @@ namespace System.Binary.Base64
                 destinationIndex -= 4;
                 Encode(sourceSlice, desitnationSlice, out int consumed, out int written);
             }
+            
+            bytesWritten = encodedLength;
+            return true;
 
-            return encodedLength;
+            FalseExit:
+            bytesWritten = 0;
+            return false;
         }
 
         class ToBase64 : ITransformation

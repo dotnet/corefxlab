@@ -107,7 +107,7 @@ namespace System.Binary.Base64.Tests
                     {
                         Span<byte> encodedSpan = new byte[length];
                         Base64.Encoder.Transform(source, encodedSpan, out int consumed, out int written);
-                        Base64.DecodeInPlace(encodedSpan);
+                        Base64.DecodeInPlace(encodedSpan, out int bytesConsumed, out int bytesWritten);
                     }
                 }
             }

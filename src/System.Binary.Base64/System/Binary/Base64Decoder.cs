@@ -191,7 +191,7 @@ namespace System.Binary.Base64
         /// </summary>
         /// <param name="buffer"></param>
         /// <returns>Number of bytes written to the buffer.</returns>
-        public static int DecodeInPlace(Span<byte> buffer)
+        public static TransformationStatus DecodeInPlace(Span<byte> buffer, out int bytesConsumed, out int bytesWritten)
         {
             ref byte bufferBytes = ref buffer.DangerousGetPinnableReference();
 
@@ -200,7 +200,7 @@ namespace System.Binary.Base64
             int sourceIndex = 0;
             int destIndex = 0;
 
-            if (buffer.Length < 4) return 0;
+            if (buffer.Length == 0) goto DoneExit;
 
             ref sbyte decodingMap = ref s_decodingMap[0];
 
@@ -213,7 +213,7 @@ namespace System.Binary.Base64
                 sourceIndex += 4;
             }
 
-            if (sourceIndex >= bufferLength) return destIndex;
+            if (sourceIndex >= bufferLength) goto NeedMoreExit;
 
             int i0 = Unsafe.Add(ref bufferBytes, bufferLength - 4);
             int i1 = Unsafe.Add(ref bufferBytes, bufferLength - 3);
@@ -262,10 +262,24 @@ namespace System.Binary.Base64
                 destIndex += 1;
             }
 
-            return destIndex;
+            sourceIndex += 4;
+
+            if (bufferLength != buffer.Length) goto NeedMoreExit;
+
+            DoneExit:
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return TransformationStatus.Done;
+
+            NeedMoreExit:
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return TransformationStatus.NeedMoreSourceData;
 
             InvalidExit:
-            return -1;
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return TransformationStatus.InvalidData;
         }
 
         class FromBase64 : ITransformation

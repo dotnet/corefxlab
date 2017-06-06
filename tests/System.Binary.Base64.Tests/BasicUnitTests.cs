@@ -276,12 +276,13 @@ namespace System.Binary.Base64.Tests
                 var expectedText = Convert.ToBase64String(testBytes, 0, value + 1);
                 Assert.Equal(expectedText, encodedText);
 
-                var decodedByteCount = Base64.DecodeInPlace(bufferSlice);
-                Assert.Equal(sourceBytes.Length, decodedByteCount);
+                Assert.Equal(TransformationStatus.Done, Base64.DecodeInPlace(bufferSlice, out int bytesConsumed, out int bytesWritten));
+                Assert.Equal(sourceBytes.Length, bytesWritten);
+                Assert.Equal(bufferSlice.Length, bytesConsumed);
 
-                for (int i = 0; i < decodedByteCount; i++)
+                for (int i = 0; i < bytesWritten; i++)
                 {
-                    Assert.Equal(sourceBytes[i], buffer[i]);
+                    Assert.Equal(sourceBytes[i], bufferSlice[i]);
                 }
             }
         }
@@ -337,8 +338,10 @@ namespace System.Binary.Base64.Tests
                 var copy = testBytes.Clone();
                 var expectedText = Convert.ToBase64String(testBytes, 0, numberOfBytesToTest);
 
-                var encoded = Base64.EncodeInPlace(testBytes, numberOfBytesToTest);
-                var encodedText = Text.Encoding.ASCII.GetString(testBytes, 0, encoded);
+                Assert.True(Base64.EncodeInPlace(testBytes, numberOfBytesToTest, out int bytesWritten));
+                Assert.Equal(Base64.ComputeEncodedLength(numberOfBytesToTest), bytesWritten);
+
+                var encodedText = Text.Encoding.ASCII.GetString(testBytes, 0, bytesWritten);
 
                 Assert.Equal(expectedText, encodedText);
             }
