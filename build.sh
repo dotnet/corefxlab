@@ -77,6 +77,10 @@ declare -a projectsFailed
 
 while read testFile;
 do
+  if [[ $testFile == *"System.IO.Compression.Tests"* ]]; then
+    echo "Skipping tests in $testFile. Cannot build the brotli dll yet."
+    continue
+  fi
   echo "Building and running tests for project $testFile..."
   ./$dotnetExePath test $testFile -c $Configuration --no-build -- -notrait category=performance -notrait category=outerloop
   ret=$?
@@ -100,3 +104,5 @@ if [ $errorsEncountered -ne 0 ]; then
 else
   echo -e "${GREEN}** Build succeeded. **${NC}"
 fi
+
+exit $errorsEncountered
