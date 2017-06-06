@@ -77,7 +77,6 @@ declare -a projectsFailed
 
 while read testFile;
 do
-  if [[ "$testFile" == *"System.IO.Compression.Tests"*]]
   if grep -q "System.IO.Compression.Tests" "$testFile"; then
     echo "Skipping tests in $testFile. Cannot build the brotli dll yet."
     continue
