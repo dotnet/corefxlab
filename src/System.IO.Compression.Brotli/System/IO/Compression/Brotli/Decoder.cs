@@ -3,16 +3,17 @@
 // See the LICENSE file in the project root for more information.
 using System;
 using System.Collections.Generic;
+using System.IO.Compression.Brotli.Resources;
 using System.Text;
 
 namespace System.IO.Compression
 {
     internal sealed class Decoder
     {
-        internal IntPtr State=IntPtr.Zero;
-        internal BrotliNative.BrotliDecoderResult LastDecoderResult=BrotliNative.BrotliDecoderResult.NeedsMoreInput;
+        internal IntPtr State = IntPtr.Zero;
+        internal BrotliNative.BrotliDecoderResult LastDecoderResult = BrotliNative.BrotliDecoderResult.NeedsMoreInput;
         internal MemoryStream BufferStream;
-        private bool _isDisposed=false;
+        private bool _isDisposed = false;
         internal Decoder()
         {
             _isDisposed = false;
@@ -23,7 +24,7 @@ namespace System.IO.Compression
             State = BrotliNative.BrotliDecoderCreateInstance();
             if (State == IntPtr.Zero)
             {
-                throw new Exception();//TODO Create exception
+                throw new System.IO.IOException(BrotliEx.DecoderInstanceCreate);//TODO Create exception
             }
             BufferStream = new MemoryStream();
         }

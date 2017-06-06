@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 #if BIT64
     using nuint = System.UInt64;
 #else // BIT64
-using nuint = System.UInt32;
+    using nuint = System.UInt32;
 #endif // BIT64
 
 namespace System.IO.Compression
@@ -20,7 +20,6 @@ namespace System.IO.Compression
     /// This class provides declaration for constants and PInvokes as well as some basic tools for exposing the
     /// native Brotli library to managed code.
     /// </summary>
-    //internal static partial class BrotliNative
     public class BrotliNative
     {
         /// <summary>
@@ -69,13 +68,32 @@ namespace System.IO.Compression
             NeedsMoreOutput
         };
 
-        #region Encoder
-        public static IntPtr BrotliEncoderCreateInstance()
+        /// <summary>
+        /// 0 - Default (Compressor does not know anything in advance properties of the input)
+        /// 1 - For UTF-8 formatted text input
+        /// 2 - Mode used in WOFF 2.0
+        /// </summary>
+        public enum BrotliEncoderMode
         {
-           return Interop.Brotli.BrotliEncoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+            Generic,
+            Text,
+            Font
+        };
+
+        #region Encoder
+
+        public static bool BrotliEncoderCompress(int quality, int lgwin, BrotliNative.BrotliEncoderMode mode, nuint input_size,
+                IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer)
+        {
+            return Interop.Brotli.BrotliEncoderCompress(quality, lgwin, mode, input_size, input_buffer, ref encoded_size, encoded_buffer);
         }
 
-        public static bool BrotliEncoderSetParameter(IntPtr state, BrotliEncoderParameter param, nuint value)
+        public static IntPtr BrotliEncoderCreateInstance()
+        {
+            return Interop.Brotli.BrotliEncoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+        }
+
+        public static bool BrotliEncoderSetParameter(IntPtr state, BrotliEncoderParameter param, UInt32 value)
         {
             return Interop.Brotli.BrotliEncoderSetParameter(state, param, value);
         }
@@ -86,8 +104,8 @@ namespace System.IO.Compression
         }
 
         public static bool BrotliEncoderCompressStream(
-            IntPtr state, BrotliEncoderOperation op, ref IntPtr availableIn,
-            ref IntPtr nextIn, ref IntPtr availableOut, ref IntPtr nextOut, out nuint totalOut)
+            IntPtr state, BrotliEncoderOperation op, ref nuint availableIn,
+            ref IntPtr nextIn, ref nuint availableOut, ref IntPtr nextOut, out nuint totalOut)
         {
             return Interop.Brotli.BrotliEncoderCompressStream(state, op, ref availableIn, ref nextIn, ref availableOut, ref nextOut, out totalOut);
         }
@@ -105,10 +123,18 @@ namespace System.IO.Compression
         public static UInt32 BrotliEncoderVersion()
         {
             return Interop.Brotli.BrotliEncoderVersion();
-            
+
         }
+
         #endregion
+
         #region Decoder
+
+        public static BrotliDecoderResult BrotliDecoderDecompress(ref nuint availableIn, IntPtr nextIn, ref nuint availableOut, IntPtr nextOut)
+        {
+            return Interop.Brotli.BrotliDecoderDecompress(ref availableIn, nextIn, ref availableOut, nextOut);
+        }
+
         public static IntPtr BrotliDecoderCreateInstance()
         {
             return Interop.Brotli.BrotliDecoderCreateInstance(IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
@@ -120,15 +146,15 @@ namespace System.IO.Compression
         }
 
         public static BrotliDecoderResult BrotliDecoderDecompressStream(
-            IntPtr state, ref IntPtr availableIn,
-            ref IntPtr nextIn, ref IntPtr availableOut, ref IntPtr nextOut, out nuint totalOut)
+            IntPtr state, ref nuint availableIn,
+            ref IntPtr nextIn, ref nuint availableOut, ref IntPtr nextOut, out nuint totalOut)
         {
             return Interop.Brotli.BrotliDecoderDecompressStream(state, ref availableIn, ref nextIn, ref availableOut, ref nextOut, out totalOut);
         }
 
         public static void BrotliDecoderDestroyInstance(IntPtr state)
         {
-           Interop.Brotli.BrotliDecoderDestroyInstance(state);
+            Interop.Brotli.BrotliDecoderDestroyInstance(state);
         }
 
         public static nuint BrotliDecoderVersion()
@@ -148,8 +174,8 @@ namespace System.IO.Compression
 
         public static Int32 BrotliDecoderGetErrorCode(IntPtr state)
         {
-           return Interop.Brotli.BrotliDecoderGetErrorCode(state);
-           
+            return Interop.Brotli.BrotliDecoderGetErrorCode(state);
+
         }
 
         public static String BrotliDecoderErrorString(Int32 code)
@@ -162,7 +188,9 @@ namespace System.IO.Compression
             }
             return String.Empty;
         }
+
         #endregion
+
     }
 }
 

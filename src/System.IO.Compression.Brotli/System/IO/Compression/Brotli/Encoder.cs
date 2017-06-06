@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 using System;
 using System.Collections.Generic;
+using System.IO.Compression.Brotli.Resources;
 using System.Text;
 
 namespace System.IO.Compression
@@ -13,8 +14,8 @@ namespace System.IO.Compression
         private const int MaxWindowBits = 24;
         private const int MinQuality = 0;
         private const int MaxQuality = 11;
-        private bool _isDisposed=false;
-        internal IntPtr State=IntPtr.Zero;
+        private bool _isDisposed = false;
+        internal IntPtr State = IntPtr.Zero;
 
         internal Encoder()
         {
@@ -25,7 +26,7 @@ namespace System.IO.Compression
         {
             if (quality < MinQuality || quality > MaxQuality)
             {
-                throw new ArgumentException();//TODO
+                throw new ArgumentException(BrotliEx.WrongQuality);//TODO
             }
             BrotliNative.BrotliEncoderSetParameter(State, BrotliNative.BrotliEncoderParameter.Quality, quality);
         }
@@ -37,7 +38,7 @@ namespace System.IO.Compression
         {
             if (window < MinWindowBits || window > MaxWindowBits)
             {
-                throw new ArgumentException();//TODO
+                throw new ArgumentException(BrotliEx.WrongWindowSize);//TODO
             }
             BrotliNative.BrotliEncoderSetParameter(State, BrotliNative.BrotliEncoderParameter.LGWin, window);
         }
@@ -50,7 +51,7 @@ namespace System.IO.Compression
             State = BrotliNative.BrotliEncoderCreateInstance();
             if (State == IntPtr.Zero)
             {
-                throw new Exception();//TODO Create exception
+                throw new System.IO.IOException(BrotliEx.EncoderInstanceCreate);
             }
         }
         internal void Dispose()
