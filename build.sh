@@ -100,3 +100,5 @@ if [ $errorsEncountered -ne 0 ]; then
 else
   echo -e "${GREEN}** Build succeeded. **${NC}"
 fi
+
+exit $errorsEncountered
