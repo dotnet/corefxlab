@@ -6,20 +6,8 @@ using System.Runtime.CompilerServices;
 
 namespace System.Binary.Base64
 {
-    public sealed class Base64Decoder : ITransformation
+    public static partial class Base64
     {
-        private static readonly Base64Decoder s_instance = new Base64Decoder();
-
-        public static Base64Decoder Instance
-        {
-            get
-            {
-                return s_instance;
-            }
-        }
-
-        private Base64Decoder() { }
-
         // Pre-computing this table using a custom string(s_characters) and GenerateDecodingMapAndVerify (found in tests)
         static readonly sbyte[] s_decodingMap = {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -39,8 +27,6 @@ namespace System.Binary.Base64
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         };
-
-        const byte s_encodingPad = (byte)'=';              // '=', for padding
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ComputeDecodedLength(ReadOnlySpan<byte> source)
@@ -98,7 +84,7 @@ namespace System.Binary.Base64
             Unsafe.Add(ref destBytes, 2) = (byte)i0;
         }
 
-        public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+        public static TransformationStatus Decode(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             ref byte srcBytes = ref source.DangerousGetPinnableReference();
             ref byte destBytes = ref destination.DangerousGetPinnableReference();
@@ -205,7 +191,7 @@ namespace System.Binary.Base64
         /// </summary>
         /// <param name="buffer"></param>
         /// <returns>Number of bytes written to the buffer.</returns>
-        public static int DecodeInPlace(Span<byte> buffer)
+        public static TransformationStatus DecodeInPlace(Span<byte> buffer, out int bytesConsumed, out int bytesWritten)
         {
             ref byte bufferBytes = ref buffer.DangerousGetPinnableReference();
 
@@ -214,7 +200,7 @@ namespace System.Binary.Base64
             int sourceIndex = 0;
             int destIndex = 0;
 
-            if (buffer.Length < 4) return 0;
+            if (buffer.Length == 0) goto DoneExit;
 
             ref sbyte decodingMap = ref s_decodingMap[0];
 
@@ -227,7 +213,7 @@ namespace System.Binary.Base64
                 sourceIndex += 4;
             }
 
-            if (sourceIndex >= bufferLength) return destIndex;
+            if (sourceIndex >= bufferLength) goto NeedMoreExit;
 
             int i0 = Unsafe.Add(ref bufferBytes, bufferLength - 4);
             int i1 = Unsafe.Add(ref bufferBytes, bufferLength - 3);
@@ -276,10 +262,30 @@ namespace System.Binary.Base64
                 destIndex += 1;
             }
 
-            return destIndex;
-            
+            sourceIndex += 4;
+
+            if (bufferLength != buffer.Length) goto NeedMoreExit;
+
+            DoneExit:
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return TransformationStatus.Done;
+
+            NeedMoreExit:
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return TransformationStatus.NeedMoreSourceData;
+
             InvalidExit:
-            return -1;
+            bytesConsumed = sourceIndex;
+            bytesWritten = destIndex;
+            return TransformationStatus.InvalidData;
+        }
+
+        class FromBase64 : ITransformation
+        {
+            public TransformationStatus Transform(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
+                => Decode(source, destination, out bytesConsumed, out bytesWritten);
         }
     }
 }
