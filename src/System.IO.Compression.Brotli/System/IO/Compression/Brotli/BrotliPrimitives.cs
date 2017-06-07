@@ -17,6 +17,17 @@ namespace System.IO.Compression
         const int defQuality = 11;
         const int defLgWin = 24;
 
+        public static int BrotliEncoderMaxCompressedSize(int input_size)
+        {
+            int num_large_blocks = input_size >> 24;
+            int tail = input_size - (num_large_blocks << 24);
+            int tail_overhead = (tail > (1 << 20)) ? 4 : 3;
+            int overhead = 2 + (4 * num_large_blocks) + tail_overhead + 1;
+            int result = input_size + overhead;
+            if (input_size == 0) return 1;
+            return (result < input_size) ? input_size : result;
+        }
+
         public static bool Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
             return Compress(source, destination, out bytesConsumed, out bytesWritten, defQuality, defLgWin);
