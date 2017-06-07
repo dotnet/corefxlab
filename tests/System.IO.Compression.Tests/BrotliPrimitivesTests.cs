@@ -21,8 +21,7 @@ namespace System.IO.Compression.Tests
         [InlineData(24, 12)]
         public void TestMethodCompressEx(int quality, int lgwin)
         {
-            int written, consumed;
-            Assert.Throws<ArgumentOutOfRangeException>(() => BrotliPrimitives.Compress(new byte[1], new byte[1], out consumed, out written,quality,lgwin));
+            Assert.Throws<ArgumentOutOfRangeException>(() => BrotliPrimitives.Compress(new byte[1], new byte[1], out int consumed, out int written,quality,lgwin));
         }
 
         [Theory]
