@@ -29,7 +29,7 @@ namespace System.IO.Compression
             {
                 throw new ArgumentException(BrotliEx.WrongQuality);//TODO
             }
-            BrotliNative.BrotliEncoderSetParameter(State, BrotliNative.BrotliEncoderParameter.Quality, quality);
+            BrotliNative.BrotliEncoderSetParameter(State, BrotliEncoderParameter.Quality, quality);
         }
 
         public void SetQuality()
@@ -43,7 +43,7 @@ namespace System.IO.Compression
             {
                 throw new ArgumentException(BrotliEx.WrongWindowSize);//TODO
             }
-            BrotliNative.BrotliEncoderSetParameter(State, BrotliNative.BrotliEncoderParameter.LGWin, window);
+            BrotliNative.BrotliEncoderSetParameter(State, BrotliEncoderParameter.LGWin, window);
         }
 
         public void SetWindow()

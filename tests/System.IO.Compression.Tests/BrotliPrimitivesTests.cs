@@ -33,15 +33,18 @@ namespace System.IO.Compression.Tests
         {
             byte[] data = new byte[totalSize];
             new Random(42).NextBytes(data);
-            var compressed = new byte[BrotliPrimitives.BrotliEncoderMaxCompressedSize(totalSize)];
+            Span<byte> compressed = new byte[BrotliPrimitives.GetMaximumCompressedSize(totalSize)];
             bool res=BrotliPrimitives.Compress(data, compressed, out int consumed,out int written);
-            ValidateCompressedData(written, compressed, data);
+            Assert.Equal<bool>(true, res);
+            compressed = compressed.Slice(0, written);
+            ValidateCompressedData(compressed, data);
         }
 
-        private void ValidateCompressedData(int chunkSize, byte[] data, byte[] expected)
+        private void ValidateCompressedData(Span<byte> data, byte[] expected)
         {
             byte[] decompressed = new byte[expected.Length];
-            BrotliPrimitives.Decompress(data, decompressed, out int consumed, out int written);
+            BrotliDecoderResult res=BrotliPrimitives.Decompress(data, decompressed, out int consumed, out int written);
+            Assert.Equal<BrotliDecoderResult>(BrotliDecoderResult.Success, res);
             Assert.Equal<byte>(expected, decompressed);
         }
 

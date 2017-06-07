@@ -47,7 +47,7 @@ namespace System.IO.Compression
             }
         }
 
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize)
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen=false, int BuffSize=DefaultBufferSize)
         {
             if (baseStream == null) throw new ArgumentNullException("baseStream");
             _mode = mode;
@@ -70,10 +70,6 @@ namespace System.IO.Compression
             NextOut = BufferOut;
             AvailOut = (nuint)BuffSize;
         }
-
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen) : this(baseStream, mode, leaveOpen, DefaultBufferSize) { }
-
-        public BrotliStream(Stream baseStream, CompressionMode mode) : this(baseStream, mode, false) { }
 
         public override bool CanRead
         {
@@ -121,7 +117,7 @@ namespace System.IO.Compression
         {
             if (_encoder.State == IntPtr.Zero) return;
             if (BrotliNative.BrotliEncoderIsFinished(_encoder.State)) return;
-            BrotliNative.BrotliEncoderOperation op = finished ? BrotliNative.BrotliEncoderOperation.Finish : BrotliNative.BrotliEncoderOperation.Flush;
+            BrotliEncoderOperation op = finished ? BrotliEncoderOperation.Finish : BrotliEncoderOperation.Flush;
             nuint totalOut = 0;
             while (true)
             {
@@ -225,7 +221,7 @@ namespace System.IO.Compression
             {
                 while (true)
                 {
-                    if (_decoder.LastDecoderResult == BrotliNative.BrotliDecoderResult.NeedsMoreInput)
+                    if (_decoder.LastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
                     {
                         AvailIn = (nuint)_stream.Read(buf, 0, (int)BufferSize);
                         NextIn = BufferIn;
@@ -236,7 +232,7 @@ namespace System.IO.Compression
                         }
                         Marshal.Copy(buf, 0, BufferIn, (int)AvailIn);
                     }
-                    else if (_decoder.LastDecoderResult == BrotliNative.BrotliDecoderResult.NeedsMoreOutput)
+                    else if (_decoder.LastDecoderResult == BrotliDecoderResult.NeedsMoreOutput)
                     {
                         Marshal.Copy(BufferOut, buf, 0, BufferSize);
                         _decoder.BufferStream.Write(buf, 0, BufferSize);
@@ -258,13 +254,13 @@ namespace System.IO.Compression
                 {
                     errorDetected = true;
                 }
-                if (_decoder.LastDecoderResult == BrotliNative.BrotliDecoderResult.Error || errorDetected)
+                if (_decoder.LastDecoderResult == BrotliDecoderResult.Error || errorDetected)
                 {
                     var error = BrotliNative.BrotliDecoderGetErrorCode(_decoder.State);
                     var text = BrotliNative.BrotliDecoderErrorString(error);
                     throw new System.IO.IOException(text + BrotliEx.unableDecode);
                 }
-                if (endOfStream && !BrotliNative.BrotliDecoderIsFinished(_decoder.State) && _decoder.LastDecoderResult == BrotliNative.BrotliDecoderResult.NeedsMoreInput)
+                if (endOfStream && !BrotliNative.BrotliDecoderIsFinished(_decoder.State) && _decoder.LastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
                 {
                     throw new System.IO.IOException(BrotliEx.FinishDecompress);
                 }
@@ -323,7 +319,7 @@ namespace System.IO.Compression
                 NextIn = BufferIn;
                 while ((int)AvailIn > 0)
                 {
-                    if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, BrotliNative.BrotliEncoderOperation.Process, ref AvailIn, ref NextIn, ref AvailOut,
+                    if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, BrotliEncoderOperation.Process, ref AvailIn, ref NextIn, ref AvailOut,
                         ref NextOut, out totalOut)) throw new System.IO.IOException(BrotliEx.unableEncode);
                     if (AvailOut != (nuint)BufferSize)
                     {
