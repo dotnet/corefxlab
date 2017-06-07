@@ -15,7 +15,7 @@ if (!(Test-Path "dotnet\dotnet.exe")) {
     if ($Version -eq "<default>") {
         $Version = (Get-Content "$PSScriptRoot\..\DotnetCLIVersion.txt" -Raw).Trim()
     }
-    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Version $Version -InstallDir $PSScriptRoot\..\dotnet"
+    Invoke-Expression -Command "$PSScriptRoot\install-dotnet.ps1 -Channel master -Version $Version -InstallDir $PSScriptRoot\..\dotnet"
     if ($lastexitcode -ne $null -and $lastexitcode -ne 0) {
         Write-Error "Failed to install latest dotnet.exe, exit code [$lastexitcode], aborting build."
         exit -1
