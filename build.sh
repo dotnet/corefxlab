@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# adding dotnet to the path. it is needed to run toolset csc. 
+# adding dotnet to the path. it is needed to run toolset csc.
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 dotnet_path=$parent_path/dotnet
 export PATH=$PATH:$dotnet_path
@@ -32,10 +32,10 @@ echo "BuildVersion=$BuildVersion."
 
 if [ ! -d "dotnet" ]; then
   echo "dotnet.exe not installed, downloading and installing."
-  if [ "$Version" = "<default>" ]; then 
+  if [ "$Version" = "<default>" ]; then
     Version=$(head -n 1 "DotnetCLIVersion.txt")
   fi
-  ./scripts/install-dotnet.sh -Version "$Version" -InstallDir "dotnet"
+  ./scripts/install-dotnet.sh -Channel master -Version "$Version" -InstallDir "dotnet"
   ret=$?
   if [ $ret -ne 0 ]; then
     echo "Failed to install latest dotnet.exe, exit code $ret, aborting build."
