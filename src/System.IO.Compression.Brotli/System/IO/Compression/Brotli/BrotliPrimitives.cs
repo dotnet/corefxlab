@@ -21,6 +21,7 @@ namespace System.IO.Compression
         {
             return Compress(source, destination, out bytesConsumed, out bytesWritten, defQuality, defLgWin);
         }
+
         public static bool Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality, int lgwin)
         {
             return Compress(source, destination, out bytesConsumed, out bytesWritten, quality, lgwin, BrotliNative.BrotliEncoderMode.Generic);
@@ -35,22 +36,24 @@ namespace System.IO.Compression
         {
             if (quality > defQuality || quality <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongQuality);
             if (lgwin > defLgWin || lgwin <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongWindowSize);
+            bytesConsumed = 0;
+            bytesWritten = 0;
             unsafe
             {
-                bytesConsumed = (int)source.Length;
-                bytesWritten = (int)0;
                 IntPtr bufIn, bufOut;
                 fixed (byte* inBytes = &source.DangerousGetPinnableReference())
                 fixed (byte* outBytes = &destination.DangerousGetPinnableReference())
                 {
                     bufIn = new IntPtr(inBytes);
                     bufOut = new IntPtr(outBytes);
-                    nuint written = 0,consumed=(nuint)bytesConsumed;
+                    nuint written = (nuint)destination.Length;
+                    nuint consumed = (nuint)source.Length;
                     if (!BrotliNative.BrotliEncoderCompress(quality, lgwin, encMode, consumed, bufIn, ref written, bufOut))
                     {
-                        consumed = written = 0;
+                        bytesConsumed = bytesWritten = 0;
                         return false;
                     };
+                    bytesConsumed = (int)consumed;
                     bytesWritten = (int)written;
                     return true;
                 }
@@ -59,19 +62,20 @@ namespace System.IO.Compression
 
         public static BrotliNative.BrotliDecoderResult Decompress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
         {
+            bytesConsumed = 0;
+            bytesWritten = 0;
             unsafe
             {
-                bytesConsumed = source.Length;
-                bytesWritten = 0;
                 IntPtr bufIn, bufOut;
                 fixed (byte* inBytes = &source.DangerousGetPinnableReference())
                 fixed (byte* outBytes = &destination.DangerousGetPinnableReference())
                 {
                     bufIn = new IntPtr(inBytes);
                     bufOut = new IntPtr(outBytes);
-                    nuint written = 0, consumed=(nuint)bytesConsumed;
-                    BrotliNative.BrotliDecoderResult res=BrotliNative.BrotliDecoderDecompress(ref consumed, bufIn, ref written, bufOut);
-                    if (res!=BrotliNative.BrotliDecoderResult.Success)
+                    nuint written = (nuint)destination.Length;
+                    nuint consumed = (nuint)source.Length;
+                    BrotliNative.BrotliDecoderResult res = BrotliNative.BrotliDecoderDecompress(ref consumed, bufIn, ref written, bufOut);
+                    if (res != BrotliNative.BrotliDecoderResult.Success)
                     {
                         consumed = written = 0;   
                     }

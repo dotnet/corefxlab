@@ -10,50 +10,46 @@ using Xunit;
 
 namespace System.IO.Compression.Tests
 {
-    class BrotliPrimitivesTests
+    public class BrotliPrimitivesTests
     {
         static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
 
-        [Fact]
-        public void TestMethodCompressEx()
+        [Theory]
+        [InlineData(25,1)]
+        [InlineData(0, 1)]
+        [InlineData(24, 0)]
+        [InlineData(24, 12)]
+        public void TestMethodCompressEx(int quality, int lgwin)
         {
             int written, consumed;
-            Assert.Throws<ArgumentOutOfRangeException>(() => BrotliPrimitives.Compress(new byte[1], new byte[1], out consumed, out written,25,1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => BrotliPrimitives.Compress(new byte[1], new byte[1], out consumed, out written, 0, 1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => BrotliPrimitives.Compress(new byte[1], new byte[1], out consumed, out written, 24, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => BrotliPrimitives.Compress(new byte[1], new byte[1], out consumed, out written, 24, 12));
-        }
-
-        public static IEnumerable<object[]> RoundtripCompressDecompressOuterData
-        {
-            get
-            {
-                yield return new object[] { 1 };
-                yield return new object[] { 5 }; // smallest possible writes
-                yield return new object[] { 1023 }; // normal
-                yield return new object[] { 1024 * 1024 }; // large single write
-            }
+            Assert.Throws<ArgumentOutOfRangeException>(() => BrotliPrimitives.Compress(new byte[1], new byte[1], out consumed, out written,quality,lgwin));
         }
 
         [Theory]
-        [MemberData(nameof(RoundtripCompressDecompressOuterData))]
+        [InlineData(1)]
+        [InlineData(5)]
+        [InlineData(1023)]
+        [InlineData(1024 * 1024)]
         public void RoundtripCompressDecompress(int totalSize)
         {
             byte[] data = new byte[totalSize];
             new Random(42).NextBytes(data);
             var compressed = new byte[totalSize];
             int consumed, written;
-            BrotliPrimitives.Compress(data, compressed, out consumed,out written);
-            Assert.Equal(consumed, 0);
+            bool res=BrotliPrimitives.Compress(data, compressed, out consumed,out written);
+            Assert.Equal(true, res);
+            Assert.Equal(0,consumed);
+            Assert.NotEqual(0,written);
             ValidateCompressedData(written, compressed, data);
         }
 
-        private void ValidateCompressedData(int chunkSize, byte[]data, byte[] expected)
+        private void ValidateCompressedData(int chunkSize, byte[] data, byte[] expected)
         {
             int consumed, written;
             byte[] decompressed = new byte[expected.Length];
             BrotliPrimitives.Decompress(data, decompressed, out consumed, out written);
-            Assert.Equal(consumed, 0);
+            Assert.Equal(0, consumed);
+            Assert.NotEqual(0, written);
             Assert.Equal<byte>(expected, decompressed);
         }
 
