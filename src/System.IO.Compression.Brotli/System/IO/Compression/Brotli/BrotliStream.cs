@@ -36,6 +36,7 @@ namespace System.IO.Compression
         private int _readOffset = 0;
         Decoder _decoder;
         Encoder _encoder;
+
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize, uint windowSize, uint quality) : this(baseStream, mode, leaveOpen, BuffSize)
         {
             if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
@@ -45,6 +46,7 @@ namespace System.IO.Compression
                 _encoder.SetWindow(windowSize);
             }
         }
+
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize)
         {
             if (baseStream == null) throw new ArgumentNullException("baseStream");
@@ -68,6 +70,7 @@ namespace System.IO.Compression
             NextOut = BufferOut;
             AvailOut = (nuint)BuffSize;
         }
+
         public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen) : this(baseStream, mode, leaveOpen, DefaultBufferSize) { }
 
         public BrotliStream(Stream baseStream, CompressionMode mode) : this(baseStream, mode, false) { }
@@ -100,6 +103,7 @@ namespace System.IO.Compression
         {
             throw new NotSupportedException();
         }
+
         public override bool CanSeek => false;
 
         public override long Length
@@ -291,11 +295,13 @@ namespace System.IO.Compression
         {
             throw new NotSupportedException();
         }
+
         private void EnsureCompressionMode()
         {
             if (_mode != CompressionMode.Compress)
                 throw new System.InvalidOperationException(BrotliEx.WrongModeCompress);
         }
+
         public override void Write(byte[] buffer, int offset, int count)
         {
             EnsureCompressionMode();

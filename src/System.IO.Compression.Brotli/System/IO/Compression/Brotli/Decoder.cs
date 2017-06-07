@@ -14,11 +14,13 @@ namespace System.IO.Compression
         internal BrotliNative.BrotliDecoderResult LastDecoderResult = BrotliNative.BrotliDecoderResult.NeedsMoreInput;
         internal MemoryStream BufferStream;
         private bool _isDisposed = false;
+
         internal Decoder()
         {
             _isDisposed = false;
             InitializeDecoder();
         }
+
         private void InitializeDecoder()
         {
             State = BrotliNative.BrotliDecoderCreateInstance();
@@ -38,6 +40,7 @@ namespace System.IO.Compression
             }
             _isDisposed = true;
         }
+
         internal void RemoveBytes(int numberOfBytes)
         {
             ArraySegment<byte> buf;

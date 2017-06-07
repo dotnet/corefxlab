@@ -67,13 +67,18 @@ namespace System.IO.Compression.Tests
         public void CanDisposeBrotliStream()
         {
             var ms = new MemoryStream();
-            var bro = new BrotliStream(ms, CompressionMode.Compress);
-            bro.Dispose();
-
-            // Base Stream should be null after dispose
-            Assert.Null(bro._stream);
-
-            bro.Dispose(); // Should be a no-op
+            using (var bro = new BrotliStream(ms, CompressionMode.Compress))
+            {
+                bro.Dispose();
+                Assert.Null(bro._stream);  // Base Stream should be null after dispose
+                bro.Dispose(); // Should be a no-op
+            }
+            using (var bro = new BrotliStream(ms, CompressionMode.Decompress))
+            {
+                bro.Dispose();
+                Assert.Null(bro._stream);  // Base Stream should be null after dispose
+                bro.Dispose(); // Should be a no-op
+            }
         }
 
         [Fact]
@@ -97,18 +102,32 @@ namespace System.IO.Compression.Tests
         public void DoubleDispose()
         {
             var ms = new MemoryStream();
-            var ds = new BrotliStream(ms, CompressionMode.Compress);
-            ds.Dispose();
-            ds.Dispose();
+            using (var ds = new BrotliStream(ms, CompressionMode.Compress))
+            {
+                ds.Dispose();
+                ds.Dispose();
+            }
+            using (var ds = new BrotliStream(ms, CompressionMode.Decompress))
+            {
+                ds.Dispose();
+                ds.Dispose();
+            }
         }
 
         [Fact]
         public void FlushThenDispose()
         {
             var ms = new MemoryStream();
-            var ds = new BrotliStream(ms, CompressionMode.Compress);
-            ds.Flush();
-            ds.Dispose();
+            using (var ds = new BrotliStream(ms, CompressionMode.Compress))
+            {
+                ds.Flush();
+                ds.Dispose();
+            }
+            using (var ds = new BrotliStream(ms, CompressionMode.Decompress))
+            {
+                ds.Flush();
+                ds.Dispose();
+            }
         }
 
         [Fact]
@@ -180,12 +199,10 @@ namespace System.IO.Compression.Tests
         {
             get
             {
-                foreach (var level in new[] { CompressionLevel.Fastest, CompressionLevel.Optimal, CompressionLevel.NoCompression }) // compression level
-                {
-                    yield return new object[] { 1, 5 }; // smallest possible writes
-                    yield return new object[] {1023, 1023 * 10}; // overflowing internal buffer
-                    yield return new object[] { 1024 * 1024, 1024 * 1024}; // large single write
-                }
+                yield return new object[] { 1, 5 }; // smallest possible writes
+                yield return new object[] { 1023, 1023 * 10 }; // overflowing internal buffer
+                yield return new object[] { 1024 * 1024, 1024 * 1024 }; // large single write
+
             }
         }
 
