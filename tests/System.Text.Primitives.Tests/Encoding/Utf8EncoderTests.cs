@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using Xunit;
 
 namespace System.Text.Primitives.Tests.Encoding
@@ -252,23 +253,22 @@ namespace System.Text.Primitives.Tests.Encoding
         [Theory, MemberData("PartialEncodeDecodeUtf8ToUtf16TestCases")]
         public void TryPartialUtf8ToUtf16EncodingTest(int outputSize, int expectedConsumed, byte[] inputBytes, byte[] expected1, byte[] expected2)
         {
-            int written;
-            int consumed;
+            Span<byte> input = inputBytes;
+            Span<byte> output = new byte[outputSize];
 
-            var input = new Span<byte>(inputBytes);
-            var output = new Span<byte>(new byte[outputSize]);
-
-            Assert.False(TextEncoder.Utf16.TryEncode(input, output, out consumed, out written));
+            var result = Encoders.Utf16.ConvertFromUtf8(input, output, out int consumed, out int written);
+            Assert.Equal(TransformationStatus.DestinationTooSmall, result);
             Assert.Equal(expected1.Length, written);
             Assert.Equal(expectedConsumed, consumed);
-            Assert.True(AreByteArraysEqual(expected1, output.Slice(0, written).ToArray()));
+            Assert.True(output.Slice(0, written).SequenceEqual(expected1));
 
             input = input.Slice(consumed);
-            output = new Span<byte>(new byte[expected2.Length]);
-            Assert.True(TextEncoder.Utf16.TryEncode(input, output, out consumed, out written));
+            output = new byte[expected2.Length];
+            result = Encoders.Utf16.ConvertFromUtf8(input, output, out consumed, out written);
+            Assert.Equal(TransformationStatus.Done, result);
             Assert.Equal(expected2.Length, written);
             Assert.Equal(inputBytes.Length - expectedConsumed, consumed);
-            Assert.True(AreByteArraysEqual(expected2, output.ToArray()));
+            Assert.True(output.SequenceEqual(expected2));
         }
 
         [Theory, MemberData("PartialEncodeDecodeUtf8ToUtf16TestCases")]

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Xunit;
 using Microsoft.Xunit.Performance;
 using System.Text.Primitives.Tests.Encoding;
+using System.Buffers;
 
 namespace System.Text.Primitives.Tests
 {
@@ -113,23 +114,22 @@ namespace System.Text.Primitives.Tests
         public void EncodeFromUtf8toUtf16UsingTextEncoder(int length, int minCodePoint, int maxCodePoint, SpecialTestCases special = SpecialTestCases.None)
         {
             string inputString = GenerateStringData(length, minCodePoint, maxCodePoint, special);
-            char[] characters = inputString.AsSpan().ToArray();
-            Text.Encoding utf8Encoder = Text.Encoding.UTF8;
-            int utf8Length = utf8Encoder.GetByteCount(characters);
-            var utf8TempBuffer = new byte[utf8Length];
-            utf8Encoder.GetBytes(characters, 0, characters.Length, utf8TempBuffer, 0);
-            Span<byte> utf8Span = new Span<byte>(utf8TempBuffer);
+            byte[] utf8Bytes = Text.Encoding.UTF8.GetBytes(inputString);
 
-            TextEncoder utf16 = TextEncoder.Utf16;
-            Assert.True(utf16.TryComputeEncodedBytes(utf8Span, out int encodedBytes));
-            var utf16Buffer = new byte[encodedBytes];
-            var span = new Span<byte>(utf16Buffer);
+            Assert.True(TextEncoder.Utf16.TryComputeEncodedBytes(utf8Bytes, out int encodedBytes));
+            Span<byte> utf16Bytes = new byte[encodedBytes];
 
             foreach (var iteration in Benchmark.Iterations)
             {
                 using (iteration.StartMeasurement())
+                {
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        if (!utf16.TryEncode(utf8Span, span, out int consumed, out int written)) { throw new Exception(); }
+                    {
+                        var result = Encoders.Utf16.ConvertFromUtf8(utf8Bytes, utf16Bytes, out int consumed, out int written);
+                        if (result != TransformationStatus.Done)
+                            throw new Exception();
+                    }
+                }
             }
         }
 
