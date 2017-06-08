@@ -10,17 +10,17 @@ using System.Runtime.InteropServices;
 
 #if BIT64
     using nuint = System.UInt64;
-#else // BIT64
+#else 
     using nuint = System.UInt32;
-#endif // BIT64
+#endif 
 
 namespace System.IO.Compression
 {
     ///  /// <summary>
     /// 0 - Process input. Encoder may postpone producing output, until it has processed enough input.
-    /// 1 - Produce output for all processed input.  Actual flush is performed when input stream is depleted and there is enoughspace in output stream.
+    /// 1 - Produce output for all processed input.  Actual flush is performed when input stream is depleted and there is enough space in output stream.
     /// 2 - Finalize the stream. Adding more input data to finalized stream is impossible.
-    /// 3 - Emit metadata block to stream.Stream is soft-flushed before metadata block is emitted. Metadata bloc MUST be no longer than than 16MiB.
+    /// 3 - Emit metadata block to stream. Stream is soft-flushed before metadata block is emitted. Metadata bloc MUST be no longer than 16MiB.
     /// </summary>
     public enum BrotliEncoderOperation
     {

@@ -8,12 +8,12 @@ using System.IO;
 using System.IO.Compression.Brotli.Resources;
 using System.Runtime.InteropServices;
 
-
 #if BIT64
     using nuint = System.UInt64;
 #else
     using nuint = System.UInt32;
 #endif 
+
 namespace System.IO.Compression
 {
     public partial class BrotliStream : Stream
@@ -47,7 +47,7 @@ namespace System.IO.Compression
             }
         }
 
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen=false, int BuffSize=DefaultBufferSize)
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen = false, int BuffSize = DefaultBufferSize)
         {
             if (baseStream == null) throw new ArgumentNullException("baseStream");
             _mode = mode;

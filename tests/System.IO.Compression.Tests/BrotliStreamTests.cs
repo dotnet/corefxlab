@@ -12,7 +12,7 @@ namespace System.IO.Compression.Tests
 {
     public class BrotliStreamTests
     {
-        static string brTestFile(string fileName) => Path.Combine("BrotliTestData" , fileName);
+        static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
 
         [Fact]
         public void BaseStreamCompress()
@@ -22,7 +22,7 @@ namespace System.IO.Compression.Tests
             Assert.Same(bro._stream, writeStream);
             writeStream.Dispose();
         }
-              
+
         [Fact]
         public void BaseStreamDecompress()
         {
@@ -180,7 +180,7 @@ namespace System.IO.Compression.Tests
                 Assert.Throws<ArgumentOutOfRangeException>(() => ds.Write(new byte[1], 1, 1));
                 Assert.Throws<InvalidOperationException>(() => ds.Read(new byte[1], 0, 1));
                 ds.Write(new byte[1], 0, 0);
-            }         
+            }
             using (var ds = new BrotliStream(new MemoryStream(), CompressionMode.Decompress))
             {
                 Assert.Throws<ArgumentNullException>(() => ds.Read(null, 0, 0));
@@ -192,22 +192,13 @@ namespace System.IO.Compression.Tests
                 var data = new byte[1] { 42 };
                 Assert.Equal(0, ds.Read(data, 0, 0));
                 Assert.Equal(42, data[0]);
-            }         
-        }
-
-        public static IEnumerable<object[]> RoundtripCompressDecompressOuterData
-        {
-            get
-            {
-                yield return new object[] { 1, 5 }; // smallest possible writes
-                yield return new object[] { 1023, 1023 * 10 }; // overflowing internal buffer
-                yield return new object[] { 1024 * 1024, 1024 * 1024 }; // large single write
-
             }
         }
 
         [Theory]
-        [MemberData(nameof(RoundtripCompressDecompressOuterData))]
+        [InlineData(1, 5)]
+        [InlineData(1023, 1023 * 10)]
+        [InlineData(1024 * 1024, 1024 * 1024)]
         public void RoundtripCompressDecompress(int chunkSize, int totalSize)
         {
             byte[] data = new byte[totalSize];
@@ -217,7 +208,7 @@ namespace System.IO.Compression.Tests
             {
                 for (int i = 0; i < data.Length; i += chunkSize)
                 {
-                    compressor.Write(data, i, chunkSize);               
+                    compressor.Write(data, i, chunkSize);
                 }
             }
             compressed.Position = 0;
@@ -228,10 +219,10 @@ namespace System.IO.Compression.Tests
         private void ValidateCompressedData(int chunkSize, MemoryStream compressed, byte[] expected)
         {
             using (MemoryStream decompressed = new MemoryStream())
-            using (var decompressor =new BrotliStream(compressed, CompressionMode.Decompress, true))
+            using (var decompressor = new BrotliStream(compressed, CompressionMode.Decompress, true))
             {
-                 decompressor.CopyTo(decompressed, chunkSize);
-                
+                decompressor.CopyTo(decompressed, chunkSize);
+
                 Assert.Equal<byte>(expected, decompressed.ToArray());
             }
         }
