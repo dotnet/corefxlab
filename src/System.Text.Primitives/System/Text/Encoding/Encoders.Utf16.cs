@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace System.Text
 {
@@ -404,9 +405,57 @@ namespace System.Text
                 throw new NotImplementedException();
             }
 
+            /// <summary>
+            /// Converts a span containing a sequence of UTF-32 bytes into UTF-16 bytes.
+            ///
+            /// This method will consume as many of the input bytes as possible.
+            ///
+            /// On successful exit, the entire input was consumed and encoded successfully. In this case, <paramref name="bytesConsumed"/> will be
+            /// equal to the length of the <paramref name="source"/> and <paramref name="bytesWritten"/> will equal the total number of bytes written to
+            /// the <paramref name="destination"/>.
+            /// </summary>
+            /// <param name="source">A span containing a sequence of UTF-32 bytes.</param>
+            /// <param name="destination">A span to write the UTF-16 bytes into.</param>
+            /// <param name="bytesConsumed">On exit, contains the number of bytes that were consumed from the <paramref name="source"/>.</param>
+            /// <param name="bytesWritten">On exit, contains the number of bytes written to <paramref name="destination"/></param>
+            /// <returns>A <see cref="TransformationStatus"/> value representing the state of the conversion.</returns>
             public static TransformationStatus ConvertFromUtf32(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten)
             {
-                throw new NotImplementedException();
+                ref byte src = ref source.DangerousGetPinnableReference();
+                ref byte dst = ref destination.DangerousGetPinnableReference();
+                int srcLength = source.Length;
+                int dstLength = destination.Length;
+
+                bytesConsumed = 0;
+                bytesWritten = 0;
+
+                while (bytesConsumed < srcLength - 3)
+                {
+                    ref uint codePoint = ref Unsafe.As<byte, uint>(ref Unsafe.Add(ref src, bytesConsumed));
+
+                    if (!EncodingHelper.IsSupportedCodePoint(codePoint))
+                        return TransformationStatus.InvalidData;
+
+                    int written = EncodingHelper.IsBmp(codePoint) ? 2 : 4;
+                    if (bytesWritten >= dstLength - written)
+                        return TransformationStatus.DestinationTooSmall;
+
+                    unchecked
+                    {
+                        if (written == 2)
+                            Unsafe.As<byte, char>(ref Unsafe.Add(ref dst, bytesWritten)) = (char)codePoint;
+                        else
+                        {
+                            Unsafe.As<byte, char>(ref Unsafe.Add(ref dst, bytesWritten)) = (char)(((codePoint - 0x010000u) >> 10) + EncodingHelper.HighSurrogateStart);
+                            Unsafe.As<byte, char>(ref Unsafe.Add(ref dst, bytesWritten + 2)) = (char)((codePoint & 0x3FF) + EncodingHelper.LowSurrogateStart);
+                        }
+                    }
+
+                    bytesWritten += written;
+                    bytesConsumed += 4;
+                }
+
+                return bytesConsumed < srcLength ? TransformationStatus.NeedMoreSourceData : TransformationStatus.Done;
             }
 
             #endregion Utf-32 to Utf-16 conversion
