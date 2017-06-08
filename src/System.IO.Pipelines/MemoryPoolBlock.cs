@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Text;
+using System.Diagnostics;
 
 namespace System.IO.Pipelines
 {
@@ -81,7 +82,6 @@ namespace System.IO.Pipelines
 
         /// <summary>
         /// ToString overridden for debugger convenience. This displays the "active" byte information in this block as ASCII characters.
-        /// ToString overridden for debugger convenience. This displays the byte information in this block as ASCII characters.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -91,17 +91,8 @@ namespace System.IO.Pipelines
             return builder.ToString();
         }
 
-        internal void Initialize()
+        protected override void OnZeroReferences()
         {
-            // This is VERY bad, but is required while there is no re-initialization support
-            base.Dispose(false);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            // Dispose before returning to pool to prevent race between Lease and Dispose
-            base.Dispose(disposing);
-
             Pool.Return(this);
         }
 
