@@ -15,13 +15,13 @@ namespace System.IO.Compression.Tests
         static string brTestFile(string fileName) => Path.Combine("BrotliTestData", fileName);
 
         [Theory]
-        [InlineData(25,1)]
+        [InlineData(25, 1)]
         [InlineData(0, 1)]
         [InlineData(24, 0)]
         [InlineData(24, 12)]
         public void TestMethodCompressEx(int quality, int lgwin)
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => BrotliPrimitives.Compress(new byte[1], new byte[1], out int consumed, out int written,quality,lgwin));
+            Assert.Throws<ArgumentOutOfRangeException>(() => BrotliPrimitives.Compress(new byte[1], new byte[1], out int consumed, out int written, quality, lgwin));
         }
 
         [Theory]
@@ -34,8 +34,9 @@ namespace System.IO.Compression.Tests
             byte[] data = new byte[totalSize];
             new Random(42).NextBytes(data);
             Span<byte> compressed = new byte[BrotliPrimitives.GetMaximumCompressedSize(totalSize)];
-            bool res=BrotliPrimitives.Compress(data, compressed, out int consumed,out int written);
+            bool res = BrotliPrimitives.Compress(data, compressed, out int consumed, out int written);
             Assert.Equal<bool>(true, res);
+            Assert.Equal<int>(totalSize, consumed);
             compressed = compressed.Slice(0, written);
             ValidateCompressedData(compressed, data);
         }
@@ -43,7 +44,7 @@ namespace System.IO.Compression.Tests
         private void ValidateCompressedData(Span<byte> data, byte[] expected)
         {
             byte[] decompressed = new byte[expected.Length];
-            BrotliDecoderResult res=BrotliPrimitives.Decompress(data, decompressed, out int consumed, out int written);
+            BrotliDecoderResult res = BrotliPrimitives.Decompress(data, decompressed, out int consumed, out int written);
             Assert.Equal<BrotliDecoderResult>(BrotliDecoderResult.Success, res);
             Assert.Equal<byte>(expected, decompressed);
         }

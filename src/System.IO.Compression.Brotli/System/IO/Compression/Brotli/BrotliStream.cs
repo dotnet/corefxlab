@@ -321,6 +321,7 @@ namespace System.IO.Compression
                 {
                     if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, BrotliEncoderOperation.Process, ref AvailIn, ref NextIn, ref AvailOut,
                         ref NextOut, out totalOut)) throw new System.IO.IOException(BrotliEx.unableEncode);
+
                     if (AvailOut != (nuint)BufferSize)
                     {
                         var bytesWrote = (int)((nuint)BufferSize - AvailOut);

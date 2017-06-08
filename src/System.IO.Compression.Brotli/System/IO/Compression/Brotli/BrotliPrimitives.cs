@@ -28,7 +28,6 @@ namespace System.IO.Compression
             return (result < input_size) ? input_size : result;
         }
 
-
         public static bool Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality=defQuality, int lgwin=defLgWin, BrotliEncoderMode encMode=BrotliEncoderMode.Generic)
         {
             if (quality > defQuality || quality <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongQuality);
