@@ -14,7 +14,6 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x64'">
     <SourceArch>x64</SourceArch>
-    <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <BaseAddress>0x180000000</BaseAddress>
     <DefineConstants>BIT64;AMD64;$(DefineConstants)</DefineConstants>
@@ -30,6 +29,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' == 'OSX'">
     <SourceSystem>osx</SourceSystem>
+    <SourceArch></SourceArch>
   </PropertyGroup>
   <PropertyGroup>
     <BrotliPath>..\..\external\Brotli\lib\$(SourceSystem)\$(SourceArch)</BrotliPath>
@@ -52,8 +52,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="ReportGenerator" Version="2.5.9-beta1" />
+    <ProjectReference Include="..\System.Buffers.Primitives\System.Buffers.Primitives.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="$(SystemCompilerServicesUnsafeVersion)" />
     <PackageReference Include="System.Memory" Version="$(SystemMemoryVersion)" />
   </ItemGroup>

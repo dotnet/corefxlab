@@ -22,30 +22,35 @@ namespace System.IO.Compression
             _isDisposed = false;
             InitializeEncoder();
         }
+
         public void SetQuality(uint quality)
         {
             if (quality < MinQuality || quality > MaxQuality)
             {
                 throw new ArgumentException(BrotliEx.WrongQuality);//TODO
             }
-            BrotliNative.BrotliEncoderSetParameter(State, BrotliNative.BrotliEncoderParameter.Quality, quality);
+            BrotliNative.BrotliEncoderSetParameter(State, BrotliEncoderParameter.Quality, quality);
         }
+
         public void SetQuality()
         {
             SetQuality(MaxQuality);
         }
+
         public void SetWindow(uint window)
         {
             if (window < MinWindowBits || window > MaxWindowBits)
             {
                 throw new ArgumentException(BrotliEx.WrongWindowSize);//TODO
             }
-            BrotliNative.BrotliEncoderSetParameter(State, BrotliNative.BrotliEncoderParameter.LGWin, window);
+            BrotliNative.BrotliEncoderSetParameter(State, BrotliEncoderParameter.LGWin, window);
         }
+
         public void SetWindow()
         {
             SetWindow(MaxWindowBits);
         }
+
         private void InitializeEncoder()
         {
             State = BrotliNative.BrotliEncoderCreateInstance();
@@ -54,6 +59,7 @@ namespace System.IO.Compression
                 throw new System.IO.IOException(BrotliEx.EncoderInstanceCreate);
             }
         }
+
         internal void Dispose()
         {
             if (!_isDisposed && State != IntPtr.Zero)
