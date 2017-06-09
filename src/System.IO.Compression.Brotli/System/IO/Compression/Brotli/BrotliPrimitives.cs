@@ -28,7 +28,7 @@ namespace System.IO.Compression
             return (result < input_size) ? input_size : result;
         }
 
-        public static bool Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality=defQuality, int lgwin=defLgWin, BrotliEncoderMode encMode=BrotliEncoderMode.Generic)
+        public static bool Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality = defQuality, int lgwin = defLgWin, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
         {
             if (quality > defQuality || quality <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongQuality);
             if (lgwin > defLgWin || lgwin <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongWindowSize);
@@ -68,12 +68,11 @@ namespace System.IO.Compression
                     nuint written = (nuint)destination.Length;
                     nuint consumed = (nuint)source.Length;
                     BrotliDecoderResult res = BrotliNative.BrotliDecoderDecompress(ref consumed, bufIn, ref written, bufOut);
-                    if (res != BrotliDecoderResult.Success)
+                    if (res == BrotliDecoderResult.Success)
                     {
-                        return res;
+                        bytesWritten = (int)written;
+                        bytesConsumed = (int)consumed;
                     }
-                    bytesWritten = (int)written;
-                    bytesConsumed = (int)consumed;
                     return res;
                 }
             }

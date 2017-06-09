@@ -35,8 +35,8 @@ namespace System.IO.Compression.Tests
             new Random(42).NextBytes(data);
             Span<byte> compressed = new byte[BrotliPrimitives.GetMaximumCompressedSize(totalSize)];
             bool res = BrotliPrimitives.Compress(data, compressed, out int consumed, out int written);
-            Assert.Equal<bool>(true, res);
-            Assert.Equal<int>(totalSize, consumed);
+            Assert.Equal(true, res);
+            Assert.Equal(totalSize, consumed);
             compressed = compressed.Slice(0, written);
             ValidateCompressedData(compressed, data);
         }
