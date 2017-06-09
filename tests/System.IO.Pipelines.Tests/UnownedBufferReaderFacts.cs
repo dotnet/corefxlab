@@ -288,7 +288,7 @@ namespace System.IO.Pipelines.Tests
             EnsureSpanDisposed(data);
         }
 
-        [Fact]
+        [Fact(Skip = "OwnedArray<T>.OnZeroReferences() does not dispose itself.")]
         public async Task PreservingUnownedBufferCopies()
         {
             var stream = new CallbackStream(async (s, token) =>
@@ -315,7 +315,7 @@ namespace System.IO.Pipelines.Tests
 
                 preserved = buffer.Preserve();
 
-                // Make sure we can acccess the span
+                // Make sure we can access the span
                 EnsureSpanValid(buffer.First);
 
                 reader.Advance(buffer.End);
