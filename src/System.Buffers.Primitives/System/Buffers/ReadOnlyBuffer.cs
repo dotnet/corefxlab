@@ -26,11 +26,42 @@ namespace System.Buffers
             _length = length;
         }
 
-        internal ReadOnlyBuffer(T[] array, int index, int length)
+        public ReadOnlyBuffer(T[] array)
         {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+
             _array = array;
             _owner = null;
-            _index = index;
+            _index = 0;
+            _length = array.Length;
+        }
+
+        public ReadOnlyBuffer(T[] array, int start)
+        {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+
+            int arrayLength = array.Length;
+            if ((uint)start > (uint)arrayLength)
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            _array = array;
+            _owner = null;
+            _index = start;
+            _length = arrayLength - start;
+        }
+
+        public ReadOnlyBuffer(T[] array, int start, int length)
+        {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+            if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            _array = array;
+            _owner = null;
+            _index = start;
             _length = length;
         }
 
