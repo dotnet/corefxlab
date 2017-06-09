@@ -21,10 +21,10 @@ namespace System.IO.Compression
         public static int GetMaximumCompressedSize(int inputSize)
         {
             if (inputSize == 0) return 1;
-            int num_large_blocks = inputSize >> 24;
+            int numLargeBlocks = inputSize >> 24;
             int tail = inputSize & 0xFFFFFF;
-            int tail_overhead = (tail > (1 << 20)) ? 4 : 3;
-            int overhead = 2 + (4 * num_large_blocks) + tail_overhead + 1;
+            int tailOverhead = (tail > (1 << 20)) ? 4 : 3;
+            int overhead = 2 + (4 * numLargeBlocks) + tailOverhead + 1;
             int result = inputSize + overhead;
             return (result < inputSize) ? inputSize : result;
         }
@@ -32,9 +32,9 @@ namespace System.IO.Compression
         private static TransformationStatus GetTransformationStatusFromBrotliDecoderResult(BrotliDecoderResult result)
         {
             if (result == BrotliDecoderResult.Success) return TransformationStatus.Done;
-            if (result == BrotliDecoderResult.Error) return TransformationStatus.InvalidData;
+            if (result == BrotliDecoderResult.NeedsMoreOutput) return TransformationStatus.DestinationTooSmall;
             if (result == BrotliDecoderResult.NeedsMoreInput) return TransformationStatus.NeedMoreSourceData;
-            return TransformationStatus.DestinationTooSmall;
+            return TransformationStatus.Error;
         }
 
         public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality = defQuality, int windowSize = defwindowSize, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
