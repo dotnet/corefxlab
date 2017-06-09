@@ -21,7 +21,7 @@ namespace System.IO.Compression
 
         private const int DefaultBufferSize = 64 * 1024;
         private int BufferSize;
-        public Stream _stream;
+        private Stream _stream;
         private CompressionMode _mode;
         private nuint TotalOut { get; }
         private nuint AvailOut;
