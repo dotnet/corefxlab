@@ -15,8 +15,8 @@ namespace System.IO.Compression
 {
     public struct BrotliPrimitives
     {
-        const int defQuality = 11;
-        const int defwindowSize = 24;
+        const int DefaultQuality = 11;
+        const int DefaultWindowSize = 24;
 
         public static int GetMaximumCompressedSize(int inputSize)
         {
@@ -37,10 +37,10 @@ namespace System.IO.Compression
             return TransformationStatus.InvalidData;
         }
 
-        public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality = defQuality, int windowSize = defwindowSize, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
+        public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality = DefaultQuality, int windowSize = DefaultWindowSize, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
         {
-            if (quality > defQuality || quality <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongQuality);
-            if (windowSize > defwindowSize || windowSize <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongWindowSize);
+            if (quality > DefaultQuality || quality <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongQuality);
+            if (windowSize > DefaultWindowSize || windowSize <= 0) throw new System.ArgumentOutOfRangeException(BrotliEx.WrongWindowSize);
             bytesConsumed = bytesWritten = 0;
             unsafe
             {

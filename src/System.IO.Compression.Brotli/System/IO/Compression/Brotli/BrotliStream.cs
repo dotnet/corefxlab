@@ -23,13 +23,13 @@ namespace System.IO.Compression
         private int _bufferSize;
         private Stream _stream;
         private CompressionMode _mode;
-        private nuint _totalOutput { get; }
+        private nuint _totalOutput;
         private nuint _availableOutput;
         private IntPtr _nextOutput = IntPtr.Zero;
         private nuint _availableInput;
         private IntPtr _nextInput = IntPtr.Zero;
-        private IntPtr _bufferInput { get; set; }
-        private IntPtr _bufferOutput { get; set; }
+        private IntPtr _bufferInput;
+        private IntPtr _bufferOutput;
         private bool _leaveOpen;
         private int totalWrote;
         IntPtr Dict;//TODO

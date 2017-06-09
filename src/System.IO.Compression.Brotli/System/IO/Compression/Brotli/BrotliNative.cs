@@ -83,10 +83,10 @@ namespace System.IO.Compression
        
         #region Encoder
 
-        public static bool BrotliEncoderCompress(int quality, int lgwin, BrotliEncoderMode mode, nuint input_size,
-                IntPtr input_buffer, ref nuint encoded_size, IntPtr encoded_buffer)
+        public static bool BrotliEncoderCompress(int quality, int windowSize, BrotliEncoderMode mode, nuint inputSize,
+                IntPtr inputBuffer, ref nuint encodedSize, IntPtr encodedBuffer)
         {
-            return Interop.Brotli.BrotliEncoderCompress(quality, lgwin, mode, input_size, input_buffer, ref encoded_size, encoded_buffer);
+            return Interop.Brotli.BrotliEncoderCompress(quality, windowSize, mode, inputSize, inputBuffer, ref encodedSize, encodedBuffer);
         }
 
         public static IntPtr BrotliEncoderCreateInstance()
