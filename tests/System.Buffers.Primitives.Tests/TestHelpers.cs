@@ -6,33 +6,19 @@ namespace System.Buffers.Tests
 {
     internal static class TestHelpers
     {
-        public static void Validate<T>(Buffer<T> buffer, params T[] expected)
+        public static void SequenceEqualValueType<T>(ReadOnlyBuffer<T> buffer, params T[] expected) where T: struct, IEquatable<T>
         {
-            bool isValueType = default(T) != null || Nullable.GetUnderlyingType(typeof(T)) != null;
-            T[] bufferArray = buffer.ToArray();
-            Assert.Equal(buffer.Length, expected.Length);
-            for (int i = 0; i < expected.Length; i++)
-            {
-                T actual = bufferArray[i];
-                if (isValueType)
-                    Assert.Equal(expected[i], actual);
-                else
-                    Assert.Same(expected[i], actual);
-            }
+            Assert.True(buffer.Span.SequenceEqual(expected));
         }
 
-        public static void Validate<T>(ReadOnlyBuffer<T> buffer, params T[] expected)
+        public static void SequenceEqual<T>(ReadOnlyBuffer<T> buffer, params T[] expected)
         {
-            bool isValueType = default(T) != null || Nullable.GetUnderlyingType(typeof(T)) != null;
             T[] bufferArray = buffer.ToArray();
             Assert.Equal(buffer.Length, expected.Length);
             for (int i = 0; i < expected.Length; i++)
             {
                 T actual = bufferArray[i];
-                if (isValueType)
-                    Assert.Equal(expected[i], actual);
-                else
-                    Assert.Same(expected[i], actual);
+                Assert.Same(expected[i], actual);
             }
         }
 

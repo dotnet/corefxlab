@@ -7,39 +7,39 @@ namespace System.Buffers.Tests
     public class CtorArray
     {
         [Fact]
-        public static void CtorArray1()
+        public static void CtorArrayInt()
         {
             int[] a = { 91, 92, -93, 94 };
             Buffer<int> buffer;
 
             buffer = new Buffer<int>(a);
-            TestHelpers.Validate(buffer, 91, 92, -93, 94);
+            TestHelpers.SequenceEqualValueType(buffer, 91, 92, -93, 94);
 
             buffer = new Buffer<int>(a, 0);
-            TestHelpers.Validate(buffer, 91, 92, -93, 94);
+            TestHelpers.SequenceEqualValueType(buffer, 91, 92, -93, 94);
 
             buffer = new Buffer<int>(a, 0, a.Length);
-            TestHelpers.Validate(buffer, 91, 92, -93, 94);
+            TestHelpers.SequenceEqualValueType(buffer, 91, 92, -93, 94);
         }
 
         [Fact]
-        public static void CtorArray2()
+        public static void CtorArrayLong()
         {
             long[] a = { 91, -92, 93, 94, -95 };
             Buffer<long> buffer;
 
             buffer = new Buffer<long>(a);
-            TestHelpers.Validate(buffer, 91, -92, 93, 94, -95);
+            TestHelpers.SequenceEqualValueType<long>(buffer, 91, -92, 93, 94, -95);
 
             buffer = new Buffer<long>(a, 0);
-            TestHelpers.Validate(buffer, 91, -92, 93, 94, -95);
+            TestHelpers.SequenceEqualValueType<long>(buffer, 91, -92, 93, 94, -95);
 
             buffer = new Buffer<long>(a, 0, a.Length);
-            TestHelpers.Validate(buffer, 91, -92, 93, 94, -95);
+            TestHelpers.SequenceEqualValueType<long>(buffer, 91, -92, 93, 94, -95);
         }
 
         [Fact]
-        public static void CtorArray3()
+        public static void CtorArrayObject()
         {
             object o1 = new object();
             object o2 = new object();
@@ -47,13 +47,13 @@ namespace System.Buffers.Tests
             Buffer<object> buffer;
 
             buffer = new Buffer<object>(a);
-            TestHelpers.Validate(buffer, o1, o2);
+            TestHelpers.SequenceEqual(buffer, o1, o2);
 
             buffer = new Buffer<object>(a, 0);
-            TestHelpers.Validate(buffer, o1, o2);
+            TestHelpers.SequenceEqual(buffer, o1, o2);
 
             buffer = new Buffer<object>(a, 0, a.Length);
-            TestHelpers.Validate(buffer, o1, o2);
+            TestHelpers.SequenceEqual(buffer, o1, o2);
         }
 
         [Fact]
@@ -63,13 +63,13 @@ namespace System.Buffers.Tests
             Buffer<int> buffer;
 
             buffer = new Buffer<int>(empty);
-            TestHelpers.Validate(buffer);
+            TestHelpers.SequenceEqualValueType<int>(buffer);
 
             buffer = new Buffer<int>(empty, 0);
-            TestHelpers.Validate(buffer);
+            TestHelpers.SequenceEqualValueType<int>(buffer);
 
             buffer = new Buffer<int>(empty, 0, empty.Length);
-            TestHelpers.Validate(buffer);
+            TestHelpers.SequenceEqualValueType<int>(buffer);
         }
 
         [Fact]
@@ -100,101 +100,101 @@ namespace System.Buffers.Tests
             Buffer<int> buffer;
 
             buffer = new Buffer<int>(aAsIntArray);
-            TestHelpers.Validate(buffer, 42, -1);
+            TestHelpers.SequenceEqualValueType(buffer, 42, -1);
 
             buffer = new Buffer<int>(aAsIntArray, 0);
-            TestHelpers.Validate(buffer, 42, -1);
+            TestHelpers.SequenceEqualValueType(buffer, 42, -1);
 
             buffer = new Buffer<int>(aAsIntArray, 0, aAsIntArray.Length);
-            TestHelpers.Validate(buffer, 42, -1);
+            TestHelpers.SequenceEqualValueType(buffer, 42, -1);
         }
 
         [Fact]
-        public static void CtorArrayInt1()
+        public static void CtorArrayWithStartInt()
         {
             int[] a = { 90, 91, 92, 93, 94, 95, 96, 97, 98 };
             var buffer = new Buffer<int>(a, 3);
-            TestHelpers.Validate(buffer, 93, 94, 95, 96, 97, 98);
+            TestHelpers.SequenceEqualValueType(buffer, 93, 94, 95, 96, 97, 98);
         }
 
         [Fact]
-        public static void CtorArrayInt2()
+        public static void CtorArrayWithStartLong()
         {
             long[] a = { 90, 91, 92, 93, 94, 95, 96, 97, 98 };
             var buffer = new Buffer<long>(a, 3);
-            TestHelpers.Validate(buffer, 93, 94, 95, 96, 97, 98);
+            TestHelpers.SequenceEqualValueType<long>(buffer, 93, 94, 95, 96, 97, 98);
         }
 
         [Fact]
-        public static void CtorArrayIntNegativeStart()
+        public static void CtorArrayWithNegativeStart()
         {
             int[] a = new int[3];
             Assert.Throws<ArgumentOutOfRangeException>(() => new Buffer<int>(a, -1));
         }
 
         [Fact]
-        public static void CtorArrayIntStartTooLarge()
+        public static void CtorArrayWithStartTooLarge()
         {
             int[] a = new int[3];
             Assert.Throws<ArgumentOutOfRangeException>(() => new Buffer<int>(a, 4));
         }
 
         [Fact]
-        public static void CtorArrayIntStartEqualsLength()
+        public static void CtorArrayWithStartEqualsLength()
         {
             // Valid for start to equal the array length. This returns an empty buffer that starts "just past the array."
             int[] a = { 91, 92, 93 };
             var buffer = new Buffer<int>(a, 3);
-            TestHelpers.Validate(buffer);
+            TestHelpers.SequenceEqualValueType<int>(buffer);
         }
 
         [Fact]
-        public static void CtorArrayIntInt1()
+        public static void CtorArrayWithStartAndLengthInt()
         {
             int[] a = { 90, 91, 92, 93, 94, 95, 96, 97, 98 };
             var buffer = new Buffer<int>(a, 3, 2);
-            TestHelpers.Validate(buffer, 93, 94);
+            TestHelpers.SequenceEqualValueType(buffer, 93, 94);
         }
 
         [Fact]
-        public static void CtorArrayIntInt2()
+        public static void CtorArrayWithStartAndLengthLong()
         {
             long[] a = { 90, 91, 92, 93, 94, 95, 96, 97, 98 };
             var buffer = new Buffer<long>(a, 4, 3);
-            TestHelpers.Validate(buffer, 94, 95, 96);
+            TestHelpers.SequenceEqualValueType<long>(buffer, 94, 95, 96);
         }
 
         [Fact]
-        public static void CtorArrayIntIntRangeExtendsToEndOfArray()
+        public static void CtorArrayWithStartAndLengthRangeExtendsToEndOfArray()
         {
             long[] a = { 90, 91, 92, 93, 94, 95, 96, 97, 98 };
             var buffer = new Buffer<long>(a, 4, 5);
-            TestHelpers.Validate(buffer, 94, 95, 96, 97, 98);
+            TestHelpers.SequenceEqualValueType<long>(buffer, 94, 95, 96, 97, 98);
         }
 
         [Fact]
-        public static void CtorArrayIntIntNegativeStart()
+        public static void CtorArrayWithNegativeStartAndLength()
         {
             int[] a = new int[3];
             Assert.Throws<ArgumentOutOfRangeException>(() => new Buffer<int>(a, -1, 0));
         }
 
         [Fact]
-        public static void CtorArrayIntIntStartTooLarge()
+        public static void CtorArrayWithStartTooLargeAndLength()
         {
             int[] a = new int[3];
             Assert.Throws<ArgumentOutOfRangeException>(() => new Buffer<int>(a, 4, 0));
         }
 
         [Fact]
-        public static void CtorArrayIntIntNegativeLength()
+        public static void CtorArrayWithStartAndNegativeLength()
         {
             int[] a = new int[3];
             Assert.Throws<ArgumentOutOfRangeException>(() => new Buffer<int>(a, 0, -1));
         }
 
         [Fact]
-        public static void CtorArrayIntIntStartAndLengthTooLarge()
+        public static void CtorArrayWithStartAndLengthTooLarge()
         {
             int[] a = new int[3];
             Assert.Throws<ArgumentOutOfRangeException>(() => new Buffer<int>(a, 3, 1));
@@ -205,12 +205,12 @@ namespace System.Buffers.Tests
         }
 
         [Fact]
-        public static void CtorArrayIntIntStartEqualsLength()
+        public static void CtorArrayWithStartAndLengthBothEqual()
         {
             // Valid for start to equal the array length. This returns an empty buffer that starts "just past the array."
             int[] a = { 91, 92, 93 };
             var buffer = new Buffer<int>(a, 3, 0);
-            TestHelpers.Validate(buffer);
+            TestHelpers.SequenceEqualValueType<int>(buffer);
         }
     }
 }

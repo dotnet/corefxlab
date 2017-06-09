@@ -26,36 +26,17 @@ namespace System.Buffers
             _length = length;
         }
 
-        public Buffer(T[] array)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Buffer(T[] array) : this (array, 0, array.Length)
         {
-            if (array == null)
-                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
-            if (default(T) == null && array.GetType() != typeof(T[]))
-                BufferPrimitivesThrowHelper.ThrowArrayTypeMismatchException(typeof(T));
-
-            _array = array;
-            _owner = null;
-            _index = 0;
-            _length = array.Length;
         }
 
-        public Buffer(T[] array, int start)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Buffer(T[] array, int start) : this(array, start, array.Length - start)
         {
-            if (array == null)
-                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
-            if (default(T) == null && array.GetType() != typeof(T[]))
-                BufferPrimitivesThrowHelper.ThrowArrayTypeMismatchException(typeof(T));
-
-            int arrayLength = array.Length;
-            if ((uint)start > (uint)arrayLength)
-                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
-
-            _array = array;
-            _owner = null;
-            _index = start;
-            _length = arrayLength - start;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Buffer(T[] array, int start, int length)
         {
             if (array == null)
