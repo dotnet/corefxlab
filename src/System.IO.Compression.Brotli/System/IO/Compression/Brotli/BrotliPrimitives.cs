@@ -34,7 +34,7 @@ namespace System.IO.Compression
             if (result == BrotliDecoderResult.Success) return TransformationStatus.Done;
             if (result == BrotliDecoderResult.NeedsMoreOutput) return TransformationStatus.DestinationTooSmall;
             if (result == BrotliDecoderResult.NeedsMoreInput) return TransformationStatus.NeedMoreSourceData;
-            return TransformationStatus.Error;
+            return TransformationStatus.InvalidData;
         }
 
         public static TransformationStatus Compress(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, int quality = defQuality, int windowSize = defwindowSize, BrotliEncoderMode encMode = BrotliEncoderMode.Generic)
