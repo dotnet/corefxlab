@@ -101,15 +101,21 @@ namespace System.Buffers
         public bool IsEmpty => Length == 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Buffer<T> Slice(int index)
+        public Buffer<T> Slice(int start)
         {
-            return new Buffer<T>(_owner, _array, _index + index, _length - index);
+            if ((uint)start > (uint)_length)
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            return new Buffer<T>(_owner, _array, _index + start, _length - start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Buffer<T> Slice(int index, int length)
+        public Buffer<T> Slice(int start, int length)
         {
-            return new Buffer<T>(_owner, _array, _index + index, length);
+            if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            return new Buffer<T>(_owner, _array, _index + start, length);
         }
 
         public Span<T> Span

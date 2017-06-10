@@ -89,15 +89,21 @@ namespace System.Buffers
         public bool IsEmpty => Length == 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBuffer<T> Slice(int index)
+        public ReadOnlyBuffer<T> Slice(int start)
         {
-            return new ReadOnlyBuffer<T>(_owner, _array, _index + index, _length - index);
+            if ((uint)start > (uint)_length)
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            return new ReadOnlyBuffer<T>(_owner, _array, _index + start, _length - start);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBuffer<T> Slice(int index, int length)
+        public ReadOnlyBuffer<T> Slice(int start, int length)
         {
-            return new ReadOnlyBuffer<T>(_owner, _array, _index + index, length);
+            if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            return new ReadOnlyBuffer<T>(_owner, _array, _index + start, length);
         }
 
         public ReadOnlySpan<T> Span
