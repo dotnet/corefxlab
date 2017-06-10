@@ -27,13 +27,31 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBuffer(T[] array) : this(array, 0, array.Length)
+        public ReadOnlyBuffer(T[] array)
         {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+
+            _array = array;
+            _owner = null;
+            _index = 0;
+            _length = array.Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyBuffer(T[] array, int start) : this(array, start, array.Length - start)
+        public ReadOnlyBuffer(T[] array, int start)
         {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+
+            int arrayLength = array.Length;
+            if ((uint)start > (uint)arrayLength)
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            _array = array;
+            _owner = null;
+            _index = start;
+            _length = arrayLength - start;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50,7 +68,7 @@ namespace System.Buffers
             _length = length;
         }
 
-        private ReadOnlyBuffer(OwnedBuffer<T> owner, T[] array, int index, int length)
+        internal ReadOnlyBuffer(OwnedBuffer<T> owner, T[] array, int index, int length)
         {
             _array = array;
             _owner = owner;

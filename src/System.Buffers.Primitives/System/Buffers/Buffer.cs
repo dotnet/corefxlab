@@ -27,13 +27,35 @@ namespace System.Buffers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Buffer(T[] array) : this (array, 0, array.Length)
+        public Buffer(T[] array)
         {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+            if (default(T) == null && array.GetType() != typeof(T[]))
+                BufferPrimitivesThrowHelper.ThrowArrayTypeMismatchException(typeof(T));
+
+            _array = array;
+            _owner = null;
+            _index = 0;
+            _length = array.Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Buffer(T[] array, int start) : this(array, start, array.Length - start)
+        public Buffer(T[] array, int start)
         {
+            if (array == null)
+                BufferPrimitivesThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+            if (default(T) == null && array.GetType() != typeof(T[]))
+                BufferPrimitivesThrowHelper.ThrowArrayTypeMismatchException(typeof(T));
+
+            int arrayLength = array.Length;
+            if ((uint)start > (uint)arrayLength)
+                BufferPrimitivesThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+
+            _array = array;
+            _owner = null;
+            _index = start;
+            _length = arrayLength - start;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -63,7 +85,7 @@ namespace System.Buffers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ReadOnlyBuffer<T>(Buffer<T> buffer)
         {
-            return new ReadOnlyBuffer<T>(buffer._owner, buffer._index, buffer._length);
+            return new ReadOnlyBuffer<T>(buffer._owner, buffer._array, buffer._index, buffer._length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
