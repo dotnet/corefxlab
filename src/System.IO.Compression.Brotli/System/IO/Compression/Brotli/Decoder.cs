@@ -10,9 +10,9 @@ namespace System.IO.Compression
 {
     internal sealed class Decoder
     {
-        internal IntPtr State = IntPtr.Zero;
-        internal BrotliDecoderResult LastDecoderResult = BrotliDecoderResult.NeedsMoreInput;
-        internal MemoryStream BufferStream;
+        internal IntPtr _state = IntPtr.Zero;
+        internal BrotliDecoderResult _lastDecoderResult = BrotliDecoderResult.NeedsMoreInput;
+        internal MemoryStream _bufferStream;
         private bool _isDisposed = false;
 
         internal Decoder()
@@ -23,20 +23,20 @@ namespace System.IO.Compression
 
         private void InitializeDecoder()
         {
-            State = BrotliNative.BrotliDecoderCreateInstance();
-            if (State == IntPtr.Zero)
+            _state = BrotliNative.BrotliDecoderCreateInstance();
+            if (_state == IntPtr.Zero)
             {
                 throw new System.IO.IOException(BrotliEx.DecoderInstanceCreate);//TODO Create exception
             }
-            BufferStream = new MemoryStream();
+            _bufferStream = new MemoryStream();
         }
 
         internal void Dispose()
         {
-            if (!_isDisposed && State != IntPtr.Zero)
+            if (!_isDisposed && _state != IntPtr.Zero)
             {
-                BrotliNative.BrotliDecoderDestroyInstance(State);
-                BufferStream.Dispose();
+                BrotliNative.BrotliDecoderDestroyInstance(_state);
+                _bufferStream.Dispose();
             }
             _isDisposed = true;
         }
@@ -44,10 +44,10 @@ namespace System.IO.Compression
         internal void RemoveBytes(int numberOfBytes)
         {
             ArraySegment<byte> buf;
-            if (BufferStream.TryGetBuffer(out buf))
+            if (_bufferStream.TryGetBuffer(out buf))
             {
-                Buffer.BlockCopy(buf.Array, numberOfBytes, buf.Array, 0, (int)BufferStream.Length - numberOfBytes);
-                BufferStream.SetLength(BufferStream.Length - numberOfBytes);
+                Buffer.BlockCopy(buf.Array, numberOfBytes, buf.Array, 0, (int)_bufferStream.Length - numberOfBytes);
+                _bufferStream.SetLength(_bufferStream.Length - numberOfBytes);
             }
             else
             {

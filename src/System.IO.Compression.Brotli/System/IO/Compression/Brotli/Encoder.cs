@@ -15,7 +15,7 @@ namespace System.IO.Compression
         private const int MinQuality = 0;
         private const int MaxQuality = 11;
         private bool _isDisposed = false;
-        internal IntPtr State = IntPtr.Zero;
+        internal IntPtr _state = IntPtr.Zero;
 
         internal Encoder()
         {
@@ -29,7 +29,7 @@ namespace System.IO.Compression
             {
                 throw new ArgumentException(BrotliEx.WrongQuality);//TODO
             }
-            BrotliNative.BrotliEncoderSetParameter(State, BrotliEncoderParameter.Quality, quality);
+            BrotliNative.BrotliEncoderSetParameter(_state, BrotliEncoderParameter.Quality, quality);
         }
 
         public void SetQuality()
@@ -43,7 +43,7 @@ namespace System.IO.Compression
             {
                 throw new ArgumentException(BrotliEx.WrongWindowSize);//TODO
             }
-            BrotliNative.BrotliEncoderSetParameter(State, BrotliEncoderParameter.LGWin, window);
+            BrotliNative.BrotliEncoderSetParameter(_state, BrotliEncoderParameter.LGWin, window);
         }
 
         public void SetWindow()
@@ -53,8 +53,8 @@ namespace System.IO.Compression
 
         private void InitializeEncoder()
         {
-            State = BrotliNative.BrotliEncoderCreateInstance();
-            if (State == IntPtr.Zero)
+            _state = BrotliNative.BrotliEncoderCreateInstance();
+            if (_state == IntPtr.Zero)
             {
                 throw new System.IO.IOException(BrotliEx.EncoderInstanceCreate);
             }
@@ -62,9 +62,9 @@ namespace System.IO.Compression
 
         internal void Dispose()
         {
-            if (!_isDisposed && State != IntPtr.Zero)
+            if (!_isDisposed && _state != IntPtr.Zero)
             {
-                BrotliNative.BrotliEncoderDestroyInstance(State);
+                BrotliNative.BrotliEncoderDestroyInstance(_state);
             }
             _isDisposed = true;
         }

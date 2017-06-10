@@ -32,12 +32,12 @@ namespace System.IO.Compression
         private IntPtr _bufferOutput;
         private bool _leaveOpen;
         private int totalWrote;
-        IntPtr Dict;//TODO
+        private IntPtr _dictionary;//TODO
         private int _readOffset = 0;
         Decoder _decoder;
         Encoder _encoder;
 
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int BuffSize, uint windowSize, uint quality) : this(baseStream, mode, leaveOpen, BuffSize)
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int buffSize, uint windowSize, uint quality) : this(baseStream, mode, leaveOpen, buffSize)
         {
             if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
             else
@@ -47,7 +47,7 @@ namespace System.IO.Compression
             }
         }
 
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen = false, int BuffSize = DefaultBufferSize)
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen = false, int buffSize = DefaultBufferSize)
         {
             if (baseStream == null) throw new ArgumentNullException("baseStream");
             _mode = mode;
@@ -63,12 +63,12 @@ namespace System.IO.Compression
             {
                 _decoder = new Decoder();
             }
-            _bufferSize = BuffSize;
+            _bufferSize = buffSize;
             _bufferInput = Marshal.AllocHGlobal(_bufferSize);
             _bufferOutput = Marshal.AllocHGlobal(_bufferSize);
             _nextInput = _bufferInput;
             _nextOutput = _bufferOutput;
-            _availableOutput = (nuint)BuffSize;
+            _availableOutput = (nuint)buffSize;
         }
 
         public override bool CanRead

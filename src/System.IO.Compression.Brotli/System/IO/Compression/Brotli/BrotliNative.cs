@@ -17,10 +17,10 @@ using System.Runtime.InteropServices;
 namespace System.IO.Compression
 {
     ///  /// <summary>
-    /// 0 - Process input. Encoder may postpone producing output, until it has processed enough input.
-    /// 1 - Produce output for all processed input.  Actual flush is performed when input stream is depleted and there is enough space in output stream.
-    /// 2 - Finalize the stream. Adding more input data to finalized stream is impossible.
-    /// 3 - Emit metadata block to stream. Stream is soft-flushed before metadata block is emitted. Metadata bloc MUST be no longer than 16MiB.
+    /// Process - Process input. Encoder may postpone producing output, until it has processed enough input.
+    /// Flush - Produce output for all processed input.  Actual flush is performed when input stream is depleted and there is enough space in output stream.
+    /// Finish - Finalize the stream. Adding more input data to finalized stream is impossible.
+    /// EmitMetadata - Emit metadata block to stream. Stream is soft-flushed before metadata block is emitted. Metadata bloc MUST be no longer than 16MiB.
     /// </summary>
     public enum BrotliEncoderOperation
     {
@@ -31,12 +31,12 @@ namespace System.IO.Compression
     };
 
     /// <summary>
-    /// 0 - BrotliEncoderMode enumerates all available values.
-    /// 1 - The main compression speed-density lever. The higher the quality, the slower the compression.Range is from ::BROTLI_MIN_QUALITY to::BROTLI_MAX_QUALITY.
-    /// 2 - Recommended sliding LZ77 window size  2^value -16 .  Encoder may reduce this value, e.g. if input is much smaller than window size.
-    /// 3 - Recommended input block size. 
-    /// 4-  Flag that affects usage of "literal context modeling" format feature. This flag is a "decoding-speed vs compression ratio" trade-off.
-    /// 5 - Estimated total input size for all ::BrotliEncoderCompressStream calls. The default value is 0, which means that the total input size is unknown.
+    /// Mode - BrotliEncoderMode enumerates all available values.
+    /// Quality - The main compression speed-density lever. The higher the quality, the slower the compression.Range is from ::BROTLI_MIN_QUALITY to::BROTLI_MAX_QUALITY.
+    /// LGWin - Recommended sliding LZ77 window size  2^value -16 .  Encoder may reduce this value, e.g. if input is much smaller than window size.
+    /// LGBlock - Recommended input block size. 
+    /// LCModeling-  Flag that affects usage of "literal context modeling" format feature. This flag is a "decoding-speed vs compression ratio" trade-off.
+    /// SizeHint - Estimated total input size for all ::BrotliEncoderCompressStream calls. The default value is 0, which means that the total input size is unknown.
     /// </summary>
     public enum BrotliEncoderParameter
     {
@@ -49,10 +49,10 @@ namespace System.IO.Compression
     };
 
     /// <summary>
-    /// 0 - Decoding error, e.g. corrupted input or memory allocation problem.
-    /// 1 - Decoding successfully completed
-    /// 2 - Partially done; should be called again with more input
-    /// 3 - Partially done; should be called again with more output
+    /// Error - Decoding error, e.g. corrupted input or memory allocation problem.
+    /// Success - Decoding successfully completed
+    /// NeedMoreInput - Partially done; should be called again with more input
+    /// NeedMOreOutput - Partially done; should be called again with more output
     /// </summary>
     public enum BrotliDecoderResult
     {
@@ -63,9 +63,9 @@ namespace System.IO.Compression
     };
 
     /// <summary>
-    /// 0 - Default (Compressor does not know anything in advance properties of the input)
-    /// 1 - For UTF-8 formatted text input
-    /// 2 - Mode used in WOFF 2.0
+    /// Generic - Default (Compressor does not know anything in advance properties of the input)
+    /// Text - For UTF-8 formatted text input
+    /// Font - Mode used in WOFF 2.0
     /// </summary>
     public enum BrotliEncoderMode
     {
