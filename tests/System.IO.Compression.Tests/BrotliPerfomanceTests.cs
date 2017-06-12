@@ -105,7 +105,9 @@ namespace System.IO.Compression.Tests
             NormalData
         }
 
-        [Benchmark(InnerIterationCount = 10000)]
+        private const int Iter = 10000;
+
+        [Benchmark(InnerIterationCount = Iter)]
         [InlineData(CompressionType.CryptoRandom)]
         [InlineData(CompressionType.RepeatedSegments)]
         [InlineData(CompressionType.NormalData)]
@@ -113,13 +115,13 @@ namespace System.IO.Compression.Tests
         {
             string testFilePath = CreateCompressedFile(type);
             int bufferSize = 1024;
-            int retCount = -1;
             var bytes = new byte[bufferSize];
             using (MemoryStream brStream = new MemoryStream(File.ReadAllBytes(testFilePath)))
                 foreach (var iteration in Benchmark.Iterations)
                     using (iteration.StartMeasurement())
                         for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                         {
+                            int retCount = -1;
                             using (BrotliStream zip = new BrotliStream(brStream, CompressionMode.Decompress, true))
                             {
                                 while (retCount != 0)
@@ -153,7 +155,7 @@ namespace System.IO.Compression.Tests
             }
         }
 
-        [Benchmark(InnerIterationCount = 10000)]
+        [Benchmark(InnerIterationCount = Iter)]
         [InlineData(CompressionType.CryptoRandom)]
         [InlineData(CompressionType.RepeatedSegments)]
         [InlineData(CompressionType.NormalData)]
@@ -164,11 +166,11 @@ namespace System.IO.Compression.Tests
             byte[] data = File.ReadAllBytes(testFilePath);
             var bytes = new byte[bufferSize];
             foreach (var iteration in Benchmark.Iterations)
-                    using (iteration.StartMeasurement())
-                        for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                        {
-                            BrotliPrimitives.Decompress(data, bytes, out int consumed, out int written);
-                        }
+                using (iteration.StartMeasurement())
+                    for (int i = 0; i < Benchmark.InnerIterationCount; i++)
+                    {
+                        BrotliPrimitives.Decompress(data, bytes, out int consumed, out int written);
+                    }
             File.Delete(testFilePath);
         }
 

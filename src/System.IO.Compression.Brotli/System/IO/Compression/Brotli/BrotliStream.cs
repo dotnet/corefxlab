@@ -32,12 +32,12 @@ namespace System.IO.Compression
         private IntPtr _bufferOutput;
         private bool _leaveOpen;
         private int totalWrote;
-        private IntPtr _dictionary;//TODO
+        private IntPtr _dictionary;//TODO an opportunity to create, add, save and use compression dictionary
         private int _readOffset = 0;
         Decoder _decoder;
         Encoder _encoder;
 
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int buffSize, uint windowSize, uint quality) : this(baseStream, mode, leaveOpen, buffSize)
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen, int bufferSize, uint windowSize, uint quality) : this(baseStream, mode, leaveOpen, bufferSize)
         {
             if (_mode == CompressionMode.Decompress) throw new System.IO.IOException(BrotliEx.QualityAndWinSize);
             else
@@ -47,7 +47,7 @@ namespace System.IO.Compression
             }
         }
 
-        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen = false, int buffSize = DefaultBufferSize)
+        public BrotliStream(Stream baseStream, CompressionMode mode, bool leaveOpen = false, int bufferSize = DefaultBufferSize)
         {
             if (baseStream == null) throw new ArgumentNullException("baseStream");
             _mode = mode;
@@ -63,12 +63,12 @@ namespace System.IO.Compression
             {
                 _decoder = new Decoder();
             }
-            _bufferSize = buffSize;
+            _bufferSize = bufferSize;
             _bufferInput = Marshal.AllocHGlobal(_bufferSize);
             _bufferOutput = Marshal.AllocHGlobal(_bufferSize);
             _nextInput = _bufferInput;
             _nextOutput = _bufferOutput;
-            _availableOutput = (nuint)buffSize;
+            _availableOutput = (nuint)_bufferSize;
         }
 
         public override bool CanRead
@@ -113,7 +113,7 @@ namespace System.IO.Compression
             set { throw new NotSupportedException(); }
         }
 
-        protected virtual void FlushEncoder(Boolean finished)
+        protected virtual void FlushEncoder(bool finished)
         {
             if (_encoder._state == IntPtr.Zero) return;
             if (BrotliNative.BrotliEncoderIsFinished(_encoder._state)) return;
@@ -214,8 +214,8 @@ namespace System.IO.Compression
 
             int bytesRead = (int)(_decoder._bufferStream.Length - _readOffset);
             nuint totalCount = 0;
-            Boolean endOfStream = false;
-            Boolean errorDetected = false;
+            bool endOfStream = false;
+            bool errorDetected = false;
             Byte[] buf = new Byte[_bufferSize];
             while (bytesRead < count)
             {
