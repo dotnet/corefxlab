@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Text.Utf8;
 using Xunit;
 
 namespace System.Text.Primitives.Tests
@@ -16,7 +15,7 @@ namespace System.Text.Primitives.Tests
         [InlineData("-51.500", 7, -51.5, 7)]
         public unsafe void DecimalPositiveTests(string text, int length, decimal expectedValue, int expectedConsumed)
         {
-            byte[] byteBuffer = new Utf8String(text).CopyBytes();
+            byte[] byteBuffer = Text.Encoding.UTF8.GetBytes(text);
             ReadOnlySpan<byte> byteSpan = new ReadOnlySpan<byte>(byteBuffer);
 
             char[] charBuffer = text.ToCharArray();

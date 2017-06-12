@@ -37,7 +37,7 @@ namespace System.Text.Utf16
                     throw new InvalidOperationException("Enumerator is on invalid position");
                 }
 
-                if (!Utf16LittleEndianEncoder.TryDecodeCodePointFromString(_s, _index, out _codePoint, out _encodedChars))
+                if (!Utf8Helper.TryDecodeCodePointFromString(_s, _index, out _codePoint, out _encodedChars))
                 {
                     _codePoint = default(uint);
                     _encodedChars = 0;
