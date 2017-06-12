@@ -32,7 +32,6 @@ namespace System.IO.Compression
         private IntPtr _bufferOutput;
         private bool _leaveOpen;
         private int totalWrote;
-        private IntPtr _dictionary;//TODO an opportunity to create, add, save and use compression dictionary
         private int _readOffset = 0;
         Decoder _decoder;
         Encoder _encoder;
@@ -115,13 +114,13 @@ namespace System.IO.Compression
 
         protected virtual void FlushEncoder(bool finished)
         {
-            if (_encoder._state == IntPtr.Zero) return;
-            if (BrotliNative.BrotliEncoderIsFinished(_encoder._state)) return;
+            if (_encoder.State == IntPtr.Zero) return;
+            if (BrotliNative.BrotliEncoderIsFinished(_encoder.State)) return;
             BrotliEncoderOperation op = finished ? BrotliEncoderOperation.Finish : BrotliEncoderOperation.Flush;
             nuint totalOut = 0;
             while (true)
             {
-                if (!BrotliNative.BrotliEncoderCompressStream(_encoder._state, op, ref _availableInput, ref _nextInput, ref _availableOutput, ref _nextOutput, out totalOut))
+                if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, op, ref _availableInput, ref _nextInput, ref _availableOutput, ref _nextOutput, out totalOut))
                     throw new System.IO.IOException(BrotliEx.unableEncode);
                 var extraData = (nuint)_availableOutput != (nuint)_bufferSize;
                 if (extraData)
@@ -133,7 +132,7 @@ namespace System.IO.Compression
                     _availableOutput = (nuint)_bufferSize;
                     _nextOutput = _bufferOutput;
                 }
-                if (BrotliNative.BrotliEncoderIsFinished(_encoder._state)) break;
+                if (BrotliNative.BrotliEncoderIsFinished(_encoder.State)) break;
                 if (!extraData) break;
             }
         }
@@ -221,7 +220,7 @@ namespace System.IO.Compression
             {
                 while (true)
                 {
-                    if (_decoder._lastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
+                    if (_decoder.LastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
                     {
                         _availableInput = (nuint)_stream.Read(buf, 0, (int)_bufferSize);
                         _nextInput = _bufferInput;
@@ -232,7 +231,7 @@ namespace System.IO.Compression
                         }
                         Marshal.Copy(buf, 0, _bufferInput, (int)_availableInput);
                     }
-                    else if (_decoder._lastDecoderResult == BrotliDecoderResult.NeedsMoreOutput)
+                    else if (_decoder.LastDecoderResult == BrotliDecoderResult.NeedsMoreOutput)
                     {
                         Marshal.Copy(_bufferOutput, buf, 0, _bufferSize);
                         _decoder._bufferStream.Write(buf, 0, _bufferSize);
@@ -246,21 +245,21 @@ namespace System.IO.Compression
                         endOfStream = true;
                         break;
                     }
-                    _decoder._lastDecoderResult = BrotliNative.BrotliDecoderDecompressStream(_decoder._state, ref _availableInput, ref _nextInput,
+                    _decoder.LastDecoderResult = BrotliNative.BrotliDecoderDecompressStream(_decoder.State, ref _availableInput, ref _nextInput,
                         ref _availableOutput, ref _nextOutput, out totalCount);
                     if (bytesRead >= count) break;
                 }
-                if (endOfStream && !BrotliNative.BrotliDecoderIsFinished(_decoder._state))
+                if (endOfStream && !BrotliNative.BrotliDecoderIsFinished(_decoder.State))
                 {
                     errorDetected = true;
                 }
-                if (_decoder._lastDecoderResult == BrotliDecoderResult.Error || errorDetected)
+                if (_decoder.LastDecoderResult == BrotliDecoderResult.Error || errorDetected)
                 {
-                    var error = BrotliNative.BrotliDecoderGetErrorCode(_decoder._state);
+                    var error = BrotliNative.BrotliDecoderGetErrorCode(_decoder.State);
                     var text = BrotliNative.BrotliDecoderErrorString(error);
                     throw new System.IO.IOException(text + BrotliEx.unableDecode);
                 }
-                if (endOfStream && !BrotliNative.BrotliDecoderIsFinished(_decoder._state) && _decoder._lastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
+                if (endOfStream && !BrotliNative.BrotliDecoderIsFinished(_decoder.State) && _decoder.LastDecoderResult == BrotliDecoderResult.NeedsMoreInput)
                 {
                     throw new System.IO.IOException(BrotliEx.FinishDecompress);
                 }
@@ -319,7 +318,7 @@ namespace System.IO.Compression
                 _nextInput = _bufferInput;
                 while ((int)_availableInput > 0)
                 {
-                    if (!BrotliNative.BrotliEncoderCompressStream(_encoder._state, BrotliEncoderOperation.Process, ref _availableInput, ref _nextInput, ref _availableOutput,
+                    if (!BrotliNative.BrotliEncoderCompressStream(_encoder.State, BrotliEncoderOperation.Process, ref _availableInput, ref _nextInput, ref _availableOutput,
                         ref _nextOutput, out totalOut)) throw new System.IO.IOException(BrotliEx.unableEncode);
 
                     if (_availableOutput != (nuint)_bufferSize)
@@ -332,7 +331,7 @@ namespace System.IO.Compression
                         _nextOutput = _bufferOutput;
                     }
                 }
-                if (BrotliNative.BrotliEncoderIsFinished(_encoder._state)) break;
+                if (BrotliNative.BrotliEncoderIsFinished(_encoder.State)) break;
             }
         }
     }

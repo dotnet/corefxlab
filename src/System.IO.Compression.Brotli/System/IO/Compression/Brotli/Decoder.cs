@@ -10,8 +10,8 @@ namespace System.IO.Compression
 {
     internal sealed class Decoder
     {
-        internal IntPtr _state = IntPtr.Zero;
-        internal BrotliDecoderResult _lastDecoderResult = BrotliDecoderResult.NeedsMoreInput;
+        internal IntPtr State { get; private set; }
+        internal BrotliDecoderResult LastDecoderResult { get; set; }
         internal MemoryStream _bufferStream;
         private bool _isDisposed = false;
 
@@ -23,19 +23,20 @@ namespace System.IO.Compression
 
         private void InitializeDecoder()
         {
-            _state = BrotliNative.BrotliDecoderCreateInstance();
-            if (_state == IntPtr.Zero)
+            State = BrotliNative.BrotliDecoderCreateInstance();
+            if (State == IntPtr.Zero)
             {
-                throw new System.IO.IOException(BrotliEx.DecoderInstanceCreate);//TODO Create exception
+                throw new System.IO.IOException(BrotliEx.DecoderInstanceCreate);
             }
+            LastDecoderResult = BrotliDecoderResult.NeedsMoreInput;
             _bufferStream = new MemoryStream();
         }
 
         internal void Dispose()
         {
-            if (!_isDisposed && _state != IntPtr.Zero)
+            if (!_isDisposed && State != IntPtr.Zero)
             {
-                BrotliNative.BrotliDecoderDestroyInstance(_state);
+                BrotliNative.BrotliDecoderDestroyInstance(State);
                 _bufferStream.Dispose();
             }
             _isDisposed = true;

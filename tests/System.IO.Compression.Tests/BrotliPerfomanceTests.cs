@@ -122,11 +122,11 @@ namespace System.IO.Compression.Tests
                         for (int i = 0; i < Benchmark.InnerIterationCount; i++)
                         {
                             int retCount = -1;
-                            using (BrotliStream zip = new BrotliStream(brStream, CompressionMode.Decompress, true))
+                            using (BrotliStream brotliDecompressStream = new BrotliStream(brStream, CompressionMode.Decompress, true))
                             {
                                 while (retCount != 0)
                                 {
-                                    retCount = zip.Read(bytes, 0, bufferSize);
+                                    retCount = brotliDecompressStream.Read(bytes, 0, bufferSize);
                                 }
                             }
                             brStream.Seek(0, SeekOrigin.Begin);
@@ -146,10 +146,10 @@ namespace System.IO.Compression.Tests
             {
                 string filePath = GetTestFilePath();
                 using (FileStream output = File.Create(filePath))
-                using (BrotliStream zip = new BrotliStream(output, CompressionMode.Compress))
+                using (BrotliStream brotliCompressStream = new BrotliStream(output, CompressionMode.Compress))
                 using (iteration.StartMeasurement())
                 {
-                    zip.Write(bytes, 0, bytes.Length);
+                    brotliCompressStream.Write(bytes, 0, bytes.Length);
                 }
                 File.Delete(filePath);
             }
@@ -168,9 +168,7 @@ namespace System.IO.Compression.Tests
             foreach (var iteration in Benchmark.Iterations)
                 using (iteration.StartMeasurement())
                     for (int i = 0; i < Benchmark.InnerIterationCount; i++)
-                    {
                         BrotliPrimitives.Decompress(data, bytes, out int consumed, out int written);
-                    }
             File.Delete(testFilePath);
         }
 
