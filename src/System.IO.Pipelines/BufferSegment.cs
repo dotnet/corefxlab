@@ -91,11 +91,6 @@ namespace System.IO.Pipelines
             Debug.Assert(_owned.IsRetained);
 
             _owned.Release();
-
-            if (!_owned.IsRetained)
-            {
-                _owned.Dispose();
-            }
         }
 
 

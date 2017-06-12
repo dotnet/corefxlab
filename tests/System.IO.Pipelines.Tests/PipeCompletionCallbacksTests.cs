@@ -5,7 +5,7 @@ using Xunit;
 
 namespace System.IO.Pipelines.Tests
 {
-    public class PipeCompletionCallbacksTests
+    public class PipeCompletionCallbacksTests : IDisposable
     {
         private readonly PipeFactory _pipeFactory;
 
@@ -415,8 +415,8 @@ namespace System.IO.Pipelines.Tests
 
             pipe.Writer.OnReaderCompleted((exception, state) =>
             {
-                callbackRan = true;
                 Assert.False(continuationRan);
+                callbackRan = true;
             }, null);
 
             var buffer = pipe.Writer.Alloc(10);
@@ -431,6 +431,7 @@ namespace System.IO.Pipelines.Tests
             pipe.Reader.Complete();
 
             Assert.True(callbackRan);
+            pipe.Writer.Complete();
         }
 
         [Fact]

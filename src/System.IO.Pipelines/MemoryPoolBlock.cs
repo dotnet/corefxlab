@@ -4,6 +4,7 @@
 using System.Buffers;
 using System.Text;
 using System.Threading;
+using System.Diagnostics;
 
 namespace System.IO.Pipelines
 {
@@ -56,11 +57,16 @@ namespace System.IO.Pipelines
 
         ~MemoryPoolBlock()
         {
-#if BLOCK_LEASE_TRACKING
-            Debug.Assert(Slab == null || !Slab.IsActive, $"{Environment.NewLine}{Environment.NewLine}*** Block being garbage collected instead of returned to pool: {Leaser} ***{Environment.NewLine}");
-#endif
             if (Slab != null && Slab.IsActive)
             {
+#if DEBUG
+                Debug.Assert(false, $"{Environment.NewLine}{Environment.NewLine}*** Block being garbage collected instead of returned to pool" +
+#if BLOCK_LEASE_TRACKING
+                    $": {Leaser}" +
+#endif
+                    $" ***{ Environment.NewLine}");
+#endif
+
                 // Need to make a new object because this one is being finalized
                 Pool.Return(new MemoryPoolBlock(Pool, Slab, _offset, _length));
             }
@@ -72,17 +78,11 @@ namespace System.IO.Pipelines
             MemoryPool pool,
             MemoryPoolSlab slab)
         {
-            return new MemoryPoolBlock(pool, slab, offset, length)
-            {
-#if BLOCK_LEASE_TRACKING
-                Leaser = Environment.StackTrace,
-#endif
-            };
+            return new MemoryPoolBlock(pool, slab, offset, length);
         }
 
         /// <summary>
         /// ToString overridden for debugger convenience. This displays the "active" byte information in this block as ASCII characters.
-        /// ToString overridden for debugger convenience. This displays the byte information in this block as ASCII characters.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -92,15 +92,8 @@ namespace System.IO.Pipelines
             return builder.ToString();
         }
 
-        internal void Initialize()
+        protected override void OnZeroReferences()
         {
-            // This is VERY bad, but is required while there is no re-initialization support
-            _disposed = false;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            _disposed = true;
             Pool.Return(this);
         }
 
