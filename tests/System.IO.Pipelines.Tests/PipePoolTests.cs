@@ -22,11 +22,11 @@ namespace System.IO.Pipelines.Tests
 
                 readerWriter.Writer.Complete();
                 readerWriter.Reader.Complete();
-                Assert.Equal(1, pool.Disposed);
+                Assert.Equal(1, pool.ReturnedBlocks);
 
                 readerWriter.Writer.Complete();
                 readerWriter.Reader.Complete();
-                Assert.Equal(1, pool.Disposed);
+                Assert.Equal(1, pool.ReturnedBlocks);
             }
         }
 
@@ -40,7 +40,7 @@ namespace System.IO.Pipelines.Tests
             using (var factory = new PipeFactory(pool))
             {
                 var pipe = factory.Create();
-                while (pool.RentedBlocks != 3)
+                while (pool.CurrentlyRentedBlocks != 3)
                 {
                     var writableBuffer = pipe.Writer.Alloc(writeSize);
                     writableBuffer.Advance(writeSize);
@@ -50,7 +50,7 @@ namespace System.IO.Pipelines.Tests
                 var readResult = await pipe.Reader.ReadAsync();
                 pipe.Reader.Advance(readResult.Buffer.End);
 
-                Assert.Equal(0, pool.RentedBlocks);
+                Assert.Equal(0, pool.CurrentlyRentedBlocks);
             }
         }
 
@@ -72,7 +72,7 @@ namespace System.IO.Pipelines.Tests
                 buffer.Write(new byte[writeSize]);
                 buffer.Commit();
 
-                Assert.Equal(1, pool.RentedBlocks);
+                Assert.Equal(1, pool.CurrentlyRentedBlocks);
             }
         }
 
@@ -94,7 +94,7 @@ namespace System.IO.Pipelines.Tests
                 buffer.Advance(writeSize);
                 await buffer.FlushAsync();
 
-                Assert.Equal(2, pool.RentedBlocks);
+                Assert.Equal(2, pool.CurrentlyRentedBlocks);
 
                 // Read everything
                 var readResult = await pipe.Reader.ReadAsync();
@@ -112,8 +112,8 @@ namespace System.IO.Pipelines.Tests
                 return new DisposeTrackingOwnedMemory(new byte[2048], this);
             }
 
-            public int Disposed { get; set; }
-            public int RentedBlocks { get; set; }
+            public int ReturnedBlocks { get; set; }
+            public int CurrentlyRentedBlocks { get; set; }
 
             protected override void Dispose(bool disposing)
             {
@@ -128,14 +128,13 @@ namespace System.IO.Pipelines.Tests
                 {
                     _array = array;
                     _bufferPool = bufferPool;
-                    _bufferPool.RentedBlocks++;
+                    _bufferPool.CurrentlyRentedBlocks++;
                 }
 
-                protected override void Dispose(bool disposing)
+                protected override void OnZeroReferences()
                 {
-                    _bufferPool.Disposed++;
-                    _bufferPool.RentedBlocks--;
-                    base.Dispose(disposing);
+                    _bufferPool.ReturnedBlocks++;
+                    _bufferPool.CurrentlyRentedBlocks--;
                 }
 
                 protected override bool TryGetArrayInternal(out ArraySegment<byte> buffer)

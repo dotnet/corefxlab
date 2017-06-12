@@ -3,7 +3,7 @@
 
 namespace System.IO.Pipelines.Tests
 {
-    public class PipeTest: IDisposable
+    public abstract class PipeTest : IDisposable
     {
         protected const int MaximumSizeHigh = 65;
 

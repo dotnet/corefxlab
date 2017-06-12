@@ -91,11 +91,6 @@ namespace System.IO.Pipelines
             Debug.Assert(_owned.HasOutstandingReferences);
 
             _owned.Release();
-
-            if (!_owned.HasOutstandingReferences)
-            {
-                _owned.Dispose();
-            }
         }
 
 

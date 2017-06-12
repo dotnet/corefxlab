@@ -2,9 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics;
 using System.Runtime;
-using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace System.Buffers
@@ -41,7 +39,7 @@ namespace System.Buffers
         {
             get
             {
-                return _referenceCount > 0
+                return Volatile.Read(ref _referenceCount) > 0
                         || (ReferenceCountingSettings.OwnedMemory == ReferenceCountingMethod.ReferenceCounter
                             && ReferenceCounter.HasReference(this));
             }
@@ -54,13 +52,13 @@ namespace System.Buffers
 
         public void Release()
         {
-            if(Interlocked.Decrement(ref _referenceCount) == 0)
+            if (Interlocked.Decrement(ref _referenceCount) == 0)
                 OnZeroReferences();
         }
 
         protected virtual void OnZeroReferences()
         { }
-        
+
         public virtual BufferHandle Pin(int index = 0)
         {
             return BufferHandle.Create(this, index);

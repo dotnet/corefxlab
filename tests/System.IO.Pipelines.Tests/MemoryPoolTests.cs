@@ -15,20 +15,24 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public void ReleasedBlockWorks()
         {
-            var pool = new MemoryPool();
-            var block = pool.Rent(1);
-            block.Dispose();
-
-            OwnedBuffer<byte> block2 = null;
-
-            // Lease-return until we get same block
-            do
+            using (var pool = new MemoryPool())
             {
-                block2?.Dispose();
-                block2 = pool.Rent(1);
-            } while (block != block2);
+                var block1 = pool.Rent(1);
+                block1.AddReference();
+                block1.Release();
 
-            Assert.True(block2.Span.Length > 0);
+                OwnedBuffer<byte> block2 = null;
+
+                // Lease-return until we get same block
+                while (block1 != block2)
+                {
+                    block2 = pool.Rent(1);
+                    block2.AddReference();
+                    block2.Release();
+                }
+
+                Assert.True(block2.Span.Length > 0);
+            }
         }
     }
 }
