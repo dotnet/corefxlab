@@ -16,6 +16,7 @@ namespace System.Threading.Tasks.Channels.Tests
                 SingleReader = this.RequiresSingleReader,
                 AllowSynchronousContinuations = this.AllowSynchronousContinuations
             });
+        protected override Channel<int> CreateFullChannel() => null;
 
         [Fact]
         public async Task Complete_BeforeEmpty_NoWaiters_TriggersCompletion()
