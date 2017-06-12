@@ -8,7 +8,7 @@ using Xunit;
 
 namespace System.Text.Primitives.Tests
 {
-    public class Utf8StringTests
+    public class RandomEncoderTests
     {
         public static IEnumerable<object[]> TryComputeEncodedBytesShouldMatchEncoding_Strings()
         {
