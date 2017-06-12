@@ -288,7 +288,7 @@ namespace System.IO.Pipelines.Tests
             EnsureSpanDisposed(data);
         }
 
-        [Fact(Skip = "OwnedArray<T>.OnZeroReferences() does not dispose itself.")]
+        [Fact]
         public async Task PreservingUnownedBufferCopies()
         {
             var stream = new CallbackStream(async (s, token) =>
@@ -299,34 +299,28 @@ namespace System.IO.Pipelines.Tests
             });
 
             var reader = stream.AsPipelineReader();
+            var result = await reader.ReadAsync();
+            var buffer = result.Buffer;
+            var preserved = buffer.Preserve();
 
-            var preserved = default(PreservedBuffer);
+            // Make sure we can access the span
+            EnsureSpanValid(buffer.First);
+            Assert.True(buffer.First.Length > 0);
+            buffer.First.Span[0] = (byte)'J';
+            Assert.Equal("Jello ", Encoding.UTF8.GetString(buffer.ToArray()));
 
-            while (true)
-            {
-                var result = await reader.ReadAsync();
-                var buffer = result.Buffer;
+            reader.Advance(buffer.End);
 
-                if (buffer.IsEmpty && result.IsCompleted)
-                {
-                    // Done
-                    break;
-                }
-
-                preserved = buffer.Preserve();
-
-                // Make sure we can access the span
-                EnsureSpanValid(buffer.First);
-
-                reader.Advance(buffer.End);
-            }
+            result = await reader.ReadAsync();
+            Assert.True(result.IsCompleted);
 
             using (preserved)
             {
+                // Preserved was copied, so it still contains "Hello " instead of "Jello ".
                 Assert.Equal("Hello ", Encoding.UTF8.GetString(preserved.Buffer.ToArray()));
             }
 
-            EnsureSpanDisposed(preserved.Buffer.First);
+            // There is currently no way to verify that OwnedArray<byte> is fully released.
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
